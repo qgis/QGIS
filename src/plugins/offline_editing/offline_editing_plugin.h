@@ -20,7 +20,7 @@
 #define QGS_OFFLINE_EDITING_PLUGIN_H
 
 #include "../qgisplugin.h"
-#include <qgsofflineediting.h>
+#include "qgsofflineediting.h"
 #include <QObject>
 
 class QAction;

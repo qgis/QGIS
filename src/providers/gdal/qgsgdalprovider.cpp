@@ -85,7 +85,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
       sDfLastComplete = dfComplete;
   }
 
-  if ( floor( sDfLastComplete * 10 ) != floor( dfComplete * 10 ) )
+  if ( std::floor( sDfLastComplete * 10 ) != std::floor( dfComplete * 10 ) )
   {
     if ( prog->feedback )
       prog->feedback->setProgress( dfComplete * 100 );
@@ -485,20 +485,20 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   if ( myRasterExtent.yMaximum() < extent.yMaximum() )
   {
-    top = qRound( ( extent.yMaximum() - myRasterExtent.yMaximum() ) / yRes );
+    top = std::round( ( extent.yMaximum() - myRasterExtent.yMaximum() ) / yRes );
   }
   if ( myRasterExtent.yMinimum() > extent.yMinimum() )
   {
-    bottom = qRound( ( extent.yMaximum() - myRasterExtent.yMinimum() ) / yRes ) - 1;
+    bottom = std::round( ( extent.yMaximum() - myRasterExtent.yMinimum() ) / yRes ) - 1;
   }
 
   if ( myRasterExtent.xMinimum() > extent.xMinimum() )
   {
-    left = qRound( ( myRasterExtent.xMinimum() - extent.xMinimum() ) / xRes );
+    left = std::round( ( myRasterExtent.xMinimum() - extent.xMinimum() ) / xRes );
   }
   if ( myRasterExtent.xMaximum() < extent.xMaximum() )
   {
-    right = qRound( ( myRasterExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
+    right = std::round( ( myRasterExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
   }
 #endif
   QRect subRect = QgsRasterBlock::subRect( extent, pixelWidth, pixelHeight, myRasterExtent );
@@ -528,7 +528,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   int srcBottom = ySize() - 1;
   int srcRight = xSize() - 1;
 
-  // Note: original approach for xRes < srcXRes || yRes < qAbs( srcYRes ) was to avoid
+  // Note: original approach for xRes < srcXRes || yRes < std::fabs( srcYRes ) was to avoid
   // second resampling and read with GDALRasterIO to another temporary data block
   // extended to fit src grid. The problem was that with src resolution much bigger
   // than dst res, the target could become very large
@@ -556,21 +556,21 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   // Get necessary src extent aligned to src resolution
   if ( mExtent.xMinimum() < myRasterExtent.xMinimum() )
   {
-    srcLeft = static_cast<int>( floor( ( myRasterExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
+    srcLeft = static_cast<int>( std::floor( ( myRasterExtent.xMinimum() - mExtent.xMinimum() ) / srcXRes ) );
   }
   if ( mExtent.xMaximum() > myRasterExtent.xMaximum() )
   {
-    srcRight = static_cast<int>( floor( ( myRasterExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) );
+    srcRight = static_cast<int>( std::floor( ( myRasterExtent.xMaximum() - mExtent.xMinimum() ) / srcXRes ) );
   }
 
   // GDAL states that mGeoTransform[3] is top, may it also be bottom and mGeoTransform[5] positive?
   if ( mExtent.yMaximum() > myRasterExtent.yMaximum() )
   {
-    srcTop = static_cast<int>( floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMaximum() ) / srcYRes ) );
+    srcTop = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMaximum() ) / srcYRes ) );
   }
   if ( mExtent.yMinimum() < myRasterExtent.yMinimum() )
   {
-    srcBottom = static_cast<int>( floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMinimum() ) / srcYRes ) );
+    srcBottom = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMinimum() ) / srcYRes ) );
   }
 
   QgsDebugMsg( QString( "srcTop = %1 srcBottom = %2 srcLeft = %3 srcRight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcLeft ).arg( srcRight ) );
@@ -585,11 +585,11 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   if ( xRes > srcXRes )
   {
-    tmpWidth = static_cast<int>( qRound( srcWidth * srcXRes / xRes ) );
+    tmpWidth = static_cast<int>( std::round( srcWidth * srcXRes / xRes ) );
   }
-  if ( yRes > fabs( srcYRes ) )
+  if ( yRes > std::fabs( srcYRes ) )
   {
-    tmpHeight = static_cast<int>( qRound( -1.*srcHeight * srcYRes / yRes ) );
+    tmpHeight = static_cast<int>( std::round( -1.*srcHeight * srcYRes / yRes ) );
   }
 
   double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;
@@ -626,7 +626,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   double y = myRasterExtent.yMaximum() - 0.5 * yRes;
   for ( int row = 0; row < height; row++ )
   {
-    int tmpRow = static_cast<int>( floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
+    int tmpRow = static_cast<int>( std::floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
 
     char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
     char *dstRowBlock = ( char * )block + dataSize * ( top + row ) * pixelWidth;
@@ -640,7 +640,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
     int lastCol = 0;
     for ( int col = 0; col < width; ++col )
     {
-      // floor() is quite slow! Use just cast to int.
+      // std::floor() is quite slow! Use just cast to int.
       tmpCol = static_cast<int>( x );
       if ( tmpCol > lastCol )
       {
@@ -959,7 +959,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
         }
 
         if ( !bandNameValues.isEmpty() )
-          return tr( "Band" ) + QStringLiteral( " %1 / %2" ) .arg( bandNumber, 1 + ( int ) log10( ( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( QStringLiteral( " / " ) ) );
+          return tr( "Band" ) + QStringLiteral( " %1 / %2" ) .arg( bandNumber, 1 + ( int ) std::log10( ( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( QStringLiteral( " / " ) ) );
       }
     }
   }
@@ -1002,9 +1002,9 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   double xres = ( finalExtent.width() ) / width;
   double yres = ( finalExtent.height() ) / height;
 
-  // Offset, not the cell index -> floor
-  int col = ( int ) floor( ( point.x() - finalExtent.xMinimum() ) / xres );
-  int row = ( int ) floor( ( finalExtent.yMaximum() - point.y() ) / yres );
+  // Offset, not the cell index -> std::floor
+  int col = ( int ) std::floor( ( point.x() - finalExtent.xMinimum() ) / xres );
+  int row = ( int ) std::floor( ( finalExtent.yMaximum() - point.y() ) / yres );
 
   QgsDebugMsg( QString( "row = %1 col = %2" ).arg( row ).arg( col ) );
 
@@ -1033,7 +1033,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
     double value = myBlock->value( r, c );
 
     if ( ( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) &&
-           ( qIsNaN( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
+           ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
          ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
     {
       results.insert( i, QVariant() ); // null QVariant represents no data
@@ -1291,8 +1291,8 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
 
   // min/max are stored as text in aux file => use threshold
   if ( myBinCount != myHistogram.binCount ||
-       qAbs( myMinVal - myExpectedMinVal ) > qAbs( myExpectedMinVal ) / 10e6 ||
-       qAbs( myMaxVal - myExpectedMaxVal ) > qAbs( myExpectedMaxVal ) / 10e6 )
+       std::fabs( myMinVal - myExpectedMinVal ) > std::fabs( myExpectedMinVal ) / 10e6 ||
+       std::fabs( myMaxVal - myExpectedMaxVal ) > std::fabs( myExpectedMaxVal ) / 10e6 )
   {
     QgsDebugMsg( QString( "Params do not match binCount: %1 x %2, minVal: %3 x %4, maxVal: %5 x %6" ).arg( myBinCount ).arg( myHistogram.binCount ).arg( myMinVal ).arg( myExpectedMinVal ).arg( myMaxVal ).arg( myExpectedMaxVal ) );
     return false;

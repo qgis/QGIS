@@ -444,6 +444,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( this, &QDialog::accepted, this, &QgsDxfExportDialog::saveSettings );
   connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::selectAll );
   connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::deSelectAll );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDxfExportDialog::showHelp );
 
   mFileLineEdit->setFocus();
 
@@ -646,4 +647,8 @@ QgsCoordinateReferenceSystem QgsDxfExportDialog::crs() const
 QString QgsDxfExportDialog::mapTheme() const
 {
   return mVisibilityPresets->currentText();
+}
+void QgsDxfExportDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#create-dxf-files" ) );
 }

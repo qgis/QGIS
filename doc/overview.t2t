@@ -8,7 +8,7 @@ Following a summary of the required dependencies for building:
 
 Required build tools:
 
-- CMake >= 2.8.6
+- CMake >= 3.0.0
 - Flex >= 2.5.6
 - Bison >= 2.4
 -
@@ -31,10 +31,7 @@ Required build dependencies:
 
 Optional dependencies:
 
-- for GRASS providers and plugin - GRASS >= 6.0.0. QGIS may be compiled with GRASS 6 or GRASS 7.
-  It can also be compiled with both GRASS versions in a single build but only if QGIS
-  is not installed with rpath. The desired GRASS version is chosen on runtime by setting
-  LD_LIBRARY_PATH or PATH.
+- for GRASS providers and plugin - GRASS >= 7.0.0.
 - for georeferencer - GSL >= 1.8
 - for PostGIS support - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel

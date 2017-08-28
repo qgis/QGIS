@@ -135,7 +135,7 @@ int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &
     s2Char = s2start;
     for ( int j = 0; j < length2; ++j )
     {
-      col[j + 1] = qMin( qMin( 1 + col[j], 1 + prevCol[1 + j] ), prevCol[j] + ( ( *s1Char == *s2Char ) ? 0 : 1 ) );
+      col[j + 1] = std::min( std::min( 1 + col[j], 1 + prevCol[1 + j] ), prevCol[j] + ( ( *s1Char == *s2Char ) ? 0 : 1 ) );
       s2Char++;
     }
     col.swap( prevCol );

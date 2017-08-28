@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <math.h>
+#include <cmath>
 
 #include <QApplication>
 #include <QFileDialog>
@@ -67,6 +67,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mPythonUtils = nullptr;
 
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPluginManager::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -698,8 +699,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     voteLabel->show();
     voteSlider->show();
     voteSubmit->show();
-    QgsDebugMsg( QString( "vote slider:%1" ).arg( qRound( metadata->value( "average_vote" ).toFloat() ) ) );
-    voteSlider->setValue( qRound( metadata->value( "average_vote" ).toFloat() ) );
+    QgsDebugMsg( QString( "vote slider:%1" ).arg( std::round( metadata->value( "average_vote" ).toFloat() ) ) );
+    voteSlider->setValue( std::round( metadata->value( "average_vote" ).toFloat() ) );
     mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
   }
   else
@@ -1576,4 +1577,7 @@ void QgsPluginManager::pushMessage( const QString &text, QgsMessageBar::MessageL
   msgBar->pushMessage( text, level, duration );
 }
 
-
+void QgsPluginManager::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins.html" ) );
+}

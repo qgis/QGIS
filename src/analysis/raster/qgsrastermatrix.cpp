@@ -17,7 +17,7 @@
 
 #include "qgsrastermatrix.h"
 #include <cstring>
-#include <qmath.h>
+#include <cmath>
 
 QgsRasterMatrix::QgsRasterMatrix()
   : mColumns( 0 )
@@ -216,26 +216,26 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           }
           else
           {
-            mData[i] = sqrt( value );
+            mData[i] = std::sqrt( value );
           }
           break;
         case opSIN:
-          mData[i] = sin( value );
+          mData[i] = std::sin( value );
           break;
         case opCOS:
-          mData[i] = cos( value );
+          mData[i] = std::cos( value );
           break;
         case opTAN:
-          mData[i] = tan( value );
+          mData[i] = std::tan( value );
           break;
         case opASIN:
-          mData[i] = asin( value );
+          mData[i] = std::asin( value );
           break;
         case opACOS:
-          mData[i] = acos( value );
+          mData[i] = std::acos( value );
           break;
         case opATAN:
-          mData[i] = atan( value );
+          mData[i] = std::atan( value );
           break;
         case opSIGN:
           mData[i] = -value;
@@ -292,7 +292,7 @@ double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, 
       }
       else
       {
-        return qPow( arg1, arg2 );
+        return std::pow( arg1, arg2 );
       }
     case opEQ:
       return ( arg1 == arg2 ? 1.0 : 0.0 );
@@ -415,7 +415,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
 
 bool QgsRasterMatrix::testPowerValidity( double base, double power ) const
 {
-  if ( ( base == 0 && power < 0 ) || ( base < 0 && ( power - floor( power ) ) > 0 ) )
+  if ( ( base == 0 && power < 0 ) || ( base < 0 && ( power - std::floor( power ) ) > 0 ) )
   {
     return false;
   }

@@ -57,8 +57,6 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
     ~QgsSpatiaLiteSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
-    //! Determines the tables the user selected and closes the dialog
-    void addTables();
     //! String list containing the selected tables
     QStringList selectedTables();
     //! Connection info (DB-path)
@@ -76,7 +74,7 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
      */
     void on_btnConnect_clicked();
     void buildQuery();
-    void addClicked();
+    void addButtonClicked() override;
     void updateStatistics();
     //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
@@ -96,7 +94,7 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#spatialite-layers" ) ); }
+    void showHelp();
 
   private:
     enum Columns
@@ -128,7 +126,6 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
 
     QString layerURI( const QModelIndex &index );
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QPushButton *mStatsButton = nullptr;
 };
 

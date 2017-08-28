@@ -20,7 +20,6 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -36,6 +35,7 @@
 #include <QFileDialog>
 #include <QRadioButton>
 #include <QImageReader>
+#include "qgshelp.h"
 
 /**
  * Item delegate with tweaked sizeHint.
@@ -57,11 +57,9 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   mImageEncodingGroup( 0 )
 {
   setupUi( this );
+  setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::showHelp );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
-
-  mAddButton = buttonBox->addButton( tr( "&Add" ), QDialogButtonBox::ActionRole );
-  mAddButton->setEnabled( false );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::addButtonClicked );
 
   if ( mServiceType == FeatureService )
   {
@@ -225,7 +223,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
 {
 
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
-  nc.setWindowTitle( tr( "Create a new %1 connection" ).arg( mServiceName ) );
+  nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
   {
@@ -237,7 +235,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
 void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
 {
   QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
-  nc.setWindowTitle( tr( "Modify %1 connection" ).arg( mServiceName ) );
+  nc.setWindowTitle( tr( "Modify %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
   {
@@ -300,7 +298,7 @@ void QgsArcGisServiceSourceSelect::connectToServer()
   }
 
   btnConnect->setEnabled( true );
-  mAddButton->setEnabled( haveLayers );
+  emit enableButtons( haveLayers );
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton->setEnabled( haveLayers );
@@ -439,7 +437,7 @@ void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelInde
   {
     mBuildQueryButton->setEnabled( current.isValid() );
   }
-  mAddButton->setEnabled( current.isValid() );
+  emit enableButtons( current.isValid() );
 }
 
 void QgsArcGisServiceSourceSelect::buildQueryButtonClicked()
@@ -471,7 +469,7 @@ QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewI
   return size;
 }
 
-void QgsArcGisServiceSourceSelect::on_buttonBox_helpRequested() const
+void QgsArcGisServiceSourceSelect::showHelp()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/index.html" ) );
 }

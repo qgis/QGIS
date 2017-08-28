@@ -541,7 +541,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
 void QgsPropertyOverrideButton::showDescriptionDialog()
 {
   QgsMessageViewer *mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( tr( "Data definition description" ) );
+  mv->setWindowTitle( tr( "Data Definition Description" ) );
   mv->setMessageAsHtml( mFullDescription );
   mv->exec();
 }

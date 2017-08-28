@@ -234,7 +234,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
     // correct size, see #9377.
     int max = widget->size().height() * 0.9;
     QgsDebugMsg( QString( "parent widget height = %1 max height = %2" ).arg( widget->size().height() ).arg( max ) );
-    height = qMin( height, max );
+    height = std::min( height, max );
   }
   else
   {
@@ -243,7 +243,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
 
   // Always keep some minimum size, e.g. if page is not yet loaded
   // or parent has wrong size
-  height = qMax( height, 100 );
+  height = std::max( height, 100 );
 
   s = QSize( size().width(), height );
   QgsDebugMsg( QString( "size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
@@ -402,7 +402,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mActionPrint, &QAction::triggered, this, &QgsIdentifyResultsDialog::printCurrentItem );
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
-  connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::helpRequested );
+  connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::showHelp );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -1967,4 +1967,9 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
 void QgsIdentifyResultsDialogMapLayerAction::execute()
 {
   mAction->triggerForFeature( mLayer, mFeature );
+}
+
+void QgsIdentifyResultsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#identify" ) );
 }

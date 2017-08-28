@@ -52,12 +52,9 @@ brew install \
     spatialindex \
     fastcgi \
     qtkeychain \
-    gnu-sed
+    gnu-sed \
+    libzip
 
-
-# Fix qscintilla typo
-wget https://gist.githubusercontent.com/m-kuhn/f70e4b160dd7b18eb8d637ed2a75df6d/raw/6eb8a0c8601ec52ad9ad41c01d0fad68fe967aa1/qsci.patch
-patch -p1 /usr/local/share/sip/QSci/qscilexer.sip qsci.patch
 
 mkdir -p ${HOME}/Library/Python/3.6/lib/python/site-packages
 echo 'import site; site.addsitedir("/usr/local/opt/gdal2-python/lib/python3.6/site-packages")'  >> ${HOME}/Library/Python/3.6/lib/python/site-packages/gdal2.pth

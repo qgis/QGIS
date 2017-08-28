@@ -10,7 +10,6 @@
 
 
 
-
 class QgsStatisticalSummary
 {
 %Docstring

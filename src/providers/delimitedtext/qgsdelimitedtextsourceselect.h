@@ -58,24 +58,17 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     QString mLastFileType;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
+    void showHelp();
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested()
-    {
-      QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#delimited-text-files" ) );
-    }
     void on_btnBrowseForFile_clicked();
 
   public slots:
+    void addButtonClicked() override;
     void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();
     bool validate();
-
-  signals:
-    void addVectorLayer( const QString &, const QString &, const QString & );
 };
 
 #endif // QGSDELIMITEDTEXTSOURCESELECT_H

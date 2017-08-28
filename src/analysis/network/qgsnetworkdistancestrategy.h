@@ -16,7 +16,7 @@
 #ifndef QGSNETWORKDISTANCESTRATEGY_H
 #define QGSNETWORKDISTANCESTRATEGY_H
 
-#include <qgsnetworkstrategy.h>
+#include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
 
 /** \ingroup analysis

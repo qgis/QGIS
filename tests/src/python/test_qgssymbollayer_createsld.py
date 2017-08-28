@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     test_qgssymbollayer_createsld.py
@@ -25,15 +23,16 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import Qt, QDir, QFile, QIODevice, QPointF
+from qgis.PyQt.QtCore import Qt, QDir, QFile, QIODevice, QPointF, QSizeF
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QFont
 
 from qgis.core import (
     QgsSimpleMarkerSymbolLayer, QgsSimpleMarkerSymbolLayerBase, QgsUnitTypes, QgsSvgMarkerSymbolLayer,
     QgsFontMarkerSymbolLayer, QgsEllipseSymbolLayer, QgsSimpleLineSymbolLayer,
     QgsMarkerLineSymbolLayer, QgsMarkerSymbol, QgsSimpleFillSymbolLayer, QgsSVGFillSymbolLayer,
-    QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer)
+    QgsLinePatternFillSymbolLayer, QgsPointPatternFillSymbolLayer, QgsVectorLayer, QgsVectorLayerSimpleLabeling,
+    QgsTextBufferSettings, QgsPalLayerSettings, QgsTextBackgroundSettings)
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -57,32 +56,6 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         self.assertStaticRotation(root, '50')
 
-    def assertStaticRotation(self, root, expectedValue, index=0):
-        # Check the rotation element is a literal, not a
-        rotation = root.elementsByTagName('se:Rotation').item(index)
-        literal = rotation.firstChild()
-        self.assertEqual("ogc:Literal", literal.nodeName())
-        self.assertEqual(expectedValue, literal.firstChild().nodeValue())
-
-    def assertStaticDisplacement(self, root, expectedDispX, expectedDispY):
-        displacement = root.elementsByTagName('se:Displacement').item(0)
-        self.assertIsNotNone(displacement)
-        dx = displacement.firstChild()
-        self.assertIsNotNone(dx)
-        self.assertEqual("se:DisplacementX", dx.nodeName())
-        self.assertSldNumber(expectedDispX, dx.firstChild().nodeValue())
-        dy = displacement.lastChild()
-        self.assertIsNotNone(dy)
-        self.assertEqual("se:DisplacementY", dy.nodeName())
-        self.assertSldNumber(expectedDispY, dy.firstChild().nodeValue())
-
-    def assertSldNumber(self, expected, stringValue):
-        value = float(stringValue)
-        self.assertFloatEquals(expected, value, 0.01)
-
-    def assertFloatEquals(self, expected, actual, tol):
-        self.assertLess(abs(expected - actual), tol)
-
     def testSimpleMarkerUnitDefault(self):
         symbol = QgsSimpleMarkerSymbolLayer(
             QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)
@@ -97,14 +70,6 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         # Check the same happened to the stroke width
         self.assertStrokeWidth(root, 2, 11)
         self.assertStaticDisplacement(root, 18, 36)
-
-    def assertStrokeWidth(self, root, svgParameterIdx, expectedWidth):
-        strokeWidth = root.elementsByTagName(
-            'se:SvgParameter').item(svgParameterIdx)
-        svgParameterName = strokeWidth.attributes().namedItem('name')
-        self.assertEqual("stroke-width", svgParameterName.nodeValue())
-        self.assertSldNumber(
-            expectedWidth, strokeWidth.firstChild().nodeValue())
 
     def testSimpleMarkerUnitPixels(self):
         symbol = QgsSimpleMarkerSymbolLayer(
@@ -530,21 +495,666 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
 
         gt = filter.firstChild()
         expectedGtName = "ogc:PropertyIsGreaterThanOrEqualTo" if includeMin else "ogc:PropertyIsGreaterThan"
-        self.assertEquals(expectedGtName, gt.nodeName())
+        self.assertEqual(expectedGtName, gt.nodeName())
         gtProperty = gt.firstChild()
-        self.assertEquals("ogc:PropertyName", gtProperty.nodeName())
-        self.assertEquals(attributeName, gtProperty.toElement().text())
+        self.assertEqual("ogc:PropertyName", gtProperty.nodeName())
+        self.assertEqual(attributeName, gtProperty.toElement().text())
         gtValue = gt.childNodes().item(1)
-        self.assertEquals(min, gtValue.toElement().text())
+        self.assertEqual(min, gtValue.toElement().text())
 
         lt = filter.childNodes().item(1)
         expectedLtName = "ogc:PropertyIsLessThanOrEqualTo" if includeMax else "ogc:PropertyIsLessThan"
-        self.assertEquals(expectedLtName, lt.nodeName())
+        self.assertEqual(expectedLtName, lt.nodeName())
         ltProperty = lt.firstChild()
-        self.assertEquals("ogc:PropertyName", ltProperty.nodeName())
-        self.assertEquals(attributeName, ltProperty.toElement().text())
+        self.assertEqual("ogc:PropertyName", ltProperty.nodeName())
+        self.assertEqual(attributeName, ltProperty.toElement().text())
         ltValue = lt.childNodes().item(1)
-        self.assertEquals(max, ltValue.toElement().text())
+        self.assertEqual(max, ltValue.toElement().text())
+
+    def testSimpleLabeling(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        # Pick a local default font
+        fontFamily = QFont().family()
+        settings = layer.labeling().settings()
+        format = settings.format()
+        font = format.font()
+        font.setFamily(fontFamily)
+        font.setBold(False)
+        font.setItalic(False)
+        format.setFont(font)
+        settings.setFormat(format)
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Simple label text symbolizer" + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        self.assertPropertyName(ts, 'se:Label', 'NAME')
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEqual(fontFamily, self.assertSvgParameter(font, 'font-family').text())
+        self.assertEqual('11', self.assertSvgParameter(font, 'font-size').text())
+
+        fill = self.assertElement(ts, 'se:Fill', 0)
+        self.assertEqual('#000000', self.assertSvgParameter(fill, "fill").text())
+        self.assertIsNone(self.assertSvgParameter(fill, "fill-opacity", True))
+
+    def testLabelingUomMillimeter(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        self.updateLayerLabelingUnit(layer, QgsUnitTypes.RenderMillimeters)
+
+        dom, root = self.layerToSld(layer)
+        #print("Label sized in mm " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEqual('32', self.assertSvgParameter(font, 'font-size').text())
+
+    def testLabelingUomPixels(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        self.updateLayerLabelingUnit(layer, QgsUnitTypes.RenderPixels)
+
+        dom, root = self.layerToSld(layer)
+        # print("Label sized in pixels " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEqual('9', self.assertSvgParameter(font, 'font-size').text())
+
+    def testLabelingUomInches(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        self.updateLayerLabelingUnit(layer, QgsUnitTypes.RenderInches)
+
+        dom, root = self.layerToSld(layer)
+        # print("Label sized in inches " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEqual('816', self.assertSvgParameter(font, 'font-size').text())
+
+    def testTextStyle(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+
+        # testing regular
+        self.updateLayerLabelingFontStyle(layer, False, False)
+        dom, root = self.layerToSld(layer)
+        # print("Simple label italic text" + dom.toString())
+        ts = self.getTextSymbolizer(root, 1, 0)
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertIsNone(self.assertSvgParameter(font, 'font-weight', True))
+        self.assertIsNone(self.assertSvgParameter(font, 'font-style', True))
+
+        # testing bold
+        self.updateLayerLabelingFontStyle(layer, True, False)
+        dom, root = self.layerToSld(layer)
+        # print("Simple label bold text" + dom.toString())
+        ts = self.getTextSymbolizer(root, 1, 0)
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEqual('bold', self.assertSvgParameter(font, 'font-weight').text())
+        self.assertIsNone(self.assertSvgParameter(font, 'font-style', True))
+
+        # testing italic
+        self.updateLayerLabelingFontStyle(layer, False, True)
+        dom, root = self.layerToSld(layer)
+        # print("Simple label italic text" + dom.toString())
+        ts = self.getTextSymbolizer(root, 1, 0)
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEqual('italic', self.assertSvgParameter(font, 'font-style').text())
+        self.assertIsNone(self.assertSvgParameter(font, 'font-weight', True))
+
+        # testing bold italic
+        self.updateLayerLabelingFontStyle(layer, True, True)
+        dom, root = self.layerToSld(layer)
+        # print("Simple label bold and italic text" + dom.toString())
+        ts = self.getTextSymbolizer(root, 1, 0)
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEqual('italic', self.assertSvgParameter(font, 'font-style').text())
+        self.assertEqual('bold', self.assertSvgParameter(font, 'font-weight').text())
+
+        # testing underline and strikethrough vendor options
+        self.updateLayerLabelingFontStyle(layer, False, False, True, True)
+        dom, root = self.layerToSld(layer)
+        # print("Simple label underline and strikethrough text" + dom.toString())
+        ts = self.getTextSymbolizer(root, 1, 0)
+        font = self.assertElement(ts, 'se:Font', 0)
+        self.assertEqual('true', self.assertVendorOption(ts, 'underlineText').text())
+        self.assertEqual('true', self.assertVendorOption(ts, 'strikethroughText').text())
+
+    def testTextMixedCase(self):
+        self.assertCapitalizationFunction(QFont.MixedCase, None)
+
+    def testTextUppercase(self):
+        self.assertCapitalizationFunction(QFont.AllUppercase, "strToUpperCase")
+
+    def testTextLowercase(self):
+        self.assertCapitalizationFunction(QFont.AllLowercase, "strToLowerCase")
+
+    def testTextCapitalcase(self):
+        self.assertCapitalizationFunction(QFont.Capitalize, "strCapitalize")
+
+    def assertCapitalizationFunction(self, capitalization, expectedFunction):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+
+        settings = layer.labeling().settings()
+        format = settings.format()
+        font = format.font()
+        font.setCapitalization(capitalization)
+        format.setFont(font)
+        settings.setFormat(format)
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Simple text with capitalization " + str(QFont.AllUppercase) + ": " + dom.toString())
+        ts = self.getTextSymbolizer(root, 1, 0)
+        label = self.assertElement(ts, "se:Label", 0)
+        if expectedFunction is None:
+            property = self.assertElement(label, "ogc:PropertyName", 0)
+            self.assertEqual("NAME", property.text())
+        else:
+            function = self.assertElement(label, "ogc:Function", 0)
+            self.assertEqual(expectedFunction, function.attribute("name"))
+            property = self.assertElement(function, "ogc:PropertyName", 0)
+            self.assertEqual("NAME", property.text())
+
+    def testLabelingTransparency(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        settings = layer.labeling().settings()
+        format = settings.format()
+        format.setOpacity(0.5)
+        settings.setFormat(format)
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with transparency  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        fill = self.assertElement(ts, 'se:Fill', 0)
+        self.assertEqual('#000000', self.assertSvgParameter(fill, "fill").text())
+        self.assertEqual('0.5', self.assertSvgParameter(fill, "fill-opacity").text())
+
+    def testLabelingBuffer(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        buffer = QgsTextBufferSettings()
+        buffer.setEnabled(True)
+        buffer.setSize(10)
+        buffer.setSizeUnit(QgsUnitTypes.RenderPixels)
+        buffer.setColor(QColor("Black"))
+        self.setLabelBufferSettings(layer, buffer)
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with buffer 10 px  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        halo = self.assertElement(ts, 'se:Halo', 0)
+        # not full width, just radius here
+        self.assertEqual('5', self.assertElement(ts, 'se:Radius', 0).text())
+        haloFill = self.assertElement(halo, 'se:Fill', 0)
+        self.assertEqual('#000000', self.assertSvgParameter(haloFill, "fill").text())
+
+    def testLabelingBufferPointTranslucent(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        buffer = QgsTextBufferSettings()
+        buffer.setEnabled(True)
+        buffer.setSize(10)
+        buffer.setSizeUnit(QgsUnitTypes.RenderPoints)
+        buffer.setColor(QColor("Red"))
+        buffer.setOpacity(0.5)
+        self.setLabelBufferSettings(layer, buffer)
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with buffer 10 points, red 50% transparent  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        halo = self.assertElement(ts, 'se:Halo', 0)
+        # not full width, just radius here
+        self.assertEqual('6.5', self.assertElement(ts, 'se:Radius', 0).text())
+        haloFill = self.assertElement(halo, 'se:Fill', 0)
+        self.assertEqual('#ff0000', self.assertSvgParameter(haloFill, "fill").text())
+        self.assertEqual('0.5', self.assertSvgParameter(haloFill, "fill-opacity").text())
+
+    def testLabelingLowPriority(self):
+        self.assertLabelingPriority(0, 0, '0')
+
+    def testLabelingDefaultPriority(self):
+        self.assertLabelingPriority(0, 5, None)
+
+    def testLabelingHighPriority(self):
+        self.assertLabelingPriority(0, 10, '1000')
+
+    def testLabelingZIndexLowPriority(self):
+        self.assertLabelingPriority(1, 0, '1001')
+
+    def testLabelingZIndexDefaultPriority(self):
+        self.assertLabelingPriority(1, 5, "1500")
+
+    def testLabelingZIndexHighPriority(self):
+        self.assertLabelingPriority(1, 10, '2000')
+
+    def assertLabelingPriority(self, zIndex, priority, expectedSldPriority):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        settings = layer.labeling().settings()
+        settings.zIndex = zIndex
+        settings.priority = priority
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with zIndex at " + str(zIndex) + " and priority at " + str(priority) + ": " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        priorityElement = self.assertElement(ts, "se:Priority", 0, True)
+        if expectedSldPriority is None:
+            self.assertIsNone(priorityElement)
+        else:
+            self.assertEqual(expectedSldPriority, priorityElement.text())
+
+    def testLabelingPlacementOverPointOffsetRotation(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+        settings = layer.labeling().settings()
+        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.xOffset = 5
+        settings.yOffset = 10
+        settings.offsetUnits = QgsUnitTypes.RenderMillimeters
+        settings.quadOffset = QgsPalLayerSettings.QuadrantOver
+        settings.angleOffset = 30
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with 'over point' placement  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        pointPlacement = self.assertPointPlacement(ts)
+        self.assertStaticDisplacement(pointPlacement, 18, 36)
+        self.assertStaticAnchorPoint(pointPlacement, 0.5, 0.5)
+
+    def testPointPlacementAboveLeft(self):
+        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantAboveLeft, "AboveLeft", 1, 0)
+
+    def testPointPlacementAbove(self):
+        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantAbove, "Above", 0.5, 0)
+
+    def testPointPlacementAboveRight(self):
+        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantAboveRight, "AboveRight", 0, 0)
+
+    def testPointPlacementLeft(self):
+        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantLeft, "Left", 1, 0.5)
+
+    def testPointPlacementRight(self):
+        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantRight, "Right", 0, 0.5)
+
+    def testPointPlacementBelowLeft(self):
+        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantBelowLeft, "BelowLeft", 1, 1)
+
+    def testPointPlacementBelow(self):
+        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantBelow, "Below", 0.5, 1)
+
+    def testPointPlacementAboveRight(self):
+        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantBelowRight, "BelowRight", 0, 1)
+
+    def testPointPlacementCartoraphic(self):
+        self.assertPointPlacementDistance(QgsPalLayerSettings.OrderedPositionsAroundPoint)
+
+    def testPointPlacementCartoraphic(self):
+        self.assertPointPlacementDistance(QgsPalLayerSettings.AroundPoint)
+
+    def testLineParallelPlacement(self):
+        layer = QgsVectorLayer("LineString", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "lineLabel")
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with parallel line placement  " + dom.toString())
+        linePlacement = self.assertLinePlacement(root)
+        generalize = self.assertElement(linePlacement, 'se:GeneralizeLine', 0)
+        self.assertEqual("true", generalize.text())
+
+    def testLineParallelPlacementOffsetRepeat(self):
+        layer = QgsVectorLayer("LineString", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "lineLabel")
+        self.updateLinePlacementProperties(layer, QgsPalLayerSettings.Line, 2, 50)
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with parallel line placement, perp. offset and repeat  " + dom.toString())
+        ts = self.getTextSymbolizer(root, 1, 0)
+        linePlacement = self.assertLinePlacement(ts)
+        generalize = self.assertElement(linePlacement, 'se:GeneralizeLine', 0)
+        self.assertEqual("true", generalize.text())
+        offset = self.assertElement(linePlacement, 'se:PerpendicularOffset', 0)
+        self.assertEqual("7", offset.text())
+        repeat = self.assertElement(linePlacement, 'se:Repeat', 0)
+        self.assertEqual("true", repeat.text())
+        gap = self.assertElement(linePlacement, 'se:Gap', 0)
+        self.assertEqual("179", gap.text())
+        self.assertEqual("179", self.assertVendorOption(ts, "repeat").text())
+
+    def testLineCurvePlacementOffsetRepeat(self):
+        layer = QgsVectorLayer("LineString", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "lineLabel")
+        self.updateLinePlacementProperties(layer, QgsPalLayerSettings.Curved, 2, 50, 30, 40)
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with curved line placement  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        linePlacement = self.assertLinePlacement(ts)
+        generalize = self.assertElement(linePlacement, 'se:GeneralizeLine', 0)
+        self.assertEqual("true", generalize.text())
+        offset = self.assertElement(linePlacement, 'se:PerpendicularOffset', 0)
+        self.assertEqual("7", offset.text())
+        repeat = self.assertElement(linePlacement, 'se:Repeat', 0)
+        self.assertEqual("true", repeat.text())
+        gap = self.assertElement(linePlacement, 'se:Gap', 0)
+        self.assertEqual("179", gap.text())
+        self.assertEqual("179", self.assertVendorOption(ts, "repeat").text())
+        self.assertEqual("true", self.assertVendorOption(ts, "followLine").text())
+        self.assertEqual("30", self.assertVendorOption(ts, "maxAngleDelta").text())
+
+    def testLineCurveMergeLines(self):
+        layer = QgsVectorLayer("LineString", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "lineLabel")
+        settings = layer.labeling().settings()
+        settings.placement = QgsPalLayerSettings.Curved
+        settings.mergeLines = True
+        settings.labelPerPart = True
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with curved line and line grouping  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        self.assertEqual("yes", self.assertVendorOption(ts, "group").text())
+        self.assertEqual("true", self.assertVendorOption(ts, "labelAllGroup").text())
+
+    def testLabelingPolygonFree(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "polygonLabel")
+        settings = layer.labeling().settings()
+        settings.placement = QgsPalLayerSettings.Free
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Polygon label with 'Free' placement  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        pointPlacement = self.assertPointPlacement(ts)
+        self.assertIsNone(self.assertElement(ts, "se:Displacement", 0, True))
+        self.assertStaticAnchorPoint(pointPlacement, 0.5, 0.5)
+
+    def testLabelingPolygonPerimeterCurved(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "polygonLabel")
+        self.updateLinePlacementProperties(layer, QgsPalLayerSettings.PerimeterCurved, 2, 50, 30, -40)
+
+        dom, root = self.layerToSld(layer)
+        # print("Polygon Label with curved perimeter line placement  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        linePlacement = self.assertLinePlacement(ts)
+        generalize = self.assertElement(linePlacement, 'se:GeneralizeLine', 0)
+        self.assertEqual("true", generalize.text())
+        offset = self.assertElement(linePlacement, 'se:PerpendicularOffset', 0)
+        self.assertEqual("7", offset.text())
+        repeat = self.assertElement(linePlacement, 'se:Repeat', 0)
+        self.assertEqual("true", repeat.text())
+        gap = self.assertElement(linePlacement, 'se:Gap', 0)
+        self.assertEqual("179", gap.text())
+        self.assertEqual("179", self.assertVendorOption(ts, "repeat").text())
+        self.assertEqual("true", self.assertVendorOption(ts, "followLine").text())
+        self.assertEqual("30", self.assertVendorOption(ts, "maxAngleDelta").text())
+
+    def testLabelScaleDependencies(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "polygonLabel")
+        settings = layer.labeling().settings()
+        settings.scaleVisibility = True
+        settings.minimumScale = 1000000
+        settings.maximumScale = 10000000
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Labeling with scale dependencies  " + dom.toString())
+        self.assertScaleDenominator(root, "1000000", "10000000", 1)
+
+    def testLabelShowAll(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "polygonLabel")
+        settings = layer.labeling().settings()
+        settings.displayAll = True
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Labeling, showing all labels  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        self.assertVendorOption(ts, "conflictResolution", "false")
+
+    def testLabelUpsideDown(self):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "polygonLabel")
+        settings = layer.labeling().settings()
+        settings.upsidedownLabels = QgsPalLayerSettings.ShowAll
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Labeling, showing upside down labels on lines  " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        self.assertVendorOption(ts, "forceLeftToRight", "false")
+
+    def testLabelBackgroundSquareResize(self):
+        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeSquare, 'square',
+                                   QgsTextBackgroundSettings.SizeBuffer, 'proportional')
+
+    def testLabelBackgroundRectangleResize(self):
+        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeRectangle, 'square',
+                                   QgsTextBackgroundSettings.SizeBuffer, 'stretch')
+
+    def testLabelBackgroundCircleResize(self):
+        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeCircle, 'circle',
+                                   QgsTextBackgroundSettings.SizeBuffer, 'proportional')
+
+    def testLabelBackgroundEllipseResize(self):
+        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeEllipse, 'circle',
+                                   QgsTextBackgroundSettings.SizeBuffer, 'stretch')
+
+    def testLabelBackgroundSquareAbsolute(self):
+        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeSquare, 'square',
+                                   QgsTextBackgroundSettings.SizeFixed, None)
+
+    def testLabelBackgroundRectangleAbsolute(self):
+        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeRectangle, 'square',
+                                   QgsTextBackgroundSettings.SizeFixed, None)
+
+    def testLabelBackgroundCircleAbsolute(self):
+        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeCircle, 'circle',
+                                   QgsTextBackgroundSettings.SizeFixed, None)
+
+    def testLabelBackgroundEllipseAbsolute(self):
+        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeEllipse, 'circle',
+                                   QgsTextBackgroundSettings.SizeFixed, None)
+
+    def assertLabelBackground(self, backgroundType, expectedMarkName, sizeType, expectedResize):
+        layer = QgsVectorLayer("Polygon", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "polygonLabel")
+        settings = layer.labeling().settings()
+        background = QgsTextBackgroundSettings()
+        background.setEnabled(True)
+        background.setType(backgroundType)
+        background.setFillColor(QColor('yellow'))
+        background.setStrokeColor(QColor('black'))
+        background.setStrokeWidth(2)
+        background.setSize(QSizeF(10, 10))
+        background.setSizeType(sizeType)
+        format = settings.format()
+        format.setBackground(background)
+        settings.setFormat(format)
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Labeling, with background type " + str(backgroundType) + " and size type " + str(sizeType) + ": " + dom.toString())
+
+        ts = self.getTextSymbolizer(root, 1, 0)
+        graphic = self.assertElement(ts, "se:Graphic", 0)
+        self.assertEqual("36", self.assertElement(graphic, 'se:Size', 0).text())
+        self.assertWellKnownMark(graphic, 0, expectedMarkName, '#ffff00', '#000000', 7)
+        if expectedResize is None:
+            self.assertIsNone(expectedResize, self.assertVendorOption(ts, 'graphic-resize', True))
+        else:
+            self.assertEqual(expectedResize, self.assertVendorOption(ts, 'graphic-resize').text())
+        if sizeType == 0:
+            # check extra padding for proportional ellipse
+            if backgroundType == QgsTextBackgroundSettings.ShapeEllipse:
+                self.assertEqual("42.5 49", self.assertVendorOption(ts, 'graphic-margin').text())
+            else:
+                self.assertEqual("36 36", self.assertVendorOption(ts, 'graphic-margin').text())
+        else:
+            self.assertIsNone(self.assertVendorOption(ts, 'graphic-margin', True))
+
+    def updateLinePlacementProperties(self, layer, linePlacement, distance, repeat, maxAngleInternal=25, maxAngleExternal=-25):
+        settings = layer.labeling().settings()
+        settings.placement = linePlacement
+        settings.dist = distance
+        settings.repeatDistance = repeat
+        settings.maxCurvedCharAngleIn = maxAngleInternal
+        settings.maxCurvedCharAngleOut = maxAngleExternal
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+    def assertPointPlacementDistance(self, placement):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+
+        settings = layer.labeling().settings()
+        settings.placement = placement
+        settings.xOffset = 0
+        settings.yOffset = 0
+        settings.dist = 2
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with around point placement  " + dom.toString())
+        ts = self.getTextSymbolizer(root, 1, 0)
+        pointPlacement = self.assertPointPlacement(ts)
+        self.assertStaticAnchorPoint(pointPlacement, 0, 0.5)
+        self.assertStaticDisplacement(pointPlacement, 4.95, 4.95)
+
+    def assertLabelQuadrant(self, quadrant, label, ax, ay):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "simpleLabel")
+
+        settings = layer.labeling().settings()
+        settings.placement = QgsPalLayerSettings.OverPoint
+        settings.xOffset = 0
+        settings.yOffset = 0
+        settings.quadOffset = quadrant
+        settings.angleOffset = 0
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+        dom, root = self.layerToSld(layer)
+        # print("Label with " + label  + " placement  " + dom.toString())
+        self.assertStaticAnchorPoint(root, ax, ay)
+
+    def setLabelBufferSettings(self, layer, buffer):
+        settings = layer.labeling().settings()
+        format = settings.format()
+        format.setBuffer(buffer)
+        settings.setFormat(format)
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+    def updateLayerLabelingFontStyle(self, layer, bold, italic, underline=False, strikeout=False):
+        settings = layer.labeling().settings()
+        format = settings.format()
+        font = format.font()
+        font.setBold(bold)
+        font.setItalic(italic)
+        font.setUnderline(underline)
+        font.setStrikeOut(strikeout)
+        format.setFont(font)
+        settings.setFormat(format)
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+    def updateLayerLabelingUnit(self, layer, unit):
+        settings = layer.labeling().settings()
+        format = settings.format()
+        format.setSizeUnit(unit)
+        settings.setFormat(format)
+        layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
+
+    def loadStyleWithCustomProperties(self, layer, qmlFileName):
+        # load the style, only vector symbology
+        path = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), qmlFileName))
+
+        # labeling is in custom properties, they need to be loaded separately
+        status = layer.loadNamedStyle(path)
+        doc = QDomDocument()
+        file = QFile(path)
+        file.open(QIODevice.ReadOnly)
+        doc.setContent(file, True)
+        file.close()
+        flag = layer.readCustomProperties(doc.documentElement())
+
+    def assertPointPlacement(self, textSymbolizer):
+        labelPlacement = self.assertElement(textSymbolizer, 'se:LabelPlacement', 0)
+        self.assertIsNone(self.assertElement(labelPlacement, 'se:LinePlacement', 0, True))
+        pointPlacement = self.assertElement(labelPlacement, 'se:PointPlacement', 0)
+        return pointPlacement
+
+    def assertLinePlacement(self, textSymbolizer):
+        labelPlacement = self.assertElement(textSymbolizer, 'se:LabelPlacement', 0)
+        self.assertIsNone(self.assertElement(labelPlacement, 'se:PointPlacement', 0, True))
+        linePlacement = self.assertElement(labelPlacement, 'se:LinePlacement', 0)
+        return linePlacement
+
+    def assertElement(self, container, elementName, index, allowMissing=False):
+        list = container.elementsByTagName(elementName)
+        if list.size() <= index:
+            if allowMissing:
+                return None
+            else:
+                self.fail('Expected to find at least ' + str(index + 1) + ' ' + elementName + ' in ' + container.nodeName() + ' but found ' + str(list.size()))
+
+        node = list.item(index)
+        self.assertTrue(node.isElement(), 'Found node but it''s not an element')
+        return node.toElement()
+
+    def getTextSymbolizer(self, root, ruleIndex, textSymbolizerIndex):
+        rule = self.assertElement(root, 'se:Rule', ruleIndex)
+        textSymbolizer = self.assertElement(rule, 'se:TextSymbolizer', textSymbolizerIndex)
+        return textSymbolizer
+
+    def assertPropertyName(self, root, containerProperty, expectedAttributeName):
+        container = root.elementsByTagName(containerProperty).item(0).toElement()
+        property = container.elementsByTagName("ogc:PropertyName").item(0).toElement()
+        self.assertEqual(expectedAttributeName, property.text())
+
+    def assertSvgParameter(self, container, expectedName, allowMissing=False):
+        list = container.elementsByTagName("se:SvgParameter")
+        for i in range(0, list.size()):
+            item = list.item(i)
+            if item.isElement and item.isElement() and item.toElement().attribute('name') == expectedName:
+                return item.toElement()
+        if allowMissing:
+            return None
+        else:
+            self.fail('Could not find a se:SvgParameter named ' + expectedName + ' in ' + container.nodeName())
+
+    def assertVendorOption(self, container, expectedName, allowMissing=False):
+        list = container.elementsByTagName("se:VendorOption")
+        for i in range(0, list.size()):
+            item = list.item(i)
+            if item.isElement and item.isElement() and item.toElement().attribute('name') == expectedName:
+                return item.toElement()
+        if allowMissing:
+            return None
+        else:
+            self.fail('Could not find a se:VendorOption named ' + expectedName + ' in ' + container.nodeName())
 
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
         rule = root.elementsByTagName('se:Rule').item(index).toElement()
@@ -614,6 +1224,52 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
             parameter = parameter.nextSiblingElement('se:SvgParameter')
             self.assertEqual('stroke-width', parameter.attribute('name'))
             self.assertEqual(str(expectedStrokeWidth), parameter.text())
+
+    def assertStaticRotation(self, root, expectedValue, index=0):
+        # Check the rotation element is a literal, not a
+        rotation = root.elementsByTagName('se:Rotation').item(index)
+        literal = rotation.firstChild()
+        self.assertEqual("ogc:Literal", literal.nodeName())
+        self.assertEqual(expectedValue, literal.firstChild().nodeValue())
+
+    def assertStaticDisplacement(self, root, expectedAnchorX, expectedAnchorY):
+        displacement = root.elementsByTagName('se:Displacement').item(0)
+        self.assertIsNotNone(displacement)
+        dx = displacement.firstChild()
+        self.assertIsNotNone(dx)
+        self.assertEqual("se:DisplacementX", dx.nodeName())
+        self.assertSldNumber(expectedAnchorX, dx.firstChild().nodeValue())
+        dy = displacement.lastChild()
+        self.assertIsNotNone(dy)
+        self.assertEqual("se:DisplacementY", dy.nodeName())
+        self.assertSldNumber(expectedAnchorY, dy.firstChild().nodeValue())
+
+    def assertStaticAnchorPoint(self, root, expectedDispX, expectedDispY):
+        anchor = root.elementsByTagName('se:AnchorPoint').item(0)
+        self.assertIsNotNone(anchor)
+        ax = anchor.firstChild()
+        self.assertIsNotNone(ax)
+        self.assertEqual("se:AnchorPointX", ax.nodeName())
+        self.assertSldNumber(expectedDispX, ax.firstChild().nodeValue())
+        ay = anchor.lastChild()
+        self.assertIsNotNone(ay)
+        self.assertEqual("se:AnchorPointY", ay.nodeName())
+        self.assertSldNumber(expectedDispY, ay.firstChild().nodeValue())
+
+    def assertSldNumber(self, expected, stringValue):
+        value = float(stringValue)
+        self.assertFloatEquals(expected, value, 0.01)
+
+    def assertFloatEquals(self, expected, actual, tol):
+        self.assertLess(abs(expected - actual), tol, 'Expected %d but was %d' % (expected, actual))
+
+    def assertStrokeWidth(self, root, svgParameterIdx, expectedWidth):
+        strokeWidth = root.elementsByTagName(
+            'se:SvgParameter').item(svgParameterIdx)
+        svgParameterName = strokeWidth.attributes().namedItem('name')
+        self.assertEqual("stroke-width", svgParameterName.nodeValue())
+        self.assertSldNumber(
+            expectedWidth, strokeWidth.firstChild().nodeValue())
 
     def symbolToSld(self, symbolLayer):
         dom = QDomDocument()

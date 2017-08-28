@@ -13,8 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qmath.h>
-
 #include "qgsgeometrysegmentlengthcheck.h"
 #include "qgsgeometryutils.h"
 #include "../utils/qgsfeaturepool.h"
@@ -46,7 +44,7 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
         {
           QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
           QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
-          double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
+          double dist = std::sqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
           if ( dist < mMinLength )
           {
             errors.append( new QgsGeometryCheckError( this, featureid, QgsPoint( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) ), QgsVertexId( iPart, iRing, iVert ), dist, QgsGeometryCheckError::ValueLength ) );
@@ -87,7 +85,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
 
   QgsPoint pi = geom->vertexAt( error->vidx() );
   QgsPoint pj = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( vidx.vertex - 1 + nVerts ) % nVerts ) );
-  double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
+  double dist = std::sqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
   if ( dist >= mMinLength )
   {
     error->setObsolete();

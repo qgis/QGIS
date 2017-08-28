@@ -57,8 +57,8 @@ void QgsLeastSquares::linear( const QVector<QgsPointXY> &mapCoords,
   origin.setX( aX );
   origin.setY( aY );
 
-  pixelXSize = qAbs( bX );
-  pixelYSize = qAbs( bY );
+  pixelXSize = std::fabs( bX );
+  pixelYSize = std::fabs( bY );
 }
 
 
@@ -197,11 +197,11 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
   {
     double X = ( coords[i].x() - cogX );
     double Y = ( coords[i].y() - cogY );
-    meanDist += sqrt( X * X + Y * Y );
+    meanDist += std::sqrt( X * X + Y * Y );
   }
   meanDist *= 1.0 / coords.size();
 
-  double OOD = meanDist / sqrt( 2.0 );
+  double OOD = meanDist / std::sqrt( 2.0 );
   double D   = 1.0 / OOD;
   normalizedCoords.resize( coords.size() );
   for ( int i = 0; i < coords.size(); i++ )
@@ -255,7 +255,7 @@ void QgsLeastSquares::projective( QVector<QgsPointXY> mapCoords,
 
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
-  uint m = qMax( 9u, ( uint )mapCoords.size() * 2u );
+  uint m = std::max( 9u, ( uint )mapCoords.size() * 2u );
   uint n = 9;
   gsl_matrix *S = gsl_matrix_alloc( m, n );
 

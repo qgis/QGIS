@@ -30,6 +30,7 @@ import math
 
 from qgis.gui import QgsExpressionLineEdit, QgsProjectionSelectionWidget
 from qgis.core import (QgsSettings,
+                       QgsProcessing,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterBoolean,
@@ -48,7 +49,8 @@ from qgis.core import (QgsSettings,
                        QgsProcessingParameterExpression,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFeatureSource)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterBand)
 from qgis.PyQt.QtCore import (Qt,
                               QByteArray)
 from qgis.PyQt.QtWidgets import (QDialog,
@@ -76,6 +78,8 @@ class ModelerParameterDefinitionDialog(QDialog):
     PARAMETER_POINT = 'Point'
     PARAMETER_CRS = 'CRS'
     PARAMETER_MULTIPLE = 'Multiple Input'
+    PARAMETER_BAND = 'Raster Band'
+    PARAMETER_MAP_LAYER = 'Map Layer'
 
     paramTypes = [
         PARAMETER_BOOLEAN,
@@ -85,12 +89,14 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_RASTER,
         PARAMETER_STRING,
         PARAMETER_EXPRESSION,
+        PARAMETER_MAP_LAYER,
         PARAMETER_TABLE,
         PARAMETER_TABLE_FIELD,
         PARAMETER_VECTOR,
         PARAMETER_POINT,
         PARAMETER_CRS,
-        PARAMETER_MULTIPLE
+        PARAMETER_MULTIPLE,
+        PARAMETER_BAND
     ]
 
     def __init__(self, alg, paramType=None, param=None):
@@ -141,7 +147,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
-                        if self.param.parentLayerParameter() == definition.name():
+                        if self.param.parentLayerParameterName() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -167,30 +173,46 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.multipleCheck.setChecked(self.param.allowMultiple())
             self.verticalLayout.addWidget(self.multipleCheck)
-
-        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or
-                isinstance(self.param, QgsProcessingParameterFeatureSource)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Shape type')))
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BAND or \
+                isinstance(self.param, QgsProcessingParameterBand):
+            self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
+            self.parentCombo = QComboBox()
+            idx = 0
+            for param in list(self.alg.parameterComponents().values()):
+                definition = self.alg.parameterDefinition(param.parameterName())
+                if isinstance(definition, (QgsProcessingParameterRasterLayer)):
+                    self.parentCombo.addItem(definition.description(), definition.name())
+                    if self.param is not None:
+                        if self.param.parentLayerParameterName() == definition.name():
+                            self.parentCombo.setCurrentIndex(idx)
+                    idx += 1
+            self.verticalLayout.addWidget(self.parentCombo)
+        elif (self.paramType in (ModelerParameterDefinitionDialog.PARAMETER_VECTOR, ModelerParameterDefinitionDialog.PARAMETER_TABLE) or
+                isinstance(self.param, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer))):
+            self.verticalLayout.addWidget(QLabel(self.tr('Geometry type')))
             self.shapetypeCombo = QComboBox()
-            self.shapetypeCombo.addItem(self.tr('Any'))
-            self.shapetypeCombo.addItem(self.tr('Point'))
-            self.shapetypeCombo.addItem(self.tr('Line'))
-            self.shapetypeCombo.addItem(self.tr('Polygon'))
+            self.shapetypeCombo.addItem(self.tr('Geometry Not Required'), QgsProcessing.TypeVector)
+            self.shapetypeCombo.addItem(self.tr('Point'), QgsProcessing.TypeVectorPoint)
+            self.shapetypeCombo.addItem(self.tr('Line'), QgsProcessing.TypeVectorLine)
+            self.shapetypeCombo.addItem(self.tr('Polygon'), QgsProcessing.TypeVectorPolygon)
+            self.shapetypeCombo.addItem(self.tr('Any Geometry Type'), QgsProcessing.TypeVectorAnyGeometry)
             if self.param is not None:
-                self.shapetypeCombo.setCurrentIndex(self.param.dataTypes()[0] + 1)
+                self.shapetypeCombo.setCurrentIndex(self.shapetypeCombo.findData(self.param.dataTypes()[0]))
             self.verticalLayout.addWidget(self.shapetypeCombo)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE or
                 isinstance(self.param, QgsProcessingParameterMultipleLayers)):
             self.verticalLayout.addWidget(QLabel(self.tr('Data type')))
             self.datatypeCombo = QComboBox()
-            self.datatypeCombo.addItem(self.tr('Vector (any)'))
-            self.datatypeCombo.addItem(self.tr('Vector (point)'))
-            self.datatypeCombo.addItem(self.tr('Vector (line)'))
-            self.datatypeCombo.addItem(self.tr('Vector (polygon)'))
-            self.datatypeCombo.addItem(self.tr('Raster'))
-            self.datatypeCombo.addItem(self.tr('File'))
+            self.datatypeCombo.addItem(self.tr('Any Map Layer'), QgsProcessing.TypeMapLayer)
+            self.datatypeCombo.addItem(self.tr('Vector (No Geometry Required)'), QgsProcessing.TypeVector)
+            self.datatypeCombo.addItem(self.tr('Vector (Point)'), QgsProcessing.TypeVectorPoint)
+            self.datatypeCombo.addItem(self.tr('Vector (Line)'), QgsProcessing.TypeVectorLine)
+            self.datatypeCombo.addItem(self.tr('Vector (Polygon)'), QgsProcessing.TypeVectorPolygon)
+            self.datatypeCombo.addItem(self.tr('Vector (Any Geometry Type)'), QgsProcessing.TypeVectorAnyGeometry)
+            self.datatypeCombo.addItem(self.tr('Raster'), QgsProcessing.TypeRaster)
+            self.datatypeCombo.addItem(self.tr('File'), QgsProcessing.TypeFile)
             if self.param is not None:
-                self.datatypeCombo.setCurrentIndex(self.param.layerType() + 1)
+                self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.layerType()))
             self.verticalLayout.addWidget(self.datatypeCombo)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER or
                 isinstance(self.param, QgsProcessingParameterNumber)):
@@ -230,7 +252,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
                     self.parentCombo.addItem(definition.description(), definition.name())
                     if self.param is not None:
-                        if self.param.parentLayerParameter() == definition.name():
+                        if self.param.parentLayerParameterName() == definition.name():
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
@@ -281,15 +303,15 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel |
                                           QDialogButtonBox.Ok)
         self.buttonBox.setObjectName('buttonBox')
-        self.buttonBox.accepted.connect(self.okPressed)
-        self.buttonBox.rejected.connect(self.cancelPressed)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
 
         self.verticalLayout.addStretch()
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.setLayout(self.verticalLayout)
 
-    def okPressed(self):
+    def accept(self):
         description = str(self.nameTextBox.text())
         if description.strip() == '':
             QMessageBox.warning(self, self.tr('Unable to define parameter'),
@@ -318,6 +340,18 @@ class ModelerParameterDefinitionDialog(QDialog):
             parent = self.parentCombo.currentData()
             datatype = self.datatypeCombo.currentData()
             self.param = QgsProcessingParameterField(name, description, None, parent, datatype, self.multipleCheck.isChecked())
+        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BAND or
+              isinstance(self.param, QgsProcessingParameterBand)):
+            if self.parentCombo.currentIndex() < 0:
+                QMessageBox.warning(self, self.tr('Unable to define parameter'),
+                                    self.tr('Wrong or missing parameter values'))
+                return
+            parent = self.parentCombo.currentData()
+            self.param = QgsProcessingParameterBand(name, description, None, parent)
+        elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MAP_LAYER or
+                isinstance(self.param, QgsProcessingParameterMapLayer)):
+            self.param = QgsProcessingParameterMapLayer(
+                name, description)
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or
                 isinstance(self.param, QgsProcessingParameterRasterLayer)):
             self.param = QgsProcessingParameterRasterLayer(
@@ -325,17 +359,18 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE or
                 isinstance(self.param, QgsProcessingParameterVectorLayer)):
             self.param = QgsProcessingParameterVectorLayer(
-                name, description)
+                name, description,
+                [self.shapetypeCombo.currentData()])
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or
                 isinstance(self.param, QgsProcessingParameterFeatureSource)):
             self.param = QgsProcessingParameterFeatureSource(
                 name, description,
-                [self.shapetypeCombo.currentIndex() - 1])
+                [self.shapetypeCombo.currentData()])
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE or
                 isinstance(self.param, QgsProcessingParameterMultipleLayers)):
             self.param = QgsProcessingParameterMultipleLayers(
                 name, description,
-                self.datatypeCombo.currentIndex() - 1)
+                self.datatypeCombo.currentData())
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER or
                 isinstance(self.param, QgsProcessingParameterNumber)):
             try:
@@ -377,8 +412,16 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param = QgsProcessingParameterCrs(name, description, self.selector.crs().authid())
         if not self.requiredCheck.isChecked():
             self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.FlagOptional)
-        self.close()
 
-    def cancelPressed(self):
+        settings = QgsSettings()
+        settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
+
+        QDialog.accept(self)
+
+    def reject(self):
         self.param = None
-        self.close()
+
+        settings = QgsSettings()
+        settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
+
+        QDialog.reject(self)

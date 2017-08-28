@@ -31,13 +31,6 @@ class QgsMapMouseEvent : QMouseEvent
 %End
   public:
 
-    enum SnappingMode
-    {
-      NoSnapping,
-      SnapProjectConfig,
-      SnapAllLayers,
-    };
-
     QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event );
 %Docstring
  Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
@@ -59,7 +52,7 @@ class QgsMapMouseEvent : QMouseEvent
  \param modifiers Keyboard modifiers
 %End
 
-    QgsPointXY snapPoint( SnappingMode snappingMode );
+    QgsPointXY snapPoint();
 %Docstring
  snapPoint will snap the points using the map canvas snapping utils configuration
 .. note::
@@ -68,12 +61,11 @@ class QgsMapMouseEvent : QMouseEvent
  :rtype: QgsPointXY
 %End
 
-    QList<QgsPointXY> snapSegment( SnappingMode snappingMode, bool *snapped = 0, bool allLayers = false ) const;
+    QList<QgsPointXY> snapSegment( bool *snapped = 0, bool allLayers = false ) const;
 %Docstring
  Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
  Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
  will not be overwritten.
- \param snappingMode Specify if the default project settings or all layers should be used for snapping
  \param snapped if given, determines if a segment has been snapped
  \param allLayers if true, override snapping mode
  :rtype: list of QgsPointXY

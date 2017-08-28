@@ -809,8 +809,6 @@ namespace QgsWms
 
   QImage *QgsRenderer::createImage( int width, int height, bool useBbox ) const
   {
-    bool conversionSuccess;
-
     if ( width < 0 )
       width = mWmsParameters.widthAsInt();
 
@@ -819,8 +817,7 @@ namespace QgsWms
 
     //Adapt width / height if the aspect ratio does not correspond with the BBOX.
     //Required by WMS spec. 1.3.
-    QString version = mParameters.value( QStringLiteral( "VERSION" ), QStringLiteral( "1.3.0" ) );
-    if ( useBbox && version != QLatin1String( "1.1.1" ) )
+    if ( useBbox && mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
     {
       QgsRectangle mapExtent = mWmsParameters.bboxAsRectangle();
       if ( !mWmsParameters.bbox().isEmpty() && mapExtent.isEmpty() )
@@ -829,7 +826,7 @@ namespace QgsWms
                                       QStringLiteral( "Invalid BBOX parameter" ) );
       }
 
-      QString crs = mParameters.value( QStringLiteral( "CRS" ), mParameters.value( QStringLiteral( "SRS" ) ) );
+      QString crs = mWmsParameters.crs();
       if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
       {
         crs = QString( "EPSG:4326" );
@@ -861,31 +858,11 @@ namespace QgsWms
 
     QImage *image = nullptr;
 
-    //Define the image background color in case of map settings is not used
-    //is format jpeg?
-    QString format = mParameters.value( QStringLiteral( "FORMAT" ) );
-    bool jpeg = format.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
-                || format.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
-                || format.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0;
+    // use alpha channel only if necessary because it slows down performance
+    QgsWmsParameters::Format format = mWmsParameters.format();
+    bool transparent = mWmsParameters.transparentAsBool();
 
-    //transparent parameter
-    bool transparent = mParameters.value( QStringLiteral( "TRANSPARENT" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
-
-    //background  color
-    QString bgColorString = mParameters.value( "BGCOLOR" );
-    if ( bgColorString.startsWith( "0x", Qt::CaseInsensitive ) )
-    {
-      bgColorString.replace( 0, 2, "#" );
-    }
-    QColor backgroundColor;
-    backgroundColor.setNamedColor( bgColorString );
-    if ( !backgroundColor.isValid() )
-    {
-      backgroundColor = QColor( Qt::white );
-    }
-
-    //use alpha channel only if necessary because it slows down performance
-    if ( transparent && !jpeg )
+    if ( transparent && format != QgsWmsParameters::JPG )
     {
       image = new QImage( width, height, QImage::Format_ARGB32_Premultiplied );
       image->fill( 0 );
@@ -893,21 +870,16 @@ namespace QgsWms
     else
     {
       image = new QImage( width, height, QImage::Format_RGB32 );
-      image->fill( backgroundColor );
+      image->fill( mWmsParameters.backgroundColorAsColor() );
     }
 
     //apply DPI parameter if present. This is an extension of Qgis Mapserver compared to WMS 1.3.
     //Because of backwards compatibility, this parameter is optional
     double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
     int dpm = 1 / OGC_PX_M;
-    if ( mParameters.contains( QStringLiteral( "DPI" ) ) )
-    {
-      int dpi = mParameters[ QStringLiteral( "DPI" )].toInt( &conversionSuccess );
-      if ( conversionSuccess )
-      {
-        dpm = dpi / 0.0254;
-      }
-    }
+    if ( !mWmsParameters.dpi().isEmpty() )
+      dpm = mWmsParameters.dpiAsInt() / 0.0254;
+
     image->setDotsPerMeterX( dpm );
     image->setDotsPerMeterY( dpm );
     return image;
@@ -931,7 +903,7 @@ namespace QgsWms
       throw QgsBadRequestException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "Invalid BBOX parameter" ) );
     }
 
-    QString crs = mParameters.value( QStringLiteral( "CRS" ), mParameters.value( QStringLiteral( "SRS" ) ) );
+    QString crs = mWmsParameters.crs();
     if ( crs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
     {
       crs = QString( "EPSG:4326" );
@@ -941,8 +913,6 @@ namespace QgsWms
     QgsCoordinateReferenceSystem outputCRS;
 
     //wms spec says that CRS parameter is mandatory.
-
-    //destination SRS
     outputCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
     if ( !outputCRS.isValid() )
     {
@@ -954,8 +924,7 @@ namespace QgsWms
     mapSettings.setDestinationCrs( outputCRS );
 
     // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
-    QString version = mParameters.value( QStringLiteral( "VERSION" ), QStringLiteral( "1.3.0" ) );
-    if ( version != QLatin1String( "1.1.1" ) && outputCRS.hasAxisInverted() )
+    if ( mWmsParameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) && outputCRS.hasAxisInverted() )
     {
       mapExtent.invert();
     }
@@ -965,26 +934,12 @@ namespace QgsWms
     /* Define the background color
      * Transparent or colored
      */
-    //is format jpeg?
-    QString format = mParameters.value( QStringLiteral( "FORMAT" ) );
-    bool jpeg = format.compare( QLatin1String( "jpg" ), Qt::CaseInsensitive ) == 0
-                || format.compare( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) == 0
-                || format.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0;
-
-    //transparent parameter
-    bool transparent = mParameters.value( QStringLiteral( "TRANSPARENT" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
-
-    //background  color
-    QString bgColorString = mParameters.value( "BGCOLOR" );
-    if ( bgColorString.startsWith( "0x", Qt::CaseInsensitive ) )
-    {
-      bgColorString.replace( 0, 2, "#" );
-    }
-    QColor backgroundColor;
-    backgroundColor.setNamedColor( bgColorString );
+    QgsWmsParameters::Format format = mWmsParameters.format();
+    bool transparent = mWmsParameters.transparentAsBool();
+    QColor backgroundColor = mWmsParameters.backgroundColorAsColor();
 
     //set background color
-    if ( transparent && !jpeg )
+    if ( transparent && format != QgsWmsParameters::JPG )
     {
       mapSettings.setBackgroundColor( QColor( 0, 0, 0, 0 ) );
     }
@@ -1171,10 +1126,7 @@ namespace QgsWms
             QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
             if ( vectorLayer )
             {
-              if ( !featureInfoFromVectorLayer( vectorLayer, infoPoint.get(), featureCount, result, layerElement, mapSettings, renderContext, version, featuresRect.get(), filterGeom.get() ) )
-              {
-                break;
-              }
+              ( void )featureInfoFromVectorLayer( vectorLayer, infoPoint.get(), featureCount, result, layerElement, mapSettings, renderContext, version, featuresRect.get(), filterGeom.get() );
               break;
             }
           }
@@ -1194,10 +1146,7 @@ namespace QgsWms
                 break;
               }
               QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
-              if ( !featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version ) )
-              {
-                break;
-              }
+              ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version );
               break;
             }
           }
@@ -1350,14 +1299,14 @@ namespace QgsWms
         break;
       }
 
+      renderContext.expressionContext().setFeature( feature );
+
       if ( layer->wkbType() != QgsWkbTypes::NoGeometry && ! searchRect.isEmpty() )
       {
         if ( !r2 )
         {
           continue;
         }
-
-        renderContext.expressionContext().setFeature( feature );
 
         //check if feature is rendered at all
         bool render = r2->willRenderFeature( feature, renderContext );

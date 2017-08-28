@@ -76,10 +76,10 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionArrowDown.svg" ) ) );
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
 
-  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
-  mRasterStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mRasterStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mRasterStrokeColorButton->setAllowOpacity( true );
   mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
 

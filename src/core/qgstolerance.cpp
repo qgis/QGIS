@@ -30,7 +30,7 @@ double _ratioMU2LU( const QgsMapSettings &mapSettings, QgsMapLayer *layer )
   QgsPointXY ptMapCenterRightMU( ptMapCenterMU.x() + distMU, ptMapCenterMU.y() );
   QgsPointXY ptMapCenterLU = mapSettings.mapToLayerCoordinates( layer, ptMapCenterMU );
   QgsPointXY ptMapCenterRightLU = mapSettings.mapToLayerCoordinates( layer, ptMapCenterRightMU );
-  double distLU = sqrt( ptMapCenterLU.sqrDist( ptMapCenterRightLU ) );
+  double distLU = std::sqrt( ptMapCenterLU.sqrDist( ptMapCenterRightLU ) );
   double ratio = distMU / distLU;
   return ratio;
 }
@@ -109,11 +109,11 @@ double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer *layer, const QgsMapSet
   double y = p3.sqrDist( p4 );
   if ( x > y )
   {
-    return sqrt( x );
+    return std::sqrt( x );
   }
   else
   {
-    return sqrt( y );
+    return std::sqrt( y );
   }
 }
 

@@ -18,6 +18,10 @@ TOPLEVEL=$(git rev-parse --show-toplevel)
 
 PATH=$TOPLEVEL/scripts:$PATH
 
+if ! tty -s && [[ "$0" =~ /pre-commit ]]; then
+    exec </dev/tty
+fi
+
 cd $TOPLEVEL
 
 # GNU prefix command for mac os support (gsed, gsplit)
@@ -141,9 +145,6 @@ fi
 if [ -s "$ASTYLEDIFF" ]; then
     exit 1
 fi
-
-# If there are whitespace errors, print the offending file names and fail.
-exec git diff-index --check --cached HEAD --
 
 exit 0
 

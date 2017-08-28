@@ -20,7 +20,6 @@
 
 #include "qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
-#include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsprojectionselectiondialog.h"
@@ -60,17 +59,10 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWMSSourceSelect::showHelp );
 
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
-  {
-    // For some obscure reason hiding does not work!
-    // buttonBox->button( QDialogButtonBox::Close )->hide();
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-  }
-
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setToolTip( tr( "Add selected layers to map" ) );
-  mAddButton->setEnabled( false );
+  // Creates and connects standard ok/apply buttons
+  setupButtons( buttonBox );
 
   mTileWidth->setValidator( new QIntValidator( 0, 9999, this ) );
   mTileHeight->setValidator( new QIntValidator( 0, 9999, this ) );
@@ -82,12 +74,6 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsWMSSourceSelect::addClicked );
-
-    // TODO: do it without QgisApp
-    //mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.svg" ) );
-    //mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.svg" ) );
 
     QHBoxLayout *layout = new QHBoxLayout;
 
@@ -485,7 +471,7 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   populateLayerList( caps );
 }
 
-void QgsWMSSourceSelect::addClicked()
+void QgsWMSSourceSelect::addButtonClicked()
 {
   QStringList layers;
   QStringList styles;
@@ -921,12 +907,12 @@ void QgsWMSSourceSelect::updateButtons()
       labelStatus->setText( tr( "Select layer(s)" ) );
     else
       labelStatus->setText( tr( "Select layer(s) or a tileset" ) );
-    mAddButton->setEnabled( false );
+    emit enableButtons( false );
   }
   else if ( !lstTilesets->selectedItems().isEmpty() && mLayerOrderTreeWidget->topLevelItemCount() > 0 )
   {
     labelStatus->setText( tr( "Select either layer(s) or a tileset" ) );
-    mAddButton->setEnabled( false );
+    emit enableButtons( false );
   }
   else
   {
@@ -938,34 +924,34 @@ void QgsWMSSourceSelect::updateButtons()
       if ( mCRSs.isEmpty() )
       {
         labelStatus->setText( tr( "No common CRS for selected layers." ) );
-        mAddButton->setEnabled( false );
+        emit enableButtons( false );
       }
       else if ( mCRS.isEmpty() )
       {
         labelStatus->setText( tr( "No CRS selected" ) );
-        mAddButton->setEnabled( false );
+        emit enableButtons( false );
       }
       else if ( mImageFormatGroup->checkedId() == -1 )
       {
         labelStatus->setText( tr( "No image encoding selected" ) );
-        mAddButton->setEnabled( false );
+        emit enableButtons( false );
       }
       else
       {
         labelStatus->setText( tr( "%n Layer(s) selected", "selected layer count", mLayerOrderTreeWidget->topLevelItemCount() ) );
-        mAddButton->setEnabled( true );
+        emit enableButtons( true );
       }
     }
     else
     {
       labelStatus->setText( tr( "Tileset selected" ) );
-      mAddButton->setEnabled( true );
+      emit enableButtons( true );
     }
   }
 
   if ( leLayerName->text().isEmpty() || leLayerName->text() == mLastLayerName )
   {
-    if ( mAddButton->isEnabled() )
+    if ( addButton()->isEnabled() )
     {
       if ( !lstTilesets->selectedItems().isEmpty() )
       {
@@ -1357,4 +1343,9 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList &newLayerList, c
   }
 
   tabServers->setTabEnabled( tabServers->indexOf( tabLayerOrder ), mLayerOrderTreeWidget->topLevelItemCount() > 0 );
+}
+
+void QgsWMSSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }

@@ -15,7 +15,7 @@
 #ifndef QGSMAPCANVASDOCKWIDGET_H
 #define QGSMAPCANVASDOCKWIDGET_H
 
-#include <ui_qgsmapcanvasdockwidgetbase.h>
+#include "ui_qgsmapcanvasdockwidgetbase.h"
 
 #include "qgsdockwidget.h"
 #include "qgspointxy.h"
@@ -157,6 +157,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     QgsMapCanvas *mMainCanvas = nullptr;
     QMenu *mMenu = nullptr;
     QList<QAction *> mMenuPresetActions;
+    QCheckBox *mSyncExtentCheckBox = nullptr;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationEdit = nullptr;
     QgsDoubleSpinBox *mMagnificationEdit = nullptr;
@@ -187,6 +188,7 @@ class QgsMapSettingsAction: public QWidgetAction
 
     QgsMapSettingsAction( QWidget *parent = nullptr );
 
+    QCheckBox *syncExtentCheckBox() { return mSyncExtentCheckBox; }
     QgsScaleComboBox *scaleCombo() { return mScaleCombo; }
     QgsDoubleSpinBox *rotationSpinBox() { return mRotationWidget; }
     QgsDoubleSpinBox *magnifierSpinBox() { return mMagnifierWidget; }
@@ -194,6 +196,7 @@ class QgsMapSettingsAction: public QWidgetAction
     QCheckBox *syncScaleCheckBox() { return mSyncScaleCheckBox; }
 
   private:
+    QCheckBox *mSyncExtentCheckBox = nullptr;
     QgsScaleComboBox *mScaleCombo = nullptr;
     QgsDoubleSpinBox *mRotationWidget = nullptr;
     QgsDoubleSpinBox *mMagnifierWidget = nullptr;

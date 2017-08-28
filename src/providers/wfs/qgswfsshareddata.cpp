@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <math.h> // M_PI
+#include <cmath> // M_PI
 
 #include "qgswfsconstants.h"
 #include "qgswfsshareddata.h"

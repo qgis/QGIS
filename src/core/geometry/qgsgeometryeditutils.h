@@ -24,7 +24,9 @@ class QgsVectorLayer;
 #define SIP_NO_FILE
 
 #include "qgsfeature.h"
+#include "qgsgeometry.h"
 #include <QMap>
+#include <memory>
 
 /** \ingroup core
  * \class QgsGeometryEditUtils
@@ -36,19 +38,24 @@ class QgsGeometryEditUtils
 {
   public:
 
-    /** Adds interior ring (taking ownership).
-    \returns 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
-    3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    static int addRing( QgsAbstractGeometry *geom, QgsCurve *ring );
+    /**
+     * Add an interior \a ring to a \a geometry.
+     * Ownership of the \a ring is transferred.
+     * \returns 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
+     * 3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring
+     */
+    static QgsGeometry::OperationResult addRing( QgsAbstractGeometry *geometry, QgsCurve *ring SIP_TRANSFER );
 
-    /** Adds part to multi type geometry (taking ownership)
-    \returns 0 in case of success, 1 if not a multigeometry, 2 if part is not a valid geometry, 3 if new polygon ring
-    not disjoint with existing polygons of the feature*/
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    static int addPart( QgsAbstractGeometry *geom, QgsAbstractGeometry *part );
+    /**
+     * Add a \a part to multi type \a geometry.
+     * Ownership of the \a part is transferred.
+     * \returns 0 in case of success, 1 if not a multigeometry, 2 if part is not a valid geometry, 3 if new polygon ring
+     * not disjoint with existing polygons of the feature
+     */
+    static QgsGeometry::OperationResult addPart( QgsAbstractGeometry *geometry, QgsAbstractGeometry *part SIP_TRANSFER );
 
-    /** Deletes a ring from a geometry.
+    /**
+     * Deletes a ring from a geometry.
      * \returns true if delete was successful
      */
     static bool deleteRing( QgsAbstractGeometry *geom, int ringNum, int partNum = 0 );
@@ -63,7 +70,7 @@ class QgsGeometryEditUtils
      * \param avoidIntersectionsLayers list of layers to check for intersections
      * \param ignoreFeatures map of layer to feature id of features to ignore
      */
-    static QgsAbstractGeometry *avoidIntersections( const QgsAbstractGeometry &geom,
+    static std::unique_ptr< QgsAbstractGeometry > avoidIntersections( const QgsAbstractGeometry &geom,
         const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
         QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 };

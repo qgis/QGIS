@@ -1012,7 +1012,7 @@ void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition
   mItemRotation = r;
   if ( mItemRotation >= 360.0 || mItemRotation <= -360.0 )
   {
-    mItemRotation = fmod( mItemRotation, 360.0 );
+    mItemRotation = std::fmod( mItemRotation, 360.0 );
   }
 
   QgsExpressionContext context = createExpressionContext();

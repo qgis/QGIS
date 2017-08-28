@@ -126,16 +126,16 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   mRasterViewPort->mTopLeftPoint = mapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
   mRasterViewPort->mBottomRightPoint = mapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
 
-  // align to output device grid, i.e. floor/ceil to integers
+  // align to output device grid, i.e. std::floor/ceil to integers
   // TODO: this should only be done if paint device is raster - screen, image
   // for other devices (pdf) it can have floating point origin
   // we could use floating point for raster devices as well, but respecting the
   // output device grid should make it more effective as the resampling is done in
   // the provider anyway
-  mRasterViewPort->mTopLeftPoint.setX( floor( mRasterViewPort->mTopLeftPoint.x() ) );
-  mRasterViewPort->mTopLeftPoint.setY( floor( mRasterViewPort->mTopLeftPoint.y() ) );
-  mRasterViewPort->mBottomRightPoint.setX( ceil( mRasterViewPort->mBottomRightPoint.x() ) );
-  mRasterViewPort->mBottomRightPoint.setY( ceil( mRasterViewPort->mBottomRightPoint.y() ) );
+  mRasterViewPort->mTopLeftPoint.setX( std::floor( mRasterViewPort->mTopLeftPoint.x() ) );
+  mRasterViewPort->mTopLeftPoint.setY( std::floor( mRasterViewPort->mTopLeftPoint.y() ) );
+  mRasterViewPort->mBottomRightPoint.setX( std::ceil( mRasterViewPort->mBottomRightPoint.x() ) );
+  mRasterViewPort->mBottomRightPoint.setY( std::ceil( mRasterViewPort->mBottomRightPoint.y() ) );
   // recalc myRasterExtent to aligned values
   myRasterExtent.set(
     mapToPixel.toMapCoordinatesF( mRasterViewPort->mTopLeftPoint.x(),

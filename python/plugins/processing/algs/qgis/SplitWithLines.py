@@ -26,42 +26,40 @@ __copyright__ = '(C) 2014, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureRequest,
+from qgis.core import (QgsFeatureRequest,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsWkbTypes,
-                       QgsMessageLog,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 from processing.tools import vector
 
 
 class SplitWithLines(QgisAlgorithm):
 
-    INPUT_A = 'INPUT_A'
-    INPUT_B = 'INPUT_B'
+    INPUT = 'INPUT'
+    LINES = 'LINES'
 
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector overlay tools')
+        return self.tr('Vector overlay')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_A,
-                                          self.tr('Input layer, single geometries only'), [dataobjects.TYPE_VECTOR_POLYGON,
-                                                                                           dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterVector(self.INPUT_B,
-                                          self.tr('Split layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Split')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer, single geometries only'), [QgsProcessing.TypeVectorLine,
+                                                                                                               QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.LINES,
+                                                              self.tr('Split layer'), [QgsProcessing.TypeVectorLine]))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Split')))
 
     def name(self):
         return 'splitwithlines'
@@ -70,34 +68,37 @@ class SplitWithLines(QgisAlgorithm):
         return self.tr('Split with lines')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layerA = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_A), context)
-        splitLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_B), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        line_source = self.parameterAsSource(parameters, self.LINES, context)
 
-        sameLayer = self.getParameterValue(self.INPUT_A) == self.getParameterValue(self.INPUT_B)
-        fieldList = layerA.fields()
+        sameLayer = parameters[self.INPUT] == parameters[self.LINES]
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList, QgsWkbTypes.multiType(layerA.wkbType()),
-                                                                     layerA.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), QgsWkbTypes.multiType(source.wkbType()), source.sourceCrs())
 
         spatialIndex = QgsSpatialIndex()
         splitGeoms = {}
         request = QgsFeatureRequest()
         request.setSubsetOfAttributes([])
+        request.setDestinationCrs(source.sourceCrs())
 
-        for aSplitFeature in QgsProcessingUtils.getFeatures(splitLayer, context, request):
+        for aSplitFeature in line_source.getFeatures(request):
+            if feedback.isCanceled():
+                break
+
             splitGeoms[aSplitFeature.id()] = aSplitFeature.geometry()
             spatialIndex.insertFeature(aSplitFeature)
             # honor the case that user has selection on split layer and has setting "use selection"
 
         outFeat = QgsFeature()
-        features = QgsProcessingUtils.getFeatures(layerA, context)
+        features = source.getFeatures()
 
-        if QgsProcessingUtils.featureCount(layerA, context) == 0:
-            total = 100
-        else:
-            total = 100.0 / layerA.featureCount() if layerA.featureCount() else 0
+        total = 100.0 / source.featureCount() if source.featureCount() else 100
 
         for current, inFeatA in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             inGeom = inFeatA.geometry()
             attrsA = inFeatA.attributes()
             outFeat.setAttributes(attrsA)
@@ -141,6 +142,9 @@ class SplitWithLines(QgisAlgorithm):
                         split_geom_engine.prepareGeometry()
 
                         while len(inGeoms) > 0:
+                            if feedback.isCanceled():
+                                break
+
                             inGeom = inGeoms.pop()
 
                             if inGeom.isNull():  # this has been encountered and created a run-time error
@@ -154,7 +158,7 @@ class SplitWithLines(QgisAlgorithm):
                                 try:
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:
-                                    QgsMessageLog.logMessage(self.tr('Geometry exception while splitting'), self.tr('Processing'), QgsMessageLog.WARNING)
+                                    feedback.reportError(self.tr('Geometry exception while splitting'))
                                     result = 1
 
                                 # splitGeometry: If there are several intersections
@@ -179,6 +183,9 @@ class SplitWithLines(QgisAlgorithm):
             parts = []
 
             for aGeom in inGeoms:
+                if feedback.isCanceled():
+                    break
+
                 passed = True
 
                 if QgsWkbTypes.geometryType(aGeom.wkbType()) == QgsWkbTypes.LineGeometry:
@@ -196,7 +203,7 @@ class SplitWithLines(QgisAlgorithm):
 
             if len(parts) > 0:
                 outFeat.setGeometry(QgsGeometry.collectGeometry(parts))
-                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
-        del writer
+        return {self.OUTPUT: dest_id}

@@ -24,7 +24,6 @@
 #include "qgswfsutils.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -54,25 +53,19 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   , mSQLComposerDialog( nullptr )
 {
   setupUi( this );
+  setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWFSSourceSelect::showHelp );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    // For some obscure reason hiding does not work!
-    // buttonBox->button( QDialogButtonBox::Close )->hide();
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
   }
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
 
   mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
   mBuildQueryButton->setToolTip( tr( "Build query" ) );
   mBuildQueryButton->setDisabled( true );
 
-
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::addLayer );
 
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
   connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsWFSSourceSelect::buildQueryButtonClicked );
@@ -127,7 +120,6 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   delete mCapabilities;
   delete mModel;
   delete mModelProxy;
-  delete mAddButton;
   delete mBuildQueryButton;
 }
 
@@ -244,7 +236,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     if ( !property( "hideDialogs" ).toBool() )
       box->open();
 
-    mAddButton->setEnabled( false );
+    emit enableButtons( false );
     return;
   }
 
@@ -291,7 +283,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
   else
   {
     QMessageBox::information( nullptr, tr( "No Layers" ), tr( "capabilities document contained no layers." ) );
-    mAddButton->setEnabled( false );
+    emit enableButtons( false );
     mBuildQueryButton->setEnabled( false );
   }
 }
@@ -300,7 +292,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS );
   nc->setAttribute( Qt::WA_DeleteOnClose );
-  nc->setWindowTitle( tr( "Create a new WFS connection" ) );
+  nc->setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )
@@ -313,7 +305,7 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
   QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
   nc->setAttribute( Qt::WA_DeleteOnClose );
-  nc->setWindowTitle( tr( "Modify WFS connection" ) );
+  nc->setWindowTitle( tr( "Modify WFS Connection" ) );
 
   // For testability, do not use exec()
   if ( !property( "hideDialogs" ).toBool() )
@@ -368,7 +360,7 @@ void QgsWFSSourceSelect::connectToServer()
 }
 
 
-void QgsWFSSourceSelect::addLayer()
+void QgsWFSSourceSelect::addButtonClicked()
 {
   //get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
@@ -768,7 +760,7 @@ void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
   changeCRSFilter();
   mBuildQueryButton->setEnabled( current.isValid() );
-  mAddButton->setEnabled( current.isValid() );
+  emit enableButtons( current.isValid() );
 }
 
 void QgsWFSSourceSelect::buildQueryButtonClicked()
@@ -799,4 +791,9 @@ QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QM
   QSize size = option.fontMetrics.boundingRect( data ).size();
   size.setHeight( size.height() + 2 );
   return size;
+}
+
+void QgsWFSSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }

@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/layout
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -21,7 +21,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_SOURCE_DIR}/src/native
 
@@ -74,13 +75,13 @@ INCLUDE_DIRECTORIES(SYSTEM
 #ENDIF (APPLE)
 
 SET(IMAGE_RCCS ../../../images/images.qrc)
-QT5_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
 
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS} ${IMAGE_RCC_SRCS})
+  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS} ${IMAGE_RCCS})
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
+  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTORCC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${QT_QTXML_LIBRARY}
     ${QT_QTCORE_LIBRARY}
@@ -134,3 +135,5 @@ ADD_QGIS_TEST(listwidgettest testqgslistwidget.cpp)
 ADD_QGIS_TEST(filedownloader testqgsfiledownloader.cpp)
 ADD_QGIS_TEST(composergui testqgscomposergui.cpp)
 ADD_QGIS_TEST(layoutview testqgslayoutview.cpp)
+ADD_QGIS_TEST(valuerelationwidgetwrapper testqgsvaluerelationwidgetwrapper.cpp)
+ADD_QGIS_TEST(relationreferencewidget testqgsrelationreferencewidget.cpp)

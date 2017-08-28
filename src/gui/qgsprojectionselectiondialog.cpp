@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 
 #include "qgsprojectionselectiondialog.h"
+#include "qgshelp.h"
 #include <QApplication>
 
 QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
@@ -26,6 +27,7 @@ QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectionSelectionDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ProjectionSelector/geometry" ) ).toByteArray() );
@@ -88,4 +90,9 @@ void QgsProjectionSelectionDialog::setCrs( const QgsCoordinateReferenceSystem &c
 void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString> &crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
+}
+
+void QgsProjectionSelectionDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
 }

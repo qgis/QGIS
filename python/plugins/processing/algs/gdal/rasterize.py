@@ -41,8 +41,6 @@ from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.vector import ogrConnectionString, ogrLayerName
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
@@ -67,6 +65,8 @@ class rasterize(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute field'), self.INPUT))
@@ -102,7 +102,7 @@ class rasterize(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.getParameterValue(self.INPUT)
         noData = self.getParameterValue(self.NO_DATA)
         rastext = str(self.getParameterValue(self.RAST_EXT))
@@ -111,7 +111,7 @@ class rasterize(GdalAlgorithm):
         opts = self.getParameterValue(self.OPTIONS)
         out = self.getOutputValue(self.OUTPUT)
 
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
 
         if noData is not None:
             noData = str(noData)
@@ -160,8 +160,8 @@ class rasterize(GdalAlgorithm):
 
         arguments.append('-l')
 
-        print(ogrLayerName(inLayer))
-        arguments.append(ogrLayerName(inLayer))
+        print(GdalUtils.ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         arguments.append(ogrLayer)
 
         arguments.append(out)

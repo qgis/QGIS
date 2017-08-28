@@ -171,7 +171,7 @@ void QgsGCPListModel::updateModel()
         }
       }
     }
-    residual = sqrt( dX * dX + dY * dY );
+    residual = std::sqrt( dX * dX + dY * dY );
 
     p->setResidual( QPointF( dX, dY ) );
 

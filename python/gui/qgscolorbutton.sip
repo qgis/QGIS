@@ -45,6 +45,7 @@ class QgsColorButton : QToolButton
 %End
 
     virtual QSize minimumSizeHint() const;
+    virtual QSize sizeHint() const;
 
     QColor color() const;
 %Docstring

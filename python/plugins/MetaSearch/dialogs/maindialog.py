@@ -1,8 +1,3 @@
-from future import standard_library
-standard_library.install_aliases()
-from builtins import map
-from builtins import str
-from builtins import range
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -46,6 +41,7 @@ from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings)
 from qgis.gui import QgsRubberBand
+from qgis.utils import OverrideCursor
 
 from owslib.csw import CatalogueServiceWeb # spellok
 from owslib.fes import BBox, PropertyIsLike
@@ -281,8 +277,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if not self._get_csw():
             return
 
-        QApplication.restoreOverrideCursor()
-
         if self.catalog:  # display service metadata
             self.btnCapabilities.setEnabled(True)
             metadata = render_template('en', self.context,
@@ -490,25 +484,22 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # TODO: allow users to select resources types
         # to find ('service', 'dataset', etc.)
         try:
-            self.catalog.getrecords2(constraints=self.constraints,
-                                     maxrecords=self.maxrecords, esn='full')
+            with OverrideCursor(Qt.WaitCursor):
+                self.catalog.getrecords2(constraints=self.constraints,
+                                         maxrecords=self.maxrecords, esn='full')
         except ExceptionReport as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: {0}').format(err))
             return
         except Exception as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
                                 self.tr('Connection error: {0}').format(err))
             return
 
         if self.catalog.results['matches'] == 0:
-            QApplication.restoreOverrideCursor()
             self.lblResults.setText(self.tr('0 results'))
             return
 
-        QApplication.restoreOverrideCursor()
         self.display_results()
 
     def display_results(self):
@@ -675,24 +666,19 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 else:
                     return
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-
         try:
-            self.catalog.getrecords2(constraints=self.constraints,
-                                     maxrecords=self.maxrecords,
-                                     startposition=self.startfrom, esn='full')
+            with OverrideCursor(Qt.WaitCursor):
+                self.catalog.getrecords2(constraints=self.constraints,
+                                         maxrecords=self.maxrecords,
+                                         startposition=self.startfrom, esn='full')
         except ExceptionReport as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Search error'),
                                 self.tr('Search error: {0}').format(err))
             return
         except Exception as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('Connection error'),
                                 self.tr('Connection error: {0}').format(err))
             return
-
-        QApplication.restoreOverrideCursor()
 
         self.display_results()
 
@@ -726,8 +712,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         elif caller == 'mActionAddAfs':
             stype = ['ESRI:ArcGIS:FeatureServer', 'afs', 'arcgisfeatureserver']
             data_url = item_data['afs'].split('FeatureServer')[0] + 'FeatureServer'
-
-        QApplication.restoreOverrideCursor()
 
         sname = '%s from MetaSearch' % stype[1]
 
@@ -820,14 +804,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         identifier = get_item_data(item, 'identifier')
 
         try:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout, # spellok
-                                      username=self.catalog_username,
-                                      password=self.catalog_password)
-            cat.getrecordbyid(
-                [self.catalog.records[identifier].identifier])
+            with OverrideCursor(Qt.WaitCursor):
+                cat = CatalogueServiceWeb(self.catalog_url, timeout=self.timeout, # spellok
+                                          username=self.catalog_username,
+                                          password=self.catalog_password)
+                cat.getrecordbyid(
+                    [self.catalog.records[identifier].identifier])
         except ExceptionReport as err:
-            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('GetRecords error'),
                                 self.tr('Error getting response: {0}').format(err))
             return
@@ -835,10 +818,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             QMessageBox.warning(self,
                                 self.tr('Record parsing error'),
                                 self.tr('Unable to locate record identifier'))
-            QApplication.restoreOverrideCursor()
             return
-
-        QApplication.restoreOverrideCursor()
 
         record = cat.records[identifier]
         record.xml_url = cat.request
@@ -902,21 +882,20 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         """convenience function to init owslib.csw.CatalogueServiceWeb""" # spellok
 
         # connect to the server
-        try:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            self.catalog = CatalogueServiceWeb(self.catalog_url, # spellok
-                                               timeout=self.timeout,
-                                               username=self.catalog_username,
-                                               password=self.catalog_password)
-            return True
-        except ExceptionReport as err:
-            msg = self.tr('Error connecting to service: {0}').format(err)
-        except ValueError as err:
-            msg = self.tr('Value Error: {0}').format(err)
-        except Exception as err:
-            msg = self.tr('Unknown Error: {0}').format(err)
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.catalog = CatalogueServiceWeb(self.catalog_url, # spellok
+                                                   timeout=self.timeout,
+                                                   username=self.catalog_username,
+                                                   password=self.catalog_password)
+                return True
+            except ExceptionReport as err:
+                msg = self.tr('Error connecting to service: {0}').format(err)
+            except ValueError as err:
+                msg = self.tr('Value Error: {0}').format(err)
+            except Exception as err:
+                msg = self.tr('Unknown Error: {0}').format(err)
 
-        QApplication.restoreOverrideCursor()
         QMessageBox.warning(self, self.tr('CSW Connection error'), msg)
         return False
 

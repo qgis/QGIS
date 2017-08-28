@@ -45,6 +45,19 @@ bool QgsLayoutContext::testFlag( const QgsLayoutContext::Flag flag ) const
   return mFlags.testFlag( flag );
 }
 
+QgsRenderContext::Flags QgsLayoutContext::renderContextFlags() const
+{
+  QgsRenderContext::Flags flags = 0;
+  if ( mFlags & FlagAntialiasing )
+    flags = flags | QgsRenderContext::Antialiasing;
+  if ( mFlags & FlagUseAdvancedEffects )
+    flags = flags | QgsRenderContext::UseAdvancedEffects;
+
+  // TODO - expose as layout context flag?
+  flags |= QgsRenderContext::ForceVectorOutput;
+  return flags;
+}
+
 QgsVectorLayer *QgsLayoutContext::layer() const
 {
   return mLayer;
@@ -63,4 +76,14 @@ void QgsLayoutContext::setDpi( double dpi )
 double QgsLayoutContext::dpi() const
 {
   return mMeasurementConverter.dpi();
+}
+
+bool QgsLayoutContext::gridVisible() const
+{
+  return mGridVisible;
+}
+
+void QgsLayoutContext::setGridVisible( bool visible )
+{
+  mGridVisible = visible;
 }

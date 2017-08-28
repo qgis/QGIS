@@ -64,6 +64,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDwgImportDialog::showHelp );
 
   QgsSettings s;
   leDatabase->setText( s.value( "/DwgImport/lastDatabase", "" ).toString() );
@@ -477,4 +478,9 @@ void QgsDwgImportDialog::on_buttonBox_accepted()
 
     dwgGroup->setExpanded( false );
   }
+}
+
+void QgsDwgImportDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-dxf-or-dwg-file" ) );
 }

@@ -109,7 +109,7 @@ QList<QAction *> QgsWfsConnectionItem::actions()
 void QgsWfsConnectionItem::editConnection()
 {
   QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS, mName );
-  nc.setWindowTitle( tr( "Modify WFS connection" ) );
+  nc.setWindowTitle( tr( "Modify WFS Connection" ) );
 
   if ( nc.exec() )
   {
@@ -183,7 +183,7 @@ void QgsWfsRootItem::connectionsChanged()
 void QgsWfsRootItem::newConnection()
 {
   QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS );
-  nc.setWindowTitle( tr( "Create a new WFS connection" ) );
+  nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   if ( nc.exec() )
   {
@@ -208,7 +208,7 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  QgsDebugMsg( "thePath = " + path );
+  QgsDebugMsg( "path = " + path );
   if ( path.isEmpty() )
   {
     return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );

@@ -2472,7 +2472,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       {
         QVariant min = layer->minimumValue( i );
         QVariant max = layer->maximumValue( i );
-        if ( qMax( qAbs( min.toLongLong() ), qAbs( max.toLongLong() ) ) < INT_MAX )
+        if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < INT_MAX )
         {
           fields[i].setType( QVariant::Int );
         }
@@ -2646,7 +2646,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( *fet.geometry().geometry() ) )
+    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( fet.geometry().geometry() ) )
       continue;
 
     if ( attributes.size() < 1 && options.skipAttributeCreation )

@@ -362,7 +362,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
   QgsVectorLayer *coverageLayer = atlasCoverageLayer();
   QgsExpressionContext context = mHtml->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
-  exprDlg.setWindowTitle( tr( "Insert expression" ) );
+  exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();

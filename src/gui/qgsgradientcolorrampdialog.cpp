@@ -21,7 +21,6 @@
 #include "qgscptcityarchive.h"
 #include "qgssettings.h"
 
-#include <qmath.h>
 #include <QColorDialog>
 #include <QInputDialog>
 #include <QPainter>
@@ -54,12 +53,12 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
 
   mPositionSpinBox->setShowClearButton( false );
   btnColor1->setAllowOpacity( true );
-  btnColor1->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor1->setColorDialogTitle( tr( "Select Ramp Color" ) );
   btnColor1->setContext( QStringLiteral( "symbology" ) );
   btnColor1->setShowNoColor( true );
   btnColor1->setNoColorString( tr( "Transparent" ) );
   btnColor2->setAllowOpacity( true );
-  btnColor2->setColorDialogTitle( tr( "Select ramp color" ) );
+  btnColor2->setColorDialogTitle( tr( "Select Ramp Color" ) );
   btnColor2->setContext( QStringLiteral( "symbology" ) );
   btnColor2->setShowNoColor( true );
   btnColor2->setNoColorString( tr( "Transparent" ) );
@@ -377,7 +376,7 @@ void QgsGradientColorRampDialog::plotMousePress( QPointF point )
     double currentDist;
     if ( mPlotHueCheckbox->isChecked() )
     {
-      currentDist = qPow( point.x() - currentOff, 2.0 ) + qPow( point.y() - currentCol.hslHueF(), 2.0 );
+      currentDist = std::pow( point.x() - currentOff, 2.0 ) + std::pow( point.y() - currentCol.hslHueF(), 2.0 );
       if ( currentDist < minDist )
       {
         minDist = currentDist;
@@ -387,7 +386,7 @@ void QgsGradientColorRampDialog::plotMousePress( QPointF point )
     }
     if ( mPlotLightnessCheckbox->isChecked() )
     {
-      currentDist = qPow( point.x() - currentOff, 2.0 ) + qPow( point.y() - currentCol.lightnessF(), 2.0 );
+      currentDist = std::pow( point.x() - currentOff, 2.0 ) + std::pow( point.y() - currentCol.lightnessF(), 2.0 );
       if ( currentDist < minDist )
       {
         minDist = currentDist;
@@ -397,7 +396,7 @@ void QgsGradientColorRampDialog::plotMousePress( QPointF point )
     }
     if ( mPlotSaturationCheckbox->isChecked() )
     {
-      currentDist = qPow( point.x() - currentOff, 2.0 ) + qPow( point.y() - currentCol.hslSaturationF(), 2.0 );
+      currentDist = std::pow( point.x() - currentOff, 2.0 ) + std::pow( point.y() - currentCol.hslSaturationF(), 2.0 );
       if ( currentDist < minDist )
       {
         minDist = currentDist;
@@ -407,7 +406,7 @@ void QgsGradientColorRampDialog::plotMousePress( QPointF point )
     }
     if ( mPlotAlphaCheckbox->isChecked() )
     {
-      currentDist = qPow( point.x() - currentOff, 2.0 ) + qPow( point.y() - currentCol.alphaF(), 2.0 );
+      currentDist = std::pow( point.x() - currentOff, 2.0 ) + std::pow( point.y() - currentCol.alphaF(), 2.0 );
       if ( currentDist < minDist )
       {
         minDist = currentDist;;

@@ -16,13 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
-from builtins import range
-from builtins import object
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
@@ -32,30 +25,15 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import re
-import os
 import csv
-import uuid
-
-import psycopg2
-from osgeo import ogr
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsFields,
                        QgsField,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsVectorLayer,
-                       QgsVectorFileWriter,
-                       QgsDistanceArea,
-                       QgsDataSourceUri,
-                       QgsCredentials,
                        QgsFeatureRequest,
-                       QgsSettings,
-                       QgsProcessingContext,
-                       QgsProcessingUtils)
-
-from processing.tools import dataobjects
+                       QgsPointXY)
 
 
 def resolveFieldIndex(source, attr):
@@ -196,38 +174,6 @@ def extractPoints(geom):
     return points
 
 
-def simpleMeasure(geom, method=0, ellips=None, crs=None):
-    # Method defines calculation type:
-    # 0 - layer CRS
-    # 1 - project CRS
-    # 2 - ellipsoidal
-
-    if geom.type() == QgsWkbTypes.PointGeometry:
-        if not geom.isMultipart():
-            pt = geom.geometry()
-            attr1 = pt.x()
-            attr2 = pt.y()
-        else:
-            pt = geom.asMultiPoint()
-            attr1 = pt[0].x()
-            attr2 = pt[0].y()
-    else:
-        measure = QgsDistanceArea()
-
-        if method == 2:
-            measure.setSourceCrs(crs)
-            measure.setEllipsoid(ellips)
-
-        if geom.type() == QgsWkbTypes.PolygonGeometry:
-            attr1 = measure.measureArea(geom)
-            attr2 = measure.measurePerimeter(geom)
-        else:
-            attr1 = measure.measureLength(geom)
-            attr2 = None
-
-    return (attr1, attr2)
-
-
 def combineFields(fieldsA, fieldsB):
     """Create single field map from two input field maps.
     """
@@ -283,127 +229,7 @@ def snapToPrecision(geom, precision):
         snapped.moveVertex(x, y, i)
         i = i + 1
         p = snapped.vertexAt(i)
-    return snapped
-
-
-def ogrConnectionString(uri):
-    """Generates OGR connection sting from layer source
-    """
-    ogrstr = None
-
-    context = dataobjects.createContext()
-    layer = QgsProcessingUtils.mapLayerFromString(uri, context, False)
-    if layer is None:
-        return '"' + uri + '"'
-    provider = layer.dataProvider().name()
-    if provider == 'spatialite':
-        # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
-        regex = re.compile("dbname='(.+)'")
-        r = regex.search(str(layer.source()))
-        ogrstr = r.groups()[0]
-    elif provider == 'postgres':
-        # dbname='ktryjh_iuuqef' host=spacialdb.com port=9999
-        # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
-        # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
-        # table="t4" (geom) sql=
-        dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
-        conninfo = dsUri.connectionInfo()
-        conn = None
-        ok = False
-        while not conn:
-            try:
-                conn = psycopg2.connect(dsUri.connectionInfo())
-            except psycopg2.OperationalError:
-                (ok, user, passwd) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
-                if not ok:
-                    break
-
-                dsUri.setUsername(user)
-                dsUri.setPassword(passwd)
-
-        if not conn:
-            raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
-
-        if ok:
-            QgsCredentials.instance().put(conninfo, user, passwd)
-
-        ogrstr = "PG:%s" % dsUri.connectionInfo()
-    elif provider == "oracle":
-        # OCI:user/password@host:port/service:table
-        dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
-        ogrstr = "OCI:"
-        if dsUri.username() != "":
-            ogrstr += dsUri.username()
-            if dsUri.password() != "":
-                ogrstr += "/" + dsUri.password()
-            delim = "@"
-
-        if dsUri.host() != "":
-            ogrstr += delim + dsUri.host()
-            delim = ""
-            if dsUri.port() != "" and dsUri.port() != '1521':
-                ogrstr += ":" + dsUri.port()
-            ogrstr += "/"
-            if dsUri.database() != "":
-                ogrstr += dsUri.database()
-        elif dsUri.database() != "":
-            ogrstr += delim + dsUri.database()
-
-        if ogrstr == "OCI:":
-            raise RuntimeError('Invalid oracle data source - check connection info')
-
-        ogrstr += ":"
-        if dsUri.schema() != "":
-            ogrstr += dsUri.schema() + "."
-
-        ogrstr += dsUri.table()
-    else:
-        ogrstr = str(layer.source()).split("|")[0]
-
-    return '"' + ogrstr + '"'
-
-
-def ogrLayerName(uri):
-    if os.path.isfile(uri):
-        return os.path.basename(os.path.splitext(uri)[0])
-
-    if ' table=' in uri:
-        # table="schema"."table"
-        re_table_schema = re.compile(' table="([^"]*)"\\."([^"]*)"')
-        r = re_table_schema.search(uri)
-        if r:
-            return r.groups()[0] + '.' + r.groups()[1]
-        # table="table"
-        re_table = re.compile(' table="([^"]*)"')
-        r = re_table.search(uri)
-        if r:
-            return r.groups()[0]
-    elif 'layername' in uri:
-        regex = re.compile('(layername=)([^|]*)')
-        r = regex.search(uri)
-        return r.groups()[1]
-
-    fields = uri.split('|')
-    basePath = fields[0]
-    fields = fields[1:]
-    layerid = 0
-    for f in fields:
-        if f.startswith('layername='):
-            return f.split('=')[1]
-        if f.startswith('layerid='):
-            layerid = int(f.split('=')[1])
-
-    ds = ogr.Open(basePath)
-    if not ds:
-        return None
-
-    ly = ds.GetLayer(layerid)
-    if not ly:
-        return None
-
-    name = ly.GetName()
-    ds = None
-    return name
+    return QgsPointXY(snapped.x(), snapped.y())
 
 
 NOGEOMETRY_EXTENSIONS = [

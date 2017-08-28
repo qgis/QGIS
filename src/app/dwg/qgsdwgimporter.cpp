@@ -1341,9 +1341,9 @@ void QgsDwgImporter::addArc( const DRW_Arc &data )
 
   QgsCircularString c;
   c.setPoints( QgsPointSequence()
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + cos( a0 ) * data.mRadius, data.basePoint.y + sin( a0 ) * data.mRadius )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + cos( a1 ) * data.mRadius, data.basePoint.y + sin( a1 ) * data.mRadius )
-               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + cos( a2 ) * data.mRadius, data.basePoint.y + sin( a2 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a0 ) * data.mRadius, data.basePoint.y + std::sin( a0 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a1 ) * data.mRadius, data.basePoint.y + std::sin( a1 ) * data.mRadius )
+               << QgsPoint( QgsWkbTypes::PointZ, data.basePoint.x + std::cos( a2 ) * data.mRadius, data.basePoint.y + std::sin( a2 ) * data.mRadius )
              );
 
   if ( !createFeature( layer, f, c ) )
@@ -1395,7 +1395,7 @@ void QgsDwgImporter::addEllipse( const DRW_Ellipse &data )
 
 bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoundCurve &cc )
 {
-  int vertexnum = data.vertlist.size();
+  size_t vertexnum = data.vertlist.size();
   if ( vertexnum == 0 )
   {
     QgsDebugMsg( "polyline without points" );
@@ -1407,7 +1407,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
   std::vector<DRW_Vertex2D *>::size_type n = data.flags & 1 ? vertexnum + 1 : vertexnum;
   for ( std::vector<DRW_Vertex2D *>::size_type i = 0; i < n; i++ )
   {
-    int i0 = i % vertexnum;
+    size_t i0 = i % vertexnum;
 
     Q_ASSERT( data.vertlist[i0] != nullptr );
     QgsDebugMsgLevel( QString( "%1: %2,%3 bulge:%4" ).arg( i ).arg( data.vertlist[i0]->x ).arg( data.vertlist[i0]->y ).arg( data.vertlist[i0]->bulge ), 5 );
@@ -1439,14 +1439,14 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
 
     if ( hasBulge && i < n - 1 )
     {
-      int i1 = ( i + 1 ) % vertexnum;
+      size_t i1 = ( i + 1 ) % vertexnum;
 
-      double a = 2.0 * atan( data.vertlist[i]->bulge );
+      double a = 2.0 * std::atan( data.vertlist[i]->bulge );
       double dx = data.vertlist[i1]->x - data.vertlist[i0]->x;
       double dy = data.vertlist[i1]->y - data.vertlist[i0]->y;
-      double c = sqrt( dx * dx + dy * dy );
-      double r = c / 2.0 / sin( a );
-      double h = r * ( 1 - cos( a ) );
+      double c = std::sqrt( dx * dx + dy * dy );
+      double r = c / 2.0 / std::sin( a );
+      double h = r * ( 1 - std::cos( a ) );
 
       s << QgsPoint( QgsWkbTypes::PointZ,
                      data.vertlist[i0]->x + 0.5 * dx + h * dy / c,
@@ -1461,7 +1461,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
 
 void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 {
-  int vertexnum = data.vertlist.size();
+  size_t vertexnum = data.vertlist.size();
   if ( vertexnum == 0 )
   {
     QgsDebugMsg( "LWPolyline without vertices" );
@@ -1476,8 +1476,8 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
   std::vector<DRW_Vertex2D *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
   for ( std::vector<DRW_Vertex2D *>::size_type i = 0; i < n; i++ )
   {
-    int i0 = i % vertexnum;
-    int i1 = ( i + 1 ) % vertexnum;
+    size_t i0 = i % vertexnum;
+    size_t i1 = ( i + 1 ) % vertexnum;
 
     QgsPoint p0( QgsWkbTypes::PointZ, data.vertlist[i0]->x, data.vertlist[i0]->y, data.elevation );
     QgsPoint p1( QgsWkbTypes::PointZ, data.vertlist[i1]->x, data.vertlist[i1]->y, data.elevation );
@@ -1552,12 +1552,12 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
       if ( hasBulge )
       {
-        double a = 2.0 * atan( data.vertlist[i]->bulge );
+        double a = 2.0 * std::atan( data.vertlist[i]->bulge );
         double dx = p1.x() - p0.x();
         double dy = p1.y() - p0.y();
-        double c = sqrt( dx * dx + dy * dy );
-        double r = c / 2.0 / sin( a );
-        double h = r * ( 1 - cos( a ) );
+        double c = std::sqrt( dx * dx + dy * dy );
+        double r = c / 2.0 / std::sin( a );
+        double h = r * ( 1 - std::cos( a ) );
 
         s << QgsPoint( QgsWkbTypes::PointZ,
                        p0.x() + 0.5 * dx + h * dy / c,
@@ -1660,7 +1660,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
 void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 {
-  int vertexnum = data.vertlist.size();
+  size_t vertexnum = data.vertlist.size();
   if ( vertexnum == 0 )
   {
     QgsDebugMsg( "Polyline without vertices" );
@@ -1675,8 +1675,8 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
   std::vector<DRW_Vertex *>::size_type n = data.flags & 1 ? vertexnum : vertexnum - 1;
   for ( std::vector<DRW_Vertex *>::size_type i = 0; i < n; i++ )
   {
-    int i0 = i % vertexnum;
-    int i1 = ( i + 1 ) % vertexnum;
+    size_t i0 = i % vertexnum;
+    size_t i1 = ( i + 1 ) % vertexnum;
 
     QgsPoint p0( QgsWkbTypes::PointZ, data.vertlist[i0]->basePoint.x, data.vertlist[i0]->basePoint.y, data.vertlist[i0]->basePoint.z );
     QgsPoint p1( QgsWkbTypes::PointZ, data.vertlist[i1]->basePoint.x, data.vertlist[i1]->basePoint.y, data.vertlist[i1]->basePoint.z );
@@ -1753,13 +1753,13 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
       if ( hasBulge )
       {
-        double a = 2.0 * atan( data.vertlist[i]->bulge );
+        double a = 2.0 * std::atan( data.vertlist[i]->bulge );
         double dx = p1.x() - p0.x();
         double dy = p1.y() - p0.y();
         double dz = p1.z() - p0.z();
-        double c = sqrt( dx * dx + dy * dy );
-        double r = c / 2.0 / sin( a );
-        double h = r * ( 1 - cos( a ) );
+        double c = std::sqrt( dx * dx + dy * dy );
+        double r = c / 2.0 / std::sin( a );
+        double h = r * ( 1 - std::cos( a ) );
 
         s << QgsPoint( QgsWkbTypes::PointZ,
                        p0.x() + 0.5 * dx + h * dy / c,
@@ -1906,24 +1906,24 @@ static std::vector<double> knotu( const DRW_Spline &data, size_t num, size_t ord
   }
 }
 
-static std::vector<double> rbasis( int c, double t, int npts,
+static std::vector<double> rbasis( size_t c, double t, size_t npts,
                                    const std::vector<double> &x,
                                    const std::vector<double> &h )
 {
-  int nplusc = npts + c;
+  size_t nplusc = npts + c;
   std::vector<double> temp( nplusc, 0. );
 
   // calculate the first order nonrational basis functions n[i]
-  for ( int i = 0; i < nplusc - 1; ++i )
+  for ( size_t i = 0; i < nplusc - 1; ++i )
   {
     if ( t >= x[i] && t < x[i + 1] )
       temp[i] = 1;
   }
 
   // calculate the higher order nonrational base functions
-  for ( int k = 2; k <= c; ++k )
+  for ( size_t k = 2; k <= c; ++k )
   {
-    for ( int i = 0; i < nplusc - k; ++i )
+    for ( size_t i = 0; i < nplusc - k; ++i )
     {
       // if the lower order basis function is zero skip the calculation
       if ( temp[i] != 0 )
@@ -1941,7 +1941,7 @@ static std::vector<double> rbasis( int c, double t, int npts,
 
   // calculate sum for denominator of rational basis functions
   double sum = 0.;
-  for ( int i = 0; i < npts; ++i )
+  for ( size_t i = 0; i < npts; ++i )
   {
     sum += temp[i] * h[i];
   }
@@ -1951,7 +1951,7 @@ static std::vector<double> rbasis( int c, double t, int npts,
   // form rational basis functions and put in r vector
   if ( sum != 0.0 )
   {
-    for ( int i = 0; i < npts; i++ )
+    for ( size_t i = 0; i < npts; i++ )
     {
       r[i] = ( temp[i] * h[i] ) / sum;
     }
@@ -1969,7 +1969,7 @@ static void rbspline( const DRW_Spline &data,
                       const std::vector<double> &h,
                       std::vector<QgsPointXY> &p )
 {
-  int nplusc = npts + k;
+  size_t nplusc = npts + k;
 
   // generate the open knot vector
   std::vector<double> x( knot( data, npts, k ) );
@@ -2067,7 +2067,7 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
 
   size_t npts = cps.size();
   size_t k = data->degree + 1;
-  size_t p1 = mSplineSegs * npts;
+  int p1 = mSplineSegs * ( int ) npts;
 
   std::vector<double> h( npts + 1, 1. );
   std::vector<QgsPointXY> p( p1, QgsPointXY( 0., 0. ) );

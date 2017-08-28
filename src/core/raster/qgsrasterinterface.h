@@ -203,7 +203,7 @@ class CORE_EXPORT QgsRasterInterface
     //! \brief helper function to create zero padded band names
     virtual QString generateBandName( int bandNumber ) const
     {
-      return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + static_cast< int >( log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
+      return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + static_cast< int >( std::log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
     }
 
     /** Read block of data using given extent and size.

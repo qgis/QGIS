@@ -37,6 +37,7 @@ class QgsLayoutView: QGraphicsView
  :rtype: QgsLayout
 %End
 
+
     void setCurrentLayout( QgsLayout *layout /KeepReference/ );
 %Docstring
  Sets the current ``layout`` to edit in the view.
@@ -90,6 +91,42 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: setHorizontalRuler()
 %End
 
+    void setMenuProvider( QgsLayoutViewMenuProvider *provider /Transfer/ );
+%Docstring
+ Sets a ``provider`` for context menus. Ownership of the provider is transferred to the view.
+.. seealso:: menuProvider()
+%End
+
+    QgsLayoutViewMenuProvider *menuProvider() const;
+%Docstring
+ Returns the provider for context menus. Returned value may be None if no provider is set.
+.. seealso:: setMenuProvider()
+ :rtype: QgsLayoutViewMenuProvider
+%End
+
+    int currentPage() const;
+%Docstring
+ Returns the page visible in the view. This method
+ considers the page at the center of the view as the current visible
+ page.
+.. seealso:: pageChanged()
+ :rtype: int
+%End
+
+    QList< QgsLayoutItemPage * > visiblePages() const;
+%Docstring
+ Returns a list of page items which are currently visible in the view.
+.. seealso:: visiblePageNumbers()
+ :rtype: list of QgsLayoutItemPage
+%End
+
+    QList< int > visiblePageNumbers() const;
+%Docstring
+ Returns a list of page numbers for pages which are currently visible in the view.
+.. seealso:: visiblePages()
+ :rtype: list of int
+%End
+
   public slots:
 
     void zoomFull();
@@ -134,9 +171,9 @@ class QgsLayoutView: QGraphicsView
 
     void emitZoomLevelChanged();
 
-    void updateRulers();
+    void viewChanged();
 %Docstring
- Updates associated rulers after view extent or zoom has changed.
+ Updates associated rulers and other widgets after view extent or zoom has changed.
  This should be called after calling any of the QGraphicsView
  base class methods which alter the view's zoom level or extent,
  i.e. QGraphicsView.fitInView().
@@ -169,6 +206,14 @@ class QgsLayoutView: QGraphicsView
  the layout coordinate system.
 %End
 
+    void pageChanged( int page );
+%Docstring
+ Emitted when the page visible in the view is changed. This signal
+ considers the page at the center of the view as the current visible
+ page.
+.. seealso:: currentPage()
+%End
+
   protected:
     virtual void mousePressEvent( QMouseEvent *event );
 
@@ -186,8 +231,39 @@ class QgsLayoutView: QGraphicsView
 
     virtual void resizeEvent( QResizeEvent *event );
 
+    virtual void scrollContentsBy( int dx, int dy );
+
 
 };
+
+
+class QgsLayoutViewMenuProvider
+{
+%Docstring
+
+ Interface for a QgsLayoutView context menu.
+
+ Implementations of this interface can be made to allow QgsLayoutView
+ instances to provide custom context menus (opened upon right-click).
+
+.. seealso:: QgsLayoutView
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutview.h"
+%End
+  public:
+    virtual ~QgsLayoutViewMenuProvider();
+
+    virtual QMenu *createContextMenu( QWidget *parent /Transfer/, QgsLayout *layout, QPointF layoutPoint ) const = 0 /Factory/;
+%Docstring
+Return a newly created menu instance (or null pointer on error)
+ :rtype: QMenu
+%End
+};
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -62,23 +62,23 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
   mUnitsComboBox->insertItem( 2, tr( "Feet" ), QgsUnitTypes::DistanceFeet );
   mUnitsComboBox->insertItem( 3, tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
 
-  mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
   mFillColorButton->setAllowOpacity( true );
   mFillColorButton->setContext( QStringLiteral( "composer" ) );
-  mFillColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mFillColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mFillColorButton->setShowNoColor( true );
 
-  mFillColor2Button->setColorDialogTitle( tr( "Select alternate fill color" ) );
+  mFillColor2Button->setColorDialogTitle( tr( "Select Alternate Fill Color" ) );
   mFillColor2Button->setAllowOpacity( true );
   mFillColor2Button->setContext( QStringLiteral( "composer" ) );
   mFillColor2Button->setNoColorString( tr( "Transparent fill" ) );
   mFillColor2Button->setShowNoColor( true );
 
-  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setAllowOpacity( true );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
-  mStrokeColorButton->setColorDialogTitle( tr( "Select line color" ) );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select Line Color" ) );
   mStrokeColorButton->setAllowOpacity( true );
   mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
   mStrokeColorButton->setNoColorString( tr( "Transparent line" ) );

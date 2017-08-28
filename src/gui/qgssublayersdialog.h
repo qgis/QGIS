@@ -18,8 +18,8 @@
 
 #include <QDialog>
 #include <QCheckBox>
-#include <ui_qgssublayersdialogbase.h>
-#include "qgscontexthelp.h"
+#include "ui_qgssublayersdialogbase.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -85,7 +85,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     int countColumn() const { return mShowCount ? 2 : -1; }
 
   public slots:
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     int exec();
 
   protected:

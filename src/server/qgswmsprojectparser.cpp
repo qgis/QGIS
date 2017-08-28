@@ -1321,7 +1321,7 @@ void QgsWmsProjectParser::addLayers( QDomDocument &doc,
         if ( version == QLatin1String( "1.1.1" ) )
         {
           double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
-          double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2.0 );
+          double SCALE_TO_SCALEHINT = OGC_PX_M * std::sqrt( 2.0 );
 
           QDomElement scaleHintElem = doc.createElement( QStringLiteral( "ScaleHint" ) );
           scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( currentLayer->maximumScale() * SCALE_TO_SCALEHINT ) );
@@ -2005,7 +2005,7 @@ QHash<QString, QString> QgsWmsProjectParser::featureInfoLayerAliasMap() const
     layerAliasStringList << layerAliasesValueList.at( i ).toElement().text();
   }
 
-  int nMapEntries = qMin( aliasLayerStringList.size(), layerAliasStringList.size() );
+  int nMapEntries = std::min( aliasLayerStringList.size(), layerAliasStringList.size() );
   for ( int i = 0; i < nMapEntries; ++i )
   {
     aliasMap.insert( aliasLayerStringList.at( i ), layerAliasStringList.at( i ) );

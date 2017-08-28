@@ -31,15 +31,15 @@ from qgis.core import (QgsFeature,
                        QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
-                       QgsApplication,
-                       QgsProcessingUtils)
+                       QgsFeatureRequest,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingException,
+                       QgsExpression)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects
+from processing.tools import vector
 
 
 class HubLines(QgisAlgorithm):
@@ -50,22 +50,26 @@ class HubLines(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector analysis tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.HUBS,
-                                          self.tr('Hub layer')))
-        self.addParameter(ParameterTableField(self.HUB_FIELD,
-                                              self.tr('Hub ID field'), self.HUBS))
-        self.addParameter(ParameterVector(self.SPOKES,
-                                          self.tr('Spoke layer')))
-        self.addParameter(ParameterTableField(self.SPOKE_FIELD,
-                                              self.tr('Spoke ID field'), self.SPOKES))
+    def tags(self):
+        return self.tr('join,points,lines,connect,hub,spoke').split(',')
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+    def initAlgorithm(self, config=None):
+
+        self.addParameter(QgsProcessingParameterFeatureSource(self.HUBS,
+                                                              self.tr('Hub layer')))
+        self.addParameter(QgsProcessingParameterField(self.HUB_FIELD,
+                                                      self.tr('Hub ID field'), parentLayerParameterName=self.HUBS))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.SPOKES,
+                                                              self.tr('Spoke layer')))
+        self.addParameter(QgsProcessingParameterField(self.SPOKE_FIELD,
+                                                      self.tr('Spoke ID field'), parentLayerParameterName=self.SPOKES))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Hub lines'), QgsProcessing.TypeVectorLine))
 
     def name(self):
         return 'hublines'
@@ -74,44 +78,61 @@ class HubLines(QgisAlgorithm):
         return self.tr('Hub lines')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layerHub = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
-        layerSpoke = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.SPOKES), context)
-
-        fieldHub = self.getParameterValue(self.HUB_FIELD)
-        fieldSpoke = self.getParameterValue(self.SPOKE_FIELD)
-
-        if layerHub.source() == layerSpoke.source():
-            raise GeoAlgorithmExecutionException(
+        if parameters[self.SPOKES] == parameters[self.HUBS]:
+            raise QgsProcessingException(
                 self.tr('Same layer given for both hubs and spokes'))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layerSpoke.fields(), QgsWkbTypes.LineString,
-                                                                     layerSpoke.crs(), context)
+        hub_source = self.parameterAsSource(parameters, self.HUBS, context)
+        spoke_source = self.parameterAsSource(parameters, self.SPOKES, context)
+        field_hub = self.parameterAsString(parameters, self.HUB_FIELD, context)
+        field_hub_index = hub_source.fields().lookupField(field_hub)
+        field_spoke = self.parameterAsString(parameters, self.SPOKE_FIELD, context)
+        field_spoke_index = hub_source.fields().lookupField(field_spoke)
 
-        spokes = QgsProcessingUtils.getFeatures(layerSpoke, context)
-        hubs = QgsProcessingUtils.getFeatures(layerHub, context)
-        total = 100.0 / layerSpoke.featureCount() if layerSpoke.featureCount() else 0
+        fields = vector.combineFields(hub_source.fields(), spoke_source.fields())
 
-        for current, spokepoint in enumerate(spokes):
-            p = spokepoint.geometry().boundingBox().center()
-            spokeX = p.x()
-            spokeY = p.y()
-            spokeId = str(spokepoint[fieldSpoke])
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.LineString, hub_source.sourceCrs())
 
-            for hubpoint in hubs:
-                hubId = str(hubpoint[fieldHub])
-                if hubId == spokeId:
-                    p = hubpoint.geometry().boundingBox().center()
-                    hubX = p.x()
-                    hubY = p.y()
+        hubs = hub_source.getFeatures()
+        total = 100.0 / hub_source.featureCount() if hub_source.featureCount() else 0
+
+        matching_field_types = hub_source.fields().at(field_hub_index).type() == spoke_source.fields().at(field_spoke_index).type()
+
+        for current, hub_point in enumerate(hubs):
+            if feedback.isCanceled():
+                break
+
+            if not hub_point.hasGeometry():
+                continue
+
+            p = hub_point.geometry().boundingBox().center()
+            hub_x = p.x()
+            hub_y = p.y()
+            hub_id = str(hub_point[field_hub])
+            hub_attributes = hub_point.attributes()
+
+            request = QgsFeatureRequest().setDestinationCrs(hub_source.sourceCrs())
+            if matching_field_types:
+                request.setFilterExpression(QgsExpression.createFieldEqualityExpression(field_spoke, hub_attributes[field_hub_index]))
+
+            spokes = spoke_source.getFeatures()
+            for spoke_point in spokes:
+                if feedback.isCanceled():
+                    break
+
+                spoke_id = str(spoke_point[field_spoke])
+                if hub_id == spoke_id:
+                    p = spoke_point.geometry().boundingBox().center()
+                    spoke_x = p.x()
+                    spoke_y = p.y()
 
                     f = QgsFeature()
-                    f.setAttributes(spokepoint.attributes())
+                    f.setAttributes(hub_attributes + spoke_point.attributes())
                     f.setGeometry(QgsGeometry.fromPolyline(
-                        [QgsPointXY(spokeX, spokeY), QgsPointXY(hubX, hubY)]))
-                    writer.addFeature(f, QgsFeatureSink.FastInsert)
-
-                    break
+                        [QgsPointXY(hub_x, hub_y), QgsPointXY(spoke_x, spoke_y)]))
+                    sink.addFeature(f, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

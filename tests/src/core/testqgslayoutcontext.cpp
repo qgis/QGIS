@@ -36,6 +36,7 @@ class TestQgsLayoutContext: public QObject
     void feature();
     void layer();
     void dpi();
+    void renderContextFlags();
 
   private:
     QString mReport;
@@ -133,6 +134,28 @@ void TestQgsLayoutContext::dpi()
   context.setDpi( 600 );
   QCOMPARE( context.dpi(), 600.0 );
   QCOMPARE( context.measurementConverter().dpi(), 600.0 );
+}
+
+void TestQgsLayoutContext::renderContextFlags()
+{
+  QgsLayoutContext context;
+  context.setFlags( 0 );
+  QgsRenderContext::Flags flags = context.renderContextFlags();
+  QVERIFY( !( flags & QgsRenderContext::Antialiasing ) );
+  QVERIFY( !( flags & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
+
+  context.setFlag( QgsLayoutContext::FlagAntialiasing );
+  flags = context.renderContextFlags();
+  QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
+  QVERIFY( !( flags & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
+
+  context.setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  flags = context.renderContextFlags();
+  QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
+  QVERIFY( ( flags & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

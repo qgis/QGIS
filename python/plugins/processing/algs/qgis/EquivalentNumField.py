@@ -27,14 +27,11 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
-                       QgsFeature,
                        QgsFeatureSink,
-                       QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
 
 
 class EquivalentNumField(QgisAlgorithm):
@@ -44,17 +41,19 @@ class EquivalentNumField(QgisAlgorithm):
     FIELD = 'FIELD'
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Class field'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Layer with index field')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Class field'),
+                                                      None, self.INPUT, QgsProcessingParameterField.Any))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Layer with index field')))
 
     def name(self):
         return 'adduniquevalueindexfield'
@@ -63,30 +62,34 @@ class EquivalentNumField(QgisAlgorithm):
         return self.tr('Add unique value index field')
 
     def processAlgorithm(self, parameters, context, feedback):
-        fieldname = self.getParameterValue(self.FIELD)
-        output = self.getOutputFromName(self.OUTPUT)
-        vlayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        fieldindex = vlayer.fields().lookupField(fieldname)
-        fields = vlayer.fields()
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fields = source.fields()
         fields.append(QgsField('NUM_FIELD', QVariant.Int))
-        writer = output.getVectorWriter(fields, vlayer.wkbType(), vlayer.crs(), context)
-        outFeat = QgsFeature()
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, source.wkbType(), source.sourceCrs())
+
+        field_name = self.parameterAsString(parameters, self.FIELD, context)
+        field_index = source.fields().lookupField(field_name)
+
         classes = {}
 
-        features = QgsProcessingUtils.getFeatures(vlayer, context)
-        total = 100.0 / vlayer.featureCount() if vlayer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             feedback.setProgress(int(current * total))
-            inGeom = feature.geometry()
-            outFeat.setGeometry(inGeom)
-            atMap = feature.attributes()
-            clazz = atMap[fieldindex]
+
+            attributes = feature.attributes()
+            clazz = attributes[field_index]
 
             if clazz not in classes:
                 classes[clazz] = len(list(classes.keys()))
 
-            atMap.append(classes[clazz])
-            outFeat.setAttributes(atMap)
-            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            attributes.append(classes[clazz])
+            feature.setAttributes(attributes)
+            sink.addFeature(feature, QgsFeatureSink.FastInsert)
 
-        del writer
+        return {self.OUTPUT: dest_id}

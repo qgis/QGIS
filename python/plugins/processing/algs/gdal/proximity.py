@@ -62,6 +62,8 @@ class proximity(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.VALUES,
@@ -88,7 +90,7 @@ class proximity(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []

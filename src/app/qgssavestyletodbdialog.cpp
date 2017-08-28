@@ -26,7 +26,7 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
-  setWindowTitle( QStringLiteral( "Save style in database" ) );
+  setWindowTitle( QStringLiteral( "Save Style in Database" ) );
   mDescriptionEdit->setTabChangesFocus( true );
   setTabOrder( mNameEdit, mDescriptionEdit );
   setTabOrder( mDescriptionEdit, mUseAsDefault );

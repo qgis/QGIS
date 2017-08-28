@@ -37,7 +37,7 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel *label ): QgsCo
   QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, label );
   mainLayout->addWidget( itemPropertiesWidget );
 
-  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
   mMarginXDoubleSpinBox->setClearValue( 0.0 );
@@ -149,7 +149,7 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   QgsExpressionContext context = mComposerLabel->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
 
-  exprDlg.setWindowTitle( tr( "Insert expression" ) );
+  exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();

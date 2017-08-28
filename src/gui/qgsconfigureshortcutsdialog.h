@@ -20,6 +20,7 @@
 #include "qgis.h"
 
 #include "ui_qgsconfigureshortcutsdialog.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QShortcut;
@@ -59,6 +60,9 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void on_mLeFilter_textChanged( const QString &text );
 
     void actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
+
+    //! Open the associated help
+    void showHelp();
 
   private:
 

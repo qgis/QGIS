@@ -109,7 +109,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
     }
     mSaveAsRaster->setVisible( true );
 
-    this->setWindowTitle( tr( "Save map as PDF" ) );
+    this->setWindowTitle( tr( "Save Map as PDF" ) );
   }
   else
   {
@@ -119,6 +119,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
   }
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::accepted );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMapSaveDialog::showHelp );
 }
 
 void QgsMapSaveDialog::updateDpi( int dpi )
@@ -458,4 +459,9 @@ void QgsMapSaveDialog::accepted()
       QgsApplication::taskManager()->addTask( mapRendererTask );
     }
   }
+}
+
+void QgsMapSaveDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html#output" ) );
 }

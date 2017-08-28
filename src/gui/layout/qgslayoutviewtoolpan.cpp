@@ -48,7 +48,7 @@ void QgsLayoutViewToolPan::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
   view()->horizontalScrollBar()->setValue( view()->horizontalScrollBar()->value() - ( event->x() - mLastMousePos.x() ) );
   view()->verticalScrollBar()->setValue( view()->verticalScrollBar()->value() - ( event->y() - mLastMousePos.y() ) );
   mLastMousePos = event->pos();
-  view()->updateRulers();
+  view()->viewChanged();
 }
 
 void QgsLayoutViewToolPan::layoutReleaseEvent( QgsLayoutViewMouseEvent *event )

@@ -212,5 +212,12 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
   connect( mActionText, &QsciScintilla::textChanged, this, &QgsAttributeActionPropertiesDialog::updateButtons );
   connect( mChooseIconButton, &QAbstractButton::clicked, this, &QgsAttributeActionPropertiesDialog::chooseIcon );
 
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsAttributeActionPropertiesDialog::showHelp );
+
   updateButtons();
+}
+
+void QgsAttributeActionPropertiesDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#actions-properties" ) );
 }

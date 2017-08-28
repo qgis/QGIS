@@ -28,6 +28,8 @@
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 
+#include <memory>
+
 
 // ------------ BuildArea stuff ---------------------------------------------------------------------
 
@@ -142,6 +144,7 @@ static GEOSGeometry *collectFacesWithEvenAncestors( Face **faces, int nfaces )
   return ret;
 }
 
+Q_NOWARN_UNREACHABLE_PUSH
 static GEOSGeometry *LWGEOM_GEOS_buildArea( const GEOSGeometry *geom_in, QString &errorMessage )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
@@ -261,8 +264,7 @@ static GEOSGeometry *LWGEOM_GEOS_buildArea( const GEOSGeometry *geom_in, QString
 
   return shp;
 }
-
-
+Q_NOWARN_UNREACHABLE_POP
 
 // Return Nth vertex in GEOSGeometry as a POINT.
 // May return NULL if the geometry has NO vertexex.
@@ -338,16 +340,16 @@ static GEOSGeometry *LWGEOM_GEOS_getPointN( const GEOSGeometry *g_in, uint32_t n
 }
 
 
-static bool lwline_make_geos_friendly( QgsLineString &line );
-static bool lwpoly_make_geos_friendly( QgsPolygonV2 &poly );
-static bool lwcollection_make_geos_friendly( QgsGeometryCollection &g );
+static bool lwline_make_geos_friendly( QgsLineString *line );
+static bool lwpoly_make_geos_friendly( QgsPolygonV2 *poly );
+static bool lwcollection_make_geos_friendly( QgsGeometryCollection *g );
 
 
 // Ensure the geometry is "structurally" valid (enough for GEOS to accept it)
-static bool lwgeom_make_geos_friendly( QgsAbstractGeometry &geom )
+static bool lwgeom_make_geos_friendly( QgsAbstractGeometry *geom )
 {
-  QgsDebugMsg( QString( "lwgeom_make_geos_friendly enter (type %1)" ).arg( geom.wkbType() ) );
-  switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
+  QgsDebugMsg( QString( "lwgeom_make_geos_friendly enter (type %1)" ).arg( geom->wkbType() ) );
+  switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
   {
     case QgsWkbTypes::Point:
     case QgsWkbTypes::MultiPoint:
@@ -357,61 +359,61 @@ static bool lwgeom_make_geos_friendly( QgsAbstractGeometry &geom )
 
     case QgsWkbTypes::LineString:
       // lines need at least 2 points
-      return lwline_make_geos_friendly( dynamic_cast<QgsLineString &>( geom ) );
+      return lwline_make_geos_friendly( qgsgeometry_cast<QgsLineString *>( geom ) );
       break;
 
     case QgsWkbTypes::Polygon:
       // polygons need all rings closed and with npoints > 3
-      return lwpoly_make_geos_friendly( dynamic_cast<QgsPolygonV2 &>( geom ) );
+      return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygonV2 *>( geom ) );
       break;
 
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::GeometryCollection:
-      return lwcollection_make_geos_friendly( dynamic_cast<QgsGeometryCollection &>( geom ) );
+      return lwcollection_make_geos_friendly( qgsgeometry_cast<QgsGeometryCollection *>( geom ) );
       break;
 
     default:
-      QgsDebugMsg( QString( "lwgeom_make_geos_friendly: unsupported input geometry type: %1" ).arg( geom.wkbType() ) );
+      QgsDebugMsg( QString( "lwgeom_make_geos_friendly: unsupported input geometry type: %1" ).arg( geom->wkbType() ) );
       break;
   }
   return false;
 }
 
 
-static bool ring_make_geos_friendly( QgsCurve &ring )
+static bool ring_make_geos_friendly( QgsCurve *ring )
 {
-  if ( ring.nCoordinates() == 0 )
+  if ( ring->nCoordinates() == 0 )
     return false;
 
   // earlier we allowed in only geometries with straight segments
-  QgsLineString &linestring = dynamic_cast<QgsLineString &>( ring );
+  QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( ring );
 
   // close the ring if not already closed (2d only)
 
-  QgsPoint p1 = linestring.startPoint(), p2 = linestring.endPoint();
+  QgsPoint p1 = linestring->startPoint(), p2 = linestring->endPoint();
   if ( p1.x() != p2.x() || p1.y() != p2.y() )
-    linestring.addVertex( p1 );
+    linestring->addVertex( p1 );
 
   // must have at least 4 coordinates to be accepted by GEOS
 
-  while ( linestring.nCoordinates() < 4 )
-    linestring.addVertex( p1 );
+  while ( linestring->nCoordinates() < 4 )
+    linestring->addVertex( p1 );
 
   return true;
 }
 
 // Make sure all rings are closed and have > 3 points.
-static bool lwpoly_make_geos_friendly( QgsPolygonV2 &poly )
+static bool lwpoly_make_geos_friendly( QgsPolygonV2 *poly )
 {
   // If the polygon has no rings there's nothing to do
   // TODO: in qgis representation there always is exterior ring
   //if ( ! poly->nrings ) return true;
 
   // All rings must be closed and have > 3 points
-  for ( int i = 0; i < poly.numInteriorRings(); i++ )
+  for ( int i = 0; i < poly->numInteriorRings(); i++ )
   {
-    if ( !ring_make_geos_friendly( *const_cast<QgsCurve *>( poly.interiorRing( i ) ) ) )
+    if ( !ring_make_geos_friendly( qgsgeometry_cast<QgsCurve *>( poly->interiorRing( i ) ) ) )
       return false;
   }
 
@@ -419,20 +421,20 @@ static bool lwpoly_make_geos_friendly( QgsPolygonV2 &poly )
 }
 
 // Need NO or >1 points. Duplicate first if only one.
-static bool lwline_make_geos_friendly( QgsLineString &line )
+static bool lwline_make_geos_friendly( QgsLineString *line )
 {
-  if ( line.numPoints() == 1 ) // 0 is fine, 2 is fine
+  if ( line->numPoints() == 1 ) // 0 is fine, 2 is fine
   {
-    line.addVertex( line.startPoint() );
+    line->addVertex( line->startPoint() );
   }
   return true;
 }
 
-static bool lwcollection_make_geos_friendly( QgsGeometryCollection &g )
+static bool lwcollection_make_geos_friendly( QgsGeometryCollection *g )
 {
-  for ( int i = 0; i < g.numGeometries(); i++ )
+  for ( int i = 0; i < g->numGeometries(); i++ )
   {
-    if ( !lwgeom_make_geos_friendly( *g.geometryN( i ) ) )
+    if ( !lwgeom_make_geos_friendly( g->geometryN( i ) ) )
       return false;
   }
 
@@ -466,6 +468,7 @@ static GEOSGeometry *LWGEOM_GEOS_nodeLines( const GEOSGeometry *lines )
 }
 
 // Will return NULL on error (expect error handler being called by then)
+Q_NOWARN_UNREACHABLE_PUSH
 static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QString &errorMessage )
 {
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
@@ -602,7 +605,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
       return nullptr;
     }
 
-    // Now symdif new and old area
+    // Now symdiff new and old area
     try
     {
       symdif = GEOSSymDifference_r( handle, geos_area, new_area );
@@ -697,6 +700,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
   return gout;
 
 }
+Q_NOWARN_UNREACHABLE_PUSH
 
 static GEOSGeometry *LWGEOM_GEOS_makeValidLine( const GEOSGeometry *gin, QString &errorMessage )
 {
@@ -846,6 +850,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
   // return what we got so far if already valid
+  Q_NOWARN_UNREACHABLE_PUSH
   try
   {
     if ( GEOSisValid_r( handle, gin ) )
@@ -860,6 +865,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
     errorMessage = QString( "GEOSisValid(): %1" ).arg( e.what() );
     return nullptr;
   }
+  Q_NOWARN_UNREACHABLE_POP
 
   // make what we got valid
 
@@ -891,7 +897,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
 }
 
 
-QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry &lwgeom_in, QString &errorMessage )
+QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
 {
   //bool is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -899,26 +905,24 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry &lwgeom_
   // otherwise (adding only duplicates of existing points)
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
-  GEOSGeometry *geosgeom = QgsGeos::asGeos( &lwgeom_in );
-  if ( ! geosgeom )
+  GEOSGeometry *geosgeom = QgsGeos::asGeos( lwgeom_in );
+  if ( !geosgeom )
   {
     QgsDebugMsg( "Original geom can't be converted to GEOS - will try cleaning that up first" );
 
-    QgsAbstractGeometry *lwgeom_in_clone = lwgeom_in.clone();
-    if ( !lwgeom_make_geos_friendly( *lwgeom_in_clone ) )
+    std::unique_ptr<QgsAbstractGeometry> lwgeom_in_clone( lwgeom_in->clone() );
+    if ( !lwgeom_make_geos_friendly( lwgeom_in_clone.get() ) )
     {
       QgsDebugMsg( "Could not make a valid geometry out of input" );
     }
 
     // try again as we did cleanup now
     // TODO: invoke LWGEOM2GEOS directly with autoclean ?
-    geosgeom = QgsGeos::asGeos( lwgeom_in_clone );
-
-    delete lwgeom_in_clone;
+    geosgeom = QgsGeos::asGeos( lwgeom_in_clone.get() );
 
     if ( ! geosgeom )
     {
-      errorMessage = "Couldn't convert QGIS geom to GEOS";
+      errorMessage = "Could not convert QGIS geom to GEOS";
       return nullptr;
     }
   }
@@ -938,7 +942,7 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry &lwgeom_
     return nullptr;
 
   // force multi-type if we had a multi-type before
-  if ( QgsWkbTypes::isMultiType( lwgeom_in.wkbType() ) && !QgsWkbTypes::isMultiType( lwgeom_out->wkbType() ) )
+  if ( QgsWkbTypes::isMultiType( lwgeom_in->wkbType() ) && !QgsWkbTypes::isMultiType( lwgeom_out->wkbType() ) )
   {
     QgsGeometryCollection *collection = nullptr;
     switch ( QgsWkbTypes::multiType( lwgeom_out->wkbType() ) )

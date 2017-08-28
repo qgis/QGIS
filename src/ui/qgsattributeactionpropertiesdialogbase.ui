@@ -67,7 +67,7 @@
    <item row="6" column="0" colspan="4">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -136,7 +136,7 @@
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QgsFieldExpressionWidget" name="mFieldExpression">
+         <widget class="QgsFieldExpressionWidget" name="mFieldExpression" native="true">
           <property name="focusPolicy">
            <enum>Qt::TabFocus</enum>
           </property>

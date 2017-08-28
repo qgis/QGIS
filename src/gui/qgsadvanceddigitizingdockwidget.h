@@ -20,7 +20,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmessagebaritem.h"
 
-#include <ui_qgsadvanceddigitizingdockwidgetbase.h>
+#include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis.h"
 #include <memory>
@@ -256,12 +256,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void clear();
 
-    /**
-     * The snapping mode
-     * \returns Snapping mode
-     */
-    QgsMapMouseEvent::SnappingMode snappingMode() { return mSnappingMode; }
-
     void keyPressEvent( QKeyEvent *e ) override;
 
     //! determines if CAD tools are enabled or if map tools behaves "nomally"
@@ -455,7 +449,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! is CAD currently enabled for current map tool
     bool mCadEnabled;
     bool mConstructionMode;
-    QgsMapMouseEvent::SnappingMode mSnappingMode;
 
     // constraints
     std::unique_ptr< CadConstraint > mAngleConstraint;
@@ -478,7 +471,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     // UI
     QAction *mEnableAction = nullptr;
     QMap< QAction *, int > mCommonAngleActions; // map the common angle actions with their angle values
-    QMap< QAction *, QgsMapMouseEvent::SnappingMode > mSnappingActions; // map the snapping mode actions with their values
 
   private:
 #ifdef SIP_RUN

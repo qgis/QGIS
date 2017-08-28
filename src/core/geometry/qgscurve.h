@@ -134,6 +134,29 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     QPolygonF asQPolygonF() const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsCurve.
+     * Should be used by qgsgeometry_cast<QgsCurve *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsCurve *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type type = geom->wkbType();
+      if ( QgsWkbTypes::geometryType( type ) == QgsWkbTypes::LineGeometry && QgsWkbTypes::isSingleType( type ) )
+      {
+        return static_cast<const QgsCurve *>( geom );
+      }
+      return nullptr;
+    }
+#endif
+
 
   protected:
 

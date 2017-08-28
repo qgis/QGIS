@@ -69,6 +69,13 @@ class QgsLayoutItemPropertiesDialog : QDialog
 .. seealso:: referencePoint()
 %End
 
+    void setLayout( QgsLayout *layout );
+%Docstring
+ Sets the ``layout`` associated with the dialog. This allows the dialog
+ to retrieve properties from the layout and perform tasks like automatic
+ conversion of units.
+%End
+
 };
 
 /************************************************************************

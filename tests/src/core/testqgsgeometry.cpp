@@ -118,7 +118,6 @@ class TestQgsGeometry : public QObject
 
     void wkbInOut();
 
-    void segmentizeCircularString();
     void directionNeutralSegmentation();
     void poleOfInaccessibility();
 
@@ -617,9 +616,9 @@ void TestQgsGeometry::point()
   QgsPoint exportPointFloat( 1 / 3.0, 2 / 3.0 );
   QDomDocument doc( QStringLiteral( "gml" ) );
   QString expectedGML2( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates></Point>" ) );
-  QCOMPARE( elemToString( exportPoint.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportPoint.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667</coordinates></Point>" ) );
-  QCOMPARE( elemToString( exportPointFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportPointFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1 2</pos></Point>" ) );
@@ -814,12 +813,12 @@ void TestQgsGeometry::point()
   p29.setM( 9.0 );
   QVERIFY( p29.convertTo( QgsWkbTypes::PointM ) );
   QCOMPARE( p29.wkbType(), QgsWkbTypes::PointM );
-  QVERIFY( qIsNaN( p29.z() ) );
+  QVERIFY( std::isnan( p29.z() ) );
   QCOMPARE( p29.m(), 9.0 );
   QVERIFY( p29.convertTo( QgsWkbTypes::Point ) );
   QCOMPARE( p29.wkbType(), QgsWkbTypes::Point );
-  QVERIFY( qIsNaN( p29.z() ) );
-  QVERIFY( qIsNaN( p29.m() ) );
+  QVERIFY( std::isnan( p29.z() ) );
+  QVERIFY( std::isnan( p29.m() ) );
   QVERIFY( !p29.convertTo( QgsWkbTypes::Polygon ) );
 
   //boundary
@@ -851,12 +850,12 @@ void TestQgsGeometry::point()
 
   // distance 3D
   QCOMPARE( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ), 2.0 );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( 1, 1, 0 ) ) );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ) ) );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( 2, 2, 2 ) ) );
-  QVERIFY( qIsNaN( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( 1, 1, 0 ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( 2, 2, 2 ) ) );
+  QVERIFY( std::isnan( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ) ) );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( 1, 1, 0 ), 6.0 );
-  QVERIFY( qIsNaN( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( 0, 0 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( 0, 0 ) ) ) );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 0, 0, 0 ), 12.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ), 48.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 2, 2, 2 ), 48.0 );
@@ -1317,8 +1316,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.zAt( 0 ), 3.0 );
   QCOMPARE( l9.zAt( 1 ), 13.0 );
   QCOMPARE( l9.zAt( 2 ), 23.0 );
-  QVERIFY( qIsNaN( l9.zAt( -1 ) ) ); //out of range
-  QVERIFY( qIsNaN( l9.zAt( 11 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.zAt( -1 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.zAt( 11 ) ) ); //out of range
 
   l9.setZAt( 0, 53.0 );
   QCOMPARE( l9.zAt( 0 ), 53.0 );
@@ -1330,8 +1329,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.mAt( 0 ), 4.0 );
   QCOMPARE( l9.mAt( 1 ), 14.0 );
   QCOMPARE( l9.mAt( 2 ), 24.0 );
-  QVERIFY( qIsNaN( l9.mAt( -1 ) ) ); //out of range
-  QVERIFY( qIsNaN( l9.mAt( 11 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.mAt( -1 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.mAt( 11 ) ) ); //out of range
 
   l9.setMAt( 0, 54.0 );
   QCOMPARE( l9.mAt( 0 ), 54.0 );
@@ -1346,8 +1345,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 24 ) );
 
   //basically we just don't want these to crash
-  QVERIFY( qIsNaN( l9.zAt( 0 ) ) );
-  QVERIFY( qIsNaN( l9.zAt( 1 ) ) );
+  QVERIFY( std::isnan( l9.zAt( 0 ) ) );
+  QVERIFY( std::isnan( l9.zAt( 1 ) ) );
   l9.setZAt( 0, 53.0 );
   l9.setZAt( 1, 63.0 );
 
@@ -1357,8 +1356,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( 21, 22 ) );
 
   //basically we just don't want these to crash
-  QVERIFY( qIsNaN( l9.mAt( 0 ) ) );
-  QVERIFY( qIsNaN( l9.mAt( 1 ) ) );
+  QVERIFY( std::isnan( l9.mAt( 0 ) ) );
+  QVERIFY( std::isnan( l9.mAt( 1 ) ) );
   l9.setMAt( 0, 53.0 );
   l9.setMAt( 1, 63.0 );
 
@@ -1739,9 +1738,9 @@ void TestQgsGeometry::lineString()
                              << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) );
   QDomDocument doc( QStringLiteral( "gml" ) );
   QString expectedGML2( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">31,32 41,42 51,52</coordinates></LineString>" ) );
-  QCOMPARE( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667 1.333,1.667 2.333,2.667</coordinates></LineString>" ) );
-  QCOMPARE( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></LineString>" ) );
@@ -3203,7 +3202,7 @@ void TestQgsGeometry::polygon()
 
   // as GML2
   QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
-  QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
+  QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" ) );
@@ -3240,10 +3239,10 @@ void TestQgsGeometry::polygon()
   // as GML2
   QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" ) );
   expectedGML2 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
-  QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></outerBoundaryIs>" ) );
   expectedGML2prec3 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
-  QCOMPARE( elemToString( exportPolygonFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportPolygonFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //as GML3
   QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior>" ) );
@@ -3655,7 +3654,7 @@ void TestQgsGeometry::triangle()
   QVector<double> l_tested, l_t7 = t7.lengths();
   l_tested.append( 5 );
   l_tested.append( 5 );
-  l_tested.append( sqrt( 5 * 5 + 5 * 5 ) );
+  l_tested.append( std::sqrt( 5 * 5 + 5 * 5 ) );
   QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 2 ), l_t7.at( 2 ), 0.0001 );
@@ -3923,11 +3922,11 @@ void TestQgsGeometry::ellipse()
   // fromFoci
   // horizontal
   QgsEllipse elp_hor = QgsEllipse().fromFoci( QgsPoint( -4, 0 ), QgsPoint( 4, 0 ), QgsPoint( 0, 4 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), sqrt( 32.0 ), sqrt( 16.0 ), 90.0 ) == elp_hor );
+  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), std::sqrt( 32.0 ), std::sqrt( 16.0 ), 90.0 ) == elp_hor );
   QGSCOMPARENEARPOINT( QgsPoint( 4, 0 ), elp_hor.foci().at( 0 ), 1e-8 );
   QGSCOMPARENEARPOINT( QgsPoint( -4, 0 ), elp_hor.foci().at( 1 ), 1e-8 );
   elp_hor = QgsEllipse().fromFoci( QgsPoint( 4, 0 ), QgsPoint( -4, 0 ), QgsPoint( 0, 4 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), sqrt( 32.0 ), sqrt( 16.0 ), 270.0 ) == elp_hor );
+  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), std::sqrt( 32.0 ), std::sqrt( 16.0 ), 270.0 ) == elp_hor );
   QGSCOMPARENEARPOINT( QgsPoint( -4, 0 ), elp_hor.foci().at( 0 ), 1e-8 );
   QGSCOMPARENEARPOINT( QgsPoint( 4, 0 ), elp_hor.foci().at( 1 ), 1e-8 );
 
@@ -4177,7 +4176,7 @@ void TestQgsGeometry::circle()
 // byCenterPoint
   QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 90 ) );
   QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 0 ) );
-  QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5 * cos( 45 * M_PI / 180.0 ), 5 * sin( 45 * M_PI / 180.0 ) ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 45 ) );
+  QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5 * std::cos( 45 * M_PI / 180.0 ), 5 * std::sin( 45 * M_PI / 180.0 ) ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 45 ) );
 // by3Tangents
 // Tangents from triangle tri1( 0,0 ; 0,5 ), tri2( 0,0 ; 5,0 ), tri3( 5,0 ; 0,5 )
   QgsCircle circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 2, 0 ), QgsPoint( 3, 0 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
@@ -4228,7 +4227,7 @@ void TestQgsGeometry::circle()
 
 // oriented
 //45
-  double val = 5 * sin( M_PI / 4 );
+  double val = 5 * std::sin( M_PI / 4 );
   pol.reset( QgsCircle( QgsPoint( 0, 0 ), 5, 45 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
@@ -5290,35 +5289,19 @@ void TestQgsGeometry::wkbInOut()
   QCOMPARE( badHeader.wkbType(), QgsWkbTypes::Unknown );
 }
 
-void TestQgsGeometry::segmentizeCircularString()
-{
-  QString wkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 2 0 )" ) );
-  QgsCircularString *circularString = dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( wkt ) );
-  QVERIFY( circularString );
-  QgsLineString *lineString = circularString->curveToLine();
-  QVERIFY( lineString );
-  QgsPointSequence points;
-  lineString->points( points );
-
-  delete circularString;
-  delete lineString;
-
-  //make sure the curve point is part of the segmentized result
-  QVERIFY( points.contains( QgsPoint( 0.5, 0.5 ) ) );
-}
-
 void TestQgsGeometry::directionNeutralSegmentation()
 {
   //Tests, if segmentation of a circularstring is the same in both directions
   QString CWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 0.83 7.33 )" ) );
-  QgsCircularString *CWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ) );
+  QgsCircularString *CWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ).release() );
   QgsLineString *CWLineString = CWCircularString->curveToLine();
 
   QString CCWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0.83 7.33, 0.5 0.5, 0 0 )" ) );
-  QgsCircularString *CCWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ) );
+  QgsCircularString *CCWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ).release() );
   QgsLineString *CCWLineString = CCWCircularString->curveToLine();
   QgsLineString *reversedCCWLineString = CCWLineString->reversed();
 
+  QCOMPARE( CWLineString->asWkt(), reversedCCWLineString->asWkt() );
   bool equal = ( *CWLineString == *reversedCCWLineString );
 
   delete CWCircularString;

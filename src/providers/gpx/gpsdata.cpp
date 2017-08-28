@@ -26,7 +26,7 @@
 #include <QSet>
 
 #include "gpsdata.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 
 #define OUTPUT_PRECISION 12
 

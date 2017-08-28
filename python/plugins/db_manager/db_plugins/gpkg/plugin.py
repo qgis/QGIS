@@ -61,7 +61,7 @@ class GPKGDBPlugin(DBPlugin):
 
     @classmethod
     def connectionSettingsKey(self):
-        return '/GPKG/connections'
+        return '/providers/geopackage/connections'
 
     def databasesFactory(self, connection, uri):
         return GPKGDatabase(connection, uri)
@@ -71,10 +71,10 @@ class GPKGDBPlugin(DBPlugin):
         settings = QgsSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
-        if not settings.contains("gpkgpath"):  # non-existent entry?
+        if not settings.contains("path"):  # non-existent entry?
             raise InvalidDataException(self.tr(u'There is no defined database connection "{0}".').format(conn_name))
 
-        database = settings.value("gpkgpath")
+        database = settings.value("path")
 
         uri = QgsDataSourceUri()
         uri.setDatabase(database)
@@ -84,7 +84,7 @@ class GPKGDBPlugin(DBPlugin):
     def addConnection(self, conn_name, uri):
         settings = QgsSettings()
         settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
-        settings.setValue("gpkgpath", uri.database())
+        settings.setValue("path", uri.database())
         return True
 
     @classmethod

@@ -33,6 +33,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationGridDialog::showHelp );
 
   mMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
   mLineSymbolButton->setSymbolType( QgsSymbol::Line );
@@ -157,7 +158,7 @@ QgsDecorationGridDialog::~QgsDecorationGridDialog()
   settings.setValue( QStringLiteral( "/Windows/DecorationGrid/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationGridDialog::on_buttonBox_helpRequested()
+void QgsDecorationGridDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#grid" ) );
 }

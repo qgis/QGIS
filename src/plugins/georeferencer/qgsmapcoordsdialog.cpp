@@ -137,7 +137,7 @@ double QgsMapCoordsDialog::dmsToDD( const QString &dms )
 {
   QStringList list = dms.split( ' ' );
   QString tmpStr = list.at( 0 );
-  double res = qAbs( tmpStr.toDouble() );
+  double res = std::fabs( tmpStr.toDouble() );
 
   tmpStr = list.value( 1 );
   if ( !tmpStr.isEmpty() )

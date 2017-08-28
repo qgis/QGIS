@@ -147,6 +147,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
   qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
   qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
+  qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
@@ -613,21 +614,6 @@ QString QgsApplication::licenceFilePath()
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/LICENSE" );
 }
 
-QString QgsApplication::helpAppPath()
-{
-  QString helpAppPath;
-#ifdef Q_OS_MACX
-  helpAppPath = applicationDirPath() + "/bin/qgis_help.app/Contents/MacOS";
-#else
-  helpAppPath = libexecPath();
-#endif
-  helpAppPath += QLatin1String( "/qgis_help" );
-#ifdef Q_OS_WIN
-  helpAppPath += ".exe";
-#endif
-  return helpAppPath;
-}
-
 QString QgsApplication::i18nPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
@@ -724,7 +710,7 @@ QStringList QgsApplication::composerTemplatePaths()
 
 QString QgsApplication::userStylePath()
 {
-  return qgisSettingsDirPath() + QStringLiteral( "symbology-ng-style.db" );
+  return qgisSettingsDirPath() + QStringLiteral( "symbology-style.db" );
 }
 
 QRegExp QgsApplication::shortNameRegExp()
@@ -842,7 +828,7 @@ QString QgsApplication::userThemesFolder()
 
 QString QgsApplication::defaultStylePath()
 {
-  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/symbology-ng-style.xml" );
+  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/symbology-style.xml" );
 }
 
 QString QgsApplication::defaultThemesFolder()

@@ -40,7 +40,7 @@ class CORE_EXPORT QgsPageSize
      * Constructor for QgsPageSize, accepting the \a name of the page size and
      * page \a size.
     */
-    QgsPageSize( const QString &name, const QgsLayoutSize &size );
+    QgsPageSize( const QString &name, const QgsLayoutSize &size, const QString &displayName = QString() );
 
     /**
      * Constructor for QgsPageSize, accepting a page \a size.
@@ -52,6 +52,9 @@ class CORE_EXPORT QgsPageSize
 
     //! Page size
     QgsLayoutSize size;
+
+    //! Translated page name
+    QString displayName;
 
     bool operator==( const QgsPageSize &other ) const;
     bool operator!=( const QgsPageSize &other ) const;
@@ -91,6 +94,15 @@ class CORE_EXPORT QgsPageSizeRegistry
      * on the page size \a name.
      */
     QList< QgsPageSize > find( const QString &name ) const;
+
+    /**
+     * Finds a matching page \a size from the registry. Returns the page size name,
+     * or an empty string if no matching size could be found.
+     *
+     * Orientation is ignored when matching page sizes, so a landscape A4 page will
+     * match to the portrait A4 size in the registry.
+     */
+    QString find( const QgsLayoutSize &size ) const;
 
     /**
      * Decodes a \a string representing a preset page size.

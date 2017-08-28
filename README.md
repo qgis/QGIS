@@ -1,6 +1,7 @@
 # About QGIS
 
 [![Build Status](https://travis-ci.org/qgis/QGIS.svg?branch=master)](https://travis-ci.org/qgis/QGIS)
+[![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://cloud.docker.com/app/qgis/repository/docker/qgis/qgis/general)
 
 QGIS is an Open Source Geographic Information System. The project was born in
 May of 2002 and was established as a project on SourceForge in June of the same
@@ -63,7 +64,7 @@ an email address where we can request additional information.
 ## Support
 You can get support in the following ways:
 
- -  Using the QGIS community site at http://qgis.org 
+ -  Using the QGIS community site at http://qgis.org
  -  Joining the [qgis-users mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-user)
  -  Using IRC by joining the [#qgis](http://webchat.freenode.net/?channels=#qgis) channel on irc.freenode.net.       Please wait around for a response to your question as many folks on the channel are doing other things and it may take a while for them to notice your question.
  -  Join the [Gitter](https://gitter.im/qgis/QGIS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) chat.

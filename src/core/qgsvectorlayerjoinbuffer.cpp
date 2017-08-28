@@ -416,10 +416,11 @@ QgsFeature QgsVectorLayerJoinBuffer::joinedFeatureOf( const QgsVectorLayerJoinIn
 
   if ( info->joinLayer() )
   {
+    joinedFeature.setFields( info->joinLayer()->fields() );
+
+    QString joinFieldName = info->joinFieldName();
     const QVariant targetValue = feature.attribute( info->targetFieldName() );
-    QString fieldRef = QgsExpression::quotedColumnRef( info->joinFieldName() );
-    QString quotedVal = QgsExpression::quotedValue( targetValue.toString() );
-    const QString filter = QStringLiteral( "%1 = %2" ).arg( fieldRef, quotedVal );
+    QString filter = QgsExpression::createFieldEqualityExpression( joinFieldName, targetValue );
 
     QgsFeatureRequest request;
     request.setFilterExpression( filter );

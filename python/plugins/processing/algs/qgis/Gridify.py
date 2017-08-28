@@ -31,36 +31,29 @@ from qgis.core import (QgsGeometry,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsApplication,
-                       QgsMessageLog,
-                       QgsProcessingUtils)
-from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
+                       QgsProcessingException,
+                       QgsProcessingParameterNumber)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class Gridify(QgisAlgorithm):
-    INPUT = 'INPUT'
+class Gridify(QgisFeatureBasedAlgorithm):
+
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
-    OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
+        self.h_spacing = None
+        self.v_spacing = None
 
-    def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
-        self.addParameter(ParameterNumber(self.HSPACING,
-                                          self.tr('Horizontal spacing'), default=0.1))
-        self.addParameter(ParameterNumber(self.VSPACING,
-                                          self.tr('Vertical spacing'), default=0.1))
-
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped')))
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.HSPACING,
+                                                       self.tr('Horizontal spacing'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=0.1))
+        self.addParameter(QgsProcessingParameterNumber(self.VSPACING,
+                                                       self.tr('Vertical spacing'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=0.1))
 
     def name(self):
         return 'snappointstogrid'
@@ -68,46 +61,45 @@ class Gridify(QgisAlgorithm):
     def displayName(self):
         return self.tr('Snap points to grid')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        hSpacing = self.getParameterValue(self.HSPACING)
-        vSpacing = self.getParameterValue(self.VSPACING)
+    def outputName(self):
+        return self.tr('Snapped')
 
-        if hSpacing <= 0 or vSpacing <= 0:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.h_spacing = self.parameterAsDouble(parameters, self.HSPACING, context)
+        self.v_spacing = self.parameterAsDouble(parameters, self.VSPACING, context)
+        if self.h_spacing <= 0 or self.v_spacing <= 0:
+            raise QgsProcessingException(
+                self.tr('Invalid grid spacing: {0}/{1}').format(self.h_spacing, self.v_spacing))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), layer.wkbType(), layer.crs(),
-                                                                     context)
+        return True
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
-
-        for current, f in enumerate(features):
-            geom = f.geometry()
-            geomType = geom.wkbType()
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            geom = feature.geometry()
+            geomType = QgsWkbTypes.flatType(geom.wkbType())
+            newGeom = None
 
             if geomType == QgsWkbTypes.Point:
-                points = self._gridify([geom.asPoint()], hSpacing, vSpacing)
+                points = self._gridify([geom.asPoint()], self.h_spacing, self.v_spacing)
                 newGeom = QgsGeometry.fromPoint(points[0])
             elif geomType == QgsWkbTypes.MultiPoint:
-                points = self._gridify(geom.aMultiPoint(), hSpacing, vSpacing)
+                points = self._gridify(geom.asMultiPoint(), self.h_spacing, self.v_spacing)
                 newGeom = QgsGeometry.fromMultiPoint(points)
             elif geomType == QgsWkbTypes.LineString:
-                points = self._gridify(geom.asPolyline(), hSpacing, vSpacing)
+                points = self._gridify(geom.asPolyline(), self.h_spacing, self.v_spacing)
                 if len(points) < 2:
-                    QgsMessageLog.logMessage(self.tr('Failed to gridify feature with FID {0}').format(f.id()), self.tr('Processing'), QgsMessageLog.INFO)
+                    feedback.reportError(self.tr('Failed to gridify feature with FID {0}').format(feature.id()))
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromPolyline(points)
             elif geomType == QgsWkbTypes.MultiLineString:
                 polyline = []
                 for line in geom.asMultiPolyline():
-                    points = self._gridify(line, hSpacing, vSpacing)
+                    points = self._gridify(line, self.h_spacing, self.v_spacing)
                     if len(points) > 1:
                         polyline.append(points)
                 if len(polyline) <= 0:
-                    QgsMessageLog.logMessage(self.tr('Failed to gridify feature with FID {0}').format(f.id()), self.tr('Processing'), QgsMessageLog.INFO)
+                    feedback.reportError(self.tr('Failed to gridify feature with FID {0}').format(feature.id()))
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromMultiPolyline(polyline)
@@ -115,11 +107,11 @@ class Gridify(QgisAlgorithm):
             elif geomType == QgsWkbTypes.Polygon:
                 polygon = []
                 for line in geom.asPolygon():
-                    points = self._gridify(line, hSpacing, vSpacing)
+                    points = self._gridify(line, self.h_spacing, self.v_spacing)
                     if len(points) > 1:
                         polygon.append(points)
                 if len(polygon) <= 0:
-                    QgsMessageLog.logMessage(self.tr('Failed to gridify feature with FID {0}').format(f.id()), self.tr('Processing'), QgsMessageLog.INFO)
+                    feedback.reportError(self.tr('Failed to gridify feature with FID {0}').format(feature.id()))
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromPolygon(polygon)
@@ -128,7 +120,7 @@ class Gridify(QgisAlgorithm):
                 for polygon in geom.asMultiPolygon():
                     newPolygon = []
                     for line in polygon:
-                        points = self._gridify(line, hSpacing, vSpacing)
+                        points = self._gridify(line, self.h_spacing, self.v_spacing)
                         if len(points) > 2:
                             newPolygon.append(points)
 
@@ -136,20 +128,16 @@ class Gridify(QgisAlgorithm):
                         multipolygon.append(newPolygon)
 
                 if len(multipolygon) <= 0:
-                    QgsMessageLog.logMessage(self.tr('Failed to gridify feature with FID {0}').format(f.id()), self.tr('Processing'), QgsMessageLog.INFO)
+                    feedback.reportError(self.tr('Failed to gridify feature with FID {0}').format(feature.id()))
                     newGeom = None
                 else:
                     newGeom = QgsGeometry.fromMultiPolygon(multipolygon)
 
             if newGeom is not None:
-                feat = QgsFeature()
-                feat.setGeometry(newGeom)
-                feat.setAttributes(f.attributes())
-                writer.addFeature(feat, QgsFeatureSink.FastInsert)
-
-            feedback.setProgress(int(current * total))
-
-        del writer
+                feature.setGeometry(newGeom)
+            else:
+                feature.clearGeometry()
+        return feature
 
     def _gridify(self, points, hSpacing, vSpacing):
         nPoints = []

@@ -55,6 +55,8 @@ class rgb2pct(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(rgb2pct.INPUT,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS,
@@ -67,7 +69,7 @@ class rgb2pct(GdalAlgorithm):
     def displayName(self):
         return self.tr('RGB to PCT')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-n')
         arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))

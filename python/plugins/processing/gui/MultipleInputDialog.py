@@ -29,10 +29,16 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import (QgsSettings,
+                       QgsProcessing,
+                       QgsVectorFileWriter,
+                       QgsProviderRegistry,
+                       QgsProcessingModelChildParameterSource)
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox
+from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication
+from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -41,9 +47,11 @@ WIDGET, BASE = uic.loadUiType(
 
 class MultipleInputDialog(BASE, WIDGET):
 
-    def __init__(self, options, selectedoptions=None):
+    def __init__(self, options, selectedoptions=None, datatype=None):
         super(MultipleInputDialog, self).__init__(None)
         self.setupUi(self)
+        self.datatype = datatype
+        self.model = None
 
         self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
 
@@ -66,23 +74,47 @@ class MultipleInputDialog(BASE, WIDGET):
         self.btnToggleSelection = QPushButton(self.tr('Toggle selection'))
         self.buttonBox.addButton(self.btnToggleSelection,
                                  QDialogButtonBox.ActionRole)
+        if self.datatype is not None:
+            btnAddFile = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add file(s)…'))
+            btnAddFile.clicked.connect(self.addFiles)
+            self.buttonBox.addButton(btnAddFile,
+                                     QDialogButtonBox.ActionRole)
 
         self.btnSelectAll.clicked.connect(lambda: self.selectAll(True))
         self.btnClearSelection.clicked.connect(lambda: self.selectAll(False))
         self.btnToggleSelection.clicked.connect(self.toggleSelection)
 
+        self.settings = QgsSettings()
+        self.restoreGeometry(self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray()))
+
+        self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.populateList()
+        self.finished.connect(self.saveWindowGeometry)
+
+    def saveWindowGeometry(self):
+        self.settings.setValue("/Processing/multipleInputDialogGeometry", self.saveGeometry())
 
     def populateList(self):
-        model = QStandardItemModel()
+        self.model = QStandardItemModel()
         for value, text in self.options:
             item = QStandardItem(text)
             item.setData(value, Qt.UserRole)
             item.setCheckState(Qt.Checked if value in self.selectedoptions else Qt.Unchecked)
             item.setCheckable(True)
-            model.appendRow(item)
+            self.model.appendRow(item)
 
-        self.lstLayers.setModel(model)
+        # add extra options (e.g. manually added layers)
+        for t in [o for o in self.selectedoptions if not isinstance(o, int)]:
+            if isinstance(t, QgsProcessingModelChildParameterSource):
+                item = QStandardItem(t.staticValue())
+            else:
+                item = QStandardItem(t)
+            item.setData(item.text(), Qt.UserRole)
+            item.setCheckState(Qt.Checked)
+            item.setCheckable(True)
+            self.model.appendRow(item)
+
+        self.lstLayers.setModel(self.model)
 
     def accept(self):
         self.selectedoptions = []
@@ -97,15 +129,56 @@ class MultipleInputDialog(BASE, WIDGET):
         self.selectedoptions = None
         QDialog.reject(self)
 
+    def getItemsToModify(self):
+        items = []
+        if len(self.lstLayers.selectedIndexes()) > 1:
+            for i in self.lstLayers.selectedIndexes():
+                items.append(self.model.itemFromIndex(i))
+        else:
+            for i in range(self.model.rowCount()):
+                items.append(self.model.item(i))
+        return items
+
     def selectAll(self, value):
-        model = self.lstLayers.model()
-        for i in range(model.rowCount()):
-            item = model.item(i)
+        for item in self.getItemsToModify():
             item.setCheckState(Qt.Checked if value else Qt.Unchecked)
 
     def toggleSelection(self):
-        model = self.lstLayers.model()
-        for i in range(model.rowCount()):
-            item = model.item(i)
+        for item in self.getItemsToModify():
             checked = item.checkState() == Qt.Checked
             item.setCheckState(Qt.Unchecked if checked else Qt.Checked)
+
+    def getFileFilter(self, datatype):
+        """
+        Returns a suitable file filter pattern for the specified parameter definition
+        :param param:
+        :return:
+        """
+        if datatype == QgsProcessing.TypeRaster:
+            return QgsProviderRegistry.instance().fileRasterFilters()
+        elif datatype == QgsProcessing.TypeFile:
+            return self.tr('All files (*.*)')
+        else:
+            exts = QgsVectorFileWriter.supportedFormatExtensions()
+            for i in range(len(exts)):
+                exts[i] = self.tr('{0} files (*.{1})').format(exts[i].upper(), exts[i].lower())
+            return self.tr('All files (*.*)') + ';;' + ';;'.join(exts)
+
+    def addFiles(self):
+        filter = self.getFileFilter(self.datatype)
+
+        settings = QgsSettings()
+        path = str(settings.value('/Processing/LastInputPath'))
+
+        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select file(s)'),
+                                                            path, filter)
+        if ret:
+            files = list(ret)
+            settings.setValue('/Processing/LastInputPath',
+                              os.path.dirname(str(files[0])))
+            for filename in files:
+                item = QStandardItem(filename)
+                item.setData(filename, Qt.UserRole)
+                item.setCheckState(Qt.Checked)
+                item.setCheckable(True)
+                self.model.appendRow(item)

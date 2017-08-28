@@ -377,7 +377,7 @@ void QgsDualView::previewExpressionBuilder()
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, mFeatureList->displayExpression(), this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Expression based preview" ) );
+  dlg.setWindowTitle( tr( "Expression Based Preview" ) );
   dlg.setExpressionText( mFeatureList->displayExpression() );
 
   if ( dlg.exec() == QDialog::Accepted )
@@ -474,7 +474,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
         continue;
 
       QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, action.id(), sourceIndex );
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
       menu->addAction( action.name(), a, SLOT( execute() ) );
+#else
+      menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
+#endif
     }
   }
 
@@ -485,17 +489,24 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     //add a separator between user defined and standard actions
     menu->addSeparator();
 
-    QList<QgsMapLayerAction *>::iterator actionIt;
-    for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
+    Q_FOREACH ( QgsMapLayerAction *action, registeredActions )
     {
-      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( ( *actionIt )->text(), this, ( *actionIt ), sourceIndex );
-      menu->addAction( ( *actionIt )->text(), a, SLOT( execute() ) );
+      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
+      menu->addAction( action->text(), a, SLOT( execut() ) );
+#else
+      menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
+#endif
     }
   }
 
   menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, QString(), sourceIndex );
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
+#else
+  menu->addAction( tr( "Open form" ), a, &QgsAttributeTableAction::featureForm );
+#endif
 }
 
 void QgsDualView::showViewHeaderMenu( QPoint point )
@@ -606,7 +617,7 @@ void QgsDualView::modifySort()
   QgsAttributeTableConfig config = mConfig;
 
   QDialog orderByDlg;
-  orderByDlg.setWindowTitle( tr( "Configure attribute table sort order" ) );
+  orderByDlg.setWindowTitle( tr( "Configure Attribute Table Sort Order" ) );
   QDialogButtonBox *dialogButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   QGridLayout *layout = new QGridLayout();
   connect( dialogButtonBox, &QDialogButtonBox::accepted, &orderByDlg, &QDialog::accept );
@@ -800,7 +811,7 @@ void QgsDualView::progress( int i, bool &cancel )
   if ( !mProgressDlg )
   {
     mProgressDlg = new QProgressDialog( tr( "Loading features..." ), tr( "Abort" ), 0, 0, this );
-    mProgressDlg->setWindowTitle( tr( "Attribute table" ) );
+    mProgressDlg->setWindowTitle( tr( "Attribute Table" ) );
     mProgressDlg->setWindowModality( Qt::WindowModal );
     mProgressDlg->show();
   }

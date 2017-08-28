@@ -456,7 +456,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
       attributeChangesOk = false;   // don't try attribute updates - they'll fail.
     }
 
-    for ( int i = 0; i < qMin( oldFields.count(), newFields.count() ); ++i )
+    for ( int i = 0; i < std::min( oldFields.count(), newFields.count() ); ++i )
     {
       QgsField oldField = oldFields.at( i );
       QgsField newField = newFields.at( i );

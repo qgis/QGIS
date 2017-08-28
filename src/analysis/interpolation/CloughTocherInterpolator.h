@@ -33,27 +33,43 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)
     double mEdgeTolerance;
     //! First point of the triangle in x-,y-,z-coordinates
-    QgsPoint point1;
+    QgsPoint point1 = QgsPoint( 0, 0, 0 );
     //! Second point of the triangle in x-,y-,z-coordinates
-    QgsPoint point2;
+    QgsPoint point2 = QgsPoint( 0, 0, 0 );
     //! Third point of the triangle in x-,y-,z-coordinates
-    QgsPoint point3;
-    QgsPoint cp1;
-    QgsPoint cp2;
-    QgsPoint cp3;
-    QgsPoint cp4;
-    QgsPoint cp5;
-    QgsPoint cp6;
-    QgsPoint cp7;
-    QgsPoint cp8;
-    QgsPoint cp9;
-    QgsPoint cp10;
-    QgsPoint cp11;
-    QgsPoint cp12;
-    QgsPoint cp13;
-    QgsPoint cp14;
-    QgsPoint cp15;
-    QgsPoint cp16;
+    QgsPoint point3 = QgsPoint( 0, 0, 0 );
+    //! Control point 1
+    QgsPoint cp1 = QgsPoint( 0, 0, 0 );
+    //! Control point 2
+    QgsPoint cp2 = QgsPoint( 0, 0, 0 );
+    //! Control point 3
+    QgsPoint cp3 = QgsPoint( 0, 0, 0 );
+    //! Control point 4
+    QgsPoint cp4 = QgsPoint( 0, 0, 0 );
+    //! Control point 5
+    QgsPoint cp5 = QgsPoint( 0, 0, 0 );
+    //! Control point 6
+    QgsPoint cp6 = QgsPoint( 0, 0, 0 );
+    //! Control point 7
+    QgsPoint cp7 = QgsPoint( 0, 0, 0 );
+    //! Control point 8
+    QgsPoint cp8 = QgsPoint( 0, 0, 0 );
+    //! Control point 9
+    QgsPoint cp9 = QgsPoint( 0, 0, 0 );
+    //! Control point 10
+    QgsPoint cp10 = QgsPoint( 0, 0, 0 );
+    //! Control point 11
+    QgsPoint cp11 = QgsPoint( 0, 0, 0 );
+    //! Control point 12
+    QgsPoint cp12 = QgsPoint( 0, 0, 0 );
+    //! Control point 13
+    QgsPoint cp13 = QgsPoint( 0, 0, 0 );
+    //! Control point 14
+    QgsPoint cp14 = QgsPoint( 0, 0, 0 );
+    //! Control point 15
+    QgsPoint cp15 = QgsPoint( 0, 0, 0 );
+    //! Control point 16
+    QgsPoint cp16 = QgsPoint( 0, 0, 0 );
     //! Derivative in x-direction at point1
     double der1X;
     //! Derivative in y-direction at point1
@@ -67,11 +83,11 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Derivative in y-direction at point3
     double der3Y;
     //! Stores point1 of the last run
-    QgsPoint lpoint1;
+    QgsPoint lpoint1 = QgsPoint( 0, 0, 0 );
     //! Stores point2 of the last run
-    QgsPoint lpoint2;
+    QgsPoint lpoint2 = QgsPoint( 0, 0, 0 );
     //! Stores point3 of the last run
-    QgsPoint lpoint3;
+    QgsPoint lpoint3 = QgsPoint( 0, 0, 0 );
     //! Finds out, in which triangle the point with the coordinates x and y is
     void init( double x, double y );
     //! Calculates the Bernsteinpolynomials to calculate the Beziertriangle. 'n' is three in the cubical case, 'i', 'j', 'k' are the indices of the controllpoint and 'u', 'v', 'w' are the barycentric coordinates of the point

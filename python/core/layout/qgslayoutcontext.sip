@@ -67,6 +67,12 @@ class QgsLayoutContext
  :rtype: bool
 %End
 
+    QgsRenderContext::Flags renderContextFlags() const;
+%Docstring
+ Returns the combination of render context flags matched to the layout context's settings.
+ :rtype: QgsRenderContext.Flags
+%End
+
     void setFeature( const QgsFeature &feature );
 %Docstring
  Sets the current ``feature`` for evaluating the layout. This feature may
@@ -117,6 +123,19 @@ class QgsLayoutContext
  Returns the layout measurement converter to be used in the layout. This converter is used
  for translating between other measurement units and the layout's native unit.
  :rtype: QgsLayoutMeasurementConverter
+%End
+
+    bool gridVisible() const;
+%Docstring
+ Returns true if the page grid should be drawn.
+.. seealso:: setGridVisible()
+ :rtype: bool
+%End
+
+    void setGridVisible( bool visible );
+%Docstring
+ Sets whether the page grid should be ``visible``.
+.. seealso:: gridVisible()
 %End
 
 };

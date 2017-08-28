@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 #include "qgis.h" // GEO_EPSG_CRS_ID
-#include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsprojectionselectiondialog.h"
@@ -60,19 +59,10 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   , mCurrentTileset( nullptr )
 {
   setupUi( this );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-  }
+  setupButtons( buttonBox );
 
 
   setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
-
-  mAddButton = buttonBox->button( QDialogButtonBox::Apply );
-  mAddButton->setText( tr( "&Add" ) );
-  mAddButton->setToolTip( tr( "Add selected layers to map" ) );
-  mAddButton->setEnabled( false );
 
   clearCrs();
 
@@ -90,7 +80,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsOWSSourceSelect::addClicked );
     //set the current project CRS if available
     QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
     //convert CRS id to epsg
@@ -106,7 +95,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
     mTimeWidget->hide();
     mFormatWidget->hide();
     mCRSWidget->hide();
-    mAddButton->hide();
     mCacheWidget->hide();
   }
 
@@ -243,7 +231,7 @@ void QgsOWSSourceSelect::populateConnectionList()
 }
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/' );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
   {
@@ -256,7 +244,7 @@ void QgsOWSSourceSelect::on_mNewButton_clicked()
 
 void QgsOWSSourceSelect::on_mEditButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {
@@ -359,10 +347,6 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   populateLayerList();
 
   QApplication::restoreOverrideCursor();
-}
-
-void QgsOWSSourceSelect::addClicked()
-{
 }
 
 void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
@@ -602,7 +586,7 @@ void QgsOWSSourceSelect::addDefaultServers()
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + mService.toLower() );
+  settings.beginGroup( "/qgis/connections-" + mService.toLower() );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
   {

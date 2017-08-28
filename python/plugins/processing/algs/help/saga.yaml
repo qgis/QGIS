@@ -1,5 +1,5 @@
 saga:rastercalculator: >
-  This algorithm allows to perform algebraic operations on raster layers
+  This algorithm allows performing algebraic operations on raster layers
 
   It requires a base layer, and a set of additional layers. The base layer is identified as "a" in the formula, while the additional layers are identified as "b, c, d...", using the order in which they appear in the multiple selection dialog.
 

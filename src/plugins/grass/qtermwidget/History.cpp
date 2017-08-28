@@ -384,12 +384,12 @@ void HistoryScrollBuffer::setMaxNbLines(unsigned int lineCount)
     HistoryLine* oldBuffer = _historyBuffer;
     HistoryLine* newBuffer = new HistoryLine[lineCount];
 
-    for ( int i = 0 ; i < qMin(_usedLines,(int)lineCount) ; i++ )
+    for ( int i = 0 ; i < std::min(_usedLines,(int)lineCount) ; i++ )
     {
         newBuffer[i] = oldBuffer[bufferIndex(i)];
     }
 
-    _usedLines = qMin(_usedLines,(int)lineCount);
+    _usedLines = std::min(_usedLines,(int)lineCount);
     _maxLineCount = lineCount;
     _head = ( _usedLines == _maxLineCount ) ? 0 : _usedLines-1;
 

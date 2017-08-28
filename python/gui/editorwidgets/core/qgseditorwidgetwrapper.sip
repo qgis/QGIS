@@ -104,7 +104,6 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 %End
 
     virtual void setEnabled( bool enabled );
-
 %Docstring
  Is used to enable or disable the edit functionality of the managed widget.
  By default this will enable or disable the whole widget
@@ -125,6 +124,18 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
  \param constraintOrigin optional origin for constraints to check. This can be used to limit the constraints tested
  to only provider or layer based constraints.
 .. versionadded:: 2.16
+%End
+
+    void updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &feature, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
+%Docstring
+ Update constraint on a feature coming from a specific layer.
+ \param layer The vector layer where the feature is defined
+ \param index The index of the field to check
+ \param feature The feature to use to evaluate the constraint
+ \param constraintOrigin Optional origin for constraints to check. This
+ can be used to limit the constraints tested to only provider or layer
+ based constraints.
+.. versionadded:: 3.0
 %End
 
     bool isValidConstraint() const;

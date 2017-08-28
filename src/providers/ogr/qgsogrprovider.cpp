@@ -30,6 +30,9 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
+#include "qgsdataitemprovider.h"
+#include "qgsogrdataitems.h"
+#include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
 #include "qgis.h"
 
@@ -1105,10 +1108,10 @@ QgsRectangle QgsOgrProvider::extent() const
           OGREnvelope env;
           OGR_G_GetEnvelope( g, &env );
 
-          mExtent->MinX = qMin( mExtent->MinX, env.MinX );
-          mExtent->MinY = qMin( mExtent->MinY, env.MinY );
-          mExtent->MaxX = qMax( mExtent->MaxX, env.MaxX );
-          mExtent->MaxY = qMax( mExtent->MaxY, env.MaxY );
+          mExtent->MinX = std::min( mExtent->MinX, env.MinX );
+          mExtent->MinY = std::min( mExtent->MinY, env.MinY );
+          mExtent->MaxX = std::max( mExtent->MaxX, env.MaxX );
+          mExtent->MaxY = std::max( mExtent->MaxY, env.MaxY );
         }
 
         OGR_F_Destroy( f );
@@ -1668,6 +1671,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
       continue;
     }
+    OGR_L_ResetReading( ogrLayer ); // needed for SQLite-based to clear iterator
 
     QgsLocaleNumC l;
 
@@ -1808,6 +1812,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
       continue;
     }
+    OGR_L_ResetReading( ogrLayer ); // needed for SQLite-based to clear iterator
 
     OGRGeometryH newGeometry = nullptr;
     QByteArray wkb = it->exportToWkb();
@@ -2922,6 +2927,14 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     OSRRelease( reference );
   }
   return true;
+}
+
+
+QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
+{
+  QList< QgsDataItemProvider * > *providers = new QList< QgsDataItemProvider * >();
+  *providers << new QgsGeoPackageDataItemProvider;
+  return providers;
 }
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
@@ -4285,4 +4298,77 @@ QGISEXTERN void cleanupProvider()
   QgsOgrConnPool::cleanupInstance();
   // NOTE: QgsApplication takes care of
   // calling OGRCleanupAll();
+}
+
+
+
+QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
+{
+  bool isSubLayer;
+  int layerIndex;
+  QString layerName;
+  QString subsetString;
+  OGRwkbGeometryType ogrGeometryType;
+  QString filePath = AnalyzeURI( uri,
+                                 isSubLayer,
+                                 layerIndex,
+                                 layerName,
+                                 subsetString,
+                                 ogrGeometryType );
+
+  OGRDataSourceH hDS = GDALOpenEx( filePath.toLocal8Bit().data(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, NULL, NULL, NULL );
+  if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )
+  {
+    if ( layerIndex == -1 )
+    {
+      for ( int i = 0; i < GDALDatasetGetLayerCount( hDS ); i++ )
+      {
+        OGRLayerH hL = GDALDatasetGetLayer( hDS, i );
+        if ( layerName == QString( OGR_L_GetName( hL ) ) )
+        {
+          layerIndex = i;
+        }
+      }
+    }
+    OGRErr error = GDALDatasetDeleteLayer( hDS, layerIndex );
+    switch ( error )
+    {
+      case OGRERR_NOT_ENOUGH_DATA:
+        errCause = QObject::tr( "Not enough data to deserialize" );
+        break;
+      case OGRERR_NOT_ENOUGH_MEMORY:
+        errCause = QObject::tr( "Not enough memory" );
+        break;
+      case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
+        errCause = QObject::tr( "Unsupported geometry type" );
+        break;
+      case OGRERR_UNSUPPORTED_OPERATION:
+        errCause = QObject::tr( "Unsupported operation" );
+        break;
+      case OGRERR_CORRUPT_DATA:
+        errCause = QObject::tr( "Corrupt data" );
+        break;
+      case OGRERR_FAILURE:
+        errCause = QObject::tr( "Failure" );
+        break;
+      case OGRERR_UNSUPPORTED_SRS:
+        errCause = QObject::tr( "Unsupported SRS" );
+        break;
+      case OGRERR_INVALID_HANDLE:
+        errCause = QObject::tr( "Invalid handle" );
+        break;
+      case OGRERR_NON_EXISTING_FEATURE:
+        errCause = QObject::tr( "Non existing feature" );
+        break;
+      default:
+      case OGRERR_NONE:
+        errCause = QObject::tr( "Success" );
+        break;
+    }
+    errCause = QObject::tr( "GDAL result code: %s" ).arg( errCause );
+    return error == OGRERR_NONE;
+  }
+  // This should never happen:
+  errCause = QObject::tr( "Layer not found: %s" ).arg( uri );
+  return false;
 }

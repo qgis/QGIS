@@ -314,7 +314,7 @@ QStringList QgsWmsConfigParser::addHighlightLayers( const QMap<QString, QString>
 
   QString crsString = parameterMap.contains( QStringLiteral( "CRS" ) ) ? parameterMap.value( QStringLiteral( "CRS" ) ) : parameterMap.value( QStringLiteral( "SRS" ) );
 
-  int nHighlights = qMin( geomSplit.size(), symbolSplit.size() );
+  int nHighlights = std::min( geomSplit.size(), symbolSplit.size() );
   for ( int i = 0; i < nHighlights; ++i )
   {
     //create geometry

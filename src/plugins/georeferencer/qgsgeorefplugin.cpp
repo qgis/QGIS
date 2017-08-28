@@ -45,10 +45,10 @@
 // Required qgis includes
 //
 
-#include <qgisinterface.h>
-#include <qgsapplication.h>
-#include <qgsmaplayer.h>
-#include <qgsrasterlayer.h>
+#include "qgisinterface.h"
+#include "qgsapplication.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsgeorefplugin.h"
 
 #include <QFile>

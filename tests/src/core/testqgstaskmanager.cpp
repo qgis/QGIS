@@ -489,14 +489,14 @@ void TestQgsTaskManager::subTask()
   // test progress calculation
   QSignalSpy spy( parent, &QgsTask::progressChanged );
   parent->emitProgressChanged( 50 );
-  QCOMPARE( qRound( parent->progress() ), 17 );
+  QCOMPARE( std::round( parent->progress() ), 17 );
   //QCOMPARE( spy.count(), 1 );
-  QCOMPARE( qRound( spy.last().at( 0 ).toDouble() ), 17 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 17 );
 
   subTask->emitProgressChanged( 100 );
-  QCOMPARE( qRound( parent->progress() ), 50 );
+  QCOMPARE( std::round( parent->progress() ), 50 );
   //QCOMPARE( spy.count(), 2 );
-  QCOMPARE( qRound( spy.last().at( 0 ).toDouble() ), 50 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 50 );
 
   subTask2->finish();
   while ( subTask2->status() != QgsTask::Complete )
@@ -504,14 +504,14 @@ void TestQgsTaskManager::subTask()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( qRound( parent->progress() ), 83 );
+  QCOMPARE( std::round( parent->progress() ), 83 );
   //QCOMPARE( spy.count(), 3 );
-  QCOMPARE( qRound( spy.last().at( 0 ).toDouble() ), 83 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 83 );
 
   parent->emitProgressChanged( 100 );
-  QCOMPARE( qRound( parent->progress() ), 100 );
+  QCOMPARE( std::round( parent->progress() ), 100 );
   //QCOMPARE( spy.count(), 4 );
-  QCOMPARE( qRound( spy.last().at( 0 ).toDouble() ), 100 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 100 );
   parent->terminate();
   subTask->terminate();
 

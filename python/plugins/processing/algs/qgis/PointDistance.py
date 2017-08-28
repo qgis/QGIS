@@ -69,7 +69,7 @@ class PointDistance(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'matrix.png'))
 
     def group(self):
-        return self.tr('Vector analysis tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()
@@ -158,7 +158,7 @@ class PointDistance(QgisAlgorithm):
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs())
-        distArea.setEllipsoid(QgsProject.instance().ellipsoid())
+        distArea.setEllipsoid(context.project().ellipsoid())
 
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([inIdx]))
         total = 100.0 / source.featureCount() if source.featureCount() else 0
@@ -213,7 +213,7 @@ class PointDistance(QgisAlgorithm):
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs())
-        distArea.setEllipsoid(QgsProject.instance().ellipsoid())
+        distArea.setEllipsoid(context.project().ellipsoid())
 
         first = True
         sink = None

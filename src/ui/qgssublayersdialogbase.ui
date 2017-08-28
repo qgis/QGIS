@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select layers to load</string>
+   <string>Select Layers to Load</string>
   </property>
   <layout class="QGridLayout">
    <property name="margin">

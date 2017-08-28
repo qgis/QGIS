@@ -223,12 +223,6 @@ Returns the path to the licence file.
  :rtype: str
 %End
 
-    static QString helpAppPath();
-%Docstring
-Returns the path to the help application.
- :rtype: str
-%End
-
     static QString i18nPath();
 %Docstring
 Returns the path to the translation directory.

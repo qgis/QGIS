@@ -70,17 +70,17 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
   connect( mComposerMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerAttributeTableWidget::composerMapChanged );
 
-  mHeaderFontColorButton->setColorDialogTitle( tr( "Select header font color" ) );
+  mHeaderFontColorButton->setColorDialogTitle( tr( "Select Header Font Color" ) );
   mHeaderFontColorButton->setAllowOpacity( true );
   mHeaderFontColorButton->setContext( QStringLiteral( "composer" ) );
-  mContentFontColorButton->setColorDialogTitle( tr( "Select content font color" ) );
+  mContentFontColorButton->setColorDialogTitle( tr( "Select Content Font Color" ) );
   mContentFontColorButton->setAllowOpacity( true );
   mContentFontColorButton->setContext( QStringLiteral( "composer" ) );
-  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
+  mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
   mGridColorButton->setAllowOpacity( true );
   mGridColorButton->setContext( QStringLiteral( "composer" ) );
   mGridColorButton->setDefaultColor( Qt::black );
-  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
   mBackgroundColorButton->setShowNoColor( true );
@@ -785,7 +785,7 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
 
   QgsExpressionContext context = mComposerTable->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
-  exprDlg.setWindowTitle( tr( "Expression based filter" ) );
+  exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();

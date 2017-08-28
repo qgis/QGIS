@@ -17,15 +17,20 @@
 #include "qgslayoutitem.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgspagesizeregistry.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QUuid>
 
 #define CACHE_SIZE_LIMIT 5000
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   : QgsLayoutObject( layout )
   , QGraphicsRectItem( 0 )
+  , mUuid( QUuid::createUuid().toString() )
 {
+  setZValue( QgsLayout::ZItem );
+
   // needed to access current view transform during paint operations
   setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
@@ -36,6 +41,28 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   mItemSize = QgsLayoutSize( rect().width(), rect().height(), initialUnits );
 
   initConnectionsToLayout();
+}
+
+void QgsLayoutItem::setId( const QString &id )
+{
+  if ( id == mId )
+  {
+    return;
+  }
+
+  mId = id;
+  setToolTip( id );
+
+  //TODO
+#if 0
+  //inform model that id data has changed
+  if ( mComposition )
+  {
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
+
+  emit itemChanged();
+#endif
 }
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
@@ -54,7 +81,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
 
   double destinationDpi = itemStyle->matrix.m11() * 25.4;
-  bool useImageCache = true;
+  bool useImageCache = false;
 
   if ( useImageCache )
   {
@@ -104,7 +131,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       QPainter p( &mItemCachedImage );
 
       preparePainter( &p );
-      QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, &p, destinationDpi );
+      QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( nullptr, &p, destinationDpi );
       // painter is already scaled to dots
       // need to translate so that item origin is at 0,0 in painter coordinates (not bounding rect origin)
       p.translate( -boundingRect().x() * context.scaleFactor(), -boundingRect().y() * context.scaleFactor() );
@@ -123,7 +150,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   {
     // no caching or flattening
     painter->save();
-    QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, painter, destinationDpi );
+    preparePainter( painter );
+    QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
     // scale painter from mm to dots
     painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
     draw( context, itemStyle );
@@ -200,12 +228,36 @@ void QgsLayoutItem::setScenePos( const QPointF &destinationPos )
   //since setPos does not account for item rotation, use difference between
   //current scenePos (which DOES account for rotation) and destination pos
   //to calculate how much the item needs to move
-  setPos( pos() + ( destinationPos - scenePos() ) );
+  if ( parentItem() )
+    setPos( pos() + ( destinationPos - scenePos() ) + parentItem()->scenePos() );
+  else
+    setPos( pos() + ( destinationPos - scenePos() ) );
 }
 
 double QgsLayoutItem::itemRotation() const
 {
   return rotation();
+}
+
+bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QDomElement element = doc.createElement( "LayoutItem" );
+  element.setAttribute( "type", stringType() );
+
+  writePropertiesToElement( element, doc, context );
+  parentElement.appendChild( element );
+
+  return true;
+}
+
+bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
+{
+  if ( itemElem.nodeName() != QString( "LayoutItem" ) || itemElem.attribute( "type" ) != stringType() )
+  {
+    return false;
+  }
+
+  return readPropertiesFromElement( itemElem, doc, context );
 }
 
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
@@ -229,8 +281,22 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   }
 
   QgsExpressionContext context = createExpressionContext();
-  double evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, size.width() );
-  double evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, size.height() );
+
+  // lowest priority is page size
+  QString pageSize = mDataDefinedProperties.valueAsString( QgsLayoutObject::PresetPaperSize, context );
+  QgsPageSize matchedSize;
+  double evaluatedWidth = size.width();
+  double evaluatedHeight = size.height();
+  if ( QgsApplication::pageSizeRegistry()->decodePageSize( pageSize, matchedSize ) )
+  {
+    QgsLayoutSize convertedSize = mLayout->context().measurementConverter().convert( matchedSize.size, size.units() );
+    evaluatedWidth = convertedSize.width();
+    evaluatedHeight = convertedSize.height();
+  }
+
+  // highest priority is dd width/height
+  evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, evaluatedWidth );
+  evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, evaluatedHeight );
   return QgsLayoutSize( evaluatedWidth, evaluatedHeight, size.units() );
 }
 
@@ -310,6 +376,11 @@ void QgsLayoutItem::refresh()
   refreshDataDefinedProperty();
 }
 
+void QgsLayoutItem::redraw()
+{
+  update();
+}
+
 void QgsLayoutItem::drawDebugRect( QPainter *painter )
 {
   if ( !painter )
@@ -385,6 +456,80 @@ QPointF QgsLayoutItem::positionAtReferencePoint( const QgsLayoutItem::ReferenceP
 {
   QPointF pointWithinItem = itemPositionAtReferencePoint( reference, rect().size() );
   return mapToScene( pointWithinItem );
+}
+
+bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  element.setAttribute( QStringLiteral( "id" ), mId );
+  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
+  element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
+  element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
+  element.setAttribute( QStringLiteral( "rotation" ), QString::number( rotation() ) );
+
+  //TODO
+  /*
+  composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
+  composerItemElem.setAttribute( "visibility", isVisible() );
+  //position lock for mouse moves/resizes
+  if ( mItemPositionLocked )
+  {
+    composerItemElem.setAttribute( "positionLock", "true" );
+  }
+  else
+  {
+    composerItemElem.setAttribute( "positionLock", "false" );
+  }
+  */
+
+  //blend mode
+  //  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
+
+  //transparency
+  //  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
+
+  //  composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
+
+  writeObjectPropertiesToElement( element, document, context );
+  return true;
+}
+
+bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  readObjectPropertiesFromElement( element, document, context );
+
+  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
+  setId( element.attribute( QStringLiteral( "id" ) ) );
+  mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
+  attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
+  attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
+  setItemRotation( element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
+
+  //TODO
+  /*
+  // temporary for groups imported from templates
+  mTemplateUuid = itemElem.attribute( "templateUuid" );
+  //position lock for mouse moves/resizes
+  QString positionLock = itemElem.attribute( "positionLock" );
+  if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    setPositionLock( true );
+  }
+  else
+  {
+    setPositionLock( false );
+  }
+  //visibility
+  setVisibility( itemElem.attribute( "visibility", "1" ) != "0" );
+  setZValue( itemElem.attribute( "zValue" ).toDouble() );
+  //blend mode
+  setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
+  //transparency
+  setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
+  mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
+  mEvaluatedExcludeFromExports = mExcludeFromExports;
+  */
+  return true;
 }
 
 void QgsLayoutItem::initConnectionsToLayout()

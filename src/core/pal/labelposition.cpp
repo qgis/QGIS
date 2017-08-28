@@ -78,11 +78,11 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   double dx1, dx2, dy1, dy2;
 
-  dx1 = cos( this->alpha ) * w;
-  dy1 = sin( this->alpha ) * w;
+  dx1 = std::cos( this->alpha ) * w;
+  dy1 = std::sin( this->alpha ) * w;
 
-  dx2 = cos( beta ) * h;
-  dy2 = sin( beta ) * h;
+  dx2 = std::cos( beta ) * h;
+  dy2 = std::sin( beta ) * h;
 
   x[0] = x1;
   y[0] = y1;
@@ -136,10 +136,10 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   for ( int i = 0; i < nbPoints; ++i )
   {
-    xmin = qMin( xmin, x[i] );
-    xmax = qMax( xmax, x[i] );
-    ymin = qMin( ymin, y[i] );
-    ymax = qMax( ymax, y[i] );
+    xmin = std::min( xmin, x[i] );
+    xmax = std::max( xmax, x[i] );
+    ymin = std::min( ymin, y[i] );
+    ymax = std::max( ymax, y[i] );
   }
 }
 
@@ -453,10 +453,10 @@ double LabelPosition::getDistanceToPoint( double xp, double yp ) const
 {
   //first check if inside, if so then distance is -1
   double distance = ( containsPoint( xp, yp ) ? -1
-                      : sqrt( minDistanceToPoint( xp, yp ) ) );
+                      : std::sqrt( minDistanceToPoint( xp, yp ) ) );
 
   if ( nextPart && distance > 0 )
-    return qMin( distance, nextPart->getDistanceToPoint( xp, yp ) );
+    return std::min( distance, nextPart->getDistanceToPoint( xp, yp ) );
 
   return distance;
 }
@@ -525,7 +525,7 @@ int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
   //effectively take the average polygon intersection cost for all label parts
   double totalCost = polygonIntersectionCostForParts( polygon );
   int n = partCount();
-  return ceil( totalCost / n );
+  return std::ceil( totalCost / n );
 }
 
 bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const

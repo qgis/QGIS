@@ -15,6 +15,12 @@
 ###########################################################################
 set -e
 
+if [ $BASH_VERSINFO -lt 4 ]; then
+    echo "You need bash version 4+ to run this script."
+    echo "Your bash version is $BASH_VERSION"
+    exit 1
+fi
+
 DIR=$(git rev-parse --show-toplevel)
 
 pushd ${DIR} > /dev/null

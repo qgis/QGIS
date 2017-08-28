@@ -28,7 +28,7 @@
 class QgsAspectFilter;
 class QgsSlopeFilter;
 class QgsHillshadeFilter;
-class QProgressDialog;
+class QgsFeedback;
 
 /** \ingroup analysis
  * Produces colored relief rasters from DEM*/
@@ -52,9 +52,9 @@ class ANALYSIS_EXPORT QgsRelief
     QgsRelief &operator=( const QgsRelief &rh ) = delete;
 
     /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-      \param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
+      \param feedback feedback object that receives update and that is checked for cancelation.
       \returns 0 in case of success*/
-    int processRaster( QProgressDialog *p );
+    int processRaster( QgsFeedback *feedback = nullptr );
 
     double zFactor() const { return mZFactor; }
     void setZFactor( double factor ) { mZFactor = factor; }

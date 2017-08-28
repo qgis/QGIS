@@ -25,15 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingParameterFile,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.core.parameters import ParameterFile
-from processing.tools import dataobjects
-from qgis.utils import iface
 
 
 class SetVectorStyle(QgisAlgorithm):
@@ -43,17 +38,18 @@ class SetVectorStyle(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Vector layer')))
-        self.addParameter(ParameterFile(self.STYLE,
-                                        self.tr('Style file'), False, False, 'qml'))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Styled'), True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Vector layer')))
+        self.addParameter(QgsProcessingParameterFile(self.STYLE,
+                                                     self.tr('Style file'), extension='qml'))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
+                                                      self.tr('Styled')))
 
     def name(self):
         return 'setstyleforvectorlayer'
@@ -62,13 +58,8 @@ class SetVectorStyle(QgisAlgorithm):
         return self.tr('Set style for vector layer')
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.getParameterValue(self.INPUT)
-
-        style = self.getParameterValue(self.STYLE)
-        layer = QgsProcessingUtils.mapLayerFromString(filename, context, False)
-        if layer is None:
-            dataobjects.load(filename, os.path.basename(filename), style=style)
-        else:
-            layer.loadNamedStyle(style)
-            context.addLayerToLoadOnCompletion(layer.id())
-            layer.triggerRepaint()
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        style = self.parameterAsFile(parameters, self.STYLE, context)
+        layer.loadNamedStyle(style)
+        layer.triggerRepaint()
+        return {self.INPUT: layer}

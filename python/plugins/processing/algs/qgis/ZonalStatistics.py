@@ -35,7 +35,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterString,
-                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBand,
                        QgsProcessingParameterEnum,
                        QgsProcessingOutputVectorLayer)
 
@@ -56,7 +56,7 @@ class ZonalStatistics(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'zonalstats.png'))
 
     def group(self):
-        return self.tr('Raster tools')
+        return self.tr('Raster analysis')
 
     def __init__(self):
         super().__init__()
@@ -78,9 +78,10 @@ class ZonalStatistics(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT_RASTER,
                                                             self.tr('Raster layer')))
-        self.addParameter(QgsProcessingParameterNumber(self.RASTER_BAND,
-                                                       self.tr('Raster band'),
-                                                       minValue=1, maxValue=999, defaultValue=1))
+        self.addParameter(QgsProcessingParameterBand(self.RASTER_BAND,
+                                                     self.tr('Raster band'),
+                                                     1,
+                                                     self.INPUT_RASTER))
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT_VECTOR,
                                                             self.tr('Vector layer containing zones'),
                                                             [QgsProcessing.TypeVectorPolygon]))
@@ -105,7 +106,7 @@ class ZonalStatistics(QgisAlgorithm):
         return 'zonalstatistics'
 
     def displayName(self):
-        return self.tr('Zonal Statistics')
+        return self.tr('Zonal statistics')
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.bandNumber = self.parameterAsInt(parameters, self.RASTER_BAND, context)

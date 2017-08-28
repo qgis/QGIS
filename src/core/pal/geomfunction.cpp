@@ -330,10 +330,10 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
   if ( !qgsDoubleNear( alpha, 0.0 ) )
   {
     double beta = alpha + ( M_PI / 2 );
-    double dx1 = cos( alpha ) * width;
-    double dy1 = sin( alpha ) * width;
-    double dx2 = cos( beta ) * height;
-    double dy2 = sin( beta ) * height;
+    double dx1 = std::cos( alpha ) * width;
+    double dy1 = std::sin( alpha ) * width;
+    double dx2 = std::cos( beta ) * height;
+    double dy2 = std::sin( beta ) * height;
     GEOSCoordSeq_setX_r( geosctxt, coord, 1, x  + dx1 );
     GEOSCoordSeq_setY_r( geosctxt, coord, 1, y + dy1 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 2, x + dx1 + dx2 );
@@ -363,8 +363,10 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
   }
   catch ( GEOSException &e )
   {
+    Q_NOWARN_UNREACHABLE_PUSH
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
+    Q_NOWARN_UNREACHABLE_POP
   }
 }
 
@@ -396,7 +398,7 @@ void GeomFunction::findLineCircleIntersection( double cx, double cy, double radi
     // Two solutions.
     // Always use the 1st one
     // We only really have one solution here, as we know the line segment will start in the circle and end outside
-    double t = ( -B + sqrt( det ) ) / ( 2 * A );
+    double t = ( -B + std::sqrt( det ) ) / ( 2 * A );
     xRes = x1 + t * dx;
     yRes = y1 + t * dy;
   }

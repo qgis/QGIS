@@ -65,8 +65,6 @@ QList<QAction *> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer *layer, 
   Q_FOREACH ( QString name, mgr->styles() )
   {
     bool active = name == mgr->currentStyle();
-    if ( name.isEmpty() )
-      name = defaultStyleName();
     QAction *actionUse = new QAction( name, parent );
     connect( actionUse, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::useStyle );
     actionUse->setCheckable( true );
@@ -89,12 +87,6 @@ void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu *m, QgsMapLayer *la
   Q_FOREACH ( QAction *a, actionsUseStyle( layer, m ) )
     m->addAction( a );
 }
-
-QString QgsMapLayerStyleGuiUtils::defaultStyleName()
-{
-  return tr( "(default)" );
-}
-
 
 void QgsMapLayerStyleGuiUtils::addStyle()
 {
@@ -133,8 +125,6 @@ void QgsMapLayerStyleGuiUtils::useStyle()
   if ( !layer )
     return;
   QString name = a->text();
-  if ( name == defaultStyleName() )
-    name.clear();
 
   bool res = layer->styleManager()->setCurrentStyle( name );
   if ( !res )

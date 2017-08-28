@@ -46,6 +46,19 @@ Destructor
  The default implementation does nothing
 %End
 
+    virtual void addButtonClicked();
+%Docstring
+ Triggered when the add button is clicked, the add layer signal is emitted
+ Concrete classes should implement the right behavior depending on the layer
+ being added.
+%End
+
+    virtual void okButtonClicked();
+%Docstring
+ Triggered when the dialog is accepted, call addButtonClicked() and
+ emit the accepted() signal
+%End
+
   signals:
 
     void connectionsChanged();
@@ -69,6 +82,14 @@ Emitted when a raster layer has been selected for addition
 Emitted when a vector layer has been selected for addition
 %End
 
+    void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
+%Docstring
+ Emitted when one or more OGR supported layers are selected for addition
+ \param layerList list of layers protocol URIs
+ \param encoding encoding
+ \param dataSourceType string (can be "file" or "database")
+%End
+
     void progress( int, int );
 %Docstring
 Emitted when a progress dialog is shown by the provider dialog
@@ -78,6 +99,12 @@ Emitted when a progress dialog is shown by the provider dialog
 %Docstring
 Emitted when a progress dialog is shown by the provider dialog
 %End
+
+    void enableButtons( bool enable );
+%Docstring
+Emitted when the ok/add buttons should be enabled/disabled
+%End
+
 
   protected:
 
@@ -94,8 +121,19 @@ Return the widget mode
 
     const QgsMapCanvas *mapCanvas() const;
 %Docstring
- Return the map canvas (can be null)
+Return the map canvas (can be null)
  :rtype: QgsMapCanvas
+%End
+
+    void setupButtons( QDialogButtonBox *buttonBox );
+%Docstring
+Connect the ok and apply/add buttons to the slots
+%End
+
+    QPushButton *addButton( ) const;
+%Docstring
+Return the add Button
+ :rtype: QPushButton
 %End
 
 };

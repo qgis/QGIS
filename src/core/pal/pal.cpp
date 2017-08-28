@@ -55,8 +55,8 @@ Pal::Pal()
   // do not init and exit GEOS - we do it inside QGIS
   //initGEOS( geosNotice, geosError );
 
-  fnIsCancelled = nullptr;
-  fnIsCancelledContext = nullptr;
+  fnIsCanceled = nullptr;
+  fnIsCanceledContext = nullptr;
 
   ejChainDeg = 50;
   tenure = 10;
@@ -208,7 +208,7 @@ bool filteringCallback( FeaturePart *featurePart, void *ctx )
   RTree<LabelPosition *, double, 2, double> *cdtsIndex = ( reinterpret_cast< FilterContext * >( ctx ) )->cdtsIndex;
   Pal *pal = ( reinterpret_cast< FilterContext * >( ctx ) )->pal;
 
-  if ( pal->isCancelled() )
+  if ( pal->isCanceled() )
     return false; // do not continue searching
 
   double amin[2], amax[2];
@@ -335,7 +335,7 @@ Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
   filterCtx.pal = this;
   obstacles->Search( amin, amax, filteringCallback, static_cast< void * >( &filterCtx ) );
 
-  if ( isCancelled() )
+  if ( isCanceled() )
   {
     Q_FOREACH ( Feats *feat, *fFeats )
     {
@@ -356,7 +356,7 @@ Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
     feat = fFeats->takeFirst();
 
     prob->featStartId[i] = idlp;
-    prob->inactiveCost[i] = pow( 2, 10 - 10 * feat->priority );
+    prob->inactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
 
     switch ( feat->feature->getGeosType() )
     {
@@ -400,7 +400,7 @@ Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
 
   while ( !fFeats->isEmpty() ) // foreach feature
   {
-    if ( isCancelled() )
+    if ( isCanceled() )
     {
       Q_FOREACH ( Feats *feat, *fFeats )
       {
@@ -503,10 +503,10 @@ QList<LabelPosition *> *Pal::labeller( double bbox[4], PalStat **stats, bool dis
   return solution;
 }
 
-void Pal::registerCancellationCallback( Pal::FnIsCancelled fnCancelled, void *context )
+void Pal::registerCancelationCallback( Pal::FnIsCanceled fnCanceled, void *context )
 {
-  fnIsCancelled = fnCancelled;
-  fnIsCancelledContext = context;
+  fnIsCanceled = fnCanceled;
+  fnIsCanceledContext = context;
 }
 
 Problem *Pal::extractProblem( double bbox[4] )

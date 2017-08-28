@@ -45,9 +45,9 @@ QString memoryLayerFieldType( QVariant::Type type )
       return QStringLiteral( "datetime" );
 
     default:
-      return QStringLiteral( "string" );
+      break;
   }
-  return QStringLiteral( "string" ); // no warnings
+  return QStringLiteral( "string" );
 }
 
 QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs )

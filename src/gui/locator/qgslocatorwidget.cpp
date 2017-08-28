@@ -41,7 +41,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 #endif
 
   int placeholderMinWidth = mLineEdit->fontMetrics().width( mLineEdit->placeholderText() );
-  int minWidth = qMax( 200, ( int )( placeholderMinWidth * 1.6 ) );
+  int minWidth = std::max( 200, ( int )( placeholderMinWidth * 1.6 ) );
   resize( minWidth, 30 );
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   sizePolicy.setHorizontalStretch( 0 );
@@ -536,7 +536,7 @@ void QgsLocatorResultsView::recalculateSize()
   int rowSize = 20 * itemDelegate()->sizeHint( viewOptions(), model()->index( 0, 0 ) ).height();
 
   // try to take up a sensible portion of window width (about half)
-  int width = qMax( 300, window()->size().width() / 2 );
+  int width = std::max( 300, window()->size().width() / 2 );
   QSize newSize( width, rowSize + frameWidth() * 2 );
   // resize the floating widget this is contained within
   parentWidget()->resize( newSize );

@@ -40,6 +40,8 @@ class QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputString;
     else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
+    else
+      sipType = nullptr;
 %End
   public:
 
@@ -106,7 +108,7 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 %End
   public:
 
-    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny );
+    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry );
 %Docstring
  Constructor for QgsProcessingOutputVectorLayer.
 %End
@@ -118,14 +120,14 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 %End
     virtual QString type() const;
 
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 %Docstring
  Returns the layer type for the output layer.
 .. seealso:: setDataType()
- :rtype: QgsProcessing.LayerType
+ :rtype: QgsProcessing.SourceType
 %End
 
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for the output layer.
 .. seealso:: dataType()

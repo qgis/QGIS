@@ -124,7 +124,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix &other );
     double calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const;
 
-    /*sqrt, sin, cos, tan, asin, acos, atan*/
+    /*sqrt, std::sin, std::cos, tan, asin, acos, atan*/
     bool oneArgumentOperation( OneArgOperator op );
     bool testPowerValidity( double base, double power ) const;
 };

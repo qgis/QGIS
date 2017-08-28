@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from builtins import zip
-from builtins import str
-from builtins import object
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
@@ -43,6 +39,7 @@ import tempfile
 
 from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
+from copy import deepcopy
 
 import processing
 
@@ -59,6 +56,7 @@ from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  #
 
 from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
+                       QgsFeatureRequest,
                        QgsMapLayer,
                        QgsProject,
                        QgsApplication,
@@ -126,6 +124,10 @@ class AlgorithmsTest(object):
         # ignore user setting for invalid geometry handling
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
+
+        if 'skipInvalid' in defs and defs['skipInvalid']:
+            context.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
+
         feedback = QgsProcessingFeedback()
 
         if expectFailure:
@@ -186,7 +188,10 @@ class AlgorithmsTest(object):
         if param['type'] in ['vector', 'file', 'table', 'regex']:
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
-            basename = os.path.basename(param['name'])
+            if isinstance(param['name'], str):
+                basename = os.path.basename(param['name'])
+            else:
+                basename = os.path.basename(param['name'][0])
             filepath = os.path.join(outdir, basename)
             return filepath
         elif param['type'] == 'rasterhash':
@@ -197,6 +202,19 @@ class AlgorithmsTest(object):
             return filepath
 
         raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
+
+    def load_layers(self, id, param):
+        layers = []
+        if param['type'] in ('vector', 'table') and isinstance(param['name'], str):
+            layers.append(self.load_layer(id, param))
+        elif param['type'] in ('vector', 'table'):
+            for n in param['name']:
+                layer_param = deepcopy(param)
+                layer_param['name'] = n
+                layers.append(self.load_layer(id, layer_param))
+        else:
+            layers.append(self.load_layer(id, param))
+        return layers
 
     def load_layer(self, id, param):
         """
@@ -253,10 +271,10 @@ class AlgorithmsTest(object):
                     self.assertTrue(result_lyr.isValid())
                     continue
 
-                expected_lyr = self.load_layer(id, expected_result)
+                expected_lyrs = self.load_layers(id, expected_result)
                 if 'in_place_result' in expected_result:
                     result_lyr = QgsProcessingUtils.mapLayerFromString(self.in_place_layers[id], context)
-                    self.assertTrue(result_lyr, self.in_place_layers[id])
+                    self.assertTrue(result_lyr.isValid(), self.in_place_layers[id])
                 else:
                     try:
                         results[id]
@@ -270,8 +288,17 @@ class AlgorithmsTest(object):
                     self.assertTrue(result_lyr, results[id])
 
                 compare = expected_result.get('compare', {})
+                pk = expected_result.get('pk', None)
 
-                self.assertLayersEqual(expected_lyr, result_lyr, compare=compare)
+                if len(expected_lyrs) == 1:
+                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk)
+                else:
+                    res = False
+                    for l in expected_lyrs:
+                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk):
+                            res = True
+                            break
+                    self.assertTrue(res, 'Could not find matching layer in expected results')
 
             elif 'rasterhash' == expected_result['type']:
                 print("id:{} result:{}".format(id, results[id]))
@@ -279,7 +306,10 @@ class AlgorithmsTest(object):
                 dataArray = nan_to_num(dataset.ReadAsArray(0))
                 strhash = hashlib.sha224(dataArray.data).hexdigest()
 
-                self.assertEqual(strhash, expected_result['hash'])
+                if not isinstance(expected_result['hash'], str):
+                    self.assertIn(strhash, expected_result['hash'])
+                else:
+                    self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:
                 expected_filepath = self.filepath_from_param(expected_result)
                 result_filepath = results[id]

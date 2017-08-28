@@ -21,7 +21,6 @@
 
 #include "qgspgnewconnection.h"
 #include "qgsauthmanager.h"
-#include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgspostgresconn.h"
 #include "qgssettings.h"
@@ -32,6 +31,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
   , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgNewConnection::showHelp );
 
   cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceUri::SslDisable );
   cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceUri::SslAllow );
@@ -219,4 +219,9 @@ void QgsPgNewConnection::testConnection()
     bar->pushMessage( tr( "Connection failed - consult message log for details." ),
                       QgsMessageBar::WARNING );
   }
+}
+
+void QgsPgNewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
 }

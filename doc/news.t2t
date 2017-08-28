@@ -38,6 +38,36 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.18 'Las Palmas'? =
+
+This release has following new features:
+
+- Symbology: Color picker is now embedded in layer style panel
+- Labeling: Substitution list support for labeling
+- Labeling: Improved line label placement algorithm
+- Labeling: Label polygons using curved labels along perimeter
+- Data Management: Add flag to only copy selected features
+- Forms and Widgets: Allow controlling labels for individual edit widgets
+- Forms and Widgets: Conditional visibility for tabs and group boxes
+- Forms and Widgets: Client side default field values
+- Map Composer: True North Arrows
+- Processing: Point on surface algorithm  added
+- Processing: New algorithm for geometry boundary
+- Processing: New algorithm for calculating feature bounding box
+- Processing: Processing dissolve algorithm accepts multiple fields
+- Processing: Optimised processing clip algorithm
+- Processing: New algorithm for merging connected lines
+- General: Automatic links in identify results
+- General: Mouse wheel over color dialog sliders
+- General: Add custom color schemes to color button drop-down menu
+- Data Providers: Preview for WMTS + added XYZ tile layers
+- QGIS Server: Possibility to segmentize feature info geometry in server
+- Plugins: DB Manager: Add the ability to update SQL Layer
+- Programmability: New expression functions
+- Programmability: Expose GEOS linear referencing function to QgsGeometry
+-
+
+
 = What's new in Version 2.16 'Nødebo'? =
 
 This release has following new features:
@@ -650,7 +680,7 @@ were made.
 http://linfiniti.com/2011/08/improvements-to-raster-performance-in-qgis-master/]
 - Update version on cmakelists and splash to 1.7.1
 - Move setting projection to after we have features
-- symbology-ng: sort the category items when classifying them #4206
+- symbology: sort the category items when classifying them #4206
 - Fix feature_count consideration in wms feature info
 - Check topological editing yes/no when opening snapping dialog
 - Updated required version for bison and cmake
@@ -725,7 +755,7 @@ changed so we will just provide a bullet list of key new features here.
 
 - New symbology now used by default!
 - Diagram system that uses the same smart placement system as labeling-ng
-- Export and import of styles (symbology-ng).
+- Export and import of styles (symbology).
 - Labels for rules in rule-based renderers.
 - Ability to set label distance in map units.
 - Rotation for svg fills.
@@ -893,7 +923,7 @@ Breaks (based on pretty from the R statistical environment).
 [Read more...
 http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/]
 - Improved loading speed of the symbol properties dialog.
-- Data-defined rotation and size for categorized and graduated renderer (symbology-ng).
+- Data-defined rotation and size for categorized and graduated renderer (symbology).
 - Use size scale also for line symbols to modify line width.
 - Replaced raster histogram implementation with one based on Qwt. Added
 option to save histogram as image file. Show actual pixel values on x axis
@@ -956,7 +986,7 @@ pkgDataPath/composer_templates
 colors
 - Center map if user clicks into the map
 - New plugin for carrying out spatial selections
-- Data-defined size and rotation for single symbol renderer in symbology-ng
+- Data-defined size and rotation for single symbol renderer in symbology
 - IdentifyAsHtml to raster layer and use it in identify
 - Export legend groups and layers with legendinterface and use this
 information to display groups in the composer legend.
@@ -964,11 +994,11 @@ information to display groups in the composer legend.
 - Query option added to layer menu to subset vector layers
 - Option to label only selected features (on the 'old' labeling tool)
 - Load/save queries created in the query builder.
-- Manual adding of categories in symbology-ng.
+- Manual adding of categories in symbology.
 - Georeferencer: possibility to configure if residuals should be showed in
 pixels or map units
 - Delimited text provider: allow empty values in numeric columns
-- Added rule-based renderer for symbology-ng
+- Added rule-based renderer for symbology
 - Ability to create spatial lite databases from within QGIS
 - Inclusion of GDAL Raster tools plugin into QGIS core
 - New python console (with history)

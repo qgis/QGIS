@@ -103,7 +103,7 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
+    void addButtonClicked() override;
     void buildQuery();
 
     /** Connects to the database using the stored connection parameters.
@@ -134,8 +134,6 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
-
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#oracle-spatial-layers" ) ); }
 
     void columnThreadFinished();
 
@@ -174,6 +172,9 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
 
     void finishList();
     bool mIsConnected;
+
+    void showHelp();
+
 };
 
 #endif // QGSORACLESOURCESELECT_H

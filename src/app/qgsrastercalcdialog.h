@@ -20,6 +20,7 @@
 
 #include "ui_qgsrastercalcdialogbase.h"
 #include "qgsrastercalculator.h"
+#include "qgshelp.h"
 #include "qgis_app.h"
 
 //! A dialog to enter a raster calculation expression
@@ -54,6 +55,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void on_mOutputLayerLineEdit_textChanged( const QString &text );
     //! Enables OK button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
+    void showHelp();
 
     //calculator buttons
     void on_mPlusPushButton_clicked();

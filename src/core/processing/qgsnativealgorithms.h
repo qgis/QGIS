@@ -58,14 +58,14 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString name() const override { return QStringLiteral( "centroids" ); }
     QString displayName() const override { return QObject::tr( "Centroids" ); }
     QStringList tags() const override { return QObject::tr( "centroid,center,average,point,middle" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsCentroidAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
     QString outputName() const override { return QObject::tr( "Centroids" ); }
-    QgsProcessing::LayerType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
+    QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Point; }
 
     QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
@@ -83,7 +83,7 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString name() const override { return QStringLiteral( "reprojectlayer" ); }
     QString displayName() const override { return QObject::tr( "Reproject layer" ); }
     virtual QStringList tags() const override { return QObject::tr( "transform,reproject,crs,srs,warp" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector general tools" ); }
+    QString group() const override { return QObject::tr( "Vector general" ); }
     QString shortHelpString() const override;
     QgsTransformAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -118,7 +118,7 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
     QString name() const override { return QStringLiteral( "buffer" ); }
     QString displayName() const override { return QObject::tr( "Buffer" ); }
     virtual QStringList tags() const override { return QObject::tr( "buffer,grow" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsBufferAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -142,7 +142,7 @@ class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
     QString name() const override { return QStringLiteral( "dissolve" ); }
     QString displayName() const override { return QObject::tr( "Dissolve" ); }
     virtual QStringList tags() const override { return QObject::tr( "dissolve,union,combine,collect" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsDissolveAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -181,7 +181,7 @@ class QgsExtractByAttributeAlgorithm : public QgsProcessingAlgorithm
     QString name() const override { return QStringLiteral( "extractbyattribute" ); }
     QString displayName() const override { return QObject::tr( "Extract by attribute" ); }
     virtual QStringList tags() const override { return QObject::tr( "extract,filter,attribute,value,contains,null,field" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector selection tools" ); }
+    QString group() const override { return QObject::tr( "Vector selection" ); }
     QString shortHelpString() const override;
     QgsExtractByAttributeAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -205,7 +205,7 @@ class QgsExtractByExpressionAlgorithm : public QgsProcessingAlgorithm
     QString name() const override { return QStringLiteral( "extractbyexpression" ); }
     QString displayName() const override { return QObject::tr( "Extract by expression" ); }
     virtual QStringList tags() const override { return QObject::tr( "extract,filter,expression,field" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector selection tools" ); }
+    QString group() const override { return QObject::tr( "Vector selection" ); }
     QString shortHelpString() const override;
     QgsExtractByExpressionAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -229,7 +229,7 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
     QString name() const override { return QStringLiteral( "clip" ); }
     QString displayName() const override { return QObject::tr( "Clip" ); }
     virtual QStringList tags() const override { return QObject::tr( "clip,intersect,intersection,mask" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector overlay tools" ); }
+    QString group() const override { return QObject::tr( "Vector overlay" ); }
     QString shortHelpString() const override;
     QgsClipAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -254,7 +254,7 @@ class QgsSubdivideAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString name() const override { return QStringLiteral( "subdivide" ); }
     QString displayName() const override { return QObject::tr( "Subdivide" ); }
     virtual QStringList tags() const override { return QObject::tr( "subdivide,segmentize,split,tesselate" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsSubdivideAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -285,7 +285,7 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
     QString name() const override { return QStringLiteral( "multiparttosingleparts" ); }
     QString displayName() const override { return QObject::tr( "Multipart to singleparts" ); }
     virtual QStringList tags() const override { return QObject::tr( "multi,single,multiple,split,dump" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector geometry tools" ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsMultipartToSinglepartAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -310,7 +310,7 @@ class QgsRemoveNullGeometryAlgorithm : public QgsProcessingAlgorithm
     QString name() const override { return QStringLiteral( "removenullgeometries" ); }
     QString displayName() const override { return QObject::tr( "Remove null geometries" ); }
     virtual QStringList tags() const override { return QObject::tr( "remove,drop,delete,empty,geometry" ).split( ',' ); }
-    QString group() const override { return QObject::tr( "Vector selection tools" ); }
+    QString group() const override { return QObject::tr( "Vector selection" ); }
     QString shortHelpString() const override;
     QgsRemoveNullGeometryAlgorithm *createInstance() const override SIP_FACTORY;
 

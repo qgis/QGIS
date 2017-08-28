@@ -281,7 +281,7 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double
   }
 
   mDisableMinMaxWidgetRefresh = true;
-  if ( qIsNaN( min ) )
+  if ( std::isnan( min ) )
   {
     myMinLineEdit->clear();
   }
@@ -290,7 +290,7 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double
     myMinLineEdit->setText( QString::number( min ) );
   }
 
-  if ( qIsNaN( max ) )
+  if ( std::isnan( max ) )
   {
     myMaxLineEdit->clear();
   }

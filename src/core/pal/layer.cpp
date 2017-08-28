@@ -427,7 +427,7 @@ void Layer::chopFeaturesAtRepeatDistance()
     double chopInterval = fpart->repeatDistance();
     if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
     {
-      chopInterval *= ceil( fpart->getLabelWidth() / fpart->repeatDistance() );
+      chopInterval *= std::ceil( fpart->getLabelWidth() / fpart->repeatDistance() );
 
       double bmin[2], bmax[2];
       fpart->getBoundingBox( bmin, bmax );

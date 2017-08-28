@@ -21,14 +21,23 @@
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgslayout.h"
+#include "qgslayoutappmenuprovider.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
 #include "qgslayoutviewtoolpan.h"
 #include "qgslayoutviewtoolzoom.h"
 #include "qgslayoutviewtoolselect.h"
+#include "qgslayoutitemwidget.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
+#include "qgslayoutpropertieswidget.h"
 #include "qgslayoutruler.h"
+#include "qgslayoutaddpagesdialog.h"
+#include "qgspanelwidgetstack.h"
+#include "qgspanelwidget.h"
+#include "qgsdockwidget.h"
+#include "qgslayoutpagepropertieswidget.h"
+#include "qgslayoutguidewidget.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -41,6 +50,8 @@
 QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
 #define FIT_LAYOUT -101
 #define FIT_LAYOUT_WIDTH -102
+
+bool QgsLayoutDesignerDialog::sInitializedRegistry = false;
 
 QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog )
   : QgsLayoutDesignerInterface( dialog )
@@ -68,6 +79,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   , mInterface( new QgsAppLayoutDesignerInterface( this ) )
   , mToolsActionGroup( new QActionGroup( this ) )
 {
+  if ( !sInitializedRegistry )
+  {
+    initializeRegistry();
+  }
   QgsSettings settings;
   int size = settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
@@ -108,6 +123,22 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mRulerLayoutFix->setVisible( showRulers );
   mActionShowRulers->blockSignals( false );
   connect( mActionShowRulers, &QAction::triggered, this, &QgsLayoutDesignerDialog::showRulers );
+
+  QMenu *rulerMenu = new QMenu( this );
+  rulerMenu->addAction( mActionShowGuides );
+  rulerMenu->addAction( mActionSnapGuides );
+  rulerMenu->addAction( mActionManageGuides );
+  rulerMenu->addAction( mActionClearGuides );
+  rulerMenu->addSeparator();
+  rulerMenu->addAction( mActionShowRulers );
+  mHorizontalRuler->setContextMenu( rulerMenu );
+  mVerticalRuler->setContextMenu( rulerMenu );
+
+  connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
+  connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
+
+  connect( mActionShowGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGuides );
+  connect( mActionSnapGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGuides );
 
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
@@ -154,6 +185,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionZoomAll, &QAction::triggered, mView, &QgsLayoutView::zoomFull );
   connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
   connect( mActionZoomToWidth, &QAction::triggered, mView, &QgsLayoutView::zoomWidth );
+
+  connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
@@ -218,6 +251,52 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionToggleFullScreen, &QAction::toggled, this, &QgsLayoutDesignerDialog::toggleFullScreen );
 
+  mMenuProvider = new QgsLayoutAppMenuProvider( this );
+  mView->setMenuProvider( mMenuProvider );
+
+  int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
+
+  setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
+  mGeneralDock = new QgsDockWidget( tr( "Layout" ), this );
+  mGeneralDock->setObjectName( QStringLiteral( "LayoutDock" ) );
+  mGeneralDock->setMinimumWidth( minDockWidth );
+  mGeneralPropertiesStack = new QgsPanelWidgetStack();
+  mGeneralDock->setWidget( mGeneralPropertiesStack );
+  mPanelsMenu->addAction( mGeneralDock->toggleViewAction() );
+  connect( mActionLayoutProperties, &QAction::triggered, this, [ = ]
+  {
+    mGeneralDock->setUserVisible( true );
+  } );
+
+  mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
+  mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );
+  mItemDock->setMinimumWidth( minDockWidth );
+  mItemPropertiesStack = new QgsPanelWidgetStack();
+  mItemDock->setWidget( mItemPropertiesStack );
+  mPanelsMenu->addAction( mItemDock->toggleViewAction() );
+
+  mGuideDock = new QgsDockWidget( tr( "Guides" ), this );
+  mGuideDock->setObjectName( QStringLiteral( "GuideDock" ) );
+  mGuideDock->setMinimumWidth( minDockWidth );
+  mGuideStack = new QgsPanelWidgetStack();
+  mGuideDock->setWidget( mGuideStack );
+  mPanelsMenu->addAction( mGuideDock->toggleViewAction() );
+  connect( mActionManageGuides, &QAction::triggered, this, [ = ]
+  {
+    mGuideDock->setUserVisible( true );
+  } );
+
+  addDockWidget( Qt::RightDockWidgetArea, mItemDock );
+  addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
+  addDockWidget( Qt::RightDockWidgetArea, mGuideDock );
+
+  createLayoutPropertiesWidget();
+
+  mItemDock->show();
+  mGeneralDock->show();
+
+  tabifyDockWidget( mGeneralDock, mItemDock );
+
   restoreWindowState();
 }
 
@@ -235,6 +314,18 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
   mLayout = layout;
   mView->setCurrentLayout( layout );
+
+  connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [ = ]
+  {
+    mLayout->guides().clear();
+  } );
+
+  mActionShowGrid->setChecked( mLayout->context().gridVisible() );
+  mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
+  mActionShowGuides->setChecked( mLayout->guides().visible() );
+  mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
+
+  createLayoutPropertiesWidget();
 }
 
 void QgsLayoutDesignerDialog::setIconSizes( int size )
@@ -250,19 +341,34 @@ void QgsLayoutDesignerDialog::setIconSizes( int size )
   }
 }
 
+void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
+{
+  if ( !item )
+  {
+    delete mItemPropertiesStack->takeMainPanel();
+    return;
+  }
+
+  std::unique_ptr< QgsLayoutItemBaseWidget > widget( QgsGui::layoutItemGuiRegistry()->createItemWidget( item ) );
+  if ( ! widget )
+  {
+    return;
+  }
+
+  delete mItemPropertiesStack->takeMainPanel();
+  widget->setDockMode( true );
+  mItemPropertiesStack->setMainPanel( widget.release() );
+  mItemDock->setUserVisible( true );
+}
+
 void QgsLayoutDesignerDialog::open()
 {
   show();
   activate();
-  mView->zoomFull(); // zoomFull() does not work properly until we have called show()
-
-#if 0 // TODO
-
   if ( mView )
   {
-    mView->updateRulers();
+    mView->zoomFull(); // zoomFull() does not work properly until we have called show()
   }
-#endif
 }
 
 void QgsLayoutDesignerDialog::activate()
@@ -292,6 +398,27 @@ void QgsLayoutDesignerDialog::showRulers( bool visible )
   settings.setValue( QStringLiteral( "LayoutDesigner/showRulers" ), visible );
 }
 
+void QgsLayoutDesignerDialog::showGrid( bool visible )
+{
+  mLayout->context().setGridVisible( visible );
+  mLayout->pageCollection()->redraw();
+}
+
+void QgsLayoutDesignerDialog::snapToGrid( bool enabled )
+{
+  mLayout->snapper().setSnapToGrid( enabled );
+}
+
+void QgsLayoutDesignerDialog::showGuides( bool visible )
+{
+  mLayout->guides().setVisible( visible );
+}
+
+void QgsLayoutDesignerDialog::snapToGuides( bool enabled )
+{
+  mLayout->snapper().setSnapToGuides( enabled );
+}
+
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
 {
   emit aboutToClose();
@@ -300,6 +427,9 @@ void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
 
 void QgsLayoutDesignerDialog::itemTypeAdded( int type )
 {
+  if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->flags() & QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools )
+    return;
+
   QString name = QgsApplication::layoutItemRegistry()->itemMetadata( type )->visibleName();
   QString groupId = QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->groupId();
   QToolButton *groupButton = nullptr;
@@ -408,16 +538,24 @@ void QgsLayoutDesignerDialog::sliderZoomChanged( int value )
 
 void QgsLayoutDesignerDialog::updateStatusZoom()
 {
-  double dpi = QgsApplication::desktop()->logicalDpiX();
-  //monitor dpi is not always correct - so make sure the value is sane
-  if ( ( dpi < 60 ) || ( dpi > 1200 ) )
-    dpi = 72;
+  double zoomLevel = 0;
+  if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
+  {
+    zoomLevel = mView->transform().m11() * 100;
+  }
+  else
+  {
+    double dpi = QgsApplication::desktop()->logicalDpiX();
+    //monitor dpi is not always correct - so make sure the value is sane
+    if ( ( dpi < 60 ) || ( dpi > 1200 ) )
+      dpi = 72;
 
-  //pixel width for 1mm on screen
-  double scale100 = dpi / 25.4;
-  //current zoomLevel
-  double zoomLevel = mView->transform().m11() * 100 / scale100;
-
+    //pixel width for 1mm on screen
+    double scale100 = dpi / 25.4;
+    scale100 = currentLayout()->convertFromLayoutUnits( scale100, QgsUnitTypes::LayoutMillimeters ).length();
+    //current zoomLevel
+    zoomLevel = mView->transform().m11() * 100 / scale100;
+  }
   whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
   whileBlocking( mStatusZoomSlider )->setValue( zoomLevel );
 }
@@ -430,16 +568,13 @@ void QgsLayoutDesignerDialog::updateStatusCursorPos( QPointF position )
   }
 
   //convert cursor position to position on current page
-#if 0 // TODO
-  QPointF pagePosition = mView->currentLayout()->positionOnPage( cursorPosition );
-  int currentPage = mView->currentLayout()->pageNumberForPoint( cursorPosition );
-#endif
-  QPointF pagePosition = position;
-  int currentPage = 1;
+  QPointF pagePosition = mLayout->pageCollection()->positionOnPage( position );
+  int currentPage = mLayout->pageCollection()->pageNumberForPoint( position );
 
-  mStatusCursorXLabel->setText( QString( tr( "x: %1 mm" ) ).arg( pagePosition.x() ) );
-  mStatusCursorYLabel->setText( QString( tr( "y: %1 mm" ) ).arg( pagePosition.y() ) );
-  mStatusCursorPageLabel->setText( QString( tr( "page: %1" ) ).arg( currentPage ) );
+  QString unit = QgsUnitTypes::toAbbreviatedString( mLayout->units() );
+  mStatusCursorXLabel->setText( tr( "x: %1 %2" ).arg( pagePosition.x() ).arg( unit ) );
+  mStatusCursorYLabel->setText( tr( "y: %1 %2" ).arg( pagePosition.y() ).arg( unit ) );
+  mStatusCursorPageLabel->setText( tr( "page: %1" ).arg( currentPage + 1 ) );
 }
 
 void QgsLayoutDesignerDialog::toggleFullScreen( bool enabled )
@@ -451,6 +586,38 @@ void QgsLayoutDesignerDialog::toggleFullScreen( bool enabled )
   else
   {
     showNormal();
+  }
+}
+
+void QgsLayoutDesignerDialog::addPages()
+{
+  QgsLayoutAddPagesDialog dlg( this );
+  dlg.setLayout( mLayout );
+
+  if ( dlg.exec() )
+  {
+    int firstPagePosition = dlg.beforePage() - 1;
+    switch ( dlg.pagePosition() )
+    {
+      case QgsLayoutAddPagesDialog::BeforePage:
+        break;
+
+      case QgsLayoutAddPagesDialog::AfterPage:
+        firstPagePosition = firstPagePosition + 1;
+        break;
+
+      case QgsLayoutAddPagesDialog::AtEnd:
+        firstPagePosition = mLayout->pageCollection()->pageCount();
+        break;
+
+    }
+
+    for ( int i = 0; i < dlg.numberPages(); ++i )
+    {
+      QgsLayoutItemPage *page = new QgsLayoutItemPage( mLayout );
+      page->setPageSize( dlg.pageSize() );
+      mLayout->pageCollection()->insertPage( page, firstPagePosition + i );
+    }
   }
 }
 
@@ -491,6 +658,40 @@ void QgsLayoutDesignerDialog::activateNewItemCreationTool( int type )
   {
     mView->setTool( mAddItemTool );
   }
+}
+
+void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
+{
+  if ( !mLayout )
+  {
+    return;
+  }
+
+  // update layout based widgets
+  QgsLayoutPropertiesWidget *oldCompositionWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+  delete oldCompositionWidget;
+  QgsLayoutGuideWidget *oldGuideWidget = qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
+  delete oldGuideWidget;
+
+  QgsLayoutPropertiesWidget *widget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
+  widget->setDockMode( true );
+  mGeneralPropertiesStack->setMainPanel( widget );
+
+  QgsLayoutGuideWidget *guideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );
+  guideWidget->setDockMode( true );
+  mGuideStack->setMainPanel( guideWidget );
+}
+
+void QgsLayoutDesignerDialog::initializeRegistry()
+{
+  sInitializedRegistry = true;
+  auto createPageWidget = ( []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutPagePropertiesWidget( nullptr, item );
+  } );
+
+  QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QIcon(), createPageWidget, nullptr, QString(), QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
+
 }
 
 

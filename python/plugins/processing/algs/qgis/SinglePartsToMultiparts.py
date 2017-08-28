@@ -30,12 +30,17 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeature, QgsFeatureSink, QgsGeometry, QgsWkbTypes, QgsProcessingUtils, NULL
+from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       NULL,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -50,17 +55,18 @@ class SinglePartsToMultiparts(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'single_to_multi.png'))
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Unique ID field'), self.INPUT))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Unique ID field'), parentLayerParameterName=self.INPUT))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Multipart')))
 
     def name(self):
         return 'singlepartstomultipart'
@@ -69,31 +75,29 @@ class SinglePartsToMultiparts(QgisAlgorithm):
         return self.tr('Singleparts to multipart')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        fieldName = self.getParameterValue(self.FIELD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        field_name = self.parameterAsString(parameters, self.FIELD, context)
 
-        geomType = QgsWkbTypes.multiType(layer.wkbType())
+        geom_type = QgsWkbTypes.multiType(source.wkbType())
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), geomType, layer.crs(),
-                                                                     context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), geom_type, source.sourceCrs())
 
-        outFeat = QgsFeature()
-        inGeom = QgsGeometry()
-
-        index = layer.fields().lookupField(fieldName)
+        index = source.fields().lookupField(field_name)
 
         collection_geom = {}
         collection_attrs = {}
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, feature in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             atMap = feature.attributes()
             idVar = atMap[index]
-            if idVar in [None, NULL]:
-                outFeat.setAttributes(atMap)
-                outFeat.setGeometry(feature.geometry())
-                writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            if idVar in [None, NULL] or not feature.hasGeometry():
+                sink.addFeature(feature, QgsFeatureSink.FastInsert)
                 feedback.setProgress(int(current * total))
                 continue
 
@@ -108,8 +112,12 @@ class SinglePartsToMultiparts(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         for key, geoms in collection_geom.items():
-            outFeat.setAttributes(collection_attrs[key])
-            outFeat.setGeometry(QgsGeometry.collectGeometry(geoms))
-            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            if feedback.isCanceled():
+                break
 
-        del writer
+            feature = QgsFeature()
+            feature.setAttributes(collection_attrs[key])
+            feature.setGeometry(QgsGeometry.collectGeometry(geoms))
+            sink.addFeature(feature, QgsFeatureSink.FastInsert)
+
+        return {self.OUTPUT: dest_id}

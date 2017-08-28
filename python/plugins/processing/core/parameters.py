@@ -190,7 +190,7 @@ class ParameterMultipleInput(Parameter):
             return True
 
         if _minNumInputs < 1 and not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            # don't allow to set negative or null number of inputs if parameter isn't optional
+            # don't allow setting negative or null number of inputs if parameter isn't optional
             return False
 
         self.minNumInputs = int(_minNumInputs)

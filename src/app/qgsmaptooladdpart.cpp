@@ -31,6 +31,8 @@ QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Add part" );
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddPart::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddPart::stopCapturing );
 }
 
 QgsMapToolAddPart::~QgsMapToolAddPart()
@@ -155,7 +157,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsGeometry *geom = new QgsGeometry( cp );
         geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
 
-        const QgsCurvePolygon *cpGeom = dynamic_cast<const QgsCurvePolygon *>( geom->geometry() );
+        const QgsCurvePolygon *cpGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom->geometry() );
         if ( !cpGeom )
         {
           stopCapturing();

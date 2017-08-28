@@ -23,7 +23,6 @@
 #include <QTextStream>
 #include <QTransform>
 #include <QRegExp>
-#include <qnumeric.h>
 
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
@@ -156,16 +155,13 @@ QgsRectangle QgsRectangle::buffer( double width )
 QgsRectangle QgsRectangle::intersect( const QgsRectangle *rect ) const
 {
   QgsRectangle intersection = QgsRectangle();
-  //If they don't actually intersect an empty QgsRectangle should be returned
-  if ( !rect || !intersects( *rect ) )
+  if ( rect && intersects( *rect ) )
   {
-    return intersection;
+    intersection.setXMinimum( mXmin > rect->xMinimum() ? mXmin : rect->xMinimum() );
+    intersection.setXMaximum( mXmax < rect->xMaximum() ? mXmax : rect->xMaximum() );
+    intersection.setYMinimum( mYmin > rect->yMinimum() ? mYmin : rect->yMinimum() );
+    intersection.setYMaximum( mYmax < rect->yMaximum() ? mYmax : rect->yMaximum() );
   }
-
-  intersection.setXMinimum( mXmin > rect->xMinimum() ? mXmin : rect->xMinimum() );
-  intersection.setXMaximum( mXmax < rect->xMaximum() ? mXmax : rect->xMaximum() );
-  intersection.setYMinimum( mYmin > rect->yMinimum() ? mYmin : rect->yMinimum() );
-  intersection.setYMaximum( mYmax < rect->yMaximum() ? mYmax : rect->yMaximum() );
   return intersection;
 }
 
@@ -308,7 +304,7 @@ QString QgsRectangle::toString( int precision ) const
     precision = 0;
     if ( ( width() < 10 || height() < 10 ) && ( width() > 0 && height() > 0 ) )
     {
-      precision = static_cast<int>( ceil( -1.0 * log10( qMin( width(), height() ) ) ) ) + 1;
+      precision = static_cast<int>( std::ceil( -1.0 * std::log10( std::min( width(), height() ) ) ) ) + 1;
       // sanity check
       if ( precision > 20 )
         precision = 20;
@@ -380,11 +376,11 @@ QgsRectangle &QgsRectangle::operator=( const QgsRectangle &r )
 
 bool QgsRectangle::isFinite() const
 {
-  if ( qIsInf( mXmin ) || qIsInf( mYmin ) || qIsInf( mXmax ) || qIsInf( mYmax ) )
+  if ( std::isinf( mXmin ) || std::isinf( mYmin ) || std::isinf( mXmax ) || std::isinf( mYmax ) )
   {
     return false;
   }
-  if ( qIsNaN( mXmin ) || qIsNaN( mYmin ) || qIsNaN( mXmax ) || qIsNaN( mYmax ) )
+  if ( std::isnan( mXmin ) || std::isnan( mYmin ) || std::isnan( mXmax ) || std::isnan( mYmax ) )
   {
     return false;
   }
