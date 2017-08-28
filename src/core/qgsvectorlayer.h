@@ -1671,8 +1671,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Update the extents for the layer. This is necessary if features are
      *  added/deleted or the layer has been subsetted.
+     *
+     * \param force true to update layer extent even if it's read from xml by default, false otherwise
      */
-    virtual void updateExtents();
+    virtual void updateExtents( bool force = false );
 
     /**
      * Make layer editable.

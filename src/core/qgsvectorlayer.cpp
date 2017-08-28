@@ -782,9 +782,11 @@ bool QgsVectorLayer::countSymbolFeatures()
   return true;
 }
 
-void QgsVectorLayer::updateExtents()
+void QgsVectorLayer::updateExtents( bool force )
 {
-  mValidExtent = false;
+  // do not update extent by default when trust project option is activated
+  if ( force || !mReadExtent || ( mReadExtent && mXmlExtent.isNull() ) )
+    mValidExtent = false;
 }
 
 void QgsVectorLayer::setExtent( const QgsRectangle &r )
@@ -801,15 +803,16 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
+  if ( !mValidExtent && mDataProvider && mReadExtent && !mXmlExtent.isNull() )
+  {
+    mExtent = mXmlExtent;
+    mValidExtent = true;
+    mLazyExtent = false;
+  }
+
   if ( !mValidExtent && mLazyExtent && mDataProvider )
   {
     QgsRectangle mbr;
-
-    // get the extent from xml
-    if ( mReadExtent && !mXmlExtent.isNull() && !mDataProvider->hasMetadata() )
-    {
-      mbr = mXmlExtent;
-    }
 
     // get the extent data provider if not yet defined
     if ( mbr.isNull() )
@@ -1524,7 +1527,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   }
 
   // TODO: Check if the provider has the capability to send fullExtentCalculated
-  connect( mDataProvider, &QgsVectorDataProvider::fullExtentCalculated, this, &QgsVectorLayer::updateExtents );
+  connect( mDataProvider, &QgsVectorDataProvider::fullExtentCalculated, this, [ = ] { updateExtents(); } );
 
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
