@@ -91,7 +91,11 @@ void QgsActionMenu::triggerAction()
     QgsExpressionContext context = mLayer->createExpressionContext();
 
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
+
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), action->property( "click_x" ), true ) );
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), action->property( "click_y" ), true ) );
+
     context << actionScope;
     QgsAction act = data.actionData.value<QgsAction>();
     act.run( context );
