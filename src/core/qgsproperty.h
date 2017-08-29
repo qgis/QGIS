@@ -142,9 +142,19 @@ class CORE_EXPORT QgsPropertyDefinition
     QString name() const { return mName; }
 
     /**
+     * Sets the name of the property
+     */
+    void setName( const QString &name ) { mName = name; }
+
+    /**
      * Returns the origin of the property
      */
     Origin origin() const { return mOrigin; }
+
+    /**
+     * Sets origin of the property
+     */
+    void setOrigin( Origin origin ) { mOrigin = origin; }
 
     /**
      * Descriptive name of the property.

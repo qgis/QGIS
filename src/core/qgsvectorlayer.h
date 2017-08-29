@@ -1302,7 +1302,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setExcludeAttributesWfs( const QSet<QString> &att ) { mExcludeAttributesWFS = att; }
 
     //! Delete an attribute field (but does not commit it)
-    bool deleteAttribute( int attr );
+    virtual bool deleteAttribute( int attr );
 
     /**
      * Deletes a list of attribute fields (but does not commit it)

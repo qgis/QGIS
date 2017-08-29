@@ -87,6 +87,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mAuxiliaryLayerActionClear( nullptr )
   , mAuxiliaryLayerActionDelete( nullptr )
   , mAuxiliaryLayerActionExport( nullptr )
+  , mAuxiliaryLayerActionDeleteField( nullptr )
 {
   setupUi( this );
   connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
@@ -377,6 +378,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mAuxiliaryLayerActionExport, &QAction::triggered, this, &QgsVectorLayerProperties::onAuxiliaryLayerExport );
 
   mAuxiliaryStorageActions->setMenu( menu );
+
+  connect( mAuxiliaryStorageFieldsDeleteBtn, &QPushButton::clicked, this, &QgsVectorLayerProperties::onAuxiliaryLayerDeleteField );
 
   updateAuxiliaryStoragePage();
 }
@@ -1630,4 +1633,49 @@ void QgsVectorLayerProperties::onAuxiliaryLayerExport()
   clone.reset( alayer->toSpatialLayer() );
 
   QgisApp::instance()->saveAsFile( clone.get() );
+}
+
+void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
+{
+  QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
+  if ( !alayer )
+    return;
+
+  QList<QTreeWidgetItem *> items = mAuxiliaryStorageFieldsTree->selectedItems();
+  if ( items.count() < 1 )
+    return;
+
+  // get auxiliary field name and index from item
+  const QTreeWidgetItem *item = items[0];
+  QgsPropertyDefinition def;
+
+  if ( item->text( 0 ).compare( "pal", Qt::CaseInsensitive ) == 0 )
+    def.setOrigin( QgsPropertyDefinition::Pal );
+  else
+    def.setOrigin( QgsPropertyDefinition::Diagram );
+
+  def.setName( item->text( 1 ) );
+
+  const QString fieldName = QgsAuxiliaryField::name( def );
+
+  const int index = mLayer->auxiliaryLayer()->fields().indexOf( fieldName );
+  if ( index < 0 )
+    return;
+
+  // should be only 1 field
+  const QString msg = tr( "Are you sure you want to delete auxiliary field %1 for %2" ).arg( item->text( 1 ), item->text( 0 ) );
+
+  QMessageBox::StandardButton reply;
+  reply = QMessageBox::question( this, "Delete auxiliary field", msg, QMessageBox::Yes | QMessageBox::No );
+
+  if ( reply == QMessageBox::Yes )
+  {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    mLayer->auxiliaryLayer()->deleteAttribute( index );
+    QApplication::restoreOverrideCursor();
+    mLayer->updateFields();
+    updateAuxiliaryStoragePage( true );
+    mFieldsPropertiesDialog->init();
+    mLayer->triggerRepaint();
+  }
 }

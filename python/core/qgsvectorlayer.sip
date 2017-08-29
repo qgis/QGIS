@@ -1302,7 +1302,7 @@ Returns a map of field name to attribute alias
  A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
 
-    bool deleteAttribute( int attr );
+    virtual bool deleteAttribute( int attr );
 %Docstring
 Delete an attribute field (but does not commit it)
  :rtype: bool

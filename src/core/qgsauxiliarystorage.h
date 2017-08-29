@@ -174,6 +174,16 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      */
     bool save();
 
+    /**
+     * Remove attribute from the layer and commit changes. The layer remains
+     * editable.
+     *
+     * \param attr The index of the attribute to remove
+     *
+     * \returns true if the attribute is well deleted, false otherwise
+     */
+    virtual bool deleteAttribute( int attr ) override;
+
   private:
     QgsVectorLayerJoinInfo mJoinInfo;
     const QgsVectorLayer *mLayer;

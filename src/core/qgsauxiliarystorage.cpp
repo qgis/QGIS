@@ -233,6 +233,14 @@ QgsAuxiliaryFields QgsAuxiliaryLayer::auxiliaryFields() const
   return afields;
 }
 
+bool QgsAuxiliaryLayer::deleteAttribute( int attr )
+{
+  QgsVectorLayer::deleteAttribute( attr );
+  bool rc = commitChanges();
+  startEditing();
+  return rc;
+}
+
 bool QgsAuxiliaryLayer::save()
 {
   bool rc = false;

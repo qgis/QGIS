@@ -151,6 +151,17 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  :rtype: bool
 %End
 
+    virtual bool deleteAttribute( int attr );
+%Docstring
+ Remove attribute from the layer and commit changes. The layer remains
+ editable.
+
+ \param attr The index of the attribute to remove
+
+ :return: true if the attribute is well deleted, false otherwise
+ :rtype: bool
+%End
+
 };
 
 

@@ -104,10 +104,20 @@ class QgsPropertyDefinition
  :rtype: str
 %End
 
+    void setName( const QString &name );
+%Docstring
+ Sets the name of the property
+%End
+
     Origin origin() const;
 %Docstring
  Returns the origin of the property
  :rtype: Origin
+%End
+
+    void setOrigin( Origin origin );
+%Docstring
+ Sets origin of the property
 %End
 
     QString description() const;
