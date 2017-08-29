@@ -421,5 +421,6 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include qgsuserprofilemanager.sip
 %Include symbology/qgsarrowsymbollayer.sip
+%Include qgsauxiliarystorage.sip
 %Include composer/qgscomposerutils.sip
 %Include qgsuserprofile.sip

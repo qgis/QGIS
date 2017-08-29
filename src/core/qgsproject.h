@@ -61,6 +61,7 @@ class QgsAnnotationManager;
 class QgsLayoutManager;
 class QgsLayerTree;
 class QgsLabelingEngineSettings;
+class QgsAuxiliaryStorage;
 
 /**
  * \ingroup core
@@ -1101,6 +1102,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Zip project
     bool zip( const QString &filename );
 
+    //! Save auxiliary storage to database
+    bool saveAuxiliaryStorage( const QString &filename = QString() );
+
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
@@ -1135,6 +1139,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QVariantMap mCustomVariables;
 
     std::unique_ptr<QgsProjectArchive> mArchive;
+
+    std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
