@@ -540,6 +540,10 @@ ELSE(NOT MSVC)
     pal/feature.cpp
     pal/pointset.cpp
     PROPERTIES COMPILE_FLAGS -wd4702)
+  # -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+  SET_SOURCE_FILES_PROPERTIES(
+    qgsstacktrace.cpp
+    PROPERTIES COMPILE_FLAGS -wd4091)
 ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
