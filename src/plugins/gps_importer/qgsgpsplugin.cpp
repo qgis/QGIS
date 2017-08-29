@@ -642,7 +642,7 @@ void QgsGPSPlugin::setupBabel()
 
   QStringList::const_iterator iter;
 
-  for ( iter = deviceNames.begin(); iter != deviceNames.end(); ++iter )
+  for ( iter = deviceNames.constBegin(); iter != deviceNames.constEnd(); ++iter )
   {
     QString wptDownload = settings.
                           value( QStringLiteral( "/Plugin-GPS/devices/%1/wptdownload" ).

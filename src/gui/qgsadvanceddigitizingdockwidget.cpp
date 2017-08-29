@@ -167,7 +167,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   commonAngles << QPair<int, QString>( 30, trUtf8( "Snap to 30° angles" ) );
   commonAngles << QPair<int, QString>( 45, trUtf8( "Snap to 45° angles" ) );
   commonAngles << QPair<int, QString>( 90, trUtf8( "Snap to 90° angles" ) );
-  for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.begin(); it != commonAngles.end(); ++it )
+  for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
     QAction *action = new QAction( it->second, menu );
     action->setCheckable( true );

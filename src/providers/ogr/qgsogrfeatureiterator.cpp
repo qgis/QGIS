@@ -370,7 +370,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
     QgsAttributeList attrs = mRequest.subsetOfAttributes();
-    for ( QgsAttributeList::const_iterator it = attrs.begin(); it != attrs.end(); ++it )
+    for ( QgsAttributeList::const_iterator it = attrs.constBegin(); it != attrs.constEnd(); ++it )
     {
       getFeatureAttribute( fet, feature, *it );
     }

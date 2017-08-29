@@ -146,7 +146,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
       resultsDialog()->QDialog::show();
 
     QList<IdentifyResult>::const_iterator result;
-    for ( result = results.begin(); result != results.end(); ++result )
+    for ( result = results.constBegin(); result != results.constEnd(); ++result )
     {
       resultsDialog()->addFeature( *result );
     }
@@ -164,7 +164,7 @@ void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult>
   // Add new result after raster format change
   QgsDebugMsg( QString( "%1 raster results" ).arg( results.size() ) );
   QList<IdentifyResult>::const_iterator rresult;
-  for ( rresult = results.begin(); rresult != results.end(); ++rresult )
+  for ( rresult = results.constBegin(); rresult != results.constEnd(); ++rresult )
   {
     if ( rresult->mLayer->type() == QgsMapLayer::RasterLayer )
     {

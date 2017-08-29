@@ -387,8 +387,8 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
     QList<QgsFeatureId> crossingIds;
     crossingIds = index->intersects( bb );
 
-    QList<QgsFeatureId>::Iterator cit = crossingIds.begin();
-    QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.end();
+    QList<QgsFeatureId>::ConstIterator cit = crossingIds.constBegin();
+    QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.constEnd();
 
     bool duplicate = false;
 
@@ -504,7 +504,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
     QList<QgsFeatureId> crossingIds;
     crossingIds = index->intersects( bb );
 
-    QList<QgsFeatureId>::Iterator cit = crossingIds.begin();
+    QList<QgsFeatureId>::ConstIterator cit = crossingIds.begin();
     QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.end();
 
     bool duplicate = false;
@@ -919,7 +919,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
     QList<QgsFeatureId> crossingIds;
     crossingIds = index->intersects( bb );
 
-    QList<QgsFeatureId>::Iterator cit = crossingIds.begin();
+    QList<QgsFeatureId>::ConstIterator cit = crossingIds.begin();
     QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.end();
 
     bool touched = false;
@@ -1148,7 +1148,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer *la
     QList<QgsFeatureId> crossingIds;
     crossingIds = index->intersects( bb );
 
-    QList<QgsFeatureId>::Iterator cit = crossingIds.begin();
+    QList<QgsFeatureId>::ConstIterator cit = crossingIds.begin();
     QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.end();
     for ( ; cit != crossingIdsEnd; ++cit )
     {
@@ -1240,8 +1240,8 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
     QgsRectangle bb = g1.boundingBox();
     QList<QgsFeatureId> crossingIds;
     crossingIds = index->intersects( bb );
-    QList<QgsFeatureId>::Iterator cit = crossingIds.begin();
-    QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.end();
+    QList<QgsFeatureId>::ConstIterator cit = crossingIds.constBegin();
+    QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.constEnd();
     bool touched = false;
     for ( ; cit != crossingIdsEnd; ++cit )
     {
@@ -1322,7 +1322,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
     QgsRectangle bb = g1.boundingBox();
     QList<QgsFeatureId> crossingIds;
     crossingIds = index->intersects( bb );
-    QList<QgsFeatureId>::Iterator cit = crossingIds.begin();
+    QList<QgsFeatureId>::ConstIterator cit = crossingIds.begin();
     QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.end();
     bool touched = false;
 
@@ -1416,7 +1416,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
     QgsRectangle bb = g1.boundingBox();
     QList<QgsFeatureId> crossingIds;
     crossingIds = index->intersects( bb );
-    QList<QgsFeatureId>::Iterator cit = crossingIds.begin();
+    QList<QgsFeatureId>::ConstIterator cit = crossingIds.begin();
     QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.end();
     bool touched = false;
     for ( ; cit != crossingIdsEnd; ++cit )
@@ -1490,8 +1490,8 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
     QgsRectangle bb = g1.boundingBox();
     QList<QgsFeatureId> crossingIds;
     crossingIds = index->intersects( bb );
-    QList<QgsFeatureId>::Iterator cit = crossingIds.begin();
-    QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.end();
+    QList<QgsFeatureId>::ConstIterator cit = crossingIds.begin();
+    QList<QgsFeatureId>::ConstIterator crossingIdsEnd = crossingIds.constEnd();
     bool touched = false;
     for ( ; cit != crossingIdsEnd; ++cit )
     {

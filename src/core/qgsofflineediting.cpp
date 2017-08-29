@@ -800,7 +800,7 @@ void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer *remoteLayer, sqlit
   emit progressModeSet( QgsOfflineEditing::RemoveFeatures, values.size() );
 
   int i = 1;
-  for ( QgsFeatureIds::const_iterator it = values.begin(); it != values.end(); ++it )
+  for ( QgsFeatureIds::const_iterator it = values.constBegin(); it != values.constEnd(); ++it )
   {
     QgsFeatureId fid = remoteFid( db, layerId, *it );
     remoteLayer->deleteFeature( fid );
@@ -883,7 +883,7 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer *remoteLayer, sqlite3 *d
     // add new fid lookups
     i = 0;
     sqlExec( db, QStringLiteral( "BEGIN" ) );
-    for ( QMap<QgsFeatureId, bool>::const_iterator it = newRemoteFids.begin(); it != newRemoteFids.end(); ++it )
+    for ( QMap<QgsFeatureId, bool>::const_iterator it = newRemoteFids.constBegin(); it != newRemoteFids.constEnd(); ++it )
     {
       addFidLookup( db, layerId, newOfflineFids.at( i++ ), it.key() );
     }
@@ -1346,7 +1346,7 @@ void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLaye
       continue;
     }
     QgsAttributeMap attrMap = cit.value();
-    for ( QgsAttributeMap::const_iterator it = attrMap.begin(); it != attrMap.end(); ++it )
+    for ( QgsAttributeMap::const_iterator it = attrMap.constBegin(); it != attrMap.constEnd(); ++it )
     {
       QString sql = QStringLiteral( "INSERT INTO 'log_feature_updates' VALUES ( %1, %2, %3, %4, '%5' )" )
                     .arg( layerId )

@@ -966,7 +966,7 @@ void QgsCustomization::loadDefault()
   QStringList keys = fileSettings.allKeys();
   QgsDebugMsg( QString( "size = %1" ).arg( keys.size() ) );
   QStringList::const_iterator i;
-  for ( i = keys.begin(); i != keys.end(); ++i )
+  for ( i = keys.constBegin(); i != keys.constEnd(); ++i )
   {
     QString p( *i );
 

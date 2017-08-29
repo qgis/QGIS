@@ -4283,11 +4283,12 @@ QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> 
 
   QString name = mFields.at( fieldIndex ).name();
 
-  for ( QPair< QString, QgsFieldConstraints::Constraint > p : mFieldConstraintStrength.keys() )
+  QMap< QPair< QString, QgsFieldConstraints::Constraint >, QgsFieldConstraints::ConstraintStrength >::const_iterator conIt = mFieldConstraintStrength.constBegin();
+  for ( ; conIt != mFieldConstraintStrength.constEnd(); ++conIt )
   {
-    if ( p.first == name )
+    if ( conIt.key().first == name )
     {
-      m[ p.second ] = mFieldConstraintStrength.value( p );
+      m[ conIt.key().second ] = mFieldConstraintStrength.value( conIt.key() );
     }
   }
 

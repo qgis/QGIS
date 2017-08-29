@@ -255,10 +255,10 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     QList< QgsNetworkStrategy * >::const_iterator it;
     QgsAttributeList::const_iterator it2;
 
-    for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
+    for ( it = mStrategies.constBegin(); it != mStrategies.constEnd(); ++it )
     {
       QgsAttributeList tmp = ( *it )->requiredAttributes();
-      for ( it2 = tmp.begin(); it2 != tmp.end(); ++it2 )
+      for ( it2 = tmp.constBegin(); it2 != tmp.constEnd(); ++it2 )
       {
         tmpAttr.push_back( *it2 );
       }
@@ -266,7 +266,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     std::sort( tmpAttr.begin(), tmpAttr.end() );
 
     int lastAttrId = -1;
-    for ( it2 = tmpAttr.begin(); it2 != tmpAttr.end(); ++it2 )
+    for ( it2 = tmpAttr.constBegin(); it2 != tmpAttr.constEnd(); ++it2 )
     {
       if ( *it2 == lastAttrId )
       {

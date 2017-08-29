@@ -694,8 +694,8 @@ void QgsWFSSourceSelect::changeCRSFilter()
     QString currentTypename = currentIndex.sibling( currentIndex.row(), MODEL_IDX_NAME ).data().toString();
     QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
-    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
-    if ( crsIterator != mAvailableCRS.end() )
+    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
+    if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames( crsIterator->toSet() );
 

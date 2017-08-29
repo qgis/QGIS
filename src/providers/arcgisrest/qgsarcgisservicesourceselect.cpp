@@ -391,8 +391,8 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
     QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
     QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
-    QMap<QString, QStringList>::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
-    if ( crsIterator != mAvailableCRS.end() )
+    QMap<QString, QStringList>::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
+    if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames;
       foreach ( const QString &crsName, crsIterator.value() )

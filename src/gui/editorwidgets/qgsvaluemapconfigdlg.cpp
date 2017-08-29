@@ -81,7 +81,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 
   int row = 0;
   QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
-  for ( QVariantMap::ConstIterator mit = values.begin(); mit != values.end(); mit++, row++ )
+  for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
   {
     if ( mit.value().isNull() )
       setRow( row, mit.key(), QString() );

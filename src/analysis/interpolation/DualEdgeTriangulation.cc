@@ -1545,10 +1545,10 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
 
 
   //setNext and setPoint for the forced edge because this would disturb the building of 'leftpoly' and 'rightpoly' otherwise
-  mHalfEdge[leftPolygon.first()]->setNext( ( *( ++( leftiter = leftPolygon.begin() ) ) ) );
+  mHalfEdge[leftPolygon.first()]->setNext( ( *( ++( leftiter = leftPolygon.constBegin() ) ) ) );
   mHalfEdge[leftPolygon.first()]->setPoint( p2 );
   mHalfEdge[leftPolygon.last()]->setNext( firstedge );
-  mHalfEdge[rightPolygon.first()]->setNext( ( *( ++( rightiter = rightPolygon.begin() ) ) ) );
+  mHalfEdge[rightPolygon.first()]->setNext( ( *( ++( rightiter = rightPolygon.constBegin() ) ) ) );
   mHalfEdge[rightPolygon.first()]->setPoint( p1 );
   mHalfEdge[rightPolygon.last()]->setNext( dualfirstedge );
 
@@ -1556,7 +1556,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   triangulatePolygon( &rightPolygon, &freelist, dualfirstedge );
 
   //optimisation of the new edges
-  for ( iter = crossedEdges.begin(); iter != crossedEdges.end(); ++iter )
+  for ( iter = crossedEdges.constBegin(); iter != crossedEdges.constEnd(); ++iter )
   {
     checkSwap( ( *( iter ) ), 0 );
   }
