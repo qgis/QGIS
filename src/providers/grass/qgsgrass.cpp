@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <qglobal.h>
+
 #ifdef _MSC_VER
 // to avoid conflicting SF_UNKNOWN
 #define _OLE2_H_
