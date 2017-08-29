@@ -1734,7 +1734,7 @@ bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &bru
   QgsDebugMsg( "Entered." );
 
   brushStyle = Qt::SolidPattern;
-  color = QColor( "#808080" );
+  color = QColor( 128, 128, 128 );
 
   if ( element.isNull() )
   {
@@ -1875,7 +1875,7 @@ bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
   QgsDebugMsg( "Entered." );
 
   penStyle = Qt::SolidLine;
-  color = QColor( "#000000" );
+  color = QColor( 0, 0, 0 );
   width = 1;
   if ( penJoinStyle )
     *penJoinStyle = Qt::BevelJoin;
@@ -2224,7 +2224,7 @@ bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
 
   name = QStringLiteral( "square" );
   color = QColor();
-  strokeColor = QColor( "#000000" );
+  strokeColor = QColor( 0, 0, 0 );
   strokeWidth = 1;
   size = 6;
 

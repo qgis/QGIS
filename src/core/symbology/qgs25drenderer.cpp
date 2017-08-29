@@ -93,13 +93,13 @@ Qgs25DRenderer::Qgs25DRenderer()
 
   // These methods must only be used after the above initialization!
 
-  setRoofColor( QColor( "#b1a97c" ) );
-  setWallColor( QColor( "#777777" ) );
+  setRoofColor( QColor( 177, 169, 124 ) );
+  setWallColor( QColor( 119, 119, 119 ) );
 
   wallLayer()->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QString( WALL_SHADING_EXPRESSION ) ) );
 
   setShadowSpread( 4 );
-  setShadowColor( QColor( "#111111" ) );
+  setShadowColor( QColor( 17, 17, 17 ) );
 
   QgsFeatureRequest::OrderBy orderBy;
   orderBy << QgsFeatureRequest::OrderByClause(
