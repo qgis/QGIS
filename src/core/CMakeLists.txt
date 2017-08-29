@@ -1126,13 +1126,13 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 #for PAL classes
 IF (WIN32)
-    ADD_DEFINITIONS("-D_HAVE_WINDOWS_H_")
+    ADD_DEFINITIONS(-D_HAVE_WINDOWS_H_)
 ELSE (WIN32)
-    ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
+    ADD_DEFINITIONS(-D_HAVE_PTHREAD_)
 ENDIF (WIN32)
 
 # Test data dir for QgsRenderChecker
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
+ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 #############################################################
 # qgis_core library

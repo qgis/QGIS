@@ -28,9 +28,9 @@ ENDIF(APPLE)
 # This define is used for tests that need to locate the test
 # data under tests/testdata in the qgis source tree.
 # the TEST_DATA_DIR variable is set in the top level CMakeLists.txt
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
+ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
-ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
+ADD_DEFINITIONS(-DINSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
 
 #############################################################
 # libraries
