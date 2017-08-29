@@ -1363,7 +1363,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
       QString propertyType( gmlRefProperty.cap( 1 ) );
       // Set the first character in upper case
-      propertyType = propertyType.left( 1 ).toUpper() + propertyType.mid( 1 );
+      propertyType = propertyType.at( 0 ).toUpper() + propertyType.mid( 1 );
       geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
     }
     else if ( !name.isEmpty() ) //todo: distinguish between numerical and non-numerical types
