@@ -355,7 +355,7 @@ class DoxygenParser():
 
         # ignore certain obvious operators
         try:
-            if name.text in ('operator=', 'operator==', 'operator!='):
+            if name.text in ('operator=', 'operator==', 'operator!=', 'Q_ENUM'):
                 return False
         except:
             pass
