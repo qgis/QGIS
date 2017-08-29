@@ -12,6 +12,55 @@
 
 
 
+class QgsAuxiliaryLayer : QgsVectorLayer
+{
+%Docstring
+
+
+ Class allowing to manage the auxiliary storage for a vector layer
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsauxiliarystorage.h"
+%End
+  public:
+
+    QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, const QgsVectorLayer *vlayer );
+%Docstring
+ Constructor
+
+ \param pkField The primary key to use for joining
+ \param filename The database path
+ \param table The table name
+ \param vlayer The target vector layer in join definition
+%End
+
+    virtual ~QgsAuxiliaryLayer();
+%Docstring
+ Destructor
+%End
+
+
+
+    QgsVectorLayerJoinInfo joinInfo() const;
+%Docstring
+ Returns information to use for joining with primary key and so on.
+ :rtype: QgsVectorLayerJoinInfo
+%End
+
+    bool save();
+%Docstring
+ Commit changes and starts editing then.
+
+ :return: true if commit step passed, false otherwise
+ :rtype: bool
+%End
+
+};
+
+
 class QgsAuxiliaryStorage
 {
 %Docstring
@@ -93,6 +142,19 @@ class QgsAuxiliaryStorage
 
  :return: true if everything is saved, false otherwise
  :rtype: bool
+%End
+
+    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const;
+%Docstring
+ Creates an auxiliary layer for a vector layer. A new table is created if
+ necessary. The primary key to use to construct the auxiliary layer is
+ given in parameter.
+
+ \param field The primary key to join
+ \param layer The vector layer for which the auxiliary layer has to be created
+
+ :return: A new auxiliary layer or a None if an error happened.
+ :rtype: QgsAuxiliaryLayer
 %End
 
     static QString extension();

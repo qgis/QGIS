@@ -20,12 +20,68 @@
 
 #include "qgis_core.h"
 #include "qgsdatasourceuri.h"
+#include "qgsvectorlayerjoininfo.h"
 
 #include <sqlite3.h>
 
 #include <QString>
 
 class QgsProject;
+
+/**
+ * \class QgsAuxiliaryLayer
+ *
+ * \ingroup core
+ *
+ * \brief Class allowing to manage the auxiliary storage for a vector layer
+ *
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor
+     *
+     * \param pkField The primary key to use for joining
+     * \param filename The database path
+     * \param table The table name
+     * \param vlayer The target vector layer in join definition
+     */
+    QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, const QgsVectorLayer *vlayer );
+
+    /**
+     * Destructor
+     */
+    virtual ~QgsAuxiliaryLayer() = default;
+
+    /**
+     * Copy constructor deactivated
+     */
+    QgsAuxiliaryLayer( const QgsAuxiliaryLayer &rhs ) = delete;
+
+    QgsAuxiliaryLayer &operator=( QgsAuxiliaryLayer const &rhs ) = delete;
+
+    /**
+     * Returns information to use for joining with primary key and so on.
+     */
+    QgsVectorLayerJoinInfo joinInfo() const;
+
+    /**
+     * Commit changes and starts editing then.
+     *
+     * \returns true if commit step passed, false otherwise
+     */
+    bool save();
+
+  private:
+    QgsVectorLayerJoinInfo mJoinInfo;
+    const QgsVectorLayer *mLayer;
+};
+
 
 /**
  * \class QgsAuxiliaryStorage
@@ -103,6 +159,18 @@ class CORE_EXPORT QgsAuxiliaryStorage
     bool save() const;
 
     /**
+     * Creates an auxiliary layer for a vector layer. A new table is created if
+     * necessary. The primary key to use to construct the auxiliary layer is
+     * given in parameter.
+     *
+     * \param field The primary key to join
+     * \param layer The vector layer for which the auxiliary layer has to be created
+     *
+     * \returns A new auxiliary layer or a nullptr if an error happened.
+     */
+    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const;
+
+    /**
      * Returns the extension used for auxiliary databases.
      */
     static QString extension();
@@ -117,6 +185,8 @@ class CORE_EXPORT QgsAuxiliaryStorage
     static sqlite3 *createDB( const QString &filename );
     static sqlite3 *openDB( const QString &filename );
     static void close( sqlite3 *handler );
+    static bool tableExists( const QString &table, sqlite3 *handler );
+    static bool createTable( const QString &type, const QString &table, sqlite3 *handler );
 
     static bool exec( const QString &sql, sqlite3 *handler );
     static void debugMsg( const QString &sql, sqlite3 *handler );

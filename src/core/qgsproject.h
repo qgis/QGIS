@@ -810,6 +810,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool trustLayerMetadata() const { return mTrustLayerMetadata; }
 
+    /**
+     * Returns the current const auxiliary storage.
+     *
+     * \since QGIS 3.0
+     */
+    const QgsAuxiliaryStorage *auxiliaryStorage() const SIP_SKIP;
+
+    /**
+     * Returns the current auxiliary storage.
+     *
+     * \since QGIS 3.0
+     */
+    QgsAuxiliaryStorage *auxiliaryStorage();
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );

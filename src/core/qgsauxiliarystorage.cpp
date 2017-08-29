@@ -24,6 +24,44 @@
 
 const QString AS_JOINFIELD = "ASPK";
 const QString AS_EXTENSION = "qgd";
+const QString AS_JOINPREFIX = "auxiliary_storage_";
+
+QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, const QgsVectorLayer *vlayer )
+  : QgsVectorLayer( QString( "%1|layername=%2" ).arg( filename, table ), QString( "%1_auxiliarystorage" ).arg( table ), "ogr" )
+  , mLayer( vlayer )
+{
+  // init join info
+  mJoinInfo.setPrefix( AS_JOINPREFIX );
+  mJoinInfo.setJoinLayer( this );
+  mJoinInfo.setJoinFieldName( AS_JOINFIELD );
+  mJoinInfo.setTargetFieldName( pkField );
+  mJoinInfo.setEditable( true );
+  mJoinInfo.setUpsertOnEdit( true );
+  mJoinInfo.setCascadedDelete( true );
+}
+
+QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const
+{
+  return mJoinInfo;
+}
+
+bool QgsAuxiliaryLayer::save()
+{
+  bool rc = false;
+
+  if ( isEditable() )
+  {
+    rc = commitChanges();
+  }
+
+  startEditing();
+
+  return rc;
+}
+
+//
+// QgsAuxiliaryStorage
+//
 
 QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QgsProject &project, bool copy )
   : mValid( false )
@@ -92,6 +130,31 @@ bool QgsAuxiliaryStorage::save() const
   }
 }
 
+QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const
+{
+  QgsAuxiliaryLayer *alayer = nullptr;
+
+  if ( mValid && layer && layer->isSpatial() )
+  {
+    const QString table( layer->id() );
+    sqlite3 *handler = openDB( currentFileName() );
+
+    if ( !tableExists( table, handler ) )
+    {
+      if ( !createTable( field.typeName(), table, handler ) )
+      {
+        close( handler );
+        return alayer;
+      }
+    }
+
+    alayer = new QgsAuxiliaryLayer( field.name(), currentFileName(), table, layer );
+    close( handler );
+  }
+
+  return alayer;
+}
+
 bool QgsAuxiliaryStorage::saveAs( const QString &filename ) const
 {
   if ( QFile::exists( filename ) )
@@ -149,6 +212,16 @@ sqlite3 *QgsAuxiliaryStorage::openDB( const QString &filename )
   return handler;
 }
 
+bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler )
+{
+  const QString sql = QString( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table ).arg( AS_JOINFIELD ).arg( type );
+
+  if ( !exec( sql, handler ) )
+    return false;
+
+  return true;
+}
+
 sqlite3 *QgsAuxiliaryStorage::createDB( const QString &filename )
 {
   sqlite3 *handler = nullptr;
@@ -167,6 +240,26 @@ sqlite3 *QgsAuxiliaryStorage::createDB( const QString &filename )
     return handler;
 
   return handler;
+}
+
+bool QgsAuxiliaryStorage::tableExists( const QString &table, sqlite3 *handler )
+{
+  const QString sql = QString( "SELECT 1 FROM sqlite_master WHERE type='table' AND name='%1'" ).arg( table );
+  int rows = 0;
+  int columns = 0;
+  char **results = nullptr;
+  const int rc = sqlite3_get_table( handler, sql.toStdString().c_str(), &results, &rows, &columns, nullptr );
+  if ( rc != SQLITE_OK )
+  {
+    debugMsg( sql, handler );
+    return false;
+  }
+
+  sqlite3_free_table( results );
+  if ( rows >= 1 )
+    return true;
+
+  return false;
 }
 
 sqlite3 *QgsAuxiliaryStorage::open( const QString &filename )

@@ -573,6 +573,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsactionmanager.h
   qgsactionscoperegistry.h
   qgsanimatedicon.h
+  qgsauxiliarystorage.h
   qgsbrowsermodel.h
   qgscoordinatereferencesystem.h
   qgscredentials.h

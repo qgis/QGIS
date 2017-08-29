@@ -2246,6 +2246,22 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
     if ( addToLegend )
       emit legendLayersAdded( myResultList );
   }
+
+  if ( mAuxiliaryStorage )
+  {
+    Q_FOREACH ( QgsMapLayer *mlayer, myResultList )
+    {
+      if ( mlayer->type() != QgsMapLayer::VectorLayer )
+        continue;
+
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
+      if ( vl && vl->isSpatial() )
+      {
+        vl->loadAuxiliaryLayer( *mAuxiliaryStorage.get() );
+      }
+    }
+  }
+
   return myResultList;
 }
 
@@ -2343,6 +2359,18 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
+  Q_FOREACH ( QgsMapLayer *l, mapLayers().values() )
+  {
+    if ( l->type() != QgsMapLayer::VectorLayer )
+      continue;
+
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+    if ( vl && vl->auxiliaryLayer() )
+    {
+      vl->auxiliaryLayer()->save();
+    }
+  }
+
   if ( !filename.isEmpty() )
   {
     return mAuxiliaryStorage->saveAs( filename );
@@ -2351,4 +2379,14 @@ bool QgsProject::saveAuxiliaryStorage( const QString &filename )
   {
     return mAuxiliaryStorage->saveAs( *this );
   }
+}
+
+const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
+{
+  return mAuxiliaryStorage.get();
+}
+
+QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
+{
+  return mAuxiliaryStorage.get();
 }

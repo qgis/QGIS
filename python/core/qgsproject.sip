@@ -811,6 +811,14 @@ Returns the number of registered layers.
  :rtype: bool
 %End
 
+    QgsAuxiliaryStorage *auxiliaryStorage();
+%Docstring
+ Returns the current auxiliary storage.
+
+.. versionadded:: 3.0
+ :rtype: QgsAuxiliaryStorage
+%End
+
   signals:
     void readProject( const QDomDocument & );
 %Docstring

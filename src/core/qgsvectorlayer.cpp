@@ -88,6 +88,7 @@
 #include "qgsunittypes.h"
 #include "qgstaskmanager.h"
 #include "qgstransaction.h"
+#include "qgsauxiliarystorage.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -139,6 +140,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 bool readExtentFromXml )
   : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
   , mProviderKey( providerKey )
+  , mAuxiliaryLayer( nullptr )
+  , mAuxiliaryLayerKey( QString() )
   , mReadExtentFromXml( readExtentFromXml )
 {
   mActions = new QgsActionManager( this );
@@ -1447,6 +1450,14 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsReadWriteCont
     }
   }
 
+  // auxiliary layer
+  const QDomNode asNode = layer_node.namedItem( QStringLiteral( "auxiliaryLayer" ) );
+  const QDomElement asElem = asNode.toElement();
+  if ( !asElem.isNull() )
+  {
+    mAuxiliaryLayerKey = asElem.attribute( QStringLiteral( "key" ) );
+  }
+
   return mValid;               // should be true if read successfully
 
 } // void QgsVectorLayer::readXml
@@ -1666,6 +1677,15 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
   mExpressionFieldBuffer->writeXml( layer_node, document );
 
   writeStyleManager( layer_node, document );
+
+  // auxiliary layer
+  QDomElement asElem = document.createElement( QStringLiteral( "auxiliaryLayer" ) );
+  if ( mAuxiliaryLayer )
+  {
+    const QString pkField = mAuxiliaryLayer->joinInfo().targetFieldName();
+    asElem.setAttribute( QStringLiteral( "key" ), pkField );
+  }
+  layer_node.appendChild( asElem );
 
   // renderer specific settings
   QString errorMsg;
@@ -4221,6 +4241,58 @@ void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &de
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag )
 {
   return loadNamedStyle( theURI, resultFlag, false );
+}
+
+bool QgsVectorLayer::loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage )
+{
+  bool rc = false;
+
+  if ( isSpatial() && storage.isValid() && !mAuxiliaryLayerKey.isEmpty() )
+  {
+    QgsAuxiliaryLayer *alayer = nullptr;
+
+    int idx = fields().lookupField( mAuxiliaryLayerKey );
+
+    if ( idx >= 0 )
+    {
+      alayer = storage.createAuxiliaryLayer( fields().field( idx ), this );
+
+      if ( alayer )
+      {
+        setAuxiliaryLayer( alayer );
+        rc = true;
+      }
+    }
+  }
+
+  return rc;
+}
+
+void QgsVectorLayer::setAuxiliaryLayer( QgsAuxiliaryLayer *alayer )
+{
+  if ( alayer )
+  {
+    if ( mAuxiliaryLayer )
+      removeJoin( mAuxiliaryLayer->id() );
+
+    addJoin( alayer->joinInfo() );
+
+    if ( !alayer->isEditable() )
+      alayer->startEditing();
+  }
+
+  mAuxiliaryLayer.reset( alayer );
+  updateFields();
+}
+
+const QgsAuxiliaryLayer *QgsVectorLayer::auxiliaryLayer() const
+{
+  return mAuxiliaryLayer.get();
+}
+
+QgsAuxiliaryLayer *QgsVectorLayer::auxiliaryLayer()
+{
+  return mAuxiliaryLayer.get();
 }
 
 QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag, bool loadFromLocalDB )

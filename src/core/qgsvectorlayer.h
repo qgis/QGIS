@@ -70,6 +70,8 @@ class QgsVectorLayerFeatureCounter;
 class QgsAbstractVectorLayerLabeling;
 class QgsPoint;
 class QgsFeedback;
+class QgsAuxiliaryStorage;
+class QgsAuxiliaryLayer;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -784,6 +786,44 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
 
     /**
+     * Loads the auxiliary layer for this vector layer. If there's no
+     * corresponding table in the database, then nothing happens and false is
+     * returned.
+     *
+     * \param storage The auxiliary storage where to look for the table
+     *
+     * \returns true if the auxiliary layer is well loaded, false otherwise
+     *
+     * \since QGIS 3.0
+     */
+    bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage );
+
+    /**
+     * Sets the current auxiliary layer. The auxiliary layer is automatically
+     * put in editable mode and fields are updated. Moreover, a join is created
+     * between the current layer and the auxiliary layer. Ownership is
+     * transferred.
+     *
+     * \since QGIS 3.0
+     *
+     */
+    void setAuxiliaryLayer( QgsAuxiliaryLayer *layer = nullptr );
+
+    /**
+     * Returns the current auxiliary layer.
+     *
+     * \since QGIS 3.0
+     */
+    QgsAuxiliaryLayer *auxiliaryLayer();
+
+    /**
+     * Returns the current const auxiliary layer.
+     *
+     * \since QGIS 3.0
+     */
+    const QgsAuxiliaryLayer *auxiliaryLayer() const SIP_SKIP;
+
+    /** 
      * Read the symbology for the current layer from the Dom node supplied.
      * \param layerNode node that will contain the symbology definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages
@@ -2144,6 +2184,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     mutable bool mValidExtent = false;
     mutable bool mLazyExtent = true;
+
+    //! Auxiliary layer
+    std::unique_ptr<QgsAuxiliaryLayer> mAuxiliaryLayer;
+
+    //! Key to use to join auxiliary layer
+    QString mAuxiliaryLayerKey;
 
     // Features in renderer classes counted
     bool mSymbolFeatureCounted = false;
