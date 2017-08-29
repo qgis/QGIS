@@ -40,6 +40,7 @@
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
+  , mCaptureMode( mode )
   , mRubberBand( nullptr )
   , mTempRubberBand( nullptr )
   , mValidator( nullptr )
@@ -48,8 +49,6 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   , mSkipNextContextMenuEvent( 0 )
 #endif
 {
-  mCaptureMode = mode;
-
   mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
@@ -649,9 +648,8 @@ void QgsMapToolCapture::validateGeometry()
     case CaptureNone:
     case CapturePoint:
       return;
-    case CaptureSegment:
     case CaptureLine:
-      if ( size() < 2  || ( mCaptureMode == CaptureSegment && size() > 2 ) )
+      if ( size() < 2 )
         return;
       geom = QgsGeometry( mCaptureCurve.curveToLine() );
       break;

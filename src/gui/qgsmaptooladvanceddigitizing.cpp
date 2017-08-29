@@ -20,7 +20,6 @@
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolEdit( canvas )
-  , mCaptureMode( CapturePoint )
   , mCadDockWidget( cadDockWidget )
 {
 }
@@ -42,24 +41,9 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsAdvancedDigitizingDockWidget::AdvancedDigitizingMode dockMode;
-  switch ( mCaptureMode )
-  {
-    case CaptureLine:
-    case CapturePolygon:
-      dockMode = QgsAdvancedDigitizingDockWidget::ManyPoints;
-      break;
-    case CaptureSegment:
-      dockMode = QgsAdvancedDigitizingDockWidget::TwoPoints;
-      break;
-    default:
-      dockMode = QgsAdvancedDigitizingDockWidget::SinglePoint;
-      break;
-  }
-
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    if ( mCadDockWidget->canvasReleaseEvent( e, dockMode ) )
+    if ( mCadDockWidget->canvasReleaseEvent( e ) )
       return;  // decided to eat the event and not pass it to the map tool (construction mode or picking a segment)
   }
   else if ( isAutoSnapEnabled() )

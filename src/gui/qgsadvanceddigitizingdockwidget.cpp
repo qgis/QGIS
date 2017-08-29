@@ -911,7 +911,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasPressEvent( QgsMapMouseEvent *e )
   return mCadEnabled && mConstructionMode;
 }
 
-bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode )
+bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mCadEnabled )
     return false;
@@ -940,14 +940,6 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent *e, A
 
   releaseLocks( false );
 
-  if ( e->button() == Qt::LeftButton )
-  {
-    // stop digitizing if not intermediate point and enough points are recorded with respect to the mode
-    if ( !mConstructionMode && ( mode == SinglePoint || ( mode == TwoPoints && mCadPointList.count() > 2 ) ) )
-    {
-      clearPoints();
-    }
-  }
   return mConstructionMode;
 }
 

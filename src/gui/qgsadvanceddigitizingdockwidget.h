@@ -73,16 +73,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       Parallel       //!< Parallel
     };
 
-    /**
-     * Determines if the dock has to record one, two or many points.
-     */
-    enum AdvancedDigitizingMode
-    {
-      SinglePoint, //!< Capture a single point (e.g. for point digitizing)
-      TwoPoints,   //!< Capture two points (e.g. for translation)
-      ManyPoints   //!< Capture two or more points (e.g. line or polygon digitizing)
-    };
-
     /** \ingroup gui
      * \brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
@@ -226,10 +216,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Will react on a canvas release event
      *
      * \param e A mouse event (may be modified)
-     * \param mode determines if the dock has to record one, two or many points.
      * \returns  If the event is hidden (construction mode hides events from the maptool)
      */
-    bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
+    bool canvasReleaseEvent( QgsMapMouseEvent *e );
 
     /**
      * Will react on a canvas move event
@@ -249,7 +238,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
     //! \returns false if no solution was found (invalid constraints)
-    virtual bool applyConstraints( QgsMapMouseEvent *e );
+    bool applyConstraints( QgsMapMouseEvent *e );
 
     /**
      * Clear any cached previous clicks and helper lines
@@ -276,6 +265,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
     //! Constraint on a common angle
     bool commonAngleConstraint() const { return mCommonAngleConstraint; }
+
+    /** Removes all points from the CAD point list
+     * \since QGIS 3.0
+     */
+    void clearPoints();
 
     /**
      * Configures list of current CAD points
@@ -420,8 +414,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void updateCurrentPoint( const QgsPointXY &point );
     //! remove previous point in the CAD point list
     void removePreviousPoint();
-    //! remove all points from the CAD point list
-    void clearPoints();
 
     //! filters key press
     //! \note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)

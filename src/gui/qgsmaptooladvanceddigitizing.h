@@ -35,15 +35,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-    //! Different capture modes
-    enum CaptureMode
-    {
-      CaptureNone,    //!< Do not capture
-      CapturePoint,   //!< Capture points
-      CaptureSegment, //!< Capture a segment (i.e. 2 points)
-      CaptureLine,    //!< Capture lines
-      CapturePolygon  //!< Capture polygons
-    };
 
     /**
      * Creates an advanced digitizing maptool
@@ -58,13 +49,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     //! Catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
     virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-
-    /**
-     * The capture mode
-     *
-     * \returns Capture mode
-     */
-    CaptureMode mode() const { return mCaptureMode; }
 
     /**
      * Registers this maptool with the cad dock widget
@@ -152,9 +136,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * \param e Mouse events prepared by the cad system
      */
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) { Q_UNUSED( e ) }
-
-    //! The capture mode in which this tool operates
-    CaptureMode mCaptureMode;
 
   private slots:
 

@@ -474,7 +474,7 @@ QgsAction             {#qgis_api_break_3_0_QgsAction}
 QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizingDockWidget}
 -------------------------------
 
-- canvasReleaseEvent takes now QgsAdvancedDigitizingDockWidget::CaptureMode as second argument.
+- canvasReleaseEvent() does not take second argument anymore. Map tools are expected to clear CAD points themselves whenever needed.
 - snappingMode() was removed. Advanced digitizing now always uses project's snapping configuration.
 
 
@@ -1628,6 +1628,7 @@ QgsMapToolAdvancedDigitizing         {#qgis_api_break_3_0_QgsMapToolAdvancedDigi
 ----------------------------
 
 - setMode() was replaced by setAdvancedDigitizingAllowed() and setAutoSnapEnabled()
+- mode() and CaptureMode enum have been moved to QgsMapToolCapture subclass
 
 
 QgsMapToolCapture        {#qgis_api_break_3_0_QgsMapToolCapture}

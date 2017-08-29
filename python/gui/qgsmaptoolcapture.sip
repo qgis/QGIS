@@ -18,6 +18,15 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 #include "qgsmaptoolcapture.h"
 %End
   public:
+
+    enum CaptureMode
+    {
+      CaptureNone,
+      CapturePoint,
+      CaptureLine,
+      CapturePolygon
+    };
+
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 %Docstring
 constructor
@@ -27,6 +36,14 @@ constructor
 
     virtual void activate();
     virtual void deactivate();
+
+    CaptureMode mode() const;
+%Docstring
+ The capture mode
+
+ :return: Capture mode
+ :rtype: CaptureMode
+%End
 
     int addCurve( QgsCurve *c );
 %Docstring

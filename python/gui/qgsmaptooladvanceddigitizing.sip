@@ -27,14 +27,6 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 #include "qgsmaptooladvanceddigitizing.h"
 %End
   public:
-    enum CaptureMode
-    {
-      CaptureNone,
-      CapturePoint,
-      CaptureSegment,
-      CaptureLine,
-      CapturePolygon
-    };
 
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
@@ -54,14 +46,6 @@ Catch the mouse release event, filters it, transforms it to map coordinates and 
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 %Docstring
 Catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
-%End
-
-    CaptureMode mode() const;
-%Docstring
- The capture mode
-
- :return: Capture mode
- :rtype: CaptureMode
 %End
 
     virtual void activate();
@@ -155,7 +139,6 @@ Catch the mouse move event, filters it, transforms it to map coordinates and sen
 
  \param e Mouse events prepared by the cad system
 %End
-
 
 };
 

@@ -42,13 +42,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
       Parallel
     };
 
-    enum AdvancedDigitizingMode
-    {
-      SinglePoint,
-      TwoPoints,
-      ManyPoints
-    };
-
     class CadConstraint
 {
 %Docstring
@@ -188,12 +181,11 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  :rtype: bool
 %End
 
-    bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
+    bool canvasReleaseEvent( QgsMapMouseEvent *e );
 %Docstring
  Will react on a canvas release event
 
  \param e A mouse event (may be modified)
- \param mode determines if the dock has to record one, two or many points.
  :return:  If the event is hidden (construction mode hides events from the maptool)
  :rtype: bool
 %End
@@ -216,7 +208,7 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  :rtype: bool
 %End
 
-    virtual bool applyConstraints( QgsMapMouseEvent *e );
+    bool applyConstraints( QgsMapMouseEvent *e );
 %Docstring
 :return: false if no solution was found (invalid constraints)
  :rtype: bool
@@ -271,6 +263,12 @@ Constraint on the Y coordinate
 %Docstring
 Constraint on a common angle
  :rtype: bool
+%End
+
+    void clearPoints();
+%Docstring
+ Removes all points from the CAD point list
+.. versionadded:: 3.0
 %End
 
     void setPoints( const QList<QgsPointXY> &points );
