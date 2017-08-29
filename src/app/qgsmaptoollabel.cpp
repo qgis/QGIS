@@ -794,6 +794,9 @@ bool QgsMapToolLabel::isAuxiliaryField( QgsVectorLayer *layer, int index ) const
 {
   bool auxiliaryField = false;
 
+  if ( !layer->auxiliaryLayer() )
+    return auxiliaryField;
+
   if ( index >= 0 && layer->fields().fieldOrigin( index ) == QgsFields::OriginJoin )
   {
     int srcFieldIndex;
