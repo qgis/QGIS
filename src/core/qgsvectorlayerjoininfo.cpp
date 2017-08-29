@@ -56,7 +56,8 @@ QgsFeature QgsVectorLayerJoinInfo::extractJoinedFeature( const QgsFeature &featu
     joinFeature.setFields( joinLayer()->fields() );
     joinFeature.setAttribute( joinFieldName(), idFieldValue );
 
-    Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+    const QgsFields joinFields = joinFeature.fields();
+    for ( const auto &field : joinFields )
     {
       const QString prefixedName = prefixedFieldName( field );
 

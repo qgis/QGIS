@@ -497,7 +497,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   // create table
   QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
   QString delim = QLatin1String( "" );
-  Q_FOREACH ( const QgsField &field, layer->dataProvider()->fields() )
+  const QgsFields providerFields = layer->dataProvider()->fields();
+  for ( const auto &field : providerFields )
   {
     QString dataType = QLatin1String( "" );
     QVariant::Type type = field.type();

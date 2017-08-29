@@ -332,10 +332,10 @@ void QgsGrassVectorMapLayer::close()
   }
 }
 
-QStringList QgsGrassVectorMapLayer::fieldNames( QgsFields &fields )
+QStringList QgsGrassVectorMapLayer::fieldNames( const QgsFields &fields )
 {
   QStringList list;
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const QgsField &field : fields )
   {
     list << field.name();
   }
@@ -598,7 +598,7 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
 
   QgsFields catFields;
   catFields.append( QgsField( mFieldInfo->key, QVariant::Int, QStringLiteral( "integer" ) ) );
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const QgsField &field : fields )
   {
     catFields.append( field );
   }
@@ -643,7 +643,7 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
 
   if ( mFieldInfo )
   {
-    Q_FOREACH ( const QgsField &field, fields )
+    for ( const QgsField &field : fields )
     {
       mTableFields.append( field );
       mAttributeFields.append( field );

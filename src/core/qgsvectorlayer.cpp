@@ -257,7 +257,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     layer->setDefaultValueExpression( i, defaultValueExpression( i ) );
 
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> constraints = fieldConstraintsAndStrength( i );
-    for ( QgsFieldConstraints::Constraint c : constraints.keys() )
+    Q_FOREACH ( QgsFieldConstraints::Constraint c,  constraints.keys() )
     {
       layer->setFieldConstraint( i, c, constraints.value( c ) );
     }

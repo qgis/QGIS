@@ -48,7 +48,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
       def.setUid( uid );
     }
   }
-  Q_FOREACH ( const QgsField &f, layer->dataProvider()->fields() )
+  const QgsFields providerFields = layer->dataProvider()->fields();
+  for ( const auto &f : providerFields )
   {
     columns << "t." + f.name();
   }
@@ -72,7 +73,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     }
     else
     {
-      Q_FOREACH ( const QgsField &f, joinedLayer->fields() )
+      const QgsFields joinFields = joinedLayer->fields();
+      for ( const QgsField &f : joinFields )
       {
         if ( f.name() == join.joinFieldName() )
           continue;

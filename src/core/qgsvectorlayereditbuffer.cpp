@@ -320,7 +320,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
     {
       if ( provider->doesStrictFeatureTypeCheck() )
       {
-        for ( QgsFeature f : mAddedFeatures )
+        for ( const auto &f : qgsAsConst( mAddedFeatures ) )
         {
           if ( ( ! f.hasGeometry() ) ||
                ( f.geometry().wkbType() == provider->wkbType() ) )

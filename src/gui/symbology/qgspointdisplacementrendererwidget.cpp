@@ -72,7 +72,8 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   //insert attributes into combo box
   if ( layer )
   {
-    Q_FOREACH ( const QgsField &f, layer->fields() )
+    const QgsFields layerFields = layer->fields();
+    for ( const QgsField &f : layerFields )
     {
       mLabelFieldComboBox->addItem( f.name() );
     }

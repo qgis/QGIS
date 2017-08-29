@@ -471,7 +471,7 @@ void QgsDwgImportDialog::on_buttonBox_accepted()
     QgsLayerTreeGroup *dwgGroup = QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup()->addGroup( leLayerGroup->text() );
     Q_ASSERT( dwgGroup );
 
-    Q_FOREACH ( QString layer, layers.keys() )
+    Q_FOREACH ( const QString &layer, layers.keys() )
     {
       createGroup( dwgGroup, layer, QStringList( layer ), layers[layer] );
     }

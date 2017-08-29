@@ -2606,7 +2606,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
     QTransform t;
     t.translate( p.x(), p.y() ).scale( xscale, yscale ).rotateRadians( angle );
 
-    Q_FOREACH ( QString name, QStringList() << "hatches" << "lines" << "polylines" << "texts" << "points" )
+    Q_FOREACH ( const QString &name, QStringList() << "hatches" << "lines" << "polylines" << "texts" << "points" )
     {
       OGRLayerH src = OGR_DS_ExecuteSQL( mDs, QString( "SELECT * FROM %1 WHERE block=%2" ).arg( name ).arg( handle ).toUtf8().constData(), nullptr, nullptr );
       if ( !src )

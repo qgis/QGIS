@@ -108,7 +108,7 @@ const QString QgsCrashReport::toHtml() const
   }
 
   QString report;
-  Q_FOREACH ( QString line, reportData )
+  Q_FOREACH ( const QString &line, reportData )
   {
     report += line + "<br>";
   }

@@ -371,7 +371,7 @@ bool QgsWFSSharedData::createCache()
     {
       mCacheTablename = QStringLiteral( "features" );
       sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
-      Q_FOREACH ( const QgsField &field, cacheFields )
+      for ( const QgsField &field : qgsAsConst( cacheFields ) )
       {
         QString type( QStringLiteral( "VARCHAR" ) );
         if ( field.type() == QVariant::Int )
