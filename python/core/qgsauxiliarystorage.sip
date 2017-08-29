@@ -92,6 +92,15 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
 
 
+    bool clear();
+%Docstring
+ Deletes all features from the layer. Changes are automatically committed
+ and the layer remains editable.
+
+ :return: true if changes are committed without error, false otherwise.
+ :rtype: bool
+%End
+
     QgsVectorLayerJoinInfo joinInfo() const;
 %Docstring
  Returns information to use for joining with primary key and so on.

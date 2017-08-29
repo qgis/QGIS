@@ -84,6 +84,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mLayer( lyr )
   , mOriginalSubsetSQL( lyr->subsetString() )
   , mAuxiliaryLayerActionNew( nullptr )
+  , mAuxiliaryLayerActionClear( nullptr )
 {
   setupUi( this );
   connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
@@ -360,6 +361,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAuxiliaryLayerActionNew = new QAction( tr( "Create" ), this );
   menu->addAction( mAuxiliaryLayerActionNew );
   connect( mAuxiliaryLayerActionNew, &QAction::triggered, this, &QgsVectorLayerProperties::onAuxiliaryLayerNew );
+
+  mAuxiliaryLayerActionClear = new QAction( tr( "Clear" ), this );
+  menu->addAction( mAuxiliaryLayerActionClear );
+  connect( mAuxiliaryLayerActionClear, &QAction::triggered, this, &QgsVectorLayerProperties::onAuxiliaryLayerClear );
 
   mAuxiliaryStorageActions->setMenu( menu );
 
@@ -1552,5 +1557,26 @@ void QgsVectorLayerProperties::onAuxiliaryLayerNew()
   if ( dlg.exec() == QDialog::Accepted )
   {
     updateAuxiliaryStoragePage( true );
+  }
+}
+
+void QgsVectorLayerProperties::onAuxiliaryLayerClear()
+{
+  QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
+
+  if ( !alayer )
+    return;
+
+  const QString msg = tr( "Are you sure you want to clear auxiliary data for %1" ).arg( mLayer->name() );
+  QMessageBox::StandardButton reply;
+  reply = QMessageBox::question( this, "Clear auxiliary data", msg, QMessageBox::Yes | QMessageBox::No );
+
+  if ( reply == QMessageBox::Yes )
+  {
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    alayer->clear();
+    QApplication::restoreOverrideCursor();
+    updateAuxiliaryStoragePage( true );
+    mLayer->triggerRepaint();
   }
 }

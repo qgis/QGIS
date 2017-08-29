@@ -123,6 +123,14 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     QgsAuxiliaryLayer &operator=( QgsAuxiliaryLayer const &rhs ) = delete;
 
     /**
+     * Deletes all features from the layer. Changes are automatically committed
+     * and the layer remains editable.
+     *
+     * \returns true if changes are committed without error, false otherwise.
+     */
+    bool clear();
+
+    /**
      * Returns information to use for joining with primary key and so on.
      */
     QgsVectorLayerJoinInfo joinInfo() const;

@@ -115,6 +115,14 @@ void QgsAuxiliaryField::init( const QgsPropertyDefinition &def )
   }
 }
 
+bool QgsAuxiliaryLayer::clear()
+{
+  bool rc = deleteFeatures( allFeatureIds() );
+  commitChanges();
+  startEditing();
+  return rc;
+}
+
 QString QgsAuxiliaryField::name( const QgsPropertyDefinition &def, bool joined )
 {
   QString origin;
