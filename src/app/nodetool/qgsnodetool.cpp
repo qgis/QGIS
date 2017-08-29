@@ -200,6 +200,8 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 QgsNodeTool::QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
 {
+  setAdvancedDigitizingAllowed( false );
+
   mSnapMarker = new QgsVertexMarker( canvas );
   mSnapMarker->setIconType( QgsVertexMarker::ICON_CROSS );
   mSnapMarker->setColor( Qt::magenta );
@@ -1029,7 +1031,7 @@ void QgsNodeTool::startDragging( QgsMapMouseEvent *e )
     return;
 
   // activate advanced digitizing dock
-  setMode( CaptureLine );
+  setAdvancedDigitizingAllowed( true );
 
   // adding a new vertex instead of moving a vertex
   if ( m.hasEdge() )
@@ -1260,7 +1262,7 @@ void QgsNodeTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
   Q_ASSERT( m.hasEdge() );
 
   // activate advanced digitizing dock
-  setMode( CaptureLine );
+  setAdvancedDigitizingAllowed( true );
 
   mDraggingVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() + 1 ) );
   mDraggingVertexType = AddingVertex;
@@ -1290,7 +1292,7 @@ void QgsNodeTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint )
   Q_ASSERT( mMouseAtEndpoint );
 
   // activate advanced digitizing dock
-  setMode( CaptureLine );
+  setAdvancedDigitizingAllowed( true );
 
   mDraggingVertex.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId ) );
   mDraggingVertexType = AddingEndpoint;
@@ -1315,7 +1317,7 @@ void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsP
   Q_ASSERT( m.hasEdge() );
 
   // activate advanced digitizing
-  setMode( CaptureLine );
+  setAdvancedDigitizingAllowed( true );
 
   mDraggingEdge = true;
   mDraggingExtraVertices.clear();
@@ -1354,7 +1356,7 @@ void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsP
 void QgsNodeTool::stopDragging()
 {
   // deactivate advanced digitizing
-  setMode( CaptureNone );
+  setAdvancedDigitizingAllowed( false );
 
   // stop adv digitizing
   QMouseEvent mouseEvent( QEvent::MouseButtonRelease,
@@ -1399,7 +1401,7 @@ void QgsNodeTool::moveEdge( const QgsPointXY &mapPoint )
 void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match *mapPointMatch )
 {
   // deactivate advanced digitizing
-  setMode( CaptureNone );
+  setAdvancedDigitizingAllowed( false );
 
   QgsVectorLayer *dragLayer = mDraggingVertex->layer;
   QgsFeatureId dragFid = mDraggingVertex->fid;

@@ -18,7 +18,7 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 #include "qgsmaptoolcapture.h"
 %End
   public:
-    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = CaptureNone );
+    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 %Docstring
 constructor
 %End

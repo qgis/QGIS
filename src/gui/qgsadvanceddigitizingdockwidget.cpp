@@ -872,12 +872,12 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
     return false;
   }
 
-  bool previousPointExist, penulPointExist, mSnappedSegmentExist;
+  bool previousPointExist, penulPointExist, snappedSegmentExist;
   QgsPointXY previousPt = previousPoint( &previousPointExist );
   QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
-  QList<QgsPointXY> mSnappedSegment = e->snapSegment( &mSnappedSegmentExist, true );
+  mSnappedSegment = e->snapSegment( &snappedSegmentExist, true );
 
-  if ( !previousPointExist || !mSnappedSegmentExist )
+  if ( !previousPointExist || !snappedSegmentExist )
   {
     return false;
   }
