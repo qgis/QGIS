@@ -611,6 +611,15 @@ void QgsLabelingGui::updateUi()
   {
     chkMergeLines->setToolTip( QString() );
   }
+
+  mCoordXDDBtn->updateFieldLists();
+  mCoordXDDBtn->updateGui();
+
+  mCoordYDDBtn->updateFieldLists();
+  mCoordYDDBtn->updateGui();
+
+  mCoordRotationDDBtn->updateFieldLists();
+  mCoordRotationDDBtn->updateGui();
 }
 
 void QgsLabelingGui::createAuxiliaryField()
@@ -640,4 +649,6 @@ void QgsLabelingGui::createAuxiliaryField()
   button->updateFieldLists();
   button->setToProperty( property );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
+
+  emit auxiliaryFieldCreated();
 }

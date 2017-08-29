@@ -83,6 +83,8 @@ class CORE_EXPORT QgsAuxiliaryField : public QgsField
     friend class QgsAuxiliaryLayer;
 };
 
+typedef QList<QgsAuxiliaryField> QgsAuxiliaryFields;
+
 /**
  * \class QgsAuxiliaryLayer
  *
@@ -143,6 +145,11 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * \returns true if the auxiliary field is well added, false otherwise
      */
     bool addAuxiliaryField( const QgsPropertyDefinition &definition );
+
+    /**
+     * Returns a list of all auxiliary fields currently managed by the layer.
+     */
+    QgsAuxiliaryFields auxiliaryFields() const;
 
     /**
      * Commit changes and starts editing then.

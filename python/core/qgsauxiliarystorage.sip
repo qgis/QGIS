@@ -58,6 +58,8 @@ class QgsAuxiliaryField : QgsField
 
 };
 
+typedef QList<QgsAuxiliaryField> QgsAuxiliaryFields;
+
 class QgsAuxiliaryLayer : QgsVectorLayer
 {
 %Docstring
@@ -115,6 +117,12 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
  :return: true if the auxiliary field is well added, false otherwise
  :rtype: bool
+%End
+
+    QgsAuxiliaryFields auxiliaryFields() const;
+%Docstring
+ Returns a list of all auxiliary fields currently managed by the layer.
+ :rtype: QgsAuxiliaryFields
 %End
 
     bool save();

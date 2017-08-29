@@ -147,6 +147,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layout->setMargin( 0 );
     labelingDialog = new QgsLabelingWidget( mLayer, QgisApp::instance()->mapCanvas(), labelingFrame );
     labelingDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
+    connect( labelingDialog, &QgsLabelingWidget::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
   }
@@ -256,6 +257,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   diagLayout->setMargin( 0 );
   diagramPropertiesDialog = new QgsDiagramProperties( mLayer, mDiagramFrame, QgisApp::instance()->mapCanvas() );
   diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
+  connect( diagramPropertiesDialog, &QgsDiagramProperties::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
 
@@ -1467,7 +1469,7 @@ void QgsVectorLayerProperties::showHelp()
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
 }
 
-void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
+void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
 {
   const QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
 
@@ -1486,6 +1488,33 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
 
     // update actions
     mAuxiliaryLayerActionNew->setEnabled( false );
+
+    const QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
+    if ( alayer )
+    {
+      const int fields = alayer->auxiliaryFields().count();
+      mAuxiliaryStorageFieldsLineEdit->setText( QString::number( fields ) );
+
+      // add fields
+      mAuxiliaryStorageFieldsTree->clear();
+      Q_FOREACH ( const QgsAuxiliaryField &field, alayer->auxiliaryFields() )
+      {
+        const QgsPropertyDefinition prop = field.propertyDefinition();
+        QTreeWidgetItem *item = new QTreeWidgetItem();
+
+        if ( prop.origin() == QgsPropertyDefinition::Pal )
+          item->setText( 0, "Pal" );
+        else if ( prop.origin() == QgsPropertyDefinition::Diagram )
+          item->setText( 0, "Diagram" );
+        else
+          item->setText( 0, "Unknown" );
+
+        item->setText( 1, prop.name() );
+        item->setText( 2, field.typeName() );
+
+        mAuxiliaryStorageFieldsTree->addTopLevelItem( item );
+      }
+    }
   }
   else
   {
@@ -1500,6 +1529,11 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
     mAuxiliaryStorageFieldsLineEdit->setText( QString() );
     mAuxiliaryStorageFeaturesLineEdit->setText( QString() );
   }
+
+  if ( reset && labelingDialog )
+  {
+    labelingDialog->resetSettings(); // update data defined buttons
+  }
 }
 
 void QgsVectorLayerProperties::onAuxiliaryLayerNew()
@@ -1512,6 +1546,6 @@ void QgsVectorLayerProperties::onAuxiliaryLayerNew()
   QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    updateAuxiliaryStoragePage();
+    updateAuxiliaryStoragePage( true );
   }
 }

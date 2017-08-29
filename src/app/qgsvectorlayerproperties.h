@@ -208,7 +208,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, const int insertIndex = -1 );
 
-    void updateAuxiliaryStoragePage();
+    void updateAuxiliaryStoragePage( bool reset = false );
 
     QgsExpressionContext mContext;
 

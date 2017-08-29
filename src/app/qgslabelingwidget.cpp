@@ -96,6 +96,12 @@ void QgsLabelingWidget::adaptToLayer()
   {
     mLabelModeComboBox->setCurrentIndex( 0 );
   }
+
+  QgsLabelingGui *lg = qobject_cast<QgsLabelingGui *>( mWidget );
+  if ( lg )
+  {
+    lg->updateUi();
+  }
 }
 
 void QgsLabelingWidget::writeSettingsToLayer()
@@ -156,6 +162,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
     QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
     simpleWidget->setDockMode( dockMode() );
     connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
+    connect( simpleWidget, &QgsLabelingGui::auxiliaryFieldCreated, this, &QgsLabelingWidget::auxiliaryFieldCreated );
 
     if ( index == 3 )
       simpleWidget->setLabelMode( QgsLabelingGui::ObstaclesOnly );

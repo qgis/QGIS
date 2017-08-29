@@ -39,6 +39,10 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     //! Adds an attribute from the list of available attributes to the assigned attributes with a random color.
     void addAttribute( QTreeWidgetItem *item );
 
+  signals:
+
+    void auxiliaryFieldCreated();
+
   public slots:
     void apply();
     void mDiagramTypeComboBox_currentIndexChanged( int index );

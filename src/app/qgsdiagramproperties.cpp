@@ -1079,4 +1079,6 @@ void QgsDiagramProperties::createAuxiliaryField()
   button->updateFieldLists();
   button->setToProperty( property );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
+
+  emit auxiliaryFieldCreated();
 }

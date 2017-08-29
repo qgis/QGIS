@@ -84,20 +84,24 @@ void QgsAuxiliaryField::init( const QgsPropertyDefinition &def )
   if ( !def.name().isEmpty() )
   {
     QVariant::Type type;
+    QString typeName;
     int len( 0 ), precision( 0 );
     switch ( def.dataType() )
     {
       case QgsPropertyDefinition::DataTypeString:
         type = QVariant::String;
         len = 50;
+        typeName = "String";
         break;
       case QgsPropertyDefinition::DataTypeNumeric:
         type = QVariant::Double;
         len = 0;
         precision = 0;
+        typeName = "Real";
         break;
       case QgsPropertyDefinition::DataTypeBoolean:
         type = QVariant::Int; // sqlite does not have a bool type
+        typeName = "Integer";
         break;
       default:
         break;
@@ -105,6 +109,7 @@ void QgsAuxiliaryField::init( const QgsPropertyDefinition &def )
 
     setType( type );
     setName( name( def ) );
+    setTypeName( typeName );
     setLength( len );
     setPrecision( precision );
   }
@@ -176,6 +181,16 @@ bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definiti
   updateFields();
 
   return rc;
+}
+
+QgsAuxiliaryFields QgsAuxiliaryLayer::auxiliaryFields() const
+{
+  QgsAuxiliaryFields afields;
+
+  for ( int i = 2; i < fields().count(); i++ ) // ignore rowid and PK field
+    afields.append( QgsAuxiliaryField( fields().field( i ) ) );
+
+  return afields;
 }
 
 bool QgsAuxiliaryLayer::save()
