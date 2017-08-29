@@ -25,6 +25,9 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
 #include "qgssettings.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QMouseEvent>
 
@@ -467,7 +470,7 @@ bool QgsMapToolLabel::currentLabelDataDefinedPosition( double &x, bool &xSuccess
 
 bool QgsMapToolLabel::layerIsRotatable( QgsVectorLayer *vlayer, int &rotationCol ) const
 {
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->labeling() )
+  if ( !vlayer || !vlayer->labeling() )
   {
     return false;
   }
@@ -485,7 +488,23 @@ bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayer
 {
   QString rColName = dataDefinedColumnName( QgsPalLayerSettings::LabelRotation, settings );
   rotationCol = layer->fields().lookupField( rColName );
-  return rotationCol != -1;
+
+  if ( rotationCol >= 0 )
+  {
+    bool auxiliaryField = isAuxiliaryField( layer, rotationCol );
+
+    if ( !auxiliaryField )
+    {
+      if ( layer->isEditable() )
+        return true;
+      else
+        return false;
+    }
+    else
+      return true;
+  }
+
+  return false;
 }
 
 
@@ -580,7 +599,26 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
           yCol = vlayer->fields().lookupField( ddY.field() );
         }
       }
-      return xCol >= 0 && yCol >= 0;
+
+      // diagrams may be moveable even if layer is not editable when data
+      // defined columns come from auxiliary storage
+      if ( xCol >= 0 && yCol >= 0 )
+      {
+        bool xAuxiliaryField = isAuxiliaryField( vlayer, xCol );
+        bool yAuxiliaryField = isAuxiliaryField( vlayer, yCol );
+
+        if ( ! xAuxiliaryField || ! yAuxiliaryField )
+        {
+          if ( vlayer->isEditable() )
+            return true;
+          else
+            return false;
+        }
+        else
+          return true;
+      }
+
+      return false;
     }
   }
   return false;
@@ -588,7 +626,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
 
 bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
 {
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->labeling() )
+  if ( !vlayer || !vlayer->labeling() )
   {
     return false;
   }
@@ -606,10 +644,30 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
 {
   QString xColName = dataDefinedColumnName( QgsPalLayerSettings::PositionX, settings );
   QString yColName = dataDefinedColumnName( QgsPalLayerSettings::PositionY, settings );
+
   //return !xColName.isEmpty() && !yColName.isEmpty();
   xCol = vlayer->fields().lookupField( xColName );
   yCol = vlayer->fields().lookupField( yColName );
-  return ( xCol != -1 && yCol != -1 );
+
+  // labels may be moveable even if layer is not editable when data defined
+  // columns come from auxiliary storage
+  if ( xCol >= 0 && yCol >= 0 )
+  {
+    bool xAuxiliaryField = isAuxiliaryField( vlayer, xCol );
+    bool yAuxiliaryField = isAuxiliaryField( vlayer, yCol );
+
+    if ( ! xAuxiliaryField || ! yAuxiliaryField )
+    {
+      if ( vlayer->isEditable() )
+        return true;
+      else
+        return false;
+    }
+    else
+      return true;
+  }
+
+  return false;
 }
 
 bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
@@ -621,7 +679,7 @@ bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol 
 
 bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
 {
-  if ( !vlayer || !vlayer->isEditable() || !vlayer->labeling() )
+  if ( !vlayer || !vlayer->labeling() )
   {
     return false;
   }
@@ -631,8 +689,20 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
     QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
                         vlayer->labeling()->settings( providerId ) );
     showCol = vlayer->fields().lookupField( fieldname );
-    if ( showCol != -1 )
-      return true;
+    if ( showCol >= 0 )
+    {
+      bool auxiliaryField = isAuxiliaryField( vlayer, showCol );
+
+      if ( ! auxiliaryField )
+      {
+        if ( vlayer->isEditable() )
+          return true;
+        else
+          return false;
+      }
+      else
+        return true;
+    }
   }
 
   return false;
@@ -665,7 +735,7 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
 {
   showCol = -1;
 
-  if ( vlayer && vlayer->isEditable() && vlayer->diagramsEnabled() )
+  if ( vlayer && vlayer->diagramsEnabled() )
   {
     if ( const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings() )
     {
@@ -679,7 +749,22 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
     }
   }
 
-  return showCol >= 0;
+  if ( showCol >= 0 )
+  {
+    bool auxiliaryField = isAuxiliaryField( vlayer, showCol );
+
+    if ( !auxiliaryField )
+    {
+      if ( vlayer->isEditable() )
+        return true;
+      else
+        return false;
+    }
+    else
+      return true;
+  }
+
+  return false;
 }
 
 //
@@ -703,4 +788,20 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
     layer = nullptr;
     settings = QgsPalLayerSettings();
   }
+}
+
+bool QgsMapToolLabel::isAuxiliaryField( QgsVectorLayer *layer, int index ) const
+{
+  bool auxiliaryField = false;
+
+  if ( index >= 0 && layer->fields().fieldOrigin( index ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( index, layer->fields(), srcFieldIndex );
+
+    if ( info && info->joinLayerId() == layer->auxiliaryLayer()->id() )
+      auxiliaryField = true;
+  }
+
+  return auxiliaryField;
 }
