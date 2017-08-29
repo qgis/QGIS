@@ -67,20 +67,27 @@ class QgsPropertyDefinition
       DataTypeBoolean,
     };
 
+    enum Origin
+    {
+      Diagram,
+      Pal
+    };
+
     QgsPropertyDefinition();
 %Docstring
  Constructs an empty property.
 %End
 
-    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, Origin origin = QgsPropertyDefinition::Pal );
 %Docstring
  Constructor for QgsPropertyDefinition, using a standard property template.
  \param name is used internally and should be a unique, alphanumeric string.
  \param description can be any localised string describing what the property is used for.
  \param type one of the predefined standard property template
+ \param origin The origin of the property
 %End
 
-    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, Origin origin = QgsPropertyDefinition::Pal );
 %Docstring
  Constructor for custom QgsPropertyDefinitions.
  \param name is used internally and should be a unique, alphanumeric string.
@@ -88,12 +95,19 @@ class QgsPropertyDefinition
  \param description can be any localised string describing what the property is used for.
  \param helpText parameter should specify a descriptive string for users outlining the types
  of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
+ \param origin The origin of the property
 %End
 
     QString name() const;
 %Docstring
  Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
  :rtype: str
+%End
+
+    Origin origin() const;
+%Docstring
+ Returns the origin of the property
+ :rtype: Origin
 %End
 
     QString description() const;

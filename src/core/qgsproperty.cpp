@@ -21,10 +21,11 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type, Origin origin )
   : mName( name )
   , mDescription( description )
   , mStandardType( type )
+  , mOrigin( origin )
 {
   switch ( mStandardType )
   {
@@ -169,11 +170,12 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
   }
 }
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, Origin origin )
   : mName( name )
   , mDescription( description )
   , mTypes( dataType )
   , mHelpText( helpText )
+  , mOrigin( origin )
 {}
 
 bool QgsPropertyDefinition::supportsAssistant() const
