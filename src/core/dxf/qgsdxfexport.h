@@ -154,6 +154,20 @@ class CORE_EXPORT QgsDxfExport
     bool layerTitleAsName() { return mLayerTitleAsName; }
 
     /**
+     * Force 2d output (eg. to support linewidth in polylines)
+     * \param force2d flag
+     * \see force2d
+     */
+    void setForce2d( bool force2d ) { mForce2d = force2d; }
+
+    /**
+     * Retrieve whether the output should be forced to 2d
+     * \returns flag
+     * \see setForce2d
+     */
+    bool force2d() { return mForce2d; }
+
+    /**
      * Get DXF palette index of nearest entry for given color
      * @param color
      */
@@ -465,6 +479,7 @@ class CORE_EXPORT QgsDxfExport
     QgsMapSettings mMapSettings;
     QHash<QString, int> mLayerNameAttribute;
     double mFactor;
+    bool mForce2d;
 };
 
 #endif // QGSDXFEXPORT_H

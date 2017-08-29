@@ -130,6 +130,20 @@ class QgsDxfExport
     bool layerTitleAsName();
 
     /**
+     * Force 2d output (eg. to support linewidth in polylines)
+     * \param force2d flag
+     * \see force2d
+     */
+    void setForce2d( bool force2d );
+
+    /**
+     * Retrieve whether the output should be forced to 2d
+     * \returns flag
+     * \see setForce2d
+     */
+    bool force2d();
+
+    /**
      * Get DXF palette index of nearest entry for given color
      * @param color
      */

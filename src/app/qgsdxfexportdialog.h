@@ -87,6 +87,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QString saveFile() const;
     bool exportMapExtent() const;
     bool layerTitleAsName() const;
+    bool force2d() const;
     QString mapTheme() const;
     QString encoding() const;
     long crs() const;

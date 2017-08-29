@@ -52,7 +52,6 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
   if ( !vl )
     return nullptr;
 
-
   QgsFieldComboBox *w = new QgsFieldComboBox( parent );
   w->setLayer( vl );
   return w;
@@ -601,6 +600,11 @@ bool QgsDxfExportDialog::exportMapExtent() const
 bool QgsDxfExportDialog::layerTitleAsName() const
 {
   return mLayerTitleAsName->isChecked();
+}
+
+bool QgsDxfExportDialog::force2d() const
+{
+  return mForce2d->isChecked();
 }
 
 void QgsDxfExportDialog::saveSettings()

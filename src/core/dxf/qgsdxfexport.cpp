@@ -373,6 +373,7 @@ QgsDxfExport::QgsDxfExport()
     , mNextHandleId( DXF_HANDSEED )
     , mBlockCounter( 0 )
     , mCrs( -1 )
+    , mForce2d( false )
 {
 }
 
@@ -444,7 +445,7 @@ void QgsDxfExport::writeGroup( int code, const QgsPoint &p, double z, bool skipz
 {
   writeGroup( code + 10, p.x() );
   writeGroup( code + 20, p.y() );
-  if ( !skipz )
+  if ( !mForce2d && !skipz )
     writeGroup( code + 30, z );
 }
 
@@ -452,7 +453,7 @@ void QgsDxfExport::writeGroup( int code, const QgsPointV2 &p )
 {
   writeGroup( code + 10, p.x() );
   writeGroup( code + 20, p.y() );
-  if ( p.is3D() && qIsFinite( p.z() ) )
+  if ( !mForce2d && p.is3D() && qIsFinite( p.z() ) )
     writeGroup( code + 30, p.z() );
 }
 
@@ -3472,7 +3473,7 @@ void QgsDxfExport::writePolyline( const QgsPointSequenceV2 &line, const QString&
     return;
   }
 
-  if ( !line.at( 0 ).is3D() )
+  if ( mForce2d || !line.at( 0 ).is3D() )
   {
     writeGroup( 0, "LWPOLYLINE" );
     writeHandle();

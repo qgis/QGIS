@@ -14,6 +14,13 @@
    <string>DXF export</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="2" column="0">
+    <widget class="QLabel" name="mSymbologyScaleLabel">
+     <property name="text">
+      <string>Symbology scale</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="2">
     <widget class="QToolButton" name="mFileSelectionButton">
      <property name="text">
@@ -51,13 +58,6 @@
     <widget class="QLabel" name="mSymbologyModeLabel">
      <property name="text">
       <string>Symbology mode</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mSymbologyScaleLabel">
-     <property name="text">
-      <string>Symbology scale</string>
      </property>
     </widget>
    </item>
@@ -122,7 +122,7 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="0" colspan="3">
+   <item row="13" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -170,6 +170,13 @@
      </property>
     </widget>
    </item>
+   <item row="12" column="0" colspan="3">
+    <widget class="QCheckBox" name="mForce2d">
+     <property name="text">
+      <string>Force 2d output (eg. to support polyline width)</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -195,12 +202,14 @@
   <tabstop>mFileSelectionButton</tabstop>
   <tabstop>mSymbologyModeComboBox</tabstop>
   <tabstop>mEncoding</tabstop>
+  <tabstop>mScaleWidget</tabstop>
   <tabstop>mVisibilityPresets</tabstop>
   <tabstop>mTreeView</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mUnSelectAllButton</tabstop>
   <tabstop>mLayerTitleAsName</tabstop>
   <tabstop>mMapExtentCheckBox</tabstop>
+  <tabstop>mForce2d</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
