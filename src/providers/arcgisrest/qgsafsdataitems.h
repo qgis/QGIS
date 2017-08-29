@@ -62,6 +62,8 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
 
 class QgsAfsLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
+
   public:
     QgsAfsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &title, const QString &authid );
 };

@@ -158,13 +158,6 @@ class DRW_Coord
     DRW_Coord(): x( 0 ), y( 0 ), z( 0 ) {}
     DRW_Coord( double ix, double iy, double iz ): x( ix ), y( iy ), z( iz ) {}
 
-    DRW_Coord &operator = ( const DRW_Coord &data )
-    {
-      x = data.x;
-      y = data.y;
-      z = data.z;
-      return *this;
-    }
     //! < convert to unitary vector
     void unitize()
     {

@@ -1285,7 +1285,6 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   QTreeWidgetItem *childFields = new QTreeWidgetItem();
   childFields->setText( 0, "Joined fields" );
   const QStringList *list = join.joinFieldNamesSubset();
-  QString fields;
   if ( list )
     childFields->setText( 1, QStringLiteral( "%1" ).arg( list->count() ) );
   else

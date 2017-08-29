@@ -151,7 +151,7 @@ void QgsDwgImportDialog::on_leLayerGroup_textChanged( const QString &text )
 
 void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 {
-  if ( !QFileInfo( leDatabase->text() ).exists() )
+  if ( !QFileInfo::exists( leDatabase->text() ) )
     return;
 
   CursorOverride waitCursor;
@@ -269,7 +269,7 @@ void QgsDwgImportDialog::on_pbImportDrawing_clicked()
 
 QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, QString layerFilter, QString table )
 {
-  QgsVectorLayer *l = new QgsVectorLayer( QString( "%1|layername=%2" ).arg( leDatabase->text() ).arg( table ), table, "ogr", false );
+  QgsVectorLayer *l = new QgsVectorLayer( QString( "%1|layername=%2" ).arg( leDatabase->text(), table ), table, "ogr", false );
   l->setSubsetString( QString( "%1space=0 AND block=-1" ).arg( layerFilter ) );
 
   if ( l->featureCount() == 0 )
@@ -471,7 +471,7 @@ void QgsDwgImportDialog::on_buttonBox_accepted()
     QgsLayerTreeGroup *dwgGroup = QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup()->addGroup( leLayerGroup->text() );
     Q_ASSERT( dwgGroup );
 
-    Q_FOREACH ( QString layer, layers.keys() )
+    Q_FOREACH ( const QString &layer, layers.keys() )
     {
       createGroup( dwgGroup, layer, QStringList( layer ), layers[layer] );
     }

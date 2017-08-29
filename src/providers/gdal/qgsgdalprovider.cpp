@@ -910,8 +910,8 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
       QStringList metadata = cStringList2Q_( GDALmetadata );
       QStringList dimExtraValues;
       QMap< QString, QString > unitsMap;
-      for ( QStringList::const_iterator i = metadata.begin();
-            i != metadata.end(); ++i )
+      for ( QStringList::const_iterator i = metadata.constBegin();
+            i != metadata.constEnd(); ++i )
       {
         QString val( *i );
         if ( !val.startsWith( QLatin1String( "NETCDF_DIM_EXTRA" ) ) && !val.contains( QLatin1String( "#units=" ) ) )
@@ -937,15 +937,15 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
         if ( GDALmetadata )
         {
           metadata = cStringList2Q_( GDALmetadata );
-          for ( QStringList::const_iterator i = metadata.begin();
-                i != metadata.end(); ++i )
+          for ( QStringList::const_iterator i = metadata.constBegin();
+                i != metadata.constEnd(); ++i )
           {
             QString val( *i );
             if ( !val.startsWith( QLatin1String( "NETCDF_DIM_" ) ) )
               continue;
             QStringList values = val.split( '=' );
-            for ( QStringList::const_iterator j = dimExtraValues.begin();
-                  j != dimExtraValues.end(); ++j )
+            for ( QStringList::const_iterator j = dimExtraValues.constBegin();
+                  j != dimExtraValues.constEnd(); ++j )
             {
               QString dim = ( *j );
               if ( values.at( 0 ) != "NETCDF_DIM_" + dim )
@@ -1628,8 +1628,8 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
       mGdalDataset = mGdalBaseDataset;
 
       // restore former configOptions
-      for ( QgsStringMap::const_iterator it = myConfigOptionsOld.begin();
-            it != myConfigOptionsOld.end(); ++it )
+      for ( QgsStringMap::const_iterator it = myConfigOptionsOld.constBegin();
+            it != myConfigOptionsOld.constEnd(); ++it )
       {
         QByteArray key = it.key().toLocal8Bit();
         QByteArray value = it.value().toLocal8Bit();
@@ -1655,8 +1655,8 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> &rasterPyr
   }
 
   // restore former configOptions
-  for ( QgsStringMap::const_iterator it = myConfigOptionsOld.begin();
-        it != myConfigOptionsOld.end(); ++it )
+  for ( QgsStringMap::const_iterator it = myConfigOptionsOld.constBegin();
+        it != myConfigOptionsOld.constEnd(); ++it )
   {
     QByteArray key = it.key().toLocal8Bit();
     QByteArray value = it.value().toLocal8Bit();

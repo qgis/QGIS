@@ -33,6 +33,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
 
     SET(GRASS_LIBRARY_MOC_HDRS
       ../qgsgrass.h
+      ../qgsgrassdatafile.h
       ../qgsgrassfeatureiterator.h
       ../qgsgrassimport.h
       ../qgsgrassprovider.h

@@ -610,11 +610,12 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         }
 
         // list of feature stores for a single sublayer
-        QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
+        const QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
 
-        Q_FOREACH ( QgsFeatureStore featureStore, featureStoreList )
+        for ( const QgsFeatureStore &featureStore : featureStoreList )
         {
-          Q_FOREACH ( QgsFeature feature, featureStore.features() )
+          const QgsFeatureList storeFeatures = featureStore.features();
+          for ( QgsFeature feature : storeFeatures )
           {
             attributes.clear();
             // WMS sublayer and feature type, a sublayer may contain multiple feature types.

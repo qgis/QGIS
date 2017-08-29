@@ -24,6 +24,7 @@
 
 #include "qgspanelwidget.h"
 #include "qgsproperty.h"
+#include <QStyledItemDelegate>
 
 class QStandardItemModel;
 
@@ -75,5 +76,31 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
     QgsMapCanvas *mMapCanvas = nullptr;
     QStandardItemModel *mSizeClassesModel;
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+//! Simple delegate to allow only numeric values
+class SizeClassDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    SizeClassDelegate( QObject *parent )
+      : QStyledItemDelegate( parent )
+    {
+    }
+
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
+    {
+      QLineEdit *lineEdit = new QLineEdit( parent );
+      QDoubleValidator *validator = new QDoubleValidator( 0, 1e6, 1, lineEdit );
+      lineEdit->setValidator( validator );
+      return lineEdit;
+    }
+};
+
+///@endcond
+#endif
 
 #endif // QGSDATADEFINEDSIZELEGENDWIDGET_H

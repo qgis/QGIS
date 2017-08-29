@@ -124,8 +124,6 @@ void QgsExpressionSelectionDialog::on_mButtonZoomToFeatures_clicked()
   if ( mExpressionBuilder->expressionText().isEmpty() || !mMapCanvas )
     return;
 
-  QgsFeatureIds ids;
-
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )

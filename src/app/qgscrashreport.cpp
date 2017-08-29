@@ -108,7 +108,7 @@ const QString QgsCrashReport::toHtml() const
   }
 
   QString report;
-  Q_FOREACH ( QString line, reportData )
+  Q_FOREACH ( const QString &line, reportData )
   {
     report += line + "<br>";
   }
@@ -125,8 +125,10 @@ const QString QgsCrashReport::crashID() const
   // Hashes the full stack.
   Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
   {
+#if 0
     QFileInfo fileInfo( line.fileName );
     QString filename( fileInfo.fileName() );
+#endif
     data += line.symbolName;
   }
 

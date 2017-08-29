@@ -529,7 +529,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
               x += fontSize / 2;
               y += fontSize;
             }
-            QString resizeSpec = QString( "%1 %2" ).arg( qgsDoubleToString( x, 2 ) ).arg( qgsDoubleToString( y, 2 ) );
+            QString resizeSpec = QString( "%1 %2" ).arg( qgsDoubleToString( x, 2 ), qgsDoubleToString( y, 2 ) );
             QDomElement voMargin =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-margin" ), resizeSpec );
             textSymbolizerElement.appendChild( voMargin );
           }

@@ -3207,7 +3207,6 @@ void QgsComposition::refreshPageSize( const QgsExpressionContext *context )
   double pageWidth = mPageWidth;
   double pageHeight = mPageHeight;
 
-  QVariant exprVal;
   //in order of precedence - first consider predefined page size
   bool ok = false;
   QString presetString = mDataDefinedProperties.valueAsString( QgsComposerObject::PresetPaperSize, *evalContext, QString(), &ok );

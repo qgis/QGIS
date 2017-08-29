@@ -133,16 +133,16 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
   if ( !settings.contains( QStringLiteral( "/colors/palettecolors" ) ) )
   {
     //no custom palette, return default colors
-    colorList.append( qMakePair( QColor( "#000000" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#ffffff" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#a6cee3" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#1f78b4" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#b2df8a" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#33a02c" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#fb9a99" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#e31a1c" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#fdbf6f" ), QString() ) );
-    colorList.append( qMakePair( QColor( "#ff7f00" ), QString() ) );
+    colorList.append( qMakePair( QColor( 0, 0, 0 ), QString() ) );
+    colorList.append( qMakePair( QColor( 255, 255, 255 ), QString() ) );
+    colorList.append( qMakePair( QColor( 166, 206, 227 ), QString() ) );
+    colorList.append( qMakePair( QColor( 31, 120, 180 ), QString() ) );
+    colorList.append( qMakePair( QColor( 178, 223, 138 ), QString() ) );
+    colorList.append( qMakePair( QColor( 51, 160, 44 ), QString() ) );
+    colorList.append( qMakePair( QColor( 251, 154, 153 ), QString() ) );
+    colorList.append( qMakePair( QColor( 227, 26, 28 ), QString() ) );
+    colorList.append( qMakePair( QColor( 253, 191, 111 ), QString() ) );
+    colorList.append( qMakePair( QColor( 255, 127, 0 ), QString() ) );
 
     return colorList;
   }

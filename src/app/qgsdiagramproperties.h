@@ -94,6 +94,8 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
 class EditBlockerDelegate: public QStyledItemDelegate
 {
+    Q_OBJECT
+
   public:
     EditBlockerDelegate( QObject *parent = nullptr )
       : QStyledItemDelegate( parent )

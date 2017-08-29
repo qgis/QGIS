@@ -50,14 +50,14 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
   public:
 
-    Q_ENUMS( Mode )
-
     //! Available button modes.
     enum Mode
     {
       ModeTextRenderer,  //!< Configure font settings for use with QgsTextRenderer
       ModeQFont, //!< Configure font settings for use with QFont objects
     };
+
+    Q_ENUM( Mode );
 
     /**
      * Construct a new font button.

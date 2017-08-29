@@ -888,7 +888,7 @@ bool QgsProcessingParameters::parseScriptCodeParameterOptions( const QString &co
 
   name = m.captured( 1 );
   QString tokens = m.captured( 2 );
-  if ( tokens.toLower().startsWith( QStringLiteral( "optional" ) ) )
+  if ( tokens.startsWith( QStringLiteral( "optional" ), Qt::CaseInsensitive ) )
   {
     isOptional = true;
     tokens.remove( 0, 8 ); // length "optional" = 8

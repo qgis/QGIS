@@ -2009,7 +2009,8 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
     }
     else
     {
-      Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+      const QgsFields joinFields = joinFeature.fields();
+      for ( const QgsField &field : joinFields )
       {
         QString prefixedName = info->prefixedFieldName( field );
         QVariant val;

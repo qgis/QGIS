@@ -2010,8 +2010,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   query.setForwardOnly( true );
   if ( !query.exec( QStringLiteral( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name= N'layer_styles'" ) ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
@@ -2265,8 +2264,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   queryOk = query.exec( selectOthersQuery );
   if ( !queryOk )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return -1;
   }
   QgsDebugMsg( query.isActive() && query.size() );
@@ -2299,8 +2297,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   bool queryOk = query.exec( selectQmlQuery );
   if ( !queryOk )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     errCause = query.lastError().text();
     return QString();
   }

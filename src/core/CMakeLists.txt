@@ -659,6 +659,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
+  processing/qgsnativealgorithms.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h
@@ -669,6 +670,8 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterfilewritertask.h
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
+  raster/qgsrasterinterface.h
+  raster/qgsrasterlayerrenderer.h
 
   geometry/qgspoint.h
 
@@ -943,7 +946,6 @@ SET(QGIS_CORE_HDRS
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
 
-  processing/qgsnativealgorithms.h
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
@@ -980,7 +982,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterfilewriter.h
   raster/qgsrasterhistogram.h
   raster/qgsrasteridentifyresult.h
-  raster/qgsrasterinterface.h
   raster/qgsrasteriterator.h
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h

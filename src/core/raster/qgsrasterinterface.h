@@ -39,6 +39,8 @@
  */
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
+    Q_OBJECT
+
   public:
     //! Construct a new raster block feedback object
     QgsRasterBlockFeedback( QObject *parent = nullptr ) : QgsFeedback( parent ), mPreviewOnly( false ), mRenderPartialOutput( false ) {}

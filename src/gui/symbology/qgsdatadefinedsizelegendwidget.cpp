@@ -30,29 +30,6 @@
 #include "qgsvectorlayer.h"
 
 
-///@cond PRIVATE
-
-//! Simple delegate to allow only numeric values
-class SizeClassDelegate : public QStyledItemDelegate
-{
-  public:
-    SizeClassDelegate( QObject *parent )
-      : QStyledItemDelegate( parent )
-    {
-    }
-
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
-    {
-      QLineEdit *lineEdit = new QLineEdit( parent );
-      QDoubleValidator *validator = new QDoubleValidator( 0, 1e6, 1, lineEdit );
-      lineEdit->setValidator( validator );
-      return lineEdit;
-    }
-};
-
-///@endcond
-
-
 QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol, QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent )
   , mSizeProperty( ddSize )

@@ -564,7 +564,8 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
           }
           else
           {
-            Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+            const QgsFields joinFields = joinFeature.fields();
+            for ( const auto &field : joinFields )
             {
               QVariant newValue = joinFeature.attribute( field.name() );
               int fieldIndex = joinLayer->fields().indexOf( field.name() );
@@ -576,7 +577,8 @@ bool QgsVectorLayerJoinBuffer::addFeatures( QgsFeatureList &features, QgsFeature
         {
           // joined feature is added only if one of its field is not null
           bool notNullFields = false;
-          Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+          const QgsFields joinFields = joinFeature.fields();
+          for ( const auto &field : joinFields )
           {
             if ( field.name() == info.joinFieldName() )
               continue;

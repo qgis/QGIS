@@ -23,6 +23,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsabstractdatasourcewidget.h"
 
+#include <QItemDelegate>
+
 class QStandardItemModel;
 class QSortFilterProxyModel;
 class QgsProjectionSelectionDialog;
@@ -116,5 +118,17 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
 };
 
+/**
+ * Item delegate with tweaked sizeHint.
+ */
+class QgsAbstractDataSourceWidgetItemDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    //! Constructor
+    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+};
 
 #endif // QGSARCGISSERVICESOURCESELECT_H

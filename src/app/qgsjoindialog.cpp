@@ -171,7 +171,8 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer *layer )
 
   mUseJoinFieldsSubset->setChecked( false );
   QStandardItemModel *subsetModel = new QStandardItemModel( this );
-  Q_FOREACH ( const QgsField &field, vLayer->fields() )
+  const QgsFields layerFields = vLayer->fields();
+  for ( const QgsField &field : layerFields )
   {
     QStandardItem *subsetItem = new QStandardItem( field.name() );
     subsetItem->setCheckable( true );

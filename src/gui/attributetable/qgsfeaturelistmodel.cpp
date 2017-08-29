@@ -197,9 +197,9 @@ void QgsFeatureListModel::setInjectNull( bool injectNull )
 {
   if ( mInjectNull != injectNull )
   {
-    emit beginResetModel();
+    beginResetModel();
     mInjectNull = injectNull;
-    emit endResetModel();
+    endResetModel();
   }
 }
 

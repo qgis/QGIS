@@ -357,7 +357,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
       }
       if ( !srcLayer )
       {
-        importResults.append( tr( "%1: %2" ).arg( dropUri.name ).arg( error ) );
+        importResults.append( tr( "%1: %2" ).arg( dropUri.name, error ) );
         hasError = true;
         continue;
       }
@@ -370,7 +370,8 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
         // check if the destination layer already exists
         bool exists = false;
         // Q_FOREACH won't detach ...
-        for ( const auto child : children() )
+        const QVector< QgsDataItem *> c = children();
+        for ( const auto child : c )
         {
           if ( child->name() == dropUri.name )
           {

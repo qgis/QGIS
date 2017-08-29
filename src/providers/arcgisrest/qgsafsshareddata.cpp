@@ -26,8 +26,8 @@ QgsAfsSharedData::QgsAfsSharedData()
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
 {
   // If cached, return cached feature
-  QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );
-  if ( it != mCache.end() )
+  QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.constFind( id );
+  if ( it != mCache.constEnd() )
   {
     f = it.value();
     return filterRect.isNull() || f.geometry().intersects( filterRect );

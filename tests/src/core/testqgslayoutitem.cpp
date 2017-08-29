@@ -28,6 +28,88 @@
 #include <QImage>
 #include <QtTest/QSignalSpy>
 
+
+//simple item for testing, since some methods in QgsLayoutItem are pure virtual
+class TestItem : public QgsLayoutItem
+{
+    Q_OBJECT
+
+  public:
+
+    TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
+    ~TestItem() {}
+
+    //implement pure virtual methods
+    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
+    QString stringType() const override { return QStringLiteral( "TestItemType" ); }
+
+  protected:
+    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * = nullptr ) override
+    {
+      QPainter *painter = context.painter();
+      painter->save();
+      painter->setRenderHint( QPainter::Antialiasing, false );
+      painter->setPen( Qt::NoPen );
+      painter->setBrush( QColor( 255, 100, 100, 200 ) );
+      painter->drawRect( rect() );
+      painter->restore();
+    }
+};
+
+//item with minimum size
+class MinSizedItem : public TestItem
+{
+    Q_OBJECT
+
+  public:
+    MinSizedItem( QgsLayout *layout ) : TestItem( layout )
+    {
+      setMinimumSize( QgsLayoutSize( 5.0, 10.0, QgsUnitTypes::LayoutCentimeters ) );
+    }
+
+    void updateMinSize( QgsLayoutSize size )
+    {
+      setMinimumSize( size );
+    }
+
+    ~MinSizedItem() {}
+};
+
+//item with fixed size
+class FixedSizedItem : public TestItem
+{
+    Q_OBJECT
+
+  public:
+
+    FixedSizedItem( QgsLayout *layout ) : TestItem( layout )
+    {
+      setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutInches ) );
+    }
+
+    void updateFixedSize( QgsLayoutSize size )
+    {
+      setFixedSize( size );
+    }
+    ~FixedSizedItem() {}
+};
+
+//item with both conflicting fixed and minimum size
+class FixedMinSizedItem : public TestItem
+{
+    Q_OBJECT
+
+  public:
+
+    FixedMinSizedItem( QgsLayout *layout ) : TestItem( layout )
+    {
+      setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
+      setMinimumSize( QgsLayoutSize( 5.0, 9.0, QgsUnitTypes::LayoutCentimeters ) );
+    }
+    ~FixedMinSizedItem() {}
+};
+
+
 class TestQgsLayoutItem: public QObject
 {
     Q_OBJECT
@@ -65,78 +147,6 @@ class TestQgsLayoutItem: public QObject
     void writeReadXmlProperties();
 
   private:
-
-    //simple item for testing, since some methods in QgsLayoutItem are pure virtual
-    class TestItem : public QgsLayoutItem
-    {
-      public:
-
-        TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
-        ~TestItem() {}
-
-        //implement pure virtual methods
-        int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
-        QString stringType() const override { return QStringLiteral( "TestItemType" ); }
-
-      protected:
-        void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * = nullptr ) override
-        {
-          QPainter *painter = context.painter();
-          painter->save();
-          painter->setRenderHint( QPainter::Antialiasing, false );
-          painter->setPen( Qt::NoPen );
-          painter->setBrush( QColor( 255, 100, 100, 200 ) );
-          painter->drawRect( rect() );
-          painter->restore();
-        }
-    };
-
-    //item with minimum size
-    class MinSizedItem : public TestItem
-    {
-      public:
-        MinSizedItem( QgsLayout *layout ) : TestItem( layout )
-        {
-          setMinimumSize( QgsLayoutSize( 5.0, 10.0, QgsUnitTypes::LayoutCentimeters ) );
-        }
-
-        void updateMinSize( QgsLayoutSize size )
-        {
-          setMinimumSize( size );
-        }
-
-        ~MinSizedItem() {}
-    };
-
-    //item with fixed size
-    class FixedSizedItem : public TestItem
-    {
-      public:
-
-        FixedSizedItem( QgsLayout *layout ) : TestItem( layout )
-        {
-          setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutInches ) );
-        }
-
-        void updateFixedSize( QgsLayoutSize size )
-        {
-          setFixedSize( size );
-        }
-        ~FixedSizedItem() {}
-    };
-
-    //item with both conflicting fixed and minimum size
-    class FixedMinSizedItem : public TestItem
-    {
-      public:
-
-        FixedMinSizedItem( QgsLayout *layout ) : TestItem( layout )
-        {
-          setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
-          setMinimumSize( QgsLayoutSize( 5.0, 9.0, QgsUnitTypes::LayoutCentimeters ) );
-        }
-        ~FixedMinSizedItem() {}
-    };
 
     QString mReport;
 
