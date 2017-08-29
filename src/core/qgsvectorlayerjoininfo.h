@@ -141,6 +141,14 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      */
     QgsFeature extractJoinedFeature( const QgsFeature &feature ) const;
 
+    void setJoinFieldNamesBlackList( const QStringList &blackList ) { mBlackList = blackList; }
+
+    QStringList joinFieldNamesBlackList() const { return mBlackList; }
+
+    bool hasSubset( bool blacklisted = true ) const;
+
+    static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blacklisted = true );
+
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
       return mTargetFieldName == other.mTargetFieldName &&
@@ -196,6 +204,8 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     bool mUpsertOnEdit = false;
 
     bool mCascadedDelete = false;
+
+    QStringList mBlackList;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     QHash< QString, QgsAttributes> cachedAttributes;
