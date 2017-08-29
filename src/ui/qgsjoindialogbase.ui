@@ -58,7 +58,7 @@
      <property name="collapsed" stdset="0">
       <bool>true</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="gridLayout_21">
       <item row="0" column="0">
        <widget class="QListView" name="mJoinFieldsSubsetView"/>
       </item>
