@@ -21,12 +21,67 @@
 #include "qgis_core.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayerjoininfo.h"
+#include "qgsproperty.h"
 
 #include <sqlite3.h>
 
 #include <QString>
 
 class QgsProject;
+
+/**
+ * \class QgsAuxiliaryField
+ *
+ * \ingroup core
+ *
+ * \brief Class allowing to manage fields from of auxiliary layers
+ *
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsAuxiliaryField : public QgsField
+{
+  public:
+
+    /**
+     * Constructor
+     *
+     * \param def Definition of the property to be stored by this auxiliary
+     *  field.
+     */
+    QgsAuxiliaryField( const QgsPropertyDefinition &def );
+
+    /**
+     * Destructor
+     */
+    virtual ~QgsAuxiliaryField() = default;
+
+    /**
+     * Returns the property definition corresponding to this field.
+     */
+    QgsPropertyDefinition propertyDefinition() const;
+
+    /**
+     * Returns the name of the field.
+     */
+    using QgsField::name SIP_SKIP;
+
+    /**
+     * Returns the name of the auxiliary field for a property definition.
+     *
+     * \returns def The property definition
+     * \returns joined The join prefix is tok into account if true
+     */
+    static QString name( const QgsPropertyDefinition &def, bool joined = false );
+
+  private:
+    QgsAuxiliaryField( const QgsField &f ); // only for auxiliary layer
+
+    void init( const QgsPropertyDefinition &def );
+
+    QgsPropertyDefinition mPropertyDefinition;
+
+    friend class QgsAuxiliaryLayer;
+};
 
 /**
  * \class QgsAuxiliaryLayer
@@ -69,6 +124,25 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * Returns information to use for joining with primary key and so on.
      */
     QgsVectorLayerJoinInfo joinInfo() const;
+
+    /**
+     * Returns true if the property is stored in the layer yet, false
+     * otherwise.
+     *
+     * \param definition The property definition to check
+     *
+     * \returns true if the property is stored, false otherwise
+     */
+    bool exists( const QgsPropertyDefinition &definition ) const;
+
+    /**
+     * Add an an auxiliary field for the given property.
+     *
+     * \param definition The definition of the property to add
+     *
+     * \returns true if the auxiliary field is well added, false otherwise
+     */
+    bool addAuxiliaryField( const QgsPropertyDefinition &definition );
 
     /**
      * Commit changes and starts editing then.

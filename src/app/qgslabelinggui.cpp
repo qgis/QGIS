@@ -21,6 +21,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsproject.h"
+#include "qgsauxiliarystorage.h"
+#include "qgsnewauxiliarylayerdialog.h"
 
 QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
@@ -46,6 +48,7 @@ void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton *butto
 {
   button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateProperty );
+  connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsLabelingGui::createAuxiliaryField );
   button->registerExpressionContextGenerator( this );
 }
 
@@ -610,6 +613,31 @@ void QgsLabelingGui::updateUi()
   }
 }
 
+void QgsLabelingGui::createAuxiliaryField()
+{
+  // try to create an auxiliary layer if not yet created
+  if ( !mLayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
+    dlg.exec();
+  }
 
+  // return if still not exists
+  if ( !mLayer->auxiliaryLayer() )
+    return;
 
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  const QgsPalLayerSettings::Property key = static_cast< QgsPalLayerSettings::Property >( button->propertyKey() );
+  const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[key];
 
+  // create property in auxiliary storage
+  mLayer->auxiliaryLayer()->addAuxiliaryField( def );
+
+  // update property with join field name from auxiliary storage
+  QgsProperty property = button->toProperty();
+  property.setField( QgsAuxiliaryField::name( def, true ) );
+  property.setActive( true );
+  button->updateFieldLists();
+  button->setToProperty( property );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
+}

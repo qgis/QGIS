@@ -172,6 +172,13 @@ class QgsPropertyOverrideButton: QToolButton
  an expression context for the button when required.
 %End
 
+    void updateFieldLists();
+%Docstring
+ Updates list of fields.
+
+.. versionadded:: 3.0
+%End
+
 
   public slots:
 

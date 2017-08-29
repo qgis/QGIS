@@ -297,6 +297,7 @@
 %Include qgsapplication.sip
 %Include qgsactionscoperegistry.sip
 %Include qgsanimatedicon.sip
+%Include qgsauxiliarystorage.sip
 %Include qgsbrowsermodel.sip
 %Include qgscoordinatereferencesystem.sip
 %Include qgscredentials.sip
@@ -421,6 +422,5 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include qgsuserprofilemanager.sip
 %Include symbology/qgsarrowsymbollayer.sip
-%Include qgsauxiliarystorage.sip
 %Include composer/qgscomposerutils.sip
 %Include qgsuserprofile.sip

@@ -19,12 +19,128 @@
 #include "qgslogger.h"
 #include "qgsslconnect.h"
 #include "qgsproject.h"
+#include "qgspallabeling.h"
+#include "qgsdiagramrenderer.h"
 
 #include <QFile>
 
 const QString AS_JOINFIELD = "ASPK";
 const QString AS_EXTENSION = "qgd";
 const QString AS_JOINPREFIX = "auxiliary_storage_";
+
+QgsAuxiliaryField::QgsAuxiliaryField( const QgsPropertyDefinition &def )
+  : QgsField()
+  , mPropertyDefinition( def )
+{
+  init( def );
+}
+
+QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
+{
+  const QStringList parts = f.name().split( '_' );
+
+  if ( parts.size() <= 1 )
+    return;
+
+  const QString origin = parts[0];
+  const QString propertyName = parts[1];
+  QgsPropertyDefinition def;
+
+  if ( origin.compare( "pal", Qt::CaseInsensitive ) == 0 )
+  {
+    const QgsPropertiesDefinition props = QgsPalLayerSettings::propertyDefinitions();
+    Q_FOREACH ( const QgsPropertyDefinition p, props.values() )
+    {
+      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      {
+        def = p;
+        break;
+      }
+    }
+  }
+  else if ( origin.compare( "diagram", Qt::CaseInsensitive ) == 0 )
+  {
+    const QgsPropertiesDefinition props = QgsDiagramLayerSettings::propertyDefinitions();
+    Q_FOREACH ( const QgsPropertyDefinition p, props.values() )
+    {
+      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      {
+        def = p;
+        break;
+      }
+    }
+  }
+
+  if ( !def.name().isEmpty() )
+  {
+    init( def );
+    setTypeName( f.typeName() );
+    mPropertyDefinition = def;
+  }
+}
+
+void QgsAuxiliaryField::init( const QgsPropertyDefinition &def )
+{
+  if ( !def.name().isEmpty() )
+  {
+    QVariant::Type type;
+    int len( 0 ), precision( 0 );
+    switch ( def.dataType() )
+    {
+      case QgsPropertyDefinition::DataTypeString:
+        type = QVariant::String;
+        len = 50;
+        break;
+      case QgsPropertyDefinition::DataTypeNumeric:
+        type = QVariant::Double;
+        len = 0;
+        precision = 0;
+        break;
+      case QgsPropertyDefinition::DataTypeBoolean:
+        type = QVariant::Int; // sqlite does not have a bool type
+        break;
+      default:
+        break;
+    }
+
+    setType( type );
+    setName( name( def ) );
+    setLength( len );
+    setPrecision( precision );
+  }
+}
+
+QString QgsAuxiliaryField::name( const QgsPropertyDefinition &def, bool joined )
+{
+  QString origin;
+  switch ( def.origin() )
+  {
+    case QgsPropertyDefinition::Pal:
+      origin = "pal";
+      break;
+    case QgsPropertyDefinition::Diagram:
+      origin = "diagram";
+      break;
+    default:
+      break;
+  }
+
+  QString fieldName = QString( "%2_%3" ).arg( origin, def.name().toLower() );
+
+  if ( joined )
+    fieldName = QString( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
+
+  return fieldName;
+}
+
+QgsPropertyDefinition QgsAuxiliaryField::propertyDefinition() const
+{
+  return mPropertyDefinition;
+}
+
+//
+// QgsAuxiliaryLayer
+//
 
 QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, const QgsVectorLayer *vlayer )
   : QgsVectorLayer( QString( "%1|layername=%2" ).arg( filename, table ), QString( "%1_auxiliarystorage" ).arg( table ), "ogr" )
@@ -43,6 +159,23 @@ QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &fil
 QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const
 {
   return mJoinInfo;
+}
+
+bool QgsAuxiliaryLayer::exists( const QgsPropertyDefinition &definition ) const
+{
+  return ( fields().indexOf( QgsAuxiliaryField::name( definition ) ) >= 0 );
+}
+
+bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definition )
+{
+  if ( definition.name().isEmpty() || exists( definition ) )
+    return false;
+
+  const QgsAuxiliaryField af( definition );
+  const bool rc = addAttribute( af );
+  updateFields();
+
+  return rc;
 }
 
 bool QgsAuxiliaryLayer::save()

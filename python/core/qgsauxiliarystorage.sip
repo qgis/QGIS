@@ -12,6 +12,52 @@
 
 
 
+class QgsAuxiliaryField : QgsField
+{
+%Docstring
+
+
+ Class allowing to manage fields from of auxiliary layers
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsauxiliarystorage.h"
+%End
+  public:
+
+    QgsAuxiliaryField( const QgsPropertyDefinition &def );
+%Docstring
+ Constructor
+
+ \param def Definition of the property to be stored by this auxiliary
+  field.
+%End
+
+    virtual ~QgsAuxiliaryField();
+%Docstring
+ Destructor
+%End
+
+    QgsPropertyDefinition propertyDefinition() const;
+%Docstring
+ Returns the property definition corresponding to this field.
+ :rtype: QgsPropertyDefinition
+%End
+
+
+    static QString name( const QgsPropertyDefinition &def, bool joined = false );
+%Docstring
+ Returns the name of the auxiliary field for a property definition.
+
+ :return: def The property definition
+ :return: joined The join prefix is tok into account if true
+ :rtype: str
+%End
+
+};
+
 class QgsAuxiliaryLayer : QgsVectorLayer
 {
 %Docstring
@@ -48,6 +94,27 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 %Docstring
  Returns information to use for joining with primary key and so on.
  :rtype: QgsVectorLayerJoinInfo
+%End
+
+    bool exists( const QgsPropertyDefinition &definition ) const;
+%Docstring
+ Returns true if the property is stored in the layer yet, false
+ otherwise.
+
+ \param definition The property definition to check
+
+ :return: true if the property is stored, false otherwise
+ :rtype: bool
+%End
+
+    bool addAuxiliaryField( const QgsPropertyDefinition &definition );
+%Docstring
+ Add an an auxiliary field for the given property.
+
+ \param definition The definition of the property to add
+
+ :return: true if the auxiliary field is well added, false otherwise
+ :rtype: bool
 %End
 
     bool save();

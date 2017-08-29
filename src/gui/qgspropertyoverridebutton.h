@@ -182,6 +182,13 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     /**
+     * Updates list of fields.
+     *
+     * \since QGIS 3.0
+     */
+    void updateFieldLists();
+
+    /**
      * Sets a symbol which can be used for previews inside the widget or in any dialog created
      * by the widget. If not specified, a default created symbol will be used instead.
      * \note not available in Python bindings
@@ -210,8 +217,6 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
-
-    void updateFieldLists();
 
     void showDescriptionDialog();
     void showExpressionDialog();

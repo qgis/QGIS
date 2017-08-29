@@ -47,6 +47,8 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
     void updateUi();
 
+    void createAuxiliaryField();
+
   protected:
     void blockInitSignals( bool block );
     void syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f );
