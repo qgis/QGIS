@@ -192,6 +192,11 @@ Emitted when property definition changes
 Emitted when the activated status of the widget changes
 %End
 
+    void createAuxiliaryField();
+%Docstring
+Emitted when creating a new auxiliary field
+%End
+
   protected:
     virtual void mouseReleaseEvent( QMouseEvent *event );
 

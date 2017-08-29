@@ -203,6 +203,9 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     //! Emitted when the activated status of the widget changes
     void activated( bool isActive );
 
+    //! Emitted when creating a new auxiliary field
+    void createAuxiliaryField();
+
   protected:
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
@@ -246,6 +249,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QAction *mActionCopyExpr = nullptr;
     QAction *mActionClearExpr = nullptr;
     QAction *mActionAssistant = nullptr;
+    QAction *mActionCreateAuxiliaryField = nullptr;
 
     QgsPropertyDefinition mDefinition;
 

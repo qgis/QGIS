@@ -22,6 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgspanelwidget.h"
 #include "qgspropertyassistantwidget.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QClipboard>
 #include <QMenu>
@@ -65,6 +66,8 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
   mActionActive->setFont( f );
 
   mActionDescription = new QAction( tr( "Description..." ), this );
+
+  mActionCreateAuxiliaryField = new QAction( tr( "Store data in the project" ), this );
 
   mActionExpDialog = new QAction( tr( "Edit..." ), this );
   mActionExpression = nullptr;
@@ -329,6 +332,20 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
 
   mDefineMenu->addSeparator();
 
+  // deactivate button if field yet exists
+  mDefineMenu->addAction( mActionCreateAuxiliaryField );
+
+  const QgsAuxiliaryLayer *alayer = mVectorLayer->auxiliaryLayer();
+
+  if ( alayer && alayer->exists( mDefinition ) )
+  {
+    mActionCreateAuxiliaryField->setEnabled( false );
+  }
+  else
+  {
+    mActionCreateAuxiliaryField->setEnabled( true );
+  }
+
   bool fieldActive = false;
   if ( !mDataTypesString.isEmpty() )
   {
@@ -506,6 +523,10 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
   else if ( action == mActionAssistant )
   {
     showAssistant();
+  }
+  else if ( action == mActionCreateAuxiliaryField )
+  {
+    emit createAuxiliaryField();
   }
   else if ( mFieldsMenu->actions().contains( action ) )  // a field name clicked
   {
