@@ -273,6 +273,15 @@ Constraint on a common angle
  :rtype: bool
 %End
 
+    void setPoints( const QList<QgsPointXY> &points );
+%Docstring
+ Configures list of current CAD points
+
+ Some map tools may find it useful to override list of CAD points that is otherwise
+ automatically populated when user clicks with left mouse button on map canvas.
+.. versionadded:: 3.0
+%End
+
     QgsPointXY currentPoint( bool *exists  = 0 ) const;
 %Docstring
  The last point.

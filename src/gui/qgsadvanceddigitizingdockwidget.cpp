@@ -222,8 +222,7 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mCadButtons->setEnabled( enabled );
   mInputWidgets->setEnabled( enabled );
 
-  clearPoints();
-  releaseLocks();
+  clear();
   setConstructionMode( false );
 }
 
@@ -921,8 +920,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent *e, A
 
   if ( e->button() == Qt::RightButton )
   {
-    clearPoints();
-    releaseLocks();
+    clear();
     return false;
   }
 
@@ -1038,6 +1036,15 @@ void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
       filterKeyPress( e );
       break;
     }
+  }
+}
+
+void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points )
+{
+  clearPoints();
+  Q_FOREACH ( const QgsPointXY &pt, points )
+  {
+    addPoint( pt );
   }
 }
 

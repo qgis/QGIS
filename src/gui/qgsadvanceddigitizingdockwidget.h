@@ -278,6 +278,15 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     bool commonAngleConstraint() const { return mCommonAngleConstraint; }
 
     /**
+     * Configures list of current CAD points
+     *
+     * Some map tools may find it useful to override list of CAD points that is otherwise
+     * automatically populated when user clicks with left mouse button on map canvas.
+     * \since QGIS 3.0
+     */
+    void setPoints( const QList<QgsPointXY> &points );
+
+    /**
      * The last point.
      * Helper for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
