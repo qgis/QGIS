@@ -808,15 +808,9 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                       "Can be one of NULL for a simple .dbf file with no .shp file, POINT, "
                                       "ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or "
                                       "MULTIPOINTZ for 3D;" ) +
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,1,0)
-                         QObject::tr( " Shapefiles with measure values are not supported,"
-                                      " nor are MULTIPATCH files." ) +
-#endif
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
                          QObject::tr( " POINTM, ARCM, POLYGONM or MULTIPOINTM for measured geometries"
                                       " and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured"
                                       " geometries." ) +
-#endif
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
                          QObject::tr( " MULTIPATCH files are supported since GDAL 2.2." ) +
 #endif
@@ -831,7 +825,6 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          << QStringLiteral( "ARCZ" )
                          << QStringLiteral( "POLYGONZ" )
                          << QStringLiteral( "MULTIPOINTZ" )
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
                          << QStringLiteral( "POINTM" )
                          << QStringLiteral( "ARCM" )
                          << QStringLiteral( "POLYGONM" )
@@ -840,7 +833,6 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          << QStringLiteral( "ARCZM" )
                          << QStringLiteral( "POLYGONZM" )
                          << QStringLiteral( "MULTIPOINTZM" )
-#endif
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
                          << QStringLiteral( "MULTIPATCH" )
 #endif
@@ -1330,7 +1322,6 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            true // Allow None
                          ) );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,2)
   datasetOptions.insert( QStringLiteral( "BLOCK_SIZE" ), new IntOption(
                            QObject::tr( "(multiples of 512): Block size for .map files. Defaults "
                                         "to 512. MapInfo 15.2 and above creates .tab files with a "
@@ -1338,15 +1329,12 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                         "able to handle block sizes from 512 to 32256." ),
                            512
                          ) );
-#endif
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,0,0)
   layerOptions.insert( QStringLiteral( "BOUNDS" ), new StringOption(
                          QObject::tr( "xmin,ymin,xmax,ymax: Define custom layer bounds to increase the "
                                       "accuracy of the coordinates. Note: the geometry of written "
                                       "features must be within the defined box." ),
                          QLatin1String( "" ) // Default value
                        ) );
-#endif
 
   driverMetadata.insert( QStringLiteral( "MapInfo File" ),
                          MetaData(
@@ -1894,9 +1882,6 @@ QStringList QgsVectorFileWriter::defaultLayerOptions( const QString &driverName 
 
 OGRwkbGeometryType QgsVectorFileWriter::ogrTypeFromWkbType( QgsWkbTypes::Type type )
 {
-#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,1,0)
-  type = QgsWkbTypes::dropM( type );
-#endif
 
   OGRwkbGeometryType ogrType = static_cast<OGRwkbGeometryType>( type );
 

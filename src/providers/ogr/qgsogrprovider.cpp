@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsogrprovider.h"
+#include "qgscplerrorhandler.h"
 #include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -79,31 +80,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + ')';
 
 static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
-
-class QgsCPLErrorHandler
-{
-    static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
-    {
-      if ( errNo != OGRERR_NONE )
-        QgsMessageLog::logMessage( QObject::tr( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ), QObject::tr( "OGR" ) );
-    }
-
-  public:
-    QgsCPLErrorHandler()
-    {
-      CPLPushErrorHandler( showError );
-    }
-
-    ~QgsCPLErrorHandler()
-    {
-      CPLPopErrorHandler();
-    }
-
-  private:
-    QgsCPLErrorHandler( const QgsCPLErrorHandler &other );
-    QgsCPLErrorHandler &operator=( const QgsCPLErrorHandler &other );
-
-};
 
 
 bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
@@ -593,7 +569,6 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
   QString geom;
 
   // GDAL 2.1 can return M/ZM geometries
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
   if ( wkbHasM( type ) )
   {
     geom = ogrWkbGeometryTypeName( wkbFlatten( type ) );
@@ -603,7 +578,6 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
       geom += "M";
     return geom;
   }
-#endif
 
   switch ( ( long )type )
   {
@@ -4365,10 +4339,10 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
         errCause = QObject::tr( "Success" );
         break;
     }
-    errCause = QObject::tr( "GDAL result code: %s" ).arg( errCause );
+    errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
     return error == OGRERR_NONE;
   }
   // This should never happen:
-  errCause = QObject::tr( "Layer not found: %s" ).arg( uri );
+  errCause = QObject::tr( "Layer not found: %1" ).arg( uri );
   return false;
 }

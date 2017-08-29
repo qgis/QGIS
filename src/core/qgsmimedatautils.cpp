@@ -100,6 +100,18 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
   return new QgsVectorLayer( uri, name, providerKey );
 }
 
+QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error ) const
+{
+  owner = false;
+  if ( layerType != QLatin1String( "raster" ) )
+  {
+    error = QObject::tr( "%1: Not a raster layer." ).arg( name );
+    return nullptr;
+  }
+  owner = true;
+  return new QgsRasterLayer( uri, name, providerKey );
+}
+
 // -----
 
 bool QgsMimeDataUtils::isUriList( const QMimeData *data )
