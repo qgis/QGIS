@@ -141,7 +141,6 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         {
           QString origLayerId = vl->id();
           QgsVectorLayer *newLayer = copyVectorLayer( vl, db, dbPath, onlySelected );
-
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
@@ -582,45 +581,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
     if ( newLayer->isValid() )
     {
-      // mark as offline layer
-      newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
 
-      // store original layer source
-      newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
-      newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
-
-      // register this layer with the central layers registry
-      QgsProject::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << newLayer );
-
-      // copy style
-      copySymbology( layer, newLayer );
-
-      QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
-      // Find the parent group of the original layer
-      QgsLayerTreeLayer *layerTreeLayer = layerTreeRoot->findLayer( layer->id() );
-      if ( layerTreeLayer )
-      {
-        QgsLayerTreeGroup *parentTreeGroup = qobject_cast<QgsLayerTreeGroup *>( layerTreeLayer->parent() );
-        if ( parentTreeGroup )
-        {
-          int index = parentTreeGroup->children().indexOf( layerTreeLayer );
-          // Move the new layer from the root group to the new group
-          QgsLayerTreeLayer *newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
-          if ( newLayerTreeLayer )
-          {
-            QgsLayerTreeNode *newLayerTreeLayerClone = newLayerTreeLayer->clone();
-            QgsLayerTreeGroup *grp = qobject_cast<QgsLayerTreeGroup *>( newLayerTreeLayer->parent() );
-            parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
-            if ( grp )
-              grp->removeChildNode( newLayerTreeLayer );
-          }
-        }
-      }
-
-      updateRelations( layer, newLayer );
-      updateMapThemes( layer, newLayer );
-      updateLayerOrder( layer, newLayer );
       // copy features
       newLayer->startEditing();
       QgsFeature f;
@@ -704,6 +665,48 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       {
         showWarning( newLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
       }
+
+      // mark as offline layer
+      newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
+
+      // store original layer source
+      newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
+      newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
+
+      // register this layer with the central layers registry
+      QgsProject::instance()->addMapLayers(
+        QList<QgsMapLayer *>() << newLayer );
+
+      // copy style
+      copySymbology( layer, newLayer );
+
+      QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
+      // Find the parent group of the original layer
+      QgsLayerTreeLayer *layerTreeLayer = layerTreeRoot->findLayer( layer->id() );
+      if ( layerTreeLayer )
+      {
+        QgsLayerTreeGroup *parentTreeGroup = qobject_cast<QgsLayerTreeGroup *>( layerTreeLayer->parent() );
+        if ( parentTreeGroup )
+        {
+          int index = parentTreeGroup->children().indexOf( layerTreeLayer );
+          // Move the new layer from the root group to the new group
+          QgsLayerTreeLayer *newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
+          if ( newLayerTreeLayer )
+          {
+            QgsLayerTreeNode *newLayerTreeLayerClone = newLayerTreeLayer->clone();
+            QgsLayerTreeGroup *grp = qobject_cast<QgsLayerTreeGroup *>( newLayerTreeLayer->parent() );
+            parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
+            if ( grp )
+              grp->removeChildNode( newLayerTreeLayer );
+          }
+        }
+      }
+
+      updateRelations( layer, newLayer );
+      updateMapThemes( layer, newLayer );
+      updateLayerOrder( layer, newLayer );
+
+
     }
     return newLayer;
   }
