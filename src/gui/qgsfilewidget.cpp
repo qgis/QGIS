@@ -264,7 +264,7 @@ void QgsFileWidget::openFileDialog()
       fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
       break;
     case GetMultipleFiles:
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one ore more files" );
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
       fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
       break;
     case GetDirectory:
