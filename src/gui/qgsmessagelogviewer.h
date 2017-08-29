@@ -55,6 +55,8 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
 
   private slots:
     void closeTab( int index );
+    void filter();
+
 };
 
 #endif
