@@ -55,6 +55,8 @@
 #include "qgssettings.h"
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
+#include "qgsauxiliarystorage.h"
+#include "qgsnewauxiliarylayerdialog.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -81,6 +83,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
   , mLayer( lyr )
   , mOriginalSubsetSQL( lyr->subsetString() )
+  , mAuxiliaryLayerActionNew( nullptr )
 {
   setupUi( this );
   connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
@@ -349,6 +352,16 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
 
+  // auxiliary layer
+  QMenu *menu = new QMenu( this );
+
+  mAuxiliaryLayerActionNew = new QAction( tr( "Create" ), this );
+  menu->addAction( mAuxiliaryLayerActionNew );
+  connect( mAuxiliaryLayerActionNew, &QAction::triggered, this, &QgsVectorLayerProperties::onAuxiliaryLayerNew );
+
+  mAuxiliaryStorageActions->setMenu( menu );
+
+  updateAuxiliaryStoragePage();
 }
 
 void QgsVectorLayerProperties::toggleEditing()
@@ -1452,4 +1465,53 @@ void QgsVectorLayerProperties::updateFieldsPropertiesDialog()
 void QgsVectorLayerProperties::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
+}
+
+void QgsVectorLayerProperties::updateAuxiliaryStoragePage()
+{
+  const QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
+
+  if ( alayer )
+  {
+    // set widgets to enable state
+    mAuxiliaryStorageInformationGrpBox->setEnabled( true );
+    mAuxiliaryStorageFieldsGrpBox->setEnabled( true );
+
+    // update key
+    mAuxiliaryStorageKeyLineEdit->setText( alayer->joinInfo().targetFieldName() );
+
+    // update feature count
+    int features = alayer->featureCount();
+    mAuxiliaryStorageFeaturesLineEdit->setText( QString::number( features ) );
+
+    // update actions
+    mAuxiliaryLayerActionNew->setEnabled( false );
+  }
+  else
+  {
+    mAuxiliaryStorageInformationGrpBox->setEnabled( false );
+    mAuxiliaryStorageFieldsGrpBox->setEnabled( false );
+
+    if ( mLayer->isSpatial() )
+      mAuxiliaryLayerActionNew->setEnabled( true );
+
+    mAuxiliaryStorageFieldsTree->clear();
+    mAuxiliaryStorageKeyLineEdit->setText( QString() );
+    mAuxiliaryStorageFieldsLineEdit->setText( QString() );
+    mAuxiliaryStorageFeaturesLineEdit->setText( QString() );
+  }
+}
+
+void QgsVectorLayerProperties::onAuxiliaryLayerNew()
+{
+  QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
+
+  if ( alayer || !mLayer->isSpatial() )
+    return;
+
+  QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    updateAuxiliaryStoragePage();
+  }
 }
