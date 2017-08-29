@@ -168,14 +168,14 @@ QgsStackTrace::QgsStackTrace()
 
 bool QgsStackTrace::StackLine::isQgisModule() const
 {
-  return moduleName.toLower().contains( "qgis" );
+  return moduleName.contains( "qgis", Qt::CaseInsensitive );
 }
 
 bool QgsStackTrace::StackLine::isValid() const
 {
-  return !( fileName.toLower().contains( "exe_common" ) ||
-            fileName.toLower().contains( "unknown" ) ||
-            lineNumber.toLower().contains( "unknown" ) );
+  return !( fileName.contains( "exe_common", Qt::CaseInsensitive ) ||
+            fileName.contains( "unknown", Qt::CaseInsensitive ) ||
+            lineNumber.contains( "unknown", Qt::CaseInsensitive ) );
 
 }
 ///@endcond
