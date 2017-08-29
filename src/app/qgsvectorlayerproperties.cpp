@@ -1260,6 +1260,11 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   }
 
   joinItem->setText( 0, QStringLiteral( "Join layer" ) );
+  if ( mLayer->auxiliaryLayer() && mLayer->auxiliaryLayer()->id() == join.joinLayerId() )
+  {
+    return;
+  }
+
   joinItem->setText( 1, joinLayer->name() );
 
   QFont f = joinItem->font( 0 );
