@@ -49,6 +49,11 @@ class TestQgsProject(unittest.TestCase):
         unittest.TestCase.__init__(self, methodName)
         self.messageCaught = False
 
+    def setUpClass(cls):
+        cls.dbconn = 'dbname=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
+
     def test_makeKeyTokens_(self):
         # see http://www.w3.org/TR/REC-xml/#d0e804 for a list of valid characters
 
@@ -688,18 +693,18 @@ class TestQgsProject(unittest.TestCase):
         # No transaction group.
         QgsProject.instance().setAutoTransaction(False)
         noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
-        assert(noTg is None)
+        self.assertIsNone(noTg)
         
         # Undefined transaction group (wrong provider key).
         QgsProject.instance().setAutoTransaction(True)
         noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
-        assert(noTg is None)
+        self.assertIsNone(noTg)
         
         # Existing transaction group.
-        vl = QgsVectorLayer('service=qwat port=5432 sslmode=disable', 'test', 'postgres')
+        vl = QgsVectorLayer(cls.dbconn + ' port=5432 sslmode=disable', 'test', 'postgres')
         QgsProject.instance().addMapLayer(vl)
-        tg = QgsProject.instance().transactionGroup("postgres", "service=qwat port=5432 sslmode=disable")
-        assert(noTg is not None)
+        tg = QgsProject.instance().transactionGroup("postgres", cls.dbconn +  " port=5432 sslmode=disable")
+        self.assertIsNotNone(noTg)
 
 if __name__ == '__main__':
     unittest.main()
