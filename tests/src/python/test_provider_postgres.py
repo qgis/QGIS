@@ -759,7 +759,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # read xml with custom extent with readExtent option. Extent read from
         # xml document should be used because we have a view
         vl2 = QgsVectorLayer()
-        vl2.setReadExtent(True)
+        vl2.setReadExtentFromXml(True)
         vl2.readLayerXml(elem, QgsReadWriteContext())
         self.assertTrue(vl2.isValid())
 
@@ -793,7 +793,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         # xml document should NOT be used because we don't have a view or a
         # materialized view
         vl2 = QgsVectorLayer()
-        vl2.setReadExtent(True)
+        vl2.setReadExtentFromXml(True)
         vl2.readLayerXml(elem, QgsReadWriteContext())
         self.assertTrue(vl2.isValid())
 

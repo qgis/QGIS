@@ -316,7 +316,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
 
     QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
                     const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
-                    bool readExtent = false );
+                    bool readExtentFromXml = false );
 %Docstring
  Constructor - creates a vector layer
 
@@ -329,7 +329,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
  \param  baseName The name used to represent the layer in the legend
  \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
  \param  loadDefaultStyleFlag whether to load the default style
- \param  readExtent Read extent from XML if true or let provider determine it if false
+ \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
 %End
 
 
@@ -1729,16 +1729,16 @@ Returns the current blending mode for features
 .. versionadded:: 3.0
 %End
 
-    void setReadExtent( bool readExtent );
+    void setReadExtentFromXml( bool readExtentFromXml );
 %Docstring
- Flag allowing to indicate if the extent has be read from the XML
+ Flag allowing to indicate if the extent has to be read from the XML
  document when data source has no metadata or if the data provider has
  to determine it.
 
 .. versionadded:: 3.0
 %End
 
-    bool readExtent() const;
+    bool readExtentFromXml() const;
 %Docstring
  Returns true if the extent is read from the XML document when data
  source has no metadata, false if it's the data provider which determines

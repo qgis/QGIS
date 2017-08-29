@@ -720,12 +720,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
     // apply specific settings to vector layer
     QgsSettings s;
+    bool trustProject = s.value( QStringLiteral( "/qgis/trustProject" ), false ).toBool();
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer ) )
     {
-      if ( s.value( QStringLiteral( "/qgis/trustProject" ), false ).toBool() )
-      {
-        vl->setReadExtent( true );
-      }
+      vl->setReadExtentFromXml( trustProject );
     }
   }
   else if ( type == QLatin1String( "raster" ) )

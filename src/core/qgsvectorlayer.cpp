@@ -134,7 +134,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
                                 bool loadDefaultStyleFlag,
-                                bool readExtent )
+                                bool readExtentFromXml )
   : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
   , mDataProvider( nullptr )
   , mProviderKey( providerKey )
@@ -154,7 +154,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mLazyExtent( true )
   , mSymbolFeatureCounted( false )
   , mEditCommandActive( false )
-  , mReadExtent( readExtent )
+  , mReadExtentFromXml( readExtentFromXml )
 
 {
   mActions = new QgsActionManager( this );
@@ -224,7 +224,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
   layer->setOpacity( opacity() );
-  layer->setReadExtent( readExtent() );
+  layer->setReadExtentFromXml( readExtentFromXml() );
 
   Q_FOREACH ( const QgsAction &action, actions()->actions() )
   {
@@ -785,7 +785,7 @@ bool QgsVectorLayer::countSymbolFeatures()
 void QgsVectorLayer::updateExtents( bool force )
 {
   // do not update extent by default when trust project option is activated
-  if ( force || !mReadExtent || ( mReadExtent && mXmlExtent.isNull() ) )
+  if ( force || !mReadExtentFromXml || ( mReadExtentFromXml && mXmlExtent.isNull() ) )
     mValidExtent = false;
 }
 
@@ -803,7 +803,7 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-  if ( !mValidExtent && mDataProvider && mReadExtent && !mXmlExtent.isNull() )
+  if ( !mValidExtent && mDataProvider && !mDataProvider->hasMetadata() && mReadExtentFromXml && !mXmlExtent.isNull() )
   {
     mExtent = mXmlExtent;
     mValidExtent = true;
@@ -812,13 +812,8 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !mValidExtent && mLazyExtent && mDataProvider )
   {
-    QgsRectangle mbr;
-
-    // get the extent data provider if not yet defined
-    if ( mbr.isNull() )
-    {
-      mbr = mDataProvider->extent();
-    }
+    // get the extent
+    QgsRectangle mbr = mDataProvider->extent();
 
     // show the extent
     QgsDebugMsg( "Extent of layer: " + mbr.toString() );
@@ -1446,7 +1441,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsReadWriteCont
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   // read extent
-  if ( mReadExtent )
+  if ( mReadExtentFromXml )
   {
     QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
     if ( !extentNode.isNull() )
@@ -4446,12 +4441,12 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   return labeling;
 }
 
-void QgsVectorLayer::setReadExtent( bool readExtent )
+void QgsVectorLayer::setReadExtentFromXml( bool readExtentFromXml )
 {
-  mReadExtent = readExtent;
+  mReadExtentFromXml = readExtentFromXml;
 }
 
-bool QgsVectorLayer::readExtent() const
+bool QgsVectorLayer::readExtentFromXml() const
 {
-  return mReadExtent;
+  return mReadExtentFromXml;
 }
