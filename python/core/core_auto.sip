@@ -198,7 +198,6 @@
 %Include raster/qgsrasterfilewriter.sip
 %Include raster/qgsrasterhistogram.sip
 %Include raster/qgsrasteridentifyresult.sip
-%Include raster/qgsrasterinterface.sip
 %Include raster/qgsrasteriterator.sip
 %Include raster/qgsrasterminmaxorigin.sip
 %Include raster/qgsrasternuller.sip
@@ -377,6 +376,7 @@
 %Include raster/qgsrasterfilewritertask.sip
 %Include raster/qgsrasterlayer.sip
 %Include raster/qgsrasterdataprovider.sip
+%Include raster/qgsrasterinterface.sip
 %Include geometry/qgspoint.sip
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsdetector.sip
