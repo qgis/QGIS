@@ -105,6 +105,7 @@ class CORE_EXPORT QgsPropertyDefinition
       DataTypeBoolean,
     };
 
+    //! Indicates for which settings the property has been set
     enum Origin
     {
       Diagram,

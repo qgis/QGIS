@@ -167,19 +167,35 @@ Returns whether values from the joined layer should be cached in memory to speed
 %End
 
     void setJoinFieldNamesBlackList( const QStringList &blackList );
+%Docstring
+ Sets a list of fields to ignore whatever happens.
+
+.. versionadded:: 3.0
+%End
 
     QStringList joinFieldNamesBlackList() const;
 %Docstring
+ Returns the list of fields to ignore.
+
+.. versionadded:: 3.0
  :rtype: list of str
 %End
 
     bool hasSubset( bool blacklisted = true ) const;
 %Docstring
+ Returns true if blacklisted fields is not empty or if a subset of names
+ has been set.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
     static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blacklisted = true );
 %Docstring
+ Returns the list of field names to use for joining considering
+ blacklisted fields and subset.
+
+.. versionadded:: 3.0
  :rtype: list of str
 %End
 

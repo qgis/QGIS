@@ -141,12 +141,34 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
      */
     QgsFeature extractJoinedFeature( const QgsFeature &feature ) const;
 
+    /**
+     * Sets a list of fields to ignore whatever happens.
+     *
+     * \since QGIS 3.0
+     */
     void setJoinFieldNamesBlackList( const QStringList &blackList ) { mBlackList = blackList; }
 
+    /**
+     * Returns the list of fields to ignore.
+     *
+     * \since QGIS 3.0
+     */
     QStringList joinFieldNamesBlackList() const { return mBlackList; }
 
+    /**
+     * Returns true if blacklisted fields is not empty or if a subset of names
+     * has been set.
+     *
+     * \since QGIS 3.0
+     */
     bool hasSubset( bool blacklisted = true ) const;
 
+    /**
+     * Returns the list of field names to use for joining considering
+     * blacklisted fields and subset.
+     *
+     * \since QGIS 3.0
+     */
     static QStringList joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blacklisted = true );
 
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
