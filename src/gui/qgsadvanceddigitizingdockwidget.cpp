@@ -964,7 +964,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasMoveEvent( QgsMapMouseEvent *e )
   }
   else
   {
-    popWarning();
+    emit popWarning();
   }
 
   // perpendicular/parallel constraint

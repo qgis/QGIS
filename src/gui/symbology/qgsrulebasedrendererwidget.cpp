@@ -1227,7 +1227,7 @@ void QgsRuleBasedRendererModel::willAddRules( const QModelIndex &parent, int cou
 
 void QgsRuleBasedRendererModel::finishedAddingRules()
 {
-  emit endInsertRows();
+  endInsertRows();
 }
 
 void QgsRuleBasedRendererModel::setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &countMap )
