@@ -1,4 +1,4 @@
-#ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
+#ADD_DEFINITIONS(-DGRASS_BASE="${GRASS_PREFIX}")
 ########################################################
 # Build
 
