@@ -21,6 +21,7 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgsrastermatrix.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgstestutils.h"
 
 Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator )
 
@@ -212,7 +213,7 @@ void TestQgsRasterCalculator::singleOp()
   QVERIFY( node.calculate( rasterData, result ) );
 
   qDebug() << "Result: " << result.number() << " expected: " << expected;
-  QVERIFY( qgsDoubleNear( result.number(), expected, 0.0000000001 ) );
+  QGSCOMPARENEAR( result.number(), expected, 0.0000000001 );
 
 }
 

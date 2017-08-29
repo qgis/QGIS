@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgshistogram.h"
+#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for QgsHistogram
@@ -70,7 +71,7 @@ void TestQgsHistogram::optimalBinWidth()
 
   QgsHistogram h;
   h.setValues( vals );
-  QVERIFY( qgsDoubleNear( h.optimalBinWidth(), 4.641, 0.001 ) );
+  QGSCOMPARENEAR( h.optimalBinWidth(), 4.641, 0.001 );
 }
 
 void TestQgsHistogram::optimalBinCount()

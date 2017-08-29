@@ -90,7 +90,7 @@ void TestQgsLayoutUtils::normalizedAngle()
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first );
     qDebug() << QString( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QVERIFY( qgsDoubleNear( result, ( *it ).second ) );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
   }
 
@@ -111,7 +111,7 @@ void TestQgsLayoutUtils::normalizedAngle()
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first, true );
     qDebug() << QString( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QVERIFY( qgsDoubleNear( result, ( *it ).second ) );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
   }
 }

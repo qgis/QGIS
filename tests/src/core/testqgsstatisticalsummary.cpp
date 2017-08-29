@@ -20,6 +20,7 @@
 
 #include "qgsstatisticalsummary.h"
 #include "qgis.h"
+#include "qgstestutils.h"
 
 class TestQgsStatisticSummary: public QObject
 {
@@ -85,10 +86,10 @@ void TestQgsStatisticSummary::stats()
   QCOMPARE( s2.sum(), 24.0 );
   QCOMPARE( s.mean(), 4.0 );
   QCOMPARE( s2.mean(), 4.0 );
-  QVERIFY( qgsDoubleNear( s.stDev(), 2.0816, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( s2.stDev(), 2.0816, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( s.sampleStDev(), 2.2803, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( s2.sampleStDev(), 2.2803, 0.0001 ) );
+  QGSCOMPARENEAR( s.stDev(), 2.0816, 0.0001 );
+  QGSCOMPARENEAR( s2.stDev(), 2.0816, 0.0001 );
+  QGSCOMPARENEAR( s.sampleStDev(), 2.2803, 0.0001 );
+  QGSCOMPARENEAR( s2.sampleStDev(), 2.2803, 0.0001 );
 
   QCOMPARE( s.min(), 2.0 );
   QCOMPARE( s2.min(), 2.0 );
@@ -248,7 +249,7 @@ void TestQgsStatisticSummary::individualStatCalculations()
   QCOMPARE( s.statistics(), stat );
 
   s.calculate( values );
-  QVERIFY( qgsDoubleNear( s.statistic( stat ), expected, 0.00001 ) );
+  QGSCOMPARENEAR( s.statistic( stat ), expected, 0.00001 );
 
   //also test using values added one-at-a-time
   QgsStatisticalSummary s2( QgsStatisticalSummary::Statistics( 0 ) );
