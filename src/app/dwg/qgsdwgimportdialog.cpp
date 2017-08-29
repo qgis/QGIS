@@ -151,7 +151,7 @@ void QgsDwgImportDialog::on_leLayerGroup_textChanged( const QString &text )
 
 void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 {
-  if ( !QFileInfo( leDatabase->text() ).exists() )
+  if ( !QFileInfo::exists( leDatabase->text() ) )
     return;
 
   CursorOverride waitCursor;

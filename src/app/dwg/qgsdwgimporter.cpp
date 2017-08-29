@@ -195,7 +195,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
     return false;
   }
 
-  if ( QFileInfo( mDatabase ).exists() )
+  if ( QFileInfo::exists( mDatabase ) )
   {
     mDs = OGROpen( mDatabase.toUtf8().constData(), true, nullptr );
     if ( !mDs )
