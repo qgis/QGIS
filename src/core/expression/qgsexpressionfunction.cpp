@@ -2574,6 +2574,27 @@ static QVariant fcnDistance( const QVariantList &values, const QgsExpressionCont
   QgsGeometry sGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
   return QVariant( fGeom.distance( sGeom ) );
 }
+
+static QVariant fcnHausdorffDistance( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  QgsGeometry g1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  QgsGeometry g2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+
+  double res = -1;
+  if ( values.length() == 3 && values.at( 2 ).isValid() )
+  {
+    double densify = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+    densify = qBound( 0.0, densify, 1.0 );
+    res = g1.hausdorffDistanceDensify( g2, densify );
+  }
+  else
+  {
+    res = g1.hausdorffDistance( g2 );
+  }
+
+  return res > -1 ? QVariant( res ) : QVariant();
+}
+
 static QVariant fcnIntersection( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -4113,6 +4134,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "convex_hull" ), 1, fcnConvexHull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "convexHull" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "difference" ), 2, fcnDifference, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "distance" ), 2, fcnDistance, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "hausdorff_distance" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "densify_fraction" ), true ), fcnHausdorffDistance, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "intersection" ), 2, fcnIntersection, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "sym_difference" ), 2, fcnSymDifference, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "symDifference" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "combine" ), 2, fcnCombine, QStringLiteral( "GeometryGroup" ) )
