@@ -86,6 +86,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mAuxiliaryLayerActionNew( nullptr )
   , mAuxiliaryLayerActionClear( nullptr )
   , mAuxiliaryLayerActionDelete( nullptr )
+  , mAuxiliaryLayerActionExport( nullptr )
 {
   setupUi( this );
   connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
@@ -370,6 +371,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAuxiliaryLayerActionDelete = new QAction( tr( "Delete" ), this );
   menu->addAction( mAuxiliaryLayerActionDelete );
   connect( mAuxiliaryLayerActionDelete, &QAction::triggered, this, &QgsVectorLayerProperties::onAuxiliaryLayerDelete );
+
+  mAuxiliaryLayerActionExport = new QAction( tr( "Export" ), this );
+  menu->addAction( mAuxiliaryLayerActionExport );
+  connect( mAuxiliaryLayerActionExport, &QAction::triggered, this, &QgsVectorLayerProperties::onAuxiliaryLayerExport );
 
   mAuxiliaryStorageActions->setMenu( menu );
 
@@ -1504,6 +1509,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
     // update actions
     mAuxiliaryLayerActionClear->setEnabled( true );
     mAuxiliaryLayerActionDelete->setEnabled( true );
+    mAuxiliaryLayerActionExport->setEnabled( true );
     mAuxiliaryLayerActionNew->setEnabled( false );
 
     const QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
@@ -1540,6 +1546,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
 
     mAuxiliaryLayerActionClear->setEnabled( false );
     mAuxiliaryLayerActionDelete->setEnabled( false );
+    mAuxiliaryLayerActionExport->setEnabled( false );
 
     if ( mLayer->isSpatial() )
       mAuxiliaryLayerActionNew->setEnabled( true );
@@ -1611,4 +1618,16 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDelete()
     updateAuxiliaryStoragePage( true );
     mLayer->triggerRepaint();
   }
+}
+
+void QgsVectorLayerProperties::onAuxiliaryLayerExport()
+{
+  const QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
+  if ( !alayer )
+    return;
+
+  std::unique_ptr<QgsVectorLayer> clone;
+  clone.reset( alayer->toSpatialLayer() );
+
+  QgisApp::instance()->saveAsFile( clone.get() );
 }

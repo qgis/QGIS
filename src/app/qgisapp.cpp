@@ -1856,7 +1856,7 @@ void QgisApp::createActions()
   connect( mActionRollbackAllEdits, &QAction::triggered, this, &QgisApp::rollbackAllEdits );
   connect( mActionCancelEdits, &QAction::triggered, this, [ = ] { cancelEdits(); } );
   connect( mActionCancelAllEdits, &QAction::triggered, this, &QgisApp::cancelAllEdits );
-  connect( mActionLayerSaveAs, &QAction::triggered, this, &QgisApp::saveAsFile );
+  connect( mActionLayerSaveAs, &QAction::triggered, this, [ = ] { saveAsFile(); } );
   connect( mActionSaveLayerDefinition, &QAction::triggered, this, &QgisApp::saveAsLayerDefinition );
   connect( mActionRemoveLayer, &QAction::triggered, this, &QgisApp::removeLayer );
   connect( mActionDuplicateLayer, &QAction::triggered, this, [ = ] { duplicateLayers(); } );
@@ -6442,9 +6442,11 @@ void QgisApp::attributeTable()
   // the dialog will be deleted by itself on close
 }
 
-void QgisApp::saveAsRasterFile()
+void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
 {
-  QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( activeLayer() );
+  if ( !rasterLayer )
+    rasterLayer = qobject_cast<QgsRasterLayer *>( activeLayer() );
+
   if ( !rasterLayer )
   {
     return;
@@ -6578,20 +6580,22 @@ void QgisApp::saveAsRasterFile()
 }
 
 
-void QgisApp::saveAsFile()
+void QgisApp::saveAsFile( QgsMapLayer *layer )
 {
-  QgsMapLayer *layer = activeLayer();
+  if ( !layer )
+    layer = activeLayer();
+
   if ( !layer )
     return;
 
   QgsMapLayer::LayerType layerType = layer->type();
   if ( layerType == QgsMapLayer::RasterLayer )
   {
-    saveAsRasterFile();
+    saveAsRasterFile( qobject_cast<QgsRasterLayer *>( layer ) );
   }
   else if ( layerType == QgsMapLayer::VectorLayer )
   {
-    saveAsVectorFileGeneral();
+    saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ) );
   }
 }
 

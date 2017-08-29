@@ -654,6 +654,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QSize iconSize( bool dockedToolbar = false ) const;
 
   public slots:
+    //! save current vector layer
+    void saveAsFile( QgsMapLayer *layer = nullptr );
+
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
     //! Convenience function to open either a project or a layer file.
@@ -1439,13 +1442,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! set the CAD dock widget visible
     void setCadDockVisible( bool visible );
 
-    //! save current vector layer
-    void saveAsFile();
-
     void saveAsLayerDefinition();
 
     //! save current raster layer
-    void saveAsRasterFile();
+    void saveAsRasterFile( QgsRasterLayer *layer = nullptr );
 
     //! show Python console
     void showPythonDialog();

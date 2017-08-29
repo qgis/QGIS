@@ -123,6 +123,14 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     QgsAuxiliaryLayer &operator=( QgsAuxiliaryLayer const &rhs ) = delete;
 
     /**
+     * An auxiliary layer is not spatial. This method returns a spatial
+     * representation of auxiliary data.
+     *
+     * \returns A new spatial vector layer
+     */
+    QgsVectorLayer *toSpatialLayer() const;
+
+    /**
      * Deletes all features from the layer. Changes are automatically committed
      * and the layer remains editable.
      *

@@ -92,6 +92,15 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
 
 
+    QgsVectorLayer *toSpatialLayer() const;
+%Docstring
+ An auxiliary layer is not spatial. This method returns a spatial
+ representation of auxiliary data.
+
+ :return: A new spatial vector layer
+ :rtype: QgsVectorLayer
+%End
+
     bool clear();
 %Docstring
  Deletes all features from the layer. Changes are automatically committed

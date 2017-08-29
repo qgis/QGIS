@@ -21,6 +21,7 @@
 #include "qgsproject.h"
 #include "qgspallabeling.h"
 #include "qgsdiagramrenderer.h"
+#include "qgsmemoryproviderutils.h"
 
 #include <QFile>
 
@@ -167,6 +168,37 @@ QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &fil
   mJoinInfo.setEditable( true );
   mJoinInfo.setUpsertOnEdit( true );
   mJoinInfo.setCascadedDelete( true );
+}
+
+QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
+{
+  QgsVectorLayer *layer = QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "auxiliary_layer" ), fields(), mLayer->wkbType(), mLayer->crs() );
+
+  QString pkField = mJoinInfo.targetFieldName();
+  QgsFeature joinFeature;
+  QgsFeature targetFeature;
+  QgsFeatureIterator it = getFeatures();
+
+  layer->startEditing();
+  while ( it.nextFeature( joinFeature ) )
+  {
+    QString filter = QgsExpression::createFieldEqualityExpression( pkField, joinFeature.attribute( AS_JOINFIELD ) );
+
+    QgsFeatureRequest request;
+    request.setFilterExpression( filter );
+
+    mLayer->getFeatures( request ).nextFeature( targetFeature );
+
+    if ( targetFeature.isValid() )
+    {
+      QgsFeature newFeature( joinFeature );
+      newFeature.setGeometry( targetFeature.geometry() );
+      layer->addFeature( newFeature );
+    }
+  }
+  layer->commitChanges();
+
+  return layer;
 }
 
 QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const
