@@ -1069,8 +1069,9 @@ void QgsDiagramProperties::createAuxiliaryField()
   const QgsDiagramLayerSettings::Property key = static_cast< QgsDiagramLayerSettings::Property >( button->propertyKey() );
   const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[key];
 
-  // create property in auxiliary storage
-  mLayer->auxiliaryLayer()->addAuxiliaryField( def );
+  // create property in auxiliary storage if necessary
+  if ( !mLayer->auxiliaryLayer()->exists( def ) )
+    mLayer->auxiliaryLayer()->addAuxiliaryField( def );
 
   // update property with join field name from auxiliary storage
   QgsProperty property = button->toProperty();

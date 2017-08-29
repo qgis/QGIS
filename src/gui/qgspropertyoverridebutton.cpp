@@ -68,6 +68,7 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
   mActionDescription = new QAction( tr( "Description..." ), this );
 
   mActionCreateAuxiliaryField = new QAction( tr( "Store data in the project" ), this );
+  mActionCreateAuxiliaryField->setCheckable( true );
 
   mActionExpDialog = new QAction( tr( "Edit..." ), this );
   mActionExpression = nullptr;
@@ -337,13 +338,15 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
 
   const QgsAuxiliaryLayer *alayer = mVectorLayer->auxiliaryLayer();
 
+  mActionCreateAuxiliaryField->setEnabled( true );
+  mActionCreateAuxiliaryField->setChecked( false );
   if ( alayer && alayer->exists( mDefinition ) )
   {
-    mActionCreateAuxiliaryField->setEnabled( false );
-  }
-  else
-  {
-    mActionCreateAuxiliaryField->setEnabled( true );
+    if ( mProperty.field() == QgsAuxiliaryField::name( mDefinition, true ) )
+    {
+      mActionCreateAuxiliaryField->setEnabled( false );
+      mActionCreateAuxiliaryField->setChecked( true );
+    }
   }
 
   bool fieldActive = false;

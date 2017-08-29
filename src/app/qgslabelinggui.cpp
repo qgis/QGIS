@@ -639,8 +639,9 @@ void QgsLabelingGui::createAuxiliaryField()
   const QgsPalLayerSettings::Property key = static_cast< QgsPalLayerSettings::Property >( button->propertyKey() );
   const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[key];
 
-  // create property in auxiliary storage
-  mLayer->auxiliaryLayer()->addAuxiliaryField( def );
+  // create property in auxiliary storage if necessary
+  if ( !mLayer->auxiliaryLayer()->exists( def ) )
+    mLayer->auxiliaryLayer()->addAuxiliaryField( def );
 
   // update property with join field name from auxiliary storage
   QgsProperty property = button->toProperty();
