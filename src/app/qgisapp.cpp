@@ -11024,7 +11024,8 @@ void QgisApp::updateLabelToolButtons()
       ( qobject_cast<QgsMapToolRotateLabel *>( mMapTools.mRotateLabel ) &&
         qobject_cast<QgsMapToolRotateLabel *>( mMapTools.mRotateLabel )->layerIsRotatable( vlayer, colAng ) );
 
-    enableChange = true;
+    if ( vlayer->isEditable() )
+      enableChange = true;
 
     if ( enablePin && enableShowHide && enableMove && enableRotate && enableChange )
       break;
