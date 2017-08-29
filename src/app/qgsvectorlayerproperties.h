@@ -157,7 +157,10 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void updateFieldsPropertiesDialog();
 
     void onAuxiliaryLayerNew();
+
     void onAuxiliaryLayerClear();
+
+    void onAuxiliaryLayerDelete();
 
   private:
 
@@ -224,6 +227,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QAction *mAuxiliaryLayerActionNew;
     QAction *mAuxiliaryLayerActionClear;
+    QAction *mAuxiliaryLayerActionDelete;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

@@ -260,6 +260,13 @@ class CORE_EXPORT QgsAuxiliaryStorage
     QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const;
 
     /**
+     * Removes a table from the auxiliary storage.
+     *
+     * \returns true if the table is well deleted, false otherwise
+     */
+    static bool deleteTable( const QgsDataSourceUri &uri );
+
+    /**
      * Returns the extension used for auxiliary databases.
      */
     static QString extension();

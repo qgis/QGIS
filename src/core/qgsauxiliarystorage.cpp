@@ -311,6 +311,45 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
   return alayer;
 }
 
+bool QgsAuxiliaryStorage::deleteTable( const QgsDataSourceUri &uri )
+{
+  bool rc = false;
+
+  // parsing for ogr style uri :
+  // " filePath|layername='tableName' table="" sql="
+  QStringList uriParts = uri.uri().split( '|' );
+  if ( uriParts.count() < 2 )
+    return false;
+
+  const QString databasePath = uriParts[0].replace( ' ', "" );
+
+  const QString table = uriParts[1];
+  QStringList tableParts = table.split( ' ' );
+
+  if ( tableParts.count() < 1 )
+    return false;
+
+  const QString tableName = tableParts[0].replace( "layername=", "" );
+
+  if ( !databasePath.isEmpty() && !tableName.isEmpty() )
+  {
+    sqlite3 *handler = openDB( databasePath );
+
+    if ( handler )
+    {
+      QString sql = QString( "DROP TABLE %1" ).arg( tableName );
+      rc = exec( sql, handler );
+
+      sql = QString( "VACUUM" );
+      rc = exec( sql, handler );
+
+      close( handler );
+    }
+  }
+
+  return rc;
+}
+
 bool QgsAuxiliaryStorage::saveAs( const QString &filename ) const
 {
   if ( QFile::exists( filename ) )

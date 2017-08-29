@@ -241,6 +241,14 @@ class QgsAuxiliaryStorage
  :rtype: QgsAuxiliaryLayer
 %End
 
+    static bool deleteTable( const QgsDataSourceUri &uri );
+%Docstring
+ Removes a table from the auxiliary storage.
+
+ :return: true if the table is well deleted, false otherwise
+ :rtype: bool
+%End
+
     static QString extension();
 %Docstring
  Returns the extension used for auxiliary databases.
