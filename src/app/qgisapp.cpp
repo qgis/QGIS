@@ -5528,6 +5528,7 @@ void QgisApp::dxfExport()
     dxfExport.setSymbologyExport( d.symbologyMode() );
     dxfExport.setLayerTitleAsName( d.layerTitleAsName() );
     dxfExport.setDestinationCrs( d.crs() );
+    dxfExport.setForce2d( d.force2d() );
     if ( mapCanvas() )
     {
       //extent
