@@ -38,10 +38,10 @@ from osgeo import gdal
 from qgis.core import QgsProcessingException
 
 
-def scanraster(layer, feedback):
+def scanraster(layer, feedback, band_number=1):
     filename = str(layer.source())
     dataset = gdal.Open(filename, gdal.GA_ReadOnly)
-    band = dataset.GetRasterBand(1)
+    band = dataset.GetRasterBand(band_number)
     nodata = band.GetNoDataValue()
     bandtype = gdal.GetDataTypeName(band.DataType)
     for y in range(band.YSize):
