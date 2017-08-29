@@ -624,7 +624,7 @@ bool QgsProperty::valueAsBool( const QgsExpressionContext &context, bool default
   bool valOk = false;
   QVariant val = value( context, defaultValue, &valOk );
 
-  if ( !valOk || !val.isValid() )
+  if ( !valOk || !val.isValid() || val.isNull() )
     return defaultValue;
 
   if ( ok )
