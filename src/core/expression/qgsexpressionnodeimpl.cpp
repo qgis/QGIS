@@ -949,7 +949,7 @@ QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
   {
     if ( !mArgs->list().isEmpty() )
     {
-      QgsExpressionNodeLiteral *var = dynamic_cast<QgsExpressionNodeLiteral *>( mArgs->list().first() );
+      QgsExpressionNodeLiteral *var = dynamic_cast<QgsExpressionNodeLiteral *>( mArgs->list().at( 0 ) );
       if ( var )
         return QSet<QString>() << var->value().toString();
     }
