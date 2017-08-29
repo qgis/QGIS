@@ -215,7 +215,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
     }
 
     OGRFeatureDefnH dfn = OGR_L_GetLayerDefn( layer );
-    int pathIdx = OGR_FD_GetFieldIndex( dfn, "path" );
+    //int pathIdx = OGR_FD_GetFieldIndex( dfn, "path" );
     int lastmodifiedIdx = OGR_FD_GetFieldIndex( dfn, "lastmodified" );
 
     OGR_L_ResetReading( layer );
@@ -229,8 +229,6 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
       return false;
     }
 
-    QString path = QString::fromUtf8( OGR_F_GetFieldAsString( f, pathIdx ) );
-
     int year, month, day, hour, minute, second, tzf;
     if ( !OGR_F_GetFieldAsDateTime( f, lastmodifiedIdx, &year, &month, &day, &hour, &minute, &second, &tzf ) )
     {
@@ -241,9 +239,10 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
       return false;
     }
 
-    QDateTime lastModified( QDate( year, month, day ), QTime( hour, minute, second ) );
 
 #if 0
+    QDateTime lastModified( QDate( year, month, day ), QTime( hour, minute, second ) );
+    QString path = QString::fromUtf8( OGR_F_GetFieldAsString( f, pathIdx ) );
     if ( path == fi.canonicalPath() && fi.lastModified() <= lastModified )
     {
       LOG( QObject::tr( "Drawing already uptodate in database." ) );

@@ -125,8 +125,10 @@ const QString QgsCrashReport::crashID() const
   // Hashes the full stack.
   Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
   {
+#if 0
     QFileInfo fileInfo( line.fileName );
     QString filename( fileInfo.fileName() );
+#endif
     data += line.symbolName;
   }
 

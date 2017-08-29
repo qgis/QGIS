@@ -922,8 +922,6 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext *context )
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   //data defined map extents set?
-  QVariant exprVal;
-
   QgsRectangle newExtent = *currentMapExtent();
   bool useDdXMin = false;
   bool useDdXMax = false;

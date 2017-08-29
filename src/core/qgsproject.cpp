@@ -2156,7 +2156,6 @@ bool QgsProject::zip( const QString &filename )
   archive->addFile( qgsFile.fileName() );
 
   // zip
-  QString errMsg;
   if ( !archive->zip( filename ) )
   {
     setError( tr( "Unable to perform zip" ) );

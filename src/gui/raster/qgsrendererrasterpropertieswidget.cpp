@@ -365,13 +365,15 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
         // Compare used bands in new and old renderer and reset transparency dialog if different
         QgsRasterRenderer *oldRenderer = oldWidget->renderer();
         QgsRasterRenderer *newRenderer = mRendererWidget->renderer();
+#if 0
         QList<int> oldBands = oldRenderer->usesBands();
         QList<int> newBands = newRenderer->usesBands();
 
-//        if ( oldBands != newBands )
-//        {
-//          populateTransparencyTable( newRenderer );
-//        }
+        if ( oldBands != newBands )
+        {
+          populateTransparencyTable( newRenderer );
+        }
+#endif
 
         delete oldRenderer;
         delete newRenderer;
