@@ -84,6 +84,42 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsPoint *pointOnSurface( QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *convexHull( QString *errorMsg = nullptr ) const override;
     double distance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+
+    /**
+     * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
+     *
+     * This algorithm is an approximation to the standard Hausdorff distance. This approximation is exact or close enough for a large
+     * subset of useful cases. Examples of these are:
+     *
+     * - computing distance between Linestrings that are roughly parallel to each other,
+     * and roughly equal in length. This occurs in matching linear networks.
+     * - Testing similarity of geometries.
+     *
+     * If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
+     *
+     * \since QGIS 3.0
+     * \see hausdorffDistanceDensify()
+     */
+    double hausdorffDistance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const;
+
+    /**
+     * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
+     *
+     * This function accepts a \a densifyFraction argument. The function performs a segment
+     * densification before computing the discrete Hausdorff distance. The \a densifyFraction parameter
+     * sets the fraction by which to densify each segment. Each segment will be split into a
+     * number of equal-length subsegments, whose fraction of the total length is
+     * closest to the given fraction.
+     *
+     * This method can be used when the default approximation provided by hausdorffDistance()
+     * is not sufficient. Decreasing the \a densifyFraction parameter will make the
+     * distance returned approach the true Hausdorff distance for the geometries.
+     *
+     * \since QGIS 3.0
+     * \see hausdorffDistance()
+     */
+    double hausdorffDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg = nullptr ) const;
+
     bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;

@@ -272,6 +272,45 @@ class CORE_EXPORT QgsGeometry
     double distance( const QgsGeometry &geom ) const;
 
     /**
+     * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
+     *
+     * This algorithm is an approximation to the standard Hausdorff distance. This approximation is exact or close enough for a large
+     * subset of useful cases. Examples of these are:
+     *
+     * - computing distance between Linestrings that are roughly parallel to each other,
+     * and roughly equal in length. This occurs in matching linear networks.
+     * - Testing similarity of geometries.
+     *
+     * If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
+     *
+     * In case of error -1 will be returned.
+     *
+     * \since QGIS 3.0
+     * \see hausdorffDistanceDensify()
+     */
+    double hausdorffDistance( const QgsGeometry &geom ) const;
+
+    /**
+     * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
+     *
+     * This function accepts a \a densifyFraction argument. The function performs a segment
+     * densification before computing the discrete Hausdorff distance. The \a densifyFraction parameter
+     * sets the fraction by which to densify each segment. Each segment will be split into a
+     * number of equal-length subsegments, whose fraction of the total length is
+     * closest to the given fraction.
+     *
+     * This method can be used when the default approximation provided by hausdorffDistance()
+     * is not sufficient. Decreasing the \a densifyFraction parameter will make the
+     * distance returned approach the true Hausdorff distance for the geometries.
+     *
+     * In case of error -1 will be returned.
+     *
+     * \since QGIS 3.0
+     * \see hausdorffDistance()
+     */
+    double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
+
+    /**
      * Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
      * and the indices of the vertices before and after the closest vertex.
      * \param point point to search for

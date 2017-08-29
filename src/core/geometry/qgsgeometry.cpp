@@ -1447,6 +1447,28 @@ double QgsGeometry::distance( const QgsGeometry &geom ) const
   return g.distance( geom.d->geometry );
 }
 
+double QgsGeometry::hausdorffDistance( const QgsGeometry &geom ) const
+{
+  if ( !d->geometry || !geom.d->geometry )
+  {
+    return -1.0;
+  }
+
+  QgsGeos g( d->geometry );
+  return g.hausdorffDistance( geom.d->geometry );
+}
+
+double QgsGeometry::hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const
+{
+  if ( !d->geometry || !geom.d->geometry )
+  {
+    return -1.0;
+  }
+
+  QgsGeos g( d->geometry );
+  return g.hausdorffDistanceDensify( geom.d->geometry, densifyFraction );
+}
+
 QgsGeometry QgsGeometry::buffer( double distance, int segments ) const
 {
   if ( !d->geometry )
