@@ -28,13 +28,12 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
 
 from processing.tools import vector
 
@@ -53,15 +52,16 @@ class MeanAndStdDevPlot(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'), self.INPUT,
-                                              ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'), self.INPUT))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input table')))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'), parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Plot'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Plot')))
 
     def name(self):
         return 'meanandstandarddeviationplot'
@@ -70,13 +70,13 @@ class MeanAndStdDevPlot(QgisAlgorithm):
         return self.tr('Mean and standard deviation plot')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
+        valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
-        output = self.getOutputValue(self.OUTPUT)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(layer, namefieldname, valuefieldname)
+        values = vector.values(source, namefieldname, valuefieldname)
 
         d = {}
         for i in range(len(values[namefieldname])):
@@ -93,3 +93,5 @@ class MeanAndStdDevPlot(QgisAlgorithm):
                                name=k
                                ))
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

@@ -29,12 +29,11 @@ import plotly as plt
 import plotly.graph_objs as go
 import numpy as np
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
@@ -52,14 +51,15 @@ class PolarPlot(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'), self.INPUT))  # FIXME unused?
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'), self.INPUT))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'), parentLayerParameterName=self.INPUT))  # FIXME unused?
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Polar plot')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Polar plot'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Polar plot')))
 
     def name(self):
         return 'polarplot'
@@ -68,14 +68,16 @@ class PolarPlot(QgisAlgorithm):
         return self.tr('Polar plot')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        namefieldname = self.getParameterValue(self.NAME_FIELD)  # NOQA  FIXME unused?
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)  # NOQA  FIXME unused?
+        valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
-        output = self.getOutputValue(self.OUTPUT)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(layer, valuefieldname)
+        values = vector.values(source, valuefieldname)
 
         data = [go.Area(r=values[valuefieldname],
                         t=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

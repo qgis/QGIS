@@ -323,20 +323,23 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ]
 
         if hasPlotly:
-            #     from .VectorLayerHistogram import VectorLayerHistogram
-            #     from .RasterLayerHistogram import RasterLayerHistogram
-            #     from .VectorLayerScatterplot import VectorLayerScatterplot
-            #     from .MeanAndStdDevPlot import MeanAndStdDevPlot
             from .BarPlot import BarPlot
-        #     from .PolarPlot import PolarPlot
-        #     from .BoxPlot import BoxPlot
-        #     from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
-        #
-            algs.extend([BarPlot()])
-            #[VectorLayerHistogram(), RasterLayerHistogram(),
-        #                  VectorLayerScatterplot(), MeanAndStdDevPlot(),
-        #                  BarPlot(), PolarPlot(), BoxPlot(),
-        #                  VectorLayerScatterplot3D()])
+            from .BoxPlot import BoxPlot
+            from .MeanAndStdDevPlot import MeanAndStdDevPlot
+            from .PolarPlot import PolarPlot
+            from .RasterLayerHistogram import RasterLayerHistogram
+            from .VectorLayerHistogram import VectorLayerHistogram
+            from .VectorLayerScatterplot import VectorLayerScatterplot
+            from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
+
+            algs.extend([BarPlot(),
+                         BoxPlot(),
+                         MeanAndStdDevPlot(),
+                         PolarPlot(),
+                         RasterLayerHistogram(),
+                         VectorLayerHistogram(),
+                         VectorLayerScatterplot(),
+                         VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
