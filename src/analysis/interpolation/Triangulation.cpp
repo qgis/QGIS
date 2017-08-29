@@ -1,6 +1,6 @@
 /***************************************************************************
-    Triangulation.cc
-    ---------------------
+    Triangulation.cpp
+    -----------------
     begin                : September 2009
     copyright            : (C) 2009 by Marco Hugentobler
     email                : marco dot hugentobler at sourcepole dot ch
@@ -13,5 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "Triangulation.h"
+#include "qgsfields.h"
 
-//empty file (abstract class)
+QgsFields Triangulation::triangulationFields()
+{
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String, QStringLiteral( "String" ) ) );
+  return fields;
+}

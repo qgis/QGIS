@@ -1,6 +1,6 @@
 /***************************************************************************
-                          NormVecDecorator.cc  -  description
-                             -------------------
+                             NormVecDecorator.cpp
+                             --------------------
     copyright            : (C) 2004 by Marco Hugentobler
     email                : mhugent@geo.unizh.ch
  ***************************************************************************/
@@ -17,6 +17,7 @@
 #include "NormVecDecorator.h"
 #include "qgsfeedback.h"
 #include "qgslogger.h"
+#include "qgsfields.h"
 #include <QApplication>
 
 NormVecDecorator::~NormVecDecorator()
@@ -590,13 +591,12 @@ bool NormVecDecorator::swapEdge( double x, double y )
   }
 }
 
-bool NormVecDecorator::saveAsShapefile( const QString &fileName ) const
+bool NormVecDecorator::saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback ) const
 {
   if ( !mTIN )
   {
     return false;
   }
-  return mTIN->saveAsShapefile( fileName );
+  return mTIN->saveTriangulation( sink, feedback );
 }
-
 

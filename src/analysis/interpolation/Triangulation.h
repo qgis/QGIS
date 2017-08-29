@@ -23,10 +23,17 @@
 #include "TriangleInterpolator.h"
 #include "qgis_analysis.h"
 
+class QgsFeatureSink;
 class Line3D;
+class QgsFields;
+class QgsFeedback;
+
+#define SIP_NO_FILE
 
 /** \ingroup analysis
- * Interface for Triangulation classes*/
+ * Interface for Triangulation classes.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT Triangulation
 {
   public:
@@ -148,10 +155,26 @@ class ANALYSIS_EXPORT Triangulation
     virtual bool swapEdge( double x, double y ) = 0;
 
     /**
-     * Saves the triangulation as a (line) shapefile
-     * \returns true in case of success
+     * Returns the fields output by features when calling
+     * saveTriangulation(). These fields should be used when creating
+     * a suitable feature sink for saveTriangulation()
+     * \see saveTriangulation()
+     * \since QGIS 3.0
      */
-    virtual bool saveAsShapefile( const QString &fileName ) const = 0;
+    static QgsFields triangulationFields();
+
+    /**
+     * Saves the triangulation features to a feature \a sink.
+     *
+     * The sink must be setup to accept LineString features, with fields matching
+     * those returned by triangulationFields().
+     *
+     * \returns true in case of success
+     *
+     * \see triangulationFields()
+     *  \since QGIS 3.0
+     */
+    virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const = 0;
 };
 
 #ifndef SIP_RUN

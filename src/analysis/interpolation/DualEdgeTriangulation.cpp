@@ -1,6 +1,6 @@
 /***************************************************************************
-                          DualEdgeTriangulation.cc  -  description
-                             -------------------
+                          DualEdgeTriangulation.cpp
+                          -------------------------
     copyright            : (C) 2004 by Marco Hugentobler
     email                : mhugent@geo.unizh.ch
  ***************************************************************************/
@@ -3081,30 +3081,9 @@ QList<int> *DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
   }
 }
 
-bool DualEdgeTriangulation::saveAsShapefile( const QString &fileName ) const
+bool DualEdgeTriangulation::saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback ) const
 {
-  QString shapeFileName = fileName;
-
-  QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "type" ), QVariant::String, QStringLiteral( "String" ) ) );
-
-  // add the extension if not present
-  if ( shapeFileName.indexOf( QLatin1String( ".shp" ) ) == -1 )
-  {
-    shapeFileName += QLatin1String( ".shp" );
-  }
-
-  //delete already existing files
-  if ( QFile::exists( shapeFileName ) )
-  {
-    if ( !QgsVectorFileWriter::deleteShapeFile( shapeFileName ) )
-    {
-      return false;
-    }
-  }
-
-  QgsVectorFileWriter writer( shapeFileName, QStringLiteral( "Utf-8" ), fields, QgsWkbTypes::LineString );
-  if ( writer.hasError() != QgsVectorFileWriter::NoError )
+  if ( !sink )
   {
     return false;
   }
@@ -3123,6 +3102,9 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString &fileName ) const
 
   for ( int i = 0; i < mHalfEdge.size(); ++i )
   {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
     HalfEdge *currentEdge = mHalfEdge[i];
     if ( currentEdge->getPoint() != -1 && mHalfEdge[currentEdge->getDual()]->getPoint() != -1 && !alreadyVisitedEdges[currentEdge->getDual()] )
     {
@@ -3152,14 +3134,14 @@ bool DualEdgeTriangulation::saveAsShapefile( const QString &fileName ) const
       }
       edgeLineFeature.setAttribute( 0, attributeString );
 
-      writer.addFeature( edgeLineFeature );
+      sink->addFeature( edgeLineFeature, QgsFeatureSink::FastInsert );
     }
     alreadyVisitedEdges[i] = true;
   }
 
   delete [] alreadyVisitedEdges;
 
-  return true;
+  return !feedback || !feedback->isCanceled();
 }
 
 double DualEdgeTriangulation::swapMinAngle( int edge ) const

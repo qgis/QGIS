@@ -21,8 +21,12 @@
 #include "qgis.h"
 #include "qgis_analysis.h"
 
+#define SIP_NO_FILE
+
 /** \ingroup analysis
- * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
+ * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.).
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT TriDecorator : public Triangulation
 {
   public:

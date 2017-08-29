@@ -20,7 +20,8 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include <QProgressDialog>
+#include "qgsfeedback.h"
+
 #include <QFileInfo>
 #ifndef _MSC_VER
 #include <cstdint>
@@ -60,10 +61,8 @@ QgsTransectSample::QgsTransectSample()
 {
 }
 
-int QgsTransectSample::createSample( QProgressDialog *pd )
+int QgsTransectSample::createSample( QgsFeedback *feedback )
 {
-  Q_UNUSED( pd );
-
   if ( !mStrataLayer || !mStrataLayer->isValid() )
   {
     return 1;
@@ -147,19 +146,20 @@ int QgsTransectSample::createSample( QProgressDialog *pd )
   QgsFeature fet;
   int nTotalTransects = 0;
   int nFeatures = 0;
+  int totalFeatures = 0;
 
-  if ( pd )
+  if ( feedback )
   {
-    pd->setMaximum( mStrataLayer->featureCount() );
+    totalFeatures = mStrataLayer->featureCount();
   }
 
   while ( strataIt.nextFeature( fet ) )
   {
-    if ( pd )
+    if ( feedback )
     {
-      pd->setValue( nFeatures );
+      feedback->setProgress( 100.0 * static_cast< double >( nFeatures ) / totalFeatures );
     }
-    if ( pd && pd->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
     }
@@ -321,9 +321,9 @@ int QgsTransectSample::createSample( QProgressDialog *pd )
     ++nFeatures;
   }
 
-  if ( pd )
+  if ( feedback )
   {
-    pd->setValue( mStrataLayer->featureCount() );
+    feedback->setProgress( 100.0 );
   }
 
   return 0;

@@ -19,7 +19,6 @@
 #include "qgslogger.h"
 #include "cpl_string.h"
 #include "qgsfeedback.h"
-#include <QProgressDialog>
 #include <QFile>
 
 QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )

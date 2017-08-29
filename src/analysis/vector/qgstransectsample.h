@@ -25,7 +25,7 @@ class QgsGeometry;
 class QgsSpatialIndex;
 class QgsVectorLayer;
 class QgsPointXY;
-class QProgressDialog;
+class QgsFeedback;
 
 /** \ingroup analysis
  * A class for the creation of transect sample lines based on a set of strata polygons and baselines*/
@@ -44,7 +44,12 @@ class ANALYSIS_EXPORT QgsTransectSample
                        const QString &baselineStrataId, const QString &outputPointLayer, const QString &outputLineLayer, const QString &usedBaselineLayer, double minTransectLength = 0.0,
                        double baselineBufferDistance = -1.0, double baselineSimplificationTolerance = -1.0 );
 
-    int createSample( QProgressDialog *pd );
+    /**
+     * Creates the sample.
+     *
+     * The optional \a feedback argument can be used for progress reporting and cancelation support.
+     */
+    int createSample( QgsFeedback *feedback = nullptr );
 
   private:
     QgsTransectSample(); //default constructor forbidden

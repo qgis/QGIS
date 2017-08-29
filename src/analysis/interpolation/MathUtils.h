@@ -23,6 +23,8 @@
 class QgsPoint;
 class Vector3D;
 
+#define SIP_NO_FILE
+
 namespace MathUtils
 {
   //! Calculates the barycentric coordinates of a point (x,y) with respect to p1, p2, p3 and stores the three barycentric coordinates in 'result'. Thus the u-coordinate is stored in result::x, the v-coordinate in result::y and the w-coordinate in result::z. Attention: p1, p2 and p3 have to be ordered counterclockwise
