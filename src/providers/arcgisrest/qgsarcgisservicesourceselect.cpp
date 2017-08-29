@@ -29,25 +29,12 @@
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 
-#include <QItemDelegate>
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QRadioButton>
 #include <QImageReader>
 #include "qgshelp.h"
-
-/**
- * Item delegate with tweaked sizeHint.
- */
-class QgsAbstractDataSourceWidgetItemDelegate : public QItemDelegate
-{
-  public:
-    //! Constructor
-    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-};
-
 
 QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, widgetMode ),

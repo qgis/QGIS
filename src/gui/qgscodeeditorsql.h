@@ -19,6 +19,7 @@
 #include "qgscodeeditor.h"
 #include "qgis_sip.h"
 #include "qgis_gui.h"
+#include <Qsci/qscilexersql.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
@@ -40,5 +41,29 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     //QWidget *mWidget;
     void setSciLexerSQL();
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/** Internal use.
+
+   setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
+   a lexer, since its caseSensitive() method is actually used, and defaults
+   to true.
+   @note not available in Python bindings
+   @ingroup gui
+*/
+class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
+{
+    Q_OBJECT
+
+  public:
+    //! constructor
+    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = 0 ) : QsciLexerSQL( parent ) {}
+
+    bool caseSensitive() const override { return false; }
+};
+///@endcond
+#endif
 
 #endif

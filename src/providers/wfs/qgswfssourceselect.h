@@ -23,6 +23,7 @@
 #include "qgswfscapabilities.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgssqlcomposerdialog.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -30,7 +31,6 @@
 
 class QgsProjectionSelectionDialog;
 class QgsWfsCapabilities;
-class QgsSQLComposerDialog;
 
 class QgsWFSItemDelegate : public QItemDelegate
 {
@@ -41,6 +41,21 @@ class QgsWFSItemDelegate : public QItemDelegate
 
     virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
+};
+
+class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
+{
+    Q_OBJECT
+
+  public:
+    QgsWFSValidatorCallback( QObject *parent,
+                             const QgsWFSDataSourceURI &uri, const QString &allSql,
+                             const QgsWfsCapabilities::Capabilities &caps );
+    bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
+  private:
+    QgsWFSDataSourceURI mURI;
+    QString mAllSql;
+    const QgsWfsCapabilities::Capabilities &mCaps;
 };
 
 class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
@@ -107,5 +122,21 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
 
 };
 
+
+class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
+{
+    Q_OBJECT
+
+  public:
+    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
+                                 const QgsWFSDataSourceURI &uri,
+                                 const QgsWfsCapabilities::Capabilities &caps );
+    void tableSelected( const QString &name ) override;
+
+  private:
+    QgsSQLComposerDialog *mDialog = nullptr;
+    QgsWFSDataSourceURI mURI;
+    const QgsWfsCapabilities::Capabilities &mCaps;
+};
 
 #endif

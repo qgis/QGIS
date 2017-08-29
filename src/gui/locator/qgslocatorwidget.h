@@ -130,6 +130,8 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
 class QgsLocatorFilterFilter : public QgsLocatorFilter
 {
+    Q_OBJECT
+
   public:
 
     QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
@@ -221,6 +223,8 @@ class QgsLocatorModel : public QAbstractTableModel
 
 class QgsLocatorProxyModel : public QSortFilterProxyModel
 {
+    Q_OBJECT
+
   public:
 
     explicit QgsLocatorProxyModel( QObject *parent = nullptr );

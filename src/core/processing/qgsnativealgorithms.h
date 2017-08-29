@@ -29,6 +29,8 @@
 
 class QgsNativeAlgorithms: public QgsProcessingProvider
 {
+    Q_OBJECT
+
   public:
 
     QgsNativeAlgorithms( QObject *parent = nullptr );
