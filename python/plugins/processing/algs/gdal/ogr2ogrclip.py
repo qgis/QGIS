@@ -35,7 +35,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools import dataobjects
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrClip(GdalAlgorithm):
@@ -47,6 +46,8 @@ class Ogr2OgrClip(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterVector(self.CLIP_LAYER,
@@ -65,30 +66,30 @@ class Ogr2OgrClip(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
         clipLayer = self.getParameterValue(self.CLIP_LAYER)
-        ogrClipLayer = ogrConnectionString(clipLayer)[1:-1]
+        ogrClipLayer = GdalUtils.ogrConnectionString(clipLayer, context)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
-        output = ogrConnectionString(outFile)
+        output = GdalUtils.ogrConnectionString(outFile, context)
         options = str(self.getParameterValue(self.OPTIONS))
 
         arguments = []
         arguments.append('-clipsrc')
         arguments.append(ogrClipLayer)
         arguments.append("-clipsrclayer")
-        arguments.append(ogrLayerName(clipLayer))
+        arguments.append(GdalUtils.ogrLayerName(clipLayer))
 
         if options is not None and len(options.strip()) > 0:
             arguments.append(options)
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
 
         commands = []
         if isWindows():

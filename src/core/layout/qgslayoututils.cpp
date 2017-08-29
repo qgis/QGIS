@@ -20,14 +20,14 @@
 #include "qgsrendercontext.h"
 #include "qgslayoutitemmap.h"
 #include <QPainter>
-#include <math.h>
+#include <cmath>
 
 double QgsLayoutUtils::normalizedAngle( const double angle, const bool allowNegative )
 {
   double clippedAngle = angle;
   if ( clippedAngle >= 360.0 || clippedAngle <= -360.0 )
   {
-    clippedAngle = fmod( clippedAngle, 360.0 );
+    clippedAngle = std::fmod( clippedAngle, 360.0 );
   }
   if ( !allowNegative && clippedAngle < 0.0 )
   {
@@ -74,12 +74,17 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForMap( QgsLayoutItemMap *ma
     QgsRenderContext context; // = QgsRenderContext::fromMapSettings( ms );
     if ( painter )
       context.setPainter( painter );
+
+    context.setFlags( map->layout()->context().renderContextFlags() );
     return context;
   }
 }
 
-QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout, QPainter *painter )
+QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout, QPainter *painter, double dpi )
 {
   QgsLayoutItemMap *referenceMap = layout ? layout->referenceMap() : nullptr;
-  return createRenderContextForMap( referenceMap, painter );
+  QgsRenderContext context = createRenderContextForMap( referenceMap, painter, dpi );
+  if ( layout )
+    context.setFlags( layout->context().renderContextFlags() );
+  return context;
 }

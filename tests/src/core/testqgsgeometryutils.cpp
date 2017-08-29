@@ -485,7 +485,7 @@ void TestQgsGeometryUtils::testCircleCenterRadius_data()
   QTest::addColumn<double>( "expectedCenterX" );
   QTest::addColumn<double>( "expectedCenterY" );
 
-  QTest::newRow( "circleCenterRadius1" ) << 1.0 << 1.0 << 5.0 << 7.0 << 1.0 << 1.0 << sqrt( 13.0 ) << 3.0 << 4.0;
+  QTest::newRow( "circleCenterRadius1" ) << 1.0 << 1.0 << 5.0 << 7.0 << 1.0 << 1.0 << std::sqrt( 13.0 ) << 3.0 << 4.0;
   QTest::newRow( "circleCenterRadius1" ) << 0.0 << 2.0 << 2.0 << 2.0 << 0.0 << 2.0 << 1.0 << 1.0 << 2.0;
 }
 
@@ -642,14 +642,14 @@ void TestQgsGeometryUtils::testClosestPoint()
 
   QgsPoint pt1 = QgsGeometryUtils::closestPoint( linestringZ, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt1.z(), 1, 0.0001 );
-  QVERIFY( qIsNaN( pt1.m() ) );
+  QVERIFY( std::isnan( pt1.m() ) );
 
   QgsLineString linestringM( QVector<QgsPoint>()
                              << QgsPoint( 1, 1, std::numeric_limits<double>::quiet_NaN(), 1 )
                              << QgsPoint( 1, 3, std::numeric_limits<double>::quiet_NaN(), 2 ) );
 
   QgsPoint pt2 = QgsGeometryUtils::closestPoint( linestringM, QgsPoint( 1, 4 ) );
-  QVERIFY( qIsNaN( pt2.z() ) );
+  QVERIFY( std::isnan( pt2.z() ) );
   QGSCOMPARENEAR( pt2.m(), 2, 0.0001 );
 
   QgsLineString linestringZM( QVector<QgsPoint>()

@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from builtins import str
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -67,7 +64,7 @@ class BatchOutputSelectionPanel(QWidget):
                                 QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
-        self.pushButton.setText('...')
+        self.pushButton.setText('…')
         self.pushButton.clicked.connect(self.showSelectionDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)

@@ -46,14 +46,21 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   connect( mMenu, &QMenu::aboutToShow, this, &QgsFontButton::prepareMenu );
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
+
+  //make sure height of button looks good under different platforms
+  QSize size = QToolButton::minimumSizeHint();
+  int fontHeight = fontMetrics().height() * 1.4;
+  mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
 QSize QgsFontButton::minimumSizeHint() const
 {
-  //make sure height of button looks good under different platforms
-  QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = fontMetrics().height() * 1.4;
-  return QSize( size.width(), qMax( size.height(), fontHeight ) );
+  return mSizeHint;
+}
+
+QSize QgsFontButton::sizeHint() const
+{
+  return mSizeHint;
 }
 
 void QgsFontButton::showSettingsDialog()
@@ -166,7 +173,7 @@ bool QgsFontButton::event( QEvent *e )
   {
     QHelpEvent *helpEvent = static_cast< QHelpEvent *>( e );
     QString toolTip;
-    double fontSize;
+    double fontSize = 0.0;
     switch ( mMode )
     {
       case ModeTextRenderer:
@@ -342,7 +349,7 @@ void QgsFontButton::wheelEvent( QWheelEvent *event )
   {
     size -= increment;
   }
-  size = qMax( size, 1.0 );
+  size = std::max( size, 1.0 );
 
   switch ( mMode )
   {
@@ -432,13 +439,13 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       if ( tempFormat->buffer().enabled() )
         xtrans = context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() );
       if ( tempFormat->background().enabled() && tempFormat->background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
-        xtrans = qMax( xtrans, context.convertToPainterUnits( tempFormat->background().size().width(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
+        xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat->background().size().width(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
       double ytrans = 0.0;
       if ( tempFormat->buffer().enabled() )
-        ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
+        ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
       if ( tempFormat->background().enabled() )
-        ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat->background().size().height(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
+        ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat->background().size().height(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
       QRectF textRect = rect;
       textRect.setLeft( xtrans );
@@ -811,13 +818,13 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       if ( tempFormat.buffer().enabled() )
         xtrans = context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
       if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
-        xtrans = qMax( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+        xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
       double ytrans = 0.0;
       if ( tempFormat.buffer().enabled() )
-        ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+        ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
       if ( tempFormat.background().enabled() )
-        ytrans = qMax( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
+        ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
       QRectF textRect = rect;
       textRect.setLeft( xtrans );

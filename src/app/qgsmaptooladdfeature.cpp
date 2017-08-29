@@ -40,6 +40,8 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
   , mCheckGeometryType( true )
 {
   mToolName = tr( "Add feature" );
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddFeature::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddFeature::stopCapturing );
 }
 
 QgsMapToolAddFeature::~QgsMapToolAddFeature()

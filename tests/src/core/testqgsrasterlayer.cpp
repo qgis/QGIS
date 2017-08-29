@@ -435,19 +435,19 @@ void TestQgsRasterLayer::checkScaleOffset()
   QVERIFY( myRasterLayer->height() == 10 );
   //QVERIFY( myStatistics.elementCount == 100 );
   double minVal = 0.0;
-  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.minimumValue ).arg( minVal ).arg( fabs( myStatistics.minimumValue - minVal ) );
+  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.minimumValue ).arg( minVal ).arg( std::fabs( myStatistics.minimumValue - minVal ) );
   double maxVal = 9.0;
-  mReport += QStringLiteral( "max = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.maximumValue ).arg( maxVal ).arg( fabs( myStatistics.maximumValue - maxVal ) );
+  mReport += QStringLiteral( "max = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.maximumValue ).arg( maxVal ).arg( std::fabs( myStatistics.maximumValue - maxVal ) );
   double meanVal = 4.5;
-  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.mean ).arg( meanVal ).arg( fabs( myStatistics.mean - meanVal ) );
-  QVERIFY( fabs( myStatistics.minimumValue - minVal ) < 0.0000001 );
-  QVERIFY( fabs( myStatistics.maximumValue - maxVal ) < 0.0000001 );
-  QVERIFY( fabs( myStatistics.mean - meanVal ) < 0.0000001 );
+  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.mean ).arg( meanVal ).arg( std::fabs( myStatistics.mean - meanVal ) );
+  QVERIFY( std::fabs( myStatistics.minimumValue - minVal ) < 0.0000001 );
+  QVERIFY( std::fabs( myStatistics.maximumValue - maxVal ) < 0.0000001 );
+  QVERIFY( std::fabs( myStatistics.mean - meanVal ) < 0.0000001 );
 
   double stdDev = 2.87228615;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
-  mReport += QStringLiteral( "stdDev = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev ).arg( fabs( myStatistics.stdDev - stdDev ) );
-  QVERIFY( fabs( myStatistics.stdDev - stdDev ) < 0.0000001 );
+  mReport += QStringLiteral( "stdDev = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev ).arg( std::fabs( myStatistics.stdDev - stdDev ) );
+  QVERIFY( std::fabs( myStatistics.stdDev - stdDev ) < 0.0000001 );
 
   QgsRasterDataProvider *myProvider = myRasterLayer->dataProvider();
   QgsPointXY myPoint( 1535030, 5083350 );
@@ -474,8 +474,8 @@ void TestQgsRasterLayer::checkScaleOffset()
         double value = values.value( bandNo ).toDouble();
         valueString = QgsRasterBlock::printValue( value );
         mReport += QStringLiteral( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
-        mReport += QStringLiteral( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( fabs( value - expected ) );
-        QVERIFY( fabs( value - expected ) < 0.0000001 );
+        mReport += QStringLiteral( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( std::fabs( value - expected ) );
+        QVERIFY( std::fabs( value - expected ) < 0.0000001 );
       }
     }
   }

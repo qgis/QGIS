@@ -1336,7 +1336,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   if ( itemData.type() == QgsFieldsProperties::DesignerTreeItemData::Container )
   {
     QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure container" ) );
+    dlg.setWindowTitle( tr( "Configure Container" ) );
     QFormLayout *layout = new QFormLayout() ;
     dlg.setLayout( layout );
     layout->addRow( baseWidget );
@@ -1350,7 +1350,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     visibilityExpressionGroupBox->setLayout( new QGridLayout );
     QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
     visibilityExpressionWidget->setLayer( mLayer );
-    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility expression" ) );
+    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility Expression" ) );
     visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
     visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
 
@@ -1395,7 +1395,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   else if ( itemData.type() == QgsFieldsProperties::DesignerTreeItemData::Relation )
   {
     QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure relation editor" ) );
+    dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
     QFormLayout *layout = new QFormLayout() ;
     dlg.setLayout( layout );
     layout->addWidget( baseWidget );
@@ -1428,7 +1428,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   else
   {
     QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure field" ) );
+    dlg.setWindowTitle( tr( "Configure Field" ) );
     dlg.setLayout( new QGridLayout() );
     dlg.layout()->addWidget( baseWidget );
 

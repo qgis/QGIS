@@ -19,8 +19,8 @@
 
 #include <QList>
 #include "qgis.h"
-#include <qpainter.h>
-#include <TriangleInterpolator.h>
+#include <QPainter>
+#include "TriangleInterpolator.h"
 #include "qgis_analysis.h"
 
 class Line3D;

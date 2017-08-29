@@ -46,6 +46,7 @@ class QgsFontButton : QToolButton
 %End
 
     virtual QSize minimumSizeHint() const;
+    virtual QSize sizeHint() const;
 
     QgsFontButton::Mode mode() const;
 %Docstring

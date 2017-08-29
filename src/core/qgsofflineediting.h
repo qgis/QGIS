@@ -20,8 +20,8 @@
 #define QGS_OFFLINE_EDITING_H
 
 #include "qgis_core.h"
-#include <qgsfeature.h>
-#include <qgsvectorlayer.h>
+#include "qgsfeature.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
 #include <QString>

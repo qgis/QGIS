@@ -387,7 +387,7 @@ int DualEdgeTriangulation::addPoint( QgsPoint *p )
         //Take the higher z-Value in case of two equal points
         QgsPoint *newPoint = mPointVector[mPointVector.count() - 1];
         QgsPoint *existingPoint = mPointVector[mTwiceInsPoint];
-        existingPoint->setZ( qMax( newPoint->z(), existingPoint->z() ) );
+        existingPoint->setZ( std::max( newPoint->z(), existingPoint->z() ) );
 
         mPointVector.remove( mPointVector.count() - 1 );
         delete newPoint;
@@ -976,7 +976,6 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, QgsPoint *p1, int *
     int edge = baseEdgeOfTriangle( &point );
     if ( edge == -10 )//the point is outside the convex hull
     {
-      QgsDebugMsg( "edge outside the convex hull" );
       return false;
     }
 
@@ -1094,7 +1093,6 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, QgsPoint *p1, QgsPo
     int edge = baseEdgeOfTriangle( &point );
     if ( edge == -10 )//the point is outside the convex hull
     {
-      QgsDebugMsg( "edge outside the convex hull" );
       return false;
     }
     else if ( edge >= 0 )//the point is inside the convex hull
@@ -1178,14 +1176,12 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, QgsPoint *p1, QgsPo
     }
     else//problems
     {
-      QgsDebugMsg( QString( "problems: the edge is: %1" ).arg( edge ) );
       return false;
     }
   }
 
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 }
@@ -1270,13 +1266,13 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     {
       if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge, we have to snap the forced line to the next node
       {
-        QgsPoint crosspoint;
+        QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
         p3 = mHalfEdge[mHalfEdge[actedge]->getNext()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[actedge]->getNext()]->getDual()]->getPoint();
         MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[p3], mPointVector[p4], &crosspoint );
-        double dista = sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        double distb = sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
+        double dista = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
+        double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
         if ( dista <= distb )
         {
           insertForcedSegment( p1, p3, breakline );
@@ -1292,13 +1288,13 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
       }
       else if ( mHalfEdge[mHalfEdge[actedge]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
-        QgsPoint crosspoint;
+        QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
         p3 = mHalfEdge[mHalfEdge[actedge]->getNext()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[actedge]->getNext()]->getDual()]->getPoint();
         MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[p3], mPointVector[p4], &crosspoint );
-        double distpart = sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
-        double disttot = sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
+        double distpart = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
+        double disttot = std::sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
         float frac = distpart / disttot;
 
         if ( frac == 0 || frac == 1 )//just in case MathUtils::lineIntersection does not work as expected
@@ -1358,13 +1354,13 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     {
       if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
       {
-        QgsPoint crosspoint;
+        QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
         p3 = mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint();
         MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[p3], mPointVector[p4], &crosspoint );
-        double dista = sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        double distb = sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
+        double dista = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
+        double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
         if ( dista <= distb )
         {
           insertForcedSegment( p1, p3, breakline );
@@ -1380,13 +1376,13 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
       }
       else if ( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
-        QgsPoint crosspoint;
+        QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
         p3 = mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint();
         MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[p3], mPointVector[p4], &crosspoint );
-        double distpart = sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        double disttot = sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
+        double distpart = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
+        double disttot = std::sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
         float frac = distpart / disttot;
         if ( frac == 0 || frac == 1 )
         {
@@ -1405,13 +1401,13 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     {
       if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::SnappingTypeVertex )//if the crossed edge is a forced edge and mForcedCrossBehavior is SnappingType_VERTICE, we have to snap the forced line to the next node
       {
-        QgsPoint crosspoint;
+        QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
         p3 = mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getPoint();
         MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[p3], mPointVector[p4], &crosspoint );
-        double dista = sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        double distb = sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
+        double dista = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
+        double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
         if ( dista <= distb )
         {
           insertForcedSegment( p1, p3, breakline );
@@ -1427,13 +1423,13 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
       }
       else if ( mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getForced() && mForcedCrossBehavior == Triangulation::InsertVertex )//if the crossed edge is a forced edge, we have to insert a new vertice on this edge
       {
-        QgsPoint crosspoint;
+        QgsPoint crosspoint( 0, 0, 0 );
         int p3, p4;
         p3 = mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getPoint();
         p4 = mHalfEdge[mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext()]->getPoint();
         MathUtils::lineIntersection( mPointVector[p1], mPointVector[p2], mPointVector[p3], mPointVector[p4], &crosspoint );
-        double distpart = sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
-        double disttot = sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
+        double distpart = std::sqrt( ( crosspoint.x() - mPointVector[p3]->x() ) * ( crosspoint.x() - mPointVector[p3]->x() ) + ( crosspoint.y() - mPointVector[p3]->y() ) * ( crosspoint.y() - mPointVector[p3]->y() ) );
+        double disttot = std::sqrt( ( mPointVector[p3]->x() - mPointVector[p4]->x() ) * ( mPointVector[p3]->x() - mPointVector[p4]->x() ) + ( mPointVector[p3]->y() - mPointVector[p4]->y() ) * ( mPointVector[p3]->y() - mPointVector[p4]->y() ) );
         float frac = distpart / disttot;
         if ( frac == 0 || frac == 1 )
         {
@@ -1769,7 +1765,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   int minedgenext;
   int minedgenextnext;
 
-  QgsPoint circumcenter;
+  QgsPoint circumcenter( 0, 0, 0 );
 
   while ( !edge_angle.empty() )
   {
@@ -2205,7 +2201,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
     /*******otherwise, try to add the circumcenter to the triangulation************************************************************************************************/
 
-    QgsPoint *p = new QgsPoint();
+    QgsPoint *p = new QgsPoint( 0, 0, 0 );
     mDecorator->calcPoint( circumcenter.x(), circumcenter.y(), p );
     int pointno = mDecorator->addPoint( p );
 
@@ -3218,7 +3214,7 @@ int DualEdgeTriangulation::splitHalfEdge( int edge, float position )
   QgsPoint *p = new QgsPoint( mPointVector[mHalfEdge[edge]->getPoint()]->x()*position + mPointVector[mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint()]->x() * ( 1 - position ), mPointVector[mHalfEdge[edge]->getPoint()]->y()*position + mPointVector[mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint()]->y() * ( 1 - position ), 0 );
 
   //calculate the z-value of the point to insert
-  QgsPoint zvaluepoint;
+  QgsPoint zvaluepoint( 0, 0, 0 );
   mDecorator->calcPoint( p->x(), p->y(), &zvaluepoint );
   p->setZ( zvaluepoint.z() );
 

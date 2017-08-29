@@ -133,7 +133,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     void setSemiMajorAxis( const double semiMajorAxis ) override
     {
-      mSemiMajorAxis = qAbs( semiMajorAxis );
+      mSemiMajorAxis = std::fabs( semiMajorAxis );
       mSemiMinorAxis = mSemiMajorAxis;
     }
 
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     void setSemiMinorAxis( const double semiMinorAxis ) override
     {
-      mSemiMajorAxis = qAbs( semiMinorAxis );
+      mSemiMajorAxis = std::fabs( semiMinorAxis );
       mSemiMinorAxis = mSemiMajorAxis;
     }
 
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     //! Set the radius of the circle
     void setRadius( double radius )
     {
-      mSemiMajorAxis = qAbs( radius );
+      mSemiMajorAxis = std::fabs( radius );
       mSemiMinorAxis = mSemiMajorAxis;
     }
 

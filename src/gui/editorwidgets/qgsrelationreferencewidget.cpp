@@ -198,10 +198,10 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
     mReferencingFieldIdx = mReferencingLayer->fields().lookupField( relation.fieldPairs().at( 0 ).first );
     mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
 
-    QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
 
     if ( mEmbedForm )
     {
+      QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
       mAttributeEditorFrame->setTitle( mReferencedLayer->name() );
       mReferencedAttributeForm = new QgsAttributeForm( relation.referencedLayer(), QgsFeature(), context, this );
       mAttributeEditorLayout->addWidget( mReferencedAttributeForm );
@@ -280,6 +280,20 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   }
   else
   {
+    QVariant nullValue = QgsApplication::nullRepresentation();
+
+    if ( mChainFilters && mFeature.isValid() && mFilterComboBoxes.count() >= mFilterFields.count() )
+    {
+      QgsFeature feature = mFeature;
+
+      for ( int i = 0; i < mFilterFields.size(); i++ )
+      {
+        QVariant v = feature.attribute( mFilterFields[i] );
+        QString f = v.isNull() ? nullValue.toString() : v.toString();
+        mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
+      }
+    }
+
     int i = mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole );
     if ( i == -1 && mAllowNull )
     {
@@ -467,6 +481,10 @@ void QgsRelationReferenceWidget::init()
       Q_FOREACH ( const QString &fieldName, mFilterFields )
       {
         int idx = mReferencedLayer->fields().lookupField( fieldName );
+
+        if ( idx == -1 )
+          continue;
+
         QComboBox *cb = new QComboBox();
         cb->setProperty( "Field", fieldName );
         cb->setProperty( "FieldAlias", mReferencedLayer->attributeDisplayName( idx ) );
@@ -539,7 +557,7 @@ void QgsRelationReferenceWidget::init()
       attributes << mReferencedLayer->fields().lookupField( attr );
 
     layerCache->setCacheSubsetOfAttributes( attributes );
-    mMasterModel = new QgsAttributeTableModel( layerCache );
+    mMasterModel = new QgsAttributeTableModel( layerCache, this );
     mMasterModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( requestedAttrs, mReferencedLayer->fields() ) );
     mFilterModel = new QgsAttributeTableFilterModel( mCanvas, mMasterModel, mMasterModel );
     mFeatureListModel = new QgsFeatureListModel( mFilterModel, this );
@@ -807,13 +825,41 @@ void QgsRelationReferenceWidget::filterChanged()
 {
   QVariant nullValue = QgsApplication::nullRepresentation();
 
-  QStringList filters;
+  QMap<QString, QString> filters;
   QgsAttributeList attrs;
 
   QComboBox *scb = qobject_cast<QComboBox *>( sender() );
 
   Q_ASSERT( scb );
 
+  QgsFeature f;
+  QgsFeatureIds featureIds;
+  QString filterExpression;
+
+  // comboboxes have to be disabled before building filters
+  if ( mChainFilters )
+    disableChainedComboBoxes( scb );
+
+  // build filters
+  Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+  {
+    if ( cb->currentIndex() != 0 )
+    {
+      const QString fieldName = cb->property( "Field" ).toString();
+
+      if ( cb->currentText() == nullValue.toString() )
+      {
+        filters[fieldName] = QStringLiteral( "\"%1\" IS NULL" ).arg( fieldName );
+      }
+      else
+      {
+        filters[fieldName] = QgsExpression::createFieldEqualityExpression( fieldName, cb->currentText() );
+      }
+      attrs << mReferencedLayer->fields().lookupField( fieldName );
+    }
+  }
+
+  bool filtered = false;
   if ( mChainFilters )
   {
     QComboBox *ccb = nullptr;
@@ -827,13 +873,11 @@ void QgsRelationReferenceWidget::filterChanged()
         continue;
       }
 
-      if ( ccb->currentIndex() == 0 )
+      if ( ccb->currentIndex() != 0 )
       {
-        cb->setCurrentIndex( 0 );
-        cb->setEnabled( false );
-      }
-      else
-      {
+        const QString fieldName = cb->property( "Field" ).toString();
+        filtered = true;
+
         cb->blockSignals( true );
         cb->clear();
         cb->addItem( cb->property( "FieldAlias" ).toString() );
@@ -843,8 +887,29 @@ void QgsRelationReferenceWidget::filterChanged()
         QStringList texts;
         Q_FOREACH ( const QString &txt, mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] )
         {
-          texts << txt;
+          QMap<QString, QString> filtersAttrs = filters;
+          filtersAttrs[fieldName] = QgsExpression::createFieldEqualityExpression( fieldName, txt );
+          QString expression = filtersAttrs.values().join( QStringLiteral( " AND " ) );
+
+          QgsAttributeList subset = attrs;
+          subset << mReferencedLayer->fields().lookupField( fieldName );
+
+          QgsFeatureIterator it( mMasterModel->layerCache()->getFeatures( QgsFeatureRequest().setFilterExpression( expression ).setSubsetOfAttributes( subset ) ) );
+
+          bool found = false;
+          while ( it.nextFeature( f ) )
+          {
+            if ( !featureIds.contains( f.id() ) )
+              featureIds << f.id();
+
+            found = true;
+          }
+
+          // item is only provided if at least 1 feature exists
+          if ( found )
+            texts << txt;
         }
+
         texts.sort();
         cb->addItems( texts );
 
@@ -856,34 +921,20 @@ void QgsRelationReferenceWidget::filterChanged()
     }
   }
 
-  Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+  if ( !mChainFilters || ( mChainFilters && !filtered ) )
   {
-    if ( cb->currentIndex() != 0 )
+    filterExpression = filters.values().join( QStringLiteral( " AND " ) );
+
+    QgsFeatureRequest req = QgsFeatureRequest().setSubsetOfAttributes( attrs );
+    if ( !filterExpression.isEmpty() )
+      req.setFilterExpression( filterExpression );
+
+    QgsFeatureIterator it( mMasterModel->layerCache()->getFeatures( req ) );
+
+    while ( it.nextFeature( f ) )
     {
-      const QString fieldName = cb->property( "Field" ).toString();
-
-      if ( cb->currentText() == nullValue.toString() )
-      {
-        filters << QStringLiteral( "\"%1\" IS NULL" ).arg( fieldName );
-      }
-      else
-      {
-        filters << QgsExpression::createFieldEqualityExpression( fieldName, cb->currentText() );
-      }
-      attrs << mReferencedLayer->fields().lookupField( fieldName );
+      featureIds << f.id();
     }
-  }
-
-  QString filterExpression = filters.join( QStringLiteral( " AND " ) );
-
-  QgsFeatureIterator it( mMasterModel->layerCache()->getFeatures( QgsFeatureRequest().setFilterExpression( filterExpression ).setSubsetOfAttributes( attrs ) ) );
-
-  QgsFeature f;
-  QgsFeatureIds featureIds;
-
-  while ( it.nextFeature( f ) )
-  {
-    featureIds << f.id();
   }
 
   mFilterModel->setFilteredFeatures( featureIds );
@@ -917,4 +968,29 @@ void QgsRelationReferenceWidget::updateAddEntryButton()
 {
   mAddEntryButton->setVisible( mAllowAddFeatures );
   mAddEntryButton->setEnabled( mReferencedLayer && mReferencedLayer->isEditable() );
+}
+
+void QgsRelationReferenceWidget::disableChainedComboBoxes( const QComboBox *scb )
+{
+  QComboBox *ccb = nullptr;
+  Q_FOREACH ( QComboBox *cb, mFilterComboBoxes )
+  {
+    if ( !ccb )
+    {
+      if ( cb == scb )
+      {
+        ccb = cb;
+      }
+
+      continue;
+    }
+
+    cb->setCurrentIndex( 0 );
+    if ( ccb->currentIndex() == 0 )
+    {
+      cb->setEnabled( false );
+    }
+
+    ccb = cb;
+  }
 }

@@ -30,27 +30,66 @@ import os
 from qgis.PyQt.QtGui import QIcon, QColor
 
 from qgis.analysis import QgsRelief
-from qgis.core import QgsProcessingParameterDefinition
+from qgis.core import (QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterFileDestination,
+                       QgsRasterFileWriter,
+                       QgsProcessingException)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import (Parameter,
-                                        ParameterRaster,
-                                        ParameterNumber,
-                                        ParameterBoolean,
-                                        _splitParameterOptions)
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.outputs import OutputRaster, OutputTable
-from processing.tools import raster
+from processing.tools.dataobjects import exportRasterLayer
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
+class ParameterReliefColors(QgsProcessingParameterDefinition):
+
+    def __init__(self, name='', description='', parent=None, optional=True):
+        super().__init__(name, description, None, optional)
+        self.parent = parent
+        self.setMetadata({'widget_wrapper': 'processing.algs.qgis.ui.ReliefColorsWidget.ReliefColorsWidgetWrapper'})
+
+    def type(self):
+        return 'relief_colors'
+
+    def clone(self):
+        return ParameterReliefColors(self.name(), self.description(), self.parent,
+                                     self.flags() & QgsProcessingParameterDefinition.FlagOptional)
+
+    @staticmethod
+    def valueToColors(value):
+        if value is None:
+            return None
+
+        if value == '':
+            return None
+
+        if isinstance(value, str):
+            return value.split(';')
+        else:
+            return ParameterReliefColors.colorsToString(value)
+
+    @staticmethod
+    def colorsToString(colors):
+        s = ''
+        for c in colors:
+            s += '{:f}, {:f}, {:d}, {:d}, {:d};'.format(c[0],
+                                                        c[1],
+                                                        c[2],
+                                                        c[3],
+                                                        c[4])
+        return s[:-1]
+
+
 class Relief(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     Z_FACTOR = 'Z_FACTOR'
     AUTO_COLORS = 'AUTO_COLORS'
     COLORS = 'COLORS'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
     FREQUENCY_DISTRIBUTION = 'FREQUENCY_DISTRIBUTION'
 
     def icon(self):
@@ -63,74 +102,22 @@ class Relief(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        class ParameterReliefColors(Parameter):
-            default_metadata = {
-                'widget_wrapper': 'processing.algs.qgis.ui.ReliefColorsWidget.ReliefColorsWidgetWrapper'
-            }
-
-            def __init__(self, name='', description='', parent=None, optional=True):
-                Parameter.__init__(self, name, description, None, optional)
-                self.parent = parent
-
-            def setValue(self, value):
-                if value is None:
-                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                        return False
-                    self.value = None
-                    return True
-
-                if value == '':
-                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                        return False
-
-                if isinstance(value, str):
-                    self.value = value if value != '' else None
-                else:
-                    self.value = ParameterReliefColors.colorsToString(value)
-                return True
-
-            def getValueAsCommandLineParameter(self):
-                return '"{}"'.format(self.value)
-
-            def getAsScriptCode(self):
-                param_type = ''
-                param_type += 'relief colors '
-                return '##' + self.name + '=' + param_type
-
-            @classmethod
-            def fromScriptCode(self, line):
-                isOptional, name, definition = _splitParameterOptions(line)
-                descName = QgsProcessingParameters.descriptionFromName(name)
-                parent = definition.lower().strip()[len('relief colors') + 1:]
-                return ParameterReliefColors(name, descName, parent)
-
-            @staticmethod
-            def colorsToString(colors):
-                s = ''
-                for c in colors:
-                    s += '{:f}, {:f}, {:d}, {:d}, {:d};'.format(c[0],
-                                                                c[1],
-                                                                c[2],
-                                                                c[3],
-                                                                c[4])
-                return s[:-1]
-
-        self.addParameter(ParameterRaster(self.INPUT_LAYER,
-                                          self.tr('Elevation layer')))
-        self.addParameter(ParameterNumber(self.Z_FACTOR,
-                                          self.tr('Z factor'),
-                                          1.0, 999999.99, 1.0))
-        self.addParameter(ParameterBoolean(self.AUTO_COLORS,
-                                           self.tr('Generate relief classes automatically'),
-                                           False))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Elevation layer')))
+        self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
+                                                       self.tr('Z factor'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.00, maxValue=999999.99, defaultValue=1.0))
+        self.addParameter(QgsProcessingParameterBoolean(self.AUTO_COLORS,
+                                                        self.tr('Generate relief classes automatically'),
+                                                        defaultValue=False))
         self.addParameter(ParameterReliefColors(self.COLORS,
                                                 self.tr('Relief colors'),
-                                                self.INPUT_LAYER,
+                                                self.INPUT,
                                                 True))
-        self.addOutput(OutputRaster(self.OUTPUT_LAYER,
-                                    self.tr('Relief')))
-        self.addOutput(OutputTable(self.FREQUENCY_DISTRIBUTION,
-                                   self.tr('Frequency distribution')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
+                                                                  self.tr('Relief')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.FREQUENCY_DISTRIBUTION,
+                                                                self.tr('Frequency distribution'), 'CSV files (*.csv)', optional=True))
 
     def name(self):
         return 'relief'
@@ -139,26 +126,26 @@ class Relief(QgisAlgorithm):
         return self.tr('Relief')
 
     def processAlgorithm(self, parameters, context, feedback):
-        inputFile = self.getParameterValue(self.INPUT_LAYER)
-        zFactor = self.getParameterValue(self.Z_FACTOR)
-        automaticColors = self.getParameterValue(self.AUTO_COLORS)
-        colors = self.getParameterValue(self.COLORS)
-        outputFile = self.getOutputValue(self.OUTPUT_LAYER)
-        frequencyDistribution = self.getOutputValue(self.FREQUENCY_DISTRIBUTION)
+        inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT, context))
+        zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
+        automaticColors = self.parameterAsBool(parameters, self.AUTO_COLORS, context)
+        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        frequencyDistribution = self.parameterAsFileOutput(parameters, self.FREQUENCY_DISTRIBUTION, context)
 
-        outputFormat = raster.formatShortNameFromFileName(outputFile)
+        outputFormat = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
 
         relief = QgsRelief(inputFile, outputFile, outputFormat)
 
         if automaticColors:
             reliefColors = relief.calculateOptimizedReliefClasses()
         else:
-            if colors is None:
-                raise GeoAlgorithmExecutionException(
+            colors = ParameterReliefColors.valueToColors(parameters[self.COLORS])
+            if colors is None or len(colors) == 0:
+                raise QgsProcessingException(
                     self.tr('Specify relief colors or activate "Generate relief classes automatically" option.'))
 
             reliefColors = []
-            for c in colors.split(';'):
+            for c in colors:
                 v = c.split(',')
                 color = QgsRelief.ReliefColor(QColor(int(v[2]), int(v[3]), int(v[4])),
                                               float(v[0]),
@@ -167,5 +154,8 @@ class Relief(QgisAlgorithm):
 
         relief.setReliefColors(reliefColors)
         relief.setZFactor(zFactor)
-        relief.exportFrequencyDistributionToCsv(frequencyDistribution)
-        relief.processRaster(None)
+        if frequencyDistribution:
+            relief.exportFrequencyDistributionToCsv(frequencyDistribution)
+        relief.processRaster(feedback)
+
+        return {self.OUTPUT: outputFile, self.FREQUENCY_DISTRIBUTION: frequencyDistribution}

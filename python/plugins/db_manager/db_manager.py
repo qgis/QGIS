@@ -21,8 +21,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from __future__ import absolute_import
-from builtins import range
 
 import functools
 
@@ -32,6 +30,8 @@ from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
 from qgis.core import QgsSettings, QgsMapLayer
+from qgis.utils import OverrideCursor
+
 from .info_viewer import InfoViewer
 from .table_viewer import TableViewer
 from .layer_preview import LayerPreview
@@ -72,29 +72,23 @@ class DBManager(QMainWindow):
         QMainWindow.closeEvent(self, e)
 
     def refreshItem(self, item=None):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            if item is None:
-                item = self.tree.currentItem()
-            self.tree.refreshItem(item)  # refresh item children in the db tree
-        except BaseError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                if item is None:
+                    item = self.tree.currentItem()
+                self.tree.refreshItem(item)  # refresh item children in the db tree
+            except BaseError as e:
+                DlgDbError.showError(e, self)
 
     def itemChanged(self, item):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            self.reloadButtons()
-            # clear preview, this will delete the layer in preview tab
-            self.preview.loadPreview(None)
-            self.refreshTabs()
-        except BaseError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.reloadButtons()
+                # clear preview, this will delete the layer in preview tab
+                self.preview.loadPreview(None)
+                self.refreshTabs()
+            except BaseError as e:
+                DlgDbError.showError(e, self)
 
     def reloadButtons(self):
         db = self.tree.currentDatabase()
@@ -114,14 +108,11 @@ class DBManager(QMainWindow):
             self._lastDb.registerAllActions(self)
 
     def tabChanged(self, index):
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            self.refreshTabs()
-        except BaseError as e:
-            DlgDbError.showError(e, self)
-            return
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.refreshTabs()
+            except BaseError as e:
+                DlgDbError.showError(e, self)
 
     def refreshTabs(self):
         index = self.tabs.currentIndex()
@@ -300,17 +291,12 @@ class DBManager(QMainWindow):
                 This method takes care to override and restore the cursor,
                 but also catches exceptions and displays the error dialog.
         """
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            callback(self.tree.currentItem(), self.sender(), self, *params)
-
-        except BaseError as e:
-            # catch database errors and display the error dialog
-            DlgDbError.showError(e, self)
-            return
-
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                callback(self.tree.currentItem(), self.sender(), self, *params)
+            except BaseError as e:
+                # catch database errors and display the error dialog
+                DlgDbError.showError(e, self)
 
     def unregisterAction(self, action, menuName):
         if not hasattr(self, '_registeredDbActions'):

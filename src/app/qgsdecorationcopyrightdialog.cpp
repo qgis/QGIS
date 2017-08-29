@@ -28,6 +28,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationCopyrightDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationCopyright/geometry" ) ).toByteArray() );
@@ -53,7 +54,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   pbnColorChooser->setAllowOpacity( true );
   pbnColorChooser->setColor( mDeco.mColor );
   pbnColorChooser->setContext( QStringLiteral( "gui" ) );
-  pbnColorChooser->setColorDialogTitle( tr( "Select text color" ) );
+  pbnColorChooser->setColorDialogTitle( tr( "Select Text color" ) );
 
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();
@@ -99,7 +100,7 @@ void QgsDecorationCopyrightDialog::apply()
   mDeco.update();
 }
 
-void QgsDecorationCopyrightDialog::on_buttonBox_helpRequested()
+void QgsDecorationCopyrightDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-label" ) );
 }

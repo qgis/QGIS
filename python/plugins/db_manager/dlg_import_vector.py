@@ -37,6 +37,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsProject,
                        QgsSettings)
 from qgis.gui import QgsMessageViewer
+from qgis.utils import OverrideCursor
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
 
@@ -292,85 +293,82 @@ class DlgImportVector(QDialog, Ui_Dialog):
                                         self.tr("Invalid target srid: must be an integer"))
                 return
 
-        # override cursor
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        # store current input layer crs and encoding, so I can restore it
-        prevInCrs = self.inLayer.crs()
-        prevInEncoding = self.inLayer.dataProvider().encoding()
+        with OverrideCursor(Qt.WaitCursor):
+            # store current input layer crs and encoding, so I can restore it
+            prevInCrs = self.inLayer.crs()
+            prevInEncoding = self.inLayer.dataProvider().encoding()
 
-        try:
-            schema = self.outUri.schema() if not self.cboSchema.isEnabled() else self.cboSchema.currentText()
-            table = self.cboTable.currentText()
+            try:
+                schema = self.outUri.schema() if not self.cboSchema.isEnabled() else self.cboSchema.currentText()
+                table = self.cboTable.currentText()
 
-            # get pk and geom field names from the source layer or use the
-            # ones defined by the user
-            srcUri = QgsDataSourceUri(self.inLayer.source())
+                # get pk and geom field names from the source layer or use the
+                # ones defined by the user
+                srcUri = QgsDataSourceUri(self.inLayer.source())
 
-            pk = srcUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
-            if not pk:
-                pk = self.default_pk
+                pk = srcUri.keyColumn() if not self.chkPrimaryKey.isChecked() else self.editPrimaryKey.text()
+                if not pk:
+                    pk = self.default_pk
 
-            if self.inLayer.isSpatial() and self.chkGeomColumn.isEnabled():
-                geom = srcUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
-                if not geom:
-                    geom = self.default_geom
-            else:
-                geom = None
+                if self.inLayer.isSpatial() and self.chkGeomColumn.isEnabled():
+                    geom = srcUri.geometryColumn() if not self.chkGeomColumn.isChecked() else self.editGeomColumn.text()
+                    if not geom:
+                        geom = self.default_geom
+                else:
+                    geom = None
 
-            options = {}
-            if self.chkLowercaseFieldNames.isEnabled() and self.chkLowercaseFieldNames.isChecked():
-                pk = pk.lower()
-                if geom:
-                    geom = geom.lower()
-                options['lowercaseFieldNames'] = True
+                options = {}
+                if self.chkLowercaseFieldNames.isEnabled() and self.chkLowercaseFieldNames.isChecked():
+                    pk = pk.lower()
+                    if geom:
+                        geom = geom.lower()
+                    options['lowercaseFieldNames'] = True
 
-            # get output params, update output URI
-            self.outUri.setDataSource(schema, table, geom, "", pk)
-            typeName = self.db.dbplugin().typeName()
-            providerName = self.db.dbplugin().providerName()
-            if typeName == 'gpkg':
-                uri = self.outUri.database()
-                options['update'] = True
-                options['driverName'] = 'GPKG'
-                options['layerName'] = table
-            else:
-                uri = self.outUri.uri(False)
+                # get output params, update output URI
+                self.outUri.setDataSource(schema, table, geom, "", pk)
+                typeName = self.db.dbplugin().typeName()
+                providerName = self.db.dbplugin().providerName()
+                if typeName == 'gpkg':
+                    uri = self.outUri.database()
+                    options['update'] = True
+                    options['driverName'] = 'GPKG'
+                    options['layerName'] = table
+                else:
+                    uri = self.outUri.uri(False)
 
-            if self.chkDropTable.isChecked():
-                options['overwrite'] = True
+                if self.chkDropTable.isChecked():
+                    options['overwrite'] = True
 
-            if self.chkSinglePart.isEnabled() and self.chkSinglePart.isChecked():
-                options['forceSinglePartGeometryType'] = True
+                if self.chkSinglePart.isEnabled() and self.chkSinglePart.isChecked():
+                    options['forceSinglePartGeometryType'] = True
 
-            outCrs = QgsCoordinateReferenceSystem()
-            if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-                targetSrid = int(self.editTargetSrid.text())
-                outCrs = QgsCoordinateReferenceSystem(targetSrid)
+                outCrs = QgsCoordinateReferenceSystem()
+                if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
+                    targetSrid = int(self.editTargetSrid.text())
+                    outCrs = QgsCoordinateReferenceSystem(targetSrid)
 
-            # update input layer crs and encoding
-            if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-                sourceSrid = int(self.editSourceSrid.text())
-                inCrs = QgsCoordinateReferenceSystem(sourceSrid)
-                self.inLayer.setCrs(inCrs)
+                # update input layer crs and encoding
+                if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
+                    sourceSrid = int(self.editSourceSrid.text())
+                    inCrs = QgsCoordinateReferenceSystem(sourceSrid)
+                    self.inLayer.setCrs(inCrs)
 
-            if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
-                enc = self.cboEncoding.currentText()
-                self.inLayer.setProviderEncoding(enc)
+                if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
+                    enc = self.cboEncoding.currentText()
+                    self.inLayer.setProviderEncoding(enc)
 
-            onlySelected = self.chkSelectedFeatures.isChecked()
+                onlySelected = self.chkSelectedFeatures.isChecked()
 
-            # do the import!
-            ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs, onlySelected, options)
-        except Exception as e:
-            ret = -1
-            errMsg = str(e)
+                # do the import!
+                ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs, onlySelected, options)
+            except Exception as e:
+                ret = -1
+                errMsg = str(e)
 
-        finally:
-            # restore input layer crs and encoding
-            self.inLayer.setCrs(prevInCrs)
-            self.inLayer.setProviderEncoding(prevInEncoding)
-            # restore cursor
-            QApplication.restoreOverrideCursor()
+            finally:
+                # restore input layer crs and encoding
+                self.inLayer.setCrs(prevInCrs)
+                self.inLayer.setProviderEncoding(prevInEncoding)
 
         if ret != 0:
             output = QgsMessageViewer()

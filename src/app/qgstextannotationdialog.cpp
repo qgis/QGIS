@@ -42,7 +42,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
     mTextEdit->setDocument( mTextDocument.get() );
   }
 
-  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setAllowOpacity( true );
   mFontColorButton->setContext( QStringLiteral( "symbology" ) );
 

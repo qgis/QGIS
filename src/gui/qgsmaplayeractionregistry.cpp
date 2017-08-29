@@ -108,12 +108,12 @@ void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction *action )
 QList< QgsMapLayerAction * > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets )
 {
   QList< QgsMapLayerAction * > validActions;
-  QList<QgsMapLayerAction *>::iterator actionIt;
-  for ( actionIt = mMapLayerActionList.begin(); actionIt != mMapLayerActionList.end(); ++actionIt )
+
+  Q_FOREACH ( QgsMapLayerAction *action, mMapLayerActionList )
   {
-    if ( ( *actionIt )->canRunUsingLayer( layer ) && ( targets & ( *actionIt )->targets() ) )
+    if ( action->canRunUsingLayer( layer ) && ( targets & action->targets() ) )
     {
-      validActions.append( ( *actionIt ) );
+      validActions.append( action );
     }
   }
   return validActions;

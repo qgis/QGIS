@@ -54,7 +54,6 @@ from qgis.analysis import (QgsVectorLayerDirector,
                            QgsGraphBuilder,
                            QgsGraphAnalyzer
                            )
-from qgis.utils import iface
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -196,7 +195,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
                                           bothValue,
                                           defaultDirection)
 
-        distUnit = iface.mapCanvas().mapSettings().destinationCrs().mapUnits()
+        distUnit = context.project().crs().mapUnits()
         multiplier = QgsUnitTypes.fromUnitToUnitFactor(distUnit, QgsUnitTypes.DistanceMeters)
         if strategy == 0:
             strategy = QgsNetworkDistanceStrategy()
@@ -207,7 +206,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             multiplier = 3600
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
+        builder = QgsGraphBuilder(context.project().crs(),
                                   True,
                                   tolerance)
 

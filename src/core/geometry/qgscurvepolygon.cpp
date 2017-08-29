@@ -255,7 +255,7 @@ QString QgsCurvePolygon::asWkt( int precision ) const
   if ( mExteriorRing )
   {
     QString childWkt = mExteriorRing->asWkt( precision );
-    if ( dynamic_cast<QgsLineString *>( mExteriorRing ) )
+    if ( qgsgeometry_cast<QgsLineString *>( mExteriorRing ) )
     {
       // Type names of linear geometries are omitted
       childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
@@ -265,7 +265,7 @@ QString QgsCurvePolygon::asWkt( int precision ) const
   Q_FOREACH ( const QgsCurve *curve, mInteriorRings )
   {
     QString childWkt = curve->asWkt( precision );
-    if ( dynamic_cast<const QgsLineString *>( curve ) )
+    if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
     {
       // Type names of linear geometries are omitted
       childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
@@ -370,7 +370,7 @@ double QgsCurvePolygon::area() const
   {
     double area = 0.0;
     mExteriorRing->sumUpArea( area );
-    totalArea += qAbs( area );
+    totalArea += std::fabs( area );
   }
 
   QList<QgsCurve *>::const_iterator ringIt = mInteriorRings.constBegin();
@@ -380,7 +380,7 @@ double QgsCurvePolygon::area() const
     if ( ( *ringIt )->isRing() )
     {
       ( *ringIt )->sumUpArea( area );
-      totalArea -= qAbs( area );
+      totalArea -= std::fabs( area );
     }
   }
   return totalArea;

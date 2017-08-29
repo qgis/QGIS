@@ -133,7 +133,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
   else
   {
     //multigeom is sum of measured parts
-    const QgsGeometryCollection *collection = dynamic_cast<const QgsGeometryCollection *>( geomV2 );
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geomV2 );
     if ( collection )
     {
       double sum = 0;
@@ -146,7 +146,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
 
     if ( measureType == Length )
     {
-      const QgsCurve *curve = dynamic_cast<const QgsCurve *>( geomV2 );
+      const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( geomV2 );
       if ( !curve )
       {
         return 0.0;
@@ -159,7 +159,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
     }
     else
     {
-      const QgsSurface *surface = dynamic_cast<const QgsSurface *>( geomV2 );
+      const QgsSurface *surface = qgsgeometry_cast<const QgsSurface *>( geomV2 );
       if ( !surface )
         return 0.0;
 
@@ -216,12 +216,12 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
 
   //create list with (single) surfaces
   QList< const QgsSurface * > surfaces;
-  const QgsSurface *surf = dynamic_cast<const QgsSurface *>( geomV2 );
+  const QgsSurface *surf = qgsgeometry_cast<const QgsSurface *>( geomV2 );
   if ( surf )
   {
     surfaces.append( surf );
   }
-  const QgsMultiSurface *multiSurf = dynamic_cast<const QgsMultiSurface *>( geomV2 );
+  const QgsMultiSurface *multiSurf = qgsgeometry_cast<const QgsMultiSurface *>( geomV2 );
   if ( multiSurf )
   {
     surfaces.reserve( ( surf ? 1 : 0 ) + multiSurf->numGeometries() );
@@ -411,8 +411,8 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   double radians_long = DEG2RAD( p1.x() );
   double b2 = POW2( b ); // spheroid_mu2
   double omf = 1 - f;
-  double tan_u1 = omf * tan( radians_lat );
-  double u1 = atan( tan_u1 );
+  double tan_u1 = omf * std::tan( radians_lat );
+  double u1 = std::atan( tan_u1 );
   double sigma, last_sigma, delta_sigma, two_sigma_m;
   double sigma1, sin_alpha, alpha, cos_alphasq;
   double u2, A, B;
@@ -426,33 +426,33 @@ QgsPointXY QgsDistanceArea::computeSpheroidProject(
   {
     azimuth = azimuth - M_PI * 2.0;
   }
-  sigma1 = atan2( tan_u1, cos( azimuth ) );
-  sin_alpha = cos( u1 ) * sin( azimuth );
-  alpha = asin( sin_alpha );
+  sigma1 = std::atan2( tan_u1, std::cos( azimuth ) );
+  sin_alpha = std::cos( u1 ) * std::sin( azimuth );
+  alpha = std::asin( sin_alpha );
   cos_alphasq = 1.0 - POW2( sin_alpha );
-  u2 = POW2( cos( alpha ) ) * ( POW2( a ) - b2 ) / b2; // spheroid_mu2
+  u2 = POW2( std::cos( alpha ) ) * ( POW2( a ) - b2 ) / b2; // spheroid_mu2
   A = 1.0 + ( u2 / 16384.0 ) * ( 4096.0 + u2 * ( -768.0 + u2 * ( 320.0 - 175.0 * u2 ) ) );
   B = ( u2 / 1024.0 ) * ( 256.0 + u2 * ( -128.0 + u2 * ( 74.0 - 47.0 * u2 ) ) );
   sigma = ( distance / ( b * A ) );
   do
   {
     two_sigma_m = 2.0 * sigma1 + sigma;
-    delta_sigma = B * sin( sigma ) * ( cos( two_sigma_m ) + ( B / 4.0 ) * ( cos( sigma ) * ( -1.0 + 2.0 * POW2( cos( two_sigma_m ) ) - ( B / 6.0 ) * cos( two_sigma_m ) * ( -3.0 + 4.0 * POW2( sin( sigma ) ) ) * ( -3.0 + 4.0 * POW2( cos( two_sigma_m ) ) ) ) ) );
+    delta_sigma = B * std::sin( sigma ) * ( std::cos( two_sigma_m ) + ( B / 4.0 ) * ( std::cos( sigma ) * ( -1.0 + 2.0 * POW2( std::cos( two_sigma_m ) ) - ( B / 6.0 ) * std::cos( two_sigma_m ) * ( -3.0 + 4.0 * POW2( std::sin( sigma ) ) ) * ( -3.0 + 4.0 * POW2( std::cos( two_sigma_m ) ) ) ) ) );
     last_sigma = sigma;
     sigma = ( distance / ( b * A ) ) + delta_sigma;
     i++;
   }
-  while ( i < 999 && qAbs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
+  while ( i < 999 && std::fabs( ( last_sigma - sigma ) / sigma ) > 1.0e-9 );
 
-  lat2 = atan2( ( sin( u1 ) * cos( sigma ) + cos( u1 ) * sin( sigma ) *
-                  cos( azimuth ) ), ( omf * sqrt( POW2( sin_alpha ) +
-                                      POW2( sin( u1 ) * sin( sigma ) - cos( u1 ) * cos( sigma ) *
-                                          cos( azimuth ) ) ) ) );
-  lambda = atan2( ( sin( sigma ) * sin( azimuth ) ), ( cos( u1 ) * cos( sigma ) -
-                  sin( u1 ) * sin( sigma ) * cos( azimuth ) ) );
+  lat2 = std::atan2( ( std::sin( u1 ) * std::cos( sigma ) + std::cos( u1 ) * std::sin( sigma ) *
+                       std::cos( azimuth ) ), ( omf * std::sqrt( POW2( sin_alpha ) +
+                           POW2( std::sin( u1 ) * std::sin( sigma ) - std::cos( u1 ) * std::cos( sigma ) *
+                                 std::cos( azimuth ) ) ) ) );
+  lambda = std::atan2( ( std::sin( sigma ) * std::sin( azimuth ) ), ( std::cos( u1 ) * std::cos( sigma ) -
+                       std::sin( u1 ) * std::sin( sigma ) * std::cos( azimuth ) ) );
   C = ( f / 16.0 ) * cos_alphasq * ( 4.0 + f * ( 4.0 - 3.0 * cos_alphasq ) );
-  omega = lambda - ( 1.0 - C ) * f * sin_alpha * ( sigma + C * sin( sigma ) *
-          ( cos( two_sigma_m ) + C * cos( sigma ) * ( -1.0 + 2.0 * POW2( cos( two_sigma_m ) ) ) ) );
+  omega = lambda - ( 1.0 - C ) * f * sin_alpha * ( sigma + C * std::sin( sigma ) *
+          ( std::cos( two_sigma_m ) + C * std::cos( sigma ) * ( -1.0 + 2.0 * POW2( std::cos( two_sigma_m ) ) ) ) );
   lambda2 = radians_long + omega;
   return QgsPointXY( RAD2DEG( lambda2 ), RAD2DEG( lat2 ) );
 }
@@ -525,7 +525,7 @@ double QgsDistanceArea::bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) co
   {
     double dx = p2.x() - p1.x();
     double dy = p2.y() - p1.y();
-    bearing = atan2( dx, dy );
+    bearing = std::atan2( dx, dy );
   }
 
   return bearing;
@@ -551,10 +551,10 @@ double QgsDistanceArea::computeDistanceBearing(
   double p2_lat = DEG2RAD( p2.y() ), p2_lon = DEG2RAD( p2.x() );
 
   double L = p2_lon - p1_lon;
-  double U1 = atan( ( 1 - f ) * tan( p1_lat ) );
-  double U2 = atan( ( 1 - f ) * tan( p2_lat ) );
-  double sinU1 = sin( U1 ), cosU1 = cos( U1 );
-  double sinU2 = sin( U2 ), cosU2 = cos( U2 );
+  double U1 = std::atan( ( 1 - f ) * std::tan( p1_lat ) );
+  double U2 = std::atan( ( 1 - f ) * std::tan( p2_lat ) );
+  double sinU1 = std::sin( U1 ), cosU1 = std::cos( U1 );
+  double sinU2 = std::sin( U2 ), cosU2 = std::cos( U2 );
   double lambda = L;
   double lambdaP = 2 * M_PI;
 
@@ -571,21 +571,21 @@ double QgsDistanceArea::computeDistanceBearing(
   double tu2 = 0;
 
   int iterLimit = 20;
-  while ( qAbs( lambda - lambdaP ) > 1e-12 && --iterLimit > 0 )
+  while ( std::fabs( lambda - lambdaP ) > 1e-12 && --iterLimit > 0 )
   {
-    sinLambda = sin( lambda );
-    cosLambda = cos( lambda );
+    sinLambda = std::sin( lambda );
+    cosLambda = std::cos( lambda );
     tu1 = ( cosU2 * sinLambda );
     tu2 = ( cosU1 * sinU2 - sinU1 * cosU2 * cosLambda );
-    sinSigma = sqrt( tu1 * tu1 + tu2 * tu2 );
+    sinSigma = std::sqrt( tu1 * tu1 + tu2 * tu2 );
     cosSigma = sinU1 * sinU2 + cosU1 * cosU2 * cosLambda;
-    sigma = atan2( sinSigma, cosSigma );
-    alpha = asin( cosU1 * cosU2 * sinLambda / sinSigma );
-    cosSqAlpha = cos( alpha ) * cos( alpha );
+    sigma = std::atan2( sinSigma, cosSigma );
+    alpha = std::asin( cosU1 * cosU2 * sinLambda / sinSigma );
+    cosSqAlpha = std::cos( alpha ) * std::cos( alpha );
     cos2SigmaM = cosSigma - 2 * sinU1 * sinU2 / cosSqAlpha;
     C = f / 16 * cosSqAlpha * ( 4 + f * ( 4 - 3 * cosSqAlpha ) );
     lambdaP = lambda;
-    lambda = L + ( 1 - C ) * f * sin( alpha ) *
+    lambda = L + ( 1 - C ) * f * std::sin( alpha ) *
              ( sigma + C * sinSigma * ( cos2SigmaM + C * cosSigma * ( -1 + 2 * cos2SigmaM * cos2SigmaM ) ) );
   }
 
@@ -601,12 +601,12 @@ double QgsDistanceArea::computeDistanceBearing(
 
   if ( course1 )
   {
-    *course1 = atan2( tu1, tu2 );
+    *course1 = std::atan2( tu1, tu2 );
   }
   if ( course2 )
   {
     // PI is added to return azimuth from P2 to P1
-    *course2 = atan2( cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda ) + M_PI;
+    *course2 = std::atan2( cosU1 * sinLambda, -sinU1 * cosU2 + cosU1 * sinU2 * cosLambda ) + M_PI;
   }
 
   return s;
@@ -621,7 +621,7 @@ double QgsDistanceArea::getQ( double x ) const
 {
   double sinx, sinx2;
 
-  sinx = sin( x );
+  sinx = std::sin( x );
   sinx2 = sinx * sinx;
 
   return sinx * ( 1 + sinx2 * ( m_QA + sinx2 * ( m_QB + sinx2 * m_QC ) ) );
@@ -632,7 +632,7 @@ double QgsDistanceArea::getQbar( double x ) const
 {
   double cosx, cosx2;
 
-  cosx = cos( x );
+  cosx = std::cos( x );
   cosx2 = cosx * cosx;
 
   return cosx * ( m_QbarA + cosx2 * ( m_QbarB + cosx2 * ( m_QbarC + cosx2 * m_QbarD ) ) );
@@ -741,7 +741,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
 
     dx = x2 - x1;
     dy = y2 - y1;
-    if ( qAbs( dy ) > thresh )
+    if ( std::fabs( dy ) > thresh )
     {
       /* account for different latitudes y1, y2 */
       area += dx * ( m_Qp - ( Qbar2 - Qbar1 ) / dy );
@@ -797,7 +797,7 @@ double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPointXY> &points 
   }
   // QgsDebugMsg("Area from point: " + (points[i % size]).toString(2));
   area = area / 2.0;
-  return qAbs( area ); // All areas are positive!
+  return std::fabs( area ); // All areas are positive!
 }
 
 QString QgsDistanceArea::formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit )

@@ -34,6 +34,7 @@
 QgsLayoutViewToolAddItem::QgsLayoutViewToolAddItem( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Add item" ) )
 {
+  setFlags( QgsLayoutViewTool::FlagSnaps );
   QPixmap crosshairQPixmap = QPixmap( ( const char ** )( cross_hair_cursor ) );
   setCursor( QCursor( crosshairQPixmap, 8, 8 ) );
 }
@@ -56,7 +57,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
   mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemType, view() ) );
   if ( mRubberBand )
   {
-    mRubberBand->start( event->layoutPoint(), event->modifiers() );
+    mRubberBand->start( event->snappedPoint(), event->modifiers() );
   }
 }
 
@@ -64,7 +65,7 @@ void QgsLayoutViewToolAddItem::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( mDrawing && mRubberBand )
   {
-    mRubberBand->update( event->layoutPoint(), event->modifiers() );
+    mRubberBand->update( event->snappedPoint(), event->modifiers() );
   }
   else
   {
@@ -81,7 +82,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   }
   mDrawing = false;
 
-  QRectF rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
+  QRectF rect = mRubberBand->finish( event->snappedPoint(), event->modifiers() );
 
   QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
 
@@ -90,7 +91,8 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   if ( clickOnly )
   {
     QgsLayoutItemPropertiesDialog dlg( view() );
-    dlg.setItemPosition( QgsLayoutPoint( event->layoutPoint(), layout()->units() ) );
+    dlg.setLayout( layout() );
+    dlg.setItemPosition( QgsLayoutPoint( event->snappedPoint(), layout()->units() ) );
     if ( dlg.exec() )
     {
       item->setReferencePoint( dlg.referencePoint() );
@@ -115,7 +117,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
   settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
 
-  layout()->addItem( item );
+  layout()->addLayoutItem( item );
 }
 
 void QgsLayoutViewToolAddItem::deactivate()

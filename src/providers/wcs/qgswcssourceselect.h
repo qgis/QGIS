@@ -23,7 +23,6 @@
 #include "qgsowssourceselect.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 #include "qgswcscapabilities.h"
 #include "qgsproviderregistry.h"
 #include "qgsdataprovider.h"
@@ -71,7 +70,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
 
     // QgsWcsCapabilities virtual methods
     void populateLayerList() override;
-    void addClicked() override;
+    void addButtonClicked() override;
     void on_mLayersTreeWidget_itemSelectionChanged() override;
     void enableLayersForCrs( QTreeWidgetItem *item ) override;
     void updateButtons() override;

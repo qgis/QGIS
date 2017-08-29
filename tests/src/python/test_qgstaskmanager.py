@@ -38,7 +38,7 @@ def run_with_kwargs(task, password, result):
         return result
 
 
-def cancellable(task):
+def cancelable(task):
     while not task.isCanceled():
         pass
     if task.isCanceled():
@@ -138,9 +138,9 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertFalse(task.exception)
         self.assertEqual(task.status(), QgsTask.Complete)
 
-    def testTaskFromFunctionIsCancellable(self):
+    def testTaskFromFunctionIsCancelable(self):
         """ test that task from function can check canceled status """
-        bad_task = QgsTask.fromFunction('test task4', cancellable)
+        bad_task = QgsTask.fromFunction('test task4', cancelable)
         QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() != QgsTask.Running:
             pass

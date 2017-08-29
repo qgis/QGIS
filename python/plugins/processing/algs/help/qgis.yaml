@@ -20,6 +20,17 @@ qgis:adduniquevalueindexfield: >
 qgis:advancedpythonfieldcalculator: >
   This algorithm adds a new attribute to a vector layer, with values resulting from applying an expression to each feature. The expression is defined as a Python function.
 
+qgis:aggregate: >
+  This algorithm take a vector or table layer and aggregate features based on a group by expression. Features for which group by expression return the same value are grouped together.
+
+  It is possible to group all source features together using constant value in group by parameter, example: NULL.
+
+  It is also possible to group features using multiple fields using Array function, example: Array("Field1", "Field2").
+
+  Geometries (if present) are combined into one multipart geometry for each group.
+
+  Output attributes are computed depending on each given aggregate definition.
+
 qgis:barplot:
 
 qgis:basicstatisticsforfields: >
@@ -218,9 +229,9 @@ qgis:fixeddistancebuffer: >
 
   The end cap style parameter controls how line endings are handled in the buffer.
 
-  The join style parameter specifies whether round, mitre or beveled joins should be used when offsetting corners in a line.
+  The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.
 
-  The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join.
+  The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join.
 
 qgis:fixgeometries: >
   This algorithm attempts to create a valid representation of a given invalid geometry without losing any of the input vertices. Already-valid geometries are returned without further intervention. Always outputs multi-geometry layer.
@@ -242,7 +253,9 @@ qgis:generatepointspixelcentroidsinsidepolygons:
 
 
 qgis:hublines:
+  This algorithm creates hub and spoke diagrams with lines drawn from points on the Spoke Point layer to matching points in the Hub Point layer.
 
+  Determination of which hub goes with each point is based on a match between the Hub ID field on the hub points and the Spoke ID field on the spoke points.
 
 qgis:hypsometriccurves: >
   This algorithm computes hypsometric curves  for an input Digital Elevation Model. Curves are produced as table files in an output folder specified by the user.
@@ -321,7 +334,7 @@ qgis:nearestneighbouranalysis: >
 
 
 qgis:numberofuniquevaluesinclasses: >
-  This algorithm  counts the different values that appear in a specified attributes for features of the same class.
+  This algorithm counts the different values that appear in a specified attributes for features of the same class.
 
   Classes are defined according to a given attribute. For all layers that share the same value of this attribute, the values of a second attribute are analyzed.
 
@@ -332,9 +345,9 @@ qgis:offsetline: >
 
   The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded offsets.
 
-  The join style parameter specifies whether round, mitre or beveled joins should be used when offsetting corners in a line.
+  The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.
 
-  The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the offset curve to use when creating a mitred join.
+  The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join.
 
 qgis:orientedminimumboundingbox: >
   This algorithm takes a vector layer and generate a new one with the minimum rectangle that covers all the input features.
@@ -358,7 +371,7 @@ qgis:pointsalonglines: >
   An optional start and end offset can be specified, which controls how far from the start and end of the geometry the points should be created.
 
 qgis:pointsdisplacement:
-
+  Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 
 qgis:pointslayerfromtable: >
   This algorithm generates a points layer based on the values from an input table.
@@ -368,7 +381,9 @@ qgis:pointslayerfromtable: >
   The attributes table of the resulting layer will be the input table.
 
 qgis:pointstopath:
+  Converts a point layer to a line layer, by joining points in a defined order.
 
+  Points can be grouped by a field to output individual line features per group.
 
 qgis:polarplot: >
   This algorithm generates a polar plot based on the value of an input vector layer.
@@ -447,7 +462,7 @@ qgis:randomselectionwithinsubsets: >
   The percentage/count value is not applied to the whole layer, but instead to each category. Categories are defined according to a given attribute, which is also specified as an input parameter for the algorithm.
 
 qgis:rastercalculator: >
-  This algorithm allows to perform algebraic operations using raster layers.
+  This algorithm allows performing algebraic operations using raster layers.
 
   The resulting layer will have its values computed according to an expression. The expression can contain numerical values, operators and references to any of the layers in the current project. The following functions are also supported:
 
@@ -467,9 +482,18 @@ qgis:rasterlayerhistogram: >
   The raster layer must have a single band.
 
 qgis:rasterlayerstatistics: >
-  This algorithm computes basic statistics from the values in a raster layer.
+  This algorithm computes basic statistics from the values in a given band of the raster layer.
 
-  The raster layer must have a single band.
+qgis:rasterize: >
+  This algorithm rasterizes map canvas content.
+
+  A map theme can be selected to render a predetermined set of layers with a defined style for each layer.
+
+  Alternatively, a single layer can be selected if no map theme is set.
+
+  If neither map theme nor layer is set, the current map content will be rendered.
+
+  The minimum extent entered will internally be extended to be a multiple of the tile size.
 
 qgis:refactorfields: >
   This algorithm allows editing the structure of the attributes table of a vector layer. Fields can be modified in their type and name, using a fields mapping.
@@ -535,9 +559,9 @@ qgis:singlesidedbuffer: >
 
   The segments parameter controls the number of line segments to use to approximate a quarter circle when creating rounded buffers.
 
-  The join style parameter specifies whether round, mitre or beveled joins should be used when buffering corners in a line.
+  The join style parameter specifies whether round, miter or beveled joins should be used when buffering corners in a line.
 
-  The mitre limit parameter is only applicable for mitre join styles, and controls the maximum distance from the buffer to use when creating a mitred join.
+  The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the buffer to use when creating a mitered join.
 
 qgis:smoothgeometry: >
   This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the same features as the ones in the input layer, but with geometries containing a higher number of vertices and corners in the geometries smoothed out.

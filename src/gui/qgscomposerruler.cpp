@@ -103,7 +103,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent *event )
     double endX = t.map( QPointF( width(), 0 ) ).x();
 
     //start marker position in mm
-    double markerPos = ( floor( startX / mmDisplay ) + 1 ) * mmDisplay;
+    double markerPos = ( std::floor( startX / mmDisplay ) + 1 ) * mmDisplay;
 
     //draw minor ticks marks which occur before first major tick
     drawSmallDivisions( &p, markerPos, numSmallDivisions, -mmDisplay );

@@ -262,15 +262,15 @@ void QgsComposerScaleBar::refreshDataDefinedProperty( const QgsComposerObject::D
 // nextNiceNumber(4573.23, d) = 5000 (d=1) -> 4600 (d=10) -> 4580 (d=100) -> 4574 (d=1000) -> etc
 inline double nextNiceNumber( double a, double d = 1 )
 {
-  double s = qPow( 10.0, floor( log10( a ) ) ) / d;
-  return ceil( a / s ) * s;
+  double s = std::pow( 10.0, std::floor( std::log10( a ) ) ) / d;
+  return std::ceil( a / s ) * s;
 }
 
 // prevNiceNumber(4573.23, d) = 4000 (d=1) -> 4500 (d=10) -> 4570 (d=100) -> 4573 (d=1000) -> etc
 inline double prevNiceNumber( double a, double d = 1 )
 {
-  double s = qPow( 10.0, floor( log10( a ) ) ) / d;
-  return floor( a / s ) * s;
+  double s = std::pow( 10.0, std::floor( std::log10( a ) ) ) / d;
+  return std::floor( a / s ) * s;
 }
 
 void QgsComposerScaleBar::refreshSegmentMillimeters()
@@ -473,9 +473,9 @@ void QgsComposerScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit u )
     }
 
     double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
-    int segmentMagnitude = floor( log10( segmentWidth ) );
-    double unitsPerSegment = upperMagnitudeMultiplier * ( qPow( 10.0, segmentMagnitude ) );
-    double multiplier = floor( ( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
+    int segmentMagnitude = std::floor( std::log10( segmentWidth ) );
+    double unitsPerSegment = upperMagnitudeMultiplier * ( std::pow( 10.0, segmentMagnitude ) );
+    double multiplier = std::floor( ( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
 
     if ( multiplier > 0 )
     {

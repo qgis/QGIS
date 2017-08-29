@@ -28,6 +28,7 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgshelp.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -48,6 +49,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   , mLayerIdentifierEdited( false )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewGeoPackageLayerDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ) ).toByteArray() );
@@ -241,7 +243,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   {
     QMessageBox msgBox;
     msgBox.setIcon( QMessageBox::Question );
-    msgBox.setWindowTitle( tr( "The file already exists." ) );
+    msgBox.setWindowTitle( tr( "The File Already Exists." ) );
     msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
     QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
     QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
@@ -348,6 +350,13 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>
                                ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+
+  // z-coordinate & m-value.
+  if ( mGeometryWithZCheckBox->isChecked() )
+    wkbType = OGR_GT_SetZ( wkbType );
+
+  if ( mGeometryWithMCheckBox->isChecked() )
+    wkbType = OGR_GT_SetM( wkbType );
 
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
@@ -473,3 +482,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   return false;
 }
 
+void QgsNewGeoPackageLayerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-geopackage-layer" ) );
+}

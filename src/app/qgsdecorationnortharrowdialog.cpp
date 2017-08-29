@@ -34,6 +34,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationNorthArrowDialog::apply );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationNorthArrowDialog::showHelp );
 
   // signal/slot connection defined in 'designer' causes the slider to
   // be moved to reflect the change in the spinbox.
@@ -59,12 +60,12 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
   pbnChangeColor->setContext( QStringLiteral( "gui" ) );
-  pbnChangeColor->setColorDialogTitle( tr( "Select north arrow fill color" ) );
+  pbnChangeColor->setColorDialogTitle( tr( "Select North Arrow Fill Color" ) );
 
   pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
-  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select north arrow outline color" ) );
+  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select North Arrow Outline Color" ) );
 
   connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
   connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
@@ -78,7 +79,7 @@ QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
   settings.setValue( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
+void QgsDecorationNorthArrowDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#north-arrow" ) );
 }
@@ -154,12 +155,12 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     const double PI = 3.14159265358979323846;
     double myRadiansDouble = ( PI / 180 ) * rotation;
     int xShift = static_cast<int>( (
-                                     ( centerXDouble * cos( myRadiansDouble ) ) +
-                                     ( centerYDouble * sin( myRadiansDouble ) )
+                                     ( centerXDouble * std::cos( myRadiansDouble ) ) +
+                                     ( centerYDouble * std::sin( myRadiansDouble ) )
                                    ) - centerXDouble );
     int yShift = static_cast<int>( (
-                                     ( -centerXDouble * sin( myRadiansDouble ) ) +
-                                     ( centerYDouble * cos( myRadiansDouble ) )
+                                     ( -centerXDouble * std::sin( myRadiansDouble ) ) +
+                                     ( centerYDouble * std::cos( myRadiansDouble ) )
                                    ) - centerYDouble );
 
     //draw the pixmap in the proper position

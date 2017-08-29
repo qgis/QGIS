@@ -110,7 +110,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( m.layer(), mVL );
       QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
-      QCOMPARE( m.distance(), sqrt( 2.0 ) );
+      QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
       QCOMPARE( m.vertexIndex(), 2 );
     }
 
@@ -158,7 +158,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( lst[1].point(), QgsPointXY( 1, 1 ) );
       QCOMPARE( lst[1].distance(), 1. );
       QCOMPARE( lst[2].point(), QgsPointXY( 0, 1 ) );
-      QCOMPARE( lst[2].distance(), sqrt( 2 ) );
+      QCOMPARE( lst[2].distance(), std::sqrt( 2 ) );
 
       QgsPointLocator::MatchList lst2 = loc.verticesInRect( QgsPointXY( 1, 0 ), 1 );
       QCOMPARE( lst2.count(), 2 );

@@ -87,7 +87,7 @@ float QgsDerivativeFilter::calcFirstDerX( float *x11, float *x21, float *x31, fl
     return mOutputNodataValue;
   }
 
-  return sum / ( weight * mCellSizeX * mZFactor );
+  return sum / ( weight * mCellSizeX ) * mZFactor;
 }
 
 float QgsDerivativeFilter::calcFirstDerY( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 )
@@ -154,7 +154,7 @@ float QgsDerivativeFilter::calcFirstDerY( float *x11, float *x21, float *x31, fl
     return mOutputNodataValue;
   }
 
-  return sum / ( weight * mCellSizeY * mZFactor );
+  return sum / ( weight * mCellSizeY ) * mZFactor;
 }
 
 

@@ -19,7 +19,7 @@
 #ifndef QGS_GLOBE_PLUGIN_H
 #define QGS_GLOBE_PLUGIN_H
 
-#include <qgisplugin.h>
+#include "qgisplugin.h"
 #include <QObject>
 #include <osg/ref_ptr>
 #include <osgEarth/Version>

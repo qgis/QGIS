@@ -23,6 +23,11 @@ namespace QgsWms
 {
   QgsWmsParameters::QgsWmsParameters()
   {
+    // Available version number
+    mVersions.append( QgsProjectVersion( 1, 1, 1 ) );
+    mVersions.append( QgsProjectVersion( 1, 3, 0 ) );
+
+    // WMS parameters definition
     const Parameter pBoxSpace = { ParameterName::BOXSPACE,
                                   QVariant::Double,
                                   QVariant( 2.0 ),
@@ -183,6 +188,13 @@ namespace QgsWms
                              QVariant()
                            };
     save( pCRS );
+
+    const Parameter pSRS = { ParameterName::SRS,
+                             QVariant::String,
+                             QVariant( "" ),
+                             QVariant()
+                           };
+    save( pSRS );
 
     const Parameter pFormat = { ParameterName::FORMAT,
                                 QVariant::String,
@@ -350,7 +362,7 @@ namespace QgsWms
                                QVariant( "" ),
                                QVariant()
                              };
-    save( pLayers );
+    save( pStyle );
 
     const Parameter pStyles = { ParameterName::STYLES,
                                 QVariant::String,
@@ -393,6 +405,27 @@ namespace QgsWms
                                       QVariant()
                                     };
     save( pWmsPrecision );
+
+    const Parameter pTransparent = { ParameterName::TRANSPARENT,
+                                     QVariant::Bool,
+                                     QVariant( false ),
+                                     QVariant()
+                                   };
+    save( pTransparent );
+
+    const Parameter pBgColor = { ParameterName::BGCOLOR,
+                                 QVariant::String,
+                                 QVariant( "white" ),
+                                 QVariant()
+                               };
+    save( pBgColor );
+
+    const Parameter pDpi = { ParameterName::DPI,
+                             QVariant::Int,
+                             QVariant( -1 ),
+                             QVariant()
+                           };
+    save( pDpi );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerRequest::Parameters &parameters )
@@ -438,6 +471,9 @@ namespace QgsWms
         log( " - " + name + " : " + value );
       }
     }
+
+    if ( !version().isEmpty() )
+      log( " - VERSION : " + version() );
   }
 
   void QgsWmsParameters::save( const Parameter &parameter )
@@ -490,7 +526,25 @@ namespace QgsWms
 
   QString QgsWmsParameters::crs() const
   {
-    return value( ParameterName::CRS ).toString();
+    QString rs;
+    QString srs = value( ParameterName::SRS ).toString();
+    QString crs = value( ParameterName::CRS ).toString();
+
+    // both SRS/CRS are supported but there's a priority according to the
+    // specified version when both are defined in the request
+    if ( !srs.isEmpty() && crs.isEmpty() )
+      rs = srs;
+    else if ( srs.isEmpty() && !crs.isEmpty() )
+      rs = crs;
+    else if ( !srs.isEmpty() && !crs.isEmpty() )
+    {
+      if ( versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
+        rs = crs;
+      else
+        rs = srs;
+    }
+
+    return rs;
   }
 
   QString QgsWmsParameters::bbox() const
@@ -552,6 +606,39 @@ namespace QgsWms
     return toInt( ParameterName::WIDTH );
   }
 
+  QString QgsWmsParameters::dpi() const
+  {
+    return value( ParameterName::DPI ).toString();
+  }
+
+  int QgsWmsParameters::dpiAsInt() const
+  {
+    return toInt( ParameterName::DPI );
+  }
+
+  QString QgsWmsParameters::version() const
+  {
+    // VERSION parameter is not managed with other parameters because
+    // there's a conflict with qgis VERSION defined in qgsconfig.h
+    if ( mRequestParameters.contains( "VERSION" ) )
+      return mRequestParameters["VERSION"];
+    else
+      return QString();
+  }
+
+  QgsProjectVersion QgsWmsParameters::versionAsNumber() const
+  {
+    QString vStr = version();
+    QgsProjectVersion version;
+
+    if ( vStr.isEmpty() )
+      version = QgsProjectVersion( 1, 3, 0 ); // default value
+    else if ( mVersions.contains( QgsProjectVersion( vStr ) ) )
+      version = QgsProjectVersion( vStr );
+
+    return version;
+  }
+
   double QgsWmsParameters::toDouble( ParameterName p ) const
   {
     double val = defaultValue( p ).toDouble();
@@ -603,6 +690,31 @@ namespace QgsWms
     }
 
     return val;
+  }
+
+  QColor QgsWmsParameters::toColor( ParameterName p ) const
+  {
+    QColor c = defaultValue( p ).value<QColor>();
+
+    if ( !value( p ).toString().isEmpty() )
+    {
+      // support hexadecimal notation to define colors
+      QString cStr = value( p ).toString();
+      if ( cStr.startsWith( "0x", Qt::CaseInsensitive ) )
+        cStr.replace( 0, 2, "#" );
+
+      c = QColor( cStr );
+
+      if ( !c.isValid() )
+      {
+        QString val = value( p ).toString();
+        QString n = name( p );
+        QString msg = n + " ('" + val + "') cannot be converted into a color";
+        raiseError( msg );
+      }
+    }
+
+    return c;
   }
 
   QStringList QgsWmsParameters::toStringList( ParameterName name, char delimiter ) const
@@ -795,6 +907,16 @@ namespace QgsWms
     return toBool( ParameterName::RULELABEL );
   }
 
+  QString QgsWmsParameters::transparent() const
+  {
+    return value( ParameterName::TRANSPARENT ).toString();
+  }
+
+  bool QgsWmsParameters::transparentAsBool() const
+  {
+    return toBool( ParameterName::TRANSPARENT );
+  }
+
   QString QgsWmsParameters::scale() const
   {
     return value( ParameterName::SCALE ).toString();
@@ -962,23 +1084,7 @@ namespace QgsWms
 
   QColor QgsWmsParameters::layerFontColorAsColor() const
   {
-    ParameterName p = ParameterName::LAYERFONTCOLOR;
-    QColor c = defaultValue( p ).value<QColor>();
-
-    if ( !layerFontColor().isEmpty() )
-    {
-      c = QColor( layerFontColor() );
-
-      if ( !c.isValid() )
-      {
-        QString val = value( p ).toString();
-        QString n = name( p );
-        QString msg = n + " ('" + val + "') cannot be converted into a color";
-        raiseError( msg );
-      }
-    }
-
-    return c;
+    return toColor( ParameterName::LAYERFONTCOLOR );
   }
 
   QString QgsWmsParameters::itemFontSize() const
@@ -1266,7 +1372,7 @@ namespace QgsWms
     QList<QColor> bufferColors = highlightLabelBufferColorAsColor();
     QList<float> bufferSizes = highlightLabelBufferSizeAsFloat();
 
-    int nLayers = qMin( geoms.size(), slds.size() );
+    int nLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nLayers; i++ )
     {
       QgsWmsParametersHighlightLayer param;
@@ -1299,6 +1405,16 @@ namespace QgsWms
     }
 
     return params;
+  }
+
+  QString QgsWmsParameters::backgroundColor() const
+  {
+    return value( ParameterName::BGCOLOR ).toString();
+  }
+
+  QColor QgsWmsParameters::backgroundColorAsColor() const
+  {
+    return toColor( ParameterName::BGCOLOR );
   }
 
   QString QgsWmsParameters::name( ParameterName name ) const

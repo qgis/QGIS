@@ -42,7 +42,7 @@ class SetMValue(QgisFeatureBasedAlgorithm):
     M_VALUE = 'M_VALUE'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -52,7 +52,7 @@ class SetMValue(QgisFeatureBasedAlgorithm):
         return 'setmvalue'
 
     def displayName(self):
-        return self.tr('Set M Value')
+        return self.tr('Set M value')
 
     def outputName(self):
         return self.tr('M Added')

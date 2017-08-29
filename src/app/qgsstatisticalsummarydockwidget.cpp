@@ -185,7 +185,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
   {
     double val = stats.statistic( stat );
     addRow( row, QgsStatisticalSummary::displayName( stat ),
-            qIsNaN( val ) ? QString() : QString::number( val ),
+            std::isnan( val ) ? QString() : QString::number( val ),
             stats.count() != 0 );
     row++;
   }

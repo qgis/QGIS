@@ -16,12 +16,14 @@
 
 set -e
 
-case "$1" in
+action=$1
+
+case "$action" in
 pull|push|update)
 	;;
 
 *)
-	echo "usage: $(basename $0) {pull|{push|update} builddirectory}"
+	echo "usage: $(basename $0) {pull|{push|update} builddirectory [lang...]}"
 	exit 1
 esac
 
@@ -72,18 +74,32 @@ if ! type tx >/dev/null 2>&1; then
 	exit 1
 fi
 
+files=
 if [ -d "$2" ]; then
 	builddir=$(realpath $2)
 	textcpp=
 	for i in $builddir/src/core/qgsexpression_texts.cpp $builddir/src/core/qgscontexthelp_texts.cpp; do
 		if [ -f $i ]; then
 			textcpp="$textcpp $i"
-		elif [ "$1" != "pull" ]; then
+		elif [ "$action" != "pull" ]; then
 			echo Generated help file $i not found
 			exit 1
 		fi
 	done
-elif [ "$1" != "pull" ]; then
+	shift
+	shift
+	if [[ $# -gt 0 ]]; then
+		for t in i18n/qgis_*.ts; do
+			for l in "$@"; do
+				if [ "i18n/qgis_$l.ts" = "$t" ]; then
+					continue 2
+				fi
+			done
+			files="$files $t"
+		done
+	fi
+
+elif [ "$action" != "pull" ]; then
 	echo Build directory not found
 	exit 1
 fi
@@ -91,22 +107,28 @@ fi
 trap cleanup EXIT
 
 echo Saving translations
-files="$(find python -name "*.ts") src/plugins/plugin_template/plugingui.cpp src/plugins/plugin_template/plugin.cpp"
-[ $1 = push ] && files="$files i18n/qgis_*.ts"
+files="$files $(find python -name "*.ts") src/plugins/plugin_template/plugingui.cpp src/plugins/plugin_template/plugin.cpp"
+[ $action = push ] && files="$files i18n/qgis_*.ts"
 tar --remove-files -cf i18n/backup.tar $files
 
-if [ $1 = push ]; then
+if [ $action = push ]; then
 	echo Pulling source from transifex...
 	tx pull -s -l none
 	if ! [ -f "i18n/qgis_en.ts" ]; then
 		echo Download of source translation failed
 		exit
 	fi
-elif [ $1 = pull ]; then
+elif [ $action = pull ]; then
 	rm i18n/qgis_*.ts
 
 	echo Pulling new translations...
-	tx pull -a -s --minimum-perc=35
+	shift
+	if [ "$#" -gt 0 ]; then
+		o="-l $@"
+	else
+		o="-a"
+	fi
+	tx pull $o -s --minimum-perc=35
 fi
 
 echo Updating python translations
@@ -147,7 +169,7 @@ $LUPDATE -locations absolute -verbose qgis_ts.pro
 
 perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\.cpp.*$/;' i18n/qgis_*.ts
 
-if [ $1 = push ]; then
+if [ $action = push ]; then
 	echo Pushing translation...
 	tx push -s
 else

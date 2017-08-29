@@ -31,21 +31,56 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRectangle,
                        QgsProcessingUtils,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingException)
 from qgis.analysis import (QgsInterpolator,
                            QgsIDWInterpolator,
-                           QgsGridFileWriter
-                           )
+                           QgsGridFileWriter)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import (Parameter,
-                                        ParameterNumber,
-                                        ParameterExtent,
-                                        _splitParameterOptions)
-from processing.core.outputs import OutputRaster
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
+
+
+class ParameterInterpolationData(QgsProcessingParameterDefinition):
+
+    def __init__(self, name='', description=''):
+        super().__init__(name, description)
+        self.setMetadata({
+            'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
+        })
+
+    def type(self):
+        return 'idw_interpolation_data'
+
+    def clone(self):
+        return ParameterInterpolationData(self.name(), self.description())
+
+    @staticmethod
+    def parseValue(value):
+        if value is None:
+            return None
+
+        if value == '':
+            return None
+
+        if isinstance(value, str):
+            return value if value != '' else None
+        else:
+            return ParameterInterpolationData.dataToString(value)
+
+    @staticmethod
+    def dataToString(data):
+        s = ''
+        for c in data:
+            s += '{}, {}, {:d}, {:d};'.format(c[0],
+                                              c[1],
+                                              c[2],
+                                              c[3])
+        return s[:-1]
 
 
 class IdwInterpolation(QgisAlgorithm):
@@ -57,7 +92,7 @@ class IdwInterpolation(QgisAlgorithm):
     CELLSIZE_X = 'CELLSIZE_X'
     CELLSIZE_Y = 'CELLSIZE_Y'
     EXTENT = 'EXTENT'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
@@ -69,78 +104,29 @@ class IdwInterpolation(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        class ParameterInterpolationData(Parameter):
-            default_metadata = {
-                'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
-            }
-
-            def __init__(self, name='', description=''):
-                Parameter.__init__(self, name, description)
-
-            def setValue(self, value):
-                if value is None:
-                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                        return False
-                    self.value = None
-                    return True
-
-                if value == '':
-                    if not self.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                        return False
-
-                if isinstance(value, str):
-                    self.value = value if value != '' else None
-                else:
-                    self.value = ParameterInterpolationData.dataToString(value)
-                return True
-
-            def getValueAsCommandLineParameter(self):
-                return '"{}"'.format(self.value)
-
-            def getAsScriptCode(self):
-                param_type = ''
-                param_type += 'interpolation data '
-                return '##' + self.name + '=' + param_type
-
-            @classmethod
-            def fromScriptCode(self, line):
-                isOptional, name, definition = _splitParameterOptions(line)
-                descName = QgsProcessingParameters.descriptionFromName(name)
-                parent = definition.lower().strip()[len('interpolation data') + 1:]
-                return ParameterInterpolationData(name, descName, parent)
-
-            @staticmethod
-            def dataToString(data):
-                s = ''
-                for c in data:
-                    s += '{}, {}, {:d}, {:d};'.format(c[0],
-                                                      c[1],
-                                                      c[2],
-                                                      c[3])
-                return s[:-1]
 
         self.addParameter(ParameterInterpolationData(self.INTERPOLATION_DATA,
                                                      self.tr('Input layer(s)')))
-        self.addParameter(ParameterNumber(self.DISTANCE_COEFFICIENT,
-                                          self.tr('Distance coefficient P'),
-                                          0.0, 99.99, 2.0))
-        self.addParameter(ParameterNumber(self.COLUMNS,
-                                          self.tr('Number of columns'),
-                                          0, 10000000, 300))
-        self.addParameter(ParameterNumber(self.ROWS,
-                                          self.tr('Number of rows'),
-                                          0, 10000000, 300))
-        self.addParameter(ParameterNumber(self.CELLSIZE_X,
-                                          self.tr('Cell Size X'),
-                                          0.0, 999999.000000, 0.0))
-        self.addParameter(ParameterNumber(self.CELLSIZE_Y,
-                                          self.tr('Cell Size Y'),
-                                          0.0, 999999.000000, 0.0))
-        self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Extent'),
-                                          optional=False))
-        self.addOutput(OutputRaster(self.OUTPUT_LAYER,
-                                    self.tr('Interpolated')))
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE_COEFFICIENT,
+                                                       self.tr('Distance coefficient P'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=99.99, defaultValue=2.0))
+        self.addParameter(QgsProcessingParameterNumber(self.COLUMNS,
+                                                       self.tr('Number of columns'),
+                                                       minValue=0, maxValue=10000000, defaultValue=300))
+        self.addParameter(QgsProcessingParameterNumber(self.ROWS,
+                                                       self.tr('Number of rows'),
+                                                       minValue=0, maxValue=10000000, defaultValue=300))
+        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_X,
+                                                       self.tr('Cell Size X'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_Y,
+                                                       self.tr('Cell Size Y'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Extent'),
+                                                       optional=False))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
+                                                                  self.tr('Interpolated')))
 
     def name(self):
         return 'idwinterpolation'
@@ -149,24 +135,18 @@ class IdwInterpolation(QgisAlgorithm):
         return self.tr('IDW interpolation')
 
     def processAlgorithm(self, parameters, context, feedback):
-        interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
-        coefficient = self.getParameterValue(self.DISTANCE_COEFFICIENT)
-        columns = self.getParameterValue(self.COLUMNS)
-        rows = self.getParameterValue(self.ROWS)
-        cellsizeX = self.getParameterValue(self.CELLSIZE_X)
-        cellsizeY = self.getParameterValue(self.CELLSIZE_Y)
-        extent = self.getParameterValue(self.EXTENT).split(',')
-        output = self.getOutputValue(self.OUTPUT_LAYER)
+        interpolationData = ParameterInterpolationData.parseValue(parameters[self.INTERPOLATION_DATA])
+        coefficient = self.parameterAsDouble(parameters, self.DISTANCE_COEFFICIENT, context)
+        columns = self.parameterAsInt(parameters, self.COLUMNS, context)
+        rows = self.parameterAsInt(parameters, self.ROWS, context)
+        cellsizeX = self.parameterAsDouble(parameters, self.CELLSIZE_X, context)
+        cellsizeY = self.parameterAsDouble(parameters, self.CELLSIZE_Y, context)
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         if interpolationData is None:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('You need to specify at least one input layer.'))
-
-        xMin = float(extent[0])
-        xMax = float(extent[1])
-        yMin = float(extent[2])
-        yMax = float(extent[3])
-        bbox = QgsRectangle(xMin, yMin, xMax, yMax)
 
         layerData = []
         layers = []
@@ -200,4 +180,5 @@ class IdwInterpolation(QgisAlgorithm):
                                    cellsizeX,
                                    cellsizeY)
 
-        writer.writeFile()
+        writer.writeFile(feedback)
+        return {self.OUTPUT: output}

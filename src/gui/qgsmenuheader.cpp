@@ -25,7 +25,7 @@ QgsMenuHeader::QgsMenuHeader( const QString &text, QWidget *parent )
 {
   int textMinWidth = fontMetrics().width( mText );
   mTextHeight = fontMetrics().height();
-  mLabelMargin = fontMetrics().width( QStringLiteral( "." ) );
+  mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "." ) );
   mMinWidth = 2 * mLabelMargin + textMinWidth;
   setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   updateGeometry();
@@ -33,12 +33,12 @@ QgsMenuHeader::QgsMenuHeader( const QString &text, QWidget *parent )
 
 QSize QgsMenuHeader::minimumSizeHint() const
 {
-  return QSize( mMinWidth, mTextHeight + 0.5 * mLabelMargin );
+  return QSize( mMinWidth, mTextHeight + mLabelMargin );
 }
 
 QSize QgsMenuHeader::sizeHint() const
 {
-  return QSize( mMinWidth, mTextHeight + 0.5 * mLabelMargin );
+  return QSize( mMinWidth, mTextHeight + mLabelMargin );
 }
 
 void QgsMenuHeader::paintEvent( QPaintEvent * )
@@ -51,12 +51,11 @@ void QgsMenuHeader::paintEvent( QPaintEvent * )
   //draw header background
   painter.setBrush( headerBgColor );
   painter.setPen( Qt::NoPen );
-  painter.drawRect( QRect( 0, 0, width(), mTextHeight + 0.5 * mLabelMargin ) );
+  painter.drawRect( QRect( 0, 0, width(), mTextHeight + mLabelMargin ) );
 
   //draw header text
   painter.setPen( headerTextColor );
-  painter.drawText( QRect( mLabelMargin, 0.25 * mLabelMargin, width() - 2 * mLabelMargin, mTextHeight ),
-                    Qt::AlignLeft | Qt::AlignVCenter, mText );
+  painter.drawText( QPoint( mLabelMargin, 0.25 * mLabelMargin + mTextHeight ), mText );
   painter.end();
 }
 

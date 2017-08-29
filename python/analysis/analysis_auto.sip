@@ -12,9 +12,6 @@
 %Include raster/qgsrastermatrix.sip
 %Include raster/qgsrastercalcnode.sip
 %Include raster/qgstotalcurvaturefilter.sip
-%Include vector/qgsgeometryanalyzer.sip
-%Include vector/qgsoverlayanalyzer.sip
-%Include vector/qgspointsample.sip
 %Include vector/qgstransectsample.sip
 %Include vector/qgszonalstatistics.sip
 %Include interpolation/qgsinterpolator.sip

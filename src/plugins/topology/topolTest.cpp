@@ -17,16 +17,16 @@
 
 #include "topolTest.h"
 
-#include <qgsvectorlayer.h>
+#include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
-#include <qgsmaplayer.h>
-#include <qgsmapcanvas.h>
-#include <qgsgeometry.h>
-#include <qgsfeature.h>
-#include <qgsspatialindex.h>
-#include <qgisinterface.h>
-#include <qgslogger.h>
-#include <qgsmessagelog.h>
+#include "qgsmaplayer.h"
+#include "qgsmapcanvas.h"
+#include "qgsgeometry.h"
+#include "qgsfeature.h"
+#include "qgsspatialindex.h"
+#include "qgisinterface.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include <cmath>
 #include <set>
 #include <map>
@@ -1015,7 +1015,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
 
         for ( int i = 1; i < ls.size(); ++i )
         {
-          distance = sqrt( ls[i - 1].sqrDist( ls[i] ) );
+          distance = std::sqrt( ls[i - 1].sqrDist( ls[i] ) );
           if ( distance < tolerance )
           {
             fls.clear();
@@ -1040,7 +1040,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
         {
           for ( int j = 1; j < pol[i].size(); ++j )
           {
-            distance =  sqrt( pol[i][j - 1].sqrDist( pol[i][j] ) );
+            distance =  std::sqrt( pol[i][j - 1].sqrDist( pol[i][j] ) );
             if ( distance < tolerance )
             {
               fls.clear();
@@ -1067,7 +1067,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
           QgsPolyline &ls = mls[k];
           for ( int i = 1; i < ls.size(); ++i )
           {
-            distance = sqrt( ls[i - 1].sqrDist( ls[i] ) );
+            distance = std::sqrt( ls[i - 1].sqrDist( ls[i] ) );
             if ( distance < tolerance )
             {
               fls.clear();

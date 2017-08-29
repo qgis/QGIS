@@ -81,7 +81,7 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   // Region
   QPen regionPen = QgsGrass::regionPen();
   mRegionColorButton->setContext( QStringLiteral( "gui" ) );
-  mRegionColorButton->setColorDialogTitle( tr( "Select color" ) );
+  mRegionColorButton->setColorDialogTitle( tr( "Select Color" ) );
   mRegionColorButton->setColor( regionPen.color() );
   mRegionWidthSpinBox->setValue( regionPen.width() );
 

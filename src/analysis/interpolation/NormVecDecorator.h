@@ -20,12 +20,12 @@
 #include "TriDecorator.h"
 #include "qgis_sip.h"
 #include "qgis.h"
-#include <TriangleInterpolator.h>
-#include <MathUtils.h>
+#include "TriangleInterpolator.h"
+#include "MathUtils.h"
 #include "qgslogger.h"
 #include "qgis_analysis.h"
 
-class QProgressDialog;
+class QgsFeedback;
 
 /** \ingroup analysis
  * Decorator class which adds the functionality of estimating normals at the data points*/
@@ -50,7 +50,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     //! Estimates the first derivative a point. Return true in case of succes and false otherwise
     bool estimateFirstDerivative( int pointno );
     //! This method adds the functionality of estimating normals at the data points. Return true in the case of success and false otherwise
-    bool estimateFirstDerivatives( QProgressDialog *d = nullptr );
+    bool estimateFirstDerivatives( QgsFeedback *feedback = nullptr );
     //! Returns a pointer to the normal vector for the point with the number n
     Vector3D *getNormal( int n ) const;
     //! Finds out, in which triangle a point with coordinates x and y is and assigns the triangle points to p1, p2, p3 and the estimated normals to v1, v2, v3. The vectors are normally taken from 'mNormVec', except if p1, p2 or p3 is a point on a breakline. In this case, the normal is calculated on-the-fly. Returns false, if something went wrong and true otherwise

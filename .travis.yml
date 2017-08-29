@@ -35,6 +35,7 @@ matrix:
             - poppler-utils
             - xvfb
             - clang-3.8
+            - libzip-dev
 
 
     - os: linux

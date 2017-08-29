@@ -30,18 +30,16 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsWkbTypes,
-                       QgsFeatureSink,
-                       QgsProcessingUtils)
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
 
-from processing.core.outputs import OutputVector
 from . import Buffer as buff
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -56,43 +54,45 @@ class FixedDistanceBuffer(QgisAlgorithm):
     DISSOLVE = 'DISSOLVE'
     END_CAP_STYLE = 'END_CAP_STYLE'
     JOIN_STYLE = 'JOIN_STYLE'
-    MITRE_LIMIT = 'MITRE_LIMIT'
+    MITER_LIMIT = 'MITER_LIMIT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterNumber(self.DISTANCE,
-                                          self.tr('Distance'), default=10.0))
-        self.addParameter(ParameterNumber(self.SEGMENTS,
-                                          self.tr('Segments'), 1, default=5))
-        self.addParameter(ParameterBoolean(self.DISSOLVE,
-                                           self.tr('Dissolve result'), False))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
+                                                       self.tr('Distance'), defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
+                                                       self.tr('Segments'), type=QgsProcessingParameterNumber.Integer, minValue=1, defaultValue=5))
+        self.addParameter(QgsProcessingParameterBoolean(self.DISSOLVE,
+                                                        self.tr('Dissolve result'), defaultValue=False))
         self.end_cap_styles = [self.tr('Round'),
                                'Flat',
                                'Square']
-        self.addParameter(ParameterSelection(
+        self.addParameter(QgsProcessingParameterEnum(
             self.END_CAP_STYLE,
             self.tr('End cap style'),
-            self.end_cap_styles, default=0))
+            options=self.end_cap_styles, defaultValue=0))
         self.join_styles = [self.tr('Round'),
-                            'Mitre',
+                            'Miter',
                             'Bevel']
-        self.addParameter(ParameterSelection(
+        self.addParameter(QgsProcessingParameterEnum(
             self.JOIN_STYLE,
             self.tr('Join style'),
-            self.join_styles, default=0))
-        self.addParameter(ParameterNumber(self.MITRE_LIMIT,
-                                          self.tr('Mitre limit'), 1, default=2))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+            options=self.join_styles, defaultValue=0))
+        self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
+                                                       self.tr('Miter limit'), minValue=0, defaultValue=2))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Buffer'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'fixeddistancebuffer'
@@ -101,16 +101,19 @@ class FixedDistanceBuffer(QgisAlgorithm):
         return self.tr('Fixed distance buffer')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        distance = self.getParameterValue(self.DISTANCE)
-        dissolve = self.getParameterValue(self.DISSOLVE)
-        segments = int(self.getParameterValue(self.SEGMENTS))
-        end_cap_style = self.getParameterValue(self.END_CAP_STYLE) + 1
-        join_style = self.getParameterValue(self.JOIN_STYLE) + 1
-        miter_limit = self.getParameterValue(self.MITRE_LIMIT)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields(), QgsWkbTypes.Polygon, layer.crs(), context)
+        distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
+        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
+        segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
+        end_cap_style = self.parameterAsEnum(parameters, self.END_CAP_STYLE, context) + 1
+        join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
+        miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
 
-        buff.buffering(feedback, context, writer, distance, None, False, layer, dissolve, segments, end_cap_style,
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+
+        buff.buffering(feedback, context, sink, distance, None, False, source, dissolve, segments, end_cap_style,
                        join_style, miter_limit)
+
+        return {self.OUTPUT: dest_id}

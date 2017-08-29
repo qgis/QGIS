@@ -27,7 +27,7 @@
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
-  , mExpressionDialogTitle( tr( "Expression dialog" ) )
+  , mExpressionDialogTitle( tr( "Expression Dialog" ) )
   , mDa( nullptr )
   , mExpressionContextGenerator( nullptr )
 {

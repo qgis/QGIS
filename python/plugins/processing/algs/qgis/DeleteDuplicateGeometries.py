@@ -26,12 +26,10 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
-                       QgsApplication,
                        QgsFeatureSink,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 
 
 class DeleteDuplicateGeometries(QgisAlgorithm):
@@ -40,15 +38,15 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Cleaned')))
 
     def name(self):
         return 'deleteduplicategeometries'
@@ -57,23 +55,26 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
         return self.tr('Delete duplicate geometries')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), source.wkbType(), source.sourceCrs())
 
-        fields = layer.fields()
-
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
-
-        features = QgsProcessingUtils.getFeatures(layer, context)
-
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         geoms = dict()
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             geoms[f.id()] = f.geometry()
             feedback.setProgress(int(current * total))
 
         cleaned = dict(geoms)
 
         for i, g in list(geoms.items()):
+            if feedback.isCanceled():
+                break
+
             for j in list(cleaned.keys()):
                 if i == j or i not in cleaned:
                     continue
@@ -82,8 +83,11 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
         total = 100.0 / len(cleaned) if cleaned else 1
         request = QgsFeatureRequest().setFilterFids(list(cleaned.keys()))
-        for current, f in enumerate(layer.getFeatures(request)):
-            writer.addFeature(f, QgsFeatureSink.FastInsert)
+        for current, f in enumerate(source.getFeatures(request)):
+            if feedback.isCanceled():
+                break
+
+            sink.addFeature(f, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

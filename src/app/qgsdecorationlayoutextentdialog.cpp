@@ -40,12 +40,9 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
   QgsSettings settings;
   restoreGeometry( settings.value( "/Windows/DecorationLayoutExtent/geometry" ).toByteArray() );
 
-  connect( mCheckBoxLabelExtents, &QCheckBox::toggled, mButtonFontStyle, &QPushButton::setEnabled );
-  mCheckBoxLabelExtents->setChecked( false );
-  mButtonFontStyle->setEnabled( false );
-
   updateGuiElements();
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationLayoutExtentDialog::apply );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationLayoutExtentDialog::showHelp );
 
   mSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
 }
@@ -87,4 +84,9 @@ void QgsDecorationLayoutExtentDialog::apply()
 void QgsDecorationLayoutExtentDialog::on_buttonBox_rejected()
 {
   reject();
+}
+
+void QgsDecorationLayoutExtentDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#decorations" ) );
 }

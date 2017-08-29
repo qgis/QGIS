@@ -35,13 +35,15 @@ class QgsMultiSurface: QgsGeometryCollection
 
 
 
-    virtual bool addGeometry( QgsAbstractGeometry *g )  /Transfer/;
+    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring
 Adds a geometry and takes ownership. Returns true in case of success
  :rtype: bool
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+
 };
 
 /************************************************************************

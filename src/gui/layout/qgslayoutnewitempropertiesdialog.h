@@ -80,6 +80,13 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
      */
     void setReferencePoint( QgsLayoutItem::ReferencePoint point );
 
+    /**
+     * Sets the \a layout associated with the dialog. This allows the dialog
+     * to retrieve properties from the layout and perform tasks like automatic
+     * conversion of units.
+     */
+    void setLayout( QgsLayout *layout );
+
 };
 
 #endif // QGSLAYOUTNEWITEMPROPERTIESDIALOG_H

@@ -33,17 +33,19 @@ class QgsLayoutUtils
 %Docstring
  Creates a render context suitable for the specified layout ``map`` and ``painter`` destination.
  This method returns a new QgsRenderContext which matches the scale and settings of the
- target map. If the ``dpi`` argument is not specified then the dpi will be taken from the destinatation
+ target map. If the ``dpi`` argument is not specified then the dpi will be taken from the destination
  painter device.
 .. seealso:: createRenderContextForLayout()
  :rtype: QgsRenderContext
 %End
 
-    static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter );
+    static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter, double dpi = -1 );
 %Docstring
  Creates a render context suitable for the specified ``layout`` and ``painter`` destination.
  This method returns a new QgsRenderContext which matches the scale and settings from the layout's
  QgsLayout.referenceMap().
+ If the ``dpi`` argument is not specified then the dpi will be taken from the destination
+ painter device.
 .. seealso:: createRenderContextForMap()
  :rtype: QgsRenderContext
 %End

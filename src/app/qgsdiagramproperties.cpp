@@ -88,12 +88,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
   mSizeFieldExpressionWidget->registerExpressionContextGenerator( this );
 
-  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "Transparent background" ) );
-  mDiagramPenColorButton->setColorDialogTitle( tr( "Select pen color" ) );
+  mDiagramPenColorButton->setColorDialogTitle( tr( "Select Pen Color" ) );
   mDiagramPenColorButton->setAllowOpacity( true );
   mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
   mDiagramPenColorButton->setShowNoColor( true );
@@ -593,7 +593,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
       while ( features.nextFeature( *&feature ) )
       {
         context.setFeature( feature );
-        maxValue = qMax( maxValue, exp.evaluate( &context ).toFloat() );
+        maxValue = std::max( maxValue, exp.evaluate( &context ).toFloat() );
       }
     }
     else
@@ -689,7 +689,7 @@ void QgsDiagramProperties::apply()
             bool ok = false;
             double val = provider->maximumValue( fld ).toDouble( &ok );
             if ( ok )
-              maxVal = qMax( maxVal, val );
+              maxVal = std::max( maxVal, val );
           }
         }
       }
@@ -851,7 +851,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
           << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Expression based attribute" ) );
+  dlg.setWindowTitle( tr( "Expression Based Attribute" ) );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs() );

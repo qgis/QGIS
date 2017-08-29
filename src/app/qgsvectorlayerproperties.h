@@ -104,7 +104,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void loadStyle_clicked();
     void saveStyleAs_clicked();
     void mOptionsStackedWidget_CurrentChanged( int indx );
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) ); }
     void on_pbnUpdateExtents_clicked();
 
     void on_mButtonAddJoin_clicked();
@@ -198,6 +197,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     std::unique_ptr<QgsLayerTree> mLayersDependenciesTreeGroup;
     std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
+
+    void showHelp();
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

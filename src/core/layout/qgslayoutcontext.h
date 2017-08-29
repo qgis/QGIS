@@ -82,6 +82,11 @@ class CORE_EXPORT QgsLayoutContext
     bool testFlag( const Flag flag ) const;
 
     /**
+     * Returns the combination of render context flags matched to the layout context's settings.
+     */
+    QgsRenderContext::Flags renderContextFlags() const;
+
+    /**
      * Sets the current \a feature for evaluating the layout. This feature may
      * be used for altering an item's content and appearance for a report
      * or atlas layout.
@@ -134,6 +139,18 @@ class CORE_EXPORT QgsLayoutContext
      */
     QgsLayoutMeasurementConverter &measurementConverter() { return mMeasurementConverter; }
 
+    /**
+     * Returns true if the page grid should be drawn.
+     * \see setGridVisible()
+     */
+    bool gridVisible() const;
+
+    /**
+     * Sets whether the page grid should be \a visible.
+     * \see gridVisible()
+     */
+    void setGridVisible( bool visible );
+
   private:
 
     Flags mFlags = 0;
@@ -142,6 +159,9 @@ class CORE_EXPORT QgsLayoutContext
     QPointer< QgsVectorLayer > mLayer;
 
     QgsLayoutMeasurementConverter mMeasurementConverter;
+
+    bool mGridVisible = false;
+
 
 };
 

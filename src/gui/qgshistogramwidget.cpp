@@ -115,7 +115,7 @@ void QgsHistogramWidget::refreshValues()
   std::sort( mValues.begin(), mValues.end() );
   mHistogram.setValues( mValues );
   mBinsSpinBox->blockSignals( true );
-  mBinsSpinBox->setValue( qMax( mHistogram.optimalNumberBins(), 30 ) );
+  mBinsSpinBox->setValue( std::max( mHistogram.optimalNumberBins(), 30 ) );
   mBinsSpinBox->blockSignals( false );
 
   mStats.setStatistics( QgsStatisticalSummary::StDev );
@@ -235,7 +235,7 @@ void QgsHistogramWidget::drawHistogram()
       dataHisto << QwtIntervalSample( lastValue, mRanges.at( rangeIndex - 1 ).upperValue(), edges.at( bin ) );
     }
 
-    double upperEdge = !mRanges.isEmpty() ? qMin( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
+    double upperEdge = !mRanges.isEmpty() ? std::min( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
                        : edges.at( bin + 1 );
 
     dataHisto << QwtIntervalSample( binValue, edges.at( bin ), upperEdge );

@@ -31,6 +31,10 @@ class QgsLayoutRuler;
 class QComboBox;
 class QSlider;
 class QLabel;
+class QgsLayoutAppMenuProvider;
+class QgsLayoutItem;
+class QgsPanelWidgetStack;
+class QgsDockWidget;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -89,6 +93,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void setIconSizes( int size );
 
+    /**
+     * Shows the configuration widget for the specified layout \a item.
+     */
+    void showItemOptions( QgsLayoutItem *item );
 
   public slots:
 
@@ -106,6 +114,26 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Toggles whether or not the rulers should be \a visible.
      */
     void showRulers( bool visible );
+
+    /**
+     * Toggles whether the page grid should be \a visible.
+     */
+    void showGrid( bool visible );
+
+    /**
+     * Toggles whether snapping to the page grid is \a enabled.
+     */
+    void snapToGrid( bool enabled );
+
+    /**
+     * Toggles whether the page guides should be \a visible.
+     */
+    void showGuides( bool visible );
+
+    /**
+     * Toggles whether snapping to the page guides is \a enabled.
+     */
+    void snapToGuides( bool enabled );
 
   signals:
 
@@ -133,7 +161,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void toggleFullScreen( bool enabled );
 
+    void addPages();
+
   private:
+
+    static bool sInitializedRegistry;
 
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
 
@@ -165,6 +197,15 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QMap< QString, QToolButton * > mItemGroupToolButtons;
     QMap< QString, QMenu * > mItemGroupSubmenus;
 
+    QgsLayoutAppMenuProvider *mMenuProvider;
+
+    QgsDockWidget *mItemDock = nullptr;
+    QgsPanelWidgetStack *mItemPropertiesStack = nullptr;
+    QgsDockWidget *mGeneralDock = nullptr;
+    QgsPanelWidgetStack *mGeneralPropertiesStack = nullptr;
+    QgsDockWidget *mGuideDock = nullptr;
+    QgsPanelWidgetStack *mGuideStack = nullptr;
+
     //! Save window state
     void saveWindowState();
 
@@ -173,6 +214,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     //! Switch to new item creation tool, for a new item of the specified \a type.
     void activateNewItemCreationTool( int type );
+
+    void createLayoutPropertiesWidget();
+
+    void initializeRegistry();
 
 };
 

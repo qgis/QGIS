@@ -142,7 +142,7 @@ void QgsColorWidget::alterColor( QColor &color, const QgsColorWidget::ColorCompo
   color.getHsv( &h, &s, &v, &a );
 
   //clip value to sensible range
-  int clippedValue = qMin( qMax( 0, newValue ), componentRange( component ) );
+  int clippedValue = std::min( std::max( 0, newValue ), componentRange( component ) );
 
   switch ( component )
   {
@@ -262,8 +262,8 @@ void QgsColorWidget::setComponentValue( const int value )
   }
 
   //clip value to valid range
-  int valueClipped = qMin( value, componentRange() );
-  valueClipped = qMax( valueClipped, 0 );
+  int valueClipped = std::min( value, componentRange() );
+  valueClipped = std::max( valueClipped, 0 );
 
   int r, g, b, a;
   mCurrentColor.getRgb( &r, &g, &b, &a );
@@ -397,7 +397,7 @@ QgsColorWheel::~QgsColorWheel()
 
 QSize QgsColorWheel::sizeHint() const
 {
-  int size = fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
   return QSize( size, size );
 }
 
@@ -455,16 +455,16 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   //adapted from equations at https://github.com/timjb/colortriangle/blob/master/colortriangle.js by Tim Baumann
   double lightness = mCurrentColor.lightnessF();
   double hueRadians = ( h * M_PI / 180.0 );
-  double hx = cos( hueRadians ) * triangleRadius;
-  double hy = -sin( hueRadians ) * triangleRadius;
-  double sx = -cos( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
-  double sy = -sin( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
-  double vx = -cos( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
-  double vy = sin( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
+  double hx = std::cos( hueRadians ) * triangleRadius;
+  double hy = -std::sin( hueRadians ) * triangleRadius;
+  double sx = -std::cos( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
+  double sy = -std::sin( -hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
+  double vx = -std::cos( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
+  double vy = std::sin( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   double mx = ( sx + vx ) / 2.0;
   double  my = ( sy + vy ) / 2.0;
 
-  double a = ( 1 - 2.0 * fabs( lightness - 0.5 ) ) * mCurrentColor.hslSaturationF();
+  double a = ( 1 - 2.0 * std::fabs( lightness - 0.5 ) ) * mCurrentColor.hslSaturationF();
   double x = sx + ( vx - sx ) * lightness + ( hx - mx ) * a;
   double y = sy + ( vy - sy ) * lightness + ( hy - my ) * a;
 
@@ -493,7 +493,7 @@ void QgsColorWheel::setColor( const QColor &color, const bool emitSignals )
 
 void QgsColorWheel::createImages( const QSizeF size )
 {
-  double wheelSize = qMin( size.width(), size.height() ) - mMargin * 2.0;
+  double wheelSize = std::min( size.width(), size.height() ) - mMargin * 2.0;
   mWheelThickness = wheelSize / 15.0;
 
   //recreate cache images at correct size
@@ -539,35 +539,35 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 
     double eventAngleRadians = line.angle() * M_PI / 180.0;
     double hueRadians = h * M_PI / 180.0;
-    double rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
-    double rad1 = fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
+    double rad0 = std::fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
+    double rad1 = std::fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
     double length = mWheelImage->width() / 2.0;
     double triangleLength = length - mWheelThickness - 1;
 
     double a = 0.5 * triangleLength;
-    double b = tan( rad1 ) * a;
-    double r = sqrt( x * x + y * y );
-    double maxR = sqrt( a * a + b * b );
+    double b = std::tan( rad1 ) * a;
+    double r = std::sqrt( x * x + y * y );
+    double maxR = std::sqrt( a * a + b * b );
 
     if ( r > maxR )
     {
-      double dx = tan( rad1 ) * r;
-      double rad2 = atan( dx / maxR );
-      rad2 = qMin( rad2, M_PI / 3.0 );
-      rad2 = qMax( rad2, -M_PI / 3.0 );
+      double dx = std::tan( rad1 ) * r;
+      double rad2 = std::atan( dx / maxR );
+      rad2 = std::min( rad2, M_PI / 3.0 );
+      rad2 = std::max( rad2, -M_PI / 3.0 );
       eventAngleRadians += rad2 - rad1;
-      rad0 = fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
-      rad1 = fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
-      b = tan( rad1 ) * a;
-      r = sqrt( a * a + b * b );
+      rad0 = std::fmod( eventAngleRadians + 2.0 * M_PI - hueRadians, 2.0 * M_PI );
+      rad1 = std::fmod( rad0, ( ( 2.0 / 3.0 ) * M_PI ) ) - ( M_PI / 3.0 );
+      b = std::tan( rad1 ) * a;
+      r = std::sqrt( a * a + b * b );
     }
 
-    double triangleSideLength = sqrt( 3.0 ) * triangleLength;
-    double newL = ( ( -sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
-    double widthShare = 1.0 - ( fabs( newL - 0.5 ) * 2.0 );
-    double newS = ( ( ( cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;
-    s = qMin( qRound( qMax( 0.0, newS ) * 255.0 ), 255 );
-    l = qMin( qRound( qMax( 0.0, newL ) * 255.0 ), 255 );
+    double triangleSideLength = std::sqrt( 3.0 ) * triangleLength;
+    double newL = ( ( -std::sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
+    double widthShare = 1.0 - ( std::fabs( newL - 0.5 ) * 2.0 );
+    double newS = ( ( ( std::cos( rad0 ) * r ) + ( triangleLength / 2.0 ) ) / ( 1.5 * triangleLength ) ) / widthShare;
+    s = std::min( static_cast< int >( std::round( std::max( 0.0, newS ) * 255.0 ) ), 255 );
+    l = std::min( static_cast< int >( std::round( std::max( 0.0, newL ) * 255.0 ) ), 255 );
     newColor = QColor::fromHsl( h, s, l );
     //explicitly set the hue again, so that it's exact
     newColor.setHsv( h, newColor.hsvSaturation(), newColor.value(), alpha );
@@ -637,7 +637,7 @@ void QgsColorWheel::createWheel()
     return;
   }
 
-  int maxSize = qMin( mWheelImage->width(),  mWheelImage->height() );
+  int maxSize = std::min( mWheelImage->width(),  mWheelImage->height() );
   double wheelRadius = maxSize / 2.0;
 
   mWheelImage->fill( Qt::transparent );
@@ -683,10 +683,10 @@ void QgsColorWheel::createTriangle()
   alphaColor.setAlpha( 0 );
 
   //some rather ugly shortcuts to obtain corners and midpoints of triangle
-  QLineF line1 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() - triangleRadius * sin( M_PI / 3.0 ) );
+  QLineF line1 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() - triangleRadius * std::sin( M_PI / 3.0 ) );
   QLineF line2 = QLineF( center.x(), center.y(), center.x() + triangleRadius, center.y() );
-  QLineF line3 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() + triangleRadius * sin( M_PI / 3.0 ) );
-  QLineF line4 = QLineF( center.x(), center.y(), center.x() - triangleRadius * cos( M_PI / 3.0 ), center.y() );
+  QLineF line3 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() + triangleRadius * std::sin( M_PI / 3.0 ) );
+  QLineF line4 = QLineF( center.x(), center.y(), center.x() - triangleRadius * std::cos( M_PI / 3.0 ), center.y() );
   QLineF line5 = QLineF( center.x(), center.y(), ( line2.p2().x() + line1.p2().x() ) / 2.0, ( line2.p2().y() + line1.p2().y() ) / 2.0 );
   line1.setAngle( line1.angle() + angle );
   line2.setAngle( line2.angle() + angle );
@@ -758,7 +758,7 @@ QgsColorBox::~QgsColorBox()
 
 QSize QgsColorBox::sizeHint() const
 {
-  int size = fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
   return QSize( size, size );
 }
 
@@ -943,10 +943,10 @@ int QgsColorBox::xComponentValue() const
 void QgsColorBox::setColorFromPoint( QPoint point )
 {
   int valX = valueRangeX() * ( point.x() - mMargin ) / ( width() - 2 * mMargin - 1 );
-  valX = qMin( qMax( valX, 0 ), valueRangeX() );
+  valX = std::min( std::max( valX, 0 ), valueRangeX() );
 
   int valY = valueRangeY() - valueRangeY() * ( point.y() - mMargin ) / ( height() - 2 * mMargin - 1 );
-  valY = qMin( qMax( valY, 0 ), valueRangeY() );
+  valY = std::min( std::max( valY, 0 ), valueRangeY() );
 
   QColor color = QColor( mCurrentColor );
   alterColor( color, xComponent(), valX );
@@ -991,12 +991,12 @@ QSize QgsColorRampWidget::sizeHint() const
   if ( mOrientation == QgsColorRampWidget::Horizontal )
   {
     //horizontal
-    return QSize( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), fontMetrics().height() * 1.3 );
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
   }
   else
   {
     //vertical
-    return QSize( fontMetrics().height() * 1.3, fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) );
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) );
   }
 }
 
@@ -1254,7 +1254,7 @@ void QgsColorRampWidget::setColorFromPoint( QPointF point )
   {
     val = componentRange() - componentRange() * ( point.y() - mMargin ) / ( height() - 2 * mMargin );
   }
-  val = qMax( 0, qMin( val, componentRange() ) );
+  val = std::max( 0, std::min( val, componentRange() ) );
   setComponentValue( val );
 
   if ( componentValue() != oldValue )
@@ -1375,7 +1375,7 @@ int QgsColorSliderWidget::convertRealToDisplay( const int realValue ) const
   //for whom "255" is a totally arbitrary value!
   if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value || mComponent == QgsColorWidget::Alpha )
   {
-    return qRound( 100.0 * realValue / 255.0 );
+    return std::round( 100.0 * realValue / 255.0 );
   }
 
   //leave all other values intact
@@ -1387,7 +1387,7 @@ int QgsColorSliderWidget::convertDisplayToReal( const int displayValue ) const
   //scale saturation, value or alpha from 0->100 range (see note in convertRealToDisplay)
   if ( mComponent == QgsColorWidget::Saturation || mComponent == QgsColorWidget::Value || mComponent == QgsColorWidget::Alpha )
   {
-    return qRound( 255.0 * displayValue / 100.0 );
+    return std::round( 255.0 * displayValue / 100.0 );
   }
 
   //leave all other values intact
@@ -1559,13 +1559,13 @@ void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter
     //ensure at least a 1px overlap to avoid artifacts
     QBrush colorBrush = QBrush( color );
     painter.setBrush( colorBrush );
-    painter.drawRect( floor( rect.width() / 2.0 ) + rect.left(), rect.top(), rect.width() - floor( rect.width() / 2.0 ), rect.height() );
+    painter.drawRect( std::floor( rect.width() / 2.0 ) + rect.left(), rect.top(), rect.width() - std::floor( rect.width() / 2.0 ), rect.height() );
 
     QColor opaqueColor = QColor( color );
     opaqueColor.setAlpha( 255 );
     QBrush opaqueBrush = QBrush( opaqueColor );
     painter.setBrush( opaqueBrush );
-    painter.drawRect( rect.left(), rect.top(), ceil( rect.width() / 2.0 ), rect.height() );
+    painter.drawRect( rect.left(), rect.top(), std::ceil( rect.width() / 2.0 ), rect.height() );
   }
   else
   {
@@ -1584,7 +1584,7 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
   if ( mColor2.isValid() )
   {
     //drawing with two color sections
-    int verticalSplit = qRound( height() / 2.0 );
+    int verticalSplit = std::round( height() / 2.0 );
     drawColor( mCurrentColor, QRect( 0, 0, width(), verticalSplit ), painter );
     drawColor( mColor2, QRect( 0, verticalSplit, width(), height() - verticalSplit ), painter );
   }
@@ -1598,7 +1598,7 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 
 QSize QgsColorPreviewWidget::sizeHint() const
 {
-  return QSize( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) * 0.75 );
+  return QSize( Qgis::UI_SCALE_FACTOR *  fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) * 0.75 );
 }
 
 void QgsColorPreviewWidget::setColor2( const QColor &color )
@@ -1634,7 +1634,7 @@ void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent *e )
   if ( mColor2.isValid() )
   {
     //two color sections, check if dragged color was the second color
-    int verticalSplit = qRound( height() / 2.0 );
+    int verticalSplit = std::round( height() / 2.0 );
     if ( mDragStartPosition.y() >= verticalSplit )
     {
       clickedColor = mColor2;
@@ -1669,7 +1669,7 @@ void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )
   if ( mColor2.isValid() )
   {
     //two color sections, check if dragged color was the second color
-    int verticalSplit = qRound( height() / 2.0 );
+    int verticalSplit = std::round( height() / 2.0 );
     if ( mDragStartPosition.y() >= verticalSplit )
     {
       dragColor = mColor2;

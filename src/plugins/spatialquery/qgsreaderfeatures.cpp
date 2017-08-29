@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgsvectordataprovider.h>
+#include "qgsvectordataprovider.h"
 
 #include "qgsreaderfeatures.h"
 

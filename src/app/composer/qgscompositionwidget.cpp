@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgis.h>
+#include "qgis.h"
 #include "qgscompositionwidget.h"
 #include "qgscomposition.h"
 #include "qgscomposermap.h"

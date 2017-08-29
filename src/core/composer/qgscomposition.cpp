@@ -565,14 +565,14 @@ QPointF QgsComposition::positionOnPage( QPointF position ) const
   else
   {
     //y coordinate is less then the end of the last page
-    y = fmod( position.y(), ( paperHeight() + spaceBetweenPages() ) );
+    y = std::fmod( position.y(), ( paperHeight() + spaceBetweenPages() ) );
   }
   return QPointF( position.x(), y );
 }
 
 int QgsComposition::pageNumberForPoint( QPointF position ) const
 {
-  int pageNumber = qFloor( position.y() / ( paperHeight() + spaceBetweenPages() ) ) + 1;
+  int pageNumber = std::floor( position.y() / ( paperHeight() + spaceBetweenPages() ) ) + 1;
   pageNumber = pageNumber < 1 ? 1 : pageNumber;
   pageNumber = pageNumber > mPages.size() ? mPages.size() : pageNumber;
   return pageNumber;
@@ -1117,8 +1117,8 @@ QPointF QgsComposition::minPointFromXml( const QDomElement &elem ) const
     {
       continue;
     }
-    minX = qMin( minX, x );
-    minY = qMin( minY, y );
+    minX = std::min( minX, x );
+    minY = std::min( minY, y );
   }
   if ( minX < std::numeric_limits<double>::max() )
   {
@@ -1170,7 +1170,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlacePt )
       {
-        newLabel->setItemPosition( newLabel->pos().x(), fmod( newLabel->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLabel->setItemPosition( newLabel->pos().x(), std::fmod( newLabel->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newLabel->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1203,7 +1203,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newMap->setItemPosition( newMap->pos().x(), fmod( newMap->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newMap->setItemPosition( newMap->pos().x(), std::fmod( newMap->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newMap->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1247,7 +1247,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newArrow->setItemPosition( newArrow->pos().x(), fmod( newArrow->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newArrow->setItemPosition( newArrow->pos().x(), std::fmod( newArrow->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newArrow->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1275,7 +1275,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newScaleBar->setItemPosition( newScaleBar->pos().x(), fmod( newScaleBar->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newScaleBar->setItemPosition( newScaleBar->pos().x(), std::fmod( newScaleBar->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newScaleBar->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1305,7 +1305,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newShape->setItemPosition( newShape->pos().x(), fmod( newShape->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newShape->setItemPosition( newShape->pos().x(), std::fmod( newShape->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newShape->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1335,7 +1335,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPolygon->setItemPosition( newPolygon->pos().x(), fmod( newPolygon->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPolygon->setItemPosition( newPolygon->pos().x(), std::fmod( newPolygon->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newPolygon->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1366,7 +1366,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPolyline->setItemPosition( newPolyline->pos().x(), fmod( newPolyline->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPolyline->setItemPosition( newPolyline->pos().x(), std::fmod( newPolyline->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newPolyline->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1396,7 +1396,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPicture->setItemPosition( newPicture->pos().x(), fmod( newPicture->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPicture->setItemPosition( newPicture->pos().x(), std::fmod( newPicture->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newPicture->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -1424,7 +1424,7 @@ void QgsComposition::addItemsFromXml( const QDomElement &elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newLegend->setItemPosition( newLegend->pos().x(), fmod( newLegend->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLegend->setItemPosition( newLegend->pos().x(), std::fmod( newLegend->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         newLegend->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
@@ -2047,12 +2047,12 @@ QPointF QgsComposition::snapPointToGrid( QPointF scenePoint ) const
   double viewScaleFactor = graphicsView()->transform().m11();
   double alignThreshold = mSnapTolerance / viewScaleFactor;
 
-  if ( fabs( xSnapped - scenePoint.x() ) > alignThreshold )
+  if ( std::fabs( xSnapped - scenePoint.x() ) > alignThreshold )
   {
     //snap distance is outside of tolerance
     xSnapped = scenePoint.x();
   }
-  if ( fabs( ySnapped - scenePoint.y() ) > alignThreshold )
+  if ( std::fabs( ySnapped - scenePoint.y() ) > alignThreshold )
   {
     //snap distance is outside of tolerance
     ySnapped = scenePoint.y();
@@ -3011,8 +3011,8 @@ double *QgsComposition::computeGeoTransform( const QgsComposerMap *map, const QR
   double mapXCenter = mapExtent.center().x();
   double mapYCenter = mapExtent.center().y();
   double alpha = - map->mapRotation() / 180 * M_PI;
-  double sinAlpha = sin( alpha );
-  double cosAlpha = cos( alpha );
+  double sinAlpha = std::sin( alpha );
+  double cosAlpha = std::cos( alpha );
 
   // get the extent (in map units) for the exported region
   QPointF mapItemPos = map->pos();
@@ -3151,12 +3151,12 @@ void QgsComposition::computeWorldFileParameters( const QRectF &exportRegion, dou
 
   // rotation matrix
   double r[6];
-  r[0] = cos( alpha );
-  r[1] = -sin( alpha );
-  r[2] = xCenter * ( 1 - cos( alpha ) ) + yCenter * sin( alpha );
-  r[3] = sin( alpha );
-  r[4] = cos( alpha );
-  r[5] = - xCenter * sin( alpha ) + yCenter * ( 1 - cos( alpha ) );
+  r[0] = std::cos( alpha );
+  r[1] = -std::sin( alpha );
+  r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
+  r[3] = std::sin( alpha );
+  r[4] = std::cos( alpha );
+  r[5] = - xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
   a = r[0] * s[0] + r[1] * s[3];
@@ -3238,13 +3238,13 @@ void QgsComposition::refreshPageSize( const QgsExpressionContext *context )
       double heightD, widthD;
       if ( orientation == QgsComposition::Portrait )
       {
-        heightD = qMax( pageHeight, pageWidth );
-        widthD = qMin( pageHeight, pageWidth );
+        heightD = std::max( pageHeight, pageWidth );
+        widthD = std::min( pageHeight, pageWidth );
       }
       else
       {
-        heightD = qMin( pageHeight, pageWidth );
-        widthD = qMax( pageHeight, pageWidth );
+        heightD = std::min( pageHeight, pageWidth );
+        widthD = std::max( pageHeight, pageWidth );
       }
       pageWidth = widthD;
       pageHeight = heightD;

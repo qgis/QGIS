@@ -36,7 +36,7 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
     END_DISTANCE = 'END_DISTANCE'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

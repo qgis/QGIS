@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Layer labeling settings</string>
+   <string>Layer Labeling Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
    <property name="leftMargin">
@@ -5686,7 +5686,7 @@ font-style: italic;</string>
                            <item>
                             <widget class="QgsDoubleSpinBox" name="mZIndexSpinBox">
                              <property name="toolTip">
-                              <string>Controls how labels are drawn on top of each other. Labels with a higher z-index are drawn above labels with a lower z-index.</string>
+                              <string>Controls how labels are drawn on top of each other. Labels with a higher z-index are drawn above labels and diagrams with a lower z-index.</string>
                              </property>
                              <property name="minimum">
                               <double>-9999999.000000000000000</double>

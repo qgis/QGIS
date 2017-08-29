@@ -45,10 +45,10 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
     DISTANCE = 'DISTANCE'
     SEGMENTS = 'SEGMENTS'
     JOIN_STYLE = 'JOIN_STYLE'
-    MITRE_LIMIT = 'MITRE_LIMIT'
+    MITER_LIMIT = 'MITER_LIMIT'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -68,14 +68,14 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
                                                        type=QgsProcessingParameterNumber.Integer,
                                                        minValue=1, defaultValue=8))
         self.join_styles = [self.tr('Round'),
-                            'Mitre',
+                            'Miter',
                             'Bevel']
         self.addParameter(QgsProcessingParameterEnum(
             self.JOIN_STYLE,
             self.tr('Join style'),
             options=self.join_styles))
-        self.addParameter(QgsProcessingParameterNumber(self.MITRE_LIMIT,
-                                                       self.tr('Mitre limit'), type=QgsProcessingParameterNumber.Double,
+        self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
+                                                       self.tr('Miter limit'), type=QgsProcessingParameterNumber.Double,
                                                        minValue=1, defaultValue=2))
 
     def name(self):
@@ -94,7 +94,7 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
         self.distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         self.segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
         self.join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
-        self.miter_limit = self.parameterAsDouble(parameters, self.MITRE_LIMIT, context)
+        self.miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
         return True
 
     def processFeature(self, feature, feedback):

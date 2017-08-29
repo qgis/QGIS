@@ -6,12 +6,15 @@
     <type>dataset</type>
     <title>roads</title>
     <abstract>my roads</abstract>
+    <keywords vocabulary="gmd:topicCategory">
+        <keyword>natural</keyword>
+    </keywords>
     <keywords vocabulary="GEMET">
         <keyword>kw1</keyword>
         <keyword>kw2</keyword>
     </keywords>
     <fees>None</fees>
-    <constraints type="access">None<constraints>
+    <constraints type="access">None</constraints>
     <rights>Copyright foo 2017</rights>
     <encoding>utf-8</encoding>
     <crs>EPSG:4326</crs>

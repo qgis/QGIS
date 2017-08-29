@@ -38,7 +38,7 @@ from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QApplication)
 
 from qgis.core import QgsApplication, QgsSettings
-from qgis.utils import iface
+from qgis.utils import iface, OverrideCursor
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
@@ -68,8 +68,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
 
-        iconSize = int(settings.value("IconSize", 24))
-        self.toolBar.setIconSize(QSize(iconSize, iconSize))
+        self.toolBar.setIconSize(iface.iconSize())
 
         self.actionOpenScript.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
@@ -207,15 +206,14 @@ class ScriptEditorDialog(BASE, WIDGET):
         if self.filename == '':
             return
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        with codecs.open(self.filename, 'r', encoding='utf-8') as f:
-            txt = f.read()
+        with OverrideCursor(Qt.WaitCursor):
+            with codecs.open(self.filename, 'r', encoding='utf-8') as f:
+                txt = f.read()
 
-        self.editor.setText(txt)
-        self.hasChanged = False
-        self.editor.setModified(False)
-        self.editor.recolor()
-        QApplication.restoreOverrideCursor()
+            self.editor.setText(txt)
+            self.hasChanged = False
+            self.editor.setModified(False)
+            self.editor.recolor()
 
     def save(self):
         self.saveScript(False)
@@ -281,7 +279,7 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         # have to manually delete the dialog - otherwise it's owned by the
         # iface mainWindow and never deleted
-        del dlg
+        dlg.deleteLater()
 
         if canvas.mapTool() != prevMapTool:
             try:

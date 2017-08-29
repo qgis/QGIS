@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>DXF export</string>
+   <string>DXF Export</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="2">
@@ -72,11 +72,11 @@
     </widget>
    </item>
    <item row="2" column="1" colspan="2">
-    <widget class="QgsScaleWidget" name="mScaleWidget">
+    <widget class="QgsScaleWidget" name="mScaleWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
-     <property name="showCurrentScaleButton">
+     <property name="showCurrentScaleButton" stdset="0">
       <bool>true</bool>
      </property>
     </widget>
@@ -131,7 +131,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -167,7 +167,7 @@
     </widget>
    </item>
    <item row="5" column="1" colspan="2">
-    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
@@ -177,15 +177,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeView</class>

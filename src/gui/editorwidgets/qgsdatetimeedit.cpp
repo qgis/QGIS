@@ -45,8 +45,8 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   setStyleSheet( QStringLiteral( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
 
   QSize msz = minimumSizeHint();
-  setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
-                  qMax( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
+  setMinimumSize( std::max( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
+                  std::max( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
 
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 

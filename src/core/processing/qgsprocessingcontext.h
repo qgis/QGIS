@@ -134,13 +134,17 @@ class CORE_EXPORT QgsProcessingContext
       /**
        * Constructor for LayerDetails.
        */
-      LayerDetails( const QString &name, QgsProject *project )
+      LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString() )
         : name( name )
+        , outputName( outputName )
         , project( project )
       {}
 
       //! Friendly name for layer, to use when loading layer into project.
       QString name;
+
+      //! Associated output name from algorithm which generated the layer.
+      QString outputName;
 
       //! Destination project
       QgsProject *project;

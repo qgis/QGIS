@@ -35,7 +35,7 @@ bool QgsCurve::isClosed() const
   bool closed = qgsDoubleNear( start.x(), end.x(), 1E-8 ) &&
                 qgsDoubleNear( start.y(), end.y(), 1E-8 );
   if ( is3D() && closed )
-    closed &= qgsDoubleNear( start.z(), end.z(), 1E-8 ) || ( qIsNaN( start.z() ) && qIsNaN( end.z() ) );
+    closed &= qgsDoubleNear( start.z(), end.z(), 1E-8 ) || ( std::isnan( start.z() ) && std::isnan( end.z() ) );
   return closed;
 }
 

@@ -201,8 +201,6 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &currentIdx );
 
-    void helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#identify" ) ); }
-
     void on_cmbIdentifyMode_currentIndexChanged( int index );
 
     void on_cmbViewMode_currentIndexChanged( int index );
@@ -261,6 +259,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsDockWidget *mDock = nullptr;
 
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
+
+    void showHelp();
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

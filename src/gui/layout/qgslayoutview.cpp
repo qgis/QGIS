@@ -28,6 +28,7 @@
 #include "qgsapplication.h"
 #include <memory>
 #include <QDesktopWidget>
+#include <QMenu>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -39,9 +40,16 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
 
+  // set the "scene" background on the view using stylesheets
+  // we don't want to use QGraphicsScene::setBackgroundBrush because we want to keep
+  // a transparent background for exports, and it's only a cosmetic thing for the view only
+  // ALSO - only set it on the viewport - we don't want scrollbars/etc affected by this
+  viewport()->setStyleSheet( QStringLiteral( "background-color:#d7d7d7;" ) );
+
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
+  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -49,9 +57,36 @@ QgsLayout *QgsLayoutView::currentLayout()
   return qobject_cast<QgsLayout *>( scene() );
 }
 
+const QgsLayout *QgsLayoutView::currentLayout() const
+{
+  return qobject_cast<const QgsLayout *>( scene() );
+}
+
 void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 {
   setScene( layout );
+
+  connect( layout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutView::viewChanged );
+  viewChanged();
+
+  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
+  mSnapMarker->hide();
+  layout->addItem( mSnapMarker.get() );
+
+  if ( mHorizontalRuler )
+  {
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+  }
+  if ( mVerticalRuler )
+  {
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+  }
 
   //emit layoutSet, so that designer dialogs can update for the new layout
   emit layoutSet( layout );
@@ -71,6 +106,8 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
   {
     mTool->deactivate();
   }
+
+  mSnapMarker->setVisible( false );
 
   // activate new tool before setting it - gives tools a chance
   // to respond to whatever the current tool is
@@ -97,40 +134,89 @@ void QgsLayoutView::scaleSafe( double scale )
   scale = qBound( MIN_VIEW_SCALE, scale, MAX_VIEW_SCALE );
   setTransform( QTransform::fromScale( scale, scale ) );
   emit zoomLevelChanged();
-  updateRulers();
+  viewChanged();
 }
 
 void QgsLayoutView::setZoomLevel( double level )
 {
-  double dpi = QgsApplication::desktop()->logicalDpiX();
-  //monitor dpi is not always correct - so make sure the value is sane
-  if ( ( dpi < 60 ) || ( dpi > 1200 ) )
-    dpi = 72;
+  if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
+  {
+    setTransform( QTransform::fromScale( level, level ) );
+  }
+  else
+  {
+    double dpi = QgsApplication::desktop()->logicalDpiX();
+    //monitor dpi is not always correct - so make sure the value is sane
+    if ( ( dpi < 60 ) || ( dpi > 1200 ) )
+      dpi = 72;
 
-  //desired pixel width for 1mm on screen
-  double scale = qBound( MIN_VIEW_SCALE, level * dpi / 25.4, MAX_VIEW_SCALE );
-  setTransform( QTransform::fromScale( scale, scale ) );
+    //desired pixel width for 1mm on screen
+    level = qBound( MIN_VIEW_SCALE, level, MAX_VIEW_SCALE );
+    double mmLevel = currentLayout()->convertFromLayoutUnits( level, QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
+    setTransform( QTransform::fromScale( mmLevel, mmLevel ) );
+  }
   emit zoomLevelChanged();
-  updateRulers();
+  viewChanged();
 }
 
 void QgsLayoutView::setHorizontalRuler( QgsLayoutRuler *ruler )
 {
   mHorizontalRuler = ruler;
   ruler->setLayoutView( this );
-  updateRulers();
+  if ( QgsLayout *layout = currentLayout() )
+  {
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [ = ] { mHorizontalRuler->update(); } );
+  }
+  viewChanged();
 }
 
 void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
 {
   mVerticalRuler = ruler;
   ruler->setLayoutView( this );
-  updateRulers();
+  if ( QgsLayout *layout = currentLayout() )
+  {
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [ = ] { mVerticalRuler->update(); } );
+  }
+  viewChanged();
+}
+
+void QgsLayoutView::setMenuProvider( QgsLayoutViewMenuProvider *provider )
+{
+  mMenuProvider.reset( provider );
+}
+
+QgsLayoutViewMenuProvider *QgsLayoutView::menuProvider() const
+{
+  return mMenuProvider.get();
+}
+
+QList<QgsLayoutItemPage *> QgsLayoutView::visiblePages() const
+{
+  //get current visible part of scene
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
+  return currentLayout()->pageCollection()->visiblePages( visibleRect );
+}
+
+QList<int> QgsLayoutView::visiblePageNumbers() const
+{
+  //get current visible part of scene
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
+  return currentLayout()->pageCollection()->visiblePageNumbers( visibleRect );
 }
 
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
+  viewChanged();
   emit zoomLevelChanged();
 }
 
@@ -153,7 +239,7 @@ void QgsLayoutView::zoomWidth()
 
   fitInView( targetRect, Qt::KeepAspectRatio );
   emit zoomLevelChanged();
-  updateRulers();
+  viewChanged();
 }
 
 void QgsLayoutView::zoomIn()
@@ -178,9 +264,11 @@ void QgsLayoutView::emitZoomLevelChanged()
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
+  mSnapMarker->setVisible( false );
+
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
     mTool->layoutPressEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -192,6 +280,15 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
       event->accept();
+    }
+    else if ( event->button() == Qt::RightButton && mMenuProvider )
+    {
+      QMenu *menu = mMenuProvider->createContextMenu( this, currentLayout(), mapToScene( event->pos() ) );
+      if ( menu )
+      {
+        menu->exec( event->globalPos() );
+        delete menu;
+      }
     }
     else
     {
@@ -208,7 +305,7 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
     mTool->layoutReleaseEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -221,15 +318,28 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
 {
   mMouseCurrentXY = event->pos();
 
-  //update cursor position in status bar
-  emit cursorPosChanged( mapToScene( mMouseCurrentXY ) );
-
+  QPointF cursorPos = mapToScene( mMouseCurrentXY );
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
+    if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
+    {
+      //draw snapping point indicator
+      if ( me->isSnapped() )
+      {
+        cursorPos = me->snappedPoint();
+        mSnapMarker->setPos( me->snappedPoint() );
+        mSnapMarker->setVisible( true );
+      }
+      else
+        mSnapMarker->setVisible( false );
+    }
     mTool->layoutMoveEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
+
+  //update cursor position in status bar
+  emit cursorPosChanged( cursorPos );
 
   if ( !mTool || !event->isAccepted() )
     QGraphicsView::mouseMoveEvent( event );
@@ -239,7 +349,7 @@ void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 {
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event ) );
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
     mTool->layoutDoubleClickEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -303,9 +413,16 @@ void QgsLayoutView::resizeEvent( QResizeEvent *event )
 {
   QGraphicsView::resizeEvent( event );
   emit zoomLevelChanged();
+  viewChanged();
 }
 
-void QgsLayoutView::updateRulers()
+void QgsLayoutView::scrollContentsBy( int dx, int dy )
+{
+  QGraphicsView::scrollContentsBy( dx, dy );
+  viewChanged();
+}
+
+void QgsLayoutView::viewChanged()
 {
   if ( mHorizontalRuler )
   {
@@ -314,6 +431,21 @@ void QgsLayoutView::updateRulers()
   if ( mVerticalRuler )
   {
     mVerticalRuler->setSceneTransform( viewportTransform() );
+  }
+
+  // determine page at center of view
+  QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
+  QRectF visibleRect = mapToScene( viewportRect ).boundingRect();
+  QPointF centerVisible = visibleRect.center();
+
+  if ( currentLayout() && currentLayout()->pageCollection() )
+  {
+    int newPage = currentLayout()->pageCollection()->pageNumberForPoint( centerVisible );
+    if ( newPage != mCurrentPage )
+    {
+      mCurrentPage = newPage;
+      emit pageChanged( mCurrentPage );
+    }
   }
 }
 
@@ -324,7 +456,7 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( event->angleDelta().y() );
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
 
   if ( event->modifiers() & Qt::ControlModifier )
   {
@@ -359,3 +491,35 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
     scaleSafe( 1 / zoomFactor );
   }
 }
+
+
+//
+// QgsLayoutViewSnapMarker
+//
+
+///@cond PRIVATE
+QgsLayoutViewSnapMarker::QgsLayoutViewSnapMarker()
+  : QGraphicsRectItem( QRectF( 0, 0, 0, 0 ) )
+{
+  QFont f;
+  QFontMetrics fm( f );
+  mSize = fm.width( "X" );
+  setPen( QPen( Qt::transparent, mSize ) );
+
+  setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );
+  setZValue( QgsLayout::ZSnapIndicator );
+}
+
+void QgsLayoutViewSnapMarker::paint( QPainter *p, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  QPen pen( QColor( 255, 0, 0 ) );
+  pen.setWidth( 0 );
+  p->setPen( pen );
+  p->setBrush( Qt::NoBrush );
+
+  double halfSize = mSize / 2.0;
+  p->drawLine( QLineF( -halfSize, -halfSize, halfSize, halfSize ) );
+  p->drawLine( QLineF( -halfSize, halfSize, halfSize, -halfSize ) );
+}
+
+///@endcond

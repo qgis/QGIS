@@ -19,7 +19,7 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgswfscapabilities.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
@@ -66,7 +66,6 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QgsWfsCapabilities::Capabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
@@ -78,17 +77,19 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     \returns the authority id of the crs or an empty string in case of error*/
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
+    void showHelp();
+
   public slots:
 
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
+    void addButtonClicked() override;
 
   private slots:
     void addEntryToServerList();
     void modifyEntryOfServerList();
     void deleteEntryOfServerList();
     void connectToServer();
-    void addLayer();
     void buildQuery( const QModelIndex &index );
     void changeCRS();
     void changeCRSFilter();
@@ -103,8 +104,6 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     void updateSql();
 
     void populateConnectionList();
-
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
 };
 

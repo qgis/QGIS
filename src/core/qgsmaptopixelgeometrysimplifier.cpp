@@ -47,12 +47,12 @@ float QgsMapToPixelSimplifier::calculateLengthSquared2D( double x1, double y1, d
 
 bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY )
 {
-  int grid_x1 = qRound( ( x1 - gridOriginX ) * gridInverseSizeXY );
-  int grid_x2 = qRound( ( x2 - gridOriginX ) * gridInverseSizeXY );
+  int grid_x1 = std::round( ( x1 - gridOriginX ) * gridInverseSizeXY );
+  int grid_x2 = std::round( ( x2 - gridOriginX ) * gridInverseSizeXY );
   if ( grid_x1 != grid_x2 ) return false;
 
-  int grid_y1 = qRound( ( y1 - gridOriginY ) * gridInverseSizeXY );
-  int grid_y2 = qRound( ( y2 - gridOriginY ) * gridInverseSizeXY );
+  int grid_y1 = std::round( ( y1 - gridOriginY ) * gridInverseSizeXY );
+  int grid_y2 = std::round( ( y2 - gridOriginY ) * gridInverseSizeXY );
   if ( grid_y1 != grid_y2 ) return false;
 
   return true;
@@ -107,7 +107,7 @@ static QgsGeometry generalizeWkbGeometryByBoundingBox(
 template<class T>
 static T *createEmptySameTypeGeom( const T &geom )
 {
-  T *output( dynamic_cast<T *>( geom.clone() ) );
+  T *output( qgsgeometry_cast<T *>( geom.clone() ) );
   output->clear();
   return output;
 }
@@ -269,11 +269,11 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   {
     const QgsPolygonV2 &srcPolygon = dynamic_cast<const QgsPolygonV2 &>( geometry );
     std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
-    polygon->setExteriorRing( dynamic_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, srcPolygon.exteriorRing()->wkbType(), *srcPolygon.exteriorRing(), envelope, map2pixelTol, true ).geometry()->clone() ) );
+    polygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, srcPolygon.exteriorRing()->wkbType(), *srcPolygon.exteriorRing(), envelope, map2pixelTol, true ).geometry()->clone() ) );
     for ( int i = 0; i < srcPolygon.numInteriorRings(); ++i )
     {
       const QgsCurve *sub = srcPolygon.interiorRing( i );
-      polygon->addInteriorRing( dynamic_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, sub->wkbType(), *sub, envelope, map2pixelTol, true ).geometry()->clone() ) );
+      polygon->addInteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, sub->wkbType(), *sub, envelope, map2pixelTol, true ).geometry()->clone() ) );
     }
     return QgsGeometry( polygon.release() );
   }
@@ -329,7 +329,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplify( const QgsGeometry &geometry ) con
   }
 
   const QgsRectangle envelope = geometry.boundingBox();
-  if ( qMax( envelope.width(), envelope.height() ) / numPoints > mTolerance * 2.0 )
+  if ( std::max( envelope.width(), envelope.height() ) / numPoints > mTolerance * 2.0 )
   {
     //points are in average too far apart to lead to any significant simplification
     return geometry;

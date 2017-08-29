@@ -69,7 +69,7 @@ class RandomPointsPolygons(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()
@@ -125,7 +125,7 @@ class RandomPointsPolygons(QgisAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(source.sourceCrs())
-        da.setEllipsoid(QgsProject.instance().ellipsoid())
+        da.setEllipsoid(context.project().ellipsoid())
 
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(source.getFeatures()):

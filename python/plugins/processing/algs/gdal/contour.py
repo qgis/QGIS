@@ -53,6 +53,8 @@ class contour(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.INTERVAL,
@@ -79,7 +81,7 @@ class contour(GdalAlgorithm):
     def group(self):
         return self.tr('Raster extraction')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         output = self.getOutputValue(self.OUTPUT_VECTOR)
         interval = str(self.getParameterValue(self.INTERVAL))
         fieldName = str(self.getParameterValue(self.FIELD_NAME))

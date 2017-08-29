@@ -15,9 +15,9 @@
  ***************************************************************************/
 
 #include "NormVecDecorator.h"
+#include "qgsfeedback.h"
 #include "qgslogger.h"
 #include <QApplication>
-#include <QProgressDialog>
 
 NormVecDecorator::~NormVecDecorator()
 {
@@ -350,7 +350,6 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint *p1, int *ptn1,
     }
     else
     {
-      QgsDebugMsg( "warning, getTriangle returned false" );
       return false;
     }
 
@@ -512,29 +511,18 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 }
 
 //weighted method of little
-bool NormVecDecorator::estimateFirstDerivatives( QProgressDialog *d )
+bool NormVecDecorator::estimateFirstDerivatives( QgsFeedback *feedback )
 {
-  if ( d )
+  int numberPoints = getNumberOfPoints();
+  for ( int i = 0; i < numberPoints; i++ )
   {
-    d->setMinimum( 0 );
-    d->setMaximum( getNumberOfPoints() );
-    d->setCancelButton( nullptr ); //we cannot cancel derivative estimation
-    d->show();
-  }
-
-  for ( int i = 0; i < getNumberOfPoints(); i++ )
-  {
-    if ( d )
+    if ( feedback )
     {
-      d->setValue( i );
+      feedback->setProgress( 100.0 * static_cast< double >( i ) / numberPoints );
     }
     estimateFirstDerivative( i );
   }
 
-  if ( d )
-  {
-    d->setValue( getNumberOfPoints() );
-  }
   return true;
 }
 

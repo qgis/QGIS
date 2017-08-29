@@ -29,5 +29,16 @@ export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 
 export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
 
+# This works around an issue where travis would timeout on master because
+# when make is run inside ctest no output is generated. At the current time
+# nobody know why, but at least this workaround gets travis results for master
+# back. Better approaches VERY welcome.
+if [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
+then
+    pushd build
+    $CTEST_BUILD_COMMAND
+    popd
+fi
+
 python ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py \
   xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S ${DIR}/../travis.ctest --output-on-failure

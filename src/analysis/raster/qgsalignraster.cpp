@@ -20,7 +20,6 @@
 #include <cpl_conv.h>
 #include <limits>
 
-#include <qmath.h>
 #include <QPair>
 #include <QString>
 
@@ -30,18 +29,18 @@
 
 static double ceil_with_tolerance( double value )
 {
-  if ( qAbs( value - qRound( value ) ) < 1e-6 )
-    return qRound( value );
+  if ( std::fabs( value - std::round( value ) ) < 1e-6 )
+    return std::round( value );
   else
-    return qCeil( value );
+    return std::ceil( value );
 }
 
 static double floor_with_tolerance( double value )
 {
-  if ( qAbs( value - qRound( value ) ) < 1e-6 )
-    return qRound( value );
+  if ( std::fabs( value - std::round( value ) ) < 1e-6 )
+    return std::round( value );
   else
-    return qFloor( value );
+    return std::floor( value );
 }
 
 static double fmod_with_tolerance( double num, double denom )
@@ -390,7 +389,7 @@ void QgsAlignRaster::dump() const
 int QgsAlignRaster::suggestedReferenceLayer() const
 {
   int bestIndex = -1;
-  double bestCellArea = qInf();
+  double bestCellArea = INFINITY;
   QSizeF cs;
   int i = 0;
 
@@ -538,7 +537,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
   if ( eErr != CE_None )
     return false;
 
-  QSizeF cs( qAbs( adfDstGeoTransform[1] ), qAbs( adfDstGeoTransform[5] ) );
+  QSizeF cs( std::fabs( adfDstGeoTransform[1] ), std::fabs( adfDstGeoTransform[5] ) );
 
   if ( rect )
     *rect = QgsRectangle( extents[0], extents[1], extents[2], extents[3] );
@@ -582,7 +581,7 @@ QgsAlignRaster::RasterInfo::~RasterInfo()
 
 QSizeF QgsAlignRaster::RasterInfo::cellSize() const
 {
-  return QSizeF( qAbs( mGeoTransform[1] ), qAbs( mGeoTransform[5] ) );
+  return QSizeF( std::fabs( mGeoTransform[1] ), std::fabs( mGeoTransform[5] ) );
 }
 
 QPointF QgsAlignRaster::RasterInfo::gridOffset() const

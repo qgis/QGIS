@@ -23,6 +23,7 @@
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgswkbptr.h"
+#include "qgslogger.h"
 #include <QPainter>
 #include <QPainterPath>
 
@@ -353,6 +354,7 @@ QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationTol
   QgsPointSequence points;
   int nPoints = numPoints();
 
+  QgsDebugMsg( QString( "curveToLine input: %1" ) .arg( asWkt( 2 ) ) );
   for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
   {
     QgsGeometryUtils::segmentizeArc( pointN( i ), pointN( i + 1 ), pointN( i + 2 ), points, tolerance, toleranceType, is3D(), isMeasure() );
@@ -364,12 +366,12 @@ QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationTol
 
 int QgsCircularString::numPoints() const
 {
-  return qMin( mX.size(), mY.size() );
+  return std::min( mX.size(), mY.size() );
 }
 
 QgsPoint QgsCircularString::pointN( int i ) const
 {
-  if ( qMin( mX.size(), mY.size() ) <= i )
+  if ( std::min( mX.size(), mY.size() ) <= i )
   {
     return QgsPoint();
   }
@@ -760,7 +762,7 @@ void QgsCircularString::sumUpArea( double &sum ) const
     double radius, centerX, centerY;
     QgsGeometryUtils::circleCenterRadius( p1, p2, p3, radius, centerX, centerY );
 
-    double d = sqrt( QgsGeometryUtils::sqrDistance2D( QgsPoint( centerX, centerY ), QgsPoint( midPointX, midPointY ) ) );
+    double d = std::sqrt( QgsGeometryUtils::sqrDistance2D( QgsPoint( centerX, centerY ), QgsPoint( midPointX, midPointY ) ) );
     double r2 = radius * radius;
 
     if ( d > radius )
@@ -772,7 +774,7 @@ void QgsCircularString::sumUpArea( double &sum ) const
     bool circlePointLeftOfLine = QgsGeometryUtils::leftOfLine( p2.x(), p2.y(), p1.x(), p1.y(), p3.x(), p3.y() ) < 0;
     bool centerPointLeftOfLine = QgsGeometryUtils::leftOfLine( centerX, centerY, p1.x(), p1.y(), p3.x(), p3.y() ) < 0;
 
-    double cov = 0.5 - d * sqrt( r2 - d * d ) / ( M_PI * r2 ) - 1 / M_PI * asin( d / radius );
+    double cov = 0.5 - d * std::sqrt( r2 - d * d ) / ( M_PI * r2 ) - 1 / M_PI * std::asin( d / radius );
     double circleChordArea = 0;
     if ( circlePointLeftOfLine == centerPointLeftOfLine )
     {

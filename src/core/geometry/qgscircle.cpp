@@ -52,24 +52,24 @@ static bool isPerpendicular( const QgsPoint &pt1, const QgsPoint &pt2, const Qgs
   double yDelta_b = pt3.y() - pt2.y();
   double xDelta_b = pt3.x() - pt2.x();
 
-  if ( ( qAbs( xDelta_a ) <= epsilon ) && ( qAbs( yDelta_b ) <= epsilon ) )
+  if ( ( std::fabs( xDelta_a ) <= epsilon ) && ( std::fabs( yDelta_b ) <= epsilon ) )
   {
     return false;
   }
 
-  if ( qAbs( yDelta_a ) <= epsilon )
+  if ( std::fabs( yDelta_a ) <= epsilon )
   {
     return true;
   }
-  else if ( qAbs( yDelta_b ) <= epsilon )
+  else if ( std::fabs( yDelta_b ) <= epsilon )
   {
     return true;
   }
-  else if ( qAbs( xDelta_a ) <= epsilon )
+  else if ( std::fabs( xDelta_a ) <= epsilon )
   {
     return true;
   }
-  else if ( qAbs( xDelta_b ) <= epsilon )
+  else if ( std::fabs( xDelta_b ) <= epsilon )
   {
     return true;
   }
@@ -138,7 +138,7 @@ QgsCircle QgsCircle::from3Points( const QgsPoint &pt1, const QgsPoint &pt2, cons
   double aSlope = yDelta_a / xDelta_a;
   double bSlope = yDelta_b / xDelta_b;
 
-  if ( ( qAbs( xDelta_a ) <= epsilon ) && ( qAbs( yDelta_b ) <= epsilon ) )
+  if ( ( std::fabs( xDelta_a ) <= epsilon ) && ( std::fabs( yDelta_b ) <= epsilon ) )
   {
     center.setX( 0.5 * ( p2.x() + p3.x() ) );
     center.setY( 0.5 * ( p1.y() + p2.y() ) );
@@ -147,7 +147,7 @@ QgsCircle QgsCircle::from3Points( const QgsPoint &pt1, const QgsPoint &pt2, cons
     return QgsCircle( center, radius );
   }
 
-  if ( qAbs( aSlope - bSlope ) <= epsilon )
+  if ( std::fabs( aSlope - bSlope ) <= epsilon )
   {
     return QgsCircle();
   }
@@ -191,8 +191,8 @@ QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2
 
 QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
-  double delta_x = qAbs( pt1.x() - pt2.x() );
-  double delta_y = qAbs( pt1.x() - pt2.y() );
+  double delta_x = std::fabs( pt1.x() - pt2.x() );
+  double delta_y = std::fabs( pt1.x() - pt2.y() );
   if ( !qgsDoubleNear( delta_x, delta_y ) )
   {
     return QgsCircle();

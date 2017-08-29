@@ -30,6 +30,7 @@ class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
 class QgsLayoutViewRubberBand;
+class QgsLayoutItemBaseWidget;
 
 /**
  * \ingroup gui
@@ -45,14 +46,22 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
 {
   public:
 
+    //! Flags for controlling how a items behave in the GUI
+    enum Flag
+    {
+      FlagNoCreationTools = 1 << 1,  //!< Do not show item creation tools for the item type
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class \a type.
      *
      * An optional \a groupId can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
      */
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString() )
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString(), Flags flags = 0 )
       : mType( type )
       , mGroupId( groupId )
+      , mFlags( flags )
     {}
 
     virtual ~QgsLayoutItemAbstractGuiMetadata() = default;
@@ -61,6 +70,11 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      * Returns the unique item type code for the layout item class.
      */
     int type() const { return mType; }
+
+    /**
+     * Returns item flags.
+     */
+    Flags flags() const { return mFlags; }
 
     /**
      * Returns the item group ID, if set.
@@ -73,9 +87,9 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
 
     /**
-     * Creates a configuration widget for layout items of this type. Can return nullptr if no configuration GUI is required.
+     * Creates a configuration widget for an \a item of this type. Can return nullptr if no configuration GUI is required.
      */
-    virtual QWidget *createItemWidget() SIP_FACTORY { return nullptr; }
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_FACTORY { Q_UNUSED( item ); return nullptr; }
 
     /**
      * Creates a rubber band for use when creating layout items of this type. Can return nullptr if no rubber band
@@ -87,11 +101,12 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
 
     int mType = -1;
     QString mGroupId;
+    Flags mFlags;
 
 };
 
 //! Layout item configuration widget creation function
-typedef std::function<QWidget *()> QgsLayoutItemWidgetFunc SIP_SKIP;
+typedef std::function<QgsLayoutItemBaseWidget *( QgsLayoutItem * )> QgsLayoutItemWidgetFunc SIP_SKIP;
 
 //! Layout rubber band creation function
 typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutItemRubberBandFunc SIP_SKIP;
@@ -117,8 +132,8 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      */
     QgsLayoutItemGuiMetadata( int type, const QIcon &creationIcon,
                               QgsLayoutItemWidgetFunc pfWidget = nullptr,
-                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString() )
-      : QgsLayoutItemAbstractGuiMetadata( type, groupId )
+                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString(), QgsLayoutItemAbstractGuiMetadata::Flags flags = 0 )
+      : QgsLayoutItemAbstractGuiMetadata( type, groupId, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )
       , mRubberBandFunc( pfRubberBand )
@@ -149,7 +164,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
     void setRubberBandCreationFunction( QgsLayoutItemRubberBandFunc function ) { mRubberBandFunc = function; }
 
     QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
-    QWidget *createItemWidget() override { return mWidgetFunc ? mWidgetFunc() : nullptr; }
+    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
 
   protected:
@@ -275,9 +290,9 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     const QgsLayoutItemGuiGroup &itemGroup( const QString &id );
 
     /**
-     * Creates a new instance of a layout item configuration widget for the specified item \a type.
+     * Creates a new instance of a layout item configuration widget for the specified \a item.
      */
-    QWidget *createItemWidget( int type ) const SIP_FACTORY;
+    QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const SIP_FACTORY;
 
     /**
      * Creates a new rubber band item for the specified item \a type and destination \a view.

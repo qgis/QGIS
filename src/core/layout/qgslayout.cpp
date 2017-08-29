@@ -15,11 +15,33 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutguidecollection.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : QGraphicsScene()
   , mProject( project )
-{}
+  , mSnapper( QgsLayoutSnapper( this ) )
+  , mPageCollection( new QgsLayoutPageCollection( this ) )
+  , mGuideCollection( new QgsLayoutGuideCollection( this, mPageCollection.get() ) )
+{
+  // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
+  setBackgroundBrush( Qt::NoBrush );
+}
+
+QgsLayout::~QgsLayout()
+{
+  // delete guide collection FIRST, since it depends on the page collection
+  mGuideCollection.reset();
+}
+
+void QgsLayout::initializeDefaults()
+{
+  // default to a A4 landscape page
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( this );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  mPageCollection->addPage( page );
+}
 
 QgsProject *QgsLayout::project() const
 {
@@ -54,6 +76,16 @@ QgsLayoutSize QgsLayout::convertFromLayoutUnits( const QSizeF &size, const QgsUn
 QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const
 {
   return mContext.measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+}
+
+QgsLayoutGuideCollection &QgsLayout::guides()
+{
+  return *mGuideCollection;
+}
+
+const QgsLayoutGuideCollection &QgsLayout::guides() const
+{
+  return *mGuideCollection;
 }
 
 QgsExpressionContext QgsLayout::createExpressionContext() const
@@ -102,4 +134,69 @@ QgsLayoutItemMap *QgsLayout::referenceMap() const
 void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
 {
   Q_UNUSED( map );
+}
+
+QgsLayoutPageCollection *QgsLayout::pageCollection()
+{
+  return mPageCollection.get();
+}
+
+const QgsLayoutPageCollection *QgsLayout::pageCollection() const
+{
+  return mPageCollection.get();
+}
+
+QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
+{
+  //start with an empty rectangle
+  QRectF bounds;
+
+  //add all QgsComposerItems and QgsPaperItems which are in the composition
+  Q_FOREACH ( const QGraphicsItem *item, items() )
+  {
+    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    if ( !layoutItem )
+      continue;
+
+    bool isPage = layoutItem->type() == QgsLayoutItemRegistry::LayoutPage;
+    if ( !isPage || !ignorePages )
+    {
+      //expand bounds with current item's bounds
+      QRectF itemBounds;
+      if ( isPage )
+      {
+        // for pages we only consider the item's rect - not the bounding rect
+        // as the bounding rect contains extra padding
+        itemBounds = layoutItem->mapToScene( layoutItem->rect() ).boundingRect();
+      }
+      else
+        itemBounds = item->sceneBoundingRect();
+
+      if ( bounds.isValid() )
+        bounds = bounds.united( itemBounds );
+      else
+        bounds = itemBounds;
+    }
+  }
+
+  if ( bounds.isValid() && margin > 0.0 )
+  {
+    //finally, expand bounds out by specified margin of page size
+    double maxWidth = mPageCollection->maximumPageWidth();
+    bounds.adjust( -maxWidth * margin, -maxWidth * margin, maxWidth * margin, maxWidth * margin );
+  }
+
+  return bounds;
+
+}
+
+void QgsLayout::addLayoutItem( QgsLayoutItem *item )
+{
+  addItem( item );
+  updateBounds();
+}
+
+void QgsLayout::updateBounds()
+{
+  setSceneRect( layoutBounds( false, 0.05 ) );
 }

@@ -30,11 +30,11 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsSlopeFilter
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import raster
 from processing.tools.dataobjects import exportRasterLayer
 
 
@@ -61,7 +61,7 @@ class Slope(QgisAlgorithm):
                                                             self.tr('Elevation layer')))
         self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
                                                        self.tr('Z factor'), QgsProcessingParameterNumber.Double,
-                                                       1, False, 1, 999999.99))
+                                                       1, False, 0.00, 999999.99))
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Slope')))
 
     def name(self):
@@ -75,8 +75,7 @@ class Slope(QgisAlgorithm):
         zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
 
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-
-        outputFormat = raster.formatShortNameFromFileName(outputFile)
+        outputFormat = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
 
         slope = QgsSlopeFilter(inputFile, outputFile, outputFormat)
         slope.setZFactor(zFactor)

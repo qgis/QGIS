@@ -140,7 +140,7 @@ QgsMapLayer *QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
 
   QgsRectangle extent = mVectorLayer->extent();
   QgsGridFileWriter gridWriter( interpolator, tmpFile->fileName(), extent, nCols, nRows, extent.width() / nCols, extent.height() / nRows );
-  if ( gridWriter.writeFile( false ) != 0 )
+  if ( gridWriter.writeFile() != 0 )
   {
     QgsDebugMsg( "Interpolation of raster failed" );
     return nullptr;

@@ -65,7 +65,8 @@ class CORE_EXPORT QgsAggregateCalculator
       StringMinimumLength, //!< Minimum length of string (string fields only)
       StringMaximumLength, //!< Maximum length of string (string fields only)
       StringConcatenate, //! Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
-      GeometryCollect //! Create a multipart geometry from aggregated geometries
+      GeometryCollect, //! Create a multipart geometry from aggregated geometries
+      ArrayAggregate //! Create an array of values
     };
 
     //! A bundle of parameters controlling aggregate calculation
@@ -164,6 +165,9 @@ class CORE_EXPORT QgsAggregateCalculator
     static QVariant calculateDateTimeAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
         QgsExpressionContext *context, QgsDateTimeStatisticalSummary::Statistic stat );
     static QVariant calculateGeometryAggregate( QgsFeatureIterator &fit, QgsExpression *expression, QgsExpressionContext *context );
+
+    static QVariant calculateArrayAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
+        QgsExpressionContext *context );
 
     static QVariant calculate( Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType,
                                int attr, QgsExpression *expression,

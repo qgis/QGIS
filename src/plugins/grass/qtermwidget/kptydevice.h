@@ -251,7 +251,7 @@ public:
         } else {
             buffers.last().resize(tail);
             QByteArray tmp;
-            tmp.resize(qMax(CHUNKSIZE, bytes));
+            tmp.resize(std::max(CHUNKSIZE, bytes));
             ptr = tmp.data();
             buffers << tmp;
             tail = bytes;
@@ -286,7 +286,7 @@ public:
                 return -1;
             const QByteArray &buf = *it;
             ++it;
-            int len = qMin((it == buffers.end() ? tail : buf.size()) - start,
+            int len = std::min((it == buffers.end() ? tail : buf.size()) - start,
                            maxLength);
             const char *ptr = buf.data() + start;
             if (const char *rptr = (const char *)memchr(ptr, c, len))
@@ -309,11 +309,11 @@ public:
 
     int read(char *data, int maxLength)
     {
-        int bytesToRead = qMin(size(), maxLength);
+        int bytesToRead = std::min(size(), maxLength);
         int readSoFar = 0;
         while (readSoFar < bytesToRead) {
             const char *ptr = readPointer();
-            int bs = qMin(bytesToRead - readSoFar, readSize());
+            int bs = std::min(bytesToRead - readSoFar, readSize());
             memcpy(data + readSoFar, ptr, bs);
             readSoFar += bs;
             free(bs);
@@ -323,7 +323,7 @@ public:
 
     int readLine(char *data, int maxLength)
     {
-        return read(data, lineSize(qMin(maxLength, size())));
+        return read(data, lineSize(std::min(maxLength, size())));
     }
 
 private:

@@ -14,8 +14,10 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsUnitTypes
+from qgis.core import QgsUnitTypes, QgsLayoutMeasurementConverter
 from qgis.gui import QgsLayoutUnitsComboBox
+
+from qgis.PyQt.QtWidgets import QDoubleSpinBox
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app, unittest
@@ -41,6 +43,37 @@ class TestQgsLayoutUnitsComboBox(unittest.TestCase):
 
         self.assertEqual(len(spy), 1)
         self.assertEqual(spy[0][0], QgsUnitTypes.LayoutPixels)
+
+    def testLinkedWidgets(self):
+        """ test linking spin boxes to combobox"""
+        w = qgis.gui.QgsLayoutUnitsComboBox()
+        self.assertFalse(w.converter())
+        c = QgsLayoutMeasurementConverter()
+        w.setConverter(c)
+        self.assertEqual(w.converter(), c)
+
+        spin = QDoubleSpinBox()
+        spin.setMaximum(1000000)
+        spin.setValue(100)
+        w.setUnit(QgsUnitTypes.LayoutCentimeters)
+        w.linkToWidget(spin)
+        w.setUnit(QgsUnitTypes.LayoutMeters)
+        self.assertAlmostEqual(spin.value(), 1.0, 2)
+        w.setUnit(QgsUnitTypes.LayoutMillimeters)
+        self.assertAlmostEqual(spin.value(), 1000.0, 2)
+
+        spin2 = QDoubleSpinBox()
+        spin2.setValue(50)
+        spin2.setMaximum(1000000)
+        w.linkToWidget(spin2)
+        w.setUnit(QgsUnitTypes.LayoutCentimeters)
+        self.assertAlmostEqual(spin.value(), 100.0, 2)
+        self.assertAlmostEqual(spin2.value(), 5.0, 2)
+
+        # no crash!
+        del spin
+        w.setUnit(QgsUnitTypes.LayoutMeters)
+        self.assertAlmostEqual(spin2.value(), 0.05, 2)
 
 
 if __name__ == '__main__':

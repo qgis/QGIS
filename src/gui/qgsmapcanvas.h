@@ -84,6 +84,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     Q_OBJECT
     Q_PROPERTY( QString theme READ theme WRITE setTheme NOTIFY themeChanged )
+    Q_PROPERTY( bool previewJobsEnabled READ previewJobsEnabled WRITE setPreviewJobsEnabled )
 
   public:
 
@@ -523,6 +524,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 
+    /**
+     * Returns true if canvas map preview jobs (low priority render jobs which render portions
+     * of the view just outside of the canvas extent, to allow preview of these
+     * out-of-canvas areas when panning or zooming out the map) are enabled
+     * for the canvas.
+     * \see setPreviewJobsEnabled()
+     * \since QGIS 3.0
+     */
+    bool previewJobsEnabled() const;
+
+    /**
+     * Sets whether canvas map preview jobs (low priority render jobs which render portions
+     * of the view just outside of the canvas extent, to allow preview of these
+     * out-of-canvas areas when panning or zooming out the map) are \a enabled
+     * for the canvas.
+     * \see previewJobsEnabled()
+     * \since QGIS 3.0
+     */
+    void setPreviewJobsEnabled( bool enabled );
+
   public slots:
 
     //! Repaints the canvas map
@@ -750,6 +771,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void projectThemesChanged();
 
+    void startPreviewJob( int number );
+
   private:
     /// this class is non-copyable
 
@@ -845,9 +868,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QTimer mAutoRefreshTimer;
 
+    QTimer mPreviewTimer;
+    QMetaObject::Connection mPreviewTimerConnection;
+
     QString mTheme;
 
     bool mAnnotationsVisible = true;
+
+    bool mUsePreviewJobs = false;
 
     //! Force a resize of the map canvas item
     //! \since QGIS 2.16
@@ -877,6 +905,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void startPreviewJobs();
     void stopPreviewJobs();
+    void schedulePreviewJob( int number );
 
     friend class TestQgsMapCanvas;
 

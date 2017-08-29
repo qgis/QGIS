@@ -369,7 +369,7 @@ QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary
   summary.calculate( values );
 
   double val = summary.statistic( stat );
-  return qIsNaN( val ) ? QVariant( QVariant::Double ) : val;
+  return std::isnan( val ) ? QVariant( QVariant::Double ) : val;
 }
 
 QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )

@@ -41,7 +41,7 @@ class Orthogonalize(QgisFeatureBasedAlgorithm):
         return self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

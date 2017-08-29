@@ -44,7 +44,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 {
   QList<QgsLineString *> linesToProcess;
 
-  const QgsMultiCurve *multiCurve = dynamic_cast< const QgsMultiCurve * >( mGeometry );
+  const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
   if ( multiCurve )
   {
     for ( int i = 0; i < multiCurve->partCount(); ++i )
@@ -53,7 +53,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     }
   }
 
-  const QgsCurve *curve = dynamic_cast< const QgsCurve * >( mGeometry );
+  const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( mGeometry );
   if ( curve )
   {
     linesToProcess << static_cast<QgsLineString *>( curve->segmentize() );
@@ -158,7 +158,7 @@ Cell *getCentroidCell( const QgsPolygonV2 *polygon )
 QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precision, double &distanceFromBoundary )
 {
   std::unique_ptr< QgsPolygonV2 > segmentizedPoly;
-  const QgsPolygonV2 *polygon = dynamic_cast< const QgsPolygonV2 * >( surface );
+  const QgsPolygonV2 *polygon = qgsgeometry_cast< const QgsPolygonV2 * >( surface );
   if ( !polygon )
   {
     segmentizedPoly.reset( static_cast< QgsPolygonV2 *>( surface->segmentize() ) );
@@ -169,7 +169,7 @@ QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precisi
   QgsRectangle bounds = polygon->boundingBox();
 
   // initial parameters
-  double cellSize = qMin( bounds.width(), bounds.height() );
+  double cellSize = std::min( bounds.width(), bounds.height() );
 
   if ( qgsDoubleNear( cellSize, 0.0 ) )
     return QgsPoint( bounds.xMinimum(), bounds.yMinimum() );
@@ -241,7 +241,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
   if ( precision <= 0 )
     return QgsGeometry();
 
-  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
     double maxDist = 0;
@@ -249,7 +249,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
     bool found = false;
     for ( int i = 0; i < numGeom; ++i )
     {
-      const QgsSurface *surface = dynamic_cast< const QgsSurface * >( gc->geometryN( i ) );
+      const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( gc->geometryN( i ) );
       if ( !surface )
         continue;
 
@@ -272,7 +272,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
   }
   else
   {
-    const QgsSurface *surface = dynamic_cast< const QgsSurface * >( mGeometry );
+    const QgsSurface *surface = qgsgeometry_cast< const QgsSurface * >( mGeometry );
     if ( !surface )
       return QgsGeometry();
 
@@ -290,7 +290,7 @@ QgsGeometry QgsInternalGeometryEngine::poleOfInaccessibility( double precision, 
 
 bool dotProductWithinAngleTolerance( double dotProduct, double lowerThreshold, double upperThreshold )
 {
-  return lowerThreshold > qAbs( dotProduct ) || qAbs( dotProduct ) > upperThreshold;
+  return lowerThreshold > std::fabs( dotProduct ) || std::fabs( dotProduct ) > upperThreshold;
 }
 
 double normalizedDotProduct( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c )
@@ -341,7 +341,7 @@ double squareness( QgsLineString *ring, double lowerThreshold, double upperThres
       if ( !dotProductWithinAngleTolerance( dotProduct, lowerThreshold, upperThreshold ) )
         continue;
 
-      sum += 2.0 * qMin( qAbs( dotProduct - 1.0 ), qMin( qAbs( dotProduct ), qAbs( dotProduct + 1 ) ) );
+      sum += 2.0 * std::min( std::fabs( dotProduct - 1.0 ), std::min( std::fabs( dotProduct ), std::fabs( dotProduct + 1 ) ) );
     }
     a = b;
     b = c;
@@ -360,7 +360,7 @@ QgsVector calcMotion( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c,
     return QgsVector( 0, 0 );
 
   // 2.0 is a magic number from the original JOSM source code
-  double scale = 2.0 * qMin( p.length(), q.length() );
+  double scale = 2.0 * std::min( p.length(), q.length() );
 
   p = p.normalized();
   q = q.normalized();
@@ -491,10 +491,10 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     return QgsGeometry();
   }
 
-  double lowerThreshold = cos( ( 90 - angleThreshold ) * M_PI / 180.00 );
-  double upperThreshold = cos( angleThreshold * M_PI / 180.0 );
+  double lowerThreshold = std::cos( ( 90 - angleThreshold ) * M_PI / 180.00 );
+  double upperThreshold = std::cos( angleThreshold * M_PI / 180.0 );
 
-  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
     QList< QgsAbstractGeometry * > geometryList;
@@ -575,7 +575,7 @@ QgsLineString *doDensify( QgsLineString *ring, int extraNodesPerSegment = -1, do
     if ( extraNodesPerSegment < 0 )
     {
       // distance mode
-      extraNodesThisSegment = floor( sqrt( ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) ) / distance );
+      extraNodesThisSegment = std::floor( std::sqrt( ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) ) / distance );
       if ( extraNodesThisSegment >= 1 )
         multiplier = 1.0 / ( extraNodesThisSegment + 1 );
     }
@@ -652,7 +652,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
 
-  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
     QList< QgsAbstractGeometry * > geometryList;
@@ -687,7 +687,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
   }
 
-  if ( const QgsGeometryCollection *gc = dynamic_cast< const QgsGeometryCollection *>( mGeometry ) )
+  if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
     QList< QgsAbstractGeometry * > geometryList;

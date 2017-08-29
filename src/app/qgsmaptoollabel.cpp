@@ -145,7 +145,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     if ( trunc > 0 && labelText.length() > trunc )
     {
       labelText.truncate( trunc );
-      labelText += QLatin1String( "…" );
+      labelText += QStringLiteral( "…" );
     }
     return labelText;
   }
@@ -168,7 +168,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
         if ( trunc > 0 && labelText.length() > trunc )
         {
           labelText.truncate( trunc );
-          labelText += QLatin1String( "…" );
+          labelText += QStringLiteral( "…" );
         }
         return labelText;
       }
@@ -343,8 +343,8 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   //  QgsDebugMsg( QString( "cp_0: x=%1, y=%2" ).arg( cp_0.x() ).arg( cp_0.y() ) );
   //  QgsDebugMsg( QString( "cp_1: x=%1, y=%2" ).arg( cp_1.x() ).arg( cp_1.y() ) );
   //  QgsDebugMsg( QString( "cp_3: x=%1, y=%2" ).arg( cp_3.x() ).arg( cp_3.y() ) );
-  double labelSizeX = qSqrt( cp_0.sqrDist( cp_1 ) );
-  double labelSizeY = qSqrt( cp_0.sqrDist( cp_3 ) );
+  double labelSizeX = std::sqrt( cp_0.sqrDist( cp_1 ) );
+  double labelSizeY = std::sqrt( cp_0.sqrDist( cp_3 ) );
 
   double xdiff = 0;
   double ydiff = 0;
@@ -376,8 +376,8 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   }
 
   double angle = mCurrentLabel.pos.rotation;
-  double xd = xdiff * cos( angle ) - ydiff * sin( angle );
-  double yd = xdiff * sin( angle ) + ydiff * cos( angle );
+  double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
+  double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
   if ( mCurrentLabel.pos.upsideDown && !ignoreUpsideDown )
   {
     pos.setX( pos.x() - xd );

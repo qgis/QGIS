@@ -52,6 +52,8 @@ from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameter
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
+from qgis.utils import iface
+
 from processing.modeler.WrongModelException import WrongModelException
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -78,6 +80,34 @@ class ModelerDialog(BASE, WIDGET):
             self.setDockOptions(self.dockOptions() | QMainWindow.GroupedDragging)
         except:
             pass
+
+        self.mToolbar.setIconSize(iface.iconSize())
+        self.mActionOpen.setIcon(
+            QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
+        self.mActionSave.setIcon(
+            QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+        self.mActionSaveAs.setIcon(
+            QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+        self.mActionZoomActual.setIcon(
+            QgsApplication.getThemeIcon('/mActionZoomActual.svg'))
+        self.mActionZoomIn.setIcon(
+            QgsApplication.getThemeIcon('/mActionZoomIn.svg'))
+        self.mActionZoomOut.setIcon(
+            QgsApplication.getThemeIcon('/mActionZoomOut.svg'))
+        self.mActionExportImage.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveMapAsImage.svg'))
+        self.mActionZoomToItems.setIcon(
+            QgsApplication.getThemeIcon('/mActionZoomFullExtent.svg'))
+        self.mActionExportPdf.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveAsPDF.svg'))
+        self.mActionExportSvg.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveAsSVG.svg'))
+        self.mActionExportPython.setIcon(
+            QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
+        self.mActionEditHelp.setIcon(
+            QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
+        self.mActionRun.setIcon(
+            QgsApplication.getThemeIcon('/mActionStart.svg'))
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.propertiesDock)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.inputsDock)
@@ -217,11 +247,6 @@ class ModelerDialog(BASE, WIDGET):
         ctrlEquals = QShortcut(QKeySequence("Ctrl+="), self)
         ctrlEquals.activated.connect(self.zoomIn)
 
-        try:
-            iconSize = int(settings.value("IconSize", 24))
-        except:
-            iconSize = 24
-        self.mToolbar.setIconSize(QSize(iconSize, iconSize))
         self.mActionOpen.triggered.connect(self.openModel)
         self.mActionSave.triggered.connect(self.save)
         self.mActionSaveAs.triggered.connect(self.saveAs)
@@ -293,7 +318,7 @@ class ModelerDialog(BASE, WIDGET):
         dlg.exec_()
         # have to manually delete the dialog - otherwise it's owned by the
         # iface mainWindow and never deleted
-        del dlg
+        dlg.deleteLater()
 
     def save(self):
         self.saveModel(False)
@@ -634,6 +659,7 @@ class ModelerDialog(BASE, WIDGET):
                         name = alg.group()
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
+                        groupItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                         if provider.id() in ('qgis', 'native'):
                             groupItem.setIcon(0, provider.icon())
                             qgis_groups[alg.group()] = groupItem
@@ -647,6 +673,7 @@ class ModelerDialog(BASE, WIDGET):
                 providerItem.setText(0, provider.name())
                 providerItem.setToolTip(0, provider.name())
                 providerItem.setIcon(0, provider.icon())
+                providerItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                 for groupItem in list(groups.values()):
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

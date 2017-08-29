@@ -87,7 +87,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     void refresh() override;
 
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
+    void addButtonClicked() override;
     void buildQuery();
 
     /** Connects to the database using the stored connection parameters.
@@ -118,8 +118,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
-
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#mssql-spatial-layers" ) ); }
 
     void columnThreadFinished();
 
@@ -152,9 +150,11 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     QgsDatabaseFilterProxyModel mProxyModel;
 
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
 
     void finishList();
+
+    void showHelp();
+
 };
 
 #endif // QGSMSSQLSOURCESELECT_H

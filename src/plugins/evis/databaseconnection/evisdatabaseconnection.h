@@ -56,7 +56,7 @@ class eVisDatabaseConnection
     //! \brief Constructor
     eVisDatabaseConnection( const QString &, int, const QString &, const QString &, const QString &, DatabaseType );
 
-    //! \brief Public method that finalizes a connection to a databse
+    //! \brief Public method that finalizes a connection to a database
     bool connect();
 
     //! \brief Public method that passes an SQL statement to the database for execution

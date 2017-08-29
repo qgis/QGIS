@@ -27,7 +27,7 @@
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include "qgsexpression.h"
 
 #include <QList>

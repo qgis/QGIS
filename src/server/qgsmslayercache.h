@@ -21,7 +21,7 @@
 #define SIP_NO_FILE
 
 
-#include <time.h>
+#include <ctime>
 #include <QFileSystemWatcher>
 #include <QMultiHash>
 #include <QObject>

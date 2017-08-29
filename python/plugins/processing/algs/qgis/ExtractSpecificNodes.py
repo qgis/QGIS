@@ -27,39 +27,38 @@ __revision__ = '$Format:%H$'
 
 import math
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterString
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsField,
-                       QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingException)
 from qgis.PyQt.QtCore import QVariant
 
 
 class ExtractSpecificNodes(QgisAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
     NODES = 'NODES'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_ANY]))
-        self.addParameter(ParameterString(self.NODES,
-                                          self.tr('Node indices'), default='0'))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorAnyGeometry]))
+        self.addParameter(QgsProcessingParameterString(self.NODES,
+                                                       self.tr('Node indices'), defaultValue='0'))
+
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Nodes'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'extractspecificnodes'
@@ -68,34 +67,42 @@ class ExtractSpecificNodes(QgisAlgorithm):
         return self.tr('Extract specific nodes')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-
-        fields = layer.fields()
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fields = source.fields()
         fields.append(QgsField('node_pos', QVariant.Int))
         fields.append(QgsField('node_index', QVariant.Int))
         fields.append(QgsField('distance', QVariant.Double))
         fields.append(QgsField('angle', QVariant.Double))
+        fields.append(QgsField('NUM_FIELD', QVariant.Int))
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(fields, QgsWkbTypes.Point, layer.crs(), context)
+        wkb_type = QgsWkbTypes.Point
+        if QgsWkbTypes.hasM(source.wkbType()):
+            wkb_type = QgsWkbTypes.addM(wkb_type)
+        if QgsWkbTypes.hasZ(source.wkbType()):
+            wkb_type = QgsWkbTypes.addZ(wkb_type)
 
-        node_indices_string = self.getParameterValue(self.NODES)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, wkb_type, source.sourceCrs())
+
+        node_indices_string = self.parameterAsString(parameters, self.NODES, context)
         indices = []
         for node in node_indices_string.split(','):
             try:
                 indices.append(int(node))
             except:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('\'{}\' is not a valid node index').format(node))
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
 
             input_geometry = f.geometry()
             if not input_geometry:
-                writer.addFeature(f, QgsFeatureSink.FastInsert)
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 total_nodes = input_geometry.geometry().nCoordinates()
 
@@ -120,10 +127,10 @@ class ExtractSpecificNodes(QgisAlgorithm):
                     output_feature.setAttributes(attrs)
 
                     point = input_geometry.vertexAt(node_index)
-                    output_feature.setGeometry(QgsGeometry.fromPoint(point))
+                    output_feature.setGeometry(QgsGeometry(point))
 
-                    writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
+                    sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

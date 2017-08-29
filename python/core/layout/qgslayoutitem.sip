@@ -18,6 +18,24 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 
 %TypeHeaderCode
 #include "qgslayoutitem.h"
+
+#include <qgslayoutitemshape.h>
+#include <qgslayoutitempage.h>
+%End
+
+%ConvertToSubClassCode
+    // the conversions have to be static, because they're using multiple inheritance
+    // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+    switch ( sipCpp->type() )
+    {
+      // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
+      case QGraphicsItem::UserType + 101:
+        sipType = sipType_QgsLayoutItemPage;
+        *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
+        break;
+      default:
+        sipType = 0;
+    }
 %End
   public:
 
@@ -37,6 +55,51 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
     explicit QgsLayoutItem( QgsLayout *layout );
 %Docstring
  Constructor for QgsLayoutItem, with the specified parent ``layout``.
+%End
+
+    virtual int type() const = 0;
+%Docstring
+ Return correct graphics item type
+.. seealso:: stringType()
+ :rtype: int
+%End
+
+    virtual QString stringType() const = 0;
+%Docstring
+ Return the item type as a string.
+
+ This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
+.. seealso:: type()
+ :rtype: str
+%End
+
+    QString uuid() const;
+%Docstring
+ Returns the item identification string. This is a unique random string set for the item
+ upon creation.
+.. note::
+
+   There is no corresponding setter for the uuid - it's created automatically.
+.. seealso:: id()
+.. seealso:: setId()
+ :rtype: str
+%End
+
+    QString id() const;
+%Docstring
+ Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
+ for a layout.
+.. seealso:: setId()
+.. seealso:: uuid()
+ :rtype: str
+%End
+
+    virtual void setId( const QString &id );
+%Docstring
+ Set the item's ``id`` name. This is not necessarily unique, and duplicate ID names may exist
+ for a layout.
+.. seealso:: id()
+.. seealso:: uuid()
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -130,6 +193,32 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  :rtype: float
 %End
 
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Stores the item state in a DOM element.
+ \param parentElement parent DOM element (e.g. 'Layout' element)
+ \param document DOM document
+ \param context read write context
+.. seealso:: readXml()
+.. note::
+
+   Subclasses should ensure that they call writePropertiesToElement() in their implementation.
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+ Sets the item state from a DOM element.
+ \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
+ \param document DOM document
+ \param context read write context
+.. seealso:: writeXml()
+.. note::
+
+   Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
+ :rtype: bool
+%End
+
   public slots:
 
     virtual void refresh();
@@ -137,6 +226,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 %Docstring
  Refreshes the item, causing a recalculation of any property overrides and
  recalculation of its position and size.
+%End
+
+    virtual void redraw();
+%Docstring
+ Triggers a redraw (update) of the item.
 %End
 
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
@@ -228,6 +322,34 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 %Docstring
  Returns the current position (in layout units) of a ``reference`` point for the item.
  :rtype: QPointF
+%End
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Stores item state within an XML DOM element.
+ \param element is the DOM element to store the item's properties in
+ \param document DOM document
+ \param context read write context
+.. seealso:: writeXml()
+.. seealso:: readPropertiesFromElement()
+.. note::
+
+   derived classes must call this base implementation when overriding this method
+ :rtype: bool
+%End
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+ Sets item state from a DOM element.
+ \param element is the DOM element for the item
+ \param document DOM document
+ \param context read write context
+.. seealso:: writePropertiesToElement()
+.. seealso:: readXml()
+.. note::
+
+   derived classes must call this base implementation when overriding this method
+ :rtype: bool
 %End
 
 };

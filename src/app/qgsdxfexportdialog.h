@@ -21,6 +21,7 @@
 #include "ui_qgsdxfexportdialogbase.h"
 #include "qgslayertreemodel.h"
 #include "qgsdxfexport.h"
+#include "qgshelp.h"
 
 #include <QList>
 #include <QPair>
@@ -102,6 +103,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void saveSettings();
     void on_mVisibilityPresets_currentIndexChanged( int index );
     void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void showHelp();
 
   private:
     void cleanGroup( QgsLayerTreeNode *node );

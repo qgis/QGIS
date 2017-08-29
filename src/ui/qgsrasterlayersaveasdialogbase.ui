@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Save raster layer as...</string>
+   <string>Save Raster Layer as...</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

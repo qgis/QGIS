@@ -140,7 +140,7 @@ void QgsWFSProgressDialog::resizeEvent( QResizeEvent *ev )
   QRect cancelRect = mCancel->geometry();
   QRect hideRect = mHide->geometry();
   int mtb = style()->pixelMetric( QStyle::PM_DefaultTopLevelMargin );
-  int mlr = qMin( width() / 10, mtb );
+  int mlr = std::min( width() / 10, mtb );
   if ( rect.width() - cancelRect.x() - cancelRect.width() > mlr )
   {
     // Force right alighnment of cancel button

@@ -29,17 +29,14 @@ __revision__ = '$Format:%H$'
 from pprint import pformat
 import time
 
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import QMessageBox, QApplication, QPushButton, QWidget, QVBoxLayout, QSizePolicy
-from qgis.PyQt.QtGui import QCursor, QColor, QPalette
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QSizePolicy, QDialogButtonBox
+from qgis.PyQt.QtGui import QColor, QPalette
 
 from qgis.core import (QgsProject,
                        QgsApplication,
                        QgsProcessingUtils,
-                       QgsMessageLog,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingOutputRasterLayer,
-                       QgsProcessingOutputVectorLayer,
                        QgsProcessingAlgRunnerTask,
                        QgsProcessingOutputHtml,
                        QgsProcessingParameterVectorDestination,
@@ -56,16 +53,13 @@ from processing.core.ProcessingResults import resultsList
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import execute, executeIterating
+from processing.gui.AlgorithmExecutor import executeIterating
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterMultipleInput
-from processing.core.GeoAlgorithm import executeAlgorithm
-
-from processing.core.outputs import OutputTable
 
 from processing.tools import dataobjects
 
@@ -83,14 +77,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.layout().insertWidget(0, self.bar)
 
-        self.cornerWidget = QWidget()
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 5)
-        self.runAsBatchButton = QPushButton(self.tr("Run as batch process..."))
+        self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
-        layout.addWidget(self.runAsBatchButton)
-        self.cornerWidget.setLayout(layout)
-        self.tabWidget.setCornerWidget(self.cornerWidget)
+        self.buttonBox.addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
 
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg)
@@ -103,6 +92,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
     def getParamValues(self):
         parameters = {}
+
+        if not hasattr(self, 'mainWidget') or self.mainWidget is None:
+            return parameters
 
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
@@ -184,7 +176,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 if reply == QMessageBox.No:
                     return
             checkExtentCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_EXTENT_CRS)
-            #TODO
+            # TODO
             if False and checkExtentCRS and self.checkExtentCRS():
                 reply = QMessageBox.question(self, self.tr("Extent CRS"),
                                              self.tr('Extent parameters must use the same CRS as the input layers.\n'
@@ -234,7 +226,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     feedback.pushInfo(
                         self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
                     self.buttonCancel.setEnabled(False)
-                    self.finish(parameters, context, feedback)
+                    self.finish(True, parameters, context, feedback)
                 else:
                     self.buttonCancel.setEnabled(False)
                     self.resetGUI()
@@ -255,7 +247,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     feedback.pushInfo('')
 
                     self.buttonCancel.setEnabled(False)
-                    self.finish(results, context, feedback)
+                    self.finish(ok, results, context, feedback)
 
                 task = QgsProcessingAlgRunnerTask(self.alg, parameters, context, feedback)
                 task.executed.connect(on_complete)
@@ -274,8 +266,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
             self.bar.pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
                                  level=QgsMessageBar.WARNING, duration=5)
 
-    def finish(self, result, context, feedback):
-        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
+    def finish(self, successful, result, context, feedback):
+        keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
 

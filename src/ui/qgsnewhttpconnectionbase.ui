@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create a new WMS connection</string>
+   <string>Create a New WMS Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>

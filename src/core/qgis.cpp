@@ -84,6 +84,12 @@ const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
 
+#ifdef Q_OS_WIN
+const double Qgis::UI_SCALE_FACTOR = 1.5;
+#else
+const double Qgis::UI_SCALE_FACTOR = 1;
+#endif
+
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators
@@ -171,7 +177,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QList<QVariant> &lhsl = lhs.toList();
       const QList<QVariant> &rhsl = rhs.toList();
 
-      int i, n = qMin( lhsl.size(), rhsl.size() );
+      int i, n = std::min( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
         ;
 
@@ -186,7 +192,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QStringList &lhsl = lhs.toStringList();
       const QStringList &rhsl = rhs.toStringList();
 
-      int i, n = qMin( lhsl.size(), rhsl.size() );
+      int i, n = std::min( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i] == rhsl[i]; i++ )
         ;
 
@@ -226,7 +232,7 @@ QString qgsVsiPrefix( const QString &path )
 uint qHash( const QVariant &variant )
 {
   if ( !variant.isValid() || variant.isNull() )
-    return -1;
+    return std::numeric_limits<uint>::max();
 
   switch ( variant.type() )
   {
@@ -284,8 +290,8 @@ uint qHash( const QVariant &variant )
     case QVariant::RegExp:
       return qHash( variant.toString() );
     default:
-      return -1;
+      break;
   }
 
-  return -1;
+  return std::numeric_limits<uint>::max();
 }

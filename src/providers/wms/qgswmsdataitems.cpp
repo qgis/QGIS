@@ -94,37 +94,15 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     QgsWmsCapabilitiesProperty capabilitiesProperty = caps.capabilitiesProperty();
     const QgsWmsCapabilityProperty &capabilityProperty = capabilitiesProperty.capability;
 
-    // If we have several top-level layers, or if we just have one single top-level layer,
-    // then use those top-level layers directly
-    if ( capabilityProperty.layers.size() > 1 ||
-         ( capabilityProperty.layers.size() == 1 && capabilityProperty.layers[0].layer.size() == 0 ) )
+    Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers )
     {
-      Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers )
-      {
-        // Attention, the name may be empty
-        QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
-        QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
+      // Attention, the name may be empty
+      QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
+      QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
 
-        QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
+      QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
 
-        children << layer;
-      }
-    }
-    // Otherwise if we have just one single top-level layers with children, then
-    // skip this top-level layer and iterate directly on its children
-    // Note (E. Rouault): this was the historical behavior before fixing #13762
-    else if ( capabilityProperty.layers.size() == 1 )
-    {
-      Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers[0].layer )
-      {
-        // Attention, the name may be empty
-        QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
-        QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
-
-        QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
-
-        children << layer;
-      }
+      children << layer;
     }
   }
 
@@ -449,7 +427,7 @@ QGISEXTERN QgsWMSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl
 
 QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
-  QgsDebugMsg( "thePath = " + path );
+  QgsDebugMsg( "path = " + path );
   if ( path.isEmpty() )
   {
     return new QgsWMSRootItem( parentItem, QStringLiteral( "WMS" ), QStringLiteral( "wms:" ) );
@@ -469,11 +447,15 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
   return nullptr;
 }
 
-QGISEXTERN QList<QgsDataItemProvider *> dataItemProviders()
+QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
 {
-  return QList<QgsDataItemProvider *>()
-         << new QgsWmsDataItemProvider
-         << new QgsXyzTileDataItemProvider;
+  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+
+  *providers
+      << new QgsWmsDataItemProvider
+      << new QgsXyzTileDataItemProvider;
+
+  return providers;
 }
 
 // ---------------------------------------------------------------------------

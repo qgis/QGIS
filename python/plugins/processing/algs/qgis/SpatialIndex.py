@@ -27,13 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsApplication,
-                       QgsVectorDataProvider,
-                       QgsProcessingUtils)
+from qgis.core import (QgsVectorDataProvider,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessing)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -44,16 +43,16 @@ class SpatialIndex(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer')))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Indexed layer'), True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input Layer'),
+                                                            [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine]))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Indexed layer')))
 
     def name(self):
         return 'createspatialindex'
@@ -62,8 +61,7 @@ class SpatialIndex(QgisAlgorithm):
         return self.tr('Create spatial index')
 
     def processAlgorithm(self, parameters, context, feedback):
-        fileName = self.getParameterValue(self.INPUT)
-        layer = QgsProcessingUtils.mapLayerFromString(fileName, context)
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         provider = layer.dataProvider()
 
         if provider.capabilities() & QgsVectorDataProvider.CreateSpatialIndex:
@@ -73,4 +71,4 @@ class SpatialIndex(QgisAlgorithm):
             feedback.pushInfo(self.tr("Layer's data provider does not support "
                                       "spatial indexes"))
 
-        self.setOutputValue(self.OUTPUT, fileName)
+        return {self.OUTPUT: layer.id()}

@@ -100,6 +100,21 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
 
+    /*
+     * IMPORTANT: While it seems like /Factory/ would be the correct annotation here, that's not
+     * the case.
+     * As per Phil Thomson's advice on https://www.riverbankcomputing.com/pipermail/pyqt/2017-July/039450.html:
+     *
+     * "
+     * /Factory/ is used when the instance returned is guaranteed to be new to Python.
+     * In this case it isn't because it has already been seen when being returned by QgsProcessingAlgorithm::createInstance()
+     * (However for a different sub-class implemented in C++ then it would be the first time it was seen
+     * by Python so the /Factory/ on create() would be correct.)
+     *
+     * You might try using /TransferBack/ on create() instead - that might be the best compromise.
+     * "
+     */
+
     /**
      * Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a nullptr
      * is returned. Callers take responsibility for deleting the returned object.
@@ -113,7 +128,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * \see algorithms()
      * \see algorithmById()
      */
-    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
+    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const SIP_TRANSFERBACK;
 
   signals:
 

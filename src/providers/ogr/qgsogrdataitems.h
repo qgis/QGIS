@@ -18,16 +18,25 @@
 
 #include "qgsdataitem.h"
 #include "qgsogrprovider.h"
+#include "qgsdataitemprovider.h"
 
 class QgsOgrLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsOgrLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+    QgsOgrLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType, bool isSubLayer = false );
 
     bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
     QString layerName() const override;
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions() override;
+  public slots:
+    void deleteLayer();
+#endif
+  private:
+    bool mIsSubLayer;
 };
 
 
@@ -39,5 +48,6 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 };
+
 
 #endif // QGSOGRDATAITEMS_H

@@ -31,59 +31,59 @@ import sys
 
 from collections import defaultdict
 
-from qgis.core import (QgsApplication,
-                       QgsField,
+from qgis.core import (QgsField,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsSpatialIndex,
                        QgsPointXY,
                        NULL,
-                       QgsProcessingUtils)
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink)
 
 from qgis.PyQt.QtCore import (QVariant)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import (ParameterVector,
-                                        ParameterSelection,
-                                        ParameterNumber)
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class TopoColor(QgisAlgorithm):
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     MIN_COLORS = 'MIN_COLORS'
     MIN_DISTANCE = 'MIN_DISTANCE'
     BALANCE = 'BALANCE'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
     def tags(self):
         return self.tr('topocolor,colors,graph,adjacent,assign').split(',')
 
     def group(self):
-        return self.tr('Cartographic tools')
+        return self.tr('Cartography')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterNumber(self.MIN_COLORS,
-                                          self.tr('Minimum number of colors'), 1, 1000, 4))
-        self.addParameter(ParameterNumber(self.MIN_DISTANCE,
-                                          self.tr('Minimum distance between features'), 0.0, 999999999.0, 0.0))
+
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterNumber(self.MIN_COLORS,
+                                                       self.tr('Minimum number of colors'), minValue=1, maxValue=1000, defaultValue=4))
+        self.addParameter(QgsProcessingParameterNumber(self.MIN_DISTANCE,
+                                                       self.tr('Minimum distance between features'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=999999999.0, defaultValue=0.0))
         balance_by = [self.tr('By feature count'),
                       self.tr('By assigned area'),
                       self.tr('By distance between colors')]
-        self.addParameter(ParameterSelection(
+        self.addParameter(QgsProcessingParameterEnum(
             self.BALANCE,
             self.tr('Balance color assignment'),
-            balance_by, default=0))
+            options=balance_by, defaultValue=0))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Colored'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Colored'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'topologicalcoloring'
@@ -92,18 +92,18 @@ class TopoColor(QgisAlgorithm):
         return self.tr('Topological coloring')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        min_colors = self.getParameterValue(self.MIN_COLORS)
-        balance_by = self.getParameterValue(self.BALANCE)
-        min_distance = self.getParameterValue(self.MIN_DISTANCE)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        min_colors = self.parameterAsInt(parameters, self.MIN_COLORS, context)
+        balance_by = self.parameterAsEnum(parameters, self.BALANCE, context)
+        min_distance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
 
-        fields = layer.fields()
+        fields = source.fields()
         fields.append(QgsField('color_id', QVariant.Int))
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, source.wkbType(), source.sourceCrs())
 
-        features = {f.id(): f for f in QgsProcessingUtils.getFeatures(layer, context)}
+        features = {f.id(): f for f in source.getFeatures()}
 
         topology, id_graph = self.compute_graph(features, feedback, min_distance=min_distance)
         feature_colors = ColoringAlgorithm.balanced(features,
@@ -112,12 +112,18 @@ class TopoColor(QgisAlgorithm):
                                                     feedback=feedback,
                                                     min_colors=min_colors)
 
+        if len(feature_colors) == 0:
+            return {self.OUTPUT: dest_id}
+
         max_colors = max(feature_colors.values())
         feedback.pushInfo(self.tr('{} colors required').format(max_colors))
 
         total = 20.0 / len(features)
         current = 0
         for feature_id, input_feature in features.items():
+            if feedback.isCanceled():
+                break
+
             output_feature = input_feature
             attributes = input_feature.attributes()
             if feature_id in feature_colors:
@@ -126,11 +132,11 @@ class TopoColor(QgisAlgorithm):
                 attributes.append(NULL)
             output_feature.setAttributes(attributes)
 
-            writer.addFeature(output_feature, QgsFeatureSink.FastInsert)
+            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(80 + int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
 
     @staticmethod
     def compute_graph(features, feedback, create_id_graph=False, min_distance=0):
@@ -143,11 +149,14 @@ class TopoColor(QgisAlgorithm):
         # skip features without geometry
         features_with_geometry = {f_id: f for (f_id, f) in features.items() if f.hasGeometry()}
 
-        total = 70.0 / len(features_with_geometry)
+        total = 70.0 / len(features_with_geometry) if features_with_geometry else 1
         index = QgsSpatialIndex()
 
         i = 0
         for feature_id, f in features_with_geometry.items():
+            if feedback.isCanceled():
+                break
+
             g = f.geometry()
             if min_distance > 0:
                 g = g.buffer(min_distance, 5)
@@ -172,6 +181,9 @@ class TopoColor(QgisAlgorithm):
             feedback.setProgress(int(i * total))
 
         for feature_id, f in features_with_geometry.items():
+            if feedback.isCanceled():
+                break
+
             if feature_id not in s.node_edge:
                 s.add_edge(feature_id, None)
 
@@ -202,10 +214,13 @@ class ColoringAlgorithm:
             color_counts[c] = 0
             color_areas[c] = 0
 
-        total = 10.0 / len(sorted_by_count)
+        total = 10.0 / len(sorted_by_count) if sorted_by_count else 1
         i = 0
 
         for (feature_id, n) in sorted_by_count:
+            if feedback.isCanceled():
+                break
+
             # first work out which already assigned colors are adjacent to this feature
             adjacent_colors = set()
             for neighbour in graph.node_edge[feature_id]:
@@ -232,7 +247,7 @@ class ColoringAlgorithm:
                     color_areas[feature_color] += features[feature_id].geometry().area()
                 elif balance == 2:
                     min_distances = {c: sys.float_info.max for c in available_colors}
-                    this_feature_centroid = QgsPointXY(features[feature_id].geometry().centroid().geometry())
+                    this_feature_centroid = features[feature_id].geometry().centroid().geometry()
 
                     # find features for all available colors
                     other_features = {f_id: c for (f_id, c) in feature_colors.items() if c in available_colors}
@@ -240,8 +255,11 @@ class ColoringAlgorithm:
                     # loop through these, and calculate the minimum distance from this feature to the nearest
                     # feature with each assigned color
                     for other_feature_id, c in other_features.items():
+                        if feedback.isCanceled():
+                            break
+
                         other_geometry = features[other_feature_id].geometry()
-                        other_centroid = QgsPointXY(other_geometry.centroid().geometry())
+                        other_centroid = other_geometry.centroid().geometry()
 
                         distance = this_feature_centroid.distanceSquared(other_centroid)
                         if distance < min_distances[c]:

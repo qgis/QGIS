@@ -1745,8 +1745,8 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
         double yc = rect.height() / 2.0;
 
         double angle = -rotation;
-        double xd = xc * cos( angle ) - yc * sin( angle );
-        double yd = xc * sin( angle ) + yc * cos( angle );
+        double xd = xc * std::cos( angle ) - yc * std::sin( angle );
+        double yd = xc * std::sin( angle ) + yc * std::cos( angle );
 
         component.center = QPointF( component.origin.x() + xd, component.origin.y() + yd );
       }
@@ -1911,7 +1911,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
   double maxWidth = 0;
   Q_FOREACH ( const QString &line, textLines )
   {
-    maxWidth = qMax( maxWidth, fm->width( line ) );
+    maxWidth = std::max( maxWidth, fm->width( line ) );
   }
   return maxWidth;
 }
@@ -2051,7 +2051,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
     }
     else if ( background.sizeType() == QgsTextBackgroundSettings::SizeBuffer )
     {
-      sizeOut = qMax( component.size.width(), component.size.height() );
+      sizeOut = std::max( component.size.width(), component.size.height() );
       double bufferSize = context.convertToPainterUnits( background.size().width(), background.sizeUnit(), background.sizeMapUnitScale() );
 
       // add buffer
@@ -2192,14 +2192,14 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       else if ( background.type() == QgsTextBackgroundSettings::ShapeCircle )
       {
         // start with label bound by circle
-        h = sqrt( pow( w, 2 ) + pow( h, 2 ) );
+        h = std::sqrt( std::pow( w, 2 ) + std::pow( h, 2 ) );
         w = h;
       }
       else if ( background.type() == QgsTextBackgroundSettings::ShapeEllipse )
       {
         // start with label bound by ellipse
-        h = h / sqrt( 2.0 ) * 2;
-        w = w / sqrt( 2.0 ) * 2;
+        h = h / std::sqrt( 2.0 ) * 2;
+        w = w / std::sqrt( 2.0 ) * 2;
       }
 
       double bufferWidth = context.convertToPainterUnits( background.size().width(), background.sizeUnit(),
@@ -2388,8 +2388,8 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
     angleRad -= ( component.rotation * M_PI / 180 + component.rotationOffset * M_PI / 180 );
   }
 
-  QPointF transPt( -offsetDist * cos( angleRad + M_PI / 2 ),
-                   -offsetDist * sin( angleRad + M_PI / 2 ) );
+  QPointF transPt( -offsetDist * std::cos( angleRad + M_PI / 2 ),
+                   -offsetDist * std::sin( angleRad + M_PI / 2 ) );
 
   p->save();
   p->setRenderHint( QPainter::SmoothPixmapTransform );

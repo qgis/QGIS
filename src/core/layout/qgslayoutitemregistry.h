@@ -183,6 +183,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
       // known item types
       LayoutPage, //!< Page items
+      LayoutMap, //!< Map item
       LayoutRectangle, //!< Rectangular shape item
       LayoutEllipse, //!< Ellipse shape item
       LayoutTriangle, //!< Triangle shape item
@@ -270,8 +271,9 @@ class TestLayoutItem : public QgsLayoutItem
     ~TestLayoutItem() {}
 
     //implement pure virtual methods
-    int type() const { return QgsLayoutItemRegistry::LayoutItem + 102; }
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr );
+    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 102; }
+    QString stringType() const override { return QStringLiteral( "ItemTest" ); }
+    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
   private:
     QColor mColor;

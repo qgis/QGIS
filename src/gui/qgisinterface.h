@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgisinterface.h
- Interface class for exposing functions in QgisApp for use by plugins
+  Interface class for exposing functions in QgisApp for use by plugins
                              -------------------
   begin                : 2004-02-11
   copyright            : (C) 2004 by Gary E.Sherman
@@ -69,6 +69,7 @@ class QgsStatusBar;
  * could provide their own implementation to be able to use plugins.
  */
 
+Q_NOWARN_DEPRECATED_PUSH
 class GUI_EXPORT QgisInterface : public QObject
 {
     Q_OBJECT
@@ -127,6 +128,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see createNewMapCanvas()
      */
     virtual void closeMapCanvas( const QString &name ) = 0;
+
+    /**
+     * Returns the toolbar icon size. If \a dockedToolbar is true, the icon size
+     * for toolbars contained within docks is returned.
+     */
+    virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
 
   public slots: // TODO: do these functions really need to be slots?
 
@@ -452,7 +459,6 @@ class GUI_EXPORT QgisInterface : public QObject
     Q_DECL_DEPRECATED
 #endif
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;
-
 
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
@@ -791,5 +797,6 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif //#ifndef QGISINTERFACE_H

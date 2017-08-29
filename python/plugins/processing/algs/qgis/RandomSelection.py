@@ -30,13 +30,16 @@ import os
 import random
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsFeatureSink, QgsProcessingUtils
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessingException,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputVectorLayer)
+
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -52,7 +55,7 @@ class RandomSelection(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
 
     def group(self):
-        return self.tr('Vector selection tools')
+        return self.tr('Vector selection')
 
     def __init__(self):
         super().__init__()
@@ -61,13 +64,14 @@ class RandomSelection(QgisAlgorithm):
         self.methods = [self.tr('Number of selected features'),
                         self.tr('Percentage of selected features')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Method'), self.methods, 0))
-        self.addParameter(ParameterNumber(self.NUMBER,
-                                          self.tr('Number/percentage of selected features'), 0, None, 10))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Method'), self.methods, False, 0))
+        self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
+                                                       self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Integer,
+                                                       10, False, 0.0, 999999999999.0))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (random)')))
 
     def name(self):
         return 'randomselection'
@@ -76,23 +80,20 @@ class RandomSelection(QgisAlgorithm):
         return self.tr('Random selection')
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.getParameterValue(self.INPUT)
-        layer = QgsProcessingUtils.mapLayerFromString(filename, context)
-        method = self.getParameterValue(self.METHOD)
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
 
         featureCount = layer.featureCount()
-        value = int(self.getParameterValue(self.NUMBER))
-
-        layer.removeSelection()
+        value = self.parameterAsInt(parameters, self.NUMBER, context)
 
         if method == 0:
             if value > featureCount:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Selected number is greater than feature count. '
                             'Choose a lower value and try again.'))
         else:
             if value > 100:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr("Percentage can't be greater than 100. Set a "
                             "different value and try again."))
             value = int(round(value / 100.0, 4) * featureCount)
@@ -100,4 +101,4 @@ class RandomSelection(QgisAlgorithm):
         selran = random.sample(list(range(featureCount)), value)
 
         layer.selectByIds(selran)
-        self.setOutputValue(self.OUTPUT, filename)
+        return {self.OUTPUT: parameters[self.INPUT]}

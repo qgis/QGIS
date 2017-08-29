@@ -29,36 +29,33 @@ __revision__ = '$Format:%H$'
 import sys
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsProcessingException,
                        QgsField,
                        QgsFeatureSink,
-                       QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
 
 
 class FieldsPyculator(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     FIELD_NAME = 'FIELD_NAME'
     FIELD_TYPE = 'FIELD_TYPE'
     FIELD_LENGTH = 'FIELD_LENGTH'
     FIELD_PRECISION = 'FIELD_PRECISION'
     GLOBAL = 'GLOBAL'
     FORMULA = 'FORMULA'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
     RESULT_VAR_NAME = 'value'
 
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def __init__(self):
         super().__init__()
@@ -68,21 +65,21 @@ class FieldsPyculator(QgisAlgorithm):
                            self.tr('Float'),
                            self.tr('String')]
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterString(self.FIELD_NAME,
-                                          self.tr('Result field name'), 'NewField'))
-        self.addParameter(ParameterSelection(self.FIELD_TYPE,
-                                             self.tr('Field type'), self.type_names))
-        self.addParameter(ParameterNumber(self.FIELD_LENGTH,
-                                          self.tr('Field length'), 1, 255, 10))
-        self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-                                          self.tr('Field precision'), 0, 10, 0))
-        self.addParameter(ParameterString(self.GLOBAL,
-                                          self.tr('Global expression'), multiline=True, optional=True))
-        self.addParameter(ParameterString(self.FORMULA,
-                                          self.tr('Formula'), 'value = ', multiline=True))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
+                                                       self.tr('Result field name'), defaultValue='NewField'))
+        self.addParameter(QgsProcessingParameterEnum(self.FIELD_TYPE,
+                                                     self.tr('Field type'), options=self.type_names))
+        self.addParameter(QgsProcessingParameterNumber(self.FIELD_LENGTH,
+                                                       self.tr('Field length'), minValue=1, maxValue=255, defaultValue=10))
+        self.addParameter(QgsProcessingParameterNumber(self.FIELD_PRECISION,
+                                                       self.tr('Field precision'), minValue=0, maxValue=15, defaultValue=3))
+        self.addParameter(QgsProcessingParameterString(self.GLOBAL,
+                                                       self.tr('Global expression'), multiLine=True, optional=True))
+        self.addParameter(QgsProcessingParameterString(self.FORMULA,
+                                                       self.tr('Formula'), defaultValue='value = ', multiLine=True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('Calculated')))
 
     def name(self):
         return 'advancedpythonfieldcalculator'
@@ -91,21 +88,21 @@ class FieldsPyculator(QgisAlgorithm):
         return self.tr('Advanced Python field calculator')
 
     def processAlgorithm(self, parameters, context, feedback):
-        fieldName = self.getParameterValue(self.FIELD_NAME)
-        fieldType = self.getParameterValue(self.FIELD_TYPE)
-        fieldLength = self.getParameterValue(self.FIELD_LENGTH)
-        fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
-        code = self.getParameterValue(self.FORMULA)
-        globalExpression = self.getParameterValue(self.GLOBAL)
-        output = self.getOutputFromName(self.OUTPUT_LAYER)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
+        field_type = self.TYPES[self.parameterAsEnum(parameters, self.FIELD_TYPE, context)]
+        width = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
+        precision = self.parameterAsInt(parameters, self.FIELD_PRECISION, context)
+        code = self.parameterAsString(parameters, self.FORMULA, context)
+        globalExpression = self.parameterAsString(parameters, self.GLOBAL, context)
 
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_LAYER), context)
-        fields = layer.fields()
-        fields.append(QgsField(fieldName, self.TYPES[fieldType], '',
-                               fieldLength, fieldPrecision))
-        writer = output.getVectorWriter(fields, layer.wkbType(), layer.crs(), context)
-        outFeat = QgsFeature()
+        fields = source.fields()
+        fields.append(QgsField(field_name, self.TYPES[field_type], '',
+                               width, precision))
         new_ns = {}
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, source.wkbType(), source.sourceCrs())
 
         # Run global code
         if globalExpression.strip() != '':
@@ -113,11 +110,11 @@ class FieldsPyculator(QgisAlgorithm):
                 bytecode = compile(globalExpression, '<string>', 'exec')
                 exec(bytecode, new_ns)
             except:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr("FieldPyculator code execute error.Global code block can't be executed!\n{0}\n{1}").format(str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Replace all fields tags
-        fields = layer.fields()
+        fields = source.fields()
         num = 0
         for field in fields:
             field_name = str(field.name())
@@ -136,13 +133,17 @@ class FieldsPyculator(QgisAlgorithm):
         try:
             bytecode = compile(code, '<string>', 'exec')
         except:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr("FieldPyculator code execute error. Field code block can't be executed!\n{0}\n{1}").format(str(sys.exc_info()[0].__name__), str(sys.exc_info()[1])))
 
         # Run
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
+
         for current, feat in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()
             feat_id = feat.id()
@@ -168,18 +169,17 @@ class FieldsPyculator(QgisAlgorithm):
 
             # Check result
             if self.RESULT_VAR_NAME not in new_ns:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr("FieldPyculator code execute error\n"
                             "Field code block does not return '{0}' variable! "
                             "Please declare this variable in your code!").format(self.RESULT_VAR_NAME))
 
             # Write feature
-            outFeat.setGeometry(feat.geometry())
             attrs.append(new_ns[self.RESULT_VAR_NAME])
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            feat.setAttributes(attrs)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
-        del writer
+        return {self.OUTPUT: dest_id}
 
     def checkParameterValues(self, parameters, context):
         # TODO check that formula is correct and fields exist
