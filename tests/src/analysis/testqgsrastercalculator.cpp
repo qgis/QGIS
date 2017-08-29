@@ -25,7 +25,6 @@ Email                : nyall dot dawson at gmail dot com
 
 Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator )
 
-
 class TestQgsRasterCalculator : public QObject
 {
     Q_OBJECT

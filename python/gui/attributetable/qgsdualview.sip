@@ -34,6 +34,7 @@ class QgsDualView : QStackedWidget
       AttributeEditor
     };
 
+
     explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  Constructor

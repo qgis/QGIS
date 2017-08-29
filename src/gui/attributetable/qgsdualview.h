@@ -42,7 +42,6 @@ class QgsScrollArea;
 class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBase
 {
     Q_OBJECT
-    Q_ENUMS( ViewMode )
 
   public:
 
@@ -66,6 +65,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
        */
       AttributeEditor = 1
     };
+
+    Q_ENUM( ViewMode );
 
     /**
      * \brief Constructor
