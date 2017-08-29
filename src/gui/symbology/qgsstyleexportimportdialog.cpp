@@ -200,7 +200,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
     QStandardItem *item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 15 );
     item->setIcon( icon );
-    item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+    item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
     // Set font to 10points to show reasonable text
     QFont itemFont = item->font();
     itemFont.setPointSize( 10 );

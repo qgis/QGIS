@@ -99,9 +99,7 @@ bool QgsDwgImporter::exec( QString sql, bool logError )
   if ( logError )
   {
     LOG( QObject::tr( "SQL statement failed\nDatabase:%1\nSQL:%2\nError:%3" )
-         .arg( mDatabase )
-         .arg( sql )
-         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+         .arg( mDatabase, sql, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
   return false;
 }
@@ -127,9 +125,7 @@ OGRLayerH QgsDwgImporter::query( QString sql )
     return layer;
 
   LOG( QObject::tr( "SQL statement failed\nDatabase:%1\nSQL:%2\nError:%3" )
-       .arg( mDatabase )
-       .arg( sql )
-       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+       .arg( mDatabase, sql, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
 
   OGR_DS_ReleaseResultSet( mDs, layer );
 
@@ -145,8 +141,7 @@ void QgsDwgImporter::startTransaction()
   if ( !mInTransaction )
   {
     LOG( QObject::tr( "Could not start transaction\nDatabase:%1\nError:%2" )
-         .arg( mDatabase )
-         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+         .arg( mDatabase, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
 }
 
@@ -157,8 +152,7 @@ void QgsDwgImporter::commitTransaction()
   if ( mInTransaction && GDALDatasetCommitTransaction( mDs ) != OGRERR_NONE )
   {
     LOG( QObject::tr( "Could not commit transaction\nDatabase:%1\nError:%2" )
-         .arg( mDatabase )
-         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+         .arg( mDatabase, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
   mInTransaction = false;
 }
@@ -608,7 +602,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
 
   OGR_F_Destroy( f );
 
-  LOG( QObject::tr( "Updating database from %1 [%2]." ).arg( drawing ).arg( fi.lastModified().toString() ) );
+  LOG( QObject::tr( "Updating database from %1 [%2]." ).arg( drawing, fi.lastModified().toString() ) );
 
   DRW::error result( DRW::BAD_NONE );
 
@@ -752,9 +746,9 @@ void QgsDwgImporter::addHeader( const DRW_Header *data )
 
       case DRW_Variant::COORD:
         v = QString( "%1,%2,%3" )
-            .arg( qgsDoubleToString( it->second->content.v->x ) )
-            .arg( qgsDoubleToString( it->second->content.v->y ) )
-            .arg( qgsDoubleToString( it->second->content.v->z ) );
+            .arg( qgsDoubleToString( it->second->content.v->x ),
+                  qgsDoubleToString( it->second->content.v->y ),
+                  qgsDoubleToString( it->second->content.v->z ) );
         break;
 
       case DRW_Variant::INVALID:
@@ -767,9 +761,9 @@ void QgsDwgImporter::addHeader( const DRW_Header *data )
     if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
     {
       LOG( QObject::tr( "Could not add %3 %1 [%2]" )
-           .arg( k )
-           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
-           .arg( QObject::tr( "header record" ) )
+           .arg( k,
+                 QString::fromUtf8( CPLGetLastErrorMsg() ),
+                 QObject::tr( "header record" ) )
          );
     }
 

@@ -269,7 +269,7 @@ void QgsDwgImportDialog::on_pbImportDrawing_clicked()
 
 QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, QString layerFilter, QString table )
 {
-  QgsVectorLayer *l = new QgsVectorLayer( QString( "%1|layername=%2" ).arg( leDatabase->text() ).arg( table ), table, "ogr", false );
+  QgsVectorLayer *l = new QgsVectorLayer( QString( "%1|layername=%2" ).arg( leDatabase->text(), table ), table, "ogr", false );
   l->setSubsetString( QString( "%1space=0 AND block=-1" ).arg( layerFilter ) );
 
   if ( l->featureCount() == 0 )

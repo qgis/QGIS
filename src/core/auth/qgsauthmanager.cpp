@@ -3060,8 +3060,7 @@ void QgsAuthManager::passwordHelperProcessError()
     mPasswordHelperErrorMessage = tr( "There was an error and integration with your %1 system has been disabled. "
                                       "You can re-enable it at any time through the \"Utilities\" menu "
                                       "in the Authentication pane of the options dialog. %2" )
-                                  .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME )
-                                  .arg( mPasswordHelperErrorMessage );
+                                  .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, mPasswordHelperErrorMessage );
   }
   if ( mPasswordHelperErrorCode != QKeychain::NoError )
   {

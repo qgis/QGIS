@@ -286,7 +286,7 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
-      item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+      item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
       // add to model
       model->appendRow( item );
     }

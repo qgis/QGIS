@@ -808,7 +808,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 #endif
 
     QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
-                          .arg( projectFile.fileName() ).arg( errorMsg ).arg( line ).arg( column );
+                          .arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
 
     QgsDebugMsg( errorString );
 

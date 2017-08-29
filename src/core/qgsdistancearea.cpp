@@ -84,7 +84,7 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 // Also, b = a-(a/invf)
 bool QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
-  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ) ).arg( qgsDoubleToString( semiMinor ) );
+  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ), qgsDoubleToString( semiMinor ) );
   mSemiMajor = semiMajor;
   mSemiMinor = semiMinor;
   mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
