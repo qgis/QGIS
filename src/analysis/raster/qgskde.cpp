@@ -20,10 +20,6 @@
 
 #define NO_DATA -9999
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEstimation::Parameters &parameters, const QString &outputFile, const QString &outputFormat )
   : mSource( parameters.source )
   , mOutputFile( outputFile )

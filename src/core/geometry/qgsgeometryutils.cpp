@@ -1162,7 +1162,7 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const Q
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
 {
   double at = std::atan2( y2 - y1, x2 - x1 );
-  double a = -at + M_PI / 2.0;
+  double a = -at + M_PI_2;
   return normalizedAngle( a );
 }
 
@@ -1176,7 +1176,7 @@ double QgsGeometryUtils::angleBetweenThreePoints( double x1, double y1, double x
 double QgsGeometryUtils::linePerpendicularAngle( double x1, double y1, double x2, double y2 )
 {
   double a = lineAngle( x1, y1, x2, y2 );
-  a += ( M_PI / 2.0 );
+  a += M_PI_2;
   return normalizedAngle( a );
 }
 

@@ -2198,8 +2198,8 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
       else if ( background.type() == QgsTextBackgroundSettings::ShapeEllipse )
       {
         // start with label bound by ellipse
-        h = h / std::sqrt( 2.0 ) * 2;
-        w = w / std::sqrt( 2.0 ) * 2;
+        h = h * M_SQRT1_2 * 2;
+        w = w * M_SQRT1_2 * 2;
       }
 
       double bufferWidth = context.convertToPainterUnits( background.size().width(), background.sizeUnit(),
@@ -2388,8 +2388,8 @@ void QgsTextRenderer::drawShadow( QgsRenderContext &context, const QgsTextRender
     angleRad -= ( component.rotation * M_PI / 180 + component.rotationOffset * M_PI / 180 );
   }
 
-  QPointF transPt( -offsetDist * std::cos( angleRad + M_PI / 2 ),
-                   -offsetDist * std::sin( angleRad + M_PI / 2 ) );
+  QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ),
+                   -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   p->save();
   p->setRenderHint( QPainter::SmoothPixmapTransform );

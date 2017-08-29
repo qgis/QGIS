@@ -25,10 +25,6 @@
 #include <QPainter>
 #include <cmath>
 
-#ifndef M_SQRT2
-#define M_SQRT2 1.41421356237309504880
-#endif
-
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &labelAttributeName )
   : QgsPointDistanceRenderer( QStringLiteral( "pointDisplacement" ), labelAttributeName )
   , mPlacement( Ring )

@@ -34,11 +34,6 @@
 #include "qgsunittypes.h"
 #include "qgsexception.h"
 
-// MSVC compiler doesn't have defined M_PI in math.h
-#ifndef M_PI
-#define M_PI          3.14159265358979323846
-#endif
-
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define RAD2DEG(r) (180.0 * (r) / M_PI)
 #define POW2(x) ((x)*(x))
@@ -667,7 +662,7 @@ void QgsDistanceArea::computeAreaInit()
   m_QbarC =                     - ( 3.0 / 25.0 ) * e4 - ( 12.0 / 35.0 ) * e6;
   m_QbarD = ( 4.0 / 49.0 ) * e6;
 
-  m_Qp = getQ( M_PI / 2 );
+  m_Qp = getQ( M_PI_2 );
   m_E  = 4 * M_PI * m_Qp * m_AE;
   if ( m_E < 0.0 )
     m_E = -m_E;

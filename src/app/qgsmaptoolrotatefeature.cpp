@@ -36,8 +36,6 @@
 #include <limits>
 #include <cmath>
 
-#define PI 3.14159265
-
 QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *parent )
   : QWidget( parent )
 {
@@ -152,7 +150,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     const double XDistance = e->pos().x() - mStPoint.x();
     const double YDistance = e->pos().y() - mStPoint.y();
-    double rotation = std::atan2( YDistance, XDistance ) * ( 180 / PI );
+    double rotation = std::atan2( YDistance, XDistance ) * ( 180 / M_PI );
 
     if ( mRotationWidget )
     {
@@ -297,7 +295,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     double XDistance = mInitialPos.x() - mAnchorPoint->x();
     double YDistance = mInitialPos.y() - mAnchorPoint->y() ;
-    mRotationOffset = std::atan2( YDistance, XDistance ) * ( 180 / PI );
+    mRotationOffset = std::atan2( YDistance, XDistance ) * ( 180 / M_PI );
 
     createRotationWidget();
     if ( e->modifiers() & Qt::ShiftModifier )
@@ -349,7 +347,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   }
 
   //calculations for affine transformation
-  double angle = -1 * mRotation * ( PI / 180 );
+  double angle = -1 * mRotation * ( M_PI / 180 );
   QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
   double a = std::cos( angle );
   double b = -1 * std::sin( angle );
