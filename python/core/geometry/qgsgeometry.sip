@@ -1292,10 +1292,11 @@ Returns an extruded version of this geometry.
  :rtype: int
 %End
 
-    QString error() const;
+    QString lastError() const;
 %Docstring
- Returns an error string referring to an error that was produced
- when this geometry was created.
+ Returns an error string referring to the last error encountered
+ either when this geometry was created or when an operation
+ was performed on the geometry.
 
 .. versionadded:: 3.0
  :rtype: str

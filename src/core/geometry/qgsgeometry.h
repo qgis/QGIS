@@ -1230,12 +1230,13 @@ class CORE_EXPORT QgsGeometry
     int vertexNrFromVertexId( QgsVertexId i ) const;
 
     /**
-     * Returns an error string referring to an error that was produced
-     * when this geometry was created.
+     * Returns an error string referring to the last error encountered
+     * either when this geometry was created or when an operation
+     * was performed on the geometry.
      *
      * \since QGIS 3.0
      */
-    QString error() const;
+    QString lastError() const;
 
     /**
      * Return GEOS context handle
@@ -1482,6 +1483,9 @@ class CORE_EXPORT QgsGeometry
   private:
 
     QgsGeometryPrivate *d; //implicitly shared data pointer
+
+    //! Last error encountered
+    mutable QString mLastError;
 
     void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
 
