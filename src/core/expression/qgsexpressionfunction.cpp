@@ -53,6 +53,7 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
   QVariantList argValues;
   if ( args )
   {
+    int arg = 0;
     Q_FOREACH ( QgsExpressionNode *n, args->list() )
     {
       QVariant v;
@@ -65,10 +66,12 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
       {
         v = n->eval( parent, context );
         ENSURE_NO_EVAL_ERROR;
-        if ( QgsExpressionUtils::isNull( v ) && !handlesNull() )
+        bool defaultParamIsNull = mParameterList.count() > arg && mParameterList.at( arg ).optional() && !mParameterList.at( arg ).defaultValue().isValid();
+        if ( QgsExpressionUtils::isNull( v ) && !defaultParamIsNull && !handlesNull() )
           return QVariant(); // all "normal" functions return NULL, when any QgsExpressionFunction::Parameter is NULL (so coalesce is abnormal)
       }
       argValues.append( v );
+      arg++;
     }
   }
 
