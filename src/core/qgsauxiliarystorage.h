@@ -305,10 +305,10 @@ class CORE_EXPORT QgsAuxiliaryStorage
     static bool exec( const QString &sql, sqlite3 *handler );
     static void debugMsg( const QString &sql, sqlite3 *handler );
 
-    bool mValid;
+    bool mValid = false;
     QString mFileName; // original filename
     QString mTmpFileName; // temporary filename used in copy mode
-    bool mCopy;
+    bool mCopy = false;
 };
 
 #endif

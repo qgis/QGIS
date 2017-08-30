@@ -261,10 +261,7 @@ bool QgsAuxiliaryLayer::save()
 //
 
 QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QgsProject &project, bool copy )
-  : mValid( false )
-  , mFileName( QString() )
-  , mTmpFileName( QString() )
-  , mCopy( copy )
+  : mCopy( copy )
 {
   initTmpFileName();
 
@@ -278,9 +275,7 @@ QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QgsProject &project, bool copy )
 }
 
 QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QString &filename, bool copy )
-  : mValid( false )
-  , mFileName( filename )
-  , mTmpFileName( QString() )
+  : mFileName( filename )
   , mCopy( copy )
 {
   initTmpFileName();
