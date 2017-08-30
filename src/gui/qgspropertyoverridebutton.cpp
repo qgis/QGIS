@@ -333,7 +333,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
 
   mDefineMenu->addSeparator();
 
-  // deactivate button if field yet exists
+  // deactivate button if field already exists
   mDefineMenu->addAction( mActionCreateAuxiliaryField );
 
   const QgsAuxiliaryLayer *alayer = mVectorLayer->auxiliaryLayer();
