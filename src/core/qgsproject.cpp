@@ -426,8 +426,6 @@ void QgsProject::setFileName( const QString &name )
   if ( newHomePath != oldHomePath )
     emit homePathChanged();
 
-  mArchive->clear();
-
   setDirty( true );
 }
 
