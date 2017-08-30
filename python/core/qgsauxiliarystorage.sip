@@ -184,6 +184,11 @@ class QgsAuxiliaryStorage
 %Docstring
  Constructor.
 
+ The project filename is used to build a database path at the same
+ location, but with a different extension. Then, it's the same logic as
+.. seealso:: QgsAuxiliaryStorage(const QString &, bool copy).
+
+
  \param project The project for which the auxiliary storage has to be used
  \param copy Parameter indicating if a copy of the database has to be used
 %End
@@ -191,6 +196,21 @@ class QgsAuxiliaryStorage
     QgsAuxiliaryStorage( const QString &filename = QString(), bool copy = true );
 %Docstring
  Constructor.
+
+ If a valid database path is given in parameter and copy mode is
+ deactivated, then every changes is directly committed on the original
+ database. But if the copy mode is activated, then changes are committed
+ on a copy of the database (a temporary file) and a save action is
+ therefore necessary to keep modifications in the original file.
+
+ If an empty string for the database path is given in parameter, then
+ a database is created in a temporary file whatever the copy mode.
+
+ If the database path given in parameter is not empty but does not exist,
+ then a database is created at this location when copy mode is
+ deactivated. When copy mode is activated, a temporary database is used
+ instead and a save action will be necessary to create the database at
+ the original location given in parameter.
 
  \param filename The path of the database
  \param copy Parameter indicating if a copy of the database has to be used
