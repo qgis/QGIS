@@ -229,11 +229,11 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
-    QAction *mAuxiliaryLayerActionNew;
-    QAction *mAuxiliaryLayerActionClear;
-    QAction *mAuxiliaryLayerActionDelete;
-    QAction *mAuxiliaryLayerActionExport;
-    QAction *mAuxiliaryLayerActionDeleteField;
+    QAction *mAuxiliaryLayerActionNew = nullptr;
+    QAction *mAuxiliaryLayerActionClear = nullptr;
+    QAction *mAuxiliaryLayerActionDelete = nullptr;
+    QAction *mAuxiliaryLayerActionExport = nullptr;
+    QAction *mAuxiliaryLayerActionDeleteField = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );
