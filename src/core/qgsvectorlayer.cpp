@@ -4270,11 +4270,11 @@ bool QgsVectorLayer::loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage )
 
 void QgsVectorLayer::setAuxiliaryLayer( QgsAuxiliaryLayer *alayer )
 {
+  if ( mAuxiliaryLayer )
+    removeJoin( mAuxiliaryLayer->id() );
+
   if ( alayer )
   {
-    if ( mAuxiliaryLayer )
-      removeJoin( mAuxiliaryLayer->id() );
-
     addJoin( alayer->joinInfo() );
 
     if ( !alayer->isEditable() )
