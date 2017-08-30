@@ -2,11 +2,11 @@
 
 """
 ***************************************************************************
-    ExtentFromLayer.py
+    ExtentFromRasterLayer.py
     ---------------------
-    Date                 : August 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : August 2017
+    Copyright            : (C) 2017 by Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Nyall Dawson'
+__date__ = 'August 2017'
+__copyright__ = '(C) 2017, Nyall Dawson'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -37,9 +37,8 @@ from qgis.core import (QgsField,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterBoolean,
                        QgsFields)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -47,11 +46,9 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ExtentFromLayer(QgisAlgorithm):
+class ExtentFromRasterLayer(QgisAlgorithm):
 
     INPUT = 'INPUT'
-    BY_FEATURE = 'BY_FEATURE'
-
     OUTPUT = 'OUTPUT'
 
     def icon(self):
@@ -61,27 +58,23 @@ class ExtentFromLayer(QgisAlgorithm):
         return self.tr('extent,envelope,bounds,bounding,boundary,layer').split(',')
 
     def group(self):
-        return self.tr('Vector general')
+        return self.tr('Raster tools')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterBoolean(self.BY_FEATURE,
-                                                        self.tr('Calculate extent for each feature separately'), False))
-
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
-        return 'polygonfromlayerextent'
+        return 'polygonfromrasterextent'
 
     def displayName(self):
-        return self.tr('Polygon from vector extent')
+        return self.tr('Polygon from raster extent')
 
     def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT, context)
-        byFeature = self.parameterAsBool(parameters, self.BY_FEATURE, context)
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
 
         fields = QgsFields()
         fields.append(QgsField('MINX', QVariant.Double))
@@ -96,17 +89,14 @@ class ExtentFromLayer(QgisAlgorithm):
         fields.append(QgsField('WIDTH', QVariant.Double))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
+                                               fields, QgsWkbTypes.Polygon, raster.crs())
 
-        if byFeature:
-            self.featureExtent(source, context, sink, feedback)
-        else:
-            self.layerExtent(source, sink, feedback)
+        self.layerExtent(raster, sink, feedback)
 
         return {self.OUTPUT: dest_id}
 
-    def layerExtent(self, source, sink, feedback):
-        rect = source.sourceExtent()
+    def layerExtent(self, raster, sink, feedback):
+        rect = raster.extent()
         geometry = QgsGeometry.fromRect(rect)
         minx = rect.xMinimum()
         miny = rect.yMinimum()
@@ -135,44 +125,3 @@ class ExtentFromLayer(QgisAlgorithm):
         ]
         feat.setAttributes(attrs)
         sink.addFeature(feat, QgsFeatureSink.FastInsert)
-
-    def featureExtent(self, source, context, sink, feedback):
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        feat = QgsFeature()
-        for current, f in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            rect = f.geometry().boundingBox()
-            minx = rect.xMinimum()
-            miny = rect.yMinimum()
-            maxx = rect.xMaximum()
-            maxy = rect.yMaximum()
-            height = rect.height()
-            width = rect.width()
-            cntx = minx + width / 2.0
-            cnty = miny + height / 2.0
-            area = width * height
-            perim = 2 * width + 2 * height
-            rect = [QgsPointXY(minx, miny), QgsPointXY(minx, maxy), QgsPointXY(maxx,
-                                                                               maxy), QgsPointXY(maxx, miny), QgsPointXY(minx, miny)]
-
-            geometry = QgsGeometry().fromPolygon([rect])
-            feat.setGeometry(geometry)
-            attrs = [
-                minx,
-                miny,
-                maxx,
-                maxy,
-                cntx,
-                cnty,
-                area,
-                perim,
-                height,
-                width,
-            ]
-            feat.setAttributes(attrs)
-
-            sink.addFeature(feat, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))

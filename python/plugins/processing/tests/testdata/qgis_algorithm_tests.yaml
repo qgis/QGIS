@@ -2845,7 +2845,7 @@ tests:
     name: Standard polygon from layer extent
     params:
       BY_FEATURE: false
-      INPUT_LAYER:
+      INPUT:
         name: polys.gml
         type: vector
     results:
@@ -3227,4 +3227,15 @@ tests:
     results:
       OUTPUT:
         name: expected/execute_sql.gml
+        type: vector
+
+  - algorithm: qgis:polygonfromrasterextent
+    name: Polygon from raster extent
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_extent.gml
         type: vector

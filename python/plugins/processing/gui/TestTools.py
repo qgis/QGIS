@@ -27,6 +27,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import posixpath
 import re
 import yaml
 import hashlib
@@ -81,7 +82,8 @@ def extractSchemaPath(filepath):
         if part == 'testdata' and not localpath:
             localparts = parts
             localparts.reverse()
-            localpath = os.path.join(*localparts)
+            # we always want posix style paths here
+            localpath = posixpath.join(*localparts)
 
         parts.append(part)
 
