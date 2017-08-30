@@ -136,7 +136,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
     bool exists( const QgsPropertyDefinition &definition ) const;
 %Docstring
- Returns true if the property is stored in the layer yet, false
+ Returns true if the property is stored in the layer already, false
  otherwise.
 
  \param definition The property definition to check
