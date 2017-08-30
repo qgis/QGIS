@@ -788,7 +788,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    void setAuxiliaryLayer( QgsAuxiliaryLayer *layer = 0 );
+    void setAuxiliaryLayer( QgsAuxiliaryLayer *layer /Transfer/ = 0 );
 %Docstring
  Sets the current auxiliary layer. The auxiliary layer is automatically
  put in editable mode and fields are updated. Moreover, a join is created

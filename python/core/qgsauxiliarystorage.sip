@@ -286,7 +286,7 @@ class QgsAuxiliaryStorage
  :rtype: bool
 %End
 
-    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const;
+    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const /Factory/;
 %Docstring
  Creates an auxiliary layer for a vector layer. A new table is created if
  necessary. The primary key to use to construct the auxiliary layer is

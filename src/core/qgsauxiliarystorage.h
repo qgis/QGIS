@@ -313,7 +313,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
      *
      * \returns A new auxiliary layer or a nullptr if an error happened.
      */
-    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const;
+    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const SIP_FACTORY;
 
     /**
      * Removes a table from the auxiliary storage.

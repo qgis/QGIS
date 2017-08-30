@@ -807,7 +807,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.0
      *
      */
-    void setAuxiliaryLayer( QgsAuxiliaryLayer *layer = nullptr );
+    void setAuxiliaryLayer( QgsAuxiliaryLayer *layer SIP_TRANSFER = nullptr );
 
     /**
      * Returns the current auxiliary layer.
