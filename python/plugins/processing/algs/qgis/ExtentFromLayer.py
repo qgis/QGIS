@@ -77,7 +77,7 @@ class ExtentFromLayer(QgisAlgorithm):
         return 'polygonfromlayerextent'
 
     def displayName(self):
-        return self.tr('Polygon from layer extent')
+        return self.tr('Polygon from vector extent')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
