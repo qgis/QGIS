@@ -93,6 +93,10 @@ SET(QGIS_CORE_SRCS
   expression/qgsexpressionfunction.cpp
   expression/qgsexpressionutils.cpp
 
+  locator/qgslocator.cpp
+  locator/qgslocatorfilter.cpp
+  locator/qgslocatormodel.cpp
+
   processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
@@ -659,6 +663,10 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
+  locator/qgslocator.h
+  locator/qgslocatorfilter.h
+  locator/qgslocatormodel.h
+
   processing/qgsnativealgorithms.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
@@ -1036,6 +1044,8 @@ SET(QGIS_CORE_HDRS
 
   layertree/qgslayertreeutils.h
 
+  locator/qgslocatorcontext.h
+
   geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
   geometry/qgscircularstring.h
@@ -1098,6 +1108,7 @@ INCLUDE_DIRECTORIES(
   geometry
   layertree
   layout
+  locator
   metadata
   pal
   processing

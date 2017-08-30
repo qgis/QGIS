@@ -18,17 +18,17 @@
 #ifndef QGSLOCATORCONTEXT_H
 #define QGSLOCATORCONTEXT_H
 
-#include "qgis_gui.h"
+#include "qgis_core.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 
 /**
  * \class QgsLocatorContext
- * \ingroup gui
+ * \ingroup core
  * Encapsulates the properties relating to the context of a locator search.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsLocatorContext
+class CORE_EXPORT QgsLocatorContext
 {
   public:
 
