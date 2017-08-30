@@ -39,11 +39,11 @@ from .buildvrt import buildvrt
 from .ColorRelief import ColorRelief
 from .information import information
 from .rgb2pct import rgb2pct
+from .translate import translate
 from .tri import tri
 from .warp import warp
 from .nearblack import nearblack
 
-# from .translate import translate
 # from .pct2rgb import pct2rgb
 # from .merge import merge
 # from .polygonize import polygonize
@@ -148,10 +148,9 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             information(),
             nearblack(),
             rgb2pct(),
+            translate(),
             tri(),
             warp(),
-            # translate(),
-            #
             # pct2rgb(),
             # merge(),
             # polygonize(),
