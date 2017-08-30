@@ -528,31 +528,30 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   // add geometry column
   if ( layer->isSpatial() )
   {
-    QString geomType = QLatin1String( "" );
-    switch ( layer->wkbType() )
+    QString geomType = wkbTypeAsString( layer->wkbType() );
+    // We cannot trust WFS wkbType because it may be deduced by
+    // the first feature from a GetFeature request, but a dataset
+    // can be (at least in QGIS server) composed by features with
+    // simple and MULTI geometries of the same type, for example
+    // POLYGON and MULTIPOLYGON is a quite common scenario.
+    if ( ! QgsWkbTypes::isMultiType( layer->wkbType() ) && layer->providerType() == QLatin1Literal( "WFS" ) )
     {
-      case QgsWkbTypes::Point:
-        geomType = QStringLiteral( "POINT" );
-        break;
-      case QgsWkbTypes::MultiPoint:
-        geomType = QStringLiteral( "MULTIPOINT" );
-        break;
-      case QgsWkbTypes::LineString:
-        geomType = QStringLiteral( "LINESTRING" );
-        break;
-      case QgsWkbTypes::MultiLineString:
-        geomType = QStringLiteral( "MULTILINESTRING" );
-        break;
-      case QgsWkbTypes::Polygon:
-        geomType = QStringLiteral( "POLYGON" );
-        break;
-      case QgsWkbTypes::MultiPolygon:
-        geomType = QStringLiteral( "MULTIPOLYGON" );
-        break;
-      default:
-        showWarning( tr( "QGIS wkbType %1 not supported" ).arg( layer->wkbType() ) );
-        break;
-    };
+      QgsFeatureIterator fit = layer->dataProvider()->getFeatures( );
+      QgsFeature f;
+      while ( fit.nextFeature( f ) )
+      {
+        if ( wkbTypeAsString( f.geometry().wkbType() ) != geomType )
+        {
+          geomType = wkbTypeAsString( f.geometry().wkbType() );
+          break;
+        }
+      }
+    }
+    // Quit if no valid type
+    if ( geomType.isEmpty() )
+    {
+      return nullptr;
+    }
     QString sqlAddGeom = QStringLiteral( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', 2)" )
                          .arg( tableName )
                          .arg( layer->crs().authid().startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) ? layer->crs().authid().mid( 5 ).toLong() : 0 )
@@ -909,6 +908,36 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLay
   {
     showWarning( error );
   }
+}
+
+QString QgsOfflineEditing::wkbTypeAsString( const QgsWkbTypes::Type wkbType )
+{
+  QString geomType;
+  switch ( wkbType )
+  {
+    case QgsWkbTypes::Point:
+      geomType = QStringLiteral( "POINT" );
+      break;
+    case QgsWkbTypes::MultiPoint:
+      geomType = QStringLiteral( "MULTIPOINT" );
+      break;
+    case QgsWkbTypes::LineString:
+      geomType = QStringLiteral( "LINESTRING" );
+      break;
+    case QgsWkbTypes::MultiLineString:
+      geomType = QStringLiteral( "MULTILINESTRING" );
+      break;
+    case QgsWkbTypes::Polygon:
+      geomType = QStringLiteral( "POLYGON" );
+      break;
+    case QgsWkbTypes::MultiPolygon:
+      geomType = QStringLiteral( "MULTIPOLYGON" );
+      break;
+    default:
+      showWarning( tr( "QGIS wkbType %1 not supported" ).arg( wkbType ) );
+      break;
+  };
+  return geomType;
 }
 
 void QgsOfflineEditing::updateRelations( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
