@@ -1123,6 +1123,15 @@ Returns true if the provider has been modified since the last commit
  :rtype: bool
 %End
 
+    bool isAuxiliaryField( int index ) const;
+%Docstring
+ Returns true if the field comes from the auxiliary layer,
+ false otherwise.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     virtual void reload();
 %Docstring
 Synchronises with changes in the datasource

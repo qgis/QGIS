@@ -1154,6 +1154,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Returns true if the provider has been modified since the last commit
     virtual bool isModified() const;
 
+    /**
+     * Returns true if the field comes from the auxiliary layer,
+     * false otherwise.
+     *
+     * \since QGIS 3.0
+     */
+    bool isAuxiliaryField( int index ) const;
+
     //! Synchronises with changes in the datasource
     virtual void reload() override;
 

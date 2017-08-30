@@ -175,8 +175,6 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       \since QGIS 2.16
       */
     bool isPinned();
-
-    bool isAuxiliaryField( QgsVectorLayer *layer, int index ) const;
 };
 
 #endif // QGSMAPTOOLLABEL_H

@@ -491,7 +491,7 @@ bool QgsMapToolLabel::labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayer
 
   if ( rotationCol >= 0 )
   {
-    bool auxiliaryField = isAuxiliaryField( layer, rotationCol );
+    bool auxiliaryField = layer->isAuxiliaryField( rotationCol );
 
     if ( !auxiliaryField )
     {
@@ -604,8 +604,8 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
       // defined columns come from auxiliary storage
       if ( xCol >= 0 && yCol >= 0 )
       {
-        bool xAuxiliaryField = isAuxiliaryField( vlayer, xCol );
-        bool yAuxiliaryField = isAuxiliaryField( vlayer, yCol );
+        bool xAuxiliaryField = vlayer->isAuxiliaryField( xCol );
+        bool yAuxiliaryField = vlayer->isAuxiliaryField( yCol );
 
         if ( ! xAuxiliaryField || ! yAuxiliaryField )
         {
@@ -653,8 +653,8 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   // columns come from auxiliary storage
   if ( xCol >= 0 && yCol >= 0 )
   {
-    bool xAuxiliaryField = isAuxiliaryField( vlayer, xCol );
-    bool yAuxiliaryField = isAuxiliaryField( vlayer, yCol );
+    bool xAuxiliaryField = vlayer->isAuxiliaryField( xCol );
+    bool yAuxiliaryField = vlayer->isAuxiliaryField( yCol );
 
     if ( ! xAuxiliaryField || ! yAuxiliaryField )
     {
@@ -691,7 +691,7 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
     showCol = vlayer->fields().lookupField( fieldname );
     if ( showCol >= 0 )
     {
-      bool auxiliaryField = isAuxiliaryField( vlayer, showCol );
+      bool auxiliaryField = vlayer->isAuxiliaryField( showCol );
 
       if ( ! auxiliaryField )
       {
@@ -751,7 +751,7 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
 
   if ( showCol >= 0 )
   {
-    bool auxiliaryField = isAuxiliaryField( vlayer, showCol );
+    bool auxiliaryField = vlayer->isAuxiliaryField( showCol );
 
     if ( !auxiliaryField )
     {
@@ -788,23 +788,4 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
     layer = nullptr;
     settings = QgsPalLayerSettings();
   }
-}
-
-bool QgsMapToolLabel::isAuxiliaryField( QgsVectorLayer *layer, int index ) const
-{
-  bool auxiliaryField = false;
-
-  if ( !layer->auxiliaryLayer() )
-    return auxiliaryField;
-
-  if ( index >= 0 && layer->fields().fieldOrigin( index ) == QgsFields::OriginJoin )
-  {
-    int srcFieldIndex;
-    const QgsVectorLayerJoinInfo *info = layer->joinBuffer()->joinForFieldIndex( index, layer->fields(), srcFieldIndex );
-
-    if ( info && info->joinLayerId() == layer->auxiliaryLayer()->id() )
-      auxiliaryField = true;
-  }
-
-  return auxiliaryField;
 }

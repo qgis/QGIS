@@ -2833,6 +2833,26 @@ bool QgsVectorLayer::isModified() const
   return mEditBuffer && mEditBuffer->isModified();
 }
 
+
+bool QgsVectorLayer::isAuxiliaryField( int index ) const
+{
+  bool auxiliaryField = false;
+
+  if ( !auxiliaryLayer() )
+    return auxiliaryField;
+
+  if ( index >= 0 && fields().fieldOrigin( index ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = mJoinBuffer->joinForFieldIndex( index, fields(), srcFieldIndex );
+
+    if ( info && info->joinLayerId() == auxiliaryLayer()->id() )
+      auxiliaryField = true;
+  }
+
+  return auxiliaryField;
+}
+
 void QgsVectorLayer::setRenderer( QgsFeatureRenderer *r )
 {
   if ( !isSpatial() )
