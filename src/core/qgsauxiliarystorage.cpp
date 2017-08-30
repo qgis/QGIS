@@ -47,7 +47,7 @@ QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
   const QString propertyName = parts[1];
   QgsPropertyDefinition def;
 
-  if ( origin.compare( "pal", Qt::CaseInsensitive ) == 0 )
+  if ( origin.compare( "labeling", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsPalLayerSettings::propertyDefinitions();
     Q_FOREACH ( const QgsPropertyDefinition p, props.values() )
@@ -126,20 +126,7 @@ bool QgsAuxiliaryLayer::clear()
 
 QString QgsAuxiliaryField::name( const QgsPropertyDefinition &def, bool joined )
 {
-  QString origin;
-  switch ( def.origin() )
-  {
-    case QgsPropertyDefinition::Pal:
-      origin = "pal";
-      break;
-    case QgsPropertyDefinition::Diagram:
-      origin = "diagram";
-      break;
-    default:
-      break;
-  }
-
-  QString fieldName = QString( "%2_%3" ).arg( origin, def.name().toLower() );
+  QString fieldName = QString( "%2_%3" ).arg( def.origin(), def.name().toLower() );
 
   if ( joined )
     fieldName = QString( "%1%2" ).arg( AS_JOINPREFIX, fieldName );

@@ -21,7 +21,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type, Origin origin )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type, const QString &origin )
   : mName( name )
   , mDescription( description )
   , mStandardType( type )
@@ -170,7 +170,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
   }
 }
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, Origin origin )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin )
   : mName( name )
   , mDescription( description )
   , mTypes( dataType )

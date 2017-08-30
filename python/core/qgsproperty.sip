@@ -67,18 +67,12 @@ class QgsPropertyDefinition
       DataTypeBoolean,
     };
 
-    enum Origin
-    {
-      Diagram,
-      Pal
-    };
-
     QgsPropertyDefinition();
 %Docstring
  Constructs an empty property.
 %End
 
-    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, Origin origin = QgsPropertyDefinition::Pal );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QStringLiteral( "labeling" ) );
 %Docstring
  Constructor for QgsPropertyDefinition, using a standard property template.
  \param name is used internally and should be a unique, alphanumeric string.
@@ -87,7 +81,7 @@ class QgsPropertyDefinition
  \param origin The origin of the property
 %End
 
-    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, Origin origin = QgsPropertyDefinition::Pal );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QStringLiteral( "labeling" ) );
 %Docstring
  Constructor for custom QgsPropertyDefinitions.
  \param name is used internally and should be a unique, alphanumeric string.
@@ -109,13 +103,13 @@ class QgsPropertyDefinition
  Sets the name of the property
 %End
 
-    Origin origin() const;
+    QString origin() const;
 %Docstring
  Returns the origin of the property
- :rtype: Origin
+ :rtype: str
 %End
 
-    void setOrigin( Origin origin );
+    void setOrigin( const QString &origin );
 %Docstring
  Sets origin of the property
 %End

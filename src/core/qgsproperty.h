@@ -105,13 +105,6 @@ class CORE_EXPORT QgsPropertyDefinition
       DataTypeBoolean,
     };
 
-    //! Indicates for which settings the property has been set
-    enum Origin
-    {
-      Diagram,
-      Pal
-    };
-
     /**
      * Constructs an empty property.
      */
@@ -124,7 +117,7 @@ class CORE_EXPORT QgsPropertyDefinition
      * \param type one of the predefined standard property template
      * \param origin The origin of the property
      */
-    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, Origin origin = QgsPropertyDefinition::Pal );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QStringLiteral( "labeling" ) );
 
     /**
      * Constructor for custom QgsPropertyDefinitions.
@@ -135,7 +128,7 @@ class CORE_EXPORT QgsPropertyDefinition
      * of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
      * \param origin The origin of the property
      */
-    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, Origin origin = QgsPropertyDefinition::Pal );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QStringLiteral( "labeling" ) );
 
     /**
      * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
@@ -150,12 +143,12 @@ class CORE_EXPORT QgsPropertyDefinition
     /**
      * Returns the origin of the property
      */
-    Origin origin() const { return mOrigin; }
+    QString origin() const { return mOrigin; }
 
     /**
      * Sets origin of the property
      */
-    void setOrigin( Origin origin ) { mOrigin = origin; }
+    void setOrigin( const QString &origin ) { mOrigin = origin; }
 
     /**
      * Descriptive name of the property.
@@ -191,7 +184,7 @@ class CORE_EXPORT QgsPropertyDefinition
     DataType mTypes = DataTypeString;
     QString mHelpText;
     StandardPropertyTemplate mStandardType = Custom;
-    Origin mOrigin;
+    QString mOrigin;
 
     static QString trString();
 };

@@ -34,7 +34,7 @@ void QgsDiagramLayerSettings::initPropertyDefinitions()
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
-  QgsPropertyDefinition::Origin origin = QgsPropertyDefinition::Diagram;
+  const QString origin = QStringLiteral( "diagram" );
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {

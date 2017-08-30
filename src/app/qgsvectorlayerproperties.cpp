@@ -1528,13 +1528,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
         const QgsPropertyDefinition prop = field.propertyDefinition();
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
-        if ( prop.origin() == QgsPropertyDefinition::Pal )
-          item->setText( 0, "Pal" );
-        else if ( prop.origin() == QgsPropertyDefinition::Diagram )
-          item->setText( 0, "Diagram" );
-        else
-          item->setText( 0, "Unknown" );
-
+        item->setText( 0, prop.origin() );
         item->setText( 1, prop.name() );
         item->setText( 2, field.typeName() );
 
@@ -1648,12 +1642,7 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
   // get auxiliary field name and index from item
   const QTreeWidgetItem *item = items[0];
   QgsPropertyDefinition def;
-
-  if ( item->text( 0 ).compare( "pal", Qt::CaseInsensitive ) == 0 )
-    def.setOrigin( QgsPropertyDefinition::Pal );
-  else
-    def.setOrigin( QgsPropertyDefinition::Diagram );
-
+  def.setOrigin( item->text( 0 ) );
   def.setName( item->text( 1 ) );
 
   const QString fieldName = QgsAuxiliaryField::name( def );
