@@ -2845,7 +2845,7 @@ tests:
     name: Standard polygon from layer extent
     params:
       BY_FEATURE: false
-      INPUT_LAYER:
+      INPUT:
         name: polys.gml
         type: vector
     results:
