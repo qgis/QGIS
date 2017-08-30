@@ -27,7 +27,7 @@ class QgsAuxiliaryField : QgsField
 %End
   public:
 
-    QgsAuxiliaryField( const QgsPropertyDefinition &def );
+    explicit QgsAuxiliaryField( const QgsPropertyDefinition &def );
 %Docstring
  Constructor
 

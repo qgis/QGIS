@@ -48,7 +48,7 @@ class CORE_EXPORT QgsAuxiliaryField : public QgsField
      * \param def Definition of the property to be stored by this auxiliary
      *  field.
      */
-    QgsAuxiliaryField( const QgsPropertyDefinition &def );
+    explicit QgsAuxiliaryField( const QgsPropertyDefinition &def );
 
     /**
      * Destructor
