@@ -204,7 +204,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 
   private:
     QgsVectorLayerJoinInfo mJoinInfo;
-    const QgsVectorLayer *mLayer;
+    const QgsVectorLayer *mLayer = nullptr;
 };
 
 

@@ -47,7 +47,7 @@ class APP_EXPORT QgsNewAuxiliaryLayerDialog: public QDialog, private Ui::QgsNewA
   private:
     void accept() override;
 
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 #endif
