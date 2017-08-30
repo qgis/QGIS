@@ -104,8 +104,6 @@ void QgsAuxiliaryField::init( const QgsPropertyDefinition &def )
         type = QVariant::Int; // sqlite does not have a bool type
         typeName = "Integer";
         break;
-      default:
-        break;
     }
 
     setType( type );
