@@ -1,23 +1,23 @@
 # See ../README.md for a description of the file format
 
 tests:
-#  - algorithm: gdal:gdalinfo
-#    name: gdalinfo
-#    params:
-#      INPUT:
-#        name: raster.tif
-#        type: raster
-#      NOGCP: false
-#      NOMETADATA: false
-#    results:
-#      OUTPUT:
-#        name: expected/gdal/raster_info.html
-#        type: regex
-#        rules:
-#          - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
-#          - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
-#          - '  NoData Value=-32768'
-#
+  - algorithm: gdal:gdalinfo
+    name: gdalinfo
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      NOGCP: false
+      NOMETADATA: false
+    results:
+      OUTPUT:
+        name: expected/gdal/raster_info.html
+        type: regex
+        rules:
+          - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
+          - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
+          - '  NoData Value=-32768'
+
 #  - algorithm: gdal:ogrinfo
 #    name: ogrinfo
 #    params:
