@@ -107,7 +107,7 @@ void QgsAuxiliaryField::init( const QgsPropertyDefinition &def )
     }
 
     setType( type );
-    setName( name( def ) );
+    setName( nameFromProperty( def ) );
     setTypeName( typeName );
     setLength( len );
     setPrecision( precision );
@@ -122,7 +122,7 @@ bool QgsAuxiliaryLayer::clear()
   return rc;
 }
 
-QString QgsAuxiliaryField::name( const QgsPropertyDefinition &def, bool joined )
+QString QgsAuxiliaryField::nameFromProperty( const QgsPropertyDefinition &def, bool joined )
 {
   QString fieldName = QString( "%2_%3" ).arg( def.origin(), def.name().toLower() );
 
@@ -194,7 +194,7 @@ QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const
 
 bool QgsAuxiliaryLayer::exists( const QgsPropertyDefinition &definition ) const
 {
-  return ( fields().indexOf( QgsAuxiliaryField::name( definition ) ) >= 0 );
+  return ( fields().indexOf( QgsAuxiliaryField::nameFromProperty( definition ) ) >= 0 );
 }
 
 bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definition )

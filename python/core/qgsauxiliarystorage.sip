@@ -46,8 +46,7 @@ class QgsAuxiliaryField : QgsField
  :rtype: QgsPropertyDefinition
 %End
 
-
-    static QString name( const QgsPropertyDefinition &def, bool joined = false );
+    static QString nameFromProperty( const QgsPropertyDefinition &def, bool joined = false );
 %Docstring
  Returns the name of the auxiliary field for a property definition.
 

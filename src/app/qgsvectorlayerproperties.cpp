@@ -1645,7 +1645,7 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
   def.setOrigin( item->text( 0 ) );
   def.setName( item->text( 1 ) );
 
-  const QString fieldName = QgsAuxiliaryField::name( def );
+  const QString fieldName = QgsAuxiliaryField::nameFromProperty( def );
 
   const int index = mLayer->auxiliaryLayer()->fields().indexOf( fieldName );
   if ( index < 0 )

@@ -61,17 +61,12 @@ class CORE_EXPORT QgsAuxiliaryField : public QgsField
     QgsPropertyDefinition propertyDefinition() const;
 
     /**
-     * Returns the name of the field.
-     */
-    using QgsField::name SIP_SKIP;
-
-    /**
      * Returns the name of the auxiliary field for a property definition.
      *
      * \returns def The property definition
      * \returns joined The join prefix is tok into account if true
      */
-    static QString name( const QgsPropertyDefinition &def, bool joined = false );
+    static QString nameFromProperty( const QgsPropertyDefinition &def, bool joined = false );
 
   private:
     QgsAuxiliaryField( const QgsField &f ); // only for auxiliary layer
