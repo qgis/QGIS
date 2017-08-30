@@ -858,10 +858,9 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // start new project, just keep the file name and auxiliary storage
   QString fileName = mFile.fileName();
-  std::unique_ptr<QgsAuxiliaryStorage> aStorage;
-  aStorage.reset( mAuxiliaryStorage.release() );
+  std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
   clear();
-  mAuxiliaryStorage.reset( aStorage.release() );
+  mAuxiliaryStorage = std::move( aStorage );
   mFile.setFileName( fileName );
 
   // now get any properties
