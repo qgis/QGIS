@@ -3228,3 +3228,14 @@ tests:
       OUTPUT:
         name: expected/execute_sql.gml
         type: vector
+
+  - algorithm: qgis:polygonfromrasterextent
+    name: Polygon from raster extent
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected\raster_extent.gml
+        type: vector
