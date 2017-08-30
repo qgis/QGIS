@@ -155,7 +155,7 @@ QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &fil
   mJoinInfo.setEditable( true );
   mJoinInfo.setUpsertOnEdit( true );
   mJoinInfo.setCascadedDelete( true );
-  mJoinInfo.setJoinFieldNamesBlackList( QStringList() << "rowid" ); // introduced by ogr provider
+  mJoinInfo.setJoinFieldNamesBlackList( QStringList() << QStringLiteral( "rowid" ) ); // introduced by ogr provider
 }
 
 QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
