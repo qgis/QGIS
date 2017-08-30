@@ -90,7 +90,25 @@ typedef QList<QgsAuxiliaryField> QgsAuxiliaryFields;
  *
  * \ingroup core
  *
- * \brief Class allowing to manage the auxiliary storage for a vector layer
+ * Class allowing to manage the auxiliary storage for a vector layer.
+ *
+ * Such auxiliary data are data used mostly for the needs of QGIS (symbology)
+ * and have no real interest in being stored with the native raw geospatial
+ * data.
+ *
+ * The need arises from the restrictions existing in the manual placement of
+ * labels. Manual placement of labels are possible in QGIS by setting some
+ * labeling properties (X and Y position, and rotation angle optionally) as
+ * being "data-defined", meaning that values come from a column (or an
+ * expression). But setting this up on an existing layer requires either to
+ * add new columns to the source layer, while it is not always possible or
+ * desirable.
+ *
+ * This QgsAuxiliaryLayer provides the solution to this limitation. Actually
+ * it's an editable join to the original vector layer with some
+ * synchronisation mechanisms activated such as "Upsert On Edit" or "Delete
+ * Cascade". Thus, auxiliary fields are editable even if the
+ * source layer is not and edition of a joined field is also possible.
  *
  * \since QGIS 3.0
  */
