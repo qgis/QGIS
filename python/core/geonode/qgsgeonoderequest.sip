@@ -23,6 +23,18 @@ struct QgsServiceLayerDetail
   QString xyzURL;
 };
 
+struct QgsGeoNodeStyle
+{
+%TypeHeaderCode
+#include <qgsgeonoderequest.h>
+%End
+  QString id;
+  QString name;
+  QString title;
+  QDomDocument body;
+  QString styleUrl;
+};
+
 class QgsGeoNodeRequest : QObject
 {
 
@@ -42,6 +54,21 @@ class QgsGeoNodeRequest : QObject
     QList<QgsServiceLayerDetail> getLayers();
 %Docstring
  :rtype: list of QgsServiceLayerDetail
+%End
+
+    QList<QgsGeoNodeStyle> getStyles( QString layerName );
+%Docstring
+ :rtype: list of QgsGeoNodeStyle
+%End
+
+    QgsGeoNodeStyle getDefaultStyle( QString layerName );
+%Docstring
+ :rtype: QgsGeoNodeStyle
+%End
+
+    QgsGeoNodeStyle getStyle( QString styleID );
+%Docstring
+ :rtype: QgsGeoNodeStyle
 %End
 
     QStringList serviceUrls( QString serviceType );

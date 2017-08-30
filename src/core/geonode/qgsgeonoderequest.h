@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include <qnetworkreply.h>
+#include <QDomDocument>
 
 
 #include <QObject>
@@ -39,6 +40,20 @@ struct CORE_EXPORT QgsServiceLayerDetail
   QString xyzURL;
 };
 
+struct CORE_EXPORT QgsGeoNodeStyle
+{
+#ifdef SIP_RUN
+  % TypeHeaderCode
+#include <qgsgeonoderequest.h>
+  % End
+#endif
+  QString id;
+  QString name;
+  QString title;
+  QDomDocument body;
+  QString styleUrl;
+};
+
 class CORE_EXPORT QgsGeoNodeRequest : public QObject
 {
     Q_OBJECT
@@ -50,6 +65,12 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     bool request( QString endPoint );
 
     QList<QgsServiceLayerDetail> getLayers();
+
+    QList<QgsGeoNodeStyle> getStyles( QString layerName );
+
+    QgsGeoNodeStyle getDefaultStyle( QString layerName );
+
+    QgsGeoNodeStyle getStyle( QString styleID );
 
     // Obtain list of unique URL in the geonode
     QStringList serviceUrls( QString serviceType );
@@ -71,6 +92,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
   private:
     QList<QgsServiceLayerDetail> parseLayers( QByteArray layerResponse );
+    QgsGeoNodeStyle retrieveStyle( QString styleUrl );
 
   signals:
     //! \brief emit a signal to be caught by qgisapp and display a statusQString on status bar

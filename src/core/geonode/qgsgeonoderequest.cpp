@@ -70,6 +70,66 @@ QList<QgsServiceLayerDetail> QgsGeoNodeRequest::getLayers()
   return parseLayers( this->response() );
 }
 
+QgsGeoNodeStyle QgsGeoNodeRequest::getDefaultStyle( QString layerName )
+{
+  QgsGeoNodeStyle defaultStyle;
+  bool success = request( QStringLiteral( "/api/layers?name=" )  + layerName );
+  if ( !success )
+  {
+    return defaultStyle;
+  }
+
+  QJsonDocument jsonDocument = QJsonDocument::fromJson( this->response() );
+  QJsonObject jsonObject = jsonDocument.object();
+  QList<QVariant> layers = jsonObject.toVariantMap()["objects"].toList();
+  if ( layers.count() < 1 )
+  {
+    return defaultStyle;
+  }
+  QString defaultStyleUrl = layers[0].toMap()["default_style"].toString();
+
+  defaultStyle = retrieveStyle( defaultStyleUrl );
+
+  return defaultStyle;
+
+}
+
+QList<QgsGeoNodeStyle> QgsGeoNodeRequest::getStyles( QString layerName )
+{
+  QList<QgsGeoNodeStyle> geoNodeStyles;
+  bool success = request( QStringLiteral( "/api/styles?layer__name=" ) + layerName );
+  if ( !success )
+  {
+    return geoNodeStyles;
+  }
+
+  QJsonDocument jsonDocument = QJsonDocument::fromJson( this->response() );
+  QJsonObject jsobObject = jsonDocument.object();
+  QList<QVariant> styles = jsobObject.toVariantMap()["objects"].toList();
+
+  Q_FOREACH ( QVariant style, styles )
+  {
+    QVariantMap styleMap = style.toMap();
+    QString styleUrl = styleMap["resource_uri"].toString();
+    QgsGeoNodeStyle geoNodeStyle = retrieveStyle( styleUrl );
+    if ( !geoNodeStyle.name.isEmpty() )
+    {
+      geoNodeStyles.append( geoNodeStyle );
+    }
+  }
+
+  return geoNodeStyles;
+
+}
+
+QgsGeoNodeStyle QgsGeoNodeRequest::getStyle( QString styleID )
+{
+  QString endPoint = QStringLiteral( "/api/styles/" ) + styleID;
+
+  return retrieveStyle( endPoint );
+
+}
+
 void QgsGeoNodeRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   QString msg = tr( "%1 of %2 bytes of request downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
@@ -298,6 +358,38 @@ QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( QByteArray layerRes
   return layers;
 }
 
+QgsGeoNodeStyle QgsGeoNodeRequest::retrieveStyle( QString styleUrl )
+{
+  QgsGeoNodeStyle geoNodeStyle;
+
+  bool success = request( styleUrl );
+  if ( !success )
+  {
+    return geoNodeStyle;
+  }
+  QJsonDocument jsonDocument = QJsonDocument::fromJson( this->response() );
+  QJsonObject jsonObject = jsonDocument.object();
+
+  geoNodeStyle.id = jsonObject.toVariantMap()["id"].toString();
+  geoNodeStyle.name = jsonObject.toVariantMap()["name"].toString();
+  geoNodeStyle.title = jsonObject.toVariantMap()["title"].toString();
+  geoNodeStyle.styleUrl = jsonObject.toVariantMap()["style_url"].toString();
+
+  success = request( geoNodeStyle.styleUrl );
+  if ( !success )
+  {
+    return geoNodeStyle;
+  }
+
+  success = geoNodeStyle.body.setContent( this->response() );
+  if ( !success )
+  {
+    return geoNodeStyle;
+  }
+
+  return geoNodeStyle;
+}
+
 QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
 {
   QStringList urls;
@@ -393,7 +485,8 @@ bool QgsGeoNodeRequest::request( QString endPoint )
   abort();
   mIsAborted = false;
   QgsMessageLog::logMessage( mBaseUrl, tr( "GeoNode" ) );
-  QString url = mBaseUrl + endPoint;
+  // Handle case where the endpoint is full url
+  QString url = endPoint.startsWith( mBaseUrl ) ? endPoint : mBaseUrl + endPoint;
   QgsMessageLog::logMessage( url, tr( "GeoNode" ) );
   setProtocol( url.split( "://" )[0] );
   QUrl layerUrl( url );
