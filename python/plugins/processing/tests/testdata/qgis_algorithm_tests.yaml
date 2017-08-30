@@ -3237,5 +3237,5 @@ tests:
         type: raster
     results:
       OUTPUT:
-        name: expected\raster_extent.gml
+        name: expected/raster_extent.gml
         type: vector
