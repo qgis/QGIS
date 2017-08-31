@@ -306,6 +306,12 @@ class CORE_EXPORT QgsRectangle
      */
     QgsBox3d toBox3d( double zMin, double zMax ) const;
 
+    //! Allows direct construction of QVariants from rectangles.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     double mXmin;

@@ -317,6 +317,11 @@ Copy constructor
  :rtype: QgsBox3d
 %End
 
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants from rectangles.
+%End
+
 };
 
 

@@ -262,6 +262,12 @@ class CORE_EXPORT QgsPointXY
     //! Divides the coordinates in this point by a scalar quantity in place
     QgsPointXY &operator/=( double scalar ) { mX /= scalar; mY /= scalar; return *this; }
 
+    //! Allows direct construction of QVariants from points.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode

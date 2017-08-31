@@ -72,6 +72,11 @@ class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
  Constructor for QgsReferencedRectangle.
 %End
 
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants from rectangle.
+%End
+
 };
 
 
@@ -96,6 +101,11 @@ class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
     QgsReferencedPointXY();
 %Docstring
  Constructor for QgsReferencedPointXY.
+%End
+
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants from point.
 %End
 
 };

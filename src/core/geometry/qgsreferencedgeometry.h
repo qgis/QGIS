@@ -85,6 +85,12 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
      */
     QgsReferencedRectangle() = default;
 
+    //! Allows direct construction of QVariants from rectangle.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
 };
 
 Q_DECLARE_METATYPE( QgsReferencedRectangle )
@@ -108,6 +114,12 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
      * Constructor for QgsReferencedPointXY.
      */
     QgsReferencedPointXY() = default;
+
+    //! Allows direct construction of QVariants from point.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
 
 };
 
