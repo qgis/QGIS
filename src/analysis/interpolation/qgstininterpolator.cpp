@@ -125,7 +125,8 @@ void QgsTINInterpolator::initialize()
           {
             break;
           }
-          mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
+          if ( nFeatures > 0 )
+            mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
         }
         insertData( &f, layer.zCoordInterpolation, layer.interpolationAttribute, layer.mInputType );
         ++nProcessedFeatures;
