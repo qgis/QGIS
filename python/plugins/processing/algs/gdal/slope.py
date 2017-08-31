@@ -29,11 +29,13 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -49,28 +51,27 @@ class slope(GdalAlgorithm):
     SCALE = 'SCALE'
     OUTPUT = 'OUTPUT'
 
-    def group(self):
-        return self.tr('Raster analysis')
-
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterNumber(self.BAND,
-                                          self.tr('Band number'), 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-                                           self.tr('Compute edges'), False))
-        self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-                                           self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
-                                           False))
-        self.addParameter(ParameterBoolean(self.AS_PERCENT,
-                                           self.tr('Slope expressed as percent (instead of degrees)'), False))
-        self.addParameter(ParameterNumber(self.SCALE,
-                                          self.tr('Scale (ratio of vert. units to horiz.)'),
-                                          0.0, 99999999.999999, 1.0))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(
+            self.BAND, self.tr('Band number'), parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterBoolean(
+            self.COMPUTE_EDGES, self.tr('Compute edges'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(
+            self.ZEVENBERGEN, self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
+            defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(
+            self.AS_PERCENT, self.tr('Slope expressed as percent (instead of degrees)'),
+            defaultValue=False))
+        self.addParameter(QgsProcessingParameterNumber(
+            self.SCALE, self.tr('Ratio of vertical units to horizontal'),
+            type=QgsProcessingParameterNumber.Double,
+            minValue=0.0, maxValue=99999999.999999, defaultValue=1.0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Slope')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Slope')))
 
     def name(self):
         return 'slope'
@@ -78,28 +79,34 @@ class slope(GdalAlgorithm):
     def displayName(self):
         return self.tr('Slope')
 
+    def group(self):
+        return self.tr('Raster analysis')
+
     def getConsoleCommands(self, parameters, context, feedback):
         arguments = ['slope']
-        arguments.append(str(self.getParameterValue(self.INPUT)))
-        output = str(self.getOutputValue(self.OUTPUT))
-        arguments.append(output)
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        arguments.append(inLayer.source())
+
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        arguments.append(out)
 
         arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
-        arguments.append('-s')
-        arguments.append(str(self.getParameterValue(self.SCALE)))
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.getParameterValue(self.COMPUTE_EDGES):
+        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
 
-        if self.getParameterValue(self.ZEVENBERGEN):
+        if self.parameterAsBool(parameters, self.ZEVENBERGEN, context):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 
-        if self.getParameterValue(self.AS_PERCENT):
+        if self.parameterAsBool(parameters, self.AS_PERCENT, context):
             arguments.append('-p')
+
+        arguments.append('-s')
+        arguments.append(str(self.parameterAsDouble(parameters, self.SCALE, context)))
 
         return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

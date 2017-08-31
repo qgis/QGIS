@@ -392,70 +392,70 @@ tests:
         hash: ce2174ab155023367d38785fb867456c6a1ae3535ea0ec5ad7a694d5
         type: rasterhash
 
-#  - algorithm: gdal:slope
-#    name: Slope
-#    params:
-#      AS_PERCENT: false
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: 319c470de3315f440371d5df8a6e478a8ecaf1cf904a013dbf1b3a6a
-#        type: rasterhash
-#
-#  - algorithm: gdal:slope
-#    name: Slope with edges
-#    params:
-#      AS_PERCENT: false
-#      BAND: 1
-#      COMPUTE_EDGES: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: f7f8df8b6517fd8660304f7f2fbd6ade2ae68035f4dd9a224c80b465
-#        type: rasterhash
-#
-#  - algorithm: gdal:slope
-#    name: Slope with Zevenbergen formula
-#    params:
-#      AS_PERCENT: false
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: true
-#    results:
-#      OUTPUT:
-#        hash: 90e42b1bc7be9cf7b4a729c6db44dde0bba39dd33012ade6bc8080e7
-#        type: rasterhash
-#
-#  - algorithm: gdal:slope
-#    name: Slope with percent instead of degree
-#    params:
-#      AS_PERCENT: true
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: c9dc888254a571e7fbf66691fb72b35f030f87decf59ce67e32ad89d
-#        type: rasterhash
-#
+  - algorithm: gdal:slope
+    name: Slope
+    params:
+      AS_PERCENT: false
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: 319c470de3315f440371d5df8a6e478a8ecaf1cf904a013dbf1b3a6a
+        type: rasterhash
+
+  - algorithm: gdal:slope
+    name: Slope with edges
+    params:
+      AS_PERCENT: false
+      BAND: 1
+      COMPUTE_EDGES: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: f7f8df8b6517fd8660304f7f2fbd6ade2ae68035f4dd9a224c80b465
+        type: rasterhash
+
+  - algorithm: gdal:slope
+    name: Slope with Zevenbergen formula
+    params:
+      AS_PERCENT: false
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: true
+    results:
+      OUTPUT:
+        hash: 90e42b1bc7be9cf7b4a729c6db44dde0bba39dd33012ade6bc8080e7
+        type: rasterhash
+
+  - algorithm: gdal:slope
+    name: Slope with percent instead of degree
+    params:
+      AS_PERCENT: true
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+      ZEVENBERGEN: false
+    results:
+      OUTPUT:
+        hash: c9dc888254a571e7fbf66691fb72b35f030f87decf59ce67e32ad89d
+        type: rasterhash
+
 #  - algorithm: gdal:roughness
 #    name: standard roughness
 #    params:

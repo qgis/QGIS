@@ -43,6 +43,7 @@ from .nearblack import nearblack
 from .pct2rgb import pct2rgb
 from .polygonize import polygonize
 from .rgb2pct import rgb2pct
+from .slope import slope
 from .translate import translate
 from .tpi import tpi
 from .tri import tri
@@ -59,7 +60,6 @@ from .warp import warp
 # from .fillnodata import fillnodata
 # from .extractprojection import ExtractProjection
 # from .gdal2xyz import gdal2xyz
-# from .slope import slope
 # from .roughness import roughness
 # from .GridInvDist import GridInvDist
 # from .GridAverage import GridAverage
@@ -144,6 +144,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             pct2rgb(),
             polygonize(),
             rgb2pct(),
+            slope(),
             translate(),
             tpi(),
             tri(),
@@ -159,7 +160,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # fillnodata(),
             # ExtractProjection(),
             # gdal2xyz(),
-            # slope(),
             # roughness(),
             # GridInvDist(),
             # GridAverage(),
