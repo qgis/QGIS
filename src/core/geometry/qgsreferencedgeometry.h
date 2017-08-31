@@ -80,7 +80,7 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
      */
     QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
 
-    QgsReferencedRectangle();
+    QgsReferencedRectangle() = default;
 
 };
 
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
      */
     QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
 
-    QgsReferencedPointXY();
+    QgsReferencedPointXY() = default;
 
 };
 
