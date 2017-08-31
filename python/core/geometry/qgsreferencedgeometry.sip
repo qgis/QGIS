@@ -68,6 +68,9 @@ class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
 %End
 
     QgsReferencedRectangle();
+%Docstring
+ Constructor for QgsReferencedRectangle.
+%End
 
 };
 
@@ -91,6 +94,9 @@ class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
 %End
 
     QgsReferencedPointXY();
+%Docstring
+ Constructor for QgsReferencedPointXY.
+%End
 
 };
 
