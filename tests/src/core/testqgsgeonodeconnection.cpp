@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgsgeonoderequest.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsGeoConnection class.
@@ -46,7 +47,10 @@ class TestQgsGeoNodeConnection: public QObject
     // Check if we can create geonode connection from database.
     void testCreation();
 
-    // Test API
+    // Test Layer API
+    void testLayerAPI();
+
+    // Test Style API
     void testStyleAPI();
 
   private:
@@ -122,9 +126,24 @@ void TestQgsGeoNodeConnection::testCreation()
 }
 
 // Test Layer API
+void TestQgsGeoNodeConnection::testLayerAPI()
+{
+  if ( mSkipRemoteTest )
+  {
+    QSKIP( "Skip remote test for faster testing" );
+  }
+
+  QgsGeoNodeRequest geonodeRequest( mKartozaGeoNodeQGISServerURL, true );
+  QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
+  QString msg = QStringLiteral( "Number of layers: %1" ).arg( layers.count() );
+  QgsDebugMsg( msg );
+  QVERIFY( layers.count() > 0 );
+}
+
+// Test Style API
 void TestQgsGeoNodeConnection::testStyleAPI()
 {
-  if ( !mSkipRemoteTest )
+  if ( mSkipRemoteTest )
   {
     QSKIP( "Skip remote test for faster testing" );
   }

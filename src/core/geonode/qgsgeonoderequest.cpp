@@ -133,8 +133,6 @@ QgsGeoNodeStyle QgsGeoNodeRequest::getStyle( QString styleID )
 void QgsGeoNodeRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   QString msg = tr( "%1 of %2 bytes of request downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) );
-  QgsDebugMsg( msg );
-  QgsMessageLog::logMessage( QStringLiteral( "Reply in progress" ), tr( "GeoNode" ) );
   QgsMessageLog::logMessage( msg, tr( "GeoNode" ) );
   emit statusChanged( msg );
 }
@@ -484,10 +482,9 @@ bool QgsGeoNodeRequest::request( QString endPoint )
 {
   abort();
   mIsAborted = false;
-  QgsMessageLog::logMessage( mBaseUrl, tr( "GeoNode" ) );
   // Handle case where the endpoint is full url
   QString url = endPoint.startsWith( mBaseUrl ) ? endPoint : mBaseUrl + endPoint;
-  QgsMessageLog::logMessage( url, tr( "GeoNode" ) );
+  QgsMessageLog::logMessage( "Requesting to " + url, tr( "GeoNode" ) );
   setProtocol( url.split( "://" )[0] );
   QUrl layerUrl( url );
   layerUrl.setScheme( getProtocol() );
