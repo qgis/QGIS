@@ -37,14 +37,15 @@ from .AssignProjection import AssignProjection
 from .aspect import aspect
 from .buildvrt import buildvrt
 from .ColorRelief import ColorRelief
+from .hillshade import hillshade
 from .information import information
+from .nearblack import nearblack
+from .pct2rgb import pct2rgb
 from .rgb2pct import rgb2pct
 from .translate import translate
 from .tri import tri
 from .warp import warp
-from .nearblack import nearblack
 
-# from .pct2rgb import pct2rgb
 # from .merge import merge
 # from .polygonize import polygonize
 # from .gdaladdo import gdaladdo
@@ -57,7 +58,6 @@ from .nearblack import nearblack
 # from .fillnodata import fillnodata
 # from .extractprojection import ExtractProjection
 # from .gdal2xyz import gdal2xyz
-from .hillshade import hillshade
 # from .slope import slope
 # from .tpi import tpi
 # from .roughness import roughness
@@ -91,13 +91,6 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class GdalAlgorithmProvider(QgsProcessingProvider):
-
-    """This provider incorporates GDAL-based algorithms into the
-    Processing framework.
-
-    Algorithms are called directly using the command line interface.
-    They implemented individually extending GeoAlgorithm class.
-    """
 
     def __init__(self):
         super().__init__()
@@ -145,13 +138,14 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             aspect(),
             buildvrt(),
             ColorRelief(),
+            hillshade(),
             information(),
             nearblack(),
+            pct2rgb(),
             rgb2pct(),
             translate(),
             tri(),
             warp(),
-            # pct2rgb(),
             # merge(),
             # polygonize(),
             # gdaladdo(),
@@ -164,7 +158,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # fillnodata(),
             # ExtractProjection(),
             # gdal2xyz(),
-            hillshade(),
             # slope(),
             # tpi(),
             # roughness(),
