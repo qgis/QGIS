@@ -241,6 +241,47 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
+    double hausdorffDistance( const QgsGeometry &geom ) const;
+%Docstring
+ Returns the Hausdorff distance between this geometry and ``geom``. This is basically a measure of how similar or dissimilar 2 geometries are.
+
+ This algorithm is an approximation to the standard Hausdorff distance. This approximation is exact or close enough for a large
+ subset of useful cases. Examples of these are:
+
+ - computing distance between Linestrings that are roughly parallel to each other,
+ and roughly equal in length. This occurs in matching linear networks.
+ - Testing similarity of geometries.
+
+ If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
+
+ In case of error -1 will be returned.
+
+.. versionadded:: 3.0
+.. seealso:: hausdorffDistanceDensify()
+ :rtype: float
+%End
+
+    double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
+%Docstring
+ Returns the Hausdorff distance between this geometry and ``geom``. This is basically a measure of how similar or dissimilar 2 geometries are.
+
+ This function accepts a ``densifyFraction`` argument. The function performs a segment
+ densification before computing the discrete Hausdorff distance. The ``densifyFraction`` parameter
+ sets the fraction by which to densify each segment. Each segment will be split into a
+ number of equal-length subsegments, whose fraction of the total length is
+ closest to the given fraction.
+
+ This method can be used when the default approximation provided by hausdorffDistance()
+ is not sufficient. Decreasing the ``densifyFraction`` parameter will make the
+ distance returned approach the true Hausdorff distance for the geometries.
+
+ In case of error -1 will be returned.
+
+.. versionadded:: 3.0
+.. seealso:: hausdorffDistance()
+ :rtype: float
+%End
+
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
 %Docstring
  :rtype: QgsPointXY
@@ -1251,10 +1292,11 @@ Returns an extruded version of this geometry.
  :rtype: int
 %End
 
-    QString error() const;
+    QString lastError() const;
 %Docstring
- Returns an error string referring to an error that was produced
- when this geometry was created.
+ Returns an error string referring to the last error encountered
+ either when this geometry was created or when an operation
+ was performed on the geometry.
 
 .. versionadded:: 3.0
  :rtype: str
