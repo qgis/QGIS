@@ -53,7 +53,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param basePath The base path to resolve the path from to append the \\profiles folder to.
      * \return The root path to store user profiles.
      */
-    static QString resolveProfilesFolder( const QString  &basePath = QString() );
+    static QString resolveProfilesFolder( const QString &basePath = QString() );
 
     /**
      * Return the profile from the given root profile location.
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * location. Will also contain a profiles.ini for holding profile settings.
      * \param rootProfileLocation Path to the top level profile folder which contains folders for each profile.
      */
-    void setRootLocation( QString rootProfileLocation );
+    void setRootLocation( const QString &rootProfileLocation );
 
     /**
      * Returns the path to the root profiles location.
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param name The name of the profile to delete.
      * \return A QgsError with a message if the profile failed to be deleted.
      */
-    QgsError deleteProfile( const QString name );
+    QgsError deleteProfile( const QString &name );
 
     /**
      * The currently active user profile.

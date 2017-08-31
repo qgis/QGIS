@@ -58,7 +58,7 @@ QgsUserProfile *QgsUserProfileManager::getProfile( const QString &defaultProfile
   return profile;
 }
 
-void QgsUserProfileManager::setRootLocation( QString rootProfileLocation )
+void QgsUserProfileManager::setRootLocation( const QString &rootProfileLocation )
 {
   mRootProfilePath = rootProfileLocation;
 
@@ -115,7 +115,7 @@ bool QgsUserProfileManager::profileExists( const QString &name ) const
   return allProfiles().contains( name );
 }
 
-QgsUserProfile *QgsUserProfileManager::profileForName( const QString name ) const
+QgsUserProfile *QgsUserProfileManager::profileForName( const QString &name ) const
 {
   QString profilePath = mRootProfilePath + QDir::separator() + name;
   return new QgsUserProfile( profilePath );
@@ -154,7 +154,7 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
   return error;
 }
 
-QgsError QgsUserProfileManager::deleteProfile( const QString name )
+QgsError QgsUserProfileManager::deleteProfile( const QString &name )
 {
   QgsError error;
   QDir folder( mRootProfilePath + QDir::separator() + name );

@@ -34,7 +34,7 @@ class QgsUserProfileManager : QObject
  User profile manager used to manage user profiles for the instance of QGIS.
 %End
 
-    static QString resolveProfilesFolder( const QString  &basePath = QString() );
+    static QString resolveProfilesFolder( const QString &basePath = QString() );
 %Docstring
  Resolves the profiles folder for the given path. Path will have \\profiles appended to the path
  \param basePath The base path to resolve the path from to append the \\profiles folder to.
@@ -58,7 +58,7 @@ class QgsUserProfileManager : QObject
  :rtype: QgsUserProfile
 %End
 
-    void setRootLocation( QString rootProfileLocation );
+    void setRootLocation( const QString &rootProfileLocation );
 %Docstring
  Set the root profile location for the profile manager. All profiles are loaded from this
  location. Will also contain a profiles.ini for holding profile settings.
@@ -134,7 +134,7 @@ class QgsUserProfileManager : QObject
  :rtype: QgsError
 %End
 
-    QgsError deleteProfile( const QString name );
+    QgsError deleteProfile( const QString &name );
 %Docstring
  Deletes a profile from the root profiles folder.
 .. note::
