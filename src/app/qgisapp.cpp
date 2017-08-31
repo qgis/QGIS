@@ -2278,14 +2278,13 @@ void QgisApp::refreshProfileMenu()
   QString activeName = profile->name();
   mConfigMenu->setTitle( tr( "&User Profiles" ) );
 
-  QActionGroup *profileGroup = new QActionGroup( this );
+  QActionGroup *profileGroup = new QActionGroup( mConfigMenu );
   profileGroup->setExclusive( true );
 
   Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
   {
     profile = userProfileManager()->profileForName( name );
-    // Qt 5.5 has no parent default as nullptr
-    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
+    QAction *action = new QAction( profile->icon(), profile->alias(), mConfigMenu );
     action->setToolTip( profile->folder() );
     action->setCheckable( true );
     profileGroup->addAction( action );
