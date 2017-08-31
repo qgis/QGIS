@@ -390,7 +390,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsRectangle boundingBox() const override;
     QString geometryType() const override;
     int dimension() const override;
+    virtual QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
     QgsPoint *clone() const override SIP_FACTORY;
+    virtual QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+                                     double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;

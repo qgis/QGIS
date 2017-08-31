@@ -22,7 +22,7 @@ class QgsMultiLineString: QgsMultiCurve
     QgsMultiLineString();
 
     virtual QString geometryType() const;
-
+    virtual QgsMultiLineString *createEmptyWithSameType() const /Factory/;
     virtual QgsMultiLineString *clone() const /Factory/;
 
     virtual void clear();

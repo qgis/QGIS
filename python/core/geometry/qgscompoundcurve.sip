@@ -29,6 +29,7 @@ class QgsCompoundCurve: QgsCurve
 
     virtual QString geometryType() const;
     virtual int dimension() const;
+    virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
     virtual QgsCompoundCurve *clone() const /Factory/;
     virtual void clear();
 

@@ -35,6 +35,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
 
     QString geometryType() const override;
     QgsPolygonV2 *clone() const override SIP_FACTORY;
+    virtual QgsPolygonV2 *createEmptyWithSameType() const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     QByteArray asWkb() const override;

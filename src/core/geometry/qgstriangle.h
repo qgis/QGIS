@@ -64,6 +64,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     QString geometryType() const override;
     QgsTriangle *clone() const override SIP_FACTORY;
+    virtual QgsTriangle *createEmptyWithSameType() const override SIP_FACTORY;
     void clear() override;
 
     bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
