@@ -82,6 +82,27 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     QString rootLocation() { return mRootProfilePath; }
 
     /**
+     * Sets whether the manager should watch for the creation of new user profiles and emit
+     * the profilesChanged() signal when this occurs. By default new profile notification
+     * is disabled.
+     *
+     * Before calling this, ensure that the correct root location has been set via
+     * calling setRootLocation().
+     *
+     * \see isNewProfileNotificationEnabled()
+     */
+    void setNewProfileNotificationEnabled( bool enabled );
+
+    /**
+     * Returns whether the manager is watching for the creation of new user profiles and emitting
+     * the profilesChanged() signal when this occurs. By default new profile notification
+     * is disabled.
+     *
+     * \see setNewProfileNotificationEnabled()
+     */
+    bool isNewProfileNotificationEnabled() const;
+
+    /**
      * Check if the root location has been set for the manager.
      * \return True if the root location has been set.
      */
@@ -168,11 +189,18 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     /**
      * Emitted when the list of profiles is changed.
+     *
+     * This signal will only be emitted when isNewProfileNotificationEnabled() is true.
+     * By default By default new profile notification is disabled.
+     *
+     * \see isNewProfileNotificationEnabled()
+     * \see setNewProfileNotificationEnabled()
      */
-    void profilesChanged( );
+    void profilesChanged();
 
   private:
 
+    bool mWatchProfiles = false;
     std::unique_ptr<QFileSystemWatcher> mWatcher;
 
     QString mRootProfilePath;

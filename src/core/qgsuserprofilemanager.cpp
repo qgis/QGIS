@@ -29,12 +29,7 @@
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
   : QObject( parent )
 {
-  mWatcher.reset( new QFileSystemWatcher() );
   setRootLocation( rootLocation );
-  connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
-  {
-    emit profilesChanged();
-  } );
 }
 
 QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath )
@@ -62,16 +57,33 @@ void QgsUserProfileManager::setRootLocation( const QString &rootProfileLocation 
 {
   mRootProfilePath = rootProfileLocation;
 
-  if ( !mWatcher->directories().isEmpty() )
-  {
-    mWatcher->removePaths( mWatcher->directories() );
-  }
+  //updates (or removes) profile file watcher for new root location
+  setNewProfileNotificationEnabled( mWatchProfiles );
 
-  if ( !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
-  {
-    mWatcher->addPath( mRootProfilePath );
-  }
   mSettings.reset( new QSettings( settingsFile(), QSettings::IniFormat ) );
+}
+
+void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
+{
+  mWatchProfiles = enabled;
+  if ( mWatchProfiles && !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
+  {
+    mWatcher.reset( new QFileSystemWatcher() );
+    mWatcher->addPath( mRootProfilePath );
+    connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
+    {
+      emit profilesChanged();
+    } );
+  }
+  else
+  {
+    mWatcher.reset();
+  }
+}
+
+bool QgsUserProfileManager::isNewProfileNotificationEnabled() const
+{
+  return static_cast< bool >( mWatcher.get() );
 }
 
 bool QgsUserProfileManager::rootLocationIsSet() const
