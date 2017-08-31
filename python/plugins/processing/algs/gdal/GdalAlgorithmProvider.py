@@ -45,6 +45,7 @@ from .pct2rgb import pct2rgb
 from .polygonize import polygonize
 from .rgb2pct import rgb2pct
 from .roughness import roughness
+from .sieve import sieve
 from .slope import slope
 from .translate import translate
 from .tpi import tpi
@@ -57,7 +58,6 @@ from .warp import warp
 # from .ClipByMask import ClipByMask
 # from .rasterize import rasterize
 # from .proximity import proximity
-# from .sieve import sieve
 # from .fillnodata import fillnodata
 # from .extractprojection import ExtractProjection
 # from .gdal2xyz import gdal2xyz
@@ -146,6 +146,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             polygonize(),
             rgb2pct(),
             roughness(),
+            sieve(),
             slope(),
             translate(),
             tpi(),
@@ -157,7 +158,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # ClipByMask(),
             # rasterize(),
             # proximity(),
-            # sieve(),
             # fillnodata(),
             # ExtractProjection(),
             # gdal2xyz(),
