@@ -38,6 +38,13 @@ void QgsMultiPolygonV2::clear()
   mWkbType = QgsWkbTypes::MultiPolygon;
 }
 
+QgsMultiPolygonV2 *QgsMultiPolygonV2::createEmptyWithSameType() const
+{
+  auto result = new QgsMultiPolygonV2();
+  result->mWkbType = mWkbType;
+  return result;
+}
+
 QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
 {
   return new QgsMultiPolygonV2( *this );

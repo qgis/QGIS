@@ -39,6 +39,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
     virtual ~QgsGeometryCollection();
 
+    virtual QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
     QgsGeometryCollection *clone() const override SIP_FACTORY;
 
     /**
@@ -64,6 +65,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int dimension() const override;
     QString geometryType() const override;
     void clear() override;
+    virtual QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+        double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;

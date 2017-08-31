@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgscurve.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
@@ -127,6 +129,13 @@ QgsAbstractGeometry *QgsCurve::boundary() const
   multiPoint->addGeometry( new QgsPoint( startPoint() ) );
   multiPoint->addGeometry( new QgsPoint( endPoint() ) );
   return multiPoint;
+}
+
+QgsCurve *QgsCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+                                   double tolerance, SegmentationToleranceType toleranceType ) const
+{
+  std::unique_ptr<QgsLineString> line { curveToLine( tolerance, toleranceType ) };
+  return line->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing );
 }
 
 QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const

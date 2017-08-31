@@ -23,6 +23,8 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 
+#include <cmath>
+#include <memory>
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
@@ -185,6 +187,84 @@ void QgsLineString::clear()
 bool QgsLineString::isEmpty() const
 {
   return mX.isEmpty();
+}
+
+QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+    double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const
+{
+  int length = numPoints();
+
+  if ( length <= 0 )
+    return nullptr;
+
+  // prepare result
+  std::unique_ptr<QgsLineString> result { createEmptyWithSameType() };
+
+
+  // helper functions
+  auto roundVertex = [&]( QgsPoint & out, int i )
+  {
+    if ( hSpacing > 0 )
+      out.setX( std::round( mX.at( i ) / hSpacing ) * hSpacing );
+
+    if ( vSpacing > 0 )
+      out.setY( std::round( mY.at( i ) / vSpacing ) * vSpacing );
+
+    if ( dSpacing > 0 && QgsWkbTypes::hasZ( mWkbType ) )
+      out.setZ( std::round( mZ.at( i ) / dSpacing ) * dSpacing );
+
+    if ( mSpacing > 0 && QgsWkbTypes::hasM( mWkbType ) )
+      out.setM( std::round( mM.at( i ) / mSpacing ) * mSpacing );
+  };
+
+
+  auto append = [this, &result]( QgsPoint const & point )
+  {
+    result->mX.append( point.x() );
+
+    result->mY.append( point.y() );
+
+    if ( QgsWkbTypes::hasZ( mWkbType ) )
+      result->mZ.append( point.z() );
+
+    if ( QgsWkbTypes::hasM( mWkbType ) )
+      result->mM.append( point.m() );
+  };
+
+
+  auto isPointEqual = [&]( const QgsPoint & a, const QgsPoint & b )
+  {
+    return ( a.x() == b.x() )
+           && ( a.y() == b.y() )
+           && ( !QgsWkbTypes::hasZ( mWkbType ) || dSpacing <= 0 || a.z() == b.z() )
+           && ( !QgsWkbTypes::hasM( mWkbType ) || mSpacing <= 0 || a.m() == b.m() );
+  };
+
+  // temporary values
+  QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, QgsWkbTypes::hasZ( mWkbType ), QgsWkbTypes::hasM( mWkbType ) );
+  QgsPoint last( pointType );
+  QgsPoint current( pointType );
+
+  // Actual code (what does all the work)
+  roundVertex( last, 0 );
+  append( last );
+
+  for ( int i = 1; i < length; ++i )
+  {
+    roundVertex( current, i );
+    if ( !isPointEqual( current, last ) )
+    {
+      append( current );
+      last = current;
+    }
+  }
+
+  // if it's not closed, with 2 points you get a correct line
+  // if it is, you need at least 4 (3 + the vertex that closes)
+  if ( result->mX.length() < 2 || ( isClosed() && result->mX.length() < 4 ) )
+    return nullptr;
+
+  return result.release();
 }
 
 bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
@@ -709,6 +789,13 @@ void QgsLineString::extend( double startDistance, double endDistance )
     mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
     mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
   }
+}
+
+QgsLineString *QgsLineString::createEmptyWithSameType() const
+{
+  auto result = new QgsLineString();
+  result->mWkbType = mWkbType;
+  return result;
 }
 
 QString QgsLineString::geometryType() const

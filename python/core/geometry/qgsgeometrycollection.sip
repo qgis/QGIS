@@ -26,6 +26,7 @@ class QgsGeometryCollection: QgsAbstractGeometry
     QgsGeometryCollection( const QgsGeometryCollection &c );
     virtual ~QgsGeometryCollection();
 
+    virtual QgsGeometryCollection *createEmptyWithSameType() const /Factory/;
     virtual QgsGeometryCollection *clone() const /Factory/;
 
 
@@ -50,7 +51,8 @@ class QgsGeometryCollection: QgsAbstractGeometry
     virtual QString geometryType() const;
 
     virtual void clear();
-
+    virtual QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+        double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;

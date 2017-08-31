@@ -31,6 +31,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
   public:
     QgsMultiCurve();
     QString geometryType() const override;
+    virtual QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;
     QgsMultiCurve *clone() const override SIP_FACTORY;
     void clear() override;
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;
