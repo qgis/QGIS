@@ -21,6 +21,7 @@ class QgsMultiPointV2: QgsGeometryCollection
   public:
     QgsMultiPointV2();
     virtual QString geometryType() const;
+    virtual QgsMultiPointV2 *newSameGeometry() const /Factory/;
     virtual QgsMultiPointV2 *clone() const /Factory/;
 
 

@@ -36,6 +36,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
     bool operator!=( const QgsPolygonV2 &other ) const;
 
     virtual QString geometryType() const override { return QStringLiteral( "Polygon" ); }
+    virtual QgsPolygonV2 *newSameGeometry() const override SIP_FACTORY;
     virtual QgsPolygonV2 *clone() const override SIP_FACTORY;
     void clear() override;
 

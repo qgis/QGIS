@@ -37,6 +37,13 @@ QgsCurvePolygon::~QgsCurvePolygon()
   clear();
 }
 
+QgsCurvePolygon *QgsCurvePolygon::newSameGeometry() const
+{
+  auto result = new QgsCurvePolygon();
+  result->mWkbType = mWkbType;
+  return result;
+}
+
 QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   : QgsSurface( p )
   , mExteriorRing( nullptr )
@@ -433,6 +440,52 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
     }
     return multiCurve;
   }
+}
+
+QgsCurvePolygon *QgsCurvePolygon::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+    double tolerance, SegmentationToleranceType toleranceType ) const
+{
+  if ( !mExteriorRing )
+    return nullptr;
+
+  QgsPolygonV2 *polygon;
+  if ( QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Triangle ||  QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Polygon )
+  {
+    polygon = static_cast< QgsPolygonV2 const *>( this )->newSameGeometry();
+  }
+  else
+  {
+    polygon = new QgsPolygonV2();
+    polygon->mWkbType = QgsWkbTypes::zmType( QgsWkbTypes::Polygon, QgsWkbTypes::hasZ( mWkbType ), QgsWkbTypes::hasM( mWkbType ) );
+  }
+
+  // exterior ring
+  QgsCurve *exterior = mExteriorRing->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
+
+  if ( !exterior )
+  {
+    delete polygon;
+    return nullptr;
+  }
+
+  polygon->mExteriorRing = exterior;
+
+  //interior rings
+  for ( QgsCurve *interior : mInteriorRings )
+  {
+    if ( !interior )
+      continue;
+
+    QgsCurve *gridifiedInterior = interior->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
+
+    if ( !gridifiedInterior )
+      continue;
+
+    polygon->mInteriorRings.append( gridifiedInterior );
+  }
+
+  return polygon;
+
 }
 
 QgsPolygonV2 *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const

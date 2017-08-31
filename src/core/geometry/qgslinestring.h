@@ -164,9 +164,12 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     virtual QString geometryType() const override { return QStringLiteral( "LineString" ); }
     virtual int dimension() const override { return 1; }
+    virtual QgsLineString *newSameGeometry() const override SIP_FACTORY;
     virtual QgsLineString *clone() const override SIP_FACTORY;
     virtual void clear() override;
     bool isEmpty() const override;
+    virtual QgsLineString *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+                                        double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
     virtual bool fromWkt( const QString &wkt ) override;

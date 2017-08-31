@@ -103,6 +103,10 @@ class CORE_EXPORT QgsAbstractGeometry
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
     QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );
 
+    /* TODO: documentation
+     */
+    virtual QgsAbstractGeometry *newSameGeometry() const = 0 SIP_FACTORY;
+
     /** Clones the geometry by performing a deep copy
      */
     virtual QgsAbstractGeometry *clone() const = 0 SIP_FACTORY;
@@ -349,6 +353,9 @@ class CORE_EXPORT QgsAbstractGeometry
         QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
         \returns the converted geometry. Caller takes ownership*/
     virtual QgsAbstractGeometry *toCurveType() const SIP_FACTORY;
+
+    /* TODO: documentation */
+    virtual QgsAbstractGeometry *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 SIP_FACTORY;
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the

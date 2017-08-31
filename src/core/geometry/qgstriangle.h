@@ -62,6 +62,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool operator!=( const QgsTriangle &other ) const;
 
     virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
+    virtual QgsTriangle *newSameGeometry() const override SIP_FACTORY;
     virtual QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 

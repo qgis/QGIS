@@ -26,6 +26,7 @@ class QgsGeometryCollection: QgsAbstractGeometry
     QgsGeometryCollection( const QgsGeometryCollection &c );
     virtual ~QgsGeometryCollection();
 
+    virtual QgsGeometryCollection *newSameGeometry() const /Factory/;
     virtual QgsGeometryCollection *clone() const /Factory/;
 
     int numGeometries() const;
@@ -47,6 +48,8 @@ class QgsGeometryCollection: QgsAbstractGeometry
     virtual int dimension() const;
     virtual QString geometryType() const;
     virtual void clear();
+    virtual QgsGeometryCollection *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+        double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );

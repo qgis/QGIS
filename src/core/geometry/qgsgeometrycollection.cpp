@@ -63,6 +63,13 @@ QgsGeometryCollection::~QgsGeometryCollection()
   clear();
 }
 
+QgsGeometryCollection *QgsGeometryCollection::newSameGeometry() const
+{
+  auto result = new QgsGeometryCollection();
+  result->mWkbType = mWkbType;
+  return result;
+}
+
 QgsGeometryCollection *QgsGeometryCollection::clone() const
 {
   return new QgsGeometryCollection( *this );
@@ -73,6 +80,25 @@ void QgsGeometryCollection::clear()
   qDeleteAll( mGeometries );
   mGeometries.clear();
   clearCache(); //set bounding box invalid
+}
+
+QgsGeometryCollection *QgsGeometryCollection::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+    double tolerance, SegmentationToleranceType toleranceType ) const
+{
+  QgsGeometryCollection *result = nullptr;
+
+  for ( QgsAbstractGeometry *geom : mGeometries )
+  {
+    QgsAbstractGeometry *gridified = geom->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
+    if ( gridified )
+    {
+      if ( !result )
+        result = newSameGeometry();
+      result->mGeometries.append( gridified );
+    }
+  }
+
+  return result;
 }
 
 QgsAbstractGeometry *QgsGeometryCollection::boundary() const

@@ -21,6 +21,7 @@ class QgsMultiLineString: QgsMultiCurve
   public:
     QgsMultiLineString();
     virtual QString geometryType() const;
+    virtual QgsMultiLineString *newSameGeometry() const /Factory/;
     virtual QgsMultiLineString *clone() const /Factory/;
 
 

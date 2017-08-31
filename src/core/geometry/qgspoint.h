@@ -373,7 +373,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
     virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
     virtual int dimension() const override { return 0; }
+    virtual QgsPoint *newSameGeometry() const override SIP_FACTORY;
     virtual QgsPoint *clone() const override SIP_FACTORY;
+    virtual QgsPoint *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+                                   double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     void clear() override;
     virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
     virtual bool fromWkt( const QString &wkt ) override;

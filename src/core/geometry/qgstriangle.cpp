@@ -107,6 +107,13 @@ bool QgsTriangle::operator!=( const QgsTriangle &other ) const
   return !operator==( other );
 }
 
+QgsTriangle *QgsTriangle::newSameGeometry() const
+{
+  auto result = new QgsTriangle();
+  result->mWkbType = mWkbType;
+  return result;
+}
+
 void QgsTriangle::clear()
 {
   QgsCurvePolygon::clear();

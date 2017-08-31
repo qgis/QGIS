@@ -21,6 +21,7 @@ class QgsMultiCurve: QgsGeometryCollection
   public:
     QgsMultiCurve();
     virtual QString geometryType() const;
+    virtual QgsMultiCurve *newSameGeometry() const /Factory/;
     virtual QgsMultiCurve *clone() const /Factory/;
 
 

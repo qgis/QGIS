@@ -66,6 +66,13 @@ bool QgsPolygonV2::operator!=( const QgsPolygonV2 &other ) const
   return !operator==( other );
 }
 
+QgsPolygonV2 *QgsPolygonV2::newSameGeometry() const
+{
+  auto result = new QgsPolygonV2();
+  result->mWkbType = mWkbType;
+  return result;
+}
+
 QgsPolygonV2 *QgsPolygonV2::clone() const
 {
   return new QgsPolygonV2( *this );

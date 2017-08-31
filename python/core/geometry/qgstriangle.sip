@@ -56,6 +56,7 @@ class QgsTriangle : QgsPolygonV2
 %End
 
     virtual QString geometryType() const;
+    virtual QgsTriangle *newSameGeometry() const /Factory/;
     virtual QgsTriangle *clone() const /Factory/;
     virtual void clear();
 

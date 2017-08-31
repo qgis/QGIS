@@ -69,6 +69,12 @@ class QgsAbstractGeometry
     virtual ~QgsAbstractGeometry();
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
 
+    virtual QgsAbstractGeometry *newSameGeometry() const = 0 /Factory/;
+%Docstring
+ TODO: documentation
+ :rtype: QgsAbstractGeometry
+%End
+
     virtual QgsAbstractGeometry *clone() const = 0 /Factory/;
 %Docstring
  Clones the geometry by performing a deep copy
@@ -378,6 +384,12 @@ Returns the centroid of the geometry
 E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
 QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
 :return: the converted geometry. Caller takes ownership*
+ :rtype: QgsAbstractGeometry
+%End
+
+    virtual QgsAbstractGeometry *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
+%Docstring
+ TODO: documentation */
  :rtype: QgsAbstractGeometry
 %End
 

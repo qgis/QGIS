@@ -30,6 +30,7 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
   public:
     QgsMultiPointV2();
     virtual QString geometryType() const override { return QStringLiteral( "MultiPoint" ); }
+    virtual QgsMultiPointV2 *newSameGeometry() const override SIP_FACTORY;
     QgsMultiPointV2 *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;

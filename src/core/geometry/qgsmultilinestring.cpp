@@ -28,6 +28,13 @@ QgsMultiLineString::QgsMultiLineString()
   mWkbType = QgsWkbTypes::MultiLineString;
 }
 
+QgsMultiLineString *QgsMultiLineString::newSameGeometry() const
+{
+  auto result = new QgsMultiLineString();
+  result->mWkbType = mWkbType;
+  return result;
+}
+
 QgsMultiLineString *QgsMultiLineString::clone() const
 {
   return new QgsMultiLineString( *this );

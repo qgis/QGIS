@@ -27,6 +27,7 @@ class QgsCurvePolygon: QgsSurface
 
     virtual QString geometryType() const;
     virtual int dimension() const;
+    virtual QgsCurvePolygon *newSameGeometry() const /Factory/;
     virtual QgsCurvePolygon *clone() const /Factory/;
     virtual void clear();
 
@@ -50,6 +51,8 @@ class QgsCurvePolygon: QgsSurface
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+    virtual QgsCurvePolygon *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+                                          double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     int numInteriorRings() const;
 %Docstring
