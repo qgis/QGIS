@@ -561,6 +561,13 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
 
     /**
+     * Returns the minimal enclosing circle for the geometry.
+     * The center and the radius of the minimal enclosing circle will also be returned.
+     * \since QGIS 3.0
+     */
+    QgsGeometry minimalEnclosingCircle( QgsPoint &center SIP_OUT, double &radius SIP_OUT, unsigned int segments = 36 ) const;
+
+    /**
      * Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries
      * angles either right angles or flat lines. This is an iterative algorithm which will loop until
      * either the vertices are within a specified tolerance of right angles or a set number of maximum

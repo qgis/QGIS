@@ -159,6 +159,10 @@ Set the radius of the circle
  :rtype: QgsCircularString
 %End
 
+    bool contains( QgsPoint &p ) const;
+%Docstring
+ :rtype: bool
+%End
 
     virtual QgsRectangle boundingBox() const;
 
