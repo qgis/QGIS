@@ -71,7 +71,7 @@ void QgsUserProfileManager::setRootLocation( QString rootProfileLocation )
   {
     mWatcher->addPath( mRootProfilePath );
   }
-  mSettings = new QSettings( settingsFile(), QSettings::IniFormat );
+  mSettings.reset( new QSettings( settingsFile(), QSettings::IniFormat ) );
 }
 
 bool QgsUserProfileManager::rootLocationIsSet() const
@@ -172,7 +172,7 @@ QgsError QgsUserProfileManager::deleteProfile( const QString name )
   return error;
 }
 
-QString QgsUserProfileManager::settingsFile()
+QString QgsUserProfileManager::settingsFile() const
 {
   return  mRootProfilePath + QDir::separator() + "profiles.ini";
 }

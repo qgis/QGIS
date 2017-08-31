@@ -179,9 +179,9 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     std::unique_ptr<QgsUserProfile> mUserProfile;
 
-    QString settingsFile();
+    QString settingsFile() const;
 
-    QSettings *mSettings = nullptr;
+    std::unique_ptr< QSettings > mSettings;
 };
 
 #endif // QGSUSERPROFILEMANAGER_H
