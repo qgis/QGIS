@@ -315,6 +315,8 @@ class CORE_EXPORT QgsRectangle
 
 };
 
+Q_DECLARE_METATYPE( QgsRectangle )
+
 #ifndef SIP_RUN
 
 /**

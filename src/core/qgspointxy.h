@@ -311,6 +311,7 @@ class CORE_EXPORT QgsPointXY
 
 }; // class QgsPoint
 
+Q_DECLARE_METATYPE( QgsPointXY )
 
 inline bool operator==( const QgsPointXY &p1, const QgsPointXY &p2 ) SIP_SKIP
 {

@@ -80,7 +80,11 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
      */
     QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
 
+    QgsReferencedRectangle();
+
 };
+
+Q_DECLARE_METATYPE( QgsReferencedRectangle )
 
 /**
  * \ingroup core
@@ -97,6 +101,10 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
      */
     QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
 
+    QgsReferencedPointXY();
+
 };
+
+Q_DECLARE_METATYPE( QgsReferencedPointXY )
 
 #endif // QGSREFERENCEDGEOMETRY_H

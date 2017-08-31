@@ -67,7 +67,10 @@ class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
  and ``crs``.
 %End
 
+    QgsReferencedRectangle();
+
 };
+
 
 class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
 {
@@ -87,7 +90,10 @@ class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
  and ``crs``.
 %End
 
+    QgsReferencedPointXY();
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
