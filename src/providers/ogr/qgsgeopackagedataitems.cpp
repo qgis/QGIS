@@ -383,7 +383,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
         {
           if ( isVector ) // Import vectors and aspatial
           {
-            QgsVectorLayer *vectorSrcLayer = dynamic_cast < QgsVectorLayer * >( srcLayer );
+            QgsVectorLayer *vectorSrcLayer = qobject_cast < QgsVectorLayer * >( srcLayer );
             QVariantMap options;
             options.insert( QStringLiteral( "driverName" ), QStringLiteral( "GPKG" ) );
             options.insert( QStringLiteral( "update" ), true );

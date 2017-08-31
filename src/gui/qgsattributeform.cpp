@@ -2037,7 +2037,7 @@ bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
     int srcFieldIndex;
     const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
 
-    if ( !info->hasUpsertOnEdit() && mMode == QgsAttributeForm::AddFeatureMode )
+    if ( info && !info->hasUpsertOnEdit() && mMode == QgsAttributeForm::AddFeatureMode )
       editable = false;
     else if ( info && info->isEditable() && info->joinLayer()->isEditable() )
       editable = fieldIsEditable( *( info->joinLayer() ), srcFieldIndex, mFeature.id() );
