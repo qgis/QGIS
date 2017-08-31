@@ -41,13 +41,13 @@ from .hillshade import hillshade
 from .information import information
 from .nearblack import nearblack
 from .pct2rgb import pct2rgb
+from .polygonize import polygonize
 from .rgb2pct import rgb2pct
 from .translate import translate
 from .tri import tri
 from .warp import warp
 
 # from .merge import merge
-# from .polygonize import polygonize
 # from .gdaladdo import gdaladdo
 # from .ClipByExtent import ClipByExtent
 # from .ClipByMask import ClipByMask
@@ -142,12 +142,12 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             information(),
             nearblack(),
             pct2rgb(),
+            polygonize(),
             rgb2pct(),
             translate(),
             tri(),
             warp(),
             # merge(),
-            # polygonize(),
             # gdaladdo(),
             # ClipByExtent(),
             # ClipByMask(),
