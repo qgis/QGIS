@@ -30,7 +30,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterString,
@@ -127,7 +128,7 @@ class translate(GdalAlgorithm):
 
         arguments = []
         arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
         arguments.append('-ot')
         arguments.append(self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)])
         if outsizePerc:

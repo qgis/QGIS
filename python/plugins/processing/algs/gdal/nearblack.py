@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination)
@@ -74,17 +75,20 @@ class nearblack(GdalAlgorithm):
         return self.tr('Raster analysis')
 
     def getConsoleCommands(self, parameters, context, feedback):
-        out = str(self.parameterAsOutputLayer(parameters, self.OUTPUT, context))
-
         arguments = []
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append('-o')
         arguments.append(out)
+
         arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
         arguments.append('-near')
         arguments.append(str(self.parameterAsInt(parameters, self.NEAR, context)))
+
         if self.parameterAsBool(parameters, self.WHITE, context):
             arguments.append('-white')
+
         arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
 
         return ['nearblack', GdalUtils.escapeAndJoin(arguments)]

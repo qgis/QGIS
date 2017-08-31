@@ -31,7 +31,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -75,7 +76,7 @@ class rgb2pct(GdalAlgorithm):
         arguments.append(str(self.parameterAsInt(parameters, rgb2pct.NCOLORS, context)))
         arguments.append('-of')
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
         arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
         arguments.append(out)
 

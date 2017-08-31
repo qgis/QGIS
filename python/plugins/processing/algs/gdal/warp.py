@@ -29,7 +29,8 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
@@ -157,7 +158,7 @@ class warp(GdalAlgorithm):
 
         arguments.append('-of')
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
         if self.parameterAsDouble(parameters, self.TR, context) != 0:
             arguments.append('-tr')
