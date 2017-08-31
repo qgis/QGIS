@@ -107,7 +107,9 @@ static QgsGeometry generalizeWkbGeometryByBoundingBox(
 template<class T>
 static T *createEmptySameTypeGeom( const T &geom )
 {
+  // TODO - this is inefficient - we clone the geometry's content only to throw it away immediately
   T *output( qgsgeometry_cast<T *>( geom.clone() ) );
+  Q_ASSERT( output );
   output->clear();
   return output;
 }
