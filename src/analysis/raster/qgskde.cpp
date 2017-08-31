@@ -203,7 +203,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
     }
 
     block->setData( blockData );
-    if ( !mProvider->writeBlock( block, 1, xPosition, yPosition ) )
+    if ( !mProvider->writeBlock( block, 1, xPosition, yPositionIO ) )
     {
       result = RasterIoError;
     }
