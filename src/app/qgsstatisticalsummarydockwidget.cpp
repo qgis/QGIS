@@ -241,7 +241,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly 
 
 void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer *newLayer = dynamic_cast< QgsVectorLayer * >( layer );
+  QgsVectorLayer *newLayer = qobject_cast< QgsVectorLayer * >( layer );
   if ( mLayer && mLayer != newLayer )
   {
     disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );

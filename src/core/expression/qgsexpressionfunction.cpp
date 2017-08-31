@@ -3455,7 +3455,7 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
   else
   {
     //vector layer methods
-    QgsVectorLayer *vLayer = dynamic_cast< QgsVectorLayer * >( layer );
+    QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
     if ( vLayer )
     {
       if ( QString::compare( layerProperty, QStringLiteral( "storage_type" ), Qt::CaseInsensitive ) == 0 )
