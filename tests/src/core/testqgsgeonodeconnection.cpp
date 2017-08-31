@@ -23,6 +23,9 @@
 //#include "qgis_core.h"
 #include "qgsgeonodeconnection.h"
 #include "qgssettings.h"
+#include "qgsgeonoderequest.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsGeoConnection class.
@@ -50,6 +53,9 @@ class TestQgsGeoNodeConnection: public QObject
     // Check if we can create geonode connection from database.
     void testCreation();
 
+    // Test Layer API
+    void testLayerAPI();
+
   private:
     QString mGeoNodeConnectionName;
     QString mGeoNodeConnectionURL;
@@ -71,13 +77,13 @@ void TestQgsGeoNodeConnection::initTestCase()
 {
   std::cout << "CTEST_FULL_OUTPUT" << std::endl;
   mGeoNodeConnectionName = QStringLiteral( "ThisIsAGeoNodeConnection" );
-  mGeoNodeConnectionURL = QStringLiteral( "www.thisisageonodeurl.com" );
+  mGeoNodeConnectionURL = QStringLiteral( "http://www.thisisageonodeurl.com" );
   mDemoGeoNodeName = QStringLiteral( "Demo GeoNode" );
-  mDemoGeoNodeURL = QStringLiteral( "demo.geonode.org" );
+  mDemoGeoNodeURL = QStringLiteral( "http://demo.geonode.org" );
   mKartozaGeoNodeQGISServerName = QStringLiteral( "Staging Kartoza GeoNode QGIS Server" );
-  mKartozaGeoNodeQGISServerURL = QStringLiteral( "staging.geonode.kartoza.com" );
+  mKartozaGeoNodeQGISServerURL = QStringLiteral( "http://staging.geonode.kartoza.com" );
   mKartozaGeoNodeGeoServerName = QStringLiteral( "Staging Kartoza GeoNode GeoServer" );
-  mKartozaGeoNodeGeoServerURL = QStringLiteral( "staginggs.geonode.kartoza.com" );
+  mKartozaGeoNodeGeoServerURL = QStringLiteral( "http://staginggs.geonode.kartoza.com" );
 
   // Change it to skip remote testing
   mSkipRemoteTest = true;
@@ -120,6 +126,21 @@ void TestQgsGeoNodeConnection::testCreation()
 
   // Verify if the new connection is created properly
   QVERIFY( newConnectionList.contains( mGeoNodeConnectionName ) );
+}
+
+// Test Layer API
+void TestQgsGeoNodeConnection::testLayerAPI()
+{
+  if ( mSkipRemoteTest )
+  {
+    QSKIP( "Skip remote test for faster testing" );
+  }
+
+  QgsGeoNodeRequest geonodeRequest( mKartozaGeoNodeQGISServerURL, true );
+  QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
+  QString msg = QStringLiteral( "Number of layers: %1" ).arg( layers.count() );
+  QgsDebugMsg( msg );
+  QVERIFY( layers.count() > 0 );
 }
 
 QGSTEST_MAIN( TestQgsGeoNodeConnection )

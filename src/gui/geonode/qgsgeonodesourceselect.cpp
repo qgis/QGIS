@@ -199,11 +199,11 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
   if ( !layers.empty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Success" ), tr( "GeoNode" ) );
+    QgsMessageLog::logMessage( QStringLiteral( "Success, non empty layers %1" ).arg( layers.count( ) ), tr( "GeoNode" ) );
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Failed" ), tr( "GeoNode" ) );
+    QgsMessageLog::logMessage( QStringLiteral( "Failed, empty layers" ), tr( "GeoNode" ) );
   }
 
   if ( mModel )
@@ -216,8 +216,6 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
     Q_FOREACH ( const QgsServiceLayerDetail &layer, layers )
     {
       QUuid uuid = layer.uuid;
-
-      QString layerName = layer.name;
 
       QString wmsURL = layer.wmsURL;
       QString wfsURL = layer.wfsURL;

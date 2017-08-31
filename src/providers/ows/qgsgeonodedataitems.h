@@ -36,7 +36,7 @@ class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
     void editConnection();
     void deleteConnection()
     {
-      QgsGeoNodeConnection::deleteConnection( mParent->name() );
+      QgsGeoNodeConnection::deleteConnection( name() );
       mParent->refresh();
     };
 
