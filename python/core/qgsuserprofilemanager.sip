@@ -118,7 +118,7 @@ class QgsUserProfileManager : QObject
  Set the default profile name from the current active profile.
 %End
 
-    QgsUserProfile *profileForName( const QString name ) const;
+    QgsUserProfile *profileForName( const QString &name ) const /Factory/;
 %Docstring
  Return the profile found for a given name.
  \param name The name of the profile to return.

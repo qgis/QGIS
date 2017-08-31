@@ -126,7 +126,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param name The name of the profile to return.
      * \return A QgsUserprofile pointing to the location of the user profile.
      */
-    QgsUserProfile *profileForName( const QString name ) const;
+    QgsUserProfile *profileForName( const QString &name ) const SIP_FACTORY;
 
     /**
      * Create a user profile given by the name
