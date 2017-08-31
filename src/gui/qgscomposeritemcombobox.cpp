@@ -36,7 +36,6 @@ void QgsComposerItemComboBox::setComposition( QgsComposition *composition )
   connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
   setModel( mProxyModel );
   setModelColumn( QgsComposerModel::ItemId );
-  mProxyModel->sort( 0, Qt::AscendingOrder );
 }
 
 void QgsComposerItemComboBox::setItem( const QgsComposerItem* item )
