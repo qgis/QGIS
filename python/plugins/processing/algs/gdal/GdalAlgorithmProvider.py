@@ -37,6 +37,7 @@ from .AssignProjection import AssignProjection
 from .aspect import aspect
 from .buildvrt import buildvrt
 from .ColorRelief import ColorRelief
+from .contour import contour
 from .hillshade import hillshade
 from .information import information
 from .nearblack import nearblack
@@ -54,7 +55,6 @@ from .warp import warp
 # from .gdaladdo import gdaladdo
 # from .ClipByExtent import ClipByExtent
 # from .ClipByMask import ClipByMask
-# from .contour import contour
 # from .rasterize import rasterize
 # from .proximity import proximity
 # from .sieve import sieve
@@ -138,6 +138,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             aspect(),
             buildvrt(),
             ColorRelief(),
+            contour(),
             hillshade(),
             information(),
             nearblack(),
@@ -154,7 +155,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdaladdo(),
             # ClipByExtent(),
             # ClipByMask(),
-            # contour(),
             # rasterize(),
             # proximity(),
             # sieve(),
