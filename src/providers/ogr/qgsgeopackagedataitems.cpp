@@ -541,7 +541,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           char *sql = sqlite3_mprintf( "DELETE FROM %w WHERE table_name = '%q'",
                                        tableName.toUtf8().constData(),
                                        layerName.toUtf8().constData() );
-          sqlite3_exec(
+          ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             NULL,                                /* Callback function */
@@ -554,7 +554,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
         {
           char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_coverage_ancillary WHERE tile_matrix_set_name = '%q'",
                                        layerName.toUtf8().constData() );
-          sqlite3_exec(
+          ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             NULL,                                /* Callback function */
@@ -566,7 +566,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
         {
           char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_tile_ancillary WHERE tpudt_name = '%q'",
                                        layerName.toUtf8().constData() );
-          sqlite3_exec(
+          ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             NULL,                                /* Callback function */
@@ -577,7 +577,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
         }
         // Vacuum
         {
-          sqlite3_exec(
+          ( void )sqlite3_exec(
             handle,                              /* An open database */
             "VACUUM",                            /* SQL to be evaluated */
             NULL,                                /* Callback function */
