@@ -4592,8 +4592,8 @@ void TestQgsGeometry::multiPolygon()
   polygon1.setExteriorRing( ring1.clone() );
   multiPolygon1.addGeometry( polygon1.clone() );
 
-  QgsAbstractGeometry *boundary = multiPolygon1.boundary();
-  QgsMultiLineString *lineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
+  std::unique_ptr< QgsAbstractGeometry > boundary( multiPolygon1.boundary() );
+  QgsMultiLineString *lineBoundary = dynamic_cast< QgsMultiLineString * >( boundary.get() );
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numGeometries(), 1 );
   QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->numPoints(), 4 );
@@ -4605,7 +4605,6 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
   QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
   QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
-  delete boundary;
 
   // add polygon with interior rings
   QgsLineString ring2;
@@ -4619,8 +4618,8 @@ void TestQgsGeometry::multiPolygon()
   polygon2.setInteriorRings( QList< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
   multiPolygon1.addGeometry( polygon2.clone() );
 
-  boundary = multiPolygon1.boundary();
-  QgsMultiLineString *multiLineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
+  boundary.reset( multiPolygon1.boundary() );
+  QgsMultiLineString *multiLineBoundary( static_cast< QgsMultiLineString * >( boundary.get() ) );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 4 );
   QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
@@ -4659,7 +4658,6 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 1 ), 10.8 );
   QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 2 ), 10.9 );
   QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 3 ), 10.8 );
-  delete boundary;
 }
 
 void TestQgsGeometry::geometryCollection()
