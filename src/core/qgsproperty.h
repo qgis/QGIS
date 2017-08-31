@@ -117,7 +117,7 @@ class CORE_EXPORT QgsPropertyDefinition
      * \param type one of the predefined standard property template
      * \param origin The origin of the property
      */
-    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QStringLiteral( "labeling" ) );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QString() );
 
     /**
      * Constructor for custom QgsPropertyDefinitions.
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsPropertyDefinition
      * of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
      * \param origin The origin of the property
      */
-    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QStringLiteral( "labeling" ) );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QString() );
 
     /**
      * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.

@@ -72,7 +72,7 @@ class QgsPropertyDefinition
  Constructs an empty property.
 %End
 
-    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QStringLiteral( "labeling" ) );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QString() );
 %Docstring
  Constructor for QgsPropertyDefinition, using a standard property template.
  \param name is used internally and should be a unique, alphanumeric string.
@@ -81,7 +81,7 @@ class QgsPropertyDefinition
  \param origin The origin of the property
 %End
 
-    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QStringLiteral( "labeling" ) );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QString() );
 %Docstring
  Constructor for custom QgsPropertyDefinitions.
  \param name is used internally and should be a unique, alphanumeric string.
