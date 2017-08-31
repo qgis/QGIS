@@ -67,7 +67,7 @@ void QgsUserProfileManager::setRootLocation( const QString &rootProfileLocation 
     mWatcher->removePaths( mWatcher->directories() );
   }
 
-  if ( QDir( mRootProfilePath ).exists() )
+  if ( !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
   {
     mWatcher->addPath( mRootProfilePath );
   }

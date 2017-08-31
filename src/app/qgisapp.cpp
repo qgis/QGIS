@@ -652,7 +652,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
   startProfile( QStringLiteral( "User profile manager" ) );
-  mUserProfileManager = new QgsUserProfileManager( "", this );
+  mUserProfileManager = new QgsUserProfileManager( QString(), this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
   mUserProfileManager->setActiveUserProfile( activeProfile );
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
