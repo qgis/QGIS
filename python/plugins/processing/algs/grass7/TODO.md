@@ -1,5 +1,14 @@
 TODO List for GRASS7 algorithms support into QGIS Processing
 
+QGIS3 Processing Port
+=====================
+
+* Port to Python3.
+* Replace all parameters by QgsProcessingParameters.
+* Re-enable GRASS algorithm by default.
+* Add GRASS 7.2 new algorithms.
+* Improve unit tests
+
 Unit tests
 ==========
 
