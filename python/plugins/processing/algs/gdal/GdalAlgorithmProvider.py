@@ -38,6 +38,7 @@ from .aspect import aspect
 from .buildvrt import buildvrt
 from .ColorRelief import ColorRelief
 from .contour import contour
+from .fillnodata import fillnodata
 from .hillshade import hillshade
 from .information import information
 from .nearblack import nearblack
@@ -58,7 +59,6 @@ from .warp import warp
 # from .ClipByMask import ClipByMask
 # from .rasterize import rasterize
 # from .proximity import proximity
-# from .fillnodata import fillnodata
 # from .extractprojection import ExtractProjection
 # from .gdal2xyz import gdal2xyz
 # from .GridInvDist import GridInvDist
@@ -139,6 +139,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             buildvrt(),
             ColorRelief(),
             contour(),
+            fillnodata(),
             hillshade(),
             information(),
             nearblack(),
@@ -158,7 +159,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # ClipByMask(),
             # rasterize(),
             # proximity(),
-            # fillnodata(),
             # ExtractProjection(),
             # gdal2xyz(),
             # GridInvDist(),
