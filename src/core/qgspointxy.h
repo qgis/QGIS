@@ -91,8 +91,10 @@ class CORE_EXPORT QgsPointXY
      */
     QgsPointXY( const QgsPoint &point );
 
-    ~QgsPointXY()
-    {}
+    // IMPORTANT - while QgsPointXY is inherited by QgsReferencedPointXY, we do NOT want a virtual destructor here
+    // because this class MUST be lightweight and we don't want the cost of the vtable here.
+    // see https://github.com/qgis/QGIS/pull/4720#issuecomment-308652392
+    ~QgsPointXY() = default;
 
     /** Sets the x value of the point
      * \param x x coordinate

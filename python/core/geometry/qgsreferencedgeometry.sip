@@ -9,21 +9,17 @@
 
 
 
-template<T>
-class QgsReferencedGeometryPrimitive
+class QgsReferencedGeometryBase
 {
 %Docstring
- A template based class for storing geometry primitives with an associated reference system.
+ A base class for geometry primitives which are stored with an associated reference system.
 
- QgsReferencedGeometryPrimitive classes represent some form of geometry primitive
+ QgsReferencedGeometryBase classes represent some form of geometry primitive
  (such as rectangles) which have an optional coordinate reference system
  associated with them.
 
 .. versionadded:: 3.0
 .. seealso:: QgsReferencedRectangle
-.. note::
-
-   Not available in Python bindings (although SIP file is present for specific implementations).
 %End
 
 %TypeHeaderCode
@@ -31,16 +27,9 @@ class QgsReferencedGeometryPrimitive
 %End
   public:
 
-    QgsReferencedGeometryPrimitive( T primitive, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    QgsReferencedGeometryBase( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
- Constructor for QgsReferencedGeometryPrimitive, for the specified ``primitive`` and ``crs``.
-%End
-
-
-    T &primitive();
-%Docstring
- Returns the geometry primitive.
- :rtype: T
+ Constructor for QgsReferencedGeometryBase, with the specified ``crs``.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -60,11 +49,7 @@ class QgsReferencedGeometryPrimitive
 
 };
 
-
-
-typedef QgsReferencedGeometryPrimitive<QgsRectangle> QgsReferencedGeometryPrimitiveQgsRectangleBase;
-
-class QgsReferencedRectangle : QgsReferencedGeometryPrimitiveQgsRectangleBase
+class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
 {
 %Docstring
  A QgsRectangle with associated coordinate reference system.
@@ -73,20 +58,33 @@ class QgsReferencedRectangle : QgsReferencedGeometryPrimitiveQgsRectangleBase
 
 %TypeHeaderCode
 #include "qgsreferencedgeometry.h"
-typedef QgsReferencedGeometryPrimitive<QgsRectangle> QgsReferencedGeometryPrimitiveQgsRectangleBase;
 %End
   public:
 
-    QgsReferencedRectangle( const QgsRectangle &rect );
+    QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Construct a default optional expression.
- It will be disabled and with an empty expression.
+ Constructor for QgsReferencedRectangle, with the specified initial ``rectangle``
+ and ``crs``.
 %End
 
-    QgsRectangle &rect();
+};
+
+class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
+{
 %Docstring
- Returns the rectangles
- :rtype: QgsRectangle
+ A QgsPointXY with associated coordinate reference system.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsreferencedgeometry.h"
+%End
+  public:
+
+    QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+ Constructor for QgsReferencedPointXY, with the specified initial ``point``
+ and ``crs``.
 %End
 
 };

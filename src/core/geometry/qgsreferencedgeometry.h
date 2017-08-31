@@ -25,40 +25,25 @@
 #include "qgsrectangle.h"
 
 /**
- * \class QgsReferencedGeometryPrimitive
+ * \class QgsReferencedGeometryBase
  * \ingroup core
- * A template based class for storing geometry primitives with an associated reference system.
+ * A base class for geometry primitives which are stored with an associated reference system.
  *
- * QgsReferencedGeometryPrimitive classes represent some form of geometry primitive
+ * QgsReferencedGeometryBase classes represent some form of geometry primitive
  * (such as rectangles) which have an optional coordinate reference system
  * associated with them.
  *
  * \since QGIS 3.0
  * \see QgsReferencedRectangle
- * \note Not available in Python bindings (although SIP file is present for specific implementations).
  */
-template<typename T>
-class CORE_EXPORT QgsReferencedGeometryPrimitive
+class CORE_EXPORT QgsReferencedGeometryBase
 {
   public:
 
     /**
-     * Constructor for QgsReferencedGeometryPrimitive, for the specified \a primitive and \a crs.
+     * Constructor for QgsReferencedGeometryBase, with the specified \a crs.
      */
-    QgsReferencedGeometryPrimitive( T primitive, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() )
-      : mPrimitive( primitive )
-      , mCrs( crs )
-    {}
-
-    /**
-     * Returns the geometry primitive.
-     */
-    T primitive() const { return mPrimitive; } SIP_SKIP
-
-    /**
-     * Returns the geometry primitive.
-     */
-    T &primitive() { return mPrimitive; }
+    QgsReferencedGeometryBase( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Returns the associated coordinate reference system, or an invalid CRS if
@@ -76,32 +61,41 @@ class CORE_EXPORT QgsReferencedGeometryPrimitive
 
   private:
 
-    T mPrimitive;
     QgsCoordinateReferenceSystem mCrs;
 
 };
-
-//template class  QgsReferencedGeometryPrimitive< QgsRectangle > QgsReferencedRectangle;
 
 /**
  * \ingroup core
  * A QgsRectangle with associated coordinate reference system.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsReferencedRectangle : public QgsReferencedGeometryPrimitive< QgsRectangle >
+class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsReferencedGeometryBase
 {
   public:
 
     /**
-     * Construct a default optional expression.
-     * It will be disabled and with an empty expression.
+     * Constructor for QgsReferencedRectangle, with the specified initial \a rectangle
+     * and \a crs.
      */
-    QgsReferencedRectangle( const QgsRectangle &rect ) : QgsReferencedGeometryPrimitive( rect ) {}
+    QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
+
+};
+
+/**
+ * \ingroup core
+ * A QgsPointXY with associated coordinate reference system.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferencedGeometryBase
+{
+  public:
 
     /**
-     * Returns the rectangles
+     * Constructor for QgsReferencedPointXY, with the specified initial \a point
+     * and \a crs.
      */
-    QgsRectangle &rect() { return primitive(); }
+    QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
 
 };
 
