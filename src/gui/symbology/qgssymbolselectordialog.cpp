@@ -680,10 +680,11 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
 {
   setLayout( new QVBoxLayout() );
   mSelectorWidget = new QgsSymbolSelectorWidget( symbol, style, vl, this );
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsSymbolSelectorDialog::showHelp );
 
   layout()->addWidget( mSelectorWidget );
   layout()->addWidget( mButtonBox );
@@ -696,6 +697,10 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   {
     mButtonBox->hide();
     layout()->setContentsMargins( 0, 0, 0, 0 );
+  }
+  else
+  {
+    setWindowTitle( tr( "Symbol Selector" ) );
   }
   mSelectorWidget->setDockMode( embedded );
 }
@@ -832,4 +837,9 @@ void QgsSymbolSelectorDialog::symbolChanged()
 void QgsSymbolSelectorDialog::changeLayer( QgsSymbolLayer *layer )
 {
   mSelectorWidget->changeLayer( layer );
+}
+
+void QgsSymbolSelectorDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-symbol-selector" ) );
 }

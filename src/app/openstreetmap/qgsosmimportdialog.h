@@ -19,6 +19,7 @@
 #include <QDialog>
 
 #include "ui_qgsosmimportdialog.h"
+#include "qgshelp.h"
 
 class QgsOSMXmlImport;
 
@@ -38,6 +39,7 @@ class QgsOSMImportDialog : public QDialog, private Ui::QgsOSMImportDialog
 
     void onOK();
     void onClose();
+    void showHelp();
 
     void onProgress( int percent );
 
