@@ -119,6 +119,8 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
 
     void attemptResize( const QgsLayoutSize &size ) override;
 
+    QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
+
   public slots:
 
     void redraw() override;

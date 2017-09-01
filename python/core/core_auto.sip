@@ -156,6 +156,7 @@
 %Include composer/qgspaperitem.sip
 %Include layout/qgslayoutcontext.sip
 %Include layout/qgslayoutgridsettings.sip
+%Include layout/qgslayoutitemundocommand.sip
 %Include layout/qgslayoutmeasurement.sip
 %Include layout/qgslayoutmeasurementconverter.sip
 %Include layout/qgspagesizeregistry.sip
@@ -163,6 +164,8 @@
 %Include layout/qgslayoutserializableobject.sip
 %Include layout/qgslayoutsize.sip
 %Include layout/qgslayoutsnapper.sip
+%Include layout/qgslayoutundocommand.sip
+%Include layout/qgslayoutundostack.sip
 %Include layout/qgslayoututils.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip

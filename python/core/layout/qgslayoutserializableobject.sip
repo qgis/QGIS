@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutSerializableObject
+class QgsLayoutSerializableObject : QgsLayoutUndoObjectInterface
 {
 %Docstring
  An interface for layout objects which can be stored and read from DOM elements.
@@ -51,6 +51,9 @@ class QgsLayoutSerializableObject
 .. seealso:: writeXml()
  :rtype: bool
 %End
+
+    virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
+
 
 };
 

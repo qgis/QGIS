@@ -259,6 +259,8 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QList< QgsLayoutItemPage * > mPages;
 
     void createDefaultPageStyleSymbol();
+
+    friend class QgsLayoutPageCollectionUndoCommand;
 };
 
 #endif //QGSLAYOUTPAGECOLLECTION_H

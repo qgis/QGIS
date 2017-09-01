@@ -22,6 +22,7 @@
 #include "qgslayoutsize.h"
 #include "qgslayoutpoint.h"
 #include "qgsrendercontext.h"
+#include "qgslayoutundocommand.h"
 #include <QGraphicsRectItem>
 
 class QgsLayout;
@@ -33,7 +34,7 @@ class QPainter;
  * \brief Base class for graphical items within a QgsLayout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem
+class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem, public QgsLayoutUndoObjectInterface
 {
 #ifdef SIP_RUN
 #include <qgslayoutitemshape.h>
@@ -226,6 +227,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \note Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
      */
     virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
   public slots:
 

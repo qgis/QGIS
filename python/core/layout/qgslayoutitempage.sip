@@ -90,6 +90,9 @@ class QgsLayoutItemPage : QgsLayoutItem
     virtual void attemptResize( const QgsLayoutSize &size );
 
 
+    virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
+
+
   public slots:
 
     virtual void redraw();

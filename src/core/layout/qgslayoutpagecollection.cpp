@@ -18,6 +18,7 @@
 #include "qgslayout.h"
 #include "qgsreadwritecontext.h"
 #include "qgsproject.h"
+#include "qgslayoutitemundocommand.h"
 #include "qgssymbollayerutils.h"
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
@@ -256,13 +257,17 @@ QList<int> QgsLayoutPageCollection::visiblePageNumbers( QRectF region ) const
 
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
+  mLayout->undoStack()->beginCommand( this, tr( "Add page" ) );
   mPages.append( page );
   mLayout->addItem( page );
   reflow();
+  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePage )
 {
+  mLayout->undoStack()->beginCommand( this, tr( "Add page" ) );
+
   if ( beforePage < 0 )
     beforePage = 0;
 
@@ -276,18 +281,67 @@ void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePag
   }
   mLayout->addItem( page );
   reflow();
+  mLayout->undoStack()->endCommand();
 }
+
+///@cond PRIVATE
+
+class QgsLayoutItemDeletePageUndoCommand: public QgsLayoutItemDeleteUndoCommand
+{
+  public:
+
+    QgsLayoutItemDeletePageUndoCommand( QgsLayoutItemPage *page, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsLayoutItemDeleteUndoCommand( page, text, id, parent )
+    {}
+
+    void redo() override
+    {
+      if ( mFirstRun )
+      {
+        mFirstRun = false;
+        return;
+      }
+
+      // remove from page collection
+      QgsLayoutItemPage *page = dynamic_cast< QgsLayoutItemPage *>( layout()->itemByUuid( itemUuid() ) );
+      layout()->pageCollection()->takePage( page );
+
+      QgsLayoutItemDeleteUndoCommand::redo();
+      layout()->pageCollection()->reflow();
+    }
+
+    void undo() override
+    {
+      QgsLayoutItemDeleteUndoCommand::undo();
+      layout()->pageCollection()->reflow();
+    }
+
+    QgsLayoutItem *recreateItem( int, QgsLayout *layout ) override
+    {
+      QgsLayoutItemPage *page = new QgsLayoutItemPage( layout );
+      layout->pageCollection()->addPage( page );
+      return page;
+    }
+
+};
+
+///@endcond
 
 void QgsLayoutPageCollection::deletePage( int pageNumber )
 {
   if ( pageNumber < 0 || pageNumber >= mPages.count() )
     return;
 
+  mLayout->undoStack()->beginMacro( tr( "Remove page" ) );
+  mLayout->undoStack()->beginCommand( this, tr( "Remove page" ) );
   emit pageAboutToBeRemoved( pageNumber );
   QgsLayoutItemPage *page = mPages.takeAt( pageNumber );
+  //mLayout->undoStack()->stack()->push( new QgsLayoutItemDeletePageUndoCommand( page, tr( "Remove page" ) ) );
   mLayout->removeItem( page );
   page->deleteLater();
   reflow();
+  mLayout->undoStack()->endCommand();
+  mLayout->undoStack()->endMacro();
 }
 
 void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
@@ -295,10 +349,15 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   if ( !mPages.contains( page ) )
     return;
 
+  mLayout->undoStack()->beginMacro( tr( "Remove page" ) );
+  mLayout->undoStack()->beginCommand( this, tr( "Remove page" ) );
   emit pageAboutToBeRemoved( mPages.indexOf( page ) );
+  //mLayout->undoStack()->stack()->push( new QgsLayoutItemDeletePageUndoCommand( page, tr( "Remove page" ) ) );
   mPages.removeAll( page );
   page->deleteLater();
   reflow();
+  mLayout->undoStack()->endCommand();
+  mLayout->undoStack()->endMacro();
 }
 
 QgsLayoutItemPage *QgsLayoutPageCollection::takePage( QgsLayoutItemPage *page )

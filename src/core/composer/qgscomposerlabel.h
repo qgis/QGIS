@@ -71,7 +71,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * \param a alignment
      * \returns void
      */
-    void setHAlign( Qt::AlignmentFlag a ) {mHAlignment = a;}
+    void setHAlign( Qt::AlignmentFlag a ) { mHAlignment = a; }
 
     /** Mutator for the vertical alignment of the label
      * \param a alignment

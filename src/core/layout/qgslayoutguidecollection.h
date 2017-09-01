@@ -286,6 +286,12 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
 
   private:
 
+    enum UndoRoles
+    {
+      Move = 10000,
+      Remove = 20000,
+    };
+
     QgsLayout *mLayout = nullptr;
     QgsLayoutPageCollection *mPageCollection = nullptr;
 
@@ -293,6 +299,9 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     int mHeaderSize = 0;
 
     bool mGuidesVisible = true;
+    bool mBlockUndoCommands = false;
+
+    friend class QgsLayoutGuideCollectionUndoCommand;
 
 };
 

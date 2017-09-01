@@ -286,8 +286,10 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setLength( newPos );
+      mLayout->undoStack()->beginCommand( this, tr( "Guide moved" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
+      mLayout->undoStack()->endCommand();
       emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
@@ -300,8 +302,10 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setLength( newPos );
+      mLayout->undoStack()->beginCommand( this, tr( "Guide moved" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
+      mLayout->undoStack()->endCommand();
       emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
@@ -313,7 +317,9 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       if ( !ok )
         return false;
 
+      mLayout->undoStack()->beginCommand( this, tr( "Guide moved" ), Move + index.row() );
       whileBlocking( guide )->setLayoutPosition( newPos );
+      mLayout->undoStack()->endCommand();
       emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
@@ -327,8 +333,10 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setUnits( static_cast< QgsUnitTypes::LayoutUnit >( units ) );
+      mLayout->undoStack()->beginCommand( this, tr( "Guide moved" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
+      mLayout->undoStack()->endCommand();
       emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
@@ -360,13 +368,16 @@ bool QgsLayoutGuideCollection::removeRows( int row, int count, const QModelIndex
   if ( parent.isValid() )
     return false;
 
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Guide(s) removed" ), Remove + row );
   beginRemoveRows( parent, row, row + count - 1 );
   for ( int i = 0; i < count; ++ i )
   {
     delete mGuides.takeAt( row );
   }
   endRemoveRows();
-
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->endCommand();
   return true;
 }
 
@@ -374,9 +385,13 @@ void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )
 {
   guide->setLayout( mLayout );
 
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Guide created" ) );
   beginInsertRows( QModelIndex(), mGuides.count(), mGuides.count() );
   mGuides.append( guide );
   endInsertRows();
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->endCommand();
 
   QModelIndex index = createIndex( mGuides.length() - 1, 0 );
   connect( guide, &QgsLayoutGuide::positionChanged, this, [ this, index ]
@@ -405,14 +420,18 @@ void QgsLayoutGuideCollection::setGuideLayoutPosition( QgsLayoutGuide *guide, do
 
 void QgsLayoutGuideCollection::clear()
 {
+  mLayout->undoStack()->beginCommand( this, tr( "Guides cleared" ) );
   beginResetModel();
   qDeleteAll( mGuides );
   mGuides.clear();
   endResetModel();
+  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
 {
+  mLayout->undoStack()->beginCommand( this, tr( "Guides applied" ) );
+  mBlockUndoCommands = true;
   QgsLayoutItemPage *page = mPageCollection->page( sourcePage );
   // remove other page's guides
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
@@ -438,6 +457,8 @@ void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
       }
     }
   }
+  mLayout->undoStack()->endCommand();
+  mBlockUndoCommands = false;
 }
 
 void QgsLayoutGuideCollection::update()
@@ -478,16 +499,20 @@ bool QgsLayoutGuideCollection::visible() const
 
 void QgsLayoutGuideCollection::setVisible( bool visible )
 {
+  mLayout->undoStack()->beginCommand( this, tr( "Guide visibility changed" ) );
   mGuidesVisible = visible;
+  mLayout->undoStack()->endCommand();
   update();
 }
 
 void QgsLayoutGuideCollection::pageAboutToBeRemoved( int pageNumber )
 {
+  mBlockUndoCommands = true;
   Q_FOREACH ( QgsLayoutGuide *guide, guidesOnPage( pageNumber ) )
   {
     removeGuide( guide );
   }
+  mBlockUndoCommands = false;
 }
 
 bool QgsLayoutGuideCollection::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
@@ -520,6 +545,7 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
     return false;
   }
 
+  mBlockUndoCommands = true;
   beginResetModel();
   qDeleteAll( mGuides );
   mGuides.clear();
@@ -539,6 +565,7 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
   }
 
   endResetModel();
+  mBlockUndoCommands = false;
   return true;
 }
 

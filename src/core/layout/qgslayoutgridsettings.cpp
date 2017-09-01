@@ -34,12 +34,16 @@ QgsLayout *QgsLayoutGridSettings::layout()
 
 void QgsLayoutGridSettings::setResolution( const QgsLayoutMeasurement &resolution )
 {
+  mLayout->undoStack()->beginCommand( this, QObject::tr( "Grid resolution changed" ), UndoGridResolution );
   mGridResolution = resolution;
+  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutGridSettings::setOffset( const QgsLayoutPoint offset )
 {
+  mLayout->undoStack()->beginCommand( this, QObject::tr( "Grid offset changed" ), UndoGridOffset );
   mGridOffset = offset;
+  mLayout->undoStack()->endCommand();
 }
 
 bool QgsLayoutGridSettings::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const

@@ -134,11 +134,21 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 
   private:
 
+    // Used for 'collapsing' undo commands
+    enum UndoCommand
+    {
+      UndoTolerance = 1,
+      UndoSnapToGrid,
+      UndoSnapToGuides,
+    };
+
     QgsLayout *mLayout = nullptr;
 
     int mTolerance = 5;
     bool mSnapToGrid = false;
     bool mSnapToGuides = true;
+
+    friend class QgsLayoutSnapperUndoCommand;
 
 };
 

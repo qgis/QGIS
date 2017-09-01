@@ -20,18 +20,19 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgslayoutundocommand.h"
 
 class QDomElement;
 class QDomDocument;
 class QgsReadWriteContext;
-class QgsLayout;
+class QgsAbstractLayoutUndoCommand;
 
 /**
  * \ingroup core
  * An interface for layout objects which can be stored and read from DOM elements.
  * \since QGIS 3.0
 */
-class CORE_EXPORT QgsLayoutSerializableObject
+class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterface
 {
   public:
 
@@ -61,9 +62,13 @@ class CORE_EXPORT QgsLayoutSerializableObject
      */
     virtual bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) = 0;
 
+    QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
+
   private:
 
     QgsLayout *mLayout = nullptr;
+
+    friend class QgsLayoutSerializableObjectUndoCommand;
 
 };
 

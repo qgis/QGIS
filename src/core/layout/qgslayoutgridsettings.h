@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
+#include "qgslayoutundocommand.h"
 #include "qgslayoutserializableobject.h"
 #include <QPen>
 
@@ -121,6 +122,13 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
     bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
+
+    // Used for 'collapsing' undo commands
+    enum UndoCommand
+    {
+      UndoGridResolution = 1,
+      UndoGridOffset,
+    };
 
     QgsLayoutMeasurement mGridResolution;
     QgsLayoutPoint mGridOffset;

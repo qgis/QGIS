@@ -1,0 +1,93 @@
+/***************************************************************************
+                          qgslayoutundostack.h
+                          ----------------------
+    begin                : July 2017
+    copyright            : (C) 2017 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSLAYOUTUNDOSTACK_H
+#define QGSLAYOUTUNDOSTACK_H
+
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgslayoutundocommand.h"
+#include <memory>
+
+class QgsLayout;
+class QUndoStack;
+
+/**
+ * \ingroup core
+ * An undo stack for QgsLayouts.
+ * \since QGIS 3.0
+*/
+class CORE_EXPORT QgsLayoutUndoStack
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutUndoStack, for the specified parent \a layout.
+     */
+    QgsLayoutUndoStack( QgsLayout *layout );
+
+    void beginMacro( const QString &commandText );
+
+    void endMacro();
+
+    /**
+     * Begins a new undo command for the specified \a object.
+     *
+     * This must be followed by a call to endCommand() or cancelCommand() after the desired changes
+     * have been made to \a object.
+     *
+     * The \a id argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
+     * command compression can apply to the command.
+     *
+     * \see endCommand()
+     * \see cancelCommand()
+     */
+    void beginCommand( QgsLayoutUndoObjectInterface *object, const QString &commandText, int id = 0 );
+
+    /**
+     * Saves final state of an object and pushes the active command to the undo history.
+     * \see beginCommand()
+     * \see cancelCommand()
+     */
+    void endCommand();
+
+    /**
+     * Cancels the active command, discarding it without pushing to the undo history.
+     * \see endCommand()
+     * \see cancelCommand()
+     */
+    void cancelCommand();
+
+    /**
+     * Returns a pointer to the internal QUndoStack.
+     */
+    QUndoStack *stack();
+
+  private:
+
+    QgsLayout *mLayout = nullptr;
+
+    std::unique_ptr< QUndoStack > mUndoStack;
+
+    std::unique_ptr< QgsAbstractLayoutUndoCommand > mActiveCommand;
+
+#ifdef SIP_RUN
+    QgsLayoutUndoStack( const QgsLayoutUndoStack &other );
+#endif
+};
+
+#endif // QGSLAYOUTUNDOCOMMAND_H
