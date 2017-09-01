@@ -22,6 +22,8 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+
+#include <cmath>
 #include <QPainter>
 #include <QRegularExpression>
 
@@ -125,7 +127,7 @@ QgsPoint *QgsPoint::asGridified( double hSpacing, double vSpacing, double dSpaci
   auto gridifyValue = []( double value, double spacing, bool extraCondition = true ) -> double
   {
     if ( spacing > 0 && extraCondition )
-      return  round( value / spacing ) * spacing;
+      return  std::round( value / spacing ) * spacing;
     else
       return value;
   };

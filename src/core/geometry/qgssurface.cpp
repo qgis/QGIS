@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <memory>
-
 #include "qgssurface.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
+
+#include <memory>
 
 QgsSurface *QgsSurface::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
                                      double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const

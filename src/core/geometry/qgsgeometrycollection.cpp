@@ -27,6 +27,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
 
+#include <memory>
+
 QgsGeometryCollection::QgsGeometryCollection(): QgsAbstractGeometry()
 {
   mWkbType = QgsWkbTypes::GeometryCollection;
@@ -85,20 +87,21 @@ void QgsGeometryCollection::clear()
 QgsGeometryCollection *QgsGeometryCollection::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
     double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  QgsGeometryCollection *result = nullptr;
+  std::unique_ptr<QgsGeometryCollection> result;
 
-  for ( QgsAbstractGeometry *geom : mGeometries )
+  for ( auto geom : mGeometries )
   {
-    QgsAbstractGeometry *gridified = geom->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
+    std::unique_ptr<QgsAbstractGeometry> gridified { geom->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
     if ( gridified )
     {
       if ( !result )
-        result = newSameGeometry();
-      result->mGeometries.append( gridified );
+        result = std::unique_ptr<QgsGeometryCollection> { newSameGeometry() };
+
+      result->mGeometries.append( gridified.release() );
     }
   }
 
-  return result;
+  return result.release();
 }
 
 QgsAbstractGeometry *QgsGeometryCollection::boundary() const

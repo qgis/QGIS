@@ -24,6 +24,8 @@
 #include "qgspolygon.h"
 #include "qgswkbptr.h"
 #include "qgsmulticurve.h"
+
+#include <memory>
 #include <QPainter>
 #include <QPainterPath>
 
@@ -448,30 +450,27 @@ QgsCurvePolygon *QgsCurvePolygon::asGridified( double hSpacing, double vSpacing,
   if ( !mExteriorRing )
     return nullptr;
 
-  QgsPolygonV2 *polygon;
+  std::unique_ptr<QgsPolygonV2> polygon;
   if ( QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Triangle ||  QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Polygon )
   {
-    polygon = static_cast< QgsPolygonV2 const *>( this )->newSameGeometry();
+    polygon = std::unique_ptr<QgsPolygonV2> { static_cast< QgsPolygonV2 const *>( this )->newSameGeometry() };
   }
   else
   {
-    polygon = new QgsPolygonV2();
+    polygon = std::unique_ptr<QgsPolygonV2> { new QgsPolygonV2() };
     polygon->mWkbType = QgsWkbTypes::zmType( QgsWkbTypes::Polygon, QgsWkbTypes::hasZ( mWkbType ), QgsWkbTypes::hasM( mWkbType ) );
   }
 
   // exterior ring
-  QgsCurve *exterior = mExteriorRing->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
+  auto exterior = std::unique_ptr<QgsCurve> { mExteriorRing->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
 
   if ( !exterior )
-  {
-    delete polygon;
     return nullptr;
-  }
 
-  polygon->mExteriorRing = exterior;
+  polygon->mExteriorRing = exterior.release();
 
   //interior rings
-  for ( QgsCurve *interior : mInteriorRings )
+  for ( auto interior : mInteriorRings )
   {
     if ( !interior )
       continue;
@@ -484,7 +483,7 @@ QgsCurvePolygon *QgsCurvePolygon::asGridified( double hSpacing, double vSpacing,
     polygon->mInteriorRings.append( gridifiedInterior );
   }
 
-  return polygon;
+  return polygon.release();
 
 }
 

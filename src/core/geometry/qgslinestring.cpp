@@ -23,8 +23,10 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 
-#include <QPainter>
+#include <cmath>
 #include <limits>
+#include <memory>
+#include <QPainter>
 #include <QDomDocument>
 
 
@@ -195,24 +197,24 @@ QgsLineString *QgsLineString::asGridified( double hSpacing, double vSpacing, dou
   if ( length <= 0 )
     return nullptr;
 
-
-  QgsLineString *result;
+  // prepare result
+  std::unique_ptr<QgsLineString> result { newSameGeometry() };
 
 
   // helper functions
   auto roundVertex = [&]( QgsPoint & out, int i )
   {
     if ( hSpacing > 0 )
-      out.setX( round( mX.at( i ) / hSpacing ) * hSpacing );
+      out.setX( std::round( mX.at( i ) / hSpacing ) * hSpacing );
 
     if ( vSpacing > 0 )
-      out.setY( round( mY.at( i ) / vSpacing ) * vSpacing );
+      out.setY( std::round( mY.at( i ) / vSpacing ) * vSpacing );
 
     if ( dSpacing > 0 && QgsWkbTypes::hasZ( mWkbType ) )
-      out.setZ( round( mZ.at( i ) / dSpacing ) * dSpacing );
+      out.setZ( std::round( mZ.at( i ) / dSpacing ) * dSpacing );
 
     if ( mSpacing > 0 && QgsWkbTypes::hasM( mWkbType ) )
-      out.setM( round( mM.at( i ) / mSpacing ) * mSpacing );
+      out.setM( std::round( mM.at( i ) / mSpacing ) * mSpacing );
   };
 
 
@@ -238,9 +240,6 @@ QgsLineString *QgsLineString::asGridified( double hSpacing, double vSpacing, dou
            && ( !QgsWkbTypes::hasM( mWkbType ) || mSpacing <= 0 || a.m() == b.m() );
   };
 
-  // Prepare result
-  result = newSameGeometry();
-
   // temporary values
   QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, QgsWkbTypes::hasZ( mWkbType ), QgsWkbTypes::hasM( mWkbType ) );
   QgsPoint last( pointType );
@@ -263,12 +262,9 @@ QgsLineString *QgsLineString::asGridified( double hSpacing, double vSpacing, dou
   // if it's not closed, with 2 points you get a correct line
   // if it is, you need at least 4 (3 + the vertex that closes)
   if ( result->mX.length() < 2 || ( isClosed() && result->mX.length() < 4 ) )
-  {
-    delete result;
     return nullptr;
-  }
 
-  return result;
+  return result.release();
 }
 
 bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
