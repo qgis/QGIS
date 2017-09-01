@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+#include <cmath>
+#include <memory>
+#include <limits>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -127,6 +130,8 @@ class TestQgsGeometry : public QObject
 
     void reshapeGeometryLineMerge();
     void createCollectionOfType();
+
+    void snappedToGrid();
 
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
@@ -5577,6 +5582,98 @@ void TestQgsGeometry::createCollectionOfType()
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::CurvePolygonM );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiSurfaceM );
   QVERIFY( dynamic_cast< QgsMultiSurface *>( collect.get() ) );
+}
+
+void TestQgsGeometry::snappedToGrid()
+{
+  // points
+  {
+    using Point = std::unique_ptr<QgsPoint const>;
+
+    auto checkPrePost = []( QgsPoint const * a, Point const & b )
+    {
+      auto checkPoints = []( Point const & a, Point const & b )
+      {
+        // because it is to check after snapping, there shouldn't be small precision errors
+        return ( std::isnan( a->x() ) || a->x()  == b->x() )
+               && ( std::isnan( a->y() ) || a->y() == b->y() )
+               && ( std::isnan( a->z() ) || a->z() == b->z() )
+               && ( std::isnan( a->m() ) || a->m() == b->m() );
+      };
+
+      QVERIFY( checkPoints( Point { a }, b ) );
+    };
+
+
+    auto makePoint = []( double x = std::numeric_limits<double>::quiet_NaN(),
+                         double y = std::numeric_limits<double>::quiet_NaN(),
+                         double z = std::numeric_limits<double>::quiet_NaN(),
+                         double m = std::numeric_limits<double>::quiet_NaN() )
+    {
+      return Point { new QgsPoint( x, y, z, m ) };
+    };
+
+    checkPrePost( makePoint( 0, 0 )->snappedToGrid( 1, 1 ),
+                  makePoint( 0, 0 ) );
+
+    checkPrePost( makePoint( 1, 2 )->snappedToGrid( 1, 1 ),
+                  makePoint( 1, 3 ) );
+
+    checkPrePost( makePoint( 1.3, 6.4 )->snappedToGrid( 1, 1 ),
+                  makePoint( 1, 6 ) );
+
+    checkPrePost( makePoint( 1.3, 6.4 )->snappedToGrid( 1, 0 ),
+                  makePoint( 1, 6.4 ) );
+
+
+    // multiple checks with the same point
+    auto p1 = makePoint( 1.38, 2.4432 );
+
+    checkPrePost( p1->snappedToGrid( 1, 1 ),
+                  makePoint( 1, 2 ) );
+
+    checkPrePost( p1->snappedToGrid( 1, 0.1 ),
+                  makePoint( 1, 2.4 ) );
+
+    checkPrePost( p1->snappedToGrid( 1, 0.01 ),
+                  makePoint( 1, 2.44 ) );
+
+    // Let's test more dimensions
+    auto p2 = makePoint( 4.2134212, 543.1231, 0.123, 12.944145 );
+
+    checkPrePost( p2->snappedToGrid( 0, 0 ),
+                  p2 );
+
+    checkPrePost( p2->snappedToGrid( 0, 0, 1, 1 ),
+                  makePoint( 4.2134212, 543.1231, 0, 13 ) );
+
+    checkPrePost( p2->snappedToGrid( 1, 0.1, 0.01, 0.001 ),
+                  makePoint( 4, 543.1, 0.12, 12.944 ) );
+
+  }
+
+  // MultiPolygon (testing QgsCollection, QgsCurvePolygon and QgsLineString)
+  {
+    /*
+     * List of tested edge cases:
+     *
+     * - QgsLineString becoming a point
+     * - QgsLineString losing enough points so it is no longer closed
+     * - QgsCurvePolygon losing its external ring
+     * - QgsCurvePolygon losing an internal ring
+     * - QgsCurvePolygon losing all internal rings
+     * - QgsCollection losing one of its members
+     * - QgsCollection losing all its members
+     */
+
+    auto in = QString( "MultiPolygon (((-1.2 -0.87, -0.943 0.8, 0.82 1.4, 1.2 0.9, 0.9 -0.6, -1.2 -0.87),(0.4 0, -0.4 0, 0 0.2, 0.4 0)),((2 0, 2.2 0.2, 2.2 -0.2)),((3 0, 4 0.2, 4 -0.2, 3 0)),((4 8, 3.6 4.1, 0.3 4.9, -0.2 7.8, 4 8),(6.7 7.3, 7 6.4, 5.6 5.9, 6.2 6.8, 6.7 7.3),(6 5.2, 4.9 5.3, 4.8 6.2, 6 5.2)))" );
+    auto out = QString( "MultiPolygon (((-1 -1, -1 1, 1 1, 1 -1, -1 -1)),((4 8, 4 4, 0 5, 0 8, 4 8),(7 7, 7 6, 6 6, 6 7, 7 7),(6 5, 5 5, 5 6, 6 5)))" );
+
+    auto inGeom = QgsGeometryFactory::geomFromWkt( in );
+
+    std::unique_ptr<QgsAbstractGeometry> snapped { inGeom->snappedToGrid( 1, 1 ) };
+    QCOMPARE( snapped->asWkt(), out );
+  }
 }
 
 QGSTEST_MAIN( TestQgsGeometry )
