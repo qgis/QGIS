@@ -37,20 +37,56 @@ def createXYZLayerFromURL(url):
 
 class TestQgsGlobalSettings(unittest.TestCase):
 
-    def test_global_settings_exist(self):
+    def setUp(self):
         qDebug('QgsApplication.pkgDataPath(): {0}'.format(QgsApplication.pkgDataPath()))
         # Path after deployment
         # QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/qgis_global_settings.ini')
         # Path before deployment
-        QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/resources/qgis_global_settings.ini')
+        assert QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/resources/qgis_global_settings.ini')
         self.settings = QgsSettings('testqgissettings', 'testqgissettings')
-        settings = QgsSettings()
-        # qDebug('settings.allKeys(): {0}'.format(settings.allKeys()))
-        defaulturl = settings.value('qgis/connections-xyz/OpenStreetMap/url')
+
+    def test_global_settings_exist(self):
+        qDebug('settings.allKeys(): {0}'.format(self.settings.allKeys()))
+        defaulturl = self.settings.value('qgis/connections-xyz/OpenStreetMap/url')
         self.assertEqual(defaulturl, 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
         layer = createXYZLayerFromURL(defaulturl)
         self.assertEqual(layer.name(), 'OpenStreetMap')
 
+    def test_global_settings_group(self):
+        self.assertEqual(['qgis'], self.settings.childGroups())
+        self.assertEqual(['qgis'], self.settings.globalChildGroups())
+
+        self.settings.beginGroup('qgis')
+        self.assertEqual(['connections-xyz'], self.settings.childGroups())
+        self.assertEqual(['connections-xyz'], self.settings.globalChildGroups())
+        # qDebug('settings.allKeys(): {0}'.format(self.settings.allKeys()))
+        self.settings.endGroup()
+
+        self.settings.beginGroup('qgis/connections-xyz')
+        self.assertEqual(['OpenStreetMap'], self.settings.childGroups())
+        self.assertEqual(['OpenStreetMap'], self.settings.globalChildGroups())
+        # qDebug('settings.allKeys(): {0}'.format(self.settings.allKeys()))
+        self.settings.endGroup()
+
+        # add group to user's settings
+        self.settings.beginGroup('qgis/connections-xyz')
+        self.settings.setValue('OSM/url', 'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        self.settings.setValue('OSM/zmax', '19')
+        self.settings.setValue('OSM/zmin', '0')
+        self.settings.endGroup()
+
+        # groups should be different
+        self.settings.beginGroup('qgis/connections-xyz')
+        self.assertEqual(['OSM', 'OpenStreetMap'], self.settings.childGroups())
+        self.assertEqual(['OpenStreetMap'], self.settings.globalChildGroups())
+        # qDebug('settings.allKeys(): {0}'.format(self.settings.allKeys()))
+        self.settings.endGroup()
+
+        self.settings.beginGroup('qgis/connections-xyz')
+        self.settings.remove('OSM')
+        self.assertEqual(['OpenStreetMap'], self.settings.childGroups())
+        self.assertEqual(['OpenStreetMap'], self.settings.globalChildGroups())
+        self.settings.endGroup()
 
 if __name__ == '__main__':
     unittest.main()

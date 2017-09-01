@@ -20,6 +20,7 @@
 #include <QDir>
 
 #include "qgssettings.h"
+#include "qgslogger.h"
 
 QString QgsSettings::sGlobalSettingsPath = QString();
 
@@ -154,7 +155,7 @@ QStringList QgsSettings::globalChildGroups() const
   QStringList keys;
   if ( mGlobalSettings )
   {
-    QStringList keys = mGlobalSettings->childGroups();
+    keys = mGlobalSettings->childGroups();
   }
   return keys;
 }

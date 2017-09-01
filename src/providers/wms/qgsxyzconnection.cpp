@@ -47,10 +47,10 @@ QStringList QgsXyzConnectionUtils::connectionList()
   settings.beginGroup( QStringLiteral( "qgis/connections-xyz" ) );
   connList = settings.childGroups();
 
-  QStringList global = settings.globalChildGroups();
+  const QStringList global = settings.globalChildGroups();
   settings.endGroup();
 
-  for ( auto &s : global )
+  for ( const auto &s : global )
   {
     settings.beginGroup( "qgis/connections-xyz/" + s );
     bool isHidden = settings.value( QStringLiteral( "hidden" ), false ).toBool();
