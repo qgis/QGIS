@@ -25,7 +25,7 @@ QgsSurface *QgsSurface::asGridified( double hSpacing, double vSpacing, double dS
                                      double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const
 {
   std::unique_ptr<QgsPolygonV2> polygon { surfaceToPolygon() };
-  if (!polygon)
+  if ( !polygon )
     return nullptr;
 
   return polygon->asGridified( hSpacing, vSpacing, dSpacing, mSpacing );
