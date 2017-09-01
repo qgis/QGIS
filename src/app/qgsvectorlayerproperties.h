@@ -63,7 +63,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     {
       return txtDisplayName->text();
     }
-    void setRendererDirty( bool ) {}
 
     /** Adds an attribute to the table (but does not commit it yet)
     \param field the field to add
