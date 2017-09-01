@@ -119,6 +119,18 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 
+    /**
+     * Constructs the smallest circle from 3 points.
+     * Z and m values are dropped for the center point.
+     * The azimuth always takes the default value.
+     * If the points are colinear an empty circle is returned.
+     * \param pt1 First point.
+     * \param pt2 Second point.
+     * \param pt3 Third point.
+     * \param epsilon Value used to compare point.
+     */
+    static QgsCircle minimalCircleFrom3points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+
     double area() const override;
     double perimeter() const override;
 
@@ -169,7 +181,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     QgsCircularString *toCircularString( bool oriented = false ) const;
 
     // is the circle contains the point \a p?
-    bool contains( QgsPoint &p ) const;
+    bool contains( const QgsPoint &p ) const;
 
     QgsRectangle boundingBox() const override;
 

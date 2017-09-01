@@ -995,22 +995,6 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
   return minBounds;
 }
 
-static QgsCircle __MinimalCircleFrom3points( QgsPoint pt1, QgsPoint pt2, QgsPoint pt3 )
-{
-  double l1 = pt1.distance( pt2 );
-  double l2 = pt2.distance( pt3 );
-  double l3 = pt3.distance( pt1 );
-
-  if ( l1 >= ( l2 + l2 ) )
-    return QgsCircle().from2Points( pt1, pt2 );
-  else if ( l2 >= ( l1 + l3 ) )
-    return QgsCircle().from2Points( pt2, pt3 );
-  else if ( l3 >= ( l1 + l2 ) )
-    return QgsCircle().from2Points( pt1, pt3 );
-  else
-    return QgsCircle().from3Points( pt1, pt2, pt3 );
-}
-
 static QgsCircle __recMinimalEnclosingCircle( QgsMultiPoint points, QgsMultiPoint boundary )
 {
   auto l_boundary = boundary.length();
@@ -1036,7 +1020,10 @@ static QgsCircle __recMinimalEnclosingCircle( QgsMultiPoint points, QgsMultiPoin
       }
       break;
       default:
-        circ_mec = __MinimalCircleFrom3points( QgsPoint( boundary.at( 0 ) ), QgsPoint( boundary.at( 1 ) ), QgsPoint( boundary.at( 2 ) ) );
+        QgsPoint p1( boundary.at( 0 ) );
+        QgsPoint p2( boundary.at( 1 ) );
+        QgsPoint p3( boundary.at( 2 ) );
+        circ_mec = QgsCircle().minimalCircleFrom3points( p1, p2, p3 );
         break;
     }
     return circ_mec;
@@ -1065,20 +1052,13 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPoint &center, double &radiu
   {
     return QgsGeometry();
   }
-  /*else if ( d->geometry->nCoordinates() < 2 )
-  {
-      std::cout << "coord < 2\n";
-    QgsVertexId vertexId;
-    d->geometry->nextVertex( vertexId, center );
-    return QgsGeometry();
-  }*/
 
-  /*
+  /* optimization */
   QgsGeometry hull = convexHull();
   if ( hull.isNull() )
     return QgsGeometry();
-  */
-  QgsMultiPoint P = convertToPoint( true ).asMultiPoint();
+
+  QgsMultiPoint P = hull.convertToPoint( true ).asMultiPoint();
   QgsMultiPoint R;
 
   QgsCircle circ = __recMinimalEnclosingCircle( P, R );

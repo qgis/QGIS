@@ -189,6 +189,22 @@ QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2
   return QgsTriangle( p1, p2, p3 ).inscribedCircle();
 }
 
+QgsCircle QgsCircle::minimalCircleFrom3points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon )
+{
+  double l1 = pt2.distance( pt3 );
+  double l2 = pt3.distance( pt1 );
+  double l3 = pt1.distance( pt2 );
+
+  if ( ( l1 * l1 ) - ( l2 * l2 + l3 * l3 ) >= epsilon )
+    return QgsCircle().from2Points( pt2, pt3 );
+  else if ( ( l2 * l2 ) - ( l1 * l1 + l3 * l3 ) >= epsilon )
+    return QgsCircle().from2Points( pt3, pt1 );
+  else if ( ( l3 * l3 ) - ( l1 * l1 + l2 * l2 ) >= epsilon )
+    return QgsCircle().from2Points( pt1, pt2 );
+  else
+    return QgsCircle().from3Points( pt1, pt2, pt3, epsilon );
+}
+
 QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
 {
   double delta_x = std::fabs( pt1.x() - pt2.x() );
@@ -245,7 +261,7 @@ QgsCircularString *QgsCircle::toCircularString( bool oriented ) const
   return circString.release();
 }
 
-bool QgsCircle::contains( QgsPoint &p ) const
+bool QgsCircle::contains( const QgsPoint &p ) const
 {
   double TOLERANCE = 1e-8;
   return ( mCenter.distance( p ) <= mSemiMajorAxis + TOLERANCE );

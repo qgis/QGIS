@@ -4184,6 +4184,15 @@ void TestQgsGeometry::circle()
   QgsCircle circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 2, 0 ), QgsPoint( 3, 0 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
   QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 1.4645, 1.4645 ), 0.0001 );
   QGSCOMPARENEAR( circ_tgt.radius(), 1.4645, 0.0001 );
+  // minimalCircleFrom3points
+  QgsCircle minCircle3Points = QgsCircle().minimalCircleFrom3points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
+  QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( minCircle3Points.radius(), 5.0, 0.0001 );
+  minCircle3Points = QgsCircle().minimalCircleFrom3points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
+  QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( minCircle3Points.radius(), 5.0, 0.0001 );
+
+
 
 // test quadrant
   QVector<QgsPoint> quad = QgsCircle( QgsPoint( 0, 0 ), 5 ).northQuadrant();
@@ -4288,6 +4297,15 @@ void TestQgsGeometry::circle()
   QGSCOMPARENEAR( 314.1593, QgsCircle( QgsPoint( 0, 0 ), 10 ).area(), 0.0001 );
   // perimeter
   QGSCOMPARENEAR( 31.4159, QgsCircle( QgsPoint( 0, 0 ), 5 ).perimeter(), 0.0001 );
+
+  // contains
+  QgsPoint pc;
+  pc = QgsPoint( 1, 1 );
+  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
+  pc = QgsPoint( 0, 5 );
+  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
+  pc = QgsPoint( 6, 1 );
+  QVERIFY( !QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
 }
 
 void TestQgsGeometry::regularPolygon()
