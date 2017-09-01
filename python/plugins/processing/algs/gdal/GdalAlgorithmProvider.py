@@ -39,6 +39,7 @@ from .buildvrt import buildvrt
 from .ColorRelief import ColorRelief
 from .contour import contour
 from .fillnodata import fillnodata
+from .gdaltindex import gdaltindex
 from .hillshade import hillshade
 from .information import information
 from .nearblack import nearblack
@@ -65,7 +66,6 @@ from .warp import warp
 # from .GridAverage import GridAverage
 # from .GridNearest import GridNearest
 # from .GridDataMetrics import GridDataMetrics
-# from .gdaltindex import gdaltindex
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 # from .retile import retile
@@ -140,6 +140,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ColorRelief(),
             contour(),
             fillnodata(),
+            gdaltindex(),
             hillshade(),
             information(),
             nearblack(),
@@ -165,7 +166,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # GridAverage(),
             # GridNearest(),
             # GridDataMetrics(),
-            # gdaltindex(),
             # gdalcalc(),
             # rasterize_over(),
             # retile(),
