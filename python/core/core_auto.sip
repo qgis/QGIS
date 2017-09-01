@@ -405,3 +405,4 @@
 %Include symbology/qgsarrowsymbollayer.sip
 %Include composer/qgscomposerutils.sip
 %Include qgsuserprofile.sip
+
