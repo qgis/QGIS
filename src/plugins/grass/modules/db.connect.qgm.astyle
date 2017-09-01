@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Set general DB connection" module="db.connect">
-	<option key="schema" answer="" hidden="yes"/>
-	<option key="driver" answer="dbf" hidden="no"/>
-	<option key="database" answer="$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/" hidden="no"/>
-</qgisgrassmodule>

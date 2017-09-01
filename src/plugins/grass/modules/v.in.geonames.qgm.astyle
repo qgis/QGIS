@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Import geonames.org country files" module="v.in.geonames">
-	<file key="input" type="old" filter="TXT (*.txt)" />
-	<option key="output" />
-</qgisgrassmodule>

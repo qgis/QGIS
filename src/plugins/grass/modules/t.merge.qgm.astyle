@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Merges several space time datasets into a single space time dataset." module="t.merge">
-	<option key="inputs"/>
-	<option key="type"/>
-	<option key="output"/>
-</qgisgrassmodule>

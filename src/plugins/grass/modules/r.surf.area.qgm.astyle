@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Calculate raster surface area" module="r.surf.area">
-
-	<option key="map"/>
-	<option key="vscale" />
-	<option key="units"/>
-</qgisgrassmodule>

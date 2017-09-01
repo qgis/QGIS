@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/sqlfunctions">
-        <file alias="list.txt">qgsvirtuallayersqlfunctions.txt</file>
-    </qresource>
-</RCC>

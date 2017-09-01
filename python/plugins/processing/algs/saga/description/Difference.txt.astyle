@@ -1,6 +1,0 @@
-Difference
-shapes_polygons
-ParameterVector|A|Layer A|-1|False
-ParameterVector|B|Layer B|-1|False
-OutputVector|RESULT|Difference
-ParameterBoolean|SPLIT|Split Parts|True

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp" module="r.in.aster">
-	<file key="input" type="old" />
-	<option key="proctype" />
-	<option key="band" />
-	<option key="output" />
-</qgisgrassmodule>

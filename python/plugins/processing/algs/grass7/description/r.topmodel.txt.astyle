@@ -1,9 +1,0 @@
-r.topmodel
-Simulates TOPMODEL which is a physically based hydrologic model.
-Raster (r.*)
-ParameterFile|parameters|Name of TOPMODEL parameters file|False|False
-ParameterFile|topidxstats|Name of topographic index statistics file|False|False
-ParameterFile|input|Name of rainfall and potential evapotranspiration data file|False|False
-ParameterString|timestep|Time step. Generate output for this time step|None|False|True
-ParameterString|topidxclass|Topographic index class. Generate output for this topographic index class|None|False|True
-OutputFile|output|TOPMODEL output

@@ -1,8 +1,0 @@
-v.net.bridge
-Computes bridges in the network.
-Vector (v.*)
-ParameterVector|input|Input vector line layer (network)|1|False
-Hardcoded|method=bridge
-*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (name)|input|0|True
-*ParameterTableField|arc_backward_column|Arc backward direction cost column (name)|input|0|True
-OutputVector|output|Bridge

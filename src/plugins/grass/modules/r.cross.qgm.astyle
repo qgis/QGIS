@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Create cross product of category values from multiple rasters" module="r.cross">
-	<flag key="z" answer="off" hidden="no" />
-	<option key="input" label="Type in map names separated by a comma" />
-	<option key="output" />
-</qgisgrassmodule>

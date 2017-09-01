@@ -1,9 +1,0 @@
-id description data info
-1 Simple_whitespace_file data1 info1
-  2 Whitespace_at_start_of_line data2 info2
-3	Tab_whitespace	data3	info3
-4         	Multiple_whitespace_characters      data4 	 info4
-5 Extra_fields data5 info5 message5 rubbish5
-6 Missing_fields
-
-

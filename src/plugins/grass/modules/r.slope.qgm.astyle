@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Create slope raster from DEM (digital elevation model)" module="r.slope.aspect">
-	<option key="elevation" />
-	<option key="slope" />
-	<option key="format" advanced="yes" />
-	<flag key="a" answer="on" hidden="yes" />
-</qgisgrassmodule>

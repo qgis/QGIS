@@ -1,7 +1,0 @@
-r.li.pielou
-Calculates Pielou's diversity index on a raster map 
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterString|config_txt|Landscape structure configuration|None|True|True
-ParameterFile|config|Landscape structure configuration file|False|True
-OutputRaster|output|Pielou

@@ -1,8 +1,0 @@
-r.mask
-r.mask.rast - Creates a MASK for limiting raster operation.
-Raster (r.*)
-ParameterRaster|raster|Name of raster map to use as mask|False
-ParameterRaster|input|Name of raster map to which apply the mask|False
-ParameterString|maskcats|Raster values to use for mask. Format: 1 2 3 thru 7 *|*|False|True
-*ParameterBoolean|-i|Create inverse mask|False|True
-OutputRaster|output|Masked

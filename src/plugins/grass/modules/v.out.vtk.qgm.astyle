@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Export vector to VTK-ASCII" module="v.out.vtk">
-	<option key="input" layeroption="layer" typeoption="type" />
-
-	<option key="zscale"/>
-	<file key="output" type="new" filters="VTK (*.vtk *.VTK);;All files (*.*)"/>
-</qgisgrassmodule>

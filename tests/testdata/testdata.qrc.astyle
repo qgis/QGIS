@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/testdata">
-        <file>font/QGIS-Vera/QGIS-Vera.ttf</file>
-        <file>font/QGIS-Vera/QGIS-VeraIt.ttf</file>
-        <file>font/QGIS-Vera/QGIS-VeraBd.ttf</file>
-        <file>font/QGIS-Vera/QGIS-VeraBI.ttf</file>
-    </qresource>
-</RCC>

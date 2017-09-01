@@ -1,6 +1,0 @@
-Grid Normalisation
-grid_calculus
-ParameterRaster|INPUT|Grid|False
-ParameterNumber|RANGE_MIN|Target Range (min)|None|None|0
-ParameterNumber|RANGE_MAX|Target Range (max)|None|None|1
-OutputRaster|OUTPUT|Normalised Grid

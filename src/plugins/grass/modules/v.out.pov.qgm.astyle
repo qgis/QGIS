@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Export vector to POV-Ray" module="v.out.pov">
-	<option key="input" typeoption="type" />
-	<option key="size" />
-	<file key="output" filters="POV (*.pov)"/>
-</qgisgrassmodule>

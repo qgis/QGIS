@@ -1,9 +1,0 @@
-i.smap
-Performs contextual image classification using sequential maximum a posteriori (SMAP) estimation.
-Imagery (i.*)
-ParameterMultipleInput|input|Input rasters|3|False
-ParameterFile|signaturefile|Name of input file containing signatures|False|False
-ParameterNumber|blocksize|Size of submatrix to process at one time|1|None|1024|True
-*ParameterBoolean|-m|Use maximum likelihood estimation (instead of smap)|False
-OutputRaster|output|Classification
-OutputRaster|goodness|Goodness_of_fit

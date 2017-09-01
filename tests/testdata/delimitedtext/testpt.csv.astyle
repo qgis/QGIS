@@ -1,5 +1,0 @@
-id,description,geom_x,geom_y
-1,Basic point,10.5,20.82
-2,Integer point,11,22
-3,Invalid coordinate format,ten,20.0
-4,Final point,13.0,23.0

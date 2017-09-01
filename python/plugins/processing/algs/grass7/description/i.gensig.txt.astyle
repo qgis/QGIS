@@ -1,7 +1,0 @@
-i.gensig
-Generates statistics for i.maxlik from raster map.
-Imagery (i.*)
-ParameterRaster|trainingmap|Ground truth training map|False
-ParameterMultipleInput|input|Input rasters|3|False
-OutputFile|signaturefile|Signature File
-

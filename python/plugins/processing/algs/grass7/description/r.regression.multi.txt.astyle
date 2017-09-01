@@ -1,8 +1,0 @@
-r.regression.multi
-Calculates multiple linear regression from raster maps.
-Raster (r.*)
-ParameterRaster|mapx|Map for x coefficient|False
-ParameterRaster|mapy|Map for y coefficient|False
-OutputRaster|residual|Residual Map
-OutputRaster|estimates|Estimates Map
-OutputHTML|html|Regression coefficients

@@ -1,6 +1,0 @@
-r.surf.gauss
-Creates a raster layer of Gaussian deviates.
-Raster (r.*)
-ParameterString|mean|Distribution mean|0.0
-ParameterString|sigma|Standard deviation|1.0
-OutputRaster|output|Gaussian deviates

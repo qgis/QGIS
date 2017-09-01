@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<!-- TODO: this is bad -->
-<qgisgrassmodule label="Reclass category values using a column attribute (integer positive)" module="v.reclass">
-	<option key="input" layeroption="layer"/>
-	<field key="column" layer="input" type="integer" label="Attribute field" />
-	<option key="output" />
-</qgisgrassmodule>

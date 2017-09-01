@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/coordinate_capture/" >
-        <file>coordinate_capture.png</file>
-        <file>mIconProjectionEnabled.svg</file>
-        <file>transformed.svg</file>
-        <file>tracking.svg</file>
-    </qresource>
-</RCC>

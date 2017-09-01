@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Remove duplicate lines (pay attention to categories!)" module="v.clean">
-	<option key="input" typeoption="type"/>
-	<option key="tool" answer="rmdupl" hidden="yes"/>
-	<option key="output"/>
-</qgisgrassmodule>

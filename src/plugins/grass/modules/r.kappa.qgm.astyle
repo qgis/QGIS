@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Calculate error matrix and kappa parameter for accuracy assessment of classification result" module="r.kappa">
-	<option key="classification" />
-	<option key="reference" />
-	<file key="output" type="new" />
-	<option key="title" />
-</qgisgrassmodule>

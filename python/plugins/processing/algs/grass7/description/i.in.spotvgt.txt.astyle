@@ -1,7 +1,0 @@
-i.in.spotvgt
-Imports SPOT VGT NDVI data into a raster map.
-Imagery (i.*)
-ParameterRaster|input|Name of input SPOT VGT NDVI HDF file|False
-*ParameterBoolean|-a|Also import quality map (SM status map layer) and filter NDVI map|False
-OutputRaster|output|SPOT NDVI Raster
-

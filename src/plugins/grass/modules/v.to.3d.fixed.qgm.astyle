@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Performs transformation of 2D vector features to 3D with fixed height" module="v.to.3d">
-    <option key="input"/>
-	<option key="output"/>
-    <option key="height"/>
-    <option key="layer" advanced="yes"/>
-</qgisgrassmodule>

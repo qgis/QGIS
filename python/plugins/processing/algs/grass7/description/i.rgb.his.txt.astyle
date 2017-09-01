@@ -1,9 +1,0 @@
-i.rgb.his
-Transforms raster maps from RGB (Red-Green-Blue) color space to HIS (Hue-Intensity-Saturation) color space.
-Imagery (i.*)
-ParameterRaster|red|Name for input raster map (red)|True
-ParameterRaster|green|Name for input raster map (green)|True
-ParameterRaster|blue|Name for input raster map (blue)|True
-OutputRaster|hue|Hue|False
-OutputRaster|intensity|Intensity|False
-OutputRaster|saturation|Saturation|False

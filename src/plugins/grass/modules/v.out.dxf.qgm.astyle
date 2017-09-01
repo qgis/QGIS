@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Export vector to DXF" module="v.out.dxf">
-	<option key="input" />
-	<file key="output" type="new" filters="DXF (*.dxf)"/>
-</qgisgrassmodule>

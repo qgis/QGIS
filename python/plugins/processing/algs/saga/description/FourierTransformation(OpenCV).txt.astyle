@@ -1,5 +1,0 @@
-Fourier Transformation (OpenCV)
-imagery_opencv
-ParameterRaster|INPUT|Input|False
-OutputRaster|REAL|Fourier Transformation (Real)
-OutputRaster|IMAG|Fourier Transformation (Imaginary)

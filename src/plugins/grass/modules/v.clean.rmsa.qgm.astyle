@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Remove small angles between lines at nodes" module="v.clean">
-	<option key="input" typeoption="type"/>
-	<option key="tool" answer="rmsa" hidden="yes"/>
-	<option key="output"/>
-</qgisgrassmodule>

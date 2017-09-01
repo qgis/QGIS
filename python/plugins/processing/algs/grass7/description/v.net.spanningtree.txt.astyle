@@ -1,7 +1,0 @@
-v.net.spanningtree
-Computes minimum spanning tree for the network.
-Vector (v.*)
-ParameterVector|input|Input vector line layer (arcs)|1|False
-*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
-*ParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
-OutputVector|output|SpanningTree

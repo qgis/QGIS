@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Computes emissivity from NDVI, generic method for sparse land" module="i.emissivity">
-	<option key="input"/>
-	<option key="output"/>
-</qgisgrassmodule>

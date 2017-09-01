@@ -1,6 +1,0 @@
-r.usler
-Computes USLE R factor, Rainfall erosivity index.
-Raster (r.*)
-ParameterRaster|input|Name of annual precipitation raster map [mm/year]|False
-ParameterSelection|method|Name of USLE R equation|roose;morgan;foster;elswaify|0
-OutputRaster|output|USLE R Raster

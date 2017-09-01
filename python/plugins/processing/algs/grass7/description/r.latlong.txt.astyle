@@ -1,6 +1,0 @@
-r.latlong
-Creates a latitude/longitude raster map.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterBoolean|-l|Outputs a Longitude map instead of a Latitude map|False|True
-OutputRaster|output|LatLong

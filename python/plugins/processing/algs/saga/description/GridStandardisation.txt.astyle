@@ -1,5 +1,0 @@
-Grid Standardisation
-grid_calculus
-ParameterRaster|INPUT|Grid|False
-ParameterNumber|STRETCH|Stretch Factor|0.0|None|1.0
-OutputRaster|OUTPUT|Standardised Grid

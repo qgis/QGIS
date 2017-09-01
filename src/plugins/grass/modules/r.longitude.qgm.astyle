@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Creates a longitude raster map" module="r.latlong">
-	<flag key="l" answer="on" hidden="yes"/>
-	<option key="input"/>
-	<option key="output" label="Name of the output longitude raster map"/>
-</qgisgrassmodule>

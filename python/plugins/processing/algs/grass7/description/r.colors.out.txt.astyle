@@ -1,6 +1,0 @@
-r.colors.out
-Exports the color table associated with a raster map.
-Raster (r.*)
-ParameterRaster|map|Name of raster map|False
-*ParameterBoolean|-p|Output values as percentages|False|True
-OutputFile|rules|Color Table

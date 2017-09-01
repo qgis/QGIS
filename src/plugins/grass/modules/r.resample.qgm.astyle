@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Resample raster. Set new resolution first" module="r.resample">
-	<option key="input"/>
-	<option key="output"/>
-</qgisgrassmodule>

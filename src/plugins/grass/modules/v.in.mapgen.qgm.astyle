@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Import MapGen or MatLab vector" module="v.in.mapgen">
-	<file key="input" type="old" label="MapGen or MatLab vector layer" />
-	<option key="output" />
-	<flag key="f" answer="off" hidden="no" />
-</qgisgrassmodule>

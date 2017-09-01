@@ -1,9 +1,0 @@
-r.mask
-r.mask.vect - Creates a MASK for limiting raster operation with a vector layer.
-Raster (r.*)
-ParameterVector|vector|Name of vector map to use as mask|1,2|False
-ParameterRaster|input|Name of raster map to which apply the mask|False
-*ParameterString|cats|Category values. Example: 1,3,7-9,13|None|False|True
-*ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
-*ParameterBoolean|-i|Create inverse mask|False|True
-OutputRaster|output|Masked

@@ -1,9 +1,0 @@
-ncols        4
-nrows        3
-xllcorner    100.379357000000
-yllcorner    -0.960588000000
-cellsize     0.000045000000
-NODATA_value    nan
- 1 1 0 0
- 1 1 0 0
- 1 1 1 1

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Create raster of distance to features in input layer" module="r.grow.distance">
-	<option key="input" />
-	<option key="distance" />
-	<option key="value" />
-	<option key="metric" />
-</qgisgrassmodule>

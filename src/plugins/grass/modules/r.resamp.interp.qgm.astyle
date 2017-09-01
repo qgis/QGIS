@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Resample raster using interpolation" module="r.resamp.interp">
-	<option key="input" />
-	<option key="method" />
-	<option key="output" />
-</qgisgrassmodule>

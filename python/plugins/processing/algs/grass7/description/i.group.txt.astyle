@@ -1,6 +1,0 @@
-i.group
-Regroup multiple mono-band rasters into a single multiband raster.
-Imagery (i.*)
-ParameterMultipleInput|input|Input rasters|3|False
-OutputRaster|group|Multiband raster
-

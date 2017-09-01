@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Reconnect vector to a new database" module="v.db.reconnect.all">
-	<option key="old_database" />
-	<option key="new_database" />
-	<option key="old_schema" />
-	<option key="new_schema" />
-</qgisgrassmodule>

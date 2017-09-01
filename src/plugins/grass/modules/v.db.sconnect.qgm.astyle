@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Disconnect vector from database" module="v.db.connect">
-	<option key="map" layeroption="layer"/>
-	<flag key="d" answer="on" hidden="yes"/>
-</qgisgrassmodule>

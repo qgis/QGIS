@@ -1,7 +1,0 @@
-[general]
-name=plugin path test
-qgisMinimumVersion=2.0
-description=desc
-version=0.1
-author=HM/Oslandia
-email=hugo.mercier@oslandia.com

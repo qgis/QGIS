@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Export raster to various formats (GDAL library)" module="r.out.gdal">
-	<option key="input" region="no"/>
-	<option key="format" />
-	<option key="type" label="Choose appropriate format"/>
-	<file key="output" type="new" label="Name for new raster file (specify file extension)" />
-</qgisgrassmodule>

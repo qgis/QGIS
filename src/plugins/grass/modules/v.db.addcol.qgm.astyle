@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Add one or more columns to attribute table" module="v.db.addcol">
-	<option key="map" layeroption="layer" />
-	<option key="columns"/>
-</qgisgrassmodule>

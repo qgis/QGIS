@@ -1,7 +1,0 @@
-id|description|wkt
-1|Inside|LINESTRING(12 32, 28 48)
-2|Outside|LINESTRING(0 0, 0 10)
-3|Crossing|LINESTRING(5 30, 30 55)
-4|Bounding box overlap|LINESTRING(5 30, 5 55, 30 55)
-5|Crossing 2|LINESTRING(25 35, 35 35)
-6|Bounding box overlap 2|LINESTRING(28 29, 31 29, 31 33)

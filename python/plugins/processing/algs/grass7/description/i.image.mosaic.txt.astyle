@@ -1,6 +1,0 @@
-i.image.mosaic
-Mosaics several images and extends colormap.
-Imagery (i.*)
-ParameterMultipleInput|input|Input rasters|3|False
-OutputRaster|output|Mosaic Raster
-

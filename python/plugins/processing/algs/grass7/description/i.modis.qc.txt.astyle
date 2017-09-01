@@ -1,9 +1,0 @@
-i.modis.qc
-Extracts quality control parameters from MODIS QC layers.
-Imagery (i.*)
-ParameterRaster|input|Name of input surface reflectance QC layer [bit array]|False
-ParameterSelection|productname|Name of MODIS product type|mod09Q1;mod09A1;mod09A1s;mod09CMG;mod09CMGs;mod09CMGi;mod11A1;mod11A2;mod13A2;mcd43B2;mcd43B2q|8
-ParameterSelection|qcname|Name of QC type to extract|adjcorr;atcorr;cloud;data_quality;diff_orbit_from_500m;modland_qa;mandatory_qa_11A1;data_quality_flag_11A1;emis_error_11A1;lst_error_11A1;data_quality_flag_11A2;emis_error_11A2;mandatory_qa_11A2;lst_error_11A2;aerosol_quantity;brdf_correction_performed;cirrus_detected;cloud_shadow;cloud_state;internal_cloud_algorithm;internal_fire_algorithm;internal_snow_mask;land_water;mod35_snow_ice;pixel_adjacent_to_cloud;icm_cloudy;icm_clear;icm_high_clouds;icm_low_clouds;icm_snow;icm_fire;icm_sun_glint;icm_dust;icm_cloud_shadow;icm_pixel_is_adjacent_to_cloud;icm_cirrus;icm_pan_flag;icm_criteria_for_aerosol_retrieval;icm_aot_has_clim_val;modland_qa;vi_usefulness;aerosol_quantity;pixel_adjacent_to_cloud;brdf_correction_performed;mixed_clouds;land_water;possible_snow_ice;possible_shadow;platform;land_water;sun_z_angle_at_local_noon;brdf_correction_performed|5
-ParameterString|band|Band number of MODIS product (mod09Q1=[1,2],mod09A1=[1-7],m[o/y]d09CMG=[1-7], mcd43B2q=[1-7])|None|False|True
-OutputRaster|output|QC Classification
-

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Create new layer with category values based upon user's reclassification of categories in existing raster" module="r.reclass.file">
-	<option key="input"/>
-	<file key="rules_file" type="new" fileoption="olayer" label="Text file" />
-	<option key="output" />
-</qgisgrassmodule>

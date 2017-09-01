@@ -1,3 +1,0 @@
-id;description;geom_x;geom_y;other;text field
-1;Comma as decimal point 1;10,0;20,0;30,0;Field with , in it
-2;Comma as decimal point 2;12;25,003;-38,55;Plain text field

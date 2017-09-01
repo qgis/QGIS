@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Imports a vector map as GRASS GIS specific archive file (packed with v.pack)." module="v.unpack">
-    <file key="input" type="old"/>
-    <option key="output"/>
-	<flag key="o" answer="off" advanced="yes"/>
-</qgisgrassmodule>

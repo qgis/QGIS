@@ -1,7 +1,0 @@
-i.maxlik
-Classifies the cell spectral reflectances in imagery data.
-Imagery (i.*)
-ParameterMultipleInput|input|Input rasters|3|False
-ParameterFile|signaturefile|Name of input file containing signatures|False|False
-OutputRaster|output|Classification
-OutputRaster|reject|Reject Threshold

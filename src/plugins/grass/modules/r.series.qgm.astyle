@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Make each output cell function of the values assigned to the corresponding cells in the input rasters" module="r.series">
-	<flag key="n" answer="off" hidden="no" />
-	<option key="input" />
-	<option key="method" />
-	<option key="output" />
-</qgisgrassmodule>

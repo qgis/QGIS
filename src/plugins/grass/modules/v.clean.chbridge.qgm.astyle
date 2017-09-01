@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Change the type of bridges connecting area and island or 2 islands from boundary to line" module="v.clean">
-	<option key="input" typeoption="type"/>
-	<option key="tool" answer="chbridge" hidden="yes"/>
-	<option key="output"/>
-</qgisgrassmodule>

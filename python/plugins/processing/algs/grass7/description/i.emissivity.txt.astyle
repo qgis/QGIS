@@ -1,5 +1,0 @@
-i.emissivity
-Computes emissivity from NDVI, generic method for sparse land. 
-Imagery (i.*)
-ParameterRaster|input|Name of NDVI raster map [-]|False
-OutputRaster|output|Emissivity

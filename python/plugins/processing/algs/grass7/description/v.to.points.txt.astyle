@@ -1,8 +1,0 @@
-v.to.points
-Create points along input lines
-Vector (v.*)
-ParameterVector|input|Input lines layer|1|False
-ParameterString|dmax|Maximum distance between points in map units|100
-ParameterSelection|use|Use line nodes or vertices only|node;vertex
-ParameterBoolean|-i|Interpolate points between line vertices|False
-OutputVector|output|Points along lines

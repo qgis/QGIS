@@ -1,8 +1,0 @@
-v.to.3d
-Performs transformation of 2D vector features to 3D.
-Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
-ParameterString|height|Fixed height for 3D vector features (float)|None|False|True
-ParameterTableField|column|Name of attribute column used for height|input|0|True
-*ParameterBoolean|-r|Reverse transformation; 3D vector features to 2D|False
-OutputVector|output|3D

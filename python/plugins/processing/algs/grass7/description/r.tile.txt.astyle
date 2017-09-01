@@ -1,8 +1,0 @@
-r.tile
-Splits a raster map into tiles
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterString|output|Output base name of rasters|None|False|False
-ParameterNumber|width|Width of tiles (columns)|1|None|1024|True
-ParameterNumber|height|Height of tiles (rows)|1|None|1024|True
-OutputDirectory|output_dir|Tiles Directory

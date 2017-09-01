@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Rescale the range of category values in raster" module="r.rescale">
-	<option key="input" />
-	<option key="from" />
-	<option key="to" />
-	<option key="output" />
-</qgisgrassmodule>

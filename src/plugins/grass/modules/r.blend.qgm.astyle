@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Blend color components for two rasters by given ratio" module="r.blend">
-	<option key="first"/>
-	<option key="second"/>
-	<option key="output"/>
-	<option key="percent" answer="50" hidden="no" label="Percentage of first layer (0-99)" />
-</qgisgrassmodule>

@@ -1,5 +1,0 @@
-v.in.geonames
-Imports geonames.org country files into a GRASS vector points map.
-Vector (v.*)
-ParameterFile|input|Uncompressed geonames file from (with .txt extension)|False|False
-OutputVector|output|Geonames

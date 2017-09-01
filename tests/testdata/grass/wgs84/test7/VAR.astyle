@@ -1,2 +1,0 @@
-DB_DRIVER: sqlite
-DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db

@@ -1,5 +1,0 @@
-Polygon Self-Intersection
-shapes_polygons
-ParameterVector|POLYGONS|Polygons|-1|False
-ParameterTable|ID|Identifier|False
-OutputVector|INTERSECT|Intersection

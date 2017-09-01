@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Output raster values along user-defined transect line(s)" module="r.transect">
-	<flag key="g" />
-	<option key="map" />
-	<option key="line" />
-	<option key="null" />
-</qgisgrassmodule>

@@ -1,7 +1,0 @@
-r.li.mps
-Calculates mean patch size index on a raster map, using a 4 neighbour algorithm
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterString|config_txt|Landscape structure configuration|None|True|True
-ParameterFile|config|Landscape structure configuration file|False|True
-OutputRaster|output|Mean Patch Size

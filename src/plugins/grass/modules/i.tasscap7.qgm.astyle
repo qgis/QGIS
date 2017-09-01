@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Tasseled Cap (Kauth Thomas) transformation for LANDSAT-ETM 7 raster" module="i.tasscap">
-	<option key="input" label="Landsat 7 bands 1, 2, 3, 4, 5, 7"/>
-	<option key="output"/>
-	<option key="sensor" answer="landsat7_etm" hidden="yes"/>
-</qgisgrassmodule>

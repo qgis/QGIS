@@ -1,9 +1,0 @@
-i.topo.corr
-Computes topographic correction of reflectance.
-Imagery (i.*)
-ParameterMultipleInput|input|Name of reflectance raster maps to be corrected topographically|3|False
-ParameterRaster|basemap|Name of illumination input base raster map|False
-ParameterNumber|zenith|Solar zenith in degrees|0.0|360.0|0.0|False
-ParameterSelection|method|Topographic correction method|cosine;minnaert;c-factor;percent|0
-*ParameterBoolean|-s|Scale output to input and copy color rules|False
-OutputDirectory|output|Output Directory

@@ -1,5 +1,0 @@
-Get Shapes Extents
-shapes_tools
-ParameterVector|SHAPES|Shapes|-1|False
-ParameterSelection|OUTPUT|Get Extent for|[0] all shapes;[1] each shape;[2] each shape's part
-OutputVector|EXTENTS|Extents

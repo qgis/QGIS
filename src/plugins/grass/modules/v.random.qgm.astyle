@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Create random 2D vector points" module="v.random">
-
-	<option key="npoints"/>
-	<option key="output" />
-</qgisgrassmodule>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Tests of normality on vector points" module="v.normal">
-	<option key="map" typemask="point" />
-	<field key="column" layer="map" type="integer,double" label="Attribute field" />
-	<option key="tests" answer="1-1000000" hidden="yes" />
-	<flag key="r" answer="off" hidden="no" />
-</qgisgrassmodule>

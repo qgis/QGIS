@@ -1,8 +1,0 @@
-i.topo.corr
-i.topo.coor.ill - Creates illumination model for topographic correction of reflectance.
-Imagery (i.*)
-ParameterRaster|basemap|Name of elevation raster map|False
-ParameterNumber|zenith|Solar zenith in degrees|0.0|360.0|0.0|False
-ParameterNumber|azimuth|Solar azimuth in degrees|0.0|360.0|0.0|False
-Hardcoded|-i
-OutputRaster|output|Illumination Model

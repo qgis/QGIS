@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Unregisters raster, vector and raster3d maps from the temporal database or a specific space time dataset" module="t.unregister">
-	<option key="input"/>
-	<option key="type"/>
-	<option key="maps"/>
-	<file key="file" type="old" advanced="yes"/>
-</qgisgrassmodule>

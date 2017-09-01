@@ -1,7 +1,0 @@
-r.li.richness
-r.li.richness.ascii - Calculates richness index on a raster map
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterString|config_txt|Landscape structure configuration|None|True|True
-ParameterFile|config|Landscape structure configuration file|False|True
-OutputFile|output|Richness

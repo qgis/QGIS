@@ -1,7 +1,0 @@
-v.type
-Change the type of geometry elements.
-Vector (v.*)
-ParameterVector|input|Name of existing vector map|-1|False
-ParameterSelection|from_type|Feature type to convert from|point;line;boundary;centroid;face;kernel|1
-ParameterSelection|to_type|Feature type to convert to|point;line;boundary;centroid;face;kernel|1
-OutputVector|output|Typed

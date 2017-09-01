@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Upgrade all vectors from GRASS 6 to GRASS 7" module="qgis.v.upgrade.py">
-</qgisgrassmodule>

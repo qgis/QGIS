@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Fill no-data areas in raster using v.surf.rst splines interpolation" module="r.fillnulls">
-	<option key="input"/>
-	<option key="tension" answer="40" hidden="no"/>
-	<option key="smooth" answer="0.1" hidden="no"/>
-	<option key="output" />
-</qgisgrassmodule>

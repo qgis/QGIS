@@ -1,7 +1,0 @@
-r.rgb
-Splits a raster map into red, green and blue maps.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-OutputRaster|red|Red
-OutputRaster|green|Green
-OutputRaster|blue|Blue

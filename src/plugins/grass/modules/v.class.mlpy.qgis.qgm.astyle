@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Vector supervised classification tool which uses attributes as classification parameters" module="v.class.mlpy.qgis.py">
-    <option key="input"/>
-    <option key="training"/>
-    <option key="class_column"/>
-    <option key="columns"/>
-</qgisgrassmodule>

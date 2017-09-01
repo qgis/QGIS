@@ -1,4 +1,0 @@
-Invert Data/No-Data
-grid_tools
-ParameterRaster|INPUT|Grid|False
-OutputRaster|OUTPUT|Result

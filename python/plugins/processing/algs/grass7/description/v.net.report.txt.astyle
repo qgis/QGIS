@@ -1,7 +1,0 @@
-v.net
-v.net.report - Reports lines information of a network
-Vector (v.*)
-ParameterVector|input|Input vector line layer (arcs)|1|False
-Hardcoded|operation=report
-OutputFile|output|Report
-

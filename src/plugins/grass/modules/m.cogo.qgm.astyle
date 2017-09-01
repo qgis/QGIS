@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Convert bearing and distance measurements to coordinates and vice versa" module="m.cogo">
-	<file key="input" type="old" />
-	<option key="coordinates"/>
-	<flag key="r" />
-	<file key="output" type="new" />
-</qgisgrassmodule>

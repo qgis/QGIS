@@ -1,3 +1,0 @@
-type: float
-byte_order: xdr
-lzw_compression_bits: -1
