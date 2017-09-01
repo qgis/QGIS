@@ -58,11 +58,14 @@ class rgb2pct(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(rgb2pct.INPUT,
-                                                            self.tr('Input layer'), optional=False))
-        self.addParameter(QgsProcessingParameterNumber(rgb2pct.NCOLORS,
-                                                       self.tr('Number of colors'), minValue=1, defaultValue=2))
-        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('RGB to PCT')))
+        self.addParameter(QgsProcessingParameterRasterLayer(
+            self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterNumber(
+            self.NCOLORS, self.tr('Number of colors'),
+            type=QgsProcessingParameterNumber.Integer,
+            minValue=0, maxValue=255, defaultValue=2))
+        self.addParameter(QgsProcessingParameterRasterDestination(
+            self.OUTPUT, self.tr('RGB to PCT')))
 
     def name(self):
         return 'rgbtopct'
@@ -73,7 +76,7 @@ class rgb2pct(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-n')
-        arguments.append(str(self.parameterAsInt(parameters, rgb2pct.NCOLORS, context)))
+        arguments.append(str(self.parameterAsInt(parameters, self.NCOLORS, context)))
         arguments.append('-of')
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
