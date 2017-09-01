@@ -20,43 +20,43 @@ class QgsSourceSelectProviderRegistry
 %TypeHeaderCode
 #include "qgssourceselectproviderregistry.h"
 %End
-public:
-  QgsSourceSelectProviderRegistry();
+  public:
+    QgsSourceSelectProviderRegistry();
 
-  ~QgsSourceSelectProviderRegistry();
+    ~QgsSourceSelectProviderRegistry();
 
 
-  QList< QgsSourceSelectProvider*> providers() const;
+    QList< QgsSourceSelectProvider *> providers() const;
 %Docstring
 Get list of available providers
  :rtype: list of QgsSourceSelectProvider
 %End
 
-  void addProvider( QgsSourceSelectProvider *provider /Transfer/ );
+    void addProvider( QgsSourceSelectProvider *provider /Transfer/ );
 %Docstring
 Add a provider implementation. Takes ownership of the object.
 %End
 
-  void removeProvider( QgsSourceSelectProvider *provider );
+    void removeProvider( QgsSourceSelectProvider *provider );
 %Docstring
 Remove provider implementation from the list (provider object is deleted)
 %End
 
-  QgsSourceSelectProvider *providerByName( const QString &name ) const;
+    QgsSourceSelectProvider *providerByName( const QString &name ) const;
 %Docstring
 Return a provider by name or None if not found
  :rtype: QgsSourceSelectProvider
 %End
 
-  QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey ) const;
+    QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey ) const;
 %Docstring
 Return a (possibly empty) list of providers by data provider's key
  :rtype: list of QgsSourceSelectProvider
 %End
 
 
-private:
-  QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh );
+  private:
+    QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh );
 };
 
 /************************************************************************
