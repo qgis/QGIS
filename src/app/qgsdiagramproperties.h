@@ -90,6 +90,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
   private slots:
 
     void updateProperty();
+    void showHelp();
 };
 
 class EditBlockerDelegate: public QStyledItemDelegate

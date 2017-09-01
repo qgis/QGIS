@@ -17,6 +17,8 @@
 #ifndef QGS_GEOMETRY_CHECKER_DIALOG_H
 #define QGS_GEOMETRY_CHECKER_DIALOG_H
 
+#include "qgshelp.h"
+
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QTabWidget>
@@ -44,6 +46,7 @@ class QgsGeometryCheckerDialog : public QDialog
   private slots:
     void onCheckerStarted( QgsGeometryChecker *checker, QgsFeaturePool *featurePool );
     void onCheckerFinished( bool successful );
+    void showHelp();
 };
 
 #endif // QGS_GEOMETRY_CHECKER_DIALOG_H

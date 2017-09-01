@@ -57,6 +57,8 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionSelectionDialog::showHelp );
 }
 
 QgsExpressionBuilderWidget *QgsExpressionSelectionDialog::expressionBuilder()
@@ -193,4 +195,9 @@ void QgsExpressionSelectionDialog::done( int r )
 void QgsExpressionSelectionDialog::saveRecent()
 {
   mExpressionBuilder->saveToRecent( QStringLiteral( "Selection" ) );
+}
+
+void QgsExpressionSelectionDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#automatic-selection" ) );
 }

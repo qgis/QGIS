@@ -43,6 +43,7 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, b
   chkEnable->setChecked( usingSymbolLevels );
 
   connect( chkEnable, &QAbstractButton::clicked, this, &QgsSymbolLevelsDialog::updateUi );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSymbolLevelsDialog::showHelp );
 
   // only consider entries with symbols
   Q_FOREACH ( const QgsLegendSymbolItem &item, list )
@@ -165,6 +166,11 @@ void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
   }
   else
     chkEnable->show();
+}
+
+void QgsSymbolLevelsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#symbols-levels" ) );
 }
 
 

@@ -21,7 +21,7 @@
 #include <QItemDelegate>
 
 #include "qgsrenderer.h"
-
+#include "qgshelp.h"
 #include "ui_qgssymbollevelsdialogbase.h"
 #include "qgis_gui.h"
 
@@ -46,6 +46,9 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
     void updateUi();
 
     void renderingPassChanged( int row, int column );
+
+  private slots:
+    void showHelp();
 
   protected:
     //! \note not available in Python bindings

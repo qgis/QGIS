@@ -21,6 +21,7 @@
 
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 #include "qgis_gui.h"
@@ -88,6 +89,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     void on_mActionSelectIntersect_triggered();
     void on_mButtonZoomToFeatures_clicked();
     void on_mPbnClose_clicked();
+    void showHelp();
 
   protected:
 
