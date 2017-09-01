@@ -5586,69 +5586,67 @@ void TestQgsGeometry::createCollectionOfType()
 
 void TestQgsGeometry::snappedToGrid()
 {
+  qDebug( "SnappedToGrid" );
   // points
   {
-    using Point = std::unique_ptr<QgsPoint const>;
-
-    auto checkPrePost = []( QgsPoint const * a, Point const & b )
+    qDebug( "\tPoints:" );
+    auto check = []( QgsPoint * _a, QgsPoint const & b )
     {
-      auto checkPoints = []( Point const & a, Point const & b )
-      {
-        // because it is to check after snapping, there shouldn't be small precision errors
-        return ( std::isnan( a->x() ) || a->x()  == b->x() )
-               && ( std::isnan( a->y() ) || a->y() == b->y() )
-               && ( std::isnan( a->z() ) || a->z() == b->z() )
-               && ( std::isnan( a->m() ) || a->m() == b->m() );
-      };
+      std::unique_ptr<QgsPoint> a {_a};
+      // because it is to check after snapping, there shouldn't be small precision errors
 
-      QVERIFY( checkPoints( Point { a }, b ) );
+      qDebug( "\t\tGridified point: %f, %f, %f, %f", a->x(), a->y(), a->z(), a->m() );
+      qDebug( "\t\tExpected point: %f, %f, %f, %f", b.x(), b.y(), b.z(), b.m() );
+      if ( !std::isnan( b.x() ) )
+        QVERIFY( ( float )a->x() == ( float )b.x() );
+
+      if ( !std::isnan( b.y() ) )
+        QVERIFY( ( float )a->y() == ( float )b.y() );
+
+      if ( !std::isnan( b.z() ) )
+        QVERIFY( ( float )a->z() == ( float )b.z() );
+
+      if ( !std::isnan( b.m() ) )
+        QVERIFY( ( float )a->m() == ( float )b.m() );
     };
 
 
-    auto makePoint = []( double x = std::numeric_limits<double>::quiet_NaN(),
-                         double y = std::numeric_limits<double>::quiet_NaN(),
-                         double z = std::numeric_limits<double>::quiet_NaN(),
-                         double m = std::numeric_limits<double>::quiet_NaN() )
-    {
-      return Point { new QgsPoint( x, y, z, m ) };
-    };
+    check( QgsPoint( 0, 0 ).snappedToGrid( 1, 1 ),
+           QgsPoint( 0, 0 ) );
 
-    checkPrePost( makePoint( 0, 0 )->snappedToGrid( 1, 1 ),
-                  makePoint( 0, 0 ) );
+    check( QgsPoint( 1, 2.732 ).snappedToGrid( 1, 1 ),
+           QgsPoint( 1, 3 ) );
 
-    checkPrePost( makePoint( 1, 2 )->snappedToGrid( 1, 1 ),
-                  makePoint( 1, 3 ) );
+    check( QgsPoint( 1.3, 6.4 ).snappedToGrid( 1, 1 ),
+           QgsPoint( 1, 6 ) );
 
-    checkPrePost( makePoint( 1.3, 6.4 )->snappedToGrid( 1, 1 ),
-                  makePoint( 1, 6 ) );
-
-    checkPrePost( makePoint( 1.3, 6.4 )->snappedToGrid( 1, 0 ),
-                  makePoint( 1, 6.4 ) );
+    check( QgsPoint( 1.3, 6.4 ).snappedToGrid( 1, 0 ),
+           QgsPoint( 1, 6.4 ) );
 
 
     // multiple checks with the same point
-    auto p1 = makePoint( 1.38, 2.4432 );
+    auto p1 = QgsPoint( 1.38, 2.4432 );
 
-    checkPrePost( p1->snappedToGrid( 1, 1 ),
-                  makePoint( 1, 2 ) );
+    check( p1.snappedToGrid( 1, 1 ),
+           QgsPoint( 1, 2 ) );
 
-    checkPrePost( p1->snappedToGrid( 1, 0.1 ),
-                  makePoint( 1, 2.4 ) );
+    check( p1.snappedToGrid( 1, 0.1 ),
+           QgsPoint( 1, 2.4 ) );
 
-    checkPrePost( p1->snappedToGrid( 1, 0.01 ),
-                  makePoint( 1, 2.44 ) );
+    check( p1.snappedToGrid( 1, 0.01 ),
+           QgsPoint( 1, 2.44 ) );
 
     // Let's test more dimensions
-    auto p2 = makePoint( 4.2134212, 543.1231, 0.123, 12.944145 );
+    auto p2 = QgsPoint( 4.2134212, 543.1231, 0.123, 12.944145 );
 
-    checkPrePost( p2->snappedToGrid( 0, 0 ),
-                  p2 );
+    check( p2.snappedToGrid( 0, 0, 0, 0 ),
+           p2 );
 
-    checkPrePost( p2->snappedToGrid( 0, 0, 1, 1 ),
-                  makePoint( 4.2134212, 543.1231, 0, 13 ) );
+    check( p2.snappedToGrid( 0, 0, 1, 1 ),
+           QgsPoint( 4.2134212, 543.1231, 0, 13 ) );
 
-    checkPrePost( p2->snappedToGrid( 1, 0.1, 0.01, 0.001 ),
-                  makePoint( 4, 543.1, 0.12, 12.944 ) );
+    check( p2.snappedToGrid( 1, 0.1, 0.01, 0.001 ),
+           QgsPoint( 4, 543.1, 0.12, 12.944 ) );
 
   }
 
