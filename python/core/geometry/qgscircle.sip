@@ -172,8 +172,9 @@ Set the radius of the circle
  :rtype: QgsCircularString
 %End
 
-    bool contains( const QgsPoint &p ) const;
+    bool contains( const QgsPoint &p, double epsilon = 1E-8 ) const;
 %Docstring
+is the circle contains the point ``p``?
  :rtype: bool
 %End
 
