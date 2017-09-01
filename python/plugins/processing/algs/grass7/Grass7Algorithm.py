@@ -38,19 +38,22 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingUtils,
                        QgsMessageLog,
                        QgsProcessingAlgorithm,
-                       QgsProcessingParameterDefinition)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingException,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterNumber)
 from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
+#from processing.core.GeoAlgorithm import GeoAlgorithm (replaced by QgsProcessingAlgorithm)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+#from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException (replaced by QgsProcessingException).
 
 from processing.core.parameters import (getParameterFromString,
                                         ParameterVector,
                                         ParameterMultipleInput,
-                                        ParameterExtent,
-                                        ParameterNumber,
-                                        ParameterSelection,
+                                        #ParameterExtent,
+                                        #ParameterNumber,
+                                        #ParameterSelection,
                                         ParameterRaster,
                                         ParameterTable,
                                         ParameterBoolean,
@@ -70,7 +73,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class Grass7Algorithm(GeoAlgorithm):
+class Grass7Algorithm(QgsProcessingAlgorithm):
 
     GRASS_OUTPUT_TYPE_PARAMETER = 'GRASS_OUTPUT_TYPE_PARAMETER'
     GRASS_MIN_AREA_PARAMETER = 'GRASS_MIN_AREA_PARAMETER'
@@ -82,10 +85,12 @@ class Grass7Algorithm(GeoAlgorithm):
     OUTPUT_TYPES = ['auto', 'point', 'line', 'area']
 
     def __init__(self, descriptionfile):
-        GeoAlgorithm.__init__(self)
+        super().__init__()
+        #GeoAlgorithm.__init__(self)
         self._name = ''
         self._display_name = ''
         self._group = ''
+        self.grass7Name = ''
         self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
@@ -114,6 +119,11 @@ class Grass7Algorithm(GeoAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
+    def tr(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return QCoreApplication.translate(context, string)
+                                    
     def helpUrl(self):
         helpPath = Grass7Utils.grassHelpPath()
         if helpPath == '':
@@ -144,9 +154,15 @@ class Grass7Algorithm(GeoAlgorithm):
         return descs
 
     def defineCharacteristicsFromFile(self):
+        """
+        Create algorithm parameters and outputs from a text file.
+        
+        """
         with open(self.descriptionFile) as lines:
+            # First line of the file is the Grass algorithm name
             line = lines.readline().strip('\n').strip()
             self.grass7Name = line
+            # Second line if the algorithm name in Processing
             line = lines.readline().strip('\n').strip()
             self._name = line
             self._display_name = QCoreApplication.translate("GrassAlgorithm", line)
@@ -155,12 +171,13 @@ class Grass7Algorithm(GeoAlgorithm):
                 self._display_name = self.grass7Name + " - " + self._display_name
 
             self._name = self._name[:self._name.find(' ')].lower()
-
+            # Read the grass group
             line = lines.readline().strip('\n').strip()
             self._group = QCoreApplication.translate("GrassAlgorithm", line)
             hasRasterOutput = False
             hasVectorInput = False
             vectorOutputs = 0
+            # Then you have parameters/output definition
             line = lines.readline().strip('\n').strip()
             while line != '':
                 try:
@@ -191,29 +208,34 @@ class Grass7Algorithm(GeoAlgorithm):
                     QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), QgsMessageLog.CRITICAL)
                     raise e
 
-        self.addParameter(ParameterExtent(
+        self.addParameter(QgsProcessingParameterExtent(
             self.GRASS_REGION_EXTENT_PARAMETER,
             self.tr('GRASS GIS 7 region extent'))
         )
         if hasRasterOutput:
-            self.addParameter(ParameterNumber(
+            self.addParameter(QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
                 self.tr('GRASS GIS 7 region cellsize (leave 0 for default)'),
-                0, None, 0.0))
+                type=QgsProcessingParameterNumber.Double,
+                minValue=0.0, maxValue=None, defaultValue=0.0)
+            )
         if hasVectorInput:
-            param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
-                                    'v.in.ogr snap tolerance (-1 = no snap)',
-                                    -1, None, -1.0)
+            param = QgsProcessingParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
+                                                 self.tr('v.in.ogr snap tolerance (-1 = no snap)'),
+                                                 type=QgsProcessingParameterNumber.Double,
+                                                 minValue=-1.0, maxValue=None, defaultValue=-1.0)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
-            param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
-                                    'v.in.ogr min area', 0, None, 0.0001)
+            param = QgsProcessingParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
+                                                 self.tr('v.in.ogr min area'),
+                                                 type=QgsProcessingParameterNumber.double,
+                                                 minValue=0.0, maxValue=None, defaultValue=0.0001)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
         if vectorOutputs == 1:
-            param = ParameterSelection(self.GRASS_OUTPUT_TYPE_PARAMETER,
-                                       'v.out.ogr output type',
-                                       self.OUTPUT_TYPES)
+            param = QgsProcessingParameterEnum(self.GRASS_OUTPUT_TYPE_PARAMETER,
+                                               self.tr('v.out.ogr output type'),
+                                               self.OUTPUT_TYPES)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
 
@@ -250,7 +272,7 @@ class Grass7Algorithm(GeoAlgorithm):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('GRASS GIS 7 folder is not configured. Please '
                             'configure it before running GRASS GIS 7 algorithms.'))
 
@@ -421,7 +443,7 @@ class Grass7Algorithm(GeoAlgorithm):
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command += ' ' + param.name()
-            elif isinstance(param, ParameterSelection):
+            elif isinstance(param, QgsProcessingParameterEnum):
                 idx = int(param.value)
                 command += ' ' + param.name() + '=' + str(param.options[idx][1])
             elif isinstance(param, ParameterString):
@@ -579,6 +601,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return command
 
     def getTempFilename(self):
+        # TODO Replace with QgsProcessingUtils generateTempFilename
         return system.getTempFilename()
 
     def canExecute(self):

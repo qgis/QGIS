@@ -4,10 +4,20 @@ QGIS3 Processing Port
 =====================
 
 * Port to Python3.
+  * print -> print(
+  * unicode -> str
+  * dict iteritems
 * Replace all parameters by QgsProcessingParameters.
 * Re-enable GRASS algorithm by default.
 * Add GRASS 7.2 new algorithms.
 * Improve unit tests
+* GRASS_REGION_CELLSIZE_PARAMETER is integer or double?
+* GRASS_SNAP_TOLERANCE_PARAMETER is integer or double?
+* Do we need to use QgsProcessingParameters::parameterFromScriptCode for description files?
+  We don't NEED but we have to improve getParameterFromString (or use an internal method) at least.
+  There is also a problem for parameterFromScriptCode: it doesn't use description very well.
+  We can also use parameterFromVariantMap and a custom internal Grass7Algorithm getParameterFromString.
+* Make tests under MS-Windows 7 for Utf-8 support.
 
 Unit tests
 ==========
