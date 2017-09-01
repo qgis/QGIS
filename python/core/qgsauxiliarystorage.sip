@@ -179,12 +179,12 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  :rtype: bool
 %End
 
-    static int createProperty( QgsPalLayerSettings::Property p, const QString &providerId, QgsVectorLayer *vlayer );
+    static int createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *vlayer );
 %Docstring
  Create if necessary a new auxiliary field for a PAL property and
  activate this property in settings.
 
- \param p The property to create
+ \param property The property to create
  \param providerId The id of the provider to use
  \param vlayer The vector layer
 
@@ -192,12 +192,12 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  :rtype: int
 %End
 
-    static int createProperty( QgsDiagramLayerSettings::Property p, QgsVectorLayer *vlayer );
+    static int createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *vlayer );
 %Docstring
  Create if necessary a new auxiliary field for a diagram's property and
  activate this this property in settings.
 
- \param p The property to create
+ \param property The property to create
  \param providerId The id of the provider to use
  \param vlayer The vector layer
 

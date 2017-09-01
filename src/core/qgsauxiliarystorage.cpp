@@ -241,13 +241,13 @@ bool QgsAuxiliaryLayer::save()
   return rc;
 }
 
-int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property p, const QString &providerId, QgsVectorLayer *layer )
+int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *layer )
 {
   int index = -1;
 
   if ( layer && layer->labeling() && layer->auxiliaryLayer() )
   {
-    const QgsPropertyDefinition def = layer->labeling()->settings( providerId ).propertyDefinitions()[p];
+    const QgsPropertyDefinition def = layer->labeling()->settings( providerId ).propertyDefinitions()[property];
     const QString fieldName = QgsAuxiliaryField::nameFromProperty( def, true );
 
     if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
@@ -257,7 +257,7 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property p, const QS
       QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
 
       QgsPropertyCollection c = settings->dataDefinedProperties();
-      c.setProperty( p, prop );
+      c.setProperty( property, prop );
       settings->setDataDefinedProperties( c );
 
       layer->labeling()->setSettings( settings, providerId );
@@ -269,13 +269,13 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property p, const QS
   return index;
 }
 
-int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property p, QgsVectorLayer *layer )
+int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *layer )
 {
   int index = -1;
 
   if ( layer && layer->diagramLayerSettings() && layer->auxiliaryLayer() )
   {
-    const QgsPropertyDefinition def = layer->diagramLayerSettings()->propertyDefinitions()[p];
+    const QgsPropertyDefinition def = layer->diagramLayerSettings()->propertyDefinitions()[property];
 
     if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
     {
@@ -285,7 +285,7 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property p, QgsV
       QgsDiagramLayerSettings settings( *layer->diagramLayerSettings() );
 
       QgsPropertyCollection c = settings.dataDefinedProperties();
-      c.setProperty( p, prop );
+      c.setProperty( property, prop );
       settings.setDataDefinedProperties( c );
 
       layer->setDiagramLayerSettings( settings );

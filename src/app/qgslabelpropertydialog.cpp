@@ -131,6 +131,12 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
       if ( mCurLabelField >= 0 )
       {
         mLabelTextLineEdit->setText( attributeValues.at( mCurLabelField ).toString() );
+
+        if ( vlayer->isEditable() )
+          mLabelTextLineEdit->setEnabled( true );
+        else
+          mLabelTextLineEdit->setEnabled( false );
+
         const QgsFields &layerFields = vlayer->fields();
         switch ( layerFields.at( mCurLabelField ).type() )
         {

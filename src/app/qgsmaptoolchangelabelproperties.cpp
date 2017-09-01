@@ -23,6 +23,27 @@
 
 QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas ): QgsMapToolLabel( canvas )
 {
+  mPalProperties << QgsPalLayerSettings::PositionX;
+  mPalProperties << QgsPalLayerSettings::PositionY;
+  mPalProperties << QgsPalLayerSettings::Show;
+  mPalProperties << QgsPalLayerSettings::LabelRotation;
+  mPalProperties << QgsPalLayerSettings::Family;
+  mPalProperties << QgsPalLayerSettings::FontStyle;
+  mPalProperties << QgsPalLayerSettings::Size;
+  mPalProperties << QgsPalLayerSettings::Bold;
+  mPalProperties << QgsPalLayerSettings::Italic;
+  mPalProperties << QgsPalLayerSettings::Underline;
+  mPalProperties << QgsPalLayerSettings::Color;
+  mPalProperties << QgsPalLayerSettings::Strikeout;
+  mPalProperties << QgsPalLayerSettings::BufferSize;
+  mPalProperties << QgsPalLayerSettings::BufferColor;
+  mPalProperties << QgsPalLayerSettings::LabelDistance;
+  mPalProperties << QgsPalLayerSettings::Hali;
+  mPalProperties << QgsPalLayerSettings::Vali;
+  mPalProperties << QgsPalLayerSettings::ScaleVisibility;
+  mPalProperties << QgsPalLayerSettings::MinScale;
+  mPalProperties << QgsPalLayerSettings::MaxScale;
+  mPalProperties << QgsPalLayerSettings::AlwaysShow;
 }
 
 void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
@@ -37,9 +58,16 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
   }
 
   mCurrentLabel = LabelDetails( labelPos );
-  if ( !mCurrentLabel.valid || !mCurrentLabel.layer || !mCurrentLabel.layer->isEditable() )
+  if ( !mCurrentLabel.valid || !mCurrentLabel.layer )
   {
     return;
+  }
+
+  if ( !mCurrentLabel.layer->isEditable() )
+  {
+    QgsPalIndexes indexes;
+    if ( createAuxiliaryFields( indexes ) )
+      return;
   }
 
   createRubberBands();
