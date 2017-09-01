@@ -40,6 +40,7 @@ from .ColorRelief import ColorRelief
 from .contour import contour
 from .fillnodata import fillnodata
 from .gdaltindex import gdaltindex
+from .GridAverage import GridAverage
 from .hillshade import hillshade
 from .information import information
 from .nearblack import nearblack
@@ -63,7 +64,6 @@ from .warp import warp
 # from .extractprojection import ExtractProjection
 # from .gdal2xyz import gdal2xyz
 # from .GridInvDist import GridInvDist
-# from .GridAverage import GridAverage
 # from .GridNearest import GridNearest
 # from .GridDataMetrics import GridDataMetrics
 # from .gdalcalc import gdalcalc
@@ -141,6 +141,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             contour(),
             fillnodata(),
             gdaltindex(),
+            GridAverage(),
             hillshade(),
             information(),
             nearblack(),
@@ -163,7 +164,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # ExtractProjection(),
             # gdal2xyz(),
             # GridInvDist(),
-            # GridAverage(),
             # GridNearest(),
             # GridDataMetrics(),
             # gdalcalc(),

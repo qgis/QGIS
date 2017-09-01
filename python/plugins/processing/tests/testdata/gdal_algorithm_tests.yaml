@@ -377,6 +377,24 @@ tests:
         hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
         type: rasterhash
 
+  - algorithm: gdal:gridaverage
+    name: Moving Average interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      MIN_POINTS: 0.0
+      NODATA: 0.0
+      RADIUS_1: 0.01
+      RADIUS_2: 0.01
+      RTYPE: '5'
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 3542d928bccee955b1c426cac7b698c603c9a385429ca529758083bf
+        type: rasterhash
+
 #  - algorithm: gdal:merge
 #    name: Merge 2 raster layers
 #    params:
@@ -482,24 +500,6 @@ tests:
 #    results:
 #      OUTPUT:
 #        hash: 220953299b18286b57ce093a054323e59add7c78c0429a02e51b4ad4
-#        type: rasterhash
-#
-#  - algorithm: gdal:gridaverage
-#    name: Moving Average interpolation
-#    params:
-#      ANGLE: 0.0
-#      INPUT:
-#        name: custom/points_values.gml
-#        type: vector
-#      MIN_POINTS: 0.0
-#      NODATA: 0.0
-#      RADIUS_1: 0.01
-#      RADIUS_2: 0.01
-#      RTYPE: '5'
-#      Z_FIELD: EC
-#    results:
-#      OUTPUT:
-#        hash: 3542d928bccee955b1c426cac7b698c603c9a385429ca529758083bf
 #        type: rasterhash
 #
 #  - algorithm: gdal:gridnearestneighbor
