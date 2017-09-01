@@ -181,7 +181,6 @@ SET(QGIS_APP_SRCS
   pluginmanager/qgspluginitemdelegate.cpp
 
   qgsnewspatialitelayerdialog.cpp
-  qgsnewauxiliarylayerdialog.cpp
 
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
@@ -360,7 +359,6 @@ SET (QGIS_APP_MOC_HDRS
   pluginmanager/qgspluginitemdelegate.h
 
   qgsnewspatialitelayerdialog.h
-  qgsnewauxiliarylayerdialog.h
 
   qgssettingstree.h
   qgsvariantdelegate.h

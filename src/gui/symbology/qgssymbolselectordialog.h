@@ -100,7 +100,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
        * \param vl The vector layer for the symbol.
        * \param parent
        */
-    QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
@@ -242,7 +242,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
     QMenu *mAdvancedMenu = nullptr;
-    const QgsVectorLayer *mVectorLayer = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
 
     QStandardItemModel *model = nullptr;
     QWidget *mPresentWidget = nullptr;
@@ -261,7 +261,7 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool embedded = false );
     ~QgsSymbolSelectorDialog();
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button

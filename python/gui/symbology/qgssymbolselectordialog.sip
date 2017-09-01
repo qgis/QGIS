@@ -28,7 +28,7 @@ class QgsSymbolSelectorWidget: QgsPanelWidget
 %End
   public:
 
-    QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+    QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
  Symbol selector widget that can be used to select and build a symbol
  \param symbol The symbol to load into the widget as a start point.
@@ -184,7 +184,7 @@ class QgsSymbolSelectorDialog : QDialog
 #include "qgssymbolselectordialog.h"
 %End
   public:
-    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0, bool embedded = false );
+    QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0, bool embedded = false );
     ~QgsSymbolSelectorDialog();
 
     QMenu *advancedMenu();

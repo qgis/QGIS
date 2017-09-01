@@ -296,6 +296,7 @@ SET(QGIS_GUI_SRCS
   qgsmessagelogviewer.cpp
   qgsmessageviewer.cpp
   qgsmetadatawidget.cpp
+  qgsnewauxiliarylayerdialog.cpp
   qgsnewhttpconnection.cpp
   qgsnewmemorylayerdialog.cpp
   qgsnewnamedialog.cpp
@@ -456,6 +457,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmessagelogviewer.h
   qgsmessageviewer.h
   qgsmetadatawidget.h
+  qgsnewauxiliarylayerdialog.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h

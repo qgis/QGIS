@@ -22,6 +22,7 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsmemoryproviderutils.h"
+#include "qgssymbollayer.h"
 
 #include <QFile>
 
@@ -50,6 +51,18 @@ QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
   if ( origin.compare( "labeling", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsPalLayerSettings::propertyDefinitions();
+    Q_FOREACH ( const QgsPropertyDefinition p, props.values() )
+    {
+      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      {
+        def = p;
+        break;
+      }
+    }
+  }
+  else if ( origin.compare( "symbol", Qt::CaseInsensitive ) == 0 )
+  {
+    const QgsPropertiesDefinition props = QgsSymbolLayer::propertyDefinitions();
     Q_FOREACH ( const QgsPropertyDefinition p, props.values() )
     {
       if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
