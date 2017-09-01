@@ -147,8 +147,6 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   if ( !pageSize.isEmpty() )
   {
     mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );
-    mWidthSpin->setEnabled( false );
-    mHeightSpin->setEnabled( false );
     mLockAspectRatio->setEnabled( false );
     mLockAspectRatio->setLocked( false );
     mSizeUnitsComboBox->setEnabled( false );
@@ -158,8 +156,6 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   {
     // custom
     mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->count() - 1 );
-    mWidthSpin->setEnabled( true );
-    mHeightSpin->setEnabled( true );
     mLockAspectRatio->setEnabled( true );
     mSizeUnitsComboBox->setEnabled( true );
     mPageOrientationComboBox->setEnabled( false );
