@@ -626,7 +626,7 @@ bool QgsMapToolLabel::diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &y
 
 bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
 {
-  if ( !vlayer || !vlayer->labeling() )
+  if ( !vlayer || !vlayer->isEditable() || !vlayer->labeling() )
   {
     return false;
   }
@@ -648,26 +648,7 @@ bool QgsMapToolLabel::labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSe
   //return !xColName.isEmpty() && !yColName.isEmpty();
   xCol = vlayer->fields().lookupField( xColName );
   yCol = vlayer->fields().lookupField( yColName );
-
-  // labels may be moveable even if layer is not editable when data defined
-  // columns come from auxiliary storage
-  if ( xCol >= 0 && yCol >= 0 )
-  {
-    bool xAuxiliaryField = vlayer->isAuxiliaryField( xCol );
-    bool yAuxiliaryField = vlayer->isAuxiliaryField( yCol );
-
-    if ( ! xAuxiliaryField || ! yAuxiliaryField )
-    {
-      if ( vlayer->isEditable() )
-        return true;
-      else
-        return false;
-    }
-    else
-      return true;
-  }
-
-  return false;
+  return ( xCol != -1 && yCol != -1 );
 }
 
 bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const
@@ -679,7 +660,7 @@ bool QgsMapToolLabel::layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol 
 
 bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const
 {
-  if ( !vlayer || !vlayer->labeling() )
+  if ( !vlayer || !vlayer->isEditable() || !vlayer->labeling() )
   {
     return false;
   }
@@ -689,20 +670,8 @@ bool QgsMapToolLabel::labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) c
     QString fieldname = dataDefinedColumnName( QgsPalLayerSettings::Show,
                         vlayer->labeling()->settings( providerId ) );
     showCol = vlayer->fields().lookupField( fieldname );
-    if ( showCol >= 0 )
-    {
-      bool auxiliaryField = vlayer->isAuxiliaryField( showCol );
-
-      if ( ! auxiliaryField )
-      {
-        if ( vlayer->isEditable() )
-          return true;
-        else
-          return false;
-      }
-      else
-        return true;
-    }
+    if ( showCol != -1 )
+      return true;
   }
 
   return false;
@@ -773,14 +742,14 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
   : pos( p )
 {
   layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( pos.layerID ) );
-  if ( layer && layer->labeling() )
+  if ( layer && layer->labeling() && !p.isDiagram )
   {
     settings = layer->labeling()->settings( pos.providerID );
-
-    if ( p.isDiagram )
-      valid = layer->diagramsEnabled();
-    else
-      valid = true;
+    valid = true;
+  }
+  else if ( layer && layer->diagramsEnabled() && p.isDiagram )
+  {
+    valid = true;
   }
 
   if ( !valid )
@@ -788,4 +757,70 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
     layer = nullptr;
     settings = QgsPalLayerSettings();
   }
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes )
+{
+  return createAuxiliaryFields( mCurrentLabel, indexes );
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes ) const
+{
+  bool newAuxiliaryLayer = false;
+  QgsVectorLayer *vlayer = details.layer;
+  QString providerId = details.pos.providerID;
+
+  if ( !vlayer )
+    return newAuxiliaryLayer;
+
+  if ( !vlayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vlayer );
+    dlg.exec();
+    newAuxiliaryLayer = true;
+  }
+
+  if ( !vlayer->auxiliaryLayer() )
+    return false;
+
+  Q_FOREACH ( const QgsPalLayerSettings::Property &p, mPalProperties )
+  {
+    indexes[p] = QgsAuxiliaryLayer::createProperty( p, providerId, vlayer );
+  }
+
+  details.settings = vlayer->labeling()->settings( providerId );
+
+  return newAuxiliaryLayer;
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes )
+{
+  return createAuxiliaryFields( mCurrentLabel, indexes );
+}
+
+
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes )
+{
+  bool newAuxiliaryLayer = false;
+  QgsVectorLayer *vlayer = details.layer;
+
+  if ( !vlayer )
+    return newAuxiliaryLayer;
+
+  if ( !vlayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vlayer );
+    dlg.exec();
+    newAuxiliaryLayer = true;
+  }
+
+  if ( !vlayer->auxiliaryLayer() )
+    return false;
+
+  Q_FOREACH ( const QgsDiagramLayerSettings::Property &p, mDiagramProperties )
+  {
+    indexes[p] = QgsAuxiliaryLayer::createProperty( p, vlayer );
+  }
+
+  return newAuxiliaryLayer;
 }

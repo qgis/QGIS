@@ -19,7 +19,7 @@
 #include "qgslogger.h"
 #include "qgsslconnect.h"
 #include "qgsproject.h"
-#include "qgspallabeling.h"
+#include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsmemoryproviderutils.h"
 
@@ -239,6 +239,62 @@ bool QgsAuxiliaryLayer::save()
   startEditing();
 
   return rc;
+}
+
+int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property p, const QString &providerId, QgsVectorLayer *layer )
+{
+  int index = -1;
+
+  if ( layer && layer->labeling() && layer->auxiliaryLayer() )
+  {
+    const QgsPropertyDefinition def = layer->labeling()->settings( providerId ).propertyDefinitions()[p];
+    const QString fieldName = QgsAuxiliaryField::nameFromProperty( def, true );
+
+    if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
+    {
+      const QgsProperty prop = QgsProperty::fromField( fieldName );
+
+      QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
+
+      QgsPropertyCollection c = settings->dataDefinedProperties();
+      c.setProperty( p, prop );
+      settings->setDataDefinedProperties( c );
+
+      layer->labeling()->setSettings( settings, providerId );
+    }
+
+    index = layer->fields().lookupField( fieldName );
+  }
+
+  return index;
+}
+
+int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property p, QgsVectorLayer *layer )
+{
+  int index = -1;
+
+  if ( layer && layer->diagramLayerSettings() && layer->auxiliaryLayer() )
+  {
+    const QgsPropertyDefinition def = layer->diagramLayerSettings()->propertyDefinitions()[p];
+
+    if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
+    {
+      const QString fieldName = QgsAuxiliaryField::nameFromProperty( def, true );
+      const QgsProperty prop = QgsProperty::fromField( fieldName );
+
+      QgsDiagramLayerSettings settings( *layer->diagramLayerSettings() );
+
+      QgsPropertyCollection c = settings.dataDefinedProperties();
+      c.setProperty( p, prop );
+      settings.setDataDefinedProperties( c );
+
+      layer->setDiagramLayerSettings( settings );
+
+      index = layer->fields().lookupField( fieldName );
+    }
+  }
+
+  return index;
 }
 
 //

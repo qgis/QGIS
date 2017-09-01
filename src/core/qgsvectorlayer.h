@@ -1134,10 +1134,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     int addTopologicalPoints( const QgsPointXY &p );
 
     /**
+     * Access to const labeling configuration. May be null if labeling is not used.
+     * \since QGIS 3.0
+     */
+    const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
+
+    /**
      * Access to labeling configuration. May be null if labeling is not used.
      * \since QGIS 3.0
      */
-    const QgsAbstractVectorLayerLabeling *labeling() const { return mLabeling; }
+    QgsAbstractVectorLayerLabeling *labeling() { return mLabeling; }
 
     /**
      * Set labeling configuration. Takes ownership of the object.

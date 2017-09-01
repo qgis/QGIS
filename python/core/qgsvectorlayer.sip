@@ -1092,9 +1092,11 @@ Return the provider type for this layer
  :rtype: int
 %End
 
-    const QgsAbstractVectorLayerLabeling *labeling() const;
+
+    QgsAbstractVectorLayerLabeling *labeling();
 %Docstring
  Access to labeling configuration. May be null if labeling is not used.
+
 .. versionadded:: 3.0
  :rtype: QgsAbstractVectorLayerLabeling
 %End

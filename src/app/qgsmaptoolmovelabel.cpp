@@ -27,6 +27,12 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
   , mClickOffsetY( 0 )
 {
   mToolName = tr( "Move label" );
+
+  mPalProperties << QgsPalLayerSettings::PositionX;
+  mPalProperties << QgsPalLayerSettings::PositionY;
+
+  mDiagramProperties << QgsDiagramLayerSettings::PositionX;
+  mDiagramProperties << QgsDiagramLayerSettings::PositionY;
 }
 
 void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
@@ -49,8 +55,29 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
   }
 
   int xCol, yCol;
-  if ( labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) ||
-       diagramMoveable( vlayer, xCol, yCol ) )
+
+  if ( !mCurrentLabel.pos.isDiagram &&  !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+  {
+    QgsPalIndexes indexes;
+
+    if ( createAuxiliaryFields( indexes ) )
+      return;
+
+    xCol = indexes[ QgsPalLayerSettings::PositionX ];
+    yCol = indexes[ QgsPalLayerSettings::PositionY ];
+  }
+  else if ( mCurrentLabel.pos.isDiagram && !diagramMoveable( vlayer, xCol, yCol ) )
+  {
+    QgsDiagramIndexes indexes;
+
+    if ( createAuxiliaryFields( indexes ) )
+      return;
+
+    xCol = indexes[ QgsDiagramLayerSettings::PositionX ];
+    yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
+  }
+
+  if ( xCol >= 0 && yCol >= 0 )
   {
     mStartPointMapCoords = toMapCoordinates( e->pos() );
     QgsPointXY referencePoint;

@@ -69,6 +69,16 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 
     /**
+     * Set pal settings for a specific provider (takes ownership).
+     *
+     * \param settings Pal layer settings
+     * \param providerId The id of the provider
+     *
+     * \since QGIS 3.0
+     */
+    virtual void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) = 0;
+
+    /**
      * Returns true if drawing labels requires advanced effects like composition
      * modes, which could prevent it being used as an isolated cached image
      * or exported to a vector format.
@@ -121,6 +131,17 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+
+    /**
+     * Set pal settings (takes ownership).
+     *
+     * \param settings Pal layer settings
+     * \param providerId Unused parameter
+     *
+     * \since QGIS 3.0
+     */
+    virtual void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
+
     bool requiresAdvancedEffects() const override;
     virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 

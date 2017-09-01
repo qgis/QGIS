@@ -192,7 +192,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   }
 
   // data defined show diagram? check this before doing any other processing
-  if ( !mSettings.dataDefinedProperties().valueAsBool( QgsDiagramLayerSettings::Show, context.expressionContext(), true ) )
+  if ( !mSettings.dataDefinedProperties().valueAsBool( QgsDiagramLayerSettings::Show, context.expressionContext(), true ) || !context.expressionContext().feature().isValid() )
     return nullptr;
 
   // data defined obstacle?
