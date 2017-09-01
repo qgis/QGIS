@@ -59,7 +59,10 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Returns the display name entered in the dialog
-    QString displayName();
+    QString displayName()
+    {
+      return txtDisplayName->text();
+    }
     void setRendererDirty( bool ) {}
 
     /** Adds an attribute to the table (but does not commit it yet)
@@ -206,8 +209,5 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void openPanel( QgsPanelWidget *panel );
 };
 
-inline QString QgsVectorLayerProperties::displayName()
-{
-  return txtDisplayName->text();
-}
+
 #endif
