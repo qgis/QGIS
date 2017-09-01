@@ -104,8 +104,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
-    virtual QgsCurve *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
-                                   double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
+    virtual QgsCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+                                     double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     /** Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance

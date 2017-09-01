@@ -120,8 +120,8 @@ QgsPoint *QgsPoint::clone() const
   return new QgsPoint( *this );
 }
 
-QgsPoint *QgsPoint::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
-                                 double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const
+QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+                                   double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const
 {
   // helper function
   auto gridifyValue = []( double value, double spacing, bool extraCondition = true ) -> double
@@ -604,7 +604,7 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
 }
 
-QgsPoint *QgsPoint::newSameGeometry() const
+QgsPoint *QgsPoint::createEmptyWithSameType() const
 {
   auto result = new QgsPoint();
   result->mWkbType = mWkbType;

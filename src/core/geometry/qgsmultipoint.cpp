@@ -25,7 +25,7 @@ QgsMultiPointV2::QgsMultiPointV2()
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
-QgsMultiPointV2 *QgsMultiPointV2::newSameGeometry() const
+QgsMultiPointV2 *QgsMultiPointV2::createEmptyWithSameType() const
 {
   auto result = new QgsMultiPointV2();
   result->mWkbType = mWkbType;

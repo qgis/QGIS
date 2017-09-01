@@ -28,7 +28,7 @@ QgsMultiCurve::QgsMultiCurve()
   mWkbType = QgsWkbTypes::MultiCurve;
 }
 
-QgsMultiCurve *QgsMultiCurve::newSameGeometry() const
+QgsMultiCurve *QgsMultiCurve::createEmptyWithSameType() const
 {
   auto result = new QgsMultiCurve();
   result->mWkbType = mWkbType;

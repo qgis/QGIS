@@ -49,7 +49,7 @@ bool QgsCompoundCurve::operator!=( const QgsCurve &other ) const
   return !operator==( other );
 }
 
-QgsCompoundCurve *QgsCompoundCurve::newSameGeometry() const
+QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
 {
   auto result = new QgsCompoundCurve();
   result->mWkbType = mWkbType;

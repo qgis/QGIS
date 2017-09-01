@@ -107,7 +107,7 @@ bool QgsTriangle::operator!=( const QgsTriangle &other ) const
   return !operator==( other );
 }
 
-QgsTriangle *QgsTriangle::newSameGeometry() const
+QgsTriangle *QgsTriangle::createEmptyWithSameType() const
 {
   auto result = new QgsTriangle();
   result->mWkbType = mWkbType;

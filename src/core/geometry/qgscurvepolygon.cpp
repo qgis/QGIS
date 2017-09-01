@@ -39,7 +39,7 @@ QgsCurvePolygon::~QgsCurvePolygon()
   clear();
 }
 
-QgsCurvePolygon *QgsCurvePolygon::newSameGeometry() const
+QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
 {
   auto result = new QgsCurvePolygon();
   result->mWkbType = mWkbType;
@@ -444,7 +444,7 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
   }
 }
 
-QgsCurvePolygon *QgsCurvePolygon::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
     double tolerance, SegmentationToleranceType toleranceType ) const
 {
   if ( !mExteriorRing )
@@ -453,7 +453,7 @@ QgsCurvePolygon *QgsCurvePolygon::asGridified( double hSpacing, double vSpacing,
   std::unique_ptr<QgsPolygonV2> polygon;
   if ( QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Triangle ||  QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Polygon )
   {
-    polygon = std::unique_ptr<QgsPolygonV2> { static_cast< QgsPolygonV2 const *>( this )->newSameGeometry() };
+    polygon = std::unique_ptr<QgsPolygonV2> { static_cast< QgsPolygonV2 const *>( this )->createEmptyWithSameType() };
   }
   else
   {
@@ -462,7 +462,7 @@ QgsCurvePolygon *QgsCurvePolygon::asGridified( double hSpacing, double vSpacing,
   }
 
   // exterior ring
-  auto exterior = std::unique_ptr<QgsCurve> { mExteriorRing->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
+  auto exterior = std::unique_ptr<QgsCurve> { mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
 
   if ( !exterior )
     return nullptr;
@@ -475,7 +475,7 @@ QgsCurvePolygon *QgsCurvePolygon::asGridified( double hSpacing, double vSpacing,
     if ( !interior )
       continue;
 
-    QgsCurve *gridifiedInterior = interior->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
+    QgsCurve *gridifiedInterior = interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
 
     if ( !gridifiedInterior )
       continue;

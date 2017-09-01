@@ -46,7 +46,7 @@ bool QgsCircularString::operator!=( const QgsCurve &other ) const
   return !operator==( other );
 }
 
-QgsCircularString *QgsCircularString::newSameGeometry() const
+QgsCircularString *QgsCircularString::createEmptyWithSameType() const
 {
   auto result = new QgsCircularString();
   result->mWkbType = mWkbType;

@@ -69,12 +69,13 @@ class QgsAbstractGeometry
     virtual ~QgsAbstractGeometry();
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
 
-    virtual QgsAbstractGeometry *newSameGeometry() const = 0 /Factory/;
+    virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 /Factory/;
 %Docstring
  Makes a new geometry with the same class and same WKB and transfers ownership.
- To make it, the geometry is default constructed.
+ To create it, the geometry is default constructedand then the WKB is changed.
  :return: the new empty geometry. Callee takes ownership.
 .. seealso:: clone
+.. versionadded:: 3.0
  :rtype: QgsAbstractGeometry
 %End
 
@@ -390,21 +391,21 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
  :rtype: QgsAbstractGeometry
 %End
 
-    virtual QgsAbstractGeometry *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
 %Docstring
  Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
  It transfers ownership to the callee.
  If it couldn't make the gridified geometry it returns None.
- It may generate an invalid geomety (in some corner cases).
+ It may generate an invalid geometry (in some corner cases).
  It can also be thought as rounding the edges and it may be useful for removing errors.
  If the geometry is curved, it will be segmentized before gridifying it.
  Example:
  \code
- geometry->asGridified(1, 1);
+ geometry->snappedToGrid(1, 1);
  \endcode
  In this case we use a 2D grid of 1x1 to gridify.
  In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
- \param hSpacing Horitzontal spacing of the grid (x axis). 0 to disable.
+ \param hSpacing Horizontal spacing of the grid (x axis). 0 to disable.
  \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
  \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
  \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
@@ -412,6 +413,7 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
  \param toleranceType In case of segmentation, the toleranceType to use (passed to segmentize as is).
  :return: the segmentized geometry or None if it wasn't possible to make. Caller takes ownership.
 .. seealso:: segmentize
+.. versionadded:: 3.0
  :rtype: QgsAbstractGeometry
 %End
 

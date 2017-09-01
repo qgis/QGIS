@@ -38,7 +38,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
     virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollection *newSameGeometry() const override SIP_FACTORY;
+    virtual QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
     virtual QgsGeometryCollection *clone() const override SIP_FACTORY;
 
     /** Returns the number of geometries within the collection.
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     virtual int dimension() const override;
     virtual QString geometryType() const override;
     virtual void clear() override;
-    virtual QgsGeometryCollection *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+    virtual QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
         double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 

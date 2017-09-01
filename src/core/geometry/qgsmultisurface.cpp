@@ -29,7 +29,7 @@ QgsMultiSurface::QgsMultiSurface()
   mWkbType = QgsWkbTypes::MultiSurface;
 }
 
-QgsMultiSurface *QgsMultiSurface::newSameGeometry() const
+QgsMultiSurface *QgsMultiSurface::createEmptyWithSameType() const
 {
   auto result = new QgsMultiSurface();
   result->mWkbType = mWkbType;

@@ -21,7 +21,7 @@ class QgsMultiPolygonV2: QgsMultiSurface
   public:
     QgsMultiPolygonV2();
     virtual QString geometryType() const;
-    virtual QgsMultiPolygonV2 *newSameGeometry() const /Factory/;
+    virtual QgsMultiPolygonV2 *createEmptyWithSameType() const /Factory/;
     virtual QgsMultiPolygonV2 *clone() const /Factory/;
 
 

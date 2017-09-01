@@ -40,7 +40,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     virtual QString geometryType() const override { return QStringLiteral( "CircularString" ); }
     virtual int dimension() const override { return 1; }
-    virtual QgsCircularString *newSameGeometry() const override SIP_FACTORY;
+    virtual QgsCircularString *createEmptyWithSameType() const override SIP_FACTORY;
     virtual QgsCircularString *clone() const override SIP_FACTORY;
     virtual void clear() override;
 

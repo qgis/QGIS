@@ -189,7 +189,7 @@ bool QgsLineString::isEmpty() const
   return mX.isEmpty();
 }
 
-QgsLineString *QgsLineString::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
     double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const
 {
   int length = numPoints();
@@ -198,7 +198,7 @@ QgsLineString *QgsLineString::asGridified( double hSpacing, double vSpacing, dou
     return nullptr;
 
   // prepare result
-  std::unique_ptr<QgsLineString> result { newSameGeometry() };
+  std::unique_ptr<QgsLineString> result { createEmptyWithSameType() };
 
 
   // helper functions
@@ -776,7 +776,7 @@ void QgsLineString::extend( double startDistance, double endDistance )
   }
 }
 
-QgsLineString *QgsLineString::newSameGeometry() const
+QgsLineString *QgsLineString::createEmptyWithSameType() const
 {
   auto result = new QgsLineString();
   result->mWkbType = mWkbType;

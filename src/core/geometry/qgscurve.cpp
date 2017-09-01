@@ -97,11 +97,11 @@ QgsAbstractGeometry *QgsCurve::boundary() const
   return multiPoint;
 }
 
-QgsCurve *QgsCurve::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
-                                 double tolerance, SegmentationToleranceType toleranceType ) const
+QgsCurve *QgsCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+                                   double tolerance, SegmentationToleranceType toleranceType ) const
 {
   std::unique_ptr<QgsLineString> line { curveToLine( tolerance, toleranceType ) };
-  return line->asGridified( hSpacing, vSpacing, dSpacing, mSpacing );
+  return line->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing );
 }
 
 QgsCurve *QgsCurve::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const

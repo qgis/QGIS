@@ -65,7 +65,7 @@ QgsGeometryCollection::~QgsGeometryCollection()
   clear();
 }
 
-QgsGeometryCollection *QgsGeometryCollection::newSameGeometry() const
+QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
 {
   auto result = new QgsGeometryCollection();
   result->mWkbType = mWkbType;
@@ -84,18 +84,18 @@ void QgsGeometryCollection::clear()
   clearCache(); //set bounding box invalid
 }
 
-QgsGeometryCollection *QgsGeometryCollection::asGridified( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
     double tolerance, SegmentationToleranceType toleranceType ) const
 {
   std::unique_ptr<QgsGeometryCollection> result;
 
   for ( auto geom : mGeometries )
   {
-    std::unique_ptr<QgsAbstractGeometry> gridified { geom->asGridified( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
+    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
     if ( gridified )
     {
       if ( !result )
-        result = std::unique_ptr<QgsGeometryCollection> { newSameGeometry() };
+        result = std::unique_ptr<QgsGeometryCollection> { createEmptyWithSameType() };
 
       result->mGeometries.append( gridified.release() );
     }

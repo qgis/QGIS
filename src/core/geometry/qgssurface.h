@@ -38,8 +38,8 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      */
     virtual QgsPolygonV2 *surfaceToPolygon() const = 0 SIP_FACTORY;
 
-    virtual QgsSurface *asGridified( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
-                                     double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
+    virtual QgsSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+                                       double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     /** Returns the minimal bounding box for the geometry
      */

@@ -29,7 +29,7 @@ class QgsCircularString: QgsCurve
 
     virtual QString geometryType() const;
     virtual int dimension() const;
-    virtual QgsCircularString *newSameGeometry() const /Factory/;
+    virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
     virtual QgsCircularString *clone() const /Factory/;
     virtual void clear();
 

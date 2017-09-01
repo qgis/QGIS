@@ -28,7 +28,7 @@ QgsMultiLineString::QgsMultiLineString()
   mWkbType = QgsWkbTypes::MultiLineString;
 }
 
-QgsMultiLineString *QgsMultiLineString::newSameGeometry() const
+QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
 {
   auto result = new QgsMultiLineString();
   result->mWkbType = mWkbType;
