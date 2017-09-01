@@ -3239,3 +3239,33 @@ tests:
       OUTPUT:
         name: expected/raster_extent.gml
         type: vector
+
+    - algorithm: qgis:minimalenclosingcircle
+      name: Minimal enclosing circle each features
+      params:
+        BY_FEATURE: true
+        INPUT:
+          name: custom/oriented_bbox.gml
+          type: vector
+      results:
+        OUTPUT:
+          name: expected/enclosing_circles_each.gml
+          type: vector
+          compare:
+            geometry:
+              precision: 7
+
+    - algorithm: qgis:minimalenclosingcircle
+      name: Minimal enclosing circle all features
+      params:
+        BY_FEATURE: false
+        INPUT:
+          name: custom/oriented_bbox.gml
+          type: vector
+      results:
+        OUTPUT:
+          name: expected/enclosing_circles_all.gml
+          type: vector
+          compare:
+            geometry:
+              precision: 7

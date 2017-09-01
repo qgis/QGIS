@@ -254,6 +254,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MeanCoords(),
                 Merge(),
                 MergeLines(),
+                MinimalEnclosingCircle(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
                 OrientedMinimumBoundingBox(),
