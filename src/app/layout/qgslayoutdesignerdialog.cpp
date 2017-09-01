@@ -357,8 +357,14 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
 
   delete mItemPropertiesStack->takeMainPanel();
   widget->setDockMode( true );
+  connect( item, &QgsLayoutItem::destroyed, widget.get(), [this]
+  {
+    delete mItemPropertiesStack->takeMainPanel();
+  } );
+
   mItemPropertiesStack->setMainPanel( widget.release() );
   mItemDock->setUserVisible( true );
+
 }
 
 void QgsLayoutDesignerDialog::open()
