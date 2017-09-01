@@ -32,6 +32,16 @@ class QgsLayoutItemPage : QgsLayoutItem
 %Docstring
  Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %End
+
+    static QgsLayoutItemPage *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+%Docstring
+ Returns a new page item for the specified ``layout``.
+
+ The caller takes responsibility for deleting the returned object.
+ :rtype: QgsLayoutItemPage
+%End
+
+
     virtual int type() const;
     virtual QString stringType() const;
 

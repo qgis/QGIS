@@ -22,6 +22,7 @@ QgsLayout::QgsLayout( QgsProject *project )
   : QGraphicsScene()
   , mProject( project )
   , mSnapper( QgsLayoutSnapper( this ) )
+  , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
   , mGuideCollection( new QgsLayoutGuideCollection( this, mPageCollection.get() ) )
 {
@@ -209,6 +210,49 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 {
   addItem( item );
   updateBounds();
+}
+
+QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  QDomElement element = document.createElement( QStringLiteral( "Layout" ) );
+  auto save = [&]( const QgsLayoutSerializableObject * object )->bool
+  {
+    return object->writeXml( element, document, context );
+  };
+  save( &mSnapper );
+  save( &mGridSettings );
+  save( mPageCollection.get() );
+  save( mGuideCollection.get() );
+
+  mCustomProperties.writeXml( element, document );
+  element.setAttribute( QStringLiteral( "name" ), mName );
+  element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
+
+  return element;
+}
+
+bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  if ( layoutElement.nodeName() != QString( "Layout" ) )
+  {
+    return false;
+  }
+
+  auto restore = [&]( QgsLayoutSerializableObject * object )->bool
+  {
+    return object->readXml( layoutElement, document, context );
+  };
+
+  mCustomProperties.readXml( layoutElement );
+  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
+  setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
+
+  restore( mPageCollection.get() );
+  restore( mGuideCollection.get() );
+  restore( &mSnapper );
+  restore( &mGridSettings );
+
+  return true;
 }
 
 void QgsLayout::updateBounds()

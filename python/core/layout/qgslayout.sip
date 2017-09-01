@@ -255,6 +255,21 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
  method. Ownership of the item is transferred to the layout.
 %End
 
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Returns the layout's state encapsulated in a DOM element.
+.. seealso:: readXml()
+ :rtype: QDomElement
+%End
+
+    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+ Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
+.. seealso:: writeXml()
+ :rtype: bool
+%End
+
+
   public slots:
 
     void updateBounds();

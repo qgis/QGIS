@@ -20,6 +20,7 @@
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutserializableobject.h"
 #include <QPen>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
@@ -28,6 +29,9 @@
 
 class QgsLayout;
 class QgsLayoutPageCollection;
+class QDomElement;
+class QDomDocument;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -168,7 +172,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
  * \brief Stores and manages the snap guides used by a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
+class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public QgsLayoutSerializableObject
 {
 
     Q_OBJECT
@@ -192,6 +196,9 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
     ~QgsLayoutGuideCollection();
 
+    QString stringType() const override { return QStringLiteral( "LayoutGuideCollection" ); }
+    QgsLayout *layout() override;
+
     int rowCount( const QModelIndex & ) const override;
     int columnCount( const QModelIndex & ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -213,6 +220,11 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
      * \see clear()
      */
     void removeGuide( QgsLayoutGuide *guide );
+
+    /**
+     * Sets the absolute \a position (in layout coordinates) for \a guide within the layout.
+     */
+    void setGuideLayoutPosition( QgsLayoutGuide *guide, double position );
 
     /**
      * Removes all guides from the collection.
@@ -255,6 +267,18 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
      * \see visible()
      */
     void setVisible( bool visible );
+
+    /**
+     * Stores the collection's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
+     * \see readXml()
+     */
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private slots:
 

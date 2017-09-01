@@ -624,13 +624,13 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
       {
         case Qt::Horizontal:
         {
-          mDraggingGuide->setLayoutPosition( displayPos.x() );
+          mView->currentLayout()->guides().setGuideLayoutPosition( mDraggingGuide, displayPos.x() );
           displayPos.setY( 0 );
           break;
         }
         case Qt::Vertical:
         {
-          mDraggingGuide->setLayoutPosition( displayPos.y() );
+          mView->currentLayout()->guides().setGuideLayoutPosition( mDraggingGuide, displayPos.y() );
           displayPos.setX( 0 );
           break;
         }
@@ -679,8 +679,11 @@ void QgsLayoutRuler::mousePressEvent( QMouseEvent *event )
     if ( !mDraggingGuide )
     {
       // if no guide at the point, then we're creating one
-      mCreatingGuide = true;
-      createTemporaryGuideItem();
+      if ( mView->currentLayout()->pageCollection()->pageCount() > 0 )
+      {
+        mCreatingGuide = true;
+        createTemporaryGuideItem();
+      }
     }
     switch ( mOrientation )
     {

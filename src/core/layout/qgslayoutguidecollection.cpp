@@ -16,6 +16,8 @@
 
 #include "qgslayoutguidecollection.h"
 #include "qgslayout.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 #include <QGraphicsLineItem>
 
 
@@ -205,6 +207,11 @@ QgsLayoutGuideCollection::~QgsLayoutGuideCollection()
   qDeleteAll( mGuides );
 }
 
+QgsLayout *QgsLayoutGuideCollection::layout()
+{
+  return mLayout;
+}
+
 int QgsLayoutGuideCollection::rowCount( const QModelIndex & ) const
 {
   return mGuides.count();
@@ -298,6 +305,19 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
+
+    case LayoutPositionRole:
+    {
+      bool ok = false;
+      double newPos = value.toDouble( &ok );
+      if ( !ok )
+        return false;
+
+      whileBlocking( guide )->setLayoutPosition( newPos );
+      emit dataChanged( index, index, QVector<int>() << role );
+      return true;
+    }
+
     case UnitsRole:
     {
       bool ok = false;
@@ -346,6 +366,7 @@ bool QgsLayoutGuideCollection::removeRows( int row, int count, const QModelIndex
     delete mGuides.takeAt( row );
   }
   endRemoveRows();
+
   return true;
 }
 
@@ -371,6 +392,15 @@ void QgsLayoutGuideCollection::removeGuide( QgsLayoutGuide *guide )
     return;
 
   removeRow( row );
+}
+
+void QgsLayoutGuideCollection::setGuideLayoutPosition( QgsLayoutGuide *guide, double position )
+{
+  int row = mGuides.indexOf( guide );
+  if ( row < 0 )
+    return;
+
+  setData( index( row, 0 ), position, LayoutPositionRole );
 }
 
 void QgsLayoutGuideCollection::clear()
@@ -460,7 +490,57 @@ void QgsLayoutGuideCollection::pageAboutToBeRemoved( int pageNumber )
   }
 }
 
+bool QgsLayoutGuideCollection::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
+{
+  QDomElement element = document.createElement( QStringLiteral( "GuideCollection" ) );
+  element.setAttribute( QStringLiteral( "visible" ), mGuidesVisible );
+  Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
+  {
+    QDomElement guideElement = document.createElement( QStringLiteral( "Guide" ) );
+    guideElement.setAttribute( QStringLiteral( "orientation" ), guide->orientation() );
+    guideElement.setAttribute( QStringLiteral( "page" ), mPageCollection->pageNumber( guide->page() ) );
+    guideElement.setAttribute( QStringLiteral( "position" ), guide->position().length() );
+    guideElement.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( guide->position().units() ) );
+    element.appendChild( guideElement );
+  }
+  parentElement.appendChild( element );
+  return true;
+}
 
+bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument &, const QgsReadWriteContext & )
+{
+  QDomElement element = e;
+  if ( element.nodeName() != QStringLiteral( "GuideCollection" ) )
+  {
+    element = element.firstChildElement( QStringLiteral( "GuideCollection" ) );
+  }
+
+  if ( element.nodeName() != QStringLiteral( "GuideCollection" ) )
+  {
+    return false;
+  }
+
+  beginResetModel();
+  qDeleteAll( mGuides );
+  mGuides.clear();
+
+  mGuidesVisible = element.attribute( QStringLiteral( "visible" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
+  QDomNodeList guideNodeList = element.elementsByTagName( QStringLiteral( "Guide" ) );
+  for ( int i = 0; i < guideNodeList.size(); ++i )
+  {
+    QDomElement element = guideNodeList.at( i ).toElement();
+    QgsLayoutGuide::Orientation orientation = static_cast< QgsLayoutGuide::Orientation >( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "0" ) ).toInt() );
+    double pos = element.attribute( QStringLiteral( "position" ), QStringLiteral( "0" ) ).toDouble();
+    QgsUnitTypes::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "units" ) ) );
+    int page = element.attribute( QStringLiteral( "page" ), QStringLiteral( "0" ) ).toInt();
+    std::unique_ptr< QgsLayoutGuide > guide( new QgsLayoutGuide( orientation, QgsLayoutMeasurement( pos, unit ), mPageCollection->page( page ) ) );
+    guide->update();
+    addGuide( guide.release() );
+  }
+
+  endResetModel();
+  return true;
+}
 
 //
 // QgsLayoutGuideProxyModel

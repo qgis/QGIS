@@ -160,6 +160,7 @@
 %Include layout/qgslayoutmeasurementconverter.sip
 %Include layout/qgspagesizeregistry.sip
 %Include layout/qgslayoutpoint.sip
+%Include layout/qgslayoutserializableobject.sip
 %Include layout/qgslayoutsize.sip
 %Include layout/qgslayoutsnapper.sip
 %Include layout/qgslayoututils.sip

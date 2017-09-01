@@ -310,6 +310,19 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void addLayoutItem( QgsLayoutItem *item SIP_TRANSFER );
 
+    /**
+     * Returns the layout's state encapsulated in a DOM element.
+     * \see readXml()
+     */
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets the collection's state from a DOM element. \a layoutElement is the DOM node corresponding to the layout.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+
   public slots:
 
     /**
@@ -338,9 +351,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutGridSettings mGridSettings;
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
-
     std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
-
 };
 
 #endif //QGSLAYOUT_H

@@ -16,6 +16,9 @@
 
 #include "qgslayoutpagecollection.h"
 #include "qgslayout.h"
+#include "qgsreadwritecontext.h"
+#include "qgsproject.h"
+#include "qgssymbollayerutils.h"
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )
@@ -135,6 +138,65 @@ double QgsLayoutPageCollection::pageShadowWidth() const
   return spaceBetweenPages() / 2;
 }
 
+bool QgsLayoutPageCollection::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  QDomElement element = document.createElement( QStringLiteral( "PageCollection" ) );
+
+  QDomElement pageStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol.get(), document, context );
+  element.appendChild( pageStyleElem );
+
+  for ( const QgsLayoutItemPage *page : mPages )
+  {
+    page->writeXml( element, document, context );
+  }
+
+  parentElement.appendChild( element );
+  return true;
+}
+
+bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  QDomElement element = e;
+  if ( element.nodeName() != QStringLiteral( "PageCollection" ) )
+  {
+    element = element.firstChildElement( QStringLiteral( "PageCollection" ) );
+  }
+
+  if ( element.nodeName() != QStringLiteral( "PageCollection" ) )
+  {
+    return false;
+  }
+
+  int i = 0;
+  for ( QgsLayoutItemPage *page : qgsAsConst( mPages ) )
+  {
+    emit pageAboutToBeRemoved( i );
+    mLayout->removeItem( page );
+    page->deleteLater();
+    ++i;
+  }
+  mPages.clear();
+
+  QDomElement pageStyleSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !pageStyleSymbolElem.isNull() )
+  {
+    mPageStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem, context ) );
+  }
+
+  QDomNodeList pageList = element.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  for ( int i = 0; i < pageList.size(); ++i )
+  {
+    QDomElement pageElement = pageList.at( i ).toElement();
+    std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
+    page->readXml( pageElement, document, context );
+    mPages.append( page.get() );
+    mLayout->addItem( page.release() );
+  }
+
+  reflow();
+  return true;
+}
+
 void QgsLayoutPageCollection::redraw()
 {
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
@@ -143,7 +205,7 @@ void QgsLayoutPageCollection::redraw()
   }
 }
 
-QgsLayout *QgsLayoutPageCollection::layout() const
+QgsLayout *QgsLayoutPageCollection::layout()
 {
   return mLayout;
 }
@@ -237,6 +299,12 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   mPages.removeAll( page );
   page->deleteLater();
   reflow();
+}
+
+QgsLayoutItemPage *QgsLayoutPageCollection::takePage( QgsLayoutItemPage *page )
+{
+  mPages.removeAll( page );
+  return page;
 }
 
 void QgsLayoutPageCollection::createDefaultPageStyleSymbol()

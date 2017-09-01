@@ -367,6 +367,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoututils.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
+  layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsize.cpp
 
   pal/costcalculator.cpp
@@ -938,6 +939,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
+  layout/qgslayoutserializableobject.h
   layout/qgslayoutsize.h
   layout/qgslayoutsnapper.h
   layout/qgslayoututils.h
