@@ -25,25 +25,44 @@ class QgsSourceSelectProvider
 
     virtual QString providerKey() const = 0;
 %Docstring
-Provider key
+Data Provider key
+ :rtype: str
+%End
+
+    virtual QString name() const;
+%Docstring
+ Source select provider name, this is useful to retrieve
+ a particular source select in case the provider has more
+ than one, it should be unique among all providers.
+
+ The default implementation returns the providerKey()
  :rtype: str
 %End
 
     virtual QString text() const = 0;
 %Docstring
-Text for the menu item entry
+Text for the menu item entry, it will be visible to the user so make sure it's translatable
  :rtype: str
 %End
 
     virtual QIcon icon() const = 0 /Factory/;
 %Docstring
-Caller takes responsibility of deleting created.
+ Creates a new instance of an QIcon for the menu item entry
+ Caller takes responsibility of deleting created.
  :rtype: QIcon
 %End
 
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( ) = 0 /Factory/;
+    virtual int ordering( ) const;
 %Docstring
-Caller takes responsibility of deleting created.
+ Ordering: the source select provider registry will be able to sort
+ the source selects (ascending) using this integer value
+ :rtype: int
+%End
+
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = 0 ) const = 0 /Factory/;
+%Docstring
+ Create a new instance of QgsAbstractDataSourceWidget (or null).
+ Caller takes responsibility of deleting created.
  :rtype: QgsAbstractDataSourceWidget
 %End
 

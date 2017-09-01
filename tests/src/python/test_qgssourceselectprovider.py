@@ -12,9 +12,10 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
-from qgis.gui import (QgsSourceSelectProvider, QgsAbstractDataSourceWidget)
+from qgis.gui import (QgsSourceSelectProvider, QgsSourceSelectProviderRegistry, QgsAbstractDataSourceWidget)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QWidget
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '01/09/2017'
@@ -44,6 +45,30 @@ class ConcreteSourceSelectProvider(QgsSourceSelectProvider):
     def createDataSourceWidget(self):
         return ConcreteDataSourceWidget()
 
+    def ordering(self):
+        return 1
+
+
+class ConcreteSourceSelectProvider2(QgsSourceSelectProvider):
+
+    def providerKey(self):
+        return "MyTestProviderKey2"
+
+    def text(self):
+        return "MyTestProviderText2"
+
+    def name(self):
+        return "MyName"
+
+    def icon(self):
+        return QIcon()
+
+    def createDataSourceWidget(self):
+        return ConcreteDataSourceWidget()
+
+    def ordering(self):
+        return 2
+
 
 class TestQgsSourceSelectProvider(unittest.TestCase):
 
@@ -60,8 +85,40 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         widget = provider.createDataSourceWidget()
         self.assertTrue(isinstance(widget, ConcreteDataSourceWidget))
         self.assertEqual(provider.providerKey(), "MyTestProviderKey")
+        self.assertEqual(provider.name(), "MyTestProviderKey")
         self.assertEqual(provider.text(), "MyTestProviderText")
+        self.assertEqual(provider.ordering(), 1)
         self.assertTrue(isinstance(provider.icon(), QIcon))
+
+    def testRegistry(self):
+
+        registry = QgsSourceSelectProviderRegistry()
+        registry.addProvider(ConcreteSourceSelectProvider())
+        registry.addProvider(ConcreteSourceSelectProvider2())
+
+        # Check order
+        self.assertEqual(['MyTestProviderKey', 'MyName'], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+
+        registry = QgsSourceSelectProviderRegistry()
+        registry.addProvider(ConcreteSourceSelectProvider())
+        registry.addProvider(ConcreteSourceSelectProvider2())
+
+        # Check order
+        self.assertEqual(['MyTestProviderKey', 'MyName'], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+
+        # Get provider by name
+        self.assertTrue(registry.providerByName('MyTestProviderKey'))
+        self.assertTrue(registry.providerByName('MyName'))
+
+        # Get not existent by name
+        self.assertFalse(registry.providerByName('Oh This Is Missing!'))
+
+        # Get providers by provider key
+        self.assertGreater(len(registry.providersByKey('MyTestProviderKey')), 0)
+        self.assertGreater(len(registry.providersByKey('MyTestProviderKey2')), 0)
+
+        # Get not existent by key
+        self.assertEqual(len(registry.providersByKey('Oh This Is Missing!')), 0)
 
 
 if __name__ == '__main__':

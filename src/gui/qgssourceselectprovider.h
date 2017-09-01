@@ -22,6 +22,7 @@
 #include "qgsabstractdatasourcewidget.h"
 
 class QString;
+class QWidget;
 
 /** \ingroup gui
  * This is the interface for those who want to add entries to the \see QgsDataSourceManagerDialog
@@ -33,19 +34,34 @@ class GUI_EXPORT QgsSourceSelectProvider
   public:
     virtual ~QgsSourceSelectProvider() = default;
 
-    //! Provider key
+    //! Data Provider key
     virtual QString providerKey() const = 0;
 
-    //! Text for the menu item entry
+    /** Source select provider name, this is useful to retrieve
+     * a particular source select in case the provider has more
+     * than one, it should be unique among all providers.
+     *
+     * The default implementation returns the providerKey()
+     */
+    virtual QString name() const { return providerKey(); }
+
+    //! Text for the menu item entry, it will be visible to the user so make sure it's translatable
     virtual QString text() const = 0;
 
-    //! Creates a new instance of an QIcon for the menu item entry
-    //! Caller takes responsibility of deleting created.
+    /** Creates a new instance of an QIcon for the menu item entry
+     * Caller takes responsibility of deleting created.
+     */
     virtual QIcon icon() const = 0 SIP_FACTORY;
 
-    //! Create a new instance of QgsAbstractDataSourceWidget (or null).
-    //! Caller takes responsibility of deleting created.
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( ) = 0 SIP_FACTORY;
+    /** Ordering: the source select provider registry will be able to sort
+     * the source selects (ascending) using this integer value
+     */
+    virtual int ordering( ) const { return 0; }
+
+    /** Create a new instance of QgsAbstractDataSourceWidget (or null).
+     * Caller takes responsibility of deleting created.
+     */
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr ) const = 0 SIP_FACTORY;
 
 };
 

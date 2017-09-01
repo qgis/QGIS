@@ -298,4 +298,5 @@
 %Include locator/qgslocatorwidget.sip
 %Include qgsadvanceddigitizingcanvasitem.sip
 %Include qgssourceselectprovider.sip
+%Include qgssourceselectproviderregistry.sip
 
