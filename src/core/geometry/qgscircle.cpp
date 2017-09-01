@@ -261,10 +261,9 @@ QgsCircularString *QgsCircle::toCircularString( bool oriented ) const
   return circString.release();
 }
 
-bool QgsCircle::contains( const QgsPoint &p ) const
+bool QgsCircle::contains( const QgsPoint &p, double epsilon ) const
 {
-  double TOLERANCE = 1e-8;
-  return ( mCenter.distance( p ) <= mSemiMajorAxis + TOLERANCE );
+  return ( mCenter.distance( p ) <= mSemiMajorAxis + epsilon );
 }
 
 QgsRectangle QgsCircle::boundingBox() const
