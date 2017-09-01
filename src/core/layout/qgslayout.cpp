@@ -26,17 +26,10 @@ QgsLayout::QgsLayout( QgsProject *project )
   , mSnapper( QgsLayoutSnapper( this ) )
   , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
-  , mGuideCollection( new QgsLayoutGuideCollection( this, mPageCollection.get() ) )
   , mUndoStack( new QgsLayoutUndoStack( this ) )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
-}
-
-QgsLayout::~QgsLayout()
-{
-  // delete guide collection FIRST, since it depends on the page collection
-  mGuideCollection.reset();
 }
 
 void QgsLayout::initializeDefaults()
@@ -100,12 +93,12 @@ QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const Qg
 
 QgsLayoutGuideCollection &QgsLayout::guides()
 {
-  return *mGuideCollection;
+  return mPageCollection->guides();
 }
 
 const QgsLayoutGuideCollection &QgsLayout::guides() const
 {
-  return *mGuideCollection;
+  return mPageCollection->guides();
 }
 
 QgsExpressionContext QgsLayout::createExpressionContext() const
@@ -285,7 +278,6 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   save( &mSnapper );
   save( &mGridSettings );
   save( mPageCollection.get() );
-  save( mGuideCollection.get() );
 
   writeXmlLayoutSettings( element, document, context );
   return element;
@@ -314,7 +306,6 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
   readXmlLayoutSettings( layoutElement, document, context );
 
   restore( mPageCollection.get() );
-  restore( mGuideCollection.get() );
   restore( &mSnapper );
   restore( &mGridSettings );
 

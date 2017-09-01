@@ -26,6 +26,7 @@
 #include <memory>
 
 class QgsLayout;
+class QgsLayoutGuideCollection;
 
 /**
  * \ingroup core
@@ -227,6 +228,16 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      */
     bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Returns a reference to the collection's guide collection, which manages page snap guides.
+     */
+    QgsLayoutGuideCollection &guides();
+
+    /**
+     * Returns a reference to the collection's guide collection, which manages page snap guides.
+     */
+    SIP_SKIP const QgsLayoutGuideCollection &guides() const;
+
   public slots:
 
     /**
@@ -253,10 +264,14 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
 
     QgsLayout *mLayout = nullptr;
 
+    std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
+
     //! Symbol for drawing pages
     std::unique_ptr< QgsFillSymbol > mPageStyleSymbol;
 
     QList< QgsLayoutItemPage * > mPages;
+
+    bool mBlockUndoCommands = false;
 
     void createDefaultPageStyleSymbol();
 

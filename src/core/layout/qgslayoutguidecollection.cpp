@@ -286,7 +286,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setLength( newPos );
-      mLayout->undoStack()->beginCommand( this, tr( "Guide moved" ), Move + index.row() );
+      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide moved" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
       mLayout->undoStack()->endCommand();
@@ -302,7 +302,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setLength( newPos );
-      mLayout->undoStack()->beginCommand( this, tr( "Guide moved" ), Move + index.row() );
+      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide moved" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
       mLayout->undoStack()->endCommand();
@@ -317,7 +317,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       if ( !ok )
         return false;
 
-      mLayout->undoStack()->beginCommand( this, tr( "Guide moved" ), Move + index.row() );
+      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide moved" ), Move + index.row() );
       whileBlocking( guide )->setLayoutPosition( newPos );
       mLayout->undoStack()->endCommand();
       emit dataChanged( index, index, QVector<int>() << role );
@@ -333,7 +333,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setUnits( static_cast< QgsUnitTypes::LayoutUnit >( units ) );
-      mLayout->undoStack()->beginCommand( this, tr( "Guide moved" ), Move + index.row() );
+      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide moved" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
       mLayout->undoStack()->endCommand();
@@ -369,7 +369,7 @@ bool QgsLayoutGuideCollection::removeRows( int row, int count, const QModelIndex
     return false;
 
   if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Guide(s) removed" ), Remove + row );
+    mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide(s) removed" ), Remove + row );
   beginRemoveRows( parent, row, row + count - 1 );
   for ( int i = 0; i < count; ++ i )
   {
@@ -386,7 +386,7 @@ void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )
   guide->setLayout( mLayout );
 
   if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Guide created" ) );
+    mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide created" ) );
   beginInsertRows( QModelIndex(), mGuides.count(), mGuides.count() );
   mGuides.append( guide );
   endInsertRows();
@@ -420,7 +420,7 @@ void QgsLayoutGuideCollection::setGuideLayoutPosition( QgsLayoutGuide *guide, do
 
 void QgsLayoutGuideCollection::clear()
 {
-  mLayout->undoStack()->beginCommand( this, tr( "Guides cleared" ) );
+  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guides cleared" ) );
   beginResetModel();
   qDeleteAll( mGuides );
   mGuides.clear();
@@ -430,7 +430,7 @@ void QgsLayoutGuideCollection::clear()
 
 void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
 {
-  mLayout->undoStack()->beginCommand( this, tr( "Guides applied" ) );
+  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guides applied" ) );
   mBlockUndoCommands = true;
   QgsLayoutItemPage *page = mPageCollection->page( sourcePage );
   // remove other page's guides
@@ -499,7 +499,7 @@ bool QgsLayoutGuideCollection::visible() const
 
 void QgsLayoutGuideCollection::setVisible( bool visible )
 {
-  mLayout->undoStack()->beginCommand( this, tr( "Guide visibility changed" ) );
+  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide visibility changed" ) );
   mGuidesVisible = visible;
   mLayout->undoStack()->endCommand();
   update();
@@ -528,6 +528,7 @@ bool QgsLayoutGuideCollection::writeXml( QDomElement &parentElement, QDomDocumen
     guideElement.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( guide->position().units() ) );
     element.appendChild( guideElement );
   }
+
   parentElement.appendChild( element );
   return true;
 }
