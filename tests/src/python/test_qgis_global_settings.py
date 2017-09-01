@@ -3,7 +3,7 @@
 ***************************************************************************
     test_qgis_global_settings.py
     ---------------------
-    Date                 : January 2017
+    Date                 : August 2017
     Copyright            : (C) 2017, Jorge Gustavo Rocha
     Email                : jgr at geomaster dot pt
 ***************************************************************************
@@ -38,15 +38,15 @@ def createXYZLayerFromURL(url):
 class TestQgsGlobalSettings(unittest.TestCase):
 
     def setUp(self):
-        qDebug('QgsApplication.pkgDataPath(): {0}'.format(QgsApplication.pkgDataPath()))
+        # qDebug('QgsApplication.pkgDataPath(): {0}'.format(QgsApplication.pkgDataPath()))
         # Path after deployment
         # QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/qgis_global_settings.ini')
         # Path before deployment
-        assert QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/resources/qgis_global_settings.ini')
+        self.assertTrue(QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/resources/qgis_global_settings.ini'))
         self.settings = QgsSettings('testqgissettings', 'testqgissettings')
 
     def test_global_settings_exist(self):
-        qDebug('settings.allKeys(): {0}'.format(self.settings.allKeys()))
+        # qDebug('settings.allKeys(): {0}'.format(self.settings.allKeys()))
         defaulturl = self.settings.value('qgis/connections-xyz/OpenStreetMap/url')
         self.assertEqual(defaulturl, 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
         layer = createXYZLayerFromURL(defaulturl)
