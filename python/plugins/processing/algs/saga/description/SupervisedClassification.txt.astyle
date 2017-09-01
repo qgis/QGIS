@@ -1,0 +1,22 @@
+Supervised Classification
+imagery_classification
+ParameterMultipleInput|GRIDS|Grids|3.0|False
+ParameterVector|ROI|Training Areas|2|False
+ParameterTableField|ROI_ID|Class Identifier|ROI|-1|False
+ParameterTable|STATS|Class Statistics|False
+ParameterSelection|STATS_SRC|Get Class Statistics from...|[0] training areas;[1] table
+ParameterSelection|METHOD|Method|[0] Binary Encoding;[1] Parallelepiped;[2] Minimum Distance;[3] Mahalanobis Distance;[4] Maximum Likelihood;[5] Spectral Angle Mapping; [6] Winner Takes All
+ParameterBoolean|NORMALISE|Normalise|False
+ParameterNumber|THRESHOLD_DIST|Distance Threshold|0.0|None|0.0
+ParameterNumber|THRESHOLD_PROB|Probability Threshold (Percent)|0.0|100.0|0.0
+ParameterSelection|RELATIVE_PROB|Probability Reference|[0] absolute;[1] relative
+ParameterNumber|THRESHOLD_ANGLE|Spectral Angle Threshold (Degree)|0.0|90.0|0.0
+ParameterBoolean|WTA_0|Binary Encoding|False
+ParameterBoolean|WTA_1|Parallelepiped|False
+ParameterBoolean|WTA_2|Minimum Distance|False
+ParameterBoolean|WTA_3|Mahalanobis Distance|False
+ParameterBoolean|WTA_4|Maximum Likelihood|False
+ParameterBoolean|WTA_5|Spectral Angle Mapping|False
+OutputTable|CLASS_INFO|Class Information
+OutputRaster|CLASSES|Classification
+OutputRaster|QUALITY|Quality

@@ -1,0 +1,8 @@
+i.oif
+Calculates Optimum-Index-Factor table for spectral bands
+Imagery (i.*)
+ParameterMultipleInput|input|Name of input raster map(s)|3|False
+*ParameterBoolean|-g|Print in shell script style|False
+*ParameterBoolean|-s|Process bands serially (default: run in parallel)|False
+OutputFile|output|OIF File
+

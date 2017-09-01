@@ -1,0 +1,18 @@
+Slope, Aspect, Curvature
+ta_morphometry
+ParameterRaster|ELEVATION|Elevation|False
+ParameterSelection|METHOD|Method|[0] Maximum Slope (Travis et al. 1975);[1] Maximum Triangle Slope (Tarboton 1997);[2] Least Squares Fitted Plane (Horn 1981, Costa-Cabral & Burgess 1996);[3] 6 parameter 2nd order polynom (Evans 1979);[4] 6 parameter 2nd order polynom (Heerdegen & Beran 1982);[5] 6 parameter 2nd order polynom (Bauer, Rohdenburg, Bork 1985);[6] 9 parameter 2nd order polynom (Zevenbergen & Thorne 1987);[7]10 parameter 3rd order polynom (Haralick 1983)|6
+ParameterSelection|UNIT_SLOPE|Slope Units|[0] radians;[1] degree;[2] percent|1
+ParameterSelection|UNIT_ASPECT|Aspect Units|[0] radians;[1] degree|1
+OutputRaster|SLOPE|Slope
+OutputRaster|ASPECT|Aspect
+OutputRaster|C_GENE|General Curvature
+OutputRaster|C_PLAN|Plan Curvature
+OutputRaster|C_PROF|Profile Curvature
+OutputRaster|C_TANG|Tangential Curvature
+OutputRaster|C_LONG|Longitudinal Curvature
+OutputRaster|C_CROS|Cross-Sectional Curvature
+OutputRaster|C_MINI|Minimal Curvature
+OutputRaster|C_MAXI|Maximal Curvature
+OutputRaster|C_TOTA|Total Curvature
+OutputRaster|C_ROTO|Flow-Line Curvature

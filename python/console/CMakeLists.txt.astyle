@@ -1,0 +1,30 @@
+SET (QGIS_CONSOLE_DIR ${QGIS_DATA_DIR}/python/console)
+SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
+
+SET(PY_CONSOLE_FILES
+  console.py
+  console_sci.py
+  console_settings.py
+  console_output.py
+  console_editor.py
+  console_compile_apis.py
+  __init__.py
+)
+
+FILE(GLOB UI_FILES *.ui)
+PYQT_WRAP_UI(PYUI_FILES ${UI_FILES})
+ADD_CUSTOM_TARGET(pyconsole ALL DEPENDS ${PYUI_FILES})
+
+FOREACH(pyfile ${PY_CONSOLE_FILES} ${PYUI_FILES})
+  ADD_CUSTOM_COMMAND(TARGET pyconsole
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PYTHON_OUTPUT_DIRECTORY}/console
+    COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${PYTHON_OUTPUT_DIRECTORY}/console
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS ${pyfile}
+  )
+ENDFOREACH(pyfile)
+PY_COMPILE(pyconsole "${PYTHON_OUTPUT_DIRECTORY}/console")
+
+INSTALL(FILES ${PY_CONSOLE_FILES} ${PYUI_FILES} DESTINATION "${QGIS_CONSOLE_DIR}")
+

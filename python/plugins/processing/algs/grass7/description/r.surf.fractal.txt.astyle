@@ -1,0 +1,6 @@
+r.surf.fractal
+Creates a fractal surface of a given fractal dimension.
+Raster (r.*)
+ParameterNumber|dimension|Fractal dimension of surface (2 < D < 3)|2.0|3.0|2.05|True
+ParameterNumber|number|Number of intermediate images to produce|0|None|0|True
+OutputRaster|output|Fractal Surface

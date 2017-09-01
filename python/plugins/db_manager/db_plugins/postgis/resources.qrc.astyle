@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/db_manager/postgis">
+        <file alias="icon">icons/postgis_elephant.png</file>
+    </qresource>
+</RCC>

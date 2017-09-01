@@ -1,0 +1,10 @@
+r.blend
+r.blend.rgb - Blends color components of two raster maps by a given ratio and exports into three rasters.
+Raster (r.*)
+ParameterRaster|first|Name of first raster map for blending|False
+ParameterRaster|second|Name of second raster map for blending|False
+ParameterNumber|percent|Percentage weight of first map for color blending|0.0|100.0|50.0|True
+OutputRaster|output_red|Blended Red
+OutputRaster|output_green|Blended Green
+OutputRaster|output_blue|Blended Blue
+

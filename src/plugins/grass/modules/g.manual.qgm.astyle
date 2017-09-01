@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Display the HTML manual pages of GRASS" module="g.manual">
+	<flag key="i" answer="on" />
+</qgisgrassmodule>

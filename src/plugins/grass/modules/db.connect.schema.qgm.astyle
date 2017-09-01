@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Set general DB connection with a schema (PostgreSQL only)" module="db.connect">
+	<option key="driver" answer="pg" hidden="yes"/>
+	<option key="database" answer="$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/" hidden="no"/>
+	<option key="schema" answer=" " hidden="no"/>
+</qgisgrassmodule>

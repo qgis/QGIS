@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Convert vector to raster using constant" module="v.to.rast">
+	<option key="input" />
+	<option key="value" />
+	<option key="output" />
+	<option key="use" answer="val" hidden="yes" />
+</qgisgrassmodule>

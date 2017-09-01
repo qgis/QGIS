@@ -1,0 +1,22 @@
+#!/bin/bash
+# Use a simple shell loop, to process each of the images.
+mkdir thumbnails
+#  for $a in *.png
+#  echo $a
+#  do convert -thumbnail $a 32x32 thumbnails/$f.png
+#done
+
+# Use find to substitute filenames into a 'convert' command
+  # This also provides the ability to recurse though directories by removing
+  # the -prune option, as well as doing other file checks (like image type,
+  # or the disk space used by an image).
+  find * -prune -name '*.png' \
+         -exec  convert '{}' -alpha set -channel RGBA -fill none -opaque white \
+         -thumbnail x32 thumbnails/'{}' \;
+# -alpha set -channel RGBA -fill none -opaque white test.png
+#for i in `find . -name "*.png`
+#echo $i
+#do
+#  convert $i -thumbnail 32x32 `basename $i.png`.png
+#done
+

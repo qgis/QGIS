@@ -1,0 +1,8 @@
+r.buffer
+Creates a raster map layer showing buffer zones surrounding cells that contain non-NULL category values.
+Raster (r.*)
+ParameterRaster|input|Input raster layer|False
+ParameterString|distances|Distance zone(s) (e.g. 100,200,300)|None|False|False
+ParameterSelection|units|Units of distance|meters;kilometers;feet;miles;nautmiles|False
+ParameterBoolean|-z|Ignore zero (0) data cells instead of NULL cells|False
+OutputRaster|output|Buffer

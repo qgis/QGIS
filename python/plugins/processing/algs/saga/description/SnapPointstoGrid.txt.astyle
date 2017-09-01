@@ -1,0 +1,9 @@
+Snap Points to Grid
+shapes_points
+ParameterVector|INPUT|Points|0|False
+ParameterRaster|GRID|Grid|False
+OutputVector|OUTPUT|Result
+OutputVector|MOVES|Moves
+ParameterNumber|DISTANCE|Search Distance (Map Units)| 0.000000|None| 0.000000
+ParameterSelection|SHAPE|Search Shape|[0] circle;[1] square| 0
+ParameterSelection|EXTREME|Extreme|[0] minimum;[1] maximum| 1

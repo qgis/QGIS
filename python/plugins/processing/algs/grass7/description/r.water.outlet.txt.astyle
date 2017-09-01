@@ -1,0 +1,6 @@
+r.water.outlet
+Watershed basin creation program.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterPoint|coordinates|Coordinates of outlet point|
+OutputRaster|output|Basin

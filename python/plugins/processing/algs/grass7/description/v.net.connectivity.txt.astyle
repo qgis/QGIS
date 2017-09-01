@@ -1,0 +1,14 @@
+v.net.connectivity
+Computes vertex connectivity between two sets of nodes in the network.
+Vector (v.*)
+ParameterVector|input|Input vector line layer (network)|1|False
+ParameterVector|points|Input vector point layer (first set of nodes)|0|False
+ParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|0.0|None|50.0|False
+ParameterString|set1_cats|Set1 Category values||False|True
+ParameterString|set1_where|Set1 WHERE conditions of SQL statement without 'where' keyword||True|True
+ParameterString|set2_cats|Set2 Category values||False|True
+ParameterString|set2_where|Set2 WHERE conditions of SQL statement without 'where' keyword||True|True
+*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
+*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
+*ParameterTableField|node_column|Node cost column (number)|points|0|True
+OutputVector|output|Network_Connectivity

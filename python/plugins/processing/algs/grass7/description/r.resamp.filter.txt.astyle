@@ -1,0 +1,10 @@
+r.resamp.filter
+Resamples raster map layers using an analytic kernel.
+Raster (r.*)
+ParameterRaster|input|Input raster layer|False
+ParameterString|filter|Filter kernel(s) (comma separated list if multiple). Options: box, bartlett, gauss, normal, hermite, sinc, lanczos1, lanczos2, lanczos3, hann, hamming, blackman|None|False
+ParameterString|radius|Filter radius for each filter (comma separated list of float if multiple)|None|False|True
+ParameterString|x_radius|Filter radius (horizontal) for each filter (comma separated list of float if multiple)|None|False|True
+ParameterString|y_radius|Filter radius (vertical) for each filter (comma separated list of float if multiple)|None|False|True
+*ParameterBoolean|-n|Propagate NULLs|False|True
+OutputRaster|output|Resampled Filter

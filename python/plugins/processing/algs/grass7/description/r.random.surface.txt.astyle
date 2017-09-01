@@ -1,0 +1,10 @@
+r.random.surface
+Generates random surface(s) with spatial dependence.
+Raster (r.*)
+ParameterNumber|distance|Maximum distance of spatial correlation|0.0|None|0.0|True
+ParameterNumber|exponent|Distance decay exponent|0.0|None|1.0|True
+ParameterNumber|flat|Distance filter remains flat before beginning exponent|0.0|None|0.0|True
+ParameterString|seed|Integer random seed (SEED_MIN >= value >= SEED_MAX), default [random]|None|False|True
+ParameterNumber|high|Maximum cell value of distribution|0|None|255|True
+ParameterBoolean|-u|Uniformly distributed cell values|False|True
+OutputRaster|output|Random_Surface

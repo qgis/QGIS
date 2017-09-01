@@ -1,0 +1,9 @@
+r.shade
+Drapes a color raster over an shaded relief or aspect map. 
+Raster (r.*)
+ParameterRaster|shade|Name of shaded relief or aspect raster map|False
+ParameterRaster|color|Name of raster to drape over relief raster map|False
+ParameterNumber|brighten|Percent to brighten|-99|99|0|True
+ParameterString|bgcolor|Color to use instead of NULL values. Either a standard color name, R:G:B triplet, or "none"|None|False|True
+*ParameterBoolean|-c|Use colors from color tables for NULL values|False
+OutputRaster|output|Shaded

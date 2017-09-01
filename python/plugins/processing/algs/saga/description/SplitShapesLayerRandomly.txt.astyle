@@ -1,0 +1,7 @@
+Split Shapes Layer Randomly
+shapes_tools
+ParameterVector|SHAPES|Shapes|-1|False
+ParameterNumber|PERCENT|Split ratio (%)|0|100|50
+ParameterBoolean|EXACT       |Split exactly|True
+OutputVector|A|Group A
+OutputVector|B|Group B

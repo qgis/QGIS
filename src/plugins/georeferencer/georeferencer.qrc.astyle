@@ -1,0 +1,24 @@
+<RCC>
+  <qresource prefix="/">
+    <file>icons/default/mGeorefDescription.png</file>
+    <file>icons/default/mGeorefRun.png</file>
+    <file>icons/default/mPushButtonClipboard.png</file>
+    <file>icons/default/mPushButtonEditPaste.png</file>
+    <file>icons/default/mPushButtonFileOpen.png</file>
+    <file>icons/default/mPushButtonPencil.png</file>
+    <file>icons/default/mPushButtonTargetSRSEnabled.png</file>
+    <file>icons/default/mPushButtonTargetSRSDisabled.png</file>
+    <file>icons/default/mActionGDALScript.png</file>
+    <file>icons/default/mActionOpenRaster.png</file>
+    <file>icons/default/mActionSaveRasterAs.png</file>
+    <file>icons/default/mActionLinkGeorefToQGis.png</file>
+    <file>icons/default/mActionLinkQGisToGeoref.png</file>
+    <file>icons/default/mActionLoadGCPpoints.png</file>
+    <file>icons/default/mActionAddGCPPoint.png</file>
+    <file>icons/default/mActionDeleteGCPPoint.png</file>
+    <file>icons/default/mActionMoveGCPPoint.png</file>
+    <file>icons/default/mActionSaveGCPpointsAs.png</file>
+    <file>icons/default/mActionStartGeoref.png</file>
+    <file>icons/default/mActionTransformSettings.png</file>
+  </qresource>
+</RCC>

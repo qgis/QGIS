@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<!-- The GRASS module r.bilinear fails with fatal error: This module is deprecated. Please use 'r.resamp.interp' instead. -->
+<qgisgrassmodule label="Bilinear interpolation utility for raster maps" module="r.bilinear" direct="1">
+	<option key="input" />
+	<option key="output" />
+</qgisgrassmodule>

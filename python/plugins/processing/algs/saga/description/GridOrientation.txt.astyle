@@ -1,0 +1,5 @@
+Grid Orientation
+grid_tools
+ParameterRaster|INPUT|Grid|False
+ParameterSelection|METHOD|Method|[0] Copy;[1] Flip;[2] Mirror;[3] Invert
+OutputRaster|RESULT|Changed Grid

@@ -1,0 +1,5 @@
+Convert Data Storage Type
+grid_tools
+ParameterRaster|INPUT|Grid|False
+ParameterSelection|TYPE|Data storage type|[0] bit;[1] unsigned 1 byte integer;[2] signed 1 byte integer;[3] unsigned 2 byte integer;[4] signed 2 byte integer;[5] unsigned 4 byte integer;[6] signed 4 byte integer;[7] 4 byte floating point number;[8] 8 byte floating point number
+OutputRaster|OUTPUT|Converted Grid

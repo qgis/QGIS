@@ -1,0 +1,7 @@
+r.reclass.area
+r.reclass.area.greater - Reclassifies a raster layer, selecting areas larger than a user specified size
+Raster (r.*)
+ParameterRaster|input|Input raster layer|False
+ParameterSelection|mode|Lesser or greater than specified value|greater
+ParameterNumber|value|Value option that sets the area size limit [hectares]|0|None|1.0
+OutputRaster|output|Reclassified

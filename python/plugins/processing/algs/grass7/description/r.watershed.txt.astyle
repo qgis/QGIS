@@ -1,0 +1,25 @@
+r.watershed
+Watershed basin analysis program.
+Raster (r.*)
+ParameterRaster|elevation|Elevation|False
+ParameterRaster|depression|Locations of real depressions|True
+ParameterRaster|flow|Amount of overland flow per cell|True
+ParameterRaster|disturbed_land|Percent of disturbed land, for USLE|True
+ParameterRaster|blocking|Terrain blocking overland surface flow, for USLE|True
+ParameterNumber|threshold|Minimum size of exterior watershed basin|None|None|0
+ParameterNumber|max_slope_length|Maximum length of surface flow, for USLE|None|None|0
+ParameterNumber|convergence|Convergence factor for MFD (1-10)|1|10|5
+ParameterNumber|memory|Maximum memory to be used with -m flag (in MB)|1|None|300
+ParameterBoolean|-s|Enable Single Flow Direction (D8) flow (default is Multiple Flow Direction)|False
+ParameterBoolean|-m|Enable disk swap memory option (-m): Operation is slow|False
+ParameterBoolean|-4|Allow only horizontal and vertical flow of water|False
+ParameterBoolean|-a|Use positive flow accumulation even for likely underestimates|False
+ParameterBoolean|-b|Beautify flat areas|False
+OutputRaster|accumulation|Number of cells that drain through each cell
+OutputRaster|drainage|Drainage direction
+OutputRaster|basin|Unique label for each watershed basin
+OutputRaster|stream|Stream segments
+OutputRaster|half_basin|Half-basins
+OutputRaster|length_slope|Slope length and steepness (LS) factor for USLE
+OutputRaster|slope_steepness|Slope steepness (S) factor for USLE
+OutputRaster|tci|Topographic index ln(a / tan(b))

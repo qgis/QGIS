@@ -1,0 +1,7 @@
+Add Grid Values to Points
+shapes_grid
+ParameterVector|SHAPES|Points|0|False
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterSelection|INTERPOL|Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
+OutputVector|RESULT|Result
+AllowUnmatching

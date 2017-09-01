@@ -1,0 +1,14 @@
+v.generalize
+v.generalize.smooth - Vector based smooth generalization.
+Vector (v.*)
+ParameterVector|input|Input layer|-1|False
+ParameterSelection|method|method|boyle;sliding_averaging;distance_weighting;chaiken;hermite;snakes
+ParameterNumber|threshold|Maximal tolerance value|None|None|1.0
+ParameterNumber|look_ahead|Look-ahead parameter|None|None|7
+ParameterNumber|slide|Slide of computed point toward the original point|0.0|1.0|0.5
+ParameterNumber|angle_thresh|Minimum angle between two consecutive segments in Hermite method|0.0|180.0|3.0
+ParameterNumber|alpha|Snakes alpha parameter|None|None|1.0
+ParameterNumber|beta|Snakes beta parameter|None|None|1.0
+ParameterBoolean|-t|Do not copy attributes|False
+ParameterBoolean|-l|Disable loop support|True
+OutputVector|output|Smoothed

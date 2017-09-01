@@ -1,0 +1,15 @@
+Effective Air Flow Heights
+ta_morphometry
+ParameterRaster|DEM|Elevation|False
+ParameterRaster|DIR|Wind Direction|True
+ParameterRaster|LEN|Wind Speed|True
+ParameterNumber|DIR_CONST|Constant Wind Direction [Degree]|None|None|135
+ParameterBoolean|OLDVER         |Old Version|True
+ParameterNumber|MAXDIST|Search Distance [km]|0.0|None|300
+ParameterNumber|ACCEL|Acceleration|None|None|1.5
+ParameterBoolean|PYRAMIDS       |Use Pyramids with New Version|True
+ParameterNumber|LEEFACT|Lee Factor|None|None|0.5
+ParameterNumber|LUVFACT|Luv Factor|None|None|1.0
+ParameterSelection|DIR_UNITS|Wind Direction Units|[0] radians;[1] degree
+ParameterNumber|LEN_SCALE|Wind Speed Scale Factor|None|None|1.0
+OutputRaster|AFH|Effective Air Flow Heights

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculate geometry statistics for vectors" module="v.report">
+	<option key="map" masktype="area" layeroption="layer" />
+	<option key="option" />
+	<option key="units" answer="h" hidden="no"/>
+</qgisgrassmodule>

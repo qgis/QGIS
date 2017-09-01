@@ -1,0 +1,7 @@
+Grid Values to Points
+shapes_grid
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterVector|POLYGONS|Polygons|-1|True
+ParameterBoolean|NODATA        |Exclude NoData Cells|True
+ParameterSelection|TYPE|Type|[0] nodes;[1] cells
+OutputVector|SHAPES|Shapes

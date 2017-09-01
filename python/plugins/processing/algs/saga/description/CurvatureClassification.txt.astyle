@@ -1,0 +1,5 @@
+Curvature Classification
+ta_morphometry
+ParameterRaster|DEM|Elevation|False
+ParameterNumber|THRESHOLD|Threshold for plane|0.0000|None|0.0005
+OutputRaster|CLASS|Curvature Classification

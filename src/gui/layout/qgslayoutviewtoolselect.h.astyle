@@ -1,0 +1,62 @@
+/***************************************************************************
+                             qgslayoutviewtoolselect.h
+                             -------------------------
+    Date                 : July 2017
+    Copyright            : (C) 2017 Nyall Dawson
+    Email                : nyall dot dawson at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSLAYOUTVIEWTOOLSELECT_H
+#define QGSLAYOUTVIEWTOOLSELECT_H
+
+#include "qgis.h"
+#include "qgis_gui.h"
+#include "qgslayoutviewtool.h"
+#include "qgslayoutviewrubberband.h"
+#include <memory>
+
+/**
+ * \ingroup gui
+ * Layout view tool for selecting items in the layout.
+ * \since QGIS 3.0
+ */
+class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
+{
+
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsLayoutViewToolSelect.
+     */
+    QgsLayoutViewToolSelect( QgsLayoutView *view SIP_TRANSFERTHIS );
+
+    void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
+    void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
+    void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+    void deactivate() override;
+
+  private:
+
+    bool mIsSelecting = false;
+
+    //! Rubber band item
+    std::unique_ptr< QgsLayoutViewRubberBand > mRubberBand;
+
+    //! Start position for mouse press
+    QPoint mMousePressStartPos;
+
+    //! Start of rubber band creation
+    QPointF mRubberBandStartPos;
+
+};
+
+#endif // QGSLAYOUTVIEWTOOLSELECT_H

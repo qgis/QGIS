@@ -1,0 +1,6 @@
+Sink Drainage Route Detection
+ta_preprocessor
+ParameterRaster|ELEVATION|Elevation|False
+ParameterBoolean|THRESHOLD       |Threshold|True
+ParameterNumber|THRSHEIGHT|Threshold Height|None|None|100.0
+OutputRaster|SINKROUTE|Sink Route

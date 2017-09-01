@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export raster as non-georeferenced PNG image format" module="r.out.png">
+	<option key="input" />
+	<file key="output" type="new" />
+</qgisgrassmodule>

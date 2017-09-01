@@ -1,0 +1,18 @@
+Maximum Entropy Presence Prediction
+imagery_maxent
+ParameterVector|PRESENCE|Presence Data|-1|False
+ParameterMultipleInput|FEATURES_NUM|Numerical Features|3|True
+ParameterMultipleInput|FEATURES_CAT|Categorical Features|3|True
+OutputRaster|PREDICTION|Presence Prediction
+OutputRaster|PROBABILITY|Presence Probability
+ParameterNumber|BACKGROUND|Background Sample Density [Percent]| 0.000000| 100.000000| 1.000000
+ParameterSelection|METHOD|Method|[0] Yoshimasa Tsuruoka;[1] Dekang Lin| 0
+ParameterFile|YT_FILE_LOAD|Load from File...|False|False
+ParameterFile|YT_FILE_SAVE|Save to File...|False|False
+ParameterSelection|YT_REGUL|Regularization|[0] none;[1] L1;[2] L2| 1
+ParameterNumber|YT_REGUL_VAL|Regularization Factor| 0.000000|None| 1.000000
+ParameterBoolean|YT_NUMASREAL|Real-valued Numerical Features|True
+ParameterNumber|DL_ALPHA|Alpha|None|None| 0.100000
+ParameterNumber|DL_THRESHOLD|Threshold| 0.000000|None| 0.000000
+ParameterNumber|DL_ITERATIONS|Maximum Iterations| 1|None| 100
+ParameterNumber|NUM_CLASSES|Number of Numeric Value Classes| 1|None| 32

@@ -1,0 +1,12 @@
+GridCombination
+sim_rivflow
+ParameterRaster|INPUT|Gelaendemodell (DTM)|False
+ParameterFile|Folder1|Pfad WaterGap Raster|False|False
+ParameterNumber|sY|Start-Jahr| 1906| 2000| 1990
+ParameterNumber|eY|End-Jahr| 1906| 2000| 1990
+ParameterBoolean|DomW|Domestic Water|True
+ParameterBoolean|ElecW|Electricity Water|True
+ParameterBoolean|LiveW|Livestock Water|True
+ParameterBoolean|ManW|Manufacturing Water|True
+ParameterBoolean|IrrW|Irrigation Water|True
+ParameterSelection|FvA|Flaechenverbrauch-Auswahl (FvA)|[0] Resultierendes Raster ueber WasserENTNAHME erstellen;[1] Resultierendes Raster ueber WasserNUTZUNG erstellen| 0

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/offline_editing/" >
+        <file>offline_editing_copy.png</file>
+        <file>offline_editing_sync.png</file>
+    </qresource>
+</RCC>
+

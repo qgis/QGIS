@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create shaded map" module="r.relief">
+    <option key="input"/>
+    <option key="output" />
+    <option key="altitude" />
+    <option key="azimuth" />
+    <option key="zscale" answer="1" />
+    <option key="scale" answer="1" hidden="yes" />
+</qgisgrassmodule>

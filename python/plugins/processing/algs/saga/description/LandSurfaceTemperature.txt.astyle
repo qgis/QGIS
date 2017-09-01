@@ -1,0 +1,10 @@
+Land Surface Temperature
+ta_morphometry
+ParameterRaster|DEM|Elevation [m]|False
+ParameterRaster|SWR|Short Wave Radiation [kW/m2]|False
+ParameterRaster|LAI|Leaf Area Index|False
+ParameterNumber|Z_REFERENCE|Elevation at Reference Station [m]|None|None|0.0
+ParameterNumber|T_REFERENCE|Temperature at Reference Station [Deg.Celsius]|None|None|0.0
+ParameterNumber|T_GRADIENT|Temperature Gradient [Deg.Celsius/km]|None|None|6.5
+ParameterNumber|C_FACTOR|C Factor|None|None|1.0
+OutputRaster|LST|Land Surface Temperature [Deg.Celsius]

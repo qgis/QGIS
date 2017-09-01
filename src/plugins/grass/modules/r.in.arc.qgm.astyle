@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import ESRI ARC/INFO ASCII GRID" module="r.in.arc">
+	<file key="input" type="old" />
+	<option key="type" />
+	<option key="mult" />
+	<option key="output" />
+</qgisgrassmodule>

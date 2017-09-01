@@ -1,0 +1,8 @@
+PET (after Hargreaves, Table)
+climate_tools
+ParameterTable|TABLE|Data|False
+ParameterTable|JD|Julian Day|False
+ParameterTable|T|Mean Temperature|False
+ParameterTable|T_MIN|Minimum Temperature|False
+ParameterTable|T_MAX|Maximum Temperature|False
+ParameterNumber|LAT|Latitude| -90.000000| 90.000000| 53.000000

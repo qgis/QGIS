@@ -1,0 +1,129 @@
+[
+  {
+    url: 'http://demo.opengeo.org/geoserver/wcs',
+    description: 'It does not work at all with gvSIG-1_11-1305-final. Some layer may sometimes fail, probably when the server is overloaded or crashes.',  
+    issues: [
+      {
+        offender: 'server',
+        coverages: [ 'og:0' ],
+        versions: [ '1.0.0' ],
+        description: 'The server fails in DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+      },{
+        offender: 'server',
+        coverages: [ 'topp:bluemarble', 'topp:bm' ],
+        versions: [ '1.0.0' ],
+        description: "The extent in DescribeCoverage spatialDomain.Envelope is wrong: -187.272,-187.272,187.272,187.272. QGIS does not correct it (we don't know where the limits really are) while GDAL probably cuts longitude for EPSG:4326 to +/-90."
+      },{
+        offender: 'server',
+        coverages: [ 'usgs:ned' ],
+        versions: [ '1.0.0' ],
+        description: "The Coverage usgs:ned is very slow and it can fail even with timeout 60s. It was seen to rendered in sometimes however."
+      },{
+        offender: 'server',
+        coverages: [ 'bm' ],
+        versions: [ '1.1.0' ],
+        description: 'The server fails in DescribeCoverage with: java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encoding ...'
+      },{
+        offender: 'server',
+        coverages: [ 'usgs:nlcd', 'nlcd' ],
+        versions: [ '1.0.0', '1.1.0' ],
+        description: 'The server does not offer any CRS in DescribeCoverage supportedCRSs / supportedCRS. QGIS tries to get coverage using EPSG:5070, in which the coverage spatialDomain.Envelope is defined, but server fails reporting error: Could not recognize crs ...'
+      },{
+        offender: 'server',
+        coverages: [ '0', 'naturalearth' ],
+        versions: [ '1.1.0' ],
+        description: "The server fails in GetCoverage with 'java.lang.IllegalArgumentException: xScale:the parameter value is not valid. xScale:the parameter value is not valid.' It fails with BOUNDINGBOX=-2,-6,2,6&GRIDORIGIN=2,-6&GRIDOFFSETS=-2,3 but works with BOUNDINGBOX=-2,-6,2,6&GRIDORIGIN=2,-6&GRIDOFFSETS=2,-3 (GRIDOFFSETS signs switched) other coverages (Arc_Sample e.g.) work OK with the first"
+      },{
+        offender: 'server',
+        coverages: [ 'Img_Sample' ],
+        versions: [ '1.1.0' ],
+        description: "The server fails in GetCoverage with 'java.lang.IllegalArgumentException: The specified dimensional parameter is non-positive. The specified dimensional parameter is non-positive'." 
+      }
+    ]
+  }, {
+    url: 'http://demo.geonode.org/geoserver/wcs',
+    issues: [
+      {
+        offender: 'server',
+        coverages: [ 'geonode:__137_FMCvivo_tif', 'geonode:__137_FMCvivo_tif_1', 'geonode:cl_minu1_2', 'geonode:cl_minu1_2_1', 'geonode:cl_minu1_2_2', 'geonode:dof_5modelAvg_sresb1_2010_2019', 'geonode:dof_5modelAvg_sresb1_2010_2019_1', 'geonode:MOS_EU_LAEA_2000' ],
+        versions: [ '1.0.0' ],
+        description: "The server DescribeCoverage fails: 'java.io.IOException null Translator error Unexpected error occurred during describe coverage xml encodin...'"
+      },{
+        offender: 'server',
+        coverages: [ 'geonode:elevation_1', 'geonode:elevation_2', 'geonode:quake' ],
+        versions: [ '1.0.0' ],
+        description: "The spatialDomain.Envelope in DescribeCoverage is wrong, it is larger than (real?) extent and that reported in lonLatEnvelope."
+      }
+    ]
+  }, {
+    url: 'http://demo.mapserver.org/cgi-bin/wcs',
+    issues: [
+      {
+        offender: 'server',
+        coverages: [ 'modis-001' ],
+        versions: [ '1.0.0' ],
+        description: "The server DescribeCoverage advertises temporalDomain.timePosition 2002-001, but GetCoverage fails with 'msWCSGetCoverage(): WCS server error. Underlying layer is not tiled, unable to do temporal subsetting.' if TIME=2002-001 is used."
+      }
+    ]
+  }, {
+    url: 'http://geoserver-dev-1.irradiare.com:8080/geoserver/ows',
+    issues: [
+      {
+        offender: 'server',
+        versions: [ '1.0.0' ],
+        description: "The server fails in GetCapabilities with 'java.io.IOException 
+null Translator error No input stream for the provided source...'"
+      },{
+        offender: 'server',
+        coverages: [ 'Arc_Sample' ],
+        versions: [ '1.1.1' ],
+        description: "The problem seems to be that some versions of Geoserver (2.1.3) require latitude in GRIDOFFSETS to be negative and other versions (2.1-SNAPSHOT) positive. BTW: GetCoverage returns raster without CRS and thues the extent means raster size and cannot be used to verify extent"
+      }
+    ]
+  }, {
+    // Some (first) coverages do not advertise any supportedCRS and sever gives
+    // error both with native CRS (EPSG::561005) and EPSG:4326
+    // MOD* coverages work OK
+    url: 'http://argon.geogr.uni-jena.de:8080/geoserver/ows'
+  }, {
+    // geobrain.laits.gmu.edu servers are quite slow
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem'
+/*
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/ows8/wcseo'
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/wcs110'
+  }, {
+    url: 'http://geobrain.laits.gmu.edu/cgi-bin/wcs-all'
+  }, {
+    url: 'http://ws.csiss.gmu.edu/cgi-bin/wcs-t'
+  }, {
+    // Big and slow
+    url: 'http://ws.laits.gmu.edu/cgi-bin/wcs-all'
+  }, {
+    // Slow
+    url: 'http://iceds.ge.ucl.ac.uk/cgi-bin/icedswcs'
+*/
+  }, {
+    url: 'http://motherlode.ucar.edu:8080/thredds/wcs/fmrc/NCEP/DGEX/Alaska_12km/NCEP-DGEX-Alaska_12km_best.ncd'
+  }, {
+    url: 'http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer',
+    description: "GetCapabilities gives wrong URL for all requests (server does not exists). Additional parameter IgnoreGetMapUrl must be used",
+    params: { 'IgnoreGetMapUrl': '1' }
+  }, {
+    url: 'http://nsidc.org/cgi-bin/atlas_north'
+/*
+  }, {
+    // Slow
+    url: 'http://sedac.ciesin.columbia.edu/geoserver/wcs'
+  }, {
+    // Big and slow
+    url: 'http://webmap.ornl.gov/ogcbroker/wcs'
+  }, {
+    // Currently very slow or down
+    url: 'http://www.sogeo.ch/geoserver/wcs'
+  }, {
+    url: 'http://zeus.pin.unifi.it/gi-wcs/http'
+*/
+  }
+]

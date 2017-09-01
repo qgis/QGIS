@@ -1,0 +1,5 @@
+r.topidx
+Creates topographic index layer from elevation raster layer
+Raster (r.*)
+ParameterRaster|input|Input elevation layer|False
+OutputRaster|output|Topographic index

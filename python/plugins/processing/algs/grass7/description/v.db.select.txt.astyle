@@ -1,0 +1,14 @@
+v.db.select
+Prints vector map attributes
+Vector (v.*)
+ParameterVector|map|Input vector map |-1|False
+ParameterNumber|layer|Layer Number|1|None|1
+ParameterString|columns|Name of attribute column(s), comma separated|None|False|True
+ParameterBoolean|-c|Do not include column names in output|False
+ParameterString|separator|Output field separator|,|False|True
+*ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|False|True
+*ParameterString|vertical_separator|Output vertical record separator|None|False|True
+*ParameterString|null_value|Null value indicator|None|False|True
+*ParameterBoolean|-v|Vertical output (instead of horizontal)|False
+*ParameterBoolean|-r|Print minimal region extent of selected vector features instead of attributes|False
+OutputFile|file|Attributes

@@ -1,0 +1,5 @@
+Aggregation Index
+grid_analysis
+ParameterRaster|INPUT|Input Grid|False
+ParameterNumber|MAXNUMCLASS|Max. Number of Classes|None|None|5
+OutputTable|RESULT|Result

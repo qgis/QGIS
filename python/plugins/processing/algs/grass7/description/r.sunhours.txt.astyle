@@ -1,0 +1,16 @@
+r.sunhours
+Calculates solar elevation, solar azimuth, and sun hours.
+Raster (r.*)
+ParameterNumber|year|Year|1950|2050|2016|False
+ParameterNumber|month|Month|1|12|1|True
+ParameterNumber|day|Day|1|31|1|False
+ParameterNumber|hour|Hour|0|24|12|True
+ParameterNumber|minute|Minutes|0|60|0|True
+ParameterNumber|second|Seconds|0|60|0|True
+ParameterString|percentile|Percentile to calculate (comma separated list if multiple) (requires extended statistics flag)|None|False|True
+ParameterString|separator|Field separator. Special characters: pipe, comma, space, tab, newline|None|False|True
+*ParameterBoolean|-t|Time is local sidereal time, not Greenwich standard time|False
+*ParameterBoolean|-s|Do not use SOLPOS algorithm of NREL|False
+OutputRaster|elevation|Solar Elevation Angle
+OutputRaster|azimuth|Solar Azimuth Angle
+OutputRaster|sunhour|Sunshine Hours

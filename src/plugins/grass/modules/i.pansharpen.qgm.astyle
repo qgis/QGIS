@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Image fusion algorithms to sharpen multispectral with high-res panchromatic channels" module="i.pansharpen">
+	<option key="red" />
+	<option key="green" />
+	<option key="blue" />
+	<option key="pan" />
+	<option key="output" />
+	<option key="method" answer="brovey" advanced="yes"/>
+</qgisgrassmodule>

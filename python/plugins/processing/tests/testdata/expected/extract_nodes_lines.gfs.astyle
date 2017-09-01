@@ -1,0 +1,25 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>extract_nodes_lines</Name>
+    <ElementPath>extract_nodes_lines</ElementPath>
+    <GeometryType>1</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>17</FeatureCount>
+      <ExtentXMin>-1.00000</ExtentXMin>
+      <ExtentXMax>11.00000</ExtentXMax>
+      <ExtentYMin>-3.00000</ExtentYMin>
+      <ExtentYMax>5.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>distance</Name>
+      <ElementPath>distance</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>angle</Name>
+      <ElementPath>angle</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

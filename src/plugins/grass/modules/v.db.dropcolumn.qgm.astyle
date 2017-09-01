@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Drop column from attribute table" module="v.db.dropcolumn">
+	<option key="map" layeroption="layer" />
+	<field key="columns" layer="map" label="Attribute field"  type="integer,double,varchar,string"/>
+</qgisgrassmodule>

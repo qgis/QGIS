@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsExpressionSelectionDialogBase</class>
+ <widget class="QDialog" name="QgsExpressionSelectionDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>536</width>
+    <height>401</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Select By Expression</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="margin">
+    <number>3</number>
+   </property>
+   <item row="1" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="mPbnClose">
+     <property name="text">
+      <string>Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QToolButton" name="mButtonSelect">
+     <property name="text">
+      <string>…</string>
+     </property>
+     <property name="popupMode">
+      <enum>QToolButton::MenuButtonPopup</enum>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextBesideIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QToolButton" name="mButtonZoomToFeatures">
+     <property name="text">
+      <string>Zoom to features</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="4">
+    <widget class="QgsExpressionBuilderWidget" name="mExpressionBuilder" native="true"/>
+   </item>
+  </layout>
+  <action name="mActionSelect">
+   <property name="text">
+    <string>Select features</string>
+   </property>
+  </action>
+  <action name="mActionAddToSelection">
+   <property name="text">
+    <string>Add to current selection</string>
+   </property>
+  </action>
+  <action name="mActionRemoveFromSelection">
+   <property name="text">
+    <string>Remove from current selection</string>
+   </property>
+  </action>
+  <action name="mActionSelectIntersect">
+   <property name="text">
+    <string>Filter current selection</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsExpressionBuilderWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsexpressionbuilderwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mButtonZoomToFeatures</tabstop>
+  <tabstop>mButtonSelect</tabstop>
+  <tabstop>mPbnClose</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

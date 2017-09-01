@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <style>
+      body
+      {
+        background-color: transparent;
+        margin: 6px;
+        padding: 0px;
+      }
+      table 
+      {
+        width: 300px;
+        border-spacing: 6px;
+        margin: 0px;
+        padding: 0px;
+      }
+      table tr
+      {
+        height: 40px;
+      }
+      table td
+      {
+        border: 2px solid black;
+      }
+      tr.row1
+      {
+        background-color: red;
+      }
+      tr.row2
+      {
+        background-color: yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <tbody>
+        <tr class="row1"><td></td><td></td></tr>
+        <tr class="row2"><td></td><td></td></tr>
+        <tr class="row1"><td></td><td></td></tr>
+        <tr class="row2"><td></td><td></td></tr>
+        <tr class="row1"><td></td><td></td></tr>
+      </tbody>
+    </table>
+  </body>
+</html>

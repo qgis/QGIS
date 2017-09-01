@@ -1,0 +1,15 @@
+##############################################
+    QGIS PLUGIN TEMPLATE DIRECTORY
+
+              T.Sutton 2004
+##############################################
+
+Please do not edit the files in this directory
+unless you know exactly what you are doing -
+these files are used as the basis for creating
+new plugins. Altering these files may break
+the automated plugin template generation process.
+
+Please visit: http://qgis.org/pyqgis-cookbook/
+
+For more information on creating plugins.

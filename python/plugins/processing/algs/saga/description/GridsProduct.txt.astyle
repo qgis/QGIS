@@ -1,0 +1,4 @@
+Grids Product
+grid_calculus
+ParameterMultipleInput|GRIDS|Grids|3|False
+OutputRaster|RESULT|Product

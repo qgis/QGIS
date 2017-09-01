@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Display projection information from PROJ.4 projection description file" module="g.proj">
+	<flag key="p" />
+	<flag key="d" />
+	<flag key="j" />
+	<flag key="w" />
+	<flag key="e" />
+	<flag key="f" />
+	<file key="proj4"/>
+</qgisgrassmodule>

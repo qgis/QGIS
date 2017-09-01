@@ -1,0 +1,14 @@
+Aggregate Point Observations
+shapes_points
+ParameterVector|REFERENCE|Reference Points|-1|False
+ParameterTableField|REFERENCE_ID|ID|REFERENCE|-1|False
+ParameterTable|OBSERVATIONS|Observations|False
+ParameterTableField|X|X|OBSERVATIONS|-1|False
+ParameterTableField|Y|Y|OBSERVATIONS|-1|False
+ParameterTableField|TRACK|Track|OBSERVATIONS|-1|False
+ParameterTableField|DATE|Date|OBSERVATIONS|-1|False
+ParameterTableField|TIME|Time|OBSERVATIONS|-1|False
+ParameterTableField|PARAMETER|Parameter|OBSERVATIONS|-1|False
+ParameterNumber|EPS_TIME|Maximum Time Span (Seconds)|None|None|60.0
+ParameterNumber|EPS_SPACE|Maximum Distance|None|None|0.002
+OutputTable|AGGREGATED|Aggregated

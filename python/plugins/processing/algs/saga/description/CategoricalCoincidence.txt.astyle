@@ -1,0 +1,8 @@
+Categorical Coincidence
+statistics_grid
+ParameterMultipleInput|GRIDS|Grids|3|False
+OutputRaster|CATEGORIES|Number of Categories
+OutputRaster|COINCIDENCE|Coincidence
+OutputRaster|MAJ_COUNT|Dominance of Majority
+OutputRaster|MAJ_VALUE|Value of Majority
+ParameterNumber|RADIUS|Radius [Cells]| 0|None| 0

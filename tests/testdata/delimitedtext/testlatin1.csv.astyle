@@ -1,0 +1,2 @@
+id|description|name
+1|Correctly read latin1 encoding|This test is ©

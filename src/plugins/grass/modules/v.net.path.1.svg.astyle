@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/hardmnt/tigre0/ssi/blazek/devel/qgis/cvs/plugins/grass/modules/v.net.alloc.1" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <clipPath id="clip1" >
+   <rect width="495" x="0" y="0" height="495" />
+  </clipPath>
+  <g style="clip-path:url(#clip1)" >
+   <polyline points="257 224 132 112" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="257 224 389 220" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="257 224 214 381" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="214 381 93 272" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="93 272 132 112" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="132 112 27 9" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="132 112 243 78" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="243 78 352 103" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="352 103 389 220" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="352 103 465 17" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="243 78 237 14" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="389 220 355 375" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="355 375 214 381" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="355 375 442 483" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="214 381 122 468" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="93 272 30 306" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polyline points="389 220 471 217" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polygon points="255 78 255 78 255 82 253 85 251 87 248 89 244 90 241 90 238 89 235 87 233 84 231 81 231 77 231 74 233 71 235 68 238 66 241 65 245 65 248 67 251 68 253 71 255 74 255 78" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,0,0);" />
+   <polygon points="255 78 255 78 255 82 253 85 251 87 248 89 244 90 241 90 238 89 235 87 233 84 231 81 231 77 231 74 233 71 235 68 238 66 241 65 245 65 248 67 251 68 253 71 255 74 255 78" style="stroke:rgb(255,0,0);stroke-width:15;fill:none;" />
+   <polygon points="367 375 367 376 366 380 364 383 362 385 359 387 356 388 352 388 349 386 346 384 344 382 343 379 342 375 343 372 344 369 347 366 350 364 353 363 356 363 360 364 363 366 365 369 366 372 367 375" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,0,0);" />
+   <polygon points="367 375 367 376 366 380 364 383 362 385 359 387 356 388 352 388 349 386 346 384 344 382 343 379 342 375 343 372 344 369 347 366 350 364 353 363 356 363 360 364 363 366 365 369 366 372 367 375" style="stroke:rgb(255,0,0);stroke-width:15;fill:none;" />
+   <polygon points="105 272 105 273 105 276 103 279 101 282 98 283 94 284 91 284 88 283 85 281 83 278 81 275 81 272 82 268 83 265 85 263 88 261 92 260 95 260 98 261 101 263 104 265 105 269 105 272" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,0,0);" />
+   <polygon points="105 272 105 273 105 276 103 279 101 282 98 283 94 284 91 284 88 283 85 281 83 278 81 275 81 272 82 268 83 265 85 263 88 261 92 260 95 260 98 261 101 263 104 265 105 269 105 272" style="stroke:rgb(255,0,0);stroke-width:15;fill:none;" />
+  </g>
+ </g>
+</svg>

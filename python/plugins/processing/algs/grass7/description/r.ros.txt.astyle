@@ -1,0 +1,17 @@
+r.ros
+Generates rate of spread raster maps.
+Raster (r.*)
+ParameterRaster|model|Raster map containing fuel models|False
+ParameterRaster|moisture_1h|Raster map containing the 1-hour fuel moisture (%)|True
+ParameterRaster|moisture_10h|Raster map containing the 10-hour fuel moisture (%)|True
+ParameterRaster|moisture_100h|Raster map containing the 100-hour fuel moisture (%)|True
+ParameterRaster|moisture_live|Raster map containing live fuel moisture (%)|False
+ParameterRaster|velocity|Raster map containing midflame wind velocities (ft/min)|True
+ParameterRaster|direction|Name of raster map containing wind directions (degree)|True
+ParameterRaster|slope|Name of raster map containing slope (degree)|True
+ParameterRaster|aspect|Raster map containing aspect (degree, CCW from E)|True
+ParameterRaster|elevation|Raster map containing elevation (m, required for spotting)|True
+OutputRaster|base_ros|Base ROS
+OutputRaster|max_ros|Max ROS
+OutputRaster|direction_ros|Direction ROS
+OutputRaster|spotting_distance|Spotting Distance

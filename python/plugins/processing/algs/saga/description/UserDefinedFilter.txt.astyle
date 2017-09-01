@@ -1,0 +1,6 @@
+User Defined Filter
+grid_filter
+ParameterRaster|INPUT|Grid|False
+ParameterTable|FILTER|Filter Matrix|True
+ParameterFixedTable|FILTER_3X3|Default Filter Matrix (3x3)|3|1;2;3|True
+OutputRaster|RESULT|Filtered Grid

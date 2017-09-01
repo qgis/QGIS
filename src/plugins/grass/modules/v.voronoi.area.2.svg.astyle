@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/v.voronoi.area.2" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <clipPath id="clip1" >
+   <rect width="500" x="0" y="0" height="500" />
+  </clipPath>
+  <g style="clip-path:url(#clip1)" >
+   <polygon points="331 168 108 256 34 238 34 34 430 34 331 168" transform="translate(2.84217e-14,-0.994036)" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="331 168 108 256 34 238 34 34 430 34 331 168" transform="translate(2.84217e-14,-0.994036)" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+   <polygon points="268 459 331 168 430 34 464 34 464 464 269 464 268 459" transform="translate(2.84217e-14,-0.994036)" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="268 459 331 168 430 34 464 34 464 464 269 464 268 459" transform="translate(2.84217e-14,-0.994036)" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+   <polygon points="108 256 268 459 269 464 34 464 34 238 108 256" transform="translate(2.84217e-14,-0.994036)" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="108 256 268 459 269 464 34 464 34 238 108 256" transform="translate(2.84217e-14,-0.994036)" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+   <polygon points="268 459 108 256 331 168 268 459" transform="translate(2.84217e-14,-0.994036)" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="268 459 108 256 331 168 268 459" transform="translate(2.84217e-14,-0.994036)" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+  </g>
+ </g>
+</svg>

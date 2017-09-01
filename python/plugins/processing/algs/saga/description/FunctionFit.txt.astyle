@@ -1,0 +1,9 @@
+Function Fit
+table_calculus
+ParameterTable|SOURCE|Source|False
+ParameterTable|YFIELD|y - Values|False
+ParameterSelection|USE_X|Use x -Values|[0] No;[1] Yes| 0
+ParameterTable|XFIELD|x - Values|False
+ParameterString|FORMEL|Formula
+ParameterNumber|ITER|Iterationen| 1|None| 1000
+ParameterNumber|LAMDA|Max Lamda| 1.000000|None| 10000.000000

@@ -1,0 +1,5 @@
+Layer of extreme value
+grid_analysis
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterSelection|CRITERIA|Method|[0] Maximum;[1] Minimum
+OutputRaster|RESULT|Result

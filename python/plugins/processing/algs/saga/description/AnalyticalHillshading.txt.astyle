@@ -1,0 +1,8 @@
+Analytical Hillshading
+ta_lighting
+ParameterRaster|ELEVATION|Elevation|False
+ParameterSelection|METHOD|Shading Method|[0] Standard;[1] Standard (max. 90Degree);[2] Combined Shading;[3] Ray Tracing
+ParameterNumber|AZIMUTH|Azimuth [Degree]|None|None|315.0
+ParameterNumber|DECLINATION|Declination [Degree]|None|None|45.0
+ParameterNumber|EXAGGERATION|Exaggeration|None|None|4.0
+OutputRaster|SHADE|Analytical Hillshading

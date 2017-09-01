@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/db_manager/spatialite">
+        <file alias="icon">icons/spatialite_icon.png</file>
+    </qresource>
+</RCC>

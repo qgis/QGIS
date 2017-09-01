@@ -1,0 +1,9 @@
+v.surf.idw
+Surface interpolation from vector point data by Inverse Distance Squared Weighting.
+Vector (v.*)
+ParameterVector|input|Input vector layer|0|False
+ParameterNumber|npoints|Number of interpolation points|None|None|12
+ParameterNumber|power|Power parameter; greater values assign greater influence to closer points|None|None|2.0
+ParameterTableField|column|Attribute table column with values to interpolate|input|-1|False
+ParameterBoolean|-n|Don't index points by raster cell|False
+OutputRaster|output|Interpolated IDW

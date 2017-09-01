@@ -1,0 +1,6 @@
+v.pack
+Exports a vector map as GRASS GIS specific archive file.
+Vector (v.*)
+ParameterVector|input|Name of input vector map to pack|-1|False
+*ParameterBoolean|-c|Switch the compression off|False
+OutputFile|output|Packed archive

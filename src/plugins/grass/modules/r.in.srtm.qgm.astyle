@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import SRTM HGT" module="r.in.srtm">
+	<file key="input" type="old" />
+	<flag key="1" />
+	<option key="output" />
+</qgisgrassmodule>

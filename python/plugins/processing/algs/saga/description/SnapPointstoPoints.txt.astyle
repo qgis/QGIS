@@ -1,0 +1,7 @@
+Snap Points to Points
+shapes_points
+ParameterVector|INPUT|Points|-1|False
+ParameterVector|SNAP|Snap Features|-1|False
+OutputVector|OUTPUT|Result
+OutputVector|MOVES|Moves
+ParameterNumber|DISTANCE|Search Distance| 0.000000|None| 0.000000

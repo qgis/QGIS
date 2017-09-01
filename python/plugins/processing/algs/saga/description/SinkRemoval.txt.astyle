@@ -1,0 +1,8 @@
+Sink Removal
+ta_preprocessor
+ParameterRaster|DEM|DEM|False
+ParameterRaster|SINKROUTE|Sink Route|True
+ParameterSelection|METHOD|Method|[0] Deepen Drainage Routes;[1] Fill Sinks
+ParameterBoolean|THRESHOLD        |Threshold|True
+ParameterNumber|THRSHEIGHT|Threshold Height|None|None|100.0
+OutputRaster|DEM_PREPROC|Preprocessed DEM

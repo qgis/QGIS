@@ -1,0 +1,7 @@
+Morphological Filter
+grid_filter
+ParameterRaster|INPUT|Grid|False
+ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
+ParameterNumber|RADIUS|Radius|None|None|1
+ParameterSelection|METHOD|Method|[0] Dilation;[1] Erosion;[2] Opening;[3] Closing
+OutputRaster|RESULT|Filtered Grid

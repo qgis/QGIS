@@ -1,0 +1,11 @@
+Topographic Correction
+ta_lighting
+ParameterRaster|DEM|Elevation|False
+ParameterRaster|ORIGINAL|Original Image|False
+ParameterNumber|AZI|Azimuth|None|None|180.0
+ParameterNumber|HGT|Height|None|None|45.0
+ParameterSelection|METHOD|Method|[0] Cosine Correction (Teillet et al. 1982);[1] Cosine Correction (Civco 1989);[2] Minnaert Correction;[3] Minnaert Correction with Slope (Riano et al. 2003);[4] Minnaert Correction with Slope (Law & Nichol 2004);[5] C Correction;[6] Normalization (after Civco, modified by Law & Nichol)
+ParameterNumber|MINNAERT|Minnaert Correction|None|None|0.5
+ParameterNumber|MAXCELLS|Maximum Cells (C Correction Analysis)|None|None|1000
+ParameterSelection|MAXVALUE|Value Range|[0] 1 byte (0-255);[1] 2 byte (0-65535)
+OutputRaster|CORRECTED|Corrected Image

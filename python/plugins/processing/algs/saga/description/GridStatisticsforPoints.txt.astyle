@@ -1,0 +1,17 @@
+Grid Statistics for Points
+shapes_grid
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterVector|POINTS|Points|0|False
+ParameterSelection|KERNEL_TYPE|Kernel Type|[0] square;[1] circle| 0
+ParameterNumber|KERNEL_SIZE|Kernel Size| 1|None| 1
+ParameterSelection|NAMING|Field Naming|[0] grid number;[1] grid name| 1
+OutputVector|RESULT|Statistics
+ParameterBoolean|COUNT|Number of Cells|True
+ParameterBoolean|MIN|Minimum|True
+ParameterBoolean|MAX|Maximum|True
+ParameterBoolean|RANGE|Range|True
+ParameterBoolean|SUM|Sum|True
+ParameterBoolean|MEAN|Mean|True
+ParameterBoolean|VAR|Variance|True
+ParameterBoolean|STDDEV|Standard Deviation|True
+ParameterNumber|QUANTILE|Quantile| 0| 50| 0

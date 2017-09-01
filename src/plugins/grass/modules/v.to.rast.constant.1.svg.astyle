@@ -1,0 +1,8 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/r.to.vect.line.2" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <line transform="translate(0.331263 0.331263)" style="stroke:rgb(0,0,0);stroke-width:15;fill:rgb(220,220,220);" y1="401" y2="96" x1="94" x2="399" />
+ </g>
+</svg>

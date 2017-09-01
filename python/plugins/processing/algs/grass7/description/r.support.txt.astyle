@@ -1,0 +1,14 @@
+r.support
+Allows creation and/or modification of raster map layer support files (metadata).
+Raster (r.*)
+ParameterRaster|map|Name of raster map|False
+ParameterString|title|Title for resultant raster map|None|False|True
+ParameterString|timestamp|r.timestamp date: Datetime, datetime1/datetime2, or 'none' to remove'|None|False|True
+ParameterString|history|Text to append to the next line of the map's metadata file|None|True|True
+ParameterString|units|Text to use for map data units|None|False|True
+ParameterString|vdatum|Text to use for map vertical datum|None|False|True
+ParameterString|source1|Text to use for data source, line 1|None|False|True
+ParameterString|source2|Text to use for data source, line 2|None|False|True
+ParameterString|description|Text to use for data description or keyword(s)|None|False|True
+*ParameterFile|loadhistory|Text file from which to load history|False
+OutputRaster|output|Metadata

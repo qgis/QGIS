@@ -1,0 +1,6 @@
+r.regression.line
+Calculates linear regression from two raster layers : y = a + b*x.
+Raster (r.*)
+ParameterRaster|mapx|Layer for x coefficient|False
+ParameterRaster|mapy|Layer for y coefficient|False
+OutputHTML|html|Regression coefficients

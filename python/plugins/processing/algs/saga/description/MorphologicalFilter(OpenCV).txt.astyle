@@ -1,0 +1,8 @@
+Morphological Filter (OpenCV)
+imagery_opencv
+ParameterRaster|INPUT|Input|False
+OutputRaster|OUTPUT|Output
+ParameterSelection|TYPE|Operation|[0] dilation;[1] erosion;[2] opening;[3] closing;[4] morpological gradient;[5] top hat;[6] black hat| 0
+ParameterSelection|SHAPE|Element Shape|[0] ellipse;[1] rectangle;[2] cross| 0
+ParameterNumber|RADIUS|Radius (cells)| 0|None| 1
+ParameterNumber|ITERATIONS|Iterations| 1|None| 1

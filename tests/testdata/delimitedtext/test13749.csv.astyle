@@ -1,0 +1,5 @@
+id,description,geom_x,geom_y
+1,No geom,,
+2,Point1,11,22
+3,Point2,15,23
+4,Point3,13.0,23.0

@@ -1,0 +1,5 @@
+Line Simplification
+shapes_lines
+ParameterVector|LINES|Lines|1|False
+ParameterNumber|TOLERANCE|Tolerance|None|None|1.0
+OutputVector|OUTPUT|Simplified Lines

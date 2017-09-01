@@ -1,0 +1,7 @@
+r.topmodel
+r.topmodel.topidxstats - Builds a TOPMODEL topographic index statistics file.
+Raster (r.*)
+ParameterRaster|topidx|Name of input topographic index raster map|False
+ParameterNumber|ntopidxclasses|Number of topographic index classes|0|None|30|True
+Hardcoded|-p
+OutputFile|outtopidxstats|TOPMODEL topographic index statistics file

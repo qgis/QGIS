@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.0.2" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+
+ <bounds minlat="50.0607644" minlon="14.4217296" maxlat="50.0705202" maxlon="14.4366398"/>
+
+ <!-- node -->
+ <node id="11111" lat="50.0651387" lon="14.4277148" user="Radomír Černoch" uid="51295" visible="true" version="2" changeset="1984279" timestamp="2009-07-30T13:22:24Z">
+  <tag k="addr:conscriptionnumber" v="455"/>
+  <tag k="addr:housenumber" v="455/23"/>
+  <tag k="addr:postcode" v="12800"/>
+  <tag k="addr:street" v="Jaromírova"/>
+  <tag k="addr:streetnumber" v="23"/>
+  <tag k="source:addr" v="uir_adr"/>
+  <tag k="uir_adr:ADRESA_KOD" v="21738092"/>
+ </node>
+
+ <!-- closed way -->
+ <node id="360769661" lat="50.0665514" lon="14.4270245" user="BiIbo" uid="3516" visible="true" version="1" changeset="819377" timestamp="2009-03-15T16:58:35Z"/>
+ <node id="360769664" lat="50.0665121" lon="14.4270254" user="BiIbo" uid="3516" visible="true" version="1" changeset="819377" timestamp="2009-03-15T16:58:36Z"/>
+ <node id="360769666" lat="50.0665127" lon="14.4270765" user="BiIbo" uid="3516" visible="true" version="1" changeset="819377" timestamp="2009-03-15T16:58:36Z"/>
+ <node id="360769670" lat="50.0665514" lon="14.4270765" user="BiIbo" uid="3516" visible="true" version="1" changeset="819377" timestamp="2009-03-15T16:58:36Z"/>
+ <way id="32137532" user="BiIbo" uid="3516" visible="true" version="1" changeset="819377" timestamp="2009-03-15T16:58:37Z">
+  <nd ref="360769661"/>
+  <nd ref="360769664"/>
+  <nd ref="360769666"/>
+  <nd ref="360769670"/>
+  <nd ref="360769661"/>
+  <tag k="building" v="yes"/>
+  <tag k="layer" v="1"/>
+  <tag k="source" v="cuzk:km"/>
+ </way>
+
+ <!-- relation -->
+ <relation id="126753" user="BiIbo" uid="3516" visible="true" version="1" changeset="1078773" timestamp="2009-05-04T19:51:58Z">
+  <member type="way" ref="32137532" role="outer"/>
+  <!-- todo <member type="way" ref="34075795" role="inner"/> -->
+  <!--<member type="way" ref="34075796" role="inner"/>-->
+  <tag k="type" v="multipolygon"/>
+ </relation>
+
+</osm>

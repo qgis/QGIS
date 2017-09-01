@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Auto-balancing of colors for LANDSAT-TM raster" module="i.landsat.rgb">
+	<option key="red" />
+	<option key="green" />
+	<option key="blue" />
+	<option key="strength" />
+	<flag key="f" />
+	<flag key="p" />
+	<flag key="r" />
+</qgisgrassmodule>

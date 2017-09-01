@@ -1,0 +1,8 @@
+r.uslek
+Computes USLE Soil Erodibility Factor (K).
+Raster (r.*)
+ParameterRaster|psand|Name of soil sand fraction raster map [0.0-1.0]|False
+ParameterRaster|pclay|Name of soil clay fraction raster map [0.0-1.0]|False
+ParameterRaster|psilt|Name of soil silt fraction raster map [0.0-1.0]|False
+ParameterRaster|pomat|Name of soil organic matter raster map [0.0-1.0]|False
+OutputRaster|output|USLE R Raster

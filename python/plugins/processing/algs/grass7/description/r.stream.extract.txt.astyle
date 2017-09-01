@@ -1,0 +1,13 @@
+r.stream.extract
+Stream network extraction
+Raster (r.*)
+ParameterRaster|elevation|Input map: elevation map|False
+ParameterRaster|accumulation|Input map: accumulation map|True
+ParameterRaster|depression|Input map: map with real depressions|True
+ParameterNumber|threshold|Minimum flow accumulation for streams|1.0|None|1
+ParameterNumber|mexp|Montgomery exponent for slope|0|None|0
+ParameterNumber|stream_length|Delete stream segments shorter than cells|0|None|0
+ParameterNumber|d8cut|Use SFD above this threshold|0|None|0
+OutputRaster|stream_raster|Unique stream ids (rast)
+OutputVector|stream_vector|Unique stream ids (vect)
+OutputRaster|direction|Flow direction

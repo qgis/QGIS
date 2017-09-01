@@ -1,0 +1,51 @@
+#######################################################################
+##
+##  FastCGI Module 
+## --------------- 
+##
+## http://www.lighttpd.net/documentation/scgi.html
+##
+server.modules += ( "mod_scgi" )
+
+##
+## Ruby on Rails Example
+##
+## Normally you only run one Rails application on one vhost.
+##
+#$HTTP["host"] == "rails1.example.com" {
+#  server.document-root  = server_root + "/rails/someapp/public"
+#  server.error-handler-404 = "/dispatch.fcgi"
+#  scgi.server = ( ".scgi" =>
+#    ("scgi-someapp" =>
+#      ( "socket" => socket_dir + "/someapp-scgi.socket",
+#        "bin-path" => server_root + "/rails/someapp/public/dispatch.scgi",
+#        "bin-environment" => (
+#              "RAILS_ENV" => "production",
+#              "TMP" => home_dir + "/rails/someapp",
+#        ),
+#      )
+#    )
+#  )
+#}
+
+##
+## 2nd Ruby on Rails Example
+##
+## This time we launch the rails application via scgi_rails externally. 
+##
+#$HTTP["host"] == "rails2.example.com" {
+#  server.document-root  = server_root + "/rails/someapp/public"
+#  server.error-handler-404 = "/dispatch.scgi"
+#  scgi.server = ( ".scgi" =>
+#    ( "scgi-tcp" =>
+#      (
+#        "host" => "127.0.0.1",
+#        "port" => 9998,
+#        "check-local" => "disable",
+#      )
+#    )
+#  )
+#}
+
+##
+#######################################################################

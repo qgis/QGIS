@@ -1,0 +1,13 @@
+!table
+!version 900
+!charset Neutral
+
+Definition Table
+  Type NATIVE Charset "Neutral"
+  Fields 6
+    int_field Integer (10) ;
+    dbl_field Float ;
+    date_field Date ;
+    time_field Time ;
+    datetime_field DateTime ;
+    string_field Char (100) ;

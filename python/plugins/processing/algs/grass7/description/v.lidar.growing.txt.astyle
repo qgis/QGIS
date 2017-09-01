@@ -1,0 +1,8 @@
+v.lidar.growing
+Building contour determination and Region Growing algorithm for determining the building inside
+Vector (v.*)
+ParameterVector|input|Input vector (v.lidar.edgedetection output)|-1|False
+ParameterVector|first|First pulse vector layer|-1|False
+ParameterNumber|tj|Threshold for cell object frequency in region growing|None|None|0.2
+ParameterNumber|td|Threshold for double pulse in region growing|None|None|0.6
+OutputVector|output|Buildings
