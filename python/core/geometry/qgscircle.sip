@@ -112,7 +112,7 @@ class QgsCircle : QgsEllipse
  :rtype: QgsCircle
 %End
 
-    static QgsCircle minimalCircleFrom3points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+    static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
 %Docstring
  Constructs the smallest circle from 3 points.
  Z and m values are dropped for the center point.

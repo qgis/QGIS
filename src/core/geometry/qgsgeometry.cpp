@@ -1023,7 +1023,7 @@ static QgsCircle __recMinimalEnclosingCircle( QgsMultiPoint points, QgsMultiPoin
         QgsPoint p1( boundary.at( 0 ) );
         QgsPoint p2( boundary.at( 1 ) );
         QgsPoint p3( boundary.at( 2 ) );
-        circ_mec = QgsCircle().minimalCircleFrom3points( p1, p2, p3 );
+        circ_mec = QgsCircle().minimalCircleFrom3Points( p1, p2, p3 );
         break;
     }
     return circ_mec;

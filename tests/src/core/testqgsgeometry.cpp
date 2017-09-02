@@ -4185,10 +4185,10 @@ void TestQgsGeometry::circle()
   QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 1.4645, 1.4645 ), 0.0001 );
   QGSCOMPARENEAR( circ_tgt.radius(), 1.4645, 0.0001 );
   // minimalCircleFrom3points
-  QgsCircle minCircle3Points = QgsCircle().minimalCircleFrom3points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
+  QgsCircle minCircle3Points = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
   QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( minCircle3Points.radius(), 5.0, 0.0001 );
-  minCircle3Points = QgsCircle().minimalCircleFrom3points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
+  minCircle3Points = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
   QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( minCircle3Points.radius(), 5.0, 0.0001 );
 

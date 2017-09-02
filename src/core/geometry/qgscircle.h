@@ -129,7 +129,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt3 Third point.
      * \param epsilon Value used to compare point.
      */
-    static QgsCircle minimalCircleFrom3points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+    static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
 
     double area() const override;
     double perimeter() const override;

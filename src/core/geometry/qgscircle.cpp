@@ -189,7 +189,7 @@ QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2
   return QgsTriangle( p1, p2, p3 ).inscribedCircle();
 }
 
-QgsCircle QgsCircle::minimalCircleFrom3points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon )
+QgsCircle QgsCircle::minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon )
 {
   double l1 = pt2.distance( pt3 );
   double l2 = pt3.distance( pt1 );
