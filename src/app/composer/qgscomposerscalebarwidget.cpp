@@ -219,7 +219,7 @@ void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged( int i 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
+void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -227,7 +227,7 @@ void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
   }
   mComposerScaleBar->beginCommand( tr( "Scalebar height changed" ), QgsComposerMergeCommand::ScaleBarHeight );
   disconnectUpdateSignal();
-  mComposerScaleBar->setHeight( i );
+  mComposerScaleBar->setHeight( d );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
@@ -647,7 +647,7 @@ void QgsComposerScaleBarWidget::composerMapChanged( QgsComposerItem* item )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
+void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( double )
 {
   if ( !mComposerScaleBar )
   {
@@ -662,7 +662,7 @@ void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMaxWidthSpinBox_valueChanged( int )
+void QgsComposerScaleBarWidget::on_mMaxWidthSpinBox_valueChanged( double )
 {
   if ( !mComposerScaleBar )
   {
