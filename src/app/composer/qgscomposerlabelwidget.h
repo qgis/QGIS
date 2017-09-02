@@ -49,6 +49,7 @@ class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
   private slots:
     void setGuiElementValues();
     void fontChanged();
+    void justifyClicked();
 
   private:
     QgsComposerLabel *mComposerLabel = nullptr;
