@@ -563,9 +563,10 @@ class CORE_EXPORT QgsGeometry
     /**
      * Returns the minimal enclosing circle for the geometry.
      * The center and the radius of the minimal enclosing circle will also be returned.
+     * \param segments Number of segments used to segment geometry. \see QgsEllipse::toPolygon()
      * \since QGIS 3.0
      */
-    QgsGeometry minimalEnclosingCircle( QgsPoint &center SIP_OUT, double &radius SIP_OUT, unsigned int segments = 36 ) const;
+    QgsGeometry minimalEnclosingCircle( QgsPointXY &center SIP_OUT, double &radius SIP_OUT, unsigned int segments = 36 ) const;
 
     /**
      * Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries

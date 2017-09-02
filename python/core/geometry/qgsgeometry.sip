@@ -536,10 +536,11 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: QgsGeometry
 %End
 
-    QgsGeometry minimalEnclosingCircle( QgsPoint &center /Out/, double &radius /Out/, unsigned int segments = 36 ) const;
+    QgsGeometry minimalEnclosingCircle( QgsPointXY &center /Out/, double &radius /Out/, unsigned int segments = 36 ) const;
 %Docstring
  Returns the minimal enclosing circle for the geometry.
  The center and the radius of the minimal enclosing circle will also be returned.
+.. seealso:: QgsEllipse.toPolygon()
 .. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
