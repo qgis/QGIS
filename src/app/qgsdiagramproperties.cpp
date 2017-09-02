@@ -124,7 +124,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
   // set placement methods page based on geometry type
 
-  switch ( mLayer->geometryType() )
+  switch ( layerType )
   {
     case QgsWkbTypes::PointGeometry:
       stackedPlacement->setCurrentWidget( pagePoint );
@@ -139,32 +139,31 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mLinePlacementFrame->setVisible( false );
       break;
     case QgsWkbTypes::NullGeometry:
-      break;
     case QgsWkbTypes::UnknownGeometry:
-      qFatal( "unknown geometry type unexpected" );
+      break;
   }
 
   //insert placement options
   // setup point placement button group
   mPlacePointBtnGrp = new QButtonGroup( this );
-  mPlacePointBtnGrp->addButton( radAroundPoint, ( int )QgsDiagramLayerSettings::AroundPoint );
-  mPlacePointBtnGrp->addButton( radOverPoint, ( int )QgsDiagramLayerSettings::OverPoint );
+  mPlacePointBtnGrp->addButton( radAroundPoint );
+  mPlacePointBtnGrp->addButton( radOverPoint );
   mPlacePointBtnGrp->setExclusive( true );
   connect( mPlacePointBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
-  // setup line placement button group (assigned enum id currently unused)
+  // setup line placement button group
   mPlaceLineBtnGrp = new QButtonGroup( this );
-  mPlaceLineBtnGrp->addButton( radAroundLine, ( int )QgsDiagramLayerSettings::Line );
-  mPlaceLineBtnGrp->addButton( radOverLine, ( int )QgsDiagramLayerSettings::Horizontal );
+  mPlaceLineBtnGrp->addButton( radAroundLine );
+  mPlaceLineBtnGrp->addButton( radOverLine );
   mPlaceLineBtnGrp->setExclusive( true );
   connect( mPlaceLineBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
-  // setup polygon placement button group (assigned enum id currently unused)
+  // setup polygon placement button group
   mPlacePolygonBtnGrp = new QButtonGroup( this );
-  mPlacePolygonBtnGrp->addButton( radAroundCentroid, ( int )QgsDiagramLayerSettings::AroundPoint );
-  mPlacePolygonBtnGrp->addButton( radOverCentroid, ( int )QgsDiagramLayerSettings::OverPoint );
-  mPlacePolygonBtnGrp->addButton( radPolygonPerimeter, ( int )QgsDiagramLayerSettings::Line );
-  mPlacePolygonBtnGrp->addButton( radInsidePolygon, ( int )QgsDiagramLayerSettings::Horizontal );
+  mPlacePolygonBtnGrp->addButton( radAroundCentroid );
+  mPlacePolygonBtnGrp->addButton( radOverCentroid );
+  mPlacePolygonBtnGrp->addButton( radPolygonPerimeter );
+  mPlacePolygonBtnGrp->addButton( radInsidePolygon );
   mPlacePolygonBtnGrp->setExclusive( true );
   connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
@@ -242,6 +241,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       case QgsWkbTypes::PointGeometry:
         radAroundPoint->setChecked( true );
         break;
+
       case QgsWkbTypes::LineGeometry:
         radAroundLine->setChecked( true );
         chkLineAbove->setChecked( true );
@@ -249,9 +249,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
         chkLineOn->setChecked( false );
         chkLineOrientationDependent->setChecked( false );
         break;
+
       case QgsWkbTypes::PolygonGeometry:
         radAroundCentroid->setChecked( true );
         break;
+
       case QgsWkbTypes::UnknownGeometry:
       case QgsWkbTypes::NullGeometry:
         break;
@@ -394,13 +396,39 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramDistanceSpinBox->setValue( dls->distance() );
       mPrioritySlider->setValue( dls->priority() );
       mZIndexSpinBox->setValue( dls->zIndex() );
-      mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement() ) );
+
+      switch ( dls->placement() )
+      {
+        case QgsDiagramLayerSettings::AroundPoint:
+          radAroundPoint->setChecked( true );
+          radAroundCentroid->setChecked( true );
+          break;
+
+        case QgsDiagramLayerSettings::OverPoint:
+          radOverPoint->setChecked( true );
+          radOverCentroid->setChecked( true );
+          break;
+
+        case QgsDiagramLayerSettings::Line:
+          radAroundLine->setChecked( true );
+          radPolygonPerimeter->setChecked( true );
+          break;
+
+        case QgsDiagramLayerSettings::Horizontal:
+          radOverLine->setChecked( true );
+          radInsidePolygon->setChecked( true );
+          break;
+
+        default:
+          break;
+      }
 
       chkLineAbove->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::AboveLine );
       chkLineBelow->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::BelowLine );
       chkLineOn->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::OnLine );
       if ( !( dls->linePlacementFlags() & QgsDiagramLayerSettings::MapOrientation ) )
         chkLineOrientationDependent->setChecked( true );
+      updatePlacementWidgets();
 
       mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
 
@@ -845,7 +873,32 @@ void QgsDiagramProperties::apply()
   dls.setPriority( mPrioritySlider->value() );
   dls.setZIndex( mZIndexSpinBox->value() );
   dls.setShowAllDiagrams( mShowAllCheckBox->isChecked() );
-  //dls.setPlacement( ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->currentData().toInt() );
+
+  QWidget *curWdgt = stackedPlacement->currentWidget();
+  if ( ( curWdgt == pagePoint && radAroundPoint->isChecked() )
+       || ( curWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
+  {
+    dls.setPlacement( QgsDiagramLayerSettings::AroundPoint );
+  }
+  else if ( ( curWdgt == pagePoint && radOverPoint->isChecked() )
+            || ( curWdgt == pagePolygon && radOverCentroid->isChecked() ) )
+  {
+    dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+  }
+  else if ( ( curWdgt == pageLine && radAroundLine->isChecked() )
+            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) )
+  {
+    dls.setPlacement( QgsDiagramLayerSettings::Line );
+  }
+  else if ( ( curWdgt == pageLine && radOverLine->isChecked() )
+            || ( curWdgt == pagePolygon && radInsidePolygon->isChecked() ) )
+  {
+    dls.setPlacement( QgsDiagramLayerSettings::Horizontal );
+  }
+  else
+  {
+    qFatal( "Invalid settings" );
+  }
 
   QgsDiagramLayerSettings::LinePlacementFlags flags = 0;
   if ( chkLineAbove->isChecked() )
@@ -950,7 +1003,7 @@ void QgsDiagramProperties::updatePlacementWidgets()
     mDistanceDDBtn->setEnabled( false );
   }
 
-  bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && ( curWdgt == pageLine && radAroundLine->isChecked() ); // && currentPlacement == QgsDiagramLayerSettings::Line;
+  bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && ( curWdgt == pageLine && radAroundLine->isChecked() );
   chkLineAbove->setEnabled( linePlacementEnabled );
   chkLineBelow->setEnabled( linePlacementEnabled );
   chkLineOn->setEnabled( linePlacementEnabled );

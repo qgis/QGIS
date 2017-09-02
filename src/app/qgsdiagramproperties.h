@@ -54,7 +54,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void scalingTypeChanged();
     void showSizeLegendDialog();
 
-  protected:
+  private:
 
     QgsVectorLayer *mLayer = nullptr;
     //! Point placement button group
@@ -63,8 +63,6 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     QButtonGroup *mPlaceLineBtnGrp = nullptr;
     //! Polygon placement button group
     QButtonGroup *mPlacePolygonBtnGrp = nullptr;
-
-  private:
 
     enum Columns
     {
