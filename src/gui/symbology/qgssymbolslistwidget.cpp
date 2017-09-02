@@ -162,15 +162,23 @@ void QgsSymbolsListWidget::createAuxiliaryField()
   button->setToProperty( property );
 
   QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
+  QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( mSymbol );
   switch ( key )
   {
     case QgsSymbolLayer::PropertyAngle:
-      markerSymbol->setDataDefinedAngle( button->toProperty() );
+      if ( markerSymbol )
+        markerSymbol->setDataDefinedAngle( button->toProperty() );
       break;
     case QgsSymbolLayer::PropertySize:
-      markerSymbol->setDataDefinedSize( button->toProperty() );
-      markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
+      if ( markerSymbol )
+      {
+        markerSymbol->setDataDefinedSize( button->toProperty() );
+        markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
+      }
       break;
+    case QgsSymbolLayer::PropertyStrokeWidth:
+      if ( lineSymbol )
+        lineSymbol->setDataDefinedWidth( button->toProperty() );
     default:
       break;
   }
