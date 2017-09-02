@@ -72,6 +72,28 @@ class QgsUserProfileManager : QObject
  :rtype: str
 %End
 
+    void setNewProfileNotificationEnabled( bool enabled );
+%Docstring
+ Sets whether the manager should watch for the creation of new user profiles and emit
+ the profilesChanged() signal when this occurs. By default new profile notification
+ is disabled.
+
+ Before calling this, ensure that the correct root location has been set via
+ calling setRootLocation().
+
+.. seealso:: isNewProfileNotificationEnabled()
+%End
+
+    bool isNewProfileNotificationEnabled() const;
+%Docstring
+ Returns whether the manager is watching for the creation of new user profiles and emitting
+ the profilesChanged() signal when this occurs. By default new profile notification
+ is disabled.
+
+.. seealso:: setNewProfileNotificationEnabled()
+ :rtype: bool
+%End
+
     bool rootLocationIsSet() const;
 %Docstring
  Check if the root location has been set for the manager.
@@ -169,9 +191,15 @@ class QgsUserProfileManager : QObject
 
   signals:
 
-    void profilesChanged( );
+    void profilesChanged();
 %Docstring
  Emitted when the list of profiles is changed.
+
+ This signal will only be emitted when isNewProfileNotificationEnabled() is true.
+ By default new profile notification is disabled.
+
+.. seealso:: isNewProfileNotificationEnabled()
+.. seealso:: setNewProfileNotificationEnabled()
 %End
 
 };
