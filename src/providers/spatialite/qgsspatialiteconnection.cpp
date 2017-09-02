@@ -109,6 +109,9 @@ SpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString s
 // QgsSqliteHandle
 // -- ---------------------------------- --
 QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::sHandles;
+#if defined(SPATIALITE_HAS_INIT_EX)
+QHash<sqlite3 *, void *> QgsSqliteHandle::sSpatialiteConnections;
+#endif
 QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  QString sLayerName, bool bLoadLayers, SpatialiteDbInfo::SpatialMetadata dbCreateOption )
 {
   QString sDbPath = dbPath;
@@ -201,18 +204,26 @@ void QgsSqliteHandle::closeAll()
   }
   sHandles.clear();
 }
-void QgsSqliteHandle::initRasterlite2()
+bool QgsSqliteHandle::initRasterlite2()
 {
+  bool bRc = false;
   if ( sqlite_handle )
   {
 #ifdef RASTERLITE2_VERSION_GE_1_1_0
     if ( !rl2PrivateData )
     {
       rl2PrivateData = rl2_alloc_private();
+      // register the rl2-functions as sql-commands, verbose=0
       rl2_init( sqlite_handle, rl2PrivateData, 0 );
+      mIsRasterLite2Active = true;
+    }
+    if ( rl2PrivateData )
+    {
+      bRc = true;
     }
 #endif
   }
+  return bRc;
 }
 void QgsSqliteHandle::sqliteClose()
 {
@@ -223,9 +234,10 @@ void QgsSqliteHandle::sqliteClose()
     {
       rl2_cleanup_private( rl2PrivateData );
       rl2PrivateData = nullptr;
+      mIsRasterLite2Active = false;
     }
 #endif
-    QgsSLConnect::sqlite3_close( sqlite_handle );
+    QgsSqliteHandle::sqlite3_close( sqlite_handle );
     if ( mSpatialiteDbInfo )
     {
       delete mSpatialiteDbInfo;
@@ -233,5 +245,86 @@ void QgsSqliteHandle::sqliteClose()
     }
     sqlite_handle = nullptr;
   }
+}
+int QgsSqliteHandle::sqlite3_open( const char *filename, sqlite3 **ppDb )
+{
+#if defined(SPATIALITE_HAS_INIT_EX)
+  void *spliteInternalCache = spatialite_alloc_connection();
+#else
+  spatialite_init( 0 );
+#endif
+
+  int res = ::sqlite3_open( filename, ppDb );
+
+#if defined(SPATIALITE_HAS_INIT_EX)
+  if ( res == SQLITE_OK )
+  {
+    spatialite_init_ex( *ppDb, spliteInternalCache, 0 );
+    sSpatialiteConnections.insert( *ppDb, spliteInternalCache );
+  }
+#endif
+
+  return res;
+}
+
+int QgsSqliteHandle::sqlite3_close( sqlite3 *db )
+{
+  int res = ::sqlite3_close( db );
+
+#if defined(SPATIALITE_HAS_INIT_EX)
+  if ( sSpatialiteConnections.contains( db ) )
+  {
+    spatialite_cleanup_ex( sSpatialiteConnections.take( db ) );
+    spatialite_shutdown();
+  }
+#endif
+
+  if ( res != SQLITE_OK )
+  {
+    QgsDebugMsg( QString( "sqlite3_close() failed: %1" ).arg( res ) );
+  }
+
+  return res;
+}
+
+int QgsSqliteHandle::sqlite3_open_v2( const char *filename, sqlite3 **ppDb, int flags, const char *zVfs )
+{
+#if defined(SPATIALITE_HAS_INIT_EX)
+  void *spliteInternalCache = spatialite_alloc_connection();
+#else
+  spatialite_init( 0 );
+#endif
+
+  int res = ::sqlite3_open_v2( filename, ppDb, flags, zVfs );
+
+#if defined(SPATIALITE_HAS_INIT_EX)
+  if ( res == SQLITE_OK )
+  {
+    spatialite_init_ex( *ppDb, spliteInternalCache, 0 );
+    sSpatialiteConnections.insert( *ppDb, spliteInternalCache );
+  }
+#endif
+
+  return res;
+}
+
+int QgsSqliteHandle::sqlite3_close_v2( sqlite3 *db )
+{
+  int res = ::sqlite3_close( db );
+
+#if defined(SPATIALITE_HAS_INIT_EX)
+  if ( sSpatialiteConnections.contains( db ) )
+  {
+    spatialite_cleanup_ex( sSpatialiteConnections.take( db ) );
+    spatialite_shutdown();
+  }
+#endif
+
+  if ( res != SQLITE_OK )
+  {
+    QgsDebugMsg( QString( "sqlite3_close() failed: %1" ).arg( res ) );
+  }
+
+  return res;
 }
 

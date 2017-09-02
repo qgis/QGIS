@@ -20,6 +20,7 @@
 #include "qgsspatialiteconnection.h"
 #include "qgsslconnect.h"
 #include <gdal.h>
+#include <cstring>
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
@@ -69,6 +70,74 @@ SpatialiteDbInfo::~SpatialiteDbInfo()
   mMapGroupNames.clear();
   mListGroupNames.clear();
 };
+bool SpatialiteDbInfo::dbHasRasterlite2()
+{
+  bool bRc = false;
+  if ( ( getQSqliteHandle() ) && ( getQSqliteHandle()->isDbValid() ) )
+  {
+    // check if this has been called before
+    if ( mRasterLite2VersionMajor < 0 )
+    {
+      if ( getQSqliteHandle()->initRasterlite2() )
+      {
+        // Will only run if QGis has been compiled with RasterLite2 support [RASTERLITE2_VERSION_GE_*]
+        sqlite3_stmt *stmt = nullptr;
+        QString sql = QStringLiteral( "SELECT RL2_Version()" );
+        int i_rc = sqlite3_prepare_v2( dbSqliteHandle(), sql.toUtf8().constData(), -1, &stmt, nullptr );
+        if ( i_rc == SQLITE_OK )
+        {
+          while ( sqlite3_step( stmt ) == SQLITE_ROW )
+          {
+            if ( sqlite3_column_type( stmt, 0 ) != SQLITE_NULL )
+            {
+              mRasterLite2VersionInfo = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 0 ) );
+              QString sVersionInfo = mRasterLite2VersionInfo;
+              sVersionInfo.remove( QRegExp( QString::fromUtf8( "[-`~!@#$%^&*()_—+=|:;<>«»,?/{a-zA-Z}\'\"\\[\\]\\\\]" ) ) );
+              QStringList spatialiteParts = sVersionInfo.split( ' ', QString::SkipEmptyParts );
+              // Get major, minor and revision version
+              QStringList spatialiteVersionParts = spatialiteParts[0].split( '.', QString::SkipEmptyParts );
+              if ( spatialiteVersionParts.size() == 3 )
+              {
+                mRasterLite2VersionMajor = spatialiteVersionParts[0].toInt();
+                mRasterLite2VersionMinor = spatialiteVersionParts[1].toInt();
+                mRasterLite2VersionRevision = spatialiteVersionParts[2].toInt();
+              }
+            }
+          }
+          sqlite3_finalize( stmt );
+        }
+      } // else: QGis may not have been compiled with RasterLite2 support [RASTERLITE2_VERSION_GE_*]
+      else
+      {
+        QgsDebugMsg( QString( "Failure while connecting to: %1" ).arg( "RasterLite2" ) );
+      }
+    }
+    if ( mRasterLite2VersionMajor > 0 )
+    {
+      bRc = true;
+    }
+  }
+  return bRc;
+}
+bool SpatialiteDbLayer::layerHasRasterlite2( )
+{
+  bool bRc = false;
+  if ( getDbConnectionInfo() )
+  {
+    if ( ( getLayerType() == SpatialiteDbInfo::RasterLite2Raster ) || ( getLayerType() == SpatialiteDbInfo::RasterLite2Vector ) )
+    {
+      if ( getDbConnectionInfo()->dbRasterLite2VersionMajor() < 0 )
+      {
+        getDbConnectionInfo()->dbHasRasterlite2( );
+      }
+      if ( getDbConnectionInfo()->dbRasterLite2VersionMajor() > 0 )
+      {
+        bRc = true;
+      }
+    }
+  }
+  return bRc;
+}
 SpatialiteDbInfo *SpatialiteDbInfo::CreateSpatialiteConnection( const QString sDatabaseFileName, bool bShared, QString sLayerName, bool bLoadLayers, SpatialiteDbInfo::SpatialMetadata dbCreateOption,  SpatialSniff sniffType )
 {
   SpatialiteDbInfo *spatialiteDbInfo = new SpatialiteDbInfo( sDatabaseFileName, nullptr, dbCreateOption );
@@ -78,7 +147,7 @@ SpatialiteDbInfo *SpatialiteDbInfo::CreateSpatialiteConnection( const QString sD
     sqlite3 *sqlite_handle = nullptr;
     int open_flags = bShared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX;
     // SpatialiteDbInfo will return the actual absolute path [with resolved soft-links]
-    if ( QgsSLConnect::sqlite3_open_v2( spatialiteDbInfo->getDatabaseFileName().toUtf8().constData(), &sqlite_handle, open_flags, nullptr )  == SQLITE_OK )
+    if ( QgsSqliteHandle::sqlite3_open_v2( spatialiteDbInfo->getDatabaseFileName().toUtf8().constData(), &sqlite_handle, open_flags, nullptr )  == SQLITE_OK )
     {
       QgsSqliteHandle *handle = new QgsSqliteHandle( sqlite_handle, sDatabaseFileName, bShared );
       if ( spatialiteDbInfo->attachQSqliteHandle( handle ) )
@@ -220,7 +289,7 @@ bool SpatialiteDbInfo::attachQSqliteHandle( QgsSqliteHandle *qSqliteHandle )
   if ( ( mQSqliteHandle ) && ( mIsSqlite3 ) )
   {
     // The used canonicalFilePath will be set and used in QSqliteHandle
-    mQSqliteHandle->setSpatialiteDbInfo( this );
+    mQSqliteHandle->setSpatialiteDbInfo( ( SpatialiteDbInfo * )this );
   }
   return mIsSqlite3;
 }
@@ -846,7 +915,6 @@ QString SpatialiteDbInfo::createDbLayerInfoUri( QString &sLayerInfo, QString &sD
   QString sDataSourceUriBase = QString( "%1 table='%2'" );
   QString sTableName  = sLayerName;
   QString sGeometryColumn = QString::null;
-  QString sProvider = QStringLiteral( "spatialite" );
 //----------------------------------------------------------
   if ( ( sTableName.contains( "(" ) ) && ( sTableName.endsWith( QString( ")" ) ) ) )
   {
@@ -864,8 +932,7 @@ QString SpatialiteDbInfo::createDbLayerInfoUri( QString &sLayerInfo, QString &sD
     case SpatialiteDbInfo::TopologyExport:
     case SpatialiteDbInfo::SpatialiteTopology:
     {
-      sProvider = QStringLiteral( "spatialite" );
-      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( sProvider );
+      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( mSpatialiteProviderKey );
       sDataSourceUri = QString( sDataSourceUriBase.arg( dbConnectionInfo() ).arg( sTableName ) );
       if ( !sGeometryColumn.isEmpty() )
       {
@@ -875,45 +942,40 @@ QString SpatialiteDbInfo::createDbLayerInfoUri( QString &sLayerInfo, QString &sD
     break;
     case SpatialiteDbInfo::RasterLite2Raster:
     {
-      sProvider = QStringLiteral( "rasterlite2" );
-      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( sProvider );
-      sDataSourceUri = QString( "%4%1%2%1%3" ).arg( SpatialiteDbInfo::ParseSeparatorUris ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "RASTERLITE2" );
+      // Note: the gdal notation will be retained, so that only one connection string exists. QgsDataSourceUri will fail.
+      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( mRasterLite2ProviderKey );
+      sDataSourceUri = QString( "%4%1%2%1%3" ).arg( SpatialiteDbInfo::ParseSeparatorUris ).arg( getDatabaseFileName() ).arg( sTableName ).arg( QStringLiteral( "RASTERLITE2" ) );
     }
     break;
     case SpatialiteDbInfo::RasterLite1:
     {
-      sProvider = QStringLiteral( "gdal" );
-      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( sProvider );
+      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( mGdalProviderKey );
       sDataSourceUriBase = QString( "%1,table=%2" );
-      sDataSourceUri = QString( sDataSourceUriBase.arg( QString( "%3%1%2" ).arg( SpatialiteDbInfo::ParseSeparatorUris ).arg( getDatabaseFileName() ).arg( "RASTERLITE" ) ).arg( sTableName ) );
+      sDataSourceUri = QString( sDataSourceUriBase.arg( QString( "%3%1%2" ).arg( SpatialiteDbInfo::ParseSeparatorUris ).arg( getDatabaseFileName() ).arg( QStringLiteral( "RASTERLITE" ) ) ).arg( sTableName ) );
     }
     break;
     case SpatialiteDbInfo::GdalFdoOgr:
     {
-      sProvider = QStringLiteral( "ogr" );
-      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( sProvider );
-      sDataSourceUri = QString( "%1|%2=%3" ).arg( getDatabaseFileName() ).arg( "layername" ).arg( sTableName );
+      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( mOgrProviderKey );
+      sDataSourceUri = QString( "%1|%2=%3" ).arg( getDatabaseFileName() ).arg( QStringLiteral( "layername" ) ).arg( sTableName );
     }
     break;
     case SpatialiteDbInfo::GeoPackageVector:
     {
-      sProvider = QStringLiteral( "ogr" );
-      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( sProvider );
-      sDataSourceUri = QString( "%1|%3=%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "layername" );
+      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( mOgrProviderKey );
+      sDataSourceUri = QString( "%1|%3=%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( QStringLiteral( "layername" ) );
     }
     break;
     case SpatialiteDbInfo::GeoPackageRaster:
     {
-      sProvider = QStringLiteral( "gdal" );
-      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( sProvider );
-      sDataSourceUri = QString( "%4%1%2%1%3" ).arg( SpatialiteDbInfo::ParseSeparatorUris ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "GPKG" );
+      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( mGdalProviderKey );
+      sDataSourceUri = QString( "%4%1%2%1%3" ).arg( SpatialiteDbInfo::ParseSeparatorUris ).arg( getDatabaseFileName() ).arg( sTableName ).arg( QStringLiteral( "GPKG" ) );
     }
     break;
     case SpatialiteDbInfo::MBTilesTable:
     case SpatialiteDbInfo::MBTilesView:
     {
-      sProvider = QStringLiteral( "gdal" );
-      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( sProvider );
+      sLayerInfo = QString( "%2%1%3%1%4" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral ).arg( sGeometryType ).arg( iSrid ).arg( mGdalProviderKey );
       sDataSourceUri = getDatabaseFileName();
     }
     break;
@@ -934,8 +996,8 @@ QString SpatialiteDbInfo::createDbLayerInfoUri( QString &sLayerInfo, QString &sD
 //----------------------------------------------------------
 bool SpatialiteDbInfo::parseLayerInfo( QString sLayerInfo, QString &sGeometryType, int &iSrid, QString &sProvider )
 {
-  QStringList sa_list_info = sLayerInfo.split( SpatialiteDbInfo::ParseSeparatorGeneral );
   bool bRc = false;
+  QStringList sa_list_info = sLayerInfo.split( SpatialiteDbInfo::ParseSeparatorGeneral );
   if ( sa_list_info.size() == 3 )
   {
     // For Layers that contain no Geometries, this will be the Layer-Type
@@ -1214,10 +1276,6 @@ int SpatialiteDbInfo::addDbMapLayers( QStringList saSelectedLayers, QStringList 
   int iSrid;
   QString sProvider;
   //----------------------------------------------------------
-  QString sSpatialte = QStringLiteral( "spatialite" );
-  QString sOgr = QStringLiteral( "ogr" );
-  QString sRasterLite2 = QStringLiteral( "rasterlite2" );
-  QString sGdal = QStringLiteral( "gdal" );
   for ( int i = 0; i < saSelectedLayers.count(); i++ )
   {
     QString sLayerNameSql;
@@ -1236,13 +1294,17 @@ int SpatialiteDbInfo::addDbMapLayers( QStringList saSelectedLayers, QStringList 
         QgsVectorLayer *vectorLayer = nullptr;
         QgsRasterLayer *rasterLayer = nullptr;
         QString sLayerDataSourceUri = dbLayer->getLayerDataSourceUri();
-        if ( sProvider == sSpatialte )
+        if ( sProvider == mSpatialiteProviderKey )
         {
           if ( !sLayerNameSql.isEmpty() )
           {
             sLayerDataSourceUri = QString( "%1 sql=%2" ).arg( sLayerDataSourceUri ).arg( sLayerNameSql );
           }
-          vectorLayer = new QgsVectorLayer( sLayerDataSourceUri, sLayerName, sProvider );
+          vectorLayer = new QgsVectorLayer( sLayerDataSourceUri, sLayerName, mSpatialiteProviderKey );
+          vectorLayer->setShortName( dbLayer->getLayerName() );
+          vectorLayer->setTitle( dbLayer->getTitle() );
+          vectorLayer->setAbstract( dbLayer->getAbstract() );
+          vectorLayer->setKeywordList( dbLayer->getCopyright() );
           if ( vectorLayer->isValid() )
           {
             if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) && ( dbLayer->hasLayerStyle() ) )
@@ -1275,15 +1337,15 @@ int SpatialiteDbInfo::addDbMapLayers( QStringList saSelectedLayers, QStringList 
             }
           }
         }
-        else if ( sProvider == sOgr )
+        else if ( sProvider == mOgrProviderKey )
         {
           if ( !sLayerNameSql.isEmpty() )
           {
             sLayerDataSourceUri = QString( "%1 sql=%2" ).arg( sLayerDataSourceUri ).arg( sLayerNameSql );
           }
-          vectorLayer = new QgsVectorLayer( sLayerDataSourceUri, sLayerName, sProvider );
+          vectorLayer = new QgsVectorLayer( sLayerDataSourceUri, sLayerName, mOgrProviderKey );
         }
-        else  if ( sProvider == sGdal )
+        else  if ( sProvider == mGdalProviderKey )
         {
           bool bCheckDriver = true;
           if ( ( sLayerDataSourceUri.startsWith( "RASTERLITE:" ) ) && ( !hasDbGdalRasterLite1Driver() ) )
@@ -1296,11 +1358,22 @@ int SpatialiteDbInfo::addDbMapLayers( QStringList saSelectedLayers, QStringList 
             rasterLayer = new QgsRasterLayer( sLayerDataSourceUri, sLayerName, sProvider );
           }
         }
-        else  if ( sProvider == sRasterLite2 )
+        else  if ( sProvider == mRasterLite2ProviderKey )
         {
-          sProvider = "gdal";
+          if ( dbHasRasterlite2() )
+          {
+            sProvider = mRasterLite2ProviderKey;
+          }
+          else
+          {
+            sProvider = mGdalProviderKey;
+          }
           // Note: at present (2017-07-31) QGdalProvider cannot display RasterLite2-Rasters created with the development version
           rasterLayer = new QgsRasterLayer( sLayerDataSourceUri, sLayerName, sProvider );
+          rasterLayer->setShortName( dbLayer->getLayerName() );
+          rasterLayer->setTitle( dbLayer->getTitle() );
+          rasterLayer->setAbstract( dbLayer->getAbstract() );
+          rasterLayer->setKeywordList( dbLayer->getCopyright() );
         }
         if ( vectorLayer )
         {
@@ -1925,6 +1998,10 @@ bool SpatialiteDbInfo::GetSpatialiteDbInfo( QString sLayerName, bool bLoadLayers
     getSniffDatabaseType( );
     if ( sniffType == SpatialiteDbInfo::SniffDatabaseType )
     {
+      if ( getQSqliteHandle() )
+      {
+        getQSqliteHandle()->setStatus();
+      }
       // -- ---------------------------------- --
       // For cases where only the Sqlite3-Container-Type and the Spatialite Version numbers are needed
       // -- ---------------------------------- --
@@ -1952,6 +2029,10 @@ bool SpatialiteDbInfo::GetSpatialiteDbInfo( QString sLayerName, bool bLoadLayers
 #if 0
       qDebug() << QString( "-I-> GetSpatialiteDbInfo[SniffMinimal]](%1) -Has- VectorLayers[%2,%3] SpatialTables[%4] SpatialViews[%5] VirtualShapes[%6]  VectorCoverages[%7]  VectorCoveragesStyles[%8] RasterCoverages[%9] RasterCoveragesStyles[%10] RasterLite1[%11] TopologyExport[%12]  FdoOgr[%13] GeoPackage[%14] MBTiles[%15] NonSpatial[%16] IsValid[%17] IsSpatialite[%18] IsGdalOgr[%19]" ).arg( dbSpatialMetadataString() ).arg( dbVectorLayersCount() ).arg( mHasLegacyGeometryLayers ).arg( dbSpatialTablesLayersCount() ).arg( dbSpatialViewsLayersCount() ).arg( dbVirtualShapesLayersCount() ).arg( dbVectorCoveragesLayersCount() ).arg( dbVectorStylesViewsCount() ).arg( dbRasterCoveragesLayersCount() ).arg( dbRasterStylesViewCount() ).arg( dbRasterLite1LayersCount() ).arg( dbTopologyExportLayersCount() ).arg( dbFdoOgrLayersCount() ).arg( dbGeoPackageLayersCount() ).arg( dbMBTilesLayersCount() ).arg( dbNonSpatialTablesCount() ).arg( isDbValid() ).arg( isDbSpatialite() ).arg( isDbGdalOgr() );
 #endif
+      if ( getQSqliteHandle() )
+      {
+        getQSqliteHandle()->setStatus();
+      }
       return mIsValid;
     }
     if ( mIsValid )
@@ -1967,6 +2048,10 @@ bool SpatialiteDbInfo::GetSpatialiteDbInfo( QString sLayerName, bool bLoadLayers
 #if 0
     qDebug() << QString( "-I-> GetSpatialiteDbInfo[SniffLoadLayers](%1) -Has- VectorLayers[%2,%3] SpatialTables[%4] SpatialViews[%5] VirtualShapes[%6]  VectorCoverages[%7]  VectorCoveragesStyles[%8] RasterCoverages[%9] RasterCoveragesStyles[%10] RasterLite1[%11] TopologyExport[%12]  FdoOgr[%13] GeoPackage[%14] MBTiles[%15] NonSpatial[%16] IsValid[%17] IsSpatialite[%18] IsGdalOgr[%19]" ).arg( dbSpatialMetadataString() ).arg( dbVectorLayersCount() ).arg( mHasLegacyGeometryLayers ).arg( dbSpatialTablesLayersCount() ).arg( dbSpatialViewsLayersCount() ).arg( dbVirtualShapesLayersCount() ).arg( dbVectorCoveragesLayersCount() ).arg( dbVectorStylesViewsCount() ).arg( dbRasterCoveragesLayersCount() ).arg( dbRasterStylesViewCount() ).arg( dbRasterLite1LayersCount() ).arg( dbTopologyExportLayersCount() ).arg( dbFdoOgrLayersCount() ).arg( dbGeoPackageLayersCount() ).arg( dbMBTilesLayersCount() ).arg( dbNonSpatialTablesCount() ).arg( isDbValid() ).arg( isDbSpatialite() ).arg( isDbGdalOgr() );
 #endif
+  }
+  if ( getQSqliteHandle() )
+  {
+    getQSqliteHandle()->setStatus();
   }
   return mIsValid;
 }
@@ -2176,14 +2261,22 @@ bool SpatialiteDbInfo::readVectorRasterCoverages()
         sqlite3_finalize( stmt );
       }
       mHasRasterCoveragesTables = mRasterCoveragesLayers.count();
-      if ( ( mHasRasterCoveragesTables > 0 ) && ( !mHasGdalRasterLite2Driver ) )
+      if ( mHasRasterCoveragesTables > 0 )
       {
-        bRc = true;
-        sql = QStringLiteral( "SQLite" ); // RasterLite2
-        GDALDriverH rl2GdalDriver = GDALGetDriverByName( sql.toLocal8Bit().constData() );
-        if ( rl2GdalDriver )
+        if ( isDbSpatialite() )
         {
-          mHasGdalRasterLite2Driver = true;
+          mIsRasterLite2 = true;
+        }
+        bRc = true;
+        if ( !mHasGdalRasterLite2Driver )
+        {
+
+          sql = QStringLiteral( "SQLite" ); // RasterLite2
+          GDALDriverH rl2GdalDriver = GDALGetDriverByName( sql.toLocal8Bit().constData() );
+          if ( rl2GdalDriver )
+          {
+            mHasGdalRasterLite2Driver = true;
+          }
         }
       }
     }
@@ -2512,7 +2605,7 @@ bool SpatialiteDbInfo::createDatabase( )
   }
   //----------------------------------------------------------
   int open_flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX;
-  if ( QgsSLConnect::sqlite3_open_v2( mDatabaseFileName.toUtf8().constData(), &mSqliteHandle, open_flags, nullptr )  == SQLITE_OK )
+  if ( QgsSqliteHandle::sqlite3_open_v2( mDatabaseFileName.toUtf8().constData(), &mSqliteHandle, open_flags, nullptr )  == SQLITE_OK )
   {
     sqlite3_stmt *stmt = nullptr;
     // retrieve and set spatialite version - the spatialite connection exists , which must be closed when this function finishes
@@ -3811,8 +3904,13 @@ bool SpatialiteDbInfo::GetRasterLite2RasterLayersInfo( const QString sLayerName 
       }
       sqlite3_finalize( stmt );
     }
-    QString sFields = QString( "coverage_name, title,abstract,%1,srid,extent_minx,extent_miny,extent_maxx,extent_maxy" ).arg( sCopyright );
+    QString sFields = QString( "coverage_name, title,abstract,%1,srid,extent_minx,extent_miny,extent_maxx,extent_maxy," ).arg( sCopyright );
+    sFields += QString( "horz_resolution, vert_resolution, num_bands, tile_width, tile_height," );
+    sFields += QString( "sample_type, pixel_type, compression" );
+    // SELECT RL2_IsValidRasterStatistics ( 'main' , '1910.alt_berlin_coelln_friedrichsweder' , (SELECT statistics FROM raster_coverages WHERE coverage_name ='1910.alt_berlin_coelln_friedrichsweder')) ;
     // TODO update older RasterLite2 Databases
+    // SELECT coverage_name, title,abstract,copyright,srid,extent_minx,extent_miny,extent_maxx,extent_maxy,horz_resolution, vert_resolution, sample_type, pixel_type, num_bands, compression FROM raster_coverages
+    // SELECT sample_type, pixel_type, compression FROM raster_coverages
     sql = QStringLiteral( "SELECT %1 FROM raster_coverages" ).arg( sFields );
     if ( !sTableName.isEmpty() )
     {
@@ -3835,6 +3933,10 @@ bool SpatialiteDbInfo::GetRasterLite2RasterLayersInfo( const QString sLayerName 
           // Add only if it does not already exist [using true here, would cause loop]
           if ( !getSpatialiteDbLayer( sTableName, false ) )
           {
+            QRect layerBandsTileSize;
+            QString sLayerSampleType;
+            QString sLayerPixelType;
+            QString sLayerCompressionType;
             SpatialiteDbLayer *dbLayer = new SpatialiteDbLayer( this );
             if ( dbLayer )
             {
@@ -3872,20 +3974,37 @@ bool SpatialiteDbInfo::GetRasterLite2RasterLayersInfo( const QString sLayerName 
                       sFields = "";
                     }
                     dbLayer->mCopyright = sFields;
-                    if ( sqlite3_column_type( stmt, 4 ) != SQLITE_NULL )
+                    if ( ( sqlite3_column_type( stmt, 4 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 5 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 6 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 7 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 8 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 9 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 10 ) != SQLITE_NULL ) )
                     {
-                      if ( ( sqlite3_column_type( stmt, 4 ) != SQLITE_NULL ) &&
-                           ( sqlite3_column_type( stmt, 5 ) != SQLITE_NULL ) &&
-                           ( sqlite3_column_type( stmt, 6 ) != SQLITE_NULL ) &&
-                           ( sqlite3_column_type( stmt, 7 ) != SQLITE_NULL ) &&
-                           ( sqlite3_column_type( stmt, 8 ) != SQLITE_NULL ) )
-                      {
-                        // If valid srid, mIsValid will be set to true [srid must be set before LayerExtent]
-                        dbLayer->setSrid( sqlite3_column_int( stmt, 4 ) );
-                        QgsRectangle layerExtent( sqlite3_column_double( stmt, 5 ), sqlite3_column_double( stmt, 6 ), sqlite3_column_double( stmt, 7 ), sqlite3_column_double( stmt, 8 ) );
-                        dbLayer->setLayerExtent( layerExtent );
-                      }
+                      // If valid srid, mIsValid will be set to true [srid must be set before LayerExtent]
+                      dbLayer->setSrid( sqlite3_column_int( stmt, 4 ) );
+                      QgsRectangle layerExtent( sqlite3_column_double( stmt, 5 ), sqlite3_column_double( stmt, 6 ), sqlite3_column_double( stmt, 7 ), sqlite3_column_double( stmt, 8 ) );
+                      QgsPointXY layerResolution( sqlite3_column_double( stmt, 9 ), sqlite3_column_double( stmt, 10 ) );
+                      dbLayer->setLayerExtent( layerExtent, layerResolution );
                     }
+                    if ( ( sqlite3_column_type( stmt, 11 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 12 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 13 ) != SQLITE_NULL ) )
+                    {
+                      // num_bands, not_used, tile_width, tile_height
+                      layerBandsTileSize = QRect( sqlite3_column_int( stmt, 11 ), 0, sqlite3_column_int( stmt, 12 ), sqlite3_column_int( stmt, 13 ) );
+                    }
+                    if ( ( sqlite3_column_type( stmt, 14 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 15 ) != SQLITE_NULL ) &&
+                         ( sqlite3_column_type( stmt, 16 ) != SQLITE_NULL ) )
+                    {
+                      // sample_type, pixel_type, compression
+                      sLayerSampleType = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 14 ) );
+                      sLayerPixelType = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 15 ) );
+                      sLayerCompressionType = QString::fromUtf8( ( const char * ) sqlite3_column_text( stmt, 16 ) );
+                    }
+                    dbLayer->setLayerRasterTypesInfo( layerBandsTileSize, sLayerSampleType, sLayerPixelType, sLayerCompressionType );
                   }
                 }
               }
@@ -5258,6 +5377,10 @@ void SpatialiteDbLayer::setLayerType( SpatialiteDbInfo::SpatialiteLayerType laye
     case SpatialiteDbInfo::RasterLite2Raster:
     case SpatialiteDbInfo::TopologyExport:
       mIsSpatialite = true;
+      if ( mLayerType == SpatialiteDbInfo::RasterLite2Raster )
+      {
+        mIsRasterLite2 = true;
+      }
       break;
     case SpatialiteDbInfo::AllSpatialLayers:
     case SpatialiteDbInfo::GdalFdoOgr:
@@ -5405,6 +5528,10 @@ QString SpatialiteDbLayer::setLayerStyleSelected( QString sStyle )
           mHasStyle = true;
         }
       }
+    }
+    if ( ( mLayerType == SpatialiteDbInfo::RasterLite2Raster ) && ( mLayerStyleSelected.isEmpty() ) )
+    {
+      mLayerStyleSelected = QStringLiteral( "default" );
     }
   }
   return mLayerStyleSelected;
@@ -6839,6 +6966,160 @@ QgsWkbTypes::Type SpatialiteDbLayer::GetGeometryType( const int spatialiteGeomet
 //-----------------------------------------------------------
 // QgsSpatiaLiteProvider functions
 //-----------------------------------------------------------
+void SpatialiteDbLayer::setLayerBandsInfo( QStringList layerBandsInfo, QMap<int, QImage> layerBandsHistograms )
+{
+  mLayerBandsInfo = layerBandsInfo;
+  mLayerBandsHistograms = layerBandsHistograms;
+  mDefaultImageBackground = QString( "#ffffff" );
+  QStringList sa_list_info = mLayerBandsInfo.at( 0 ).split( SpatialiteDbInfo::ParseSeparatorGeneral );
+  if ( mLayerBandsInfo.size() > 0 )
+  {
+    int i_NoDataPixelValue = 255;
+    for ( int i = 0; i < mLayerBandsInfo.size(); i++ )
+    {
+      QStringList sa_list_info = mLayerBandsInfo.at( i ).split( SpatialiteDbInfo::ParseSeparatorGeneral );
+      if ( sa_list_info.size() == 8 )
+      {
+        if ( i == 0 )
+        {
+          mDefaultImageBackground = QString( "#" );
+          int i_PixelNodata = sa_list_info.at( 7 ).toInt();
+          int i_PixelValid = sa_list_info.at( 6 ).toInt();
+          int i_PixelImage = i_PixelNodata + i_PixelValid;
+          // Calculation based on extent and resolution may differ
+          int i_PixelDiff = i_PixelDiff - ( getLayerImageWidth() * getLayerImageHeight() );
+          mLayerPixelSizes = QRect( i_PixelNodata, i_PixelValid, i_PixelImage, i_PixelDiff );
+        }
+        if ( i < 3 )
+        {
+          // max is '#rrggbb'
+          i_NoDataPixelValue = sa_list_info.at( 0 ).toInt();
+          // Hex(0) must be shown as '00'
+          mDefaultImageBackground += QString( "%1" ).arg( i_NoDataPixelValue, 2, 16, QLatin1Char( '0' ) );
+        }
+      }
+    }
+    // '#rr' or '#rrgg' is invalid, must be '#rrggbb'
+    if ( mDefaultImageBackground.size() == 5 )
+    {
+      mDefaultImageBackground += QString( "%1" ).arg( i_NoDataPixelValue, 2, 16, QLatin1Char( '0' ) );
+    }
+    if ( mDefaultImageBackground.size() == 3 )
+    {
+      mDefaultImageBackground += QString( "%1%1" ).arg( i_NoDataPixelValue, 2, 16, QLatin1Char( '0' ) );
+    }
+  }
+}
+bool SpatialiteDbLayer::setLayerRasterTypesInfo( QRect layerBandsTileSize, QString sLayerSampleType, QString  sLayerPixelType, QString  sLayerCompressionType )
+{
+  bool bRc = false;
+  mLayerBandsTileSize = layerBandsTileSize;
+  mLayerSampleType = sLayerSampleType;
+  mLayerPixelType = sLayerPixelType;
+  mLayerCompressionType = sLayerCompressionType;
+  if ( ( mLayerSampleType.endsWith( QLatin1String( "-BIT" ) ) ) || ( mLayerSampleType.endsWith( QLatin1String( "INT8" ) ) ) )
+  {
+    mLayerRasterDataType = Qgis::Byte;
+    mLayerRasterDataTypeString = QStringLiteral( "Byte - Eight bit unsigned integer" );
+  }
+  else if ( mLayerSampleType == QLatin1String( "UINT16" ) )
+  {
+    mLayerRasterDataType = Qgis::UInt16;
+    mLayerRasterDataTypeString = QStringLiteral( "UInt16 - Sixteen bit unsigned integer" );
+  }
+  else if ( mLayerSampleType == QLatin1String( "UINT32" ) )
+  {
+    mLayerRasterDataType = Qgis::UInt32;
+    mLayerRasterDataTypeString = QStringLiteral( "UInt32 - Thirty two bit unsigned integer" );
+  }
+  else if ( mLayerSampleType == QLatin1String( "INT16" ) )
+  {
+    mLayerRasterDataType = Qgis::Int16;
+    mLayerRasterDataTypeString = QStringLiteral( "Int16 - Sixteen bit signed integer" );
+  }
+  else if ( mLayerSampleType == QLatin1String( "INT32" ) )
+  {
+    mLayerRasterDataType = Qgis::Int32;
+    mLayerRasterDataTypeString = QStringLiteral( "Int32 - Thirty two bit signed integer" );
+  }
+  else if ( mLayerSampleType == QLatin1String( "FLOAT" ) )
+  {
+    mLayerRasterDataType = Qgis::Float32;
+    mLayerRasterDataTypeString = QStringLiteral( "Float32 - Thirty two bit floating point" );
+  }
+  else if ( mLayerSampleType == QLatin1String( "DOUBLE" ) )
+  {
+    mLayerRasterDataType = Qgis::Float32;
+    mLayerRasterDataTypeString = QStringLiteral( "Float64 - Sixty four bit floating point" );
+  }
+  else
+  {
+    mLayerRasterDataType = Qgis::UnknownDataType;
+    mLayerRasterDataTypeString = QStringLiteral( "Could not determine raster data type for [%1]" ).arg( mLayerSampleType );
+    // ( "CInt16 - Complex Int16 " );
+    // ( "CInt32 - Complex Int32 " );
+    // ( "CFloat32 - Complex Float32 " );
+    // ( "CFloat64 - Complex Float64 " );
+  }
+  if ( ( getLayerNumBands() > 0 ) && ( mLayerRasterDataType != Qgis::UnknownDataType ) )
+  {
+    bRc = true;
+  }
+  return bRc;
+}
+QStringList SpatialiteDbLayer::getLayerGetBandStatistics()
+{
+  if ( layerHasRasterlite2() )
+  {
+    sqlite3_stmt *subStmt = nullptr;
+    QString sql;
+    int i_rc = 0;
+    // This should only be called from the QgsRasterLite2Provider when needed.
+    //  Only when a RasterLite2 connection exists [i.e. compiled with RasterLite2 and User has installed]
+    QStringList layerBandsInfo;
+    QMap<int, QImage> layerBandsHistograms;
+    QString subQuery_statistics = QString( "(SELECT statistics FROM raster_coverages WHERE coverage_name ='%1')" ).arg( getCoverageName() );
+    QString subQuery_nodata_pixel = QString( "(SELECT nodata_pixel FROM raster_coverages WHERE coverage_name ='%1')" ).arg( getCoverageName() );
+    QString sql_base = QStringLiteral( "SELECT RL2_GetPixelValue(%1,%2)||'%3'||" ).arg( subQuery_nodata_pixel ).arg( "ZZZ" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral );
+    sql_base += QStringLiteral( "RL2_GetBandStatistics_Min(%1,%2)||'%3'||" ).arg( subQuery_statistics ).arg( "ZZZ" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral );
+    sql_base += QStringLiteral( "RL2_GetBandStatistics_Max(%1,%2)||'%3'||" ).arg( subQuery_statistics ).arg( "ZZZ" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral );
+    sql_base += QStringLiteral( "RL2_GetBandStatistics_Avg(%1,%2)||'%3'||" ).arg( subQuery_statistics ).arg( "ZZZ" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral );
+    sql_base += QStringLiteral( "RL2_GetBandStatistics_Var(%1,%2)||'%3'||" ).arg( subQuery_statistics ).arg( "ZZZ" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral );
+    sql_base += QStringLiteral( "RL2_GetBandStatistics_StdDev(%1,%2)||'%3'||" ).arg( subQuery_statistics ).arg( "ZZZ" ).arg( SpatialiteDbInfo::ParseSeparatorGeneral );
+    // Note: RL2_GetRasterStatistics_ValidPixelsCount and NoDataPixelsCount has no band parameter
+    sql_base += QStringLiteral( "RL2_GetRasterStatistics_ValidPixelsCount(%1)||'%2'||" ).arg( subQuery_statistics ).arg( SpatialiteDbInfo::ParseSeparatorGeneral );
+    sql_base += QStringLiteral( "RL2_GetRasterStatistics_NoDataPixelsCount(%1)," ).arg( subQuery_statistics );
+    sql_base += QStringLiteral( "RL2_GetBandStatistics_Histogram(%1,%2)" ).arg( subQuery_statistics ).arg( "ZZZ" );
+    for ( int i = 0; i < getLayerNumBands(); i++ )
+    {
+      sql = sql_base;
+      sql.replace( "ZZZ", QString( "%1" ).arg( i ) );
+      i_rc = sqlite3_prepare_v2( dbSqliteHandle(), sql.toUtf8().constData(), -1, &subStmt, nullptr );
+      // qDebug() << QString( "SpatialiteDbLayer::getLayerGetBandStatisticso ::RL2_GetBandStatistics[%3] i_rc=%2 sql[%1]" ).arg( sql ).arg( i_rc ).arg(i);
+      if ( i_rc == SQLITE_OK )
+      {
+        while ( sqlite3_step( subStmt ) == SQLITE_ROW )
+        {
+          if ( sqlite3_column_type( subStmt, 0 ) != SQLITE_NULL )
+          {
+            layerBandsInfo.append( QString::fromUtf8( ( const char * ) sqlite3_column_text( subStmt, 0 ) ) );
+          }
+          if ( sqlite3_column_type( subStmt, 1 ) != SQLITE_NULL )
+          {
+            QByteArray imageData;
+            QImage imageResult;
+            imageData.prepend( ( const char * )sqlite3_column_blob( subStmt, 1 ), sqlite3_column_bytes( subStmt, 1 ) );
+            imageResult.loadFromData( imageData );
+            layerBandsHistograms.insert( i, imageResult );
+          }
+        }
+        sqlite3_finalize( subStmt );
+      }
+    }
+    setLayerBandsInfo( layerBandsInfo, layerBandsHistograms );
+  }
+  return mLayerBandsInfo;
+}
 bool SpatialiteDbLayer::addLayerFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags, QString &errorMessage )
 {
   int ret = SQLITE_ABORT; // Container not supported
@@ -7402,6 +7683,122 @@ void SpatialiteDbLayer::handleError( const QString &sql, char *errorMessage, boo
     // ROLLBACK after some previous error
     ( void )sqlite3_exec( dbSqliteHandle(), "ROLLBACK", nullptr, nullptr, nullptr );
   }
+}
+//-----------------------------------------------------------
+bool SpatialiteDbLayer::getMapImageFromRasterLite2( int width, int height, const QgsRectangle &viewExtent, QString styleName, QString mimeType, QString bgColor, void *data, QString &errCause )
+{
+  bool bRc = false;
+  bool bTransparent = true;
+  int quality = 80;
+  bool bReaspect = true;
+  QImage imageResult = rl2GetMapImageFromRaster( getSrid(), width, height, viewExtent, errCause, styleName, mimeType, bgColor, bTransparent, quality, bReaspect );
+  if ( imageResult.byteCount() > 0 )
+  {
+    uchar *ptr = imageResult.bits();
+    // "SpatialiteDbLayer::rl2GetMapImageFromRaster "
+    // size_png[601688] ; width*height[595*484=287980] byteCount[1151920/287980=4]"
+    // qDebug() << QString( "SpatialiteDbLayer::getMapImageFromRasterLite2 size[%1] byteCount[%2]" ).arg( ( (width*height) ) ).arg(imageResult.byteCount());
+    if ( ptr )
+    {
+      std::memcpy( data, ptr, imageResult.byteCount() );
+      bRc = true;
+    }
+  }
+  return bRc;
+}
+//-----------------------------------------------------------
+QImage SpatialiteDbLayer::rl2GetMapImageFromRaster( int destSrid, int width, int height, const QgsRectangle &viewExtent, QString &errCause,
+    QString styleName, QString mimeType, QString bgColor, bool bTransparent, int quality, bool bReaspect )
+{
+  QImage imageResult;
+  // Insure that a RasterLite2 connection exists and that the ViewExtent, Image width/height are valid
+  if ( ( layerHasRasterlite2() ) && ( ( !viewExtent.isEmpty() ) && ( width > 0 ) && ( height > 0 ) ) )
+  {
+    // further sanity checks
+    if ( styleName.isEmpty() )
+    {
+      styleName =  getLayerStyleSelected();
+    }
+    if ( styleName.isEmpty() )
+    {
+      styleName = "default";
+    }
+    if ( mimeType.isEmpty() )
+    {
+      mimeType = "image/png";
+    }
+    if ( bgColor.isEmpty() )
+    {
+      bgColor = "#ffffff";
+    }
+    if ( ( quality < 0 ) || ( quality > 100 ) )
+    {
+      quality = 0;
+      if ( mimeType.contains( "jpeg" ) )
+      {
+        quality = 80;
+      }
+    }
+    // The bTransparent/quality values will be ignored if the mimi-type does not support it ('image/jpeg')
+    // The bgColor value will be ignored if the mimi-type support transparity and bTransparent=true ('image/png')
+    sqlite3_stmt *stmt = nullptr;
+    QString sBuildMBR = QString();
+    if ( getSrid()  != destSrid )
+    {
+      sBuildMBR += QString( "ST_Transform(" );
+    }
+    // QgsRasterBlock::printValue: double value with all necessary significant digits.
+    //  It is ensured that conversion back to double gives the same number.
+    sBuildMBR += QStringLiteral( "BuildMbr(%1,%2,%3,%4,%5)" )
+                 .arg( QgsRasterBlock::printValue( viewExtent.xMinimum() ),
+                       QgsRasterBlock::printValue( viewExtent.yMinimum() ),
+                       QgsRasterBlock::printValue( viewExtent.xMaximum() ),
+                       QgsRasterBlock::printValue( viewExtent.yMaximum() ) ).arg( getSrid() );
+    if ( getSrid() != destSrid )
+    {
+      sBuildMBR += QString( ",%1)," ).arg( getSrid() );
+    }
+    QString sql = QString( "SELECT RL2_GetMapImageFromRaster('main','%1',%2," ).arg( getCoverageName() ).arg( sBuildMBR );
+    sql += QString( "%1,%2," ).arg( width ).arg( height );
+    sql += QString( "'%1','%2','%3'," ).arg( styleName ).arg( mimeType ).arg( bgColor );
+    sql += QString( "%1,%2,%3)" ).arg( ( int )bTransparent ).arg( quality ).arg( ( int )bReaspect );
+    if ( sqlite3_prepare_v2( dbSqliteHandle(), sql.toUtf8().constData(), -1, &stmt, nullptr ) == SQLITE_OK )
+    {
+      //-----------------------------------------------------------
+      // libpng warning: [gdal, read] Application was compiled with png.h from libpng-1.6.10
+      // libpng warning: [gdal, read] Application  is  running with png.c from libpng-1.2.56
+      // libpng error: [gdal, read] Incompatible libpng version in application and library
+      // Until libpng 1.4.21 contatains faulty 'if' condition (should only effect version < 0.90)
+      //-----------------------------------------------------------
+      // If gdal is compiled with --with-png=internal
+      // this could fail, since gdal is also being loaded and
+      // it seem that its version of libpng 1.2.56 is used.
+      // https://trac.osgeo.org/gdal/ticket/7023#ticket
+      //-----------------------------------------------------------
+      int i_count_bytes = 0;
+      while ( sqlite3_step( stmt ) == SQLITE_ROW )
+      {
+        if ( sqlite3_column_type( stmt, 0 ) != SQLITE_NULL )
+        {
+          const unsigned char *p_blob = ( const unsigned char * )sqlite3_column_blob( stmt, 0 );
+          i_count_bytes = sqlite3_column_bytes( stmt, 0 );
+          unsigned char *blobImage = new unsigned char[i_count_bytes];
+          memcpy( blobImage, p_blob, i_count_bytes );
+          imageResult.loadFromData( blobImage, i_count_bytes );
+        }
+      }
+      sqlite3_finalize( stmt );
+      if ( i_count_bytes > 0 )
+      {
+        return imageResult;
+      }
+      else
+      {
+        errCause = QString( "rl2GetMapImageFromRaster: image[%1 x %2] for area[%3] returned %4 Bytes. sql[%5]" ).arg( width ).arg( height ).arg( sBuildMBR ).arg( i_count_bytes ).arg( sql );
+      }
+    }
+  }
+  return imageResult;
 }
 //-----------------------------------------------------------
 //  QgsSpatiaLiteUtils functions

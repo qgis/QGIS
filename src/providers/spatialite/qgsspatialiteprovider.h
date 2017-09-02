@@ -44,13 +44,16 @@ class QgsSpatiaLiteFeatureIterator;
 #include "qgsspatialiteconnection.h"
 
 /**
-  \class QgsSpatiaLiteProvider
-  \brief Data provider for SQLite/SpatiaLite layers.
-
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a SQLite/SpatiaLite enabled database.
-  */
+  * \class QgsSpatiaLiteProvider
+  * \brief Data provider for SQLite/SpatiaLite Vector layers.
+  *  This provider implements the interface defined in the QgsDataProvider class
+  *    to provide access to spatial data residing in a Spatialite enabled database.
+  * \note
+  *  Each Provider must be defined as an extra library in the CMakeLists.txt
+  *  -> 'PROVIDER_KEY' and 'PROVIDER__DESCRIPTION' must be defined
+  *  --> QGISEXTERN bool isProvider(), providerKey(),description() and Class Factory method must be defined
+  *
+ */
 class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 {
     Q_OBJECT
@@ -279,7 +282,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \since QGIS 3.0
      */
     bool createAttributeIndex( int field ) override;
-    //! The class allowing to reuse the same sqlite handle for more layers
+
+    /** The class allowing to reuse the same sqlite handle for more layers
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
     QgsSqliteHandle *getQSqliteHandle() const { return mHandle; }
 
     /** Retrieve SpatialiteDbInfo
@@ -291,15 +302,25 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \since QGIS 3.0
      */
     SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
-    //! The Database filename being read
+
+    /** The Database filename (with Path)
+    * \returns mDatabaseFileName complete Path (without without symbolic links)
+    * \since QGIS 3.0
+    */
     QString getDatabaseFileName() const { return getSpatialiteDbInfo()->getDatabaseFileName(); }
-    //! The Spatialite internal Database structure being read
+
+    /** The Spatialite internal Database structure being read
+     * \note
+     *  -  based on result of CheckSpatialMetaData
+     * \see SpatialiteDbInfo::getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     SpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return getSpatialiteDbInfo()->dbSpatialMetadata(); }
 
     /** The Spatialite Version Driver being used
      * \note
      *  - returned from spatialite_version()
-     * \see getSniffDatabaseType
+     * \see SpatialiteDbInfo::getSniffDatabaseType
     * \since QGIS 3.0
     */
     QString dbSpatialiteVersionInfo() const { return getSpatialiteDbInfo()->dbSpatialiteVersionInfo(); }
@@ -307,7 +328,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** The major Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
-     * \see getSniffDatabaseType
+     * \see SpatialiteDbInfo::getSniffDatabaseType
      * \since QGIS 3.0
     */
     int dbSpatialiteVersionMajor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMajor(); }
@@ -315,7 +336,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** The minor Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
-     * \see getSniffDatabaseType
+     * \see SpatialiteDbInfo::getSniffDatabaseType
      * \since QGIS 3.0
     */
     int dbSpatialiteVersionMinor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMinor(); }
@@ -323,7 +344,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** The revision Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
-     * \see getSniffDatabaseType
+     * \see SpatialiteDbInfo::getSniffDatabaseType
     * \since QGIS 3.0
     */
     int dbSpatialiteVersionRevision() const { return getSpatialiteDbInfo()->dbSpatialiteVersionRevision(); }
@@ -433,9 +454,25 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \since QGIS 3.0
      */
     bool isDbGdalOgr() const { return getSpatialiteDbInfo()->isDbGdalOgr(); }
-    //! The active Layer
+
+    /** The active Layer
+     * - being read by the Provider
+     * \note
+     * - isLayerValid() return true if everything is considered correct
+     * \see SpatialiteDbLayer::isLayerValid
+     * \see setDbLayer
+     * \since QGIS 3.0
+     */
     SpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
-    //! The sqlite handler
+
+    /** The sqlite handler
+     * - contained in the QgsSqliteHandle class being used by the layer
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
     sqlite3 *dbSqliteHandle() const { return getDbLayer()->dbSqliteHandle(); }
     //! Name of the table with no schema
     QString getTableName() const { return getDbLayer()->getTableName(); }
@@ -600,10 +637,24 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
   private:
 
-    /**
-     * sqlite3 handles pointer
+    /** The class allowing to reuse the same sqlite handle for more layers
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see getQSqliteHandle()
+     * \since QGIS 3.0
      */
     QgsSqliteHandle *mHandle = nullptr;
+
+    /** Sets the activeQgsSqliteHandle
+     * - checking will be done to insure that the Database connected to is considered valid
+     * \note
+     * - isLayerValid() return true if everything is considered correct
+     * \see SpatialiteDbLayer::isLayerValid
+     * \see mDbLayer
+     * \since QGIS 3.0
+     */
     bool setSqliteHandle( QgsSqliteHandle *sqliteHandle );
 
     /** SpatialiteDbInfo Object
@@ -611,11 +662,29 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see SpatialiteDbInfo::isDbValid
      * \since QGIS 3.0
      */
     SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+
+    /** Sets the active Layer
+     * - checking will be done to insure that the Layer is considered valid
+     * \note
+     * - isLayerValid() return true if everything is considered correct
+     * \see SpatialiteDbLayer::isLayerValid
+     * \see mDbLayer
+     * \since QGIS 3.0
+     */
     bool setDbLayer( SpatialiteDbLayer *dbLayer );
+
+    /** The active Layer
+     * - being read by the Provider
+     * \note
+     * - isLayerValid() return true if everything is considered correct
+     * \see SpatialiteDbLayer::isLayerValid
+     * \see setDbLayer
+     * \since QGIS 3.0
+     */
     SpatialiteDbLayer *mDbLayer = nullptr;
 
     //! Convert a QgsField to work with SL
@@ -676,10 +745,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Retrieve a specific of layer fields of the table
     QgsField field( int index ) const;
 
-    /**
-     * internal utility functions used to handle common SQLite tasks
+    /** Close the Database
+     * - using QgsSqliteHandle [static]
+     * \note
+     * - if the connection is being shared and used elsewhere, the Database will not be closed
+     * \see QgsSqliteHandle::closeDb
+     * \since QGIS 3.0
      */
-    //void sqliteOpen();
     void closeDb();
     bool checkQuery();
     bool prepareStatement( sqlite3_stmt *&stmt,

@@ -20,6 +20,9 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QIcon>
+#include <QImage>
+#include <QPoint>
+#include <QRect>
 #include <QString>
 #include <QTextStream>
 #include <QDebug>
@@ -162,6 +165,10 @@ class SpatialiteDbInfo : public QObject
       , mSpatialiteVersionMajor( -1 )
       , mSpatialiteVersionMinor( -1 )
       , mSpatialiteVersionRevision( -1 )
+      , mRasterLite2VersionInfo( QString::null )
+      , mRasterLite2VersionMajor( -1 )
+      , mRasterLite2VersionMinor( -1 )
+      , mRasterLite2VersionRevision( -1 )
       , mHasVectorLayers( -1 )
       , mHasLegacyGeometryLayers( -1 )
       , mHasSpatialTables( 0 )
@@ -192,6 +199,7 @@ class SpatialiteDbInfo : public QObject
       , mIsValid( false )
       , mIsShared( false )
       , mIsSpatialite( false )
+      , mIsRasterLite2( false )
       , mIsSpatialite40( false )
       , mIsSpatialite45( false )
       , mIsGdalOgr( false )
@@ -271,9 +279,25 @@ class SpatialiteDbInfo : public QObject
     * \since QGIS 3.0
     */
     QString getFileName() const { return mFileName; }
-    //! The sqlite handler
+
+    /** The sqlite handler
+     * - contained in the QgsSqliteHandle class being used
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
     sqlite3 *dbSqliteHandle() const { return mSqliteHandle; }
-    //! The class allowing to reuse the same sqlite handle for more layers
+
+    /** The class allowing to reuse the same sqlite handle for more layers
+     * - containing all Information about Database file
+     * \note
+     * - isDbValid() return if the connection contains layers that are supported by
+     * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
+     * \see SpatialiteDbInfo::isDbValid()
+     * \since QGIS 3.0
+     */
     QgsSqliteHandle *getQSqliteHandle() const { return mQSqliteHandle; }
 
     /** Connection info (DB-path) without table and geometry
@@ -288,6 +312,46 @@ class SpatialiteDbInfo : public QObject
     {
       return QString( "dbname='%1'" ).arg( QString( mDatabaseFileName ).replace( '\'', QLatin1String( "\\'" ) ) );
     }
+
+    /** Spatialite Provider Key
+     * - for use with QgsVectorLayer and for building Uri
+     * \note
+     *  - Spatialite-Geometries
+    * \see createDbLayerInfoUri
+    * \see addDbMapLayers
+    * \since QGIS 3.0
+    */
+    const QString mSpatialiteProviderKey = QStringLiteral( "spatialite" );
+
+    /** Ogr Provider Key
+     * - for use with QgsVectorLayer and for building Uri
+     * \note
+     *  - non-Spatialite Geometries, GeoPackage
+    * \see createDbLayerInfoUri
+    * \see addDbMapLayers
+    * \since QGIS 3.0
+    */
+    const QString mOgrProviderKey = QStringLiteral( "ogr" );
+
+    /** Rasterlite2 Provider Key
+     * - for use with QgsRasterLayer and for building Uri
+     * \note
+     *  - Spatialite-RasterLite2
+    * \see createDbLayerInfoUri
+    * \see addDbMapLayers
+    * \since QGIS 3.0
+    */
+    const QString mRasterLite2ProviderKey = QStringLiteral( "rasterlite2" );
+
+    /** Gdal Provider Key
+     * - for use with QgsRasterLayer and for building Uri
+     * \note
+     *  - Rasters, GeoPackage-Rasters, RasterLite1 and MBTiles
+    * \see createDbLayerInfoUri
+    * \see addDbMapLayers
+    * \since QGIS 3.0
+    */
+    const QString mGdalProviderKey = QStringLiteral( "gdal" );
 
     /** The Summary of Layer-Types contained in the Database
      * \note
@@ -319,9 +383,21 @@ class SpatialiteDbInfo : public QObject
       }
       return sSummary;
     }
-    //! The Spatialite internal Database structure being read
+
+    /** The Spatialite internal Database structure being read
+     * \note
+     *  -  based on result of CheckSpatialMetaData
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     SpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return mSpatialMetadata; }
-    //! The Spatialite internal Database structure being read (as String)
+
+    /** The Spatialite internal Database structure being read (as String)
+     * \note
+     *  -  based on result of CheckSpatialMetaData
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
     QString dbSpatialMetadataString() const { return mSpatialMetadataString; }
 
     /** The Spatialite Version Driver being used
@@ -355,6 +431,48 @@ class SpatialiteDbInfo : public QObject
     * \since QGIS 3.0
     */
     int dbSpatialiteVersionRevision() const { return mSpatialiteVersionRevision; }
+
+    /** The RasterLite2 Version Driver being used
+     * \note
+     *  - returned from RL2_Version()
+     * \see dbHasRasterlite2
+    * \since QGIS 3.0
+    */
+    QString dbRasterLite2VersionInfo() const { return mRasterLite2VersionInfo; }
+
+    /** The major RasterLite2 Version being used
+     * \note
+     *  - extracted from RL2_Version()
+     * \see dbHasRasterlite2
+    * \since QGIS 3.0
+    */
+    int dbRasterLite2VersionMajor() const { return mRasterLite2VersionMajor; }
+
+    /** The minor RasterLite2 Version being used
+     * \note
+     *  - extracted from RL2_Version()
+     * \see dbHasRasterlite2
+    * \since QGIS 3.0
+    */
+    int dbRasterLite2VersionMinor() const { return mRasterLite2VersionMinor; }
+
+    /** The revision RasterLite2 Version being used
+     * \note
+     *  - extracted from RL2_Version()
+     * \see dbHasRasterlite2
+    * \since QGIS 3.0
+    */
+    int dbRasterLite2VersionRevision() const { return mRasterLite2VersionRevision; }
+
+    /** If  RasterLite2 can be used
+     *  -  must be called before any RasterLite2 functions are called
+     * \note
+     *  If QGis has not been compiled with RasterLite2 support, false will be returned
+     * \returns true if mRasterLite2VersionMajor is GT 0 (i.e. RL2_Version() has returned a value)
+     * \see QgsSqliteHandle::initRasterlite2
+     * \since QGIS 3.0
+     */
+    bool dbHasRasterlite2();
 
     /** Amount of SpatialTables  found in the Database
      * - from the vector_layers View
@@ -574,6 +692,15 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool isDbSpatialite() const { return mIsSpatialite; }
+
+    /** Is the read Database a Spatialite Database that contains a RasterLite2 Layer
+     * - supported by QgsRasterLite2Provider
+     * \note
+     *  - RasterLite2 specific functions should not be called when false
+     * \see readVectorRasterCoverages
+     * \since QGIS 3.0
+     */
+    bool isDbRasterLite2() const { return mIsRasterLite2; }
 
     /** Does the Spatialite Database support Spatialite commands >= 4.0 ?
      * - avoids execution of such cammands
@@ -1166,7 +1293,7 @@ class SpatialiteDbInfo : public QObject
      *  LayerInfo
      *  - field 0=Geometry-Type [for Raster-Types: LayerType]
      *  - field 1=Srid of the Layer
-     *  - field 2=The Proverder Name
+     *  - field 2=The Provider Name
      *  DataSourceUri
      *  - Provider dependent
      * \param sLayerInfo String to return the result of the LayerInfo
@@ -1232,6 +1359,7 @@ class SpatialiteDbInfo : public QObject
     sqlite3 *mSqliteHandle = nullptr;
     //! The class allowing to reuse the same sqlite handle for more layers
     QgsSqliteHandle *mQSqliteHandle = nullptr;
+
     //! The Spatialite internal Database structure being read
     SpatialiteDbInfo::SpatialMetadata mSpatialMetadata;
 
@@ -1289,6 +1417,38 @@ class SpatialiteDbInfo : public QObject
     * \since QGIS 3.0
     */
     int mSpatialiteVersionRevision;
+
+    /** The Spatialite Version Driver being used
+     * \note
+     *  - returned from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    QString mRasterLite2VersionInfo;
+
+    /** The major Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int mRasterLite2VersionMajor;
+
+    /** The minor Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int mRasterLite2VersionMinor;
+
+    /** The revision Spatialite Version being used
+     * \note
+     *  - extracted from spatialite_version()
+     * \see getSniffDatabaseType
+    * \since QGIS 3.0
+    */
+    int mRasterLite2VersionRevision;
 
     /** Does the read Database contain SpatialTables, SpatialViews or VirtualShapes
      * - determine through Sql-Queries, without usage of any Drivers
@@ -1599,6 +1759,15 @@ class SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool mIsSpatialite;
+
+    /** Is the read Database a Spatialite Database that contains a RasterLite2 Layer
+     * - supported by QgsRasterLite2Provider
+     * \note
+     *  - RasterLite2 specific functions should not be called when false
+     * \see SpatialiteDbLayer::rl2GetMapImageFromRaster
+     * \since QGIS 3.0
+     */
+    bool mIsRasterLite2;
 
     /** Does the Spatialite Database support Spatialite commands >= 4?
      * - avoids execution of such cammands
@@ -2354,10 +2523,18 @@ class SpatialiteDbLayer : public QObject
       , mLayerInfo( QString::null )
       , mDataSourceUri( QString::null )
       , mIsSpatialite( false )
+      , mIsRasterLite2( false )
       , mGeometryType( QgsWkbTypes::Unknown )
       , mGeometryTypeString( QString::null )
       , mCoordDimensions( GAIA_XY )
       , mLayerExtent( QgsRectangle( 0.0, 0.0, 0.0, 0.0 ) )
+      , mLayerResolution( QgsPointXY( 0.0, 0.0 ) )
+      , mLayerImageExtent( QPoint( 0, 0 ) )
+      , mLayerBandsTileSize( QRect( 0, 0, 0, 0 ) )
+      , mLayerSampleType( QString::null )
+      , mLayerRasterDataType( Qgis::UnknownDataType )
+      , mLayerPixelType( QString::null )
+      , mLayerCompressionType( QString::null )
       , mLayerExtentEWKT( QString::null )
       , mLayerExtentWsg84( QgsRectangle( 0.0, 0.0, 0.0, 0.0 ) )
       , mLayerExtentWsg84EWKT( QString::null )
@@ -2450,7 +2627,7 @@ class SpatialiteDbLayer : public QObject
      *  retrieved from vector_coverages, which may be different from the Layer-Name
      * \since QGIS 3.0
      */
-    QString getCoverageName() const { return mCoverageName; }
+    QString getCoverageName() const { return mCoverageName.toLower(); }
     //! Name of the table which contains the SpatialView-Geometry (underlining table)
     QString getViewTableName() const { return mViewTableName; }
     //! Name of the table-geometry which contains the SpatialView-Geometry (underlining table)
@@ -2463,9 +2640,14 @@ class SpatialiteDbLayer : public QObject
     QString getAbstract() const { return mAbstract; }
     //! Copyright [RasterLite2]
     QString getCopyright() const { return mCopyright; }
-    //! The Srid of the Geometry
+    //! The Srid of the Geometry or RasterLite2 Layer
     int getSrid() const { return mSrid; }
-    //! The Srid of the Geometry
+
+    /** The Srid of the Geometry or RasterLite2 Layer formatted as 'EPSG:nnnn'
+     * \note
+     *  - can be used to set the needed QgsCoordinateReferenceSystem
+    * \since QGIS 3.0
+    */
     QString getSridEpsg() const { return QString( "EPSG:%1" ).arg( mSrid ); }
 
     /** UpdateLayerStatistics for the Layer
@@ -2504,7 +2686,7 @@ class SpatialiteDbLayer : public QObject
      * \note
      *  - field 0=Geometry-Type [for Raster-Types: LayerType]
      *  - field 1=Srid of the Layer
-     *  - field 2=The Proverder Name
+     *  - field 2=The Provider Name
      * \see prepare
      * \see SpatialiteDbInfo::createDbLayerInfoUri
      * \since QGIS 3.0
@@ -2528,6 +2710,16 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     bool isLayerSpatialite() const { return mIsSpatialite; }
+
+    /** Is the Layer supported by QgsRasterLite2Provider
+     * - QgsSpatiaLiteProvider should never accept a Layer when this is not true
+     * \note
+     *  - check for valid Layer in the provider
+     * \see setLayerType
+     * \see QgsSpatiaLiteProvider::setDbLayer
+     * \since QGIS 3.0
+     */
+    bool isLayerRasterLite2() const { return mIsRasterLite2; }
 
     /** Returns QIcon representation of the enum of Layer-Types of the Sqlite3 Container
      * - SpatialiteDbInfo::SpatialiteLayerType
@@ -2562,20 +2754,352 @@ class SpatialiteDbLayer : public QObject
      */
     QgsRectangle getLayerExtent( bool bUpdateExtent = false, bool bUpdateStatistics = false );
 
+    /** RasterLite2 Raster-Layer Image Extent [QgsRasterLayer::width(), height() ]
+     * \note
+     *  - based on LayerExtent and Resolution from raster_coverage table
+     * \see QgsRasterLayer::width
+     * \see QgsRasterLayer::height
+     * \since QGIS 3.0
+     */
+    QPoint getLayerImageExtent() const { return mLayerImageExtent; }
+
+    /** RasterLite2 Raster-Layer Image Width [QgsRasterInterface::xSize() ]
+     * \note
+     *  - based on LayerExtent and Resolution from raster_coverage table
+     * \see QgsRasterInterface::xSize
+     * \since QGIS 3.0
+     */
+    int getLayerImageWidth() const { return mLayerImageExtent.x(); }
+
+    /** RasterLite2 Raster-Layer Image Height [QgsRasterInterface::ySize() ]
+     * \note
+     *  - based on LayerExtent and Resolution from raster_coverage table
+     * \see QgsRasterInterface::ySize
+     * \since QGIS 3.0
+     */
+    int getLayerImageHeight() const { return mLayerImageExtent.y(); }
+
+    /** RasterLite2 Raster-Layer Extent X (Width, Horizontal)
+     *  - result in Map-Units
+     * \note
+     *  - retrieved from based on extent_maxx minus extent_minx from raster_coverage table
+     * \since QGIS 3.0
+     */
+    double getLayerExtentWidth() const { return mLayerExtent.width(); }
+
+    /** RasterLite2 Raster-Layer Extent Y (Height, Vertical)
+     *  - result in Map-Units
+     * \note
+     *  - retrieved from based on extent_maxy minus extent_miny from raster_coverage table
+     * \since QGIS 3.0
+     */
+    double getLayerExtentHeight() const { return mLayerExtent.height(); }
+
+    /** RasterLite2 Raster-Layer Image X (Width, Vertical) Resolution
+     * \note
+     *  - retrieved from horz_resolution from raster_coverage table
+     * \since QGIS 3.0
+     */
+    double getLayerImageResolutionX() const { return mLayerResolution.x(); }
+
+    /** RasterLite2 Raster-Layer Image Y (Height, Vertical) Resolution
+     * \note
+     *  - retrieved from vert_resolution from raster_coverage table
+     * \since QGIS 3.0
+     */
+    double getLayerImageResolutionY() const { return mLayerResolution.y(); }
+
+    /** RasterLite2 Raster-Layer Bands [QgsRasterLayer::bandCount]
+     *  - based on // num_bands, tile_width, tile_height entries from raster_coverage table
+     * \note
+     *  - num_bands = mLayerBandsTileSize.x()
+     *  - mLayerBandsTileSize.y(): not used (yet)
+     *  - tile_width = mLayerBandsTileSize.width()
+     *  - tile_height = mLayerBandsTileSize.height()
+     * \see QgsRasterLayer::bandCount
+     * \since QGIS 3.0
+     */
+    int getLayerNumBands() const { return mLayerBandsTileSize.x(); }
+
+    /** QRectangle contains the Pixel size of a Raster-Layer Image
+     * - based on the values found in the raster_coverages table
+     * \note
+     *  - count NoData =mLayerPixelSizes.x()
+     *  - count ValidPixels = mLayerPixelSizes.y()
+     *  - count NoData+ValidPixels = mLayerPixelSizes.width()
+     *  - diff = Calculation based on extent and resolution may differ =  = mLayerPixelSizes.heght()
+     *  \see setLayerBandsInfo
+     * \since QGIS 3.0
+     */
+    int getLayerCountImageNodataPixels() const { return mLayerPixelSizes.x(); }
+
+    /** QRectangle contains the Pixel size of a Raster-Layer Image
+     * - based on the values found in the raster_coverages table
+     * \note
+     *  - count NoData =mLayerPixelSizes.x()
+     *  - count ValidPixels = mLayerPixelSizes.y()
+     *  - count NoData+ValidPixels = mLayerPixelSizes.width()
+     *  - diff = Calculation based on extent and resolution may differ =  = mLayerPixelSizes.heght()
+     *  \see setLayerBandsInfo
+     * \since QGIS 3.0
+     */
+    int getLayerCountImageValidPixels() const { return mLayerPixelSizes.y(); }
+
+    /** QRectangle contains the Pixel size of a Raster-Layer Image
+     * - based on the values found in the raster_coverages table
+     * \note
+     *  - count NoData =mLayerPixelSizes.x()
+     *  - count ValidPixels = mLayerPixelSizes.y()
+     *  - count NoData+ValidPixels = mLayerPixelSizes.width()
+     *  - diff = Calculation based on extent and resolution may differ =  = mLayerPixelSizes.heght()
+     *  \see setLayerBandsInfo
+     * \since QGIS 3.0
+     */
+    int getLayerCountImagePixels() const { return mLayerPixelSizes.width(); }
+
+    /** RasterLite2 Raster-Layer tile width [QgsRasterInterface::xBlockSize]
+     *  - based on // num_bands, tile_width, tile_height entries from raster_coverage table
+     * \note
+     *  - num_bands = mLayerBandsTileSize.x()
+     *  - mLayerBandsTileSize.y(): not used (yet)
+     *  - tile_width = mLayerBandsTileSize.width()
+     *  - tile_height = mLayerBandsTileSize.height()
+     * \see QgsRasterInterface::xBlockSize
+     * \since QGIS 3.0
+     */
+    int getLayerTileWidth() const { return mLayerBandsTileSize.width(); }
+
+    /** RasterLite2 Raster-Layer tile height [QgsRasterInterface::::yBlockSize]
+     *  - based on num_bands, tile_width, tile_height entries from raster_coverage table
+     * \note
+     *  - num_bands = mLayerBandsTileSize.x()
+     *  - mLayerBandsTileSize.y(): not used (yet)
+     *  - tile_width = mLayerBandsTileSize.width()
+     *  - tile_height = mLayerBandsTileSize.height()
+     * \see QgsRasterInterface::yBlockSize
+     * \since QGIS 3.0
+     */
+    int getLayerTileHeight() const { return mLayerBandsTileSize.height(); }
+
+    /** RasterLite2 Sample-Type
+     *  - based on sample_type entry from raster_coverage table
+     * \note
+     *  Unsigned Integer
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8, UINT16, UINT32
+     *  - Byte,Byte,Byte,Byte,UInt16,UInt32
+     *  Signed Integer
+     *  - INT8, INT16, INT32
+     *  - Byte, Int16, Int32
+     *  Floating Point
+     *  - FLOAT, DOUBLE
+     *  - Float32, Float64
+     * \see QgsRasterLayer::htmlMetadata
+     * \since QGIS 3.0
+     */
+    QString getLayerRasterSampleType() const { return mLayerSampleType; }
+
+    /** RasterLite2 Sample-Type as Qgis::DataType
+     *  - based on sample_type entry from raster_coverage table
+     * \note
+     *  Unsigned Integer
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8, UINT16, UINT32
+     *  - Byte,Byte,Byte,Byte,UInt16,UInt32
+     *  Signed Integer
+     *  - INT8, INT16, INT32
+     *  - Byte, Int16, Int32
+     *  Floating Point
+     *  - FLOAT, DOUBLE
+     *  - Float32, Float64
+     * \see mLayerRasterDataType
+     * \see QgsRasterInterface::dataType
+     * \see QgsRasterInterface::sourceDataType
+     * \since QGIS 3.0
+     */
+    Qgis::DataType getLayerRasterDataType() const { return mLayerRasterDataType; }
+
+    /** RasterLite2 Sample-Type as Qgis String
+     *  - based on sample_type entry from raster_coverage table
+     * \note
+     *  Unsigned Integer
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8, UINT16, UINT32
+     *  - Byte,Byte,Byte,Byte,UInt16,UInt32
+     *  Signed Integer
+     *  - INT8, INT16, INT32
+     *  - Byte, Int16, Int32
+     *  Floating Point
+     *  - FLOAT, DOUBLE
+     *  - Float32, Float64
+     * \see QgsRasterLayer::htmlMetadata
+     * \since QGIS 3.0
+     */
+    QString getLayerRasterDataTypeString() const { return mLayerRasterDataTypeString; }
+
+    /** RasterLite2 Pixel-Type
+     *  - based on pixel_typeentry from raster_coverage table
+     * \note
+     *  MONOCHROME
+     *  - Bands=1
+     *  - 1-BIT
+     *  PALETTE
+     *  - Bands=1
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8
+     *  GRAYSCALE
+     *  - Bands=1
+     *  - 2-BIT, 4-BIT, UINT8
+     *  RGB
+     *  - Bands=3
+     *  - UINT8, UINT16
+     *  MULTIBAND
+     *  - Bands= > 1 < 256
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8, UINT16, UINT32
+     *  DATAGRID
+     *  - Bands=1
+     *  - UINT8, UINT16, UINT32, INT8, INT16, INT32, FLOAT, DOUBLE
+     * \see QgsRasterInterface::generateBandName
+     * \since QGIS 3.0
+    */
+    QString getLayerRasterPixelType() const { return mLayerPixelType; }
+
+    /** RasterLite2 Compression-Type
+     *  - based on compression entry from raster_coverage table
+     * \note
+     *  NONE
+     *  - lossless
+     *  DEFLATE
+     *  - lossless
+     *  DEFLATE_NO
+     *  - lossless
+     *  LZMA
+     *  - lossless
+     *  LZMA_NO
+     *  - lossless
+     *  PNG
+     *  - lossless
+     *  JPEG
+     *  - lossy
+     *  WEBP
+     *  - lossy
+     *  LL_WEBP
+     *  - lossless
+     *  CHARLS
+     *  - lossy
+     *  JP2
+     *  - lossy
+     *  LL_JP2
+     *  - lossless
+     * \since QGIS 3.0
+     */
+    QString getLayerRasterCompressionType() const { return mLayerCompressionType; }
+
     /** Set the Rectangle that contains the extent (bounding box) of the layer
      *  - will also set the EWKT
      * \note
      *  The Srid must be set beforhand for the correct result
+     * \param layerExtent Layer Extent [Vectors and Rasters]
+     * \param layerResolution Layer Resolution [Rasters only]
      * \see mLayerExtent
      * \see mLayerExtentEWKT
      * \since QGIS 3.0
      */
-    QString setLayerExtent( QgsRectangle layerExtent )
+    QString setLayerExtent( QgsRectangle layerExtent, QgsPointXY layerResolution = QgsPointXY( 0.0, 0.0 ) )
     {
       mLayerExtent = layerExtent;
+      mLayerResolution = layerResolution;
       mLayerExtentEWKT = QString( "'SRID=%1;%2'" ).arg( getSrid() ).arg( mLayerExtent.asWktPolygon() );
+      if ( ( mLayerResolution.x() != 0.0 ) && ( mLayerResolution.y() != 0.0 ) )
+      {
+        mLayerImageExtent.setX( ( int )( mLayerExtent.width() / getLayerImageResolutionX() ) );
+        mLayerImageExtent.setY( ( int )( mLayerExtent.height() / getLayerImageResolutionY() ) );
+      }
       return mLayerExtentEWKT;
     }
+
+    /** Set the Rectangle that contains the extent (bounding box) of the layer
+     *  - num_bands, tile_width, tile_height,sample_type, pixel_type, compression from  raster_coverage table
+     * \note
+     *  The RasterLite2 SampleType will be 'translated' to the Qgis Data-Type (with it's String representation)
+     * \param layerBandsTileSize num_bands and tile_width and tile_height
+     * \param sLayerSampleType data sample type of Raster
+     * \param sLayerPixelType data pixel type of Raster
+     * \param sLayerCompressionType compressiontype of Raster
+     * \see mLayerBandsTileSize
+     * \see mLayerSampleType
+     * \see mLayerRasterDataType
+     * \see mLayerRasterDataTypeString
+     * \since QGIS 3.0
+     */
+    bool setLayerRasterTypesInfo( QRect layerBandsTileSize, QString sLayerSampleType, QString  sLayerPixelType, QString  sLayerCompressionType );
+
+    /** Set list for each Band in a RasterLite2 Raster
+     * - information about nodata, min/max pixel value
+     * \note
+     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     * - position 0: nodata_pixel as double
+     * - position 1: pixel_min value as double
+     * - position 2: pixel_max value as double
+     * - position 3: Average/Mean value as double
+     * - position 4: estimated Variance value as double
+     * - position 5: estimated Standard Deviation value as double
+     * - position 6: the total count of valid pixels (excluding NoData pixels) value as integer
+     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \since QGIS 3.0
+     */
+    void setLayerBandsInfo( QStringList layerBandsInfo, QMap<int, QImage> layerBandsHistograms );
+
+    /** Retrieve list for each Band in a RasterLite2 Raster
+     * - information about nodata, min/max pixel value
+     * \note
+     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     * - position 0: nodata_pixel as double
+     * - position 1: pixel_min value as double
+     * - position 2: pixel_max value as double
+     * - position 3: Average/Mean value as double
+     * - position 4: estimated Variance value as double
+     * - position 5: estimated Standard Deviation value as double
+     * - position 6: the total count of valid pixels (excluding NoData pixels) value as integer
+     * \see SpatialiteDbLayer::getLayerGetBandStatistics
+     * \since QGIS 3.0
+     */
+    QStringList getLayerBandsInfo() const { return mLayerBandsInfo; }
+
+    /** Create list for each Band in a RasterLite2 Raster
+     * - this should be called by a proverder when needed
+     * \note
+     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     * - position 0: nodata_pixel as double
+     * - position 1: pixel_min value as double
+     * - position 2: pixel_max value as double
+     * - position 3: Average/Mean value as double
+     * - position 4: estimated Variance value as double
+     * - position 5: estimated Standard Deviation value as double
+     * - position 6: the total count of valid pixels (excluding NoData pixels) value as integer
+     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \since QGIS 3.0
+     */
+    QStringList getLayerGetBandStatistics();
+
+    /** For each Band in a RasterLite2 Raster
+     * - a PNG image representing the estimated distribution Histogram from a specific Band
+     * \note
+     *  - RL2_GetBandStatistics_Histogram
+     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \since QGIS 3.0
+     */
+    QMap<int, QImage> getLayerBandsHistograms() const { return mLayerBandsHistograms; }
+
+    /**
+     * When getMapImageFromRasterLite2 is called during readBlock
+     * - a default Background must be given
+     * - The default is '#ffffff'
+     * \note
+     *  If Nodata exist, those values will be used to maximal: '#rrggbb'
+     * - maximal 3 bands, when less: will be filled with the last value
+     *  QgsRasterLite2Provider will override this value with the canvas background
+     * \see setLayerBandsInfo
+     * \see QgsRasterLite2Provider::readBlock
+     * \since QGIS 3.0
+     */
+    QString getLayerDefaultImageBackground() const { return mDefaultImageBackground; }
 
     /** Set the Wsg84 Rectangle that contains the extent (bounding box) of the layer
      *  - will also set the EWKT
@@ -2895,6 +3419,29 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     bool createLayerAttributeIndex( int field );
+
+    /**
+     * Retrieve rasterlite2 image of a given bound and size.
+     * - https://www.gaia-gis.it/fossil/librasterlite2/wiki?name=sql_reference_list
+     *  look for: RL2_GetMapImageFromRaster
+     * \note
+     *  The RasterLite2 connection will be made, if needed.
+     * The viewExtents will use the srid of the layer
+     * 'data' expects raw Image-Data, which be extracted from the QImage returned by rl2GetMapImageFromRaster
+     * - only mine-types supported by QImage may be used
+     * \param width        of image in pixel.
+     * \param height       of image in pixel.
+     * \param viewExtents   [west,south,east,north] [minx, miny, maxx, maxy] bounds.
+     * \param styleName   default: default', when has not been registered with a RasterStyle
+     * \param mimeType   default: 'image/png'
+     * \param bgColor   default: '#ffffff'
+     * \param data  point to which the image data should be copied with memcopy
+     * \return true if no errors
+     * \see layerHasRasterlite2
+     * \see rl2GetMapImageFromRaster
+     * \since QGIS 3.0
+     */
+    bool getMapImageFromRasterLite2( int width, int height, const QgsRectangle &viewExtent, QString styleName, QString mimeType, QString bgColor, void *data, QString &errCause );
   private:
     //! The Database Info-Structure being read
     SpatialiteDbInfo *mDbConnectionInfo = nullptr;;
@@ -2931,7 +3478,7 @@ class SpatialiteDbLayer : public QObject
     /** Coverage-Name [internal]
      * \note
      *   retrieved from vector_coverages, which may be different from the Layer-Name
-     + - this can be empty
+     + - this can be empty if not a RasterLite2 layer
      * \since QGIS 3.0
      */
     QString mCoverageName;
@@ -3031,7 +3578,7 @@ class SpatialiteDbLayer : public QObject
      * \note
      *  - field 0=Geometry-Type [for Raster-Types: LayerType]
      *  - field 1=Srid of the Layer
-     *  - field 2=The Proverder Name
+     *  - field 2=The Provider Name
      * \see prepare
      * \see SpatialiteDbInfo::createDbLayerInfoUri
      * \since QGIS 3.0
@@ -3065,6 +3612,15 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     bool mIsSpatialite;
+
+    /** Is the Layer
+     * - supported by QgsRasterLite2Provider
+     * \note
+     *  - RasterLite2 specific functions should not be called when false
+     *  -> rl2GetMapImageFromRaster()
+     * \since QGIS 3.0
+     */
+    bool mIsRasterLite2;
 
     /** The Spatialite Geometry-Type of the Layer
      * - representing mGeometryType
@@ -3110,6 +3666,150 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     QgsRectangle mLayerExtent;
+
+    /** QgsPointXY that contains the Horizontal/Vertial Resolution of a Raster-Layer
+     * - based on the Extent of the Layer, image width and Height are calculated
+     * \note
+     *  - QgsWkbTypes::displayString(mGeometryType)
+     *  \see setLayerExtent
+     * \since QGIS 3.0
+     */
+    QgsPointXY mLayerResolution;
+
+    /** QPoint contains the Width and Height of a Raster-Layer
+     * - based on the Extent and Resolusion of the Layer
+     * \note
+     *  - QgsWkbTypes::displayString(mGeometryType)
+     *  \see setLayerExtent
+     * \since QGIS 3.0
+     */
+    QPoint mLayerImageExtent;
+
+    /** QRectangle contains the Pixel size of a Raster-Layer Image
+     * - based on the values found in the raster_coverages table
+     * \note
+     *  - count NoData =mLayerPixelSizes.x()
+     *  - count ValidPixels = mLayerPixelSizes.y()
+     *  - count NoData+ValidPixels = mLayerPixelSizes.width()
+     *  - diff = Calculation based on extent and resolution may differ =  = mLayerPixelSizes.heght()
+     *  \see setLayerBandsInfo
+     * \since QGIS 3.0
+     */
+    QRect mLayerPixelSizes;
+
+    /** QRectangle contains the Tile Width and Height and Bands count of a Raster-Layer
+     * - based on the values found in the raster_coverages table
+     * \note
+     *  - num_bands = mLayerBandsTileSize.x()
+     *  - mLayerBandsTileSize.y(): not used (yet)
+     *  - tile_width = mLayerBandsTileSize.width()
+     *  - tile_height = mLayerBandsTileSize.height()
+     *  \see setLayerExtent
+     * \since QGIS 3.0
+     */
+    QRect mLayerBandsTileSize;
+
+    /** RasterLite2 Sample-Type
+     *  - based on sample_type entry from raster_coverage table
+     * \note
+     *  Unsigned Integer
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8, UINT16, UINT32
+     *  Signed Integer
+     *  - INT8, INT16, INT32
+     *  Floating Point
+     *  - FLOAT, DOUBLE
+     * \since QGIS 3.0
+     */
+    QString mLayerSampleType;
+
+    /** RasterLite2 Sample-Type
+     *  - based on sample_type entry from raster_coverage table
+     * \note
+     *  Unsigned Integer
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8, UINT16, UINT32
+     *  - Byte,Byte,Byte,Byte,UInt16,UInt32
+     *  Signed Integer
+     *  - INT8, INT16, INT32
+     *  - Byte, Int16, Int32
+     *  Floating Point
+     *  - FLOAT, DOUBLE
+     *  - Float32, Float64
+     * \since QGIS 3.0
+     */
+    Qgis::DataType mLayerRasterDataType;
+
+    /** RasterLite2 Sample-Type as Qgis String
+     *  - based on sample_type entry from raster_coverage table
+     * \note
+     *  Unsigned Integer
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8, UINT16, UINT32
+     *  - Byte,Byte,Byte,Byte,UInt16,UInt32
+     *  Signed Integer
+     *  - INT8, INT16, INT32
+     *  - Byte, Int16, Int32
+     *  Floating Point
+     *  - FLOAT, DOUBLE
+     *  - Float32, Float64
+     * \see QgsRasterLayer::htmlMetadata
+     * \since QGIS 3.0
+     */
+    QString mLayerRasterDataTypeString;
+
+    /** RasterLite2 Pixel-Type
+     *  - based on pixel_typeentry from raster_coverage table
+     * \note
+     *  MONOCHROME
+     *  - Bands=1
+     *  - 1-BIT
+     *  PALETTE
+     *  - Bands=1
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8
+     *  GRAYSCALE
+     *  - Bands=1
+     *  - 2-BIT, 4-BIT, UINT8
+     *  RGB
+     *  - Bands=3
+     *  - UINT8, UINT16
+     *  MULTIBAND
+     *  - Bands= > 1 < 256
+     *  - 1-BIT, 2-BIT, 4-BIT, UINT8, UINT16, UINT32
+     *  DATAGRID
+     *  - Bands=1
+     *  - UINT8, UINT16, UINT32, INT8, INT16, INT32, FLOAT, DOUBLE
+     * \since QGIS 3.0
+     */
+    QString mLayerPixelType;
+
+    /** RasterLite2 Compression-Type
+     *  - based on compression entry from raster_coverage table
+     * \note
+     *  NONE
+     *  - lossless
+     *  DEFLATE
+     *  - lossless
+     *  DEFLATE_NO
+     *  - lossless
+     *  LZMA
+     *  - lossless
+     *  LZMA_NO
+     *  - lossless
+     *  PNG
+     *  - lossless
+     *  JPEG
+     *  - lossy
+     *  WEBP
+     *  - lossy
+     *  LL_WEBP
+     *  - lossless
+     *  CHARLS
+     *  - lossy
+     *  JP2
+     *  - lossy
+     *  LL_JP2
+     *  - lossless
+     * \since QGIS 3.0
+     */
+    QString mLayerCompressionType;
 
     /** The extent (bounding box) of the layer AS Extended Well Known Text
      * - based on the Srid of the Layer
@@ -3207,6 +3907,31 @@ class SpatialiteDbLayer : public QObject
     QgsFields mAttributeFields;
     //! Map of field index to default value [for Topology, the Topology-Layers]
     QMap<int, QVariant> mDefaultValues;
+
+    /** For each Band in a RasterLite2 Raster
+     * - information about nodata, min/max pixel value
+     * \note
+     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     * - position 0: nodata_pixel as double
+     * - position 1: pixel_min value as double
+     * - position 2: pixel_max value as double
+     * - position 3: Average/Mean value as double
+     * - position 4: estimated Variance value as double
+     * - position 5: estimated Standard Deviation value as double
+     * - position 6: the total count of valid pixels (excluding NoData pixels) value as integer
+     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \since QGIS 3.0
+     */
+    QStringList mLayerBandsInfo;
+
+    /** For each Band in a RasterLite2 Raster
+     * - a PNG image representing the estimated distribution Histogram from a specific Band
+     * \note
+     *  - RL2_GetBandStatistics_Histogram
+     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \since QGIS 3.0
+     */
+    QMap<int, QImage> mLayerBandsHistograms;
 
     /** Map of valid Topology-ExportLayers
      * - contains Layer-Name and a SpatialiteDbLayer-Pointer
@@ -3357,6 +4082,57 @@ class SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     void handleError( const QString &sql, char *errorMessage, bool rollback = false );
+
+    /** If  RasterLite2 can be used
+     *  -  must be called before any RasterLite2 functions are called
+     * \note
+     *  If QGis has not been compiled with RasterLite2 support, false will be returned
+     * \returns true if mRasterLite2VersionMajor is GT 0 (i.e. RL2_Version() has returned a value)
+     * \see dbHasRasterlite2
+     * \since QGIS 3.0
+     */
+    bool layerHasRasterlite2();
+
+    /**
+     * When getMapImageFromRasterLite2 is called during readBlock
+     * - a default Background must be given
+     * - The default is '#ffffff'
+     * \note
+     *  If Nodata exist, those values will be used to maximal: '#rrggbb'
+     * - maximal 3 bands, when less: will be filled with the last value
+     *  QgsRasterLite2Provider will override this value with the canvas background
+     * \see setLayerBandsInfo
+     * \see QgsRasterLite2Provider::readBlock
+     * \since QGIS 3.0
+     */
+    QString mDefaultImageBackground;
+
+    /**
+     * Retrieve rasterlite2 image of a given bound and size.
+     * - https://www.gaia-gis.it/fossil/librasterlite2/wiki?name=sql_reference_list
+     *  look for: RL2_GetMapImageFromRaster
+     * \note
+     *  The RasterLite2 connection will be made, if needed.
+     * - all sanity checks for correct/default parameters will be done
+     * - only mine-types supported by QImage may be used
+     * \param destSrid     the destination srid (of the rasterlite2 image).
+     * \param width        of image in pixel.
+     * \param height       of image in pixel.
+     * \param viewExtents   [west,south,east,north] [minx, miny, maxx, maxy] bounds.
+     * \param mimeType     'image/tiff' etc. default: 'image/png'
+     * \param styleName    registered style used in coverage. Otherwise: 'default' if empty
+     * \param bgColor      html-syntax etc. default: '#ffffff'
+     * \param bTransparent  true or false
+     * \param quality      0-100 (for 'image/jpeg')
+     * \param bReaspect true = adapt image width,height if needed based on given bounds
+     * \return QImage with filled image data
+     * \see layerHasRasterlite2
+     * \see getMapImageFromRasterLite2
+     * \since QGIS 3.0
+     */
+    QImage rl2GetMapImageFromRaster( int destSrid, int width, int height, const QgsRectangle &viewExtent, QString &errCause,
+                                     QString styleName = QString(), QString mimeType = QString( "image/png" ), QString bgColor = QString( "#ffffff" ),
+                                     bool bTransparent = true, int quality = 80, bool bReaspect = true );
 
     friend class SpatialiteDbInfo;
 };

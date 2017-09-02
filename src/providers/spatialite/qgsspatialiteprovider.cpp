@@ -40,10 +40,224 @@ email                : a.furieri@lqt.it
 #include <QRegularExpression>
 #include "qgsspatialiteutils.h"
 
-
+//----------------------------------------------------------
+//-- Mandatory functions for each Provider
+//--> each Provider must be created in an extra library
+//----------------------------------------------------------
 const QString SPATIALITE_KEY = QStringLiteral( "spatialite" );
 const QString SPATIALITE_DESCRIPTION = QStringLiteral( "SpatiaLite data provider" );
 
+/**
+ * Required isProvider function. Used to determine if this shared library
+ * is a data provider plugin
+ */
+QGISEXTERN bool isProvider()
+{
+  return true;
+}
+
+/** Required key function (used to map the plugin to a data store type)
+*/
+QGISEXTERN QString providerKey()
+{
+  return SPATIALITE_KEY;
+}
+
+/**
+ * Required description function
+ */
+QGISEXTERN QString description()
+{
+  return SPATIALITE_DESCRIPTION;
+}
+
+/**
+ * Class factory to return a pointer to a newly created
+ * QgsSpatiaLiteProvider object
+ */
+QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri )
+{
+  return new QgsSpatiaLiteProvider( *uri );
+}
+//----------------------------------------------------------
+QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
+  : QgsVectorDataProvider( uri )
+  , mIsQuery( false )
+  , mTableBased( false )
+  , mViewBased( false )
+  , mVShapeBased( false )
+  , mReadOnly( false )
+  , mUriTableName( QString::null )
+  , mUriGeometryColumn( QString::null )
+  , mUriLayerName( QString::null )
+  , mGeometryType( QgsWkbTypes::Unknown )
+  , mSpatialIndexRTree( false )
+  , mSpatialIndexMbrCache( false )
+{
+  QgsDataSourceUri anUri = QgsDataSourceUri( uri );
+  // parsing members from the uri structure
+  mUriTableName = anUri.table();
+  mUriGeometryColumn = anUri.geometryColumn().toLower();
+  mSqlitePath = anUri.database();
+  mSubsetString = anUri.sql(); // \"id_admin\"  < 2
+  mUriPrimaryKey = anUri.keyColumn();
+  mQuery = mUriTableName;
+  // trying to open the SQLite DB
+  bool bShared = true;
+  bool bLoadLayers = true;
+#if 1
+  mUriLayerName = mUriTableName;
+  if ( !mUriGeometryColumn.isEmpty() )
+  {
+    mUriLayerName = QString( "%1(%2)" ).arg( mUriTableName ).arg( mUriGeometryColumn );
+    bLoadLayers = true;
+  }
+#endif
+  if ( setSqliteHandle( QgsSqliteHandle::openDb( mSqlitePath, bShared, mUriLayerName, bLoadLayers ) ) )
+  {
+    QStringList pragmaList = anUri.params( QStringLiteral( "pragma" ) );
+    Q_FOREACH ( const QString &pragma, pragmaList )
+    {
+      char *errMsg = nullptr;
+      int ret = sqlite3_exec( dbSqliteHandle(), ( "PRAGMA " + pragma ).toUtf8(), nullptr, nullptr, &errMsg );
+      if ( ret != SQLITE_OK )
+      {
+        QgsDebugMsg( QString( "PRAGMA " ) + pragma + QString( " failed : %1" ).arg( errMsg ? errMsg : "" ) );
+      }
+      sqlite3_free( errMsg );
+    }
+    mValid = true;
+  }
+  else
+  {
+    mValid = false;
+  }
+}
+
+QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
+{
+  closeDb();
+  invalidateConnections( mSqlitePath );
+}
+
+bool QgsSpatiaLiteProvider::isValid() const
+{
+  return isLayerValid();
+}
+
+QString QgsSpatiaLiteProvider::name() const
+{
+  return SPATIALITE_KEY;
+}
+
+QString QgsSpatiaLiteProvider::description() const
+{
+  return SPATIALITE_DESCRIPTION;
+}
+
+QgsFields QgsSpatiaLiteProvider::fields() const
+{
+  return getAttributeFields();
+}
+
+void QgsSpatiaLiteProvider::closeDb()
+{
+// trying to close the SQLite DB
+  if ( mHandle )
+  {
+    QgsSqliteHandle::closeDb( mHandle );
+    mHandle = nullptr;
+  }
+}
+
+void QgsSpatiaLiteProvider::invalidateConnections( const QString &connection )
+{
+  QgsSpatiaLiteConnPool::instance()->invalidateConnections( connection );
+}
+
+bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
+{
+  bool bRc = false;
+  mHandle = sqliteHandle;
+  bool bLoadLayer = true;
+  if ( !mHandle )
+  {
+    return bRc;
+  }
+  if ( mHandle )
+  {
+    mSpatialiteDbInfo = mHandle->getSpatialiteDbInfo();
+    if ( ( mSpatialiteDbInfo ) && ( isDbValid() )  && ( isDbSpatialite() ) )
+    {
+      // -- ---------------------------------- --
+      // The combination isDbValid() and isDbSpatialite()
+      //  - means that the given Layer is supported by the QgsSpatiaLiteProvider
+      //  --> i.e. not GeoPackage, MBTiles etc.
+      //  - RasterLite1 will return isDbGdalOgr() == 1
+      //  -> which renders the RasterLayers with gdal
+      //  --> so a check must be done later
+      //  ---> that the layer is not a RasterLite1-Layer
+      // -- ---------------------------------- --
+      QString sLayerName = mUriTableName;
+      if ( !mUriGeometryColumn.isEmpty() )
+      {
+        sLayerName = QString( "%1(%2)" ).arg( mUriTableName ).arg( mUriGeometryColumn );
+      }
+      bRc = setDbLayer( mSpatialiteDbInfo->getSpatialiteDbLayer( sLayerName, bLoadLayer ) );
+    }
+  }
+  return bRc;
+}
+bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
+{
+  bool bRc = false;
+  if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) && ( dbLayer->isLayerSpatialite() ) )
+  {
+    mDbLayer = dbLayer;
+    // mDbLayer->setLayerQuery(mSubsetString);
+    mSrid = mDbLayer->getSrid();
+    mGeometryType = mDbLayer->getGeometryType();
+    if ( mDbLayer->getSpatialIndexType() == GAIA_SPATIAL_INDEX_RTREE )
+    {
+      mSpatialIndexRTree = true;
+    }
+    if ( mDbLayer->getSpatialIndexType() == GAIA_SPATIAL_INDEX_MBRCACHE )
+    {
+      mSpatialIndexMbrCache = true;
+    }
+    if ( ( mDbLayer->getLayerType() == SpatialiteDbInfo::SpatialTable ) ||
+         ( mDbLayer->getLayerType() == SpatialiteDbInfo::TopologyExport ) )
+    {
+      mTableBased = true;
+    }
+    if ( mDbLayer->getLayerType() == SpatialiteDbInfo::SpatialView )
+    {
+      mViewBased = true;
+    }
+    if ( mDbLayer->getLayerType() == SpatialiteDbInfo::VirtualShape )
+    {
+      mVShapeBased = true;
+    }
+    //fill type names into sets
+    setNativeTypes( QList<NativeType>()
+                    << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray )
+                    << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "TEXT" ), QVariant::String )
+                    << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "FLOAT" ), QVariant::Double )
+                    << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "INTEGER" ), QVariant::LongLong )
+
+                    // date type
+                    << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
+                    << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
+                    << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
+
+                    << QgsVectorDataProvider::NativeType( tr( "Array of text" ), SpatialiteDbInfo::SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SpatialiteDbInfo::SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
+                    << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SpatialiteDbInfo::SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SpatialiteDbInfo::SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
+                    << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SpatialiteDbInfo::SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SpatialiteDbInfo::SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
+                  );
+    // bRc = checkQuery();
+  }
+  return bRc;
+}
 
 bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 {
@@ -428,149 +642,6 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
   return QgsVectorLayerExporter::NoError;
 }
 
-bool QgsSpatiaLiteProvider::setSqliteHandle( QgsSqliteHandle *sqliteHandle )
-{
-  bool bRc = false;
-  mHandle = sqliteHandle;
-  bool bLoadLayer = true;
-  if ( !mHandle )
-  {
-    return bRc;
-  }
-  if ( mHandle )
-  {
-    mSpatialiteDbInfo = mHandle->getSpatialiteDbInfo();
-    if ( ( mSpatialiteDbInfo ) && ( isDbValid() )  && ( isDbSpatialite() ) )
-    {
-      // -- ---------------------------------- --
-      // The combination isDbValid() and isDbSpatialite()
-      //  - means that the given Layer is supported by the QgsSpatiaLiteProvider
-      //  --> i.e. not GeoPackage, MBTiles etc.
-      //  - RasterLite1 will return isDbGdalOgr() == 1
-      //  -> which renders the RasterLayers with gdal
-      //  --> so a check must be done later
-      //  ---> that the layer is not a RasterLite1-Layer
-      // -- ---------------------------------- --
-      QString sLayerName = mUriTableName;
-      if ( !mUriGeometryColumn.isEmpty() )
-      {
-        sLayerName = QString( "%1(%2)" ).arg( mUriTableName ).arg( mUriGeometryColumn );
-      }
-      bRc = setDbLayer( mSpatialiteDbInfo->getSpatialiteDbLayer( sLayerName, bLoadLayer ) );
-    }
-  }
-  return bRc;
-}
-bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
-{
-  bool bRc = false;
-  if ( ( dbLayer ) && ( dbLayer->isLayerValid() ) && ( dbLayer->isLayerSpatialite() ) )
-  {
-    mDbLayer = dbLayer;
-    // mDbLayer->setLayerQuery(mSubsetString);
-    mSrid = mDbLayer->getSrid();
-    mGeometryType = mDbLayer->getGeometryType();
-    if ( mDbLayer->getSpatialIndexType() == GAIA_SPATIAL_INDEX_RTREE )
-    {
-      mSpatialIndexRTree = true;
-    }
-    if ( mDbLayer->getSpatialIndexType() == GAIA_SPATIAL_INDEX_MBRCACHE )
-    {
-      mSpatialIndexMbrCache = true;
-    }
-    if ( ( mDbLayer->getLayerType() == SpatialiteDbInfo::SpatialTable ) ||
-         ( mDbLayer->getLayerType() == SpatialiteDbInfo::TopologyExport ) )
-    {
-      mTableBased = true;
-    }
-    if ( mDbLayer->getLayerType() == SpatialiteDbInfo::SpatialView )
-    {
-      mViewBased = true;
-    }
-    if ( mDbLayer->getLayerType() == SpatialiteDbInfo::VirtualShape )
-    {
-      mVShapeBased = true;
-    }
-    //fill type names into sets
-    setNativeTypes( QList<NativeType>()
-                    << QgsVectorDataProvider::NativeType( tr( "Binary object (BLOB)" ), QStringLiteral( "BLOB" ), QVariant::ByteArray )
-                    << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "TEXT" ), QVariant::String )
-                    << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), QStringLiteral( "FLOAT" ), QVariant::Double )
-                    << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "INTEGER" ), QVariant::LongLong )
-
-                    // date type
-                    << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, -1, -1, -1, -1 )
-                    << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1, -1, -1 )
-                    << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "timestamp without time zone" ), QVariant::DateTime, -1, -1, -1, -1 )
-
-                    << QgsVectorDataProvider::NativeType( tr( "Array of text" ), SpatialiteDbInfo::SPATIALITE_ARRAY_PREFIX.toUpper() + "TEXT" + SpatialiteDbInfo::SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::StringList, 0, 0, 0, 0, QVariant::String )
-                    << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SpatialiteDbInfo::SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SpatialiteDbInfo::SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
-                    << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SpatialiteDbInfo::SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SpatialiteDbInfo::SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
-                  );
-    // bRc = checkQuery();
-  }
-  return bRc;
-}
-QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
-  , mIsQuery( false )
-  , mTableBased( false )
-  , mViewBased( false )
-  , mVShapeBased( false )
-  , mReadOnly( false )
-  , mUriTableName( QString::null )
-  , mUriGeometryColumn( QString::null )
-  , mUriLayerName( QString::null )
-  , mGeometryType( QgsWkbTypes::Unknown )
-  , mSpatialIndexRTree( false )
-  , mSpatialIndexMbrCache( false )
-{
-  QgsDataSourceUri anUri = QgsDataSourceUri( uri );
-  // parsing members from the uri structure
-  mUriTableName = anUri.table();
-  mUriGeometryColumn = anUri.geometryColumn().toLower();
-  mSqlitePath = anUri.database();
-  mSubsetString = anUri.sql(); // \"id_admin\"  < 2
-  mUriPrimaryKey = anUri.keyColumn();
-  mQuery = mUriTableName;
-  // trying to open the SQLite DB
-  bool bShared = true;
-  bool bLoadLayers = true;
-#if 1
-  mUriLayerName = mUriTableName;
-  if ( !mUriGeometryColumn.isEmpty() )
-  {
-    mUriLayerName = QString( "%1(%2)" ).arg( mUriTableName ).arg( mUriGeometryColumn );
-    bLoadLayers = true;
-  }
-#endif
-  if ( setSqliteHandle( QgsSqliteHandle::openDb( mSqlitePath, bShared, mUriLayerName, bLoadLayers ) ) )
-  {
-    QStringList pragmaList = anUri.params( QStringLiteral( "pragma" ) );
-    Q_FOREACH ( const QString &pragma, pragmaList )
-    {
-      char *errMsg = nullptr;
-      int ret = sqlite3_exec( dbSqliteHandle(), ( "PRAGMA " + pragma ).toUtf8(), nullptr, nullptr, &errMsg );
-      if ( ret != SQLITE_OK )
-      {
-        QgsDebugMsg( QString( "PRAGMA " ) + pragma + QString( " failed : %1" ).arg( errMsg ? errMsg : "" ) );
-      }
-      sqlite3_free( errMsg );
-    }
-    mValid = true;
-  }
-  else
-  {
-    mValid = false;
-  }
-}
-
-QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
-{
-  closeDb();
-  invalidateConnections( mSqlitePath );
-}
-
 QgsAbstractFeatureSource *QgsSpatiaLiteProvider::featureSource() const
 {
   return new QgsSpatiaLiteFeatureSource( this );
@@ -668,27 +739,8 @@ QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs() const
   return srs;
 }
 
-bool QgsSpatiaLiteProvider::isValid() const
-{
-  return isLayerValid();
-}
-
-QString QgsSpatiaLiteProvider::name() const
-{
-  return SPATIALITE_KEY;
-}
-
-QString QgsSpatiaLiteProvider::description() const
-{
-  return SPATIALITE_DESCRIPTION;
-}                               //  QgsSpatiaLiteProvider::description()
-
-QgsFields QgsSpatiaLiteProvider::fields() const
-{
-  return getAttributeFields();
-}
 //-----------------------------------------------------------
-//  SpatialiteDbLayer should never stor the
+//  SpatialiteDbLayer should never store the
 // - mQuery and mSubsetString members
 // --> since other source may be using the Layer
 // Functions using these 'filters' must remain in QgsSpatiaLiteProvider
@@ -1004,15 +1056,6 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
   return getDefaultValues().value( fieldId, QVariant() );
 }
 
-void QgsSpatiaLiteProvider::closeDb()
-{
-// trying to close the SQLite DB
-  if ( mHandle )
-  {
-    QgsSqliteHandle::closeDb( mHandle );
-    mHandle = nullptr;
-  }
-}
 //-----------------------------------------------------------
 // Check the validaty of a possible sugstring query
 // - not documented, so I am guessing
@@ -1063,44 +1106,6 @@ bool QgsSpatiaLiteProvider::checkQuery()
 QgsField QgsSpatiaLiteProvider::field( int index ) const
 {
   return getDbLayer()->getAttributeField( index );
-}
-
-void QgsSpatiaLiteProvider::invalidateConnections( const QString &connection )
-{
-  QgsSpatiaLiteConnPool::instance()->invalidateConnections( connection );
-}
-
-/**
- * Class factory to return a pointer to a newly created
- * QgsSpatiaLiteProvider object
- */
-QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri )
-{
-  return new QgsSpatiaLiteProvider( *uri );
-}
-
-/** Required key function (used to map the plugin to a data store type)
-*/
-QGISEXTERN QString providerKey()
-{
-  return SPATIALITE_KEY;
-}
-
-/**
- * Required description function
- */
-QGISEXTERN QString description()
-{
-  return SPATIALITE_DESCRIPTION;
-}
-
-/**
- * Required isProvider function. Used to determine if this shared library
- * is a data provider plugin
- */
-QGISEXTERN bool isProvider()
-{
-  return true;
 }
 
 QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
@@ -1201,34 +1206,6 @@ QGISEXTERN bool createDb( const QString &dbPath, QString &errCause )
   // Must be sure there is destination directory ~/.qgis
   QDir().mkpath( path.absolutePath() );
   QString sDatabaseFileName = dbPath;
-
-#if 0
-  // creating/opening the new database
-  sqlite3 *sqlite_handle = nullptr;
-  int ret = QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
-  if ( ret )
-  {
-    // an error occurred
-    errCause = QObject::tr( "Could not create a new database\n" );
-    errCause += QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) );
-    QgsSLConnect::sqlite3_close( sqlite_handle );
-    return false;
-  }
-  // activating Foreign Key constraints
-  char *errMsg = nullptr;
-  ret = sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, nullptr, &errMsg );
-  if ( ret != SQLITE_OK )
-  {
-    errCause = QObject::tr( "Unable to activate FOREIGN_KEY constraints [%1]" ).arg( errMsg );
-    sqlite3_free( errMsg );
-    QgsSLConnect::sqlite3_close( sqlite_handle );
-    return false;
-  }
-  bRc = ::initializeSpatialMetadata( sqlite_handle, errCause );
-
-  // all done: closing the DB connection
-  QgsSLConnect::sqlite3_close( sqlite_handle );
-#endif
   SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::Spatialite45;
   bRc = QgsSpatiaLiteUtils::createSpatialDatabase( sDatabaseFileName, errCause, dbCreateOption );
 

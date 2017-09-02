@@ -17,6 +17,7 @@
 
 #include <QStringList>
 #include <QObject>
+#include <QHash>
 
 extern "C"
 {
@@ -27,7 +28,6 @@ extern "C"
 #include <rasterlite2.h>
 #endif
 }
-
 #include "qgsspatialiteutils.h"
 
 
@@ -147,6 +147,8 @@ class QgsSqliteHandle
       , mDbPath( dbPath )
       , mIsValid( true )
       , mIsGdalOgr( false )
+      , mIsRasterLite2( false )
+      , mIsRasterLite2Active( false )
       , mDbValid( false )
     {
     }
@@ -187,6 +189,22 @@ class QgsSqliteHandle
       return mIsValid;
     }
 
+    /** Set status of Database after GetSpatialiteDbInfo has run
+     * - setting certin capabilities
+     * \see SpatialiteDbInfo::GetSpatialiteDbInfo
+     * \since QGIS 3.0
+     */
+    bool setStatus()
+    {
+      if ( mSpatialiteDbInfo )
+      {
+        mDbValid = getSpatialiteDbInfo()->isDbValid();
+        mIsGdalOgr = getSpatialiteDbInfo()->isDbGdalOgr();
+        mIsRasterLite2 = getSpatialiteDbInfo()->isDbRasterLite2();
+      }
+      return mDbValid;
+    }
+
     /** Count on how often this Connection is being used when shared
      * \note
      *  -1 not being shared
@@ -203,15 +221,13 @@ class QgsSqliteHandle
       mSpatialiteDbInfo = spatialiteDbInfo;
       if ( mSpatialiteDbInfo )
       {
-        mDbValid = getSpatialiteDbInfo()->isDbValid();
-        mIsGdalOgr = getSpatialiteDbInfo()->isDbGdalOgr();
-        // If the Database was created, then there may be a mismatch between the canonicalFilePath and the given file-name
-        mDbPath = mSpatialiteDbInfo->getDatabaseFileName();
+        mIsValid = true;
       }
       else
       {
         mDbValid = false;
         mIsGdalOgr = false;
+        mIsRasterLite2 = false;
       }
     }
 
@@ -243,6 +259,21 @@ class QgsSqliteHandle
      */
     bool isDbGdalOgr() const { return mIsGdalOgr; }
 
+    /** The read Database only supported by the QgsRasterLite2Provider
+     * \note
+     *  - QgsRasterLite2Provider: RasterLite2Raster
+     * \since QGIS 3.0
+     */
+    bool isDbRasterLite2() const { return mIsRasterLite2; }
+
+
+    /** Has rl2_init been called for the QgsRasterLite2Provider
+     * \note
+     *  - QgsRasterLite2Provider: RasterLite2Raster
+     * \since QGIS 3.0
+     */
+    bool isDbRasterLite2Active() const { return mIsRasterLite2Active; }
+
     /** Invalidate the Database Connection valid
      * \since QGIS 1.8
      */
@@ -251,15 +282,17 @@ class QgsSqliteHandle
       mIsValid = false;
     }
 
-    /** If  RasterLite2 ist to be used
+    /** If  RasterLite2 is to be used
      *  -  Memory must be  allocated
      * \note
-     *  - planned feature for the implementation of a RasterLite2Provider
+     *  The spatialite-Library contains placeholders for RasterLite2 function
+     *  - during 'rl2_init' these will be replaced with the real functions
      *  -> which will be called from SpatialiteDbInfo when needed
+     * \returns true if rl2PrivateData if not nullptr (i.e. 'rl2_init' has been called)
      * \see SpatialiteDbInfo
      * \since QGIS 3.0
      */
-    void initRasterlite2();
+    bool initRasterlite2();
 
     /** Close Spatialite Database
      *  - created with openDb
@@ -309,7 +342,50 @@ class QgsSqliteHandle
      * \since QGIS 1.8
      */
     static void closeAll();
-    //static void closeDb( QMap < QString, QgsSqliteHandle * >&handlesRO, QgsSqliteHandle * &handle );
+
+    /** Opening A New Database Connection
+     * -  without two additional parameters for additional control over the new database connection
+     * \note
+     * - corresponds to flags=SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE
+     * \param filename Database filename (UTF-8) [':memory:']
+     * \param ppDb OUT: SQLite db handle
+     * \since QGIS 3.0
+     */
+    static int sqlite3_open( const char *filename, sqlite3 **ppDb );
+
+    /** Closing A Database Connection
+     * -  will not return SQLITE_OK until all open tasks are completed
+     * \note
+     * - spatialite_cleanup_ex and spatialite_shutdown will be called when SPATIALITE_HAS_INIT_EX
+     * \param filename Database filename (UTF-8) [':memory:']
+     * \param sqlite3* : SQLite db handle [not previously closed]
+     * \returns SQLITE_BUSY when unfinalized prepared statements or unfinished sqlite3_backup objects, otherwise SQLITE_OK (0)
+     * \since QGIS 3.0
+     */
+    static int sqlite3_close( sqlite3 * );
+
+    /** Opening A New Database Connection
+     * -  with two additional parameters for additional control over the new database connection
+     * \note
+     * - flages=bShared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX;
+     * \param filename Database filename (UTF-8) [':memory:']
+     * \param ppDb OUT: SQLite db handle
+     * \param flags Flags
+     * \param zVfs Name of VFS module to use
+     * \since QGIS 3.0
+     */
+    static int sqlite3_open_v2( const char *filename, sqlite3 **ppDb, int flags, const char *zVfs = nullptr );
+
+    /** Closing A Database Connection
+     * -  will complete unfinalized prepared statements or unfinished sqlite3_backup objects
+     * \note
+     * - spatialite_cleanup_ex and spatialite_shutdown will be called when SPATIALITE_HAS_INIT_EX
+     * \param filename Database filename (UTF-8) [':memory:']
+     * \param sqlite3* : SQLite db handle [not previously closed]
+     * \returns SQLITE_OK (0), will be destroyed only after completing tasks
+     * \since QGIS 3.0
+     */
+    static int sqlite3_close_v2( sqlite3 * );
   private:
 
     /** Count on how often this Connection is being used when shared
@@ -353,6 +429,20 @@ class QgsSqliteHandle
      */
     bool mIsGdalOgr;
 
+    /** The read Database only supported by the QgsRasterLite2Provider
+     * \note
+     *  - QgsRasterLite2Provider: RasterLite2Raster
+     * \since QGIS 3.0
+     */
+    bool mIsRasterLite2;
+
+    /** Has rl2_init been called for the QgsRasterLite2Provider
+     * \note
+     *  - QgsRasterLite2Provider: RasterLite2Raster
+     * \since QGIS 3.0
+     */
+    bool mIsRasterLite2Active;
+
     /** Is the read Database supported by QgsSpatiaLiteProvider or
      * a format only supported by the QgsOgrProvider or QgsGdalProvider
      * \note
@@ -386,11 +476,29 @@ class QgsSqliteHandle
 #endif
 
     /**
-     * Map of cached connections
+     * Map of cached of QgsSqliteHandle connections
      * \see openDb
      * \see closeDb
      * \since QGIS 1.8
      */
     static QMap < QString, QgsSqliteHandle * > sHandles;
+#if defined(SPATIALITE_HAS_INIT_EX)
+
+    /** Hash to contains the sqlite3 handle and the spatialite InternalCache
+     *    which supports the DB connection
+     *  -  Memory must be  allocated and freed [SPATIALITE_HAS_INIT_EX]
+     * \note
+     *  - setting up the internal cache: spatialite_alloc_connection();
+     *  -> spatialite_init_ex(SqliteHandle, SpliteInternalCache, 0);
+     *  -> spatialite_cleanup_ex(SpliteInternalCache);
+     *  -> spatialite_shutdown [free memory used by this connection]
+     * \see sqlite3_open
+     * \see sqlite3_close
+     * \see sqlite3_open_v2
+     * \see sqlite3_close_v2
+     * \since QGIS 3.0
+     */
+    static QHash<sqlite3 *, void *> sSpatialiteConnections;
+#endif
 };
 #endif // QGSSPATIALITECONNECTION_H
