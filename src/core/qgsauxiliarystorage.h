@@ -138,6 +138,15 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     QgsAuxiliaryLayer &operator=( QgsAuxiliaryLayer const &rhs ) = delete;
 
     /**
+     * Returns a new instance equivalent to this one. The underlying table
+     * is duplicate for the layer given in parameter. Note that the current
+     * auxiliary layer should be saved to have a proper duplicated table.
+     *
+     * \param layer The layer for which the clone is made
+     */
+    QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const SIP_FACTORY;
+
+    /**
      * An auxiliary layer is not spatial. This method returns a spatial
      * representation of auxiliary data.
      *
@@ -243,6 +252,8 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 
   private:
     QgsVectorLayerJoinInfo mJoinInfo;
+    QString mFileName;
+    QString mTable;
     QgsVectorLayer *mLayer = nullptr;
 };
 
@@ -357,9 +368,21 @@ class CORE_EXPORT QgsAuxiliaryStorage
     /**
      * Removes a table from the auxiliary storage.
      *
+     * \param uri The uri of the table to remove
+     *
      * \returns true if the table is well deleted, false otherwise
      */
     static bool deleteTable( const QgsDataSourceUri &uri );
+
+    /**
+     * Duplicates a table and its content.
+     *
+     * \param uri The uri of the table to duplicate
+     * \param newTable The name of the new table
+     *
+     * \returns true if the table is well duplicated, false otherwise
+     */
+    static bool duplicateTable( const QgsDataSourceUri &uri, const QString &newTable );
 
     /**
      * Returns the extension used for auxiliary databases.
@@ -381,6 +404,8 @@ class CORE_EXPORT QgsAuxiliaryStorage
 
     static bool exec( const QString &sql, sqlite3 *handler );
     static void debugMsg( const QString &sql, sqlite3 *handler );
+
+    static QgsDataSourceUri parseOgrUri( const QgsDataSourceUri &uri );
 
     bool mValid = false;
     QString mFileName; // original filename

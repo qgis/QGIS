@@ -201,7 +201,9 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   QList<QgsVectorLayerJoinInfo> joins = vectorJoins();
   Q_FOREACH ( const QgsVectorLayerJoinInfo &join, joins )
   {
-    layer->addJoin( join );
+    // do not copy join information for auxiliary layer
+    if ( auxiliaryLayer() && auxiliaryLayer()->id() != join.joinLayerId() )
+      layer->addJoin( join );
   }
 
   layer->setProviderEncoding( dataProvider()->encoding() );
@@ -263,6 +265,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   }
 
   layer->setEditFormConfig( editFormConfig() );
+
+  layer->setAuxiliaryLayer( auxiliaryLayer()->clone( layer ) );
 
   return layer;
 }

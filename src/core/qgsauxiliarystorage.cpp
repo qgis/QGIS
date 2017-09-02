@@ -181,6 +181,8 @@ QgsPropertyDefinition QgsAuxiliaryField::propertyDefinition() const
 
 QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer )
   : QgsVectorLayer( QString( "%1|layername=%2" ).arg( filename, table ), QString( "%1_auxiliarystorage" ).arg( table ), "ogr" )
+  , mFileName( filename )
+  , mTable( table )
   , mLayer( vlayer )
 {
   // init join info
@@ -192,6 +194,12 @@ QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &fil
   mJoinInfo.setUpsertOnEdit( true );
   mJoinInfo.setCascadedDelete( true );
   mJoinInfo.setJoinFieldNamesBlackList( QStringList() << QStringLiteral( "rowid" ) ); // introduced by ogr provider
+}
+
+QgsAuxiliaryLayer *QgsAuxiliaryLayer::clone( QgsVectorLayer *target ) const
+{
+  QgsAuxiliaryStorage::duplicateTable( source(), target->id() );
+  return new QgsAuxiliaryLayer( mJoinInfo.targetFieldName(), mFileName, target->id(), target );
 }
 
 QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
@@ -472,36 +480,42 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
   return alayer;
 }
 
-bool QgsAuxiliaryStorage::deleteTable( const QgsDataSourceUri &uri )
+bool QgsAuxiliaryStorage::deleteTable( const QgsDataSourceUri &ogrUri )
 {
   bool rc = false;
+  QgsDataSourceUri uri = parseOgrUri( ogrUri );
 
-  // parsing for ogr style uri :
-  // " filePath|layername='tableName' table="" sql="
-  QStringList uriParts = uri.uri().split( '|' );
-  if ( uriParts.count() < 2 )
-    return false;
-
-  const QString databasePath = uriParts[0].replace( ' ', "" );
-
-  const QString table = uriParts[1];
-  QStringList tableParts = table.split( ' ' );
-
-  if ( tableParts.count() < 1 )
-    return false;
-
-  const QString tableName = tableParts[0].replace( "layername=", "" );
-
-  if ( !databasePath.isEmpty() && !tableName.isEmpty() )
+  if ( !uri.database().isEmpty() && !uri.table().isEmpty() )
   {
-    sqlite3 *handler = openDB( databasePath );
+    sqlite3 *handler = openDB( uri.database() );
 
     if ( handler )
     {
-      QString sql = QString( "DROP TABLE %1" ).arg( tableName );
+      QString sql = QString( "DROP TABLE %1" ).arg( uri.table() );
       rc = exec( sql, handler );
 
       sql = QString( "VACUUM" );
+      rc = exec( sql, handler );
+
+      close( handler );
+    }
+  }
+
+  return rc;
+}
+
+bool QgsAuxiliaryStorage::duplicateTable( const QgsDataSourceUri &ogrUri, const QString &newTable )
+{
+  QgsDataSourceUri uri = parseOgrUri( ogrUri );
+  bool rc = false;
+
+  if ( !uri.table().isEmpty() && !uri.database().isEmpty() )
+  {
+    sqlite3 *handler = openDB( uri.database() );
+
+    if ( handler )
+    {
+      QString sql = QString( "CREATE TABLE %1 AS SELECT * FROM %2" ).arg( newTable, uri.table() );
       rc = exec( sql, handler );
 
       close( handler );
@@ -679,4 +693,30 @@ QString QgsAuxiliaryStorage::currentFileName() const
     return mTmpFileName;
   else
     return mFileName;
+}
+
+QgsDataSourceUri QgsAuxiliaryStorage::parseOgrUri( const QgsDataSourceUri &uri )
+{
+  QgsDataSourceUri newUri;
+
+  // parsing for ogr style uri :
+  // " filePath|layername='tableName' table="" sql="
+  QStringList uriParts = uri.uri().split( '|' );
+  if ( uriParts.count() < 2 )
+    return newUri;
+
+  const QString databasePath = uriParts[0].replace( ' ', "" );
+
+  const QString table = uriParts[1];
+  QStringList tableParts = table.split( ' ' );
+
+  if ( tableParts.count() < 1 )
+    return newUri;
+
+  const QString tableName = tableParts[0].replace( "layername=", "" );
+
+  newUri.setDataSource( QString(), tableName, QString() );
+  newUri.setDatabase( databasePath );
+
+  return newUri;
 }

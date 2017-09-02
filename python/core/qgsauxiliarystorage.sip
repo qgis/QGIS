@@ -109,6 +109,16 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
 
 
+    QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const /Factory/;
+%Docstring
+ Returns a new instance equivalent to this one. The underlying table
+ is duplicate for the layer given in parameter. Note that the current
+ auxiliary layer should be saved to have a proper duplicated table.
+
+ \param layer The layer for which the clone is made
+ :rtype: QgsAuxiliaryLayer
+%End
+
     QgsVectorLayer *toSpatialLayer() const;
 %Docstring
  An auxiliary layer is not spatial. This method returns a spatial
@@ -348,7 +358,20 @@ class QgsAuxiliaryStorage
 %Docstring
  Removes a table from the auxiliary storage.
 
+ \param uri The uri of the table to remove
+
  :return: true if the table is well deleted, false otherwise
+ :rtype: bool
+%End
+
+    static bool duplicateTable( const QgsDataSourceUri &uri, const QString &newTable );
+%Docstring
+ Duplicates a table and its content.
+
+ \param uri The uri of the table to duplicate
+ \param newTable The name of the new table
+
+ :return: true if the table is well duplicated, false otherwise
  :rtype: bool
 %End
 
