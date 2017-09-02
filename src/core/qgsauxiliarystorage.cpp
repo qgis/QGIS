@@ -30,6 +30,31 @@ const QString AS_JOINFIELD = "ASPK";
 const QString AS_EXTENSION = "qgd";
 const QString AS_JOINPREFIX = "auxiliary_storage_";
 
+const QVector<QgsPalLayerSettings::Property> palHiddenProperties
+{
+  QgsPalLayerSettings::PositionX,
+  QgsPalLayerSettings::PositionY,
+  QgsPalLayerSettings::Show,
+  QgsPalLayerSettings::LabelRotation,
+  QgsPalLayerSettings::Family,
+  QgsPalLayerSettings::FontStyle,
+  QgsPalLayerSettings::Size,
+  QgsPalLayerSettings::Bold,
+  QgsPalLayerSettings::Italic,
+  QgsPalLayerSettings::Underline,
+  QgsPalLayerSettings::Color,
+  QgsPalLayerSettings::Strikeout,
+  QgsPalLayerSettings::BufferSize,
+  QgsPalLayerSettings::BufferColor,
+  QgsPalLayerSettings::LabelDistance,
+  QgsPalLayerSettings::Hali,
+  QgsPalLayerSettings::Vali,
+  QgsPalLayerSettings::ScaleVisibility,
+  QgsPalLayerSettings::MinScale,
+  QgsPalLayerSettings::MaxScale,
+  QgsPalLayerSettings::AlwaysShow
+};
+
 QgsAuxiliaryField::QgsAuxiliaryField( const QgsPropertyDefinition &def )
   : QgsField()
   , mPropertyDefinition( def )
@@ -308,6 +333,29 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
   }
 
   return index;
+}
+
+bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
+{
+  bool hidden = false;
+
+  QgsAuxiliaryField aField( fields().field( index ) );
+  QgsPropertyDefinition def = aField.propertyDefinition();
+
+  if ( def.origin().compare( "labeling" ) == 0 )
+  {
+    Q_FOREACH ( const QgsPalLayerSettings::Property &p, palHiddenProperties )
+    {
+      const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
+      if ( propName.compare( def.name() ) == 0 )
+      {
+        hidden = true;
+        break;
+      }
+    }
+  }
+
+  return hidden;
 }
 
 //

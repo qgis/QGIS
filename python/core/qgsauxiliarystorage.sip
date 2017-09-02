@@ -179,6 +179,15 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  :rtype: bool
 %End
 
+    bool isHiddenProperty( int index ) const;
+%Docstring
+ Returns true if the underlying field have to be hidden from editing
+ tools like attribute table, false otherwise.
+
+ \param index The index of the field for which visibility is checked
+ :rtype: bool
+%End
+
     static int createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *vlayer );
 %Docstring
  Create if necessary a new auxiliary field for a PAL property and

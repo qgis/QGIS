@@ -1125,7 +1125,7 @@ Returns true if the provider has been modified since the last commit
  :rtype: bool
 %End
 
-    bool isAuxiliaryField( int index ) const;
+    bool isAuxiliaryField( int index, int &srcIndex ) const;
 %Docstring
  Returns true if the field comes from the auxiliary layer,
  false otherwise.

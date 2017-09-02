@@ -200,6 +200,14 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     virtual bool deleteAttribute( int attr ) override;
 
     /**
+     * Returns true if the underlying field have to be hidden from editing
+     * tools like attribute table, false otherwise.
+     *
+     * \param index The index of the field for which visibility is checked
+     */
+    bool isHiddenProperty( int index ) const;
+
+    /**
      * Create if necessary a new auxiliary field for a PAL property and
      * activate this property in settings.
      *

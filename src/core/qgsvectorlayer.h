@@ -1166,7 +1166,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.0
      */
-    bool isAuxiliaryField( int index ) const;
+    bool isAuxiliaryField( int index, int &srcIndex ) const;
 
     //! Synchronises with changes in the datasource
     virtual void reload() override;

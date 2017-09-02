@@ -2834,17 +2834,17 @@ bool QgsVectorLayer::isModified() const
 }
 
 
-bool QgsVectorLayer::isAuxiliaryField( int index ) const
+bool QgsVectorLayer::isAuxiliaryField( int index, int &srcIndex ) const
 {
   bool auxiliaryField = false;
+  srcIndex = -1;
 
   if ( !auxiliaryLayer() )
     return auxiliaryField;
 
   if ( index >= 0 && fields().fieldOrigin( index ) == QgsFields::OriginJoin )
   {
-    int srcFieldIndex;
-    const QgsVectorLayerJoinInfo *info = mJoinBuffer->joinForFieldIndex( index, fields(), srcFieldIndex );
+    const QgsVectorLayerJoinInfo *info = mJoinBuffer->joinForFieldIndex( index, fields(), srcIndex );
 
     if ( info && info->joinLayerId() == auxiliaryLayer()->id() )
       auxiliaryField = true;
@@ -3071,6 +3071,31 @@ void QgsVectorLayer::updateFields()
       continue;
 
     mFields[index].setEditorWidgetSetup( fieldWidgetIterator.value() );
+  }
+
+  // update attribute table config
+  mAttributeTableConfig.update( fields() );
+
+  if ( auxiliaryLayer() )
+  {
+    QVector<QgsAttributeTableConfig::ColumnConfig> columns = mAttributeTableConfig.columns();
+
+    QVector<QgsAttributeTableConfig::ColumnConfig>::iterator it;
+    for ( it = columns.begin(); it != columns.end(); ++it )
+    {
+      int idx = fields().lookupField( it->name );
+      if ( idx >= 0 )
+      {
+        int srcIdx = -1;
+        if ( !isAuxiliaryField( idx, srcIdx ) )
+          continue;
+
+        if ( auxiliaryLayer()->isHiddenProperty( srcIdx ) )
+          it->hidden = true;
+      }
+    }
+
+    mAttributeTableConfig.setColumns( columns );
   }
 
   if ( oldFields != mFields )
