@@ -3454,14 +3454,17 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
 
 OGRLayerH QgsOgrProvider::setSubsetString( OGRLayerH layer, OGRDataSourceH ds )
 {
-  return QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), mSubsetString );
+  bool origFidAdded = false;
+  return QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), mSubsetString, origFidAdded );
 }
 
-OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec *encoding, const QString &subsetString )
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded )
 {
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   OGRSFDriverH ogrDriver = OGR_DS_GetDriver( ds );
   QString ogrDriverName = OGR_Dr_GetName( ogrDriver );
+  bool origFidAddAttempted = false;
+  origFidAdded = false;
 
   if ( ogrDriverName == QLatin1String( "ODBC" ) ) //the odbc driver does not like schema names for subset
   {
@@ -3478,12 +3481,33 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     sql = encoding->fromUnicode( subsetString );
   else
   {
-    sql = "SELECT * FROM " + quotedIdentifier( layerName, ogrDriverName );
+    QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
+
+    sql = QByteArray( "SELECT " );
+    if ( !fidColumn.isEmpty() )
+    {
+      sql += fidColumn + " as orig_ogc_fid, ";
+      origFidAddAttempted = true;
+    }
+    sql += "* FROM " + quotedIdentifier( layerName, ogrDriverName );
     sql += " WHERE " + encoding->fromUnicode( subsetString );
   }
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-  return OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+  OGRLayerH subsetLayer = OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+
+  // Check if first column is orig_ogc_fid
+  if ( origFidAddAttempted && subsetLayer )
+  {
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( subsetLayer );
+    if ( OGR_FD_GetFieldCount( fdef ) > 0 )
+    {
+      OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, 0 );
+      origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), "orig_ogc_fid" ) == 0;
+    }
+  }
+
+  return subsetLayer;
 }
 
 void QgsOgrProvider::open( OpenMode mode )
