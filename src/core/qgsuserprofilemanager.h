@@ -191,7 +191,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * Emitted when the list of profiles is changed.
      *
      * This signal will only be emitted when isNewProfileNotificationEnabled() is true.
-     * By default By default new profile notification is disabled.
+     * By default new profile notification is disabled.
      *
      * \see isNewProfileNotificationEnabled()
      * \see setNewProfileNotificationEnabled()
