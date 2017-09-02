@@ -262,7 +262,7 @@
            </widget>
           </item>
           <item row="4" column="2">
-           <widget class="QgsSpinBox" name="mMaxWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -288,7 +288,7 @@
            </widget>
           </item>
           <item row="3" column="2">
-           <widget class="QgsSpinBox" name="mMinWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mMinWidthSpinBox">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -304,7 +304,7 @@
            </widget>
           </item>
           <item row="5" column="2">
-           <widget class="QgsSpinBox" name="mHeightSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
             <property name="suffix">
              <string> mm</string>
             </property>

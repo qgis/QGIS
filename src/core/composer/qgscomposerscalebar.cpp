@@ -757,8 +757,8 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mNumSegmentsLeft = itemElem.attribute( "numSegmentsLeft", "0" ).toInt();
   mNumUnitsPerSegment = itemElem.attribute( "numUnitsPerSegment", "1.0" ).toDouble();
   mSegmentSizeMode = static_cast<SegmentSizeMode>( itemElem.attribute( "segmentSizeMode", "0" ).toInt() );
-  mMinBarWidth = itemElem.attribute( "minBarWidth", "50" ).toInt();
-  mMaxBarWidth = itemElem.attribute( "maxBarWidth", "150" ).toInt();
+  mMinBarWidth = itemElem.attribute( "minBarWidth", "50" ).toDouble();
+  mMaxBarWidth = itemElem.attribute( "maxBarWidth", "150" ).toDouble();
   mSegmentMillimeters = itemElem.attribute( "segmentMillimeters", "0.0" ).toDouble();
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
   mPen.setWidthF( itemElem.attribute( "outlineWidth", "0.3" ).toDouble() );

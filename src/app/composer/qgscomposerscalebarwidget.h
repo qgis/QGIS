@@ -35,7 +35,7 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
 
   public slots:
 
-    void on_mHeightSpinBox_valueChanged( int i );
+    void on_mHeightSpinBox_valueChanged( double d );
     void on_mLineWidthSpinBox_valueChanged( double d );
     void on_mSegmentSizeSpinBox_valueChanged( double d );
     void on_mSegmentsLeftSpinBox_valueChanged( int i );
@@ -54,8 +54,8 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void on_mUnitsComboBox_currentIndexChanged( int index );
     void on_mLineJoinStyleCombo_currentIndexChanged( int index );
     void on_mLineCapStyleCombo_currentIndexChanged( int index );
-    void on_mMinWidthSpinBox_valueChanged( int i );
-    void on_mMaxWidthSpinBox_valueChanged( int i );
+    void on_mMinWidthSpinBox_valueChanged( double d );
+    void on_mMaxWidthSpinBox_valueChanged( double d );
 
   private slots:
     void setGuiElements();
