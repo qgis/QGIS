@@ -83,9 +83,10 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 }
 
 
-void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &property, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer )
+void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &property, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer, bool auxiliaryStorageEnabled )
 {
   mVectorLayer = layer;
+  mAuxiliaryStorageEnabled = auxiliaryStorageEnabled;
   setToProperty( property );
   mPropertyKey = propertyKey;
 
@@ -126,9 +127,9 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &proper
   updateGui();
 }
 
-void QgsPropertyOverrideButton::init( int propertyKey, const QgsAbstractPropertyCollection &collection, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer )
+void QgsPropertyOverrideButton::init( int propertyKey, const QgsAbstractPropertyCollection &collection, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer, bool auxiliaryStorageEnabled )
 {
-  init( propertyKey, collection.property( propertyKey ), definitions, layer );
+  init( propertyKey, collection.property( propertyKey ), definitions, layer, auxiliaryStorageEnabled );
 }
 
 
@@ -334,18 +335,21 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   mDefineMenu->addSeparator();
 
   // deactivate button if field already exists
-  mDefineMenu->addAction( mActionCreateAuxiliaryField );
-
-  const QgsAuxiliaryLayer *alayer = mVectorLayer->auxiliaryLayer();
-
-  mActionCreateAuxiliaryField->setEnabled( true );
-  mActionCreateAuxiliaryField->setChecked( false );
-  if ( alayer && alayer->exists( mDefinition ) )
+  if ( mAuxiliaryStorageEnabled )
   {
-    if ( mProperty.field() == QgsAuxiliaryField::nameFromProperty( mDefinition, true ) )
+    mDefineMenu->addAction( mActionCreateAuxiliaryField );
+
+    const QgsAuxiliaryLayer *alayer = mVectorLayer->auxiliaryLayer();
+
+    mActionCreateAuxiliaryField->setEnabled( true );
+    mActionCreateAuxiliaryField->setChecked( false );
+    if ( alayer && alayer->exists( mDefinition ) )
     {
-      mActionCreateAuxiliaryField->setEnabled( false );
-      mActionCreateAuxiliaryField->setChecked( true );
+      if ( mProperty.field() == QgsAuxiliaryField::nameFromProperty( mDefinition, true ) )
+      {
+        mActionCreateAuxiliaryField->setEnabled( false );
+        mActionCreateAuxiliaryField->setChecked( true );
+      }
     }
   }
 
