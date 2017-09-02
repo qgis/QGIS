@@ -63,14 +63,20 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
+  createRubberBands();
+
   if ( !mCurrentLabel.layer->isEditable() )
   {
     QgsPalIndexes indexes;
-    if ( createAuxiliaryFields( indexes ) )
-      return;
-  }
+    bool newAuxiliaryLayer = createAuxiliaryFields( indexes );
 
-  createRubberBands();
+    // in case of a new auxiliary layer, a dialog window is displayed and the
+    // canvas release event is lost.
+    if ( newAuxiliaryLayer )
+    {
+      canvasReleaseEvent( e );
+    }
+  }
 }
 
 void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
