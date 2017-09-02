@@ -180,8 +180,8 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     QgsCircularString *toCircularString( bool oriented = false ) const;
 
-    //! is the circle contains the point \a p?
-    bool contains( const QgsPoint &p, double epsilon = 1E-8 ) const;
+    //! Returns true if the circle contains the \a point.
+    bool contains( const QgsPoint &point, double epsilon = 1E-8 ) const;
 
     QgsRectangle boundingBox() const override;
 
