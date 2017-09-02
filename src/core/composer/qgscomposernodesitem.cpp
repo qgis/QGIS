@@ -202,6 +202,11 @@ void QgsComposerNodesItem::paint( QPainter* painter,
   if ( !painter )
     return;
 
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
+
   painter->save();
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
