@@ -44,6 +44,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
+#include "qgscircle.h"
 
 struct QgsGeometryPrivate
 {
@@ -1006,6 +1007,81 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
     angle = std::fmod( angle, 180.0 );
 
   return minBounds;
+}
+
+static QgsCircle __recMinimalEnclosingCircle( QgsMultiPoint points, QgsMultiPoint boundary )
+{
+  auto l_boundary = boundary.length();
+  QgsCircle circ_mec;
+  if ( ( points.length() == 0 ) || ( l_boundary == 3 ) )
+  {
+    switch ( l_boundary )
+    {
+      case 0:
+        circ_mec = QgsCircle();
+        break;
+      case 1:
+        circ_mec = QgsCircle( QgsPoint( boundary.last() ), 0 );
+        boundary.pop_back();
+        break;
+      case 2:
+      {
+        QgsPointXY p1 = boundary.last();
+        boundary.pop_back();
+        QgsPointXY p2 = boundary.last();
+        boundary.pop_back();
+        circ_mec = QgsCircle().from2Points( QgsPoint( p1 ), QgsPoint( p2 ) );
+      }
+      break;
+      default:
+        QgsPoint p1( boundary.at( 0 ) );
+        QgsPoint p2( boundary.at( 1 ) );
+        QgsPoint p3( boundary.at( 2 ) );
+        circ_mec = QgsCircle().minimalCircleFrom3Points( p1, p2, p3 );
+        break;
+    }
+    return circ_mec;
+  }
+  else
+  {
+    QgsPointXY pxy = points.last();
+    points.pop_back();
+    circ_mec = __recMinimalEnclosingCircle( points, boundary );
+    QgsPoint p( pxy );
+    if ( !circ_mec.contains( p ) )
+    {
+      boundary.append( pxy );
+      circ_mec = __recMinimalEnclosingCircle( points, boundary );
+    }
+  }
+  return circ_mec;
+}
+
+QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &radius, unsigned int segments ) const
+{
+  center = QgsPointXY( );
+  radius = 0;
+
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+
+  /* optimization */
+  QgsGeometry hull = convexHull();
+  if ( hull.isNull() )
+    return QgsGeometry();
+
+  QgsMultiPoint P = hull.convertToPoint( true ).asMultiPoint();
+  QgsMultiPoint R;
+
+  QgsCircle circ = __recMinimalEnclosingCircle( P, R );
+  center = QgsPointXY( circ.center() );
+  radius = circ.radius();
+  QgsGeometry geom;
+  geom.setGeometry( circ.toPolygon( segments ) );
+  return geom;
+
 }
 
 QgsGeometry QgsGeometry::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const

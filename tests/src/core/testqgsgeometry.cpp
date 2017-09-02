@@ -128,6 +128,8 @@ class TestQgsGeometry : public QObject
     void reshapeGeometryLineMerge();
     void createCollectionOfType();
 
+    void minimalEnclosingCircle( );
+
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString &testName, const QString &comment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
@@ -4161,8 +4163,8 @@ void TestQgsGeometry::circle()
 
 //test "alt" constructors
 // by2Points
-  QVERIFY( QgsCircle().from2Points( QgsPoint( -5, 0 ), QgsPoint( 5, 0 ) ) == QgsCircle( QgsPoint( 0, 0 ), 10, 90 ) );
-  QVERIFY( QgsCircle().from2Points( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 10, 0 ) );
+  QVERIFY( QgsCircle().from2Points( QgsPoint( -5, 0 ), QgsPoint( 5, 0 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 90 ) );
+  QVERIFY( QgsCircle().from2Points( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 0 ) );
 // byExtent
   QVERIFY( QgsCircle().fromExtent( QgsPoint( -5, -5 ), QgsPoint( 5, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 0 ) );
   QVERIFY( QgsCircle().fromExtent( QgsPoint( -7.5, -2.5 ), QgsPoint( 2.5, 200.5 ) ) == QgsCircle() );
@@ -4182,6 +4184,15 @@ void TestQgsGeometry::circle()
   QgsCircle circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 2, 0 ), QgsPoint( 3, 0 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
   QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 1.4645, 1.4645 ), 0.0001 );
   QGSCOMPARENEAR( circ_tgt.radius(), 1.4645, 0.0001 );
+  // minimalCircleFrom3points
+  QgsCircle minCircle3Points = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
+  QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( minCircle3Points.radius(), 5.0, 0.0001 );
+  minCircle3Points = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
+  QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( minCircle3Points.radius(), 5.0, 0.0001 );
+
+
 
 // test quadrant
   QVector<QgsPoint> quad = QgsCircle( QgsPoint( 0, 0 ), 5 ).northQuadrant();
@@ -4286,6 +4297,15 @@ void TestQgsGeometry::circle()
   QGSCOMPARENEAR( 314.1593, QgsCircle( QgsPoint( 0, 0 ), 10 ).area(), 0.0001 );
   // perimeter
   QGSCOMPARENEAR( 31.4159, QgsCircle( QgsPoint( 0, 0 ), 5 ).perimeter(), 0.0001 );
+
+  // contains
+  QgsPoint pc;
+  pc = QgsPoint( 1, 1 );
+  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
+  pc = QgsPoint( 0, 5 );
+  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
+  pc = QgsPoint( 6, 1 );
+  QVERIFY( !QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
 }
 
 void TestQgsGeometry::regularPolygon()
@@ -5576,6 +5596,74 @@ void TestQgsGeometry::createCollectionOfType()
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiSurfaceM );
   QVERIFY( dynamic_cast< QgsMultiSurface *>( collect.get() ) );
 }
+
+void TestQgsGeometry::minimalEnclosingCircle()
+{
+  QgsGeometry geomTest;
+  QgsGeometry result, resultTest;
+  QgsPointXY center;
+  double radius;
+
+  // empty
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QCOMPARE( center, QgsPointXY() );
+  QCOMPARE( radius, 0.0 );
+  QCOMPARE( result, QgsGeometry() );
+
+  // caase 1
+  geomTest = QgsGeometry::fromPoint( QgsPointXY( 5, 5 ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QCOMPARE( center, QgsPointXY( 5, 5 ) );
+  QCOMPARE( radius, 0.0 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  // case 2
+  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 3 8, 7 4 )" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 5, 6 ), 0.0001 );
+  QGSCOMPARENEAR( radius, sqrt( 2 ) * 2, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  geomTest = QgsGeometry::fromWkt( QString( "LINESTRING( 0 5, 2 2, 0 -5, -1 -1 )" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 0 5, 2 2, 0 -5, -1 -1 )" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  geomTest = QgsGeometry::fromWkt( QString( "POLYGON(( 0 5, 2 2, 0 -5, -1 -1 ))" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  // case 3
+  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT((0 0), (5 5), (0 -5), (0 5), (-5 0))" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0.8333, 0.8333 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5.8926, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+}
+
 
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"

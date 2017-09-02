@@ -354,6 +354,11 @@ qgis:orientedminimumboundingbox: >
 
   As an alternative, the output layer can contain not just a single rectangle, but one for each input feature, representing the minimum rectangle that covers each of them.
 
+qgis:minimalenclosingcircle: >
+  This algorithm takes a vector layer and generate a new one with the minimum enclosing circle that covers all the input features.
+
+  As an alternative, the output layer can contain not just a single circle, but one for each input feature, representing the minimum enclosing circle that covers each of them.
+
 qgis:orthogonalize: >
   This algorithm takes a line or polygon layer and attempts to orthogonalize all the geometries in the layer. This process shifts the nodes in the geometries to try to make every angle in the geometry either a right angle or a straight line.
 

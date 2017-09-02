@@ -577,6 +577,16 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: QgsGeometry
 %End
 
+    QgsGeometry minimalEnclosingCircle( QgsPointXY &center /Out/, double &radius /Out/, unsigned int segments = 36 ) const;
+%Docstring
+ Returns the minimal enclosing circle for the geometry.
+ \param center Center of the minimal enclosing circle returneds
+ \param radius Radius of the minimal enclosing circle returned
+.. seealso:: QgsEllipse.toPolygon()
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 %Docstring
  Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries
