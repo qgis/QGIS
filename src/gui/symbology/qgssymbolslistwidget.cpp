@@ -27,6 +27,8 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QAction>
 #include <QString>
@@ -41,7 +43,7 @@
 #include <QPushButton>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, const QgsVectorLayer *layer )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
   , mSymbol( symbol )
   , mStyle( style )
@@ -127,6 +129,53 @@ void QgsSymbolsListWidget::registerDataDefinedButton( QgsPropertyOverrideButton 
 {
   button->setProperty( "propertyKey", key );
   button->registerExpressionContextGenerator( this );
+
+  connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsSymbolsListWidget::createAuxiliaryField );
+}
+
+void QgsSymbolsListWidget::createAuxiliaryField()
+{
+  // try to create an auxiliary layer if not yet created
+  if ( !mLayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
+    dlg.exec();
+  }
+
+  // return if still not exists
+  if ( !mLayer->auxiliaryLayer() )
+    return;
+
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
+
+  // create property in auxiliary storage if necessary
+  if ( !mLayer->auxiliaryLayer()->exists( def ) )
+    mLayer->auxiliaryLayer()->addAuxiliaryField( def );
+
+  // update property with join field name from auxiliary storage
+  QgsProperty property = button->toProperty();
+  property.setField( QgsAuxiliaryField::nameFromProperty( def, true ) );
+  property.setActive( true );
+  button->updateFieldLists();
+  button->setToProperty( property );
+
+  QgsMarkerSymbol *markerSymbol = static_cast<QgsMarkerSymbol *>( mSymbol );
+  switch ( key )
+  {
+    case QgsSymbolLayer::PropertyAngle:
+      markerSymbol->setDataDefinedAngle( button->toProperty() );
+      break;
+    case QgsSymbolLayer::PropertySize:
+      markerSymbol->setDataDefinedSize( button->toProperty() );
+      markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
+      break;
+    default:
+      break;
+  }
+
+  emit changed();
 }
 
 void QgsSymbolsListWidget::setContext( const QgsSymbolWidgetContext &context )

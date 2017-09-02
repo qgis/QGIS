@@ -38,7 +38,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, const QgsVectorLayer *layer = nullptr );
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, QgsVectorLayer *layer = nullptr );
 
 
     virtual ~QgsSymbolsListWidget();
@@ -86,6 +86,8 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateDataDefinedMarkerAngle();
     void updateDataDefinedLineWidth();
 
+    void createAuxiliaryField();
+
   signals:
     void changed();
 
@@ -101,7 +103,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsStyle *mStyle = nullptr;
     QMenu *mAdvancedMenu = nullptr;
     QAction *mClipFeaturesAction = nullptr;
-    const QgsVectorLayer *mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
 
     void populateSymbolView();

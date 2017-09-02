@@ -19,7 +19,7 @@ class QgsSymbolsListWidget : QWidget
 #include "qgssymbolslistwidget.h"
 %End
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, const QgsVectorLayer *layer = 0 );
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, QgsVectorLayer *layer = 0 );
 
 
     virtual ~QgsSymbolsListWidget();
@@ -70,6 +70,8 @@ Pupulates the groups combo box with available tags and smartgroups
     void updateDataDefinedMarkerSize();
     void updateDataDefinedMarkerAngle();
     void updateDataDefinedLineWidth();
+
+    void createAuxiliaryField();
 
   signals:
     void changed();
