@@ -123,7 +123,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * \param table The table name
      * \param vlayer The target vector layer in join definition
      */
-    QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, const QgsVectorLayer *vlayer );
+    QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer );
 
     /**
      * Destructor
@@ -208,6 +208,16 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     bool isHiddenProperty( int index ) const;
 
     /**
+     * Returns the index of the auxiliary field for a specific property
+     * definition.
+     *
+     * \param definition The property definition
+     *
+     * \returns The index of the field corresponding to the property or -1
+     */
+    int indexOfProperty( const QgsPropertyDefinition &definition ) const;
+
+    /**
      * Create if necessary a new auxiliary field for a PAL property and
      * activate this property in settings.
      *
@@ -233,7 +243,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 
   private:
     QgsVectorLayerJoinInfo mJoinInfo;
-    const QgsVectorLayer *mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 
@@ -342,7 +352,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
      *
      * \returns A new auxiliary layer or a nullptr if an error happened.
      */
-    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const SIP_FACTORY;
+    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const SIP_FACTORY;
 
     /**
      * Removes a table from the auxiliary storage.

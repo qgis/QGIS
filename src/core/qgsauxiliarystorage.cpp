@@ -179,7 +179,7 @@ QgsPropertyDefinition QgsAuxiliaryField::propertyDefinition() const
 // QgsAuxiliaryLayer
 //
 
-QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, const QgsVectorLayer *vlayer )
+QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer )
   : QgsVectorLayer( QString( "%1|layername=%2" ).arg( filename, table ), QString( "%1_auxiliarystorage" ).arg( table ), "ogr" )
   , mLayer( vlayer )
 {
@@ -232,7 +232,7 @@ QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const
 
 bool QgsAuxiliaryLayer::exists( const QgsPropertyDefinition &definition ) const
 {
-  return ( fields().indexOf( QgsAuxiliaryField::nameFromProperty( definition ) ) >= 0 );
+  return ( indexOfProperty( definition ) >= 0 );
 }
 
 bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definition )
@@ -243,6 +243,24 @@ bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definiti
   const QgsAuxiliaryField af( definition );
   const bool rc = addAttribute( af );
   updateFields();
+
+  if ( rc )
+  {
+    int auxIndex = indexOfProperty( definition );
+    int index = mLayer->fields().indexOf( QgsAuxiliaryField::nameFromProperty( definition, true ) );
+
+    if ( index >= 0 && auxIndex >= 0 )
+    {
+      if ( definition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha
+           || definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha )
+      {
+        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Color" ), QVariantMap() );
+        setEditorWidgetSetup( auxIndex, setup );
+      }
+
+      mLayer->setEditorWidgetSetup( index, editorWidgetSetup( auxIndex ) );
+    }
+  }
 
   return rc;
 }
@@ -358,6 +376,11 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
   return hidden;
 }
 
+int QgsAuxiliaryLayer::indexOfProperty( const QgsPropertyDefinition &def ) const
+{
+  return fields().indexOf( QgsAuxiliaryField::nameFromProperty( def ) );
+}
+
 //
 // QgsAuxiliaryStorage
 //
@@ -424,7 +447,7 @@ bool QgsAuxiliaryStorage::save() const
   }
 }
 
-QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const
+QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const
 {
   QgsAuxiliaryLayer *alayer = nullptr;
 

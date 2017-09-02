@@ -92,7 +92,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 %End
   public:
 
-    QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, const QgsVectorLayer *vlayer );
+    QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer );
 %Docstring
  Constructor
 
@@ -186,6 +186,17 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
  \param index The index of the field for which visibility is checked
  :rtype: bool
+%End
+
+    int indexOfProperty( const QgsPropertyDefinition &definition ) const;
+%Docstring
+ Returns the index of the auxiliary field for a specific property
+ definition.
+
+ \param definition The property definition
+
+ :return: The index of the field corresponding to the property or -1
+ :rtype: int
 %End
 
     static int createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *vlayer );
@@ -320,7 +331,7 @@ class QgsAuxiliaryStorage
  :rtype: bool
 %End
 
-    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, const QgsVectorLayer *layer ) const /Factory/;
+    QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const /Factory/;
 %Docstring
  Creates an auxiliary layer for a vector layer. A new table is created if
  necessary. The primary key to use to construct the auxiliary layer is
