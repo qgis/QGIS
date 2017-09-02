@@ -3,7 +3,7 @@
 ***************************************************************************
     test_qgis_global_settings.py
     ---------------------
-    Date                 : January 2017
+    Date                 : August 2017
     Copyright            : (C) 2017, Jorge Gustavo Rocha
     Email                : jgr at geomaster dot pt
 ***************************************************************************
@@ -38,15 +38,15 @@ def createXYZLayerFromURL(url):
 class TestQgsGlobalSettings(unittest.TestCase):
 
     def setUp(self):
-        qDebug('QgsApplication.pkgDataPath(): {0}'.format(QgsApplication.pkgDataPath()))
+        # qDebug('QgsApplication.pkgDataPath(): {0}'.format(QgsApplication.pkgDataPath()))
         # Path after deployment
         # QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/qgis_global_settings.ini')
         # Path before deployment
-        assert QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/resources/qgis_global_settings.ini')
+        self.assertTrue(QgsSettings.setGlobalSettingsPath(QgsApplication.pkgDataPath() + '/resources/qgis_global_settings.ini'))
         self.settings = QgsSettings('testqgissettings', 'testqgissettings')
 
     def test_global_settings_exist(self):
-        qDebug('settings.allKeys(): {0}'.format(self.settings.allKeys()))
+        # qDebug('settings.allKeys(): {0}'.format(self.settings.allKeys()))
         defaulturl = self.settings.value('qgis/connections-xyz/OpenStreetMap/url')
         self.assertEqual(defaulturl, 'http://a.tile.openstreetmap.org/{z}/{x}/{y}.png')
         layer = createXYZLayerFromURL(defaulturl)
@@ -90,3 +90,30 @@ class TestQgsGlobalSettings(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+    def test_global_groups(self):
+        self.assertEqual(self.settings.allKeys(), [])
+        self.assertEqual(self.globalsettings.allKeys(), [])
+
+        self.addToDefaults('testqgissettings/foo/first', 'qgis')
+        self.addToDefaults('testqgissettings/foo/last', 'rocks')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(['foo'], self.settings.childGroups())
+        self.assertEqual(['foo'], self.settings.globalChildGroups())
+        self.settings.endGroup()
+
+        self.settings.setValue('testqgissettings/bar/first', 'qgis')
+        self.settings.setValue('testqgissettings/bar/last', 'rocks')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(sorted(['bar', 'foo']), sorted(self.settings.childGroups()))
+        self.assertEqual(['foo'], self.settings.globalChildGroups())
+        self.settings.endGroup()
+
+        self.globalsettings.remove('testqgissettings/foo')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(['bar'], self.settings.childGroups())
+        self.assertEqual([], self.settings.globalChildGroups())
+        self.settings.endGroup()
