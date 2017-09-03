@@ -259,8 +259,29 @@ bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definiti
 
     if ( index >= 0 && auxIndex >= 0 )
     {
-      if ( definition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha
-           || definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha )
+      if ( isHiddenProperty( auxIndex ) )
+      {
+        // update editor widget
+        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() );
+        setEditorWidgetSetup( auxIndex, setup );
+
+        // column is hidden
+        QgsAttributeTableConfig attrCfg = mLayer->attributeTableConfig();
+        attrCfg.update( mLayer->fields() );
+        QVector<QgsAttributeTableConfig::ColumnConfig> columns = attrCfg.columns();
+        QVector<QgsAttributeTableConfig::ColumnConfig>::iterator it;
+
+        for ( it = columns.begin(); it != columns.end(); ++it )
+        {
+          if ( it->name.compare( mLayer->fields().field( index ).name() ) == 0 )
+            it->hidden = true;
+        }
+
+        attrCfg.setColumns( columns );
+        mLayer->setAttributeTableConfig( attrCfg );
+      }
+      else if ( definition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha
+                || definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha )
       {
         QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Color" ), QVariantMap() );
         setEditorWidgetSetup( auxIndex, setup );

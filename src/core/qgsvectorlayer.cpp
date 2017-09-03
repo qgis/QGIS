@@ -3077,31 +3077,6 @@ void QgsVectorLayer::updateFields()
     mFields[index].setEditorWidgetSetup( fieldWidgetIterator.value() );
   }
 
-  // update attribute table config
-  mAttributeTableConfig.update( fields() );
-
-  if ( auxiliaryLayer() )
-  {
-    QVector<QgsAttributeTableConfig::ColumnConfig> columns = mAttributeTableConfig.columns();
-
-    QVector<QgsAttributeTableConfig::ColumnConfig>::iterator it;
-    for ( it = columns.begin(); it != columns.end(); ++it )
-    {
-      int idx = fields().lookupField( it->name );
-      if ( idx >= 0 )
-      {
-        int srcIdx = -1;
-        if ( !isAuxiliaryField( idx, srcIdx ) )
-          continue;
-
-        if ( auxiliaryLayer()->isHiddenProperty( srcIdx ) )
-          it->hidden = true;
-      }
-    }
-
-    mAttributeTableConfig.setColumns( columns );
-  }
-
   if ( oldFields != mFields )
   {
     emit updatedFields();

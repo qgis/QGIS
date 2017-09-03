@@ -178,7 +178,9 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     bool exists( const QgsPropertyDefinition &definition ) const;
 
     /**
-     * Add an an auxiliary field for the given property.
+     * Add an an auxiliary field for the given property. Setup for widget
+     * editors are updated in the target layer as weel as the attribute
+     * table config to hide auxiliary fields by default.
      *
      * \param definition The definition of the property to add
      *
