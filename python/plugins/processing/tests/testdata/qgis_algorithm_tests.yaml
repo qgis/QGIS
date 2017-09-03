@@ -3269,3 +3269,155 @@ tests:
         compare:
           geometry:
             precision: 7
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (hull, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 3
+    results:
+      OUTPUT:
+        name: expected/mbg_hull_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (hull, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 3
+    results:
+      OUTPUT:
+        name: expected/mbg_hull_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (circle, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 2
+    results:
+      OUTPUT:
+        name: expected/mbg_circle_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (circle, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 2
+    results:
+      OUTPUT:
+        name: expected/mbg_circle_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (oriented rect, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 1
+    results:
+      OUTPUT:
+        name: expected/mbg_rect_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (oriented rect, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 1
+    results:
+      OUTPUT:
+        name: expected/mbg_rect_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (envelope, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 0
+    results:
+      OUTPUT:
+        name: expected/mbg_env_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (envelope, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 0
+    results:
+      OUTPUT:
+        name: expected/mbg_env_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
