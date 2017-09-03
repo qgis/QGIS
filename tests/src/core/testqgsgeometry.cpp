@@ -96,6 +96,9 @@ class TestQgsGeometry : public QObject
     void comparePolylines();
     void comparePolygons();
 
+
+    void createEmptyWithSameType();
+
     // MK, Disabled 14.11.2014
     // Too unclear what exactly should be tested and which variations are allowed for the line
 #if 0
@@ -4820,6 +4823,66 @@ void TestQgsGeometry::comparePolygons()
   QVERIFY( !QgsGeometry::compare( poly3, poly4 ) );
 }
 
+
+// Helper function (in anonymous namespace to prevent posible link with the extirior)
+namespace
+{
+  template<typename T>
+  inline void testCreateEmptyWithSameType( bool canBeEmpty = true )
+  {
+    std::unique_ptr<QgsAbstractGeometry> geom { new T() };
+    std::unique_ptr<QgsAbstractGeometry> created { geom->createEmptyWithSameType() };
+    if (canBeEmpty)
+    {
+      QVERIFY( created->isEmpty() );
+    }
+    // Check that it is the correct type
+    QVERIFY( static_cast<T *>( created.get() ) != nullptr );
+  }
+}
+
+void TestQgsGeometry::createEmptyWithSameType()
+{
+  qDebug("createEmptyWithSameType(): QgsCircularString");
+  testCreateEmptyWithSameType<QgsCircularString>();
+
+  qDebug("createEmptyWithSameType(): QgsCompoundCurve");
+  testCreateEmptyWithSameType<QgsCompoundCurve>();
+
+  qDebug("createEmptyWithSameType(): QgsLineString");
+  testCreateEmptyWithSameType<QgsLineString>();
+
+
+  qDebug("createEmptyWithSameType(): QgsGeometryCollection");
+  testCreateEmptyWithSameType<QgsGeometryCollection>();
+
+  qDebug("createEmptyWithSameType(): QgsMultiCurve");
+  testCreateEmptyWithSameType<QgsMultiCurve>();
+
+  qDebug("createEmptyWithSameType(): QgsMultiLineString");
+  testCreateEmptyWithSameType<QgsMultiLineString>();
+
+  qDebug("createEmptyWithSameType(): QgsMultiPointV2");
+  testCreateEmptyWithSameType<QgsMultiPointV2>();
+
+  qDebug("createEmptyWithSameType(): QgsMultiSurface");
+  testCreateEmptyWithSameType<QgsMultiSurface>();
+
+
+  qDebug("createEmptyWithSameType(): QgsPoint");
+  testCreateEmptyWithSameType<QgsPoint>( false );
+
+
+  qDebug("createEmptyWithSameType(): QgsCurvePolygon");
+  testCreateEmptyWithSameType<QgsCurvePolygon>();
+
+  qDebug("createEmptyWithSameType(): QgsPolygonV2");
+  testCreateEmptyWithSameType<QgsPolygonV2>();
+
+  qDebug("createEmptyWithSameType(): QgsTriangle");
+  testCreateEmptyWithSameType<QgsTriangle>();
+
+}
 
 
 // MK, Disabled 14.11.2014

@@ -606,7 +606,6 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
 
 QgsPoint *QgsPoint::createEmptyWithSameType() const
 {
-  auto result = new QgsPoint();
-  result->mWkbType = mWkbType;
-  return result;
+  double nan = std::numeric_limits<double>::quiet_NaN();
+  return new QgsPoint( nan, nan, nan, nan, mWkbType );
 }
