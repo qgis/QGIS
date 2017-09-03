@@ -193,6 +193,65 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   mDeferredClear = false;
 }
 
+
+//
+// QgsLocatorAutomaticModel
+//
+
+QgsLocatorAutomaticModel::QgsLocatorAutomaticModel( QgsLocator *locator )
+  : QgsLocatorModel( locator )
+  , mLocator( locator )
+{
+  Q_ASSERT( mLocator );
+  connect( mLocator, &QgsLocator::foundResult, this, &QgsLocatorAutomaticModel::addResult );
+  connect( mLocator, &QgsLocator::finished, this, &QgsLocatorAutomaticModel::searchFinished );
+}
+
+QgsLocator *QgsLocatorAutomaticModel::locator()
+{
+  return mLocator;
+}
+
+void QgsLocatorAutomaticModel::search( const QString &string )
+{
+  if ( mLocator->isRunning() )
+  {
+    // can't do anything while a query is running, and can't block
+    // here waiting for the current query to cancel
+    // so we queue up this string until cancel has happened
+    mLocator->cancelWithoutBlocking();
+    mNextRequestedString = string;
+    mHasQueuedRequest = true;
+    return;
+  }
+  else
+  {
+    deferredClear();
+    mLocator->fetchResults( string, createContext() );
+  }
+}
+
+QgsLocatorContext QgsLocatorAutomaticModel::createContext()
+{
+  return QgsLocatorContext();
+}
+
+void QgsLocatorAutomaticModel::searchFinished()
+{
+  if ( mHasQueuedRequest )
+  {
+    // a queued request was waiting for this - run the queued search now
+    QString nextSearch = mNextRequestedString;
+    mNextRequestedString.clear();
+    mHasQueuedRequest = false;
+    search( nextSearch );
+  }
+}
+
+
+
+
+
 //
 // QgsLocatorProxyModel
 //
@@ -237,4 +296,5 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
   rightFilter = sourceModel()->data( right, Qt::DisplayRole ).toString();
   return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 }
+
 

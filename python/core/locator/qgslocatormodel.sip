@@ -14,6 +14,10 @@ class QgsLocatorModel : QAbstractTableModel
 {
 %Docstring
  An abstract list model for displaying the results of locator searches.
+
+ Note that this class should generally be used with a QgsLocatorProxyModel
+ in order to ensure correct sorting of results by priority and match level.
+
 .. versionadded:: 3.0
 %End
 
@@ -31,7 +35,7 @@ class QgsLocatorModel : QAbstractTableModel
       ResultFilterNameRole,
     };
 
-    QgsLocatorModel( QObject *parent = 0 );
+    QgsLocatorModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsLocatorModel.
 %End
@@ -68,6 +72,64 @@ class QgsLocatorModel : QAbstractTableModel
 
 };
 
+class QgsLocatorAutomaticModel : QgsLocatorModel
+{
+%Docstring
+ A QgsLocatorModel which has is associated directly with a
+ QgsLocator, and is automatically populated with results
+ from locator searches.
+
+ Use this QgsLocatorModel subclass when you want the connections
+ between a QgsLocator and the model to be automatically created
+ for you. If more flexibility in model behavior is required,
+ use the base QgsLocatorModel class instead and setup the
+ connections manually.
+
+ Note that this class should generally be used with a QgsLocatorProxyModel
+ in order to ensure correct sorting of results by priority and match level.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslocatormodel.h"
+%End
+  public:
+
+    explicit QgsLocatorAutomaticModel( QgsLocator *locator /TransferThis/ );
+%Docstring
+ Constructor for QgsLocatorAutomaticModel, linked with the specified ``locator``.
+
+ The ``locator`` is used as the model's parent.
+%End
+
+    QgsLocator *locator();
+%Docstring
+ Returns a pointer to the locator utilized by this model.
+ :rtype: QgsLocator
+%End
+
+    void search( const QString &string );
+%Docstring
+ Enqueues a search for a specified ``string`` within the model.
+
+ Note that the search may not begin immediately if an existing search request
+ is still running. In this case the existing search must be completely
+ terminated before the new search can begin. The model handles this
+ situation automatically, and will trigger a search for the new
+ search string as soon as possible.
+%End
+
+    virtual QgsLocatorContext createContext();
+%Docstring
+ Returns a new locator context for searches. The default implementation
+ returns a default constructed QgsLocatorContext. Subclasses can override
+ this method to implement custom context creation logic.
+ :rtype: QgsLocatorContext
+%End
+
+};
+
 class QgsLocatorProxyModel : QSortFilterProxyModel
 {
 %Docstring
@@ -81,7 +143,10 @@ class QgsLocatorProxyModel : QSortFilterProxyModel
 %End
   public:
 
-    explicit QgsLocatorProxyModel( QObject *parent = 0 );
+    explicit QgsLocatorProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsLocatorProxyModel, with the specified ``parent`` object.
+%End
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 };
