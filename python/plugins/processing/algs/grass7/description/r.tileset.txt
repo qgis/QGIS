@@ -1,14 +1,14 @@
 r.tileset
 Produces tilings of the source projection for use in the destination region and projection.
 Raster (r.*)
-ParameterString|sourceproj|Source projection|None|True|False
-ParameterString|sourcescale|Conversion factor from units to meters in source projection|1|False|True
-ParameterString|destproj|Destination projection|None|True|False
-ParameterString|destscale|Conversion factor from units to meters in destination projection|1|False|True
-ParameterNumber|maxcols|Maximum number of columns for a tile in the source projection|1|None|1024|True
-ParameterNumber|maxrows|Maximum number of rows for a tile in the source projection|1|None|1024|True
-ParameterNumber|overlap|Number of cells tiles should overlap in each direction|0|None|0|True
-ParameterString|separator|Output field separator|None|False|True
-*ParameterBoolean|-g|Produces shell script output|False
-*ParameterBoolean|-w|Produces web map server query string output|False
+QgsProcessingParameterString|sourceproj|Source projection|None|True|False
+QgsProcessingParameterString|sourcescale|Conversion factor from units to meters in source projection|1|False|True
+QgsProcessingParameterString|destproj|Destination projection|None|True|False
+QgsProcessingParameterString|destscale|Conversion factor from units to meters in destination projection|1|False|True
+QgsProcessingParameterNumber|maxcols|Maximum number of columns for a tile in the source projection|1|QgsProcessingParameterNumber.Double|True|False|1024|None
+QgsProcessingParameterNumber|maxrows|Maximum number of rows for a tile in the source projection|1|QgsProcessingParameterNumber.Double|True|False|1024|None
+QgsProcessingParameterNumber|overlap|Number of cells tiles should overlap in each direction|0|QgsProcessingParameterNumber.Double|True|False|0|None
+QgsProcessingParameterString|separator|Output field separator|None|False|True
+*QgsProcessingParameterBoolean|-g|Produces shell script output|False
+*QgsProcessingParameterBoolean|-w|Produces web map server query string output|False
 OutputFile|output|Tileset

@@ -1,13 +1,13 @@
 i.cluster
 Generates spectral signatures for land cover types in an image using a clustering algorithm.
 Imagery (i.*)
-ParameterMultipleInput|input|Input rasters|3|False
-ParameterNumber|classes|Initial number of classes (1-255)|1|255|1|True
-ParameterFile|seed|Name of file containing initial signatures|False|True
-ParameterString|sample|Sampling intervals (by row and col)|None|False|True
-ParameterNumber|iterations|Maximum number of iterations|1|None|30|True
-ParameterNumber|convergence|Percent convergence|0.0|100.0|98.0|True
-ParameterNumber|separation|Cluster separation|0.0|None|0.0|True
-ParameterNumber|min_size|Minimum number of pixels in a class|1|None|17|True
+QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
+QgsProcessingParameterNumber|classes|Initial number of classes (1-255)|1|QgsProcessingParameterNumber.Double|True|False|1|255
+QgsProcessingParameterFile|seed|Name of file containing initial signatures|False|True
+QgsProcessingParameterString|sample|Sampling intervals (by row and col)|None|False|True
+QgsProcessingParameterNumber|iterations|Maximum number of iterations|1|QgsProcessingParameterNumber.Double|True|False|30|None
+QgsProcessingParameterNumber|convergence|Percent convergence|0.0|QgsProcessingParameterNumber.Double|True|False|98.0|100.0
+QgsProcessingParameterNumber|separation|Cluster separation|0.0|QgsProcessingParameterNumber.Double|True|False|0.0|None
+QgsProcessingParameterNumber|min_size|Minimum number of pixels in a class|1|QgsProcessingParameterNumber.Double|True|False|17|None
 OutputFile|signaturefile|Signature File
 OutputFile|reportfile|Final Report File

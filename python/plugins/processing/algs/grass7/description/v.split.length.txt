@@ -1,6 +1,6 @@
 v.split
 v.split.length - Split lines to shorter segments by length.
 Vector (v.*)
-ParameterVector|input|Input lines layer|1|False
-ParameterNumber|length|Maximum segment length|None|None|10.0
-OutputVector|output|Split by length
+QgsProcessingParameterVectorLayer|input|Input lines layer|1|None|False
+QgsProcessingParameterNumber|length|Maximum segment length|QgsProcessingParameterNumber.Double|10.0|False|None|None
+QgsProcessingParameterVectorDestination|output|Split by length

@@ -27,6 +27,7 @@ __copyright__ = '(C) 2012-2015, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import sys
 import os
 import uuid
 import importlib
@@ -41,29 +42,38 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessingException,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterNumber)
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterPoint,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingOutputHtml)
 from qgis.utils import iface
 
 #from processing.core.GeoAlgorithm import GeoAlgorithm (replaced by QgsProcessingAlgorithm)
 from processing.core.ProcessingConfig import ProcessingConfig
 #from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException (replaced by QgsProcessingException).
 
-from processing.core.parameters import (getParameterFromString,
-                                        ParameterVector,
-                                        ParameterMultipleInput,
+from processing.core.parameters import (getParameterFromString)
+                                        #ParameterVector,
+                                        #ParameterMultipleInput,
                                         #ParameterExtent,
                                         #ParameterNumber,
                                         #ParameterSelection,
-                                        ParameterRaster,
-                                        ParameterTable,
-                                        ParameterBoolean,
-                                        ParameterString,
-                                        ParameterPoint)
-from processing.core.outputs import (getOutputFromString,
-                                     OutputRaster,
-                                     OutputVector,
-                                     OutputFile,
-                                     OutputHTML)
+                                        #ParameterRaster,
+                                        #ParameterTable,
+                                        #ParameterBoolean,
+                                        #ParameterString,
+                                        #ParameterPoint)
+#from processing.core.outputs import (getOutputFromString,
+#                                     OutputRaster,
+#                                     OutputVector,
+#                                     OutputFile,
+#                                     OutputHTML)
 
 from .Grass7Utils import Grass7Utils
 
@@ -91,6 +101,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self._display_name = ''
         self._group = ''
         self.grass7Name = ''
+        self.params = []
         self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
@@ -152,6 +163,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         except Exception:
             pass
         return descs
+    
+    def initAlgorithm(self, config=None):
+        for p in self.params:
+            self.addParameter(p)
 
     def defineCharacteristicsFromFile(self):
         """
@@ -186,23 +201,23 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         self.hardcodedStrings.append(line[len('Hardcoded|'):])
                     parameter = getParameterFromString(line)
                     if parameter is not None:
-                        self.addParameter(parameter)
-                        if isinstance(parameter, ParameterVector):
+                        self.params.append(parameter)
+                        if isinstance(parameter, QgsProcessingParameterVectorLayer):
                             hasVectorInput = True
-                        if isinstance(parameter, ParameterMultipleInput) \
-                           and parameter.datatype < 3:
+                        if isinstance(parameter, QgsProcessingParameterMultipleLayers) \
+                           and parameter.layerType() < 3:
                             hasVectorInput = True
-                    else:
-                        output = getOutputFromString(line)
-                        self.addOutput(output)
-                        if isinstance(output, OutputRaster):
-                            hasRasterOutput = True
-                        elif isinstance(output, OutputVector):
-                            vectorOutputs += 1
-                        if isinstance(output, OutputHTML):
-                            self.addOutput(OutputFile("rawoutput",
-                                                      self.tr("{0} (raw output)").format(output.description()),
-                                                      "txt"))
+                    #else:
+                    #    output = Grass7Utils.getOutputFromString(line)
+                    #    self.addOutput(output)
+                    #    if isinstance(output, QgsProcessingOutputRasterLayer):
+                    #        hasRasterOutput = True
+                    #    elif isinstance(output, QgsProcessingOutputVectorLayer):
+                    #        vectorOutputs += 1
+                    #    if isinstance(output, QgsProcessingOutputHtml):
+                    #        self.addOutput(OutputFile("rawoutput",
+                    #                                  self.tr("{0} (raw output)").format(output.description()),
+                    #                                  "txt"))
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
                     QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), QgsMessageLog.CRITICAL)
@@ -217,19 +232,21 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
                 self.tr('GRASS GIS 7 region cellsize (leave 0 for default)'),
                 type=QgsProcessingParameterNumber.Double,
-                minValue=0.0, maxValue=None, defaultValue=0.0)
+                minValue=0.0, maxValue=sys.float_info.max + 1, defaultValue=0.0)
             )
         if hasVectorInput:
             param = QgsProcessingParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                                  self.tr('v.in.ogr snap tolerance (-1 = no snap)'),
                                                  type=QgsProcessingParameterNumber.Double,
-                                                 minValue=-1.0, maxValue=None, defaultValue=-1.0)
+                                                 minValue=-1.0, maxValue=sys.float_info.max + 1,
+                                                 defaultValue=-1.0)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
             param = QgsProcessingParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
                                                  self.tr('v.in.ogr min area'),
-                                                 type=QgsProcessingParameterNumber.double,
-                                                 minValue=0.0, maxValue=None, defaultValue=0.0001)
+                                                 type=QgsProcessingParameterNumber.Double,
+                                                 minValue=0.0, maxValue=sys.float_info.max + 1,
+                                                 defaultValue=0.0001)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
         if vectorOutputs == 1:

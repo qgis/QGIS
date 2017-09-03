@@ -1,7 +1,7 @@
 i.gensig
 Generates statistics for i.maxlik from raster map.
 Imagery (i.*)
-ParameterRaster|trainingmap|Ground truth training map|False
-ParameterMultipleInput|input|Input rasters|3|False
+QgsProcessingParameterRasterLayer|trainingmap|Ground truth training map|None|False
+QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
 OutputFile|signaturefile|Signature File
 
