@@ -43,9 +43,6 @@ qgis:basicstatisticsforfields: >
 qgis:boundary: >
   Returns the closure of the combinatorial boundary of the input geometries (ie the topological boundary of the geometry). For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon. Only valid for polygon or line layers.
 
-qgis:boundingboxes: >
-  This algorithm calculates the bounding box (envelope) of each feature in an input layer.
-
 qgis:buildvirtualvector: >
   This algorithm creates a virtual layer that contains a set of vector layer.
 
@@ -75,11 +72,6 @@ qgis:convertgeometrytype: >
   Not all conversions are possible. For instance, a line layer can be converted to a point layer, but a point layer cannot be converted to a line layer.
 
   See the "Polygonize" or "Lines to polygons" algorithm for alternative options.
-
-qgis:convexhull: >
-  This algorithm computes the convex hull of features in a layer.
-
-  If a field is specified, it will divide the features into classes based on that field, and compute a separate convex hull for the features in each class.
 
 qgis:countpointsinpolygon: >
   This algorithm takes a points layer and a polygon layer and counts the number of points from the first one in each polygons of the second one.
@@ -355,11 +347,6 @@ qgis:offsetline: >
   The join style parameter specifies whether round, miter or beveled joins should be used when offsetting corners in a line.
 
   The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join.
-
-qgis:orientedminimumboundingbox: >
-  This algorithm takes a vector layer and generate a new one with the minimum rectangle that covers all the input features.
-
-  As an alternative, the output layer can contain not just a single rectangle, but one for each input feature, representing the minimum rectangle that covers each of them.
 
 qgis:minimalenclosingcircle: >
   This algorithm takes a vector layer and generate a new one with the minimum enclosing circle that covers all the input features.

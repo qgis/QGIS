@@ -46,10 +46,8 @@ from .Aspect import Aspect
 from .AutoincrementalField import AutoincrementalField
 from .BasicStatistics import BasicStatisticsForField
 from .Boundary import Boundary
-from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
-from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Datasources2Vrt import Datasources2Vrt
@@ -101,10 +99,8 @@ from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .MergeLines import MergeLines
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
-from .MinimalEnclosingCircle import MinimalEnclosingCircle
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
-from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
@@ -201,10 +197,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 AutoincrementalField(),
                 BasicStatisticsForField(),
                 Boundary(),
-                BoundingBox(),
                 CheckValidity(),
                 ConcaveHull(),
-                ConvexHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
                 Datasources2Vrt(),
@@ -256,10 +250,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Merge(),
                 MergeLines(),
                 MinimumBoundingGeometry(),
-                MinimalEnclosingCircle(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
-                OrientedMinimumBoundingBox(),
                 Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),
