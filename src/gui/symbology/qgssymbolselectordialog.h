@@ -25,6 +25,7 @@
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsproperty.h"
+#include "qgshelp.h"
 
 #include <QStandardItemModel>
 #include <QDialogButtonBox>
@@ -328,6 +329,9 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbolSelectorWidget *mSelectorWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
     QgsSymbolWidgetContext mContext;
+
+  private slots:
+    void showHelp();
 };
 
 #endif

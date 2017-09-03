@@ -20,6 +20,7 @@
 #include "ui_qgsnewmemorylayerdialogbase.h"
 #include "qgsguiutils.h"
 #include "qgis.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
@@ -65,6 +66,10 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
   private:
 
     QString mCrsId;
+
+  private slots:
+
+    void showHelp();
 };
 
 #endif //QGSNEWMEMORYLAYERDIALOG_H

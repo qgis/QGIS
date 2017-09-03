@@ -20,6 +20,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterrange.h"
 #include "qgis_gui.h"
+#include "qgshelp.h"
 
 class QgsRasterLayer;
 class QgsRasterDataProvider;
@@ -108,6 +109,8 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void on_mPyramidsGroupBox_toggled( bool toggled );
     void populatePyramidsLevels();
     void extentChanged();
+    void crsChanged();
+    void showHelp();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -135,8 +138,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
 
-  private slots:
-    void crsChanged();
 };
 
 

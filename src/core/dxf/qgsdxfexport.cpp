@@ -374,8 +374,6 @@ QgsDxfExport::QgsDxfExport()
   , mSymbolLayerCounter( 0 )
   , mNextHandleId( DXF_HANDSEED )
   , mBlockCounter( 0 )
-  , mFactor( 1 )
-  , mForce2d( false )
 {
 }
 
@@ -397,6 +395,7 @@ QgsDxfExport &QgsDxfExport::operator=( const QgsDxfExport &dxfExport )
   mBlockCounter = 0;
   mCrs = QgsCoordinateReferenceSystem();
   mFactor = dxfExport.mFactor;
+  mForce2d = dxfExport.mForce2d;
   return *this;
 }
 

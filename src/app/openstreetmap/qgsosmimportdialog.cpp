@@ -34,6 +34,7 @@ QgsOSMImportDialog::QgsOSMImportDialog( QWidget *parent )
   connect( editDbFileName, &QLineEdit::textChanged, this, &QgsOSMImportDialog::dbFileNameChanged );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOSMImportDialog::onOK );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOSMImportDialog::onClose );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOSMImportDialog::showHelp );
 
   connect( mImport, &QgsOSMXmlImport::progress, this, &QgsOSMImportDialog::onProgress );
 }
@@ -129,4 +130,9 @@ void QgsOSMImportDialog::onProgress( int percent )
 {
   progressBar->setValue( percent );
   qApp->processEvents( QEventLoop::ExcludeSocketNotifiers );
+}
+
+void QgsOSMImportDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-openstreetmap-vectors" ) );
 }

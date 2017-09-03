@@ -416,8 +416,8 @@ class CORE_EXPORT QgsDxfExport
     QgsCoordinateReferenceSystem mCrs;
     QgsMapSettings mMapSettings;
     QHash<QString, int> mLayerNameAttribute;
-    double mFactor;
-    bool mForce2d;
+    double mFactor = 1.0;
+    bool mForce2d = false;
 };
 
 #endif // QGSDXFEXPORT_H

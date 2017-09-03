@@ -22,6 +22,7 @@
 
 #include "ui_qgsorderbydialogbase.h"
 #include "qgsfeaturerequest.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
@@ -62,6 +63,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
 
   private slots:
     void onExpressionChanged( const QString &expression );
+    void showHelp();
 
   private:
 

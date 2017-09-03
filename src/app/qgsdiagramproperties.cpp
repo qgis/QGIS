@@ -950,9 +950,15 @@ void QgsDiagramProperties::showSizeLegendDialog()
   dlg.setLayout( new QVBoxLayout() );
   dlg.setWindowTitle( panel->panelTitle() );
   dlg.layout()->addWidget( panel );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Help | QDialogButtonBox::Ok );
   connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDiagramProperties::showHelp );
   dlg.layout()->addWidget( buttonBox );
   if ( dlg.exec() )
     mSizeLegend.reset( panel->dataDefinedSizeLegend() );
+}
+
+void QgsDiagramProperties::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#legend" ) );
 }

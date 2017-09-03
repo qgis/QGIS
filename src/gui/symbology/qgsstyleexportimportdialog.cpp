@@ -113,6 +113,8 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsStyleExportImportDialog::doExportImport );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleExportImportDialog::showHelp );
 }
 
 void QgsStyleExportImportDialog::doExportImport()
@@ -584,4 +586,9 @@ void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selecte
   Q_UNUSED( deselected );
   bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( nothingSelected );
+}
+
+void QgsStyleExportImportDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#share-symbols" ) );
 }

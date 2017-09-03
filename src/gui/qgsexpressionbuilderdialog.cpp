@@ -33,6 +33,8 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
 
 QgsExpressionBuilderWidget *QgsExpressionBuilderDialog::expressionBuilder()
@@ -78,4 +80,9 @@ void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea &da )
 {
   // Store in child widget only.
   builder->setGeomCalculator( da );
+}
+
+void QgsExpressionBuilderDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/expression.html" ) );
 }

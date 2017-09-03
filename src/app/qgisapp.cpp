@@ -652,9 +652,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
   startProfile( QStringLiteral( "User profile manager" ) );
-  mUserProfileManager = new QgsUserProfileManager( "", this );
+  mUserProfileManager = new QgsUserProfileManager( QString(), this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
   mUserProfileManager->setActiveUserProfile( activeProfile );
+  mUserProfileManager->setNewProfileNotificationEnabled( true );
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
@@ -2278,19 +2279,17 @@ void QgisApp::refreshProfileMenu()
   QString activeName = profile->name();
   mConfigMenu->setTitle( tr( "&User Profiles" ) );
 
-  QActionGroup *profileGroup = new QActionGroup( this );
+  QActionGroup *profileGroup = new QActionGroup( mConfigMenu );
   profileGroup->setExclusive( true );
 
   Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
   {
-    profile = userProfileManager()->profileForName( name );
-    // Qt 5.5 has no parent default as nullptr
-    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
-    action->setToolTip( profile->folder() );
+    std::unique_ptr< QgsUserProfile > namedProfile( userProfileManager()->profileForName( name ) );
+    QAction *action = new QAction( namedProfile->icon(), namedProfile->alias(), mConfigMenu );
+    action->setToolTip( namedProfile->folder() );
     action->setCheckable( true );
     profileGroup->addAction( action );
     mConfigMenu->addAction( action );
-    delete profile;
 
     if ( name == activeName )
     {

@@ -369,7 +369,7 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
     return distance;
   }
 
-  GEOSGeometry *otherGeosGeom = asGeos( geom, mPrecision );
+  GEOSGeomScopedPtr otherGeosGeom( asGeos( geom, mPrecision ) );
   if ( !otherGeosGeom )
   {
     return distance;
@@ -377,11 +377,55 @@ double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) c
 
   try
   {
-    GEOSDistance_r( geosinit.ctxt, mGeos, otherGeosGeom, &distance );
+    GEOSDistance_r( geosinit.ctxt, mGeos, otherGeosGeom.get(), &distance );
   }
   CATCH_GEOS_WITH_ERRMSG( -1.0 )
 
-  GEOSGeom_destroy_r( geosinit.ctxt, otherGeosGeom );
+  return distance;
+}
+
+double QgsGeos::hausdorffDistance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
+{
+  double distance = -1.0;
+  if ( !mGeos )
+  {
+    return distance;
+  }
+
+  GEOSGeomScopedPtr otherGeosGeom( asGeos( geom, mPrecision ) );
+  if ( !otherGeosGeom )
+  {
+    return distance;
+  }
+
+  try
+  {
+    GEOSHausdorffDistance_r( geosinit.ctxt, mGeos, otherGeosGeom.get(), &distance );
+  }
+  CATCH_GEOS_WITH_ERRMSG( -1.0 )
+
+  return distance;
+}
+
+double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg ) const
+{
+  double distance = -1.0;
+  if ( !mGeos )
+  {
+    return distance;
+  }
+
+  GEOSGeomScopedPtr otherGeosGeom( asGeos( geom, mPrecision ) );
+  if ( !otherGeosGeom )
+  {
+    return distance;
+  }
+
+  try
+  {
+    GEOSHausdorffDistanceDensify_r( geosinit.ctxt, mGeos, otherGeosGeom.get(), densifyFraction, &distance );
+  }
+  CATCH_GEOS_WITH_ERRMSG( -1.0 )
 
   return distance;
 }

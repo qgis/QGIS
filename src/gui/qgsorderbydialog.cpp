@@ -34,6 +34,8 @@ QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
   mOrderByTableWidget->horizontalHeader()->setResizeMode( 2, QHeaderView::ResizeToContents );
 
   mOrderByTableWidget->installEventFilter( this );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOrderByDialog::showHelp );
 }
 
 void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
@@ -150,3 +152,7 @@ bool QgsOrderByDialog::eventFilter( QObject *obj, QEvent *e )
   return false;
 }
 
+void QgsOrderByDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#layer-rendering" ) );
+}

@@ -36,6 +36,7 @@ QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent )
   connect( btnBrowseDb, &QAbstractButton::clicked, this, &QgsOSMExportDialog::onBrowse );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOSMExportDialog::onOK );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOSMExportDialog::onClose );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOSMExportDialog::showHelp );
   connect( editDbFileName, &QLineEdit::textChanged, this, &QgsOSMExportDialog::updateLayerName );
   connect( radPoints, &QAbstractButton::clicked, this, &QgsOSMExportDialog::updateLayerName );
   connect( radPolylines, &QAbstractButton::clicked, this, &QgsOSMExportDialog::updateLayerName );
@@ -211,4 +212,9 @@ void QgsOSMExportDialog::onDeselectAll()
   {
     mTagsModel->item( i, 0 )->setCheckState( Qt::Unchecked );
   }
+}
+
+void QgsOSMExportDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-openstreetmap-vectors" ) );
 }

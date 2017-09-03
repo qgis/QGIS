@@ -137,6 +137,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     okButton->setEnabled( false );
   }
 
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterLayerSaveAsDialog::showHelp );
+
   mExtentGroupBox->setOutputCrs( outputCrs() );
   mExtentGroupBox->setOriginalExtent( mDataProvider->extent(), mLayerCrs );
   mExtentGroupBox->setCurrentExtent( mCurrentExtent, mCurrentCrs );
@@ -737,3 +739,7 @@ bool QgsRasterLayerSaveAsDialog::validate() const
   return true;
 }
 
+void QgsRasterLayerSaveAsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#save-layer-from-an-existing-file" ) );
+}
