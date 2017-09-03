@@ -56,7 +56,7 @@ class ExtentFromLayer(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'layer_extent.png'))
 
     def tags(self):
-        return self.tr('extent,envelope,bounds,bounding,boundary,layer').split(',')
+        return self.tr('polygon,from,vector,raster,extent,envelope,bounds,bounding,boundary,layer').split(',')
 
     def group(self):
         return self.tr('Layer tools')
@@ -72,7 +72,7 @@ class ExtentFromLayer(QgisAlgorithm):
         return 'polygonfromlayerextent'
 
     def displayName(self):
-        return self.tr('Polygon from layer extent')
+        return self.tr('Extract layer extent')
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsLayer(parameters, self.INPUT, context)
