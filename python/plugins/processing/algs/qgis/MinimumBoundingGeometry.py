@@ -38,6 +38,7 @@ from qgis.core import (QgsField,
                        QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsFields,
+                       QgsRectangle,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
@@ -53,7 +54,6 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class MinimumBoundingGeometry(QgisAlgorithm):
-
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     TYPE = 'TYPE'
@@ -76,11 +76,13 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                                      self.tr('Field (optional, set if features should be grouped by class)'),
+                                                      self.tr(
+                                                          'Field (optional, set if features should be grouped by class)'),
                                                       parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterEnum(self.TYPE,
                                                      self.tr('Geometry type'), options=self.type_names))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Bounding geometry'), QgsProcessing.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Bounding geometry'),
+                                                            QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'minimumboundinggeometry'
@@ -89,7 +91,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         return self.tr('Minimum bounding geometry')
 
     def tags(self):
-        return self.tr('bounding,box,bounds,envelope,minimum,oriented,rectangle,enclosing,circle,convex,hull,generalization').split(',')
+        return self.tr(
+            'bounding,box,bounds,envelope,minimum,oriented,rectangle,enclosing,circle,convex,hull,generalization').split(
+            ',')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
@@ -108,13 +112,13 @@ class MinimumBoundingGeometry(QgisAlgorithm):
             if field_index >= 0:
                 fields.append(source.fields()[field_index])
         if type == 0:
-            #envelope
+            # envelope
             fields.append(QgsField('width', QVariant.Double, '', 20, 6))
             fields.append(QgsField('height', QVariant.Double, '', 20, 6))
             fields.append(QgsField('area', QVariant.Double, '', 20, 6))
             fields.append(QgsField('perimeter', QVariant.Double, '', 20, 6))
         elif type == 1:
-            #oriented rect
+            # oriented rect
             fields.append(QgsField('width', QVariant.Double, '', 20, 6))
             fields.append(QgsField('height', QVariant.Double, '', 20, 6))
             fields.append(QgsField('angle', QVariant.Double, '', 20, 6))
@@ -134,6 +138,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
 
         if field_index >= 0:
             geometry_dict = {}
+            bounds_dict = {}
             total = 50.0 / source.featureCount() if source.featureCount() else 1
             features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field_index]))
             for current, f in enumerate(features):
@@ -143,29 +148,56 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                 if not f.hasGeometry():
                     continue
 
-                if not f.attributes()[field_index] in geometry_dict:
-                    geometry_dict[f.attributes()[field_index]] = [f.geometry()]
+                if type == 0:
+                    # bounding boxes - calculate on the fly for efficiency
+                    if not f.attributes()[field_index] in bounds_dict:
+                        bounds_dict[f.attributes()[field_index]] = f.geometry().boundingBox()
+                    else:
+                        bounds_dict[f.attributes()[field_index]].combineExtentWith(f.geometry().boundingBox())
                 else:
-                    geometry_dict[f.attributes()[field_index]].append(f.geometry())
+                    if not f.attributes()[field_index] in geometry_dict:
+                        geometry_dict[f.attributes()[field_index]] = [f.geometry()]
+                    else:
+                        geometry_dict[f.attributes()[field_index]].append(f.geometry())
 
                 feedback.setProgress(int(current * total))
 
-            current = 0
-            total = 50.0 / len(geometry_dict) if geometry_dict else 1
-            for group, geometries in geometry_dict.items():
-                if feedback.isCanceled():
-                    break
+            if type == 0:
+                # bounding boxes
+                current = 0
+                total = 50.0 / len(bounds_dict) if bounds_dict else 1
+                for group, rect in bounds_dict.items():
+                    if feedback.isCanceled():
+                        break
 
-                feature = self.createFeature(feedback, current, type, geometries, group)
-                sink.addFeature(feature, QgsFeatureSink.FastInsert)
-                geometry_dict[group] = None
+                    # envelope
+                    feature = QgsFeature()
+                    feature.setGeometry(QgsGeometry.fromRect(rect))
+                    feature.setAttributes([current, group, rect.width(), rect.height(), rect.area(), rect.perimeter()])
+                    sink.addFeature(feature, QgsFeatureSink.FastInsert)
+                    geometry_dict[group] = None
 
-                feedback.setProgress(50 + int(current * total))
-                current += 1
+                    feedback.setProgress(50 + int(current * total))
+                    current += 1
+            else:
+                current = 0
+                total = 50.0 / len(geometry_dict) if geometry_dict else 1
+
+                for group, geometries in geometry_dict.items():
+                    if feedback.isCanceled():
+                        break
+
+                    feature = self.createFeature(feedback, current, type, geometries, group)
+                    sink.addFeature(feature, QgsFeatureSink.FastInsert)
+                    geometry_dict[group] = None
+
+                    feedback.setProgress(50 + int(current * total))
+                    current += 1
         else:
             total = 80.0 / source.featureCount() if source.featureCount() else 1
             features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
             geometry_queue = []
+            bounds = QgsRectangle()
             for current, f in enumerate(features):
                 if feedback.isCanceled():
                     break
@@ -173,11 +205,20 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                 if not f.hasGeometry():
                     continue
 
-                geometry_queue.append(f.geometry())
+                if type == 0:
+                    # bounding boxes, calculate on the fly for efficiency
+                    bounds.combineExtentWith(f.geometry().boundingBox())
+                else:
+                    geometry_queue.append(f.geometry())
                 feedback.setProgress(int(current * total))
 
             if not feedback.isCanceled():
-                feature = self.createFeature(feedback, 0, type, geometry_queue)
+                if type == 0:
+                    feature = QgsFeature()
+                    feature.setGeometry(QgsGeometry.fromRect(bounds))
+                    feature.setAttributes([0, bounds.width(), bounds.height(), bounds.area(), bounds.perimeter()])
+                else:
+                    feature = self.createFeature(feedback, 0, type, geometry_queue)
                 sink.addFeature(feature, QgsFeatureSink.FastInsert)
 
         return {self.OUTPUT: dest_id}
