@@ -36,7 +36,6 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsrastermatrix.cpp
   vector/mersenne-twister.cpp
   vector/qgsgeometrysnapper.cpp
-  vector/qgstransectsample.cpp
   vector/qgszonalstatistics.cpp
 
   openstreetmap/qgsosmbase.cpp
@@ -115,7 +114,6 @@ SET(QGIS_ANALYSIS_HDRS
 
   vector/mersenne-twister.h
   vector/qgsgeometrysnapper.h
-  vector/qgstransectsample.h
   vector/qgszonalstatistics.h
 
   interpolation/qgsinterpolator.h
