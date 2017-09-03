@@ -2913,10 +2913,8 @@ QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 {
-  QgsDebugMsg( "Entering." );
-
   QgsCoordinateReferenceSystem srs;
-  if ( !mValid )
+  if ( !mValid || ( mOGRGeomType == wkbNone ) )
     return srs;
 
   if ( ogrDriver )
@@ -2949,7 +2947,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
     // get the proj4 text
     char *pszProj4 = nullptr;
     OSRExportToProj4( mySpatialRefSys, &pszProj4 );
-    QgsDebugMsg( pszProj4 );
+    QgsDebugMsgLevel( pszProj4, 4 );
     CPLFree( pszProj4 );
 
     char *pszWkt = nullptr;
