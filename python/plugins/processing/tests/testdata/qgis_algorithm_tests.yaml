@@ -3205,7 +3205,7 @@ tests:
         name: expected/execute_sql.gml
         type: vector
 
-  - algorithm: qgis:polygonfromrasterextent
+  - algorithm: qgis:polygonfromlayerextent
     name: Polygon from raster extent
     params:
       INPUT:

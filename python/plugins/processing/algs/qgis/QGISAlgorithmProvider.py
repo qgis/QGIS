@@ -68,7 +68,6 @@ from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
-from .ExtentFromRasterLayer import ExtentFromRasterLayer
 from .ExtractNodes import ExtractNodes
 from .ExtractSpecificNodes import ExtractSpecificNodes
 from .FieldPyculator import FieldsPyculator
@@ -219,7 +218,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
-                ExtentFromRasterLayer(),
                 ExtractNodes(),
                 ExtractSpecificNodes(),
                 FieldsCalculator(),

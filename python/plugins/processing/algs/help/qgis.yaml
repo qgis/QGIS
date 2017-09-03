@@ -402,12 +402,7 @@ qgis:polygoncentroids: >
   NOTE: This algorithm is deprecated and the generic "centroids" algorithm (which works for line and multi geometry layers) should be used instead.
 
 qgis:polygonfromlayerextent: >
-  This algorithm takes a vector layer and generates a new one with the minimum bounding box (rectangle with N-S orientation) that covers all the input features.
-
-  As an alternative, the output layer can contain not just a single bounding box, but one for each input feature, representing the bounding box of each of them.
-
-qgis:polygonfromrasterextent: >
-  This algorithm takes a raster layer and generates a vector layer containing a feature with the minimum bounding box that covers the raster layer's extent.
+  This algorithm takes a map layer and generates a new vector layer with the minimum bounding box (rectangle with N-S orientation) that covers the input layer.
 
 qgis:polygonize:  >
   This algorithm takes a lines layer and creates a polygon layer, with polygons generated from the lines in the input layer.
