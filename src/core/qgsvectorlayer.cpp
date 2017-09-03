@@ -266,7 +266,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
 
   layer->setEditFormConfig( editFormConfig() );
 
-  layer->setAuxiliaryLayer( auxiliaryLayer()->clone( layer ) );
+  if ( auxiliaryLayer() )
+    layer->setAuxiliaryLayer( auxiliaryLayer()->clone( layer ) );
 
   return layer;
 }
