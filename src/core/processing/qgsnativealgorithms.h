@@ -323,6 +323,107 @@ class QgsRemoveNullGeometryAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native bounding boxes algorithm.
+ */
+class QgsBoundingBoxAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsBoundingBoxAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "boundingboxes" ); }
+    QString displayName() const override { return QObject::tr( "Bounding boxes" ); }
+    virtual QStringList tags() const override { return QObject::tr( "bounding,boxes,envelope,rectangle,extent" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsBoundingBoxAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Bounds" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override { return QgsWkbTypes::Polygon; }
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+};
+
+/**
+ * Native minimum oriented bounding box algorithm.
+ */
+class QgsOrientedMinimumBoundingBoxAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsOrientedMinimumBoundingBoxAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "orientedminimumboundingbox" ); }
+    QString displayName() const override { return QObject::tr( "Oriented minimum bounding box" ); }
+    virtual QStringList tags() const override { return QObject::tr( "bounding,boxes,envelope,rectangle,extent,oriented,angle" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsOrientedMinimumBoundingBoxAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Bounding boxes" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override { return QgsWkbTypes::Polygon; }
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+};
+
+/**
+ * Native minimum enclosing circle algorithm.
+ */
+class QgsMinimumEnclosingCircleAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsMinimumEnclosingCircleAlgorithm() = default;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "minimumenclosingcircle" ); }
+    QString displayName() const override { return QObject::tr( "Minimum enclosing circles" ); }
+    virtual QStringList tags() const override { return QObject::tr( "minimum,circle,ellipse,extent,bounds,bounding" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsMinimumEnclosingCircleAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Minimum enclosing circles" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override { return QgsWkbTypes::Polygon; }
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    int mSegments = 72;
+};
+
+/**
+ * Native convex hull algorithm.
+ */
+class QgsConvexHullAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsConvexHullAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "convexhull" ); }
+    QString displayName() const override { return QObject::tr( "Convex hull" ); }
+    virtual QStringList tags() const override { return QObject::tr( "convex,hull,bounds,bounding" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsConvexHullAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Convex hulls" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override { return QgsWkbTypes::Polygon; }
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H
