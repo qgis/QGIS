@@ -1093,7 +1093,7 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 
 QString QgsBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the bounding box (envelope) of each feature in an input layer." );
+  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const
@@ -1131,7 +1131,7 @@ QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, Q
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer." );
+  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsOrientedMinimumBoundingBoxAlgorithm *QgsOrientedMinimumBoundingBoxAlgorithm::createInstance() const
@@ -1181,7 +1181,7 @@ void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
 
 QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." );
+  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
@@ -1222,7 +1222,7 @@ QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature 
 
 QString QgsConvexHullAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer." );
+  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
