@@ -1,46 +1,46 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/symbology/qgsvectorfieldsymbollayerwidget.h                  *
+ * src/gui/qgsnewauxiliarylayerdialog.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsVectorFieldSymbolLayerWidget: QgsSymbolLayerWidget
+
+class QgsNewAuxiliaryLayerDialog: QDialog
 {
+%Docstring
+
+ A dialog to create a new auxiliary layer
+
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
-#include "qgsvectorfieldsymbollayerwidget.h"
+#include "qgsnewauxiliarylayerdialog.h"
 %End
   public:
 
-    QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+    QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, QWidget *parent = 0 );
 %Docstring
- Constructor for QgsVectorFieldSymbolLayerWidget.
- \param vl associated vector layer
- \param parent parent widget
-%End
+ Constructor.
 
-    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
-%Docstring
- Creates a new QgsVectorFieldSymbolLayerWidget.
- \param vl associated vector layer
- :rtype: QgsSymbolLayerWidget
+ \param layer The vector layer for which the auxiliary layer has to be created
+ \param parent Parent window
 %End
-
-    virtual void setSymbolLayer( QgsSymbolLayer *layer );
-    virtual QgsSymbolLayer *symbolLayer();
 
   protected:
+    virtual void accept();
+
 
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/symbology/qgsvectorfieldsymbollayerwidget.h                  *
+ * src/gui/qgsnewauxiliarylayerdialog.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

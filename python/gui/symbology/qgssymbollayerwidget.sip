@@ -16,7 +16,13 @@ class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsSymbolLayerWidget( QWidget *parent /TransferThis/, QgsVectorLayer *vl = 0 );
+%Docstring
+ Constructor for QgsSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) = 0;
     virtual QgsSymbolLayer *symbolLayer() = 0;
@@ -79,8 +85,6 @@ class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
   protected slots:
     void updateDataDefinedProperty();
 
-    void createAuxiliaryField();
-
 };
 
 
@@ -93,10 +97,18 @@ class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsSimpleLineSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsSimpleLineSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -119,10 +131,18 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsSimpleMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsSimpleMarkerSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsSimpleMarkerSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -148,10 +168,18 @@ class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsSimpleFillSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsSimpleFillSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -213,10 +241,18 @@ class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsGradientFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsGradientFillSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsGradientFillSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -249,10 +285,18 @@ class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsShapeburstFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsShapeburstFillSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsShapeburstFillSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -277,10 +321,18 @@ class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsMarkerLineSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsMarkerLineSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -308,10 +360,18 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsSvgMarkerSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsSvgMarkerSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -336,10 +396,18 @@ class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsRasterFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsRasterFillSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsRasterFillSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -360,10 +428,18 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsSVGFillSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsSVGFillSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -395,8 +471,16 @@ class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerWidget
   public:
 
     QgsLinePatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsLinePatternFillSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
+
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsLinePatternFillSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -417,9 +501,18 @@ class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsPointPatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsPointPatternFillSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
+
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsPointPatternFillSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -440,10 +533,18 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsFontMarkerSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsFontMarkerSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -478,10 +579,18 @@ class QgsCentroidFillSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsCentroidFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsCentroidFillSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
+ Creates a new QgsCentroidFillSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 
@@ -502,7 +611,13 @@ class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
 #include "qgssymbollayerwidget.h"
 %End
   public:
+
     QgsGeometryGeneratorSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsGeometryGeneratorSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring

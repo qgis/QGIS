@@ -31,8 +31,16 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, priva
     Q_OBJECT
 
   public:
+
+    /** Constructor for QgsEllipseSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
     QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
+    /** Creates a new QgsSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsEllipseSymbolLayerWidget( vl ); }
 
     // from base class

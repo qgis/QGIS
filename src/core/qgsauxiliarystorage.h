@@ -245,7 +245,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * activate this this property in settings.
      *
      * \param property The property to create
-     * \param providerId The id of the provider to use
      * \param vlayer The vector layer
      *
      * \returns The index of the auxiliary field or -1

@@ -43,6 +43,13 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     Q_OBJECT
 
   public:
+
+    /** Constructor for QgsLayerPropertiesWidget.
+     * \param layer the symbol layer
+     * \param symbol the symbol
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
     QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**

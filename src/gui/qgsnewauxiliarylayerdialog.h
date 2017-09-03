@@ -44,7 +44,7 @@ class GUI_EXPORT QgsNewAuxiliaryLayerDialog: public QDialog, private Ui::QgsNewA
      */
     QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
-  private:
+  protected:
     void accept() override;
 
     QgsVectorLayer *mLayer = nullptr;

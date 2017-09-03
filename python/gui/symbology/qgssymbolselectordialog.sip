@@ -184,7 +184,17 @@ class QgsSymbolSelectorDialog : QDialog
 #include "qgssymbolselectordialog.h"
 %End
   public:
+
     QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0, bool embedded = false );
+%Docstring
+ Constructor for QgsSymbolSelectorDialog.
+
+ \param symbol The symbol
+ \param style The style
+ \param vl Associated vector layer
+ \param parent Parent widget
+ \param embedded True to embed in renderer properties dialog, false otherwise
+%End
     ~QgsSymbolSelectorDialog();
 
     QMenu *advancedMenu();

@@ -38,6 +38,14 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
+
+    /** Constructor for QgsSymbolsListWidget.
+     * \param symbol the symbol
+     * \param style the style
+     * \param menu the menu where to show it
+     * \param parent parent widget
+     * \param layer associated vector layer
+     */
     QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, QgsVectorLayer *layer = nullptr );
 
 
@@ -86,8 +94,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateDataDefinedMarkerAngle();
     void updateDataDefinedLineWidth();
 
-    void createAuxiliaryField();
-
   signals:
     void changed();
 
@@ -96,6 +102,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void groupsCombo_currentIndexChanged( int index );
     void updateAssistantSymbol();
     void opacityChanged( double value );
+    void createAuxiliaryField();
 
   private:
     QgsSymbol *mSymbol = nullptr;
