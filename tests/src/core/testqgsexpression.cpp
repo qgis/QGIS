@@ -2303,6 +2303,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "bounds" ) << "bounds( $geometry )" << geom << false << true << QgsGeometry::fromRect( geom.boundingBox() );
 
       geom = QgsGeometry::fromPolygon( polygon );
+      double bbox_area, bbox_angle, bbox_width, bbox_height;
+      QTest::newRow( "oriented_bbox" ) << "oriented_bbox( $geometry )" << geom << false << true << geom.orientedMinimumBoundingBox( bbox_area, bbox_angle, bbox_width, bbox_height );
+      geom = QgsGeometry::fromPolygon( polygon );
+      QgsPointXY circ_center;
+      double circ_radius;
+      QTest::newRow( "minimal_circle" ) << "minimal_circle( $geometry )" << geom << false << true << geom.minimalEnclosingCircle( circ_center, circ_radius );
+
+      geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "translate" ) << "translate( $geometry, 1, 2)" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "POLYGON ((1 2,11 12,11 2,1 2))" ) );
       geom = QgsGeometry::fromPolyline( line );
       QTest::newRow( "translate" ) << "translate( $geometry, -1, 2)" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "LINESTRING (-1 2, 9 12)" ) );
