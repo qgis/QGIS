@@ -179,7 +179,7 @@ class CORE_EXPORT QgsExpressionFunction
         return mParams;
 
       int min = 0;
-      Q_FOREACH ( const Parameter &param, mParameterList )
+      for ( const Parameter &param : mParameterList )
       {
         if ( !param.optional() )
           min++;
