@@ -52,7 +52,7 @@ class RasterLayerStatistics(QgisAlgorithm):
     SUM_OF_SQUARES = 'SUM_OF_SQUARES'
 
     def group(self):
-        return self.tr('Raster tools')
+        return self.tr('Raster analysis')
 
     def __init__(self):
         super().__init__()

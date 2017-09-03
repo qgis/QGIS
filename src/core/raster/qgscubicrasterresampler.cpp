@@ -17,7 +17,6 @@
 
 #include "qgscubicrasterresampler.h"
 #include <QImage>
-#include <qmath.h>
 
 QgsCubicRasterResampler::QgsCubicRasterResampler()
 // red
@@ -105,7 +104,7 @@ void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage
 
   for ( int y = 0; y < dstImage.height(); ++y )
   {
-    currentSrcRowInt = floor( currentSrcRow );
+    currentSrcRowInt = std::floor( currentSrcRow );
     v = currentSrcRow - currentSrcRowInt;
 
     currentSrcCol = nSrcPerDstX / 2.0 - 0.5;
@@ -113,7 +112,7 @@ void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage
     QRgb *scanLine = ( QRgb * )dstImage.scanLine( y );
     for ( int x = 0; x < dstImage.width(); ++x )
     {
-      currentSrcColInt = floor( currentSrcCol );
+      currentSrcColInt = std::floor( currentSrcCol );
       u = currentSrcCol - currentSrcColInt;
 
       //handle eight edge-cases
@@ -472,7 +471,7 @@ double QgsCubicRasterResampler::calcBernsteinPolyN3( int i, double t )
     return 0;
   }
 
-  return lowerN3( i ) * qPow( t, i ) * qPow( ( 1 - t ), ( 3 - i ) );
+  return lowerN3( i ) * std::pow( t, i ) * std::pow( ( 1 - t ), ( 3 - i ) );
 }
 
 inline int QgsCubicRasterResampler::lowerN3( int i )

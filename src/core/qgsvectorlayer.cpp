@@ -257,7 +257,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     layer->setDefaultValueExpression( i, defaultValueExpression( i ) );
 
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> constraints = fieldConstraintsAndStrength( i );
-    for ( QgsFieldConstraints::Constraint c : constraints.keys() )
+    Q_FOREACH ( QgsFieldConstraints::Constraint c,  constraints.keys() )
     {
       layer->setFieldConstraint( i, c, constraints.value( c ) );
     }
@@ -947,7 +947,12 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   bool success = mEditBuffer->addFeature( feature );
 
   if ( success )
+  {
     updateExtents();
+
+    if ( mJoinBuffer->containsJoins() )
+      success = mJoinBuffer->addFeature( feature );
+  }
 
   return success;
 }
@@ -2258,10 +2263,26 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
-  if ( !mEditBuffer || !mDataProvider )
-    return false;
+  switch ( fields().fieldOrigin( field ) )
+  {
+    case QgsFields::OriginJoin:
+      return mJoinBuffer->changeAttributeValue( fid, field, newValue, oldValue );
 
-  return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+    case QgsFields::OriginProvider:
+    case QgsFields::OriginEdit:
+    case QgsFields::OriginExpression:
+    {
+      if ( !mEditBuffer || !mDataProvider )
+        return false;
+      else
+        return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+    }
+
+    case QgsFields::OriginUnknown:
+      return false;
+  }
+
+  return false;
 }
 
 bool QgsVectorLayer::addAttribute( const QgsField &field )
@@ -2409,6 +2430,9 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   if ( !mEditBuffer )
     return false;
 
+  if ( mJoinBuffer->containsJoins() )
+    mJoinBuffer->deleteFeature( fid );
+
   bool res = mEditBuffer->deleteFeature( fid );
   if ( res )
   {
@@ -2426,6 +2450,9 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
     QgsDebugMsg( "Cannot delete features (mEditBuffer==NULL)" );
     return false;
   }
+
+  if ( mJoinBuffer->containsJoins() )
+    mJoinBuffer->deleteFeatures( fids );
 
   bool res = mEditBuffer->deleteFeatures( fids );
 
@@ -2609,9 +2636,11 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
   bool res = mEditBuffer->addFeatures( features );
   updateExtents();
 
+  if ( res && mJoinBuffer->containsJoins() )
+    res = mJoinBuffer->addFeatures( features );
+
   return res;
 }
-
 
 void QgsVectorLayer::setCoordinateSystem()
 {
@@ -3810,6 +3839,7 @@ void QgsVectorLayer::setEditFormConfig( const QgsEditFormConfig &editFormConfig 
     return;
 
   mEditFormConfig = editFormConfig;
+  mEditFormConfig.onRelationsLoaded();
   emit editFormConfigChanged();
 }
 
@@ -4253,11 +4283,12 @@ QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> 
 
   QString name = mFields.at( fieldIndex ).name();
 
-  for ( QPair< QString, QgsFieldConstraints::Constraint > p : mFieldConstraintStrength.keys() )
+  QMap< QPair< QString, QgsFieldConstraints::Constraint >, QgsFieldConstraints::ConstraintStrength >::const_iterator conIt = mFieldConstraintStrength.constBegin();
+  for ( ; conIt != mFieldConstraintStrength.constEnd(); ++conIt )
   {
-    if ( p.first == name )
+    if ( conIt.key().first == name )
     {
-      m[ p.second ] = mFieldConstraintStrength.value( p );
+      m[ conIt.key().second ] = mFieldConstraintStrength.value( conIt.key() );
     }
   }
 

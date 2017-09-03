@@ -875,7 +875,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Query the layer for the feature with the given id.
      * If there is no such feature, the returned feature will be invalid.
      */
-    inline QgsFeature getFeature( QgsFeatureId fid )
+    inline QgsFeature getFeature( QgsFeatureId fid ) const
     {
       QgsFeature feature;
       getFeatures( QgsFeatureRequest( fid ) ).nextFeature( feature );

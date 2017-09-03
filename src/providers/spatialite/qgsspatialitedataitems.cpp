@@ -219,7 +219,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
     QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
     if ( !srcLayer )
     {
-      importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+      importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
       hasError = true;
       continue;
     }
@@ -229,7 +229,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
       destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
 
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), nullptr, owner ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), QVariantMap(), owner ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()

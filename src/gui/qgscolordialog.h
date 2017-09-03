@@ -21,6 +21,7 @@
 #include "ui_qgscolordialog.h"
 #include "qgis_gui.h"
 #include "qgis.h"
+#include "qgshelp.h"
 
 class QColor;
 
@@ -113,6 +114,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     void on_mButtonBox_rejected();
     void on_mButtonBox_clicked( QAbstractButton *button );
     void discardColor();
+    void showHelp();
 
   private:
 

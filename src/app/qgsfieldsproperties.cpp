@@ -987,7 +987,6 @@ void QgsFieldsProperties::apply()
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
     int idx = mFieldsList->item( i, AttrIdCol )->text().toInt();
-    QString name = mLayer->fields().at( idx ).name();
     FieldConfig cfg = configForRow( i );
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );

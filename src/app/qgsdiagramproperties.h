@@ -20,7 +20,7 @@
 
 #include <QDialog>
 #include "qgsdiagramrenderer.h"
-#include <ui_qgsdiagrampropertiesbase.h>
+#include "ui_qgsdiagrampropertiesbase.h"
 #include <QStyledItemDelegate>
 #include "qgis_app.h"
 
@@ -90,10 +90,13 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
   private slots:
 
     void updateProperty();
+    void showHelp();
 };
 
 class EditBlockerDelegate: public QStyledItemDelegate
 {
+    Q_OBJECT
+
   public:
     EditBlockerDelegate( QObject *parent = nullptr )
       : QStyledItemDelegate( parent )

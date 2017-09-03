@@ -9,8 +9,6 @@
 
 
 
-
-
 class QgsFileWidget : QWidget
 {
 %Docstring
@@ -32,7 +30,8 @@ class QgsFileWidget : QWidget
     enum StorageMode
     {
       GetFile,
-      GetDirectory
+      GetDirectory,
+      GetMultipleFiles,
     };
 
     enum RelativeStorage
@@ -49,8 +48,18 @@ class QgsFileWidget : QWidget
 
     QString filePath();
 %Docstring
-Returns the current file path
+ Returns the current file path(s)
+ when multiple files are selected, they are quoted and separated
+ by a single space (for example: '"/path/foo" "path/bar"')
+.. seealso:: filePaths
  :rtype: str
+%End
+
+    static QStringList splitFilePaths( const QString &path );
+%Docstring
+ Split the the quoted and space separated ``path`` and returns a QString list
+.. seealso:: filePath
+ :rtype: list of str
 %End
 
     void setFilePath( QString path );
@@ -74,7 +83,7 @@ returns the open file dialog title
  setDialogTitle defines the open file dialog title
 .. note::
 
-   if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
+   if not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
 %End
 
     QString filter() const;
@@ -149,6 +158,14 @@ returns if the relative path is with respect to the project path or the default 
 determines if the relative path is with respect to the project path or the default path
 %End
 
+    QLineEdit *lineEdit();
+%Docstring
+ Returns a pointer to the widget's line edit, which can be used to customize
+ the appearance and behavior of the line edit portion of the widget.
+.. versionadded:: 3.0
+ :rtype: QLineEdit
+%End
+
   signals:
     void fileChanged( const QString & );
 %Docstring
@@ -156,6 +173,10 @@ emitted as soon as the current file or directory is changed
 %End
 
 };
+
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

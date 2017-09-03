@@ -25,11 +25,11 @@
 
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
+#include "qgslayertreemodellegendnode.h"
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
-class QgsLayerTreeModelLegendNode;
 class QgsMapHitTest;
 class QgsMapLayer;
 class QgsMapSettings;
@@ -384,5 +384,39 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )
+
+///@cond PRIVATE
+#ifndef SIP_RUN
+
+/** In order to support embedded widgets in layer tree view, the model
+ * generates one placeholder legend node for each embedded widget.
+ * The placeholder will be replaced by an embedded widget in QgsLayerTreeView
+ */
+class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
+{
+    Q_OBJECT
+
+  public:
+    EmbeddedWidgetLegendNode( QgsLayerTreeLayer *nodeL )
+      : QgsLayerTreeModelLegendNode( nodeL )
+    {
+      // we need a valid rule key to allow the model to build a tree out of legend nodes
+      // if that's possible (if there is a node without a rule key, building of tree is canceled)
+      mRuleKey = QStringLiteral( "embedded-widget-" ) + QUuid::createUuid().toString();
+    }
+
+    QVariant data( int role ) const override
+    {
+      if ( role == RuleKeyRole )
+        return mRuleKey;
+      return QVariant();
+    }
+
+  private:
+    QString mRuleKey;
+};
+#endif
+
+///@endcond
 
 #endif // QGSLAYERTREEMODEL_H

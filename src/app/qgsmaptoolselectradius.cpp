@@ -24,10 +24,6 @@ email                : jpalmer at linz dot govt dot nz
 #include <cmath>
 #include <QMouseEvent>
 
-#ifndef M_PI
-#define M_PI 3.1415926535897931159979634685
-#endif
-
 const int RADIUS_SEGMENTS = 40;
 
 QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
@@ -102,13 +98,13 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPointXY &radiusEdge )
 {
-  double r = sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
+  double r = std::sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
   mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {
     double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );
-    QgsPointXY radiusPoint( mRadiusCenter.x() + r * cos( theta ),
-                            mRadiusCenter.y() + r * sin( theta ) );
+    QgsPointXY radiusPoint( mRadiusCenter.x() + r * std::cos( theta ),
+                            mRadiusCenter.y() + r * std::sin( theta ) );
     mRubberBand->addPoint( radiusPoint, false );
   }
   mRubberBand->closePoints( true );

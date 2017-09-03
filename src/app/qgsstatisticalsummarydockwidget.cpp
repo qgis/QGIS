@@ -185,7 +185,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
   {
     double val = stats.statistic( stat );
     addRow( row, QgsStatisticalSummary::displayName( stat ),
-            qIsNaN( val ) ? QString() : QString::number( val ),
+            std::isnan( val ) ? QString() : QString::number( val ),
             stats.count() != 0 );
     row++;
   }
@@ -241,7 +241,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly 
 
 void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer *newLayer = dynamic_cast< QgsVectorLayer * >( layer );
+  QgsVectorLayer *newLayer = qobject_cast< QgsVectorLayer * >( layer );
   if ( mLayer && mLayer != newLayer )
   {
     disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );

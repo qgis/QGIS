@@ -42,6 +42,12 @@
     </ogr:convert_poly_centroid>
   </gml:featureMember>
   <gml:featureMember>
+    <ogr:convert_poly_centroid fid="polys.4">
+      <ogr:intval>120</ogr:intval>
+      <ogr:floatval>-100291.43213</ogr:floatval>
+    </ogr:convert_poly_centroid>
+  </gml:featureMember>
+  <gml:featureMember>
     <ogr:convert_poly_centroid fid="polys.5">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4.08045977011494,-0.218390804597701</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>elim</ogr:name>

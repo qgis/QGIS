@@ -509,8 +509,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     double yc = outPt2.y() - outPt.y();
 
     double angle = -component.rotation;
-    double xd = xc * cos( angle ) - yc * sin( angle );
-    double yd = xc * sin( angle ) + yc * cos( angle );
+    double xd = xc * std::cos( angle ) - yc * std::sin( angle );
+    double yd = xc * std::sin( angle ) + yc * std::cos( angle );
 
     centerPt.setX( centerPt.x() + xd );
     centerPt.setY( centerPt.y() + yd );

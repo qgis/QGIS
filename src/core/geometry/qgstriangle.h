@@ -327,6 +327,22 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     */
     QgsCircle inscribedCircle() const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsTriangle.
+     * Should be used by qgsgeometry_cast<QgsTriangle *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsTriangle *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::Triangle )
+        return static_cast<const QgsTriangle *>( geom );
+      return nullptr;
+    }
+#endif
   private:
 
     /**

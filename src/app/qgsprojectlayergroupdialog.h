@@ -17,6 +17,7 @@
 
 #include "QDialog"
 #include "ui_qgsprojectlayergroupdialogbase.h"
+#include "qgshelp.h"
 #include "qgis_app.h"
 
 class QDomElement;
@@ -44,6 +45,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     void on_mProjectFileLineEdit_editingFinished();
     void onTreeViewSelectionChanged();
     void on_mButtonBox_accepted();
+    void showHelp();
 
   private:
     void changeProjectFile();

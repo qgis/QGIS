@@ -590,18 +590,24 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
             continue;
           }
         }
-        else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
+        else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() || def->type() == QgsProcessingParameterVectorLayer::typeName() )
         {
-          const QgsProcessingParameterFeatureSource *sourceDef = static_cast< const QgsProcessingParameterFeatureSource *>( def );
-          bool ok = !sourceDef->dataTypes().isEmpty();
+          const QgsProcessingParameterLimitedDataTypes *sourceDef = dynamic_cast< const QgsProcessingParameterLimitedDataTypes *>( def );
+          if ( !sourceDef )
+            continue;
+
+          bool ok = sourceDef->dataTypes().isEmpty();
           Q_FOREACH ( int type, sourceDef->dataTypes() )
           {
-            if ( dataTypes.contains( type ) || type == QgsProcessing::TypeAny )
+            if ( dataTypes.contains( type ) || type == QgsProcessing::TypeMapLayer || type == QgsProcessing::TypeVector || type == QgsProcessing::TypeVectorAnyGeometry )
             {
               ok = true;
               break;
             }
           }
+          if ( dataTypes.contains( QgsProcessing::TypeMapLayer ) || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) )
+            ok = true;
+
           if ( !ok )
             continue;
         }
@@ -636,7 +642,9 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
           if ( out->type() == QgsProcessingOutputVectorLayer::typeName() )
           {
             const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
-            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeAny ) )
+
+            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeMapLayer || vectorOut->dataType() == QgsProcessing::TypeVector
+                    || vectorOut->dataType() == QgsProcessing::TypeVectorAnyGeometry ) )
             {
               continue;
             }
@@ -729,19 +737,19 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       if ( !source )
         continue;
 
-      QgsProcessingParameterDefinition *param = QgsProcessingParameters::parameterFromVariantMap( source->toVariantMap() );
+      std::unique_ptr< QgsProcessingParameterDefinition > param( source->clone() );
       param->setName( outputIt->childId() + ':' + outputIt->name() );
       param->setDescription( outputIt->description() );
-      addParameter( param );
 
-      if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter *>( param ) )
+      if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter *>( param.get() ) )
       {
-        QgsProcessingOutputDefinition *output = destParam->toOutputDefinition();
+        std::unique_ptr< QgsProcessingOutputDefinition > output( destParam->toOutputDefinition() );
         if ( output )
         {
-          addOutput( output );
+          addOutput( output.release() );
         }
       }
+      addParameter( param.release() );
     }
   }
 }
@@ -793,8 +801,11 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   for ( ; childIt != childMap.constEnd(); ++childIt )
   {
     QgsProcessingModelChildAlgorithm child;
+    // we be leniant here - even if we couldn't load a parameter, don't interrupt the model loading
+    // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
+    // with no way for users to repair them
     if ( !child.loadVariant( childIt.value() ) )
-      return false;
+      continue;
 
     mChildAlgorithms.insert( child.childId(), child );
   }
@@ -817,11 +828,12 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   QVariantMap::const_iterator paramDefIt = paramDefMap.constBegin();
   for ( ; paramDefIt != paramDefMap.constEnd(); ++paramDefIt )
   {
-    QgsProcessingParameterDefinition *param = QgsProcessingParameters::parameterFromVariantMap( paramDefIt.value().toMap() );
-    if ( !param )
-      return false;
-
-    addParameter( param );
+    std::unique_ptr< QgsProcessingParameterDefinition > param( QgsProcessingParameters::parameterFromVariantMap( paramDefIt.value().toMap() ) );
+    // we be leniant here - even if we couldn't load a parameter, don't interrupt the model loading
+    // otherwise models may become unusable (e.g. due to removed plugins providing algs/parameters)
+    // with no way for users to repair them
+    if ( param )
+      addParameter( param.release() );
   }
 
   updateDestinationParameters();
@@ -1109,6 +1121,7 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   QgsProcessingModelAlgorithm *alg = new QgsProcessingModelAlgorithm();
   alg->loadVariant( toVariant() );
   alg->setProvider( provider() );
+  alg->setSourceFilePath( sourceFilePath() );
   return alg;
 }
 

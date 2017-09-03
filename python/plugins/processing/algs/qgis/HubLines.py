@@ -50,7 +50,7 @@ class HubLines(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector analysis tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()

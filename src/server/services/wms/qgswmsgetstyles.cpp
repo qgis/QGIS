@@ -175,8 +175,6 @@ namespace QgsWms
             Q_FOREACH ( QString styleName, vlayer->styleManager()->styles() )
             {
               vlayer->styleManager()->setCurrentStyle( styleName );
-              if ( styleName.isEmpty() )
-                styleName = EMPTY_STYLE_NAME;
               QDomElement styleElem = vlayer->renderer()->writeSld( myDocument, styleName );
               namedLayerNode.appendChild( styleElem );
             }

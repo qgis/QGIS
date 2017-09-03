@@ -24,14 +24,12 @@
 #include "qgswfsutils.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgssqlstatement.h"
-#include "qgssqlcomposerdialog.h"
 #include "qgssettings.h"
 
 #include <QDomDocument>
@@ -55,6 +53,7 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWFSSourceSelect::showHelp );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
@@ -406,19 +405,6 @@ void QgsWFSSourceSelect::addButtonClicked()
   }
 }
 
-class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
-{
-  public:
-    QgsWFSValidatorCallback( QObject *parent,
-                             const QgsWFSDataSourceURI &uri, const QString &allSql,
-                             const QgsWfsCapabilities::Capabilities &caps );
-    bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
-  private:
-    QgsWFSDataSourceURI mURI;
-    QString mAllSql;
-    const QgsWfsCapabilities::Capabilities &mCaps;
-};
-
 QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject *parent,
     const QgsWFSDataSourceURI &uri,
     const QString &allSql,
@@ -448,20 +434,6 @@ bool QgsWFSValidatorCallback::isValid( const QString &sqlStr, QString &errorReas
 
   return true;
 }
-
-class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
-{
-  public:
-    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
-                                 const QgsWFSDataSourceURI &uri,
-                                 const QgsWfsCapabilities::Capabilities &caps );
-    void tableSelected( const QString &name ) override;
-
-  private:
-    QgsSQLComposerDialog *mDialog = nullptr;
-    QgsWFSDataSourceURI mURI;
-    const QgsWfsCapabilities::Capabilities &mCaps;
-};
 
 QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
     const QgsWFSDataSourceURI &uri,
@@ -694,8 +666,8 @@ void QgsWFSSourceSelect::changeCRSFilter()
     QString currentTypename = currentIndex.sibling( currentIndex.row(), MODEL_IDX_NAME ).data().toString();
     QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
-    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
-    if ( crsIterator != mAvailableCRS.end() )
+    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
+    if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames( crsIterator->toSet() );
 
@@ -791,4 +763,9 @@ QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QM
   QSize size = option.fontMetrics.boundingRect( data ).size();
   size.setHeight( size.height() + 2 );
   return size;
+}
+
+void QgsWFSSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
 }

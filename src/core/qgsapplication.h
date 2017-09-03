@@ -20,8 +20,8 @@
 #include <QEvent>
 #include <QStringList>
 
-#include <qgis.h>
-#include <qgsconfig.h>
+#include "qgis.h"
+#include "qgsconfig.h"
 
 class QgsActionScopeRegistry;
 class QgsRuntimeProfiler;
@@ -233,9 +233,6 @@ class CORE_EXPORT QgsApplication : public QApplication
       Returns the path to the licence file.
      */
     static QString licenceFilePath();
-
-    //! Returns the path to the help application.
-    static QString helpAppPath();
 
     //! Returns the path to the translation directory.
     static QString i18nPath();

@@ -19,8 +19,11 @@
 
 #include "qgis_analysis.h"
 
+#define SIP_NO_FILE
+
 /** \ingroup analysis
  * \class HalfEdge
+ * \note Not available in Python bindings.
  */
 class ANALYSIS_EXPORT HalfEdge
 {

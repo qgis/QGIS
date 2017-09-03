@@ -1110,7 +1110,7 @@ QgsSymbol *QgsGraduatedSymbolRendererWidget::findSymbolForRange( double lowerBou
   int decimalPlaces = mRenderer->labelFormat().precision() + 2;
   if ( decimalPlaces < 0 )
     decimalPlaces = 0;
-  double precision = 1.0 / qPow( 10, decimalPlaces );
+  double precision = 1.0 / std::pow( 10, decimalPlaces );
 
   for ( QgsRangeList::const_iterator it = ranges.begin(); it != ranges.end(); ++it )
   {

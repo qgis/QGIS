@@ -135,8 +135,6 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#oracle-spatial-layers" ) ); }
-
     void columnThreadFinished();
 
   private:
@@ -174,6 +172,9 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
 
     void finishList();
     bool mIsConnected;
+
+    void showHelp();
+
 };
 
 #endif // QGSORACLESOURCESELECT_H

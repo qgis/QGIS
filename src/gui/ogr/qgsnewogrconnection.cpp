@@ -18,7 +18,6 @@
 #include <QRegExpValidator>
 
 #include "qgsnewogrconnection.h"
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsogrhelperfunctions.h"
@@ -27,12 +26,14 @@
 
 #include <ogr_api.h>
 #include <cpl_error.h>
+#include "qgshelp.h"
 
 QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connType, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/OGRDatabaseConnection/geometry" ) ).toByteArray() );
@@ -96,6 +97,11 @@ void QgsNewOgrConnection::testConnection()
     QMessageBox::information( this, tr( "Test connection" ), tr( "Connection to %1 was successful" ).arg( uri ) );
     OGRReleaseDataSource( poDS );
   }
+}
+
+void QgsNewOgrConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
 }
 
 //! Autoconnected SLOTS *

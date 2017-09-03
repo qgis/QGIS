@@ -541,8 +541,8 @@ void Session::updateTerminalSize()
         if ( view->isHidden() == false &&
                 view->lines() >= VIEW_LINES_THRESHOLD &&
                 view->columns() >= VIEW_COLUMNS_THRESHOLD ) {
-            minLines = (minLines == -1) ? view->lines() : qMin( minLines , view->lines() );
-            minColumns = (minColumns == -1) ? view->columns() : qMin( minColumns , view->columns() );
+            minLines = (minLines == -1) ? view->lines() : std::min( minLines , view->lines() );
+            minColumns = (minColumns == -1) ? view->columns() : std::min( minColumns , view->columns() );
         }
     }
 

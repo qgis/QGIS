@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 
 __author__ = 'Martin Dobias'
 __date__ = 'November 2009'

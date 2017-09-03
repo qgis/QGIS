@@ -19,6 +19,7 @@
 #include <QDialog>
 
 #include "ui_qgsosmexportdialog.h"
+#include "qgshelp.h"
 
 class QgsOSMDatabase;
 
@@ -43,6 +44,7 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
 
     void onOK();
     void onClose();
+    void showHelp();
 
   private:
     QgsOSMDatabase *mDatabase = nullptr;

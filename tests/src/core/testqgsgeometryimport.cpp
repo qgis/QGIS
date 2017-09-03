@@ -21,6 +21,8 @@
 
 
 #include "qgstest.h"
+#include "qgstestutils.h"
+
 #include <QObject>
 
 class TestQgsGeometryImport: public QObject
@@ -81,8 +83,8 @@ void TestQgsGeometryImport::pointWkt()
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
   QgsPointXY point = geom.asPoint();
 
-  QVERIFY( qgsDoubleNear( point.x(), x ) );
-  QVERIFY( qgsDoubleNear( point.y(), y ) );
+  QGSCOMPARENEAR( point.x(), x, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( point.y(), y, 4 * DBL_EPSILON );
 }
 
 void TestQgsGeometryImport::pointWkb_data()
@@ -109,8 +111,8 @@ void TestQgsGeometryImport::pointWkb()
   QgsPointXY point = geom.asPoint();
 
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
-  QVERIFY( qgsDoubleNear( point.x(), x ) );
-  QVERIFY( qgsDoubleNear( point.y(), y ) );
+  QGSCOMPARENEAR( point.x(), x, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( point.y(), y, 4 * DBL_EPSILON );
 }
 
 void TestQgsGeometryImport::pointGeos_data()
@@ -137,8 +139,8 @@ void TestQgsGeometryImport::pointGeos()
 
   QgsPointXY geomPt = geom.asPoint();
 
-  QVERIFY( qgsDoubleNear( x, geomPt.x() ) );
-  QVERIFY( qgsDoubleNear( y, geomPt.y() ) );
+  QGSCOMPARENEAR( x, geomPt.x(), 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( y, geomPt.y(), 4 * DBL_EPSILON );
 }
 
 void TestQgsGeometryImport::linestringWkt_data()

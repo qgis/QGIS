@@ -319,13 +319,13 @@ class ProcessingToolbox(BASE, WIDGET):
                 found = False
                 if updating:
                     recentItem = self.algorithmTree.topLevelItem(0)
-                    if recentItem.text(0) == self.tr('Recently used algorithms'):
+                    if recentItem.text(0) == self.tr('Recently used'):
                         treeWidget = recentItem.treeWidget()
                         treeWidget.takeTopLevelItem(
                             treeWidget.indexOfTopLevelItem(recentItem))
 
                 recentItem = QTreeWidgetItem()
-                recentItem.setText(0, self.tr('Recently used algorithms'))
+                recentItem.setText(0, self.tr('Recently used'))
                 for algname in recent:
                     alg = QgsApplication.processingRegistry().createAlgorithmById(algname)
                     if alg is not None:

@@ -126,6 +126,21 @@ class QgsDxfExport
  :rtype: bool
 %End
 
+    void setForce2d( bool force2d );
+%Docstring
+ Force 2d output (eg. to support linewidth in polylines)
+ \param force2d flag
+.. seealso:: force2d
+%End
+
+    bool force2d();
+%Docstring
+ Retrieve whether the output should be forced to 2d
+ :return: flag
+.. seealso:: setForce2d
+ :rtype: bool
+%End
+
     static int closestColorMatch( QRgb color );
 %Docstring
  Get DXF palette index of nearest entry for given color

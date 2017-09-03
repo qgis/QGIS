@@ -17,13 +17,12 @@
  ***************************************************************************/
 #ifndef QGSGENERICPROJECTIONSELECTOR_H
 #define QGSGENERICPROJECTIONSELECTOR_H
-#include <ui_qgsgenericprojectionselectorbase.h>
+#include "ui_qgsgenericprojectionselectorbase.h"
 #include "qgis.h"
 #include "qgsguiutils.h"
 
 #include <QSet>
 
-#include "qgscontexthelp.h"
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -118,7 +117,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
 
   private slots:
 
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void showHelp();
 };
 
 #endif // #ifndef QGSLAYERCRSSELECTOR_H

@@ -31,41 +31,55 @@ import xml.sax.saxutils
 
 from osgeo import ogr
 from qgis.core import (QgsProcessingFeedback,
-                       QgsApplication)
-from processing.tools import dataobjects
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessing,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingOutputString,
+                       QgsProcessingException)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputFile
-from processing.core.outputs import OutputString
 
 
 class Datasources2Vrt(QgisAlgorithm):
-    DATASOURCES = 'DATASOURCES'
+    INPUT = 'INPUT'
     UNIONED = 'UNIONED'
 
-    VRT_FILE = 'VRT_FILE'
+    OUTPUT = 'OUTPUT'
     VRT_STRING = 'VRT_STRING'
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterMultipleInput(self.DATASOURCES,
-                                                 self.tr('Input datasources'),
-                                                 dataobjects.TYPE_TABLE))
-        self.addParameter(ParameterBoolean(self.UNIONED,
-                                           self.tr('Create "unioned" VRT'),
-                                           default=False))
+        self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
+                                                               self.tr('Input datasources'),
+                                                               QgsProcessing.TypeVector))
+        self.addParameter(QgsProcessingParameterBoolean(self.UNIONED,
+                                                        self.tr('Create "unioned" VRT'),
+                                                        defaultValue=False))
 
-        self.addOutput(OutputFile(self.VRT_FILE,
-                                  self.tr('Virtual vector'), ext='vrt'))
-        self.addOutput(OutputString(self.VRT_STRING,
-                                    self.tr('Virtual string')))
+        class ParameterVectorVrtDestination(QgsProcessingParameterVectorDestination):
+
+            def __init__(self, name, description):
+                super().__init__(name, description)
+
+            def clone(self):
+                copy = ParameterVectorVrtDestination(self.name(), self.description())
+                return copy
+
+            def type(self):
+                return 'vrt_vector_destination'
+
+            def defaultFileExtension(self):
+                return 'vrt'
+
+        self.addParameter(ParameterVectorVrtDestination(self.OUTPUT,
+                                                        self.tr('Virtual vector')))
+        self.addOutput(QgsProcessingOutputString(self.VRT_STRING,
+                                                 self.tr('Virtual string')))
 
     def name(self):
         return 'buildvirtualvector'
@@ -74,20 +88,17 @@ class Datasources2Vrt(QgisAlgorithm):
         return self.tr('Build virtual vector')
 
     def processAlgorithm(self, parameters, context, feedback):
-        input_layers = self.getParameterValue(self.DATASOURCES)
-        unioned = self.getParameterValue(self.UNIONED)
-        vrtPath = self.getOutputValue(self.VRT_FILE)
+        input_layers = self.parameterAsLayerList(parameters, self.INPUT, context)
+        unioned = self.parameterAsBool(parameters, self.UNIONED, context)
+        vrtPath = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        layers = input_layers.split(';')
-
-        vrtString = self.mergeDataSources2Vrt(layers,
+        vrtString = self.mergeDataSources2Vrt(input_layers,
                                               vrtPath,
                                               union=unioned,
                                               relative=False,
                                               schema=False,
                                               feedback=feedback)
-
-        self.setOutputValue(self.VRT_STRING, vrtString)
+        return {self.OUTPUT: vrtPath, self.VRT_STRING: vrtString}
 
     def mergeDataSources2Vrt(self, dataSources, outFile, union=False, relative=False,
                              schema=False, feedback=None):
@@ -107,12 +118,16 @@ class Datasources2Vrt(QgisAlgorithm):
             vrt += '<OGRVRTUnionLayer name="UnionedLayer">'
 
         total = 100.0 / len(dataSources) if dataSources else 1
-        for current, inFile in enumerate(dataSources):
+        for current, layer in enumerate(dataSources):
+            if feedback.isCanceled():
+                break
+
             feedback.setProgress(int(current * total))
 
+            inFile = layer.source()
             srcDS = ogr.Open(inFile, 0)
             if srcDS is None:
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr('Invalid datasource: {}'.format(inFile)))
 
             if schema:

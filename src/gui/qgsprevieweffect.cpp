@@ -130,9 +130,9 @@ QRgb QgsPreviewEffect::simulateColorBlindness( QRgb &originalColor, QgsPreviewEf
   blue = ( -0.000365294 * L ) + ( -0.00412163 * M ) + ( 0.693513 * S );
 
   //restrict values to 0-255
-  red = qMax( qMin( 255, red ), 0 );
-  green = qMax( qMin( 255, green ), 0 );
-  blue = qMax( qMin( 255, blue ), 0 );
+  red = std::max( std::min( 255, red ), 0 );
+  green = std::max( std::min( 255, green ), 0 );
+  blue = std::max( std::min( 255, blue ), 0 );
 
   return qRgb( red, green, blue );
 }

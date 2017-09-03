@@ -20,14 +20,14 @@ email                : hugo dot mercier at oslandia dot com
 #include <QMainWindow>
 #include <QSettings>
 
-#include <qgsvectorlayer.h>
-#include <layertree/qgslayertreeview.h>
-#include <layertree/qgslayertreemodel.h>
-#include <layertree/qgslayertreegroup.h>
-#include <layertree/qgslayertreelayer.h>
-#include <layertree/qgslayertree.h>
-#include <qgsproviderregistry.h>
-#include <qgsvectordataprovider.h>
+#include "qgsvectorlayer.h"
+#include "layertree/qgslayertreeview.h"
+#include "layertree/qgslayertreemodel.h"
+#include "layertree/qgslayertreegroup.h"
+#include "layertree/qgslayertreelayer.h"
+#include "layertree/qgslayertree.h"
+#include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
 
 QgsEmbeddedLayerSelectDialog::QgsEmbeddedLayerSelectDialog( QWidget *parent, QgsLayerTreeView *tv )
   : QDialog( parent ),

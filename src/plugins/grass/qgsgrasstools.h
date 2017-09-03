@@ -20,6 +20,9 @@
 
 #include "ui_qgsgrasstoolsbase.h"
 
+#include <QSortFilterProxyModel>
+#include <QStandardItem>
+
 class QDomElement;
 class QSortFilterProxyModel;
 class QStandardItem;
@@ -138,6 +141,40 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
 
     // Show (fill) / hide tabs according to direct/indirect mode
     void showTabs();
+};
+
+
+// TODO: searching acros the tree is taken from QgsDockBrowserTreeView -> create common base class
+class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsGrassToolsTreeFilterProxyModel( QObject *parent );
+
+    void setSourceModel( QAbstractItemModel *sourceModel ) override;
+
+    void setFilter( const QString &filter );
+
+  protected:
+
+    QAbstractItemModel *mModel = nullptr;
+    QString mFilter; // filter string provided
+    QRegExp mRegExp; // regular expression constructed from filter string
+
+    bool filterAcceptsString( const QString &value ) const;
+
+    // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    // returns true if at least one ancestor is accepted by filter
+    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
+
+    // returns true if at least one descendant s accepted by filter
+    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
+
+    // filter accepts item name
+    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
 };
 
 #endif // QGSGRASSTOOLS_H

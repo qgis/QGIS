@@ -23,7 +23,6 @@
 #include "qgsdistancearea.h"
 #include "qgisapp.h"
 #include "qgscomposer.h"
-#include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgslayoutmanager.h"
 #include "qgslogger.h"
@@ -77,6 +76,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -1979,4 +1980,9 @@ void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
   lstScales->takeItem( row );
   addScaleToScaleList( changedScaleItem );
   lstScales->setCurrentItem( changedScaleItem );
+}
+
+void QgsProjectProperties::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) );
 }

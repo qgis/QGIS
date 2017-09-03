@@ -265,6 +265,8 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 //simple item for testing
 class TestLayoutItem : public QgsLayoutItem
 {
+    Q_OBJECT
+
   public:
 
     TestLayoutItem( QgsLayout *layout );

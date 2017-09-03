@@ -30,12 +30,15 @@
 #include <cfloat>
 #include <QBuffer>
 #include <QStringList>
-#include <QProgressDialog>
 #include <QCursor>
 #include "qgis_analysis.h"
 
+#define SIP_NO_FILE
+
 /** \ingroup analysis
- * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/
+ * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
 {
   public:
@@ -100,9 +103,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method
     virtual QList<int> *getPointsAroundEdge( double x, double y ) override;
 
-    /** Saves the triangulation as a (line) shapefile
-    \returns true in case of success*/
-    virtual bool saveAsShapefile( const QString &fileName ) const override;
+    virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
   protected:
     //! X-coordinate of the upper right corner of the bounding box

@@ -28,9 +28,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsProcessing
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
-
+''
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
 
@@ -63,10 +64,10 @@ class MultipleInputPanel(BASE, WIDGET):
             self.tr('{0} elements selected').format(len(self.selectedoptions)))
 
     def showSelectionDialog(self):
-        if self.datatype is None:
-            dlg = MultipleInputDialog(self.options, self.selectedoptions)
-        else:
+        if self.datatype == QgsProcessing.TypeFile:
             dlg = MultipleFileInputDialog(self.selectedoptions)
+        else:
+            dlg = MultipleInputDialog(self.options, self.selectedoptions, datatype=self.datatype)
         dlg.exec_()
         if dlg.selectedoptions is not None:
             self.selectedoptions = dlg.selectedoptions
@@ -76,12 +77,15 @@ class MultipleInputPanel(BASE, WIDGET):
 
     def updateForOptions(self, options):
         selectedoptions = []
-        selected = [self.options[i] for i in self.selectedoptions]
+        selected = [self.options[i] if isinstance(i, int) else i for i in self.selectedoptions]
         for sel in selected:
-            try:
-                idx = options.index(sel)
-                selectedoptions.append(idx)
-            except ValueError:
-                pass
+            if isinstance(sel, int):
+                try:
+                    idx = options.index(sel)
+                    selectedoptions.append(idx)
+                except ValueError:
+                    pass
+            else:
+                selectedoptions.append(sel)
         self.options = options
         self.setSelectedItems(selectedoptions)

@@ -21,7 +21,7 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 #############################################################
 # CMake settings
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 
@@ -581,7 +581,6 @@ IF (WITH_CORE)
   #hoops to escape compiler directives then
   IF(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
-    cmake_policy(SET CMP0005 OLD)
     IF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
       cmake_policy(SET CMP0063 NEW)
     ENDIF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")

@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 #include "qgis.h" // GEO_EPSG_CRS_ID
-#include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsprojectionselectiondialog.h"
@@ -232,7 +231,7 @@ void QgsOWSSourceSelect::populateConnectionList()
 }
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/' );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
   {
@@ -245,7 +244,7 @@ void QgsOWSSourceSelect::on_mNewButton_clicked()
 
 void QgsOWSSourceSelect::on_mEditButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {
@@ -414,7 +413,7 @@ void QgsOWSSourceSelect::populateCrs()
         break;
 
       // save first CRS in case the current CRS is not available
-      if ( it == mSelectedLayersCRSs.begin() )
+      if ( it == mSelectedLayersCRSs.constBegin() )
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
@@ -422,7 +421,7 @@ void QgsOWSSourceSelect::populateCrs()
         defaultCRS = *it;
     }
 
-    if ( it == mSelectedLayersCRSs.end() )
+    if ( it == mSelectedLayersCRSs.constEnd() )
     {
       // not found
       mSelectedCRS = defaultCRS;
@@ -587,7 +586,7 @@ void QgsOWSSourceSelect::addDefaultServers()
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + mService.toLower() );
+  settings.beginGroup( "/qgis/connections-" + mService.toLower() );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
   {

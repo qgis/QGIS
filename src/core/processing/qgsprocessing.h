@@ -41,17 +41,17 @@ class CORE_EXPORT QgsProcessing
 
   public:
 
-    //! Layer types enum
-    enum LayerType
+    //! Data source types enum
+    enum SourceType
     {
-      TypeAny = -2, //!< Any layer
-      TypeVectorAny = -1, //!< Any vector layer with geometry
+      TypeMapLayer = -2, //!< Any map layer type (raster or vector)
+      TypeVectorAnyGeometry = -1, //!< Any vector layer with geometry
       TypeVectorPoint = 0, //!< Vector point layers
       TypeVectorLine = 1, //!< Vector line layers
       TypeVectorPolygon = 2, //!< Vector polygon layers
       TypeRaster = 3, //!< Raster layers
-      TypeFile = 4, //!< Files
-      TypeTable = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
+      TypeFile = 4, //!< Files (i.e. non map layer sources, such as text files)
+      TypeVector = 5, //!< Tables (i.e. vector layers with or without geometry). When used for a sink this indicates the sink has no geometry.
     };
 
 

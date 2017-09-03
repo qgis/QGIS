@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLayoutItemPage : QgsLayoutItem
 {
 %Docstring
@@ -74,6 +76,14 @@ class QgsLayoutItemPage : QgsLayoutItem
  page orientation.
  :rtype: QgsLayoutItemPage.Orientation
 %End
+
+    virtual void attemptResize( const QgsLayoutSize &size );
+
+
+  public slots:
+
+    virtual void redraw();
+
 
   protected:
 

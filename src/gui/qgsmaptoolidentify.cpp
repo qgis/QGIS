@@ -396,7 +396,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     QString str = formatDistance( dist );
     derivedAttributes.insert( tr( "Length" ), str );
 
-    const QgsCurve *curve = dynamic_cast< const QgsCurve * >( feature->geometry().geometry() );
+    const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( feature->geometry().geometry() );
     if ( curve )
     {
       str = QLocale::system().toString( curve->nCoordinates() );
@@ -540,8 +540,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     // are similar to source width and height used to reproject layer for drawing.
     // TODO: may be very dangerous, because it may result in different resolutions
     // in source CRS, and WMS server (QGIS server) calcs wrong coor using average resolution.
-    int width = qRound( viewExtent.width() / mapUnitsPerPixel );
-    int height = qRound( viewExtent.height() / mapUnitsPerPixel );
+    int width = std::round( viewExtent.width() / mapUnitsPerPixel );
+    int height = std::round( viewExtent.height() / mapUnitsPerPixel );
 
     QgsDebugMsg( QString( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ) );
     QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
@@ -610,11 +610,12 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         }
 
         // list of feature stores for a single sublayer
-        QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
+        const QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
 
-        Q_FOREACH ( QgsFeatureStore featureStore, featureStoreList )
+        for ( const QgsFeatureStore &featureStore : featureStoreList )
         {
-          Q_FOREACH ( QgsFeature feature, featureStore.features() )
+          const QgsFeatureList storeFeatures = featureStore.features();
+          for ( QgsFeature feature : storeFeatures )
           {
             attributes.clear();
             // WMS sublayer and feature type, a sublayer may contain multiple feature types.

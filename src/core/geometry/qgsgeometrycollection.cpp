@@ -219,10 +219,10 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
   mGeometries.clear();
   for ( int i = 0; i < nGeometries; ++i )
   {
-    QgsAbstractGeometry *geom = QgsGeometryFactory::geomFromWkb( wkbPtr );  // also updates wkbPtr
+    std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkb( wkbPtr ) );  // also updates wkbPtr
     if ( geom )
     {
-      if ( !addGeometry( geom ) )
+      if ( !addGeometry( geom.release() ) )
       {
         qDeleteAll( mGeometries );
         mGeometries = geometryListBackup;
@@ -597,11 +597,10 @@ bool QgsGeometryCollection::hasCurvedSegments() const
 
 QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  QgsAbstractGeometry *geom = QgsGeometryFactory::geomFromWkbType( mWkbType );
-  QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( geom );
+  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::geomFromWkbType( mWkbType ) );
+  QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !geomCollection )
   {
-    delete geom;
     return clone();
   }
 
@@ -610,7 +609,7 @@ QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, Segmen
   {
     geomCollection->addGeometry( ( *geomIt )->segmentize( tolerance, toleranceType ) );
   }
-  return geomCollection;
+  return geom.release();
 }
 
 double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const

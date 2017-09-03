@@ -25,7 +25,6 @@
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsapplydialog.h"
-#include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrenderer.h"
@@ -91,6 +90,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mFieldsPropertiesDialog( nullptr )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
+
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -1217,6 +1218,7 @@ void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidget
 void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, const int insertIndex )
 {
   QTreeWidgetItem *joinItem = new QTreeWidgetItem();
+  joinItem->setFlags( Qt::ItemIsEnabled );
 
   QgsVectorLayer *joinLayer = join.joinLayer();
   if ( !mLayer || !joinLayer )
@@ -1224,47 +1226,78 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
     return;
   }
 
-  joinItem->setText( 0, joinLayer->name() );
+  joinItem->setText( 0, "Join layer" );
+  joinItem->setText( 1, joinLayer->name() );
+
+  QFont f = joinItem->font( 0 );
+  f.setBold( true );
+  joinItem->setFont( 0, f );
+  joinItem->setFont( 1, f );
+
   joinItem->setData( 0, Qt::UserRole, join.joinLayerId() );
 
-  joinItem->setText( 1, join.joinFieldName() );
-  joinItem->setText( 2, join.targetFieldName() );
+  QTreeWidgetItem *childJoinField = new QTreeWidgetItem();
+  childJoinField->setText( 0, "Join field" );
+  childJoinField->setText( 1, join.joinFieldName() );
+  childJoinField->setFlags( Qt::ItemIsEnabled );
+  joinItem->addChild( childJoinField );
 
+  QTreeWidgetItem *childTargetField = new QTreeWidgetItem();
+  childTargetField->setText( 0, "Target field" );
+  childTargetField->setText( 1, join.targetFieldName() );
+  joinItem->addChild( childTargetField );
+
+  QTreeWidgetItem *childMemCache = new QTreeWidgetItem();
+  childMemCache->setText( 0, "Cache join layer in virtual memory" );
   if ( join.isUsingMemoryCache() )
-  {
-    joinItem->setText( 3, QChar( 0x2714 ) );
-  }
+    childMemCache->setText( 1, QChar( 0x2714 ) );
+  joinItem->addChild( childMemCache );
 
+  QTreeWidgetItem *childDynForm = new QTreeWidgetItem();
+  childDynForm->setText( 0, "Dynamic form" );
   if ( join.isDynamicFormEnabled() )
-  {
-    joinItem->setText( 4, QChar( 0x2714 ) );
-  }
+    childDynForm->setText( 1, QChar( 0x2714 ) );
+  joinItem->addChild( childDynForm );
 
-  joinItem->setText( 5, join.prefix() );
+  QTreeWidgetItem *childEditable = new QTreeWidgetItem();
+  childEditable->setText( 0, "Editable join layer" );
+  if ( join.isEditable() )
+    childEditable->setText( 1, QChar( 0x2714 ) );
+  joinItem->addChild( childEditable );
 
+  QTreeWidgetItem *childUpsert = new QTreeWidgetItem();
+  childUpsert->setText( 0, "Upsert on edit" );
+  if ( join.hasUpsertOnEdit() )
+    childUpsert->setText( 1, QChar( 0x2714 ) );
+  joinItem->addChild( childUpsert );
+
+  QTreeWidgetItem *childCascade = new QTreeWidgetItem();
+  childCascade->setText( 0, "Delete cascade" );
+  if ( join.hasCascadedDelete() )
+    childCascade->setText( 1, QChar( 0x2714 ) );
+  joinItem->addChild( childCascade );
+
+  QTreeWidgetItem *childPrefix = new QTreeWidgetItem();
+  childPrefix->setText( 0, "Custom field name prefix" );
+  childPrefix->setText( 1, join.prefix() );
+  joinItem->addChild( childPrefix );
+
+  QTreeWidgetItem *childFields = new QTreeWidgetItem();
+  childFields->setText( 0, "Joined fields" );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
-  {
-    joinItem->setText( 6, QStringLiteral( "%1" ).arg( list->count() ) );
-  }
+    childFields->setText( 1, QStringLiteral( "%1" ).arg( list->count() ) );
   else
-  {
-    joinItem->setText( 6, tr( "all" ) );
-  }
+    childFields->setText( 1, tr( "all" ) );
+  joinItem->addChild( childFields );
 
   if ( insertIndex >= 0 )
-  {
     mJoinTreeWidget->insertTopLevelItem( insertIndex, joinItem );
-  }
   else
-  {
     mJoinTreeWidget->addTopLevelItem( joinItem );
-  }
-  for ( int c = 0; c < 6; c++ )
-  {
-    mJoinTreeWidget->resizeColumnToContents( c );
-  }
+
   mJoinTreeWidget->setCurrentItem( joinItem );
+  mJoinTreeWidget->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 }
 
 QgsExpressionContext QgsVectorLayerProperties::createExpressionContext() const
@@ -1396,4 +1429,9 @@ void QgsVectorLayerProperties::updateFieldsPropertiesDialog()
 {
   QgsEditFormConfig cfg = mLayer->editFormConfig();
   mFieldsPropertiesDialog->setEditFormInit( cfg.uiForm(), cfg.initFunction(), cfg.initCode(), cfg.initFilePath(), cfg.initCodeSource() );
+}
+
+void QgsVectorLayerProperties::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
 }

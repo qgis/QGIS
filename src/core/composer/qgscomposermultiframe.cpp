@@ -124,7 +124,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     while ( ( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
-      int page = qFloor( ( currentItem->pos().y() + currentItem->rect().height() ) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
+      int page = std::floor( ( currentItem->pos().y() + currentItem->rect().height() ) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
 
       if ( mResizeMode == RepeatOnEveryPage )
       {

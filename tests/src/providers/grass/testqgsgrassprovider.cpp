@@ -340,7 +340,7 @@ bool TestQgsGrassProvider::compare( const QStringList &expected, const QStringLi
 
 bool TestQgsGrassProvider::compare( double expected, double got, bool &ok )
 {
-  if ( qAbs( got - expected ) > TINY_VALUE )
+  if ( std::fabs( got - expected ) > TINY_VALUE )
   {
     ok = false;
     return false;

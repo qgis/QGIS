@@ -17,7 +17,7 @@
 #ifndef QGSTEXTFORMATWIDGET_H
 #define QGSTEXTFORMATWIDGET_H
 
-#include <ui_qgstextformatwidgetbase.h>
+#include "ui_qgstextformatwidgetbase.h"
 #include "qgis.h"
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"

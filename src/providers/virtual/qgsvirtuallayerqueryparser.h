@@ -17,9 +17,9 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYER_QUERY_PARSER_H
 #define QGSVIRTUALLAYER_QUERY_PARSER_H
 
-#include <qgis.h>
-#include <qgswkbtypes.h>
-#include <qgsvectorlayer.h>
+#include "qgis.h"
+#include "qgswkbtypes.h"
+#include "qgsvectorlayer.h"
 
 namespace QgsVirtualLayerQueryParser
 {

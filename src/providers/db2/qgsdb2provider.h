@@ -20,7 +20,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerexporter.h"
-#include <qgscoordinatereferencesystem.h>
+#include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include <QtSql>

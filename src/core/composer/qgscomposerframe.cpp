@@ -160,8 +160,8 @@ void QgsComposerFrame::setSceneRect( const QRectF &rectangle )
 
     //check minimum size
     QSizeF minSize = mMultiFrame->minFrameSize( frameIndex );
-    fixedRect.setWidth( qMax( minSize.width(), fixedRect.width() ) );
-    fixedRect.setHeight( qMax( minSize.height(), fixedRect.height() ) );
+    fixedRect.setWidth( std::max( minSize.width(), fixedRect.width() ) );
+    fixedRect.setHeight( std::max( minSize.height(), fixedRect.height() ) );
   }
 
   QgsComposerItem::setSceneRect( fixedRect );

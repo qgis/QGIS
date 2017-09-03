@@ -233,6 +233,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFolderDestination;
     else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
       sipType = sipType_QgsProcessingParameterBand;
+    else
+      sipType = nullptr;
     SIP_END
 #endif
 
@@ -254,6 +256,11 @@ class CORE_EXPORT QgsProcessingParameterDefinition
                                       bool optional = false );
 
     virtual ~QgsProcessingParameterDefinition() = default;
+
+    /**
+     * Creates a clone of the parameter definition.
+     */
+    virtual QgsProcessingParameterDefinition *clone() const = 0 SIP_FACTORY;
 
     /**
      * Unique parameter type name.
@@ -638,6 +645,7 @@ class CORE_EXPORT QgsProcessingParameterBoolean : public QgsProcessingParameterD
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "boolean" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
@@ -668,6 +676,7 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "crs" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -699,6 +708,7 @@ class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameter
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "layer" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -730,6 +740,7 @@ class CORE_EXPORT QgsProcessingParameterExtent : public QgsProcessingParameterDe
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "extent" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -762,6 +773,7 @@ class CORE_EXPORT QgsProcessingParameterPoint : public QgsProcessingParameterDef
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "point" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
 
@@ -799,6 +811,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "file" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString asScriptCode() const override;
@@ -863,6 +876,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "matrix" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -938,7 +952,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
     /**
      * Constructor for QgsProcessingParameterMultipleLayers.
      */
-    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::LayerType layerType = QgsProcessing::TypeVectorAny,
+    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::SourceType layerType = QgsProcessing::TypeVectorAnyGeometry,
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 
@@ -946,6 +960,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "multilayer" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -955,13 +970,13 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
      * Returns the layer type for layers acceptable by the parameter.
      * \see setLayerType()
      */
-    QgsProcessing::LayerType layerType() const;
+    QgsProcessing::SourceType layerType() const;
 
     /**
      * Sets the layer \a type for layers acceptable by the parameter.
      * \see layerType()
      */
-    void setLayerType( QgsProcessing::LayerType type );
+    void setLayerType( QgsProcessing::SourceType type );
 
     /**
      * Returns the minimum number of layers required for the parameter. If the return value is < 1
@@ -987,7 +1002,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
 
   private:
 
-    QgsProcessing::LayerType mLayerType = QgsProcessing::TypeVectorAny;
+    QgsProcessing::SourceType mLayerType = QgsProcessing::TypeVectorAnyGeometry;
     int mMinimumNumberInputs = 0;
 
 };
@@ -1024,6 +1039,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "number" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1101,6 +1117,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "range" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1150,6 +1167,7 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "raster" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1183,6 +1201,7 @@ class CORE_EXPORT QgsProcessingParameterEnum : public QgsProcessingParameterDefi
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "enum" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1248,6 +1267,7 @@ class CORE_EXPORT QgsProcessingParameterString : public QgsProcessingParameterDe
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "string" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
@@ -1299,6 +1319,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "expression" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QStringList dependsOnOtherParameters() const override;
@@ -1329,6 +1350,40 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
 
 };
 
+
+/**
+ * \class QgsProcessingParameterLimitedDataTypes
+ * \ingroup core
+ * Can be inherited by parameters which require limits to their acceptable data types.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterLimitedDataTypes
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterLimitedDataTypes, with a list of acceptable data \a types.
+     */
+    QgsProcessingParameterLimitedDataTypes( const QList< int > &types = QList< int >() );
+
+    /**
+     * Returns the geometry types for sources acceptable by the parameter.
+     * \see setDataTypes()
+     */
+    QList< int > dataTypes() const;
+
+    /**
+     * Sets the geometry \a types for sources acceptable by the parameter.
+     * \see dataTypes()
+     */
+    void setDataTypes( const QList< int > &types );
+
+  protected:
+
+    //! List of acceptable data types for the parameter
+    QList< int > mDataTypes;
+};
+
 /**
  * \class QgsProcessingParameterVectorLayer
  * \ingroup core
@@ -1336,7 +1391,7 @@ class CORE_EXPORT QgsProcessingParameterExpression : public QgsProcessingParamet
  * the more versatile QgsProcessingParameterFeatureSource wherever possible.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes
 {
   public:
 
@@ -1353,21 +1408,10 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "vector" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-
-    /**
-     * Returns the geometry types for sources acceptable by the parameter.
-     * \see setDataTypes()
-     */
-    QList< int > dataTypes() const;
-
-    /**
-     * Sets the geometry \a types for sources acceptable by the parameter.
-     * \see dataTypes()
-     */
-    void setDataTypes( const QList< int > &types );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1376,11 +1420,6 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterVectorLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
-
-  private:
-
-    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAny;
-
 
 };
 
@@ -1416,6 +1455,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "field" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1474,13 +1514,14 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
 
 };
 
+
 /**
  * \class QgsProcessingParameterFeatureSource
  * \ingroup core
  * An input feature source (such as vector layers) parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes
 {
   public:
 
@@ -1495,22 +1536,11 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "source" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
-
-    /**
-     * Returns the geometry types for sources acceptable by the parameter.
-     * \see setDataTypes()
-     */
-    QList< int > dataTypes() const;
-
-    /**
-     * Sets the geometry \a types for sources acceptable by the parameter.
-     * \see dataTypes()
-     */
-    void setDataTypes( const QList< int > &types );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1519,10 +1549,6 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterFeatureSource *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
-
-  private:
-
-    QList< int > mDataTypes = QList< int >() << QgsProcessing::TypeVectorAny;
 
 };
 
@@ -1617,13 +1643,14 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     /**
      * Constructor for QgsProcessingParameterFeatureSink.
      */
-    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 
     /**
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "sink" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1635,7 +1662,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * Returns the layer type for sinks associated with the parameter.
      * \see setDataType()
      */
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 
     /**
      * Returns true if sink is likely to include geometries. In cases were presence of geometry
@@ -1647,7 +1674,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * Sets the layer \a type for the sinks associated with the parameter.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1660,7 +1687,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
 
   private:
 
-    QgsProcessing::LayerType mDataType = QgsProcessing::TypeVectorAny;
+    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
 };
 
 
@@ -1681,13 +1708,14 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
     /**
      * Constructor for QgsProcessingParameterVectorDestination.
      */
-    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
         bool optional = false );
 
     /**
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "vectorDestination" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1699,7 +1727,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
      * Returns the layer type for this created vector layer.
      * \see setDataType()
      */
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 
     /**
      * Returns true if the created layer is likely to include geometries. In cases were presence of geometry
@@ -1711,7 +1739,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
      * Sets the layer \a type for the created vector layer.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1724,7 +1752,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
 
   private:
 
-    QgsProcessing::LayerType mDataType = QgsProcessing::TypeVectorAny;
+    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
 };
 
 /**
@@ -1749,6 +1777,7 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "rasterDestination" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1784,6 +1813,7 @@ class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDe
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "fileDestination" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
@@ -1839,6 +1869,7 @@ class CORE_EXPORT QgsProcessingParameterFolderDestination : public QgsProcessing
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "folderDestination" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
@@ -1872,6 +1903,7 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
      * Returns the type name for the parameter class.
      */
     static QString typeName() { return QStringLiteral( "band" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;

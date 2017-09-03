@@ -28,13 +28,12 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml,
                        QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
 
 from processing.tools import vector
 
@@ -54,22 +53,23 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.XFIELD,
-                                              self.tr('X attribute'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.YFIELD,
-                                              self.tr('Y attribute'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.ZFIELD,
-                                              self.tr('Z attribute'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.XFIELD,
+                                                      self.tr('X attribute'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
+        self.addParameter(QgsProcessingParameterField(self.YFIELD,
+                                                      self.tr('Y attribute'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
+        self.addParameter(QgsProcessingParameterField(self.ZFIELD,
+                                                      self.tr('Z attribute'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot 3D')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Histogram'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Histogram')))
 
     def name(self):
         return 'scatter3dplot'
@@ -78,15 +78,14 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
         return self.tr('Vector layer scatterplot 3D')
 
     def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        xfieldname = self.parameterAsString(parameters, self.XFIELD, context)
+        yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
+        zfieldname = self.parameterAsString(parameters, self.ZFIELD, context)
 
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        xfieldname = self.getParameterValue(self.XFIELD)
-        yfieldname = self.getParameterValue(self.YFIELD)
-        zfieldname = self.getParameterValue(self.ZFIELD)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        output = self.getOutputValue(self.OUTPUT)
-
-        values = vector.values(layer, xfieldname, yfieldname, zfieldname)
+        values = vector.values(source, xfieldname, yfieldname, zfieldname)
 
         data = [go.Scatter3d(
                 x=values[xfieldname],
@@ -95,3 +94,5 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
                 mode='markers')]
 
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

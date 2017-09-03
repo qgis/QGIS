@@ -42,6 +42,7 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
   , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCptCityColorRampDialog::showHelp );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
@@ -449,7 +450,7 @@ void QgsCptCityColorRampDialog::onFinished()
   settings.setValue( QStringLiteral( "Windows/CptCityColorRampV2Dialog/splitter" ), mSplitter->saveState() );
 }
 
-void QgsCptCityColorRampDialog::on_buttonBox_helpRequested()
+void QgsCptCityColorRampDialog::showHelp()
 {
   // show error message to use color ramp manager to get more gradients
   QString helpText = tr( "You can download a more complete set of cpt-city gradients "

@@ -113,6 +113,8 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsStyleExportImportDialog::doExportImport );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleExportImportDialog::showHelp );
 }
 
 void QgsStyleExportImportDialog::doExportImport()
@@ -200,7 +202,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
     QStandardItem *item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 15 );
     item->setIcon( icon );
-    item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+    item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
     // Set font to 10points to show reasonable text
     QFont itemFont = item->font();
     itemFont.setPointSize( 10 );
@@ -584,4 +586,9 @@ void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selecte
   Q_UNUSED( deselected );
   bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( nothingSelected );
+}
+
+void QgsStyleExportImportDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#share-symbols" ) );
 }

@@ -77,7 +77,7 @@ QPoint QgsMapTool::toCanvasCoordinates( const QgsPointXY &point )
 {
   qreal x = point.x(), y = point.y();
   mCanvas->getCoordinateTransform()->transformInPlace( x, y );
-  return QPoint( qRound( x ), qRound( y ) );
+  return QPoint( std::round( x ), std::round( y ) );
 }
 
 

@@ -26,16 +26,16 @@ class QgsProcessing
 %End
   public:
 
-    enum LayerType
+    enum SourceType
     {
-      TypeAny,
-      TypeVectorAny,
+      TypeMapLayer,
+      TypeVectorAnyGeometry,
       TypeVectorPoint,
       TypeVectorLine,
       TypeVectorPolygon,
       TypeRaster,
       TypeFile,
-      TypeTable,
+      TypeVector,
     };
 
 

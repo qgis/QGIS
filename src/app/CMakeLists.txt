@@ -124,8 +124,6 @@ SET(QGIS_APP_SRCS
   qgstextannotationdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
-  qgstipgui.cpp
-  qgstipfactory.cpp
   qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
@@ -157,8 +155,10 @@ SET(QGIS_APP_SRCS
 
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutdesignerdialog.cpp
+  layout/qgslayoutguidewidget.cpp
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpropertieswidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -306,8 +306,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsstatisticalsummarydockwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
-  qgstipgui.h
-  qgstipfactory.h
   qgsundowidget.h
   qgsvectorlayerproperties.h
   qgsmapthemes.h
@@ -338,7 +336,9 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutdesignerdialog.h
+  layout/qgslayoutguidewidget.h
   layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpropertieswidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h
@@ -479,6 +479,15 @@ IF(PEDANTIC)
     )
   ENDIF(MSVC)
 ENDIF(PEDANTIC)
+
+IF(MSVC)
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+SET_SOURCE_FILES_PROPERTIES(
+  qgisapp.cpp
+  main.cpp
+  qgscrashhandler.cpp
+  PROPERTIES COMPILE_FLAGS -wd4091)
+ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app

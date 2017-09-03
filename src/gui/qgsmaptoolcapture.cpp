@@ -50,12 +50,6 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 {
   mCaptureMode = mode;
 
-  // enable the snapping on mouse move / release
-  mSnapOnMove = true;
-  mSnapOnRelease = true;
-  mSnapOnDoubleClick = false;
-  mSnapOnPress = false;
-
   mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
@@ -682,7 +676,7 @@ void QgsMapToolCapture::validateGeometry()
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   connect( mValidator, &QThread::finished, this, &QgsMapToolCapture::validationFinished );
   mValidator->start();
-  messageEmitted( tr( "Validation started" ) );
+  emit messageEmitted( tr( "Validation started" ) );
 }
 
 void QgsMapToolCapture::addError( QgsGeometry::Error e )

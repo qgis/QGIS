@@ -19,9 +19,9 @@
 #include <QMap>
 #include <QWidget>
 
-#include <qgsdistancearea.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectorlayertools.h>
+#include "qgsdistancearea.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayertools.h"
 #include "qgis_gui.h"
 
 

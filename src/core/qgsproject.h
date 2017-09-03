@@ -750,6 +750,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void reloadAllLayers();
 
+    /** Returns the default CRS for new layers based on the settings and
+     * the current project CRS
+     */
+    QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
+
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );
@@ -966,6 +972,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param layers List of QgsMapLayer which were added to the legend.
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
+
+
 
   public slots:
 

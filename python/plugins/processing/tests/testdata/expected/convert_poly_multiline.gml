@@ -42,6 +42,12 @@
     </ogr:convert_poly_multiline>
   </gml:featureMember>
   <gml:featureMember>
+    <ogr:convert_poly_multiline fid="polys.4">
+      <ogr:intval>120</ogr:intval>
+      <ogr:floatval>-100291.43213</ogr:floatval>
+    </ogr:convert_poly_multiline>
+  </gml:featureMember>
+  <gml:featureMember>
     <ogr:convert_poly_multiline fid="polys.5">
       <ogr:geometryProperty><gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>3,2 6,1 6,-3 2,-1 2,2 3,2</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString></ogr:geometryProperty>
       <ogr:name>elim</ogr:name>

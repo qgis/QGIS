@@ -191,6 +191,8 @@ class QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterFolderDestination;
     else if ( sipCpp->type() == QgsProcessingParameterBand::typeName() )
       sipType = sipType_QgsProcessingParameterBand;
+    else
+      sipType = nullptr;
 %End
   public:
 
@@ -210,6 +212,12 @@ class QgsProcessingParameterDefinition
 %End
 
     virtual ~QgsProcessingParameterDefinition();
+
+    virtual QgsProcessingParameterDefinition *clone() const = 0 /Factory/;
+%Docstring
+ Creates a clone of the parameter definition.
+ :rtype: QgsProcessingParameterDefinition
+%End
 
     virtual QString type() const = 0;
 %Docstring
@@ -618,6 +626,8 @@ class QgsProcessingParameterBoolean : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -654,6 +664,8 @@ class QgsProcessingParameterCrs : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -691,6 +703,8 @@ class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -728,6 +742,8 @@ class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -766,6 +782,8 @@ class QgsProcessingParameterPoint : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -807,6 +825,8 @@ class QgsProcessingParameterFile : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -877,6 +897,8 @@ class QgsProcessingParameterMatrix : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -953,7 +975,7 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
 %End
   public:
 
-    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::LayerType layerType = QgsProcessing::TypeVectorAny,
+    QgsProcessingParameterMultipleLayers( const QString &name, const QString &description = QString(), QgsProcessing::SourceType layerType = QgsProcessing::TypeVectorAnyGeometry,
                                           const QVariant &defaultValue = QVariant(),
                                           bool optional = false );
 %Docstring
@@ -965,6 +987,8 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -973,14 +997,14 @@ class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
     virtual QString asScriptCode() const;
 
 
-    QgsProcessing::LayerType layerType() const;
+    QgsProcessing::SourceType layerType() const;
 %Docstring
  Returns the layer type for layers acceptable by the parameter.
 .. seealso:: setLayerType()
- :rtype: QgsProcessing.LayerType
+ :rtype: QgsProcessing.SourceType
 %End
 
-    void setLayerType( QgsProcessing::LayerType type );
+    void setLayerType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for layers acceptable by the parameter.
 .. seealso:: layerType()
@@ -1048,6 +1072,8 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1131,6 +1157,8 @@ class QgsProcessingParameterRange : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1186,6 +1214,8 @@ class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1225,6 +1255,8 @@ class QgsProcessingParameterEnum : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1296,6 +1328,8 @@ class QgsProcessingParameterString : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -1352,6 +1386,8 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
@@ -1384,7 +1420,42 @@ class QgsProcessingParameterExpression : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
+
+class QgsProcessingParameterLimitedDataTypes
+{
+%Docstring
+ Can be inherited by parameters which require limits to their acceptable data types.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterLimitedDataTypes( const QList< int > &types = QList< int >() );
+%Docstring
+ Constructor for QgsProcessingParameterLimitedDataTypes, with a list of acceptable data ``types``.
+%End
+
+    QList< int > dataTypes() const;
+%Docstring
+ Returns the geometry types for sources acceptable by the parameter.
+.. seealso:: setDataTypes()
+ :rtype: list of int
+%End
+
+    void setDataTypes( const QList< int > &types );
+%Docstring
+ Sets the geometry ``types`` for sources acceptable by the parameter.
+.. seealso:: dataTypes()
+%End
+
+  protected:
+
+};
+
+class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes
 {
 %Docstring
  A vector layer (with or without geometry) parameter for processing algorithms. Consider using
@@ -1411,24 +1482,13 @@ class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
-
-    QList< int > dataTypes() const;
-%Docstring
- Returns the geometry types for sources acceptable by the parameter.
-.. seealso:: setDataTypes()
- :rtype: list of int
-%End
-
-    void setDataTypes( const QList< int > &types );
-%Docstring
- Sets the geometry ``types`` for sources acceptable by the parameter.
-.. seealso:: dataTypes()
-%End
 
     virtual QVariantMap toVariantMap() const;
 
@@ -1477,6 +1537,8 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1539,7 +1601,8 @@ class QgsProcessingParameterField : QgsProcessingParameterDefinition
 
 };
 
-class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
+
+class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes
 {
 %Docstring
  An input feature source (such as vector layers) parameter for processing algorithms.
@@ -1563,6 +1626,8 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1570,19 +1635,6 @@ class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition
 
     virtual QString asScriptCode() const;
 
-
-    QList< int > dataTypes() const;
-%Docstring
- Returns the geometry types for sources acceptable by the parameter.
-.. seealso:: setDataTypes()
- :rtype: list of int
-%End
-
-    void setDataTypes( const QList< int > &types );
-%Docstring
- Sets the geometry ``types`` for sources acceptable by the parameter.
-.. seealso:: dataTypes()
-%End
 
     virtual QVariantMap toVariantMap() const;
 
@@ -1691,7 +1743,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
 %End
   public:
 
-    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
                                        bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterFeatureSink.
@@ -1702,6 +1754,8 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1714,11 +1768,11 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
     virtual QString defaultFileExtension() const;
 
 
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 %Docstring
  Returns the layer type for sinks associated with the parameter.
 .. seealso:: setDataType()
- :rtype: QgsProcessing.LayerType
+ :rtype: QgsProcessing.SourceType
 %End
 
     bool hasGeometry() const;
@@ -1728,7 +1782,7 @@ class QgsProcessingParameterFeatureSink : QgsProcessingDestinationParameter
  :rtype: bool
 %End
 
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for the sinks associated with the parameter.
 .. seealso:: dataType()
@@ -1768,7 +1822,7 @@ class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParamete
 %End
   public:
 
-    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny, const QVariant &defaultValue = QVariant(),
+    QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
         bool optional = false );
 %Docstring
  Constructor for QgsProcessingParameterVectorDestination.
@@ -1779,6 +1833,8 @@ class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParamete
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1791,11 +1847,11 @@ class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParamete
     virtual QString defaultFileExtension() const;
 
 
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 %Docstring
  Returns the layer type for this created vector layer.
 .. seealso:: setDataType()
- :rtype: QgsProcessing.LayerType
+ :rtype: QgsProcessing.SourceType
 %End
 
     bool hasGeometry() const;
@@ -1805,7 +1861,7 @@ class QgsProcessingParameterVectorDestination : QgsProcessingDestinationParamete
  :rtype: bool
 %End
 
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for the created vector layer.
 .. seealso:: dataType()
@@ -1850,6 +1906,8 @@ class QgsProcessingParameterRasterDestination : QgsProcessingDestinationParamete
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1893,6 +1951,8 @@ class QgsProcessingParameterFileDestination : QgsProcessingDestinationParameter
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1956,6 +2016,8 @@ class QgsProcessingParameterFolderDestination : QgsProcessingDestinationParamete
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
@@ -1996,6 +2058,8 @@ class QgsProcessingParameterBand : QgsProcessingParameterDefinition
  Returns the type name for the parameter class.
  :rtype: str
 %End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 

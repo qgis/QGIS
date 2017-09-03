@@ -313,7 +313,6 @@ bool QgsVirtualLayerProvider::createIt()
   }
 
   QgsFields tfields;
-  QList<QString> geometryFields;
   if ( !mDefinition.query().isEmpty() )
   {
     // look for column types of the query

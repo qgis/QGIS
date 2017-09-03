@@ -71,7 +71,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
     }
     fullPath.replace( QRegularExpression( "(\\$\\$)" ), "$" );
 
-    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath ).arg( key );
+    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath, key );
 
     if ( helpPath.startsWith( QStringLiteral( "http" ) ) )
     {

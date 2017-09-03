@@ -24,9 +24,13 @@
 
 class Vector3D;
 
+#define SIP_NO_FILE
+
 /** \ingroup analysis
  * ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric
- * lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.*/
+ * lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.
+ * \note Not available in Python bindings
+*/
 class ANALYSIS_EXPORT ParametricLine
 {
   protected:

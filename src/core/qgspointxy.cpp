@@ -53,15 +53,15 @@ QString QgsPointXY::toString() const
 
 QString QgsPointXY::toString( int precision ) const
 {
-  QString x = qIsFinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
-  QString y = qIsFinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
+  QString x = std::isfinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
+  QString y = std::isfinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
   return QStringLiteral( "%1,%2" ).arg( x, y );
 }
 
 QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
-  double myWrappedX = fmod( mX, 360.0 );
+  double myWrappedX = std::fmod( mX, 360.0 );
   //next, wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
   if ( myWrappedX > 180.0 )
   {
@@ -73,7 +73,7 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
   }
 
   //first, limit latitude to -180 to 180 degree range
-  double myWrappedY = fmod( mY, 180.0 );
+  double myWrappedY = std::fmod( mY, 180.0 );
   //next, wrap around latitudes > 90 or < -90 degrees, so that, e.g., "110S" -> "70N"
   if ( myWrappedY > 90.0 )
   {
@@ -84,20 +84,20 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
     myWrappedY = myWrappedY + 180.0;
   }
 
-  int myDegreesX = int( qAbs( myWrappedX ) );
-  double myFloatMinutesX = double( ( qAbs( myWrappedX ) - myDegreesX ) * 60 );
+  int myDegreesX = int( std::fabs( myWrappedX ) );
+  double myFloatMinutesX = double( ( std::fabs( myWrappedX ) - myDegreesX ) * 60 );
   int myIntMinutesX = int( myFloatMinutesX );
   double mySecondsX = double( myFloatMinutesX - myIntMinutesX ) * 60;
 
-  int myDegreesY = int( qAbs( myWrappedY ) );
-  double myFloatMinutesY = double( ( qAbs( myWrappedY ) - myDegreesY ) * 60 );
+  int myDegreesY = int( std::fabs( myWrappedY ) );
+  double myFloatMinutesY = double( ( std::fabs( myWrappedY ) - myDegreesY ) * 60 );
   int myIntMinutesY = int( myFloatMinutesY );
   double mySecondsY = double( myFloatMinutesY - myIntMinutesY ) * 60;
 
   //make sure rounding to specified precision doesn't create seconds >= 60
-  if ( qRound( mySecondsX * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
+  if ( std::round( mySecondsX * std::pow( 10.0, precision ) ) >= 60 * std::pow( 10.0, precision ) )
   {
-    mySecondsX = qMax( mySecondsX - 60, 0.0 );
+    mySecondsX = std::max( mySecondsX - 60, 0.0 );
     myIntMinutesX++;
     if ( myIntMinutesX >= 60 )
     {
@@ -105,9 +105,9 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
       myDegreesX++;
     }
   }
-  if ( qRound( mySecondsY * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
+  if ( std::round( mySecondsY * std::pow( 10.0, precision ) ) >= 60 * std::pow( 10.0, precision ) )
   {
-    mySecondsY = qMax( mySecondsY - 60, 0.0 );
+    mySecondsY = std::max( mySecondsY - 60, 0.0 );
     myIntMinutesY++;
     if ( myIntMinutesY >= 60 )
     {
@@ -138,18 +138,18 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
   }
   //check if coordinate is all zeros for the specified precision, and if so,
   //remove the sign and hemisphere strings
-  if ( myDegreesX == 0 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10.0, precision ) ) == 0 )
+  if ( myDegreesX == 0 && myIntMinutesX == 0 && std::round( mySecondsX * std::pow( 10.0, precision ) ) == 0 )
   {
     myXSign = QString();
     myXHemisphere = QString();
   }
-  if ( myDegreesY == 0 && myIntMinutesY == 0 && qRound( mySecondsY * pow( 10.0, precision ) ) == 0 )
+  if ( myDegreesY == 0 && myIntMinutesY == 0 && std::round( mySecondsY * std::pow( 10.0, precision ) ) == 0 )
   {
     myYSign = QString();
     myYHemisphere = QString();
   }
   //also remove directional prefix from 180 degree longitudes
-  if ( myDegreesX == 180 && myIntMinutesX == 0 && qRound( mySecondsX * pow( 10.0, precision ) ) == 0 )
+  if ( myDegreesX == 180 && myIntMinutesX == 0 && std::round( mySecondsX * std::pow( 10.0, precision ) ) == 0 )
   {
     myXHemisphere = QString();
   }
@@ -175,7 +175,7 @@ QString QgsPointXY::toDegreesMinutesSeconds( int precision, const bool useSuffix
 QString QgsPointXY::toDegreesMinutes( int precision, const bool useSuffix, const bool padded ) const
 {
   //first, limit longitude to -360 to 360 degree range
-  double myWrappedX = fmod( mX, 360.0 );
+  double myWrappedX = std::fmod( mX, 360.0 );
   //next, wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
   if ( myWrappedX > 180.0 )
   {
@@ -186,21 +186,21 @@ QString QgsPointXY::toDegreesMinutes( int precision, const bool useSuffix, const
     myWrappedX = myWrappedX + 360.0;
   }
 
-  int myDegreesX = int( qAbs( myWrappedX ) );
-  double myFloatMinutesX = double( ( qAbs( myWrappedX ) - myDegreesX ) * 60 );
+  int myDegreesX = int( std::fabs( myWrappedX ) );
+  double myFloatMinutesX = double( ( std::fabs( myWrappedX ) - myDegreesX ) * 60 );
 
-  int myDegreesY = int( qAbs( mY ) );
-  double myFloatMinutesY = double( ( qAbs( mY ) - myDegreesY ) * 60 );
+  int myDegreesY = int( std::fabs( mY ) );
+  double myFloatMinutesY = double( ( std::fabs( mY ) - myDegreesY ) * 60 );
 
   //make sure rounding to specified precision doesn't create minutes >= 60
-  if ( qRound( myFloatMinutesX * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
+  if ( std::round( myFloatMinutesX * std::pow( 10.0, precision ) ) >= 60 * std::pow( 10.0, precision ) )
   {
-    myFloatMinutesX = qMax( myFloatMinutesX - 60, 0.0 );
+    myFloatMinutesX = std::max( myFloatMinutesX - 60, 0.0 );
     myDegreesX++;
   }
-  if ( qRound( myFloatMinutesY * pow( 10.0, precision ) ) >= 60 * pow( 10.0, precision ) )
+  if ( std::round( myFloatMinutesY * std::pow( 10.0, precision ) ) >= 60 * std::pow( 10.0, precision ) )
   {
-    myFloatMinutesY = qMax( myFloatMinutesY - 60, 0.0 );
+    myFloatMinutesY = std::max( myFloatMinutesY - 60, 0.0 );
     myDegreesY++;
   }
 
@@ -226,18 +226,18 @@ QString QgsPointXY::toDegreesMinutes( int precision, const bool useSuffix, const
   }
   //check if coordinate is all zeros for the specified precision, and if so,
   //remove the sign and hemisphere strings
-  if ( myDegreesX == 0 && qRound( myFloatMinutesX * pow( 10.0, precision ) ) == 0 )
+  if ( myDegreesX == 0 && std::round( myFloatMinutesX * std::pow( 10.0, precision ) ) == 0 )
   {
     myXSign = QString();
     myXHemisphere = QString();
   }
-  if ( myDegreesY == 0 && qRound( myFloatMinutesY * pow( 10.0, precision ) ) == 0 )
+  if ( myDegreesY == 0 && std::round( myFloatMinutesY * std::pow( 10.0, precision ) ) == 0 )
   {
     myYSign = QString();
     myYHemisphere = QString();
   }
   //also remove directional prefix from 180 degree longitudes
-  if ( myDegreesX == 180 && qRound( myFloatMinutesX * pow( 10.0, precision ) ) == 0 )
+  if ( myDegreesX == 180 && std::round( myFloatMinutesX * std::pow( 10.0, precision ) ) == 0 )
   {
     myXHemisphere = QString();
   }
@@ -273,26 +273,26 @@ double QgsPointXY::sqrDist( const QgsPointXY &other ) const
 
 double QgsPointXY::distance( double x, double y ) const
 {
-  return sqrt( sqrDist( x, y ) );
+  return std::sqrt( sqrDist( x, y ) );
 }
 
 double QgsPointXY::distance( const QgsPointXY &other ) const
 {
-  return sqrt( sqrDist( other ) );
+  return std::sqrt( sqrDist( other ) );
 }
 
 double QgsPointXY::azimuth( const QgsPointXY &other ) const
 {
   double dx = other.x() - mX;
   double dy = other.y() - mY;
-  return ( atan2( dx, dy ) * 180.0 / M_PI );
+  return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
 QgsPointXY QgsPointXY::project( double distance, double bearing ) const
 {
   double rads = bearing * M_PI / 180.0;
-  double dx = distance * sin( rads );
-  double dy = distance * cos( rads );
+  double dx = distance * std::sin( rads );
+  double dy = distance * std::cos( rads );
   return QgsPointXY( mX + dx, mY + dy );
 }
 

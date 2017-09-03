@@ -492,8 +492,6 @@ void QgsProject::clear()
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
 
-  mRootGroup->clear();
-
   mLabelingEngineSettings->clear();
 
   mArchive->clear();
@@ -512,6 +510,8 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
   removeAllMapLayers();
+  mRootGroup->clear();
+
   setDirty( false );
 }
 
@@ -808,7 +808,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 #endif
 
     QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
-                          .arg( projectFile.fileName() ).arg( errorMsg ).arg( line ).arg( column );
+                          .arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
 
     QgsDebugMsg( errorString );
 
@@ -2156,7 +2156,6 @@ bool QgsProject::zip( const QString &filename )
   archive->addFile( qgsFile.fileName() );
 
   // zip
-  QString errMsg;
   if ( !archive->zip( filename ) )
   {
     setError( tr( "Unable to perform zip" ) );
@@ -2241,3 +2240,23 @@ QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
 }
 
 
+QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
+{
+  QgsSettings settings;
+  QgsCoordinateReferenceSystem defaultCrs;
+  if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "useProject" )
+       || settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "prompt" ) )
+  {
+    // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
+    // (since "prompt" has no meaning here - the prompt will always be shown, it's just deciding on the default choice in the prompt!)
+    defaultCrs = crs();
+  }
+  else
+  {
+    // global crs
+    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+    defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
+  }
+
+  return defaultCrs;
+}

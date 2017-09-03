@@ -18,16 +18,16 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "qgsvirtuallayersourceselect.h"
 
-#include <layertree/qgslayertreeview.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgsproject.h>
-#include <qgsprojectionselectiondialog.h>
-#include <layertree/qgslayertreemodel.h>
-#include <layertree/qgslayertreegroup.h>
-#include <layertree/qgslayertreelayer.h>
-#include <layertree/qgslayertree.h>
-#include <qgsproviderregistry.h>
+#include "layertree/qgslayertreeview.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+#include "layertree/qgslayertreemodel.h"
+#include "layertree/qgslayertreegroup.h"
+#include "layertree/qgslayertreelayer.h"
+#include "layertree/qgslayertree.h"
+#include "qgsproviderregistry.h"
 
 #include "qgsembeddedlayerselectdialog.h"
 

@@ -18,8 +18,8 @@
 #ifndef SPATIALQUERY_H
 #define SPATIALQUERY_H
 
-#include <qgsvectorlayer.h>
-#include <qgsspatialindex.h>
+#include "qgsvectorlayer.h"
+#include "qgsspatialindex.h"
 
 #include "qgsmngprogressbar.h"
 #include "qgsreaderfeatures.h"
@@ -138,7 +138,7 @@ class QgsSpatialQuery
      * \param operation          Pointer to function of GEOS operation
      */
     void populateIndexResult( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry &geomTarget,
-                              bool ( QgsGeometryEngine::* operation )( const QgsAbstractGeometry &, QString * ) const );
+                              bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometry *, QString * ) const );
 
     /**
      * \brief Populate index Result Disjoint
@@ -148,7 +148,7 @@ class QgsSpatialQuery
      * \param operation          Pointer to function of GEOS operation
      */
     void populateIndexResultDisjoint( QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, const QgsGeometry &geomTarget,
-                                      bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometry &, QString * ) const );
+                                      bool ( QgsGeometryEngine::*operation )( const QgsAbstractGeometry *, QString * ) const );
 
     MngProgressBar *mPb = nullptr;
     bool mUseReferenceSelection;

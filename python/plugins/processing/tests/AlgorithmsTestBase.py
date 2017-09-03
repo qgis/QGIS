@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from builtins import zip
-from builtins import str
-from builtins import object
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
@@ -60,6 +56,7 @@ from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  #
 
 from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
+                       QgsFeatureRequest,
                        QgsMapLayer,
                        QgsProject,
                        QgsApplication,
@@ -127,6 +124,10 @@ class AlgorithmsTest(object):
         # ignore user setting for invalid geometry handling
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
+
+        if 'skipInvalid' in defs and defs['skipInvalid']:
+            context.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
+
         feedback = QgsProcessingFeedback()
 
         if expectFailure:
@@ -306,7 +307,7 @@ class AlgorithmsTest(object):
                 strhash = hashlib.sha224(dataArray.data).hexdigest()
 
                 if not isinstance(expected_result['hash'], str):
-                    self.assertTrue(strhash in expected_result['hash'])
+                    self.assertIn(strhash, expected_result['hash'])
                 else:
                     self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:

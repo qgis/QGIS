@@ -22,10 +22,93 @@
 #include "qgstest.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
+#include "qgstestutils.h"
 #include <QObject>
 #include <QPainter>
 #include <QImage>
 #include <QtTest/QSignalSpy>
+
+
+//simple item for testing, since some methods in QgsLayoutItem are pure virtual
+class TestItem : public QgsLayoutItem
+{
+    Q_OBJECT
+
+  public:
+
+    TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
+    ~TestItem() {}
+
+    //implement pure virtual methods
+    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
+    QString stringType() const override { return QStringLiteral( "TestItemType" ); }
+
+  protected:
+    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * = nullptr ) override
+    {
+      QPainter *painter = context.painter();
+      painter->save();
+      painter->setRenderHint( QPainter::Antialiasing, false );
+      painter->setPen( Qt::NoPen );
+      painter->setBrush( QColor( 255, 100, 100, 200 ) );
+      painter->drawRect( rect() );
+      painter->restore();
+    }
+};
+
+//item with minimum size
+class MinSizedItem : public TestItem
+{
+    Q_OBJECT
+
+  public:
+    MinSizedItem( QgsLayout *layout ) : TestItem( layout )
+    {
+      setMinimumSize( QgsLayoutSize( 5.0, 10.0, QgsUnitTypes::LayoutCentimeters ) );
+    }
+
+    void updateMinSize( QgsLayoutSize size )
+    {
+      setMinimumSize( size );
+    }
+
+    ~MinSizedItem() {}
+};
+
+//item with fixed size
+class FixedSizedItem : public TestItem
+{
+    Q_OBJECT
+
+  public:
+
+    FixedSizedItem( QgsLayout *layout ) : TestItem( layout )
+    {
+      setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutInches ) );
+    }
+
+    void updateFixedSize( QgsLayoutSize size )
+    {
+      setFixedSize( size );
+    }
+    ~FixedSizedItem() {}
+};
+
+//item with both conflicting fixed and minimum size
+class FixedMinSizedItem : public TestItem
+{
+    Q_OBJECT
+
+  public:
+
+    FixedMinSizedItem( QgsLayout *layout ) : TestItem( layout )
+    {
+      setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
+      setMinimumSize( QgsLayoutSize( 5.0, 9.0, QgsUnitTypes::LayoutCentimeters ) );
+    }
+    ~FixedMinSizedItem() {}
+};
+
 
 class TestQgsLayoutItem: public QObject
 {
@@ -64,78 +147,6 @@ class TestQgsLayoutItem: public QObject
     void writeReadXmlProperties();
 
   private:
-
-    //simple item for testing, since some methods in QgsLayoutItem are pure virtual
-    class TestItem : public QgsLayoutItem
-    {
-      public:
-
-        TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
-        ~TestItem() {}
-
-        //implement pure virtual methods
-        int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
-        QString stringType() const override { return QStringLiteral( "TestItemType" ); }
-
-      protected:
-        void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * = nullptr ) override
-        {
-          QPainter *painter = context.painter();
-          painter->save();
-          painter->setRenderHint( QPainter::Antialiasing, false );
-          painter->setPen( Qt::NoPen );
-          painter->setBrush( QColor( 255, 100, 100, 200 ) );
-          painter->drawRect( rect() );
-          painter->restore();
-        }
-    };
-
-    //item with minimum size
-    class MinSizedItem : public TestItem
-    {
-      public:
-        MinSizedItem( QgsLayout *layout ) : TestItem( layout )
-        {
-          setMinimumSize( QgsLayoutSize( 5.0, 10.0, QgsUnitTypes::LayoutCentimeters ) );
-        }
-
-        void updateMinSize( QgsLayoutSize size )
-        {
-          setMinimumSize( size );
-        }
-
-        ~MinSizedItem() {}
-    };
-
-    //item with fixed size
-    class FixedSizedItem : public TestItem
-    {
-      public:
-
-        FixedSizedItem( QgsLayout *layout ) : TestItem( layout )
-        {
-          setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutInches ) );
-        }
-
-        void updateFixedSize( QgsLayoutSize size )
-        {
-          setFixedSize( size );
-        }
-        ~FixedSizedItem() {}
-    };
-
-    //item with both conflicting fixed and minimum size
-    class FixedMinSizedItem : public TestItem
-    {
-      public:
-
-        FixedMinSizedItem( QgsLayout *layout ) : TestItem( layout )
-        {
-          setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
-          setMinimumSize( QgsLayoutSize( 5.0, 9.0, QgsUnitTypes::LayoutCentimeters ) );
-        }
-        ~FixedMinSizedItem() {}
-    };
 
     QString mReport;
 
@@ -547,6 +558,35 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
   QCOMPARE( item->rect().width(), 70.0 ); //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
+
+  // data defined page size
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::PresetPaperSize, QgsProperty::fromValue( QStringLiteral( "A5" ) ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( item->sizeWithUnits().width(), 14.8 );
+  QCOMPARE( item->sizeWithUnits().height(), 21.0 );
+  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->rect().width(), 148.0 ); //mm
+  QCOMPARE( item->rect().height(), 210.0 ); //mm
+  // data defined height/width should override page size
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromValue( "13.0" ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( item->sizeWithUnits().width(), 13.0 );
+  QCOMPARE( item->sizeWithUnits().height(), 21.0 );
+  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->rect().width(), 130.0 ); //mm
+  QCOMPARE( item->rect().height(), 210.0 ); //mm
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty::fromValue( "3.0" ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( item->sizeWithUnits().width(), 13.0 );
+  QCOMPARE( item->sizeWithUnits().height(), 3.0 );
+  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->rect().width(), 130.0 ); //mm
+  QCOMPARE( item->rect().height(), 30.0 ); //mm
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::PresetPaperSize, QgsProperty() );
 
   //check change of units should apply to data defined size
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
@@ -980,13 +1020,13 @@ void TestQgsLayoutItem::fixedSize()
   item->setRect( 0, 0, 5.0, 6.0 ); //temporarily set rect to random size
   item->attemptResize( QgsLayoutSize( 7.0, 8.0, QgsUnitTypes::LayoutPoints ) );
   //check size matches fixed item size converted to mm
-  QVERIFY( qgsDoubleNear( item->rect().width(), 2.0 * 25.4 ) );
-  QVERIFY( qgsDoubleNear( item->rect().height(), 4.0 * 25.4 ) );
+  QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * DBL_EPSILON );
 
   //check that setting a fixed size applies this size immediately
   item->updateFixedSize( QgsLayoutSize( 150, 250, QgsUnitTypes::LayoutMillimeters ) );
-  QVERIFY( qgsDoubleNear( item->rect().width(), 150.0 ) );
-  QVERIFY( qgsDoubleNear( item->rect().height(), 250.0 ) );
+  QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * DBL_EPSILON );
 }
 
 void TestQgsLayoutItem::minSize()
@@ -1004,18 +1044,18 @@ void TestQgsLayoutItem::minSize()
   //try to resize to less than minimum size
   item->attemptResize( QgsLayoutSize( 1.0, 0.5, QgsUnitTypes::LayoutPoints ) );
   //check size matches min item size converted to mm
-  QVERIFY( qgsDoubleNear( item->rect().width(), 50.0 ) );
-  QVERIFY( qgsDoubleNear( item->rect().height(), 100.0 ) );
+  QGSCOMPARENEAR( item->rect().width(), 50.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().height(), 100.0, 4 * DBL_EPSILON );
 
   //check that resize to larger than min size works
   item->attemptResize( QgsLayoutSize( 0.1, 0.2, QgsUnitTypes::LayoutMeters ) );
-  QVERIFY( qgsDoubleNear( item->rect().width(), 100.0 ) );
-  QVERIFY( qgsDoubleNear( item->rect().height(), 200.0 ) );
+  QGSCOMPARENEAR( item->rect().width(), 100.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().height(), 200.0, 4 * DBL_EPSILON );
 
   //check that setting a minimum size applies this size immediately
   item->updateMinSize( QgsLayoutSize( 150, 250, QgsUnitTypes::LayoutMillimeters ) );
-  QVERIFY( qgsDoubleNear( item->rect().width(), 150.0 ) );
-  QVERIFY( qgsDoubleNear( item->rect().height(), 250.0 ) );
+  QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * DBL_EPSILON );
 
   //also need check that fixed size trumps min size
   FixedMinSizedItem *fixedMinItem = new FixedMinSizedItem( &l );
@@ -1028,8 +1068,8 @@ void TestQgsLayoutItem::minSize()
   //try to resize to less than minimum size
   fixedMinItem->attemptResize( QgsLayoutSize( 1.0, 0.5, QgsUnitTypes::LayoutPoints ) );
   //check size matches fixed item size, not minimum size (converted to mm)
-  QVERIFY( qgsDoubleNear( fixedMinItem->rect().width(), 50.0 ) );
-  QVERIFY( qgsDoubleNear( fixedMinItem->rect().height(), 90.0 ) );
+  QGSCOMPARENEAR( fixedMinItem->rect().width(), 50.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( fixedMinItem->rect().height(), 90.0, 4 * DBL_EPSILON );
 }
 
 void TestQgsLayoutItem::move()

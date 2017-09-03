@@ -352,6 +352,11 @@ void QgisAppInterface::closeMapCanvas( const QString &name )
   qgis->closeMapCanvas( name );
 }
 
+QSize QgisAppInterface::iconSize( bool dockedToolbar ) const
+{
+  return qgis->iconSize( dockedToolbar );
+}
+
 QgsLayerTreeMapCanvasBridge *QgisAppInterface::layerTreeCanvasBridge()
 {
   return qgis->layerTreeCanvasBridge();

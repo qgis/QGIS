@@ -1,3 +1,6 @@
+# append :* to avoid in word check_spelling
+# append :% to exclude script files
+#...:…:%
 abailable:available
 abandonded:abandoned
 abandonned:abandoned
@@ -405,6 +408,7 @@ alocated:allocated
 alocates:allocates
 alocating:allocating
 alochol:alcohol
+alog:along
 alogirhtms:algorithms
 alogrithm:algorithm
 alogrithms:algorithms
@@ -2905,6 +2909,7 @@ facillitate:facilitate
 facinated:fascinated
 facist:fascist
 faild:failed
+faile:failed
 failue:failure
 failuer:failure
 failues:failures
@@ -3556,6 +3561,7 @@ imprisonned:imprisoned
 improvision:improvisation
 improvment:improvement
 improvments:improvements
+imput:input
 imrovement:improvement
 inablility:inability
 inacccessible:inaccessible
@@ -4366,7 +4372,7 @@ methaphors:metaphors
 metres:meters
 Michagan:Michigan
 micoscopy:microscopy
-microprocesspr\>:microprocessor
+microprocesspr:microprocessor:*
 midwifes:midwives
 mileau:milieu
 milennia:millennia
@@ -4451,6 +4457,7 @@ missonary:missionary
 misterious:mysterious
 mistery:mystery
 misteryous:mysterious
+mitre:miter:*
 mkae:make
 mkaes:makes
 mkaing:making
@@ -5381,7 +5388,7 @@ proceses:processes
 processer:processor:*
 processess:processes
 processessing:processing
-processpr\>:processor
+processpr:processor:*
 processs:process:*
 processsed:processed
 processses:processes
@@ -5731,6 +5738,7 @@ regarless:regardless
 registe:register
 registed:registered
 registeing:registering
+registing:registering
 registerd:registered:*
 registes:registers
 registraration:registration
@@ -6246,6 +6254,7 @@ sertificates:certificates
 serveral:several
 sesssion:session
 sesssions:sessions
+seting:setting:*
 setted:set
 settelement:settlement
 settlment:settlement
@@ -7093,6 +7102,7 @@ tyrranies:tyrannies
 tyrrany:tyranny
 ubiquitious:ubiquitous
 ublisher:publisher
+updat:update
 udpate:update
 udpated:updated
 udpates:updates

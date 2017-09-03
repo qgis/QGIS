@@ -24,7 +24,6 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 

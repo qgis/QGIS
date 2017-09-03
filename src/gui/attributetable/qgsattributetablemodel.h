@@ -357,6 +357,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual bool loadFeatureAtId( QgsFeatureId fid ) const;
 
+    bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const;
+
     QgsFeatureRequest mFeatureRequest;
 
     //! The currently cached column

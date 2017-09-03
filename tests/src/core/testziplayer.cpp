@@ -248,7 +248,7 @@ int TestZipLayer::getLayerTransparency( const QString &myFileName, const QString
       QgsRasterLayer *layer = dynamic_cast<QgsRasterLayer *>( myLayer );
       if ( layer && layer->renderer() )
       {
-        myTransparency = ceil( layer->renderer()->opacity() * 255 );
+        myTransparency = std::ceil( layer->renderer()->opacity() * 255 );
       }
     }
   }

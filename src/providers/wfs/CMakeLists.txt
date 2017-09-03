@@ -19,6 +19,7 @@ SET(WFS_SRCS
 
 SET (WFS_MOC_HDRS
   qgswfscapabilities.h
+  qgswfsconnection.h
   qgswfsdataitems.h
   qgswfsprovider.h
   qgswfsfeatureiterator.h

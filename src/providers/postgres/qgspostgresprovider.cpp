@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgsapplication.h>
-#include <qgsfeature.h>
-#include <qgsfield.h>
-#include <qgsgeometry.h>
-#include <qgsmessageoutput.h>
-#include <qgsmessagelog.h>
-#include <qgsrectangle.h>
-#include <qgscoordinatereferencesystem.h>
-#include <qgsxmlutils.h>
-#include <qgsvectorlayer.h>
+#include "qgsapplication.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsgeometry.h"
+#include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
+#include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsxmlutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
 
@@ -1828,7 +1828,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
   {
     // stricter check - if we are evaluating default values only on commit then we can only bypass the check
     // if the attribute values matches the original default clause
-    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString();
+    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
   }
 }
 

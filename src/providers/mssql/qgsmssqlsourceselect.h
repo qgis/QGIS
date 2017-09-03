@@ -119,8 +119,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#mssql-spatial-layers" ) ); }
-
     void columnThreadFinished();
 
 
@@ -154,6 +152,9 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     QPushButton *mBuildQueryButton = nullptr;
 
     void finishList();
+
+    void showHelp();
+
 };
 
 #endif // QGSMSSQLSOURCESELECT_H

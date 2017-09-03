@@ -84,7 +84,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                                     const QgsCoordinateReferenceSystem &destCRS,
                                     bool onlySelected = false,
                                     QString *errorMessage SIP_OUT = 0,
-                                    QMap<QString, QVariant> *options = nullptr,
+                                    const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
                                     QgsFeedback *feedback = nullptr
                                   );
 
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                             QgsWkbTypes::Type geometryType,
                             const QgsCoordinateReferenceSystem &crs,
                             bool overwrite = false,
-                            const QMap<QString, QVariant> *options = nullptr );
+                            const QMap<QString, QVariant> &options = QMap<QString, QVariant>() );
 
     //! QgsVectorLayerExporter cannot be copied
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh ) = delete;
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
                                 const QString &uri,
                                 const QString &providerKey,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                QMap<QString, QVariant> *options = nullptr,
+                                const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
                                 bool ownsLayer = false );
 
     /**
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
         const QString &uri,
         const QString &providerKey,
         const QgsCoordinateReferenceSystem &destinationCrs,
-        QMap<QString, QVariant> *options = nullptr ) SIP_FACTORY;
+        const QMap<QString, QVariant> &options = QMap<QString, QVariant>() ) SIP_FACTORY;
 
     virtual void cancel() override;
 

@@ -74,6 +74,26 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
     QgsLayoutItemPage *page( int pageNumber );
 
     /**
+     * Returns the page number for the specified \a page, or -1 if the page
+     * is not contained in the collection.
+     */
+    int pageNumber( QgsLayoutItemPage *page ) const;
+
+    /**
+     * Returns a list of the pages which are visible within the specified
+     * \a region (in layout coordinates).
+     * \see visiblePageNumbers()
+     */
+    QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
+
+    /**
+     * Returns a list of the page numbers which are visible within the specified
+     * \a region (in layout coordinates).
+     * \see visiblePages()
+     */
+    QList< int > visiblePageNumbers( QRectF region ) const;
+
+    /**
      * Adds a \a page to the collection. Ownership of the \a page is transferred
      * to the collection, and the page will automatically be added to the collection's
      * layout() (there is no need to manually add the page item to the layout).
@@ -191,12 +211,27 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      */
     double pageShadowWidth() const;
 
+  public slots:
+
+    /**
+     * Triggers a redraw for all pages.
+     */
+    void redraw();
+
   signals:
 
     /**
      * Emitted when pages are added or removed from the collection.
      */
     void changed();
+
+    /**
+     * Emitted just before a page is removed from the collection.
+     *
+     * Page numbers in collections begin at 0 - so a page number of 0 indicates the
+     * first page.
+     */
+    void pageAboutToBeRemoved( int pageNumber );
 
   private:
 

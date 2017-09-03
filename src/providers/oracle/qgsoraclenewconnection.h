@@ -39,9 +39,9 @@ class QgsOracleNewConnection : public QDialog, private Ui::QgsOracleNewConnectio
   public slots:
     void accept();
     void on_btnConnect_clicked();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#oracle-spatial-layers" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
+    void showHelp();
 };
 
 #endif //  QGSORACLENEWCONNECTIONBASE_H

@@ -118,7 +118,6 @@ class TestQgsGeometry : public QObject
 
     void wkbInOut();
 
-    void segmentizeCircularString();
     void directionNeutralSegmentation();
     void poleOfInaccessibility();
 
@@ -128,6 +127,8 @@ class TestQgsGeometry : public QObject
 
     void reshapeGeometryLineMerge();
     void createCollectionOfType();
+
+    void minimalEnclosingCircle( );
 
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
@@ -578,8 +579,8 @@ void TestQgsGeometry::point()
   //toQPointF
   QgsPoint p11a( 5.0, 9.0 );
   QPointF result = p11a.toQPointF();
-  QVERIFY( qgsDoubleNear( result.x(), 5.0 ) );
-  QVERIFY( qgsDoubleNear( result.y(), 9.0 ) );
+  QGSCOMPARENEAR( result.x(), 5.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( result.y(), 9.0, 4 * DBL_EPSILON );
 
   //to/from WKB
   QgsPoint p12( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
@@ -617,9 +618,9 @@ void TestQgsGeometry::point()
   QgsPoint exportPointFloat( 1 / 3.0, 2 / 3.0 );
   QDomDocument doc( QStringLiteral( "gml" ) );
   QString expectedGML2( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates></Point>" ) );
-  QCOMPARE( elemToString( exportPoint.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportPoint.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667</coordinates></Point>" ) );
-  QCOMPARE( elemToString( exportPointFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportPointFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1 2</pos></Point>" ) );
@@ -814,12 +815,12 @@ void TestQgsGeometry::point()
   p29.setM( 9.0 );
   QVERIFY( p29.convertTo( QgsWkbTypes::PointM ) );
   QCOMPARE( p29.wkbType(), QgsWkbTypes::PointM );
-  QVERIFY( qIsNaN( p29.z() ) );
+  QVERIFY( std::isnan( p29.z() ) );
   QCOMPARE( p29.m(), 9.0 );
   QVERIFY( p29.convertTo( QgsWkbTypes::Point ) );
   QCOMPARE( p29.wkbType(), QgsWkbTypes::Point );
-  QVERIFY( qIsNaN( p29.z() ) );
-  QVERIFY( qIsNaN( p29.m() ) );
+  QVERIFY( std::isnan( p29.z() ) );
+  QVERIFY( std::isnan( p29.m() ) );
   QVERIFY( !p29.convertTo( QgsWkbTypes::Polygon ) );
 
   //boundary
@@ -851,12 +852,12 @@ void TestQgsGeometry::point()
 
   // distance 3D
   QCOMPARE( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ), 2.0 );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( 1, 1, 0 ) ) );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ) ) );
-  QVERIFY( qIsNaN( QgsPoint( 0, 0 ).distanceSquared3D( 2, 2, 2 ) ) );
-  QVERIFY( qIsNaN( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( 1, 1, 0 ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( 0, 0 ).distanceSquared3D( 2, 2, 2 ) ) );
+  QVERIFY( std::isnan( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( QgsPoint( 1, 1 ) ) ) );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ).distanceSquared3D( 1, 1, 0 ), 6.0 );
-  QVERIFY( qIsNaN( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( 0, 0 ) ) ) );
+  QVERIFY( std::isnan( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( 0, 0 ) ) ) );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 0, 0, 0 ), 12.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( QgsPoint( QgsWkbTypes::PointZ, 2, 2, 2, 0 ) ), 48.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, -2, -2, -2, 0 ).distanceSquared3D( 2, 2, 2 ), 48.0 );
@@ -1317,8 +1318,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.zAt( 0 ), 3.0 );
   QCOMPARE( l9.zAt( 1 ), 13.0 );
   QCOMPARE( l9.zAt( 2 ), 23.0 );
-  QVERIFY( qIsNaN( l9.zAt( -1 ) ) ); //out of range
-  QVERIFY( qIsNaN( l9.zAt( 11 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.zAt( -1 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.zAt( 11 ) ) ); //out of range
 
   l9.setZAt( 0, 53.0 );
   QCOMPARE( l9.zAt( 0 ), 53.0 );
@@ -1330,8 +1331,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l9.mAt( 0 ), 4.0 );
   QCOMPARE( l9.mAt( 1 ), 14.0 );
   QCOMPARE( l9.mAt( 2 ), 24.0 );
-  QVERIFY( qIsNaN( l9.mAt( -1 ) ) ); //out of range
-  QVERIFY( qIsNaN( l9.mAt( 11 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.mAt( -1 ) ) ); //out of range
+  QVERIFY( std::isnan( l9.mAt( 11 ) ) ); //out of range
 
   l9.setMAt( 0, 54.0 );
   QCOMPARE( l9.mAt( 0 ), 54.0 );
@@ -1346,8 +1347,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 24 ) );
 
   //basically we just don't want these to crash
-  QVERIFY( qIsNaN( l9.zAt( 0 ) ) );
-  QVERIFY( qIsNaN( l9.zAt( 1 ) ) );
+  QVERIFY( std::isnan( l9.zAt( 0 ) ) );
+  QVERIFY( std::isnan( l9.zAt( 1 ) ) );
   l9.setZAt( 0, 53.0 );
   l9.setZAt( 1, 63.0 );
 
@@ -1357,8 +1358,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( 21, 22 ) );
 
   //basically we just don't want these to crash
-  QVERIFY( qIsNaN( l9.mAt( 0 ) ) );
-  QVERIFY( qIsNaN( l9.mAt( 1 ) ) );
+  QVERIFY( std::isnan( l9.mAt( 0 ) ) );
+  QVERIFY( std::isnan( l9.mAt( 1 ) ) );
   l9.setMAt( 0, 53.0 );
   l9.setMAt( 1, 63.0 );
 
@@ -1739,9 +1740,9 @@ void TestQgsGeometry::lineString()
                              << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) );
   QDomDocument doc( QStringLiteral( "gml" ) );
   QString expectedGML2( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">31,32 41,42 51,52</coordinates></LineString>" ) );
-  QCOMPARE( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667 1.333,1.667 2.333,2.667</coordinates></LineString>" ) );
-  QCOMPARE( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></LineString>" ) );
@@ -2361,26 +2362,26 @@ void TestQgsGeometry::lineString()
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
   QVERIFY( l35.closestSegment( QgsPoint( 5, 10 ), p, v, 0, 0 ) < 0 );
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 10 ) );
-  QVERIFY( qgsDoubleNear( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf, 0 ), 2.0 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf, 0 ), 2.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 5, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QVERIFY( qgsDoubleNear( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf, 0 ), 1.0 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf, 0 ), 1.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 8, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QVERIFY( qgsDoubleNear( l35.closestSegment( QgsPoint( 8, 9 ), p, v, &leftOf, 0 ), 1.0 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 9 ), p, v, &leftOf, 0 ), 1.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 8, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, false );
-  QVERIFY( qgsDoubleNear( l35.closestSegment( QgsPoint( 11, 9 ), p, v, &leftOf, 0 ), 2.0 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 11, 9 ), p, v, &leftOf, 0 ), 2.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 10, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, false );
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 )
                  << QgsPoint( 10, 10 )
                  << QgsPoint( 10, 15 ) );
-  QVERIFY( qgsDoubleNear( l35.closestSegment( QgsPoint( 11, 12 ), p, v, &leftOf, 0 ), 1.0 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 11, 12 ), p, v, &leftOf, 0 ), 1.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 10, 12 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, false );
@@ -2395,13 +2396,13 @@ void TestQgsGeometry::lineString()
   QCOMPARE( area, 1.0 );
   l36.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 10 ) );
   l36.sumUpArea( area );
-  QVERIFY( qgsDoubleNear( area, -24 ) );
+  QGSCOMPARENEAR( area, -24, 4 * DBL_EPSILON );
   l36.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) );
   l36.sumUpArea( area );
-  QVERIFY( qgsDoubleNear( area, -22 ) );
+  QGSCOMPARENEAR( area, -22, 4 * DBL_EPSILON );
   l36.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) << QgsPoint( 0, 2 ) );
   l36.sumUpArea( area );
-  QVERIFY( qgsDoubleNear( area, -18 ) );
+  QGSCOMPARENEAR( area, -18, 4 * DBL_EPSILON );
 
   //boundingBox - test that bounding box is updated after every modification to the line string
   QgsLineString l37;
@@ -2446,36 +2447,36 @@ void TestQgsGeometry::lineString()
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) );
   ( void )l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 1.5708, 0.0001 ) );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 1.5708, 0.0001 );
   ( void )l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ); //no crash
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 1 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 0.0 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0.0 ) );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0.0, 4 * DBL_EPSILON );
   l38.setPoints( QgsPointSequence() << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 4.71239, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 4.71239, 0.0001 ) );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 4.71239, 0.0001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 4.71239, 0.0001 );
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 3.1416, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.1416, 0.0001 ) );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 3.1416, 0.0001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.1416, 0.0001 );
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0.7854, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 0.0, 0.0001 ) );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0.7854, 0.0001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 0.0, 0.0001 );
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0.5, 0 ) << QgsPoint( 1, 0 )
                  << QgsPoint( 2, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 0, 2 ) );
   ( void )l38.vertexAngle( QgsVertexId( 0, 0, 20 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 1.5708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 1.17809, 0.00001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 0.0, 0.00001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 5.10509, 0.00001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 4.71239, 0.00001 ) );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 1.17809, 0.00001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 0.0, 0.00001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 5.10509, 0.00001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 4.71239, 0.00001 );
   //closed line string
   l38.close();
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 3.92699, 0.00001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 2.35619, 0.00001 ) );
-  QVERIFY( qgsDoubleNear( l38.vertexAngle( QgsVertexId( 0, 0, 6 ) ), 2.35619, 0.00001 ) );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 3.92699, 0.00001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 2.35619, 0.00001 );
+  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 6 ) ), 2.35619, 0.00001 );
 
   //removing the second to last vertex should remove the whole line
   QgsLineString l39;
@@ -3203,7 +3204,7 @@ void TestQgsGeometry::polygon()
 
   // as GML2
   QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
-  QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
+  QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" ) );
@@ -3240,10 +3241,10 @@ void TestQgsGeometry::polygon()
   // as GML2
   QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" ) );
   expectedGML2 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
-  QCOMPARE( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
+  QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></outerBoundaryIs>" ) );
   expectedGML2prec3 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
-  QCOMPARE( elemToString( exportPolygonFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QGSCOMPAREGML( elemToString( exportPolygonFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
 
   //as GML3
   QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior>" ) );
@@ -3655,7 +3656,7 @@ void TestQgsGeometry::triangle()
   QVector<double> l_tested, l_t7 = t7.lengths();
   l_tested.append( 5 );
   l_tested.append( 5 );
-  l_tested.append( sqrt( 5 * 5 + 5 * 5 ) );
+  l_tested.append( std::sqrt( 5 * 5 + 5 * 5 ) );
   QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 2 ), l_t7.at( 2 ), 0.0001 );
@@ -3923,11 +3924,11 @@ void TestQgsGeometry::ellipse()
   // fromFoci
   // horizontal
   QgsEllipse elp_hor = QgsEllipse().fromFoci( QgsPoint( -4, 0 ), QgsPoint( 4, 0 ), QgsPoint( 0, 4 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), sqrt( 32.0 ), sqrt( 16.0 ), 90.0 ) == elp_hor );
+  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), std::sqrt( 32.0 ), std::sqrt( 16.0 ), 90.0 ) == elp_hor );
   QGSCOMPARENEARPOINT( QgsPoint( 4, 0 ), elp_hor.foci().at( 0 ), 1e-8 );
   QGSCOMPARENEARPOINT( QgsPoint( -4, 0 ), elp_hor.foci().at( 1 ), 1e-8 );
   elp_hor = QgsEllipse().fromFoci( QgsPoint( 4, 0 ), QgsPoint( -4, 0 ), QgsPoint( 0, 4 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), sqrt( 32.0 ), sqrt( 16.0 ), 270.0 ) == elp_hor );
+  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), std::sqrt( 32.0 ), std::sqrt( 16.0 ), 270.0 ) == elp_hor );
   QGSCOMPARENEARPOINT( QgsPoint( -4, 0 ), elp_hor.foci().at( 0 ), 1e-8 );
   QGSCOMPARENEARPOINT( QgsPoint( 4, 0 ), elp_hor.foci().at( 1 ), 1e-8 );
 
@@ -4162,8 +4163,8 @@ void TestQgsGeometry::circle()
 
 //test "alt" constructors
 // by2Points
-  QVERIFY( QgsCircle().from2Points( QgsPoint( -5, 0 ), QgsPoint( 5, 0 ) ) == QgsCircle( QgsPoint( 0, 0 ), 10, 90 ) );
-  QVERIFY( QgsCircle().from2Points( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 10, 0 ) );
+  QVERIFY( QgsCircle().from2Points( QgsPoint( -5, 0 ), QgsPoint( 5, 0 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 90 ) );
+  QVERIFY( QgsCircle().from2Points( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 0 ) );
 // byExtent
   QVERIFY( QgsCircle().fromExtent( QgsPoint( -5, -5 ), QgsPoint( 5, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 0 ) );
   QVERIFY( QgsCircle().fromExtent( QgsPoint( -7.5, -2.5 ), QgsPoint( 2.5, 200.5 ) ) == QgsCircle() );
@@ -4177,12 +4178,21 @@ void TestQgsGeometry::circle()
 // byCenterPoint
   QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5, 0 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 90 ) );
   QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 0 ) );
-  QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5 * cos( 45 * M_PI / 180.0 ), 5 * sin( 45 * M_PI / 180.0 ) ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 45 ) );
+  QVERIFY( QgsCircle().fromCenterPoint( QgsPoint( 0, 0 ), QgsPoint( 5 * std::cos( 45 * M_PI / 180.0 ), 5 * std::sin( 45 * M_PI / 180.0 ) ) ) == QgsCircle( QgsPoint( 0, 0 ), 5, 45 ) );
 // by3Tangents
 // Tangents from triangle tri1( 0,0 ; 0,5 ), tri2( 0,0 ; 5,0 ), tri3( 5,0 ; 0,5 )
   QgsCircle circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 2, 0 ), QgsPoint( 3, 0 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
   QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 1.4645, 1.4645 ), 0.0001 );
   QGSCOMPARENEAR( circ_tgt.radius(), 1.4645, 0.0001 );
+  // minimalCircleFrom3points
+  QgsCircle minCircle3Points = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
+  QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( minCircle3Points.radius(), 5.0, 0.0001 );
+  minCircle3Points = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( -5, 0 ) );
+  QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( minCircle3Points.radius(), 5.0, 0.0001 );
+
+
 
 // test quadrant
   QVector<QgsPoint> quad = QgsCircle( QgsPoint( 0, 0 ), 5 ).northQuadrant();
@@ -4228,7 +4238,7 @@ void TestQgsGeometry::circle()
 
 // oriented
 //45
-  double val = 5 * sin( M_PI / 4 );
+  double val = 5 * std::sin( M_PI / 4 );
   pol.reset( QgsCircle( QgsPoint( 0, 0 ), 5, 45 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
@@ -4287,6 +4297,15 @@ void TestQgsGeometry::circle()
   QGSCOMPARENEAR( 314.1593, QgsCircle( QgsPoint( 0, 0 ), 10 ).area(), 0.0001 );
   // perimeter
   QGSCOMPARENEAR( 31.4159, QgsCircle( QgsPoint( 0, 0 ), 5 ).perimeter(), 0.0001 );
+
+  // contains
+  QgsPoint pc;
+  pc = QgsPoint( 1, 1 );
+  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
+  pc = QgsPoint( 0, 5 );
+  QVERIFY( QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
+  pc = QgsPoint( 6, 1 );
+  QVERIFY( !QgsCircle( QgsPoint( 0, 0 ), 5 ).contains( pc ) );
 }
 
 void TestQgsGeometry::regularPolygon()
@@ -4474,7 +4493,7 @@ void TestQgsGeometry::compoundCurve()
                 << QgsPoint( 1, 1 ) );
   double lsArea = 0.0;
   ls.sumUpArea( lsArea );
-  QVERIFY( qgsDoubleNear( ccArea, lsArea ) );
+  QGSCOMPARENEAR( ccArea, lsArea, 4 * DBL_EPSILON );
 }
 
 void TestQgsGeometry::multiPoint()
@@ -4593,8 +4612,8 @@ void TestQgsGeometry::multiPolygon()
   polygon1.setExteriorRing( ring1.clone() );
   multiPolygon1.addGeometry( polygon1.clone() );
 
-  QgsAbstractGeometry *boundary = multiPolygon1.boundary();
-  QgsMultiLineString *lineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
+  std::unique_ptr< QgsAbstractGeometry > boundary( multiPolygon1.boundary() );
+  QgsMultiLineString *lineBoundary = dynamic_cast< QgsMultiLineString * >( boundary.get() );
   QVERIFY( lineBoundary );
   QCOMPARE( lineBoundary->numGeometries(), 1 );
   QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->numPoints(), 4 );
@@ -4606,7 +4625,6 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
   QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
   QCOMPARE( dynamic_cast< QgsLineString * >( lineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
-  delete boundary;
 
   // add polygon with interior rings
   QgsLineString ring2;
@@ -4620,8 +4638,8 @@ void TestQgsGeometry::multiPolygon()
   polygon2.setInteriorRings( QList< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
   multiPolygon1.addGeometry( polygon2.clone() );
 
-  boundary = multiPolygon1.boundary();
-  QgsMultiLineString *multiLineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
+  boundary.reset( multiPolygon1.boundary() );
+  QgsMultiLineString *multiLineBoundary( static_cast< QgsMultiLineString * >( boundary.get() ) );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 4 );
   QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
@@ -4660,7 +4678,6 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 1 ), 10.8 );
   QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 2 ), 10.9 );
   QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 3 ) )->yAt( 3 ), 10.8 );
-  delete boundary;
 }
 
 void TestQgsGeometry::geometryCollection()
@@ -5290,35 +5307,19 @@ void TestQgsGeometry::wkbInOut()
   QCOMPARE( badHeader.wkbType(), QgsWkbTypes::Unknown );
 }
 
-void TestQgsGeometry::segmentizeCircularString()
-{
-  QString wkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 2 0 )" ) );
-  QgsCircularString *circularString = dynamic_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( wkt ) );
-  QVERIFY( circularString );
-  QgsLineString *lineString = circularString->curveToLine();
-  QVERIFY( lineString );
-  QgsPointSequence points;
-  lineString->points( points );
-
-  delete circularString;
-  delete lineString;
-
-  //make sure the curve point is part of the segmentized result
-  QVERIFY( points.contains( QgsPoint( 0.5, 0.5 ) ) );
-}
-
 void TestQgsGeometry::directionNeutralSegmentation()
 {
   //Tests, if segmentation of a circularstring is the same in both directions
   QString CWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0 0, 0.5 0.5, 0.83 7.33 )" ) );
-  QgsCircularString *CWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ) );
+  QgsCircularString *CWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CWCircularStringWkt ).release() );
   QgsLineString *CWLineString = CWCircularString->curveToLine();
 
   QString CCWCircularStringWkt( QStringLiteral( "CIRCULARSTRING( 0.83 7.33, 0.5 0.5, 0 0 )" ) );
-  QgsCircularString *CCWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ) );
+  QgsCircularString *CCWCircularString = static_cast<QgsCircularString *>( QgsGeometryFactory::geomFromWkt( CCWCircularStringWkt ).release() );
   QgsLineString *CCWLineString = CCWCircularString->curveToLine();
   QgsLineString *reversedCCWLineString = CCWLineString->reversed();
 
+  QCOMPARE( CWLineString->asWkt(), reversedCCWLineString->asWkt() );
   bool equal = ( *CWLineString == *reversedCCWLineString );
 
   delete CWCircularString;
@@ -5595,6 +5596,74 @@ void TestQgsGeometry::createCollectionOfType()
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiSurfaceM );
   QVERIFY( dynamic_cast< QgsMultiSurface *>( collect.get() ) );
 }
+
+void TestQgsGeometry::minimalEnclosingCircle()
+{
+  QgsGeometry geomTest;
+  QgsGeometry result, resultTest;
+  QgsPointXY center;
+  double radius;
+
+  // empty
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QCOMPARE( center, QgsPointXY() );
+  QCOMPARE( radius, 0.0 );
+  QCOMPARE( result, QgsGeometry() );
+
+  // caase 1
+  geomTest = QgsGeometry::fromPoint( QgsPointXY( 5, 5 ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QCOMPARE( center, QgsPointXY( 5, 5 ) );
+  QCOMPARE( radius, 0.0 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  // case 2
+  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 3 8, 7 4 )" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 5, 6 ), 0.0001 );
+  QGSCOMPARENEAR( radius, sqrt( 2 ) * 2, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  geomTest = QgsGeometry::fromWkt( QString( "LINESTRING( 0 5, 2 2, 0 -5, -1 -1 )" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 0 5, 2 2, 0 -5, -1 -1 )" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  geomTest = QgsGeometry::fromWkt( QString( "POLYGON(( 0 5, 2 2, 0 -5, -1 -1 ))" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+  // case 3
+  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT((0 0), (5 5), (0 -5), (0 5), (-5 0))" ) );
+  result = geomTest.minimalEnclosingCircle( center, radius );
+  QGSCOMPARENEARPOINT( center, QgsPointXY( 0.8333, 0.8333 ), 0.0001 );
+  QGSCOMPARENEAR( radius, 5.8926, 0.0001 );
+  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  QCOMPARE( result, resultTest );
+
+}
+
 
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"

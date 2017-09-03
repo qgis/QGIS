@@ -103,7 +103,7 @@ void PlainTextDecoder::decodeLine(const Character* const characters, int count, 
     for (int i=0;i<outputCount;)
     {
         plainText.append( QChar(characters[i].character) );
-        i += qMax(1,konsole_wcwidth(characters[i].character));
+        i += std::max(1,konsole_wcwidth(characters[i].character));
     }
     *_output << plainText;
 }

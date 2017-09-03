@@ -23,7 +23,11 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
     enum ZValues
     {
       ZPage,
+      ZItem,
+      ZGrid,
+      ZGuide,
       ZMapTool,
+      ZSnapIndicator,
     };
 
     QgsLayout( QgsProject *project );
@@ -34,6 +38,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
  restore a previous state from XML) then initializeDefaults() should be
  called on the new layout.
 %End
+
+    ~QgsLayout();
 
     void initializeDefaults();
 %Docstring
@@ -139,6 +145,29 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %End
 
 
+    QgsLayoutSnapper &snapper();
+%Docstring
+ Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
+ and snapping points to the nearest matching point.
+ :rtype: QgsLayoutSnapper
+%End
+
+
+    QgsLayoutGridSettings &gridSettings();
+%Docstring
+ Returns a reference to the layout's grid settings, which stores settings relating
+ to grid appearance, spacing and offsets.
+ :rtype: QgsLayoutGridSettings
+%End
+
+
+    QgsLayoutGuideCollection &guides();
+%Docstring
+ Returns a reference to the layout's guide collection, which manages page snap guides.
+ :rtype: QgsLayoutGuideCollection
+%End
+
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 %Docstring
@@ -200,6 +229,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
  page items in the layout.
  :rtype: QgsLayoutPageCollection
 %End
+
 
     QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
 %Docstring

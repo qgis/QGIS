@@ -24,6 +24,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapdecoration.h"
 #include "qgsrectangle.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 #include <QSize>
@@ -97,6 +98,9 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     int mDpi;
     QSize mSize;
 
+  private slots:
+
+    void showHelp();
 };
 
 #endif // QGSMAPSAVEDIALOG_H

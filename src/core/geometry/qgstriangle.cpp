@@ -382,13 +382,13 @@ QVector<double> QgsTriangle::angles() const
   cx = vertexAt( 2 ).x();
   cy = vertexAt( 2 ).y();
 
-  double a1 = fmod( QgsGeometryUtils::angleBetweenThreePoints( cx, cy, ax, ay, bx, by ), M_PI );
-  double a2 = fmod( QgsGeometryUtils::angleBetweenThreePoints( ax, ay, bx, by, cx, cy ), M_PI );
-  double a3 = fmod( QgsGeometryUtils::angleBetweenThreePoints( bx, by, cx, cy, ax, ay ), M_PI );
+  double a1 = std::fmod( QgsGeometryUtils::angleBetweenThreePoints( cx, cy, ax, ay, bx, by ), M_PI );
+  double a2 = std::fmod( QgsGeometryUtils::angleBetweenThreePoints( ax, ay, bx, by, cx, cy ), M_PI );
+  double a3 = std::fmod( QgsGeometryUtils::angleBetweenThreePoints( bx, by, cx, cy, ax, ay ), M_PI );
 
-  angles.append( ( a1 > M_PI / 2 ? a1 - M_PI / 2 : a1 ) );
-  angles.append( ( a2 > M_PI / 2 ? a2 - M_PI / 2 : a2 ) );
-  angles.append( ( a3 > M_PI / 2 ? a3 - M_PI / 2 : a3 ) );
+  angles.append( ( a1 > M_PI_2 ? a1 - M_PI_2 : a1 ) );
+  angles.append( ( a2 > M_PI_2 ? a2 - M_PI_2 : a2 ) );
+  angles.append( ( a3 > M_PI_2 ? a3 - M_PI_2 : a3 ) );
 
   return angles;
 }
@@ -419,7 +419,7 @@ bool QgsTriangle::isRight( double angleTolerance ) const
   QVector<double>::iterator ita = a.begin();
   while ( ita != a.end() )
   {
-    if ( qgsDoubleNear( *ita, M_PI / 2.0, angleTolerance ) )
+    if ( qgsDoubleNear( *ita, M_PI_2, angleTolerance ) )
       return true;
     ita++;
   }

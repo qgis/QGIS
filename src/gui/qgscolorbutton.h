@@ -46,7 +46,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
 
     Q_OBJECT
-    Q_ENUMS( Behavior )
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( QColor color READ color WRITE setColor )
@@ -67,6 +66,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
       ShowDialog = 0, //!< Show a color picker dialog when clicked
       SignalOnly //!< Emit colorClicked signal only, no dialog
     };
+    Q_ENUM( Behavior );
 
     /** Construct a new color ramp button.
      * Use \a parent to attach a parent QWidget to the dialog.

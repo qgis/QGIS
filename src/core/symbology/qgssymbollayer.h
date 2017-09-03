@@ -15,11 +15,6 @@
 #ifndef QGSSYMBOLLAYER_H
 #define QGSSYMBOLLAYER_H
 
-// MSVC compiler doesn't have defined M_PI in math.h
-#ifndef M_PI
-#define M_PI          3.14159265358979323846
-#endif
-
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define DEFAULT_SCALE_METHOD              QgsSymbol::ScaleDiameter
 

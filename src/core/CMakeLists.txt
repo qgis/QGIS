@@ -139,7 +139,6 @@ SET(QGIS_CORE_SRCS
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
   qgsconditionalstyle.cpp
-  qgscontexthelp.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscoordinatetransform_p.cpp
@@ -353,6 +352,8 @@ SET(QGIS_CORE_SRCS
 
   layout/qgslayout.cpp
   layout/qgslayoutcontext.cpp
+  layout/qgslayoutgridsettings.cpp
+  layout/qgslayoutguidecollection.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitempage.cpp
@@ -362,6 +363,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
+  layout/qgslayoutsnapper.cpp
   layout/qgslayoututils.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
@@ -459,7 +461,6 @@ SET(QGIS_CORE_SRCS
   fieldformatter/qgsvaluemapfieldformatter.cpp
   fieldformatter/qgsvaluerelationfieldformatter.cpp
 
-  ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
   qgsuserprofile.cpp
@@ -477,14 +478,6 @@ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
   COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
   DEPENDS ${JSON_HELP_FILES}
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-)
-
-FILE(GLOB CONTEXT_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/context_help/*")
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
-  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_contexthelp.py ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp
-  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-  DEPENDS ${CONTEXT_HELP_FILES}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
@@ -547,6 +540,10 @@ ELSE(NOT MSVC)
     pal/feature.cpp
     pal/pointset.cpp
     PROPERTIES COMPILE_FLAGS -wd4702)
+  # -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+  SET_SOURCE_FILES_PROPERTIES(
+    qgsstacktrace.cpp
+    PROPERTIES COMPILE_FLAGS -wd4091)
 ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
@@ -554,7 +551,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsactionscoperegistry.h
   qgsanimatedicon.h
   qgsbrowsermodel.h
-  qgscontexthelp.h
   qgscoordinatereferencesystem.h
   qgscredentials.h
   qgsdataitem.h
@@ -663,6 +659,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
+  processing/qgsnativealgorithms.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h
@@ -673,6 +670,8 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterfilewritertask.h
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
+  raster/qgsrasterinterface.h
+  raster/qgsrasterlayerrenderer.h
 
   geometry/qgspoint.h
 
@@ -682,6 +681,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
+  layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemmap.h
   layout/qgslayoutitempage.h
@@ -770,7 +770,6 @@ SET(QGIS_CORE_HDRS
   qgscolorscheme.h
   qgscolorschemeregistry.h
   qgsconnectionpool.h
-  qgscontexthelp.h
   qgsconditionalstyle.h
   qgscoordinatetransform.h
   qgscoordinateutils.h
@@ -935,17 +934,18 @@ SET(QGIS_CORE_HDRS
   composer/qgspaperitem.h
 
   layout/qgslayoutcontext.h
+  layout/qgslayoutgridsettings.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
   layout/qgslayoutsize.h
+  layout/qgslayoutsnapper.h
   layout/qgslayoututils.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
 
-  processing/qgsnativealgorithms.h
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
@@ -982,7 +982,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterfilewriter.h
   raster/qgsrasterhistogram.h
   raster/qgsrasteridentifyresult.h
-  raster/qgsrasterinterface.h
   raster/qgsrasteriterator.h
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
@@ -1113,6 +1112,7 @@ INCLUDE_DIRECTORIES(
   metadata
 )
 INCLUDE_DIRECTORIES(SYSTEM
+  ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -1127,13 +1127,13 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 #for PAL classes
 IF (WIN32)
-    ADD_DEFINITIONS("-D_HAVE_WINDOWS_H_")
+    ADD_DEFINITIONS(-D_HAVE_WINDOWS_H_)
 ELSE (WIN32)
-    ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
+    ADD_DEFINITIONS(-D_HAVE_PTHREAD_)
 ENDIF (WIN32)
 
 # Test data dir for QgsRenderChecker
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
+ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 #############################################################
 # qgis_core library

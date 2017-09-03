@@ -30,8 +30,11 @@ class QgsTransectSample
                        const QString &baselineStrataId, const QString &outputPointLayer, const QString &outputLineLayer, const QString &usedBaselineLayer, double minTransectLength = 0.0,
                        double baselineBufferDistance = -1.0, double baselineSimplificationTolerance = -1.0 );
 
-    int createSample( QProgressDialog *pd );
+    int createSample( QgsFeedback *feedback = 0 );
 %Docstring
+ Creates the sample.
+
+ The optional ``feedback`` argument can be used for progress reporting and cancelation support.
  :rtype: int
 %End
 

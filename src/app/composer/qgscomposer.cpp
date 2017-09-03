@@ -57,7 +57,6 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessageviewer.h"
-#include "qgscontexthelp.h"
 #include "qgscursors.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgeometry.h"
@@ -2126,7 +2125,6 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     QgsSettings myQSettings;
     QString lastUsedDir = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesDir" ), QDir::homePath() ).toString();
-    QString lastUsedFormat = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesFormat" ), "jpg" ).toString();
 
     QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
@@ -2697,8 +2695,8 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
              && !mComposition->gridVisible() ) items.pop_back();
         QgsItemTempHider itemsHider( items );
         int composerItemLayerIdx = 0;
-        QList<QGraphicsItem *>::const_iterator it = items.begin();
-        for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
+        QList<QGraphicsItem *>::const_iterator it = items.constBegin();
+        for ( unsigned svgLayerId = 1; it != items.constEnd(); ++svgLayerId )
         {
           itemsHider.hideAll();
           QgsComposerItem *composerItem = dynamic_cast<QgsComposerItem *>( *it );
@@ -2712,7 +2710,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           else
           {
             // show all items until the next item that renders on a separate layer
-            for ( ; it != items.end(); ++it )
+            for ( ; it != items.constEnd(); ++it )
             {
               composerItem = dynamic_cast<QgsComposerMap *>( *it );
               if ( composerItem && composerItem->numberExportLayers() )

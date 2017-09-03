@@ -25,6 +25,7 @@
 #include <qgsgeometry.h>
 //header for class being tested
 #include <qgspoint.h>
+#include "qgstestutils.h"
 
 class TestQgsPointXY: public QObject
 {
@@ -711,30 +712,30 @@ void TestQgsPointXY::vector()
 
   // length
   QCOMPARE( v1.length(), 0.0 );
-  QVERIFY( qgsDoubleNear( v2.length(), sqrt( 5.0 ), 0.000000001 ) );
+  QGSCOMPARENEAR( v2.length(), std::sqrt( 5.0 ), 0.000000001 );
 
   // perpVector
   QCOMPARE( QgsVector( 2, 3 ).perpVector().x(), -3.0 );
   QCOMPARE( QgsVector( 2, 3 ).perpVector().y(), 2.0 );
 
   // angle
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).angle(), M_PI_2, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 1, 0 ).angle(), 0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( -1, 0 ).angle(), M_PI, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, -1 ).angle(), 3 * M_PI_2, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 0 ).angle(), 0, 0.0000001 ) );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).angle(), M_PI_2, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 1, 0 ).angle(), 0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( -1, 0 ).angle(), M_PI, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, -1 ).angle(), 3 * M_PI_2, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 0 ).angle(), 0, 0.0000001 );
 
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).angle( QgsVector( 0, 1 ) ), 0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 1, 0 ).angle( QgsVector( 0, 1 ) ), M_PI_2, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).angle( QgsVector( -1, 0 ) ), M_PI_2, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 1, 0 ).angle( QgsVector( -1, 0 ) ), M_PI, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( -1, 0 ).angle( QgsVector( 0, 0 ) ), -M_PI, 0.0000001 ) );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).angle( QgsVector( 0, 1 ) ), 0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 1, 0 ).angle( QgsVector( 0, 1 ) ), M_PI_2, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).angle( QgsVector( -1, 0 ) ), M_PI_2, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 1, 0 ).angle( QgsVector( -1, 0 ) ), M_PI, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( -1, 0 ).angle( QgsVector( 0, 0 ) ), -M_PI, 0.0000001 );
 
   // rotateBy
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).rotateBy( M_PI_2 ).x(), -1.0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).rotateBy( M_PI_2 ).y(), 0.0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).rotateBy( M_PI ).x(), 0.0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).rotateBy( M_PI ).y(), -1.0, 0.0000001 ) );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).rotateBy( M_PI_2 ).x(), -1.0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).rotateBy( M_PI_2 ).y(), 0.0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).rotateBy( M_PI ).x(), 0.0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).rotateBy( M_PI ).y(), -1.0, 0.0000001 );
 
   // normalized
   QCOMPARE( QgsVector( 0, 2 ).normalized().x(), 0.0 );

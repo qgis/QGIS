@@ -71,11 +71,11 @@
 #include <QWhatsThis>
 #include <QWidgetAction>
 
-#include <qgssettings.h>
-#include <qgsnetworkaccessmanager.h>
-#include <qgsapplication.h>
-#include <qgscomposition.h>
-#include <qgslayerstylingwidget.h>
+#include "qgssettings.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsapplication.h"
+#include "qgscomposition.h"
+#include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
 
@@ -261,7 +261,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgstaskmanagerwidget.h"
 #include "qgssymbolselectordialog.h"
 #include "qgstextannotation.h"
-#include "qgstipgui.h"
 #include "qgsundowidget.h"
 #include "qgsuserinputdockwidget.h"
 #include "qgsvectordataprovider.h"
@@ -653,9 +652,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
   startProfile( QStringLiteral( "User profile manager" ) );
-  mUserProfileManager = new QgsUserProfileManager( "", this );
+  mUserProfileManager = new QgsUserProfileManager( QString(), this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
   mUserProfileManager->setActiveUserProfile( activeProfile );
+  mUserProfileManager->setNewProfileNotificationEnabled( true );
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
@@ -728,6 +728,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
+  mMapCanvas->setPreviewJobsEnabled( true );
 
   // set canvas color right away
   int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
@@ -1168,18 +1169,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   toggleSnapping->setProperty( "Icon", QgsApplication::getThemeIcon( "/mIconSnapping.svg" ) );
   connect( toggleSnapping, &QShortcut::activated, mSnappingUtils, &QgsSnappingUtils::toggleEnabled );
 
-  // Show a nice tip of the day
-  if ( settings.value( QStringLiteral( "qgis/showTips%1" ).arg( Qgis::QGIS_VERSION_INT / 100 ), true ).toBool() )
-  {
-    mSplash->hide();
-    QgsTipGui myTip( this );
-    myTip.exec();
-  }
-  else
-  {
-    QgsDebugMsg( "Tips are disabled" );
-  }
-
   if ( ! QTouchDevice::devices().isEmpty() )
   {
     //add reacting to long click in touch
@@ -1246,6 +1235,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 #endif
 
+  connect( qApp, &QApplication::focusChanged, this, &QgisApp::onFocusChanged );
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -1565,8 +1555,11 @@ void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
 
 void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
 {
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &u, lst )
+  // insert items in reverse order as each one is inserted on top of previous one
+  for ( int i = lst.size() - 1 ; i >= 0 ; i-- )
   {
+    const QgsMimeDataUtils::Uri &u = lst.at( i );
+
     QString uri = crsAndFormatAdjustedLayerUri( u.uri, u.supportedCrs, u.supportedFormats );
 
     if ( u.layerType == QLatin1String( "vector" ) )
@@ -1740,27 +1733,6 @@ void QgisApp::applyDefaultSettingsToCanvas( QgsMapCanvas *canvas )
   canvas->setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType( settings.value( QStringLiteral( "qgis/segmentationToleranceType" ), "0" ).toInt() ) );
 }
 
-QgsCoordinateReferenceSystem QgisApp::defaultCrsForNewLayers() const
-{
-  QgsSettings settings;
-  QgsCoordinateReferenceSystem defaultCrs;
-  if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "useProject" )
-       || settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "prompt" ) )
-  {
-    // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
-    // (since "prompt" has no meaning here - the prompt will always be shown, it's just deciding on the default choice in the prompt!)
-    defaultCrs = QgsProject::instance()->crs();
-  }
-  else
-  {
-    // global crs
-    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
-    defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
-  }
-
-  return defaultCrs;
-}
-
 int QgisApp::chooseReasonableDefaultIconSize() const
 {
   QScreen *screen = QApplication::screens().at( 0 );
@@ -1784,6 +1756,24 @@ int QgisApp::chooseReasonableDefaultIconSize() const
       return 64;
   }
 
+}
+
+int QgisApp::dockedToolbarIconSize( int standardToolbarIconSize ) const
+{
+  int dockSize;
+  if ( standardToolbarIconSize > 32 )
+  {
+    dockSize = standardToolbarIconSize - 16;
+  }
+  else if ( standardToolbarIconSize == 32 )
+  {
+    dockSize = 24;
+  }
+  else
+  {
+    dockSize = 16;
+  }
+  return dockSize;
 }
 
 void QgisApp::readSettings()
@@ -1916,7 +1906,7 @@ void QgisApp::createActions()
   connect( mActionEmbedLayers, &QAction::triggered, this, &QgisApp::embedLayers );
   connect( mActionAddLayerDefinition, &QAction::triggered, this, &QgisApp::addLayerDefinition );
   connect( mActionAddOgrLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ogr" ) ); } );
-  connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "raster" ) ); } );
+  connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "gdal" ) ); } );
   connect( mActionAddPgLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "postgres" ) ); } );
   connect( mActionAddSpatiaLiteLayer, &QAction::triggered, [ = ] { dataSourceManager( QStringLiteral( "spatialite" ) ); } );
   connect( mActionAddMssqlLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "mssql" ) ); } );
@@ -2289,19 +2279,17 @@ void QgisApp::refreshProfileMenu()
   QString activeName = profile->name();
   mConfigMenu->setTitle( tr( "&User Profiles" ) );
 
-  QActionGroup *profileGroup = new QActionGroup( this );
+  QActionGroup *profileGroup = new QActionGroup( mConfigMenu );
   profileGroup->setExclusive( true );
 
   Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
   {
-    profile = userProfileManager()->profileForName( name );
-    // Qt 5.5 has no parent default as nullptr
-    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
-    action->setToolTip( profile->folder() );
+    std::unique_ptr< QgsUserProfile > namedProfile( userProfileManager()->profileForName( name ) );
+    QAction *action = new QAction( namedProfile->icon(), namedProfile->alias(), mConfigMenu );
+    action->setToolTip( namedProfile->folder() );
     action->setCheckable( true );
     profileGroup->addAction( action );
     mConfigMenu->addAction( action );
-    delete profile;
 
     if ( name == activeName )
     {
@@ -2831,19 +2819,7 @@ void QgisApp::createStatusBar()
 
 void QgisApp::setIconSizes( int size )
 {
-  int dockSize;
-  if ( size > 32 )
-  {
-    dockSize = size - 16;
-  }
-  else if ( size == 32 )
-  {
-    dockSize = 24;
-  }
-  else
-  {
-    dockSize = 16;
-  }
+  int dockSize = dockedToolbarIconSize( size );
 
   //Set the icon size of for all the toolbars created in the future.
   setIconSize( QSize( size, size ) );
@@ -3377,8 +3353,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   {
     if ( canvas->objectName() == name )
     {
-      QString errorMessage = tr( "A map canvas with name '%1' already exists!" ).arg( name );
-      QgsDebugMsg( errorMessage );
+      QgsDebugMsg( tr( "A map canvas with name '%1' already exists!" ).arg( name ) );
       return nullptr;
     }
   }
@@ -3787,7 +3762,7 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
     QDir().mkdir( previewDir );
 
     // Render the map canvas
-    QSize previewSize( 250, 177 ); // h = w / sqrt(2)
+    QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
     QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2
                                , ( mMapCanvas->height() - previewSize.height() ) / 2 )
                        , previewSize );
@@ -4482,6 +4457,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
   }
 
+  // Check if the current layer uri contains the
 
   // We initialize a selection dialog and display it.
   QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this );
@@ -5092,7 +5068,7 @@ void QgisApp::fileNewFromTemplateAction( QAction *qAction )
 void QgisApp::newVectorLayer()
 {
   QString enc;
-  QString fileName = QgsNewVectorLayerDialog::runAndCreateLayer( this, &enc, defaultCrsForNewLayers() );
+  QString fileName = QgsNewVectorLayerDialog::runAndCreateLayer( this, &enc, QgsProject::instance()->defaultCrsForNewLayers() );
 
   if ( !fileName.isEmpty() )
   {
@@ -5114,7 +5090,7 @@ void QgisApp::newVectorLayer()
 
 void QgisApp::newMemoryLayer()
 {
-  QgsVectorLayer *newLayer = QgsNewMemoryLayerDialog::runAndCreateLayer( this, defaultCrsForNewLayers() );
+  QgsVectorLayer *newLayer = QgsNewMemoryLayerDialog::runAndCreateLayer( this, QgsProject::instance()->defaultCrsForNewLayers() );
 
   if ( newLayer )
   {
@@ -5129,14 +5105,14 @@ void QgisApp::newMemoryLayer()
 
 void QgisApp::newSpatialiteLayer()
 {
-  QgsNewSpatialiteLayerDialog spatialiteDialog( this, QgsGuiUtils::ModalDialogFlags, defaultCrsForNewLayers() );
+  QgsNewSpatialiteLayerDialog spatialiteDialog( this, QgsGuiUtils::ModalDialogFlags, QgsProject::instance()->defaultCrsForNewLayers() );
   spatialiteDialog.exec();
 }
 
 void QgisApp::newGeoPackageLayer()
 {
   QgsNewGeoPackageLayerDialog dialog( this );
-  dialog.setCrs( defaultCrsForNewLayers() );
+  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
   dialog.exec();
 }
 
@@ -5150,7 +5126,11 @@ void QgisApp::showRasterCalculator()
 
     QProgressDialog p( tr( "Calculating..." ), tr( "Abort..." ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
-    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &p ) );
+    p.setMaximum( 100.0 );
+    QgsFeedback feedback;
+    connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
+    connect( &feedback, &QgsFeedback::canceled, &p, &QProgressDialog::cancel );
+    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &feedback ) );
     switch ( res )
     {
       case QgsRasterCalculator::Success:
@@ -5547,6 +5527,7 @@ void QgisApp::dxfExport()
     dxfExport.setSymbologyExport( d.symbologyMode() );
     dxfExport.setLayerTitleAsName( d.layerTitleAsName() );
     dxfExport.setDestinationCrs( d.crs() );
+    dxfExport.setForce2d( d.force2d() );
     if ( mapCanvas() )
     {
       //extent
@@ -8306,11 +8287,32 @@ void QgisApp::refreshMapCanvas()
 
 void QgisApp::canvasRefreshStarted()
 {
-  showProgress( -1, 0 ); // trick to make progress bar show busy indicator
+  mLastRenderTime.restart();
+  // if previous render took less than 0.5 seconds, delay the appearance of the
+  // render in progress status bar by 0.5 seconds - this avoids the status bar
+  // rapidly appearing and then disappearing for very fast renders
+  if ( mLastRenderTimeSeconds > 0 && mLastRenderTimeSeconds < 0.5 )
+  {
+    mRenderProgressBarTimer.setSingleShot( true );
+    mRenderProgressBarTimer.setInterval( 500 );
+    disconnect( mRenderProgressBarTimerConnection );
+    mRenderProgressBarTimerConnection = connect( &mRenderProgressBarTimer, &QTimer::timeout, [ = ]()
+    {
+      showProgress( -1, 0 );
+    }
+                                               );
+    mRenderProgressBarTimer.start();
+  }
+  else
+  {
+    showProgress( -1, 0 ); // trick to make progress bar show busy indicator
+  }
 }
 
 void QgisApp::canvasRefreshFinished()
 {
+  mRenderProgressBarTimer.stop();
+  mLastRenderTimeSeconds = mLastRenderTime.elapsed() / 1000.0;
   showProgress( 0, 0 ); // stop the busy indicator
 }
 
@@ -8793,6 +8795,16 @@ void QgisApp::userRotation()
   mMapCanvas->refresh();
 }
 
+void QgisApp::onFocusChanged( QWidget *oldWidget, QWidget *newWidget )
+{
+  Q_UNUSED( oldWidget );
+  // If nothing has focus even though this window is active, ensure map canvas receives it
+  if ( !newWidget && isActiveWindow() )
+  {
+    mapCanvas()->setFocus();
+  }
+}
+
 // toggle overview status
 void QgisApp::isInOverview()
 {
@@ -9147,8 +9159,8 @@ void QgisApp::legendLayerZoomNative()
     QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
     p1 = ct.transform( p1 );
     p2 = ct.transform( p2 );
-    double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
-    mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
+    double width = std::sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
+    mMapCanvas->zoomByFactor( std::sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
 
     mMapCanvas->refresh();
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
@@ -9736,6 +9748,19 @@ QgsMapLayer *QgisApp::activeLayer()
   return mLayerTreeView ? mLayerTreeView->currentLayer() : nullptr;
 }
 
+QSize QgisApp::iconSize( bool dockedToolbar ) const
+{
+  QgsSettings s;
+  int size = s.value( QStringLiteral( "/IconSize" ), 32 ).toInt();
+
+  if ( dockedToolbar )
+  {
+    size = dockedToolbarIconSize( size );
+  }
+
+  return QSize( size, size );
+}
+
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 {
   if ( !layer )
@@ -9788,7 +9813,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
     // If the newly created layer has more than 1 layer of data available, we show the
     // sublayers selection dialog so the user can select the sublayers to actually load.
-    if ( sublayers.count() > 1 )
+    if ( sublayers.count() > 1 && ! vectorLayerPath.contains( QStringLiteral( "layerid=" ) ) )
     {
       askUserForOGRSublayers( layer );
 

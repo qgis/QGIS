@@ -583,7 +583,7 @@ QVariant QgsPalettedRendererModel::data( const QModelIndex &index, int role ) co
     }
 
     default:
-      return QVariant();
+      break;
   }
 
   return QVariant();
@@ -708,9 +708,9 @@ bool QgsPalettedRendererModel::insertRows( int row, int count, const QModelIndex
   for ( ; cIt != mData.constEnd(); ++cIt )
   {
     int value = cIt->value;
-    currentMaxValue = qMax( value, currentMaxValue );
+    currentMaxValue = std::max( value, currentMaxValue );
   }
-  int nextValue = qMax( 0, currentMaxValue + 1 );
+  int nextValue = std::max( 0, currentMaxValue + 1 );
 
   beginInsertRows( QModelIndex(), row, row + count - 1 );
   for ( int i = row; i < row + count; ++i, ++nextValue )

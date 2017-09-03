@@ -195,8 +195,7 @@ class ModelerGraphicItem(QGraphicsItem):
         if isinstance(self.element, QgsProcessingModelParameter):
             dlg = ModelerParameterDefinitionDialog(self.model,
                                                    param=self.model.parameterDefinition(self.element.parameterName()))
-            dlg.exec_()
-            if dlg.param is not None:
+            if dlg.exec_() and dlg.param is not None:
                 self.model.removeModelParameter(self.element.parameterName())
                 self.element.setParameterName(dlg.param.name())
                 self.element.setDescription(dlg.param.name())
@@ -260,10 +259,10 @@ class ModelerGraphicItem(QGraphicsItem):
         if w < self.BOX_WIDTH - 25 - FlatButtonGraphicItem.WIDTH:
             return text
 
-        text = text[0:-3] + '...'
+        text = text[0:-3] + '…'
         w = fm.width(text)
         while w > self.BOX_WIDTH - 25 - FlatButtonGraphicItem.WIDTH:
-            text = text[0:-4] + '...'
+            text = text[0:-4] + '…'
             w = fm.width(text)
         return text
 

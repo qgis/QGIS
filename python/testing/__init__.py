@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from builtins import zip
-from builtins import map
-from builtins import str
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
@@ -90,10 +86,11 @@ class TestCase(_TestCase):
             compare = {}
 
         # Compare CRS
-        if use_asserts:
-            _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
-        elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
-            return False
+        if 'ignore_crs_check' not in compare or not compare['ignore_crs_check']:
+            if use_asserts:
+                _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
+            elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
+                return False
 
         # Compare features
         if use_asserts:
@@ -177,7 +174,7 @@ class TestCase(_TestCase):
                         self,
                         attr_expected,
                         attr_result,
-                        'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(
+                        'Features {}/{} differ in attributes\n\n * Field expected: {} ({})\n * result  : {} ({})\n\n * Expected: {} != Result  : {}'.format(
                             feats[0].id(),
                             feats[1].id(),
                             field_expected.name(),

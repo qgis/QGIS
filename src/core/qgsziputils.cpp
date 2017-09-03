@@ -132,15 +132,15 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
 
   if ( rc == ZIP_ER_OK && z != NULL )
   {
-    Q_FOREACH ( QString file, files )
+    for ( const auto &file : files )
     {
       QFileInfo fileInfo( file );
       if ( !fileInfo.exists() )
       {
         QString err = QObject::tr( "Error input file does not exist: '%1'" ).arg( file );
         QgsMessageLog::logMessage( err, QStringLiteral( "QgsZipUtils" ) );
-        return false;
         zip_close( z );
+        return false;
       }
 
       zip_source *src = zip_source_file( z, file.toStdString().c_str(), 0, 0 );

@@ -232,7 +232,7 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     mOptListWidget->setRowHidden( r, !text.isEmpty() );
   }
 
-  for ( QPair< QgsSearchHighlightOptionWidget *, int > rsw : mRegisteredSearchWidgets )
+  for ( const QPair< QgsSearchHighlightOptionWidget *, int > &rsw : qgsAsConst( mRegisteredSearchWidgets ) )
   {
     rsw.first->reset();
     if ( !text.isEmpty() && rsw.first->searchHighlight( text ) )

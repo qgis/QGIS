@@ -67,7 +67,7 @@ QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem &option, 
 {
   Q_UNUSED( index )
   int height = ICON_SIZE;
-  return QSize( option.rect.width(), qMax( height, option.fontMetrics.height() ) );
+  return QSize( option.rect.width(), std::max( height, option.fontMetrics.height() ) );
 }
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const

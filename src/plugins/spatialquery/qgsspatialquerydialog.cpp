@@ -782,6 +782,9 @@ void QgsSpatialQueryDialog::on_bbMain_clicked( QAbstractButton *button )
     case QDialogButtonBox::RejectRole:
       reject();
       break;
+    case QDialogButtonBox::HelpRole:
+      showHelp();
+      break;
     default:
       return;
   }
@@ -1072,3 +1075,8 @@ void QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged()
 {
   evaluateCheckBoxLayer( false );
 } // void QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged()
+
+void QgsSpatialQueryDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_spatial_query.html" ) );
+}

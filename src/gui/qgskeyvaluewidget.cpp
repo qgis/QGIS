@@ -31,13 +31,13 @@ void QgsKeyValueWidget::setMap( const QVariantMap &map )
 ///@cond PRIVATE
 void QgsKeyValueModel::setMap( const QVariantMap &map )
 {
-  emit beginResetModel();
+  beginResetModel();
   mLines.clear();
   for ( QVariantMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
   {
     mLines.append( Line( it.key(), it.value() ) );
   }
-  emit endResetModel();
+  endResetModel();
 }
 
 QVariantMap QgsKeyValueModel::map() const

@@ -30,7 +30,7 @@
 #include "qgswkbtypes.h"
 #include "qgslogger.h"
 
-QgsAbstractGeometry *QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr &wkbPtr )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )
     return nullptr;
@@ -49,9 +49,7 @@ QgsAbstractGeometry *QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr &wkbPtr )
   }
   wkbPtr -= 1 + sizeof( int );
 
-  QgsAbstractGeometry *geom = nullptr;
-
-  geom = geomFromWkbType( type );
+  std::unique_ptr< QgsAbstractGeometry > geom = geomFromWkbType( type );
 
   if ( geom )
   {
@@ -63,86 +61,84 @@ QgsAbstractGeometry *QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr &wkbPtr )
     {
       Q_UNUSED( e );
       QgsDebugMsg( "WKB exception: " + e.what() );
-      delete geom;
-      geom = nullptr;
+      geom.reset();
     }
   }
 
   return geom;
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::geomFromWkt( const QString &text )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QString &text )
 {
   QString trimmed = text.trimmed();
-  QgsAbstractGeometry *geom = nullptr;
+  std::unique_ptr< QgsAbstractGeometry> geom;
   if ( trimmed.startsWith( QLatin1String( "Point" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsPoint();
+    geom.reset( new QgsPoint() );
   }
   else if ( trimmed.startsWith( QLatin1String( "LineString" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsLineString();
+    geom.reset( new QgsLineString() );
   }
   else if ( trimmed.startsWith( QLatin1String( "CircularString" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsCircularString();
+    geom.reset( new QgsCircularString() );
   }
   else if ( trimmed.startsWith( QLatin1String( "CompoundCurve" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsCompoundCurve();
+    geom.reset( new QgsCompoundCurve() );
   }
   else if ( trimmed.startsWith( QLatin1String( "Polygon" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsPolygonV2();
+    geom.reset( new QgsPolygonV2() );
   }
   else if ( trimmed.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsCurvePolygon();
+    geom.reset( new QgsCurvePolygon() );
   }
   else if ( trimmed.startsWith( QLatin1String( "MultiPoint" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiPointV2();
+    geom.reset( new QgsMultiPointV2() );
   }
   else if ( trimmed.startsWith( QLatin1String( "MultiCurve" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiCurve();
+    geom.reset( new QgsMultiCurve() );
   }
   else if ( trimmed.startsWith( QLatin1String( "MultiLineString" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiLineString();
+    geom.reset( new QgsMultiLineString() );
   }
   else if ( trimmed.startsWith( QLatin1String( "MultiSurface" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiSurface();
+    geom.reset( new QgsMultiSurface() );
   }
   else if ( trimmed.startsWith( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiPolygonV2();
+    geom.reset( new QgsMultiPolygonV2() );
   }
   else if ( trimmed.startsWith( QLatin1String( "GeometryCollection" ), Qt::CaseInsensitive ) )
   {
-    geom = new QgsGeometryCollection();
+    geom.reset( new QgsGeometryCollection() );
   }
 
   if ( geom )
   {
     if ( !geom->fromWkt( text ) )
     {
-      delete geom;
       return nullptr;
     }
   }
   return geom;
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::fromPoint( const QgsPointXY &point )
+std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPoint( const QgsPointXY &point )
 {
-  return new QgsPoint( point.x(), point.y() );
+  return std::unique_ptr< QgsAbstractGeometry >( new QgsPoint( point.x(), point.y() ) );
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &multipoint )
+std::unique_ptr<QgsMultiPointV2> QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &multipoint )
 {
-  QgsMultiPointV2 *mp = new QgsMultiPointV2();
+  std::unique_ptr< QgsMultiPointV2 > mp( new QgsMultiPointV2() );
   QgsMultiPoint::const_iterator ptIt = multipoint.constBegin();
   for ( ; ptIt != multipoint.constEnd(); ++ptIt )
   {
@@ -152,55 +148,55 @@ QgsAbstractGeometry *QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &mu
   return mp;
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::fromPolyline( const QgsPolyline &polyline )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolyline( const QgsPolyline &polyline )
 {
   return linestringFromPolyline( polyline );
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolyline &multiline )
+std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolyline &multiline )
 {
-  QgsMultiLineString *mLine = new QgsMultiLineString();
+  std::unique_ptr< QgsMultiLineString > mLine( new QgsMultiLineString() );
   for ( int i = 0; i < multiline.size(); ++i )
   {
-    mLine->addGeometry( fromPolyline( multiline.at( i ) ) );
+    mLine->addGeometry( fromPolyline( multiline.at( i ) ).release() );
   }
   return mLine;
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::fromPolygon( const QgsPolygon &polygon )
+std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromPolygon( const QgsPolygon &polygon )
 {
-  QgsPolygonV2 *poly = new QgsPolygonV2();
+  std::unique_ptr< QgsPolygonV2 > poly( new QgsPolygonV2() );
 
   QList<QgsCurve *> holes;
   for ( int i = 0; i < polygon.size(); ++i )
   {
-    QgsLineString *l = linestringFromPolyline( polygon.at( i ) );
+    std::unique_ptr< QgsLineString > l = linestringFromPolyline( polygon.at( i ) );
     l->close();
 
     if ( i == 0 )
     {
-      poly->setExteriorRing( l );
+      poly->setExteriorRing( l.release() );
     }
     else
     {
-      holes.push_back( l );
+      holes.push_back( l.release() );
     }
   }
   poly->setInteriorRings( holes );
   return poly;
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon &multipoly )
+std::unique_ptr< QgsMultiPolygonV2 > QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon &multipoly )
 {
-  QgsMultiPolygonV2 *mp = new QgsMultiPolygonV2();
+  std::unique_ptr< QgsMultiPolygonV2 > mp( new QgsMultiPolygonV2() );
   for ( int i = 0; i < multipoly.size(); ++i )
   {
-    mp->addGeometry( fromPolygon( multipoly.at( i ) ) );
+    mp->addGeometry( fromPolygon( multipoly.at( i ) ).release() );
   }
   return mp;
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::fromRect( const QgsRectangle &rect )
+std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromRect( const QgsRectangle &rect )
 {
   QgsPolyline ring;
   ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
@@ -215,7 +211,7 @@ QgsAbstractGeometry *QgsGeometryFactory::fromRect( const QgsRectangle &rect )
   return fromPolygon( polygon );
 }
 
-QgsLineString *QgsGeometryFactory::linestringFromPolyline( const QgsPolyline &polyline )
+std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolyline &polyline )
 {
   QVector< double > x;
   x.reserve( polyline.size() );
@@ -227,39 +223,39 @@ QgsLineString *QgsGeometryFactory::linestringFromPolyline( const QgsPolyline &po
     x << it->x();
     y << it->y();
   }
-  QgsLineString *line = new QgsLineString( x, y );
+  std::unique_ptr< QgsLineString > line( new QgsLineString( x, y ) );
   return line;
 }
 
-QgsAbstractGeometry *QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::Type t )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::Type t )
 {
   QgsWkbTypes::Type type = QgsWkbTypes::flatType( t );
   switch ( type )
   {
     case QgsWkbTypes::Point:
-      return new QgsPoint();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsPoint() );
     case QgsWkbTypes::LineString:
-      return new QgsLineString();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsLineString() );
     case QgsWkbTypes::CircularString:
-      return new QgsCircularString();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsCircularString() );
     case QgsWkbTypes::CompoundCurve:
-      return new QgsCompoundCurve();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsCompoundCurve() );
     case QgsWkbTypes::Polygon:
-      return new QgsPolygonV2();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsPolygonV2() );
     case QgsWkbTypes::CurvePolygon:
-      return new QgsCurvePolygon();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsCurvePolygon() );
     case QgsWkbTypes::MultiLineString:
-      return new QgsMultiLineString();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsMultiLineString() );
     case QgsWkbTypes::MultiPolygon:
-      return new QgsMultiPolygonV2();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsMultiPolygonV2() );
     case QgsWkbTypes::MultiPoint:
-      return new QgsMultiPointV2();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsMultiPointV2() );
     case QgsWkbTypes::MultiCurve:
-      return new QgsMultiCurve();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsMultiCurve() );
     case QgsWkbTypes::MultiSurface:
-      return new QgsMultiSurface();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsMultiSurface() );
     case QgsWkbTypes::GeometryCollection:
-      return new QgsGeometryCollection();
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsGeometryCollection() );
     default:
       return nullptr;
   }

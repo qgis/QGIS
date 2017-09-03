@@ -127,7 +127,7 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer *layer, in
 
       default:
         // todo other types - dates? times?
-        return QVariant();
+        break;
     }
   }
 

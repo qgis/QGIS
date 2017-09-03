@@ -63,7 +63,6 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 SET(TESTS
- testqgsvectoranalyzer.cpp
  testqgsgeometrysnapper.cpp
  testopenstreetmap.cpp
  testqgszonalstatistics.cpp

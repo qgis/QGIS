@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <qglobal.h>
+
 #ifdef _MSC_VER
 // to avoid conflicting SF_UNKNOWN
 #define _OLE2_H_
@@ -2369,7 +2371,7 @@ void QgsGrass::createTable( dbDriver *driver, const QString &tableName, const Qg
   }
 
   QStringList fieldsStringList;
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const QgsField &field : fields )
   {
     QString name = field.name().toLower().replace( QLatin1String( " " ), QLatin1String( "_" ) );
     if ( name.at( 0 ).isDigit() )

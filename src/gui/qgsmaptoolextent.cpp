@@ -47,7 +47,7 @@ void QgsMapToolExtent::canvasMoveEvent( QgsMapMouseEvent *e )
   QgsPointXY p = toMapCoordinates( e->pos() );
   if ( mRatio.width() > 0 && mRatio.height() > 0 )
   {
-    double width = qAbs( p.x() - mStartPoint.x() );
+    double width = std::fabs( p.x() - mStartPoint.x() );
     double height = width * ( mRatio.width() / mRatio.height() );
     if ( p.y() - mStartPoint.y() < 0 )
       height *= -1;
@@ -98,7 +98,7 @@ void QgsMapToolExtent::calculateEndPoint( QgsPointXY &point )
 {
   if ( mRatio.width() > 0 && mRatio.height() > 0 )
   {
-    double width = qAbs( point.x() - mStartPoint.x() );
+    double width = std::fabs( point.x() - mStartPoint.x() );
     double height = width * mRatio.height() / mRatio.width();
     if ( point.y() - mStartPoint.y() < 0 )
       height *= -1;

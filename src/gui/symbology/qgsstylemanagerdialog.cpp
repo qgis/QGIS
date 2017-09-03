@@ -49,6 +49,9 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   , mModified( false )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
+
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
@@ -283,7 +286,7 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
-      item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+      item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
       // add to model
       model->appendRow( item );
     }
@@ -1527,4 +1530,12 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   groupChanged( present );
 }
 
+void QgsStyleManagerDialog::onClose()
+{
+  reject();
+}
 
+void QgsStyleManagerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-style-manager" ) );
+}

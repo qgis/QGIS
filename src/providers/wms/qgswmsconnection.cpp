@@ -27,14 +27,6 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgssettings.h"
 
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QPicture>
-#include <QUrl>
-
-#include <QNetworkRequest>
-#include <QNetworkReply>
-
 QgsWMSConnection::QgsWMSConnection( const QString &connName )
   : mConnName( connName )
 {

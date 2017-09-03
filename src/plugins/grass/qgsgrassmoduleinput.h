@@ -152,6 +152,8 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
 
 class QgsGrassModuleInputCompleter : public QCompleter
 {
+    Q_OBJECT
+
   public:
     explicit QgsGrassModuleInputCompleter( QAbstractItemModel *model, QWidget *parent = 0 );
 
@@ -160,6 +162,8 @@ class QgsGrassModuleInputCompleter : public QCompleter
 
 class QgsGrassModuleInputComboBox : public QComboBox
 {
+    Q_OBJECT
+
   public:
     explicit QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent = 0 );
     ~QgsGrassModuleInputComboBox();
@@ -340,7 +344,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     // List of vector layers matching mGeometryTypes for currently selected vector
     QList<QgsGrassVectorLayer *> mLayers;
 
-    //! The imput map will be updated -> must be from current mapset
+    //! The input map will be updated -> must be from current mapset
     // TODO
     bool mUpdate;
 

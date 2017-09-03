@@ -778,6 +778,14 @@ Returns the number of registered layers.
 .. seealso:: QgsMapLayer.reload()
 %End
 
+    QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
+%Docstring
+ Returns the default CRS for new layers based on the settings and
+ the current project CRS
+ :rtype: QgsCoordinateReferenceSystem
+%End
+
+
   signals:
     void readProject( const QDomDocument & );
 %Docstring
@@ -1009,6 +1017,8 @@ emitted whenever the configuration for snapping has changed
 
  \param layers List of QgsMapLayer which were added to the legend.
 %End
+
+
 
   public slots:
 

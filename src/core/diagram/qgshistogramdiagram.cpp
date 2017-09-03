@@ -52,7 +52,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
   Q_FOREACH ( const QString &cat, s.categoryAttributes )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
-    maxValue = qMax( expression->evaluate( &expressionContext ).toDouble(), maxValue );
+    maxValue = std::max( expression->evaluate( &expressionContext ).toDouble(), maxValue );
   }
 
   // Scale, if extension is smaller than the specified minimum
@@ -108,7 +108,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const 
 
   for ( int i = 0; i < attributes.count(); ++i )
   {
-    maxValue = qMax( attributes.at( i ).toDouble(), maxValue );
+    maxValue = std::max( attributes.at( i ).toDouble(), maxValue );
   }
 
   switch ( s.diagramOrientation )
@@ -151,7 +151,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
     QgsExpression *expression = getExpression( cat, expressionContext );
     double currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
-    maxValue = qMax( currentVal, maxValue );
+    maxValue = std::max( currentVal, maxValue );
   }
 
   double scaledMaxVal = sizePainterUnits( maxValue * mScaleFactor, s, c );

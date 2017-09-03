@@ -18,13 +18,13 @@
 #include <QDebug>
 #include <QTableWidgetItem>
 
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
-#include <qgsmaplayer.h>
-#include <qgsproviderregistry.h>
-#include <qgslogger.h>
-#include <qgisinterface.h>
-#include <qgsproject.h>
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayer.h"
+#include "qgsproviderregistry.h"
+#include "qgslogger.h"
+#include "qgisinterface.h"
+#include "qgsproject.h"
 #include "qgsapplication.h"
 #include "rulesDialog.h"
 #include "topolTest.h"

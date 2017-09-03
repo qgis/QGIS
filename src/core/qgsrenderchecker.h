@@ -17,15 +17,15 @@
 #define QGSRENDERCHECKER_H
 
 #include "qgis_core.h"
-#include <qgis.h>
+#include "qgis.h"
 #include <QDir>
 #include <QString>
 #include <QRegExp>
 #include <QList>
 
-#include <qgslogger.h>
-#include <qgsmapsettings.h>
-#include <qgsdartmeasurement.h>
+#include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgsdartmeasurement.h"
 
 class QImage;
 

@@ -29,7 +29,7 @@
     bool _xxxresult = qgsDoubleNear( value, expected, epsilon ); \
     if ( !_xxxresult  ) \
     { \
-      qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( expected ), static_cast< double >( value ), qAbs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
+      qDebug( "Expecting %f got %f (diff %f > %f)", static_cast< double >( expected ), static_cast< double >( value ), std::fabs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
     } \
     QVERIFY( qgsDoubleNear( value, expected, epsilon ) ); \
   }
@@ -38,7 +38,7 @@
     bool _xxxresult = qgsDoubleNear( value, not_expected, epsilon ); \
     if ( _xxxresult  ) \
     { \
-      qDebug( "Expecting %f to be differerent from %f (diff %f > %f)", static_cast< double >( value ), static_cast< double >( not_expected ), qAbs( static_cast< double >( not_expected ) - value ), static_cast< double >( epsilon ) ); \
+      qDebug( "Expecting %f to be differerent from %f (diff %f > %f)", static_cast< double >( value ), static_cast< double >( not_expected ), std::fabs( static_cast< double >( not_expected ) - value ), static_cast< double >( epsilon ) ); \
     } \
     QVERIFY( !qgsDoubleNear( value, not_expected, epsilon ) ); \
   }
@@ -53,6 +53,11 @@
     QGSCOMPARENEAR( rectangle1.xMaximum(), rectangle2.xMaximum(), epsilon ); \
     QGSCOMPARENEAR( rectangle1.yMinimum(), rectangle2.yMinimum(), epsilon ); \
     QGSCOMPARENEAR( rectangle1.yMaximum(), rectangle2.yMaximum(), epsilon ); \
+  }
+
+//sometimes GML attributes are in a different order - but that's ok
+#define QGSCOMPAREGML(result,expected) { \
+    QCOMPARE( result.replace( QStringLiteral("ts=\" \" cs=\",\""), QStringLiteral("cs=\",\" ts=\" \"") ), expected ); \
   }
 
 #endif // QGSTESTUTILS_H

@@ -20,7 +20,6 @@ email                : jef at norbit dot de
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgscontexthelp.h"
 #include "qgsoracleprovider.h"
 #include "qgsoraclenewconnection.h"
 #include "qgsoracletablecache.h"
@@ -173,6 +172,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 {
   setupUi( this );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleSourceSelect::showHelp );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
@@ -669,4 +669,9 @@ void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &se
 {
   Q_UNUSED( deselected )
   emit enableButtons( !selected.isEmpty() );
+}
+
+void QgsOracleSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
 }

@@ -49,7 +49,7 @@ class StatisticsByCategories(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()

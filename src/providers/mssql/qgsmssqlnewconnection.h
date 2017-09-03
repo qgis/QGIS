@@ -47,9 +47,10 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     void on_btnListDatabase_clicked();
     void on_btnConnect_clicked();
     void on_cb_trustedConnection_clicked();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#mssql-spatial-layers" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
+    void showHelp();
+
 };
 
 #endif //  QGSMSSQLNEWCONNECTION_H

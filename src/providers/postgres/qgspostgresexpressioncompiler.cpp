@@ -195,8 +195,8 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
     }
 
     default:
-      return QgsSqlExpressionCompiler::compileNode( node, result );
+      break;
   }
 
-  return Fail;
+  return QgsSqlExpressionCompiler::compileNode( node, result );
 }

@@ -45,7 +45,7 @@ class DeleteHoles(QgisFeatureBasedAlgorithm):
         return self.tr('remove,delete,drop,holes,rings,fill').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def name(self):
         return 'deleteholes'

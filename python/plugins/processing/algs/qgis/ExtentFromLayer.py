@@ -49,7 +49,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 class ExtentFromLayer(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     BY_FEATURE = 'BY_FEATURE'
 
     OUTPUT = 'OUTPUT'
@@ -61,13 +61,13 @@ class ExtentFromLayer(QgisAlgorithm):
         return self.tr('extent,envelope,bounds,bounding,boundary,layer').split(',')
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBoolean(self.BY_FEATURE,
                                                         self.tr('Calculate extent for each feature separately'), False))
 
@@ -77,10 +77,10 @@ class ExtentFromLayer(QgisAlgorithm):
         return 'polygonfromlayerextent'
 
     def displayName(self):
-        return self.tr('Polygon from layer extent')
+        return self.tr('Polygon from vector extent')
 
     def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
         byFeature = self.parameterAsBool(parameters, self.BY_FEATURE, context)
 
         fields = QgsFields()
