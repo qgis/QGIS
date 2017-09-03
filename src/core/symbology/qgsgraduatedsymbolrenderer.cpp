@@ -39,7 +39,6 @@
 #include <limits> // for jenks classification
 #include <ctime>
 
-
 QgsRendererRange::QgsRendererRange()
   : mLowerValue( 0 )
   , mUpperValue( 0 )
@@ -564,6 +563,29 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
   return breaks;
 }
 
+static QList<double> _calcAroundZeroBreaks( double minimum, double maximum, int classes )
+{  
+  // we will use prettyBreaks and merge the classes around zero
+  // and remove the classes that are above the existing opposite
+  // sign classes to keep colors symmetrically balanced around zero
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, classes ); 
+
+  breaks.removeAt( breaks.indexOf(0) );
+  
+  std::sort( breaks.begin(), breaks.end() );
+  double absMin = qMin( qAbs(maximum), qAbs( minimum ) );
+  
+  for ( int i = 1; i < breaks.size()-1; ++i ) //not the first nor the last (expect them to be ordered)
+  {
+    if ( qAbs( breaks.at(i) ) > absMin )
+    {
+        breaks.removeAt(i);
+        --i;
+    }
+  }
+  return breaks;
+}
+
 static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
 {
   // q-th quantile of a data set:
@@ -852,6 +874,10 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   {
     breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
   }
+  else if ( mode == AroundZero )
+  {
+    breaks = _calcAroundZeroBreaks( minimum, maximum, nclasses );
+  }
   else if ( mode == Quantile || mode == Jenks || mode == StdDev )
   {
     // get values from layer
@@ -1000,6 +1026,8 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
       r->setMode( StdDev );
     else if ( modeString == QLatin1String( "pretty" ) )
       r->setMode( Pretty );
+    else if ( modeString == QLatin1String( "aroundZero" ) )
+      r->setMode( AroundZero );
   }
 
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
@@ -1114,6 +1142,10 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     modeString = QStringLiteral( "stddev" );
   else if ( mMode == Pretty )
     modeString = QStringLiteral( "pretty" );
+  else if ( mMode == AroundZero )
+    modeString = QStringLiteral( "aroundZero" );    
+    
+    
   if ( !modeString.isEmpty() )
   {
     QDomElement modeElem = doc.createElement( QStringLiteral( "mode" ) );
@@ -1223,6 +1255,7 @@ QgsSymbol *QgsGraduatedSymbolRenderer::sourceSymbol()
 {
   return mSourceSymbol.get();
 }
+
 void QgsGraduatedSymbolRenderer::setSourceSymbol( QgsSymbol *sym )
 {
   mSourceSymbol.reset( sym );
@@ -1453,7 +1486,6 @@ void QgsGraduatedSymbolRenderer::setLabelFormat( const QgsRendererRangeLabelForm
   }
   mLabelFormat = labelFormat;
 }
-
 
 void QgsGraduatedSymbolRenderer::calculateLabelPrecision( bool updateRanges )
 {
