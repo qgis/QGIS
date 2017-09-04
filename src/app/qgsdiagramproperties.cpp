@@ -59,9 +59,6 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 
 QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas )
   : QWidget( parent )
-  , mPlacePointBtnGrp( nullptr )
-  , mPlaceLineBtnGrp( nullptr )
-  , mPlacePolygonBtnGrp( nullptr )
   , mMapCanvas( canvas )
 {
   mLayer = layer;
