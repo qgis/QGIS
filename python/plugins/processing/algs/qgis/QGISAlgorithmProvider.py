@@ -100,6 +100,7 @@ from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .MergeLines import MergeLines
+from .MinimalEnclosingCircle import MinimalEnclosingCircle
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
 from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
@@ -253,6 +254,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MeanCoords(),
                 Merge(),
                 MergeLines(),
+                MinimalEnclosingCircle(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
                 OrientedMinimumBoundingBox(),

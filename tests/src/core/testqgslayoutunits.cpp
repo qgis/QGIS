@@ -23,7 +23,6 @@
 #include "qgslayoutsize.h"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgis.h"
-#include "qgstestutils.h"
 
 class TestQgsLayoutUnits : public QObject
 {

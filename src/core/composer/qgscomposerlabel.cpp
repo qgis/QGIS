@@ -612,7 +612,7 @@ QUrl QgsComposerLabel::createStylesheetUrl() const
   stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( std::max( mMarginY * mHtmlUnitsToMM, 0.0 ) ).arg( std::max( mMarginX * mHtmlUnitsToMM, 0.0 ) );
   stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToMM );
   stylesheet += QStringLiteral( "color: %1;" ).arg( mFontColor.name() );
-  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? "left" : mHAlignment == Qt::AlignRight ? "right" : "center" );
+  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
 
   QByteArray ba;
   ba.append( stylesheet.toUtf8() );

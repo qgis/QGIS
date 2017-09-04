@@ -496,8 +496,7 @@ void QgsXyzTileRootItem::newConnection()
     return;
 
   QgsXyzConnectionUtils::addConnection( dlg.connection() );
-
-  refresh();
+  refreshConnections();
 }
 #endif
 
@@ -537,13 +536,13 @@ void QgsXyzLayerItem::editConnection()
   QgsXyzConnectionUtils::deleteConnection( mName );
   QgsXyzConnectionUtils::addConnection( dlg.connection() );
 
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 
 void QgsXyzLayerItem::deleteConnection()
 {
   QgsXyzConnectionUtils::deleteConnection( mName );
 
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif

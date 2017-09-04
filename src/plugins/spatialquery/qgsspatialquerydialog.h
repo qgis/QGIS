@@ -24,6 +24,7 @@
 #include "ui_qgsspatialquerydialogbase.h"
 #include "qgisinterface.h"
 #include "qgsvectorlayer.h"
+#include "qgshelp.h"
 
 /**
 * \class QgsSpatialQueryDialog
@@ -61,6 +62,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     void on_ckbUsingSelectedTarget_toggled();
     void on_ckbLogProcessing_clicked( bool checked );
     void on_ckbZoomItem_clicked( bool checked );
+    void showHelp();
 
     //! Slots for signs of QGIS
     void signal_qgis_layerWasAdded( QgsMapLayer *mapLayer );

@@ -374,8 +374,6 @@ QgsDxfExport::QgsDxfExport()
   , mSymbolLayerCounter( 0 )
   , mNextHandleId( DXF_HANDSEED )
   , mBlockCounter( 0 )
-  , mFactor( 1 )
-  , mForce2d( false )
 {
 }
 
@@ -397,6 +395,7 @@ QgsDxfExport &QgsDxfExport::operator=( const QgsDxfExport &dxfExport )
   mBlockCounter = 0;
   mCrs = QgsCoordinateReferenceSystem();
   mFactor = dxfExport.mFactor;
+  mForce2d = dxfExport.mForce2d;
   return *this;
 }
 
@@ -517,7 +516,8 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
 
   if ( mExtent.isEmpty() )
   {
-    Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+    const QList< QgsMapLayer * > layers = mMapSettings.layers();
+    for ( QgsMapLayer *ml : layers )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
       if ( !vl )
@@ -656,7 +656,8 @@ void QgsDxfExport::writeTables()
   writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, 0 );
 
-  Q_FOREACH ( const QString &block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
+  const QStringList blockStrings = QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0";
+  for ( const QString &block : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "BLOCK_RECORD" ) );
     mBlockHandles.insert( block, writeHandle() );
@@ -772,7 +773,8 @@ void QgsDxfExport::writeTables()
   writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   QSet<QString> layerNames;
-  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+  const QList< QgsMapLayer * > layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
   {
     if ( !layerIsScaleBasedVisible( ml ) )
       continue;
@@ -788,8 +790,8 @@ void QgsDxfExport::writeTables()
     }
     else
     {
-      QSet<QVariant> values = vl->uniqueValues( attrIdx );
-      Q_FOREACH ( const QVariant &v, values )
+      const QSet<QVariant> values = vl->uniqueValues( attrIdx );
+      for ( const QVariant &v : values )
       {
         layerNames << dxfLayerName( v.toString() );
       }
@@ -814,7 +816,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 6, QStringLiteral( "CONTINUOUS" ) );
   writeHandle( 390, DXF_HANDPLOTSTYLE );
 
-  Q_FOREACH ( const QString &layerName, layerNames )
+  for ( const QString &layerName : qgsAsConst( layerNames ) )
   {
     writeGroup( 0, QStringLiteral( "LAYER" ) );
     writeHandle();
@@ -860,7 +862,8 @@ void QgsDxfExport::writeBlocks()
   startSection();
   writeGroup( 2, QStringLiteral( "BLOCKS" ) );
 
-  Q_FOREACH ( const QString &block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
+  const QStringList blockStrings = QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0";
+  for ( const QString &block : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "BLOCK" ) );
     writeHandle();
@@ -969,7 +972,8 @@ void QgsDxfExport::writeEntities()
   engine.setMapSettings( mMapSettings );
 
   // iterate through the maplayers
-  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+  const QList< QgsMapLayer *> layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl || !layerIsScaleBasedVisible( vl ) )
@@ -3979,7 +3983,8 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 {
   QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers;
 
-  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+  const QList< QgsMapLayer * > layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl )
@@ -4017,7 +4022,8 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 void QgsDxfExport::writeDefaultLinetypes()
 {
   // continuous (Qt solid line)
-  Q_FOREACH ( const QString &ltype, QStringList() << "ByLayer" << "ByBlock" << "CONTINUOUS" )
+  const QStringList blockStrings = QStringList() << "ByLayer" << "ByBlock" << "CONTINUOUS";
+  for ( const QString &ltype : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "LTYPE" ) );
     writeHandle();
@@ -4233,7 +4239,8 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer *layer ) const
 
 QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 {
-  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+  const QList< QgsMapLayer * > layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl && vl->id() == id )
@@ -4248,7 +4255,8 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 
 QString QgsDxfExport::dxfEncoding( const QString &name )
 {
-  Q_FOREACH ( const QByteArray &codec, QTextCodec::availableCodecs() )
+  const QList< QByteArray > codecs = QTextCodec::availableCodecs();
+  for ( const QByteArray &codec : codecs )
   {
     if ( name != codec )
       continue;
@@ -4269,7 +4277,8 @@ QString QgsDxfExport::dxfEncoding( const QString &name )
 QStringList QgsDxfExport::encodings()
 {
   QStringList encodings;
-  Q_FOREACH ( QByteArray codec, QTextCodec::availableCodecs() )
+  const QList< QByteArray > codecs = QTextCodec::availableCodecs();
+  for ( const QByteArray &codec : codecs )
   {
     int i;
     for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )

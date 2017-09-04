@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgstestutils.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 #include "qgsvectorlayer.h"

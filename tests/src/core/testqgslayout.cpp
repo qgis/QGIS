@@ -20,7 +20,6 @@
 #include "qgsproject.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemshape.h"
-#include "qgstestutils.h"
 
 class TestQgsLayout: public QObject
 {

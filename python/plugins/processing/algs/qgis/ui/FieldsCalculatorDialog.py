@@ -169,8 +169,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
             filename = str(files[0])
             selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not filename.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                    tuple(re.findall("\\*(\\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     filename = filename + ext.group(1)
             self.leOutputFile.setText(filename)

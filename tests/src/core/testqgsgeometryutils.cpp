@@ -19,7 +19,6 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
-#include "qgstestutils.h"
 
 class TestQgsGeometryUtils: public QObject
 {

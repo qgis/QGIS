@@ -22,7 +22,6 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsproject.h"
-#include "qgstestutils.h"
 #include "qgsproperty.h"
 #include <QObject>
 #include "qgstest.h"

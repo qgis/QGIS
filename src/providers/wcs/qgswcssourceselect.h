@@ -23,6 +23,8 @@
 #include "qgsowssourceselect.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
+#include "qgshelp.h"
+
 #include "qgswcscapabilities.h"
 #include "qgsproviderregistry.h"
 #include "qgsdataprovider.h"
@@ -78,6 +80,11 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     QStringList selectedLayersFormats() override;
     QStringList selectedLayersCrses() override;
     QStringList selectedLayersTimes() override;
+
+  private slots:
+
+    //! Open help browser
+    void showHelp();
 };
 #endif // QGSWCSSOURCESELECT_H
 

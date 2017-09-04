@@ -4223,6 +4223,34 @@ class TestQgsGeometry(unittest.TestCase):
             self.assertTrue(compareWkt(result, exp, 0.00001),
                             "clipped: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testHausdorff(self):
+        tests = [["POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))", "POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))", 0.707106781186548],
+                 ["LINESTRING (0 0, 2 1)", "LINESTRING (0 0, 2 0)", 1],
+                 ["LINESTRING (0 0, 2 0)", "LINESTRING (0 1, 1 2, 2 1)", 2],
+                 ["LINESTRING (0 0, 2 0)", "MULTIPOINT (0 1, 1 0, 2 1)", 1],
+                 ["LINESTRING (130 0, 0 0, 0 150)", "LINESTRING (10 10, 10 150, 130 10)", 14.142135623730951]
+                 ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            g2 = QgsGeometry.fromWkt(t[1])
+            o = g1.hausdorffDistance(g2)
+            exp = t[2]
+            self.assertAlmostEqual(o, exp, 5,
+                                   "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
+
+    def testHausdorffDensify(self):
+        tests = [
+            ["LINESTRING (130 0, 0 0, 0 150)", "LINESTRING (10 10, 10 150, 130 10)", 0.5, 70.0]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            g2 = QgsGeometry.fromWkt(t[1])
+            densify = t[2]
+            o = g1.hausdorffDistanceDensify(g2, densify)
+            exp = t[3]
+            self.assertAlmostEqual(o, exp, 5,
+                                   "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
+
 
 if __name__ == '__main__':
     unittest.main()

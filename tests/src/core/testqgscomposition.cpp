@@ -37,7 +37,6 @@
 
 #include <QObject>
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 class TestQgsComposition : public QObject
 {

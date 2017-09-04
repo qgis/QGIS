@@ -20,7 +20,6 @@
 
 #include "qgsstatisticalsummary.h"
 #include "qgis.h"
-#include "qgstestutils.h"
 
 class TestQgsStatisticSummary: public QObject
 {

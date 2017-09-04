@@ -199,6 +199,57 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertTrue(vl.dataProvider().defaultValue(5).secsTo(QTime.currentTime()) < 1)
         self.assertTrue(vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()) < 1)
 
+    def testSubsetStringFids(self):
+        """ tests that feature ids are stable even if a subset string is set """
+
+        tmpfile = os.path.join(self.basetestpath, 'subsetStringFids.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('type', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('value', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(0)
+        f.SetField(0, 1)
+        f.SetField(1, 11)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(1)
+        f.SetField(0, 1)
+        f.SetField(1, 12)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(2)
+        f.SetField(0, 1)
+        f.SetField(1, 13)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(3)
+        f.SetField(0, 2)
+        f.SetField(1, 14)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(4)
+        f.SetField(0, 2)
+        f.SetField(1, 15)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(5)
+        f.SetField(0, 2)
+        f.SetField(1, 16)
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile + "|subset=type=2", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        req = QgsFeatureRequest()
+        req.setFilterExpression("value=16")
+        it = vl.getFeatures(req)
+        f = QgsFeature()
+        self.assertTrue(it.nextFeature(f))
+        self.assertTrue(f.id() == 5)
+
 
 if __name__ == '__main__':
     unittest.main()

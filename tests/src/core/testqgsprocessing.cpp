@@ -25,7 +25,6 @@
 #include <QtTest/QSignalSpy>
 #include "qgis.h"
 #include "qgstest.h"
-#include "qgstestutils.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 #include "qgspoint.h"
