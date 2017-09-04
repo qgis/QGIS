@@ -8636,6 +8636,10 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
         <source>v.surf.rst.cvdev - Spatial approximation and topographic analysis using regularized spline with tension.</source>
         <translation>v.surf.rst.cvdev - Räumliche Approximation und topographische Analyse mit einer regularisierten Spline-Funktion mit Spannung.</translation>
     </message>
+    <message>
+        <source>v.voronoi.skeleton - Extract skeletons for input areas.</source>
+        <translation>v.voronoi.skeleton - Skelette aus den Eingabebereichen extrahieren.</translation>
+    </message>
 </context>
 <context>
     <name>GrassAlgorithmProvider</name>
@@ -12579,7 +12583,7 @@ Mehr Informationen.im Protokoll.</translation>
     <name>OTBAlgorithmProvider</name>
     <message>
         <source>Problem with OTB installation: OTB was not found or is not correctly installed</source>
-        <translation>Problem mit OTB-Installation: OTB wurde nicht gefunden oder ist nicht richtig installiert</translation>
+        <translation type="obsolete">Problem mit OTB-Installation: OTB wurde nicht gefunden oder ist nicht richtig installiert</translation>
     </message>
     <message>
         <source>Problem with OTB installation: installed OTB version (%s) is not supported</source>
@@ -15622,7 +15626,7 @@ Nur %1 von %2 Objekten geschrieben.</translation>
     </message>
     <message>
         <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D. Shapefiles with measure values are not supported, nor are MULTIPATCH files.</source>
-        <translation>Typ der Shapedatei ändern. Kann NULL für eine einfache DBF-Datei ohne .shp-Datei sein, POINT, ARC, POLYGON oder MULTIPOINT für 2D oder POINTZ, ARCZ, POLYGONZ oder MULTIPOINTZ für 3D.  Shapedateien mit Maßwerten oder MULTIPATCH-Dateien werden nicht unterstützt.</translation>
+        <translation type="obsolete">Typ der Shapedatei ändern. Kann NULL für eine einfache DBF-Datei ohne .shp-Datei sein, POINT, ARC, POLYGON oder MULTIPOINT für 2D oder POINTZ, ARCZ, POLYGONZ oder MULTIPOINTZ für 3D.  Shapedateien mit Maßwerten oder MULTIPATCH-Dateien werden nicht unterstützt.</translation>
     </message>
     <message>
         <source>set the encoding value in the DBF file. The default value is LDID/87. It is not clear what other values may be appropriate.</source>
@@ -15938,11 +15942,11 @@ Nur %1 von %2 Objekten geschrieben.</translation>
     </message>
     <message>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation>Wenn es sich um eine SpatiaLite-Datenbank handelt und OGR gegen libspatialite gelinkt ist, kann diese Option verwendet werden, um zu steuern ob ein räumlicher Index erzeugt werden muß.</translation>
+        <translation type="obsolete">Wenn es sich um eine SpatiaLite-Datenbank handelt und OGR gegen libspatialite gelinkt ist, kann diese Option verwendet werden, um zu steuern ob ein räumlicher Index erzeugt werden muß.</translation>
     </message>
     <message>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
-        <translation>Wenn das Geometrieformat SpatiaLite ist, kann diese Option verwendet werden, um das Kompressionsformat für Geometrien (LINESTRINGs, POLYGONe) zu steuern</translation>
+        <translation type="obsolete">Wenn das Geometrieformat SpatiaLite ist, kann diese Option verwendet werden, um das Kompressionsformat für Geometrien (LINESTRINGs, POLYGONe) zu steuern</translation>
     </message>
     <message>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
@@ -19003,6 +19007,54 @@ Fehler: %2</translation>
     <message>
         <source>Layer %2 of %1 exists and overwrite flag is false.</source>
         <translation>Layer %2 von %1 bereits vorhanden und Überschreiben nicht aktiv.</translation>
+    </message>
+    <message>
+        <source>Override the type of shapefile created. Can be one of NULL for a simple .dbf file with no .shp file, POINT, ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or MULTIPOINTZ for 3D;</source>
+        <translation>Typ der Shapedatei ändern. Kann NULL für eine einfache DBF-Datei ohne .shp-Datei sein, POINT, ARC, POLYGON oder MULTIPOINT für 2D oder POINTZ, ARCZ, POLYGONZ oder MULTIPOINTZ für 3D;</translation>
+    </message>
+    <message>
+        <source> Shapefiles with measure values are not supported, nor are MULTIPATCH files.</source>
+        <translation> Shapedateien mit Maßwerten oder MULTIPATCH-Dateien werden nicht unterstützt.</translation>
+    </message>
+    <message>
+        <source> POINTM, ARCM, POLYGONM or MULTIPOINTM for measured geometries and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured geometries.</source>
+        <translation> POINTM, ARCM, POLYGONM oder MULTIPOINTM für gemessene Geometrien und POINTZM, ARCZM, POLYGONZM oder MULTIPOINTZM für 3D gemessene Geometrien.</translation>
+    </message>
+    <message>
+        <source> MULTIPATCH files are supported since GDAL 2.2.</source>
+        <translation> MULTIPATCH-Dateien werden seit GDAL 2.2 unterstützt.</translation>
+    </message>
+    <message>
+        <source>The DOCUMENT_ID datasource creation option can be used to specified the id of the root &lt;Document&gt; node. The default value is root_doc.</source>
+        <translation>Die Datenquellenerzeugungsoption DOCUMENT_ID kann verwendet werden um den Wurzelknoten des &lt;Document&gt;s anzugeben. Der Vorgabewert ist root_doc.</translation>
+    </message>
+    <message>
+        <source>(multiples of 512): Block size for .map files. Defaults to 512. MapInfo 15.2 and above creates .tab files with a blocksize of 16384 bytes. Any MapInfo version should be able to handle block sizes from 512 to 32256.</source>
+        <translation>(Mehrfaches von 512):  Blockgröße für Map-Dateien (Vorgabe 512). MapInfo 15.2 und höher erzeugt Tab-Dateien mit einer Blockgröße von 16384 Bytes. Jede MapInfo-Version sollte in der Lage sein Blockgrößen zwischen 512 und 32256 zu verarbeiten.</translation>
+    </message>
+    <message>
+        <source>xmin,ymin,xmax,ymax: Define custom layer bounds to increase the accuracy of the coordinates. Note: the geometry of written features must be within the defined box.</source>
+        <translation>xmin,ymin,xmax,ymax: Layergrenzen festlegen umd die Genauigkeit der Koordinaten zu erhöhen.  Hinweis: Die Geometrie der geschriebenen Objekt muß innerhalb des definierten Rahmens liegen.</translation>
+    </message>
+    <message>
+        <source>If the database is of the SpatiaLite flavor, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
+        <translation>Wenn es sich um eine SpatiaLite-Datenbank handelt und OGR gegen libspatialite gelinkt ist, kann diese Option verwendet werden, um zu steuern ob ein räumlicher Index erzeugt werden muß.</translation>
+    </message>
+    <message>
+        <source>If the format of the geometry BLOB is of the SpatiaLite flavor, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
+        <translation>Wenn das Geometrieformat SpatiaLite ist, kann diese Option verwendet werden, um das Kompressionsformat für Geometrien (LINESTRINGs, POLYGONe) zu steuern</translation>
+    </message>
+    <message>
+        <source>defines the feature to be created. The TYPE corresponds to one of the Name found in the GCT file for a type section. The SUBTYPE corresponds to one of the Name found in the GCT file for a sub-type section within the previous type section.</source>
+        <translation>Definiert das zu erzeugende Objekt. Der TYPE korrespondiert mit einem der in der GCT zu findenden Namen für einen Typabschnitt.  Der SUBTYPE korrespondiert mit einem der Namen eines Untertypabschnitts dieses Typabschnitts.</translation>
+    </message>
+    <message>
+        <source>By default, the driver will read the first lines of each sheet to detect if the first line might be the name of columns. If set to FORCE, the driver will consider the first default</source>
+        <translation type="obsolete">Gemäß Vorgabe ließ der Treiber die ersten Zeilen der Tabelle, um festzustellen, ob es sich um Spaltennamen handelt.  Wenn FORCE gesetzt ist, betrachte der Treiber die erste Vorgabe.</translation>
+    </message>
+    <message>
+        <source>By default, the driver will read the first lines of each sheet to detect if the first line might be the name of columns. If set to FORCE, the driver will consider the first line will be taken as the header line. If set to DISABLE, it will be considered as the first feature. Otherwise auto-detection will occur.</source>
+        <translation>Gemäß Vorgabe liest der Treiber die ersten Zeilen der Tabelle, um festzustellen, ob es sich um Spaltennamen handelt.  Wenn FORCE gesetzt ist, betrachtet der Treiber die erste immer als Kopfzeile.  Wenn DISABLE gesetzt ist, wird sie immer als erstes Objekt betrachtet.  Ansonsten erfolgt eine automatische Erkennung.</translation>
     </message>
 </context>
 <context>
@@ -24940,6 +24992,13 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <source>Representation for unchecked state</source>
         <translation>Wert für nicht angehaktes Kästchen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsClipboard</name>
+    <message>
+        <source>Datum transformation for copied features</source>
+        <translation>Datum transformation für kopierte Objekte</translation>
     </message>
 </context>
 <context>
@@ -34101,6 +34160,10 @@ Parser-Fehler:
     <message>
         <source>CRS</source>
         <translation>KBS</translation>
+    </message>
+    <message>
+        <source>Force 2d output (eg. to support polyline width)</source>
+        <translation>2D-Ausgabe erzwingen (z.B. um Polylinienbreiten zu unterstützen)</translation>
     </message>
 </context>
 <context>
@@ -65778,6 +65841,14 @@ Fehler war:%2</translation>
         <translation>
 Datenanbieterfehler:</translation>
     </message>
+    <message numerus="yes">
+        <source>ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.</source>
+        <comment>not added features count</comment>
+        <translation>
+            <numerusform>FEHLER: Ein Objekt nicht hinzugefügt - Geometrietyp paßt nicht zum aktuellen Layer.</numerusform>
+            <numerusform>FEHLER: %n Objekte nicht hinzugefügt - Geometrietyp paßt nicht zum aktuellen Layer.</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerProperties</name>
@@ -69563,7 +69634,11 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml *.QML)</source>
-        <translation>QGIS Layerstildatei (*.qml *.QML)</translation>
+        <translation type="obsolete">QGIS Layerstildatei (*.qml *.QML)</translation>
+    </message>
+    <message>
+        <source>QGIS Layer Style File (*.qml *.QML);;</source>
+        <translation>QGIS-Layerstildatei (*.qml *.QML);;</translation>
     </message>
 </context>
 <context>
@@ -69843,1047 +69918,1047 @@ Maximalzahl der Versuche überschritten.</translation>
     <name>SAGAAlgorithm</name>
     <message>
         <source>Slope Length</source>
-        <translation>Hanglänge</translation>
+        <translation type="obsolete">Hanglänge</translation>
     </message>
     <message>
         <source>Shapes Buffer (Attribute distance)|Shapes Buffer</source>
-        <translation>Shapepuffer (Attributabstand)|Shapepuffer</translation>
+        <translation type="obsolete">Shapepuffer (Attributabstand)|Shapepuffer</translation>
     </message>
     <message>
         <source>Representativeness|Representativeness (Grid)</source>
-        <translation>Repräsentativität|Repräsentativität (Raster)</translation>
+        <translation type="obsolete">Repräsentativität|Repräsentativität (Raster)</translation>
     </message>
     <message>
         <source>Gaussian Filter</source>
-        <translation>Gauss&apos;scher Filter</translation>
+        <translation type="obsolete">Gauss&apos;scher Filter</translation>
     </message>
     <message>
         <source>Flow Accumulation (Top-Down)</source>
-        <translation>Flußdichte (Oben-Unten)</translation>
+        <translation type="obsolete">Flußdichte (Oben-Unten)</translation>
     </message>
     <message>
         <source>Convex Hull</source>
-        <translation>Konvexe Hülle</translation>
+        <translation type="obsolete">Konvexe Hülle</translation>
     </message>
     <message>
         <source>Flow Accumulation (Recursive)</source>
-        <translation>Flußdichte (Rekursiv)</translation>
+        <translation type="obsolete">Flußdichte (Rekursiv)</translation>
     </message>
     <message>
         <source>Polygon Centroids</source>
-        <translation>Polygonschwerpunkt</translation>
+        <translation type="obsolete">Polygonschwerpunkt</translation>
     </message>
     <message>
         <source>Flow Accumulation (Flow Tracing)</source>
-        <translation>Flußdichte (Flußverfolgung)</translation>
+        <translation type="obsolete">Flußdichte (Flußverfolgung)</translation>
     </message>
     <message>
         <source>Point Statistics for Polygons</source>
-        <translation>Polygon-Punktstatistik</translation>
+        <translation type="obsolete">Polygon-Punktstatistik</translation>
     </message>
     <message>
         <source>Grid Values to Points (randomly)</source>
-        <translation>Gitterwerte zu Punkten (zufällig)</translation>
+        <translation type="obsolete">Gitterwerte zu Punkten (zufällig)</translation>
     </message>
     <message>
         <source>Clip Points with Polygons</source>
-        <translation>Punkte auf Polygon zuschneiden</translation>
+        <translation type="obsolete">Punkte auf Polygon zuschneiden</translation>
     </message>
     <message>
         <source>Gradient Vectors from Direction and Length</source>
-        <translation>Gradientenvektor aus Richtung und Länge</translation>
+        <translation type="obsolete">Gradientenvektor aus Richtung und Länge</translation>
     </message>
     <message>
         <source>Grid Statistics for Polygons</source>
-        <translation>Gitterstatistik für Polygone</translation>
+        <translation type="obsolete">Gitterstatistik für Polygone</translation>
     </message>
     <message>
         <source>Layer of extreme value</source>
-        <translation>Extrema-Layer</translation>
+        <translation type="obsolete">Extrema-Layer</translation>
     </message>
     <message>
         <source>Create Graticule</source>
-        <translation>Gradnetz erzeugen</translation>
+        <translation type="obsolete">Gradnetz erzeugen</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation>Differenz</translation>
+        <translation type="obsolete">Differenz</translation>
     </message>
     <message>
         <source>Clip Grid with Polygon</source>
-        <translation>Punkte auf Polygon zuschneiden</translation>
+        <translation type="obsolete">Punkte auf Polygon zuschneiden</translation>
     </message>
     <message>
         <source>Crop to Data</source>
-        <translation>Auf Daten zuschneiden</translation>
+        <translation type="obsolete">Auf Daten zuschneiden</translation>
     </message>
     <message>
         <source>Close Gaps</source>
-        <translation>Lücken schließen</translation>
+        <translation type="obsolete">Lücken schließen</translation>
     </message>
     <message>
         <source>Polygon Clipping</source>
-        <translation>Polygonclipping</translation>
+        <translation type="obsolete">Polygonclipping</translation>
     </message>
     <message>
         <source>Multiresolution Index of Valley Bottom Flatness (MRVBF)</source>
-        <translation>Mehrauflösung-Talbodenebenheitsindex (MRVBF)</translation>
+        <translation type="obsolete">Mehrauflösung-Talbodenebenheitsindex (MRVBF)</translation>
     </message>
     <message>
         <source>Flatten Polygon Layer</source>
-        <translation>Polygonlayer glätten</translation>
+        <translation type="obsolete">Polygonlayer glätten</translation>
     </message>
     <message>
         <source>Shared Polygon Edges</source>
-        <translation>Gemeinsame Polygonkanten</translation>
+        <translation type="obsolete">Gemeinsame Polygonkanten</translation>
     </message>
     <message>
         <source>Add Point Attributes to Polygons</source>
-        <translation>Punktattribute zu Polygonen hinzufügen</translation>
+        <translation type="obsolete">Punktattribute zu Polygonen hinzufügen</translation>
     </message>
     <message>
         <source>Polygon Self-Intersection</source>
-        <translation>Polygonselbstüberschneidungen</translation>
+        <translation type="obsolete">Polygonselbstüberschneidungen</translation>
     </message>
     <message>
         <source>Gradient Vectors from Surface</source>
-        <translation>Gradientenvektor aus Oberfläche</translation>
+        <translation type="obsolete">Gradientenvektor aus Oberfläche</translation>
     </message>
     <message>
         <source>GWR for Multiple Predictor Grids</source>
-        <translation>GWR für mehrere Vorsagegitter</translation>
+        <translation type="obsolete">GWR für mehrere Vorsagegitter</translation>
     </message>
     <message>
         <source>Multiple Regression Analysis (Points/Grids)</source>
-        <translation>Mehrfach-Regressionsanalyse (Punkt/Raster)</translation>
+        <translation type="obsolete">Mehrfach-Regressionsanalyse (Punkt/Raster)</translation>
     </message>
     <message>
         <source>Hypsometry</source>
-        <translation>Hypsometrie</translation>
+        <translation type="obsolete">Hypsometrie</translation>
     </message>
     <message>
         <source>Aggregation Index</source>
-        <translation>Aggregationsindex</translation>
+        <translation type="obsolete">Aggregationsindex</translation>
     </message>
     <message>
         <source>Identity</source>
-        <translation>Identität</translation>
+        <translation type="obsolete">Identität</translation>
     </message>
     <message>
         <source>LS Factor</source>
-        <translation>LS-Faktor</translation>
+        <translation type="obsolete">LS-Faktor</translation>
     </message>
     <message>
         <source>DTM Filter (slope-based)</source>
-        <translation>DTM-Filter (Hangbasiert)</translation>
+        <translation type="obsolete">DTM-Filter (Hangbasiert)</translation>
     </message>
     <message>
         <source>Effective Air Flow Heights</source>
-        <translation>Effektive Luftflußhöhen</translation>
+        <translation type="obsolete">Effektive Luftflußhöhen</translation>
     </message>
     <message>
         <source>Add Grid Values to Points</source>
-        <translation>Gitterwerte zu Punkten</translation>
+        <translation type="obsolete">Gitterwerte zu Punkten</translation>
     </message>
     <message>
         <source>Kernel Density Estimation</source>
-        <translation>Kerndichtenschätzung</translation>
+        <translation type="obsolete">Kerndichtenschätzung</translation>
     </message>
     <message>
         <source>Grid Cell Index</source>
-        <translation>Gitterzellenindex</translation>
+        <translation type="obsolete">Gitterzellenindex</translation>
     </message>
     <message>
         <source>Mass Balance Index</source>
-        <translation>Gleichgewichtsindex</translation>
+        <translation type="obsolete">Gleichgewichtsindex</translation>
     </message>
     <message>
         <source>Transform Shapes</source>
-        <translation>Shapes transformieren</translation>
+        <translation type="obsolete">Shapes transformieren</translation>
     </message>
     <message>
         <source>Regression analysis|Regression Analysis (Points/Grid)</source>
-        <translation>Regressionanalyse|Regressionsanalyse (Punkte/Raster)</translation>
+        <translation type="obsolete">Regressionanalyse|Regressionsanalyse (Punkte/Raster)</translation>
     </message>
     <message>
         <source>Polygon Properties</source>
-        <translation>Polygoneigenschaften</translation>
+        <translation type="obsolete">Polygoneigenschaften</translation>
     </message>
     <message>
         <source>Geographically Weighted Multiple Regression</source>
-        <translation>Geografischgewichtete Mehrfach-Regression</translation>
+        <translation type="obsolete">Geografischgewichtete Mehrfach-Regression</translation>
     </message>
     <message>
         <source>GWR for Multiple Predictors (Gridded Model Output)</source>
-        <translation>GWR für mehrere Vorsagegitter (Gerasterte Modellausgabe)</translation>
+        <translation type="obsolete">GWR für mehrere Vorsagegitter (Gerasterte Modellausgabe)</translation>
     </message>
     <message>
         <source>Directional Statistics for Single Grid</source>
-        <translation>Richtungsstatistik für Einzelraster</translation>
+        <translation type="obsolete">Richtungsstatistik für Einzelraster</translation>
     </message>
     <message>
         <source>Fill Sinks|Fill Sinks (Planchon/Darboux, 2001)</source>
-        <translation>Senken füllen|Senken füllen (Planchon/Darboux, 2001)</translation>
+        <translation type="obsolete">Senken füllen|Senken füllen (Planchon/Darboux, 2001)</translation>
     </message>
     <message>
         <source>Grids Product</source>
-        <translation>Rasterprodukte</translation>
+        <translation type="obsolete">Rasterprodukte</translation>
     </message>
     <message>
         <source>Fill Gaps in Records</source>
-        <translation>Datensatzlücken füllen</translation>
+        <translation type="obsolete">Datensatzlücken füllen</translation>
     </message>
     <message>
         <source>Topographic Correction</source>
-        <translation>Topographische Korrektur</translation>
+        <translation type="obsolete">Topographische Korrektur</translation>
     </message>
     <message>
         <source>Grid Buffer</source>
-        <translation>Gitterpuffer</translation>
+        <translation type="obsolete">Gitterpuffer</translation>
     </message>
     <message>
         <source>Catchment Area (Flow Tracing)</source>
-        <translation>Einzugsbereich (Flußverfolgung)</translation>
+        <translation type="obsolete">Einzugsbereich (Flußverfolgung)</translation>
     </message>
     <message>
         <source>User Defined Filter</source>
-        <translation>Benutzerdefinierter Filter</translation>
+        <translation type="obsolete">Benutzerdefinierter Filter</translation>
     </message>
     <message>
         <source>Watershed Segmentation</source>
-        <translation>Niederschlagssegmentierung</translation>
+        <translation type="obsolete">Niederschlagssegmentierung</translation>
     </message>
     <message>
         <source>Line Simplification</source>
-        <translation>Linienvereinfachung</translation>
+        <translation type="obsolete">Linienvereinfachung</translation>
     </message>
     <message>
         <source>Convergence Index (Search Radius)</source>
-        <translation>Konvergenzindex (Suchradius)</translation>
+        <translation type="obsolete">Konvergenzindex (Suchradius)</translation>
     </message>
     <message>
         <source>Topographic Wetness Index (TWI)</source>
-        <translation>Topographischer Niederschlagsindex (TWI)</translation>
+        <translation type="obsolete">Topographischer Niederschlagsindex (TWI)</translation>
     </message>
     <message>
         <source>Upslope Area|4</source>
-        <translation>Anstieg Areal4</translation>
+        <translation type="obsolete">Anstieg Areal4</translation>
     </message>
     <message>
         <source>Laplacian Filter</source>
-        <translation>Laplace-Filter</translation>
+        <translation type="obsolete">Laplace-Filter</translation>
     </message>
     <message>
         <source>Grid Proximity Buffer</source>
-        <translation>Gitterannährungspuffer</translation>
+        <translation type="obsolete">Gitterannährungspuffer</translation>
     </message>
     <message>
         <source>Aggregate Point Observations</source>
-        <translation>Punktbeobachtung sammeln</translation>
+        <translation type="obsolete">Punktbeobachtung sammeln</translation>
     </message>
     <message>
         <source>Transpose Grids</source>
-        <translation>Gitter transponieren</translation>
+        <translation type="obsolete">Gitter transponieren</translation>
     </message>
     <message>
         <source>Topographic Position Index (TPI)</source>
-        <translation>Topographische Position (TPI)</translation>
+        <translation type="obsolete">Topographische Position (TPI)</translation>
     </message>
     <message>
         <source>Grid Masking</source>
-        <translation>Gittermaskierung</translation>
+        <translation type="obsolete">Gittermaskierung</translation>
     </message>
     <message>
         <source>Channel Network and Drainage Basins</source>
-        <translation>Kanalnetzwerk und Drainagebecken</translation>
+        <translation type="obsolete">Kanalnetzwerk und Drainagebecken</translation>
     </message>
     <message>
         <source>Real Surface Area</source>
-        <translation>Echte Oberfläche</translation>
+        <translation type="obsolete">Echte Oberfläche</translation>
     </message>
     <message>
         <source>Threshold Buffer</source>
-        <translation>Schwellenpuffer</translation>
+        <translation type="obsolete">Schwellenpuffer</translation>
     </message>
     <message>
         <source>Add Grid Values to Shapes</source>
-        <translation>Gitterwerte zu Shapes hinzufügen</translation>
+        <translation type="obsolete">Gitterwerte zu Shapes hinzufügen</translation>
     </message>
     <message>
         <source>QuadTree Structure to Shapes</source>
-        <translation>Quad-Tree-Struktur zu Shapes</translation>
+        <translation type="obsolete">Quad-Tree-Struktur zu Shapes</translation>
     </message>
     <message>
         <source>Analytical Hillshading</source>
-        <translation>Analytische Schummerung</translation>
+        <translation type="obsolete">Analytische Schummerung</translation>
     </message>
     <message>
         <source>Surface Specific Points</source>
-        <translation>Oberflächen spezifische Punkte</translation>
+        <translation type="obsolete">Oberflächen spezifische Punkte</translation>
     </message>
     <message>
         <source>Transect through polygon shapefile</source>
-        <translation>Durch Polygonshapedateien schneiden</translation>
+        <translation type="obsolete">Durch Polygonshapedateien schneiden</translation>
     </message>
     <message>
         <source>Convert Lines to Polygons</source>
-        <translation>Linien in Polygone umwandeln</translation>
+        <translation type="obsolete">Linien in Polygone umwandeln</translation>
     </message>
     <message>
         <source>Local Minima and Maxima</source>
-        <translation>Lokale Minima und Maxima</translation>
+        <translation type="obsolete">Lokale Minima und Maxima</translation>
     </message>
     <message>
         <source>Accumulated Cost (Isotropic)</source>
-        <translation>Aufgelaufenen Kosten (isotropisch)</translation>
+        <translation type="obsolete">Aufgelaufenen Kosten (isotropisch)</translation>
     </message>
     <message>
         <source>Line Dissolve</source>
-        <translation>Linien auflösen</translation>
+        <translation type="obsolete">Linien auflösen</translation>
     </message>
     <message>
         <source>Resampling</source>
-        <translation>Abtastung</translation>
+        <translation type="obsolete">Abtastung</translation>
     </message>
     <message>
         <source>Fuzzy Union (OR)</source>
-        <translation>Fuzzy-Vereinigung (ODER)</translation>
+        <translation type="obsolete">Fuzzy-Vereinigung (ODER)</translation>
     </message>
     <message>
         <source>Natural Neighbour</source>
-        <translation>Natürlicher Nachbar</translation>
+        <translation type="obsolete">Natürlicher Nachbar</translation>
     </message>
     <message>
         <source>Convert Lines to Points</source>
-        <translation>Linien in Punkten umwandeln</translation>
+        <translation type="obsolete">Linien in Punkten umwandeln</translation>
     </message>
     <message>
         <source>Thin Plate Spline (Global)</source>
-        <translation>Thin Plate Spline (global)</translation>
+        <translation type="obsolete">Thin Plate Spline (global)</translation>
     </message>
     <message>
         <source>Polygon dissolve (by attribute)|Polygon Dissolve</source>
-        <translation>Polygon auflösen (nach Attribut)|Polygon auflösen</translation>
+        <translation type="obsolete">Polygon auflösen (nach Attribut)|Polygon auflösen</translation>
     </message>
     <message>
         <source>Stream Power Index</source>
-        <translation>Stromstärkeindex</translation>
+        <translation type="obsolete">Stromstärkeindex</translation>
     </message>
     <message>
         <source>Global Moran&apos;s I for Grids</source>
-        <translation>Global Moran I für Raster</translation>
+        <translation type="obsolete">Global Moran I für Raster</translation>
     </message>
     <message>
         <source>Polynomial Regression</source>
-        <translation>Polynominalregression</translation>
+        <translation type="obsolete">Polynominalregression</translation>
     </message>
     <message>
         <source>Multiple Regression Analysis (Grid/Grids)</source>
-        <translation>Mehrfach-Regressionsanalyse (Gitter)</translation>
+        <translation type="obsolete">Mehrfach-Regressionsanalyse (Gitter)</translation>
     </message>
     <message>
         <source>Nearest Neighbour</source>
-        <translation>Nächster Nachbar</translation>
+        <translation type="obsolete">Nächster Nachbar</translation>
     </message>
     <message>
         <source>Water Retention Capacity</source>
-        <translation>Bodenwasserspannungskapazität</translation>
+        <translation type="obsolete">Bodenwasserspannungskapazität</translation>
     </message>
     <message>
         <source>Gradient Vectors from Directional Components</source>
-        <translation>Gradientenvektoren aus gerichteten Komponenten</translation>
+        <translation type="obsolete">Gradientenvektoren aus gerichteten Komponenten</translation>
     </message>
     <message>
         <source>Majority Filter</source>
-        <translation>Mehrheitsfilter</translation>
+        <translation type="obsolete">Mehrheitsfilter</translation>
     </message>
     <message>
         <source>Flow Path Length</source>
-        <translation>Fließweglänge</translation>
+        <translation type="obsolete">Fließweglänge</translation>
     </message>
     <message>
         <source>Simple Region Growing</source>
-        <translation>Einfaches Region-Growing</translation>
+        <translation type="obsolete">Einfaches Region-Growing</translation>
     </message>
     <message>
         <source>Simulation</source>
-        <translation>Simulation</translation>
+        <translation type="obsolete">Simulation</translation>
     </message>
     <message>
         <source>Get Shapes Extents</source>
-        <translation>Shapeausmaße bestimmen</translation>
+        <translation type="obsolete">Shapeausmaße bestimmen</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation>Vereinigungen</translation>
+        <translation type="obsolete">Vereinigungen</translation>
     </message>
     <message>
         <source>Fill Sinks XXL (Wang &amp; Liu)</source>
-        <translation>Senken füllen XXL (Wang &amp; Liu)</translation>
+        <translation type="obsolete">Senken füllen XXL (Wang &amp; Liu)</translation>
     </message>
     <message>
         <source>B-Spline Approximation</source>
-        <translation>B-Spline-Approximation</translation>
+        <translation type="obsolete">B-Spline-Approximation</translation>
     </message>
     <message>
         <source>Polygon Parts to Separate Polygons</source>
-        <translation>Polygonteile in Einzelpolygone umwandeln</translation>
+        <translation type="obsolete">Polygonteile in Einzelpolygone umwandeln</translation>
     </message>
     <message>
         <source>Points Thinning</source>
-        <translation>Punkte ausdünnen</translation>
+        <translation type="obsolete">Punkte ausdünnen</translation>
     </message>
     <message>
         <source>Change Date Format</source>
-        <translation>Datumsformat ändern</translation>
+        <translation type="obsolete">Datumsformat ändern</translation>
     </message>
     <message>
         <source>Gradient Vector from Cartesian to Polar Coordinates</source>
-        <translation>Gradientenvektor aus kartesischen in Polar-Koordinaten</translation>
+        <translation type="obsolete">Gradientenvektor aus kartesischen in Polar-Koordinaten</translation>
     </message>
     <message>
         <source>Fragmentation Classes from Density and Connectivity</source>
-        <translation>Fragmentierungsklassen aus Dichte und Verbindungen</translation>
+        <translation type="obsolete">Fragmentierungsklassen aus Dichte und Verbindungen</translation>
     </message>
     <message>
         <source>Ordinary Kriging</source>
-        <translation>Normales Krigen</translation>
+        <translation type="obsolete">Normales Krigen</translation>
     </message>
     <message>
         <source>Grid Volume</source>
-        <translation>Rastervolumen</translation>
+        <translation type="obsolete">Rastervolumen</translation>
     </message>
     <message>
         <source>Patching</source>
-        <translation>Zusammenflicken</translation>
+        <translation type="obsolete">Zusammenflicken</translation>
     </message>
     <message>
         <source>Ordered Weighted Averaging|Ordered Weighted Averaging (OWA)</source>
-        <translation>Sortiertes gewichtetes Mitteln|Sortiertes gewichtetes Mitteln (OWA)</translation>
+        <translation type="obsolete">Sortiertes gewichtetes Mitteln|Sortiertes gewichtetes Mitteln (OWA)</translation>
     </message>
     <message>
         <source>Thin Plate Spline (TIN)</source>
-        <translation>Thin-Plate-Spline (TIN)</translation>
+        <translation type="obsolete">Thin-Plate-Spline (TIN)</translation>
     </message>
     <message>
         <source>SAGA Wetness Index</source>
-        <translation>SAGA Feuchtigkeitsindex</translation>
+        <translation type="obsolete">SAGA Feuchtigkeitsindex</translation>
     </message>
     <message>
         <source>Histogram Surface</source>
-        <translation>Histogramm-Oberfläche</translation>
+        <translation type="obsolete">Histogramm-Oberfläche</translation>
     </message>
     <message>
         <source>Merge Layers</source>
-        <translation>Layer zusammenführen</translation>
+        <translation type="obsolete">Layer zusammenführen</translation>
     </message>
     <message>
         <source>Grid Skeletonization</source>
-        <translation>Rasterskelettierung</translation>
+        <translation type="obsolete">Rasterskelettierung</translation>
     </message>
     <message>
         <source>Catchment Area|Catchment Area (Parallel)</source>
-        <translation>Einzugsgebiet|Einzugsgebiet (Parallel)</translation>
+        <translation type="obsolete">Einzugsgebiet|Einzugsgebiet (Parallel)</translation>
     </message>
     <message>
         <source>Geometric Figures</source>
-        <translation>Geometrische Figuren</translation>
+        <translation type="obsolete">Geometrische Figuren</translation>
     </message>
     <message>
         <source>Spatial Point Pattern Analysis</source>
-        <translation>Räumliche Punktmusteranalyse</translation>
+        <translation type="obsolete">Räumliche Punktmusteranalyse</translation>
     </message>
     <message>
         <source>Update</source>
-        <translation>Aktualisieren</translation>
+        <translation type="obsolete">Aktualisieren</translation>
     </message>
     <message>
         <source>Sink Removal</source>
-        <translation>Ablauf entfernen</translation>
+        <translation type="obsolete">Ablauf entfernen</translation>
     </message>
     <message>
         <source>Convert Points to Line(s)</source>
-        <translation>Punkte in Linien umwandeln</translation>
+        <translation type="obsolete">Punkte in Linien umwandeln</translation>
     </message>
     <message>
         <source>Change Grid Values</source>
-        <translation>Gitterwert ändern</translation>
+        <translation type="obsolete">Gitterwert ändern</translation>
     </message>
     <message>
         <source>Line Properties</source>
-        <translation>Linieneigenschaften</translation>
+        <translation type="obsolete">Linieneigenschaften</translation>
     </message>
     <message>
         <source>Convert Multipoints to Points</source>
-        <translation>Multipunkt zu Punkt umwandeln</translation>
+        <translation type="obsolete">Multipunkt zu Punkt umwandeln</translation>
     </message>
     <message>
         <source>Cell Balance</source>
-        <translation>Zellengleichgewicht</translation>
+        <translation type="obsolete">Zellengleichgewicht</translation>
     </message>
     <message>
         <source>Fill Sinks (Wang &amp; Liu)</source>
-        <translation>Senken füllen (Wang &amp; Liu)</translation>
+        <translation type="obsolete">Senken füllen (Wang &amp; Liu)</translation>
     </message>
     <message>
         <source>Convert Data Storage Type</source>
-        <translation>Datenspeichertyp umwandeln</translation>
+        <translation type="obsolete">Datenspeichertyp umwandeln</translation>
     </message>
     <message>
         <source>Rank Filter</source>
-        <translation>Rangfilter</translation>
+        <translation type="obsolete">Rangfilter</translation>
     </message>
     <message>
         <source>Change Detection</source>
-        <translation>Erkennung ändern</translation>
+        <translation type="obsolete">Erkennung ändern</translation>
     </message>
     <message>
         <source>Strahler Order</source>
-        <translation>Strahler-Reihenfolge</translation>
+        <translation type="obsolete">Strahler-Reihenfolge</translation>
     </message>
     <message>
         <source>Inverse Distance Weighted</source>
-        <translation>gewichtete inverse Distanz (IDW)</translation>
+        <translation type="obsolete">gewichtete inverse Distanz (IDW)</translation>
     </message>
     <message>
         <source>Multilevel B-Spline Interpolation (from Grid)</source>
-        <translation>Mehrstufen-B-Spline-Interpolation (aus Gitter)</translation>
+        <translation type="obsolete">Mehrstufen-B-Spline-Interpolation (aus Gitter)</translation>
     </message>
     <message>
         <source>Geographically Weighted Multiple Regression (Points/Grids)</source>
-        <translation>Geografischgewichtete Mehrfach-Regression (Punkt/Gitter)</translation>
+        <translation type="obsolete">Geografischgewichtete Mehrfach-Regression (Punkt/Gitter)</translation>
     </message>
     <message>
         <source>Fast Region Growing Algorithm</source>
-        <translation>Schneller Regionswachstumalgorithmus</translation>
+        <translation type="obsolete">Schneller Regionswachstumalgorithmus</translation>
     </message>
     <message>
         <source>Terrain Ruggedness Index (TRI)</source>
-        <translation>Oberflächenrauhigkeit (TRI)</translation>
+        <translation type="obsolete">Oberflächenrauhigkeit (TRI)</translation>
     </message>
     <message>
         <source>GWR for Single Predictor Grid</source>
-        <translation>GWR für einzelnes Vorsagegitter</translation>
+        <translation type="obsolete">GWR für einzelnes Vorsagegitter</translation>
     </message>
     <message>
         <source>Points Filter</source>
-        <translation>Punktfilter</translation>
+        <translation type="obsolete">Punktfilter</translation>
     </message>
     <message>
         <source>Radius of Variance (Grid)</source>
-        <translation>Radius der Varianz (Gitter)</translation>
+        <translation type="obsolete">Radius der Varianz (Gitter)</translation>
     </message>
     <message>
         <source>Geographically Weighted Multiple Regression (Points)</source>
-        <translation>Geografischgewichtete Mehrfach-Regression (Punkte)</translation>
+        <translation type="obsolete">Geografischgewichtete Mehrfach-Regression (Punkte)</translation>
     </message>
     <message>
         <source>Sink Drainage Route Detection</source>
-        <translation>Ablaufdrainageweg bestimmen</translation>
+        <translation type="obsolete">Ablaufdrainageweg bestimmen</translation>
     </message>
     <message>
         <source>GWR for Single Predictor (Gridded Model Output)</source>
-        <translation>GWR für einzelnes Vorsagegitter (Gerasterte Modellausgabe)</translation>
+        <translation type="obsolete">GWR für einzelnes Vorsagegitter (Gerasterte Modellausgabe)</translation>
     </message>
     <message>
         <source>Cubic Spline Approximation</source>
-        <translation>Kubische Spline-Nährung</translation>
+        <translation type="obsolete">Kubische Spline-Nährung</translation>
     </message>
     <message>
         <source>Overland Flow Distance to Channel Network</source>
-        <translation>Überlandflußabstand zu Kanalnetzwerken</translation>
+        <translation type="obsolete">Überlandflußabstand zu Kanalnetzwerken</translation>
     </message>
     <message>
         <source>Shapes Buffer (Fixed distance)|Shapes Buffer</source>
-        <translation>Shapepuffer (fester Abstand)|Shapepuffer</translation>
+        <translation type="obsolete">Shapepuffer (fester Abstand)|Shapepuffer</translation>
     </message>
     <message>
         <source>Line-Polygon Intersection</source>
-        <translation>Linien-Polygon-Verschneidung</translation>
+        <translation type="obsolete">Linien-Polygon-Verschneidung</translation>
     </message>
     <message>
         <source>Accumulated Cost (Anisotropic)</source>
-        <translation>Aufgelaufenen Kosten (Anisotropisch)</translation>
+        <translation type="obsolete">Aufgelaufenen Kosten (Anisotropisch)</translation>
     </message>
     <message>
         <source>Fragmentation (Alternative)</source>
-        <translation>Fragmentierung (Alternative)</translation>
+        <translation type="obsolete">Fragmentierung (Alternative)</translation>
     </message>
     <message>
         <source>Principle Components Analysis</source>
-        <translation>Hauptkomponentenanalyse</translation>
+        <translation type="obsolete">Hauptkomponentenanalyse</translation>
     </message>
     <message>
         <source>Ordinary Kriging (Global)</source>
-        <translation>Normales Krigen (Global)</translation>
+        <translation type="obsolete">Normales Krigen (Global)</translation>
     </message>
     <message>
         <source>Multi-Band Variation</source>
-        <translation>Mehrkanalvariation</translation>
+        <translation type="obsolete">Mehrkanalvariation</translation>
     </message>
     <message>
         <source>Universal Kriging (Global)</source>
-        <translation>Universeles Krigen (Global)</translation>
+        <translation type="obsolete">Universeles Krigen (Global)</translation>
     </message>
     <message>
         <source>Analytical Hierarchy Process</source>
-        <translation>Analytischer Hierachieprozeß</translation>
+        <translation type="obsolete">Analytischer Hierachieprozeß</translation>
     </message>
     <message>
         <source>Diurnal Anisotropic Heating</source>
-        <translation>Anisotrope Erwärmung über Tag</translation>
+        <translation type="obsolete">Anisotrope Erwärmung über Tag</translation>
     </message>
     <message>
         <source>Variogram Surface</source>
-        <translation>Variogramm-Oberfläche</translation>
+        <translation type="obsolete">Variogramm-Oberfläche</translation>
     </message>
     <message>
         <source>Multi Direction Lee Filter</source>
-        <translation>Mehrrichtung-Lee-Filter</translation>
+        <translation type="obsolete">Mehrrichtung-Lee-Filter</translation>
     </message>
     <message>
         <source>Watershed Basins</source>
-        <translation>Einzugsgebietsbecken</translation>
+        <translation type="obsolete">Einzugsgebietsbecken</translation>
     </message>
     <message>
         <source>Supervised Classification</source>
-        <translation>Überwachte Klassifizierung</translation>
+        <translation type="obsolete">Überwachte Klassifizierung</translation>
     </message>
     <message>
         <source>Soil Texture Classification</source>
-        <translation>Bodentexturklassifizierung</translation>
+        <translation type="obsolete">Bodentexturklassifizierung</translation>
     </message>
     <message>
         <source>Vectorising Grid Classes</source>
-        <translation>Vektorisierende Gitter-Klassen</translation>
+        <translation type="obsolete">Vektorisierende Gitter-Klassen</translation>
     </message>
     <message>
         <source>Modified Quadratic Shepard</source>
-        <translation>Modifizierte quadratische Shepard-Methode</translation>
+        <translation type="obsolete">Modifizierte quadratische Shepard-Methode</translation>
     </message>
     <message>
         <source>Variogram Cloud</source>
-        <translation>Variogramm Wolke</translation>
+        <translation type="obsolete">Variogramm Wolke</translation>
     </message>
     <message>
         <source>Vectorising Raster Classes</source>
-        <translation>Vektorisierene Rasterklassen</translation>
+        <translation type="obsolete">Vektorisierene Rasterklassen</translation>
     </message>
     <message>
         <source>Morphometric Protection Index</source>
-        <translation>Morphometrischer Schutzindex</translation>
+        <translation type="obsolete">Morphometrischer Schutzindex</translation>
     </message>
     <message>
         <source>Universal Kriging</source>
-        <translation>Universeles Krigen</translation>
+        <translation type="obsolete">Universeles Krigen</translation>
     </message>
     <message>
         <source>Raster calculator|Grid Calculator</source>
-        <translation>Rasterrechner|Rasterrechner</translation>
+        <translation type="obsolete">Rasterrechner|Rasterrechner</translation>
     </message>
     <message>
         <source>Grid Orientation</source>
-        <translation>Gitterrichtung</translation>
+        <translation type="obsolete">Gitterrichtung</translation>
     </message>
     <message>
         <source>Convergence Index</source>
-        <translation>Konvergenzindex</translation>
+        <translation type="obsolete">Konvergenzindex</translation>
     </message>
     <message>
         <source>Shapes to Grid</source>
-        <translation>Shapes in Gitter</translation>
+        <translation type="obsolete">Shapes in Gitter</translation>
     </message>
     <message>
         <source>Land Surface Temperature</source>
-        <translation>Landoberflächentemperatur</translation>
+        <translation type="obsolete">Landoberflächentemperatur</translation>
     </message>
     <message>
         <source>Polygon dissolve (all polygons)|Polygon Dissolve</source>
-        <translation>Polygon auflösen (alle Polygone)|Polygon auflösen</translation>
+        <translation type="obsolete">Polygon auflösen (alle Polygone)|Polygon auflösen</translation>
     </message>
     <message>
         <source>Flow Width and Specific Catchment Area</source>
-        <translation>Flußbreite und spezifisches Einzugsgebiet</translation>
+        <translation type="obsolete">Flußbreite und spezifisches Einzugsgebiet</translation>
     </message>
     <message>
         <source>Random Terrain Generation</source>
-        <translation>Zufälliges Gelände erzeugen</translation>
+        <translation type="obsolete">Zufälliges Gelände erzeugen</translation>
     </message>
     <message>
         <source>Convert Polygons to Lines</source>
-        <translation>Polygon in Linien umwandeln</translation>
+        <translation type="obsolete">Polygon in Linien umwandeln</translation>
     </message>
     <message>
         <source>Fuzzy Intersection (AND)</source>
-        <translation>Fuzzy-Schnittmenge (UND)</translation>
+        <translation type="obsolete">Fuzzy-Schnittmenge (UND)</translation>
     </message>
     <message>
         <source>Polygon Shape Indices</source>
-        <translation>Polygonshapeindizes</translation>
+        <translation type="obsolete">Polygonshapeindizes</translation>
     </message>
     <message>
         <source>Cluster Analysis for Grids</source>
-        <translation>Häufungsanalyse für Gitter</translation>
+        <translation type="obsolete">Häufungsanalyse für Gitter</translation>
     </message>
     <message>
         <source>Burn Stream Network into DEM</source>
-        <translation>Stromnetzwerk in DEM brennen</translation>
+        <translation type="obsolete">Stromnetzwerk in DEM brennen</translation>
     </message>
     <message>
         <source>Relative Heights and Slope Positions</source>
-        <translation>Relative Höhen und Hangpositionen</translation>
+        <translation type="obsolete">Relative Höhen und Hangpositionen</translation>
     </message>
     <message>
         <source>Regression Kriging</source>
-        <translation>Regressionskrigen</translation>
+        <translation type="obsolete">Regressionskrigen</translation>
     </message>
     <message>
         <source>Simple Kriging</source>
-        <translation>Einfaches Krigen</translation>
+        <translation type="obsolete">Einfaches Krigen</translation>
     </message>
     <message>
         <source>Fuzzify</source>
-        <translation>Fuzzifizieren</translation>
+        <translation type="obsolete">Fuzzifizieren</translation>
     </message>
     <message>
         <source>Catchment Area (Recursive)</source>
-        <translation>Einzugsbereich (Rekursiv)</translation>
+        <translation type="obsolete">Einzugsbereich (Rekursiv)</translation>
     </message>
     <message>
         <source>Convert Polygon/Line Vertices to Points</source>
-        <translation>Polygon-/Linienstützpunkte in Punkte umwandeln</translation>
+        <translation type="obsolete">Polygon-/Linienstützpunkte in Punkte umwandeln</translation>
     </message>
     <message>
         <source>Least Cost Paths</source>
-        <translation>Pfad geringster Kosten</translation>
+        <translation type="obsolete">Pfad geringster Kosten</translation>
     </message>
     <message>
         <source>Split Shapes Layer Randomly</source>
-        <translation>Shapelayer zufällig aufteilen</translation>
+        <translation type="obsolete">Shapelayer zufällig aufteilen</translation>
     </message>
     <message>
         <source>Grid Standardisation</source>
-        <translation>Gitterstandardisierung</translation>
+        <translation type="obsolete">Gitterstandardisierung</translation>
     </message>
     <message>
         <source>Proximity Grid</source>
-        <translation>Näheraster</translation>
+        <translation type="obsolete">Näheraster</translation>
     </message>
     <message>
         <source>Contour Lines from Grid</source>
-        <translation>Umrandungslinien aus Raster</translation>
+        <translation type="obsolete">Umrandungslinien aus Raster</translation>
     </message>
     <message>
         <source>Fragmentation (Standard)</source>
-        <translation>Fragmentierung (Standard)</translation>
+        <translation type="obsolete">Fragmentierung (Standard)</translation>
     </message>
     <message>
         <source>Invert Data/No-Data</source>
-        <translation>Daten/Leerdaten invertieren</translation>
+        <translation type="obsolete">Daten/Leerdaten invertieren</translation>
     </message>
     <message>
         <source>Vegetation Index (Slope Based)</source>
-        <translation>Vegetationsindex (hangbasiert)</translation>
+        <translation type="obsolete">Vegetationsindex (hangbasiert)</translation>
     </message>
     <message>
         <source>Statistics for Grids</source>
-        <translation>Statistik für Gitter</translation>
+        <translation type="obsolete">Statistik für Gitter</translation>
     </message>
     <message>
         <source>Grids Sum</source>
-        <translation>Gittersumme</translation>
+        <translation type="obsolete">Gittersumme</translation>
     </message>
     <message>
         <source>Triangulation</source>
-        <translation>Triangulation</translation>
+        <translation type="obsolete">Triangulation</translation>
     </message>
     <message>
         <source>Grid Values to Points</source>
-        <translation>Gitterwerte in Punkte</translation>
+        <translation type="obsolete">Gitterwerte in Punkte</translation>
     </message>
     <message>
         <source>Add Coordinates to points</source>
-        <translation>Koordinaten zu Punkten hinzufügen</translation>
+        <translation type="obsolete">Koordinaten zu Punkten hinzufügen</translation>
     </message>
     <message>
         <source>Symmetrical Difference</source>
-        <translation>Symmetrische Differenz</translation>
+        <translation type="obsolete">Symmetrische Differenz</translation>
     </message>
     <message>
         <source>Flat Detection</source>
-        <translation>Flacherkennung</translation>
+        <translation type="obsolete">Flacherkennung</translation>
     </message>
     <message>
         <source>Aggregate</source>
-        <translation>Aggregieren</translation>
+        <translation type="obsolete">Aggregieren</translation>
     </message>
     <message>
         <source>Sky View Factor</source>
-        <translation>Himmelsichtfaktor</translation>
+        <translation type="obsolete">Himmelsichtfaktor</translation>
     </message>
     <message>
         <source>Grid Difference</source>
-        <translation>Gitterdifferenz</translation>
+        <translation type="obsolete">Gitterdifferenz</translation>
     </message>
     <message>
         <source>Vertical Distance to Channel Network</source>
-        <translation>Vertikale Distanz in Kanalnetzwerk</translation>
+        <translation type="obsolete">Vertikale Distanz in Kanalnetzwerk</translation>
     </message>
     <message>
         <source>Random Field</source>
-        <translation>Zufälliges Feld</translation>
+        <translation type="obsolete">Zufälliges Feld</translation>
     </message>
     <message>
         <source>Simple Filter</source>
-        <translation>Einfacher Filter</translation>
+        <translation type="obsolete">Einfacher Filter</translation>
     </message>
     <message>
         <source>Minimum Distance Analysis</source>
-        <translation>Minimumdistanzanalyse</translation>
+        <translation type="obsolete">Minimumdistanzanalyse</translation>
     </message>
     <message>
         <source>Shrink and Expand</source>
-        <translation>Verkleinern und Vergrößern</translation>
+        <translation type="obsolete">Verkleinern und Vergrößern</translation>
     </message>
     <message>
         <source>Cut Shapes Layer</source>
-        <translation>Shapelayer schneiden</translation>
+        <translation type="obsolete">Shapelayer schneiden</translation>
     </message>
     <message>
         <source>TPI Based Landform Classification</source>
-        <translation>TPI basierte Landformklassifikation</translation>
+        <translation type="obsolete">TPI basierte Landformklassifikation</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation>Schnittmengen</translation>
+        <translation type="obsolete">Schnittmengen</translation>
     </message>
     <message>
         <source>Profile from points table|Profile from points</source>
-        <translation>Profile aus Punkttabelle|Profil aus Punkten</translation>
+        <translation type="obsolete">Profile aus Punkttabelle|Profil aus Punkten</translation>
     </message>
     <message>
         <source>Downslope Distance Gradient</source>
-        <translation>Abwärtsabstandsgrendiente</translation>
+        <translation type="obsolete">Abwärtsabstandsgrendiente</translation>
     </message>
     <message>
         <source>Channel Network</source>
-        <translation>Kanalnetzwerk</translation>
+        <translation type="obsolete">Kanalnetzwerk</translation>
     </message>
     <message>
         <source>Pattern Analysis</source>
-        <translation>Musteranalyse</translation>
+        <translation type="obsolete">Musteranalyse</translation>
     </message>
     <message>
         <source>Fit N Points to shape</source>
-        <translation>N-Punkte in Shape einpassen</translation>
+        <translation type="obsolete">N-Punkte in Shape einpassen</translation>
     </message>
     <message>
         <source>Remove Duplicate Points</source>
-        <translation>Doppelte Punkte entfernen</translation>
+        <translation type="obsolete">Doppelte Punkte entfernen</translation>
     </message>
     <message>
         <source>Reclassify Grid Values</source>
-        <translation>Gitterwert neuklassifizieren</translation>
+        <translation type="obsolete">Gitterwert neuklassifizieren</translation>
     </message>
     <message>
         <source>Geographically Weighted Regression (Points/Grid)</source>
-        <translation>Geografischgewichtete Regression (Punkt/Gitter)</translation>
+        <translation type="obsolete">Geografischgewichtete Regression (Punkt/Gitter)</translation>
     </message>
     <message>
         <source>Close One Cell Gaps</source>
-        <translation>Einzellenlücken schließen</translation>
+        <translation type="obsolete">Einzellenlücken schließen</translation>
     </message>
     <message>
         <source>Slope, Aspect, Curvature</source>
-        <translation>Neigung, Exposition, Wölbung</translation>
+        <translation type="obsolete">Neigung, Exposition, Wölbung</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation>Funktion</translation>
+        <translation type="obsolete">Funktion</translation>
     </message>
     <message>
         <source>GWR for Multiple Predictors</source>
-        <translation>GWR für mehrere Vorhersagen</translation>
+        <translation type="obsolete">GWR für mehrere Vorhersagen</translation>
     </message>
     <message>
         <source>Wind effect|Wind Effect (Windward / Leeward Index)</source>
-        <translation>Windeffekt|Wind Effekt (Windwärts / Leeindex)</translation>
+        <translation type="obsolete">Windeffekt|Wind Effekt (Windwärts / Leeindex)</translation>
     </message>
     <message>
         <source>Close Gaps with Spline</source>
-        <translation>Lücken mit Spline schließen</translation>
+        <translation type="obsolete">Lücken mit Spline schließen</translation>
     </message>
     <message>
         <source>Fill Sinks (QM of ESP)</source>
-        <translation>Senken füllen (QM von ESP)</translation>
+        <translation type="obsolete">Senken füllen (QM von ESP)</translation>
     </message>
     <message>
         <source>Diversity of Categories</source>
-        <translation>Kategorienvielfalt</translation>
+        <translation type="obsolete">Kategorienvielfalt</translation>
     </message>
     <message>
         <source>Create Polygons Graticule|Create Graticule</source>
-        <translation>Gradnetz als Polygone erzeugen|Gradnetz erzeugen</translation>
+        <translation type="obsolete">Gradnetz als Polygone erzeugen|Gradnetz erzeugen</translation>
     </message>
     <message>
         <source>Change Time Format</source>
-        <translation>Zeitformat ändern</translation>
+        <translation type="obsolete">Zeitformat ändern</translation>
     </message>
     <message>
         <source>Confusion Matrix (Polygons / Grid)</source>
-        <translation>Wahrheitsmatrix (Polygone / Gitter)</translation>
+        <translation type="obsolete">Wahrheitsmatrix (Polygone / Gitter)</translation>
     </message>
     <message>
         <source>Successive Flow Routing</source>
-        <translation>Aufeinanderfolgende Flußlenkung</translation>
+        <translation type="obsolete">Aufeinanderfolgende Flußlenkung</translation>
     </message>
     <message>
         <source>Thin Plate Spline (Local)</source>
-        <translation>Thin Plate Spline (Lokal)</translation>
+        <translation type="obsolete">Thin Plate Spline (Lokal)</translation>
     </message>
     <message>
         <source>Multilevel B-Spline Interpolation for Categories</source>
-        <translation>Mehrstufen-B-Spline-Interpolation für Kategorien</translation>
+        <translation type="obsolete">Mehrstufen-B-Spline-Interpolation für Kategorien</translation>
     </message>
     <message>
         <source>Diffusive Hillslope Evolution (FTCS)</source>
-        <translation>Diffusive Hillslope Evolution (FTCS)</translation>
+        <translation type="obsolete">Diffusive Hillslope Evolution (FTCS)</translation>
     </message>
     <message>
         <source>Diffusive Hillslope Evolution (ADI)</source>
-        <translation>Diffusive Hillslope Evolution (ADI)</translation>
+        <translation type="obsolete">Diffusive Hillslope Evolution (ADI)</translation>
     </message>
     <message>
         <source>Create Lines Graticule|Create Graticule</source>
-        <translation>Gradnetz als Linien erzeugen|Gradnetz erzeugen</translation>
+        <translation type="obsolete">Gradnetz als Linien erzeugen|Gradnetz erzeugen</translation>
     </message>
     <message>
         <source>Flow Accumulation (QM of ESP)</source>
-        <translation>Flußdichte (QM von ESP)</translation>
+        <translation type="obsolete">Flußdichte (QM von ESP)</translation>
     </message>
     <message>
         <source>Grid Normalisation</source>
-        <translation>Gitternormalisierung</translation>
+        <translation type="obsolete">Gitternormalisierung</translation>
     </message>
     <message>
         <source>Thin Plate Spline</source>
-        <translation>Thin Plate Spline</translation>
+        <translation type="obsolete">Thin Plate Spline</translation>
     </message>
     <message>
         <source>Seed Generation</source>
-        <translation>Saaterzeugung</translation>
+        <translation type="obsolete">Saaterzeugung</translation>
     </message>
     <message>
         <source>Polygon-Line Intersection</source>
-        <translation>Polygon-Linien-Verschneidung</translation>
+        <translation type="obsolete">Polygon-Linien-Verschneidung</translation>
     </message>
     <message>
         <source>Running Average</source>
-        <translation>Beweglicher Mittelwert</translation>
+        <translation type="obsolete">Beweglicher Mittelwert</translation>
     </message>
     <message>
         <source>Cross-Classification and Tabulation</source>
-        <translation>Kreuzklassifizierung und Tabellierung</translation>
+        <translation type="obsolete">Kreuzklassifizierung und Tabellierung</translation>
     </message>
     <message>
         <source>Gradient Vector from Polar to Cartesian Coordinates</source>
-        <translation>Gradientenvektor aus Polar- zu kartesischen Koordinaten</translation>
+        <translation type="obsolete">Gradientenvektor aus Polar- zu kartesischen Koordinaten</translation>
     </message>
     <message>
         <source>Metric Conversions</source>
-        <translation>Metrische Umwandlungen</translation>
+        <translation type="obsolete">Metrische Umwandlungen</translation>
     </message>
     <message>
         <source>RGB Composite</source>
-        <translation>RGB-Composite</translation>
+        <translation type="obsolete">RGB-Composite</translation>
     </message>
     <message>
         <source>Edge Contamination</source>
-        <translation>Kantenverunreinigung</translation>
+        <translation type="obsolete">Kantenverunreinigung</translation>
     </message>
     <message>
         <source>Curvature Classification</source>
-        <translation>Wölbungsklassifizierung</translation>
+        <translation type="obsolete">Wölbungsklassifizierung</translation>
     </message>
     <message>
         <source>Filter Clumps</source>
-        <translation>Klumpen filtern</translation>
+        <translation type="obsolete">Klumpen filtern</translation>
     </message>
     <message>
         <source>Overland Flow - Kinematic Wave D8</source>
-        <translation>Überlandfluß - Kinematische Welle D8</translation>
+        <translation type="obsolete">Überlandfluß - Kinematische Welle D8</translation>
     </message>
     <message>
         <source>Profiles from Lines</source>
-        <translation>Profile aus Linien</translation>
+        <translation type="obsolete">Profile aus Linien</translation>
     </message>
     <message>
         <source>Distance Matrix</source>
-        <translation>Distanzmatrix</translation>
+        <translation type="obsolete">Distanzmatrix</translation>
     </message>
     <message>
         <source>Residual analysis|Residual Analysis (Grid)</source>
-        <translation>Restanalyse|Restanalyse (Raster)</translation>
+        <translation type="obsolete">Restanalyse|Restanalyse (Raster)</translation>
     </message>
     <message>
         <source>Zonal Grid Statistics</source>
-        <translation>Zonengitterstatistik</translation>
+        <translation type="obsolete">Zonengitterstatistik</translation>
     </message>
     <message>
         <source>Grid Division</source>
-        <translation>Gitterteilung</translation>
+        <translation type="obsolete">Gitterteilung</translation>
     </message>
     <message>
         <source>Lake Flood</source>
-        <translation>Seeflut</translation>
+        <translation type="obsolete">Seeflut</translation>
     </message>
     <message>
         <source>Add Polygon Attributes to Points</source>
-        <translation>Polygonattribute zu Punkten hinzufügen</translation>
+        <translation type="obsolete">Polygonattribute zu Punkten hinzufügen</translation>
     </message>
     <message>
         <source>Multilevel B-Spline Interpolation</source>
-        <translation>Mehrstufen-B-Spline-Interpolation</translation>
+        <translation type="obsolete">Mehrstufen-B-Spline-Interpolation</translation>
     </message>
     <message>
         <source>Cross Profiles</source>
-        <translation>Kreuzprofile</translation>
+        <translation type="obsolete">Kreuzprofile</translation>
     </message>
     <message>
         <source>Polar to Cartesian Coordinates</source>
-        <translation>Polar- zu kartesischen Koordinaten</translation>
+        <translation type="obsolete">Polar- zu kartesischen Koordinaten</translation>
     </message>
     <message>
         <source>Mosaick raster layers|Mosaicking</source>
-        <translation>Stitching von Rasterlayern|Stitching</translation>
+        <translation type="obsolete">Stitching von Rasterlayern|Stitching</translation>
     </message>
     <message>
         <source>Fire Risk Analysis</source>
-        <translation>Feuerriskikoanalyse</translation>
+        <translation type="obsolete">Feuerriskikoanalyse</translation>
     </message>
     <message>
         <source>Geographically Weighted Regression</source>
-        <translation>Geografischgewichtete Regression</translation>
+        <translation type="obsolete">Geografischgewichtete Regression</translation>
     </message>
     <message>
         <source>Separate points by direction</source>
-        <translation>Punkte nach Richtung aufteilen</translation>
+        <translation type="obsolete">Punkte nach Richtung aufteilen</translation>
     </message>
     <message>
         <source>Polygons to Edges and Nodes</source>
-        <translation>Polygone zu Kanten und Knoten</translation>
+        <translation type="obsolete">Polygone zu Kanten und Knoten</translation>
     </message>
     <message>
         <source>Morphological Filter</source>
-        <translation>Morphologischer Filter</translation>
+        <translation type="obsolete">Morphologischer Filter</translation>
     </message>
     <message>
         <source>Vector Ruggedness Measure (VRM)</source>
-        <translation>Vektorrauhigkeitsmaß (VRM)</translation>
+        <translation type="obsolete">Vektorrauhigkeitsmaß (VRM)</translation>
     </message>
     <message>
         <source>Fast Representativeness</source>
-        <translation>Schnelle Repräsentativität</translation>
+        <translation type="obsolete">Schnelle Repräsentativität</translation>
     </message>
 </context>
 <context>
@@ -70902,7 +70977,7 @@ Maximalzahl der Versuche überschritten.</translation>
     </message>
 </context>
 <context>
-    <name>SagaAlgorithm212</name>
+    <name>SagaAlgorithm</name>
     <message>
         <source>Unsupported file format</source>
         <translation>Nicht unterstütztes Dateiformat</translation>
@@ -70923,21 +70998,42 @@ Mehrkanallayer werden von SAGA nicht unterstützt</translation>
     </message>
 </context>
 <context>
-    <name>SagaAlgorithm213</name>
+    <name>SagaAlgorithm212</name>
     <message>
         <source>Unsupported file format</source>
-        <translation>Nicht unterstütztes Dateiformat</translation>
+        <translation type="obsolete">Nicht unterstütztes Dateiformat</translation>
     </message>
     <message>
         <source>SAGA execution commands</source>
-        <translation>SAGA-Befehlsausführung</translation>
+        <translation type="obsolete">SAGA-Befehlsausführung</translation>
+    </message>
+    <message>
+        <source>Input layer %s has more than one band.
+Multiband layers are not supported by SAGA</source>
+        <translation type="obsolete">Eingabelayer %s hat mehr als einen Kanal.
+Mehrkanallayer werden von SAGA nicht unterstützt</translation>
+    </message>
+    <message>
+        <source>Input layers do not have the same grid extent.</source>
+        <translation type="obsolete">Eingabelayer haben nicht die gleichen Gitterabmessungen.</translation>
+    </message>
+</context>
+<context>
+    <name>SagaAlgorithm213</name>
+    <message>
+        <source>Unsupported file format</source>
+        <translation type="obsolete">Nicht unterstütztes Dateiformat</translation>
+    </message>
+    <message>
+        <source>SAGA execution commands</source>
+        <translation type="obsolete">SAGA-Befehlsausführung</translation>
     </message>
 </context>
 <context>
     <name>SagaAlgorithmProvider</name>
     <message>
         <source>SAGA folder</source>
-        <translation>SAGA-Verzeichnis</translation>
+        <translation type="obsolete">SAGA-Verzeichnis</translation>
     </message>
     <message>
         <source>Enable SAGA Import/Export optimizations</source>
@@ -70961,17 +71057,31 @@ Mehrkanallayer werden von SAGA nicht unterstützt</translation>
     </message>
     <message>
         <source>Problem with SAGA installation: installed SAGA version (%s) is not supported</source>
-        <translation>Problem mit SAGA-Installation: Installierte SAGA-Version (%s) ist nicht unterstützt</translation>
+        <translation type="obsolete">Problem mit SAGA-Installation: Installierte SAGA-Version (%s) ist nicht unterstützt</translation>
     </message>
     <message>
         <source>Could not open SAGA algorithm: %s</source>
-        <translation>Konnte SAGA-Algorithmus nicht öffnen: %s</translation>
+        <translation type="obsolete">Konnte SAGA-Algorithmus nicht öffnen: %s</translation>
     </message>
     <message>
         <source>Could not open SAGA algorithm: %s
 %s</source>
-        <translation>Konnte SAGA-Algorithmus nicht öffnen: %s
+        <translation type="obsolete">Konnte SAGA-Algorithmus nicht öffnen: %s
 %s</translation>
+    </message>
+    <message>
+        <source>Problem with SAGA installation: unsupported SAGA version found.</source>
+        <translation>Problem mit SAGA-Installation: Nicht unterstützte SAGA-Version gefunden.</translation>
+    </message>
+    <message>
+        <source>Could not open SAGA algorithm: {}</source>
+        <translation>Konnte SAGA-Algorithmus nicht öffnen: {}</translation>
+    </message>
+    <message>
+        <source>Could not open SAGA algorithm: {}
+{}</source>
+        <translation>Konnte SAGA-Algorithmus nicht öffnen: {}
+{}</translation>
     </message>
 </context>
 <context>
@@ -83151,6 +83261,10 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <source>Merged</source>
         <translation>Zusammengeführt</translation>
+    </message>
+    <message>
+        <source>Assign a specified nodata value to output bands</source>
+        <translation>Legt den Leerwert des Ausgabekanals fest</translation>
     </message>
 </context>
 <context>
