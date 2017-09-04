@@ -202,7 +202,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   Q_FOREACH ( const QgsVectorLayerJoinInfo &join, joins )
   {
     // do not copy join information for auxiliary layer
-    if ( auxiliaryLayer() && auxiliaryLayer()->id() != join.joinLayerId() )
+    if ( !auxiliaryLayer()
+         || ( auxiliaryLayer() && auxiliaryLayer()->id() != join.joinLayerId() ) )
       layer->addJoin( join );
   }
 
