@@ -89,6 +89,7 @@ class Grass7Utils(object):
         if Grass7Utils.grassPath() is None:
             return None
 
+        # Does this works on MS-Windows?
         for command in ["grass73", "grass72", "grass71", "grass70", "grass"]:
             with subprocess.Popen(
                 ["{} -v".format(command)],
@@ -114,13 +115,17 @@ class Grass7Utils(object):
 
     @staticmethod
     def grassPath():
+        # Grab folder from Processing configuration
         if not isWindows() and not isMac():
             return ''
-
+        
         folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
         if not os.path.exists(folder):
             folder = None
+            
+        # If no folder is declared, search for it
         if folder is None:
+            # Under MSWindows, we use OSGEO4W
             if isWindows():
                 if "OSGEO4W_ROOT" in os.environ:
                     testfolder = os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps")
@@ -132,10 +137,19 @@ class Grass7Utils(object):
                         if subfolder.startswith('grass-7'):
                             folder = os.path.join(testfolder, subfolder)
                             break
-            else:
+            # On Mac, we use well-known paths
+            if isMac():
                 folder = os.path.join(str(QgsApplication.prefixPath()), 'grass7')
                 if not os.path.isdir(folder):
                     folder = '/Applications/GRASS-7.0.app/Contents/MacOS'
+            # GNU/Linux OS: autodetect path by using shutil.which
+            # TO test: does this works under MSWindows ?
+            else:
+                for command in ["grass73", "grass72", "grass71", "grass70", "grass"]:
+                    testFolder = shutil.which(command)
+                    if testFolder:
+                        folder = testFolder
+                        break
 
         return folder or ''
 
@@ -387,28 +401,28 @@ class Grass7Utils(object):
         if not ignorePreviousState:
             if Grass7Utils.isGrass7Installed:
                 return
-        try:
-            from processing import run
-            result = run(
-                'grass7:v.voronoi',
-                points(),
-                False,
-                False,
-                None,
-                -1,
-                0.0001,
-                0,
-                None,
-            )
-            if not os.path.exists(result['output']):
-                return Grass7Utils.tr(
-                    'It seems that GRASS GIS 7 is not correctly installed and '
-                    'configured in your system.\nPlease install it before '
-                    'running GRASS GIS 7 algorithms.')
-        except:
-            return Grass7Utils.tr(
-                'Error while checking GRASS GIS 7 installation. GRASS GIS 7 '
-                'might not be correctly configured.\n')
+        #try:
+        #    from processing import run
+        #    result = run(
+        #        'grass7:v.voronoi',
+        #        points(),
+        #        False,
+        #        False,
+        #        None,
+        #        -1,
+        #        0.0001,
+        #        0,
+        #        None,
+        #    )
+        #    if not os.path.exists(result['output']):
+        #        return Grass7Utils.tr(
+        #            'It seems that GRASS GIS 7 is not correctly installed and '
+        #            'configured in your system.\nPlease install it before '
+        #            'running GRASS GIS 7 algorithms.')
+        #except:
+        #    return Grass7Utils.tr(
+        #        'Error while checking GRASS GIS 7 installation. GRASS GIS 7 '
+        #        'might not be correctly configured.\n')
 
         Grass7Utils.isGrass7Installed = True
 
@@ -452,7 +466,7 @@ class Grass7Utils(object):
         if helpPath is not None:
             return helpPath
         elif Grass7Utils.command:
-            return 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
+            return 'https://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
         else:
             # grass not available!
-            return 'http://grass.osgeo.org/72/manuals/'
+            return 'https://grass.osgeo.org/72/manuals/'

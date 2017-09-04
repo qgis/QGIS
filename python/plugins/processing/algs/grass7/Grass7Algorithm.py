@@ -42,6 +42,7 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessingException,
                        QgsProcessingParameterExtent,
+                       QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
                        QgsProcessingParameterPoint,
@@ -49,6 +50,8 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterRasterDestination,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputHtml)
@@ -59,16 +62,6 @@ from processing.core.ProcessingConfig import ProcessingConfig
 #from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException (replaced by QgsProcessingException).
 
 from processing.core.parameters import (getParameterFromString)
-                                        #ParameterVector,
-                                        #ParameterMultipleInput,
-                                        #ParameterExtent,
-                                        #ParameterNumber,
-                                        #ParameterSelection,
-                                        #ParameterRaster,
-                                        #ParameterTable,
-                                        #ParameterBoolean,
-                                        #ParameterString,
-                                        #ParameterPoint)
 #from processing.core.outputs import (getOutputFromString,
 #                                     OutputRaster,
 #                                     OutputVector,
@@ -104,8 +97,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.params = []
         self.hardcodedStrings = []
         self.descriptionFile = descriptionfile
+        # Load parameters from a description file
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
+        # Do we need this anymore?
         self.uniqueSuffix = str(uuid.uuid4()).replace('-', '')
 
         # Use the ext mechanism
@@ -115,6 +110,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         except ImportError:
             self.module = None
 
+    def createInstance(self):
+        return self.__class__(self.descriptionFile)
+        
     def name(self):
         return self._name
 
@@ -191,7 +189,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             self._group = QCoreApplication.translate("GrassAlgorithm", line)
             hasRasterOutput = False
             hasVectorInput = False
-            vectorOutputs = 0
+            vectorOutputs = False
             # Then you have parameters/output definition
             line = lines.readline().strip('\n').strip()
             while line != '':
@@ -204,9 +202,14 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         self.params.append(parameter)
                         if isinstance(parameter, QgsProcessingParameterVectorLayer):
                             hasVectorInput = True
-                        if isinstance(parameter, QgsProcessingParameterMultipleLayers) \
+                        elif isinstance(parameter, QgsProcessingParameterMultipleLayers) \
                            and parameter.layerType() < 3:
                             hasVectorInput = True
+                        elif isinstance(parameter, QgsProcessingParameterVectorDestination):
+                            vectorOutputs = True
+                        elif isinstance(parameter, QgsProcessingParameterRasterDestination):
+                            hasRasterOutput = True
+
                     #else:
                     #    output = Grass7Utils.getOutputFromString(line)
                     #    self.addOutput(output)
@@ -223,17 +226,24 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), QgsMessageLog.CRITICAL)
                     raise e
 
-        self.addParameter(QgsProcessingParameterExtent(
+        param = QgsProcessingParameterExtent(
             self.GRASS_REGION_EXTENT_PARAMETER,
-            self.tr('GRASS GIS 7 region extent'))
+            self.tr('GRASS GIS 7 region extent'),
+            optional=True
         )
+        param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.params.append(param)
+        
         if hasRasterOutput:
-            self.addParameter(QgsProcessingParameterNumber(
+            param = QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
                 self.tr('GRASS GIS 7 region cellsize (leave 0 for default)'),
                 type=QgsProcessingParameterNumber.Double,
-                minValue=0.0, maxValue=sys.float_info.max + 1, defaultValue=0.0)
+                minValue=0.0, maxValue=sys.float_info.max + 1, defaultValue=0.0
             )
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.params.append(param)
+            
         if hasVectorInput:
             param = QgsProcessingParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
                                                  self.tr('v.in.ogr snap tolerance (-1 = no snap)'),
@@ -241,36 +251,38 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                                                  minValue=-1.0, maxValue=sys.float_info.max + 1,
                                                  defaultValue=-1.0)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-            self.addParameter(param)
+            self.params.append(param)
             param = QgsProcessingParameterNumber(self.GRASS_MIN_AREA_PARAMETER,
                                                  self.tr('v.in.ogr min area'),
                                                  type=QgsProcessingParameterNumber.Double,
                                                  minValue=0.0, maxValue=sys.float_info.max + 1,
                                                  defaultValue=0.0001)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-            self.addParameter(param)
-        if vectorOutputs == 1:
+            self.params.append(param)
+            
+        if vectorOutputs:
             param = QgsProcessingParameterEnum(self.GRASS_OUTPUT_TYPE_PARAMETER,
                                                self.tr('v.out.ogr output type'),
                                                self.OUTPUT_TYPES)
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-            self.addParameter(param)
+            self.params.append(param)
 
     def getDefaultCellsize(self, parameters, context):
         cellsize = 0
         for param in self.parameterDefinitions():
             if param.name() in parameters:
                 value = parameters[param.name()]
-                if isinstance(param, ParameterRaster):
-                    if isinstance(value, QgsRasterLayer):
-                        layer = value
-                    else:
-                        layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
+                if isinstance(param, QgsProcessingParameterRasterLayer):
+                    layer =  self.parameterAsExtent(parameters, paramName, context)
+                    #if isinstance(value, QgsRasterLayer):
+                    #    layer = value
+                    #else:
+                    #    layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
                     cellsize = max(cellsize, (layer.extent().xMaximum() -
                                               layer.extent().xMinimum()) /
                                    layer.width())
-                elif isinstance(param, ParameterMultipleInput):
-
+                elif isinstance(param, QgsProcessingParameterMultipleLayers):
+                    # TODO: finish
                     layers = value.split(';')
                     for layername in layers:
                         layer = QgsProcessingUtils.mapLayerFromString(layername, context)
@@ -328,8 +340,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.processOutputs()
         else:
             self.processInputs(parameters, context)
-            self.processCommand()
-            self.processOutputs()
+            self.processCommand(parameters, context)
+            self.processOutputs(parameters, context)
 
         # Run GRASS
         loglines = []
@@ -358,11 +370,17 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def processInputs(self, parameters, context):
         """Prepare the GRASS import commands"""
+        QgsMessageLog.logMessage('processInputs', 'Grass7', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage('processInputs parameters: {}'.format(parameters), 'Grass7', QgsMessageLog.INFO)
+        layers=[]
+        # TODO Grab all the GRASS stuff parameters before anything else
+        # To use in exportVectorLayer and exportRasterLayer
         for param in self.parameterDefinitions():
-            if isinstance(param, ParameterRaster):
-                if not param.name() in parameters():
+            paramName = param.name()
+            if isinstance(param, QgsProcessingParameterRasterLayer):
+                if not param.name() in parameters:
                     continue
-                value = parameters[param.name()]
+                value = parameters[paramName]
 
                 # Check if the layer hasn't already been exported in, for
                 # example, previous GRASS calls in this session
@@ -371,19 +389,25 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 else:
                     self.setSessionProjectionFromLayer(value, self.commands)
                     self.commands.append(self.exportRasterLayer(value))
-            if isinstance(param, ParameterVector):
-                if not param.name() in parameters():
+            # Handle vector inputs
+            if isinstance(param, QgsProcessingParameterVectorLayer):
+                if not paramName in parameters:
                     continue
-                value = parameters[param.name()]
-                if value in list(self.exportedLayers.keys()):
+                layer = self.parameterAsVectorLayer(parameters, paramName, context)
+                layers.append(layer)
+                # TODO Choose between layerSrc and layer.source()?
+                layerSrc = parameters[paramName]
+                QgsMessageLog.logMessage('processInputs layer: {} vs {}'.format(layerSrc, layer.source()), 'Grass7', QgsMessageLog.INFO)
+                if paramName in list(self.exportedLayers.keys()):
                     continue
                 else:
-                    self.setSessionProjectionFromLayer(value, self.commands)
-                    self.commands.append(self.exportVectorLayer(value))
-            if isinstance(param, ParameterTable):
-                pass
-            if isinstance(param, ParameterMultipleInput):
-                if not param.name() in parameters():
+                    self.setSessionProjectionFromLayer(layer)
+                    self.commands.append(self.exportVectorLayer(paramName, layerSrc, parameters, context))
+            # TODO: find the best replacement for ParameterTable
+            #if isinstance(param, ParameterTable):
+            #    pass
+            if isinstance(param, QgsProcessingParameterMultipleLayers):
+                if not param.name() in parameters:
                     continue
                 value = parameters[param.name()]
                 layers = value.split(';')
@@ -404,37 +428,43 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         if layer in list(self.exportedLayers.keys()):
                             continue
                         else:
-                            self.setSessionProjectionFromLayer(layer, self.commands)
+                            self.setSessionProjectionFromLayer(layer)
                             self.commands.append(self.exportVectorLayer(layer))
 
-        self.setSessionProjectionFromProject(self.commands)
+        # If projection has not already be set, use the project
+        self.setSessionProjectionFromProject()
 
-        region = \
-            str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+        # Build GRASS region
+        region =  self.parameterAsExtent(parameters,
+                                         self.GRASS_REGION_EXTENT_PARAMETER,
+                                         context
+        )
         if not region:
             region = QgsProcessingUtils.combineLayerExtents(layers)
+        command = 'g.region n={} s={} e={} w={}'.format(
+            region.yMaximum(), region.yMinimum(),
+            region.xMinimum(), region.xMaximum()
+        )
 
-        regionCoords = region.split(',')
-        command = 'g.region'
-        command += ' n=' + str(regionCoords[3])
-        command += ' s=' + str(regionCoords[2])
-        command += ' e=' + str(regionCoords[1])
-        command += ' w=' + str(regionCoords[0])
-        cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
+        # Build cell size
+        cellsize = self.parameterAsString(parameters,
+                                         self.GRASS_REGION_CELLSIZE_PARAMETER,
+                                         context
+        )
         if cellsize:
-            command += ' res=' + str(cellsize)
+            command += ' res={}'.format(cellsize)
         else:
             command += ' res=' + str(self.getDefaultCellsize(parameters, context))
-        alignToResolution = \
-            self.getParameterValue(self.GRASS_REGION_ALIGN_TO_RESOLUTION)
-        if alignToResolution:
+        if self.parameterAsBool(parameters,self.GRASS_REGION_ALIGN_TO_RESOLUTION, context):
             command += ' -a'
         self.commands.append(command)
+        QgsMessageLog.logMessage('processInputs end. Commands: {}'.format(self.commands), 'Grass7', QgsMessageLog.INFO)
 
-    def processCommand(self, parameters):
+    def processCommand(self, parameters, context):
         """Prepare the GRASS algorithm command
         :param parameters:
         """
+        QgsMessageLog.logMessage('processCommand', 'Grass7', QgsMessageLog.INFO)
         command = self.grass7Name
         command += ' ' + ' '.join(self.hardcodedStrings)
 
@@ -551,61 +581,66 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.commands.append(command)
                 self.outputCommands.append(command)
 
-    def exportVectorLayer(self, orgFilename):
-        context = dataobjects.createContext()
+    def exportVectorLayer(self, layerKey, layerSrc, parameters, context):
+        # TODO: learn about ProcessingContexts
+        #context = dataobjects.createContext()
 
         # TODO: improve this. We are now exporting if it is not a shapefile,
         # but the functionality of v.in.ogr could be used for this.
         # We also export if there is a selection
-        if not os.path.exists(orgFilename) or not orgFilename.endswith('shp'):
-            layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
-            if layer:
-                filename = dataobjects.exportVectorLayer(layer)
-        else:
-            layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
-            if layer:
-                #TODO
-                #useSelection = \
-                #    ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-                if useSelection and layer.selectedFeatureCount() != 0:
-                    filename = dataobjects.exportVectorLayer(layer)
-                else:
-                    filename = orgFilename
-            else:
-                filename = orgFilename
-        destFilename = 'a' + os.path.basename(self.getTempFilename())
-        self.exportedLayers[orgFilename] = destFilename
-        command = 'v.in.ogr'
-        min_area = self.getParameterValue(self.GRASS_MIN_AREA_PARAMETER)
-        command += ' min_area=' + str(min_area)
-        snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER)
-        command += ' snap=' + str(snap)
-        command += ' input="' + os.path.dirname(filename) + '"'
-        command += ' layer=' + os.path.basename(filename)[:-4]
-        command += ' output=' + destFilename
-        command += ' --overwrite -o'
+        #if not os.path.exists(orgFilename) or not orgFilename.endswith('shp'):
+        #    layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
+        #    if layer:
+        #        filename = dataobjects.exportVectorLayer(layer)
+        #else:
+        #    layer = QgsProcessingUtils.mapLayerFromString(orgFilename, context, False)
+        #    if layer:
+        #        #TODO
+        #        #useSelection = \
+        #        #    ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+        #        if useSelection and layer.selectedFeatureCount() != 0:
+        #            filename = dataobjects.exportVectorLayer(layer)
+        #        else:
+        #            filename = orgFilename
+        #    else:
+        #        filename = orgFilename
+        # TODO handle selection with a where_clause?
+        # TODO use v.external as an option!
+        destFileName = 'a' + os.path.basename(self.getTempFilename())
+        self.exportedLayers[layerKey] = destFileName
+        layerFileName= os.path.basename(layerSrc)
+        layerName = os.path.splitext(layerFileName)[0]
+        min_area = self.parameterAsString(parameters, self.GRASS_MIN_AREA_PARAMETER, context)
+        snap  = self.parameterAsString(parameters, self.GRASS_SNAP_TOLERANCE_PARAMETER, context)
+        command = 'v.in.ogr min_area={0} snap={1} input="{2}" layer={3} output={4} --overwrite -o'.format(
+            min_area, snap,
+            os.path.dirname(layerSrc),
+            layerName,
+            destFileName)
         return command
 
-    def setSessionProjectionFromProject(self, commands):
+    def setSessionProjectionFromProject(self):
+        """
+        Set the projection from the project.
+        We creates a PROJ4 definition which is transmitted to Grass
+        """
         if not Grass7Utils.projectionSet and iface:
             proj4 = iface.mapCanvas().mapSettings().destinationCrs().toProj4()
-            command = 'g.proj'
-            command += ' -c'
-            command += ' proj4="' + proj4 + '"'
+            command = 'g.proj -c proj4="{}"'.format(proj4)
             self.commands.append(command)
             Grass7Utils.projectionSet = True
 
-    def setSessionProjectionFromLayer(self, layer, commands):
+    def setSessionProjectionFromLayer(self, layer):
+        """
+        Set the projection from a QgsVectorLayer.
+        We creates a PROJ4 definition which is transmitted to Grass
+        """
         context = dataobjects.createContext()
         if not Grass7Utils.projectionSet:
-            qGisLayer = QgsProcessingUtils.mapLayerFromString(layer, context)
-            if qGisLayer:
-                proj4 = str(qGisLayer.crs().toProj4())
-                command = 'g.proj'
-                command += ' -c'
-                command += ' proj4="' + proj4 + '"'
-                self.commands.append(command)
-                Grass7Utils.projectionSet = True
+            proj4 = str(layer.crs().toProj4())
+            command = 'g.proj -c proj4="{}"'.format(proj4)
+            self.commands.append(command)
+            Grass7Utils.projectionSet = True
 
     def exportRasterLayer(self, layer):
         destFilename = 'a' + os.path.basename(self.getTempFilename())

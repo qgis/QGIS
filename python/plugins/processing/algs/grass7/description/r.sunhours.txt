@@ -1,12 +1,12 @@
 r.sunhours
 Calculates solar elevation, solar azimuth, and sun hours.
 Raster (r.*)
-QgsProcessingParameterNumber|year|Year|1950|QgsProcessingParameterNumber.Double|False|False|2016|2050
-QgsProcessingParameterNumber|month|Month|1|QgsProcessingParameterNumber.Double|True|False|1|12
-QgsProcessingParameterNumber|day|Day|1|QgsProcessingParameterNumber.Double|False|False|1|31
-QgsProcessingParameterNumber|hour|Hour|0|QgsProcessingParameterNumber.Double|True|False|12|24
-QgsProcessingParameterNumber|minute|Minutes|0|QgsProcessingParameterNumber.Double|True|False|0|60
-QgsProcessingParameterNumber|second|Seconds|0|QgsProcessingParameterNumber.Double|True|False|0|60
+QgsProcessingParameterNumber|year|Year|QgsProcessingParameterNumber.Integer|2017|False|1950|None
+QgsProcessingParameterNumber|month|Month|QgsProcessingParameterNumber.Integer|1|True|1|12
+QgsProcessingParameterNumber|day|Day|QgsProcessingParameterNumber.Integer|1|False|1|31
+QgsProcessingParameterNumber|hour|Hour|0|QgsProcessingParameterNumber.Integer|12|True|1|24
+QgsProcessingParameterNumber|minute|Minutes|QgsProcessingParameterNumber.Integer|0|True|0|60
+QgsProcessingParameterNumber|second|Seconds|QgsProcessingParameterNumber.Integer|0|True|0|60
 QgsProcessingParameterString|percentile|Percentile to calculate (comma separated list if multiple) (requires extended statistics flag)|None|False|True
 QgsProcessingParameterString|separator|Field separator. Special characters: pipe, comma, space, tab, newline|None|False|True
 *QgsProcessingParameterBoolean|-t|Time is local sidereal time, not Greenwich standard time|False
