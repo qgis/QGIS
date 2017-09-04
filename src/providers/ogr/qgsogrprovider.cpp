@@ -35,6 +35,8 @@ email                : sherman at mrcc.com
 #include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
+#include "qgssourceselectprovider.h"
+#include "qgsogrsourceselect.h"
 #include "qgis.h"
 
 
@@ -4345,4 +4347,30 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
   // This should never happen:
   errCause = QObject::tr( "Layer not found: %1" ).arg( uri );
   return false;
+}
+
+
+//! Provider for OGR vector source select
+class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    virtual QString text() const override { return QObject::tr( "Vector" ); }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr ) const override
+    {
+      return new QgsOgrSourceSelect( parent );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsOgrVectorSourceSelectProvider;
+
+  return providers;
 }
