@@ -95,8 +95,8 @@ Emitted when a vector layer has been selected for addition
  Emitted when a layer needs to be replaced
  \param oldId old layer ID
  \param source URI of the layer
- \params name of the layer
- \params provider key
+ \param name of the layer
+ \param provider key
 %End
 
 
