@@ -14,6 +14,9 @@ class QgsSourceSelectProviderRegistry
  This class keeps a list of source select providers that may add items to the QgsDataSourceManagerDialog
  When created, it automatically adds providers from data provider plugins (e.g. PostGIS, WMS, ...)
 
+ QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
+ QgsGui.sourceSelectProviderRegistry().
+
 .. versionadded:: 3.0
 %End
 

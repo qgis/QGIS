@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Test the QgsSourceSelectProvider class
+Test the QgsSourceSelectProvider 
+and QgsSourceSelectProviderRegistry classes
 
 Run with: ctest -V -R PyQgsSourceSelectProvider
 
@@ -12,7 +13,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 import os
 import tempfile
-from qgis.gui import (QgsSourceSelectProvider, QgsSourceSelectProviderRegistry, QgsAbstractDataSourceWidget)
+from qgis.gui import (QgsGui, QgsSourceSelectProvider, QgsSourceSelectProviderRegistry, QgsAbstractDataSourceWidget)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QWidget
@@ -90,9 +91,8 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         self.assertEqual(provider.ordering(), 1)
         self.assertTrue(isinstance(provider.icon(), QIcon))
 
-    def testRegistry(self):
+    def _testRegistry(self, registry):
 
-        registry = QgsSourceSelectProviderRegistry()
         registry.addProvider(ConcreteSourceSelectProvider())
         registry.addProvider(ConcreteSourceSelectProvider2())
 
@@ -113,12 +113,20 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         # Get not existent by name
         self.assertFalse(registry.providerByName('Oh This Is Missing!'))
 
-        # Get providers by provider key
+        # Get providers by data provider key
         self.assertGreater(len(registry.providersByKey('MyTestProviderKey')), 0)
         self.assertGreater(len(registry.providersByKey('MyTestProviderKey2')), 0)
 
         # Get not existent by key
         self.assertEqual(len(registry.providersByKey('Oh This Is Missing!')), 0)
+
+    def testRegistry(self):
+        registry = QgsSourceSelectProviderRegistry()
+        self._testRegistry(registry)
+
+    def testRegistrySingleton(self):
+        registry = QgsGui.sourceSelectProviderRegistry()
+        self._testRegistry(registry)
 
 
 if __name__ == '__main__':
