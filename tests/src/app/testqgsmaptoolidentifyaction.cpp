@@ -26,7 +26,6 @@
 #include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgssettings.h"
-#include "qgstestutils.h"
 
 #include "cpl_conv.h"
 

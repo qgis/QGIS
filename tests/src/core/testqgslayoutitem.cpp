@@ -22,7 +22,6 @@
 #include "qgstest.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgstestutils.h"
 #include <QObject>
 #include <QPainter>
 #include <QImage>

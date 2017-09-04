@@ -45,7 +45,6 @@
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
-#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.

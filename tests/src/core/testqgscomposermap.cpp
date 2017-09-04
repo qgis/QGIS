@@ -29,7 +29,6 @@
 #include "qgsproperty.h"
 #include <QObject>
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 class TestQgsComposerMap : public QObject
 {

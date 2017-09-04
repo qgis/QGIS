@@ -44,7 +44,6 @@
 #include "qgscircularstring.h"
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
-#include "qgstestutils.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"

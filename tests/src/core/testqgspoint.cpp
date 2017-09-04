@@ -25,7 +25,6 @@
 #include <qgsgeometry.h>
 //header for class being tested
 #include <qgspoint.h>
-#include "qgstestutils.h"
 
 class TestQgsPointXY: public QObject
 {

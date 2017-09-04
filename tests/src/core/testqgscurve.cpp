@@ -25,7 +25,6 @@
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the operations on curve geometries

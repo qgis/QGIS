@@ -21,7 +21,6 @@
 
 
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 #include <QObject>
 

@@ -22,12 +22,6 @@
 #include <QObject>
 #include "qgstest.h"
 
-// some of these tests have intermittent failure on Travis, probably due
-// to inconsistent availability to multiple threads on the platform.
-// These tests are disabled unless WITH_FLAKY is 1.
-
-#define WITH_FLAKY 0 //TODO - disable only for Travis?
-
 class TestTask : public QgsTask
 {
     Q_OBJECT
@@ -200,15 +194,11 @@ class TestQgsTaskManager : public QObject
     void task();
     void taskResult();
     void taskFinished();
-#if WITH_FLAKY
     void subTask();
-#endif
     void addTask();
     void taskTerminationBeforeDelete();
     void taskId();
-#if WITH_FLAKY
     void waitForFinished();
-#endif
     void progressChanged();
     void statusChanged();
     void allTasksFinished();
@@ -442,9 +432,11 @@ void TestQgsTaskManager::taskFinished()
   QCOMPARE( *resultObtained, false );
 }
 
-#if WITH_FLAKY
 void TestQgsTaskManager::subTask()
 {
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   QgsTaskManager manager;
 
   // parent with one subtask
@@ -489,14 +481,14 @@ void TestQgsTaskManager::subTask()
   // test progress calculation
   QSignalSpy spy( parent, &QgsTask::progressChanged );
   parent->emitProgressChanged( 50 );
-  QCOMPARE( std::round( parent->progress() ), 17 );
+  QCOMPARE( std::round( parent->progress() ), 17.0 );
   //QCOMPARE( spy.count(), 1 );
-  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 17 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 17.0 );
 
   subTask->emitProgressChanged( 100 );
-  QCOMPARE( std::round( parent->progress() ), 50 );
+  QCOMPARE( std::round( parent->progress() ), 50.0 );
   //QCOMPARE( spy.count(), 2 );
-  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 50 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 50.0 );
 
   subTask2->finish();
   while ( subTask2->status() != QgsTask::Complete )
@@ -504,14 +496,14 @@ void TestQgsTaskManager::subTask()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( std::round( parent->progress() ), 83 );
+  QCOMPARE( std::round( parent->progress() ), 83.0 );
   //QCOMPARE( spy.count(), 3 );
-  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 83 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 83.0 );
 
   parent->emitProgressChanged( 100 );
-  QCOMPARE( std::round( parent->progress() ), 100 );
+  QCOMPARE( std::round( parent->progress() ), 100.0 );
   //QCOMPARE( spy.count(), 4 );
-  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 100 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 100.0 );
   parent->terminate();
   subTask->terminate();
 
@@ -641,7 +633,6 @@ void TestQgsTaskManager::subTask()
   flushEvents();
   QVERIFY( parentFinished2.count() > 0 );
 }
-#endif
 
 void TestQgsTaskManager::taskId()
 {
@@ -665,9 +656,11 @@ void TestQgsTaskManager::taskId()
   delete task3;
 }
 
-#if WITH_FLAKY
 void TestQgsTaskManager::waitForFinished()
 {
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   QgsTaskManager manager;
   QEventLoop loop;
 
@@ -705,7 +698,6 @@ void TestQgsTaskManager::waitForFinished()
   QCOMPARE( timeoutTooShortTask->waitForFinished( 20 ), false );
   QCOMPARE( timeoutTooShortTask->status(), QgsTask::Running );
 }
-#endif
 
 void TestQgsTaskManager::progressChanged()
 {
@@ -1105,6 +1097,9 @@ void TestQgsTaskManager::layerDependencies()
 
 void TestQgsTaskManager::managerWithSubTasks()
 {
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   // parent with subtasks
   ProgressReportingTask *parent = new ProgressReportingTask( "parent" );
   ProgressReportingTask *subTask = new ProgressReportingTask( "subtask" );
@@ -1125,7 +1120,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( manager->activeTasks().count(), 1 );
   QVERIFY( manager->activeTasks().contains( parent ) );
   QCOMPARE( spy.count(), 1 );
-#if WITH_FLAKY
+
   //manager should not directly listen to progress reports from subtasks
   //(only parent tasks, which themselves include their subtask progress)
   QCOMPARE( spyProgress.count(), 0 );
@@ -1146,7 +1141,6 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( spyProgress.count(), 3 );
   QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 0LL );
   QCOMPARE( spyProgress.last().at( 1 ).toInt(), 63 );
-#endif
 
   //manager should not emit statusChanged signals for subtasks
   QSignalSpy statusSpy( manager, &QgsTaskManager::statusChanged );

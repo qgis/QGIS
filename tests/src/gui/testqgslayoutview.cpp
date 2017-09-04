@@ -23,7 +23,6 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutitemwidget.h"
-#include "qgstestutils.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include <QtTest/QSignalSpy>

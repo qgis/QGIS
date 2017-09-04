@@ -19,7 +19,6 @@
 #include "qgsrectangle.h"
 #include <QObject>
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 class TestQgsCoordinateTransform: public QObject
 {

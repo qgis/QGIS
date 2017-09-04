@@ -29,7 +29,6 @@
 #include <qgsproviderregistry.h>
 #include <qgsrasterdataprovider.h>
 #include <qgsrectangle.h>
-#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the gdal provider

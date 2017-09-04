@@ -26,7 +26,6 @@
 #include "qgsgeometryfactory.h"
 #include "qgsgeometry.h"
 #include "qgis.h"
-#include "qgstestutils.h"
 #include <memory>
 
 class TestQgsDistanceArea: public QObject
