@@ -66,8 +66,6 @@ class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterf
 
   private:
 
-    QgsLayout *mLayout = nullptr;
-
     friend class QgsLayoutSerializableObjectUndoCommand;
 
 };
