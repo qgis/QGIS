@@ -17,6 +17,12 @@ class QgsSourceSelectProviderRegistry
  QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
  QgsGui.sourceSelectProviderRegistry().
 
+.. note::
+
+   This class access to QgsProviderRegistry instance to initialize, but QgsProviderRegistry is
+ typically initialized after QgsGui is constructed, for this reason a delayed initialization has been
+ implemented in the class.
+
 .. versionadded:: 3.0
 %End
 
@@ -29,7 +35,7 @@ class QgsSourceSelectProviderRegistry
     ~QgsSourceSelectProviderRegistry();
 
 
-    QList< QgsSourceSelectProvider *> providers() const;
+    QList< QgsSourceSelectProvider *> providers();
 %Docstring
 Get list of available providers
  :rtype: list of QgsSourceSelectProvider
@@ -45,13 +51,13 @@ Add a provider implementation. Takes ownership of the object.
 Remove provider implementation from the list (provider object is deleted)
 %End
 
-    QgsSourceSelectProvider *providerByName( const QString &name ) const;
+    QgsSourceSelectProvider *providerByName( const QString &name );
 %Docstring
 Return a provider by name or None if not found
  :rtype: QgsSourceSelectProvider
 %End
 
-    QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey ) const;
+    QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey );
 %Docstring
 Return a (possibly empty) list of providers by data provider's key
  :rtype: list of QgsSourceSelectProvider

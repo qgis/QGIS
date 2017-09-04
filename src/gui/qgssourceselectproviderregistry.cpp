@@ -24,31 +24,18 @@ typedef QList<QgsSourceSelectProvider *> *sourceSelectProviders_t();
 
 QgsSourceSelectProviderRegistry::QgsSourceSelectProviderRegistry()
 {
-  QStringList providersList = QgsProviderRegistry::instance()->providerList();
-
-  Q_FOREACH ( const QString &key, providersList )
-  {
-    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
-    if ( !library )
-      continue;
-
-    sourceSelectProviders_t *sourceSelectProvidersFn = reinterpret_cast< sourceSelectProviders_t * >( cast_to_fptr( library->resolve( "sourceSelectProviders" ) ) );
-    if ( sourceSelectProvidersFn )
-    {
-      QList<QgsSourceSelectProvider *> *providerList = sourceSelectProvidersFn();
-      // the function is a factory - we keep ownership of the returned providers
-      for ( auto provider : qgsAsConst( *providerList ) )
-      {
-        addProvider( provider );
-      }
-      delete providerList;
-    }
-  }
+  // Initialization is delayed
 }
 
 QgsSourceSelectProviderRegistry::~QgsSourceSelectProviderRegistry()
 {
   qDeleteAll( mProviders );
+}
+
+QList<QgsSourceSelectProvider *> QgsSourceSelectProviderRegistry::providers()
+{
+  init();
+  return mProviders;
 }
 
 void QgsSourceSelectProviderRegistry::addProvider( QgsSourceSelectProvider *provider )
@@ -67,9 +54,10 @@ void QgsSourceSelectProviderRegistry::removeProvider( QgsSourceSelectProvider *p
     delete mProviders.takeAt( index );
 }
 
-QgsSourceSelectProvider *QgsSourceSelectProviderRegistry::providerByName( const QString &name ) const
+QgsSourceSelectProvider *QgsSourceSelectProviderRegistry::providerByName( const QString &name )
 {
-  for ( const auto provider : qgsAsConst( mProviders ) )
+  const QList<QgsSourceSelectProvider *> providerList = providers();
+  for ( const auto provider :  providerList )
   {
     if ( provider->name() == name )
     {
@@ -79,15 +67,45 @@ QgsSourceSelectProvider *QgsSourceSelectProviderRegistry::providerByName( const 
   return nullptr;
 }
 
-QList<QgsSourceSelectProvider *> QgsSourceSelectProviderRegistry::providersByKey( const QString &providerKey ) const
+QList<QgsSourceSelectProvider *> QgsSourceSelectProviderRegistry::providersByKey( const QString &providerKey )
 {
-  QList<QgsSourceSelectProvider *> providerList;
-  for ( const auto provider : qgsAsConst( mProviders ) )
+  QList<QgsSourceSelectProvider *> result;
+  const QList<QgsSourceSelectProvider *> providerList = providers();
+  for ( const auto provider : providerList )
   {
     if ( provider->providerKey() == providerKey )
     {
-      providerList << provider;
+      result << provider;
     }
   }
-  return providerList;
+  return result;
 }
+
+void QgsSourceSelectProviderRegistry::init()
+{
+  if ( mInitialized )
+  {
+    return;
+  }
+  QStringList providersList = QgsProviderRegistry::instance()->providerList();
+  Q_FOREACH ( const QString &key, providersList )
+  {
+    std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
+    if ( !library )
+      continue;
+
+    sourceSelectProviders_t *sourceSelectProvidersFn = reinterpret_cast< sourceSelectProviders_t * >( cast_to_fptr( library->resolve( "sourceSelectProviders" ) ) );
+    if ( sourceSelectProvidersFn )
+    {
+      QList<QgsSourceSelectProvider *> *providerList = sourceSelectProvidersFn();
+      // the function is a factory - we keep ownership of the returned providers
+      for ( auto provider : qgsAsConst( *providerList ) )
+      {
+        addProvider( provider );
+      }
+      delete providerList;
+    }
+  }
+  mInitialized = true;
+}
+

@@ -28,6 +28,10 @@ class QgsSourceSelectProvider;
  * QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
  * QgsGui::sourceSelectProviderRegistry().
  *
+ * \note This class access to QgsProviderRegistry instance to initialize, but QgsProviderRegistry is
+ * typically initialized after QgsGui is constructed, for this reason a delayed initialization has been
+ * implemented in the class.
+ *
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsSourceSelectProviderRegistry
@@ -43,7 +47,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
     QgsSourceSelectProviderRegistry &operator=( const QgsSourceSelectProviderRegistry &rh ) = delete;
 
     //! Get list of available providers
-    QList< QgsSourceSelectProvider *> providers() const { return mProviders; }
+    QList< QgsSourceSelectProvider *> providers();
 
     //! Add a provider implementation. Takes ownership of the object.
     void addProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
@@ -52,13 +56,17 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
     void removeProvider( QgsSourceSelectProvider *provider );
 
     //! Return a provider by name or nullptr if not found
-    QgsSourceSelectProvider *providerByName( const QString &name ) const;
+    QgsSourceSelectProvider *providerByName( const QString &name );
 
     //! Return a (possibly empty) list of providers by data provider's key
-    QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey ) const;
+    QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey );
 
 
   private:
+    //! Populate the providers list, this needs to happen after the data provider
+    //! registry has been initialized.
+    void init();
+    bool mInitialized = false;
 #ifdef SIP_RUN
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh );
 #endif
