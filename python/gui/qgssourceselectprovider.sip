@@ -59,7 +59,7 @@ Text for the menu item entry, it will be visible to the user so make sure it's t
  :rtype: int
 %End
 
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 /Factory/;
 %Docstring
  Create a new instance of QgsAbstractDataSourceWidget (or null).
  Caller takes responsibility of deleting created.
