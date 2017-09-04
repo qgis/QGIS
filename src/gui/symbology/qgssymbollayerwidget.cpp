@@ -1756,7 +1756,7 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLay
   connect( viewGroups->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgMarkerSymbolLayerWidget::populateIcons );
   connect( spinWidth, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setWidth );
   connect( spinHeight, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setHeight );
-  connect( mLockAspectRatio, static_cast < void ( QgsRatioLockButton::* )( bool ) > ( &QgsRatioLockButton::lockChanged ), this, &QgsSvgMarkerSymbolLayerWidget::stateChangedAspectRatio );
+  connect( mLockAspectRatio, static_cast < void ( QgsRatioLockButton::* )( bool ) > ( &QgsRatioLockButton::lockChanged ), this, &QgsSvgMarkerSymbolLayerWidget::lockAspectRatioChanged );
   connect( spinAngle, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setAngle );
   connect( spinOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setOffset );
   connect( spinOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSvgMarkerSymbolLayerWidget::setOffset );
@@ -1876,9 +1876,9 @@ void QgsSvgMarkerSymbolLayerWidget::setGuiForSvg( const QgsSvgMarkerSymbolLayer 
   {
     spinHeight->setValue( layer->size() * layer->fixedAspectRatio() );
   }
+  spinHeight->setEnabled( layer->defaultAspectRatio() > 0.0 );
   spinHeight->blockSignals( false );
-  spinHeight->setEnabled( !preservedAspectRatio );
-  mLockAspectRatio->setLocked( preservedAspectRatio );
+  whileBlocking( mLockAspectRatio )->setLocked( preservedAspectRatio );
 }
 
 void QgsSvgMarkerSymbolLayerWidget::updateAssistantSymbol()
@@ -2036,11 +2036,24 @@ void QgsSvgMarkerSymbolLayerWidget::setHeight()
   emit changed();
 }
 
-void QgsSvgMarkerSymbolLayerWidget::stateChangedAspectRatio()
+void QgsSvgMarkerSymbolLayerWidget::lockAspectRatioChanged( const bool locked )
 {
-  spinHeight->setEnabled( !mLockAspectRatio->locked() );
-  setWidth();
-  emit changed();
+  //spinHeight->setEnabled( !locked );
+  double defaultAspectRatio = mLayer->defaultAspectRatio();
+  if ( defaultAspectRatio <= 0.0 )
+  {
+    whileBlocking( mLockAspectRatio )->setLocked( true );
+  }
+  else if ( locked )
+  {
+    mLayer->setFixedAspectRatio( 0.0 );
+    setWidth();
+  }
+  else
+  {
+    mLayer->setFixedAspectRatio( spinHeight->value() / spinWidth->value() );
+  }
+  //emit changed();
 }
 
 void QgsSvgMarkerSymbolLayerWidget::setAngle()

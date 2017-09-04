@@ -459,7 +459,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
   private slots:
     void setWidth();
     void setHeight();
-    void stateChangedAspectRatio();
+    void lockAspectRatioChanged( const bool locked );
     void setAngle();
     void setOffset();
     void updateAssistantSymbol();

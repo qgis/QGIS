@@ -163,7 +163,7 @@
           </sizepolicy>
          </property>
          <property name="toolTip">
-          <string>Lock aspect ratio (including while drawing extent onto canvas)</string>
+          <string>Lock aspect ratio</string>
          </property>
          <property name="leftMargin" stdset="0">
           <number>13</number>
