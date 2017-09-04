@@ -33,6 +33,7 @@
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"
+#include "qgssourceselectprovider.h"
 #endif
 
 #include <QSqlRecord>
@@ -3582,4 +3583,36 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   return style;
 }
 
-// vim: set sw=2 :
+
+#ifdef HAVE_GUI
+
+//! Provider for Oracle source select
+class QgsOracleSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "oracle" ); }
+    virtual QString text() const override { return QObject::tr( "Oracle" ); }
+    virtual int ordering() { return 80; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOracleLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsOracleSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsOracleSourceSelectProvider;
+
+  return providers;
+}
+
+#endif
+
+
+// vim: set sw=2

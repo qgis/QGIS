@@ -49,6 +49,7 @@
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
+#include "qgssourceselectprovider.h"
 #endif
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mssql" );
@@ -2307,3 +2308,34 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   }
   return style;
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for msssql raster source select
+class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "mssql" ); }
+    virtual QString text() const override { return QObject::tr( "MSSQL" ); }
+    virtual int ordering() const override { return 60; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsMssqlSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsMssqlSourceSelectProvider ;
+
+  return providers;
+}
+
+#endif

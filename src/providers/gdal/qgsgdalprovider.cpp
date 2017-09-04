@@ -35,6 +35,11 @@
 #include "qgspointxy.h"
 #include "qgssettings.h"
 
+#ifdef HAVE_GUI
+#include "qgssourceselectprovider.h"
+#include "qgsgdalsourceselect.h"
+#endif
+
 #include <QImage>
 #include <QColor>
 #include <QProcess>
@@ -3041,3 +3046,34 @@ QGISEXTERN void cleanupProvider()
   // nothing to do here, QgsApplication takes care of
   // calling GDALDestroyDriverManager()
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for gdal raster source select
+class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "gdal" ); }
+    virtual QString text() const override { return QObject::tr( "Raster" ); }
+    virtual int ordering() const override { return 20; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsGdalSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsGdalRasterSourceSelectProvider;
+
+  return providers;
+}
+
+#endif

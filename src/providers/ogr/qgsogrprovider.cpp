@@ -35,8 +35,12 @@ email                : sherman at mrcc.com
 #include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
+
+#ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
 #include "qgsogrsourceselect.h"
+#endif
+
 #include "qgis.h"
 
 
@@ -4349,6 +4353,7 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
   return false;
 }
 
+#ifdef HAVE_GUI
 
 //! Provider for OGR vector source select
 class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
@@ -4357,10 +4362,11 @@ class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 
     virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
     virtual QString text() const override { return QObject::tr( "Vector" ); }
+    virtual int ordering() const override { return 10; }
     virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr ) const override
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
-      return new QgsOgrSourceSelect( parent );
+      return new QgsOgrSourceSelect( parent, fl, widgetMode );
     }
 };
 
@@ -4374,3 +4380,5 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
 
   return providers;
 }
+
+#endif
