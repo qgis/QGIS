@@ -34,5 +34,18 @@
     return QTest::qExec(&tc, argc, argv); \
   }
 
+/**
+ * QGIS unit test utilities.
+ * \since QGIS 3.0
+ */
+namespace QgsTest
+{
+
+  //! Returns true if test is running on Travis infrastructure
+  bool isTravis()
+  {
+    return qgetenv( "TRAVIS" ) == QStringLiteral( "true" );
+  }
+}
 
 #endif // QGSTEST_H
