@@ -59,16 +59,7 @@ warnings.simplefilter('default')
 warnings.filterwarnings("ignore", "the sets module is deprecated")
 
 
-ignorelist = [
-    "objcreator.py:152: DeprecationWarning: 'U' mode is deprecated"
-    "DeprecationWarning: the imp module is deprecated in favour of importlib;"
-]
-
 def showWarning(message, category, filename, lineno, file=None, line=None):
-    for ignore in ignorelist:
-        if ignore in message:
-            return
-
     stk = ""
     for s in traceback.format_stack()[:-2]:
         if hasattr(s, 'decode'):
