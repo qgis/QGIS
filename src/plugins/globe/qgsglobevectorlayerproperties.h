@@ -32,6 +32,7 @@ class QListWidgetItem;
 
 class QgsGlobeVectorLayerConfig : public QObject
 {
+    Q_OBJECT
   public:
     enum RenderingMode
     {
