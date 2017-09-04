@@ -120,6 +120,18 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         # Get not existent by key
         self.assertEqual(len(registry.providersByKey('Oh This Is Missing!')), 0)
 
+    def testRemoveProvider(self):
+        registry = QgsSourceSelectProviderRegistry()
+        registry.addProvider(ConcreteSourceSelectProvider())
+        registry.addProvider(ConcreteSourceSelectProvider2())
+        self.assertEqual(['MyTestProviderKey', 'MyName'], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+
+        self.assertTrue(registry.removeProvider(registry.providerByName('MyName')))
+        self.assertEqual(['MyTestProviderKey'], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+
+        self.assertTrue(registry.removeProvider(registry.providerByName('MyTestProviderKey')))
+        self.assertEqual([], [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+
     def testRegistry(self):
         registry = QgsSourceSelectProviderRegistry()
         self._testRegistry(registry)
@@ -127,6 +139,9 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
     def testRegistrySingleton(self):
         registry = QgsGui.sourceSelectProviderRegistry()
         self._testRegistry(registry)
+        # Check that at least OGR and GDAL are here
+        self.assertTrue(registry.providersByKey('ogr'))
+        self.assertTrue(registry.providersByKey('gdal'))
 
 
 if __name__ == '__main__':
