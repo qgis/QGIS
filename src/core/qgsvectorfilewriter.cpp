@@ -1856,8 +1856,10 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   layerOptions.insert( "OGR_XLSX_HEADERS", new SetOption(
                          QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
-                                      "if the first line might be the name of columns. If set to FORCE, the "
-                                      "driver will consider the first default" ),
+                                      "if the first line might be the name of columns. If set to FORCE, the driver "
+                                      "will consider the first line will be taken as the header line. If set to "
+                                      "DISABLE, it will be considered as the first feature. Otherwise "
+                                      "auto-detection will occur." ),
                          QStringList()
                          << "FORCE"
                          << "DISABLE"
@@ -1894,8 +1896,10 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   layerOptions.insert( "OGR_ODS_HEADERS", new SetOption(
                          QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
-                                      "if the first line might be the name of columns. If set to FORCE, the "
-                                      "driver will consider the first default" ),
+                                      "if the first line might be the name of columns. If set to FORCE, the driver "
+                                      "will consider the first line will be taken as the header line. If set to "
+                                      "DISABLE, it will be considered as the first feature. Otherwise "
+                                      "auto-detection will occur." ),
                          QStringList()
                          << "FORCE"
                          << "DISABLE"
