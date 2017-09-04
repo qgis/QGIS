@@ -96,8 +96,8 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     /** Emitted when a layer needs to be replaced
      * \param oldId old layer ID
      * \param source URI of the layer
-     * \params name of the layer
-     * \params provider key
+     * \param name of the layer
+     * \param provider key
      */
     void replaceVectorLayer( const QString &oldId, const QString &source, const QString &name, const QString &provider );
 
