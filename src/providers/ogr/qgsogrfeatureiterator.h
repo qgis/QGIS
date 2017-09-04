@@ -78,6 +78,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     OGRLayerH ogrLayer;
 
     bool mSubsetStringSet;
+    bool mOrigFidAdded;
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;

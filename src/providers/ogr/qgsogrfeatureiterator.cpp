@@ -42,6 +42,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     , ogrLayer( nullptr )
     , mSubsetStringSet( false )
     , mFetchGeometry( false )
+    , mOrigFidAdded( false )
     , mExpressionCompiled( false )
     , mFilterFids( mRequest.filterFids() )
     , mFilterFidsIt( mFilterFids.constBegin() )
@@ -67,7 +68,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    ogrLayer = QgsOgrProviderUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
+    ogrLayer = QgsOgrProviderUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, mOrigFidAdded );
     if ( !ogrLayer )
     {
       return;
@@ -171,7 +172,24 @@ bool QgsOgrFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
 bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature& feature ) const
 {
   feature.setValid( false );
-  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( id ) );
+  OGRFeatureH fet;
+  if ( mOrigFidAdded )
+  {
+    OGR_L_ResetReading( ogrLayer );
+    while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+    {
+      if ( OGR_F_GetFieldAsInteger64( fet, 0 ) == id )
+      {
+        break;
+      }
+      OGR_F_Destroy( fet );
+    }
+  }
+  else
+  {
+    fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( id ) );
+  }
+
   if ( !fet )
   {
     return false;
@@ -296,7 +314,14 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 
 bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) const
 {
-  feature.setFeatureId( OGR_F_GetFID( fet ) );
+  if ( mOrigFidAdded )
+  {
+    feature.setFeatureId( OGR_F_GetFieldAsInteger64( fet, 0 ) );
+  }
+  else
+  {
+    feature.setFeatureId( OGR_F_GetFID( fet ) );
+  }
   feature.initAttributes( mSource->mFields.count() );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
