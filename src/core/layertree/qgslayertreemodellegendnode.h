@@ -26,7 +26,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-#include "raster/qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
+#include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
     QString mUserLabel;
 };
 
-#include "symbology/qgslegendsymbolitem.h"
+#include "qgslegendsymbolitem.h"
 
 /** \ingroup core
  * Implementation of legend node interface for displaying preview of vector symbols and their labels
