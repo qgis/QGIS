@@ -24,16 +24,45 @@
 class QgsLayout;
 class QgsLayoutItem;
 
+SIP_NO_FILE
+
+///@cond PRIVATE
+
+/**
+ * \ingroup core
+ * An undo command subclass for layout item undo commands.
+ *
+ * QgsLayoutItemUndoCommand is a specific layout undo command which is
+ * designed for use with QgsLayoutItems. It automatically handles
+ * recreating a deleted item when the undo stack rolls back past
+ * the item deletion command.
+ *
+ * \since QGIS 3.0
+*/
 class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
 {
   public:
 
+    /**
+     * Constructor for QgsLayoutItemUndoCommand.
+     * \param item associated layout item
+     * \param text undo command descriptive text
+     * \param id optional undo command id, used for automatic command merging
+     * \param parent command
+     */
     QgsLayoutItemUndoCommand( QgsLayoutItem *item, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
 
     bool mergeWith( const QUndoCommand *command ) override;
 
+    /**
+     * Returns the layout associated with this command.
+     */
     QgsLayout *layout() const;
 
+    /**
+     * Returns the associated item's UUID, which uniquely identifies the item
+     * within the layout.
+     */
     QString itemUuid() const;
 
   protected:
@@ -51,15 +80,33 @@ class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
 
 };
 
+/**
+ * \ingroup core
+ * An undo command subclass for layout item deletion undo commands.
+ *
+ * QgsLayoutItemDeleteUndoCommand is a specific layout undo command which handles
+ * layout item deletion. When applied (e.g. as a result of a 'redo' action),
+ * the associated layout item is deleted and removed from the layout.
+ *
+ * \since QGIS 3.0
+*/
 class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoCommand
 {
   public:
 
+    /**
+     * Constructor for QgsLayoutItemDeleteUndoCommand.
+     * \param item associated layout item
+     * \param text undo command descriptive text
+     * \param id optional undo command id, used for automatic command merging
+     * \param parent command
+     */
     QgsLayoutItemDeleteUndoCommand( QgsLayoutItem *item, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
     bool mergeWith( const QUndoCommand *command ) override;
     void redo() override;
 
 };
 
+///@endcond
 
 #endif

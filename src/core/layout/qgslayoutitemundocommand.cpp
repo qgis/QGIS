@@ -21,6 +21,7 @@
 #include "qgslayout.h"
 #include "qgsproject.h"
 
+///@cond PRIVATE
 QgsLayoutItemUndoCommand::QgsLayoutItemUndoCommand( QgsLayoutItem *item, const QString &text, int id, QUndoCommand *parent )
   : QgsAbstractLayoutUndoCommand( text, id, parent )
   , mItemUuid( item->uuid() )
@@ -118,3 +119,5 @@ void QgsLayoutItemDeleteUndoCommand::redo()
   layout()->removeItem( item );
   item->deleteLater();
 }
+
+///@endcond

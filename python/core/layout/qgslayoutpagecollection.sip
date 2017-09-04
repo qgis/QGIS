@@ -231,6 +231,13 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  :rtype: bool
 %End
 
+    QgsLayoutGuideCollection &guides();
+%Docstring
+ Returns a reference to the collection's guide collection, which manages page snap guides.
+ :rtype: QgsLayoutGuideCollection
+%End
+
+
   public slots:
 
     void redraw();

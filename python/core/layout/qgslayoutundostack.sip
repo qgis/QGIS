@@ -28,8 +28,29 @@ class QgsLayoutUndoStack
 %End
 
     void beginMacro( const QString &commandText );
+%Docstring
+ Starts a macro command, with the given descriptive ``commandText``.
+
+ Any commands added to the stack (either via direct manipulation of
+ stack() or via beginCommand()/endCommand() calls) between a
+ beginMacro() and endMacro() block are collapsed into a single
+ undo command, which will be applied or rolled back in a single step.
+
+.. seealso:: endMacro()
+%End
 
     void endMacro();
+%Docstring
+ Ends a macro command. This must be called after beginMacro(), when
+ all child undo commands which form part of the macro have been completed.
+
+ Any commands added to the stack (either via direct manipulation of
+ stack() or via beginCommand()/endCommand() calls) between a
+ beginMacro() and endMacro() block are collapsed into a single
+ undo command, which will be applied or rolled back in a single step.
+
+.. seealso:: beginMacro()
+%End
 
     void beginCommand( QgsLayoutUndoObjectInterface *object, const QString &commandText, int id = 0 );
 %Docstring
