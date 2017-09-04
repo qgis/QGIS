@@ -28,7 +28,6 @@
 #include "qgsvectorfilewriter.h"
 
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the attribute table dialog

@@ -23,7 +23,6 @@
 #include "qgsrasterlayer.h"
 #include <QObject>
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 class TestProjectionIssues : public QObject
 {

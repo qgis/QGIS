@@ -21,7 +21,6 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgsrastermatrix.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
-#include "qgstestutils.h"
 
 Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator )
 

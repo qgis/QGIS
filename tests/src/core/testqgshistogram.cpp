@@ -20,7 +20,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgshistogram.h"
-#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for QgsHistogram

@@ -868,7 +868,6 @@ SET(QGIS_CORE_HDRS
   qgsstatisticalsummary.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
-  qgstestutils.h
   qgstextlabelfeature.h
   qgstextrenderer.h
   qgstextrenderer_p.h

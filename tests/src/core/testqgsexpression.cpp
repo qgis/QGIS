@@ -33,7 +33,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgstestutils.h"
 
 static void _parseAndEvalExpr( int arg )
 {
