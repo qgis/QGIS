@@ -1009,6 +1009,12 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
   return minBounds;
 }
 
+QgsGeometry QgsGeometry::orientedMinimumBoundingBox() const
+{
+  double area, angle, width, height;
+  return orientedMinimumBoundingBox( area, angle, width, height );
+}
+
 static QgsCircle __recMinimalEnclosingCircle( QgsMultiPoint points, QgsMultiPoint boundary )
 {
   auto l_boundary = boundary.length();
@@ -1081,6 +1087,14 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   QgsGeometry geom;
   geom.setGeometry( circ.toPolygon( segments ) );
   return geom;
+
+}
+
+QgsGeometry QgsGeometry::minimalEnclosingCircle( unsigned int segments ) const
+{
+  QgsPointXY center;
+  double radius;
+  return minimalEnclosingCircle( center, radius, segments );
 
 }
 

@@ -2533,15 +2533,14 @@ static QVariant fcnConvexHull( const QVariantList &values, const QgsExpressionCo
   return result;
 }
 
+
 static QVariant fcnMinimalCircle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  QgsPointXY center;
-  double radius;
   unsigned int segments = 36;
   if ( values.length() == 2 )
     segments = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  QgsGeometry geom = fGeom.minimalEnclosingCircle( center, radius, segments );
+  QgsGeometry geom = fGeom.minimalEnclosingCircle( segments );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
@@ -2549,8 +2548,7 @@ static QVariant fcnMinimalCircle( const QVariantList &values, const QgsExpressio
 static QVariant fcnOrientedBBox( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-  double area, angle, width, height;
-  QgsGeometry geom = fGeom.orientedMinimumBoundingBox( area, angle, width, height );
+  QgsGeometry geom = fGeom.orientedMinimumBoundingBox( );
   QVariant result = !geom.isNull() ? QVariant::fromValue( geom ) : QVariant();
   return result;
 }
