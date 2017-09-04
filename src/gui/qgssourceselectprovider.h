@@ -19,6 +19,8 @@
 
 #include "qgis_gui.h"
 #include "qgis.h"
+#include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 
 class QString;
@@ -61,7 +63,7 @@ class GUI_EXPORT QgsSourceSelectProvider
     /** Create a new instance of QgsAbstractDataSourceWidget (or null).
      * Caller takes responsibility of deleting created.
      */
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 SIP_FACTORY;
 
 };
 

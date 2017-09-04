@@ -49,16 +49,17 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
     //! Get list of available providers
     QList< QgsSourceSelectProvider *> providers();
 
-    //! Add a provider implementation. Takes ownership of the object.
+    //! Add a \a provider implementation. Takes ownership of the object.
     void addProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
 
-    //! Remove provider implementation from the list (provider object is deleted)
-    void removeProvider( QgsSourceSelectProvider *provider );
+    //! Remove \a provider implementation from the list (\a provider object is deleted)
+    //! \returns true if the provider was actually removed and deleted
+    bool removeProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
 
-    //! Return a provider by name or nullptr if not found
+    //! Return a provider by \a name or nullptr if not found
     QgsSourceSelectProvider *providerByName( const QString &name );
 
-    //! Return a (possibly empty) list of providers by data provider's key
+    //! Return a (possibly empty) list of providers by data \a providerkey
     QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey );
 
 

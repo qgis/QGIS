@@ -47,11 +47,15 @@ void QgsSourceSelectProviderRegistry::addProvider( QgsSourceSelectProvider *prov
   } );
 }
 
-void QgsSourceSelectProviderRegistry::removeProvider( QgsSourceSelectProvider *provider )
+bool QgsSourceSelectProviderRegistry::removeProvider( QgsSourceSelectProvider *provider )
 {
   int index = mProviders.indexOf( provider );
   if ( index >= 0 )
+  {
     delete mProviders.takeAt( index );
+    return true;
+  }
+  return false;
 }
 
 QgsSourceSelectProvider *QgsSourceSelectProviderRegistry::providerByName( const QString &name )

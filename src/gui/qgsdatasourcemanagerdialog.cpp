@@ -22,8 +22,11 @@
 #include "qgsbrowserdockwidget.h"
 #include "qgssettings.h"
 #include "qgsproviderregistry.h"
+#include "qgssourceselectprovider.h"
+#include "qgssourceselectproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsmapcanvas.h"
+#include "qgsgui.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
   QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
@@ -55,39 +58,18 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
   connect( mBrowserWidget, &QgsBrowserDockWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
 
-  // Add data provider dialogs
-
-  providerDialog( QStringLiteral( "ogr" ), tr( "Vector" ), QStringLiteral( "/mActionAddOgrLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "gdal" ), tr( "Raster" ), QStringLiteral( "/mActionAddRasterLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "delimitedtext" ), tr( "Delimited Text" ), QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) );
-
-#ifdef HAVE_POSTGRESQL
-  providerDialog( QStringLiteral( "postgres" ), tr( "PostgreSQL" ), QStringLiteral( "/mActionAddPostgisLayer.svg" ) );
-#endif
-
-  providerDialog( QStringLiteral( "spatialite" ), tr( "SpatiaLite" ), QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "mssql" ), tr( "MSSQL" ), QStringLiteral( "/mActionAddMssqlLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "DB2" ), tr( "DB2" ), QStringLiteral( "/mActionAddDb2Layer.svg" ) );
-
-#ifdef HAVE_ORACLE
-  providerDialog( QStringLiteral( "oracle" ), tr( "Oracle" ), QStringLiteral( "/mActionAddOracleLayer.svg" ) );
-#endif
-
-  providerDialog( QStringLiteral( "virtual" ), tr( "Virtual Layer" ), QStringLiteral( "/mActionAddVirtualLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "wms" ), tr( "WMS" ), QStringLiteral( "/mActionAddWmsLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "wcs" ), tr( "WCS" ), QStringLiteral( "/mActionAddWcsLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "WFS" ), tr( "WFS" ), QStringLiteral( "/mActionAddWfsLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "arcgismapserver" ), tr( "ArcGIS Map Server" ), QStringLiteral( "/mActionAddAmsLayer.svg" ) );
-
-  providerDialog( QStringLiteral( "arcgisfeatureserver" ), tr( "ArcGIS Feature Server" ), QStringLiteral( "/mActionAddAfsLayer.svg" ) );
+  // Add provider dialogs
+  const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( ) ;
+  for ( const auto provider : sourceSelectProviders )
+  {
+    QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
+    if ( !dlg )
+    {
+      QMessageBox::warning( this, provider->name(), tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ) );
+      continue;
+    }
+    addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ) );
+  }
 
 }
 
@@ -140,31 +122,21 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
 }
 
 
-QgsAbstractDataSourceWidget *QgsDataSourceManagerDialog::providerDialog( const QString providerKey, const QString providerName, const QString icon, QString title )
+void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, QString toolTip )
 {
-  QgsAbstractDataSourceWidget *dlg = dynamic_cast<QgsAbstractDataSourceWidget *>( QgsProviderRegistry::instance()->createSelectionWidget( providerKey, this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded ) );
-  if ( !dlg )
+  mPageNames.append( providerKey );
+  ui->mOptionsStackedWidget->addWidget( dlg );
+  QListWidgetItem *layerItem = new QListWidgetItem( providerName, ui->mOptionsListWidget );
+  layerItem->setToolTip( toolTip.isEmpty() ? tr( "Add %1 layer" ).arg( providerName ) : toolTip );
+  layerItem->setIcon( icon );
+  // Set crs and extent from canvas
+  if ( mMapCanvas )
   {
-    QMessageBox::warning( this, providerName, tr( "Cannot get %1 select dialog from provider %2." ).arg( providerName, providerKey ) );
-    return nullptr;
+    dlg->setMapCanvas( mMapCanvas );
   }
-  else
-  {
-    mPageNames.append( providerKey );
-    ui->mOptionsStackedWidget->addWidget( dlg );
-    QListWidgetItem *layerItem = new QListWidgetItem( providerName, ui->mOptionsListWidget );
-    layerItem->setToolTip( title.isEmpty() ? tr( "Add %1 layer" ).arg( providerName ) : title );
-    layerItem->setIcon( QgsApplication::getThemeIcon( icon ) );
-    // Set crs and extent from canvas
-    if ( mMapCanvas )
-    {
-      dlg->setMapCanvas( mMapCanvas );
-    }
-    connect( dlg, &QgsAbstractDataSourceWidget::rejected, this, &QgsDataSourceManagerDialog::reject );
-    connect( dlg, &QgsAbstractDataSourceWidget::accepted, this, &QgsDataSourceManagerDialog::accept );
-    makeConnections( dlg, providerKey );
-    return dlg;
-  }
+  connect( dlg, &QgsAbstractDataSourceWidget::rejected, this, &QgsDataSourceManagerDialog::reject );
+  connect( dlg, &QgsAbstractDataSourceWidget::accepted, this, &QgsDataSourceManagerDialog::accept );
+  makeConnections( dlg, providerKey );
 }
 
 void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey )
