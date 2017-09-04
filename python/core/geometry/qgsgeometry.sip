@@ -577,11 +577,27 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: QgsGeometry
 %End
 
+    QgsGeometry orientedMinimumBoundingBox( ) const;
+%Docstring
+ Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
+ rotated rectangle which fully encompasses the geometry.
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
     QgsGeometry minimalEnclosingCircle( QgsPointXY &center /Out/, double &radius /Out/, unsigned int segments = 36 ) const;
 %Docstring
  Returns the minimal enclosing circle for the geometry.
  \param center Center of the minimal enclosing circle returneds
  \param radius Radius of the minimal enclosing circle returned
+.. seealso:: QgsEllipse.toPolygon()
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
+    QgsGeometry minimalEnclosingCircle( unsigned int segments = 36 ) const;
+%Docstring
+ Returns the minimal enclosing circle for the geometry.
 .. seealso:: QgsEllipse.toPolygon()
 .. versionadded:: 3.0
  :rtype: QgsGeometry
