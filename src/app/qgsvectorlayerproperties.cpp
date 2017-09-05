@@ -57,6 +57,7 @@
 #include "qgsstyle.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
+#include "qgslabelinggui.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -1555,7 +1556,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
 
   if ( reset && labelingDialog )
   {
-    labelingDialog->resetSettings(); // update data defined buttons
+    labelingDialog->setLayer( mLayer );
   }
 }
 
@@ -1608,6 +1609,15 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDelete()
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
     QgsDataSourceUri uri( alayer->source() );
+
+    // delete each attribute to correctly update layer settings and data
+    // defined buttons
+    while ( alayer->auxiliaryFields().size() > 0 )
+    {
+      QgsAuxiliaryField aField = alayer->auxiliaryFields()[0];
+      deleteAuxiliaryField( alayer->fields().indexOf( aField.name() ) );
+    }
+
     mLayer->setAuxiliaryLayer(); // remove auxiliary layer
     QgsAuxiliaryStorage::deleteTable( uri );
     QApplication::restoreOverrideCursor();
@@ -1659,11 +1669,27 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
   if ( reply == QMessageBox::Yes )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    mLayer->auxiliaryLayer()->deleteAttribute( index );
+    deleteAuxiliaryField( index );
+    mLayer->triggerRepaint();
     QApplication::restoreOverrideCursor();
+  }
+}
+
+void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
+{
+  if ( !mLayer->auxiliaryLayer() )
+    return;
+
+  int key = mLayer->auxiliaryLayer()->propertyFromField( index );
+  if ( mLayer->auxiliaryLayer()->deleteAttribute( index ) )
+  {
     mLayer->updateFields();
+
+    // immediately deactivate data defined button
+    if ( labelingDialog && labelingDialog->labelingGui() )
+      labelingDialog->labelingGui()->deactivateField( ( QgsPalLayerSettings::Property ) key );
+
     updateAuxiliaryStoragePage( true );
     mFieldsPropertiesDialog->init();
-    mLayer->triggerRepaint();
   }
 }

@@ -211,6 +211,19 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  :rtype: int
 %End
 
+    int propertyFromField( int index ) const;
+%Docstring
+ Returns the underlying property key for the field index. The key may be
+ a PAL, diagram or symbology property according to the underlying
+ property definition of the field. The key -1 is returned if an error
+ happened.
+
+ \param index The index of the field
+
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
     static int createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *vlayer );
 %Docstring
  Create if necessary a new auxiliary field for a PAL property and

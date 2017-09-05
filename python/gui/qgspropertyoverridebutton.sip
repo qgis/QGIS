@@ -183,13 +183,6 @@ class QgsPropertyOverrideButton: QToolButton
 .. versionadded:: 3.0
 %End
 
-    void updateGui();
-%Docstring
- Updates data defined button icon.
-
-.. versionadded:: 3.0
-%End
-
 
   public slots:
 

@@ -50,6 +50,8 @@ void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton *butto
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsLabelingGui::createAuxiliaryField );
   button->registerExpressionContextGenerator( this );
+
+  mButtons[key] = button;
 }
 
 void QgsLabelingGui::updateProperty()
@@ -611,15 +613,6 @@ void QgsLabelingGui::updateUi()
   {
     chkMergeLines->setToolTip( QString() );
   }
-
-  mCoordXDDBtn->updateFieldLists();
-  mCoordXDDBtn->updateGui();
-
-  mCoordYDDBtn->updateFieldLists();
-  mCoordYDDBtn->updateGui();
-
-  mCoordRotationDDBtn->updateFieldLists();
-  mCoordRotationDDBtn->updateGui();
 }
 
 void QgsLabelingGui::createAuxiliaryField()
@@ -652,4 +645,18 @@ void QgsLabelingGui::createAuxiliaryField()
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 
   emit auxiliaryFieldCreated();
+}
+
+void QgsLabelingGui::deactivateField( QgsPalLayerSettings::Property key )
+{
+  if ( mButtons.contains( key ) )
+  {
+    QgsPropertyOverrideButton *button = mButtons[ key ];
+    QgsProperty p = button->toProperty();
+    p.setField( QString() );
+    p.setActive( false );
+    button->updateFieldLists();
+    button->setToProperty( p );
+    mDataDefinedProperties.setProperty( key, p );
+  }
 }

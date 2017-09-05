@@ -405,6 +405,29 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
   return hidden;
 }
 
+int QgsAuxiliaryLayer::propertyFromField( int index ) const
+{
+  int p = -1;
+  QgsAuxiliaryField aField( fields().field( index ) );
+  QgsPropertyDefinition aDef = aField.propertyDefinition();
+
+  if ( aDef.origin().compare( "labeling" ) == 0 )
+  {
+    const QgsPropertiesDefinition defs = QgsPalLayerSettings::propertyDefinitions();
+    QgsPropertiesDefinition::const_iterator it = defs.constBegin();
+    for ( ; it != defs.constEnd(); ++it )
+    {
+      if ( it->name().compare( aDef.name(), Qt::CaseInsensitive ) == 0 )
+      {
+        p = it.key();
+        break;
+      }
+    }
+  }
+
+  return p;
+}
+
 int QgsAuxiliaryLayer::indexOfProperty( const QgsPropertyDefinition &def ) const
 {
   return fields().indexOf( QgsAuxiliaryField::nameFromProperty( def ) );

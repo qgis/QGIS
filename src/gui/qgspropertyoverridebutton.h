@@ -193,13 +193,6 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     void updateFieldLists();
 
     /**
-     * Updates data defined button icon.
-     *
-     * \since QGIS 3.0
-     */
-    void updateGui();
-
-    /**
      * Sets a symbol which can be used for previews inside the widget or in any dialog created
      * by the widget. If not specified, a default created symbol will be used instead.
      * \note not available in Python bindings
@@ -232,6 +225,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     void showDescriptionDialog();
     void showExpressionDialog();
     void showAssistant();
+    void updateGui();
 
     /**
      * Sets the active status, emitting the activated signal where necessary (but never emitting the changed signal!).

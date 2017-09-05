@@ -229,6 +229,18 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     int indexOfProperty( const QgsPropertyDefinition &definition ) const;
 
     /**
+     * Returns the underlying property key for the field index. The key may be
+     * a PAL, diagram or symbology property according to the underlying
+     * property definition of the field. The key -1 is returned if an error
+     * happened.
+     *
+     * \param index The index of the field
+     *
+     * \since QGIS 3.0
+     */
+    int propertyFromField( int index ) const;
+
+    /**
      * Create if necessary a new auxiliary field for a PAL property and
      * activate this property in settings.
      *

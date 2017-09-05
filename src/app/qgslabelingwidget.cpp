@@ -40,6 +40,11 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
   setLayer( layer );
 }
 
+QgsLabelingGui *QgsLabelingWidget::labelingGui()
+{
+  return qobject_cast<QgsLabelingGui *>( mWidget );
+}
+
 void QgsLabelingWidget::resetSettings()
 {
   if ( mOldSettings )
