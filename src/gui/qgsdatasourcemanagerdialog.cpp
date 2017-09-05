@@ -168,9 +168,10 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   connect( dlg, SIGNAL( progressMessage( QString ) ),
            this, SIGNAL( showStatusMessage( QString ) ) );
   // Vector
-  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName, const QString & specifiedProvider )
   {
-    this->vectorLayerAdded( vectorLayerPath, baseName, providerKey );
+    QString key = specifiedProvider.isEmpty() ? providerKey : specifiedProvider;
+    this->vectorLayerAdded( vectorLayerPath, baseName, key );
   }
          );
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayers,

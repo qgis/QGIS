@@ -77,9 +77,12 @@ Emitted when a DB layer has been selected for addition
 Emitted when a raster layer has been selected for addition
 %End
 
-    void addVectorLayer( const QString &uri, const QString &layerName );
+    void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
 %Docstring
-Emitted when a vector layer has been selected for addition
+ Emitted when a vector layer has been selected for addition.
+
+ If ``providerKey`` is not specified, the default provider key associated with the source
+ will be used.
 %End
 
     void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );

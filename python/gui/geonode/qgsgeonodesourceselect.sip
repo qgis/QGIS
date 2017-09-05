@@ -44,13 +44,6 @@ class QgsGeoNodeSourceSelect: QgsAbstractDataSourceWidget
     virtual void addButtonClicked();
 
 
-  signals:
-
-    void addWfsLayer(
-      const QString &uri,
-      const QString &layerName,
-      const QString &providerKey );
-
 };
 
 

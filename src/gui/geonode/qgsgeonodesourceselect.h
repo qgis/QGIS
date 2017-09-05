@@ -45,13 +45,6 @@ class GUI_EXPORT QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, pri
 
     void addButtonClicked() override;
 
-  signals:
-
-    void addWfsLayer(
-      const QString &uri,
-      const QString &layerName,
-      const QString &providerKey );
-
   private:
 
     /** Stores the available CRS for a server connections.

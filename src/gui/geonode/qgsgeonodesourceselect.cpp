@@ -72,8 +72,6 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
   treeView->setModel( mModelProxy );
 }
 
-QgsGeoNodeSourceSelect::~QgsGeoNodeSourceSelect() {}
-
 void QgsGeoNodeSourceSelect::addConnectionsEntryList()
 {
   QgsGeoNodeNewConnection *nc = new QgsGeoNodeNewConnection( this );
@@ -474,7 +472,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       uri += QStringLiteral( " sql=" );
 
       QgsDebugMsg( "Add WFS from GeoNode : " + uri + " and typename: " + typeName );
-      emit addWfsLayer( uri, typeName, "WFS" );
+      emit addVectorLayer( uri, typeName, QStringLiteral( "WFS" ) );
     }
     else if ( webServiceType == "XYZ" )
     {
