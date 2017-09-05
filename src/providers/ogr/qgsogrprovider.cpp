@@ -2913,8 +2913,6 @@ QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 {
-  QgsDebugMsg( "Entering." );
-
   QgsCoordinateReferenceSystem srs;
   if ( !mValid )
     return srs;
