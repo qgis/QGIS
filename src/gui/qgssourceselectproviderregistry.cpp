@@ -91,8 +91,8 @@ void QgsSourceSelectProviderRegistry::init()
   {
     return;
   }
-  QStringList providersList = QgsProviderRegistry::instance()->providerList();
-  Q_FOREACH ( const QString &key, providersList )
+  const QStringList providersList = QgsProviderRegistry::instance()->providerList();
+  for ( const QString &key : providersList )
   {
     std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( key ) );
     if ( !library )
