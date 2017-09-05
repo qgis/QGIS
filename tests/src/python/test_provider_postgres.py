@@ -765,6 +765,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(vl2.extent(), customExtent)
 
+        # but a force update on extent should allow retrieveing the data
+        # provider extent
+        vl2.updateExtents()
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertEqual(vl2.extent(), customExtent)
+
+        vl2.updateExtents(force=True)
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertEqual(vl2.extent(), originalExtent)
+
     def testReadExtentOnTable(self):
         # vector layer based on a standard table
         vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
