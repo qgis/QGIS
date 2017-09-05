@@ -559,7 +559,7 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
   if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
   {
     QString connectionName = path.split( '/' ).last();
-    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
 
@@ -575,7 +575,7 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
           QgsDebugMsg( encodedUri );
           QgsDataSourceUri uri;
           QgsSettings settings;
-          QString key( connection.pathGeoNodeConnection() + "/" + connectionName );
+          QString key( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + "/" + connectionName );
 
           QString dpiMode = settings.value( key + "/wms/dpiMode", "all", QgsSettings::Providers ).toString();
           uri.setParam( QStringLiteral( "url" ), encodedUri );
@@ -605,7 +605,7 @@ QVector<QgsDataItem *> QgsXyzTileDataItemProvider::createDataItems( const QStrin
   if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
   {
     QString connectionName = path.split( '/' ).last();
-    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
 

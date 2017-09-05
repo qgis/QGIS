@@ -118,7 +118,7 @@ void QgsGeoNodeSourceSelect::deleteConnectionsEntryList()
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
-    QgsGeoNodeConnection::deleteConnection( cmbConnections->currentText() );
+    QgsGeoNodeConnectionUtils::deleteConnection( cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     if ( mModel )
     {
@@ -148,14 +148,14 @@ void QgsGeoNodeSourceSelect::deleteConnectionsEntryList()
 void QgsGeoNodeSourceSelect::populateConnectionList()
 {
   cmbConnections->clear();
-  cmbConnections->addItems( QgsGeoNodeConnection::connectionList() );
+  cmbConnections->addItems( QgsGeoNodeConnectionUtils::connectionList() );
 
   setConnectionListPosition();
 }
 
 void QgsGeoNodeSourceSelect::setConnectionListPosition()
 {
-  QString toSelect = QgsGeoNodeConnection::selectedConnection();
+  QString toSelect = QgsGeoNodeConnectionUtils::selectedConnection();
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 

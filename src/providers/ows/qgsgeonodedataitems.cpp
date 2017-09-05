@@ -229,7 +229,7 @@ QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsGeoNodeConnection::connectionList() )
+  Q_FOREACH ( const QString &connName, QgsGeoNodeConnectionUtils::connectionList() )
   {
     QgsGeoNodeConnection *connection = nullptr;
     connection = new QgsGeoNodeConnection( connName );
@@ -270,7 +270,7 @@ QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem( const QString &path, Qg
   if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
   {
     QString connectionName = path.split( '/' ).last();
-    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection *connection = new QgsGeoNodeConnection( connectionName );
       return new QgsGeoNodeConnectionItem( parentItem, QStringLiteral( "GeoNode" ), path, connection );

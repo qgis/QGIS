@@ -220,7 +220,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
   else if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
   {
     QString connectionName = path.split( '/' ).last();
-    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
 
@@ -244,7 +244,7 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
   if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
   {
     QString connectionName = path.split( '/' ).last();
-    if ( QgsGeoNodeConnection::connectionList().contains( connectionName ) )
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
     {
       QgsGeoNodeConnection connection( connectionName );
 

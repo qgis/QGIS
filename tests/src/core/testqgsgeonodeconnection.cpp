@@ -35,9 +35,9 @@ class TestQgsGeoNodeConnection: public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
-      QgsGeoNodeConnection::deleteConnection( mGeoNodeConnectionName );
-      QgsGeoNodeConnection::deleteConnection( mDemoGeoNodeName );
-      QgsGeoNodeConnection::deleteConnection( mKartozaGeoNodeQGISServerName );
+      QgsGeoNodeConnectionUtils::deleteConnection( mGeoNodeConnectionName );
+      QgsGeoNodeConnectionUtils::deleteConnection( mDemoGeoNodeName );
+      QgsGeoNodeConnectionUtils::deleteConnection( mKartozaGeoNodeQGISServerName );
     }
     // will be called before each testfunction is executed.
     void init() {}
@@ -89,11 +89,11 @@ void TestQgsGeoNodeConnection::initTestCase()
   QgsSettings settings;
 
   // Testing real server, demo.geonode.org. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mDemoGeoNodeName ), mDemoGeoNodeURL, QgsSettings::Providers );
+  settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mDemoGeoNodeName ), mDemoGeoNodeURL, QgsSettings::Providers );
   // Testing real server, staging.geonode.kartoza.com. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mKartozaGeoNodeQGISServerName ), mKartozaGeoNodeQGISServerURL, QgsSettings::Providers );
+  settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mKartozaGeoNodeQGISServerName ), mKartozaGeoNodeQGISServerURL, QgsSettings::Providers );
   // Testing real server, staginggs.geonode.kartoza.com. Need to be changed later.
-  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mKartozaGeoNodeGeoServerName ), mKartozaGeoNodeGeoServerURL, QgsSettings::Providers );
+  settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mKartozaGeoNodeGeoServerName ), mKartozaGeoNodeGeoServerURL, QgsSettings::Providers );
 }
 
 // Test the creation of geonode connection
@@ -104,7 +104,7 @@ void TestQgsGeoNodeConnection::testCreation()
     QSKIP( "Skip remote test for faster testing" );
   }
 
-  QStringList connectionList = QgsGeoNodeConnection::connectionList();
+  QStringList connectionList = QgsGeoNodeConnectionUtils::connectionList();
   int numberOfConnection = connectionList.count();
   // Verify if the demo.geonode.org is created properly
   QVERIFY( connectionList.contains( mDemoGeoNodeName ) );
@@ -113,9 +113,9 @@ void TestQgsGeoNodeConnection::testCreation()
   // Add new GeoNode Connection
   QgsSettings settings;
 
-  settings.setValue( QgsGeoNodeConnection::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mGeoNodeConnectionName ), mGeoNodeConnectionURL, QgsSettings::Providers );
+  settings.setValue( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/%1/url" ).arg( mGeoNodeConnectionName ), mGeoNodeConnectionURL, QgsSettings::Providers );
 
-  QStringList newConnectionList = QgsGeoNodeConnection::connectionList();
+  QStringList newConnectionList = QgsGeoNodeConnectionUtils::connectionList();
   int newNumberOfConnection = newConnectionList.count();
 
   // Check the number is increased by 1

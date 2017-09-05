@@ -33,8 +33,8 @@ QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString
 {
   setupUi( this );
 
-  mBaseKey = QgsGeoNodeConnection::pathGeoNodeConnection();
-  mCredentialsBaseKey = QgsGeoNodeConnection::pathGeoNodeConnection();
+  mBaseKey = QgsGeoNodeConnectionUtils::pathGeoNodeConnection();
+  mCredentialsBaseKey = QgsGeoNodeConnectionUtils::pathGeoNodeConnection();
 
   mAuthConfigSelect = new QgsAuthConfigSelect( this );
   tabAuth->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );

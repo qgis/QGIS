@@ -19,9 +19,10 @@
 #include "qgis_core.h"
 #include "qgsdatasourceuri.h"
 
+SIP_NO_FILE
 
 /*!
- * \brief   GeoNode Connections management
+ * \brief GeoNode Connections management
  */
 class CORE_EXPORT QgsGeoNodeConnection
 {
@@ -38,6 +39,19 @@ class CORE_EXPORT QgsGeoNodeConnection
 
     QgsDataSourceUri uri() const;
     void setUri( const QgsDataSourceUri &uri );
+
+  private:
+
+    //! The connection name
+    QString mConnName;
+
+    //! Property of mUri
+    QgsDataSourceUri mUri;
+};
+
+class CORE_EXPORT QgsGeoNodeConnectionUtils
+{
+  public:
 
     //! Retrieve all geonode connection
     static QStringList connectionList();
@@ -56,15 +70,11 @@ class CORE_EXPORT QgsGeoNodeConnection
     static QString pathGeoNodeConnectionDetails();
 
   private:
+
     // Path in QSetting
     static const QString sPathGeoNodeConnection;
     static const QString sPathGeoNodeConnectionDetails;
 
-    //! The connection name
-    QString mConnName;
-
-    //! Property of mUri
-    QgsDataSourceUri mUri;
 };
 
 

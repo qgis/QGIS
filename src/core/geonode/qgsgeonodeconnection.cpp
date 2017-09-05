@@ -18,18 +18,17 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 
-const QString QgsGeoNodeConnection::sPathGeoNodeConnection = "qgis/connections-geonode";
-const QString QgsGeoNodeConnection::sPathGeoNodeConnectionDetails = "qgis/GeoNode";
+const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnection = "qgis/connections-geonode";
+const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnectionDetails = "qgis/GeoNode";
 
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
   : mConnName( connName )
 {
   QgsSettings settings;
 
-
 //  settings.Section
-  QString key = sPathGeoNodeConnection  + QStringLiteral( "/" ) + mConnName;
-  QString credentialsKey = sPathGeoNodeConnectionDetails + QStringLiteral( "/" ) + mConnName;
+  QString key = QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/" ) + mConnName;
+  QString credentialsKey = QgsGeoNodeConnectionUtils::pathGeoNodeConnectionDetails() + QStringLiteral( "/" ) + mConnName;
 
   mUri.setParam( QStringLiteral( "url" ), settings.value( key + QStringLiteral( "/url" ), QString(), QgsSettings::Providers ).toString() );
 
@@ -61,44 +60,6 @@ QgsDataSourceUri QgsGeoNodeConnection::uri() const
   return mUri;
 }
 
-QStringList QgsGeoNodeConnection::connectionList()
-{
-  QgsSettings settings;
-  // Add Section manually
-  settings.beginGroup( QStringLiteral( "providers/qgis/connections-geonode" ) );
-  return settings.childGroups();
-}
-
-void QgsGeoNodeConnection::deleteConnection( const QString &name )
-{
-  QgsSettings settings;
-  // Add Section manually
-  settings.remove( QStringLiteral( "providers/qgis/connections-geonode/" ) + name );
-  settings.remove( QStringLiteral( "providers/qgis/geonode/" ) + name );
-}
-
-QString QgsGeoNodeConnection::selectedConnection()
-{
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/connections-geonode/selected" ), QString(), QgsSettings::Providers ).toString();
-}
-
-void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "qgis/connections-geonode/selected" ), name, QgsSettings::Providers );
-}
-
-QString QgsGeoNodeConnection::pathGeoNodeConnection()
-{
-  return sPathGeoNodeConnection;
-}
-
-QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails()
-{
-  return sPathGeoNodeConnectionDetails;
-}
-
 QString QgsGeoNodeConnection::connName() const
 {
   return mConnName;
@@ -112,4 +73,48 @@ void QgsGeoNodeConnection::setConnName( const QString &connName )
 void QgsGeoNodeConnection::setUri( const QgsDataSourceUri &uri )
 {
   mUri = uri;
+}
+
+
+//
+// QgsGeoNodeConnectionUtils
+//
+
+
+QStringList QgsGeoNodeConnectionUtils::connectionList()
+{
+  QgsSettings settings;
+  // Add Section manually
+  settings.beginGroup( QStringLiteral( "providers/qgis/connections-geonode" ) );
+  return settings.childGroups();
+}
+
+void QgsGeoNodeConnectionUtils::deleteConnection( const QString &name )
+{
+  QgsSettings settings;
+  // Add Section manually
+  settings.remove( QStringLiteral( "providers/qgis/connections-geonode/" ) + name );
+  settings.remove( QStringLiteral( "providers/qgis/geonode/" ) + name );
+}
+
+QString QgsGeoNodeConnectionUtils::selectedConnection()
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "qgis/connections-geonode/selected" ), QString(), QgsSettings::Providers ).toString();
+}
+
+void QgsGeoNodeConnectionUtils::setSelectedConnection( const QString &name )
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "qgis/connections-geonode/selected" ), name, QgsSettings::Providers );
+}
+
+QString QgsGeoNodeConnectionUtils::pathGeoNodeConnection()
+{
+  return sPathGeoNodeConnection;
+}
+
+QString QgsGeoNodeConnectionUtils::pathGeoNodeConnectionDetails()
+{
+  return sPathGeoNodeConnectionDetails;
 }
