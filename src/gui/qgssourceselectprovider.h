@@ -27,7 +27,7 @@ class QString;
 class QWidget;
 
 /** \ingroup gui
- * This is the interface for those who want to add entries to the \see QgsDataSourceManagerDialog
+ * This is the interface for those who want to add entries to the QgsDataSourceManagerDialog
  *
  * \since QGIS 3.0
  */
@@ -50,10 +50,14 @@ class GUI_EXPORT QgsSourceSelectProvider
     //! Text for the menu item entry, it will be visible to the user so make sure it's translatable
     virtual QString text() const = 0;
 
-    /** Creates a new instance of an QIcon for the menu item entry
-     * Caller takes responsibility of deleting created.
+    /** Text for the tooltip menu item entry, it will be visible to the user so make sure it's translatable
+     *
+     * The default implementation returns an empty string.
      */
-    virtual QIcon icon() const = 0 SIP_FACTORY;
+    virtual QString toolTip() const { return QString(); }
+
+    //! Creates a new instance of an QIcon for the menu item entry
+    virtual QIcon icon() const = 0;
 
     /** Ordering: the source select provider registry will be able to sort
      * the source selects (ascending) using this integer value
