@@ -29,13 +29,19 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsGeometry, QgsFeatureRequest, QgsProcessingUtils
+from qgis.core import (QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsProcessingUtils,
+                       QgsProcessing,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingOutputVectorLayer,
+                       QgsVectorLayer)
+
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
 from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -63,32 +69,43 @@ class SelectByLocation(QgisAlgorithm):
         self.predicates = (
             ('intersects', self.tr('intersects')),
             ('contains', self.tr('contains')),
-            ('disjoint', self.tr('disjoint')),
-            ('equals', self.tr('equals')),
+            ('disjoint', self.tr('is disjoint')),
+            ('isEqual', self.tr('equals')),
             ('touches', self.tr('touches')),
             ('overlaps', self.tr('overlaps')),
             ('within', self.tr('within')),
             ('crosses', self.tr('crosses')))
 
+        self.reversed_predicates = {'intersects': 'intersects',
+                                    'contains': 'within',
+                                    'disjoint': 'disjoint',
+                                    'isEqual': 'isEqual',
+                                    'touches': 'touches',
+                                    'overlaps': 'overlaps',
+                                    'within': 'contains',
+                                    'crosses': 'crosses'}
+
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
+                        self.tr('select within current selection'),
                         self.tr('removing from current selection')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Layer to select from')))
-        self.addParameter(ParameterVector(self.INTERSECT,
-                                          self.tr('Additional layer (intersection layer)')))
-        self.addParameter(ParameterSelection(self.PREDICATE,
-                                             self.tr('Geometric predicate'),
-                                             self.predicates,
-                                             multiple=True))
-        self.addParameter(ParameterNumber(self.PRECISION,
-                                          self.tr('Precision'),
-                                          0.0, None, 0.0))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Modify current selection by'),
-                                             self.methods, 0))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Select features from'), types=[QgsProcessing.TypeVectorAnyGeometry]))
+        self.addParameter(QgsProcessingParameterEnum(self.PREDICATE,
+                                                     self.tr('Where the features are (geometric predicate)'),
+                                                     options=[p[1] for p in self.predicates],
+                                                     allowMultiple=True, defaultValue=[0]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INTERSECT,
+                                                              self.tr('By comparing to the features from'), types=[QgsProcessing.TypeVectorAnyGeometry]))
+        self.addParameter(QgsProcessingParameterNumber(self.PRECISION,
+                                                       self.tr('Precision'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Modify current selection by'),
+                                                     options=self.methods, defaultValue=0))
+
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Selected (by location)')))
 
     def name(self):
         return 'selectbylocation'
@@ -97,60 +114,61 @@ class SelectByLocation(QgisAlgorithm):
         return self.tr('Select by location')
 
     def processAlgorithm(self, parameters, context, feedback):
-        filename = self.getParameterValue(self.INPUT)
-        inputLayer = QgsProcessingUtils.mapLayerFromString(filename, context)
-        method = self.getParameterValue(self.METHOD)
-        filename2 = self.getParameterValue(self.INTERSECT)
-        selectLayer = QgsProcessingUtils.mapLayerFromString(filename2, context)
-        predicates = self.getParameterValue(self.PREDICATE)
-        precision = self.getParameterValue(self.PRECISION)
-
-        oldSelection = set(inputLayer.selectedFeatureIds())
-        inputLayer.removeSelection()
-        index = QgsProcessingUtils.createSpatialIndex(inputLayer, context)
+        select_layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        method = QgsVectorLayer.SelectBehavior(self.parameterAsEnum(parameters, self.METHOD, context))
+        intersect_source = self.parameterAsSource(parameters, self.INTERSECT, context)
+        # build a list of 'reversed' predicates, because in this function
+        # we actually test the reverse of what the user wants (allowing us
+        # to prepare geometries and optimise the algorithm)
+        predicates = [self.reversed_predicates[self.predicates[i][0]] for i in self.parameterAsEnums(parameters, self.PREDICATE, context)]
+        precision = self.parameterAsDouble(parameters, self.PRECISION, context)
 
         if 'disjoint' in predicates:
-            disjoinSet = []
-            for feat in QgsProcessingUtils.getFeatures(inputLayer, context):
-                disjoinSet.append(feat.id())
+            disjoint_set = select_layer.allFeatureIds()
+        else:
+            disjoint_set = None
 
-        geom = QgsGeometry()
-        selectedSet = []
-        features = QgsProcessingUtils.getFeatures(selectLayer, context)
-        total = 100.0 / selectLayer.featureCount() if selectLayer.featureCount() else 0
+        selected_set = set()
+        request = QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(select_layer.crs())
+        features = intersect_source.getFeatures(request)
+        total = 100.0 / intersect_source.featureCount() if intersect_source.featureCount() else 0
         for current, f in enumerate(features):
-            geom = vector.snapToPrecision(f.geometry(), precision)
-            bbox = geom.boundingBox()
+            if feedback.isCanceled():
+                break
+
+            if not f.hasGeometry():
+                continue
+
+            engine = QgsGeometry.createGeometryEngine(f.geometry().geometry())
+            engine.prepareGeometry()
+            bbox = f.geometry().boundingBox()
             bbox.grow(0.51 * precision)
-            intersects = index.intersects(bbox)
 
-            request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
-            for feat in inputLayer.getFeatures(request):
-                tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
+            request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setFilterRect(bbox).setSubsetOfAttributes([])
+            for test_feat in select_layer.getFeatures(request):
+                if feedback.isCanceled():
+                    break
 
-                res = False
+                if test_feat in selected_set:
+                    # already added this one, no need for further tests
+                    continue
+
                 for predicate in predicates:
                     if predicate == 'disjoint':
-                        if tmpGeom.intersects(geom):
+                        if test_feat.geometry().intersects(f.geometry()):
                             try:
-                                disjoinSet.remove(feat.id())
+                                disjoint_set.remove(test_feat.id())
                             except:
                                 pass  # already removed
                     else:
-                        res = getattr(tmpGeom, predicate)(geom)
-                        if res:
-                            selectedSet.append(feat.id())
+                        if getattr(engine, predicate)(test_feat.geometry().geometry()):
+                            selected_set.add(test_feat.id())
                             break
 
             feedback.setProgress(int(current * total))
 
         if 'disjoint' in predicates:
-            selectedSet = selectedSet + disjoinSet
+            selected_set = list(selected_set) + disjoint_set
 
-        if method == 1:
-            selectedSet = list(oldSelection.union(selectedSet))
-        elif method == 2:
-            selectedSet = list(oldSelection.difference(selectedSet))
-
-        inputLayer.selectByIds(selectedSet)
-        self.setOutputValue(self.OUTPUT, filename)
+        select_layer.selectByIds(list(selected_set), method)
+        return {self.OUTPUT: parameters[self.INPUT]}
