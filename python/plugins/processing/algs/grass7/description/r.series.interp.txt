@@ -1,7 +1,7 @@
 r.series.interp
 Interpolates raster maps located (temporal or spatial) in between input raster maps at specific sampling positions.
 Raster (r.*)
-QgsProcessingParameterMultipleLayers|input|Input raster layer(s)|3.0|None|False
+QgsProcessingParameterMultipleLayers|input|Input raster layer(s)|3|None|False
 QgsProcessingParameterString|datapos|Data point position for each input map|None|True|True
 QgsProcessingParameterFile|infile|Input file with one input raster map name and data point position per line, field separator between name and sample point is '|'|True
 QgsProcessingParameterString|output|Name for output raster map (comma separated list if multiple|None|False|True

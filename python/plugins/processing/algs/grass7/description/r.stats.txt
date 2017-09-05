@@ -1,7 +1,7 @@
 r.stats
 Generates area statistics for raster layers.
 Raster (r.*)
-QgsProcessingParameterMultipleLayers|input|Name of input raster map|3.0|None|False
+QgsProcessingParameterMultipleLayers|input|Name of input raster map|3|None|False
 QgsProcessingParameterString|separator|Output field separator|space
 QgsProcessingParameterString|nv|String representing no data cell value|*
 QgsProcessingParameterString|nsteps|Number of fp subranges to collect stats from|255

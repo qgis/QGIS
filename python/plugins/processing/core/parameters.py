@@ -49,8 +49,11 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterCrs,
                        QgsProcessingParameterRange,
+                       QgsProcessingParameterPoint,
                        QgsProcessingParameterEnum,
+                       QgsProcessingParameterExtent,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterField,
@@ -605,11 +608,20 @@ def getParameterFromString(s):
                     params[2] = True if params[2].lower() == 'true' else False
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterPoint:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterCrs:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterRange:
                 if len(params) > 2:
                     params[2] = QgsProcessingParameterNumber.Integer if params[2].lower().endswith('integer') else QgsProcessingParameterNumber.Double
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterExtent:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterEnum:
                 if len(params) > 2:
                     params[2] = params[2].split(';')

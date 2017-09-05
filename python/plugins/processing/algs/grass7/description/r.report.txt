@@ -1,10 +1,10 @@
 r.report
 Reports statistics for raster layers.
 Raster (r.*)
-QgsProcessingParameterMultipleLayers|map|Raster layer(s) to report on|3.0|None|False
-QgsProcessingParameterEnum|units|Units|mi;me;k;a;h;c;p
-QgsProcessingParameterString|null_value|Character representing no data cell value|*
-QgsProcessingParameterNumber|nsteps|Number of fp subranges to collect stats from|QgsProcessingParameterNumber.Double|255|False|None|1
+QgsProcessingParameterMultipleLayers|map|Raster layer(s) to report on|3|None|False
+QgsProcessingParameterEnum|units|Units|mi;me;k;a;h;c;p|False|1|True
+QgsProcessingParameterString|null_value|Character representing no data cell value|*|True
+QgsProcessingParameterNumber|nsteps|Number of fp subranges to collect stats from|QgsProcessingParameterNumber.Double|255|True|1|None
 QgsProcessingParameterBoolean|-h|Suppress page headers|True
 QgsProcessingParameterBoolean|-f|Use formfeeds between pages|True
 QgsProcessingParameterBoolean|-e|Scientific format|True
