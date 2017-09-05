@@ -115,6 +115,18 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   mRequestedSrid = mUri.srid();
   mRequestedGeomType = mUri.wkbType();
 
+  if ( mUri.hasParam( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
+  {
+    if ( mUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).compare( "0" )  == 0 )
+    {
+      mCheckPrimaryKeyUnicity = false;
+    }
+    else
+    {
+      mCheckPrimaryKeyUnicity = true;
+    }
+  }
+
   if ( mSchemaName.isEmpty() && mTableName.startsWith( '(' ) && mTableName.endsWith( ')' ) )
   {
     mIsQuery = true;
@@ -1325,9 +1337,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
       }
       else if ( type == Relkind::View || type == Relkind::MaterializedView )
       {
-        QgsSettings settings;
-        bool checkPrimaryKeyUnicity = !settings.value( QStringLiteral( "/qgis/trustProject" ), false ).toBool();
-        determinePrimaryKeyFromUriKeyColumn( checkPrimaryKeyUnicity );
+        determinePrimaryKeyFromUriKeyColumn();
       }
       else
       {
@@ -1456,7 +1466,7 @@ QStringList QgsPostgresProvider::parseUriKey( const QString &key )
   return cols;
 }
 
-void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn( bool checkPrimaryKeyUnicity )
+void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
 {
   QString primaryKey = mUri.keyColumn();
   mPrimaryKeyType = PktUnknown;
@@ -1489,8 +1499,10 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn( bool checkPrimary
     if ( !mPrimaryKeyAttrs.isEmpty() )
     {
       bool unique = true;
-      if ( checkPrimaryKeyUnicity )
+      if ( mCheckPrimaryKeyUnicity )
+      {
         unique = uniqueData( primaryKey );
+      }
 
       if ( mUseEstimatedMetadata || unique )
       {

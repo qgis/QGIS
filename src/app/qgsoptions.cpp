@@ -635,7 +635,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxAddOracleDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addOracleDC" ), false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( mSettings->value( QStringLiteral( "/qgis/createRasterLegendIcons" ), false ).toBool() );
-  cbxTrustProject->setChecked( mSettings->value( QStringLiteral( "/qgis/trustProject" ), false ).toBool() );
 
   mComboCopyFeatureFormat->addItem( tr( "Plain text, no geometry" ), QgsClipboard::AttributesOnly );
   mComboCopyFeatureFormat->addItem( tr( "Plain text, WKT geometry" ), QgsClipboard::AttributesWithWKT );
@@ -1226,7 +1225,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/addPostgisDC" ), cbxAddPostgisDC->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/addOracleDC" ), cbxAddOracleDC->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/compileExpressions" ), cbxCompileExpressions->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/trustProject" ), cbxTrustProject->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = mSettings->value( QStringLiteral( "/qgis/createRasterLegendIcons" ), false ).toBool();
   mSettings->setValue( QStringLiteral( "/qgis/createRasterLegendIcons" ), cbxCreateRasterLegendIcons->isChecked() );

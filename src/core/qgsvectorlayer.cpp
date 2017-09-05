@@ -803,7 +803,8 @@ QgsRectangle QgsVectorLayer::extent() const
   if ( !isSpatial() )
     return rect;
 
-  if ( !mValidExtent && mDataProvider && !mDataProvider->hasMetadata() && mReadExtentFromXml && !mXmlExtent.isNull() )
+
+  if ( !mValidExtent && mLazyExtent && mDataProvider && !mDataProvider->hasMetadata() && mReadExtentFromXml && !mXmlExtent.isNull() )
   {
     mExtent = mXmlExtent;
     mValidExtent = true;
@@ -1498,12 +1499,28 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
 bool QgsVectorLayer::setDataProvider( QString const &provider )
 {
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
+
+  // primary key unicity is tested at construction time, so it has to be set
+  // before initializing postgres provider
+  QString checkUnicityKey = QStringLiteral( "checkPrimaryKeyUnicity" );
+  QString dataSource = mDataSource;
+  if ( provider.compare( QLatin1String( "postgres" ) ) == 0 )
+  {
+    QgsDataSourceUri uri( dataSource );
+
+    if ( uri.hasParam( checkUnicityKey ) )
+      uri.removeParam( checkUnicityKey );
+
+    uri.setParam( checkUnicityKey, mReadExtentFromXml ? "0" : "1" );
+    dataSource = uri.uri( false );
+  }
+
   // XXX when execution gets here.
 
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
   delete mDataProvider;
-  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider( provider, mDataSource ) );
+  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider( provider, dataSource ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( " unable to get data provider" );
@@ -1559,7 +1576,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
     QgsDebugMsg( "Beautified layer name " + name() );
 
     // deal with unnecessary schema qualification to make v.in.ogr happy
-    mDataSource = mDataProvider->dataSourceUri();
+    // and remove unnecessary key
+    QgsDataSourceUri dataProviderUri( mDataProvider->dataSourceUri() );
+    if ( dataProviderUri.hasParam( checkUnicityKey ) )
+      dataProviderUri.removeParam( checkUnicityKey );
+    mDataSource = dataProviderUri.uri( false );
   }
   else if ( mProviderKey == QLatin1String( "osm" ) )
   {

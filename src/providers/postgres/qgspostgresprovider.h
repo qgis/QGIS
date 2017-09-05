@@ -133,7 +133,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Fills mPrimaryKeyType and mPrimaryKeyAttrs
      * from mUri
      */
-    void determinePrimaryKeyFromUriKeyColumn( bool checkPrimaryKeyUnicity = true );
+    void determinePrimaryKeyFromUriKeyColumn();
 
     QgsFields fields() const override;
     QString dataComment() const override;
@@ -432,6 +432,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setTransaction( QgsTransaction *transaction ) override;
 
     QHash<int, QString> mDefaultValues;
+
+    bool mCheckPrimaryKeyUnicity = true;
 };
 
 

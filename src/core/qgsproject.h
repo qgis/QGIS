@@ -755,6 +755,30 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
+    /**
+     * Sets the trust option allowing to indicate if the extent has to be
+     * read from the XML document when data source has no metadata or if the
+     * data provider has to determine it. Moreover, when this option is
+     * activated, primary key unicity is not checked for views and
+     * materialized views with Postgres provider.
+     *
+     * \param trust True to trust the project, false otherwise
+     *
+     * \since QGIS 3.0
+     */
+    void setTrust( bool trust );
+
+    /**
+     * Returns true if the trust option is activated, false otherwise. This
+     * option allows indicateing if the extent has to be read from the XML
+     * document when data source has no metadata or if the data provider has
+     * to determine it. Moreover, when this option is activated, primary key
+     * unicity is not checked for views and materialized views with Postgres
+     * provider.
+     *
+     * \since QGIS 3.0
+     */
+    bool trust() const { return mTrust; }
 
   signals:
     //! emitted when project is being read
@@ -1083,6 +1107,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mEvaluateDefaultValues; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty;                 // project has been modified since it has been read or saved
+    bool mTrust = false;
 };
 
 /** Return the version string found in the given DOM document
