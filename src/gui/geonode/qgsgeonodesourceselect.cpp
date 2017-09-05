@@ -199,7 +199,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
   if ( !layers.empty() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Success, non empty layers %1" ).arg( layers.count( ) ), tr( "GeoNode" ) );
+    QgsDebugMsg( QStringLiteral( "Success, non empty layers %1" ).arg( layers.count( ) ) );
   }
   else
   {
@@ -479,7 +479,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       uri += QStringLiteral( " table=\"\"" );
       uri += QStringLiteral( " sql=" );
 
-      QgsMessageLog::logMessage( "Add WFS from GeoNode : " + uri + " and typename: " + typeName, tr( "GeoNode" ) );
+      QgsDebugMsg( "Add WFS from GeoNode : " + uri + " and typename: " + typeName );
       emit addWfsLayer( uri, typeName, "WFS" );
     }
     else if ( webServiceType == "XYZ" )
