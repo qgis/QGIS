@@ -39,6 +39,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsnewauxiliarylayerdialog.h"
+#include "qgsnewauxiliaryfielddialog.h"
 #include "qgsauxiliarystorage.h"
 
 #include <QAbstractButton>
@@ -133,11 +134,19 @@ void QgsSymbolLayerWidget::createAuxiliaryField()
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
   QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
-  const QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
+  QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
 
   // create property in auxiliary storage if necessary
   if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
-    mVectorLayer->auxiliaryLayer()->addAuxiliaryField( def );
+  {
+    QgsNewAuxiliaryFieldDialog dlg( def, mVectorLayer, true, this );
+    if ( dlg.exec() == QDialog::Accepted )
+      def = dlg.propertyDefinition();
+  }
+
+  // return if still not exist
+  if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
+    return;
 
   // update property with join field name from auxiliary storage
   QgsProperty property = button->toProperty();

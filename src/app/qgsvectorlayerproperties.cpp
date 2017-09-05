@@ -58,6 +58,7 @@
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgslabelinggui.h"
+#include "qgssymbollayer.h"
 
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
@@ -1532,7 +1533,9 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
 
         item->setText( 0, prop.origin() );
         item->setText( 1, prop.name() );
-        item->setText( 2, field.typeName() );
+        item->setText( 2, prop.comment() );
+        item->setText( 3, field.typeName() );
+        item->setText( 4, field.name() );
 
         mAuxiliaryStorageFieldsTree->addTopLevelItem( item );
       }
@@ -1653,6 +1656,7 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
   QgsPropertyDefinition def;
   def.setOrigin( item->text( 0 ) );
   def.setName( item->text( 1 ) );
+  def.setComment( item->text( 2 ) );
 
   const QString fieldName = QgsAuxiliaryField::nameFromProperty( def );
 
@@ -1680,14 +1684,20 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
   if ( !mLayer->auxiliaryLayer() )
     return;
 
-  int key = mLayer->auxiliaryLayer()->propertyFromField( index );
+  int key = mLayer->auxiliaryLayer()->propertyFromIndex( index );
+  QgsPropertyDefinition def = mLayer->auxiliaryLayer()->propertyDefinitionFromIndex( index );
+
   if ( mLayer->auxiliaryLayer()->deleteAttribute( index ) )
   {
     mLayer->updateFields();
 
     // immediately deactivate data defined button
-    if ( labelingDialog && labelingDialog->labelingGui() )
+    if ( key >= 0 && def.origin().compare( "labeling", Qt::CaseInsensitive ) == 0
+         && labelingDialog
+         && labelingDialog->labelingGui() )
+    {
       labelingDialog->labelingGui()->deactivateField( ( QgsPalLayerSettings::Property ) key );
+    }
 
     updateAuxiliaryStoragePage( true );
     mFieldsPropertiesDialog->init();

@@ -238,7 +238,16 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \since QGIS 3.0
      */
-    int propertyFromField( int index ) const;
+    int propertyFromIndex( int index ) const;
+
+    /**
+     * Returns the property definition fir the underlying field index.
+     *
+     * \param index The index of the field
+     *
+     * \since QGIS 3.0
+     */
+    QgsPropertyDefinition propertyDefinitionFromIndex( int index ) const;
 
     /**
      * Create if necessary a new auxiliary field for a PAL property and

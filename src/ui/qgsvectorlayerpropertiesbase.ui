@@ -2193,7 +2193,17 @@ border-radius: 2px;</string>
                  </column>
                  <column>
                   <property name="text">
+                   <string>Name</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
                    <string>Type</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Full Name</string>
                   </property>
                  </column>
                 </widget>

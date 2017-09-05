@@ -116,8 +116,9 @@ class CORE_EXPORT QgsPropertyDefinition
      * \param description can be any localised string describing what the property is used for.
      * \param type one of the predefined standard property template
      * \param origin The origin of the property
+     * \param comment A free comment for the property
      */
-    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QString() );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QString(), const QString &comment = QString() );
 
     /**
      * Constructor for custom QgsPropertyDefinitions.
@@ -127,8 +128,9 @@ class CORE_EXPORT QgsPropertyDefinition
      * \param helpText parameter should specify a descriptive string for users outlining the types
      * of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
      * \param origin The origin of the property
+     * \param comment A free comment for the property
      */
-    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QString() );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QString(), const QString &comment = QString() );
 
     /**
      * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
@@ -154,6 +156,16 @@ class CORE_EXPORT QgsPropertyDefinition
      * Descriptive name of the property.
      */
     QString description() const { return mDescription; }
+
+    /**
+     * Returns the comment of the property
+     */
+    QString comment() const { return mComment; }
+
+    /**
+     * Sets comment of the property
+     */
+    void setComment( const QString &comment ) { mComment = comment; }
 
     /**
      * Helper text for using the property, including a description of the valid values for the property.
@@ -185,6 +197,7 @@ class CORE_EXPORT QgsPropertyDefinition
     QString mHelpText;
     StandardPropertyTemplate mStandardType = Custom;
     QString mOrigin;
+    QString mComment;
 
     static QString trString();
 };

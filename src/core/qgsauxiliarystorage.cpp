@@ -110,6 +110,11 @@ QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
     }
   }
 
+  if ( parts.size() == 3 )
+  {
+    def.setComment( parts[2] );
+  }
+
   if ( !def.name().isEmpty() )
   {
     init( def );
@@ -162,7 +167,10 @@ bool QgsAuxiliaryLayer::clear()
 
 QString QgsAuxiliaryField::nameFromProperty( const QgsPropertyDefinition &def, bool joined )
 {
-  QString fieldName = QString( "%2_%3" ).arg( def.origin(), def.name().toLower() );
+  QString fieldName = QString( "%1_%2" ).arg( def.origin(), def.name().toLower() );
+
+  if ( !def.comment().isEmpty() )
+    fieldName = QString( "%1_%2" ).arg( fieldName ).arg( def.comment() );
 
   if ( joined )
     fieldName = QString( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
@@ -405,7 +413,7 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
   return hidden;
 }
 
-int QgsAuxiliaryLayer::propertyFromField( int index ) const
+int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
 {
   int p = -1;
   QgsAuxiliaryField aField( fields().field( index ) );
@@ -424,8 +432,26 @@ int QgsAuxiliaryLayer::propertyFromField( int index ) const
       }
     }
   }
+  else if ( aDef.origin().compare( "symbol" ) == 0 )
+  {
+    const QgsPropertiesDefinition defs = QgsSymbolLayer::propertyDefinitions();
+    QgsPropertiesDefinition::const_iterator it = defs.constBegin();
+    for ( ; it != defs.constEnd(); ++it )
+    {
+      if ( it->name().compare( aDef.name(), Qt::CaseInsensitive ) == 0 )
+      {
+        p = it.key();
+        break;
+      }
+    }
+  }
 
   return p;
+}
+
+QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromIndex( int index ) const
+{
+  return QgsAuxiliaryField( fields().field( index ) ).propertyDefinition();
 }
 
 int QgsAuxiliaryLayer::indexOfProperty( const QgsPropertyDefinition &def ) const

@@ -211,7 +211,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  :rtype: int
 %End
 
-    int propertyFromField( int index ) const;
+    int propertyFromIndex( int index ) const;
 %Docstring
  Returns the underlying property key for the field index. The key may be
  a PAL, diagram or symbology property according to the underlying
@@ -222,6 +222,16 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
 .. versionadded:: 3.0
  :rtype: int
+%End
+
+    QgsPropertyDefinition propertyDefinitionFromIndex( int index ) const;
+%Docstring
+ Returns the property definition fir the underlying field index.
+
+ \param index The index of the field
+
+.. versionadded:: 3.0
+ :rtype: QgsPropertyDefinition
 %End
 
     static int createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *vlayer );
