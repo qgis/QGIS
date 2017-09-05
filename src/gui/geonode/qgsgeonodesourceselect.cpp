@@ -74,23 +74,21 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
 
 void QgsGeoNodeSourceSelect::addConnectionsEntryList()
 {
-  QgsGeoNodeNewConnection *nc = new QgsGeoNodeNewConnection( this );
+  QgsGeoNodeNewConnection nc( this );
 
-  if ( nc->exec() )
+  if ( nc.exec() )
   {
     populateConnectionList();
     emit connectionsChanged();
   }
-
-  delete nc;
 }
 
 void QgsGeoNodeSourceSelect::modifyConnectionsEntryList()
 {
-  QgsGeoNodeNewConnection *nc = new QgsGeoNodeNewConnection( this, cmbConnections->currentText() );
-  nc->setWindowTitle( tr( "Modify GeoNode connection" ) );
+  QgsGeoNodeNewConnection nc( this, cmbConnections->currentText() );
+  nc.setWindowTitle( tr( "Modify GeoNode connection" ) );
 
-  if ( nc->exec() )
+  if ( nc.exec() )
   {
     populateConnectionList();
     emit connectionsChanged();
