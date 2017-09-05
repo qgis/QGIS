@@ -150,11 +150,11 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   QApplication::setOverrideCursor( Qt::BusyCursor );
   QgsGeoNodeConnection connection( cmbConnections->currentText() );
 
-  QString url = connection.uri().param( "url" );
+  QString url = connection.uri().param( QStringLiteral( "url" ) );
   QgsGeoNodeRequest geonodeRequest( url, true );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
+  const QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
   QApplication::restoreOverrideCursor();
 
   if ( !layers.empty() )
@@ -173,7 +173,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
   if ( !layers.isEmpty() )
   {
-    Q_FOREACH ( const QgsServiceLayerDetail &layer, layers )
+    for ( const QgsServiceLayerDetail &layer : layers )
     {
       QUuid uuid = layer.uuid;
 
@@ -181,11 +181,11 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
       QString wfsURL = layer.wfsURL;
       QString xyzURL = layer.xyzURL;
 
-      if ( wmsURL.length() > 0 )
+      if ( !wmsURL.isEmpty() )
       {
         QStandardItem *titleItem = new QStandardItem( layer.title );
         QStandardItem *nameItem;
-        if ( layer.name > 0 )
+        if ( !layer.name.isEmpty() )
         {
           nameItem = new QStandardItem( layer.name );
         }
@@ -206,13 +206,13 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
       }
       else
       {
-        qDebug() << "Layer " << layer.title << " does not have WMS url.";
+        QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have WMS url." ).arg( layer.title ), 3 );
       }
-      if ( wfsURL.length() > 0 )
+      if ( !wfsURL.isEmpty() )
       {
         QStandardItem *titleItem = new QStandardItem( layer.title );
         QStandardItem *nameItem;
-        if ( layer.name.length() > 0 )
+        if ( !layer.name.isEmpty() )
         {
           nameItem = new QStandardItem( layer.name );
         }
@@ -233,13 +233,13 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
       }
       else
       {
-        qDebug() << "Layer " << layer.title << " does not have WFS url.";
+        QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have WFS url." ).arg( layer.title ), 3 );
       }
-      if ( xyzURL.length() > 0 )
+      if ( !xyzURL.isEmpty() )
       {
         QStandardItem *titleItem = new QStandardItem( layer.title );
         QStandardItem *nameItem;
-        if ( layer.name.length() > 0 )
+        if ( !layer.name.isEmpty() )
         {
           nameItem = new QStandardItem( layer.name );
         }
@@ -260,18 +260,14 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
       }
       else
       {
-        qDebug() << "Layer " << layer.title << " does not have XYZ url.";
+        QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have XYZ url." ).arg( layer.title ), 3 );
       }
     }
   }
 
   else
   {
-    QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Error" ), tr( "Cannot get any feature services" ), QMessageBox::Ok, this );
-    box->setAttribute( Qt::WA_DeleteOnClose );
-    box->setModal( true );
-    box->setObjectName( QStringLiteral( "GeonodeCapabilitiesErrorBox" ) );
-    box->open();
+    QMessageBox::critical( this, tr( "Connect to GeoNode" ), tr( "Cannot get any feature services" ) );
   }
 
   treeView->resizeColumnToContents( MODEL_IDX_TITLE );
@@ -297,7 +293,7 @@ void QgsGeoNodeSourceSelect::saveGeonodeConnection()
 void QgsGeoNodeSourceSelect::loadGeonodeConnection()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -323,7 +319,6 @@ void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
   {
-    qDebug() << "Current index is invalid";
     return;
   }
   addButton()->setEnabled( false );
@@ -349,17 +344,14 @@ void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
 
 void QgsGeoNodeSourceSelect::addButtonClicked()
 {
-  qDebug() << "Add button clicked";
   QApplication::setOverrideCursor( Qt::BusyCursor );
   // Get selected entry in treeview
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( !currentIndex.isValid() )
   {
-    qDebug() << "Current index is invalid";
     return;
   }
 
-  QgsGeoNodeConnection connection( cmbConnections->currentText() );
   QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < modelIndexList.size(); i++ )
   {
@@ -370,12 +362,9 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     }
     int row = idx.row();
 
-    qDebug() << "Model index row " << row;
-
     QString typeItem = mModel->item( row, MODEL_IDX_TYPE )->text();
     if ( typeItem == tr( "Map" ) )
     {
-      qDebug() << "Skip adding map.";
       continue;
     }
     QString serviceURL = mModel->item( row, MODEL_IDX_TITLE )->data( Qt::UserRole + 2 ).toString();
@@ -388,19 +377,16 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       QString layerName = titleName;
     }
 
-    qDebug() << "Layer name: " << layerName << " Type: " << webServiceType;
-
-    if ( webServiceType == "WMS" )
+    if ( webServiceType == QStringLiteral( "WMS" ) )
     {
-      qDebug() << "Adding WMS layer of " << layerName;
       QgsDataSourceUri uri;
       uri.setParam( QStringLiteral( "url" ), serviceURL );
 
       // Set static first, to see that it works. Need to think about the UI also.
-      QString format( "image/png" );
-      QString crs( "EPSG:4326" );
-      QString styles( "" );
-      QString contextualWMSLegend( "0" );
+      QString format( QStringLiteral( "image/png" ) );
+      QString crs( QStringLiteral( "EPSG:4326" ) );
+      QString styles;
+      QString contextualWMSLegend( QStringLiteral( "0" ) );
 
       uri.setParam( QStringLiteral( "contextualWMSLegend" ), contextualWMSLegend );
       uri.setParam( QStringLiteral( "layers" ), layerName );
@@ -411,13 +397,11 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       QgsDebugMsg( "Add WMS from GeoNode : " + uri.encodedUri() );
       emit addRasterLayer( uri.encodedUri(), layerName, QStringLiteral( "wms" ) );
     }
-    else if ( webServiceType == "WFS" )
+    else if ( webServiceType == QStringLiteral( "WFS" ) )
     {
-      qDebug() << "Adding WFS layer of " << layerName;
-
       // Set static first, to see that it works. Need to think about the UI also.
       QString typeName = mModel->item( row, 0 )->data( Qt::UserRole + 3 ).toString();
-      QString crs( "EPSG:4326" );
+      QString crs( QStringLiteral( "EPSG:4326" ) );
 
       // typeName, titleName, sql,
       // Build url for WFS
@@ -425,10 +409,10 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       QString uri;
       uri += QStringLiteral( " restrictToRequestBBOX='1'" );
       uri += QStringLiteral( " srsname='%1'" ).arg( crs );
-      if ( serviceURL.contains( "qgis-server" ) )
+      if ( serviceURL.contains( QStringLiteral( "qgis-server" ) ) )
       {
         // I need to do this since the typename used in qgis-server is without the workspace.
-        QString qgisServerTypeName = QString( typeName ).split( ":" ).last();
+        QString qgisServerTypeName = QString( typeName ).split( ':' ).last();
         uri += QStringLiteral( " typename='%1'" ).arg( qgisServerTypeName );
       }
       else
@@ -442,7 +426,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       QgsDebugMsg( "Add WFS from GeoNode : " + uri + " and typename: " + typeName );
       emit addVectorLayer( uri, typeName, QStringLiteral( "WFS" ) );
     }
-    else if ( webServiceType == "XYZ" )
+    else if ( webServiceType == QStringLiteral( "XYZ" ) )
     {
       QgsDebugMsg( "XYZ Url: " + serviceURL );
       QgsDebugMsg( "Add XYZ from GeoNode : " + serviceURL );
