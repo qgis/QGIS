@@ -502,5 +502,6 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection2.pageStyleSymbol().symbolLayer(0).color().name(), '#00ff00')
         self.assertEqual(collection2.pageStyleSymbol().symbolLayer(0).strokeColor().name(), '#ff0000')
 
+
 if __name__ == '__main__':
     unittest.main()

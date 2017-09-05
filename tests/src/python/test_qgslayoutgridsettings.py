@@ -72,5 +72,6 @@ class TestQgsLayoutGridSettings(unittest.TestCase):
         self.assertEqual(s2.offset().y(), 7.0)
         self.assertEqual(s2.offset().units(), QgsUnitTypes.LayoutPixels)
 
+
 if __name__ == '__main__':
     unittest.main()
