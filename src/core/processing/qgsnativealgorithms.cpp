@@ -25,6 +25,8 @@
 #include "qgsgeometryengine.h"
 #include "qgswkbtypes.h"
 
+#include <functional>
+
 ///@cond PRIVATE
 
 QgsNativeAlgorithms::QgsNativeAlgorithms( QObject *parent )
@@ -62,6 +64,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsDissolveAlgorithm() );
+  addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsExtractByAttributeAlgorithm() );
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
@@ -243,7 +246,8 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
   return new QgsDissolveAlgorithm();
 }
 
-QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
+    std::function<QgsGeometry( const QList< QgsGeometry >& )> collector, int maxQueueLength )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -289,10 +293,10 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       if ( f.hasGeometry() && f.geometry() )
       {
         geomQueue.append( f.geometry() );
-        if ( geomQueue.length() > 10000 )
+        if ( maxQueueLength > 0 && geomQueue.length() > maxQueueLength )
         {
           // queue too long, combine it
-          QgsGeometry tempOutputGeometry = QgsGeometry::unaryUnion( geomQueue );
+          QgsGeometry tempOutputGeometry = collector( geomQueue );
           geomQueue.clear();
           geomQueue << tempOutputGeometry;
         }
@@ -302,7 +306,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       current++;
     }
 
-    outputFeature.setGeometry( QgsGeometry::unaryUnion( geomQueue ) );
+    outputFeature.setGeometry( collector( geomQueue ) );
     sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
   }
   else
@@ -355,7 +359,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       QgsFeature outputFeature;
       if ( geometryHash.contains( attrIt.key() ) )
       {
-        QgsGeometry geom = QgsGeometry::unaryUnion( geometryHash.value( attrIt.key() ) );
+        QgsGeometry geom = collector( geometryHash.value( attrIt.key() ) );
         if ( !geom.isMultipart() )
         {
           geom.convertToMultiType();
@@ -374,6 +378,23 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
+
+QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  return processCollection( parameters, context, feedback, []( const QList< QgsGeometry > &parts )->QgsGeometry
+  {
+    return QgsGeometry::unaryUnion( parts );
+  }, 10000 );
+}
+
+QVariantMap QgsCollectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  return processCollection( parameters, context, feedback, []( const QList< QgsGeometry > &parts )->QgsGeometry
+  {
+    return QgsGeometry::collectGeometry( parts );
+  } );
+}
+
 
 void QgsClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
@@ -1289,6 +1310,31 @@ QgsFeature QgsPromoteToMultipartAlgorithm::processFeature( const QgsFeature &fea
   }
   return f;
 }
+
+
+void QgsCollectAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID fields" ), QVariant(),
+                QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Collected" ) ) );
+}
+
+QString QgsCollectAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes a vector layer and collects its geometries into new multipart geometries. One or more attributes can "
+                      "be specified to collect only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
+                      "all geometries can be collected.\n\n"
+                      "All output geometries will be converted to multi geometries, even those with just a single part. "
+                      "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part." );
+}
+
+QgsCollectAlgorithm *QgsCollectAlgorithm::createInstance() const
+{
+  return new QgsCollectAlgorithm();
+}
+
 ///@endcond
 
 
