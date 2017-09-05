@@ -525,9 +525,6 @@ qgis:saveselectedfeatures: >
 qgis:selectbyattribute: >
   This algorithm creates a selection in a vector layer. The criteria for selected features is defined based on the values of an attribute from the input layer.
 
-qgis:selectbyattributesum:
-
-
 qgis:selectbyexpression: >
   This algorithm creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
 
