@@ -18,8 +18,8 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 
-const QString QgsGeoNodeConnection::mPathGeoNodeConnection = "qgis/connections-geonode";
-const QString QgsGeoNodeConnection::mPathGeoNodeConnectionDetails = "qgis/GeoNode";
+const QString QgsGeoNodeConnection::sPathGeoNodeConnection = "qgis/connections-geonode";
+const QString QgsGeoNodeConnection::sPathGeoNodeConnectionDetails = "qgis/GeoNode";
 
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &connName )
   : mConnName( connName )
@@ -93,12 +93,12 @@ void QgsGeoNodeConnection::setSelectedConnection( const QString &name )
 
 QString QgsGeoNodeConnection::pathGeoNodeConnection()
 {
-  return mPathGeoNodeConnection;
+  return sPathGeoNodeConnection;
 }
 
 QString QgsGeoNodeConnection::pathGeoNodeConnectionDetails()
 {
-  return mPathGeoNodeConnectionDetails;
+  return sPathGeoNodeConnectionDetails;
 }
 
 QString QgsGeoNodeConnection::connName() const

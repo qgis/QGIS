@@ -58,8 +58,8 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
 
   private:
     // Path in QSetting
-    static const QString mPathGeoNodeConnection;
-    static const QString mPathGeoNodeConnectionDetails;
+    static const QString sPathGeoNodeConnection;
+    static const QString sPathGeoNodeConnectionDetails;
 
     //! The connection name
     QString mConnName;
