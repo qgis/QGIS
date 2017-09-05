@@ -2683,7 +2683,7 @@ tests:
         name: expected/mean_coordinates.gml
         type: vector
 
-  - algorithm: qgis:singlepartstomultipart
+  - algorithm: native:collect
     name: single part to multipart
     params:
       FIELD: id
@@ -3393,3 +3393,86 @@ tests:
       OUTPUT:
         name: expected/convex_hull_by_feature.gml
         type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_lines.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart lines points
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_points.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart polygons
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_polys.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart (already multipart)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_already_multi.gml
+        type: vector
+
+  - algorithm: native:collect
+    name: Test (native:collect)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/collect_all.gml
+        type: vector
+
+  - algorithm: native:collect
+    name: Test (native:collect)
+    params:
+      FIELD:
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/collect_one_field.gml
+        type: vector
+
+  - algorithm: native:collect
+    name: Test (native:collect)
+    params:
+      FIELD:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/collect_two_fields.gml
+        type: vector
+

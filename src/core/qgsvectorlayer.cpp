@@ -3945,7 +3945,8 @@ QString QgsVectorLayer::htmlMetadata() const
   }
   else
   {
-    QString typeString( QgsWkbTypes::geometryDisplayString( geometryType() ) );
+    QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
+                        QgsWkbTypes::displayString( wkbType() ) ) );
     myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Geometry" ) % QLatin1String( "</td><td>" ) % typeString % QLatin1String( "</td></tr>\n" );
   }
 

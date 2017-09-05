@@ -132,9 +132,20 @@ class QgsBufferAlgorithm : public QgsProcessingAlgorithm
 };
 
 /**
+ * Base class for dissolve/collect type algorithms.
+ */
+class QgsCollectorAlgorithm : public QgsProcessingAlgorithm
+{
+  protected:
+
+    QVariantMap processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
+                                   std::function<QgsGeometry( const QList< QgsGeometry >& )> collector, int maxQueueLength = 0 );
+};
+
+/**
  * Native dissolve algorithm.
  */
-class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
+class QgsDissolveAlgorithm : public QgsCollectorAlgorithm
 {
 
   public:
@@ -147,6 +158,30 @@ class QgsDissolveAlgorithm : public QgsProcessingAlgorithm
     QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsDissolveAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
+/**
+ * Native collect geometries algorithm.
+ */
+class QgsCollectAlgorithm : public QgsCollectorAlgorithm
+{
+
+  public:
+
+    QgsCollectAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "collect" ); }
+    QString displayName() const override { return QObject::tr( "Collect geometries" ); }
+    virtual QStringList tags() const override { return QObject::tr( "union,combine,collect,multipart,parts,single" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsCollectAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
@@ -298,6 +333,29 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native promote to multipart algorithm.
+ */
+class QgsPromoteToMultipartAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsPromoteToMultipartAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "promotetomulti" ); }
+    QString displayName() const override { return QObject::tr( "Promote to multipart" ); }
+    virtual QStringList tags() const override { return QObject::tr( "multi,single,multiple,convert,force,parts" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsPromoteToMultipartAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Multiparts" ); }
+
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+};
 
 /**
  * Remove null geometry algorithm.

@@ -144,7 +144,6 @@ from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SimplifyGeometries import SimplifyGeometries
-from .SinglePartsToMultiparts import SinglePartsToMultiparts
 from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
 from .Smooth import Smooth
@@ -292,7 +291,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ShortestPathPointToLayer(),
                 ShortestPathPointToPoint(),
                 SimplifyGeometries(),
-                SinglePartsToMultiparts(),
                 SingleSidedBuffer(),
                 Slope(),
                 Smooth(),
