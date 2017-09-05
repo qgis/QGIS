@@ -39,26 +39,15 @@ enum
   MODEL_IDX_WEB_SERVICE
 };
 
-QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
-  : QDialog( parent, fl )
+QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
-
-  if ( embeddedMode != QgsProviderRegistry::WidgetMode::None )
-  {
-    // For some obscure reasons hiding does not work!
-    // buttonBox->button( QDialogButtonBox::Close )->hide();
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-  }
-
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
-
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGeoNodeSourceSelect::showHelp );
 
   populateConnectionList();
 
-  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGeoNodeSourceSelect::reject );
   connect( btnNew, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::addConnectionsEntryList );
   connect( btnEdit, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::modifyConnectionsEntryList );
   connect( btnDelete, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::deleteConnectionsEntryList );
@@ -67,7 +56,6 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
   connect( btnLoad, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::loadGeonodeConnection );
   connect( lineFilter, &QLineEdit::textChanged, this, &QgsGeoNodeSourceSelect::filterChanged );
   connect( treeView, &QTreeView::clicked, this, &QgsGeoNodeSourceSelect::treeViewSelectionChanged );
-  connect( mAddButton, &QPushButton::clicked, this, &QgsGeoNodeSourceSelect::addButtonClicked );
 
   mItemDelegate = new QgsGeonodeItemDelegate( treeView );
   treeView->setItemDelegate( mItemDelegate );
@@ -183,6 +171,12 @@ void QgsGeoNodeSourceSelect::setConnectionListPosition()
     btnDelete->setEnabled( true );
     btnSave->setEnabled( true );
   }
+}
+
+void QgsGeoNodeSourceSelect::showHelp()
+{
+  //TODO - correct URL
+  //QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#spatialite-layers" ) );
 }
 
 void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
@@ -366,7 +360,7 @@ void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
     qDebug() << "Current index is invalid";
     return;
   }
-  mAddButton->setEnabled( false );
+  addButton()->setEnabled( false );
   QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < modelIndexList.size(); i++ )
   {
@@ -380,7 +374,7 @@ void QgsGeoNodeSourceSelect::treeViewSelectionChanged()
     if ( typeItem == tr( "Layer" ) )
     {
       // Enable if there is a layer selected
-      mAddButton->setEnabled( true );
+      addButton()->setEnabled( true );
       return;
     }
   }

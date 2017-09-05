@@ -21,6 +21,7 @@
 #include <QItemDelegate>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include "qgsabstractdatasourcewidget.h"
 #include "ui_qgsgeonodesourceselectbase.h"
 #include "qgis_gui.h"
 
@@ -32,21 +33,21 @@ class GUI_EXPORT QgsGeonodeItemDelegate : public QItemDelegate
     explicit QgsGeonodeItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
 };
 
-class GUI_EXPORT QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeSourceSelectBase
+class GUI_EXPORT QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsGeonodeSourceSelectBase
 {
     Q_OBJECT
 
   public:
 
-    QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    QgsGeoNodeSourceSelect( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+
     ~QgsGeoNodeSourceSelect();
 
+  public slots:
+
+    void addButtonClicked() override;
+
   signals:
-    void connectionsChanged();
-    void addRasterLayer( const QString &rasterLayerPath,
-                         const QString &baseName,
-                         const QString &providerKey );
-    void addRasterLayer();
 
     void addWfsLayer(
       const QString &uri,
@@ -65,7 +66,6 @@ class GUI_EXPORT QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeS
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QModelIndex mSQLIndex;
 
   private slots:
@@ -77,10 +77,9 @@ class GUI_EXPORT QgsGeoNodeSourceSelect: public QDialog, private Ui::QgsGeonodeS
     void loadGeonodeConnection();
     void filterChanged( const QString &text );
     void treeViewSelectionChanged();
-    void addButtonClicked();
-
     void populateConnectionList();
     void setConnectionListPosition();
+    void showHelp();
 
 };
 

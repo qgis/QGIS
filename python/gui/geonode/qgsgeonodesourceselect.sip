@@ -29,7 +29,7 @@ class QgsGeonodeItemDelegate : QItemDelegate
     explicit QgsGeonodeItemDelegate( QObject *parent = 0 );
 };
 
-class QgsGeoNodeSourceSelect: QDialog
+class QgsGeoNodeSourceSelect: QgsAbstractDataSourceWidget
 {
 
 %TypeHeaderCode
@@ -37,15 +37,16 @@ class QgsGeoNodeSourceSelect: QDialog
 %End
   public:
 
-    QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
+    QgsGeoNodeSourceSelect( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+
     ~QgsGeoNodeSourceSelect();
 
+  public slots:
+
+    virtual void addButtonClicked();
+
+
   signals:
-    void connectionsChanged();
-    void addRasterLayer( const QString &rasterLayerPath,
-                         const QString &baseName,
-                         const QString &providerKey );
-    void addRasterLayer();
 
     void addWfsLayer(
       const QString &uri,

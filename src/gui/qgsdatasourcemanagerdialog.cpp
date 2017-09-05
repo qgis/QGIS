@@ -74,7 +74,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browser
 
 
   QDialog *geonodeDialog = new QgsGeoNodeSourceSelect( this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded );
-  dlg = addDialog( geonodeDialog, QStringLiteral( "geonode" ), tr( "GeoNode" ), QStringLiteral( "/mActionAddGeonodeLayer.svg" ) );
+  QDialog *dlg = addDialog( geonodeDialog, QStringLiteral( "geonode" ), tr( "GeoNode" ), QStringLiteral( "/mActionAddGeonodeLayer.svg" ) );
 
   if ( dlg )
   {
