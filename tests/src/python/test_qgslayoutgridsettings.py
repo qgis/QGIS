@@ -72,6 +72,54 @@ class TestQgsLayoutGridSettings(unittest.TestCase):
         self.assertEqual(s2.offset().y(), 7.0)
         self.assertEqual(s2.offset().units(), QgsUnitTypes.LayoutPixels)
 
+    def testUndoRedo(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        g = l.gridSettings()
+        g.setResolution(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutPoints))
+
+        # these two commands should be 'collapsed'
+        g.setOffset(QgsLayoutPoint(555, 10, QgsUnitTypes.LayoutPoints))
+        g.setOffset(QgsLayoutPoint(5, 10, QgsUnitTypes.LayoutPoints))
+
+        # these two commands should be 'collapsed'
+        g.setResolution(QgsLayoutMeasurement(45, QgsUnitTypes.LayoutInches))
+        g.setResolution(QgsLayoutMeasurement(35, QgsUnitTypes.LayoutInches))
+
+        self.assertEqual(g.offset().x(), 5.0)
+        self.assertEqual(g.offset().y(), 10.0)
+        self.assertEqual(g.offset().units(), QgsUnitTypes.LayoutPoints)
+        self.assertEqual(g.resolution().length(), 35.0)
+        self.assertEqual(g.resolution().units(), QgsUnitTypes.LayoutInches)
+
+        l.undoStack().stack().undo()
+        self.assertEqual(g.offset().x(), 5.0)
+        self.assertEqual(g.offset().y(), 10.0)
+        self.assertEqual(g.offset().units(), QgsUnitTypes.LayoutPoints)
+        self.assertEqual(g.resolution().length(), 15.0)
+        self.assertEqual(g.resolution().units(), QgsUnitTypes.LayoutPoints)
+
+        l.undoStack().stack().undo()
+        self.assertEqual(g.offset().x(), 0.0)
+        self.assertEqual(g.offset().y(), 0.0)
+        self.assertEqual(g.offset().units(), QgsUnitTypes.LayoutMillimeters)
+        self.assertEqual(g.resolution().length(), 15.0)
+        self.assertEqual(g.resolution().units(), QgsUnitTypes.LayoutPoints)
+
+        l.undoStack().stack().redo()
+        self.assertEqual(g.offset().x(), 5.0)
+        self.assertEqual(g.offset().y(), 10.0)
+        self.assertEqual(g.offset().units(), QgsUnitTypes.LayoutPoints)
+        self.assertEqual(g.resolution().length(), 15.0)
+        self.assertEqual(g.resolution().units(), QgsUnitTypes.LayoutPoints)
+
+        l.undoStack().stack().redo()
+        self.assertEqual(g.offset().x(), 5.0)
+        self.assertEqual(g.offset().y(), 10.0)
+        self.assertEqual(g.offset().units(), QgsUnitTypes.LayoutPoints)
+        self.assertEqual(g.resolution().length(), 35.0)
+        self.assertEqual(g.resolution().units(), QgsUnitTypes.LayoutInches)
+
 
 if __name__ == '__main__':
     unittest.main()

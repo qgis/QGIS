@@ -502,6 +502,56 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection2.pageStyleSymbol().symbolLayer(0).color().name(), '#00ff00')
         self.assertEqual(collection2.pageStyleSymbol().symbolLayer(0).strokeColor().name(), '#ff0000')
 
+    def testUndoRedo(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        self.assertEqual(collection.pageCount(), 1)
+
+        l.undoStack().stack().undo()
+        self.assertEqual(collection.pageCount(), 0)
+
+        l.undoStack().stack().redo()
+        self.assertEqual(collection.pageCount(), 1)
+        # make sure page is accessible
+        self.assertEqual(collection.page(0).pageSize().width(), 210)
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        # delete page
+        collection.deletePage(collection.page(0))
+        self.assertEqual(collection.pageCount(), 1)
+
+        l.undoStack().stack().undo()
+        self.assertEqual(collection.pageCount(), 2)
+        # make sure pages are accessible
+        self.assertEqual(collection.page(0).pageSize().width(), 210)
+        self.assertEqual(collection.page(1).pageSize().width(), 148)
+
+        l.undoStack().stack().undo()
+        self.assertEqual(collection.pageCount(), 1)
+        l.undoStack().stack().undo()
+        self.assertEqual(collection.pageCount(), 0)
+
+        l.undoStack().stack().redo()
+        self.assertEqual(collection.pageCount(), 1)
+        self.assertEqual(collection.page(0).pageSize().width(), 210)
+        l.undoStack().stack().redo()
+        self.assertEqual(collection.pageCount(), 2)
+        self.assertEqual(collection.page(0).pageSize().width(), 210)
+        self.assertEqual(collection.page(1).pageSize().width(), 148)
+        l.undoStack().stack().redo()
+        self.assertEqual(collection.pageCount(), 1)
+        self.assertEqual(collection.page(0).pageSize().width(), 148)
+
 
 if __name__ == '__main__':
     unittest.main()
