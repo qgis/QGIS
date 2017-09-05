@@ -766,7 +766,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.0
      */
-    void setTrust( bool trust );
+    void setTrustLayerMetadata( bool trust );
 
     /**
      * Returns true if the trust option is activated, false otherwise. This
@@ -778,7 +778,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.0
      */
-    bool trust() const { return mTrust; }
+    bool trustLayerMetadata() const { return mTrustLayerMetadata; }
 
   signals:
     //! emitted when project is being read
@@ -1107,7 +1107,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mEvaluateDefaultValues; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty;                 // project has been modified since it has been read or saved
-    bool mTrust = false;
+    bool mTrustLayerMetadata = false;
 };
 
 /** Return the version string found in the given DOM document

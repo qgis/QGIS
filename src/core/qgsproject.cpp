@@ -480,7 +480,7 @@ void QgsProject::clear()
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
-  mTrust = false;
+  mTrustLayerMetadata = false;
   mCustomVariables.clear();
 
   mEmbeddedLayers.clear();
@@ -722,7 +722,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
     // apply specific settings to vector layer
     if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer ) )
     {
-      vl->setReadExtentFromXml( mTrust );
+      vl->setReadExtentFromXml( mTrustLayerMetadata );
     }
   }
   else if ( type == QLatin1String( "raster" ) )
@@ -904,7 +904,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   {
     QDomElement trustElement = nl.at( 0 ).toElement();
     if ( trustElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
-      mTrust = true;
+      mTrustLayerMetadata = true;
   }
 
   // read the layer tree from project file
@@ -1312,7 +1312,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( evaluateDefaultValuesNode );
 
   QDomElement trustNode = doc->createElement( QStringLiteral( "trust" ) );
-  trustNode.setAttribute( QStringLiteral( "active" ), mTrust ? "1" : "0" );
+  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? "1" : "0" );
   qgisNode.appendChild( trustNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
@@ -2280,9 +2280,9 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   return defaultCrs;
 }
 
-void QgsProject::setTrust( bool trust )
+void QgsProject::setTrustLayerMetadata( bool trust )
 {
-  mTrust = trust;
+  mTrustLayerMetadata = trust;
 
   Q_FOREACH ( QgsMapLayer *layer, mapLayers().values() )
   {

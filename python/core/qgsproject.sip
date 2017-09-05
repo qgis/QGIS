@@ -785,7 +785,7 @@ Returns the number of registered layers.
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    void setTrust( bool trust );
+    void setTrustLayerMetadata( bool trust );
 %Docstring
  Sets the trust option allowing to indicate if the extent has to be
  read from the XML document when data source has no metadata or if the
@@ -798,7 +798,7 @@ Returns the number of registered layers.
 .. versionadded:: 3.0
 %End
 
-    bool trust() const;
+    bool trustLayerMetadata() const;
 %Docstring
  Returns true if the trust option is activated, false otherwise. This
  option allows indicateing if the extent has to be read from the XML
