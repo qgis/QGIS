@@ -41,6 +41,18 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def sqrt(values, feature, parent):
         pass
 
+    @qgsfunction(1, 'testing', register=False)
+    def help_with_docstring(values, feature, parent):
+        """The help comes from the python docstring."""
+        pass
+
+    help_text = 'The help comes from a variable.'
+
+    @qgsfunction(1, 'testing', register=False, help_text=help_text)
+    def help_with_variable(values, feature, parent):
+        """This docstring is not used for the help."""
+        pass
+
     @qgsfunction(1, 'testing', register=False, usesgeometry=True)
     def geomtest(values, feature, parent):
         pass
@@ -65,6 +77,17 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         function = self.autocount
         args = function.params()
         self.assertEqual(args, 3)
+
+    def testHelp(self):
+        QgsExpression.registerFunction(self.help_with_variable)
+        html = ('<h3>help_with_variable function</h3><br>'
+                'The help comes from a variable.')
+        self.assertEqual(self.help_with_variable.helptext(), html)
+
+        QgsExpression.registerFunction(self.help_with_docstring)
+        html = ('<h3>help_with_docstring function</h3><br>'
+                'The help comes from the python docstring.')
+        self.assertEqual(self.help_with_docstring.helptext(), html)
 
     def testAutoArgsAreExpanded(self):
         function = self.expandargs
@@ -185,6 +208,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
             exp = QgsExpression(e)
             result = exp.evaluate()
             self.assertEqual(exp_res, result)
+
 
 if __name__ == "__main__":
     unittest.main()
