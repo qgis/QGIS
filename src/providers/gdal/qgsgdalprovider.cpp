@@ -436,13 +436,13 @@ void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block
 
 void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsg( "thePixelWidth = "  + QString::number( pixelWidth ) );
-  QgsDebugMsg( "thePixelHeight = "  + QString::number( pixelHeight ) );
-  QgsDebugMsg( "theExtent: " + extent.toString() );
+  QgsDebugMsgLevel( "thePixelWidth = "  + QString::number( pixelWidth ), 5 );
+  QgsDebugMsgLevel( "thePixelHeight = "  + QString::number( pixelHeight ), 5 );
+  QgsDebugMsgLevel( "theExtent: " + extent.toString(), 5 );
 
   for ( int i = 0 ; i < 6; i++ )
   {
-    QgsDebugMsg( QString( "transform : %1" ).arg( mGeoTransform[i] ) );
+    QgsDebugMsgLevel( QString( "transform : %1" ).arg( mGeoTransform[i] ), 5 );
   }
 
   int dataSize = dataTypeSize( bandNo );
@@ -469,8 +469,8 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
     QgsDebugMsg( "draw request outside view extent." );
     return;
   }
-  QgsDebugMsg( "mExtent: " + mExtent.toString() );
-  QgsDebugMsg( "myRasterExtent: " + myRasterExtent.toString() );
+  QgsDebugMsgLevel( "mExtent: " + mExtent.toString(), 5 );
+  QgsDebugMsgLevel( "myRasterExtent: " + myRasterExtent.toString(), 5 );
 
   double xRes = extent.width() / pixelWidth;
   double yRes = extent.height() / pixelHeight;
@@ -506,7 +506,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   int bottom = subRect.bottom();
   int left = subRect.left();
   int right = subRect.right();
-  QgsDebugMsg( QString( "top = %1 bottom = %2 left = %3 right = %4" ).arg( top ).arg( bottom ).arg( left ).arg( right ) );
+  QgsDebugMsgLevel( QString( "top = %1 bottom = %2 left = %3 right = %4" ).arg( top ).arg( bottom ).arg( left ).arg( right ), 5 );
 
 
   // We want to avoid another resampling, so we read data approximately with
@@ -517,7 +517,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   // Set readable names
   double srcXRes = mGeoTransform[1];
   double srcYRes = mGeoTransform[5]; // may be negative?
-  QgsDebugMsg( QString( "xRes = %1 yRes = %2 srcXRes = %3 srcYRes = %4" ).arg( xRes ).arg( yRes ).arg( srcXRes ).arg( srcYRes ) );
+  QgsDebugMsgLevel( QString( "xRes = %1 yRes = %2 srcXRes = %3 srcYRes = %4" ).arg( xRes ).arg( yRes ).arg( srcXRes ).arg( srcYRes ), 5 );
 
   // target size in pizels
   int width = right - left + 1;
@@ -573,12 +573,12 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
     srcBottom = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - myRasterExtent.yMinimum() ) / srcYRes ) );
   }
 
-  QgsDebugMsg( QString( "srcTop = %1 srcBottom = %2 srcLeft = %3 srcRight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcLeft ).arg( srcRight ) );
+  QgsDebugMsgLevel( QString( "srcTop = %1 srcBottom = %2 srcLeft = %3 srcRight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcLeft ).arg( srcRight ), 5 );
 
   int srcWidth = srcRight - srcLeft + 1;
   int srcHeight = srcBottom - srcTop + 1;
 
-  QgsDebugMsg( QString( "width = %1 height = %2 srcWidth = %3 srcHeight = %4" ).arg( width ).arg( height ).arg( srcWidth ).arg( srcHeight ) );
+  QgsDebugMsgLevel( QString( "width = %1 height = %2 srcWidth = %3 srcHeight = %4" ).arg( width ).arg( height ).arg( srcWidth ).arg( srcHeight ), 5 );
 
   int tmpWidth = srcWidth;
   int tmpHeight = srcHeight;
@@ -594,13 +594,13 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;
   double tmpYMax = mExtent.yMaximum() + srcTop * srcYRes;
-  QgsDebugMsg( QString( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ) );
+  QgsDebugMsgLevel( QString( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ), 5 );
 
   // Allocate temporary block
   char *tmpBlock = ( char * )qgsMalloc( dataSize * tmpWidth * tmpHeight );
   if ( ! tmpBlock )
   {
-    QgsDebugMsg( QString( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ) );
+    QgsDebugMsgLevel( QString( "Couldn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ), 5 );
     return;
   }
   GDALRasterBandH gdalBand = getBand( bandNo );
