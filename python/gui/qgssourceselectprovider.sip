@@ -21,6 +21,16 @@ class QgsSourceSelectProvider
 #include "qgssourceselectprovider.h"
 %End
   public:
+
+    enum Ordering
+    {
+      OrderLocalProvider,
+      OrderDatabaseProvider,
+      OrderRemoteProvider,
+      OrderGeoCmsProvider,
+      OrderOtherProvider,
+    };
+
     virtual ~QgsSourceSelectProvider();
 
     virtual QString providerKey() const = 0;

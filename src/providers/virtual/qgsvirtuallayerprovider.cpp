@@ -663,7 +663,7 @@ class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 
     virtual QString providerKey() const override { return QStringLiteral( "virtual" ); }
     virtual QString text() const override { return QObject::tr( "Virtual Layer" ); }
-    virtual int ordering() const override { return 90; }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
     virtual QString toolTip() const override { return QObject::tr( "Add Virtual Layer" ); }
     virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ); }
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
