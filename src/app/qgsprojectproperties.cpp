@@ -1984,5 +1984,20 @@ void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
 
 void QgsProjectProperties::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) );
+  QWidget *activeTab = mOptionsStackedWidget->currentWidget();
+  QString link = QStringLiteral( "introduction/qgis_configuration.html#project-properties" );
+
+  if ( activeTab == mTabRelations )
+  {
+    link = QStringLiteral( "working_with_vector/attribute_table.html#creating-one-or-many-to-many-relations" );
+  }
+  else if ( activeTab == mTab_Variables )
+  {
+    link = QStringLiteral( "introduction/general_tools.html#variables" );
+  }
+  else if ( activeTab == mProjOptsCRS )
+  {
+    link = QStringLiteral( "working_with_projections/working_with_projections.html" );
+  }
+  QgsHelp::openHelp( link );
 }
