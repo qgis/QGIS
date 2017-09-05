@@ -1662,10 +1662,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool startEditing();
 
-
-  protected slots:
-    void invalidateSymbolCountedFlag();
-
   signals:
 
     /**
@@ -1901,6 +1897,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void symbolFeatureCountMapChanged();
 
   private slots:
+    void invalidateSymbolCountedFlag();
+    void onFeatureCounterCompleted();
+    void onFeatureCounterTerminated();
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
