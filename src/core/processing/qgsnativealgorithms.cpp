@@ -1286,7 +1286,8 @@ QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm takes a vector layer with singlepart geometries and generates a new one in which all geometries are "
                       "multipart. Input features which are already multipart features will remain unchanged.\n\n"
                       "This algorithm can be used to force geometries to multipart types in order to be compatibility with data providers "
-                      "with strict singlepart/multipart compatibility checks." );
+                      "with strict singlepart/multipart compatibility checks.\n\n"
+                      "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
 }
 
 QgsPromoteToMultipartAlgorithm *QgsPromoteToMultipartAlgorithm::createInstance() const
@@ -1327,7 +1328,8 @@ QString QgsCollectAlgorithm::shortHelpString() const
                       "be specified to collect only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
                       "all geometries can be collected.\n\n"
                       "All output geometries will be converted to multi geometries, even those with just a single part. "
-                      "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part." );
+                      "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part.\n\n"
+                      "See the 'Promote to multipart' or 'Aggregate' algorithms for alternative options." );
 }
 
 QgsCollectAlgorithm *QgsCollectAlgorithm::createInstance() const
