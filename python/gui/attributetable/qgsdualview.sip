@@ -171,13 +171,6 @@ class QgsDualView : QStackedWidget
  :rtype: str
 %End
 
-  protected:
-
-    void columnBoxInit();
-%Docstring
- Initializes widgets which depend on the attributes of this layer
-%End
-
   public slots:
 
     void setCurrentEditSelection( const QgsFeatureIds &fids );
@@ -243,6 +236,9 @@ class QgsDualView : QStackedWidget
  Emitted when the form changes mode.
  \param mode new mode
 %End
+
+  protected:
+    virtual void hideEvent( QHideEvent *event );
 
 };
 

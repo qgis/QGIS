@@ -197,13 +197,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     QString sortExpression() const;
 
-  protected:
-
-    /**
-     * Initializes widgets which depend on the attributes of this layer
-     */
-    void columnBoxInit();
-
   public slots:
 
     /**
@@ -265,6 +258,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void formModeChanged( QgsAttributeForm::Mode mode );
 
+  protected:
+    virtual void hideEvent( QHideEvent *event ) override;
+
   private slots:
 
     void on_mFeatureList_aboutToChangeEditSelection( bool &ok );
@@ -278,7 +274,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void previewExpressionBuilder();
 
-    void previewColumnChanged( QObject *previewAction );
+    void previewColumnChanged( QAction *previewAction, const QString &expression );
 
     void viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 
@@ -335,16 +331,26 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void rebuildFullLayerCache();
 
   private:
+
+    /**
+     * Initializes widgets which depend on the attributes of this layer
+     */
+    void columnBoxInit();
     void initLayerCache( bool cacheGeometry );
     void initModels( QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, bool loadFeatures );
+    void restoreRecentDisplayExpressions();
+    void saveRecentDisplayExpressions() const;
+    void setDisplayExpression( const QString &expression );
+    void insertRecentlyUsedDisplayExpression( const QString &expression );
 
     QgsAttributeEditorContext mEditorContext;
     QgsAttributeTableModel *mMasterModel = nullptr;
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QgsFeatureListModel *mFeatureListModel = nullptr;
     QgsAttributeForm *mAttributeForm = nullptr;
-    QSignalMapper *mPreviewActionMapper = nullptr;
     QMenu *mPreviewColumnsMenu = nullptr;
+    QMenu *mPreviewActionMenu = nullptr;
+    QAction *mLastDisplayExpressionAction = nullptr;
     QMenu *mHorizontalHeaderMenu = nullptr;
     QgsVectorLayerCache *mLayerCache = nullptr;
     QgsVectorLayer *mLayer = nullptr;
