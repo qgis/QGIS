@@ -153,6 +153,7 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
+  geocms/qgsgeocmsproviderregistry.cpp
   geocms/geonode/qgsgeonodesourceselect.cpp
 
   layout/qgslayoutaddpagesdialog.cpp
@@ -502,6 +503,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/openstreetmap
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/src/app/geocms
   ${CMAKE_SOURCE_DIR}/src/app/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis/raster

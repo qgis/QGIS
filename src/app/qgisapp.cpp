@@ -1166,6 +1166,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsApplication::taskManager(), &QgsTaskManager::allTasksFinished, taskProgress, &QWinTaskbarProgress::hide );
 #endif
 
+  mGeoCmsProviderRegistry.reset( new QgsGeoCmsProviderRegistry() );
+
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsGui::shortcutsManager()->registerAllChildren( this );
 

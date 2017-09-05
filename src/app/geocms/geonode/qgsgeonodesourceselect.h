@@ -22,6 +22,8 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include "qgsabstractdatasourcewidget.h"
+#include "qgssourceselectprovider.h"
+#include "qgsapplication.h"
 #include "ui_qgsgeonodesourceselectbase.h"
 #include "qgis_gui.h"
 
@@ -73,6 +75,21 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
     void setConnectionListPosition();
     void showHelp();
 
+};
+
+//! Provider for GeoNode source select
+class QgsGeoNodeSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "geonode" ); }
+    virtual QString text() const override { return QObject::tr( "GeoNode" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderGeoCmsProvider + 10; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeonodeLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsGeoNodeSourceSelect( parent, fl, widgetMode );
+    }
 };
 
 
