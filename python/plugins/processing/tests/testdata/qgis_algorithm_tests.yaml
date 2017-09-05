@@ -610,7 +610,7 @@ tests:
         name: expected/multi_to_single.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for lines
     params:
       INPUT:
@@ -621,7 +621,7 @@ tests:
         name: expected/lines_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for multilines
     params:
       INPUT:
@@ -632,7 +632,7 @@ tests:
         name: expected/multiline_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for multipolygons
     params:
       INPUT:
@@ -643,7 +643,7 @@ tests:
         name: expected/multipoly_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for points
     params:
       INPUT:
@@ -654,7 +654,7 @@ tests:
         name: expected/point_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for polygons
     params:
       INPUT:
@@ -665,7 +665,7 @@ tests:
         name: expected/poly_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for multipoints
     params:
       INPUT:
@@ -2241,10 +2241,9 @@ tests:
         hash: fe6e018be13c5a3c17f3f4d0f0dc7686c628cb440b74c4642aa0c939
         type: rasterhash
 
-  - algorithm: qgis:orientedminimumboundingbox
+  - algorithm: native:orientedminimumboundingbox
     name: Oriented minimum bounding box polys
     params:
-      BY_FEATURE: true
       INPUT:
         name: custom/oriented_bbox.gml
         type: vector
@@ -2509,29 +2508,6 @@ tests:
     results:
       OUTPUT:
         name: expected/join_attribute_table.gml
-        type: vector
-
-  - algorithm: qgis:convexhull
-    name: Simple convex hull
-    params:
-      INPUT:
-        name: custom/points_hull.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/convex_hull.gml
-        type: vector
-
-  - algorithm: qgis:convexhull
-    name: Convex hull based on field attribute
-    params:
-      FIELD: hull
-      INPUT:
-        name: custom/points_hull.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/convex_hull_fields.gml
         type: vector
 
 #  # These tests dissabled because algs require access to iface which
@@ -3229,7 +3205,7 @@ tests:
         name: expected/execute_sql.gml
         type: vector
 
-  - algorithm: qgis:polygonfromrasterextent
+  - algorithm: qgis:polygonfromlayerextent
     name: Polygon from raster extent
     params:
       INPUT:
@@ -3240,7 +3216,7 @@ tests:
         name: expected/raster_extent.gml
         type: vector
 
-  - algorithm: qgis:minimalenclosingcircle
+  - algorithm: native:minimumenclosingcircle
     name: Minimal enclosing circle each features
     params:
       BY_FEATURE: true
@@ -3255,17 +3231,165 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:minimalenclosingcircle
-    name: Minimal enclosing circle all features
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (hull, no field)
     params:
-      BY_FEATURE: false
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 3
+    results:
+      OUTPUT:
+        name: expected/mbg_hull_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (hull, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 3
+    results:
+      OUTPUT:
+        name: expected/mbg_hull_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (circle, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 2
+    results:
+      OUTPUT:
+        name: expected/mbg_circle_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (circle, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 2
+    results:
+      OUTPUT:
+        name: expected/mbg_circle_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (oriented rect, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 1
+    results:
+      OUTPUT:
+        name: expected/mbg_rect_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (oriented rect, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 1
+    results:
+      OUTPUT:
+        name: expected/mbg_rect_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (envelope, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 0
+    results:
+      OUTPUT:
+        name: expected/mbg_env_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (envelope, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 0
+    results:
+      OUTPUT:
+        name: expected/mbg_env_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: native:convexhull
+    name: Convex hull by feature
+    params:
       INPUT:
         name: custom/oriented_bbox.gml
         type: vector
     results:
       OUTPUT:
-        name: expected/enclosing_circles_all.gml
+        name: expected/convex_hull_by_feature.gml
         type: vector
-        compare:
-          geometry:
-            precision: 7

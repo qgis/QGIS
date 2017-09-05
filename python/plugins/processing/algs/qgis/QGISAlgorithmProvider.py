@@ -46,10 +46,8 @@ from .Aspect import Aspect
 from .AutoincrementalField import AutoincrementalField
 from .BasicStatistics import BasicStatisticsForField
 from .Boundary import Boundary
-from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
-from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Datasources2Vrt import Datasources2Vrt
@@ -70,7 +68,6 @@ from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
-from .ExtentFromRasterLayer import ExtentFromRasterLayer
 from .ExtractNodes import ExtractNodes
 from .ExtractSpecificNodes import ExtractSpecificNodes
 from .FieldPyculator import FieldsPyculator
@@ -100,10 +97,9 @@ from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .MergeLines import MergeLines
-from .MinimalEnclosingCircle import MinimalEnclosingCircle
+from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
-from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
@@ -198,10 +194,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 AutoincrementalField(),
                 BasicStatisticsForField(),
                 Boundary(),
-                BoundingBox(),
                 CheckValidity(),
                 ConcaveHull(),
-                ConvexHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
                 Datasources2Vrt(),
@@ -222,7 +216,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
-                ExtentFromRasterLayer(),
                 ExtractNodes(),
                 ExtractSpecificNodes(),
                 FieldsCalculator(),
@@ -252,10 +245,9 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MeanCoords(),
                 Merge(),
                 MergeLines(),
-                MinimalEnclosingCircle(),
+                MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
-                OrientedMinimumBoundingBox(),
                 Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),

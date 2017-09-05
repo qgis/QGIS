@@ -68,6 +68,10 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
+  addAlgorithm( new QgsBoundingBoxAlgorithm() );
+  addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
+  addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
+  addAlgorithm( new QgsConvexHullAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -1087,4 +1091,175 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 }
 
 
+QString QgsBoundingBoxAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const
+{
+  return new QgsBoundingBoxAlgorithm();
+}
+
+QgsFields QgsBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields fields = inputFields;
+  fields.append( QgsField( QStringLiteral( "width" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "height" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "perimeter" ), QVariant::Double, QString(), 20, 6 ) );
+  return fields;
+}
+
+QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    QgsRectangle bounds = f.geometry().boundingBox();
+    QgsGeometry outputGeometry = QgsGeometry::fromRect( bounds );
+    f.setGeometry( outputGeometry );
+    QgsAttributes attrs = f.attributes();
+    attrs << bounds.width()
+          << bounds.height()
+          << bounds.area()
+          << bounds.perimeter();
+    f.setAttributes( attrs );
+  }
+  return f;
+}
+
+QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QgsOrientedMinimumBoundingBoxAlgorithm *QgsOrientedMinimumBoundingBoxAlgorithm::createInstance() const
+{
+  return new QgsOrientedMinimumBoundingBoxAlgorithm();
+}
+
+QgsFields QgsOrientedMinimumBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields fields = inputFields;
+  fields.append( QgsField( QStringLiteral( "width" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "height" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "perimeter" ), QVariant::Double, QString(), 20, 6 ) );
+  return fields;
+}
+
+QgsFeature QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    double area = 0;
+    double angle = 0;
+    double width = 0;
+    double height = 0;
+    QgsGeometry outputGeometry = f.geometry().orientedMinimumBoundingBox( area, angle, width, height );
+    f.setGeometry( outputGeometry );
+    QgsAttributes attrs = f.attributes();
+    attrs << width
+          << height
+          << angle
+          << area
+          << 2 * width + 2 * height;
+    f.setAttributes( attrs );
+  }
+  return f;
+}
+
+
+void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Number of segments in circles" ), QgsProcessingParameterNumber::Integer,
+                72, false, 8, 100000 ) );
+}
+
+QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
+{
+  return new QgsMinimumEnclosingCircleAlgorithm();
+}
+
+QgsFields QgsMinimumEnclosingCircleAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields fields = inputFields;
+  fields.append( QgsField( QStringLiteral( "radius" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  return fields;
+}
+
+bool QgsMinimumEnclosingCircleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
+  return true;
+}
+
+QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    double radius = 0;
+    QgsPointXY center;
+    QgsGeometry outputGeometry = f.geometry().minimalEnclosingCircle( center, radius, mSegments );
+    f.setGeometry( outputGeometry );
+    QgsAttributes attrs = f.attributes();
+    attrs << radius
+          << M_PI *radius *radius;
+    f.setAttributes( attrs );
+  }
+  return f;
+}
+
+QString QgsConvexHullAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
+{
+  return new QgsConvexHullAlgorithm();
+}
+
+QgsFields QgsConvexHullAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields fields = inputFields;
+  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "perimeter" ), QVariant::Double, QString(), 20, 6 ) );
+  return fields;
+}
+
+QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    QgsGeometry outputGeometry = f.geometry().convexHull();
+    if ( !outputGeometry )
+      feedback->reportError( outputGeometry.lastError() );
+    f.setGeometry( outputGeometry );
+    if ( outputGeometry )
+    {
+      QgsAttributes attrs = f.attributes();
+      attrs << outputGeometry.geometry()->area()
+            << outputGeometry.geometry()->perimeter();
+      f.setAttributes( attrs );
+    }
+  }
+  return f;
+}
+
 ///@endcond
+
+
+
+
