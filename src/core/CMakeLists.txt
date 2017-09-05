@@ -683,6 +683,8 @@ SET(QGIS_CORE_MOC_HDRS
 
   geometry/qgspoint.h
 
+  geonode/qgsgeonoderequest.h
+
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
@@ -711,9 +713,6 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreeregistrybridge.h
 
   qgsuserprofilemanager.h
-
-  geonode/qgsgeonodeconnection.h
-  geonode/qgsgeonoderequest.h
 )
 
 IF (NOT WITH_QTWEBKIT)
@@ -1091,7 +1090,6 @@ SET(QGIS_CORE_HDRS
   fieldformatter/qgsvaluerelationfieldformatter.h
 
   geonode/qgsgeonodeconnection.h
-  geonode/qgsgeonoderequest.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h

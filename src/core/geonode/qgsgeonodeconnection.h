@@ -23,9 +23,8 @@
 /*!
  * \brief   GeoNode Connections management
  */
-class CORE_EXPORT QgsGeoNodeConnection : public QObject
+class CORE_EXPORT QgsGeoNodeConnection
 {
-    Q_OBJECT
 
   public:
     //! Constructor

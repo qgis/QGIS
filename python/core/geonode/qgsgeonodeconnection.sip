@@ -9,7 +9,7 @@
 
 
 
-class QgsGeoNodeConnection : QObject
+class QgsGeoNodeConnection
 {
 %Docstring
 !
