@@ -386,11 +386,11 @@ void QgsComposerRuler::setSceneTransform( const QTransform &transform )
 void QgsComposerRuler::mouseMoveEvent( QMouseEvent *event )
 {
   //qWarning( "QgsComposerRuler::mouseMoveEvent" );
-  updateMarker( event->posF() );
-  setSnapLinePosition( event->posF() );
+  updateMarker( event->pos() );
+  setSnapLinePosition( event->pos() );
 
   //update cursor position in status bar
-  QPointF displayPos = mTransform.inverted().map( event->posF() );
+  QPointF displayPos = mTransform.inverted().map( event->pos() );
   if ( mDirection == Horizontal )
   {
     //mouse is over a horizontal ruler, so don't show a y coordinate

@@ -601,7 +601,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 
 void QgsColorWheel::mouseMoveEvent( QMouseEvent *event )
 {
-  setColorFromPos( event->posF() );
+  setColorFromPos( event->pos() );
   QgsColorWidget::mouseMoveEvent( event );
 }
 
@@ -621,7 +621,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
   {
     mClickedPart = QgsColorWheel::Wheel;
   }
-  setColorFromPos( event->posF() );
+  setColorFromPos( event->pos() );
 }
 
 void QgsColorWheel::mouseReleaseEvent( QMouseEvent *event )
@@ -1162,7 +1162,7 @@ void QgsColorRampWidget::setMarkerSize( const int markerSize )
 
 void QgsColorRampWidget::mouseMoveEvent( QMouseEvent *event )
 {
-  setColorFromPoint( event->posF() );
+  setColorFromPoint( event->pos() );
   QgsColorWidget::mouseMoveEvent( event );
 }
 
@@ -1191,7 +1191,7 @@ void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
 
 void QgsColorRampWidget::mousePressEvent( QMouseEvent *event )
 {
-  setColorFromPoint( event->posF() );
+  setColorFromPoint( event->pos() );
 }
 
 void QgsColorRampWidget::keyPressEvent( QKeyEvent *event )
