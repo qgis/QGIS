@@ -4,6 +4,6 @@ Raster (r.*)
 QgsProcessingParameterFile|parameters|Name of TOPMODEL parameters file|False|False
 QgsProcessingParameterFile|topidxstats|Name of topographic index statistics file|False|False
 QgsProcessingParameterFile|input|Name of rainfall and potential evapotranspiration data file|False|False
-QgsProcessingParameterString|timestep|Time step. Generate output for this time step|None|False|True
-QgsProcessingParameterString|topidxclass|Topographic index class. Generate output for this topographic index class|None|False|True
+QgsProcessingParameterNumber|timestep|Time step. Generate output for this time step|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterNumber|topidxclass|Topographic index class. Generate output for this topographic index class|QgsProcessingParameterNumber.Integer|None|True|0|None
 OutputFile|output|TOPMODEL output

@@ -5,7 +5,7 @@ QgsProcessingParameterRasterLayer|netradiation|Name of instantaneous net radiati
 QgsProcessingParameterRasterLayer|soilheatflux|Name of instantaneous soil heat flux raster map [W/m2]|None|False
 QgsProcessingParameterRasterLayer|aerodynresistance|Name of aerodynamic resistance to heat momentum raster map [s/m]|None|False
 QgsProcessingParameterRasterLayer|temperaturemeansealevel|Name of altitude corrected surface temperature raster map [K]|None|False
-QgsProcessingParameterNumber|frictionvelocitystar|Value of the height independent friction velocity (u*) [m/s]|0.0|QgsProcessingParameterNumber.Double|False|False|0.32407|None
-QgsProcessingParameterNumber|vapourpressureactual|Value of the actual vapour pressure (e_act) [KPa]|0.0|QgsProcessingParameterNumber.Double|False|False|1.511|None
+QgsProcessingParameterNumber|frictionvelocitystar|Value of the height independent friction velocity (u*) [m/s]|QgsProcessingParameterNumber.Double|0.32407|False|0.0|None
+QgsProcessingParameterNumber|vapourpressureactual|Value of the actual vapour pressure (e_act) [KPa]|QgsProcessingParameterNumber.Double|1.511|False|0.0|None
 Hardcoded|-a
 QgsProcessingParameterRasterDestination|output|Sensible Heat Flux

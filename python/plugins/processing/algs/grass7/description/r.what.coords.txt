@@ -5,7 +5,7 @@ QgsProcessingParameterRasterLayer|map|Name of raster map|None|False
 QgsProcessingParameterPoint|coordinates|Coordinates for query (east, north)
 QgsProcessingParameterString|null_value|String representing NULL value|*|False|True
 QgsProcessingParameterString|separator|Field separator. Special characters: pipe, comma, space, tab, newlineString representing NULL value|pipe|False|True
-QgsProcessingParameterNumber|cache|Size of point cache|0|QgsProcessingParameterNumber.Double|True|False|500|None
+QgsProcessingParameterNumber|cache|Size of point cache|QgsProcessingParameterNumber.Integer|500|True|0|None
 *QgsProcessingParameterBoolean|-n|Output header row|False|True
 *QgsProcessingParameterBoolean|-f|Show the category labels of the grid cell(s)|False|True
 *QgsProcessingParameterBoolean|-r|Output color values as RRR:GGG:BBB|False|True
