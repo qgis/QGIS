@@ -4441,20 +4441,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   }
 }
 
-void QgisApp::addGeonodeLayer()
-{
-  QgsGeoNodeSourceSelect *geonodes = new QgsGeoNodeSourceSelect( this, 0, QgsProviderRegistry::WidgetMode::None );
-  if ( !geonodes )
-  {
-    QMessageBox::warning( this, tr( "Geonode" ), tr( "Cannot get Geonode select dialog." ) );
-    return;
-  }
-  //connect( geonodes, static_cast<void ( QgsGeoNodeSourceSelect::* )()>( &QgsGeoNodeSourceSelect::addRasterLayer ), this, static_cast<void ( QgisApp::* )()>( &QgisApp::addRasterLayer ) );
-  connect( geonodes, &QgsGeoNodeSourceSelect::addWfsLayer, this, &QgisApp::addVectorLayer );
-  geonodes->exec();
-  delete geonodes;
-}
-
 void QgisApp::addDatabaseLayer()
 {
 #ifdef HAVE_POSTGRESQL
