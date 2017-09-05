@@ -60,7 +60,7 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
   mItemDelegate = new QgsGeonodeItemDelegate( treeView );
   treeView->setItemDelegate( mItemDelegate );
 
-  mModel = new QStandardItemModel();
+  mModel = new QStandardItemModel( this );
   mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( tr( "Title" ) ) );
   mModel->setHorizontalHeaderItem( MODEL_IDX_NAME, new QStandardItem( tr( "Name" ) ) );
   mModel->setHorizontalHeaderItem( MODEL_IDX_TYPE, new QStandardItem( tr( "Type" ) ) );
