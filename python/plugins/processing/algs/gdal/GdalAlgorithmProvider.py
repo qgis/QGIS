@@ -44,6 +44,7 @@ from .GridAverage import GridAverage
 from .GridDataMetrics import GridDataMetrics
 from .GridInverseDistance import GridInverseDistance
 from .GridInverseDistanceNearestNeighbor import GridInverseDistanceNearestNeighbor
+from .GridLinear import GridLinear
 from .GridNearestNeighbor import GridNearestNeighbor
 from .hillshade import hillshade
 from .information import information
@@ -146,6 +147,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             GridDataMetrics(),
             GridInverseDistance(),
             GridInverseDistanceNearestNeighbor(),
+            GridLinear(),
             GridNearestNeighbor(),
             hillshade(),
             information(),
