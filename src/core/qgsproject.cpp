@@ -2252,7 +2252,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
         continue;
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
-      if ( vl && vl->isSpatial() )
+      if ( vl )
       {
         vl->loadAuxiliaryLayer( *mAuxiliaryStorage.get() );
       }

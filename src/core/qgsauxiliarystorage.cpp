@@ -480,7 +480,7 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
 {
   QgsAuxiliaryLayer *alayer = nullptr;
 
-  if ( mValid && layer && layer->isSpatial() )
+  if ( mValid && layer )
   {
     const QString table( layer->id() );
     sqlite3 *handler = openDB( currentFileName() );

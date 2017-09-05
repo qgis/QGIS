@@ -4273,7 +4273,7 @@ bool QgsVectorLayer::loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage )
 {
   bool rc = false;
 
-  if ( isSpatial() && storage.isValid() && !mAuxiliaryLayerKey.isEmpty() )
+  if ( storage.isValid() && !mAuxiliaryLayerKey.isEmpty() )
   {
     QgsAuxiliaryLayer *alayer = nullptr;
 
