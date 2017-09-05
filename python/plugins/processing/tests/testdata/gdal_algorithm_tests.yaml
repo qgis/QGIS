@@ -435,6 +435,23 @@ tests:
         hash: 2033731d6fd653da391a2633158f0ea755d96e1b2b2c60a9100332b1
         type: rasterhash
 
+  - algorithm: gdal:gridnearestneighbor
+    name: Nearest Neighbor interpolation
+    params:
+      ANGLE: 0.0
+      INPUT:
+        name: custom/points_values.gml
+        type: vector
+      NODATA: 0.0
+      RADIUS_1: 0.01
+      RADIUS_2: 0.02
+      RTYPE: '5'
+      Z_FIELD: EC
+    results:
+      OUTPUT:
+        hash: 6ee933d53e1a2ffadfd88333919255e68bb945e833e50d112124bfd5
+        type: rasterhash
+
 #  - algorithm: gdal:merge
 #    name: Merge 2 raster layers
 #    params:
@@ -500,21 +517,4 @@ tests:
 #    results:
 #      OUTPUT:
 #        hash: 2d0585dc8166fbe3cec7d9e6fd66e95cc9bdb1043b3b0fa7cbdfef4c
-#        type: rasterhash
-#
-#  - algorithm: gdal:gridnearestneighbor
-#    name: Nearest Neighbor interpolation
-#    params:
-#      ANGLE: 0.0
-#      INPUT:
-#        name: custom/points_values.gml
-#        type: vector
-#      NODATA: 0.0
-#      RADIUS_1: 0.01
-#      RADIUS_2: 0.02
-#      RTYPE: '5'
-#      Z_FIELD: EC
-#    results:
-#      OUTPUT:
-#        hash: 6ee933d53e1a2ffadfd88333919255e68bb945e833e50d112124bfd5
 #        type: rasterhash
