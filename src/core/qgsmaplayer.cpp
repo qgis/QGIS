@@ -1516,8 +1516,6 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 
 QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
 {
-  QgsDebugMsg( "Entered." );
-
   resultFlag = false;
 
   QDomDocument myDocument;
