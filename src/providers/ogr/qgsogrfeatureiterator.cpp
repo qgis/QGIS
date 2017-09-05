@@ -41,8 +41,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
     , mConn( nullptr )
     , ogrLayer( nullptr )
     , mSubsetStringSet( false )
-    , mFetchGeometry( false )
     , mOrigFidAdded( false )
+    , mFetchGeometry( false )
     , mExpressionCompiled( false )
     , mFilterFids( mRequest.filterFids() )
     , mFilterFidsIt( mFilterFids.constBegin() )
@@ -178,7 +178,13 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature& fea
     OGR_L_ResetReading( ogrLayer );
     while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
     {
-      if ( OGR_F_GetFieldAsInteger64( fet, 0 ) == id )
+      if (
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
+        OGR_F_GetFieldAsInteger64
+#else
+        OGR_F_GetFieldAsInteger
+#endif
+        ( fet, 0 ) == FID_TO_NUMBER( id ) )
       {
         break;
       }
@@ -316,7 +322,11 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) 
 {
   if ( mOrigFidAdded )
   {
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
     feature.setFeatureId( OGR_F_GetFieldAsInteger64( fet, 0 ) );
+#else
+    feature.setFeatureId( OGR_F_GetFieldAsInteger( fet, 0 ) );
+#endif
   }
   else
   {
