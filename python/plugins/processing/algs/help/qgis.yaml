@@ -153,7 +153,7 @@ qgis:dissolve: >
   If the geometries to be dissolved are spatially separated from each other the output will be multi geometries. In case the input is a polygon layer, common boundaries of adjacent polygons being dissolved will get erased.
 
 qgis:distancematrix: >
-  This algorithms creates a table containing a distance matrix, with distances between all the points in a points layer.
+  This algorithm creates a table containing a distance matrix, with distances between all the points in a points layer.
 
 qgis:distancetonearesthub: >
   Given a layer with source point and another one representing destination points, this algorithm computes the distance between each source point and the closest destination one.
@@ -277,7 +277,7 @@ qgis:joinattributestable: >
   The additional attributes and their values are taken from a second vector layer. An attribute is selected in each of them to define the join criteria.
 
 qgis:keepnbiggestparts: >
-  This algorithms takes a polygon layer and creates a new polygon layer in which multipart geometries have been removed, leaving only the n largest (in terms of area) parts.
+  This algorithm takes a polygon layer and creates a new polygon layer in which multipart geometries have been removed, leaving only the n largest (in terms of area) parts.
 
 qgis:lineintersections: >
   This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer.
