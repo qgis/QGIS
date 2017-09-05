@@ -42,11 +42,17 @@ class QgsGeoNodeRequest : QObject
 #include "qgsgeonoderequest.h"
 %End
   public:
+
     explicit QgsGeoNodeRequest( bool forceRefresh, QObject *parent = 0 );
-    QgsGeoNodeRequest( const QString &baseUrl, /*const QgsWmsAuthorization &auth,*/ bool forceRefresh, QObject *parent = 0 );
+%Docstring
+ Constructor for QgsGeoNodeRequest.
+
+ If ``forceRefresh`` is false, then cached copies of the request may be reused.
+%End
+    QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = 0 );
     virtual ~QgsGeoNodeRequest();
 
-    bool request( QString endPoint );
+    bool request( const QString &endPoint );
 %Docstring
  :rtype: bool
 %End
@@ -56,28 +62,30 @@ class QgsGeoNodeRequest : QObject
  :rtype: list of QgsServiceLayerDetail
 %End
 
-    QList<QgsGeoNodeStyle> getStyles( QString layerName );
+    QList<QgsGeoNodeStyle> getStyles( const QString &layerName );
 %Docstring
  :rtype: list of QgsGeoNodeStyle
 %End
 
-    QgsGeoNodeStyle getDefaultStyle( QString layerName );
+    QgsGeoNodeStyle getDefaultStyle( const QString &layerName );
 %Docstring
  :rtype: QgsGeoNodeStyle
 %End
 
-    QgsGeoNodeStyle getStyle( QString styleID );
+    QgsGeoNodeStyle getStyle( const QString &styleID );
 %Docstring
  :rtype: QgsGeoNodeStyle
 %End
 
-    QStringList serviceUrls( QString serviceType );
+    QStringList serviceUrls( const QString &serviceType );
 %Docstring
+Obtain list of unique URLs in the geonode
  :rtype: list of str
 %End
 
-    QgsStringMap serviceUrlData( QString serviceType );
+    QgsStringMap serviceUrlData( const QString &serviceType );
 %Docstring
+Obtain map of layer name and url for a service type
  :rtype: QgsStringMap
 %End
 

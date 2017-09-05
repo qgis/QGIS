@@ -36,7 +36,7 @@ Destructor
 %End
     void setConnName( const QString &connName );
 
-    QgsDataSourceUri uri();
+    QgsDataSourceUri uri() const;
 %Docstring
  :rtype: QgsDataSourceUri
 %End

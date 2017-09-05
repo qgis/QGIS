@@ -37,7 +37,7 @@ class CORE_EXPORT QgsGeoNodeConnection : public QObject
     QString connName() const;
     void setConnName( const QString &connName );
 
-    QgsDataSourceUri uri();
+    QgsDataSourceUri uri() const;
     void setUri( const QgsDataSourceUri &uri );
 
     //! Retrieve all geonode connection

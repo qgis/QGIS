@@ -58,8 +58,14 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsGeoNodeRequest.
+     *
+     * If \a forceRefresh is false, then cached copies of the request may be reused.
+     */
     explicit QgsGeoNodeRequest( bool forceRefresh, QObject *parent = nullptr );
-    QgsGeoNodeRequest( const QString &baseUrl, /*const QgsWmsAuthorization &auth,*/ bool forceRefresh, QObject *parent = nullptr );
+    QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = nullptr );
     virtual ~QgsGeoNodeRequest();
 
     bool request( const QString &endPoint );
@@ -72,10 +78,10 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
     QgsGeoNodeStyle getStyle( const QString &styleID );
 
-    // Obtain list of unique URL in the geonode
+    //! Obtain list of unique URLs in the geonode
     QStringList serviceUrls( const QString &serviceType );
 
-    // Obtain map of layer name and url for a service type
+    //! Obtain map of layer name and url for a service type
     QgsStringMap serviceUrlData( const QString &serviceType );
 
     QString lastError() const { return mError; }
