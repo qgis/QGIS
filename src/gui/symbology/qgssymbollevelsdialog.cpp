@@ -30,7 +30,6 @@
 
 QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, bool usingSymbolLevels, QWidget *parent )
   : QDialog( parent )
-  , mList( list )
   , mForceOrderingEnabled( false )
 {
   setupUi( this );
