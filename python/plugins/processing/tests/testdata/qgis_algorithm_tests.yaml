@@ -3393,3 +3393,47 @@ tests:
       OUTPUT:
         name: expected/convex_hull_by_feature.gml
         type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_lines.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart lines points
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_points.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart polygons
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_polys.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart (already multipart)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_already_multi.gml
+        type: vector

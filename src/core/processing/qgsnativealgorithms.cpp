@@ -72,6 +72,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
+  addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -1258,6 +1259,36 @@ QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, Qg
   return f;
 }
 
+
+QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes a vector layer with singlepart geometries and generates a new one in which all geometries are "
+                      "multipart. Input features which are already multipart features will remain unchanged.\n\n"
+                      "This algorithm can be used to force geometries to multipart types in order to be compatibility with data providers "
+                      "with strict singlepart/multipart compatibility checks." );
+}
+
+QgsPromoteToMultipartAlgorithm *QgsPromoteToMultipartAlgorithm::createInstance() const
+{
+  return new QgsPromoteToMultipartAlgorithm();
+}
+
+QgsWkbTypes::Type QgsPromoteToMultipartAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  return QgsWkbTypes::multiType( inputWkbType );
+}
+
+QgsFeature QgsPromoteToMultipartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() && !f.geometry().isMultipart() )
+  {
+    QgsGeometry g = f.geometry();
+    g.convertToMultiType();
+    f.setGeometry( g );
+  }
+  return f;
+}
 ///@endcond
 
 
