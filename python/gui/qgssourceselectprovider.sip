@@ -12,7 +12,7 @@
 class QgsSourceSelectProvider
 {
 %Docstring
-.. seealso:: QgsDataSourceManagerDialog
+ This is the interface for those who want to add entries to the QgsDataSourceManagerDialog
 
 .. versionadded:: 3.0
 %End
@@ -45,10 +45,17 @@ Text for the menu item entry, it will be visible to the user so make sure it's t
  :rtype: str
 %End
 
-    virtual QIcon icon() const = 0 /Factory/;
+    virtual QString toolTip() const;
 %Docstring
- Creates a new instance of an QIcon for the menu item entry
- Caller takes responsibility of deleting created.
+ Text for the tooltip menu item entry, it will be visible to the user so make sure it's translatable
+
+ The default implementation returns an empty string.
+ :rtype: str
+%End
+
+    virtual QIcon icon() const = 0;
+%Docstring
+Creates a new instance of an QIcon for the menu item entry
  :rtype: QIcon
 %End
 
