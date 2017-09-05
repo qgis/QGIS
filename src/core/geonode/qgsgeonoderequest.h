@@ -62,21 +62,21 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     QgsGeoNodeRequest( const QString &baseUrl, /*const QgsWmsAuthorization &auth,*/ bool forceRefresh, QObject *parent = nullptr );
     virtual ~QgsGeoNodeRequest();
 
-    bool request( QString endPoint );
+    bool request( const QString &endPoint );
 
     QList<QgsServiceLayerDetail> getLayers();
 
-    QList<QgsGeoNodeStyle> getStyles( QString layerName );
+    QList<QgsGeoNodeStyle> getStyles( const QString &layerName );
 
-    QgsGeoNodeStyle getDefaultStyle( QString layerName );
+    QgsGeoNodeStyle getDefaultStyle( const QString &layerName );
 
-    QgsGeoNodeStyle getStyle( QString styleID );
+    QgsGeoNodeStyle getStyle( const QString &styleID );
 
     // Obtain list of unique URL in the geonode
-    QStringList serviceUrls( QString serviceType );
+    QStringList serviceUrls( const QString &serviceType );
 
     // Obtain map of layer name and url for a service type
-    QgsStringMap serviceUrlData( QString serviceType );
+    QgsStringMap serviceUrlData( const QString &serviceType );
 
     QString lastError() const { return mError; }
 
@@ -91,8 +91,8 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     void setProtocol( const QString &protocol );
 
   private:
-    QList<QgsServiceLayerDetail> parseLayers( QByteArray layerResponse );
-    QgsGeoNodeStyle retrieveStyle( QString styleUrl );
+    QList<QgsServiceLayerDetail> parseLayers( const QByteArray &layerResponse );
+    QgsGeoNodeStyle retrieveStyle( const QString &styleUrl );
 
   signals:
     //! \brief emit a signal to be caught by qgisapp and display a statusQString on status bar
@@ -127,8 +127,8 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     //! Response
     QByteArray mHttpGeoNodeResponse;
 
-    bool mIsAborted;
-    bool mForceRefresh;
+    bool mIsAborted = false;
+    bool mForceRefresh = false;
 
 };
 

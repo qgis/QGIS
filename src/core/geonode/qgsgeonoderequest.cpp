@@ -37,8 +37,6 @@ QgsGeoNodeRequest::QgsGeoNodeRequest( bool forceRefresh, QObject *parent )
 QgsGeoNodeRequest::QgsGeoNodeRequest( const QString &baseUrl, /*const QgsWmsAuthorization &auth,*/ bool forceRefresh, QObject *parent )
   : QObject( parent )
   , mBaseUrl( baseUrl )
-  , mGeoNodeReply( nullptr )
-  , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {
 
@@ -70,7 +68,7 @@ QList<QgsServiceLayerDetail> QgsGeoNodeRequest::getLayers()
   return parseLayers( this->response() );
 }
 
-QgsGeoNodeStyle QgsGeoNodeRequest::getDefaultStyle( QString layerName )
+QgsGeoNodeStyle QgsGeoNodeRequest::getDefaultStyle( const QString &layerName )
 {
   QgsGeoNodeStyle defaultStyle;
   bool success = request( QStringLiteral( "/api/layers?name=" )  + layerName );
@@ -94,7 +92,7 @@ QgsGeoNodeStyle QgsGeoNodeRequest::getDefaultStyle( QString layerName )
 
 }
 
-QList<QgsGeoNodeStyle> QgsGeoNodeRequest::getStyles( QString layerName )
+QList<QgsGeoNodeStyle> QgsGeoNodeRequest::getStyles( const QString &layerName )
 {
   QList<QgsGeoNodeStyle> geoNodeStyles;
   bool success = request( QStringLiteral( "/api/styles?layer__name=" ) + layerName );
@@ -122,7 +120,7 @@ QList<QgsGeoNodeStyle> QgsGeoNodeRequest::getStyles( QString layerName )
 
 }
 
-QgsGeoNodeStyle QgsGeoNodeRequest::getStyle( QString styleID )
+QgsGeoNodeStyle QgsGeoNodeRequest::getStyle( const QString &styleID )
 {
   QString endPoint = QStringLiteral( "/api/styles/" ) + styleID;
 
@@ -243,7 +241,7 @@ void QgsGeoNodeRequest::replyFinished()
 
 }
 
-QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( QByteArray layerResponse )
+QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( const QByteArray &layerResponse )
 {
   QList<QgsServiceLayerDetail> layers;
   if ( layerResponse.isEmpty() )
@@ -356,7 +354,7 @@ QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( QByteArray layerRes
   return layers;
 }
 
-QgsGeoNodeStyle QgsGeoNodeRequest::retrieveStyle( QString styleUrl )
+QgsGeoNodeStyle QgsGeoNodeRequest::retrieveStyle( const QString &styleUrl )
 {
   QgsGeoNodeStyle geoNodeStyle;
 
@@ -388,7 +386,7 @@ QgsGeoNodeStyle QgsGeoNodeRequest::retrieveStyle( QString styleUrl )
   return geoNodeStyle;
 }
 
-QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
+QStringList QgsGeoNodeRequest::serviceUrls( const QString &serviceType )
 {
   QStringList urls;
 
@@ -432,7 +430,7 @@ QStringList QgsGeoNodeRequest::serviceUrls( QString serviceType )
   return urls;
 }
 
-QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
+QgsStringMap QgsGeoNodeRequest::serviceUrlData( const QString &serviceType )
 {
   QgsStringMap urls;
 
@@ -478,7 +476,7 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( QString serviceType )
   return urls;
 }
 
-bool QgsGeoNodeRequest::request( QString endPoint )
+bool QgsGeoNodeRequest::request( const QString &endPoint )
 {
   abort();
   mIsAborted = false;
