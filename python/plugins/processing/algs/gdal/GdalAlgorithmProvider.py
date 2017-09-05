@@ -42,6 +42,7 @@ from .fillnodata import fillnodata
 from .gdaltindex import gdaltindex
 from .GridAverage import GridAverage
 from .GridDataMetrics import GridDataMetrics
+from .GridInverseDistance import GridInverseDistance
 from .hillshade import hillshade
 from .information import information
 from .nearblack import nearblack
@@ -64,7 +65,6 @@ from .warp import warp
 # from .proximity import proximity
 # from .extractprojection import ExtractProjection
 # from .gdal2xyz import gdal2xyz
-# from .GridInvDist import GridInvDist
 # from .GridNearest import GridNearest
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
@@ -143,6 +143,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             gdaltindex(),
             GridAverage(),
             GridDataMetrics(),
+            GridInverseDistance(),
             hillshade(),
             information(),
             nearblack(),
@@ -164,7 +165,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # proximity(),
             # ExtractProjection(),
             # gdal2xyz(),
-            # GridInvDist(),
             # GridNearest(),
             # gdalcalc(),
             # rasterize_over(),

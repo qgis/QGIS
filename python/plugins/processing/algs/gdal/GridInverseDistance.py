@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    GridAverage.py
+    GridInverseDistance.py
     ---------------------
     Date                 : October 2013
     Copyright            : (C) 2013 by Alexander Bruy
@@ -25,6 +25,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+
 import os
 
 from qgis.PyQt.QtGui import QIcon
@@ -43,12 +44,15 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class GridAverage(GdalAlgorithm):
+class GridInverseDistance(GdalAlgorithm):
 
     INPUT = 'INPUT'
     Z_FIELD = 'Z_FIELD'
+    POWER = 'POWER'
+    SMOOTHING = 'SMOOTHING'
     RADIUS_1 = 'RADIUS_1'
     RADIUS_2 = 'RADIUS_2'
+    MAX_POINTS = 'MAX_POINTS'
     MIN_POINTS = 'MIN_POINTS'
     ANGLE = 'ANGLE'
     NODATA = 'NODATA'
@@ -74,6 +78,18 @@ class GridAverage(GdalAlgorithm):
         z_field_param.setFlags(z_field_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(z_field_param)
 
+        self.addParameter(QgsProcessingParameterNumber(self.POWER,
+                                                       self.tr('Weighting power'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0,
+                                                       maxValue=100.0,
+                                                       defaultValue=2.0))
+        self.addParameter(QgsProcessingParameterNumber(self.SMOOTHING,
+                                                       self.tr('Smoothing'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0,
+                                                       maxValue=99999999.999999,
+                                                       defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.RADIUS_1,
                                                        self.tr('The first radius of search ellipse'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -92,6 +108,12 @@ class GridAverage(GdalAlgorithm):
                                                        minValue=0.0,
                                                        maxValue=360.0,
                                                        defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterNumber(self.MAX_POINTS,
+                                                       self.tr('Maximum number of data points to use'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       maxValue=99999999,
+                                                       defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.MIN_POINTS,
                                                        self.tr('Minimum number of data points to use'),
                                                        type=QgsProcessingParameterNumber.Integer,
@@ -111,13 +133,13 @@ class GridAverage(GdalAlgorithm):
                                                      defaultValue=5))
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
-                                                                  self.tr('Interpolated (moving average)')))
+                                                                  self.tr('Interpolated (IDW)')))
 
     def name(self):
-        return 'gridaverage'
+        return 'gridinversedistance'
 
     def displayName(self):
-        return self.tr('Grid (Moving average)')
+        return self.tr('Grid (Inverse distance to a power)')
 
     def group(self):
         return self.tr('Raster analysis')
@@ -137,10 +159,13 @@ class GridAverage(GdalAlgorithm):
             arguments.append('-zfield')
             arguments.append(fieldName)
 
-        params = 'average'
+        params = 'invdist'
+        params += ':power={}'.format(self.parameterAsDouble(parameters, self.POWER, context))
+        params += ':smothing={}'.format(self.parameterAsDouble(parameters, self.SMOOTHING, context))
         params += ':radius1={}'.format(self.parameterAsDouble(parameters, self.RADIUS_1, context))
         params += ':radius2={}'.format(self.parameterAsDouble(parameters, self.RADIUS_2, context))
         params += ':angle={}'.format(self.parameterAsDouble(parameters, self.ANGLE, context))
+        params += ':max_points={}'.format(self.parameterAsInt(parameters, self.MAX_POINTS, context))
         params += ':min_points={}'.format(self.parameterAsInt(parameters, self.MIN_POINTS, context))
         params += ':nodata={}'.format(self.parameterAsDouble(parameters, self.NODATA, context))
 
