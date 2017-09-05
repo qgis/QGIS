@@ -374,15 +374,14 @@ class SagaAlgorithm(SagaAlgorithmBase):
         """
         extent = None
         for param in self.parameterDefinitions():
-            files = []
+            layers = []
             if isinstance(param, QgsProcessingParameterRasterLayer):
-                files = [parameters[param.name()]]
+                layers.append(parameters[param.name()])
             elif (isinstance(param, QgsProcessingParameterMultipleLayers) and
                     param.datatype == QgsProcessing.TypeRaster):
                 if parameters[param.name()] is not None:
-                    files = parameters[param.name()]
-            for f in files:
-                layer = QgsProcessingUtils.mapLayerFromString(f, context)
+                    layers.append(parameters[param.name()])
+            for layer in layers:
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:
