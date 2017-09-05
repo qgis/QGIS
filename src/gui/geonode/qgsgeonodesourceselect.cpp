@@ -374,7 +374,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
 
     if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
     {
-      QString layerName = titleName;
+      layerName = titleName;
     }
 
     if ( webServiceType == QStringLiteral( "WMS" ) )
