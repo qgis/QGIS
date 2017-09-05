@@ -39,8 +39,6 @@ class QgsGeoNodeSourceSelect: QgsAbstractDataSourceWidget
 
     QgsGeoNodeSourceSelect( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsGeoNodeSourceSelect();
-
   public slots:
 
     virtual void addButtonClicked();

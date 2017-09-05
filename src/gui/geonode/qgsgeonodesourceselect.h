@@ -41,8 +41,6 @@ class GUI_EXPORT QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, pri
 
     QgsGeoNodeSourceSelect( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsGeoNodeSourceSelect();
-
   public slots:
 
     void addButtonClicked() override;
@@ -55,7 +53,6 @@ class GUI_EXPORT QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, pri
       const QString &providerKey );
 
   private:
-    QgsGeoNodeSourceSelect(); //default constructor is forbidden
 
     /** Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
