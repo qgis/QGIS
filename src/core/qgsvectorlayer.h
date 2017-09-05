@@ -1922,9 +1922,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool setDataProvider( QString const &provider );
 
-    //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-committed feature)
-    QgsFeatureId findFreeId();
-
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );
 
