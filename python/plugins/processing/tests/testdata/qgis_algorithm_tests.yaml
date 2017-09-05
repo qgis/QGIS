@@ -2683,7 +2683,7 @@ tests:
         name: expected/mean_coordinates.gml
         type: vector
 
-  - algorithm: qgis:singlepartstomultipart
+  - algorithm: native:collect
     name: single part to multipart
     params:
       FIELD: id

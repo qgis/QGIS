@@ -544,9 +544,6 @@ qgis:simplifygeometries: >
 
   The algorithm gives a choice of simplification methods, including distance based (the "Douglas-Peucker" algorithm), area based ("Visvalingam" algorithm) and snapping geometries to grid.
 
-qgis:singlepartstomultipart:
-
-
 qgis:singlesidedbuffer: >
   This algorithm buffers lines by a specified distance on one side of the line only.
 
