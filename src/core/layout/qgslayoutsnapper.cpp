@@ -31,23 +31,17 @@ QgsLayout *QgsLayoutSnapper::layout()
 
 void QgsLayoutSnapper::setSnapTolerance( const int snapTolerance )
 {
-  mLayout->undoStack()->beginCommand( this, QObject::tr( "Snap tolerance changed" ), UndoTolerance );
   mTolerance = snapTolerance;
-  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutSnapper::setSnapToGrid( bool enabled )
 {
-  mLayout->undoStack()->beginCommand( this, QObject::tr( "Snap to grid changed" ), UndoSnapToGrid );
   mSnapToGrid = enabled;
-  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutSnapper::setSnapToGuides( bool enabled )
 {
-  mLayout->undoStack()->beginCommand( this, QObject::tr( "Snap to guides changed" ), UndoSnapToGuides );
   mSnapToGuides = enabled;
-  mLayout->undoStack()->endCommand();
 }
 
 QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped ) const
