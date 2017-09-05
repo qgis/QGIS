@@ -110,22 +110,7 @@ void QgsGeoNodeSourceSelect::deleteConnectionsEntryList()
     }
     emit connectionsChanged();
 
-    if ( cmbConnections->count() > 0 )
-    {
-      // Connections available - enable various buttons
-      btnConnect->setEnabled( true );
-      btnEdit->setEnabled( true );
-      btnDelete->setEnabled( true );
-      btnSave->setEnabled( true );
-    }
-    else
-    {
-      // No connections available - disable various buttons
-      btnConnect->setEnabled( false );
-      btnEdit->setEnabled( false );
-      btnDelete->setEnabled( false );
-      btnSave->setEnabled( false );
-    }
+    updateButtonStateForAvailableConnections();
   }
 }
 
@@ -151,22 +136,7 @@ void QgsGeoNodeSourceSelect::setConnectionListPosition()
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
 
-  if ( cmbConnections->count() == 0 )
-  {
-    // No connections - disable various buttons
-    btnConnect->setEnabled( false );
-    btnEdit->setEnabled( false );
-    btnDelete->setEnabled( false );
-    btnSave->setEnabled( false );
-  }
-  else
-  {
-    // Connections - enable various buttons
-    btnConnect->setEnabled( true );
-    btnEdit->setEnabled( true );
-    btnDelete->setEnabled( true );
-    btnSave->setEnabled( true );
-  }
+  updateButtonStateForAvailableConnections();
 }
 
 void QgsGeoNodeSourceSelect::showHelp()
@@ -486,4 +456,13 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
   }
 
   QApplication::restoreOverrideCursor();
+}
+
+void QgsGeoNodeSourceSelect::updateButtonStateForAvailableConnections()
+{
+  bool connectionsAvailable = cmbConnections->count() > 0;
+  btnConnect->setEnabled( connectionsAvailable );
+  btnEdit->setEnabled( connectionsAvailable );
+  btnDelete->setEnabled( connectionsAvailable );
+  btnSave->setEnabled( connectionsAvailable );
 }

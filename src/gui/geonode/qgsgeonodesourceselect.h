@@ -58,6 +58,8 @@ class GUI_EXPORT QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, pri
     QPushButton *mBuildQueryButton = nullptr;
     QModelIndex mSQLIndex;
 
+    void updateButtonStateForAvailableConnections();
+
   private slots:
     void addConnectionsEntryList();
     void modifyConnectionsEntryList();
