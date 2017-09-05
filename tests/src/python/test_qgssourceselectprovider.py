@@ -61,6 +61,9 @@ class ConcreteSourceSelectProvider2(QgsSourceSelectProvider):
     def name(self):
         return "MyName"
 
+    def toolTip(self):
+        return "MyToolTip"
+
     def icon(self):
         return QIcon()
 
@@ -88,8 +91,13 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         self.assertEqual(provider.providerKey(), "MyTestProviderKey")
         self.assertEqual(provider.name(), "MyTestProviderKey")
         self.assertEqual(provider.text(), "MyTestProviderText")
+        self.assertEqual(provider.toolTip(), "")
         self.assertEqual(provider.ordering(), 1)
         self.assertTrue(isinstance(provider.icon(), QIcon))
+
+        # test toolTip
+        provider = ConcreteSourceSelectProvider2()
+        self.assertEqual(provider.toolTip(), "MyToolTip")
 
     def _testRegistry(self, registry):
 

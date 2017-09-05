@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
 #include <QListWidgetItem>
 
 #include "qgsdatasourcemanagerdialog.h"
@@ -26,6 +25,7 @@
 #include "qgssourceselectproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagelog.h"
 #include "qgsgui.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
@@ -65,10 +65,10 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
     QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
     if ( !dlg )
     {
-      QMessageBox::warning( this, provider->name(), tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ) );
+      QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), QgsMessageLog::CRITICAL );
       continue;
     }
-    addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ) );
+    addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ), provider->toolTip( ) );
   }
 
 }
@@ -150,14 +150,20 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
            this, SIGNAL( showStatusMessage( QString ) ) );
   // Vector
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
-  { this->vectorLayerAdded( vectorLayerPath, baseName, providerKey ); } );
-  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );  connect( dlg, SIGNAL( connectionsChanged() ), this, SIGNAL( connectionsChanged() ) );
+  {
+    this->vectorLayerAdded( vectorLayerPath, baseName, providerKey );
+  }
+         );
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayers,
+           this, &QgsDataSourceManagerDialog::vectorLayersAdded );
+  connect( dlg, SIGNAL( connectionsChanged() ), this, SIGNAL( connectionsChanged() ) );
   // Raster
   connect( dlg, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
            this, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ) );
 
   // Virtual
-  connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ), this, SIGNAL( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
+  connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ),
+           this, SIGNAL( replaceSelectedVectorLayer( QString, QString, QString, QString ) ) );
   // Common
   connect( dlg, SIGNAL( connectionsChanged() ), this, SIGNAL( connectionsChanged() ) );
   connect( this, SIGNAL( providerDialogsRefreshRequested() ), dlg, SLOT( refresh() ) );
