@@ -83,7 +83,7 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
 
     helptemplate = string.Template("""<h3>$name function</h3><br>$doc""")
     name = kwargs.get('name', function.__name__)
-    helptext = function.__doc__ or ''
+    helptext = kwargs.get('help_text') or function.__doc__ or ''
     helptext = helptext.strip()
     expandargs = False
 
@@ -137,6 +137,7 @@ def qgsfunction(args='auto', group='custom', **kwargs):
     def wrapper(func):
         return register_function(func, args, group, **kwargs)
     return wrapper
+
 
 try:
     # Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.

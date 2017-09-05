@@ -10,6 +10,7 @@ matrix:
         - BUILD=qt4
         - QT_VERSION=4
 #        - LLVM_VERSION=3.8
+      dist: precise
       sudo: false
       cache:
         apt: true
