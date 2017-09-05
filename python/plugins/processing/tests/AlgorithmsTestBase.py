@@ -41,19 +41,6 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 from copy import deepcopy
 
-import processing
-
-from processing.script.ScriptAlgorithm import ScriptAlgorithm  # NOQA
-
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
-from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
-#from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
-#from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
-#from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
-#from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
-
-
 from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
                        QgsFeatureRequest,
@@ -65,8 +52,10 @@ from qgis.core import (QgsVectorLayer,
                        QgsProcessingFeedback)
 
 from qgis.testing import _UnexpectedSuccess
-
 from utilities import unitTestDataPath
+
+import processing
+from processing.script.ScriptAlgorithm import ScriptAlgorithm  # NOQA
 
 
 def processingTestDataPath():
