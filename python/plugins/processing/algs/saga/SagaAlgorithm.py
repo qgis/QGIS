@@ -150,10 +150,13 @@ class SagaAlgorithm(SagaAlgorithmBase):
             if isinstance(param, QgsProcessingParameterRasterLayer):
                 if param.name() not in parameters or parameters[param.name()] is None:
                     continue
-                if parameters[param.name()].endswith('sdat'):
-                    parameters[param.name()] = parameters[param.name()][:-4] + "sgrd"
-                elif not parameters[param.name()].endswith('sgrd'):
-                    exportCommand = self.exportRasterLayer(parameters[param.name()], context)
+
+                if parameters[param.name()].source().lower().endswith('sdat'):
+                    self.exportedLayers[param.name()] = parameters[param.name()].source()[:-4] + 'sgrd'
+                if parameters[param.name()].source().lower().endswith('sgrd'):
+                    self.exportedLayers[param.name()] = parameters[param.name()].source()
+                else:
+                    exportCommand = self.exportRasterLayer(param.name(), parameters[param.name()])
                     if exportCommand is not None:
                         commands.append(exportCommand)
             elif isinstance(param, QgsProcessingParameterFeatureSource):
@@ -173,19 +176,24 @@ class SagaAlgorithm(SagaAlgorithmBase):
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 if param.name() not in parameters or parameters[param.name()] is None:
                     continue
+
                 layers = self.parameterAsLayerList(parameters, param.name(), context)
                 if layers is None or len(layers) == 0:
                     continue
                 if param.layerType() == QgsProcessing.TypeRaster:
-                    for i, layerfile in enumerate(layers):
-                        if layerfile.endswith('sdat'):
-                            layerfile = param.value[:-4] + "sgrd"
-                            layers[i] = layerfile
-                        elif not layerfile.endswith('sgrd'):
-                            exportCommand = self.exportRasterLayer(layerfile)
+                    files = []
+                    for i, layer in enumerate(layers):
+                        if layer.source().lower().endswith('sdat'):
+                            files.append(parameters[param.name()].source()[:-4] + 'sgrd')
+                        if layer.source().lower().endswith('sgrd'):
+                            files.append(parameters[param.name()].source())
+                        else:
+                            exportCommand = self.exportRasterLayer(param.name(), layer)
+                            files.append(self.exportedLayers[param.name()])
                             if exportCommand is not None:
                                 commands.append(exportCommand)
-                        param.value = ";".join(layers)
+
+                    self.exportedLayers[param.name()] = files
                 else:
                     temp_params = deepcopy(parameters)
                     for layer in layers:
@@ -217,18 +225,14 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 continue
 
             if isinstance(param, (QgsProcessingParameterRasterLayer, QgsProcessingParameterFeatureSource)):
-                command += ' -' + param.name() + ' "' \
-                    + self.exportedLayers[param.name()] + '"'
+                command += ' -{} "{}"'.format(param.name(), self.exportedLayers[param.name()])
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
-                s = parameters[param.name()]
-                for layer in list(self.exportedLayers.keys()):
-                    s = s.replace(layer, self.exportedLayers[layer])
-                command += ' -' + ';'.join(self.exportedLayers[param.name()]) + ' "' + s + '"'
+                command += ' -{} "{}"'.format(param.name(), ';'.join(self.exportedLayers[param.name()]))
             elif isinstance(param, QgsProcessingParameterBoolean):
                 if self.parameterAsBool(parameters, param.name(), context):
-                    command += ' -' + param.name().strip() + " true"
+                    command += ' -{} true'.format(param.name().strip())
                 else:
-                    command += ' -' + param.name().strip() + " false"
+                    command += ' -{} false'.format(param.name().strip())
             elif isinstance(param, QgsProcessingParameterMatrix):
                 tempTableFile = getTempFilename('txt')
                 with open(tempTableFile, 'w') as f:
@@ -237,7 +241,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     for i in range(0, len(values), 3):
                         s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
                         f.write(s)
-                command += ' -' + param.name() + ' "' + tempTableFile + '"'
+                command += ' -{} "{}"'.format(param.name(), tempTableFile)
             elif isinstance(param, QgsProcessingParameterExtent):
                 # 'We have to substract/add half cell size, since SAGA is
                 # center based, not corner based
@@ -252,27 +256,26 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 values.append(rect.yMaximum())
 
                 for i in range(4):
-                    command += ' -' + self.extentParamNames[i] + ' ' \
-                        + str(float(values[i]) + offset[i])
+                    command += ' -{} {}'.format(self.extentParamNames[i], float(values[i]) + offset[i])
             elif isinstance(param, QgsProcessingParameterNumber):
-                command += ' -' + param.name() + ' ' + str(self.parameterAsDouble(parameters, param.name(), context))
+                command += ' -{} {}'.format(param.name(), self.parameterAsDouble(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterEnum):
-                command += ' -' + param.name() + ' ' + str(self.parameterAsEnum(parameters, param.name(), context))
+                command += ' -{} {}'.format(param.name(), self.parameterAsEnum(parameters, param.name(), context))
             elif isinstance(param, (QgsProcessingParameterString, QgsProcessingParameterFile)):
-                command += ' -' + param.name() + ' "' + self.parameterAsFile(parameters, param.name(), context) + '"'
+                command += ' -{} "{}"'.format(param.name(), self.parameterAsFile(parameters, param.name(), context))
             elif isinstance(param, (QgsProcessingParameterString, QgsProcessingParameterField)):
-                command += ' -' + param.name() + ' "' + self.parameterAsString(parameters, param.name(), context) + '"'
+                command += ' -{} "{}"'.format(param.name(), self.parameterAsString(parameters, param.name(), context))
 
         output_layers = []
         output_files = {}
         for out in self.destinationParameterDefinitions():
             # TODO
             # command += ' -' + out.name() + ' "' + out.getCompatibleFileName(self) + '"'
-            file = self.parameterAsOutputLayer(parameters, out.name(), context)
+            filePath = self.parameterAsOutputLayer(parameters, out.name(), context)
             if isinstance(out, (QgsProcessingParameterRasterDestination, QgsProcessingParameterVectorDestination)):
-                output_layers.append(file)
-            output_files[out.name()] = file
-            command += ' -' + out.name() + ' "' + file + '"'
+                output_layers.append(filePath)
+            output_files[out.name()] = filePath
+            command += ' -{} "{}"'.format(out.name(), filePath)
 
         commands.append(command)
 
@@ -280,11 +283,10 @@ class SagaAlgorithm(SagaAlgorithmBase):
         # TODO: improve this and put this code somewhere else
         for out in self.destinationParameterDefinitions():
             if isinstance(out, QgsProcessingParameterRasterDestination):
-                filename = out.getCompatibleFileName(self)
-                filename2 = filename + '.sgrd'
+                filename = self.parameterAsOutputLayer(parameters, out.name(), context)
+                filename2 = os.path.splitext(filename)[0] + '.sgrd'
                 if self.cmdname == 'RGB Composite':
-                    commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2 +
-                                    '" -FILE:"' + filename + '"')
+                    commands.append('io_grid_image 0 -IS_RGB -GRID:"{}" -FILE:"{}"'.format(filename2, filename))
 
         # 3: Run SAGA
         commands = self.editCommands(commands)
@@ -300,8 +302,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
         if crs is not None:
             for out in output_layers:
-                prjFile = os.path.splitext(out)[0] + ".prj"
-                with open(prjFile, "w") as f:
+                prjFile = os.path.splitext(out)[0] + '.prj'
+                with open(prjFile, 'w') as f:
                     f.write(crs.toWkt())
 
         result = {}
@@ -344,28 +346,32 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 break
         return cellsize
 
-    def exportRasterLayer(self, source, context):
+    def exportRasterLayer(self, parameterName, layer):
         global sessionExportedLayers
-        if source in sessionExportedLayers:
-            exportedLayer = sessionExportedLayers[source]
+        if layer.source() in sessionExportedLayers:
+            exportedLayer = sessionExportedLayers[layer.source()]
             if os.path.exists(exportedLayer):
-                self.exportedLayers[source] = exportedLayer
+                self.exportedLayers[parameterName] = exportedLayer
                 return None
             else:
-                del sessionExportedLayers[source]
-        layer = QgsProcessingUtils.mapLayerFromString(source, context, False)
+                del sessionExportedLayers[layer.source()]
+
         if layer:
-            filename = str(layer.name())
+            filename = layer.name()
         else:
-            filename = os.path.basename(source)
+            filename = os.path.basename(layer.source())
+
         validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
         filename = ''.join(c for c in filename if c in validChars)
+
         if len(filename) == 0:
             filename = 'layer'
+
         destFilename = QgsProcessingUtils.generateTempFilename(filename + '.sgrd')
-        self.exportedLayers[source] = destFilename
-        sessionExportedLayers[source] = destFilename
-        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 3 -GRIDS "' + destFilename + '" -FILES "' + source + '"'
+        sessionExportedLayers[layer.source()] = destFilename
+        self.exportedLayers[parameterName] = destFilename
+
+        return 'io_gdal 0 -TRANSFORM 1 -RESAMPLING 3 -GRIDS "{}" -FILES "{}"'.format(destFilename, layer.source())
 
     def checkParameterValues(self, parameters, context):
         """
