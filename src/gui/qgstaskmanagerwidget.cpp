@@ -49,7 +49,7 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
   mTreeView->header()->setStretchLastSection( false );
-  mTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
+  mTreeView->header()->setSectionResizeMode( 0, QHeaderView::Stretch );
 
   vLayout->addWidget( mTreeView );
 

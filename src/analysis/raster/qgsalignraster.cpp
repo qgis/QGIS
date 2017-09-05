@@ -568,7 +568,7 @@ QgsAlignRaster::RasterInfo::RasterInfo( const QString &layerpath )
   ( void ) GDALGetGeoTransform( mDataset, mGeoTransform );
 
   // TODO: may be null or empty string
-  mCrsWkt = QString::fromAscii( GDALGetProjectionRef( mDataset ) );
+  mCrsWkt = QString::fromLatin1( GDALGetProjectionRef( mDataset ) );
 
   mBandCnt = GDALGetBandNumber( mDataset );
 }

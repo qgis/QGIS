@@ -1601,7 +1601,7 @@ void QgsNodeTool::deleteVertex()
       QList<int> &vertexIds = it2.value();
 
       bool res = QgsVectorLayer::Success;
-      qSort( vertexIds.begin(), vertexIds.end(), qGreater<int>() );
+      std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
       Q_FOREACH ( int vertexId, vertexIds )
       {
         if ( res != QgsVectorLayer::EmptyGeometry )

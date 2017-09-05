@@ -49,16 +49,16 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
-  lstCoordinateSystems->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
+  lstCoordinateSystems->header()->setSectionResizeMode( AuthidColumn, QHeaderView::Stretch );
   lstCoordinateSystems->header()->resizeSection( QgisCrsIdColumn, 0 );
-  lstCoordinateSystems->header()->setResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
+  lstCoordinateSystems->header()->setSectionResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
 
   // Hide (internal) ID column
   lstCoordinateSystems->setColumnHidden( QgisCrsIdColumn, true );
 
-  lstRecent->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
+  lstRecent->header()->setSectionResizeMode( AuthidColumn, QHeaderView::Stretch );
   lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
-  lstRecent->header()->setResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
+  lstRecent->header()->setSectionResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
 
   // Hide (internal) ID column
   lstRecent->setColumnHidden( QgisCrsIdColumn, true );

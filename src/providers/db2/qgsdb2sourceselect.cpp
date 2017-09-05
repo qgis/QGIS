@@ -495,8 +495,8 @@ void QgsDb2SourceSelect::on_btnConnect_clicked()
   }
 
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
-  int sqlcode = db2GC.open();
-  if ( 0 != sqlcode )
+  QString sqlcode = db2GC.open();
+  if ( !sqlcode.isEmpty() && QStringLiteral( "0" ) != sqlcode )
   {
     QMessageBox::warning( this, tr( "DB2GSE.ST_GEOMETRY_COLUMNS Not Found" ),
                           tr( "DB2GSE.ST_GEOMETRY_COLUMNS not found. The DB2 Spatial Extender is not enabled or set up." ) );

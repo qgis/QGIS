@@ -591,9 +591,9 @@ QgsComposer::QgsComposer( QgsComposition *composition )
 
   mItemsTreeView->setColumnWidth( 0, 30 );
   mItemsTreeView->setColumnWidth( 1, 30 );
-  mItemsTreeView->header()->setResizeMode( 0, QHeaderView::Fixed );
-  mItemsTreeView->header()->setResizeMode( 1, QHeaderView::Fixed );
-  mItemsTreeView->header()->setMovable( false );
+  mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionsMovable( false );
 
   mItemsTreeView->setDragEnabled( true );
   mItemsTreeView->setAcceptDrops( true );

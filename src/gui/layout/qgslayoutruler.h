@@ -104,7 +104,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     QgsLayoutView *mView = nullptr;
 
     QTransform mTransform;
-    QPointF mMarkerPos;
+    QPoint mMarkerPos;
 
     QFont mRulerFont;
     std::unique_ptr< QFontMetrics > mRulerFontMetrics;
