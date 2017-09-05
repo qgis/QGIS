@@ -290,7 +290,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     //set up models, views and delegates
     mColumnModel = new QgsComposerAttributeTableColumnModelV2( mComposerTable, mColumnsTableView );
     mColumnsTableView->setModel( mColumnModel );
-    mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
+    mColumnsTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
 
     mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView, mComposerTable );
     mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
@@ -312,7 +312,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mSortedProxyModel->sort( 0, Qt::AscendingOrder );
     mSortColumnTableView->setSortingEnabled( false );
     mSortColumnTableView->setModel( mSortedProxyModel );
-    mSortColumnTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
+    mSortColumnTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
   }
 
   mOrderComboBox->insertItem( 0, tr( "Ascending" ) );

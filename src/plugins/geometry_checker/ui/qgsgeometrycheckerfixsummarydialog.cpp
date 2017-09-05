@@ -97,10 +97,10 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
 void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget *table )
 {
   table->resizeColumnToContents( 0 );
-  table->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
-  table->horizontalHeader()->setResizeMode( 2, QHeaderView::Stretch );
-  table->horizontalHeader()->setResizeMode( 3, QHeaderView::Stretch );
-  table->horizontalHeader()->setResizeMode( 4, QHeaderView::Stretch );
+  table->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+  table->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
+  table->horizontalHeader()->setSectionResizeMode( 3, QHeaderView::Stretch );
+  table->horizontalHeader()->setSectionResizeMode( 4, QHeaderView::Stretch );
 
   table->setEditTriggers( QAbstractItemView::NoEditTriggers );
   table->setSelectionBehavior( QAbstractItemView::SelectRows );

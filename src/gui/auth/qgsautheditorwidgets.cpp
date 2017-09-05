@@ -63,7 +63,7 @@ void QgsAuthMethodPlugins::setupTable()
   tblAuthPlugins->setColumnWidth( 0, 150 );
   tblAuthPlugins->setColumnWidth( 1, 300 );
   tblAuthPlugins->setRowCount( QgsAuthManager::instance()->authMethodsKeys().size() );
-  tblAuthPlugins->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
+  tblAuthPlugins->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
   tblAuthPlugins->setSortingEnabled( true );
   tblAuthPlugins->setSelectionBehavior( QAbstractItemView::SelectRows );
 }
