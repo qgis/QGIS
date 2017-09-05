@@ -40,6 +40,7 @@
 
 #ifdef HAVE_GUI
 #include "qgspgsourceselect.h"
+#include "qgssourceselectprovider.h"
 #endif
 
 const QString POSTGRES_KEY = QStringLiteral( "postgres" );
@@ -4751,6 +4752,36 @@ QGISEXTERN void cleanupProvider()
 {
   QgsPostgresConnPool::cleanupInstance();
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for postgres source select
+class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spellok
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "postgres" ); }
+    virtual QString text() const override { return QObject::tr( "PostgreSQL" ); }
+    virtual int ordering() const override { return 40; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsPgSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsPostgresSourceSelectProvider;  //#spellok
+
+  return providers;
+}
+#endif
 
 // ----------
 

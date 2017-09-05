@@ -47,6 +47,13 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 
+
+#ifdef HAVE_GUI
+#include "qgswmssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
+
+
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -4218,3 +4225,34 @@ QgsCachedImageFetcher::start()
 {
   QTimer::singleShot( 1, this, SLOT( send() ) );
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for WMS layers source select
+class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "wms" ); }
+    virtual QString text() const override { return QObject::tr( "WMS" ); }
+    virtual int ordering() const override { return 100; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsWMSSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsWmsSourceSelectProvider;
+
+  return providers;
+}
+#endif
+
