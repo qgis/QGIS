@@ -258,7 +258,10 @@ class SagaAlgorithm(SagaAlgorithmBase):
                 for i in range(4):
                     command += ' -{} {}'.format(self.extentParamNames[i], float(values[i]) + offset[i])
             elif isinstance(param, QgsProcessingParameterNumber):
-                command += ' -{} {}'.format(param.name(), self.parameterAsDouble(parameters, param.name(), context))
+                if param.dataType() == QgsProcessingParameterNumber.Integer:
+                    command += ' -{} {}'.format(param.name(), self.parameterAsInt(parameters, param.name(), context))
+                else:
+                    command += ' -{} {}'.format(param.name(), self.parameterAsDouble(parameters, param.name(), context))
             elif isinstance(param, QgsProcessingParameterEnum):
                 command += ' -{} {}'.format(param.name(), self.parameterAsEnum(parameters, param.name(), context))
             elif isinstance(param, (QgsProcessingParameterString, QgsProcessingParameterFile)):
