@@ -2354,5 +2354,20 @@ void QgsOptions::setZoomFactorValue()
 
 void QgsOptions::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#options" ) );
+  QWidget *activeTab = mOptionsStackedWidget->currentWidget();
+  QString link = QStringLiteral( "introduction/qgis_configuration.html" );
+
+  if ( activeTab == mOptionsPageAuth )
+  {
+    link = QStringLiteral( "auth_system/index.html" );
+  }
+  else if ( activeTab == mOptionsPageVariables )
+  {
+    link = QStringLiteral( "introduction/general_tools.html#variables" );
+  }
+  else if ( activeTab == mOptionsPageCRS )
+  {
+    link = QStringLiteral( "working_with_projections/working_with_projections.html" );
+  }
+  QgsHelp::openHelp( link );
 }
