@@ -151,7 +151,6 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
   geonode/qgsgeonodenewconnection.cpp
-  geonode/qgsgeonodesourceselect.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
@@ -648,7 +647,6 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsvaluerelationwidgetwrapper.h
 
   geonode/qgsgeonodenewconnection.h
-  geonode/qgsgeonodesourceselect.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
@@ -769,9 +767,6 @@ SET(QGIS_GUI_HDRS
   editorwidgets/qgsvaluemapwidgetfactory.h
   editorwidgets/qgsvaluerelationwidgetfactory.h
 
-  geonode/qgsgeonodenewconnection.h
-  geonode/qgsgeonodesourceselect.h
-
   layertree/qgslayertreeembeddedconfigwidget.h
   layertree/qgslayertreeembeddedwidgetregistry.h
 
@@ -822,7 +817,6 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgeonodesourceselectbase.h
 )
 
 IF(ENABLE_MODELTEST)

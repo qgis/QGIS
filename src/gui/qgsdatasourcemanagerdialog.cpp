@@ -27,7 +27,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
 #include "qgsgui.h"
-#include "qgsgeonodesourceselect.h"
+//#include "qgsgeonodesourceselect.h"
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
   QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
@@ -72,15 +72,15 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browser
     addProviderDialog( dlg, provider->providerKey(), provider->text(), provider->icon( ), provider->toolTip( ) );
   }
 
+  /*
+    QDialog *geonodeDialog = new QgsGeoNodeSourceSelect( this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded );
+    QDialog *dlg = addDialog( geonodeDialog, QStringLiteral( "geonode" ), tr( "GeoNode" ), QStringLiteral( "/mActionAddGeonodeLayer.svg" ) );
 
-  QDialog *geonodeDialog = new QgsGeoNodeSourceSelect( this, Qt::Widget, QgsProviderRegistry::WidgetMode::Embedded );
-  QDialog *dlg = addDialog( geonodeDialog, QStringLiteral( "geonode" ), tr( "GeoNode" ), QStringLiteral( "/mActionAddGeonodeLayer.svg" ) );
-
-  if ( dlg )
-  {
-    connect( dlg, SIGNAL( addRasterLayer( QString, QString, QString ) ), this, SLOT( rasterLayerAdded( QString, QString, QString ) ) );
-    connect( dlg, SIGNAL( addWfsLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
-  }
+    if ( dlg )
+    {
+      connect( dlg, SIGNAL( addRasterLayer( QString, QString, QString ) ), this, SLOT( rasterLayerAdded( QString, QString, QString ) ) );
+      connect( dlg, SIGNAL( addWfsLayer( QString, QString, QString ) ), this, SLOT( vectorLayerAdded( QString, QString, QString ) ) );
+    }*/
 }
 
 QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()

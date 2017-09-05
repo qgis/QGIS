@@ -25,7 +25,7 @@
 #include "ui_qgsgeonodesourceselectbase.h"
 #include "qgis_gui.h"
 
-class GUI_EXPORT QgsGeonodeItemDelegate : public QItemDelegate
+class QgsGeonodeItemDelegate : public QItemDelegate
 {
     Q_OBJECT
 
@@ -33,7 +33,7 @@ class GUI_EXPORT QgsGeonodeItemDelegate : public QItemDelegate
     explicit QgsGeonodeItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
 };
 
-class GUI_EXPORT QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsGeonodeSourceSelectBase
+class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsGeonodeSourceSelectBase
 {
     Q_OBJECT
 
