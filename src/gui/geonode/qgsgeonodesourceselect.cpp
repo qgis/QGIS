@@ -99,7 +99,7 @@ void QgsGeoNodeSourceSelect::deleteConnectionsEntryList()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
+  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Delete GeoNode Connection" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
     QgsGeoNodeConnectionUtils::deleteConnection( cmbConnections->currentText() );
