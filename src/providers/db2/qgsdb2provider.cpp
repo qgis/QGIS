@@ -583,8 +583,8 @@ void QgsDb2Provider::updateStatistics() const
 
   QgsDebugMsg( QString( "mSRId: %1" ).arg( mSRId ) );
   QgsDb2GeometryColumns gc( mDatabase );
-  int rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
-  if ( rc == 0 )
+  QString rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
+  if ( rc.isEmpty() || rc == QStringLiteral( "0" ) )
   {
     mEnvironment = gc.db2Environment();
     if ( -1 == mSRId )
@@ -1394,7 +1394,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
     sql = "DROP TABLE " + fullName;
     if ( !q.exec( sql ) )
     {
-      if ( q.lastError().number() != -206 ) // -206 is "not found" just ignore
+      if ( q.lastError().nativeErrorCode() != QStringLiteral( "-206" ) ) // -206 is "not found" just ignore
       {
         QString lastError = q.lastError().text();
         QgsDebugMsg( lastError );
@@ -1498,8 +1498,8 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
 
 // get the environment
       QgsDb2GeometryColumns gc( db );
-      int rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
-      if ( rc == 0 )
+      QString rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
+      if ( rc.isEmpty() || rc == QStringLiteral( "0" ) )
       {
         db2Environment = gc.db2Environment();
       }
