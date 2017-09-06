@@ -26,7 +26,7 @@ class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, QgsGeoNodeConnection *conn );
+    QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, std::unique_ptr< QgsGeoNodeConnection > conn );
     QVector<QgsDataItem *> createChildren() override;
     virtual QList<QAction *> actions() override;
 
@@ -38,10 +38,10 @@ class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
     {
       QgsGeoNodeConnectionUtils::deleteConnection( name() );
       mParent->refresh();
-    };
+    }
 
     QString mUri;
-    QgsGeoNodeConnection *mConnection = nullptr;
+    std::unique_ptr< QgsGeoNodeConnection > mConnection = nullptr;
 };
 
 class QgsGeoNodeServiceItem : public QgsDataCollectionItem
