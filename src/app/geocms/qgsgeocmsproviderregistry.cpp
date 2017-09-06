@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsgeocmsproviderregistry.h"
+#include "qgsdataitemproviderregistry.h"
 #include "qgsgui.h"
 #include "qgssourceselectproviderregistry.h"
 #include "geocms/geonode/qgsgeonodesourceselect.h"
+#include "geocms/geonode/qgsgeonodedataitems.h"
 
 QgsGeoCmsProviderRegistry::QgsGeoCmsProviderRegistry()
 {
@@ -25,5 +27,9 @@ QgsGeoCmsProviderRegistry::QgsGeoCmsProviderRegistry()
 
 void QgsGeoCmsProviderRegistry::init()
 {
+  // source select providers
   QgsGui::sourceSelectProviderRegistry()->addProvider( new QgsGeoNodeSourceSelectProvider() );
+
+  // data item providers
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsGeoNodeDataItemProvider() );
 }

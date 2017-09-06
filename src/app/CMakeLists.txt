@@ -154,6 +154,7 @@ SET(QGIS_APP_SRCS
   composer/qgsatlascompositionwidget.cpp
 
   geocms/qgsgeocmsproviderregistry.cpp
+  geocms/geonode/qgsgeonodedataitems.cpp
   geocms/geonode/qgsgeonodesourceselect.cpp
 
   layout/qgslayoutaddpagesdialog.cpp
@@ -336,6 +337,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
+  geocms/geonode/qgsgeonodedataitems.h
   geocms/geonode/qgsgeonodesourceselect.h
 
   layout/qgslayoutaddpagesdialog.h

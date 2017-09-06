@@ -19,7 +19,6 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgsdatasourceuri.h"
-#include "qgsgeonodeconnection.h"
 
 class QgsOWSConnectionItem : public QgsDataCollectionItem
 {

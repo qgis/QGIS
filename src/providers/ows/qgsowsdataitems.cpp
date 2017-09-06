@@ -23,9 +23,6 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsowssourceselect.h"
 #endif
-#include "qgsgeonodeconnection.h"
-#include "qgsgeonodenewconnection.h"
-#include "qgsgeonodedataitems.h"
 
 #include "qgsapplication.h"
 
@@ -267,8 +264,7 @@ QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
   QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
 
   *providers
-         << new QgsOwsDataItemProvider
-         << new QgsGeoNodeDataItemProvider;
+      << new QgsOwsDataItemProvider;
 
   return providers;
 }
