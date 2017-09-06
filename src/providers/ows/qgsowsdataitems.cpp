@@ -259,21 +259,26 @@ void QgsOWSRootItem::newConnection()
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
 
-QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
+QGISEXTERN int dataCapabilities()
 {
-  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
-
-  *providers
-      << new QgsOwsDataItemProvider;
-
-  return providers;
+  return QgsDataProvider::Net;
 }
 
-QgsDataItem *QgsOwsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
   {
     return new QgsOWSRootItem( parentItem, QStringLiteral( "OWS" ), QStringLiteral( "ows:" ) );
   }
+  return nullptr;
+}
+
+//QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
+QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+{
+  Q_UNUSED( parent );
+  Q_UNUSED( fl );
+  Q_UNUSED( widgetMode );
+  //return new QgsOWSSourceSelect( parent, fl, widgetMode );
   return nullptr;
 }
