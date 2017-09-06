@@ -28,10 +28,8 @@
 
 #include "qgis_server.h"
 #include "qgis_sip.h"
-#include "qgswmsconfigparser.h"
 #include "qgsproject.h"
 
-class QgsServerProjectParser;
 class QgsAccessControl;
 
 class SERVER_EXPORT QgsConfigCache : public QObject
@@ -39,11 +37,6 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     Q_OBJECT
   public:
     static QgsConfigCache *instance();
-
-    QgsServerProjectParser *serverConfiguration( const QString &filePath );
-    QgsWmsConfigParser *wmsConfiguration( const QString &filePath,
-                                          const QgsAccessControl *accessControl,
-                                          const QMap<QString, QString> &parameterMap = QMap< QString, QString >() );
 
     void removeEntry( const QString &path );
 
@@ -65,7 +58,6 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QDomDocument *xmlDocument( const QString &filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
-    QCache<QString, QgsWmsConfigParser> mWMSConfigCache;
     QCache<QString, QgsProject> mProjectCache;
 
   private slots:

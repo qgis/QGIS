@@ -20,7 +20,6 @@
 #ifndef QGSWMSRENDERER_H
 #define QGSWMSRENDERER_H
 
-#include "qgswmsconfigparser.h"
 #include "qgsserversettings.h"
 #include "qgswmsparameters.h"
 #include <QDomDocument>

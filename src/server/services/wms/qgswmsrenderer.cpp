@@ -46,7 +46,6 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgssldconfigparser.h"
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgspaintenginehack.h"
