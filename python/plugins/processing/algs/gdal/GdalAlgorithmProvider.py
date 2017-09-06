@@ -53,6 +53,7 @@ from .information import information
 from .nearblack import nearblack
 from .pct2rgb import pct2rgb
 from .polygonize import polygonize
+from .proximity import proximity
 from .rgb2pct import rgb2pct
 from .roughness import roughness
 from .sieve import sieve
@@ -65,7 +66,6 @@ from .warp import warp
 # from .merge import merge
 # from .gdaladdo import gdaladdo
 # from .rasterize import rasterize
-# from .proximity import proximity
 # from .extractprojection import ExtractProjection
 # from .gdal2xyz import gdal2xyz
 # from .gdalcalc import gdalcalc
@@ -156,6 +156,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             nearblack(),
             pct2rgb(),
             polygonize(),
+            proximity(),
             rgb2pct(),
             roughness(),
             sieve(),
@@ -167,7 +168,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # merge(),
             # gdaladdo(),
             # rasterize(),
-            # proximity(),
             # ExtractProjection(),
             # gdal2xyz(),
             # gdalcalc(),
