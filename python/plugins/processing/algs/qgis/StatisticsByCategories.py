@@ -67,9 +67,9 @@ class StatisticsByCategories(QgisAlgorithm):
                                                       self.tr('Field to calculate statistics on'),
                                                       parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterField(self.CATEGORIES_FIELD_NAME,
-                                                      self.tr('Field with categories'),
+                                                      self.tr('Field(s) with categories'),
                                                       parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.Any))
+                                                      type=QgsProcessingParameterField.Any, allowMultiple=True))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Statistics by category')))
 
@@ -82,15 +82,16 @@ class StatisticsByCategories(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         value_field_name = self.parameterAsString(parameters, self.VALUES_FIELD_NAME, context)
-        category_field_name = self.parameterAsString(parameters, self.CATEGORIES_FIELD_NAME, context)
+        category_field_names = self.parameterAsFields(parameters, self.CATEGORIES_FIELD_NAME, context)
 
         value_field_index = source.fields().lookupField(value_field_name)
         value_field = source.fields().at(value_field_index)
-        category_field_index = source.fields().lookupField(category_field_name)
+        category_field_indexes = [source.fields().lookupField(n) for n in category_field_names]
 
         # generate output fields
         fields = QgsFields()
-        fields.append(source.fields().at(category_field_index))
+        for c in category_field_indexes:
+            fields.append(source.fields().at(c))
 
         def addField(name):
             """
@@ -138,8 +139,11 @@ class StatisticsByCategories(QgisAlgorithm):
             fields.append(QgsField('max_length', QVariant.Int))
             fields.append(QgsField('mean_length', QVariant.Double))
 
-        features = source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes(
-            [value_field_index, category_field_index]))
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+        attrs = [value_field_index]
+        attrs.extend(category_field_indexes)
+        request.setSubsetOfAttributes(attrs)
+        features = source.getFeatures(request)
         total = 50.0 / source.featureCount() if source.featureCount() else 0
         values = defaultdict(list)
         for current, feat in enumerate(features):
@@ -148,7 +152,7 @@ class StatisticsByCategories(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()
-            try:
+            if True:
                 if field_type == 'numeric':
                     if attrs[value_field_index] == NULL:
                         continue
@@ -160,9 +164,9 @@ class StatisticsByCategories(QgisAlgorithm):
                     value = str(attrs[value_field_index])
                 else:
                     value = attrs[value_field_index]
-                cat = attrs[category_field_index]
+                cat = tuple([attrs[c] for c in category_field_indexes])
                 values[cat].append(value)
-            except:
+            else:
                 pass
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
@@ -190,21 +194,20 @@ class StatisticsByCategories(QgisAlgorithm):
 
             stat.calculate(v)
             f = QgsFeature()
-            f.setAttributes([cat,
-                             stat.count(),
-                             stat.variety(),
-                             stat.min(),
-                             stat.max(),
-                             stat.range(),
-                             stat.sum(),
-                             stat.mean(),
-                             stat.median(),
-                             stat.stDev(),
-                             stat.minority(),
-                             stat.majority(),
-                             stat.firstQuartile(),
-                             stat.thirdQuartile(),
-                             stat.interQuartileRange()])
+            f.setAttributes(list(cat) + [stat.count(),
+                                         stat.variety(),
+                                         stat.min(),
+                                         stat.max(),
+                                         stat.range(),
+                                         stat.sum(),
+                                         stat.mean(),
+                                         stat.median(),
+                                         stat.stDev(),
+                                         stat.minority(),
+                                         stat.majority(),
+                                         stat.firstQuartile(),
+                                         stat.thirdQuartile(),
+                                         stat.interQuartileRange()])
 
             sink.addFeature(f, QgsFeatureSink.FastInsert)
             current += 1
@@ -222,14 +225,13 @@ class StatisticsByCategories(QgisAlgorithm):
 
             stat.calculate(v)
             f = QgsFeature()
-            f.setAttributes([cat,
-                             stat.count(),
-                             stat.countDistinct(),
-                             stat.countMissing(),
-                             stat.count() - stat.countMissing(),
-                             stat.statistic(QgsDateTimeStatisticalSummary.Min),
-                             stat.statistic(QgsDateTimeStatisticalSummary.Max)
-                             ])
+            f.setAttributes(list(cat) + [stat.count(),
+                                         stat.countDistinct(),
+                                         stat.countMissing(),
+                                         stat.count() - stat.countMissing(),
+                                         stat.statistic(QgsDateTimeStatisticalSummary.Min),
+                                         stat.statistic(QgsDateTimeStatisticalSummary.Max)
+                                         ])
 
             sink.addFeature(f, QgsFeatureSink.FastInsert)
             current += 1
@@ -247,17 +249,16 @@ class StatisticsByCategories(QgisAlgorithm):
 
             stat.calculate(v)
             f = QgsFeature()
-            f.setAttributes([cat,
-                             stat.count(),
-                             stat.countDistinct(),
-                             stat.countMissing(),
-                             stat.count() - stat.countMissing(),
-                             stat.min(),
-                             stat.max(),
-                             stat.minLength(),
-                             stat.maxLength(),
-                             stat.meanLength()
-                             ])
+            f.setAttributes(list(cat) + [stat.count(),
+                                         stat.countDistinct(),
+                                         stat.countMissing(),
+                                         stat.count() - stat.countMissing(),
+                                         stat.min(),
+                                         stat.max(),
+                                         stat.minLength(),
+                                         stat.maxLength(),
+                                         stat.meanLength()
+                                         ])
 
             sink.addFeature(f, QgsFeatureSink.FastInsert)
             current += 1
