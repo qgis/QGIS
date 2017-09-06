@@ -36,6 +36,7 @@ from .GdalUtils import GdalUtils
 from .AssignProjection import AssignProjection
 from .aspect import aspect
 from .buildvrt import buildvrt
+from .ClipByExtent import ClipByExtent
 from .ColorRelief import ColorRelief
 from .contour import contour
 from .fillnodata import fillnodata
@@ -62,7 +63,6 @@ from .warp import warp
 
 # from .merge import merge
 # from .gdaladdo import gdaladdo
-# from .ClipByExtent import ClipByExtent
 # from .ClipByMask import ClipByMask
 # from .rasterize import rasterize
 # from .proximity import proximity
@@ -139,6 +139,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             AssignProjection(),
             aspect(),
             buildvrt(),
+            ClipByExtent(),
             ColorRelief(),
             contour(),
             fillnodata(),
@@ -164,7 +165,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             warp(),
             # merge(),
             # gdaladdo(),
-            # ClipByExtent(),
             # ClipByMask(),
             # rasterize(),
             # proximity(),

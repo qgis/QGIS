@@ -140,26 +140,6 @@ tests:
 #            precision: 7
 #
 #  - algorithm: gdal:cliprasterbyextent
-#    name: Clip raster by extent
-#    params:
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      PREDICTOR: 1
-#      PROJWIN: 18.67551824296977,18.697800756150787,45.78984181545589,45.804309302274866
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: 9913a7c0e1ced2c2ce1cd8f0e8103475bc2b0dd4d1d0adafe4920f93
-#        type: rasterhash
-#
-#  - algorithm: gdal:cliprasterbyextent
 #    name: Clip raster by extent and change no data values
 #    params:
 #      BIGTIFF: '0'
@@ -450,6 +430,26 @@ tests:
     results:
       OUTPUT:
         hash: 6ee933d53e1a2ffadfd88333919255e68bb945e833e50d112124bfd5
+        type: rasterhash
+
+  - algorithm: gdal:cliprasterbyextent
+    name: Clip raster by extent
+    params:
+      BIGTIFF: '0'
+      COMPRESS: '4'
+      INPUT:
+        name: dem.tif
+        type: raster
+      JPEGCOMPRESSION: 75
+      PREDICTOR: 1
+      PROJWIN: 18.67551824296977,18.697800756150787,45.78984181545589,45.804309302274866
+      RTYPE: '5'
+      TFW: false
+      TILED: false
+      ZLEVEL: 6
+    results:
+      OUTPUT:
+        hash: 9913a7c0e1ced2c2ce1cd8f0e8103475bc2b0dd4d1d0adafe4920f93
         type: rasterhash
 
 #  - algorithm: gdal:merge
