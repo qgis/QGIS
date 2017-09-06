@@ -9,3 +9,4 @@ ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
 ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 OutputRaster|TARGET_OUT_GRID|Grid
 ParameterNumber|WEIGHT|Minimum Weight|None|None| 0.0
+ParameterRaster|TARGET_TEMPLATE|Target System|True
