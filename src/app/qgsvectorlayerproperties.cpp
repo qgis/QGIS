@@ -86,12 +86,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
   , mLayer( lyr )
   , mOriginalSubsetSQL( lyr->subsetString() )
-  , mAuxiliaryLayerActionNew( nullptr )
-  , mAuxiliaryLayerActionClear( nullptr )
-  , mAuxiliaryLayerActionDelete( nullptr )
-  , mAuxiliaryLayerActionExport( nullptr )
-  , mAuxiliaryLayerActionDeleteField( nullptr )
-  , mAuxiliaryLayerActionAddField( nullptr )
 {
   setupUi( this );
   connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
