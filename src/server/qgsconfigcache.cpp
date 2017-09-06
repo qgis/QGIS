@@ -46,6 +46,7 @@ const QgsProject *QgsConfigCache::project( const QString &path )
     if ( prj->read( path ) )
     {
       mProjectCache.insert( path, prj.release() );
+      mFileSystemWatcher.addPath( path );
     }
   }
 
@@ -93,6 +94,8 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
 
 void QgsConfigCache::removeChangedEntry( const QString &path )
 {
+  mProjectCache.remove( path );
+
   //xml document must be removed last, as other config cache destructors may require it
   mXmlDocumentCache.remove( path );
 
