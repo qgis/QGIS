@@ -276,7 +276,6 @@
 %Include editorwidgets/qgsspinbox.sip
 %Include editorwidgets/qgsvaluemapsearchwidgetwrapper.sip
 %Include editorwidgets/qgsvaluerelationsearchwidgetwrapper.sip
-%Include geonode/qgsgeonodenewconnection.sip
 %Include layertree/qgscustomlayerorderwidget.sip
 %Include layertree/qgslayertreemapcanvasbridge.sip
 %Include layertree/qgslayertreeview.sip

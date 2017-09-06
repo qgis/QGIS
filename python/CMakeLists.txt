@@ -143,7 +143,6 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
     ${CMAKE_SOURCE_DIR}/src/gui/effects
-    ${CMAKE_SOURCE_DIR}/src/gui/geonode
     ${CMAKE_SOURCE_DIR}/src/gui/layertree
     ${CMAKE_SOURCE_DIR}/src/gui/layout
     ${CMAKE_SOURCE_DIR}/src/gui/locator

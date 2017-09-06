@@ -155,6 +155,7 @@ SET(QGIS_APP_SRCS
 
   geocms/qgsgeocmsproviderregistry.cpp
   geocms/geonode/qgsgeonodedataitems.cpp
+  geocms/geonode/qgsgeonodenewconnection.cpp
   geocms/geonode/qgsgeonodesourceselect.cpp
 
   layout/qgslayoutaddpagesdialog.cpp
@@ -338,6 +339,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgsatlascompositionwidget.h
 
   geocms/geonode/qgsgeonodedataitems.h
+  geocms/geonode/qgsgeonodenewconnection.h
   geocms/geonode/qgsgeonodesourceselect.h
 
   layout/qgslayoutaddpagesdialog.h
@@ -529,7 +531,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
-  ${CMAKE_SOURCE_DIR}/src/gui/geonode
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
@@ -577,7 +578,6 @@ INCLUDE_DIRECTORIES(
   ../gui/symbology
   ../gui/attributetable
   ../gui/auth
-  ../gui/geonode
   ../gui/ogr
   ../gui/raster
   ../gui/editorwidgets

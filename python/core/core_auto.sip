@@ -382,7 +382,7 @@
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterinterface.sip
 %Include geometry/qgspoint.sip
-%Include geonode/qgsgeonoderequest.sip
+%Include geocms/geonode/qgsgeonoderequest.sip
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsdetector.sip
 %Include gps/qgsnmeaconnection.sip
