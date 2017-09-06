@@ -169,7 +169,7 @@ void QgsDualView::columnBoxInit()
   connect( sortByPreviewExpression, &QAction::triggered, this, &QgsDualView::sortByPreviewExpression );
   mFeatureListPreviewButton->addAction( sortByPreviewExpression );
 
-  QAction *separator = new QAction();
+  QAction *separator = new QAction( mFeatureListPreviewButton );
   separator->setSeparator( true );
   mFeatureListPreviewButton->addAction( separator );
   restoreRecentDisplayExpressions();
