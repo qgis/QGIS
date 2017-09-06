@@ -1686,20 +1686,6 @@ namespace QgsWms
     return true;
   }
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  void QgsRenderer::applyAccessControlLayersFilters( const QStringList &layerList, QHash<QgsMapLayer *, QString> &originalLayerFilters ) const
-  {
-    Q_FOREACH ( const QString &layerName, layerList )
-    {
-      QList<QgsMapLayer *> mapLayers = QgsProject::instance()->mapLayersByName( layerName );
-      Q_FOREACH ( QgsMapLayer *mapLayer, mapLayers )
-      {
-        QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( mAccessControl, mapLayer, originalLayerFilters );
-      }
-    }
-  }
-#endif
-
   bool QgsRenderer::testFilterStringSafety( const QString &filter ) const
   {
     //; too dangerous for sql injections
@@ -1897,7 +1883,7 @@ namespace QgsWms
         QString currentLayerId = currentLayerElem.attribute( QStringLiteral( "id" ) );
         if ( !currentLayerId.isEmpty() )
         {
-          QgsMapLayer *currentLayer = QgsProject::instance()->mapLayer( currentLayerId );
+          QgsMapLayer *currentLayer = mProject->mapLayer( currentLayerId );
           if ( currentLayer )
           {
             QString WMSPropertyAttributesString = currentLayer->customProperty( QStringLiteral( "WMSPropertyAttributes" ) ).toString();
@@ -2109,7 +2095,7 @@ namespace QgsWms
 
     QgsExpressionContext expressionContext;
     expressionContext << QgsExpressionContextUtils::globalScope()
-                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+                      << QgsExpressionContextUtils::projectScope( mProject );
     if ( layer )
       expressionContext << QgsExpressionContextUtils::layerScope( layer );
     expressionContext.setFeature( *feat );

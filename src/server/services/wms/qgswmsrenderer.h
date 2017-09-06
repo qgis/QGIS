@@ -224,15 +224,6 @@ namespace QgsWms
       //! Record which symbols within one layer would be rendered with the given renderer context
       void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, QgsRenderContext &context ) const;
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-
-      /** Apply filter strings from the access control to the layers.
-       * \param layerList layers to filter
-       * \param originalLayerFilters the original layers filter dictionary
-       */
-      void applyAccessControlLayersFilters( const QStringList &layerList, QHash<QgsMapLayer *, QString> &originalLayerFilters ) const;
-#endif
-
       /** Tests if a filter sql string is allowed (safe)
         \returns true in case of success, false if string seems unsafe*/
       bool testFilterStringSafety( const QString &filter ) const;

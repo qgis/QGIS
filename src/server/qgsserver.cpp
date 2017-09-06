@@ -305,7 +305,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
 {
   QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
-  QgsProject::instance()->removeAllMapLayers();
 
   qApp->processEvents();
 
