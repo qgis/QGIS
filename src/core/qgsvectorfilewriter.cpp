@@ -683,7 +683,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            QStringList()
                            << QStringLiteral( "CRLF" )
                            << QStringLiteral( "LF" ),
-                           QLatin1String( "" ), // Default value
+                           QString(), // Default value
                            true // Allow None
                          ) );
 
@@ -749,7 +749,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          QStringList()
                          << QStringLiteral( "CRLF" )
                          << QStringLiteral( "LF" ),
-                         QLatin1String( "" ), // Default value
+                         QString(), // Default value
                          true // Allow None
                        ) );
 
@@ -764,7 +764,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          << QStringLiteral( "AS_XYZ" )
                          << QStringLiteral( "AS_XY" )
                          << QStringLiteral( "AS_YX" ),
-                         QStringLiteral( "" ), // Default value
+                         QString(), // Default value
                          true // Allow None
                        ) );
 
