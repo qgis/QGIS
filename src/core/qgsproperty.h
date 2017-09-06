@@ -173,6 +173,11 @@ class CORE_EXPORT QgsPropertyDefinition
     QString helpText() const { return mHelpText; }
 
     /**
+     * Sets the data type
+     */
+    void setDataType( DataType type ) { mTypes = type; }
+
+    /**
      * Returns the allowable field/value data type for the property.
      */
     DataType dataType() const { return mTypes; }

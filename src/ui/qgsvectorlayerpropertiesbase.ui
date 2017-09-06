@@ -2154,6 +2154,17 @@ border-radius: 2px;</string>
                   </spacer>
                  </item>
                  <item>
+                  <widget class="QPushButton" name="mAuxiliaryStorageFieldsAddBtn">
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../../images/images.qrc">
+                     <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="mAuxiliaryStorageFieldsDeleteBtn">
                    <property name="text">
                     <string/>

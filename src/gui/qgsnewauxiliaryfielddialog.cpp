@@ -47,12 +47,32 @@ QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinit
 
   if ( mNameOnly )
     mType->setEnabled( false );
+  else
+    mType->setEnabled( true );
 }
 
 void QgsNewAuxiliaryFieldDialog::accept()
 {
   QgsPropertyDefinition def = mPropertyDefinition;
   def.setComment( mName->text() );
+
+  if ( !mNameOnly )
+  {
+    if ( mType->currentText().compare( tr( "String" ) ) == 0 )
+    {
+      def.setDataType( QgsPropertyDefinition::DataTypeString );
+    }
+    else if ( mType->currentText().compare( tr( "Numeric" ) ) == 0 )
+    {
+      def.setDataType( QgsPropertyDefinition::DataTypeNumeric );
+    }
+    else
+    {
+      def.setDataType( QgsPropertyDefinition::DataTypeBoolean );
+    }
+
+    def.setOrigin( "user" );
+  }
 
   QString fieldName = QgsAuxiliaryField::nameFromProperty( def, true );
   const int idx = mLayer->fields().lookupField( fieldName );

@@ -57,6 +57,7 @@
 #include "qgsstyle.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsnewauxiliarylayerdialog.h"
+#include "qgsnewauxiliaryfielddialog.h"
 #include "qgslabelinggui.h"
 #include "qgssymbollayer.h"
 
@@ -90,6 +91,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mAuxiliaryLayerActionDelete( nullptr )
   , mAuxiliaryLayerActionExport( nullptr )
   , mAuxiliaryLayerActionDeleteField( nullptr )
+  , mAuxiliaryLayerActionAddField( nullptr )
 {
   setupUi( this );
   connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
@@ -382,6 +384,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAuxiliaryStorageActions->setMenu( menu );
 
   connect( mAuxiliaryStorageFieldsDeleteBtn, &QPushButton::clicked, this, &QgsVectorLayerProperties::onAuxiliaryLayerDeleteField );
+  connect( mAuxiliaryStorageFieldsAddBtn, &QPushButton::clicked, this, &QgsVectorLayerProperties::onAuxiliaryLayerAddField );
 
   updateAuxiliaryStoragePage();
 }
@@ -1676,6 +1679,19 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
     deleteAuxiliaryField( index );
     mLayer->triggerRepaint();
     QApplication::restoreOverrideCursor();
+  }
+}
+
+void QgsVectorLayerProperties::onAuxiliaryLayerAddField()
+{
+  QgsAuxiliaryLayer *alayer = mLayer->auxiliaryLayer();
+  if ( !alayer )
+    return;
+
+  QgsNewAuxiliaryFieldDialog dlg( QgsPropertyDefinition(), mLayer, false );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    updateAuxiliaryStoragePage();
   }
 }
 

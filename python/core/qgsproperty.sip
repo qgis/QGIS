@@ -139,6 +139,11 @@ class QgsPropertyDefinition
  :rtype: str
 %End
 
+    void setDataType( DataType type );
+%Docstring
+ Sets the data type
+%End
+
     DataType dataType() const;
 %Docstring
  Returns the allowable field/value data type for the property.

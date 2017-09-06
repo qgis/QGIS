@@ -81,6 +81,8 @@ QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
       if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
         def = p;
+        if ( parts.size() == 3 )
+          def.setComment( parts[2] );
         break;
       }
     }
@@ -93,6 +95,8 @@ QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
       if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
         def = p;
+        if ( parts.size() == 3 )
+          def.setComment( parts[2] );
         break;
       }
     }
@@ -105,17 +109,19 @@ QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
       if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
         def = p;
+        if ( parts.size() == 3 )
+          def.setComment( parts[2] );
         break;
       }
     }
   }
-
-  if ( parts.size() == 3 )
+  else if ( origin.compare( "user", Qt::CaseInsensitive ) == 0 )
   {
-    def.setComment( parts[2] );
+    def.setOrigin( "user" );
+    def.setComment( propertyName );
   }
 
-  if ( !def.name().isEmpty() )
+  if ( !def.name().isEmpty() || !def.comment().isEmpty() )
   {
     init( def );
     setTypeName( f.typeName() );
@@ -125,7 +131,7 @@ QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
 
 void QgsAuxiliaryField::init( const QgsPropertyDefinition &def )
 {
-  if ( !def.name().isEmpty() )
+  if ( !def.name().isEmpty() || !def.comment().isEmpty() )
   {
     QVariant::Type type;
     QString typeName;
@@ -167,7 +173,10 @@ bool QgsAuxiliaryLayer::clear()
 
 QString QgsAuxiliaryField::nameFromProperty( const QgsPropertyDefinition &def, bool joined )
 {
-  QString fieldName = QString( "%1_%2" ).arg( def.origin(), def.name().toLower() );
+  QString fieldName = def.origin();
+
+  if ( !def.name().isEmpty() )
+    fieldName =  QString( "%1_%2" ).arg( fieldName, def.name().toLower() );
 
   if ( !def.comment().isEmpty() )
     fieldName = QString( "%1_%2" ).arg( fieldName ).arg( def.comment() );
@@ -253,7 +262,7 @@ bool QgsAuxiliaryLayer::exists( const QgsPropertyDefinition &definition ) const
 
 bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definition )
 {
-  if ( definition.name().isEmpty() || exists( definition ) )
+  if ( ( definition.name().isEmpty() && definition.comment().isEmpty() ) || exists( definition ) )
     return false;
 
   const QgsAuxiliaryField af( definition );
