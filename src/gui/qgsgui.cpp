@@ -19,6 +19,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
+#include "qgssourceselectproviderregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutviewrubberband.h"
@@ -43,6 +44,11 @@ QgsNative *QgsGui::nativePlatformInterface()
 QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
 {
   return instance()->mEditorWidgetRegistry;
+}
+
+QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
+{
+  return instance()->mSourceSelectProviderRegistry;
 }
 
 QgsShortcutsManager *QgsGui::shortcutsManager()
@@ -71,6 +77,7 @@ QgsGui::~QgsGui()
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
+  delete mSourceSelectProviderRegistry;
   delete mShortcutsManager;
   delete mNative;
 }
@@ -87,6 +94,7 @@ QgsGui::QgsGui()
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
+  mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
   mLayoutItemGuiRegistry->populate();
 }

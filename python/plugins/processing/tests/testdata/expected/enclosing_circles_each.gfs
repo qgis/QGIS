@@ -7,7 +7,7 @@
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>6</FeatureCount>
-      <ExtentXMin>-1.81766</ExtentXMin>
+      <ExtentXMin>-1.82843</ExtentXMin>
       <ExtentXMax>10.59982</ExtentXMax>
       <ExtentYMin>-3.43247</ExtentYMin>
       <ExtentYMax>6.32190</ExtentYMax>
@@ -23,18 +23,13 @@
       <Type>Real</Type>
     </PropertyDefn>
     <PropertyDefn>
-      <Name>center_x</Name>
-      <ElementPath>center_x</ElementPath>
-      <Type>Real</Type>
-    </PropertyDefn>
-    <PropertyDefn>
-      <Name>center_y</Name>
-      <ElementPath>center_y</ElementPath>
-      <Type>Real</Type>
-    </PropertyDefn>
-    <PropertyDefn>
       <Name>radius</Name>
       <ElementPath>radius</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>area</Name>
+      <ElementPath>area</ElementPath>
       <Type>Real</Type>
     </PropertyDefn>
     <PropertyDefn>

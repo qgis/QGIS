@@ -25,6 +25,8 @@
 #include "qgsgeometryengine.h"
 #include "qgswkbtypes.h"
 
+#include <functional>
+
 ///@cond PRIVATE
 
 QgsNativeAlgorithms::QgsNativeAlgorithms( QObject *parent )
@@ -62,12 +64,18 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
   addAlgorithm( new QgsDissolveAlgorithm() );
+  addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsExtractByAttributeAlgorithm() );
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
+  addAlgorithm( new QgsBoundingBoxAlgorithm() );
+  addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
+  addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
+  addAlgorithm( new QgsConvexHullAlgorithm() );
+  addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -238,7 +246,8 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
   return new QgsDissolveAlgorithm();
 }
 
-QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
+    std::function<QgsGeometry( const QList< QgsGeometry >& )> collector, int maxQueueLength )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -284,10 +293,10 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       if ( f.hasGeometry() && f.geometry() )
       {
         geomQueue.append( f.geometry() );
-        if ( geomQueue.length() > 10000 )
+        if ( maxQueueLength > 0 && geomQueue.length() > maxQueueLength )
         {
           // queue too long, combine it
-          QgsGeometry tempOutputGeometry = QgsGeometry::unaryUnion( geomQueue );
+          QgsGeometry tempOutputGeometry = collector( geomQueue );
           geomQueue.clear();
           geomQueue << tempOutputGeometry;
         }
@@ -297,7 +306,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       current++;
     }
 
-    outputFeature.setGeometry( QgsGeometry::unaryUnion( geomQueue ) );
+    outputFeature.setGeometry( collector( geomQueue ) );
     sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
   }
   else
@@ -350,7 +359,7 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
       QgsFeature outputFeature;
       if ( geometryHash.contains( attrIt.key() ) )
       {
-        QgsGeometry geom = QgsGeometry::unaryUnion( geometryHash.value( attrIt.key() ) );
+        QgsGeometry geom = collector( geometryHash.value( attrIt.key() ) );
         if ( !geom.isMultipart() )
         {
           geom.convertToMultiType();
@@ -369,6 +378,23 @@ QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameter
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
+
+QVariantMap QgsDissolveAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  return processCollection( parameters, context, feedback, []( const QList< QgsGeometry > &parts )->QgsGeometry
+  {
+    return QgsGeometry::unaryUnion( parts );
+  }, 10000 );
+}
+
+QVariantMap QgsCollectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  return processCollection( parameters, context, feedback, []( const QList< QgsGeometry > &parts )->QgsGeometry
+  {
+    return QgsGeometry::collectGeometry( parts );
+  } );
+}
+
 
 void QgsClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
@@ -1087,4 +1113,232 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 }
 
 
+QString QgsBoundingBoxAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const
+{
+  return new QgsBoundingBoxAlgorithm();
+}
+
+QgsFields QgsBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields fields = inputFields;
+  fields.append( QgsField( QStringLiteral( "width" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "height" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "perimeter" ), QVariant::Double, QString(), 20, 6 ) );
+  return fields;
+}
+
+QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    QgsRectangle bounds = f.geometry().boundingBox();
+    QgsGeometry outputGeometry = QgsGeometry::fromRect( bounds );
+    f.setGeometry( outputGeometry );
+    QgsAttributes attrs = f.attributes();
+    attrs << bounds.width()
+          << bounds.height()
+          << bounds.area()
+          << bounds.perimeter();
+    f.setAttributes( attrs );
+  }
+  return f;
+}
+
+QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QgsOrientedMinimumBoundingBoxAlgorithm *QgsOrientedMinimumBoundingBoxAlgorithm::createInstance() const
+{
+  return new QgsOrientedMinimumBoundingBoxAlgorithm();
+}
+
+QgsFields QgsOrientedMinimumBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields fields = inputFields;
+  fields.append( QgsField( QStringLiteral( "width" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "height" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "perimeter" ), QVariant::Double, QString(), 20, 6 ) );
+  return fields;
+}
+
+QgsFeature QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    double area = 0;
+    double angle = 0;
+    double width = 0;
+    double height = 0;
+    QgsGeometry outputGeometry = f.geometry().orientedMinimumBoundingBox( area, angle, width, height );
+    f.setGeometry( outputGeometry );
+    QgsAttributes attrs = f.attributes();
+    attrs << width
+          << height
+          << angle
+          << area
+          << 2 * width + 2 * height;
+    f.setAttributes( attrs );
+  }
+  return f;
+}
+
+
+void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Number of segments in circles" ), QgsProcessingParameterNumber::Integer,
+                72, false, 8, 100000 ) );
+}
+
+QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
+{
+  return new QgsMinimumEnclosingCircleAlgorithm();
+}
+
+QgsFields QgsMinimumEnclosingCircleAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields fields = inputFields;
+  fields.append( QgsField( QStringLiteral( "radius" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  return fields;
+}
+
+bool QgsMinimumEnclosingCircleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
+  return true;
+}
+
+QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    double radius = 0;
+    QgsPointXY center;
+    QgsGeometry outputGeometry = f.geometry().minimalEnclosingCircle( center, radius, mSegments );
+    f.setGeometry( outputGeometry );
+    QgsAttributes attrs = f.attributes();
+    attrs << radius
+          << M_PI *radius *radius;
+    f.setAttributes( attrs );
+  }
+  return f;
+}
+
+QString QgsConvexHullAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
+{
+  return new QgsConvexHullAlgorithm();
+}
+
+QgsFields QgsConvexHullAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields fields = inputFields;
+  fields.append( QgsField( QStringLiteral( "area" ), QVariant::Double, QString(), 20, 6 ) );
+  fields.append( QgsField( QStringLiteral( "perimeter" ), QVariant::Double, QString(), 20, 6 ) );
+  return fields;
+}
+
+QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    QgsGeometry outputGeometry = f.geometry().convexHull();
+    if ( !outputGeometry )
+      feedback->reportError( outputGeometry.lastError() );
+    f.setGeometry( outputGeometry );
+    if ( outputGeometry )
+    {
+      QgsAttributes attrs = f.attributes();
+      attrs << outputGeometry.geometry()->area()
+            << outputGeometry.geometry()->perimeter();
+      f.setAttributes( attrs );
+    }
+  }
+  return f;
+}
+
+
+QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes a vector layer with singlepart geometries and generates a new one in which all geometries are "
+                      "multipart. Input features which are already multipart features will remain unchanged.\n\n"
+                      "This algorithm can be used to force geometries to multipart types in order to be compatibility with data providers "
+                      "with strict singlepart/multipart compatibility checks.\n\n"
+                      "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
+}
+
+QgsPromoteToMultipartAlgorithm *QgsPromoteToMultipartAlgorithm::createInstance() const
+{
+  return new QgsPromoteToMultipartAlgorithm();
+}
+
+QgsWkbTypes::Type QgsPromoteToMultipartAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  return QgsWkbTypes::multiType( inputWkbType );
+}
+
+QgsFeature QgsPromoteToMultipartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() && !f.geometry().isMultipart() )
+  {
+    QgsGeometry g = f.geometry();
+    g.convertToMultiType();
+    f.setGeometry( g );
+  }
+  return f;
+}
+
+
+void QgsCollectAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Unique ID fields" ), QVariant(),
+                QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Collected" ) ) );
+}
+
+QString QgsCollectAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes a vector layer and collects its geometries into new multipart geometries. One or more attributes can "
+                      "be specified to collect only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
+                      "all geometries can be collected.\n\n"
+                      "All output geometries will be converted to multi geometries, even those with just a single part. "
+                      "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part.\n\n"
+                      "See the 'Promote to multipart' or 'Aggregate' algorithms for alternative options." );
+}
+
+QgsCollectAlgorithm *QgsCollectAlgorithm::createInstance() const
+{
+  return new QgsCollectAlgorithm();
+}
+
 ///@endcond
+
+
+
+

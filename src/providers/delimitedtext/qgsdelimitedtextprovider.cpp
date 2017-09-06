@@ -41,6 +41,9 @@
 #include "qgsspatialindex.h"
 #include "qgis.h"
 #include "qgsproviderregistry.h"
+#ifdef HAVE_GUI
+#include "qgssourceselectprovider.h"
+#endif
 
 #include "qgsdelimitedtextfeatureiterator.h"
 #include "qgsdelimitedtextfile.h"
@@ -1090,7 +1093,7 @@ void QgsDelimitedTextProvider::setUriParameter( const QString &parameter, const 
   QUrl url = QUrl::fromEncoded( dataSourceUri().toLatin1() );
   if ( url.hasQueryItem( parameter ) ) url.removeAllQueryItems( parameter );
   if ( ! value.isEmpty() ) url.addQueryItem( parameter, value );
-  setDataSourceUri( QString::fromAscii( url.toEncoded() ) );
+  setDataSourceUri( QString::fromLatin1( url.toEncoded() ) );
 }
 
 void QgsDelimitedTextProvider::onFileUpdated()
@@ -1196,4 +1199,33 @@ QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::Wind
 {
   return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
 }
+
+//! Provider for delimited text source select
+class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "delimitedtext" ); }
+    virtual QString text() const override { return QObject::tr( "Delimited Text" ); }
+    virtual int ordering() const override { return 30; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsDelimitedTextSourceSelectProvider;
+
+  return providers;
+}
+
 #endif
+
+

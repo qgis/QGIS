@@ -122,7 +122,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     mBrowserView->setModel( mProxyModel );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
-    mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
+    mBrowserView->header()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
     // selectionModel is created when model is set on tree

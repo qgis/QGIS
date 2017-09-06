@@ -311,6 +311,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsSvgAnnotationItem. Use QgsSvgAnnotation instead.
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
 - QgsTextAnnotationItem. Use QgsTextAnnotation instead.
+- QgsTransectSample. This class was unused and unmaintained.
 - TriangleInterpolator.
 - Triangulation.
 - TriDecorator.
@@ -2351,12 +2352,6 @@ QgsTracer        {#qgis_api_break_3_0_QgsTracer}
 ---------
 
 - hasCrsTransformEnabled() and setCrsTransformEnabled() were removed. CRS transformation is now always enabled when required.
-
-QgsTransectSample        {#qgis_api_break_3_0_QgsTransectSample}
------------------
-
-- createSample() now uses an optional QgsFeedback instead of QProgressDialog
-for progress reports and cancelation.
 
 
 QgsTreeWidgetItem        {#qgis_api_break_3_0_QgsTreeWidgetItem}

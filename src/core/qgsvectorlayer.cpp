@@ -770,8 +770,8 @@ bool QgsVectorLayer::countSymbolFeatures()
   if ( !mFeatureCounter )
   {
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
-    connect( mFeatureCounter, &QgsTask::taskCompleted, [ = ]() { onSymbolsCounted(); mFeatureCounter = nullptr; } );
-    connect( mFeatureCounter, &QgsTask::taskTerminated, [ = ]() { mFeatureCounter = nullptr; } );
+    connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
+    connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
 
     QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
@@ -3945,7 +3945,8 @@ QString QgsVectorLayer::htmlMetadata() const
   }
   else
   {
-    QString typeString( QgsWkbTypes::geometryDisplayString( geometryType() ) );
+    QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
+                        QgsWkbTypes::displayString( wkbType() ) ) );
     myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Geometry" ) % QLatin1String( "</td><td>" ) % typeString % QLatin1String( "</td></tr>\n" );
   }
 
@@ -4032,6 +4033,17 @@ QString QgsVectorLayer::htmlMetadata() const
 void QgsVectorLayer::invalidateSymbolCountedFlag()
 {
   mSymbolFeatureCounted = false;
+}
+
+void QgsVectorLayer::onFeatureCounterCompleted()
+{
+  onSymbolsCounted();
+  mFeatureCounter = nullptr;
+}
+
+void QgsVectorLayer::onFeatureCounterTerminated()
+{
+  mFeatureCounter = nullptr;
 }
 
 void QgsVectorLayer::onJoinedFieldsChanged()

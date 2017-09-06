@@ -13,7 +13,6 @@
 %Include raster/qgsrastercalcnode.sip
 %Include raster/qgstotalcurvaturefilter.sip
 %Include vector/qgsgeometrysnapper.sip
-%Include vector/qgstransectsample.sip
 %Include vector/qgszonalstatistics.sip
 %Include interpolation/qgsinterpolator.sip
 %Include interpolation/qgsgridfilewriter.sip

@@ -35,6 +35,12 @@ email                : sherman at mrcc.com
 #include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
+
+#ifdef HAVE_GUI
+#include "qgssourceselectprovider.h"
+#include "qgsogrsourceselect.h"
+#endif
+
 #include "qgis.h"
 
 
@@ -2913,10 +2919,8 @@ QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 {
-  QgsDebugMsg( "Entering." );
-
   QgsCoordinateReferenceSystem srs;
-  if ( !mValid )
+  if ( !mValid || ( mOGRGeomType == wkbNone ) )
     return srs;
 
   if ( ogrDriver )
@@ -2949,7 +2953,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
     // get the proj4 text
     char *pszProj4 = nullptr;
     OSRExportToProj4( mySpatialRefSys, &pszProj4 );
-    QgsDebugMsg( pszProj4 );
+    QgsDebugMsgLevel( pszProj4, 4 );
     CPLFree( pszProj4 );
 
     char *pszWkt = nullptr;
@@ -4370,3 +4374,33 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
   errCause = QObject::tr( "Layer not found: %1" ).arg( uri );
   return false;
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for OGR vector source select
+class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    virtual QString text() const override { return QObject::tr( "Vector" ); }
+    virtual int ordering() const override { return 10; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsOgrSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsOgrVectorSourceSelectProvider;
+
+  return providers;
+}
+
+#endif

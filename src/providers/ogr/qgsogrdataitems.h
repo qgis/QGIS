@@ -50,4 +50,5 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 };
 
 
+
 #endif // QGSOGRDATAITEMS_H

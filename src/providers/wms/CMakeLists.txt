@@ -64,16 +64,21 @@ TARGET_LINK_LIBRARIES(wmsprovider
   ${GDAL_LIBRARY}  # for OGR_G_CreateGeometryFromJson()
 )
 
-IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (wmsprovider
-    qgis_gui
-  )
-ENDIF ()
 
 TARGET_LINK_LIBRARIES(wmsprovider_a
   qgis_core
   ${QT_QTSCRIPT_LIBRARY}
 )
+
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (wmsprovider
+    qgis_gui
+  )
+  TARGET_LINK_LIBRARIES (wmsprovider_a
+    qgis_gui
+  )
+ENDIF ()
 
 INSTALL (TARGETS wmsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

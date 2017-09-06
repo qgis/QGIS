@@ -737,15 +737,6 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
                  . arg( increment )
                );
 
-    //make sure the curve point p2 is part of the segmentized vertices. But only if p1 != p3
-    // TODO: make this a parameter
-    bool addP2 = true;
-    if ( qgsDoubleNear( circlePoint1.x(), circlePoint3.x() ) && qgsDoubleNear( circlePoint1.y(), circlePoint3.y() ) )
-    {
-      addP2 = false;
-    }
-    addP2 = false;
-
     // As we're adding the last point in any case, we'll avoid
     // including a point which is at less than 1% increment distance
     // from it (may happen to find them due to numbers approximation).
@@ -757,16 +748,6 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     QgsDebugMsg( QString( "stopAngle: %1 (%2)" ) . arg( stopAngle ) .arg( stopAngle * 180 / M_PI ) );
     for ( double angle = a1 + increment; angle < stopAngle; angle += increment )
     {
-      if ( addP2 && angle > a2 )
-      {
-        if ( stringPoints.empty() || stringPoints.back() != circlePoint2 )
-        {
-          QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
-          stringPoints.insert( stringPoints.size(), circlePoint2 );
-        }
-        addP2 = false;
-      }
-
       QgsDebugMsg( QString( "SA - %1 (%2)" ) . arg( angle ) .arg( angle * 180 / M_PI ) );
 
       x = centerX + radius * std::cos( angle );

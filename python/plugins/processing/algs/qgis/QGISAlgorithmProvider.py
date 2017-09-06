@@ -46,10 +46,8 @@ from .Aspect import Aspect
 from .AutoincrementalField import AutoincrementalField
 from .BasicStatistics import BasicStatisticsForField
 from .Boundary import Boundary
-from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
-from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Datasources2Vrt import Datasources2Vrt
@@ -70,7 +68,6 @@ from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
-from .ExtentFromRasterLayer import ExtentFromRasterLayer
 from .ExtractNodes import ExtractNodes
 from .ExtractSpecificNodes import ExtractSpecificNodes
 from .FieldPyculator import FieldsPyculator
@@ -100,10 +97,9 @@ from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .MergeLines import MergeLines
-from .MinimalEnclosingCircle import MinimalEnclosingCircle
+from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
-from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
@@ -148,7 +144,6 @@ from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SimplifyGeometries import SimplifyGeometries
-from .SinglePartsToMultiparts import SinglePartsToMultiparts
 from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
 from .Smooth import Smooth
@@ -174,7 +169,6 @@ from .ZonalStatistics import ZonalStatistics
 # from .ExtractByLocation import ExtractByLocation
 # from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
-# from .SelectByAttributeSum import SelectByAttributeSum
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -192,7 +186,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         #         SelectByLocation(),
         #         ExtractByLocation(),
         #         SpatialJoin(),
-        #         SelectByAttributeSum()
         #         ]
         algs = [AddTableField(),
                 Aggregate(),
@@ -200,10 +193,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 AutoincrementalField(),
                 BasicStatisticsForField(),
                 Boundary(),
-                BoundingBox(),
                 CheckValidity(),
                 ConcaveHull(),
-                ConvexHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
                 Datasources2Vrt(),
@@ -224,7 +215,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
-                ExtentFromRasterLayer(),
                 ExtractNodes(),
                 ExtractSpecificNodes(),
                 FieldsCalculator(),
@@ -254,10 +244,9 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 MeanCoords(),
                 Merge(),
                 MergeLines(),
-                MinimalEnclosingCircle(),
+                MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
-                OrientedMinimumBoundingBox(),
                 Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),
@@ -302,7 +291,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ShortestPathPointToLayer(),
                 ShortestPathPointToPoint(),
                 SimplifyGeometries(),
-                SinglePartsToMultiparts(),
                 SingleSidedBuffer(),
                 Slope(),
                 Smooth(),

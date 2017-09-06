@@ -54,7 +54,8 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
   if ( args )
   {
     int arg = 0;
-    Q_FOREACH ( QgsExpressionNode *n, args->list() )
+    const QList< QgsExpressionNode * > argList = args->list();
+    for ( QgsExpressionNode *n : argList )
     {
       QVariant v;
       if ( lazyEval() )
@@ -201,7 +202,8 @@ bool QgsExpressionFunction::allParamsStatic( const QgsExpressionNodeFunction *no
 {
   if ( node && node->args() )
   {
-    Q_FOREACH ( QgsExpressionNode *argNode, node->args()->list() )
+    const QList< QgsExpressionNode * > argList = node->args()->list();
+    for ( QgsExpressionNode *argNode : argList )
     {
       if ( !argNode->isStatic( parent, context ) )
         return false;
@@ -891,7 +893,7 @@ static QVariant fcnToDateTime( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnCoalesce( const QVariantList &values, const QgsExpressionContext *, QgsExpression * )
 {
-  Q_FOREACH ( const QVariant &value, values )
+  for ( const QVariant &value : values )
   {
     if ( value.isNull() )
       continue;
@@ -1329,7 +1331,7 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QString concat;
-  Q_FOREACH ( const QVariant &value, values )
+  for ( const QVariant &value : values )
   {
     concat += QgsExpressionUtils::getStringValue( value, parent );
   }
@@ -1718,9 +1720,10 @@ static QVariant fcnNodesToPoints( const QVariantList &values, const QgsExpressio
 
   QgsMultiPointV2 *mp = new QgsMultiPointV2();
 
-  Q_FOREACH ( const QgsRingSequence &part, geom.geometry()->coordinateSequence() )
+  const QgsCoordinateSequence sequence = geom.geometry()->coordinateSequence();
+  for ( const QgsRingSequence &part : sequence )
   {
-    Q_FOREACH ( const QgsPointSequence &ring, part )
+    for ( const QgsPointSequence &ring : part )
     {
       bool skipLast = false;
       if ( ignoreClosing && ring.count() > 2 && ring.first() == ring.last() )
@@ -1745,11 +1748,11 @@ static QVariant fcnSegmentsToLines( const QVariantList &values, const QgsExpress
   if ( geom.isNull() )
     return QVariant();
 
-  QList< QgsLineString * > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
+  const QList< QgsLineString * > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
 
   //OK, now we have a complete list of segmentized lines from the geometry
   QgsMultiLineString *ml = new QgsMultiLineString();
-  Q_FOREACH ( QgsLineString *line, linesToProcess )
+  for ( QgsLineString *line : linesToProcess )
   {
     for ( int i = 0; i < line->numPoints() - 1; ++i )
     {
@@ -1932,7 +1935,7 @@ static QVariant fcnMakeLine( const QVariantList &values, const QgsExpressionCont
   QgsLineString *lineString = new QgsLineString();
   lineString->clear();
 
-  Q_FOREACH ( const QVariant &value, values )
+  for ( const QVariant &value : values )
   {
     QgsGeometry geom = QgsExpressionUtils::getGeometry( value, parent );
     if ( geom.isNull() )
@@ -1987,7 +1990,7 @@ static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpression
   std::unique_ptr<QgsLineString> lineString( new QgsLineString() );
   lineString->clear();
 
-  Q_FOREACH ( const QVariant &value, values )
+  for ( const QVariant &value : values )
   {
     QgsGeometry geom = QgsExpressionUtils::getGeometry( value, parent );
     if ( geom.isNull() )
@@ -2822,7 +2825,7 @@ static QVariant fcnOrderParts( const QVariantList &values, const QgsExpressionCo
   while ( orderedGeom->partCount() )
     orderedGeom->removeGeometry( 0 );
 
-  Q_FOREACH ( const QgsFeature &feature, partFeatures )
+  for ( const QgsFeature &feature : qgsAsConst( partFeatures ) )
   {
     orderedGeom->addGeometry( feature.geometry().geometry()->clone() );
   }
@@ -3624,7 +3627,7 @@ static QVariant fcnArrayRemoveAll( const QVariantList &values, const QgsExpressi
 static QVariant fcnArrayCat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QVariantList list;
-  Q_FOREACH ( const QVariant &cur, values )
+  for ( const QVariant &cur : values )
   {
     list += QgsExpressionUtils::getListValue( cur, parent );
   }
@@ -3669,7 +3672,8 @@ static QVariant fcnArrayReverse( const QVariantList &values, const QgsExpression
 static QVariant fcnArrayIntersect( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   const QVariantList array1 = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  Q_FOREACH ( const QVariant &cur, QgsExpressionUtils::getListValue( values.at( 1 ), parent ) )
+  const QVariantList array2 = QgsExpressionUtils::getListValue( values.at( 1 ), parent );
+  for ( const QVariant &cur : array2 )
   {
     if ( array1.contains( cur ) )
       return QVariant( true );
@@ -3768,7 +3772,7 @@ static QVariant fcnMapInsert( const QVariantList &values, const QgsExpressionCon
 static QVariant fcnMapConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QVariantMap result;
-  Q_FOREACH ( const QVariant &cur, values )
+  for ( const QVariant &cur : values )
   {
     const QVariantMap curMap = QgsExpressionUtils::getMapValue( cur, parent );
     for ( QVariantMap::const_iterator it = curMap.constBegin(); it != curMap.constEnd(); ++it )
@@ -4153,7 +4157,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     orderPartsFunc->setIsStaticFunction(
       []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
     {
-      Q_FOREACH ( QgsExpressionNode *argNode, node->args()->list() )
+      const QList< QgsExpressionNode *> argList = node->args()->list();
+      for ( QgsExpressionNode *argNode : argList )
       {
         if ( !argNode->isStatic( parent, context ) )
           return false;
@@ -4344,7 +4349,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     QgsExpressionContextUtils::registerContextFunctions();
 
     //QgsExpression has ownership of all built-in functions
-    Q_FOREACH ( QgsExpressionFunction *func, sFunctions )
+    for ( QgsExpressionFunction *func : qgsAsConst( sFunctions ) )
     {
       sOwnedFunctions << func;
       sBuiltinFunctions << func->name();

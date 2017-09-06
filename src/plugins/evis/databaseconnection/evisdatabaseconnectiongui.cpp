@@ -115,7 +115,7 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString &layerName, co
     url.addQueryItem( QStringLiteral( "delimiterType" ), QStringLiteral( "regexp" ) );
     url.addQueryItem( QStringLiteral( "xField" ), xCoordinate );
     url.addQueryItem( QStringLiteral( "yField" ), yCoordinate );
-    emit drawVectorLayer( QString::fromAscii( url.toEncoded() ), layerName, QStringLiteral( "delimitedtext" ) );
+    emit drawVectorLayer( QString::fromLatin1( url.toEncoded() ), layerName, QStringLiteral( "delimitedtext" ) );
     mTempOutputFileList->last()->close();
   }
 }

@@ -571,7 +571,7 @@ void QgsLayoutRuler::setCursorPosition( QPointF position )
 
 void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
 {
-  mMarkerPos = event->posF();
+  mMarkerPos = event->pos();
   update();
 
   QPointF displayPos;
@@ -651,7 +651,7 @@ void QgsLayoutRuler::mouseMoveEvent( QMouseEvent *event )
     }
 
     //update cursor position in status bar
-    displayPos = mTransform.inverted().map( event->posF() );
+    displayPos = mTransform.inverted().map( event->pos() );
     switch ( mOrientation )
     {
       case Qt::Horizontal:

@@ -29,9 +29,9 @@ QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
 {
   setupUi( this );
 
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::ResizeToContents );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 2, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::ResizeToContents );
 
   mOrderByTableWidget->installEventFilter( this );
 

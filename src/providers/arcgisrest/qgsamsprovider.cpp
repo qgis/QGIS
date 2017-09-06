@@ -24,6 +24,11 @@
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 
+#ifdef HAVE_GUI
+#include "qgsamssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
+
 #include <cstring>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -449,3 +454,32 @@ void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
   }
   std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for AMS layers source select
+class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
+    virtual QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
+    virtual int ordering() const override { return 130; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsAmsSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsAmsSourceSelectProvider;
+
+  return providers;
+}
+#endif

@@ -1787,10 +1787,6 @@ Returns the current blending mode for features
  :rtype: bool
 %End
 
-
-  protected slots:
-    void invalidateSymbolCountedFlag();
-
   signals:
 
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );

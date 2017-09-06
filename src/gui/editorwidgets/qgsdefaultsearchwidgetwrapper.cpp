@@ -109,7 +109,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsDefaultSearchWidgetWrapper::supportedFlag
       break;
 
     case QVariant::String:
-      flags |= Contains | DoesNotContain;
+      flags |= Contains | DoesNotContain | StartsWith | EndsWith;
       break;
 
     default:
@@ -213,15 +213,21 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
                  + ( flags & EqualTo ? "=" : "<>" ) +
                  QStringLiteral( "lower(%1)" ).arg( QgsExpression::quotedString( mLineEdit->text() ) );
       }
-      else if ( flags & Contains || flags & DoesNotContain )
+      else if ( flags & Contains || flags & DoesNotContain || flags & StartsWith || flags & EndsWith )
       {
         QString exp = fieldName + ( mCheckbox && mCheckbox->isChecked() ? " LIKE " : " ILIKE " );
         QString value = QgsExpression::quotedString( mLineEdit->text() );
         value.chop( 1 );
         value = value.remove( 0, 1 );
-        exp += "'%" + value + "%'";
+        exp += '\'';
+        if ( !flags.testFlag( StartsWith ) )
+          exp += '%';
+        exp += value;
+        if ( !flags.testFlag( EndsWith ) )
+          exp += '%';
+        exp += '\'';
         if ( flags & DoesNotContain )
-          exp.prepend( "NOT (" ).append( ")" );
+          exp.prepend( "NOT (" ).append( ')' );
         return exp;
       }
 

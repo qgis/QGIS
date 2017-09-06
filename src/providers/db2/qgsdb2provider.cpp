@@ -27,6 +27,7 @@
 
 #ifdef HAVE_GUI
 #include "qgsdb2sourceselect.h"
+#include "qgssourceselectprovider.h"
 #endif
 
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
@@ -583,8 +584,8 @@ void QgsDb2Provider::updateStatistics() const
 
   QgsDebugMsg( QString( "mSRId: %1" ).arg( mSRId ) );
   QgsDb2GeometryColumns gc( mDatabase );
-  int rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
-  if ( rc == 0 )
+  QString rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
+  if ( rc.isEmpty() || rc == QStringLiteral( "0" ) )
   {
     mEnvironment = gc.db2Environment();
     if ( -1 == mSRId )
@@ -1394,7 +1395,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
     sql = "DROP TABLE " + fullName;
     if ( !q.exec( sql ) )
     {
-      if ( q.lastError().number() != -206 ) // -206 is "not found" just ignore
+      if ( q.lastError().nativeErrorCode() != QStringLiteral( "-206" ) ) // -206 is "not found" just ignore
       {
         QString lastError = q.lastError().text();
         QgsDebugMsg( lastError );
@@ -1498,8 +1499,8 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
 
 // get the environment
       QgsDb2GeometryColumns gc( db );
-      int rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
-      if ( rc == 0 )
+      QString rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
+      if ( rc.isEmpty() || rc == QStringLiteral( "0" ) )
       {
         db2Environment = gc.db2Environment();
       }
@@ -1748,3 +1749,34 @@ QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
            oldToNewAttrIdxMap, errorMessage, options
          );
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for DB2 source select
+class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "DB2" ); }
+    virtual QString text() const override { return QObject::tr( "DB2" ); }
+    virtual int ordering() const override { return 70; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsDb2SourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsDb2SourceSelectProvider;
+
+  return providers;
+}
+
+#endif
