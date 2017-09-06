@@ -466,8 +466,8 @@ SET(QGIS_CORE_SRCS
   fieldformatter/qgsvaluemapfieldformatter.cpp
   fieldformatter/qgsvaluerelationfieldformatter.cpp
 
-  geonode/qgsgeonodeconnection.cpp
-  geonode/qgsgeonoderequest.cpp
+  geocms/geonode/qgsgeonodeconnection.cpp
+  geocms/geonode/qgsgeonoderequest.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -683,7 +683,7 @@ SET(QGIS_CORE_MOC_HDRS
 
   geometry/qgspoint.h
 
-  geonode/qgsgeonoderequest.h
+  geocms/geonode/qgsgeonoderequest.h
 
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
@@ -1089,7 +1089,7 @@ SET(QGIS_CORE_HDRS
   fieldformatter/qgsvaluemapfieldformatter.h
   fieldformatter/qgsvaluerelationfieldformatter.h
 
-  geonode/qgsgeonodeconnection.h
+  geocms/geonode/qgsgeonodeconnection.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
@@ -1114,7 +1114,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   fieldformatter
   geometry
-  geonode
+  geocms
+  geocms/geonode
   layertree
   layout
   metadata
