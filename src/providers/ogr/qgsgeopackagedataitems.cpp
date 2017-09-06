@@ -154,9 +154,10 @@ QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, Q
   mCapabilities |= Collapse;
 }
 
-QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
+QList<QgsGeoPackageLayerInfo *> QgsGeoPackageConnectionItem::subLayers( const QString &path ) const
 {
-  QVector<QgsDataItem *> children;
+
+  QList<QgsGeoPackageLayerInfo *> children;
 
   // Vector layers
   QgsVectorLayer layer( mPath, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ) );
@@ -199,8 +200,7 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
         if ( i == 0 && values.size() > 1 )
         {
           uri = QStringLiteral( "%1|layerid=%2|layername=%3" ).arg( mPath, layerId, name );
-          QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, QgsLayerItem::LayerType::TableLayer );
-          children.append( item );
+          children.append( new QgsGeoPackageLayerInfo( mPath, uri, name, QgsLayerItem::LayerType::TableLayer ) );
         }
         if ( layerType != QgsLayerItem::LayerType::NoType )
         {
@@ -218,9 +218,8 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
             {
               uri = QStringLiteral( "%1|layerid=%2" ).arg( mPath, layerId );
             }
-            QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
             QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
-            children.append( item );
+            children.append( new QgsGeoPackageLayerInfo( mPath, uri, name, layerType ) );
           }
         }
         else
@@ -240,8 +239,7 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
       QStringList pieces = uri.split( ':' );
       QString name = pieces.value( pieces.length() - 1 );
       QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
-      QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
-      children.append( item );
+      children.append( new QgsGeoPackageLayerInfo( mPath, uri, name, QgsLayerItem::LayerType::Raster ) );
     }
   }
   else if ( rlayer.isValid( ) )
@@ -275,12 +273,29 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
       }
 
       QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, mPath ), 3 );
-      QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
-      children.append( item );
+      children.append( new QgsGeoPackageLayerInfo( mPath, uri, name, QgsLayerItem::LayerType::Raster ) );
     }
   }
   return children;
+}
 
+QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
+{
+  QVector<QgsDataItem *> children;
+  QList<QgsGeoPackageLayerInfo *> layers = subLayers( mPath );
+  for ( const QgsGeoPackageLayerInfo *info : qgsAsConst( layers ) )
+  {
+    if ( info->type() == QgsLayerItem::LayerType::Raster )
+    {
+      children.append( new QgsGeoPackageRasterLayerItem( this, info->name(), info->path(), info->uri() ) );
+    }
+    else
+    {
+      children.append( new QgsGeoPackageVectorLayerItem( this, info->name(), info->path(), info->uri(), info->type( ) ) );
+    }
+  }
+  qDeleteAll( layers );
+  return children;
 }
 
 bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
