@@ -64,8 +64,9 @@ class StatisticsByCategories(QgisAlgorithm):
                                                               self.tr('Input vector layer'),
                                                               types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterField(self.VALUES_FIELD_NAME,
-                                                      self.tr('Field to calculate statistics on'),
-                                                      parentLayerParameterName=self.INPUT))
+                                                      self.tr(
+                                                          'Field to calculate statistics on (if empty, only count is calculated)'),
+                                                      parentLayerParameterName=self.INPUT, optional=True))
         self.addParameter(QgsProcessingParameterField(self.CATEGORIES_FIELD_NAME,
                                                       self.tr('Field(s) with categories'),
                                                       parentLayerParameterName=self.INPUT,
@@ -85,7 +86,10 @@ class StatisticsByCategories(QgisAlgorithm):
         category_field_names = self.parameterAsFields(parameters, self.CATEGORIES_FIELD_NAME, context)
 
         value_field_index = source.fields().lookupField(value_field_name)
-        value_field = source.fields().at(value_field_index)
+        if value_field_index >= 0:
+            value_field = source.fields().at(value_field_index)
+        else:
+            value_field = None
         category_field_indexes = [source.fields().lookupField(n) for n in category_field_names]
 
         # generate output fields
@@ -101,7 +105,10 @@ class StatisticsByCategories(QgisAlgorithm):
             field.setName(name)
             fields.append(field)
 
-        if value_field.isNumeric():
+        if value_field is None:
+            field_type = 'none'
+            fields.append(QgsField('count', QVariant.Int))
+        elif value_field.isNumeric():
             field_type = 'numeric'
             fields.append(QgsField('count', QVariant.Int))
             fields.append(QgsField('unique', QVariant.Int))
@@ -140,42 +147,50 @@ class StatisticsByCategories(QgisAlgorithm):
             fields.append(QgsField('mean_length', QVariant.Double))
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
-        attrs = [value_field_index]
+        if value_field is not None:
+            attrs = [value_field_index]
+        else:
+            attrs = []
         attrs.extend(category_field_indexes)
         request.setSubsetOfAttributes(attrs)
         features = source.getFeatures(request)
         total = 50.0 / source.featureCount() if source.featureCount() else 0
-        values = defaultdict(list)
+        if field_type == 'none':
+            values = defaultdict(lambda: 0)
+        else:
+            values = defaultdict(list)
         for current, feat in enumerate(features):
             if feedback.isCanceled():
                 break
 
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()
-            if True:
-                if field_type == 'numeric':
-                    if attrs[value_field_index] == NULL:
-                        continue
-                    else:
-                        value = float(attrs[value_field_index])
-                elif field_type == 'string':
-                    if attrs[value_field_index] == NULL:
-                        value=''
-                    else:
-                        value = str(attrs[value_field_index])
-                elif attrs[value_field_index] == NULL:
-                    value = NULL
+            cat = tuple([attrs[c] for c in category_field_indexes])
+            if field_type == 'none':
+                values[cat] += 1
+                continue
+            if field_type == 'numeric':
+                if attrs[value_field_index] == NULL:
+                    continue
                 else:
-                    value = attrs[value_field_index]
-                cat = tuple([attrs[c] for c in category_field_indexes])
-                values[cat].append(value)
+                    value = float(attrs[value_field_index])
+            elif field_type == 'string':
+                if attrs[value_field_index] == NULL:
+                    value = ''
+                else:
+                    value = str(attrs[value_field_index])
+            elif attrs[value_field_index] == NULL:
+                value = NULL
             else:
-                pass
+                value = attrs[value_field_index]
+            values[cat].append(value)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
 
-        if field_type == 'numeric':
+        if field_type == 'none':
+            self.saveCounts(values, sink, feedback)
+        elif field_type == 'numeric':
             self.calcNumericStats(values, sink, feedback)
         elif field_type == 'datetime':
             self.calcDateTimeStats(values, sink, feedback)
@@ -183,6 +198,19 @@ class StatisticsByCategories(QgisAlgorithm):
             self.calcStringStats(values, sink, feedback)
 
         return {self.OUTPUT: dest_id}
+
+    def saveCounts(self, values, sink, feedback):
+        total = 50.0 / len(values) if values else 0
+        current = 0
+        for cat, v in values.items():
+            if feedback.isCanceled():
+                break
+
+            feedback.setProgress(int(current * total) + 50)
+            f = QgsFeature()
+            f.setAttributes(list(cat) + [v])
+            sink.addFeature(f, QgsFeatureSink.FastInsert)
+            current += 1
 
     def calcNumericStats(self, values, sink, feedback):
         stat = QgsStatisticalSummary()
