@@ -490,7 +490,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
     return nullptr;
 
-  QString uom = element.attribute( QString( "uom" ), "" );
+  const QString uom = element.attribute( QString( "uom" ), "" );
   size = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, size );
   borderWidth = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, borderWidth );
 
