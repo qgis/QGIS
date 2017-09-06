@@ -158,10 +158,13 @@ class StatisticsByCategories(QgisAlgorithm):
                         continue
                     else:
                         value = float(attrs[value_field_index])
+                elif field_type == 'string':
+                    if attrs[value_field_index] == NULL:
+                        value=''
+                    else:
+                        value = str(attrs[value_field_index])
                 elif attrs[value_field_index] == NULL:
                     value = NULL
-                elif field_type == 'string':
-                    value = str(attrs[value_field_index])
                 else:
                     value = attrs[value_field_index]
                 cat = tuple([attrs[c] for c in category_field_indexes])
