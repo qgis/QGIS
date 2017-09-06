@@ -78,7 +78,7 @@ QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJo
     QStringList *lst = info.joinFieldNamesSubset();
     if ( lst )
     {
-      Q_FOREACH ( const QString &s, *lst )
+      for ( const QString &s : qgsAsConst( *lst ) )
       {
         if ( !info.joinFieldNamesBlackList().contains( s ) )
           fieldNames.append( s );
@@ -86,7 +86,7 @@ QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJo
     }
     else
     {
-      Q_FOREACH ( const QgsField &f, info.joinLayer()->fields() )
+      for ( const QgsField &f : info.joinLayer()->fields() )
       {
         if ( !info.joinFieldNamesBlackList().contains( f.name() )
              && f.name() != info.joinFieldName() )

@@ -1529,7 +1529,7 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
 
       // add fields
       mAuxiliaryStorageFieldsTree->clear();
-      Q_FOREACH ( const QgsField &field, alayer->auxiliaryFields() )
+      for ( const QgsField &field : alayer->auxiliaryFields() )
       {
         const QgsPropertyDefinition prop = QgsAuxiliaryLayer::propertyDefinitionFromField( field );
         QTreeWidgetItem *item = new QTreeWidgetItem();

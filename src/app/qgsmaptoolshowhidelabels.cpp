@@ -142,7 +142,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
     QList<QgsLabelPosition> positions;
     if ( selectedLabelFeatures( vlayer, positions ) )
     {
-      Q_FOREACH ( const QgsLabelPosition &pos, positions )
+      for ( const QgsLabelPosition &pos : qgsAsConst( positions ) )
       {
         if ( showHide( pos, false ) )
           labelChanged = true;
@@ -154,7 +154,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
     QgsFeatureIds fids;
     if ( selectedFeatures( vlayer, fids ) )
     {
-      Q_FOREACH ( QgsFeatureId fid, fids )
+      for ( const QgsFeatureId &fid : qgsAsConst( fids ) )
       {
         QgsLabelPosition pos;
         pos.featureId = fid;

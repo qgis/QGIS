@@ -277,7 +277,7 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
 
   if ( def.origin().compare( "labeling" ) == 0 )
   {
-    Q_FOREACH ( const QgsPalLayerSettings::Property &p, palHiddenProperties )
+    for ( const QgsPalLayerSettings::Property &p : palHiddenProperties )
     {
       const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
       if ( propName.compare( def.name() ) == 0 )
@@ -404,7 +404,7 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   if ( origin.compare( "labeling", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsPalLayerSettings::propertyDefinitions();
-    Q_FOREACH ( const QgsPropertyDefinition p, props.values() )
+    for ( const QgsPropertyDefinition &p : props.values() )
     {
       if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
@@ -418,7 +418,7 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   else if ( origin.compare( "symbol", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsSymbolLayer::propertyDefinitions();
-    Q_FOREACH ( const QgsPropertyDefinition p, props.values() )
+    for ( const QgsPropertyDefinition &p : props.values() )
     {
       if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
@@ -432,7 +432,7 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   else if ( origin.compare( "diagram", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsDiagramLayerSettings::propertyDefinitions();
-    Q_FOREACH ( const QgsPropertyDefinition p, props.values() )
+    for ( const QgsPropertyDefinition &p : props.values() )
     {
       if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {

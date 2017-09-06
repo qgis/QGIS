@@ -182,7 +182,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QSt
   if ( key == mRuleKey )
     return this;
 
-  Q_FOREACH ( Rule *rule, mChildren )
+  for ( Rule *rule : mChildren )
   {
     Rule *r = rule->findRuleByKey( key );
     if ( r )

@@ -142,7 +142,7 @@ QString QgsProjectArchive::auxiliaryStorageFile() const
 {
   const QString extension = QgsAuxiliaryStorage::extension();
 
-  Q_FOREACH ( const QString &file, files() )
+  for ( const QString &file : files() )
   {
     const QFileInfo fileInfo( file );
     if ( fileInfo.suffix().compare( extension, Qt::CaseInsensitive ) == 0 )

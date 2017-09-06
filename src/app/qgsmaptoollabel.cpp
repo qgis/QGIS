@@ -732,7 +732,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
   if ( !vlayer->auxiliaryLayer() )
     return false;
 
-  Q_FOREACH ( const QgsPalLayerSettings::Property &p, mPalProperties )
+  for ( const QgsPalLayerSettings::Property &p : qgsAsConst( mPalProperties ) )
   {
     int index = -1;
 
@@ -779,7 +779,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   if ( !vlayer->auxiliaryLayer() )
     return false;
 
-  Q_FOREACH ( const QgsDiagramLayerSettings::Property &p, mDiagramProperties )
+  for ( const QgsDiagramLayerSettings::Property &p : qgsAsConst( mDiagramProperties ) )
   {
     int index = -1;
 

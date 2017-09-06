@@ -2246,7 +2246,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
 
   if ( mAuxiliaryStorage )
   {
-    Q_FOREACH ( QgsMapLayer *mlayer, myResultList )
+    for ( QgsMapLayer *mlayer : myResultList )
     {
       if ( mlayer->type() != QgsMapLayer::VectorLayer )
         continue;
@@ -2356,7 +2356,7 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
-  Q_FOREACH ( QgsMapLayer *l, mapLayers().values() )
+  for ( QgsMapLayer *l : mapLayers().values() )
   {
     if ( l->type() != QgsMapLayer::VectorLayer )
       continue;
