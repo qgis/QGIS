@@ -13,6 +13,8 @@
 #                                                                         #
 ###########################################################################
 
+set -e
+
 export PYTHONPATH=${HOME}/osgeo4travis/lib/python3.3/site-packages/
 export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${HOME}/OTB-5.6.0-Linux64/bin:${PATH}
 export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
