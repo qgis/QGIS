@@ -1999,5 +1999,9 @@ void QgsProjectProperties::showHelp()
   {
     link = QStringLiteral( "working_with_projections/working_with_projections.html" );
   }
+  else if ( activeTab == mProjOptsOWS )
+  {
+    link = QStringLiteral( "working_with_ogc/server/getting_started.html#prepare-a-project-to-serve" );
+  }
   QgsHelp::openHelp( link );
 }
