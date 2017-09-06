@@ -42,6 +42,26 @@ QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapCanvas *canvas )
   clean();
 }
 
+void QgsMapToolAddRectangle::setAzimuth( const double azimuth )
+{
+  mAzimuth = azimuth;
+}
+
+void QgsMapToolAddRectangle::setDistance1( const double distance1 )
+{
+  mDistance1 = distance1;
+}
+
+void QgsMapToolAddRectangle::setDistance2( const double distance2 )
+{
+  mDistance2 = distance2;
+}
+
+void QgsMapToolAddRectangle::setSide( const int side )
+{
+  mSide = side;
+}
+
 QgsMapToolAddRectangle::~QgsMapToolAddRectangle()
 {
   clean();
@@ -70,7 +90,7 @@ void QgsMapToolAddRectangle::keyReleaseEvent( QKeyEvent *e )
   }
 }
 
-QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( ) const
+QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOriented ) const
 {
   std::unique_ptr<QgsLineString> ext( new QgsLineString() );
   if ( mRectangle.isEmpty() )
@@ -78,16 +98,32 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( ) const
     return ext.release();
   }
 
-  ext->addVertex( QgsPoint( mRectangle.xMinimum(), mRectangle.yMinimum() ) );
-  ext->addVertex( QgsPoint( mRectangle.xMinimum(), mRectangle.yMaximum() ) );
-  ext->addVertex( QgsPoint( mRectangle.xMaximum(), mRectangle.yMaximum() ) );
-  ext->addVertex( QgsPoint( mRectangle.xMaximum(), mRectangle.yMinimum() ) );
-  ext->addVertex( QgsPoint( mRectangle.xMinimum(), mRectangle.yMinimum() ) );
+  QgsPoint x0( mRectangle.xMinimum(), mRectangle.yMinimum() );
+
+  QgsPoint x1, x2, x3;
+  if ( isOriented )
+  {
+    double perpendicular = 90.0 * mSide;
+    x1 = x0.project( mDistance1, mAzimuth );
+    x3 = x0.project( mDistance2, mAzimuth + perpendicular );
+    x2 = x1.project( mDistance2, mAzimuth + perpendicular );
+  }
+  else
+  {
+    x1 = QgsPoint( mRectangle.xMinimum(), mRectangle.yMaximum() );
+    x2 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMaximum() );
+    x3 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMinimum() );
+  }
+  ext->addVertex( x0 );
+  ext->addVertex( x1 );
+  ext->addVertex( x2 );
+  ext->addVertex( x3 );
+  ext->addVertex( x0 );
 
   return ext.release();
 }
 
-QgsPolygonV2 *QgsMapToolAddRectangle::rectangleToPolygon() const
+QgsPolygonV2 *QgsMapToolAddRectangle::rectangleToPolygon( const bool isOriented ) const
 {
   std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
   if ( mRectangle.isEmpty() )
@@ -95,12 +131,12 @@ QgsPolygonV2 *QgsMapToolAddRectangle::rectangleToPolygon() const
     return polygon.release();
   }
 
-  polygon->setExteriorRing( rectangleToLinestring( ) );
+  polygon->setExteriorRing( rectangleToLinestring( isOriented ) );
 
   return polygon.release();
 }
 
-void QgsMapToolAddRectangle::deactivate()
+void QgsMapToolAddRectangle::deactivate( const bool isOriented )
 {
   if ( !mParentTool || mRectangle.isEmpty() )
   {
@@ -108,7 +144,7 @@ void QgsMapToolAddRectangle::deactivate()
   }
 
   mParentTool->clearCurve( );
-  mParentTool->addCurve( rectangleToLinestring() );
+  mParentTool->addCurve( rectangleToLinestring( isOriented ) );
   clean();
 
   QgsMapToolCapture::deactivate();

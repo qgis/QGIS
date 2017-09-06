@@ -144,6 +144,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdregularpolygon.cpp
   qgsmaptoolrectanglecenter.cpp
   qgsmaptoolrectangleextent.cpp
+  qgsmaptoolrectangle3points.cpp
   qgsmaptoolsquarecenter.cpp
   qgsmaptoolregularpolygon2points.cpp
   qgsmaptoolregularpolygoncenterpoint.cpp
@@ -317,6 +318,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooladdregularpolygon.h
   qgsmaptoolrectanglecenter.h
   qgsmaptoolrectangleextent.h
+  qgsmaptoolrectangle3points.h
   qgsmaptoolsquarecenter.h
   qgsmaptoolregularpolygon2points.h
   qgsmaptoolregularpolygoncenterpoint.h

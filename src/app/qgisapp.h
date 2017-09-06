@@ -1235,6 +1235,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void rectangleCenterPoint();
     //! activates the add rectangle from extent tool
     void rectangleExtent();
+    //! activates the add rectangle from 3 points tool
+    void rectangle3Points();
     //! activates the add square from center tool
     void squareCenter();
     //! activates the add regular polygon from 2 points tool
@@ -1819,6 +1821,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
           , mEllipseFoci( nullptr )
           , mRectangleCenterPoint( nullptr )
           , mRectangleExtent( nullptr )
+          , mRectangle3Points( nullptr )
           , mSquareCenter( nullptr )
           , mRegularPolygon2Points( nullptr )
           , mRegularPolygonCenterPoint( nullptr )
@@ -1878,6 +1881,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mEllipseFoci = nullptr;
         QgsMapTool *mRectangleCenterPoint = nullptr;
         QgsMapTool *mRectangleExtent = nullptr;
+        QgsMapTool *mRectangle3Points = nullptr;
         QgsMapTool *mSquareCenter = nullptr;
         QgsMapTool *mRegularPolygon2Points = nullptr;
         QgsMapTool *mRegularPolygonCenterPoint = nullptr;
