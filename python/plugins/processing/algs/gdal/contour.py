@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -55,23 +54,26 @@ class contour(GdalAlgorithm):
     IGNORE_NODATA = 'IGNORE_NODATA'
     NODATA = 'NODATA'
     OFFSET = 'OFFSET'
-    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterBand(
-            self.BAND, self.tr('Band number'), parentLayerParameterName=self.INPUT))
-        self.addParameter(QgsProcessingParameterNumber(
-            self.INTERVAL, self.tr('Interval between contour lines'),
-            type=QgsProcessingParameterNumber.Double,
-            minValue=0.0, maxValue=99999999.999999, defaultValue=10.0))
-        self.addParameter(QgsProcessingParameterString(
-            self.FIELD_NAME, self.tr('Attribute name (if not set, no elevation attribute is attached)'),
-            defaultValue='ELEV', optional=True))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
+                                                       self.tr('Interval between contour lines'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0,
+                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
+                                                       self.tr('Attribute name (if not set, no elevation attribute is attached)'),
+                                                       defaultValue='ELEV',
+                                                       optional=True))
 
         create_3d_param = QgsProcessingParameterBoolean(self.CREATE_3D,
                                                         self.tr('Produce 3D vector'),
@@ -85,29 +87,21 @@ class contour(GdalAlgorithm):
         ignore_nodata_param.setFlags(ignore_nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(ignore_nodata_param)
 
-        nodata_param = QgsProcessingParameterNumber(
-            self.NODATA, self.tr('Input pixel value to treat as "nodata"'),
-            type=QgsProcessingParameterNumber.Double,
-            minValue=-99999999.999999, maxValue=99999999.999999, defaultValue=0.0, optional=True)
+        nodata_param = QgsProcessingParameterNumber(self.NODATA,
+                                                    self.tr('Input pixel value to treat as "nodata"'),
+                                                    type=QgsProcessingParameterNumber.Double,
+                                                    defaultValue=0.0,
+                                                    optional=True)
         nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(nodata_param)
 
-        offset_param = QgsProcessingParameterNumber(
-            self.OFFSET, self.tr('Offset from zero relative to which to interpret intervals'),
-            type=QgsProcessingParameterNumber.Double,
-            minValue=0.0, maxValue=99999999.999999, defaultValue=0.0, optional=True)
+        offset_param = QgsProcessingParameterNumber(self.OFFSET,
+                                                    self.tr('Offset from zero relative to which to interpret intervals'),
+                                                    type=QgsProcessingParameterNumber.Double,
+                                                    defaultValue=0.0,
+                                                    optional=True)
         nodata_param.setFlags(offset_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(offset_param)
-
-        extra_options_param = QgsProcessingParameterString(self.EXTRA,
-                                                           self.tr('Additional creation parameters'),
-                                                           defaultValue='',
-                                                           optional=True)
-        extra_options_param.setFlags(extra_options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        extra_options_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
-        self.addParameter(extra_options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(
             self.OUTPUT, self.tr('Contours'), QgsProcessing.TypeVectorLine))
@@ -126,23 +120,23 @@ class contour(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
-        band = str(self.parameterAsInt(parameters, self.BAND, context))
-        interval = str(self.parameterAsDouble(parameters, self.INTERVAL, context))
         fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
         nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         offset = self.parameterAsDouble(parameters, self.OFFSET, context)
-        extra = self.parameterAsString(parameters, self.EXTRA, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        output, format = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         arguments = []
+        arguments.append('-b')
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+
         if fieldName:
             arguments.append('-a')
             arguments.append(fieldName)
 
         arguments.append('-i')
-        arguments.append(interval)
+        arguments.append(str(self.parameterAsDouble(parameters, self.INTERVAL, context)))
 
         if self.parameterAsBool(parameters, self.CREATE_3D, context):
             arguments.append('-3d')
@@ -156,11 +150,8 @@ class contour(GdalAlgorithm):
         if offset:
             arguments.append('-off {}'.format(offset))
 
-        if format:
-            arguments.append('-f {}'.format(format))
-
-        if extra:
-            arguments.append(extra)
+        if outFormat:
+            arguments.append('-f {}'.format(outFormat))
 
         arguments.append(inLayer.source())
         arguments.append(output)

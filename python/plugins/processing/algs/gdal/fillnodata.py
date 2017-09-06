@@ -55,20 +55,25 @@ class fillnodata(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterBand(
-            self.BAND, self.tr('Band number'), parentLayerParameterName=self.INPUT))
-        self.addParameter(QgsProcessingParameterNumber(
-            self.DISTANCE, self.tr('Maximum distance (in pixels) to search out for values to interpolate'),
-            type=QgsProcessingParameterNumber.Integer,
-            minValue=0, maxValue=999999, defaultValue=10))
-        self.addParameter(QgsProcessingParameterNumber(
-            self.ITERATIONS, self.tr('Number of smoothing iterations to run after the interpolation'),
-            type=QgsProcessingParameterNumber.Integer,
-            minValue=0, maxValue=999999, defaultValue=0))
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.NO_MASK, self.tr('Do not use the default validity mask for the input band'),
-            defaultValue=False))
-        self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER, self.tr('Validity mask'), optional=True))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
+                                                       self.tr('Maximum distance (in pixels) to search out for values to interpolate'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=10))
+        self.addParameter(QgsProcessingParameterNumber(self.ITERATIONS,
+                                                       self.tr('Number of smoothing iterations to run after the interpolation'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=0))
+        self.addParameter(QgsProcessingParameterBoolean(self.NO_MASK,
+                                                        self.tr('Do not use the default validity mask for the input band'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,
+                                                            self.tr('Validity mask'),
+                                                            optional=True))
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Filled')))
 

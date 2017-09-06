@@ -54,9 +54,12 @@ class pct2rgb(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterBand(
-            self.BAND, self.tr('Band number'), parentLayerParameterName=self.INPUT))
-        self.addParameter(QgsProcessingParameterBoolean(self.RGBA, self.tr('Generate a RGBA file'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterBoolean(self.RGBA,
+                                                        self.tr('Generate a RGBA file'),
+                                                        defaultValue=False))
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('PCT to RGB')))
 
     def name(self):

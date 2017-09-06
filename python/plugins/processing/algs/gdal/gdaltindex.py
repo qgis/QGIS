@@ -26,7 +26,6 @@ __copyright__ = '(C) 2015, Pedro Venancio'
 __revision__ = '$Format:%H$'
 
 import os
-from collections import OrderedDict
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -61,46 +60,47 @@ class gdaltindex(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.FORMATS = OrderedDict([(self.tr('Auto'), 'AUTO'),
-                                    (self.tr('Well-known text (WKT)'), 'WKT'),
-                                    (self.tr('EPSG'), 'EPSG'),
-                                    (self.tr('Proj.4'), 'PROJ')])
+        self.formats = ((self.tr('Auto'), 'AUTO'),
+                        (self.tr('Well-known text (WKT)'), 'WKT'),
+                        (self.tr('EPSG'), 'EPSG'),
+                        (self.tr('Proj.4'), 'PROJ'))
 
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
                                                                self.tr('Input files'),
                                                                QgsProcessing.TypeRaster))
-        self.addParameter(QgsProcessingParameterString(
-            self.PATH_FIELD_NAME, self.tr('Field name to hold the file path to the indexed rasters'),
-            defaultValue='location'))
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.ABSOLUTE_PATH, self.tr('Store absolute path to the indexed rasters'),
-            defaultValue=False))
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.PROJ_DIFFERENCE, self.tr('Skip files with different projection reference'),
-            defaultValue=False))
+        self.addParameter(QgsProcessingParameterString(self.PATH_FIELD_NAME,
+                                                       self.tr('Field name to hold the file path to the indexed rasters'),
+                                                       defaultValue='location'))
+        self.addParameter(QgsProcessingParameterBoolean(self.ABSOLUTE_PATH,
+                                                        self.tr('Store absolute path to the indexed rasters'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.PROJ_DIFFERENCE,
+                                                        self.tr('Skip files with different projection reference'),
+                                                        defaultValue=False))
 
-        target_crs_param = QgsProcessingParameterCrs(
-            self.TARGET_CRS, self.tr('Transform geometries to the given CRS'), optional=True)
+        target_crs_param = QgsProcessingParameterCrs(self.TARGET_CRS,
+                                                     self.tr('Transform geometries to the given CRS'),
+                                                     optional=True)
         target_crs_param.setFlags(target_crs_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(target_crs_param)
 
-        crs_field_param = QgsProcessingParameterString(
-            self.CRS_FIELD_NAME, self.tr('The name of the field to store the SRS of each tile'),
-            optional=True)
+        crs_field_param = QgsProcessingParameterString(self.CRS_FIELD_NAME,
+                                                       self.tr('The name of the field to store the SRS of each tile'),
+                                                       optional=True)
         crs_field_param.setFlags(crs_field_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(crs_field_param)
 
-        keys = list(self.FORMATS.keys())
         crs_format_param = QgsProcessingParameterEnum(self.CRS_FORMAT,
                                                       self.tr('The format in which the CRS of each tile must be written'),
-                                                      keys,
+                                                      options=[i[0] for i in self.formats],
                                                       allowMultiple=False,
                                                       defaultValue=0)
         crs_format_param.setFlags(crs_format_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(crs_format_param)
 
-        self.addParameter(QgsProcessingParameterVectorDestination(
-            self.OUTPUT, self.tr('Tile index'), QgsProcessing.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
+                                                                  self.tr('Tile index'),
+                                                                  QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'tileindex'
@@ -121,7 +121,7 @@ class gdaltindex(GdalAlgorithm):
         target_crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        output, format = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         layers = []
         for layer in input_layers:
@@ -144,13 +144,13 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-src_srs_name {}'.format(crs_field))
 
         if crs_format:
-            arguments.append('-src_srs_format {}'.format(list(self.FORMATS.values())[crs_format]))
+            arguments.append('-src_srs_format {}'.format(self.modes[crs_format][1]))
 
         if target_crs:
             arguments.append('-t_srs {}'.format(target_crs.authid()))
 
-        if format:
-            arguments.append('-f {}'.format(format))
+        if outFormat:
+            arguments.append('-f {}'.format(outFormat))
 
         arguments.append(output)
         arguments.extend(' '.join(layers))

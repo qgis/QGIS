@@ -55,17 +55,20 @@ class sieve(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterNumber(
-            self.THRESHOLD, self.tr('Threshold'),
-            type=QgsProcessingParameterNumber.Integer,
-            minValue=0, maxValue=999999, defaultValue=10))
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.EIGHT_CONNECTEDNESS, self.tr('Use 8-connectedness'),
-            defaultValue=False))
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.NO_MASK, self.tr('Do not use the default validity mask for the input band'),
-            defaultValue=False))
-        self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER, self.tr('Validity mask'), optional=True))
+        self.addParameter(QgsProcessingParameterNumber(self.THRESHOLD,
+                                                       self.tr('Threshold'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=10))
+        self.addParameter(QgsProcessingParameterBoolean(self.EIGHT_CONNECTEDNESS,
+                                                        self.tr('Use 8-connectedness'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.NO_MASK,
+                                                        self.tr('Do not use the default validity mask for the input band'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,
+                                                            self.tr('Validity mask'),
+                                                            optional=True))
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Sieved')))
 

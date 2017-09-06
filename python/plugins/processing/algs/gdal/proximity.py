@@ -87,21 +87,16 @@ class proximity(GdalAlgorithm):
                                                        self.tr('The maximum distance to be generated'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
-                                                       maxValue=99999999.999999,
                                                        defaultValue=0.0,
                                                        optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.REPLACE,
                                                        self.tr('Value to be applied to all pixels that are within the -maxdist of target pixels'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0,
-                                                       maxValue=99999999.999999,
                                                        defaultValue=0.0,
                                                        optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Nodata value to use for the destination proximity raster'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       minValue=-99999999.999999,
-                                                       maxValue=99999999.999999,
                                                        defaultValue=0.0,
                                                        optional=True))
 

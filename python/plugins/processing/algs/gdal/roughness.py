@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -29,9 +28,10 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
-                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterRasterDestination)
 
@@ -46,6 +46,7 @@ class roughness(GdalAlgorithm):
     INPUT = 'INPUT'
     BAND = 'BAND'
     COMPUTE_EDGES = 'COMPUTE_EDGES'
+    OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
@@ -53,10 +54,22 @@ class roughness(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterBand(
-            self.BAND, self.tr('Band number'), parentLayerParameterName=self.INPUT))
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.COMPUTE_EDGES, self.tr('Compute edges'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_EDGES,
+                                                        self.tr('Compute edges'),
+                                                        defaultValue=False))
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation parameters'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Roughness')))
 
@@ -85,5 +98,10 @@ class roughness(GdalAlgorithm):
 
         if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.append('-co')
+            arguments.append(options)
 
         return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

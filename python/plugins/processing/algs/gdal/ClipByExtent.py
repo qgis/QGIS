@@ -66,8 +66,6 @@ class ClipByExtent(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       minValue=-99999999.999999,
-                                                       maxValue=99999999.999999,
                                                        defaultValue=0.0,
                                                        optional=True))
 
@@ -81,11 +79,13 @@ class ClipByExtent(GdalAlgorithm):
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
 
-        self.addParameter(QgsProcessingParameterEnum(self.DATA_TYPE,
-                                                     self.tr('Output data type'),
-                                                     self.TYPES,
-                                                     allowMultiple=False,
-                                                     defaultValue=5))
+        dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
+                                                    self.tr('Output data type'),
+                                                    self.TYPES,
+                                                    allowMultiple=False,
+                                                    defaultValue=5)
+        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(dataType_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Clipped (extent)')))

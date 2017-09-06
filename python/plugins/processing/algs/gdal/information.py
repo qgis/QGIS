@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -43,9 +42,11 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class information(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+    MIN_MAX = 'MIN_MAX'
+    STATS = 'STATS'
     NOGCP = 'NOGCP'
     NOMETADATA = 'NOMETADATA'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
@@ -55,13 +56,23 @@ class information(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(information.INPUT,
-                                                            self.tr('Input layer'), optional=False))
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBoolean(information.MIN_MAX,
+                                                        self.tr('Force computation of the actual min/max values for each band'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(information.STATS,
+                                                        self.tr('Read and display image statistics (force computation if necessary)'),
+                                                        defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(information.NOGCP,
-                                                        self.tr('Suppress GCP info'), defaultValue=False))
+                                                        self.tr('Suppress GCP info'),
+                                                        defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(information.NOMETADATA,
-                                                        self.tr('Suppress metadata info'), defaultValue=False))
+                                                        self.tr('Suppress metadata info'),
+                                                        defaultValue=False))
 
-        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Layer information'), self.tr('HTML files (*.html)')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
+                                                                self.tr('Layer information'),
+                                                                self.tr('HTML files (*.html)')))
         self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Layer information')))
 
     def name(self):
@@ -75,6 +86,10 @@ class information(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
+        if self.parameterAsBool(parameters, information.MIN_MAX, context):
+            arguments.append('-mm')
+        if self.parameterAsBool(parameters, information.STATS, context):
+            arguments.append('-stats')
         if self.parameterAsBool(parameters, information.NOGCP, context):
             arguments.append('-nogcp')
         if self.parameterAsBool(parameters, information.NOMETADATA, context):

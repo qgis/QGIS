@@ -56,14 +56,19 @@ class polygonize(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterBand(
-            self.BAND, self.tr('Band number'), parentLayerParameterName=self.INPUT))
-        self.addParameter(QgsProcessingParameterString(
-            self.FIELD, self.tr('Name of the field to create'), defaultValue='DN'))
-        self.addParameter(QgsProcessingParameterBoolean(
-            self.EIGHT_CONNECTEDNESS, self.tr('Use 8-connectedness'), defaultValue=False))
-        self.addParameter(QgsProcessingParameterVectorDestination(
-            self.OUTPUT, self.tr('Vectorized'), QgsProcessing.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterString(self.FIELD,
+                                                       self.tr('Name of the field to create'),
+                                                       defaultValue='DN'))
+        self.addParameter(QgsProcessingParameterBoolean(self.EIGHT_CONNECTEDNESS,
+                                                        self.tr('Use 8-connectedness'),
+                                                        defaultValue=False))
+
+        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
+                                                                  self.tr('Vectorized'),
+                                                                  QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'polygonize'
@@ -83,7 +88,7 @@ class polygonize(GdalAlgorithm):
         arguments.append(inLayer.source())
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        output, format = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
+        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
         arguments.append(output)
 
         if self.parameterAsBool(parameters, self.EIGHT_CONNECTEDNESS, context):
@@ -92,10 +97,10 @@ class polygonize(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if format:
-            arguments.append('-f {}'.format(format))
+        if outFormat:
+            arguments.append('-f {}'.format(outFormat))
 
-        arguments.append(QFileInfo(output).baseName())
+        arguments.append(GdalUtils.ogrLayerName(output))
         arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
         commands = []

@@ -37,6 +37,7 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -50,10 +51,11 @@ class GridLinear(GdalAlgorithm):
     Z_FIELD = 'Z_FIELD'
     RADIUS = 'RADIUS'
     NODATA = 'NODATA'
+    OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
     OUTPUT = 'OUTPUT'
 
-    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
+    TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
@@ -76,19 +78,29 @@ class GridLinear(GdalAlgorithm):
                                                        self.tr('Search distance '),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=-1.0,
-                                                       maxValue=99999999.999999,
                                                        defaultValue=-1.0))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('NODATA marker to fill empty points'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       minValue=-99999999.999999,
-                                                       maxValue=99999999.999999,
                                                        defaultValue=0.0))
-        self.addParameter(QgsProcessingParameterEnum(self.DATA_TYPE,
-                                                     self.tr('Output data type'),
-                                                     self.TYPE,
-                                                     allowMultiple=False,
-                                                     defaultValue=5))
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation parameters'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
+        dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
+                                                    self.tr('Output data type'),
+                                                    self.TYPES,
+                                                    allowMultiple=False,
+                                                    defaultValue=5)
+        dataType_param.setFlags(dataType_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(dataType_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Interpolated (IDW)')))
@@ -124,11 +136,15 @@ class GridLinear(GdalAlgorithm):
         arguments.append('-a')
         arguments.append(params)
         arguments.append('-ot')
-        arguments.append(self.TYPE[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
+        arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
+        if options:
+            arguments.append('-co')
+            arguments.append(options)
 
         arguments.append(connectionString)
         arguments.append(out)
