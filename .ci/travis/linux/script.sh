@@ -34,7 +34,9 @@ export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
 # nobody know why, but at least this workaround gets travis results
 # back. Better approaches VERY welcome.
 pushd build
+echo "travis_fold:start:qgis_build"
 $CTEST_BUILD_COMMAND
+echo "travis_fold:end:qgis_build"
 popd
 
 python ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py \
