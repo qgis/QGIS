@@ -42,6 +42,8 @@ Construct a rectangle from a QRectF. The rectangle is normalized after construct
 Copy constructor
 %End
 
+    ~QgsRectangle();
+
     void set( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
  Sets the rectangle from two QgsPoints. The rectangle is
@@ -315,7 +317,13 @@ Copy constructor
  :rtype: QgsBox3d
 %End
 
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants from rectangles.
+%End
+
 };
+
 
 
 /************************************************************************
