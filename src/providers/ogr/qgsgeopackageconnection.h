@@ -36,9 +36,7 @@ class QgsGeoPackageConnection : public QObject
     ~QgsGeoPackageConnection();
 
     static QStringList connectionList();
-
     static void deleteConnection( const QString &name );
-
     static QString selectedConnection();
     static void setSelectedConnection( const QString &name );
 
