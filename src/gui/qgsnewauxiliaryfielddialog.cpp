@@ -29,8 +29,8 @@ QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinit
   setupUi( this );
 
   mType->addItem( tr( "String" ) );
-  mType->addItem( tr( "Numeric" ) );
-  mType->addItem( tr( "Boolean" ) );
+  mType->addItem( tr( "Real" ) );
+  mType->addItem( tr( "Integer" ) );
 
   switch ( def.dataType() )
   {
@@ -38,10 +38,10 @@ QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinit
       mType->setCurrentIndex( mType->findText( tr( "String" ) ) );
       break;
     case QgsPropertyDefinition::DataTypeNumeric:
-      mType->setCurrentIndex( mType->findText( tr( "Numeric" ) ) );
+      mType->setCurrentIndex( mType->findText( tr( "Real" ) ) );
       break;
     case QgsPropertyDefinition::DataTypeBoolean:
-      mType->setCurrentIndex( mType->findText( tr( "Boolean" ) ) );
+      mType->setCurrentIndex( mType->findText( tr( "Integer" ) ) );
       break;
   }
 
@@ -62,7 +62,7 @@ void QgsNewAuxiliaryFieldDialog::accept()
     {
       def.setDataType( QgsPropertyDefinition::DataTypeString );
     }
-    else if ( mType->currentText().compare( tr( "Numeric" ) ) == 0 )
+    else if ( mType->currentText().compare( tr( "Real" ) ) == 0 )
     {
       def.setDataType( QgsPropertyDefinition::DataTypeNumeric );
     }
@@ -74,7 +74,7 @@ void QgsNewAuxiliaryFieldDialog::accept()
     def.setOrigin( "user" );
   }
 
-  QString fieldName = QgsAuxiliaryField::nameFromProperty( def, true );
+  QString fieldName = QgsAuxiliaryLayer::nameFromProperty( def, true );
   const int idx = mLayer->fields().lookupField( fieldName );
   if ( idx >= 0 )
   {

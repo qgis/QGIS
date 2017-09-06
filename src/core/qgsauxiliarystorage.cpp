@@ -55,23 +55,351 @@ const QVector<QgsPalLayerSettings::Property> palHiddenProperties
   QgsPalLayerSettings::AlwaysShow
 };
 
-QgsAuxiliaryField::QgsAuxiliaryField( const QgsPropertyDefinition &def )
-  : QgsField()
-  , mPropertyDefinition( def )
+//
+// QgsAuxiliaryLayer
+//
+
+QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer )
+  : QgsVectorLayer( QString( "%1|layername=%2" ).arg( filename, table ), QString( "%1_auxiliarystorage" ).arg( table ), "ogr" )
+  , mFileName( filename )
+  , mTable( table )
+  , mLayer( vlayer )
 {
-  init( def );
+  // init join info
+  mJoinInfo.setPrefix( AS_JOINPREFIX );
+  mJoinInfo.setJoinLayer( this );
+  mJoinInfo.setJoinFieldName( AS_JOINFIELD );
+  mJoinInfo.setTargetFieldName( pkField );
+  mJoinInfo.setEditable( true );
+  mJoinInfo.setUpsertOnEdit( true );
+  mJoinInfo.setCascadedDelete( true );
+  mJoinInfo.setJoinFieldNamesBlackList( QStringList() << QStringLiteral( "rowid" ) ); // introduced by ogr provider
 }
 
-QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
+QgsAuxiliaryLayer *QgsAuxiliaryLayer::clone( QgsVectorLayer *target ) const
 {
+  QgsAuxiliaryStorage::duplicateTable( source(), target->id() );
+  return new QgsAuxiliaryLayer( mJoinInfo.targetFieldName(), mFileName, target->id(), target );
+}
+
+bool QgsAuxiliaryLayer::clear()
+{
+  bool rc = deleteFeatures( allFeatureIds() );
+  commitChanges();
+  startEditing();
+  return rc;
+}
+
+QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
+{
+  QgsVectorLayer *layer = QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "auxiliary_layer" ), fields(), mLayer->wkbType(), mLayer->crs() );
+
+  QString pkField = mJoinInfo.targetFieldName();
+  QgsFeature joinFeature;
+  QgsFeature targetFeature;
+  QgsFeatureIterator it = getFeatures();
+
+  layer->startEditing();
+  while ( it.nextFeature( joinFeature ) )
+  {
+    QString filter = QgsExpression::createFieldEqualityExpression( pkField, joinFeature.attribute( AS_JOINFIELD ) );
+
+    QgsFeatureRequest request;
+    request.setFilterExpression( filter );
+
+    mLayer->getFeatures( request ).nextFeature( targetFeature );
+
+    if ( targetFeature.isValid() )
+    {
+      QgsFeature newFeature( joinFeature );
+      newFeature.setGeometry( targetFeature.geometry() );
+      layer->addFeature( newFeature );
+    }
+  }
+  layer->commitChanges();
+
+  return layer;
+}
+
+QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const
+{
+  return mJoinInfo;
+}
+
+bool QgsAuxiliaryLayer::exists( const QgsPropertyDefinition &definition ) const
+{
+  return ( indexOfPropertyDefinition( definition ) >= 0 );
+}
+
+bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definition )
+{
+  if ( ( definition.name().isEmpty() && definition.comment().isEmpty() ) || exists( definition ) )
+    return false;
+
+  const QgsField af = createAuxiliaryField( definition );
+  const bool rc = addAttribute( af );
+  updateFields();
+
+  if ( rc )
+  {
+    int auxIndex = indexOfPropertyDefinition( definition );
+    int index = mLayer->fields().indexOf( nameFromProperty( definition, true ) );
+
+    if ( index >= 0 && auxIndex >= 0 )
+    {
+      if ( isHiddenProperty( auxIndex ) )
+      {
+        // update editor widget
+        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() );
+        setEditorWidgetSetup( auxIndex, setup );
+
+        // column is hidden
+        QgsAttributeTableConfig attrCfg = mLayer->attributeTableConfig();
+        attrCfg.update( mLayer->fields() );
+        QVector<QgsAttributeTableConfig::ColumnConfig> columns = attrCfg.columns();
+        QVector<QgsAttributeTableConfig::ColumnConfig>::iterator it;
+
+        for ( it = columns.begin(); it != columns.end(); ++it )
+        {
+          if ( it->name.compare( mLayer->fields().field( index ).name() ) == 0 )
+            it->hidden = true;
+        }
+
+        attrCfg.setColumns( columns );
+        mLayer->setAttributeTableConfig( attrCfg );
+      }
+      else if ( definition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha
+                || definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha )
+      {
+        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Color" ), QVariantMap() );
+        setEditorWidgetSetup( auxIndex, setup );
+      }
+
+      mLayer->setEditorWidgetSetup( index, editorWidgetSetup( auxIndex ) );
+    }
+  }
+
+  return rc;
+}
+
+QgsFields QgsAuxiliaryLayer::auxiliaryFields() const
+{
+  QgsFields afields;
+
+  for ( int i = 2; i < fields().count(); i++ ) // ignore rowid and PK field
+    afields.append( createAuxiliaryField( fields().field( i ) ) );
+
+  return afields;
+}
+
+bool QgsAuxiliaryLayer::deleteAttribute( int attr )
+{
+  QgsVectorLayer::deleteAttribute( attr );
+  bool rc = commitChanges();
+  startEditing();
+  return rc;
+}
+
+bool QgsAuxiliaryLayer::save()
+{
+  bool rc = false;
+
+  if ( isEditable() )
+  {
+    rc = commitChanges();
+  }
+
+  startEditing();
+
+  return rc;
+}
+
+int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *layer )
+{
+  int index = -1;
+
+  if ( layer && layer->labeling() && layer->auxiliaryLayer() )
+  {
+    const QgsPropertyDefinition def = layer->labeling()->settings( providerId ).propertyDefinitions()[property];
+    const QString fieldName = nameFromProperty( def, true );
+
+    if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
+    {
+      const QgsProperty prop = QgsProperty::fromField( fieldName );
+
+      QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
+
+      QgsPropertyCollection c = settings->dataDefinedProperties();
+      c.setProperty( property, prop );
+      settings->setDataDefinedProperties( c );
+
+      layer->labeling()->setSettings( settings, providerId );
+    }
+
+    index = layer->fields().lookupField( fieldName );
+  }
+
+  return index;
+}
+
+int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *layer )
+{
+  int index = -1;
+
+  if ( layer && layer->diagramLayerSettings() && layer->auxiliaryLayer() )
+  {
+    const QgsPropertyDefinition def = layer->diagramLayerSettings()->propertyDefinitions()[property];
+
+    if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
+    {
+      const QString fieldName = nameFromProperty( def, true );
+      const QgsProperty prop = QgsProperty::fromField( fieldName );
+
+      QgsDiagramLayerSettings settings( *layer->diagramLayerSettings() );
+
+      QgsPropertyCollection c = settings.dataDefinedProperties();
+      c.setProperty( property, prop );
+      settings.setDataDefinedProperties( c );
+
+      layer->setDiagramLayerSettings( settings );
+
+      index = layer->fields().lookupField( fieldName );
+    }
+  }
+
+  return index;
+}
+
+bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
+{
+  bool hidden = false;
+  QgsPropertyDefinition def = propertyDefinitionFromIndex( index );
+
+  if ( def.origin().compare( "labeling" ) == 0 )
+  {
+    Q_FOREACH ( const QgsPalLayerSettings::Property &p, palHiddenProperties )
+    {
+      const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
+      if ( propName.compare( def.name() ) == 0 )
+      {
+        hidden = true;
+        break;
+      }
+    }
+  }
+
+  return hidden;
+}
+
+int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
+{
+  int p = -1;
+  QgsPropertyDefinition aDef = propertyDefinitionFromIndex( index );
+
+  if ( aDef.origin().compare( "labeling" ) == 0 )
+  {
+    const QgsPropertiesDefinition defs = QgsPalLayerSettings::propertyDefinitions();
+    QgsPropertiesDefinition::const_iterator it = defs.constBegin();
+    for ( ; it != defs.constEnd(); ++it )
+    {
+      if ( it->name().compare( aDef.name(), Qt::CaseInsensitive ) == 0 )
+      {
+        p = it.key();
+        break;
+      }
+    }
+  }
+  else if ( aDef.origin().compare( "symbol" ) == 0 )
+  {
+    const QgsPropertiesDefinition defs = QgsSymbolLayer::propertyDefinitions();
+    QgsPropertiesDefinition::const_iterator it = defs.constBegin();
+    for ( ; it != defs.constEnd(); ++it )
+    {
+      if ( it->name().compare( aDef.name(), Qt::CaseInsensitive ) == 0 )
+      {
+        p = it.key();
+        break;
+      }
+    }
+  }
+
+  return p;
+}
+
+QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromIndex( int index ) const
+{
+  return propertyDefinitionFromField( fields().field( index ) );
+}
+
+int QgsAuxiliaryLayer::indexOfPropertyDefinition( const QgsPropertyDefinition &def ) const
+{
+  return fields().indexOf( nameFromProperty( def ) );
+}
+
+QString QgsAuxiliaryLayer::nameFromProperty( const QgsPropertyDefinition &def, bool joined )
+{
+  QString fieldName = def.origin();
+
+  if ( !def.name().isEmpty() )
+    fieldName =  QString( "%1_%2" ).arg( fieldName, def.name().toLower() );
+
+  if ( !def.comment().isEmpty() )
+    fieldName = QString( "%1_%2" ).arg( fieldName ).arg( def.comment() );
+
+  if ( joined )
+    fieldName = QString( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
+
+  return fieldName;
+}
+
+QgsField QgsAuxiliaryLayer::createAuxiliaryField( const QgsPropertyDefinition &def )
+{
+  QgsField afield;
+
+  if ( !def.name().isEmpty() || !def.comment().isEmpty() )
+  {
+    QVariant::Type type;
+    QString typeName;
+    int len( 0 ), precision( 0 );
+    switch ( def.dataType() )
+    {
+      case QgsPropertyDefinition::DataTypeString:
+        type = QVariant::String;
+        len = 50;
+        typeName = "String";
+        break;
+      case QgsPropertyDefinition::DataTypeNumeric:
+        type = QVariant::Double;
+        len = 0;
+        precision = 0;
+        typeName = "Real";
+        break;
+      case QgsPropertyDefinition::DataTypeBoolean:
+        type = QVariant::Int; // sqlite does not have a bool type
+        typeName = "Integer";
+        break;
+    }
+
+    afield.setType( type );
+    afield.setName( nameFromProperty( def ) );
+    afield.setTypeName( typeName );
+    afield.setLength( len );
+    afield.setPrecision( precision );
+  }
+
+  return afield;
+}
+
+QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsField &f )
+{
+  QgsPropertyDefinition def;
   const QStringList parts = f.name().split( '_' );
 
   if ( parts.size() <= 1 )
-    return;
+    return def;
 
   const QString origin = parts[0];
   const QString propertyName = parts[1];
-  QgsPropertyDefinition def;
 
   if ( origin.compare( "labeling", Qt::CaseInsensitive ) == 0 )
   {
@@ -121,351 +449,21 @@ QgsAuxiliaryField::QgsAuxiliaryField( const QgsField &f )
     def.setComment( propertyName );
   }
 
+  return def;
+}
+
+QgsField QgsAuxiliaryLayer::createAuxiliaryField( const QgsField &field )
+{
+  QgsPropertyDefinition def = propertyDefinitionFromField( field );
+  QgsField afield;
+
   if ( !def.name().isEmpty() || !def.comment().isEmpty() )
   {
-    init( def );
-    setTypeName( f.typeName() );
-    mPropertyDefinition = def;
-  }
-}
-
-void QgsAuxiliaryField::init( const QgsPropertyDefinition &def )
-{
-  if ( !def.name().isEmpty() || !def.comment().isEmpty() )
-  {
-    QVariant::Type type;
-    QString typeName;
-    int len( 0 ), precision( 0 );
-    switch ( def.dataType() )
-    {
-      case QgsPropertyDefinition::DataTypeString:
-        type = QVariant::String;
-        len = 50;
-        typeName = "String";
-        break;
-      case QgsPropertyDefinition::DataTypeNumeric:
-        type = QVariant::Double;
-        len = 0;
-        precision = 0;
-        typeName = "Real";
-        break;
-      case QgsPropertyDefinition::DataTypeBoolean:
-        type = QVariant::Int; // sqlite does not have a bool type
-        typeName = "Integer";
-        break;
-    }
-
-    setType( type );
-    setName( nameFromProperty( def ) );
-    setTypeName( typeName );
-    setLength( len );
-    setPrecision( precision );
-  }
-}
-
-bool QgsAuxiliaryLayer::clear()
-{
-  bool rc = deleteFeatures( allFeatureIds() );
-  commitChanges();
-  startEditing();
-  return rc;
-}
-
-QString QgsAuxiliaryField::nameFromProperty( const QgsPropertyDefinition &def, bool joined )
-{
-  QString fieldName = def.origin();
-
-  if ( !def.name().isEmpty() )
-    fieldName =  QString( "%1_%2" ).arg( fieldName, def.name().toLower() );
-
-  if ( !def.comment().isEmpty() )
-    fieldName = QString( "%1_%2" ).arg( fieldName ).arg( def.comment() );
-
-  if ( joined )
-    fieldName = QString( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
-
-  return fieldName;
-}
-
-QgsPropertyDefinition QgsAuxiliaryField::propertyDefinition() const
-{
-  return mPropertyDefinition;
-}
-
-//
-// QgsAuxiliaryLayer
-//
-
-QgsAuxiliaryLayer::QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer )
-  : QgsVectorLayer( QString( "%1|layername=%2" ).arg( filename, table ), QString( "%1_auxiliarystorage" ).arg( table ), "ogr" )
-  , mFileName( filename )
-  , mTable( table )
-  , mLayer( vlayer )
-{
-  // init join info
-  mJoinInfo.setPrefix( AS_JOINPREFIX );
-  mJoinInfo.setJoinLayer( this );
-  mJoinInfo.setJoinFieldName( AS_JOINFIELD );
-  mJoinInfo.setTargetFieldName( pkField );
-  mJoinInfo.setEditable( true );
-  mJoinInfo.setUpsertOnEdit( true );
-  mJoinInfo.setCascadedDelete( true );
-  mJoinInfo.setJoinFieldNamesBlackList( QStringList() << QStringLiteral( "rowid" ) ); // introduced by ogr provider
-}
-
-QgsAuxiliaryLayer *QgsAuxiliaryLayer::clone( QgsVectorLayer *target ) const
-{
-  QgsAuxiliaryStorage::duplicateTable( source(), target->id() );
-  return new QgsAuxiliaryLayer( mJoinInfo.targetFieldName(), mFileName, target->id(), target );
-}
-
-QgsVectorLayer *QgsAuxiliaryLayer::toSpatialLayer() const
-{
-  QgsVectorLayer *layer = QgsMemoryProviderUtils::createMemoryLayer( QStringLiteral( "auxiliary_layer" ), fields(), mLayer->wkbType(), mLayer->crs() );
-
-  QString pkField = mJoinInfo.targetFieldName();
-  QgsFeature joinFeature;
-  QgsFeature targetFeature;
-  QgsFeatureIterator it = getFeatures();
-
-  layer->startEditing();
-  while ( it.nextFeature( joinFeature ) )
-  {
-    QString filter = QgsExpression::createFieldEqualityExpression( pkField, joinFeature.attribute( AS_JOINFIELD ) );
-
-    QgsFeatureRequest request;
-    request.setFilterExpression( filter );
-
-    mLayer->getFeatures( request ).nextFeature( targetFeature );
-
-    if ( targetFeature.isValid() )
-    {
-      QgsFeature newFeature( joinFeature );
-      newFeature.setGeometry( targetFeature.geometry() );
-      layer->addFeature( newFeature );
-    }
-  }
-  layer->commitChanges();
-
-  return layer;
-}
-
-QgsVectorLayerJoinInfo QgsAuxiliaryLayer::joinInfo() const
-{
-  return mJoinInfo;
-}
-
-bool QgsAuxiliaryLayer::exists( const QgsPropertyDefinition &definition ) const
-{
-  return ( indexOfProperty( definition ) >= 0 );
-}
-
-bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definition )
-{
-  if ( ( definition.name().isEmpty() && definition.comment().isEmpty() ) || exists( definition ) )
-    return false;
-
-  const QgsAuxiliaryField af( definition );
-  const bool rc = addAttribute( af );
-  updateFields();
-
-  if ( rc )
-  {
-    int auxIndex = indexOfProperty( definition );
-    int index = mLayer->fields().indexOf( QgsAuxiliaryField::nameFromProperty( definition, true ) );
-
-    if ( index >= 0 && auxIndex >= 0 )
-    {
-      if ( isHiddenProperty( auxIndex ) )
-      {
-        // update editor widget
-        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Hidden" ), QVariantMap() );
-        setEditorWidgetSetup( auxIndex, setup );
-
-        // column is hidden
-        QgsAttributeTableConfig attrCfg = mLayer->attributeTableConfig();
-        attrCfg.update( mLayer->fields() );
-        QVector<QgsAttributeTableConfig::ColumnConfig> columns = attrCfg.columns();
-        QVector<QgsAttributeTableConfig::ColumnConfig>::iterator it;
-
-        for ( it = columns.begin(); it != columns.end(); ++it )
-        {
-          if ( it->name.compare( mLayer->fields().field( index ).name() ) == 0 )
-            it->hidden = true;
-        }
-
-        attrCfg.setColumns( columns );
-        mLayer->setAttributeTableConfig( attrCfg );
-      }
-      else if ( definition.standardTemplate() == QgsPropertyDefinition::ColorNoAlpha
-                || definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha )
-      {
-        QgsEditorWidgetSetup setup = QgsEditorWidgetSetup( QStringLiteral( "Color" ), QVariantMap() );
-        setEditorWidgetSetup( auxIndex, setup );
-      }
-
-      mLayer->setEditorWidgetSetup( index, editorWidgetSetup( auxIndex ) );
-    }
+    afield = createAuxiliaryField( def );
+    afield.setTypeName( field.typeName() );
   }
 
-  return rc;
-}
-
-QgsAuxiliaryFields QgsAuxiliaryLayer::auxiliaryFields() const
-{
-  QgsAuxiliaryFields afields;
-
-  for ( int i = 2; i < fields().count(); i++ ) // ignore rowid and PK field
-    afields.append( QgsAuxiliaryField( fields().field( i ) ) );
-
-  return afields;
-}
-
-bool QgsAuxiliaryLayer::deleteAttribute( int attr )
-{
-  QgsVectorLayer::deleteAttribute( attr );
-  bool rc = commitChanges();
-  startEditing();
-  return rc;
-}
-
-bool QgsAuxiliaryLayer::save()
-{
-  bool rc = false;
-
-  if ( isEditable() )
-  {
-    rc = commitChanges();
-  }
-
-  startEditing();
-
-  return rc;
-}
-
-int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *layer )
-{
-  int index = -1;
-
-  if ( layer && layer->labeling() && layer->auxiliaryLayer() )
-  {
-    const QgsPropertyDefinition def = layer->labeling()->settings( providerId ).propertyDefinitions()[property];
-    const QString fieldName = QgsAuxiliaryField::nameFromProperty( def, true );
-
-    if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
-    {
-      const QgsProperty prop = QgsProperty::fromField( fieldName );
-
-      QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
-
-      QgsPropertyCollection c = settings->dataDefinedProperties();
-      c.setProperty( property, prop );
-      settings->setDataDefinedProperties( c );
-
-      layer->labeling()->setSettings( settings, providerId );
-    }
-
-    index = layer->fields().lookupField( fieldName );
-  }
-
-  return index;
-}
-
-int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *layer )
-{
-  int index = -1;
-
-  if ( layer && layer->diagramLayerSettings() && layer->auxiliaryLayer() )
-  {
-    const QgsPropertyDefinition def = layer->diagramLayerSettings()->propertyDefinitions()[property];
-
-    if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
-    {
-      const QString fieldName = QgsAuxiliaryField::nameFromProperty( def, true );
-      const QgsProperty prop = QgsProperty::fromField( fieldName );
-
-      QgsDiagramLayerSettings settings( *layer->diagramLayerSettings() );
-
-      QgsPropertyCollection c = settings.dataDefinedProperties();
-      c.setProperty( property, prop );
-      settings.setDataDefinedProperties( c );
-
-      layer->setDiagramLayerSettings( settings );
-
-      index = layer->fields().lookupField( fieldName );
-    }
-  }
-
-  return index;
-}
-
-bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
-{
-  bool hidden = false;
-
-  QgsAuxiliaryField aField( fields().field( index ) );
-  QgsPropertyDefinition def = aField.propertyDefinition();
-
-  if ( def.origin().compare( "labeling" ) == 0 )
-  {
-    Q_FOREACH ( const QgsPalLayerSettings::Property &p, palHiddenProperties )
-    {
-      const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
-      if ( propName.compare( def.name() ) == 0 )
-      {
-        hidden = true;
-        break;
-      }
-    }
-  }
-
-  return hidden;
-}
-
-int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
-{
-  int p = -1;
-  QgsAuxiliaryField aField( fields().field( index ) );
-  QgsPropertyDefinition aDef = aField.propertyDefinition();
-
-  if ( aDef.origin().compare( "labeling" ) == 0 )
-  {
-    const QgsPropertiesDefinition defs = QgsPalLayerSettings::propertyDefinitions();
-    QgsPropertiesDefinition::const_iterator it = defs.constBegin();
-    for ( ; it != defs.constEnd(); ++it )
-    {
-      if ( it->name().compare( aDef.name(), Qt::CaseInsensitive ) == 0 )
-      {
-        p = it.key();
-        break;
-      }
-    }
-  }
-  else if ( aDef.origin().compare( "symbol" ) == 0 )
-  {
-    const QgsPropertiesDefinition defs = QgsSymbolLayer::propertyDefinitions();
-    QgsPropertiesDefinition::const_iterator it = defs.constBegin();
-    for ( ; it != defs.constEnd(); ++it )
-    {
-      if ( it->name().compare( aDef.name(), Qt::CaseInsensitive ) == 0 )
-      {
-        p = it.key();
-        break;
-      }
-    }
-  }
-
-  return p;
-}
-
-QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromIndex( int index ) const
-{
-  return QgsAuxiliaryField( fields().field( index ) ).propertyDefinition();
-}
-
-int QgsAuxiliaryLayer::indexOfProperty( const QgsPropertyDefinition &def ) const
-{
-  return fields().indexOf( QgsAuxiliaryField::nameFromProperty( def ) );
+  return afield;
 }
 
 //

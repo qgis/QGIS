@@ -12,53 +12,6 @@
 
 
 
-class QgsAuxiliaryField : QgsField
-{
-%Docstring
-
-
- Class allowing to manage fields from of auxiliary layers
-
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgsauxiliarystorage.h"
-%End
-  public:
-
-    explicit QgsAuxiliaryField( const QgsPropertyDefinition &def );
-%Docstring
- Constructor
-
- \param def Definition of the property to be stored by this auxiliary
-  field.
-%End
-
-    virtual ~QgsAuxiliaryField();
-%Docstring
- Destructor
-%End
-
-    QgsPropertyDefinition propertyDefinition() const;
-%Docstring
- Returns the property definition corresponding to this field.
- :rtype: QgsPropertyDefinition
-%End
-
-    static QString nameFromProperty( const QgsPropertyDefinition &def, bool joined = false );
-%Docstring
- Returns the name of the auxiliary field for a property definition.
-
- :return: def The property definition
- :return: joined The join prefix is tok into account if true
- :rtype: str
-%End
-
-};
-
-typedef QList<QgsAuxiliaryField> QgsAuxiliaryFields;
-
 class QgsAuxiliaryLayer : QgsVectorLayer
 {
 %Docstring
@@ -166,10 +119,10 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  :rtype: bool
 %End
 
-    QgsAuxiliaryFields auxiliaryFields() const;
+    QgsFields auxiliaryFields() const;
 %Docstring
  Returns a list of all auxiliary fields currently managed by the layer.
- :rtype: QgsAuxiliaryFields
+ :rtype: QgsFields
 %End
 
     bool save();
@@ -200,7 +153,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  :rtype: bool
 %End
 
-    int indexOfProperty( const QgsPropertyDefinition &definition ) const;
+    int indexOfPropertyDefinition( const QgsPropertyDefinition &definition ) const;
 %Docstring
  Returns the index of the auxiliary field for a specific property
  definition.
@@ -219,8 +172,6 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  happened.
 
  \param index The index of the field
-
-.. versionadded:: 3.0
  :rtype: int
 %End
 
@@ -229,14 +180,12 @@ class QgsAuxiliaryLayer : QgsVectorLayer
  Returns the property definition fir the underlying field index.
 
  \param index The index of the field
-
-.. versionadded:: 3.0
  :rtype: QgsPropertyDefinition
 %End
 
     static int createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *vlayer );
 %Docstring
- Create if necessary a new auxiliary field for a PAL property and
+ Creates if necessary a new auxiliary field for a PAL property and
  activate this property in settings.
 
  \param property The property to create
@@ -249,7 +198,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
     static int createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *vlayer );
 %Docstring
- Create if necessary a new auxiliary field for a diagram's property and
+ Creates if necessary a new auxiliary field for a diagram's property and
  activate this this property in settings.
 
  \param property The property to create
@@ -257,6 +206,39 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
  :return: The index of the auxiliary field or -1
  :rtype: int
+%End
+
+    static QgsField createAuxiliaryField( const QgsPropertyDefinition &definition );
+%Docstring
+ Creates a new auxiliary field from a property definition.
+
+ \param definition The property definition of the auxiliary field to create
+ :rtype: QgsField
+%End
+
+    static QgsField createAuxiliaryField( const QgsField &field );
+%Docstring
+ Creates a new auxiliary field from a field.
+
+ \param field The field to use to create the auxiliary field
+ :rtype: QgsField
+%End
+
+    static QString nameFromProperty( const QgsPropertyDefinition &def, bool joined = false );
+%Docstring
+ Returns the name of the auxiliary field for a property definition.
+
+ \param def The property definition
+ \param joined The join prefix is taken into account if true
+ :rtype: str
+%End
+
+    static QgsPropertyDefinition propertyDefinitionFromField( const QgsField &field );
+%Docstring
+ Returns the property definition from an auxiliary field.
+
+ \param field The auxiliary field
+ :rtype: QgsPropertyDefinition
 %End
 
 };

@@ -345,7 +345,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     mActionCreateAuxiliaryField->setChecked( false );
     if ( alayer && alayer->exists( mDefinition ) )
     {
-      if ( mProperty.field() == QgsAuxiliaryField::nameFromProperty( mDefinition, true ) )
+      if ( mProperty.field() == QgsAuxiliaryLayer::nameFromProperty( mDefinition, true ) )
       {
         mActionCreateAuxiliaryField->setEnabled( false );
         mActionCreateAuxiliaryField->setChecked( true );

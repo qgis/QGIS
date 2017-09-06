@@ -638,7 +638,7 @@ void QgsLabelingGui::createAuxiliaryField()
 
   // update property with join field name from auxiliary storage
   QgsProperty property = button->toProperty();
-  property.setField( QgsAuxiliaryField::nameFromProperty( def, true ) );
+  property.setField( QgsAuxiliaryLayer::nameFromProperty( def, true ) );
   property.setActive( true );
   button->updateFieldLists();
   button->setToProperty( property );

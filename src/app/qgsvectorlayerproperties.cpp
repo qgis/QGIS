@@ -1529,9 +1529,9 @@ void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
 
       // add fields
       mAuxiliaryStorageFieldsTree->clear();
-      Q_FOREACH ( const QgsAuxiliaryField &field, alayer->auxiliaryFields() )
+      Q_FOREACH ( const QgsField &field, alayer->auxiliaryFields() )
       {
-        const QgsPropertyDefinition prop = field.propertyDefinition();
+        const QgsPropertyDefinition prop = QgsAuxiliaryLayer::propertyDefinitionFromField( field );
         QTreeWidgetItem *item = new QTreeWidgetItem();
 
         item->setText( 0, prop.origin() );
@@ -1620,7 +1620,7 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDelete()
     // defined buttons
     while ( alayer->auxiliaryFields().size() > 0 )
     {
-      QgsAuxiliaryField aField = alayer->auxiliaryFields()[0];
+      QgsField aField = alayer->auxiliaryFields()[0];
       deleteAuxiliaryField( alayer->fields().indexOf( aField.name() ) );
     }
 
@@ -1661,7 +1661,7 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
   def.setName( item->text( 1 ) );
   def.setComment( item->text( 2 ) );
 
-  const QString fieldName = QgsAuxiliaryField::nameFromProperty( def );
+  const QString fieldName = QgsAuxiliaryLayer::nameFromProperty( def );
 
   const int index = mLayer->auxiliaryLayer()->fields().indexOf( fieldName );
   if ( index < 0 )

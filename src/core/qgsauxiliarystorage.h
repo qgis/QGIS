@@ -32,57 +32,6 @@
 class QgsProject;
 
 /**
- * \class QgsAuxiliaryField
- *
- * \ingroup core
- *
- * \brief Class allowing to manage fields from of auxiliary layers
- *
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsAuxiliaryField : public QgsField
-{
-  public:
-
-    /**
-     * Constructor
-     *
-     * \param def Definition of the property to be stored by this auxiliary
-     *  field.
-     */
-    explicit QgsAuxiliaryField( const QgsPropertyDefinition &def );
-
-    /**
-     * Destructor
-     */
-    virtual ~QgsAuxiliaryField() = default;
-
-    /**
-     * Returns the property definition corresponding to this field.
-     */
-    QgsPropertyDefinition propertyDefinition() const;
-
-    /**
-     * Returns the name of the auxiliary field for a property definition.
-     *
-     * \returns def The property definition
-     * \returns joined The join prefix is tok into account if true
-     */
-    static QString nameFromProperty( const QgsPropertyDefinition &def, bool joined = false );
-
-  private:
-    QgsAuxiliaryField( const QgsField &f ); // only for auxiliary layer
-
-    void init( const QgsPropertyDefinition &def );
-
-    QgsPropertyDefinition mPropertyDefinition;
-
-    friend class QgsAuxiliaryLayer;
-};
-
-typedef QList<QgsAuxiliaryField> QgsAuxiliaryFields;
-
-/**
  * \class QgsAuxiliaryLayer
  *
  * \ingroup core
@@ -191,7 +140,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     /**
      * Returns a list of all auxiliary fields currently managed by the layer.
      */
-    QgsAuxiliaryFields auxiliaryFields() const;
+    QgsFields auxiliaryFields() const;
 
     /**
      * Commit changes and starts editing then.
@@ -226,7 +175,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \returns The index of the field corresponding to the property or -1
      */
-    int indexOfProperty( const QgsPropertyDefinition &definition ) const;
+    int indexOfPropertyDefinition( const QgsPropertyDefinition &definition ) const;
 
     /**
      * Returns the underlying property key for the field index. The key may be
@@ -235,8 +184,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * happened.
      *
      * \param index The index of the field
-     *
-     * \since QGIS 3.0
      */
     int propertyFromIndex( int index ) const;
 
@@ -244,13 +191,11 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * Returns the property definition fir the underlying field index.
      *
      * \param index The index of the field
-     *
-     * \since QGIS 3.0
      */
     QgsPropertyDefinition propertyDefinitionFromIndex( int index ) const;
 
     /**
-     * Create if necessary a new auxiliary field for a PAL property and
+     * Creates if necessary a new auxiliary field for a PAL property and
      * activate this property in settings.
      *
      * \param property The property to create
@@ -262,7 +207,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     static int createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *vlayer );
 
     /**
-     * Create if necessary a new auxiliary field for a diagram's property and
+     * Creates if necessary a new auxiliary field for a diagram's property and
      * activate this this property in settings.
      *
      * \param property The property to create
@@ -271,6 +216,35 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      * \returns The index of the auxiliary field or -1
      */
     static int createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *vlayer );
+
+    /**
+     * Creates a new auxiliary field from a property definition.
+     *
+     * \param definition The property definition of the auxiliary field to create
+     */
+    static QgsField createAuxiliaryField( const QgsPropertyDefinition &definition );
+
+    /**
+     * Creates a new auxiliary field from a field.
+     *
+     * \param field The field to use to create the auxiliary field
+     */
+    static QgsField createAuxiliaryField( const QgsField &field );
+
+    /**
+     * Returns the name of the auxiliary field for a property definition.
+     *
+     * \param def The property definition
+     * \param joined The join prefix is taken into account if true
+     */
+    static QString nameFromProperty( const QgsPropertyDefinition &def, bool joined = false );
+
+    /**
+     * Returns the property definition from an auxiliary field.
+     *
+     * \param field The auxiliary field
+     */
+    static QgsPropertyDefinition propertyDefinitionFromField( const QgsField &field );
 
   private:
     QgsVectorLayerJoinInfo mJoinInfo;
