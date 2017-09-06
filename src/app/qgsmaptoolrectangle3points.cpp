@@ -70,10 +70,10 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       case 1:
       {
-        QgsLineString *line = new QgsLineString();
+        std::unique_ptr<QgsLineString> line( new QgsLineString() );
         line->addVertex( mPoints.at( 0 ) );
         line->addVertex( mapPoint );
-        mTempRubberBand->setGeometry( line );
+        mTempRubberBand->setGeometry( line.release() );
         setAzimuth( mPoints.at( 0 ).azimuth( mapPoint ) );
         setDistance1( mPoints.at( 0 ).distance( mapPoint ) );
       }

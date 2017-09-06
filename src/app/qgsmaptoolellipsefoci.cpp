@@ -19,6 +19,7 @@
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
 #include <QMouseEvent>
+#include <memory>
 
 QgsMapToolEllipseFoci::QgsMapToolEllipseFoci( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
@@ -67,10 +68,10 @@ void QgsMapToolEllipseFoci::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       case 1:
       {
-        QgsLineString *line = new QgsLineString();
+        std::unique_ptr<QgsLineString> line( new QgsLineString() );
         line->addVertex( mPoints.at( 0 ) );
         line->addVertex( mapPoint );
-        mTempRubberBand->setGeometry( line );
+        mTempRubberBand->setGeometry( line.release() );
       }
       break;
       case 2:
