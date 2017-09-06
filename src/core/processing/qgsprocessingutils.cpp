@@ -161,13 +161,16 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
     ProjectionSettingRestorer restorer;
     ( void )restorer; // no warnings
 
+    QFileInfo fi( string );
+    QString name = fi.baseName();
+
     // brute force attempt to load a matching layer
-    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, QStringLiteral( "temp" ), QStringLiteral( "ogr" ), false ) );
+    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), false ) );
     if ( layer->isValid() )
     {
       return layer.release();
     }
-    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, QStringLiteral( "temp" ), QStringLiteral( "gdal" ), false ) );
+    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), false ) );
     if ( rasterLayer->isValid() )
     {
       return rasterLayer.release();
@@ -369,7 +372,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     else
     {
       //create empty layer
-      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, false, &options ) );
+      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, false, options ) );
       if ( exporter->errorCode() )
         return nullptr;
 

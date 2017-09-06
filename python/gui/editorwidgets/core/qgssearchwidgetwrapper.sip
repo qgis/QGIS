@@ -90,6 +90,8 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
       IsNull,
       IsNotBetween,
       IsNotNull,
+      StartsWith,
+      EndsWith,
     };
     typedef QFlags<QgsSearchWidgetWrapper::FilterFlag> FilterFlags;
 

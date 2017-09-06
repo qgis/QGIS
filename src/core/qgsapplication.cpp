@@ -148,6 +148,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
   qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
   qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
+  qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
@@ -166,9 +167,9 @@ void QgsApplication::init( QString profileFolder )
     ABISYM( mRunningFromBuildDir ) = true;
     ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
     ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
-    qDebug( "Running from build directory!" );
-    qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toUtf8().data() );
-    qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toUtf8().data() );
+    QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().data() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().data() ), 4 );
 #ifdef _MSC_VER
     ABISYM( mCfgIntDir ) = prefixPath.split( '/', QString::SkipEmptyParts ).last();
     qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
@@ -317,7 +318,7 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   }
   catch ( std::exception &e )
   {
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }

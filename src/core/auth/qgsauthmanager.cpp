@@ -148,9 +148,9 @@ bool QgsAuthManager::init( const QString &pluginPath )
   }
 
   QgsDebugMsg( "Prioritizing qca-ossl over all other QCA providers..." );
-  QCA::ProviderList provds = QCA::providers();
+  const QCA::ProviderList provds = QCA::providers();
   QStringList prlist;
-  Q_FOREACH ( QCA::Provider *p, provds )
+  for ( QCA::Provider *p : provds )
   {
     QString pn = p->name();
     int pr = 0;
@@ -780,9 +780,10 @@ bool QgsAuthManager::registerCoreAuthMethods()
 
   qDeleteAll( mAuthMethods );
   mAuthMethods.clear();
-  Q_FOREACH ( const QString &authMethodKey, QgsAuthMethodRegistry::instance()->authMethodList() )
+  const QStringList methods = QgsAuthMethodRegistry::instance()->authMethodList();
+  for ( const auto &authMethodKey : methods )
   {
-    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->authMethod( authMethodKey ) );
+    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->authMethod( authMethodKey ).release() );
   }
 
   return !mAuthMethods.isEmpty();
@@ -2086,7 +2087,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
     while ( i != mIgnoredSslErrorsCache.constEnd() )
     {
       QStringList errs;
-      Q_FOREACH ( QSslError::SslError err, i.value() )
+      for ( auto err : i.value() )
       {
         errs << QgsAuthCertUtils::sslErrorEnumString( err );
       }
@@ -2150,7 +2151,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, co
   }
 
   QSet<QSslError::SslError> errs;
-  Q_FOREACH ( const QSslError &error, errors )
+  for ( const auto &error : errors )
   {
     if ( error.error() == QSslError::NoError )
       continue;
@@ -2240,7 +2241,7 @@ bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
     return false;
   }
 
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     if ( !storeCertAuthority( cert ) )
       return false;
@@ -2410,7 +2411,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
     filecerts = QgsAuthCertUtils::certsFromFile( cafile );
   }
   // only CAs or certs capable of signing other certs are allowed
-  Q_FOREACH ( const QSslCertificate &cert, filecerts )
+  for ( const auto &cert : qgsAsConst( filecerts ) )
   {
     if ( !allowinvalid.toBool() && !cert.isValid() )
     {
@@ -2547,7 +2548,7 @@ bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &cert
     return false;
   }
 
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     if ( !removeCertTrustPolicy( cert ) )
       return false;
@@ -2730,11 +2731,11 @@ bool QgsAuthManager::rebuildTrustedCaCertsCache()
 const QByteArray QgsAuthManager::getTrustedCaCertsPemText()
 {
   QByteArray capem;
-  QList<QSslCertificate> certs( getTrustedCaCertsCache() );
+  const QList<QSslCertificate> certs( getTrustedCaCertsCache() );
   if ( !certs.isEmpty() )
   {
     QStringList certslist;
-    Q_FOREACH ( const QSslCertificate &cert, certs )
+    for ( const auto &cert : certs )
     {
       certslist << cert.toPem();
     }
@@ -2762,7 +2763,8 @@ void QgsAuthManager::clearAllCachedConfigs()
   if ( isDisabled() )
     return;
 
-  Q_FOREACH ( QString authcfg, configIds() )
+  const QStringList ids = configIds();
+  for ( const auto &authcfg : ids )
   {
     clearCachedConfig( authcfg );
   }
@@ -3058,8 +3060,7 @@ void QgsAuthManager::passwordHelperProcessError()
     mPasswordHelperErrorMessage = tr( "There was an error and integration with your %1 system has been disabled. "
                                       "You can re-enable it at any time through the \"Utilities\" menu "
                                       "in the Authentication pane of the options dialog. %2" )
-                                  .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME )
-                                  .arg( mPasswordHelperErrorMessage );
+                                  .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, mPasswordHelperErrorMessage );
   }
   if ( mPasswordHelperErrorCode != QKeychain::NoError )
   {
@@ -3307,7 +3308,8 @@ bool QgsAuthManager::reencryptAllAuthenticationConfigs( const QString &prevpass,
     return false;
 
   bool res = true;
-  Q_FOREACH ( QString configid, configIds() )
+  const QStringList ids = configIds();
+  for ( const auto &configid : ids )
   {
     res = res && reencryptAuthenticationConfig( configid, prevpass, prevciv );
   }
@@ -3395,7 +3397,7 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
   QStringList encryptedsettings;
   encryptedsettings << "";
 
-  Q_FOREACH ( const QString &sett, encryptedsettings )
+  for ( const auto & sett, qgsAsConst( encryptedsettings ) )
   {
     if ( sett.isEmpty() || !existsAuthSetting( sett ) )
       continue;
@@ -3468,7 +3470,8 @@ bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString &prevpa
     return false;
 
   bool res = true;
-  Q_FOREACH ( const QString &identid, getCertIdentityIds() )
+  const QStringList ids = getCertIdentityIds();
+  for ( const auto &identid : ids )
   {
     res = res && reencryptAuthenticationIdentity( identid, prevpass, prevciv );
   }
@@ -3649,7 +3652,7 @@ bool QgsAuthManager::authDbTransactionQuery( QSqlQuery *query ) const
 
 void QgsAuthManager::insertCaCertInCache( QgsAuthCertUtils::CaCertSource source, const QList<QSslCertificate> &certs )
 {
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     mCaCertsCache.insert( QgsAuthCertUtils::shaHexForCert( cert ),
                           QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>( source, cert ) );

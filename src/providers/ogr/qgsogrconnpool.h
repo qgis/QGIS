@@ -122,8 +122,8 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     void ref( const QString &connInfo )
     {
       mMutex.lock();
-      T_Groups::const_iterator it = mGroups.constFind( connInfo );
-      if ( it == mGroups.constEnd() )
+      T_Groups::iterator it = mGroups.find( connInfo );
+      if ( it == mGroups.end() )
         it = mGroups.insert( connInfo, new QgsOgrConnPoolGroup( connInfo ) );
       it.value()->ref();
       mMutex.unlock();

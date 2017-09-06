@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 // QGIS Specific includes
-#include <qgsmaplayer.h>
-#include <qgsapplication.h>
-#include <qgisinterface.h>
+#include "qgsmaplayer.h"
+#include "qgsapplication.h"
+#include "qgisinterface.h"
 #include "qgsguiutils.h"
 
 // Qt4 Related Includes

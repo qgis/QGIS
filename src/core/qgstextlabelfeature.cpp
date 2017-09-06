@@ -18,7 +18,7 @@
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
 #include "qgsmaptopixel.h"
-#include <pal/feature.h>
+#include "pal/feature.h"
 
 
 QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size )

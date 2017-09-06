@@ -179,7 +179,7 @@ QHash<QString, QString> QgsServerProjectUtils::wmsFeatureInfoLayerAliasMap( cons
     return aliasMap;
   }
 
-  int nMapEntries = qMin( aliasLayerStringList.size(), layerAliasStringList.size() );
+  int nMapEntries = std::min( aliasLayerStringList.size(), layerAliasStringList.size() );
   for ( int i = 0; i < nMapEntries; ++i )
   {
     aliasMap.insert( aliasLayerStringList.at( i ), layerAliasStringList.at( i ) );

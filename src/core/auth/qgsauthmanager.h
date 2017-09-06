@@ -60,7 +60,6 @@ class QTimer;
 class CORE_EXPORT QgsAuthManager : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( MessageLevel )
 
   public:
 
@@ -71,6 +70,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
       WARNING = 1,
       CRITICAL = 2
     };
+    Q_ENUM( MessageLevel );
 
     /** Enforce singleton pattern
      * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()

@@ -132,7 +132,7 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
 
   if ( rc == ZIP_ER_OK && z != NULL )
   {
-    Q_FOREACH ( QString file, files )
+    for ( const auto &file : files )
     {
       QFileInfo fileInfo( file );
       if ( !fileInfo.exists() )

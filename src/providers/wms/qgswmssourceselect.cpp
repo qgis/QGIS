@@ -830,7 +830,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
         break;
 
       // save first CRS in case the current CRS is not available
-      if ( it == mCRSs.begin() )
+      if ( it == mCRSs.constBegin() )
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
@@ -838,7 +838,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
         defaultCRS = *it;
     }
 
-    if ( it == mCRSs.end() )
+    if ( it == mCRSs.constEnd() )
     {
       // not found
       mCRS = defaultCRS;

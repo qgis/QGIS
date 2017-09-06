@@ -43,6 +43,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mConn( nullptr )
   , ogrLayer( nullptr )
   , mSubsetStringSet( false )
+  , mOrigFidAdded( false )
   , mFetchGeometry( false )
   , mExpressionCompiled( false )
   , mFilterFids( mRequest.filterFids() )
@@ -69,7 +70,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    ogrLayer = QgsOgrProviderUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
+    ogrLayer = QgsOgrProviderUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, mOrigFidAdded );
     if ( !ogrLayer )
     {
       return;
@@ -197,7 +198,24 @@ bool QgsOgrFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const
 {
   feature.setValid( false );
-  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( id ) );
+  OGRFeatureH fet;
+  if ( mOrigFidAdded )
+  {
+    OGR_L_ResetReading( ogrLayer );
+    while ( ( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+    {
+      if ( OGR_F_GetFieldAsInteger64( fet, 0 ) == id )
+      {
+        break;
+      }
+      OGR_F_Destroy( fet );
+    }
+  }
+  else
+  {
+    fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( id ) );
+  }
+
   if ( !fet )
   {
     return false;
@@ -323,7 +341,14 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
 
 bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) const
 {
-  feature.setId( OGR_F_GetFID( fet ) );
+  if ( mOrigFidAdded )
+  {
+    feature.setId( OGR_F_GetFieldAsInteger64( fet, 0 ) );
+  }
+  else
+  {
+    feature.setId( OGR_F_GetFID( fet ) );
+  }
   feature.initAttributes( mSource->mFields.count() );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
@@ -370,7 +395,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
   if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
   {
     QgsAttributeList attrs = mRequest.subsetOfAttributes();
-    for ( QgsAttributeList::const_iterator it = attrs.begin(); it != attrs.end(); ++it )
+    for ( QgsAttributeList::const_iterator it = attrs.constBegin(); it != attrs.constEnd(); ++it )
     {
       getFeatureAttribute( fet, feature, *it );
     }

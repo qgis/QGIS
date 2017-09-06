@@ -52,7 +52,7 @@ class QgsVectorLayerExporter : QgsFeatureSink
                                     const QgsCoordinateReferenceSystem &destCRS,
                                     bool onlySelected = false,
                                     QString *errorMessage /Out/ = 0,
-                                    QMap<QString, QVariant> *options = 0,
+                                    const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
                                     QgsFeedback *feedback = 0
                                   );
 %Docstring
@@ -76,7 +76,7 @@ class QgsVectorLayerExporter : QgsFeatureSink
                             QgsWkbTypes::Type geometryType,
                             const QgsCoordinateReferenceSystem &crs,
                             bool overwrite = false,
-                            const QMap<QString, QVariant> *options = 0 );
+                            const QMap<QString, QVariant> &options = QMap<QString, QVariant>() );
 %Docstring
  Constructor for QgsVectorLayerExporter.
  \param uri URI for destination data source
@@ -152,7 +152,7 @@ class QgsVectorLayerExporterTask : QgsTask
                                 const QString &uri,
                                 const QString &providerKey,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                QMap<QString, QVariant> *options = 0,
+                                const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
                                 bool ownsLayer = false );
 %Docstring
  Constructor for QgsVectorLayerExporterTask. Takes a source ``layer``, destination ``uri``
@@ -165,7 +165,7 @@ class QgsVectorLayerExporterTask : QgsTask
         const QString &uri,
         const QString &providerKey,
         const QgsCoordinateReferenceSystem &destinationCrs,
-        QMap<QString, QVariant> *options = 0 ) /Factory/;
+        const QMap<QString, QVariant> &options = QMap<QString, QVariant>() ) /Factory/;
 %Docstring
  Creates a new QgsVectorLayerExporterTask which has ownership over a source ``layer``.
  When the export task has completed (successfully or otherwise) ``layer`` will be

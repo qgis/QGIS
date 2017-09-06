@@ -19,6 +19,7 @@
 #include <qgsrectangle.h>
 #include <qgspoint.h>
 #include "qgslogger.h"
+#include "qgsreferencedgeometry.h"
 
 class TestQgsRectangle: public QObject
 {
@@ -27,6 +28,8 @@ class TestQgsRectangle: public QObject
     void manipulate();
     void regression6194();
     void operators();
+    void asVariant();
+    void referenced();
 };
 
 void TestQgsRectangle::manipulate()
@@ -109,6 +112,47 @@ void TestQgsRectangle::operators()
   QCOMPARE( rect2.yMinimum(), 18.0 );
   QCOMPARE( rect2.height(), rect1.height() );
   QCOMPARE( rect2.width(), rect1.width() );
+}
+
+void TestQgsRectangle::asVariant()
+{
+  QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( rect1 );
+  QVERIFY( var.isValid() );
+  QVERIFY( var.canConvert< QgsRectangle >() );
+  QVERIFY( !var.canConvert< QgsReferencedRectangle >() );
+
+  QgsRectangle rect2 = qvariant_cast<QgsRectangle>( var );
+  QCOMPARE( rect2.xMinimum(), rect1.xMinimum() );
+  QCOMPARE( rect2.yMinimum(), rect1.yMinimum() );
+  QCOMPARE( rect2.height(), rect1.height() );
+  QCOMPARE( rect2.width(), rect1.width() );
+}
+
+void TestQgsRectangle::referenced()
+{
+  QgsReferencedRectangle rect1 = QgsReferencedRectangle( QgsRectangle( 10.0, 20.0, 110.0, 220.0 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  QCOMPARE( rect1.crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  rect1.setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  QCOMPARE( rect1.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( rect1 );
+  QVERIFY( var.isValid() );
+
+  // not great - we'd ideally like this to pass, but it doesn't:
+  // QVERIFY( !var.canConvert< QgsRectangle >() );
+
+  QVERIFY( var.canConvert< QgsReferencedRectangle >() );
+
+  QgsReferencedRectangle rect2 = qvariant_cast<QgsReferencedRectangle>( var );
+  QCOMPARE( rect2.xMinimum(), rect1.xMinimum() );
+  QCOMPARE( rect2.yMinimum(), rect1.yMinimum() );
+  QCOMPARE( rect2.height(), rect1.height() );
+  QCOMPARE( rect2.width(), rect1.width() );
+  QCOMPARE( rect2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
 }
 
 QGSTEST_MAIN( TestQgsRectangle )

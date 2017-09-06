@@ -19,7 +19,7 @@
 #ifndef QGS_GLOBE_PLUGIN_H
 #define QGS_GLOBE_PLUGIN_H
 
-#include <qgisplugin.h>
+#include "qgisplugin.h"
 #include <QObject>
 #include <osg/ref_ptr>
 #include <osgEarth/Version>
@@ -125,6 +125,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     osgEarth::QtGui::ViewerWidget *mViewerWidget = nullptr;
     QgsGlobeWidget *mDockWidget = nullptr;
     QgsGlobePluginDialog *mSettingsDialog = nullptr;
+
     QString mBaseLayerUrl;
     QList<QgsGlobePluginDialog::LayerDataSource> mImagerySources;
     QList<QgsGlobePluginDialog::LayerDataSource> mElevationSources;

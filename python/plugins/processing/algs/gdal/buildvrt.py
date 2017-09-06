@@ -63,6 +63,10 @@ class buildvrt(GdalAlgorithm):
             def __init__(self, name, description):
                 super().__init__(name, description)
 
+            def clone(self):
+                copy = ParameterVrtDestination(self.name(), self.description())
+                return copy
+
             def type(self):
                 return 'vrt_destination'
 

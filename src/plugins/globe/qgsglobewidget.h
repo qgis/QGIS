@@ -1,7 +1,7 @@
 /***************************************************************************
     qgsglobewidget.h
     ---------------------
-    begin                : August 2010
+    begin                : August 2016
     copyright            : (C) 2016 Sandro Mani
     email                : smani at sourcepole dot ch
  ***************************************************************************
@@ -24,7 +24,7 @@ class QgsGlobeWidget : public QDockWidget
     Q_OBJECT
   public:
     QgsGlobeWidget( QgisInterface *iface, QWidget *parent = 0 );
-    QStringList getSelectedLayers() const;
+    QStringList getSelectedLayerIds() const;
 
   signals:
     void layersChanged();

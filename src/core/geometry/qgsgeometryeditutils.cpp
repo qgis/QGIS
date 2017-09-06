@@ -221,7 +221,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
   return c->removeGeometry( partNum );
 }
 
-QgsAbstractGeometry *QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
     const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
     QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
 {
@@ -248,7 +248,7 @@ QgsAbstractGeometry *QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
   Q_FOREACH ( QgsVectorLayer *currentLayer, avoidIntersectionsLayers )
   {
     QgsFeatureIds ignoreIds;
-    QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
+    QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.constFind( currentLayer );
     if ( ignoreIt != ignoreFeatures.constEnd() )
       ignoreIds = ignoreIt.value();
 
@@ -281,7 +281,7 @@ QgsAbstractGeometry *QgsGeometryEditUtils::avoidIntersections( const QgsAbstract
     return nullptr;
   }
 
-  QgsAbstractGeometry *diffGeom = geomEngine->difference( combinedGeometries );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries ) );
 
   delete combinedGeometries;
   return diffGeom;

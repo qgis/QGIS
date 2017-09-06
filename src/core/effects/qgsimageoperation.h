@@ -21,7 +21,6 @@
 #include <QImage>
 #include "qgis.h"
 #include <QColor>
-#include <QtCore/qmath.h>
 
 #include "qgis_core.h"
 
@@ -375,7 +374,7 @@ class CORE_EXPORT QgsImageOperation
           , mSpread( spread )
           , mProperties( properties )
         {
-          mSpreadSquared = qPow( mSpread, 2.0 );
+          mSpreadSquared = std::pow( mSpread, 2.0 );
         }
 
         void operator()( QRgb &rgb, const int x, const int y );

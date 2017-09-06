@@ -40,6 +40,7 @@ Returns configuration as set up in the dialog (may be null). Ownership is passed
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

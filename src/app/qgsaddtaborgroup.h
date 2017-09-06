@@ -22,6 +22,7 @@
 #include "ui_qgsaddtaborgroupbase.h"
 #include "qgsguiutils.h"
 #include "qgis_app.h"
+#include "qgshelp.h"
 
 class QTreeWidgetItem;
 class QgsVectorLayer;
@@ -50,6 +51,7 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
   private slots:
     void on_mGroupButton_toggled( bool checked );
     void on_mTabButton_toggled( bool checked );
+    void showHelp();
 
   protected:
     QgsVectorLayer *mLayer = nullptr;

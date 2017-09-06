@@ -16,7 +16,7 @@
 
 #include "qgslabelingenginesettings.h"
 #include "qgsproject.h"
-#include <pal/pal.h>
+#include "pal/pal.h"
 
 #include <QPushButton>
 

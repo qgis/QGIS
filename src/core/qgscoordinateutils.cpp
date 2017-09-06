@@ -45,7 +45,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
       // having enough decimal places to show the difference in position between adjacent pixels.
       // Also avoid taking the log of 0.
       if ( !qgsDoubleNear( mapUnitsPerPixel, 0.0 ) )
-        dp = static_cast<int>( ceil( -1.0 * log10( mapUnitsPerPixel ) ) );
+        dp = static_cast<int>( std::ceil( -1.0 * std::log10( mapUnitsPerPixel ) ) );
     }
     else
     {

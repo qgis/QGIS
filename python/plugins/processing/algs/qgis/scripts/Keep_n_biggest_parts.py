@@ -1,5 +1,5 @@
 from builtins import range
-##Vector geometry tools=group
+##Vector geometry=group
 
 #inputs
 

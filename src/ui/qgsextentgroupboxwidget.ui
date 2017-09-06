@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>380</width>
-    <height>202</height>
+    <width>679</width>
+    <height>163</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -77,7 +77,7 @@
    <item>
     <widget class="QWidget" name="widget_2" native="true">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="4">
+      <item row="0" column="6">
        <widget class="QPushButton" name="mCurrentExtentButton">
         <property name="minimumSize">
          <size>
@@ -103,7 +103,7 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="5">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -116,7 +116,7 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="5">
+      <item row="0" column="10">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -129,20 +129,7 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="mOriginalExtentButton">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Current layer extent</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
+      <item row="0" column="3">
        <widget class="QPushButton" name="mButtonCalcFromLayer">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -155,7 +142,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="4">
+      <item row="0" column="11">
        <widget class="QPushButton" name="mButtonDrawOnCanvas">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -165,6 +152,19 @@
         </property>
         <property name="text">
          <string>Draw on canvas</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="mOriginalExtentButton">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Current layer extent</string>
         </property>
        </widget>
       </item>
@@ -178,7 +178,10 @@
   <tabstop>mXMinLineEdit</tabstop>
   <tabstop>mXMaxLineEdit</tabstop>
   <tabstop>mYMinLineEdit</tabstop>
+  <tabstop>mOriginalExtentButton</tabstop>
+  <tabstop>mButtonCalcFromLayer</tabstop>
   <tabstop>mCurrentExtentButton</tabstop>
+  <tabstop>mButtonDrawOnCanvas</tabstop>
  </tabstops>
  <resources/>
  <connections/>

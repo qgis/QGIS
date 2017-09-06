@@ -18,7 +18,7 @@
 #include "qgsdb2provider.h"
 #include "qgsdb2tablemodel.h"
 
-#include <qgsdataitem.h>
+#include "qgsdataitem.h"
 
 class QgsDb2RootItem;
 class QgsDb2Connection;

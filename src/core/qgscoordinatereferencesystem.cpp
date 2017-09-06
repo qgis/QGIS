@@ -1164,7 +1164,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     static const double FEET_TO_METER = 0.3048;
     static const double SMALL_NUM = 1e-3;
 
-    if ( qAbs( toMeter - FEET_TO_METER ) < SMALL_NUM )
+    if ( std::fabs( toMeter - FEET_TO_METER ) < SMALL_NUM )
       unit = QStringLiteral( "Foot" );
 
     if ( qgsDoubleNear( toMeter, 1.0 ) ) //Unit name for meters would be "metre"
@@ -1715,7 +1715,7 @@ QString QgsCoordinateReferenceSystem::quotedValue( QString value )
 // adapted from gdal/ogr/ogr_srs_dict.cpp
 bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const char *filename )
 {
-  qDebug( "Loading %s", filename );
+  QgsDebugMsgLevel( QStringLiteral( "Loading %1" ).arg( filename ), 4 );
   const char *pszFilename = CPLFindFile( "gdal", filename );
   if ( !pszFilename )
     return false;
@@ -1826,7 +1826,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
     f.close();
 
-    qDebug( "Loaded %d/%d from %s", n, l, filename.toUtf8().constData() );
+    QgsDebugMsgLevel( QStringLiteral( "Loaded %1/%2 from %3" ).arg( QString::number( n ), QString::number( l ), filename.toUtf8().constData() ), 4 );
   }
 
   OSRDestroySpatialReference( crs );
@@ -1841,7 +1841,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
-  qDebug( "Load srs db from: %s", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() );
+  QgsDebugMsgLevel( QStringLiteral( "Load srs db from: %1" ).arg( QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() ), 4 );
 
   sqlite3 *database = nullptr;
   if ( sqlite3_open( dbFilePath.toUtf8().constData(), &database ) != SQLITE_OK )
@@ -1874,7 +1874,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   loadIds( wkts );
   loadWkts( wkts, "epsg.wkt" );
 
-  qDebug( "%d WKTs loaded", wkts.count() );
+  QgsDebugMsgLevel( QStringLiteral( "%1 WKTs loaded" ).arg( wkts.count() ), 4 );
 
   for ( QHash<int, QString>::const_iterator it = wkts.constBegin(); it != wkts.constEnd(); ++it )
   {
@@ -2114,7 +2114,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   sqlite3_close( database );
 
-  qWarning( "CRS update (inserted:%d updated:%d deleted:%d errors:%d)", inserted, updated, deleted, errors );
+  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( QString::number( inserted ), QString::number( updated ), QString::number( deleted ), QString::number( errors ) ), 4 );
 
   if ( errors > 0 )
     return -errors;

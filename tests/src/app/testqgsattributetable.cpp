@@ -114,7 +114,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
   double expected = 26932.156;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
@@ -126,7 +126,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 88360.0918635;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
 void TestQgsAttributeTable::testFieldCalculationArea()
@@ -164,7 +164,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
   double expected = 1009089817.0;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 1.0 );
 
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
@@ -176,7 +176,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 389.6117565069;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
 void TestQgsAttributeTable::testNoGeom()

@@ -204,19 +204,19 @@ bool QgsRasterPipe::set( QgsRasterInterface *interface )
   }
   else if ( role == BrightnessRole )
   {
-    idx =  qMax( providerIdx, rendererIdx ) + 1;
+    idx =  std::max( providerIdx, rendererIdx ) + 1;
   }
   else if ( role == HueSaturationRole )
   {
-    idx =  qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ) + 1;
+    idx =  std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ) + 1;
   }
   else if ( role == ResamplerRole )
   {
-    idx = qMax( qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ) + 1;
+    idx = std::max( std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ) + 1;
   }
   else if ( role == ProjectorRole )
   {
-    idx = qMax( qMax( qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ), resamplerIdx )  + 1;
+    idx = std::max( std::max( std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ), resamplerIdx )  + 1;
   }
 
   return insert( idx, interface );  // insert may still fail and return false

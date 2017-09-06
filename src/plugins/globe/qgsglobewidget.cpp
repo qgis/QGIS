@@ -1,7 +1,7 @@
 /***************************************************************************
     qgsglobewidget.cpp
     ---------------------
-    begin                : August 2010
+    begin                : August 2016
     copyright            : (C) 2016 Sandro Mani
     email                : smani at sourcepole dot ch
  ***************************************************************************
@@ -94,25 +94,25 @@ QgsGlobeWidget::QgsGlobeWidget( QgisInterface *iface, QWidget *parent )
 void QgsGlobeWidget::updateLayerSelectionMenu()
 {
   QStringList prevLayers;
-  QStringList prevDisabledLayers;
-  QStringList prevEnabledLayers;
-  foreach ( QAction *action, mLayerSelectionMenu->actions() )
+  QStringList prevDisabledLayerIds;
+  QStringList prevEnabledLayerIds;
+  for ( QAction *action : mLayerSelectionMenu->actions() )
   {
     prevLayers.append( action->data().toString() );
     if ( !action->isChecked() )
     {
-      prevDisabledLayers.append( action->data().toString() );
+      prevDisabledLayerIds.append( action->data().toString() );
     }
     else
     {
-      prevEnabledLayers.append( action->data().toString() );
+      prevEnabledLayerIds.append( action->data().toString() );
     }
   }
 
   mLayerSelectionMenu->clear();
   QString heightmap = QgsProject::instance()->readEntry( "Heightmap", "layer" );
   // Use layerTreeRoot to get layers ordered as in the layer tree
-  foreach ( QgsLayerTreeLayer *layerTreeLayer, QgsProject::instance()->layerTreeRoot()->findLayers() )
+  for ( QgsLayerTreeLayer *layerTreeLayer : QgsProject::instance()->layerTreeRoot()->findLayers() )
   {
     QgsMapLayer *layer = layerTreeLayer->layer();
     if ( !layer )
@@ -121,7 +121,7 @@ void QgsGlobeWidget::updateLayerSelectionMenu()
     layerAction->setData( layer->id() );
     // Check if was not previously unchecked, unless it is a new layer with url=http in datasource
     layerAction->setCheckable( true );
-    bool wasUnchecked = prevDisabledLayers.contains( layer->id() );
+    bool wasUnchecked = prevDisabledLayerIds.contains( layer->id() );
     bool isNew = !prevLayers.contains( layer->id() );
     bool isRemote = layer->source().contains( "url=http" );
     bool isHeightmap = layer->id() == heightmap;
@@ -129,21 +129,21 @@ void QgsGlobeWidget::updateLayerSelectionMenu()
     connect( layerAction, SIGNAL( toggled( bool ) ), this, SIGNAL( layersChanged() ) );
     mLayerSelectionMenu->addAction( layerAction );
   }
-  if ( prevEnabledLayers != getSelectedLayers() )
+  if ( prevEnabledLayerIds != getSelectedLayerIds() )
     emit layersChanged();
 }
 
-QStringList QgsGlobeWidget::getSelectedLayers() const
+QStringList QgsGlobeWidget::getSelectedLayerIds() const
 {
-  QStringList selectedLayers;
-  foreach ( QAction *layerAction, mLayerSelectionMenu->actions() )
+  QStringList selectedLayerIds;
+  for ( QAction *layerAction : mLayerSelectionMenu->actions() )
   {
     if ( layerAction->isChecked() )
     {
-      selectedLayers.append( layerAction->data().toString() );
+      selectedLayerIds.append( layerAction->data().toString() );
     }
   }
-  return selectedLayers;
+  return selectedLayerIds;
 }
 
 void QgsGlobeWidget::contextMenuEvent( QContextMenuEvent *e )

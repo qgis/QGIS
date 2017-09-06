@@ -408,7 +408,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
   double min = stats.minimumValue;
   double max = stats.maximumValue;
   // need count of every individual value
-  int bins = ceil( max - min ) + 1;
+  int bins = std::ceil( max - min ) + 1;
   if ( bins <= 0 )
     return ClassData();
 

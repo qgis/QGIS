@@ -17,9 +17,9 @@
 #ifndef QGSDETAILEDITEMWIDGET_H
 #define QGSDETAILEDITEMWIDGET_H
 
-#include <ui_qgsdetaileditemwidgetbase.h>
+#include "ui_qgsdetaileditemwidgetbase.h"
 #include "qgis.h"
-#include <qgsdetaileditemdata.h>
+#include "qgsdetaileditemdata.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui

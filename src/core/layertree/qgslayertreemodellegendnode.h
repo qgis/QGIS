@@ -388,6 +388,8 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
  */
 class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendNode
 {
+    Q_OBJECT
+
   public:
     //! Construct the node using QgsDataDefinedSizeLegend as definition of the node's appearance
     QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent SIP_TRANSFERTHIS = nullptr );

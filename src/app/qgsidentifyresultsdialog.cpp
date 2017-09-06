@@ -234,7 +234,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
     // correct size, see #9377.
     int max = widget->size().height() * 0.9;
     QgsDebugMsg( QString( "parent widget height = %1 max height = %2" ).arg( widget->size().height() ).arg( max ) );
-    height = qMin( height, max );
+    height = std::min( height, max );
   }
   else
   {
@@ -243,7 +243,7 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
 
   // Always keep some minimum size, e.g. if page is not yet loaded
   // or parent has wrong size
-  height = qMax( height, 100 );
+  height = std::max( height, 100 );
 
   s = QSize( size().width(), height );
   QgsDebugMsg( QString( "size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
@@ -447,7 +447,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
-  lstResults->header()->setResizeMode( QHeaderView::ResizeToContents );
+  lstResults->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
   lstResults->header()->setStretchLastSection( false );
 
   if ( !layItem )
@@ -1780,7 +1780,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
 
     const QgsFields &fields = vlayer->fields();
 
-    for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+    for ( QgsAttributeMap::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
     {
       int attrIdx = it.key();
       if ( attrIdx < 0 || attrIdx >= fields.count() )

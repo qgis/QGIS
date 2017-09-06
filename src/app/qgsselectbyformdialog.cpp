@@ -67,8 +67,6 @@ void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 {
-  QgsFeatureIds ids;
-
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )

@@ -47,7 +47,6 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 #endif
 
     Q_OBJECT
-    Q_ENUMS( ClearMode )
     Q_PROPERTY( ClearMode clearMode READ clearMode WRITE setClearMode )
     Q_PROPERTY( QString nullValue READ nullValue WRITE setNullValue )
     Q_PROPERTY( QString defaultValue READ defaultValue WRITE setDefaultValue )
@@ -63,6 +62,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
       ClearToNull = 0, //!< Reset value to null
       ClearToDefault, //!< Reset value to default value (see defaultValue() )
     };
+    Q_ENUM( ClearMode );
 
     /** Constructor for QgsFilterLineEdit.
      * \param parent parent widget

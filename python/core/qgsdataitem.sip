@@ -52,6 +52,7 @@ class QgsDataItem : QObject
       Project
     };
 
+
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent /TransferThis/, const QString &name, const QString &path );
 %Docstring
 Create new data item.

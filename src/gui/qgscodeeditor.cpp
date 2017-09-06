@@ -88,10 +88,10 @@ void QgsCodeEditor::setSciWidget()
 {
   setUtf8( true );
   setCaretLineVisible( true );
-  setCaretLineBackgroundColor( QColor( "#fcf3ed" ) );
+  setCaretLineBackgroundColor( QColor( 252, 243, 237 ) );
 
   setBraceMatching( QsciScintilla::SloppyBraceMatch );
-  setMatchedBraceBackgroundColor( QColor( "#b7f907" ) );
+  setMatchedBraceBackgroundColor( QColor( 183, 249, 7 ) );
   // whether margin will be shown
   setMarginVisible( mMargin );
   // whether margin will be shown
@@ -121,8 +121,8 @@ void QgsCodeEditor::setMarginVisible( bool margin )
     setMarginLineNumbers( 1, true );
     setMarginsFont( marginFont );
     setMarginWidth( 1, QStringLiteral( "00000" ) );
-    setMarginsForegroundColor( QColor( "#3E3EE3" ) );
-    setMarginsBackgroundColor( QColor( "#f9f9f9" ) );
+    setMarginsForegroundColor( QColor( 62, 62, 227 ) );
+    setMarginsBackgroundColor( QColor( 249, 249, 249 ) );
   }
   else
   {
@@ -138,7 +138,7 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   if ( folding )
   {
     setFolding( QsciScintilla::PlainFoldStyle );
-    setFoldMarginColors( QColor( "#f4f4f4" ), QColor( "#f4f4f4" ) );
+    setFoldMarginColors( QColor( 244, 244, 244 ), QColor( 244, 244, 244 ) );
   }
   else
   {

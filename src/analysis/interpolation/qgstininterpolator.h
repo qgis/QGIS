@@ -22,9 +22,12 @@
 #include <QString>
 #include "qgis_analysis.h"
 
+class QgsFeatureSink;
 class Triangulation;
 class TriangleInterpolator;
 class QgsFeature;
+class QgsFeedback;
+class QgsFields;
 
 /** \ingroup analysis
  *  Interpolation in a triangular irregular network*/
@@ -37,7 +40,13 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
       Linear,
       CloughTocher
     };
-    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, bool showProgressDialog = false );
+
+    /**
+     * Constructor for QgsTINInterpolator.
+     * The \a feedback object specifies an optional QgsFeedback object for progress reports and cancelation support.
+     * Ownership of \a feedback is not transferred and callers must ensure that it exists for the lifetime of this object.
+     */
+    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, QgsFeedback *feedback = nullptr );
     ~QgsTINInterpolator();
 
     /** Calculates interpolation value for map coordinates x, y
@@ -47,18 +56,34 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
        \returns 0 in case of success*/
     int interpolatePoint( double x, double y, double &result ) override;
 
-    void setExportTriangulationToFile( bool e ) {mExportTriangulationToFile = e;}
-    void setTriangulationFilePath( const QString &filepath ) {mTriangulationFilePath = filepath;}
+    /**
+     * Returns the fields output by features when saving the triangulation.
+     * These fields should be used when creating
+     * a suitable feature sink for setTriangulationSink()
+     * \see setTriangulationSink()
+     * \since QGIS 3.0
+     */
+    static QgsFields triangulationFields();
+
+    /**
+     * Sets the optional \a sink for saving the triangulation features.
+     *
+     * The sink must be setup to accept LineString features, with fields matching
+     * those returned by triangulationFields().
+     *
+     * \see triangulationFields()
+     *  \since QGIS 3.0
+     */
+    void setTriangulationSink( QgsFeatureSink *sink );
 
   private:
     Triangulation *mTriangulation = nullptr;
     TriangleInterpolator *mTriangleInterpolator = nullptr;
     bool mIsInitialized;
-    bool mShowProgressDialog;
-    //! If true: export triangulation to shapefile after initialization
-    bool mExportTriangulationToFile;
-    //! File path to export the triangulation
-    QString mTriangulationFilePath;
+    QgsFeedback *mFeedback = nullptr;
+
+    //! Feature sink for triangulation
+    QgsFeatureSink *mTriangulationSink = nullptr;
     //! Type of interpolation
     TINInterpolation mInterpolation;
 

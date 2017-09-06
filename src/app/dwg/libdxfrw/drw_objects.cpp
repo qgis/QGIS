@@ -505,7 +505,7 @@ void DRW_LType::update()
   size = path.size();
   for ( std::vector<double>::size_type i = 0;  i < size; i++ )
   {
-    d += fabs( path.at( i ) );
+    d += std::fabs( path.at( i ) );
   }
   length = d;
 }

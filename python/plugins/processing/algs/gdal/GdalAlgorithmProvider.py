@@ -37,12 +37,13 @@ from .AssignProjection import AssignProjection
 from .aspect import aspect
 from .buildvrt import buildvrt
 from .ColorRelief import ColorRelief
+from .information import information
+from .rgb2pct import rgb2pct
+from .translate import translate
 from .tri import tri
 from .warp import warp
 from .nearblack import nearblack
-# from .information import information
-# from .rgb2pct import rgb2pct
-# from .translate import translate
+
 # from .pct2rgb import pct2rgb
 # from .merge import merge
 # from .polygonize import polygonize
@@ -140,16 +141,16 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
 
     def loadAlgorithms(self):
         self.algs = [
-            nearblack(),
-            # information(),
             AssignProjection(),
             aspect(),
             buildvrt(),
             ColorRelief(),
+            information(),
+            nearblack(),
+            rgb2pct(),
+            translate(),
             tri(),
             warp(),
-            # translate(),
-            # rgb2pct(),
             # pct2rgb(),
             # merge(),
             # polygonize(),

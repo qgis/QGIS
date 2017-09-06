@@ -20,8 +20,8 @@
 
 #include <QObject>
 
-#include <qgsvectorlayer.h>
-#include <qgsgeometry.h>
+#include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
 #include "qgsspatialindex.h"
 
 #include "topolError.h"

@@ -593,6 +593,27 @@ returns last position of mouse cursor
  :rtype: QgsLabelingEngineSettings
 %End
 
+    bool previewJobsEnabled() const;
+%Docstring
+ Returns true if canvas map preview jobs (low priority render jobs which render portions
+ of the view just outside of the canvas extent, to allow preview of these
+ out-of-canvas areas when panning or zooming out the map) are enabled
+ for the canvas.
+.. seealso:: setPreviewJobsEnabled()
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setPreviewJobsEnabled( bool enabled );
+%Docstring
+ Sets whether canvas map preview jobs (low priority render jobs which render portions
+ of the view just outside of the canvas extent, to allow preview of these
+ out-of-canvas areas when panning or zooming out the map) are ``enabled``
+ for the canvas.
+.. seealso:: previewJobsEnabled()
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void refresh();

@@ -23,13 +23,13 @@ extern "C"
 }
 
 #include <stdexcept>
-#include <qgscoordinatereferencesystem.h>
-#include <qgsdistancearea.h>
-#include <qgsexception.h>
-#include <qgsproviderregistry.h>
-#include <qgsrectangle.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasterprojector.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdistancearea.h"
+#include "qgsexception.h"
+#include "qgsproviderregistry.h"
+#include "qgsrectangle.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterprojector.h"
 
 #include <QLibrary>
 #include <QProcess>

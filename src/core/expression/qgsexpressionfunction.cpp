@@ -53,7 +53,9 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
   QVariantList argValues;
   if ( args )
   {
-    Q_FOREACH ( QgsExpressionNode *n, args->list() )
+    int arg = 0;
+    const QList< QgsExpressionNode * > argList = args->list();
+    for ( QgsExpressionNode *n : argList )
     {
       QVariant v;
       if ( lazyEval() )
@@ -65,10 +67,12 @@ QVariant QgsExpressionFunction::run( QgsExpressionNode::NodeList *args, const Qg
       {
         v = n->eval( parent, context );
         ENSURE_NO_EVAL_ERROR;
-        if ( QgsExpressionUtils::isNull( v ) && !handlesNull() )
+        bool defaultParamIsNull = mParameterList.count() > arg && mParameterList.at( arg ).optional() && !mParameterList.at( arg ).defaultValue().isValid();
+        if ( QgsExpressionUtils::isNull( v ) && !defaultParamIsNull && !handlesNull() )
           return QVariant(); // all "normal" functions return NULL, when any QgsExpressionFunction::Parameter is NULL (so coalesce is abnormal)
       }
       argValues.append( v );
+      arg++;
     }
   }
 
@@ -198,7 +202,8 @@ bool QgsExpressionFunction::allParamsStatic( const QgsExpressionNodeFunction *no
 {
   if ( node && node->args() )
   {
-    Q_FOREACH ( QgsExpressionNode *argNode, node->args()->list() )
+    const QList< QgsExpressionNode * > argList = node->args()->list();
+    for ( QgsExpressionNode *argNode : argList )
     {
       if ( !argNode->isStatic( parent, context ) )
         return false;
@@ -235,13 +240,13 @@ static QVariant fcnEval( const QVariantList &values, const QgsExpressionContext 
 static QVariant fcnSqrt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( sqrt( x ) );
+  return QVariant( std::sqrt( x ) );
 }
 
 static QVariant fcnAbs( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double val = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( fabs( val ) );
+  return QVariant( std::fabs( val ) );
 }
 
 static QVariant fcnRadians( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -257,50 +262,50 @@ static QVariant fcnDegrees( const QVariantList &values, const QgsExpressionConte
 static QVariant fcnSin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( sin( x ) );
+  return QVariant( std::sin( x ) );
 }
 static QVariant fcnCos( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( cos( x ) );
+  return QVariant( std::cos( x ) );
 }
 static QVariant fcnTan( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( tan( x ) );
+  return QVariant( std::tan( x ) );
 }
 static QVariant fcnAsin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( asin( x ) );
+  return QVariant( std::asin( x ) );
 }
 static QVariant fcnAcos( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( acos( x ) );
+  return QVariant( std::acos( x ) );
 }
 static QVariant fcnAtan( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( atan( x ) );
+  return QVariant( std::atan( x ) );
 }
 static QVariant fcnAtan2( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double y = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
   double x = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
-  return QVariant( atan2( y, x ) );
+  return QVariant( std::atan2( y, x ) );
 }
 static QVariant fcnExp( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( exp( x ) );
+  return QVariant( std::exp( x ) );
 }
 static QVariant fcnLn( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
   if ( x <= 0 )
     return QVariant();
-  return QVariant( log( x ) );
+  return QVariant( std::log( x ) );
 }
 static QVariant fcnLog10( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -315,7 +320,7 @@ static QVariant fcnLog( const QVariantList &values, const QgsExpressionContext *
   double x = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   if ( x <= 0 || b <= 0 )
     return QVariant();
-  return QVariant( log( x ) / log( b ) );
+  return QVariant( std::log( x ) / std::log( b ) );
 }
 static QVariant fcnRndF( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
@@ -402,7 +407,7 @@ static QVariant fcnExpScale( const QVariantList &values, const QgsExpressionCont
   }
 
   // Return exponentially scaled value
-  return QVariant( ( ( rangeMax - rangeMin ) / pow( domainMax - domainMin, exponent ) ) * pow( val - domainMin, exponent ) + rangeMin );
+  return QVariant( ( ( rangeMax - rangeMin ) / std::pow( domainMax - domainMin, exponent ) ) * std::pow( val - domainMin, exponent ) + rangeMin );
 }
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -859,13 +864,13 @@ static QVariant fcnClamp( const QVariantList &values, const QgsExpressionContext
 static QVariant fcnFloor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( floor( x ) );
+  return QVariant( std::floor( x ) );
 }
 
 static QVariant fcnCeil( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   double x = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-  return QVariant( ceil( x ) );
+  return QVariant( std::ceil( x ) );
 }
 
 static QVariant fcnToInt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
@@ -888,7 +893,7 @@ static QVariant fcnToDateTime( const QVariantList &values, const QgsExpressionCo
 
 static QVariant fcnCoalesce( const QVariantList &values, const QgsExpressionContext *, QgsExpression * )
 {
-  Q_FOREACH ( const QVariant &value, values )
+  for ( const QVariant &value : values )
   {
     if ( value.isNull() )
       continue;
@@ -1007,13 +1012,13 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
             if ( strhit == lasthit || strhit == -1 )
             {
               //if no new backward delimiter found, try to locate forward
-              strhit = lines[i].indexOf( rx, strcurrent + qAbs( wrap ) );
+              strhit = lines[i].indexOf( rx, strcurrent + std::labs( wrap ) );
             }
             lasthit = strhit;
           }
           else
           {
-            strhit = lines[i].indexOf( rx, strcurrent + qAbs( wrap ) );
+            strhit = lines[i].indexOf( rx, strcurrent + std::labs( wrap ) );
           }
           if ( strhit > -1 )
           {
@@ -1326,7 +1331,7 @@ static QVariant fcnNumSelected( const QVariantList &values, const QgsExpressionC
 static QVariant fcnConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QString concat;
-  Q_FOREACH ( const QVariant &value, values )
+  for ( const QVariant &value : values )
   {
     concat += QgsExpressionUtils::getStringValue( value, parent );
   }
@@ -1715,9 +1720,10 @@ static QVariant fcnNodesToPoints( const QVariantList &values, const QgsExpressio
 
   QgsMultiPointV2 *mp = new QgsMultiPointV2();
 
-  Q_FOREACH ( const QgsRingSequence &part, geom.geometry()->coordinateSequence() )
+  const QgsCoordinateSequence sequence = geom.geometry()->coordinateSequence();
+  for ( const QgsRingSequence &part : sequence )
   {
-    Q_FOREACH ( const QgsPointSequence &ring, part )
+    for ( const QgsPointSequence &ring : part )
     {
       bool skipLast = false;
       if ( ignoreClosing && ring.count() > 2 && ring.first() == ring.last() )
@@ -1742,11 +1748,11 @@ static QVariant fcnSegmentsToLines( const QVariantList &values, const QgsExpress
   if ( geom.isNull() )
     return QVariant();
 
-  QList< QgsLineString * > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
+  const QList< QgsLineString * > linesToProcess = QgsGeometryUtils::extractLineStrings( geom.geometry() );
 
   //OK, now we have a complete list of segmentized lines from the geometry
   QgsMultiLineString *ml = new QgsMultiLineString();
-  Q_FOREACH ( QgsLineString *line, linesToProcess )
+  for ( QgsLineString *line : linesToProcess )
   {
     for ( int i = 0; i < line->numPoints() - 1; ++i )
     {
@@ -1875,7 +1881,7 @@ static QVariant fcnSmooth( const QVariantList &values, const QgsExpressionContex
   if ( geom.isNull() )
     return QVariant();
 
-  int iterations = qMin( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), 10 );
+  int iterations = std::min( QgsExpressionUtils::getNativeIntValue( values.at( 1 ), parent ), 10 );
   double offset = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent ), 0.5 );
   double minLength = QgsExpressionUtils::getDoubleValue( values.at( 3 ), parent );
   double maxAngle = qBound( 0.0, QgsExpressionUtils::getDoubleValue( values.at( 4 ), parent ), 180.0 );
@@ -1929,7 +1935,7 @@ static QVariant fcnMakeLine( const QVariantList &values, const QgsExpressionCont
   QgsLineString *lineString = new QgsLineString();
   lineString->clear();
 
-  Q_FOREACH ( const QVariant &value, values )
+  for ( const QVariant &value : values )
   {
     QgsGeometry geom = QgsExpressionUtils::getGeometry( value, parent );
     if ( geom.isNull() )
@@ -1984,7 +1990,7 @@ static QVariant fcnMakeTriangle( const QVariantList &values, const QgsExpression
   std::unique_ptr<QgsLineString> lineString( new QgsLineString() );
   lineString->clear();
 
-  Q_FOREACH ( const QVariant &value, values )
+  for ( const QVariant &value : values )
   {
     QgsGeometry geom = QgsExpressionUtils::getGeometry( value, parent );
     if ( geom.isNull() )
@@ -2574,6 +2580,27 @@ static QVariant fcnDistance( const QVariantList &values, const QgsExpressionCont
   QgsGeometry sGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
   return QVariant( fGeom.distance( sGeom ) );
 }
+
+static QVariant fcnHausdorffDistance( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
+{
+  QgsGeometry g1 = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  QgsGeometry g2 = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+
+  double res = -1;
+  if ( values.length() == 3 && values.at( 2 ).isValid() )
+  {
+    double densify = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+    densify = qBound( 0.0, densify, 1.0 );
+    res = g1.hausdorffDistanceDensify( g2, densify );
+  }
+  else
+  {
+    res = g1.hausdorffDistance( g2 );
+  }
+
+  return res > -1 ? QVariant( res ) : QVariant();
+}
+
 static QVariant fcnIntersection( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -2645,9 +2672,9 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   if ( pt1->y() == pt2->y() )
   {
     if ( pt1->x() < pt2->x() )
-      return M_PI / 2;
+      return M_PI_2;
     else if ( pt1->x() > pt2->x() )
-      return M_PI + ( M_PI / 2 );
+      return M_PI + ( M_PI_2 );
     else
       return 0;
   }
@@ -2656,12 +2683,12 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   {
     if ( pt1->y() < pt2->y() )
     {
-      return atan( fabs( pt1->x() - pt2->x() ) / fabs( pt1->y() - pt2->y() ) );
+      return std::atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) );
     }
     else /* ( pt1->y() > pt2->y() )  - equality case handled above */
     {
-      return atan( fabs( pt1->y() - pt2->y() ) / fabs( pt1->x() - pt2->x() ) )
-             + ( M_PI / 2 );
+      return std::atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
+             + ( M_PI_2 );
     }
   }
 
@@ -2669,13 +2696,13 @@ static QVariant fcnAzimuth( const QVariantList &values, const QgsExpressionConte
   {
     if ( pt1->y() > pt2->y() )
     {
-      return atan( fabs( pt1->x() - pt2->x() ) / fabs( pt1->y() - pt2->y() ) )
+      return std::atan( std::fabs( pt1->x() - pt2->x() ) / std::fabs( pt1->y() - pt2->y() ) )
              + M_PI;
     }
     else /* ( pt1->y() < pt2->y() )  - equality case handled above */
     {
-      return atan( fabs( pt1->y() - pt2->y() ) / fabs( pt1->x() - pt2->x() ) )
-             + ( M_PI + ( M_PI / 2 ) );
+      return std::atan( std::fabs( pt1->y() - pt2->y() ) / std::fabs( pt1->x() - pt2->x() ) )
+             + ( M_PI + ( M_PI_2 ) );
     }
   }
 }
@@ -2798,7 +2825,7 @@ static QVariant fcnOrderParts( const QVariantList &values, const QgsExpressionCo
   while ( orderedGeom->partCount() )
     orderedGeom->removeGeometry( 0 );
 
-  Q_FOREACH ( const QgsFeature &feature, partFeatures )
+  for ( const QgsFeature &feature : qgsAsConst( partFeatures ) )
   {
     orderedGeom->addGeometry( feature.geometry().geometry()->clone() );
   }
@@ -2883,14 +2910,14 @@ static QVariant fcnRound( const QVariantList &values, const QgsExpressionContext
   if ( values.length() == 2 && values.at( 1 ).toInt() != 0 )
   {
     double number = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-    double scaler = pow( 10.0, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
-    return QVariant( qRound( number * scaler ) / scaler );
+    double scaler = std::pow( 10.0, QgsExpressionUtils::getIntValue( values.at( 1 ), parent ) );
+    return QVariant( std::round( number * scaler ) / scaler );
   }
 
   if ( values.length() >= 1 )
   {
     double number = QgsExpressionUtils::getIntValue( values.at( 0 ), parent );
-    return QVariant( qRound( number ) );
+    return QVariant( qlonglong( std::round( number ) ) );
   }
 
   return QVariant();
@@ -3431,7 +3458,7 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
   else
   {
     //vector layer methods
-    QgsVectorLayer *vLayer = dynamic_cast< QgsVectorLayer * >( layer );
+    QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
     if ( vLayer )
     {
       if ( QString::compare( layerProperty, QStringLiteral( "storage_type" ), Qt::CaseInsensitive ) == 0 )
@@ -3600,7 +3627,7 @@ static QVariant fcnArrayRemoveAll( const QVariantList &values, const QgsExpressi
 static QVariant fcnArrayCat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QVariantList list;
-  Q_FOREACH ( const QVariant &cur, values )
+  for ( const QVariant &cur : values )
   {
     list += QgsExpressionUtils::getListValue( cur, parent );
   }
@@ -3645,7 +3672,8 @@ static QVariant fcnArrayReverse( const QVariantList &values, const QgsExpression
 static QVariant fcnArrayIntersect( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   const QVariantList array1 = QgsExpressionUtils::getListValue( values.at( 0 ), parent );
-  Q_FOREACH ( const QVariant &cur, QgsExpressionUtils::getListValue( values.at( 1 ), parent ) )
+  const QVariantList array2 = QgsExpressionUtils::getListValue( values.at( 1 ), parent );
+  for ( const QVariant &cur : array2 )
   {
     if ( array1.contains( cur ) )
       return QVariant( true );
@@ -3744,7 +3772,7 @@ static QVariant fcnMapInsert( const QVariantList &values, const QgsExpressionCon
 static QVariant fcnMapConcat( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QVariantMap result;
-  Q_FOREACH ( const QVariant &cur, values )
+  for ( const QVariant &cur : values )
   {
     const QVariantMap curMap = QgsExpressionUtils::getMapValue( cur, parent );
     for ( QVariantMap::const_iterator it = curMap.constBegin(); it != curMap.constEnd(); ++it )
@@ -3791,7 +3819,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "degrees" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "radians" ) ), fcnDegrees, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "azimuth" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ), fcnAzimuth, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "inclination" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point_a" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point_b" ) ), fcnInclination, QStringList() << QStringLiteral( "Math" ) << QStringLiteral( "GeometryGroup" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "project" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "elevation" ), true, M_PI / 2 ), fcnProject, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "project" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "distance" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "azimuth" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "elevation" ), true, M_PI_2 ), fcnProject, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "abs" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnAbs, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "cos" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "angle" ) ), fcnCos, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "sin" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "angle" ) ), fcnSin, QStringLiteral( "Math" ) )
@@ -4113,6 +4141,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "convex_hull" ), 1, fcnConvexHull, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "convexHull" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "difference" ), 2, fcnDifference, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "distance" ), 2, fcnDistance, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "hausdorff_distance" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry1" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "geometry2" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "densify_fraction" ), true ), fcnHausdorffDistance, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "intersection" ), 2, fcnIntersection, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "sym_difference" ), 2, fcnSymDifference, QStringLiteral( "GeometryGroup" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "symDifference" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "combine" ), 2, fcnCombine, QStringLiteral( "GeometryGroup" ) )
@@ -4127,7 +4157,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     orderPartsFunc->setIsStaticFunction(
       []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
     {
-      Q_FOREACH ( QgsExpressionNode *argNode, node->args()->list() )
+      const QList< QgsExpressionNode *> argList = node->args()->list();
+      for ( QgsExpressionNode *argNode : argList )
       {
         if ( !argNode->isStatic( parent, context ) )
           return false;
@@ -4318,7 +4349,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     QgsExpressionContextUtils::registerContextFunctions();
 
     //QgsExpression has ownership of all built-in functions
-    Q_FOREACH ( QgsExpressionFunction *func, sFunctions )
+    for ( QgsExpressionFunction *func : qgsAsConst( sFunctions ) )
     {
       sOwnedFunctions << func;
       sBuiltinFunctions << func->name();

@@ -71,11 +71,11 @@
 #include <QWhatsThis>
 #include <QWidgetAction>
 
-#include <qgssettings.h>
-#include <qgsnetworkaccessmanager.h>
-#include <qgsapplication.h>
-#include <qgscomposition.h>
-#include <qgslayerstylingwidget.h>
+#include "qgssettings.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsapplication.h"
+#include "qgscomposition.h"
+#include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
 
@@ -666,9 +666,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsRuntimeProfiler *profiler = QgsApplication::profiler();
 
   startProfile( QStringLiteral( "User profile manager" ) );
-  mUserProfileManager = new QgsUserProfileManager( "", this );
+  mUserProfileManager = new QgsUserProfileManager( QString(), this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
   mUserProfileManager->setActiveUserProfile( activeProfile );
+  mUserProfileManager->setNewProfileNotificationEnabled( true );
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
@@ -741,6 +742,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
+  mMapCanvas->setPreviewJobsEnabled( true );
 
   // set canvas color right away
   int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
@@ -1247,6 +1249,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 #endif
 
+  connect( qApp, &QApplication::focusChanged, this, &QgisApp::onFocusChanged );
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -1945,7 +1948,7 @@ void QgisApp::createActions()
   connect( mActionEmbedLayers, &QAction::triggered, this, &QgisApp::embedLayers );
   connect( mActionAddLayerDefinition, &QAction::triggered, this, &QgisApp::addLayerDefinition );
   connect( mActionAddOgrLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "ogr" ) ); } );
-  connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "raster" ) ); } );
+  connect( mActionAddRasterLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "gdal" ) ); } );
   connect( mActionAddPgLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "postgres" ) ); } );
   connect( mActionAddSpatiaLiteLayer, &QAction::triggered, [ = ] { dataSourceManager( QStringLiteral( "spatialite" ) ); } );
   connect( mActionAddMssqlLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "mssql" ) ); } );
@@ -2332,19 +2335,17 @@ void QgisApp::refreshProfileMenu()
   QString activeName = profile->name();
   mConfigMenu->setTitle( tr( "&User Profiles" ) );
 
-  QActionGroup *profileGroup = new QActionGroup( this );
+  QActionGroup *profileGroup = new QActionGroup( mConfigMenu );
   profileGroup->setExclusive( true );
 
   Q_FOREACH ( const QString &name, userProfileManager()->allProfiles() )
   {
-    profile = userProfileManager()->profileForName( name );
-    // Qt 5.5 has no parent default as nullptr
-    QAction *action = new QAction( profile->icon(), profile->alias(), nullptr );
-    action->setToolTip( profile->folder() );
+    std::unique_ptr< QgsUserProfile > namedProfile( userProfileManager()->profileForName( name ) );
+    QAction *action = new QAction( namedProfile->icon(), namedProfile->alias(), mConfigMenu );
+    action->setToolTip( namedProfile->folder() );
     action->setCheckable( true );
     profileGroup->addAction( action );
     mConfigMenu->addAction( action );
-    delete profile;
 
     if ( name == activeName )
     {
@@ -3478,8 +3479,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   {
     if ( canvas->objectName() == name )
     {
-      QString errorMessage = tr( "A map canvas with name '%1' already exists!" ).arg( name );
-      QgsDebugMsg( errorMessage );
+      QgsDebugMsg( tr( "A map canvas with name '%1' already exists!" ).arg( name ) );
       return nullptr;
     }
   }
@@ -3888,7 +3888,7 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
     QDir().mkdir( previewDir );
 
     // Render the map canvas
-    QSize previewSize( 250, 177 ); // h = w / sqrt(2)
+    QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
     QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2
                                , ( mMapCanvas->height() - previewSize.height() ) / 2 )
                        , previewSize );
@@ -5252,7 +5252,11 @@ void QgisApp::showRasterCalculator()
 
     QProgressDialog p( tr( "Calculating..." ), tr( "Abort..." ), 0, 0 );
     p.setWindowModality( Qt::WindowModal );
-    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &p ) );
+    p.setMaximum( 100.0 );
+    QgsFeedback feedback;
+    connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
+    connect( &feedback, &QgsFeedback::canceled, &p, &QProgressDialog::cancel );
+    QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &feedback ) );
     switch ( res )
     {
       case QgsRasterCalculator::Success:
@@ -5649,6 +5653,7 @@ void QgisApp::dxfExport()
     dxfExport.setSymbologyExport( d.symbologyMode() );
     dxfExport.setLayerTitleAsName( d.layerTitleAsName() );
     dxfExport.setDestinationCrs( d.crs() );
+    dxfExport.setForce2d( d.force2d() );
     if ( mapCanvas() )
     {
       //extent
@@ -8478,11 +8483,32 @@ void QgisApp::refreshMapCanvas()
 
 void QgisApp::canvasRefreshStarted()
 {
-  showProgress( -1, 0 ); // trick to make progress bar show busy indicator
+  mLastRenderTime.restart();
+  // if previous render took less than 0.5 seconds, delay the appearance of the
+  // render in progress status bar by 0.5 seconds - this avoids the status bar
+  // rapidly appearing and then disappearing for very fast renders
+  if ( mLastRenderTimeSeconds > 0 && mLastRenderTimeSeconds < 0.5 )
+  {
+    mRenderProgressBarTimer.setSingleShot( true );
+    mRenderProgressBarTimer.setInterval( 500 );
+    disconnect( mRenderProgressBarTimerConnection );
+    mRenderProgressBarTimerConnection = connect( &mRenderProgressBarTimer, &QTimer::timeout, [ = ]()
+    {
+      showProgress( -1, 0 );
+    }
+                                               );
+    mRenderProgressBarTimer.start();
+  }
+  else
+  {
+    showProgress( -1, 0 ); // trick to make progress bar show busy indicator
+  }
 }
 
 void QgisApp::canvasRefreshFinished()
 {
+  mRenderProgressBarTimer.stop();
+  mLastRenderTimeSeconds = mLastRenderTime.elapsed() / 1000.0;
   showProgress( 0, 0 ); // stop the busy indicator
 }
 
@@ -8965,6 +8991,16 @@ void QgisApp::userRotation()
   mMapCanvas->refresh();
 }
 
+void QgisApp::onFocusChanged( QWidget *oldWidget, QWidget *newWidget )
+{
+  Q_UNUSED( oldWidget );
+  // If nothing has focus even though this window is active, ensure map canvas receives it
+  if ( !newWidget && isActiveWindow() )
+  {
+    mapCanvas()->setFocus();
+  }
+}
+
 // toggle overview status
 void QgisApp::isInOverview()
 {
@@ -9319,8 +9355,8 @@ void QgisApp::legendLayerZoomNative()
     QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
     p1 = ct.transform( p1 );
     p2 = ct.transform( p2 );
-    double width = sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
-    mMapCanvas->zoomByFactor( sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
+    double width = std::sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel
+    mMapCanvas->zoomByFactor( std::sqrt( layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelX() + layer->rasterUnitsPerPixelY() * layer->rasterUnitsPerPixelY() ) / width );
 
     mMapCanvas->refresh();
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );

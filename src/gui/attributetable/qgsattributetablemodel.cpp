@@ -35,6 +35,8 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsgui.h"
 #include "qgsexpressionnodeimpl.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 #include <QVariant>
 
@@ -546,7 +548,7 @@ int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return qMax( 1, mFieldCount + mExtraColumns );  // if there are zero columns all model indices will be considered invalid
+  return std::max( 1, mFieldCount + mExtraColumns );  // if there are zero columns all model indices will be considered invalid
 }
 
 QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -740,13 +742,31 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  if ( layer()->isEditable() &&
-       !layer()->editFormConfig().readOnly( mAttributes[index.column()] ) &&
-       ( ( layer()->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
-         FID_IS_NEW( rowToId( index.row() ) ) ) )
+  bool editable = false;
+  const int fieldIndex = mAttributes[index.column()];
+  const QgsFeatureId fid = rowToId( index.row() );
+  if ( layer()->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = layer()->joinBuffer()->joinForFieldIndex( fieldIndex, layer()->fields(), srcFieldIndex );
+
+    if ( info && info->isEditable() )
+      editable = fieldIsEditable( *info->joinLayer(), srcFieldIndex, fid );
+  }
+  else
+    editable = fieldIsEditable( *layer(), fieldIndex, fid );
+
+  if ( editable )
     flags |= Qt::ItemIsEditable;
 
   return flags;
+}
+
+bool QgsAttributeTableModel::fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const
+{
+  return ( layer.isEditable() &&
+           !layer.editFormConfig().readOnly( fieldIndex ) &&
+           ( ( layer.dataProvider() && layer.dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( fid ) ) );
 }
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )

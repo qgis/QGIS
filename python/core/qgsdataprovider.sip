@@ -46,7 +46,6 @@ class QgsDataProvider : QObject
 %End
   public:
 
-
     enum DataCapability
     {
       NoDataCapabilities,

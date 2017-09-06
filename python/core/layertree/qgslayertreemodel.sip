@@ -385,6 +385,8 @@ Filter nodes from QgsMapLayerLegend according to the current filtering rules
 QFlags<QgsLayerTreeModel::Flag> operator|(QgsLayerTreeModel::Flag f1, QFlags<QgsLayerTreeModel::Flag> f2);
 
 
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

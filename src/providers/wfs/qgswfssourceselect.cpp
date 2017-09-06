@@ -30,7 +30,6 @@
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgssqlstatement.h"
-#include "qgssqlcomposerdialog.h"
 #include "qgssettings.h"
 
 #include <QDomDocument>
@@ -406,19 +405,6 @@ void QgsWFSSourceSelect::addButtonClicked()
   }
 }
 
-class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
-{
-  public:
-    QgsWFSValidatorCallback( QObject *parent,
-                             const QgsWFSDataSourceURI &uri, const QString &allSql,
-                             const QgsWfsCapabilities::Capabilities &caps );
-    bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
-  private:
-    QgsWFSDataSourceURI mURI;
-    QString mAllSql;
-    const QgsWfsCapabilities::Capabilities &mCaps;
-};
-
 QgsWFSValidatorCallback::QgsWFSValidatorCallback( QObject *parent,
     const QgsWFSDataSourceURI &uri,
     const QString &allSql,
@@ -448,20 +434,6 @@ bool QgsWFSValidatorCallback::isValid( const QString &sqlStr, QString &errorReas
 
   return true;
 }
-
-class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
-{
-  public:
-    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
-                                 const QgsWFSDataSourceURI &uri,
-                                 const QgsWfsCapabilities::Capabilities &caps );
-    void tableSelected( const QString &name ) override;
-
-  private:
-    QgsSQLComposerDialog *mDialog = nullptr;
-    QgsWFSDataSourceURI mURI;
-    const QgsWfsCapabilities::Capabilities &mCaps;
-};
 
 QgsWFSTableSelectedCallback::QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
     const QgsWFSDataSourceURI &uri,
@@ -694,8 +666,8 @@ void QgsWFSSourceSelect::changeCRSFilter()
     QString currentTypename = currentIndex.sibling( currentIndex.row(), MODEL_IDX_NAME ).data().toString();
     QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
-    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
-    if ( crsIterator != mAvailableCRS.end() )
+    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
+    if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames( crsIterator->toSet() );
 

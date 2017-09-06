@@ -24,13 +24,17 @@
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 
+#ifdef HAVE_GUI
+#include "qgsamssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
+
 #include <cstring>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QPainter>
-#include <qmath.h>
 
 QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider )
   : QgsImageFetcher( provider ), mProvider( provider )
@@ -97,11 +101,11 @@ void QgsAmsLegendFetcher::handleFinished()
     QSize maxImageSize( 0, 0 );
     foreach ( const LegendEntry_t &legendEntry, legendEntries )
     {
-      maxImageSize.setWidth( qMax( maxImageSize.width(), legendEntry.second.width() ) );
-      maxImageSize.setHeight( qMax( maxImageSize.height(), legendEntry.second.height() ) );
+      maxImageSize.setWidth( std::max( maxImageSize.width(), legendEntry.second.width() ) );
+      maxImageSize.setHeight( std::max( maxImageSize.height(), legendEntry.second.height() ) );
     }
     double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 :
-                         qMin( 1., qMin( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
+                         std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
 
     mLegendImage = QImage( imageSize + padding + textWidth, vpadding + legendEntries.size() * ( imageSize + vpadding ), QImage::Format_ARGB32 );
     mLegendImage.fill( Qt::transparent );
@@ -287,10 +291,10 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
     // Get necessary tiles to fill extent
     // tile_x = ox + i * (resolution * tileWidth)
     // tile_y = oy - j * (resolution * tileHeight)
-    int ixStart = qFloor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) );
-    int iyStart = qFloor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) );
-    int ixEnd = qCeil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) );
-    int iyEnd = qCeil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) );
+    int ixStart = std::floor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) );
+    int iyStart = std::floor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) );
+    int ixEnd = std::ceil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) );
+    int iyEnd = std::ceil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) );
     double imX = ( viewExtent.xMinimum() - ox ) / resolution;
     double imY = ( oy - viewExtent.yMaximum() ) / resolution;
 
@@ -450,3 +454,32 @@ void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
   }
   std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for AMS layers source select
+class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
+    virtual QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
+    virtual int ordering() const override { return 130; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsAmsSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsAmsSourceSelectProvider;
+
+  return providers;
+}
+#endif

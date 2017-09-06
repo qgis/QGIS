@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>225</height>
+    <height>318</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,17 +25,17 @@
      </item>
      <item row="8" column="0" colspan="2">
       <widget class="QCheckBox" name="mSaveAsRaster">
-       <property name="text">
-        <string>Rasterize map</string>
+       <property name="visible">
+        <bool>false</bool>
        </property>
        <property name="toolTip">
         <string>Advanced effects such as blend modes or vector layer transparency cannot be exported as vectors.
 Rasterizing the map is recommended when such effects are used.</string>
        </property>
-       <property name="checked">
-        <bool>false</bool>
+       <property name="text">
+        <string>Rasterize map</string>
        </property>
-       <property name="visible">
+       <property name="checked">
         <bool>false</bool>
        </property>
       </widget>
@@ -50,7 +50,7 @@ Rasterizing the map is recommended when such effects are used.</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="0" colspan="2">>
+     <item row="6" column="0" colspan="2">
       <widget class="QCheckBox" name="mDrawAnnotations">
        <property name="text">
         <string>Draw annotations</string>
@@ -133,9 +133,6 @@ Rasterizing the map is recommended when such effects are used.</string>
          </property>
          <item>
           <widget class="QgsRatioLockButton" name="mLockAspectRatio">
-           <property name="leftMargin">
-            <number>13</number>
-           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -144,6 +141,9 @@ Rasterizing the map is recommended when such effects are used.</string>
            </property>
            <property name="toolTip">
             <string>Lock aspect ratio (including while drawing extent onto canvas)</string>
+           </property>
+           <property name="leftMargin" stdset="0">
+            <number>13</number>
            </property>
           </widget>
          </item>
@@ -204,8 +204,7 @@ Rasterizing the map is recommended when such effects are used.</string>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsScaleWidget" name="mScaleWidget">
-      </widget>
+      <widget class="QgsScaleWidget" name="mScaleWidget" native="true"/>
      </item>
      <item row="0" column="0" colspan="2">
       <widget class="QgsExtentGroupBox" name="mExtentGroupBox">
@@ -235,7 +234,7 @@ Rasterizing the map is recommended when such effects are used.</string>
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>
@@ -249,6 +248,16 @@ Rasterizing the map is recommended when such effects are used.</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsExtentGroupBox</class>
    <extends>QgsCollapsibleGroupBox</extends>
    <header>qgsextentgroupbox.h</header>
@@ -259,16 +268,6 @@ Rasterizing the map is recommended when such effects are used.</string>
    <extends>QToolButton</extends>
    <header>qgsratiolockbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

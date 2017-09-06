@@ -25,6 +25,7 @@ class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
 class QgsLayerTreeEmbeddedWidgetRegistry;
 class QgsMapLayerActionRegistry;
+class QgsSourceSelectProviderRegistry;
 class QgsNative;
 class QgsLayoutItemGuiRegistry;
 
@@ -62,6 +63,11 @@ class GUI_EXPORT QgsGui
     static QgsEditorWidgetRegistry *editorWidgetRegistry();
 
     /**
+     * Returns the global source select provider registry, used for managing all known source select widget factories.
+     */
+    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry();
+
+    /**
      * Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
      */
     static QgsShortcutsManager *shortcutsManager();
@@ -89,6 +95,7 @@ class GUI_EXPORT QgsGui
 
     QgsNative *mNative = nullptr;
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
+    QgsSourceSelectProviderRegistry *mSourceSelectProviderRegistry = nullptr;
     QgsShortcutsManager *mShortcutsManager = nullptr;
     QgsLayerTreeEmbeddedWidgetRegistry *mLayerTreeEmbeddedWidgetRegistry = nullptr;
     QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;

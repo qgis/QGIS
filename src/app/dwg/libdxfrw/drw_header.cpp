@@ -19,7 +19,7 @@
 #include "qgslogger.h"
 #include <QStringList>
 
-#include <assert.h>
+#include <cassert>
 
 DRW_Header::DRW_Header()
   : curr( nullptr )

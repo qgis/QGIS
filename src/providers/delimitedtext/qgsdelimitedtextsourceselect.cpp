@@ -193,7 +193,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
 
   // add the layer to the map
-  emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text() );
+  emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();

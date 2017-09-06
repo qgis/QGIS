@@ -359,7 +359,7 @@ void QgsCompoundColorWidget::removePalette()
   //remove scheme from registry
   QgsApplication::colorSchemeRegistry()->removeColorScheme( userScheme );
   refreshSchemeComboBox();
-  prevIndex = qMax( qMin( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
+  prevIndex = std::max( std::min( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
   mSchemeComboBox->setCurrentIndex( prevIndex );
 }
 

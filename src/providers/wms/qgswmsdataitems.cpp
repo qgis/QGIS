@@ -94,37 +94,15 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
     QgsWmsCapabilitiesProperty capabilitiesProperty = caps.capabilitiesProperty();
     const QgsWmsCapabilityProperty &capabilityProperty = capabilitiesProperty.capability;
 
-    // If we have several top-level layers, or if we just have one single top-level layer,
-    // then use those top-level layers directly
-    if ( capabilityProperty.layers.size() > 1 ||
-         ( capabilityProperty.layers.size() == 1 && capabilityProperty.layers[0].layer.size() == 0 ) )
+    Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers )
     {
-      Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers )
-      {
-        // Attention, the name may be empty
-        QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
-        QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
+      // Attention, the name may be empty
+      QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
+      QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
 
-        QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
+      QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
 
-        children << layer;
-      }
-    }
-    // Otherwise if we have just one single top-level layers with children, then
-    // skip this top-level layer and iterate directly on its children
-    // Note (E. Rouault): this was the historical behavior before fixing #13762
-    else if ( capabilityProperty.layers.size() == 1 )
-    {
-      Q_FOREACH ( const QgsWmsLayerProperty &layerProperty, capabilityProperty.layers[0].layer )
-      {
-        // Attention, the name may be empty
-        QgsDebugMsg( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title );
-        QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
-
-        QgsWMSLayerItem *layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
-
-        children << layer;
-      }
+      children << layer;
     }
   }
 
@@ -518,8 +496,7 @@ void QgsXyzTileRootItem::newConnection()
     return;
 
   QgsXyzConnectionUtils::addConnection( dlg.connection() );
-
-  refresh();
+  refreshConnections();
 }
 #endif
 
@@ -559,13 +536,13 @@ void QgsXyzLayerItem::editConnection()
   QgsXyzConnectionUtils::deleteConnection( mName );
   QgsXyzConnectionUtils::addConnection( dlg.connection() );
 
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 
 void QgsXyzLayerItem::deleteConnection()
 {
   QgsXyzConnectionUtils::deleteConnection( mName );
 
-  mParent->refresh();
+  mParent->refreshConnections();
 }
 #endif

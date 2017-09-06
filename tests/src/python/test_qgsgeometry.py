@@ -3498,7 +3498,7 @@ class TestQgsGeometry(unittest.TestCase):
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
         point = QgsGeometry.fromWkt('Point(9 -2)')
-        self.assertAlmostEqual(geom.lineLocatePoint(point), 7.372, places=3)
+        self.assertAlmostEqual(geom.lineLocatePoint(point), 7.377, places=3)
 
     def testInterpolateAngle(self):
         """ test QgsGeometry.interpolateAngle() """
@@ -3542,7 +3542,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
-        self.assertAlmostEqual(geom.interpolateAngle(5), 1.69120, places=3)
+        self.assertAlmostEqual(geom.interpolateAngle(5), 1.6919, places=3)
 
     def testInterpolate(self):
         """ test QgsGeometry.interpolate() """
@@ -4222,6 +4222,34 @@ class TestQgsGeometry(unittest.TestCase):
             result = o.exportToWkt()
             self.assertTrue(compareWkt(result, exp, 0.00001),
                             "clipped: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+    def testHausdorff(self):
+        tests = [["POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))", "POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))", 0.707106781186548],
+                 ["LINESTRING (0 0, 2 1)", "LINESTRING (0 0, 2 0)", 1],
+                 ["LINESTRING (0 0, 2 0)", "LINESTRING (0 1, 1 2, 2 1)", 2],
+                 ["LINESTRING (0 0, 2 0)", "MULTIPOINT (0 1, 1 0, 2 1)", 1],
+                 ["LINESTRING (130 0, 0 0, 0 150)", "LINESTRING (10 10, 10 150, 130 10)", 14.142135623730951]
+                 ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            g2 = QgsGeometry.fromWkt(t[1])
+            o = g1.hausdorffDistance(g2)
+            exp = t[2]
+            self.assertAlmostEqual(o, exp, 5,
+                                   "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
+
+    def testHausdorffDensify(self):
+        tests = [
+            ["LINESTRING (130 0, 0 0, 0 150)", "LINESTRING (10 10, 10 150, 130 10)", 0.5, 70.0]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            g2 = QgsGeometry.fromWkt(t[1])
+            densify = t[2]
+            o = g1.hausdorffDistanceDensify(g2, densify)
+            exp = t[3]
+            self.assertAlmostEqual(o, exp, 5,
+                                   "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
 
 
 if __name__ == '__main__':

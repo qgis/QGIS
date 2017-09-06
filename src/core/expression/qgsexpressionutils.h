@@ -144,7 +144,7 @@ class QgsExpressionUtils
       {
         bool ok;
         double val = v.toString().toDouble( &ok );
-        ok = ok && qIsFinite( val ) && !qIsNaN( val );
+        ok = ok && std::isfinite( val ) && !std::isnan( val );
         return ok;
       }
       return false;
@@ -191,7 +191,7 @@ class QgsExpressionUtils
     {
       bool ok;
       double x = value.toDouble( &ok );
-      if ( !ok || qIsNaN( x ) || !qIsFinite( x ) )
+      if ( !ok || std::isnan( x ) || !std::isfinite( x ) )
       {
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
         return 0;

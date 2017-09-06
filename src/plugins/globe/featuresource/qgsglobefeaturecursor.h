@@ -17,9 +17,9 @@
 #define QGSGLOBEFEATURECURSOR_H
 
 #include <osgEarthFeatures/FeatureCursor>
-#include <qgsfeature.h>
-#include <qgsfeatureiterator.h>
-#include <qgsvectorlayer.h>
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsvectorlayer.h"
 
 #include "qgsglobefeatureutils.h"
 

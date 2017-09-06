@@ -17,6 +17,8 @@ WORKDIR /usr/src/QGIS/build
 
 RUN cmake \
  -GNinja \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DBINDINGS_GLOBAL_INSTALL=ON \
  -DWITH_STAGED_PLUGINS=ON \
  -DWITH_GRASS=ON \
  -DSUPPRESS_QT_WARNINGS=ON \
@@ -30,4 +32,6 @@ RUN cmake \
  -DDISABLE_DEPRECATED=ON \
  .. \
  && ninja install \
- && rm -rf /usr/src/QGIS/build/*
+ && rm -rf /usr/src/QGIS
+
+WORKDIR /

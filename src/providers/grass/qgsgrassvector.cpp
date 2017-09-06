@@ -348,7 +348,7 @@ int QgsGrassVector::maxLayerNumber() const
   int max = 0;
   Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
   {
-    max = qMax( max, layer->number() );
+    max = std::max( max, layer->number() );
   }
   return max;
 }

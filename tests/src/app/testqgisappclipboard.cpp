@@ -194,8 +194,8 @@ void TestQgisAppClipboard::copyToText()
   QStringList list = regex.capturedTexts();
   QCOMPARE( list.count(), 3 );
 
-  int x = qRound( list.at( 1 ).toDouble() );
-  int y = qRound( list.at( 2 ).toDouble() );
+  int x = std::round( list.at( 1 ).toDouble() );
+  int y = std::round( list.at( 2 ).toDouble() );
 
   QCOMPARE( x, 145 );
   QCOMPARE( y, -38 );

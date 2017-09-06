@@ -342,6 +342,9 @@
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconDeselected.svg</file>
         <file>themes/default/mIconDropDownMenu.svg</file>
+        <file>themes/default/mIconJoinNotEditable.svg</file>
+        <file>themes/default/mIconJoinedLayerNotEditable.svg</file>
+        <file>themes/default/mIconJoinHasNotUpsertOnEdit.svg</file>
         <file>themes/default/mIconEditableEdits.svg</file>
         <file>themes/default/mIconExpand.svg</file>
         <file>themes/default/mIconExpandSmall.svg</file>

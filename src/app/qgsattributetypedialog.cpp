@@ -93,6 +93,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
 
   constraintExpressionWidget->setLayer( vl );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAttributeTypeDialog::showHelp );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -370,4 +371,9 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
   QString previewText = fieldFormatter->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
+}
+
+void QgsAttributeTypeDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
 }

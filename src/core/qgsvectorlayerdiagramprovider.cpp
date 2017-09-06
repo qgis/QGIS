@@ -266,7 +266,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     ddPosX = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::PositionX, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
     ddPosY = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::PositionY, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
 
-    ddPos = !qIsNaN( ddPosX ) && !qIsNaN( ddPosY );
+    ddPos = !std::isnan( ddPosX ) && !std::isnan( ddPosY );
 
     if ( ddPos )
     {

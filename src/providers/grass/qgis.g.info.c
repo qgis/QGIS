@@ -324,12 +324,12 @@ int main( int argc, char **argv )
             if ( val > max ) max = val;
             sum += val;
             count++;
-            squares_sum += pow( val, 2 );
+            squares_sum += val * val;
           }
         }
       }
       mean = count > 0 ? sum / count : 0;
-      squares_sum -= count * pow( mean, 2 );
+      squares_sum -= count * mean * mean;
       stdev = sqrt( squares_sum / ( count - 1 ) );
 
       fprintf( stdout, "MIN:%.17e\n", min );

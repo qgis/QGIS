@@ -20,7 +20,7 @@
 
 #include <QDialog>
 #include "qgsdiagramrenderer.h"
-#include <ui_qgsdiagrampropertiesbase.h>
+#include "ui_qgsdiagrampropertiesbase.h"
 #include <QStyledItemDelegate>
 #include "qgis_app.h"
 
@@ -50,15 +50,19 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void on_mEngineSettingsButton_clicked();
     void showAddAttributeExpressionDialog();
     void on_mDiagramStackedWidget_currentChanged( int index );
-    void on_mPlacementComboBox_currentIndexChanged( int index );
+    void updatePlacementWidgets();
     void scalingTypeChanged();
     void showSizeLegendDialog();
 
-  protected:
+  private:
 
     QgsVectorLayer *mLayer = nullptr;
-
-  private:
+    //! Point placement button group
+    QButtonGroup *mPlacePointBtnGrp = nullptr;
+    //! Line placement button group
+    QButtonGroup *mPlaceLineBtnGrp = nullptr;
+    //! Polygon placement button group
+    QButtonGroup *mPlacePolygonBtnGrp = nullptr;
 
     enum Columns
     {
@@ -90,10 +94,13 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
   private slots:
 
     void updateProperty();
+    void showHelp();
 };
 
 class EditBlockerDelegate: public QStyledItemDelegate
 {
+    Q_OBJECT
+
   public:
     EditBlockerDelegate( QObject *parent = nullptr )
       : QStyledItemDelegate( parent )

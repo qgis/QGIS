@@ -349,6 +349,8 @@ SET(QGIS_GUI_SRCS
   qgsfiledownloader.cpp
   qgsdatasourcemanagerdialog.cpp
   qgsabstractdatasourcewidget.cpp
+  qgssourceselectprovider.cpp
+  qgssourceselectproviderregistry.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -711,6 +713,8 @@ SET(QGIS_GUI_HDRS
   qgsfiledownloader.h
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
+  qgssourceselectprovider.h
+  qgssourceselectproviderregistry.h
 
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h

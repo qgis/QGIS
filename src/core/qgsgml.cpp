@@ -603,7 +603,7 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
   {
     QString currentTypename( QString::fromUtf8( pszLocalName, localNameLen ) );
     QMap< QString, LayerProperties >::const_iterator iter = mMapTypeNameToProperties.constFind( currentTypename );
-    if ( iter != mMapTypeNameToProperties.end() )
+    if ( iter != mMapTypeNameToProperties.constEnd() )
     {
       mFeatureTupleDepth = mParseDepth;
       mCurrentTypename = currentTypename;

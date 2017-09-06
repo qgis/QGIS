@@ -379,8 +379,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>542</height>
+                <width>306</width>
+                <height>508</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -830,8 +830,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>542</height>
+                <width>268</width>
+                <height>321</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1068,8 +1068,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>542</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1169,8 +1169,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>542</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -1229,8 +1229,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>542</height>
+                <width>632</width>
+                <height>276</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1589,8 +1589,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>542</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1674,42 +1674,23 @@ border-radius: 2px;</string>
                </property>
                <item>
                 <widget class="QTreeWidget" name="mJoinTreeWidget">
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::NoSelection</enum>
+                 </property>
                  <property name="columnCount">
-                  <number>7</number>
+                  <number>2</number>
                  </property>
                  <column>
                   <property name="text">
-                   <string>Join layer</string>
+                   <string>Setting</string>
                   </property>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Join field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Target field</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Memory cache</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Dynamic form</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Prefix</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Joined fields</string>
+                   <string>Value</string>
                   </property>
                  </column>
                 </widget>
@@ -1977,12 +1958,6 @@ border-radius: 2px;</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -1995,10 +1970,9 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsLayerTreeView</class>
-   <extends>QTreeView</extends>
-   <header>qgslayertreeview.h</header>
-   <container>1</container>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -2007,15 +1981,27 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScaleRangeWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalerangewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleRangeWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleComboBox</class>
@@ -2032,11 +2018,6 @@ border-radius: 2px;</string>
    <class>QgsCodeEditorHTML</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorhtml.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

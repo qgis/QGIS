@@ -64,7 +64,7 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( QgisInte
 
 void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeometryCheckError *error )
 {
-  int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
+  int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
   double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mLayer );
   QVariant value;
@@ -97,10 +97,10 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
 void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget *table )
 {
   table->resizeColumnToContents( 0 );
-  table->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
-  table->horizontalHeader()->setResizeMode( 2, QHeaderView::Stretch );
-  table->horizontalHeader()->setResizeMode( 3, QHeaderView::Stretch );
-  table->horizontalHeader()->setResizeMode( 4, QHeaderView::Stretch );
+  table->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
+  table->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
+  table->horizontalHeader()->setSectionResizeMode( 3, QHeaderView::Stretch );
+  table->horizontalHeader()->setSectionResizeMode( 4, QHeaderView::Stretch );
 
   table->setEditTriggers( QAbstractItemView::NoEditTriggers );
   table->setSelectionBehavior( QAbstractItemView::SelectRows );

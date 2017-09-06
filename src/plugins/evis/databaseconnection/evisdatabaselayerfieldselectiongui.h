@@ -28,7 +28,7 @@
 #define eVisDatabaseLayerFieldSelectionGui_H
 
 #include <QDialog>
-#include <ui_evisdatabaselayerfieldselectionguibase.h>
+#include "ui_evisdatabaselayerfieldselectionguibase.h"
 
 /**
 * \class eVisDatabaseLayerFieldSelectionGui

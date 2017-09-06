@@ -23,7 +23,6 @@
 #include "qgsgeometryutils.h"
 
 #include <QMutexLocker>
-#include <qmath.h>
 #include <limits>
 
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, bool selectedOnly )

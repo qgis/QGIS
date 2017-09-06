@@ -100,6 +100,7 @@ SET(TESTS
  testcontrastenhancements.cpp
  testqgscoordinatereferencesystem.cpp
  testqgscoordinatetransform.cpp
+ testqgscurve.cpp
  testqgsdatadefinedsizelegend.cpp
  testqgsdataitem.cpp
  testqgsdatasourceuri.cpp

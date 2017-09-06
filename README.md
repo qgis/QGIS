@@ -27,7 +27,7 @@ modified.
 
 ## Supported raster formats include:
 
- * Grass
+ * GRASS
  * USGS DEM
  * ArcInfo binary grid
  * ArcInfo ASCII grid

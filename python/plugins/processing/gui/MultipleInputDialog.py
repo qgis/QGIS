@@ -35,8 +35,7 @@ from qgis.core import (QgsSettings,
                        QgsProviderRegistry,
                        QgsProcessingModelChildParameterSource)
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtCore import QByteArray
+from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 from processing.tools import dataobjects
@@ -76,7 +75,7 @@ class MultipleInputDialog(BASE, WIDGET):
         self.buttonBox.addButton(self.btnToggleSelection,
                                  QDialogButtonBox.ActionRole)
         if self.datatype is not None:
-            btnAddFile = QPushButton(self.tr('Add file(s)…'))
+            btnAddFile = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add file(s)…'))
             btnAddFile.clicked.connect(self.addFiles)
             self.buttonBox.addButton(btnAddFile,
                                      QDialogButtonBox.ActionRole)

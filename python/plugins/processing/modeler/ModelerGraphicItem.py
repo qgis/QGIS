@@ -195,8 +195,7 @@ class ModelerGraphicItem(QGraphicsItem):
         if isinstance(self.element, QgsProcessingModelParameter):
             dlg = ModelerParameterDefinitionDialog(self.model,
                                                    param=self.model.parameterDefinition(self.element.parameterName()))
-            dlg.exec_()
-            if dlg.param is not None:
+            if dlg.exec_() and dlg.param is not None:
                 self.model.removeModelParameter(self.element.parameterName())
                 self.element.setParameterName(dlg.param.name())
                 self.element.setDescription(dlg.param.name())

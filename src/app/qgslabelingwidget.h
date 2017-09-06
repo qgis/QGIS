@@ -17,8 +17,8 @@
 
 #include <QWidget>
 
-#include <ui_qgslabelingwidget.h>
-#include <qgspallabeling.h>
+#include "ui_qgslabelingwidget.h"
+#include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include "qgsmaplayerconfigwidget.h"

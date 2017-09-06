@@ -128,7 +128,7 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
     /**
      * Constructor for QgsProcessingOutputVectorLayer.
      */
-    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny );
+    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry );
 
     /**
      * Returns the type name for the output class.
@@ -140,17 +140,17 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
      * Returns the layer type for the output layer.
      * \see setDataType()
      */
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 
     /**
      * Sets the layer \a type for the output layer.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 
   private:
 
-    QgsProcessing::LayerType mDataType = QgsProcessing::TypeVectorAny;
+    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
 };
 
 /**

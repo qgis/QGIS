@@ -871,6 +871,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "smooth point" ) << "geom_to_wkt(smooth(geom_from_wkt('POINT(1 2)'),10))" << false << QVariant( "Point (1 2)" );
       QTest::newRow( "smooth line" ) << "geom_to_wkt(smooth(geometry:=geom_from_wkt('LineString(0 0, 5 0, 5 5)'),iterations:=1,offset:=0.2,min_length:=-1,max_angle:=180))" << false << QVariant( "LineString (0 0, 4 0, 5 1, 5 5)" );
       QTest::newRow( "transform invalid" ) << "transform(make_point(500,500),'EPSG:4326','EPSG:28356')" << false << QVariant();
+      QTest::newRow( "hausdorff line to line" ) << " hausdorff_distance( geometry1:= geom_from_wkt('LINESTRING (0 0, 2 1)'),geometry2:=geom_from_wkt('LINESTRING (0 0, 2 0)'))" << false << QVariant( 1.0 );
+      QTest::newRow( "hausdorff line to line default" ) << " round(hausdorff_distance( geom_from_wkt('LINESTRING (130 0, 0 0, 0 150)'),geom_from_wkt('LINESTRING (10 10, 10 150, 130 10)')))" << false << QVariant( 14 );
+      QTest::newRow( "hausdorff line to line densify" ) << " round(hausdorff_distance( geom_from_wkt('LINESTRING (130 0, 0 0, 0 150)'),geom_from_wkt('LINESTRING (10 10, 10 150, 130 10)'),0.5))" << false << QVariant( 70 );
+      QTest::newRow( "hausdorff not geom 1" ) << " hausdorff_distance( 'a',geom_from_wkt('LINESTRING (0 0, 2 0)'))" << true << QVariant();
+      QTest::newRow( "hausdorff not geom 2" ) << " hausdorff_distance( geom_from_wkt('LINESTRING (0 0, 2 0)'), 'b')" << true << QVariant();
 
       // string functions
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
@@ -921,7 +926,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "wordwrap with negative length" ) << "wordwrap('university of qgis',-3)" << false << QVariant( "university\nof qgis" );
       QTest::newRow( "wordwrap with negative length, custom delimiter" ) << "wordwrap('university of qgis',-3,' ')" << false << QVariant( "university\nof qgis" );
       QTest::newRow( "wordwrap on multi line" ) << "wordwrap('university of qgis\nsupports many multiline',-5,' ')" << false << QVariant( "university\nof qgis\nsupports\nmany multiline" );
-      QTest::newRow( "wordwrap on zero-space width" ) << "wordwrap('test\u200Bzero-width space',4)" << false << QVariant( "test\nzero-width\nspace" );
+      QTest::newRow( "wordwrap on zero-space width" ) << QStringLiteral( "wordwrap('test%1zero-width space',4)" ).arg( QChar( 8203 ) ) << false << QVariant( "test\nzero-width\nspace" );
       QTest::newRow( "format" ) << "format('%1 %2 %3 %1', 'One', 'Two', 'Three')" << false << QVariant( "One Two Three One" );
       QTest::newRow( "concat" ) << "concat('a', 'b', 'c', 'd')" << false << QVariant( "abcd" );
       QTest::newRow( "concat function single" ) << "concat('a')" << false << QVariant( "a" );
@@ -1638,7 +1643,7 @@ class TestQgsExpression: public QObject
         qDebug() << exp.evalErrorString();
 
       QCOMPARE( exp.hasEvalError(), false );
-      QVERIFY( qgsDoubleNear( res.toDouble(), -85.65217, 0.00001 ) );
+      QGSCOMPARENEAR( res.toDouble(), -85.65217, 0.00001 );
     }
 
     void eval_rand()
@@ -1940,63 +1945,63 @@ class TestQgsExpression: public QObject
       QgsExpression expArea( QStringLiteral( "$area" ) );
       QVariant vArea = expArea.evaluate( &context );
       double expected = 1005640568.0;
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       // units should not be converted if no geometry calculator set
       expArea.setAreaUnits( QgsUnitTypes::AreaSquareFeet );
       vArea = expArea.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       expArea.setAreaUnits( QgsUnitTypes::AreaSquareNauticalMiles );
       vArea = expArea.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
 
       // test area with geomCalculator
       QgsExpression expArea2( QStringLiteral( "$area" ) );
       expArea2.setGeomCalculator( &da );
       vArea = expArea2.evaluate( &context );
       expected = 1009089817.0;
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       // test unit conversion
       expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMeters ); //default units should be square meters
       vArea = expArea2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       expArea2.setAreaUnits( QgsUnitTypes::AreaUnknownUnit ); //unknown units should not be converted
       vArea = expArea2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 1.0 ) );
+      QGSCOMPARENEAR( vArea.toDouble(), expected, 1.0 );
       expArea2.setAreaUnits( QgsUnitTypes::AreaSquareMiles );
       expected = 389.6117565069;
       vArea = expArea2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vArea.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vArea.toDouble(), expected, 0.001 );
 
       // test perimeter without geomCalculator
       QgsExpression expPerimeter( QStringLiteral( "$perimeter" ) );
       QVariant vPerimeter = expPerimeter.evaluate( &context );
       expected = 128282.086;
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       // units should not be converted if no geometry calculator set
       expPerimeter.setDistanceUnits( QgsUnitTypes::DistanceFeet );
       vPerimeter = expPerimeter.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       expPerimeter.setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
       vPerimeter = expPerimeter.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
 
       // test perimeter with geomCalculator
       QgsExpression expPerimeter2( QStringLiteral( "$perimeter" ) );
       expPerimeter2.setGeomCalculator( &da );
       vPerimeter = expPerimeter2.evaluate( &context );
       expected = 128289.074;
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       // test unit conversion
       expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceMeters ); //default units should be meters
       vPerimeter = expPerimeter2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceUnknownUnit ); //unknown units should not be converted
       vPerimeter = expPerimeter2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
       expPerimeter2.setDistanceUnits( QgsUnitTypes::DistanceFeet );
       expected = 420895.9120735;
       vPerimeter = expPerimeter2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vPerimeter.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vPerimeter.toDouble(), expected, 0.001 );
 
       // test length without geomCalculator
       QgsPolyline line3111;
@@ -2008,32 +2013,32 @@ class TestQgsExpression: public QObject
       QgsExpression expLength( QStringLiteral( "$length" ) );
       QVariant vLength = expLength.evaluate( &context );
       expected = 26930.637;
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       // units should not be converted if no geometry calculator set
       expLength.setDistanceUnits( QgsUnitTypes::DistanceFeet );
       vLength = expLength.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       expLength.setDistanceUnits( QgsUnitTypes::DistanceNauticalMiles );
       vLength = expLength.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
 
       // test length with geomCalculator
       QgsExpression expLength2( QStringLiteral( "$length" ) );
       expLength2.setGeomCalculator( &da );
       vLength = expLength2.evaluate( &context );
       expected = 26932.156;
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       // test unit conversion
       expLength2.setDistanceUnits( QgsUnitTypes::DistanceMeters ); //default units should be meters
       vLength = expLength2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       expLength2.setDistanceUnits( QgsUnitTypes::DistanceUnknownUnit ); //unknown units should not be converted
       vLength = expLength2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
       expLength2.setDistanceUnits( QgsUnitTypes::DistanceFeet );
       expected = 88360.0918635;
       vLength = expLength2.evaluate( &context );
-      QVERIFY( qgsDoubleNear( vLength.toDouble(), expected, 0.001 ) );
+      QGSCOMPARENEAR( vLength.toDouble(), expected, 0.001 );
     }
 
     void eval_geometry_wkt()

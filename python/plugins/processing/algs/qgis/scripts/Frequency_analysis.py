@@ -1,4 +1,4 @@
-##Table=group
+##Vector analysis=group
 
 #inputs
 

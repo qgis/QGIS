@@ -18,7 +18,7 @@
 #ifndef QGSVECTORLAYERSAVEASDIALOG_H
 #define QGSVECTORLAYERSAVEASDIALOG_H
 
-#include <ui_qgsvectorlayersaveasdialogbase.h>
+#include "ui_qgsvectorlayersaveasdialogbase.h"
 #include <QDialog>
 #include "qgshelp.h"
 #include "qgsfields.h"

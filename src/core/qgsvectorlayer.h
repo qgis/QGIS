@@ -875,7 +875,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Query the layer for the feature with the given id.
      * If there is no such feature, the returned feature will be invalid.
      */
-    inline QgsFeature getFeature( QgsFeatureId fid )
+    inline QgsFeature getFeature( QgsFeatureId fid ) const
     {
       QgsFeature feature;
       getFeatures( QgsFeatureRequest( fid ) ).nextFeature( feature );
@@ -1662,10 +1662,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool startEditing();
 
-
-  protected slots:
-    void invalidateSymbolCountedFlag();
-
   signals:
 
     /**
@@ -1901,6 +1897,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void symbolFeatureCountMapChanged();
 
   private slots:
+    void invalidateSymbolCountedFlag();
+    void onFeatureCounterCompleted();
+    void onFeatureCounterTerminated();
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
@@ -1922,9 +1921,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @todo XXX should this return bool?  Throw exceptions?
      */
     bool setDataProvider( QString const &provider );
-
-    //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-committed feature)
-    QgsFeatureId findFreeId();
 
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );

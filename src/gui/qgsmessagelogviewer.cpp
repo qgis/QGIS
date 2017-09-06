@@ -93,8 +93,7 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   }
 
   QString prefix = QStringLiteral( "%1\t%2\t" )
-                   .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
-                   .arg( levelString );
+                   .arg( QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
   QString cleanedMessage = message;
   cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "\n\t\t\t" ) );
   w->appendPlainText( cleanedMessage );

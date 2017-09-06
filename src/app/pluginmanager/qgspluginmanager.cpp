@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <math.h>
+#include <cmath>
 
 #include <QApplication>
 #include <QFileDialog>
@@ -699,8 +699,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     voteLabel->show();
     voteSlider->show();
     voteSubmit->show();
-    QgsDebugMsg( QString( "vote slider:%1" ).arg( qRound( metadata->value( "average_vote" ).toFloat() ) ) );
-    voteSlider->setValue( qRound( metadata->value( "average_vote" ).toFloat() ) );
+    QgsDebugMsg( QString( "vote slider:%1" ).arg( std::round( metadata->value( "average_vote" ).toFloat() ) ) );
+    voteSlider->setValue( std::round( metadata->value( "average_vote" ).toFloat() ) );
     mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
   }
   else

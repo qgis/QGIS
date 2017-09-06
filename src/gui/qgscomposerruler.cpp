@@ -103,7 +103,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent *event )
     double endX = t.map( QPointF( width(), 0 ) ).x();
 
     //start marker position in mm
-    double markerPos = ( floor( startX / mmDisplay ) + 1 ) * mmDisplay;
+    double markerPos = ( std::floor( startX / mmDisplay ) + 1 ) * mmDisplay;
 
     //draw minor ticks marks which occur before first major tick
     drawSmallDivisions( &p, markerPos, numSmallDivisions, -mmDisplay );
@@ -386,11 +386,11 @@ void QgsComposerRuler::setSceneTransform( const QTransform &transform )
 void QgsComposerRuler::mouseMoveEvent( QMouseEvent *event )
 {
   //qWarning( "QgsComposerRuler::mouseMoveEvent" );
-  updateMarker( event->posF() );
-  setSnapLinePosition( event->posF() );
+  updateMarker( event->pos() );
+  setSnapLinePosition( event->pos() );
 
   //update cursor position in status bar
-  QPointF displayPos = mTransform.inverted().map( event->posF() );
+  QPointF displayPos = mTransform.inverted().map( event->pos() );
   if ( mDirection == Horizontal )
   {
     //mouse is over a horizontal ruler, so don't show a y coordinate

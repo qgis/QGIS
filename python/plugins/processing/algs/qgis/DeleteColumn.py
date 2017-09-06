@@ -37,7 +37,7 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
         return self.tr('drop,delete,remove,fields,columns,attributes').split(',')
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def __init__(self):
         super().__init__()

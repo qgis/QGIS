@@ -29,12 +29,7 @@
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
   : QObject( parent )
 {
-  mWatcher.reset( new QFileSystemWatcher() );
   setRootLocation( rootLocation );
-  connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
-  {
-    emit profilesChanged();
-  } );
 }
 
 QString QgsUserProfileManager::resolveProfilesFolder( const QString &basePath )
@@ -58,20 +53,37 @@ QgsUserProfile *QgsUserProfileManager::getProfile( const QString &defaultProfile
   return profile;
 }
 
-void QgsUserProfileManager::setRootLocation( QString rootProfileLocation )
+void QgsUserProfileManager::setRootLocation( const QString &rootProfileLocation )
 {
   mRootProfilePath = rootProfileLocation;
 
-  if ( !mWatcher->directories().isEmpty() )
-  {
-    mWatcher->removePaths( mWatcher->directories() );
-  }
+  //updates (or removes) profile file watcher for new root location
+  setNewProfileNotificationEnabled( mWatchProfiles );
 
-  if ( QDir( mRootProfilePath ).exists() )
+  mSettings.reset( new QSettings( settingsFile(), QSettings::IniFormat ) );
+}
+
+void QgsUserProfileManager::setNewProfileNotificationEnabled( bool enabled )
+{
+  mWatchProfiles = enabled;
+  if ( mWatchProfiles && !mRootProfilePath.isEmpty() && QDir( mRootProfilePath ).exists() )
   {
+    mWatcher.reset( new QFileSystemWatcher() );
     mWatcher->addPath( mRootProfilePath );
+    connect( mWatcher.get(), &QFileSystemWatcher::directoryChanged, this, [this]
+    {
+      emit profilesChanged();
+    } );
   }
-  mSettings = new QSettings( settingsFile(), QSettings::IniFormat );
+  else
+  {
+    mWatcher.reset();
+  }
+}
+
+bool QgsUserProfileManager::isNewProfileNotificationEnabled() const
+{
+  return static_cast< bool >( mWatcher.get() );
 }
 
 bool QgsUserProfileManager::rootLocationIsSet() const
@@ -115,7 +127,7 @@ bool QgsUserProfileManager::profileExists( const QString &name ) const
   return allProfiles().contains( name );
 }
 
-QgsUserProfile *QgsUserProfileManager::profileForName( const QString name ) const
+QgsUserProfile *QgsUserProfileManager::profileForName( const QString &name ) const
 {
   QString profilePath = mRootProfilePath + QDir::separator() + name;
   return new QgsUserProfile( profilePath );
@@ -154,7 +166,7 @@ QgsError QgsUserProfileManager::createUserProfile( const QString &name )
   return error;
 }
 
-QgsError QgsUserProfileManager::deleteProfile( const QString name )
+QgsError QgsUserProfileManager::deleteProfile( const QString &name )
 {
   QgsError error;
   QDir folder( mRootProfilePath + QDir::separator() + name );
@@ -172,7 +184,7 @@ QgsError QgsUserProfileManager::deleteProfile( const QString name )
   return error;
 }
 
-QString QgsUserProfileManager::settingsFile()
+QString QgsUserProfileManager::settingsFile() const
 {
   return  mRootProfilePath + QDir::separator() + "profiles.ini";
 }

@@ -20,7 +20,7 @@
 #include <QString>
 #include <ogr_api.h>
 
-#include <qgsabstractgeometry.h>
+#include "qgsabstractgeometry.h"
 
 class QgsCompoundCurve;
 class QgsQgsCoordinateReferenceSystem;

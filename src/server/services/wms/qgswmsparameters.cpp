@@ -362,7 +362,7 @@ namespace QgsWms
                                QVariant( "" ),
                                QVariant()
                              };
-    save( pLayers );
+    save( pStyle );
 
     const Parameter pStyles = { ParameterName::STYLES,
                                 QVariant::String,
@@ -1372,7 +1372,7 @@ namespace QgsWms
     QList<QColor> bufferColors = highlightLabelBufferColorAsColor();
     QList<float> bufferSizes = highlightLabelBufferSizeAsFloat();
 
-    int nLayers = qMin( geoms.size(), slds.size() );
+    int nLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nLayers; i++ )
     {
       QgsWmsParametersHighlightLayer param;

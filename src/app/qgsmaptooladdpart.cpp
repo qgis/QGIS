@@ -68,7 +68,8 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   bool isGeometryEmpty = false;
-  if ( vlayer->selectedFeatures()[0].geometry().isNull() )
+  QgsFeatureList selectedFeatures = vlayer->selectedFeatures();
+  if ( !selectedFeatures.isEmpty() && selectedFeatures.at( 0 ).geometry().isNull() )
     isGeometryEmpty = true;
 
   if ( !checkSelection() )

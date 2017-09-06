@@ -647,13 +647,13 @@ bool QgsNodeTool::isNearEndpointMarker( const QgsPointXY &mapPoint )
   if ( !mEndpointMarkerCenter )
     return false;
 
-  double distMarker = sqrt( mEndpointMarkerCenter->sqrDist( mapPoint ) );
+  double distMarker = std::sqrt( mEndpointMarkerCenter->sqrDist( mapPoint ) );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
   QgsGeometry geom = cachedGeometryForVertex( *mMouseAtEndpoint );
   QgsPointXY vertexPointV2 = geom.vertexAt( mMouseAtEndpoint->vertexId );
   QgsPointXY vertexPoint = QgsPointXY( vertexPointV2.x(), vertexPointV2.y() );
-  double distVertex = sqrt( vertexPoint.sqrDist( mapPoint ) );
+  double distVertex = std::sqrt( vertexPoint.sqrDist( mapPoint ) );
 
   return distMarker < tol && distMarker < distVertex;
 }
@@ -681,9 +681,9 @@ QgsPointXY QgsNodeTool::positionForEndpointMarker( const QgsPointLocator::Match 
   double dx = pt1.x() - pt0.x();
   double dy = pt1.y() - pt0.y();
   double dist = 15 * canvas()->mapSettings().mapUnitsPerPixel();
-  double angle = atan2( dy, dx );  // to the top: angle=0, to the right: angle=90, to the left: angle=-90
-  double x = pt1.x() + cos( angle ) * dist;
-  double y = pt1.y() + sin( angle ) * dist;
+  double angle = std::atan2( dy, dx );  // to the top: angle=0, to the right: angle=90, to the left: angle=-90
+  double x = pt1.x() + std::cos( angle ) * dist;
+  double y = pt1.y() + std::sin( angle ) * dist;
   return QgsPointXY( x, y );
 }
 
@@ -976,7 +976,7 @@ void QgsNodeTool::deleteNodeEditorSelection()
     if ( mSelectedFeature->geometry()->type() == QgsWkbTypes::LineGeometry )
     {
       // for lines we don't wrap around vertex selection when deleting nodes from end of line
-      nextVertexToSelect = qMin( nextVertexToSelect, mSelectedFeature->geometry()->geometry()->nCoordinates() - 1 );
+      nextVertexToSelect = std::min( nextVertexToSelect, mSelectedFeature->geometry()->geometry()->nCoordinates() - 1 );
     }
 
     _safeSelectVertex( *mSelectedFeature, nextVertexToSelect );
@@ -1601,7 +1601,7 @@ void QgsNodeTool::deleteVertex()
       QList<int> &vertexIds = it2.value();
 
       bool res = QgsVectorLayer::Success;
-      qSort( vertexIds.begin(), vertexIds.end(), qGreater<int>() );
+      std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
       Q_FOREACH ( int vertexId, vertexIds )
       {
         if ( res != QgsVectorLayer::EmptyGeometry )
@@ -1756,7 +1756,7 @@ bool QgsNodeTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const Qg
   if ( edgeCenterPtr )
     *edgeCenterPtr = edgeCenter;
 
-  double distFromEdgeCenter = sqrt( mapPoint.sqrDist( edgeCenter ) );
+  double distFromEdgeCenter = std::sqrt( mapPoint.sqrDist( edgeCenter ) );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
   bool isNearCenter = distFromEdgeCenter < tol;
   return isNearCenter;

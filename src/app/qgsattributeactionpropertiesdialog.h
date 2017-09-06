@@ -19,6 +19,7 @@
 #include "ui_qgsattributeactionpropertiesdialogbase.h"
 
 #include "qgsaction.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 
@@ -52,6 +53,7 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
     void insertExpressionOrField();
     void chooseIcon();
     void updateButtons();
+    void showHelp();
 
   private:
     void init( const QSet<QString> &actionScopes );
