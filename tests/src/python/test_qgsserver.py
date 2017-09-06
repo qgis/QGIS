@@ -163,7 +163,7 @@ class QgsServerTestBase(unittest.TestCase):
         control.setRenderedImage(temp_image)
         if max_size_diff.isValid():
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
-        return control.compareImages(control_image), control.report()
+        return control.compareImages(control_image, max_diff), control.report()
 
     def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
         self.assertEqual(

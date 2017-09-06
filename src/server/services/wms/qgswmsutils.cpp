@@ -94,7 +94,7 @@ namespace QgsWms
                                     QRegularExpression::CaseInsensitiveOption );
 
       QRegularExpressionMatch match = modeExpr.match( format );
-      QString mode = match.captured();
+      QString mode = match.captured( 1 );
       if ( mode.compare( QLatin1String( "16bit" ), Qt::CaseInsensitive ) == 0 )
         return PNG16;
       if ( mode.compare( QLatin1String( "8bit" ), Qt::CaseInsensitive ) == 0 )
