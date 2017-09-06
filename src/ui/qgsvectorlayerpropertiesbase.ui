@@ -2225,7 +2225,7 @@ border-radius: 2px;</string>
             <item row="0" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
-               <string>Auxiliary Storage tables can contain additional data that should only belong to the project file. For instance, specific location or rotation for labels. Auxiliary data are saved in qgd files (sqlite). New fields can be added from any data defined widget when needed. Be aware that this information will NOT be saved in you datasource but only in the project file.</string>
+               <string>Auxiliary storage tables can contain additional data that should only belong to the project file. For instance, specific location or rotation for labels. Auxiliary data are saved in qgd files. New fields can be added from any data-defined widget when needed. Be aware that this information will NOT be saved in you datasource but only in the project file.</string>
               </property>
               <property name="wordWrap">
                <bool>true</bool>
