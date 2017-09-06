@@ -1577,7 +1577,8 @@ QgsMapMouseEvent        {#qgis_api_break_3_0_QgsMapMouseEvent}
 ----------------
 
 - SnappingMode enum was removed.
-- snapPoint() and snapSegment() do not take SnappingMode argument anymore. Snapping is done according to project's snapping configuration.
+- snapPoint() does not take SnappingMode argument anymore. Snapping is done according to project's snapping configuration.
+- snapSegment() was removed.
 
 
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}

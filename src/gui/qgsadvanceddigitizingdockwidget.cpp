@@ -30,12 +30,16 @@
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 #include "qgssettings.h"
+#include "qgssnappingutils.h"
 #include "qgsproject.h"
 
+/// @cond PRIVATE
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
   bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
+/// @endcond
+
 
 bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection )
 {
@@ -571,7 +575,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 
   QgsPointXY point = e->snapPoint();
 
-  mSnappedSegment = e->snapSegment();
+  mSnappedSegment = snapSegment( e->originalMapPoint() );
 
   bool previousPointExist, penulPointExist;
   QgsPointXY previousPt = previousPoint( &previousPointExist );
@@ -864,6 +868,49 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 }
 
 
+
+QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegment( const QgsPointXY &originalMapPoint, bool *snapped, bool allLayers ) const
+{
+  QList<QgsPointXY> segment;
+  QgsPointXY pt1, pt2;
+  QgsPointLocator::Match match;
+
+  if ( !allLayers )
+  {
+    // run snapToMap with only segments
+    EdgesOnlyFilter filter;
+    match = mMapCanvas->snappingUtils()->snapToMap( originalMapPoint, &filter );
+  }
+  else
+  {
+    // run snapToMap with only edges on all layers
+    QgsSnappingUtils *snappingUtils = mMapCanvas->snappingUtils();
+
+    QgsSnappingConfig canvasConfig = snappingUtils->config();
+    QgsSnappingConfig localConfig = snappingUtils->config();
+
+    localConfig.setMode( QgsSnappingConfig::AllLayers );
+    localConfig.setType( QgsSnappingConfig::Segment );
+    snappingUtils->setConfig( localConfig );
+
+    match = snappingUtils->snapToMap( originalMapPoint );
+
+    snappingUtils->setConfig( canvasConfig );
+  }
+  if ( match.isValid() && match.hasEdge() )
+  {
+    match.edgePoints( pt1, pt2 );
+    segment << pt1 << pt2;
+  }
+
+  if ( snapped )
+  {
+    *snapped = segment.count() == 2;
+  }
+
+  return segment;
+}
+
 bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )
 {
   if ( mAdditionalConstraint == NoConstraint )
@@ -874,7 +921,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   bool previousPointExist, penulPointExist, snappedSegmentExist;
   QgsPointXY previousPt = previousPoint( &previousPointExist );
   QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
-  mSnappedSegment = e->snapSegment( &snappedSegmentExist, true );
+  mSnappedSegment = snapSegment( e->originalMapPoint(), &snappedSegmentExist, true );
 
   if ( !previousPointExist || !snappedSegmentExist )
   {

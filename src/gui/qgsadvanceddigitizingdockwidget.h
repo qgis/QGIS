@@ -408,6 +408,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
     bool alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode = CadConstraint::HardLock );
 
+    /**
+     * Returns the first snapped segment. Will try to snap a segment according to the event's snapping mode.
+     * \param originalMapPoint point to be snapped (in map coordinates)
+     * \param snapped if given, determines if a segment has been snapped
+     * \param allLayers if true, override snapping mode
+     */
+    QList<QgsPointXY> snapSegment( const QgsPointXY &originalMapPoint, bool *snapped = nullptr, bool allLayers = false ) const;
+
     //! add point to the CAD point list
     void addPoint( const QgsPointXY &point );
     //! update the current point in the CAD point list
