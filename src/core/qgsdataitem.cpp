@@ -1135,10 +1135,8 @@ void QgsZipItem::init()
     // keys << "ogr" << "gdal";
     keys << QStringLiteral( "gdal" ) << QStringLiteral( "ogr" );
 
-    QStringList::const_iterator i;
-    for ( i = keys.begin(); i != keys.end(); ++i )
+    for ( const auto &k : qgsAsConst( keys ) )
     {
-      QString k( *i );
       QgsDebugMsgLevel( "provider " + k, 3 );
       // some providers hangs with empty uri (PostGIS) etc...
       // -> using libraries directly

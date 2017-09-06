@@ -102,7 +102,7 @@ Required build dependencies:
 - Sqlite3 >= 3.0.0
 - SpatiaLite
 - libspatialindex
-- GDAL/OGR >= 2.0
+- GDAL/OGR >= 2.1
 - Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
 - expat >= 1.95
 - QScintilla2

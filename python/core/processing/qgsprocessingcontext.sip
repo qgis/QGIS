@@ -92,7 +92,7 @@ class QgsProcessingContext
     struct LayerDetails
     {
 
-      LayerDetails( const QString &name, QgsProject *project );
+      LayerDetails( const QString &name, QgsProject *project, const QString &outputName = QString() );
 %Docstring
  Constructor for LayerDetails.
 %End
@@ -100,6 +100,11 @@ class QgsProcessingContext
       QString name;
 %Docstring
 Friendly name for layer, to use when loading layer into project.
+%End
+
+      QString outputName;
+%Docstring
+Associated output name from algorithm which generated the layer.
 %End
 
       QgsProject *project;

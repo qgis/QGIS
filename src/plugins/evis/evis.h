@@ -70,8 +70,8 @@
 
 #include <QObject>
 
-#include <qgisplugin.h>
-#include <qgisinterface.h>
+#include "qgisplugin.h"
+#include "qgisinterface.h"
 
 //forward declarations
 class QAction;

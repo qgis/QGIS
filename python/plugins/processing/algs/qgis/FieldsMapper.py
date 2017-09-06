@@ -26,18 +26,12 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (
-    QgsApplication,
     QgsDistanceArea,
     QgsExpression,
-    QgsFeature,
-    QgsFeatureSink,
     QgsField,
     QgsFields,
     QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingUtils,
-    QgsProject,
-)
+    QgsProcessingParameterDefinition)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -49,7 +43,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def initParameters(self, config=None):
 
@@ -58,6 +52,10 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             def __init__(self, name, description, parentLayerParameterName='INPUT'):
                 super().__init__(name, description)
                 self._parentLayerParameter = parentLayerParameterName
+
+            def clone(self):
+                copy = ParameterFieldsMapping(self.name(), self.description(), self._parentLayerParameter)
+                return copy
 
             def type(self):
                 return 'fields_mapping'

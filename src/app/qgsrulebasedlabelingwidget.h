@@ -19,7 +19,7 @@
 
 #include "qgspanelwidget.h"
 
-#include <ui_qgsrulebasedlabelingwidget.h>
+#include "ui_qgsrulebasedlabelingwidget.h"
 
 #include "qgsrulebasedlabeling.h"
 #include "qgis_app.h"

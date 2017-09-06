@@ -36,9 +36,11 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.core import (QgsExpressionContextUtils,
                        QgsProcessingFeedback,
                        QgsSettings,
-                       QgsProcessingUtils,
                        QgsMapLayerProxyModel,
-                       QgsMessageLog)
+                       QgsProperty,
+                       QgsProject,
+                       QgsMessageLog,
+                       QgsProcessingOutputLayerDefinition)
 from qgis.gui import QgsEncodingFileDialog
 from qgis.utils import OverrideCursor
 
@@ -47,6 +49,8 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.PostgisTableSelector import PostgisTableSelector
+from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.dirname(__file__)
 WIDGET, BASE = uic.loadUiType(
@@ -72,9 +76,6 @@ class FieldsCalculatorDialog(BASE, WIDGET):
     def __init__(self, alg):
         super(FieldsCalculatorDialog, self).__init__(None)
         self.setupUi(self)
-
-        self.feedback = FieldCalculatorFeedback(self)
-        self.feedback.progressChanged.connect(self.setPercentage)
 
         self.executed = False
         self.alg = alg
@@ -144,8 +145,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
             self.mOutputFieldPrecisionSpinBox.setEnabled(False)
 
     def selectFile(self):
-        output = self.alg.getOutputFromName('OUTPUT_LAYER')
-        fileFilter = output.getFileFilter(self.alg)
+        output = self.alg.parameterDefinition('OUTPUT')
+        fileFilter = getFileFilter(output)
 
         settings = QgsSettings()
         if settings.contains('/Processing/LastOutputPath'):
@@ -168,8 +169,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
             filename = str(files[0])
             selectedFileFilter = str(fileDialog.selectedNameFilter())
             if not filename.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                    tuple(re.findall("\\*(\\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     filename = filename + ext.group(1)
             self.leOutputFile.setText(filename)
@@ -200,17 +201,23 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
         layer = self.cmbInputLayer.currentLayer()
 
+        context = dataobjects.createContext()
+
         parameters = {}
-        parameters['INPUT_LAYER'] = layer
+        parameters['INPUT'] = layer
         parameters['FIELD_NAME'] = fieldName
         parameters['FIELD_TYPE'] = self.mOutputFieldTypeComboBox.currentIndex()
         parameters['FIELD_LENGTH'] = self.mOutputFieldWidthSpinBox.value()
         parameters['FIELD_PRECISION'] = self.mOutputFieldPrecisionSpinBox.value()
         parameters['NEW_FIELD'] = self.mNewFieldGroupBox.isChecked()
         parameters['FORMULA'] = self.builder.expressionText()
-        parameters['OUTPUT_LAYER'] = self.leOutputFile.text().strip() or None
-
-        context = dataobjects.createContext()
+        output = QgsProcessingOutputLayerDefinition()
+        if self.leOutputFile.text().strip():
+            output.sink = QgsProperty.fromValue(self.leOutputFile.text().strip())
+        else:
+            output.sink = QgsProperty.fromValue('memory:')
+        output.destinationProject = context.project()
+        parameters['OUTPUT'] = output
 
         ok, msg = self.alg.checkParameterValues(parameters, context)
         if not ok:
@@ -224,10 +231,15 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         parameters = self.getParamValues()
         if parameters:
             with OverrideCursor(Qt.WaitCursor):
+                self.feedback = FieldCalculatorFeedback(self)
+                self.feedback.progressChanged.connect(self.setPercentage)
+
                 context = dataobjects.createContext()
                 ProcessingLog.addToLog(self.alg.asPythonCommand(parameters, context))
 
                 self.executed, results = execute(self.alg, parameters, context, self.feedback)
+                self.setPercentage(0)
+
                 if self.executed:
                     handleAlgorithmResults(self.alg,
                                            context,

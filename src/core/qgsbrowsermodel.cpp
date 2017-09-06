@@ -569,9 +569,9 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   else
   {
     int i = mRootItems.indexOf( item );
-    emit beginRemoveRows( QModelIndex(), i, i );
+    beginRemoveRows( QModelIndex(), i, i );
     mRootItems.remove( i );
     item->deleteLater();
-    emit endRemoveRows();
+    endRemoveRows();
   }
 }

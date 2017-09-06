@@ -285,6 +285,11 @@ Divides the coordinates in this point by a scalar quantity in place
  :rtype: QgsPointXY
 %End
 
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants from points.
+%End
+
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = "(" + QString::number( sipCpp->x() ) + "," + QString::number( sipCpp->y() ) + ")";

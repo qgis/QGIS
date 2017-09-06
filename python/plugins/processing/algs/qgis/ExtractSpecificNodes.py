@@ -47,14 +47,14 @@ class ExtractSpecificNodes(QgisAlgorithm):
     NODES = 'NODES'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorAny]))
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorAnyGeometry]))
         self.addParameter(QgsProcessingParameterString(self.NODES,
                                                        self.tr('Node indices'), defaultValue='0'))
 

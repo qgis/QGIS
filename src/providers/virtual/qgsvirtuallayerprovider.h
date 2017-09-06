@@ -17,7 +17,7 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUAL_LAYER_PROVIDER_H
 #define QGSVIRTUAL_LAYER_PROVIDER_H
 
-#include <qgsvectordataprovider.h>
+#include "qgsvectordataprovider.h"
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvirtuallayerdefinition.h"

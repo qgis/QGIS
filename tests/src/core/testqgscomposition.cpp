@@ -37,7 +37,6 @@
 
 #include <QObject>
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 class TestQgsComposition : public QObject
 {
@@ -365,34 +364,34 @@ void TestQgsComposition::bounds()
 
   //check bounds
   QRectF compositionBounds = composition->compositionBounds( false );
-  QVERIFY( qgsDoubleNear( compositionBounds.height(), 372.15, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.width(), 301.00, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.left(), -2, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.top(), -2, 0.01 ) );
+  QGSCOMPARENEAR( compositionBounds.height(), 372.15, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.width(), 301.00, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.left(), -2, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.top(), -2, 0.01 );
 
   QRectF compositionBoundsNoPage = composition->compositionBounds( true );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.height(), 320.36, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.width(), 250.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.left(), 9.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.top(), 49.79, 0.01 ) );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 320.36, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 49.79, 0.01 );
 
   QRectF page1Bounds = composition->pageItemBounds( 0, true );
-  QVERIFY( qgsDoubleNear( page1Bounds.height(), 150.36, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.width(), 155.72, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.left(), 54.43, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.top(), 49.79, 0.01 ) );
+  QGSCOMPARENEAR( page1Bounds.height(), 150.36, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.width(), 155.72, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.left(), 54.43, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.top(), 49.79, 0.01 );
 
   QRectF page2Bounds = composition->pageItemBounds( 1, true );
-  QVERIFY( qgsDoubleNear( page2Bounds.height(), 100.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.width(), 50.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.left(), 209.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.top(), 249.85, 0.01 ) );
+  QGSCOMPARENEAR( page2Bounds.height(), 100.30, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.width(), 50.30, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.left(), 209.85, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.top(), 249.85, 0.01 );
 
   QRectF page2BoundsWithHidden = composition->pageItemBounds( 1, false );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.height(), 120.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.width(), 250.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.left(), 9.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.top(), 249.85, 0.01 ) );
+  QGSCOMPARENEAR( page2BoundsWithHidden.height(), 120.30, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.top(), 249.85, 0.01 );
 
   delete composition;
 }
@@ -539,54 +538,54 @@ void TestQgsComposition::georeference()
   composition->addComposerMap( map );
 
   t = composition->computeGeoTransform( map );
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
   delete[] t;
 
   // don't specify map
   composition->setReferenceMap( map );
   t = composition->computeGeoTransform();
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
   delete[] t;
 
   // specify extent
   t = composition->computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
-  QVERIFY( qgsDoubleNear( t[0], 2100.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211864, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 2950, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211864, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 2100.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211864, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 2950, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211864, 0.0001 );
   delete[] t;
 
   // specify dpi
   t = composition->computeGeoTransform( map, QRectF(), 75 );
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.847603, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200.0, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.846774, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1 );
+  QGSCOMPARENEAR( t[1], 0.847603, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200.0, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.846774, 0.0001 );
   delete[] t;
 
   // rotation
   map->setMapRotation( 45 );
   t = composition->computeGeoTransform( map );
-  QVERIFY( qgsDoubleNear( t[0], 1825.7, 1 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.149708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.149708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[3], 2889.64, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.14969, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.14969, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1825.7, 1 );
+  QGSCOMPARENEAR( t[1], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[3], 2889.64, 1 );
+  QGSCOMPARENEAR( t[4], 0.14969, 0.0001 );
+  QGSCOMPARENEAR( t[5], -0.14969, 0.0001 );
   delete[] t;
 
   delete composition;

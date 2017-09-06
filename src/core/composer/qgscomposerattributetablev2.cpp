@@ -201,7 +201,8 @@ void QgsComposerAttributeTableV2::resetColumns()
 
   //rebuild columns list from vector layer fields
   int idx = 0;
-  Q_FOREACH ( const QgsField &field, source->fields() )
+  const QgsFields sourceFields = source->fields();
+  for ( const auto &field : sourceFields )
   {
     QString currentAlias = source->attributeDisplayName( idx );
     QgsComposerTableColumn *col = new QgsComposerTableColumn;
@@ -319,7 +320,7 @@ void QgsComposerAttributeTableV2::setDisplayedFields( const QStringList &fields,
   qDeleteAll( mColumns );
   mColumns.clear();
 
-  QgsFields layerFields = source->fields();
+  const QgsFields layerFields = source->fields();
 
   if ( !fields.isEmpty() )
   {
@@ -340,7 +341,7 @@ void QgsComposerAttributeTableV2::setDisplayedFields( const QStringList &fields,
   {
     //resetting, so add all attributes to columns
     int idx = 0;
-    Q_FOREACH ( const QgsField &field, layerFields )
+    for ( const QgsField &field : layerFields )
     {
       QString currentAlias = source->attributeDisplayName( idx );
       QgsComposerTableColumn *col = new QgsComposerTableColumn;

@@ -14,7 +14,7 @@
 typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 
 
-class QgsVectorLayerJoinBuffer : QObject
+class QgsVectorLayerJoinBuffer : QObject, QgsFeatureSink
 {
 %Docstring
  Manages joined fields for a vector layer*
@@ -117,10 +117,81 @@ Quick way to test if there is any join at all
  :rtype: QgsFeature
 %End
 
+    QgsFeature targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
+%Docstring
+ Returns the targeted feature corresponding to the joined feature.
+ \param info the vector join information
+ \param feature the feature of the joined layer
+.. versionadded:: 3.0
+ :rtype: QgsFeature
+%End
+
     QgsVectorLayerJoinBuffer *clone() const /Factory/;
 %Docstring
 .. versionadded:: 2.6
  :rtype: QgsVectorLayerJoinBuffer
+%End
+
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+
+%Docstring
+ Adds a list of features in joined layers. Features given in parameter
+ are those added in target layer. If a corresponding joined feature yet
+ exists in a joined layer, then this feature is just updated. Note that
+ if a corresponding joined feature has only empty fields, then it's not
+ created nor added.
+
+ \param features The list of features added in the target layer
+ \param flags Unused parameter
+
+ :return: false if an error happened, true otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
+%Docstring
+ Changes attribute value in joined layers. The feature id given in
+ parameter is the one added in target layer. If the corresponding joined
+ feature does not exist in a joined layer, then it's automatically
+ created if its fields are not empty.
+
+ \param fid The feature id
+ \param field The field to update
+ \param newValue The new value of the attribute
+ \param oldValue The old value of the attribute
+
+ :return: false if an error happened, true otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool deleteFeature( QgsFeatureId fid ) const;
+%Docstring
+ Deletes a feature from joined layers. The feature id given in
+ parameter is the one coming from the target layer.
+
+ \param fid The feature id from the target layer to delete
+
+ :return: false if an error happened, true otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool deleteFeatures( const QgsFeatureIds &fids ) const;
+%Docstring
+ Deletes a list of features from joined layers. Feature ids given
+ in aprameter are those coming from the target layer.
+
+ \param fids Feature ids from the target layer to delete
+
+ :return: false if an error happened, true otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
 %End
 
   signals:

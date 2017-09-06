@@ -11,7 +11,7 @@
 #ifndef QGSCRSSELECTOR_H
 #define QGSCRSSELECTOR_H
 
-#include <ui_qgsprojectionselectorbase.h>
+#include "ui_qgsprojectionselectorbase.h"
 
 #include <QSet>
 #include <QStringList>

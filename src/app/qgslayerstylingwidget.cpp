@@ -74,7 +74,6 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
 
   mStyleManagerFactory = new QgsLayerStyleManagerWidgetFactory();
 
-  QList<QgsMapLayerConfigWidgetFactory *> l;
   setPageFactories( pages );
 
   connect( mUndoButton, &QAbstractButton::pressed, this, &QgsLayerStylingWidget::undo );

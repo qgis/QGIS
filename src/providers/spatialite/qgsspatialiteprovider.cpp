@@ -31,8 +31,13 @@ email                : a.furieri@lqt.it
 #include "qgsspatialitefeatureiterator.h"
 #include "qgsfeedback.h"
 
-#include <qgsjsonutils.h>
-#include <qgsvectorlayer.h>
+#include "qgsjsonutils.h"
+#include "qgsvectorlayer.h"
+
+#ifdef HAVE_GUI
+#include "qgssourceselectprovider.h"
+#include "qgsspatialitesourceselect.h"
+#endif
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -5917,3 +5922,31 @@ QGISEXTERN void cleanupProvider()
   QgsSqliteHandle::closeAll();
 }
 
+#ifdef HAVE_GUI
+
+//! Provider for spatialite source select
+class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "spatialite" ); }
+    virtual QString text() const override { return QObject::tr( "SpatiaLite" ); }
+    virtual int ordering() const override { return 50; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsSpatialiteSourceSelectProvider;
+
+  return providers;
+}
+#endif

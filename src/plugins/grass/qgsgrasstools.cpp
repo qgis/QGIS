@@ -41,114 +41,11 @@
 #include "qgsdetaileditemdata.h"
 #include "qgsdetaileditemdelegate.h"
 
-#include <QSortFilterProxyModel>
-#include <QStandardItem>
 
 #ifdef Q_OS_WIN
 #include "qgsgrassutils.h"
 #endif
 
-// TODO: searching acros the tree is taken from QgsDockBrowserTreeView -> create common base class
-class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
-{
-  public:
-    explicit QgsGrassToolsTreeFilterProxyModel( QObject *parent )
-      : QSortFilterProxyModel( parent )
-      , mModel( 0 )
-    {
-      setDynamicSortFilter( true );
-      mRegExp.setPatternSyntax( QRegExp::Wildcard );
-      mRegExp.setCaseSensitivity( Qt::CaseInsensitive );
-    }
-
-    void setSourceModel( QAbstractItemModel *sourceModel ) override
-    {
-      mModel = sourceModel;
-      QSortFilterProxyModel::setSourceModel( sourceModel );
-    }
-
-    void setFilter( const QString &filter )
-    {
-      QgsDebugMsg( QString( "filter = %1" ).arg( filter ) );
-      if ( mFilter == filter )
-      {
-        return;
-      }
-      mFilter = filter;
-      mRegExp.setPattern( mFilter );
-
-      invalidateFilter();
-    }
-
-  protected:
-
-    QAbstractItemModel *mModel = nullptr;
-    QString mFilter; // filter string provided
-    QRegExp mRegExp; // regular expression constructed from filter string
-
-    bool filterAcceptsString( const QString &value ) const
-    {
-      return value.contains( mRegExp );
-    }
-
-    // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override
-    {
-      if ( mFilter.isEmpty() || !mModel )
-      {
-        return true;
-      }
-
-      QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
-      return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
-    }
-
-    // returns true if at least one ancestor is accepted by filter
-    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const
-    {
-      if ( !mModel )
-      {
-        return true;
-      }
-
-      QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
-      if ( !sourceParentIndex.isValid() )
-        return false;
-      if ( filterAcceptsItem( sourceParentIndex ) )
-        return true;
-
-      return filterAcceptsAncestor( sourceParentIndex );
-    }
-
-    // returns true if at least one descendant s accepted by filter
-    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const
-    {
-      if ( !mModel )
-      {
-        return true;
-      }
-
-      for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
-      {
-        QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
-        if ( filterAcceptsItem( sourceChildIndex ) )
-          return true;
-        if ( filterAcceptsDescendant( sourceChildIndex ) )
-          return true;
-      }
-      return false;
-    }
-
-    // filter accepts item name
-    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const
-    {
-      if ( !mModel )
-      {
-        return true;
-      }
-      return filterAcceptsString( mModel->data( sourceIndex, filterRole() ).toString() );
-    }
-};
 
 QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char *name, Qt::WindowFlags f )
   : QgsDockWidget( parent, f )
@@ -791,4 +688,91 @@ void QgsGrassTools::on_mViewModeButton_clicked()
     mListView->show();
     mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconTreeView.png" ) ) );
   }
+}
+
+QgsGrassToolsTreeFilterProxyModel::QgsGrassToolsTreeFilterProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mModel( 0 )
+{
+  setDynamicSortFilter( true );
+  mRegExp.setPatternSyntax( QRegExp::Wildcard );
+  mRegExp.setCaseSensitivity( Qt::CaseInsensitive );
+}
+
+void QgsGrassToolsTreeFilterProxyModel::setSourceModel( QAbstractItemModel *sourceModel )
+{
+  mModel = sourceModel;
+  QSortFilterProxyModel::setSourceModel( sourceModel );
+}
+
+void QgsGrassToolsTreeFilterProxyModel::setFilter( const QString &filter )
+{
+  QgsDebugMsg( QString( "filter = %1" ).arg( filter ) );
+  if ( mFilter == filter )
+  {
+    return;
+  }
+  mFilter = filter;
+  mRegExp.setPattern( mFilter );
+
+  invalidateFilter();
+}
+
+bool QgsGrassToolsTreeFilterProxyModel::filterAcceptsString( const QString &value ) const
+{
+  return value.contains( mRegExp );
+}
+
+bool QgsGrassToolsTreeFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  if ( mFilter.isEmpty() || !mModel )
+  {
+    return true;
+  }
+
+  QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+  return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
+}
+
+bool QgsGrassToolsTreeFilterProxyModel::filterAcceptsAncestor( const QModelIndex &sourceIndex ) const
+{
+  if ( !mModel )
+  {
+    return true;
+  }
+
+  QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+  if ( !sourceParentIndex.isValid() )
+    return false;
+  if ( filterAcceptsItem( sourceParentIndex ) )
+    return true;
+
+  return filterAcceptsAncestor( sourceParentIndex );
+}
+
+bool QgsGrassToolsTreeFilterProxyModel::filterAcceptsDescendant( const QModelIndex &sourceIndex ) const
+{
+  if ( !mModel )
+  {
+    return true;
+  }
+
+  for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
+  {
+    QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
+    if ( filterAcceptsItem( sourceChildIndex ) )
+      return true;
+    if ( filterAcceptsDescendant( sourceChildIndex ) )
+      return true;
+  }
+  return false;
+}
+
+bool QgsGrassToolsTreeFilterProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) const
+{
+  if ( !mModel )
+  {
+    return true;
+  }
+  return filterAcceptsString( mModel->data( sourceIndex, filterRole() ).toString() );
 }

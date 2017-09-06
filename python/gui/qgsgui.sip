@@ -38,6 +38,12 @@ class QgsGui
  :rtype: QgsEditorWidgetRegistry
 %End
 
+    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry();
+%Docstring
+ Returns the global source select provider registry, used for managing all known source select widget factories.
+ :rtype: QgsSourceSelectProviderRegistry
+%End
+
     static QgsShortcutsManager *shortcutsManager();
 %Docstring
  Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.

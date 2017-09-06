@@ -905,7 +905,7 @@ Return the provider type for this layer
  :rtype: QgsFeatureIterator
 %End
 
-    QgsFeature getFeature( QgsFeatureId fid );
+    QgsFeature getFeature( QgsFeatureId fid ) const;
 %Docstring
  Query the layer for the feature with the given id.
  If there is no such feature, the returned feature will be invalid.
@@ -1786,10 +1786,6 @@ Returns the current blending mode for features
  rollBack().
  :rtype: bool
 %End
-
-
-  protected slots:
-    void invalidateSymbolCountedFlag();
 
   signals:
 

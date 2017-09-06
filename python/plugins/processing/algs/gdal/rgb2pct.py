@@ -31,10 +31,10 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -57,11 +57,11 @@ class rgb2pct(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterRaster(rgb2pct.INPUT,
-                                          self.tr('Input layer'), False))
-        self.addParameter(ParameterNumber(rgb2pct.NCOLORS,
-                                          self.tr('Number of colors'), 1, None, 2))
-        self.addOutput(OutputRaster(rgb2pct.OUTPUT, self.tr('RGB to PCT')))
+        self.addParameter(QgsProcessingParameterRasterLayer(rgb2pct.INPUT,
+                                                            self.tr('Input layer'), optional=False))
+        self.addParameter(QgsProcessingParameterNumber(rgb2pct.NCOLORS,
+                                                       self.tr('Number of colors'), minValue=1, defaultValue=2))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('RGB to PCT')))
 
     def name(self):
         return 'rgbtopct'
@@ -72,11 +72,11 @@ class rgb2pct(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-n')
-        arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))
+        arguments.append(str(self.parameterAsInt(parameters, rgb2pct.NCOLORS, context)))
         arguments.append('-of')
-        out = self.getOutputValue(rgb2pct.OUTPUT)
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.append(self.getParameterValue(rgb2pct.INPUT))
+        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
         arguments.append(out)
 
         if isWindows():

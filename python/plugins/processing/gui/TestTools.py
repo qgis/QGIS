@@ -27,6 +27,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import posixpath
 import re
 import yaml
 import hashlib
@@ -51,7 +52,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingParameterFileDestination)
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterEnum)
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
 
@@ -80,7 +82,8 @@ def extractSchemaPath(filepath):
         if part == 'testdata' and not localpath:
             localparts = parts
             localparts.reverse()
-            localpath = os.path.join(*localparts)
+            # we always want posix style paths here
+            localpath = posixpath.join(*localparts)
 
         parts.append(part)
 
@@ -152,6 +155,9 @@ def createTest(text):
         if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
             continue
 
+        if not param.name() in parameters:
+            continue
+
         i += 1
         token = parameters[param.name()]
         # Handle empty parameters that are optionals
@@ -179,12 +185,12 @@ def createTest(text):
 
             params[param.name()] = p
         elif isinstance(param, QgsProcessingParameterMultipleLayers):
-            multiparams = token.split(';')
+            multiparams = token
             newparam = []
 
             # Handle datatype detection
             dataType = param.layerType()
-            if dataType in [QgsProcessing.TypeVectorAny, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeTable]:
+            if dataType in [QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVector]:
                 dataType = 'vector'
             else:
                 dataType = 'raster'
@@ -223,7 +229,9 @@ def createTest(text):
                 params[param.name()] = int(token)
             else:
                 params[param.name()] = float(token)
-        else:
+        elif isinstance(param, QgsProcessingParameterEnum):
+            params[param.name()] = int(token)
+        elif token:
             if token[0] == '"':
                 token = token[1:]
             if token[-1] == '"':

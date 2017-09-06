@@ -26,7 +26,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -89,14 +89,13 @@
   </action>
  </widget>
  <customwidgets>
- <customwidget>
-  <class>QgsCompoundColorWidget</class>
-  <extends>QWidget</extends>
-  <header>qgscompoundcolorwidget.h</header>
-  <container>1</container>
- </customwidget>
-</customwidgets>
-
+  <customwidget>
+   <class>QgsCompoundColorWidget</class>
+   <extends>QWidget</extends>
+   <header>qgscompoundcolorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -39,6 +39,9 @@ images/svg/symbol/red-marker.svg
 images/themes/default/propertyicons/diagram.svg
 images/themes/default/propertyicons/general.svg
 images/themes/default/svgbase/hammer.svg
+images/themes/default/mIconJoinHasNotUpsertOnEdit.svg
+images/themes/default/mIconJoinNotEditable.svg
+images/themes/default/mIconJoinedLayerNotEditable.svg
 LexerR.py
 python/plugins/MetaSearch/resources/connections-default.xml
 python/plugins/processing/algs/grass7/description/i.landsat.toar.txt

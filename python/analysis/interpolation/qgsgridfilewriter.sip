@@ -20,10 +20,10 @@ class QgsGridFileWriter
     QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
 
 
-    int writeFile( bool showProgressDialog = false );
+    int writeFile( QgsFeedback *feedback = 0 );
 %Docstring
  Writes the grid file.
-\param showProgressDialog shows a dialog with the possibility to cancel
+\param feedback optional feedback object for progress reports and cancelation support
 :return: 0 in case of success*
  :rtype: int
 %End

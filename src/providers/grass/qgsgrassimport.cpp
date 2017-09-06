@@ -435,14 +435,16 @@ bool QgsGrassRasterImport::import()
     // TODO: best timeout?
     mProcess->waitForFinished( 30000 );
 
-    QString stdoutString = mProcess->readAllStandardOutput().constData();
     QString stderrString = mProcess->readAllStandardError().constData();
 
+#ifdef QGISDEBUG
+    QString stdoutString = mProcess->readAllStandardOutput().constData();
     QString processResult = QStringLiteral( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                             .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
                             .arg( mProcess->error() ).arg( mProcess->errorString(),
                                 stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
     QgsDebugMsg( "processResult: " + processResult );
+#endif
 
     if ( mProcess->exitStatus() != QProcess::NormalExit )
     {
@@ -716,11 +718,13 @@ bool QgsGrassVectorImport::import()
   QString stdoutString = mProcess->readAllStandardOutput().constData();
   QString stderrString = mProcess->readAllStandardError().constData();
 
+#ifdef QGISDEBUG
   QString processResult = QStringLiteral( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                           .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
                           .arg( mProcess->error() ).arg( mProcess->errorString(),
                               stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
   QgsDebugMsg( "processResult: " + processResult );
+#endif
 
   if ( mProcess->exitStatus() != QProcess::NormalExit )
   {

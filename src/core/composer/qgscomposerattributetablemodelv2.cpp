@@ -263,7 +263,7 @@ bool QgsComposerAttributeTableColumnModelV2::removeRows( int row, int count, con
 {
   Q_UNUSED( parent );
 
-  int maxRow = qMin( row + count - 1, mComposerTable->columns()->length() - 1 );
+  int maxRow = std::min( row + count - 1, mComposerTable->columns()->length() - 1 );
   beginRemoveRows( QModelIndex(), row, maxRow );
   //move backwards through rows, removing each corresponding QgsComposerTableColumn
   for ( int i = maxRow; i >= row; --i )
@@ -357,7 +357,7 @@ void QgsComposerAttributeTableColumnModelV2::setColumnAsSorted( QgsComposerTable
   QList<QgsComposerTableColumn *>::const_iterator columnIt = mComposerTable->columns()->constBegin();
   for ( ; columnIt != mComposerTable->columns()->constEnd(); ++columnIt )
   {
-    highestRank = qMax( highestRank, ( *columnIt )->sortByRank() );
+    highestRank = std::max( highestRank, ( *columnIt )->sortByRank() );
   }
 
   column->setSortByRank( highestRank + 1 );
@@ -399,7 +399,8 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
 
   //find column before this one in sort order
   QList<QgsComposerTableColumn *> sortedColumns;
-  Q_FOREACH ( QgsComposerTableColumn *currentColumn, *mComposerTable->columns() )
+  const QgsComposerTableColumns columns = *mComposerTable->columns();
+  for ( QgsComposerTableColumn *currentColumn : columns )
   {
     if ( currentColumn->sortByRank() > 0 )
     {

@@ -35,6 +35,11 @@
 #include "qgswfsutils.h"
 #include "qgssettings.h"
 
+#ifdef HAVE_GUI
+#include "qgswfssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
+
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDomNodeList>
@@ -1363,7 +1368,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
       QString propertyType( gmlRefProperty.cap( 1 ) );
       // Set the first character in upper case
-      propertyType = propertyType.left( 1 ).toUpper() + propertyType.mid( 1 );
+      propertyType = propertyType.at( 0 ).toUpper() + propertyType.mid( 1 );
       geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
     }
     else if ( !name.isEmpty() ) //todo: distinguish between numerical and non-numerical types
@@ -1698,3 +1703,32 @@ QGISEXTERN bool isProvider()
 
   return true;
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for WFS layers source select
+class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "WFS" ); }
+    virtual QString text() const override { return QObject::tr( "WFS" ); }
+    virtual int ordering() const override { return 120; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsWFSSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsWfsSourceSelectProvider;
+
+  return providers;
+}
+#endif

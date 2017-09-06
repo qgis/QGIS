@@ -154,7 +154,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     int removedColumnCount = 0;
 
     // Check if there have a contiguous set of columns have been removed or if we require a full reset
-    for ( int i = 0; i < qMin( newColumnMapping.size(), mColumnMapping.size() - removedColumnCount ); ++i )
+    for ( int i = 0; i < std::min( newColumnMapping.size(), mColumnMapping.size() - removedColumnCount ); ++i )
     {
       if ( newColumnMapping.at( i ) == mColumnMapping.at( i + removedColumnCount ) )
         continue;

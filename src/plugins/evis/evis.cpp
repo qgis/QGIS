@@ -50,10 +50,10 @@
 //
 // QGIS Specific includes
 //
-#include <qgsapplication.h>
-#include <qgsrasterlayer.h>
-#include <qgisinterface.h>
-#include <qgsmaplayer.h>
+#include "qgsapplication.h"
+#include "qgsrasterlayer.h"
+#include "qgisinterface.h"
+#include "qgsmaplayer.h"
 #include "qgsguiutils.h"
 
 //the gui subclass

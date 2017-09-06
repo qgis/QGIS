@@ -28,14 +28,12 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
-
 from processing.tools import vector
 
 
@@ -53,18 +51,19 @@ class VectorLayerScatterplot(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.XFIELD,
-                                              self.tr('X attribute'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.YFIELD,
-                                              self.tr('Y attribute'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.XFIELD,
+                                                      self.tr('X attribute'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
+        self.addParameter(QgsProcessingParameterField(self.YFIELD,
+                                                      self.tr('Y attribute'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Scatterplot')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Scatterplot'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Scatterplot')))
 
     def name(self):
         return 'vectorlayerscatterplot'
@@ -73,14 +72,16 @@ class VectorLayerScatterplot(QgisAlgorithm):
         return self.tr('Vector layer scatterplot')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        xfieldname = self.getParameterValue(self.XFIELD)
-        yfieldname = self.getParameterValue(self.YFIELD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        xfieldname = self.parameterAsString(parameters, self.XFIELD, context)
+        yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
 
-        output = self.getOutputValue(self.OUTPUT)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(layer, xfieldname, yfieldname)
+        values = vector.values(source, xfieldname, yfieldname)
         data = [go.Scatter(x=values[xfieldname],
                            y=values[yfieldname],
                            mode='markers')]
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

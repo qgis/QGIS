@@ -77,6 +77,19 @@ QString QgsFileWidget::filePath()
   return mFilePath;
 }
 
+QStringList QgsFileWidget::splitFilePaths( const QString &path )
+{
+  QStringList paths;
+  const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts );
+  for ( const auto &pathsPart : pathParts )
+  {
+    QString cleaned = pathsPart;
+    cleaned.remove( QRegExp( "(^\\s*\")|(\"\\s*)" ) );
+    paths.append( cleaned );
+  }
+  return paths;
+}
+
 void QgsFileWidget::setFilePath( QString path )
 {
   if ( path == QgsApplication::nullRepresentation() )
@@ -86,6 +99,7 @@ void QgsFileWidget::setFilePath( QString path )
 
   //will trigger textEdited slot
   mLineEdit->setValue( path );
+
 }
 
 void QgsFileWidget::setReadOnly( bool readOnly )
@@ -130,6 +144,15 @@ void QgsFileWidget::textEdited( const QString &path )
 {
   mFilePath = path;
   mLinkLabel->setText( toUrl( path ) );
+  // Show tooltip if multiple files are selected
+  if ( path.contains( QStringLiteral( "\" \"" ) ) )
+  {
+    mLineEdit->setToolTip( tr( "Selected files:<br><ul><li>%1</li></ul><br>" ).arg( splitFilePaths( path ).join( QStringLiteral( "</li><li>" ) ) ) );
+  }
+  else
+  {
+    mLineEdit->setToolTip( QString() );
+  }
   emit fileChanged( mFilePath );
 }
 
@@ -231,39 +254,75 @@ void QgsFileWidget::openFileDialog()
 
   // Handle Storage
   QString fileName;
+  QStringList fileNames;
   QString title;
-  if ( mStorageMode == GetFile )
+
+  switch ( mStorageMode )
   {
-    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-    fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
-  }
-  else if ( mStorageMode == GetDirectory )
-  {
-    title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
-    fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
+    case GetFile:
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
+      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      break;
+    case GetMultipleFiles:
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
+      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      break;
+    case GetDirectory:
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
+      fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
+      break;
   }
 
-  if ( fileName.isEmpty() )
+  if ( fileName.isEmpty() && fileNames.isEmpty( ) )
     return;
 
-
-  fileName = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
-  // Store the last used path:
-
-  if ( mStorageMode == GetFile )
+  if ( mStorageMode != GetMultipleFiles )
   {
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+    fileName = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileName ).absoluteFilePath() ) );
   }
-  else if ( mStorageMode == GetDirectory )
+  else
   {
-    settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
+    for ( int i = 0; i < fileNames.length(); i++ )
+    {
+      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) ) ;
+    }
+  }
+
+  // Store the last used path:
+  switch ( mStorageMode )
+  {
+    case GetFile:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
+      break;
+    case GetDirectory:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), fileName );
+      break;
+    case GetMultipleFiles:
+      settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileNames.first( ) ).absolutePath() );
+      break;
   }
 
   // Handle relative Path storage
-  fileName = relativePath( fileName, true );
-
-  // Keep the new value
-  setFilePath( fileName );
+  if ( mStorageMode != GetMultipleFiles )
+  {
+    fileName = relativePath( fileName, true );
+    setFilePath( fileName );
+  }
+  else
+  {
+    for ( int i = 0; i < fileNames.length(); i++ )
+    {
+      fileNames.replace( i, relativePath( fileNames.at( i ), true ) );
+    }
+    if ( fileNames.length() > 1 )
+    {
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( "\" \"" ) ) );
+    }
+    else
+    {
+      setFilePath( fileNames.first( ) );
+    }
+  }
 }
 
 
@@ -327,7 +386,6 @@ QString QgsFileWidget::toUrl( const QString &path ) const
 
 
 
-
 ///@cond PRIVATE
 
 
@@ -359,16 +417,30 @@ void QgsFileDropEdit::setFilters( const QString &filters )
 
 QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
 {
-  QString path;
+  QStringList paths;
   if ( event->mimeData()->hasUrls() )
   {
-    QFileInfo file( event->mimeData()->urls().first().toLocalFile() );
-    if ( ( mStorageMode == QgsFileWidget::GetFile && file.isFile() &&
-           ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
-         || ( mStorageMode == QgsFileWidget::GetDirectory && file.isDir() ) )
-      path = file.filePath();
+    Q_FOREACH ( const QUrl &url, event->mimeData()->urls() )
+    {
+      QFileInfo file( url.toLocalFile() );
+      if ( ( mStorageMode != QgsFileWidget::GetDirectory && file.isFile() &&
+             ( mAcceptableExtensions.isEmpty() || mAcceptableExtensions.contains( file.suffix(), Qt::CaseInsensitive ) ) )
+           || ( mStorageMode == QgsFileWidget::GetDirectory && file.isDir() ) )
+        paths.append( file.filePath() );
+    }
   }
-  return path;
+  if ( paths.size() > 1 )
+  {
+    return QStringLiteral( "\"%1\"" ).arg( paths.join( "\" \"" ) );
+  }
+  else if ( paths.size() == 1 )
+  {
+    return paths.first();
+  }
+  else
+  {
+    return QString();
+  }
 }
 
 void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )

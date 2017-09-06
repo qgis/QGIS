@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsogrprovider.h"
+#include "qgscplerrorhandler.h"
 #include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -34,6 +35,12 @@ email                : sherman at mrcc.com
 #include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
+
+#ifdef HAVE_GUI
+#include "qgssourceselectprovider.h"
+#include "qgsogrsourceselect.h"
+#endif
+
 #include "qgis.h"
 
 
@@ -79,31 +86,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + ')';
 
 static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
-
-class QgsCPLErrorHandler
-{
-    static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
-    {
-      if ( errNo != OGRERR_NONE )
-        QgsMessageLog::logMessage( QObject::tr( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ), QObject::tr( "OGR" ) );
-    }
-
-  public:
-    QgsCPLErrorHandler()
-    {
-      CPLPushErrorHandler( showError );
-    }
-
-    ~QgsCPLErrorHandler()
-    {
-      CPLPopErrorHandler();
-    }
-
-  private:
-    QgsCPLErrorHandler( const QgsCPLErrorHandler &other );
-    QgsCPLErrorHandler &operator=( const QgsCPLErrorHandler &other );
-
-};
 
 
 bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
@@ -277,7 +259,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
             OGR_DS_Destroy( hDS );
             if ( errorMessage )
               *errorMessage += QObject::tr( "Layer %2 of %1 exists and overwrite flag is false." )
-                               .arg( uri ).arg( layerName );
+                               .arg( uri, layerName );
             return QgsVectorLayerExporter::ErrCreateDataSource;
           }
           OGR_DS_Destroy( hDS );
@@ -340,7 +322,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
       }
     }
 
-    for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.begin(); attrIt != attrIdxMap.end(); ++attrIt )
+    for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.constBegin(); attrIt != attrIdxMap.constEnd(); ++attrIt )
     {
       oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt + ( firstFieldIsFid ? 1 : 0 ) );
     }
@@ -593,7 +575,6 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
   QString geom;
 
   // GDAL 2.1 can return M/ZM geometries
-#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,0)
   if ( wkbHasM( type ) )
   {
     geom = ogrWkbGeometryTypeName( wkbFlatten( type ) );
@@ -603,7 +584,6 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
       geom += "M";
     return geom;
   }
-#endif
 
   switch ( ( long )type )
   {
@@ -1108,10 +1088,10 @@ QgsRectangle QgsOgrProvider::extent() const
           OGREnvelope env;
           OGR_G_GetEnvelope( g, &env );
 
-          mExtent->MinX = qMin( mExtent->MinX, env.MinX );
-          mExtent->MinY = qMin( mExtent->MinY, env.MinY );
-          mExtent->MaxX = qMax( mExtent->MaxX, env.MaxX );
-          mExtent->MaxY = qMax( mExtent->MaxY, env.MaxY );
+          mExtent->MinX = std::min( mExtent->MinX, env.MinX );
+          mExtent->MinY = std::min( mExtent->MinY, env.MinY );
+          mExtent->MaxX = std::max( mExtent->MaxX, env.MaxX );
+          mExtent->MaxY = std::max( mExtent->MaxY, env.MaxY );
         }
 
         OGR_F_Destroy( f );
@@ -1671,6 +1651,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
       continue;
     }
+    OGR_L_ResetReading( ogrLayer ); // needed for SQLite-based to clear iterator
 
     QgsLocaleNumC l;
 
@@ -1811,6 +1792,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
       pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
       continue;
     }
+    OGR_L_ResetReading( ogrLayer ); // needed for SQLite-based to clear iterator
 
     OGRGeometryH newGeometry = nullptr;
     QByteArray wkb = it->exportToWkb();
@@ -2937,10 +2919,8 @@ QGISEXTERN QList< QgsDataItemProvider * > *dataItemProviders()
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
 {
-  QgsDebugMsg( "Entering." );
-
   QgsCoordinateReferenceSystem srs;
-  if ( !mValid )
+  if ( !mValid || ( mOGRGeomType == wkbNone ) )
     return srs;
 
   if ( ogrDriver )
@@ -2973,7 +2953,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
     // get the proj4 text
     char *pszProj4 = nullptr;
     OSRExportToProj4( mySpatialRefSys, &pszProj4 );
-    QgsDebugMsg( pszProj4 );
+    QgsDebugMsgLevel( pszProj4, 4 );
     CPLFree( pszProj4 );
 
     char *pszWkt = nullptr;
@@ -3478,14 +3458,17 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
 
 OGRLayerH QgsOgrProvider::setSubsetString( OGRLayerH layer, OGRDataSourceH ds )
 {
-  return QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), mSubsetString );
+  bool origFidAdded = false;
+  return QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), mSubsetString, origFidAdded );
 }
 
-OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec *encoding, const QString &subsetString )
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded )
 {
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   OGRSFDriverH ogrDriver = OGR_DS_GetDriver( ds );
   QString ogrDriverName = OGR_Dr_GetName( ogrDriver );
+  bool origFidAddAttempted = false;
+  origFidAdded = false;
 
   if ( ogrDriverName == QLatin1String( "ODBC" ) ) //the odbc driver does not like schema names for subset
   {
@@ -3502,12 +3485,33 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     sql = encoding->fromUnicode( subsetString );
   else
   {
-    sql = "SELECT * FROM " + quotedIdentifier( layerName, ogrDriverName );
+    QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
+
+    sql = QByteArray( "SELECT " );
+    if ( !fidColumn.isEmpty() )
+    {
+      sql += fidColumn + " as orig_ogc_fid, ";
+      origFidAddAttempted = true;
+    }
+    sql += "* FROM " + quotedIdentifier( layerName, ogrDriverName );
     sql += " WHERE " + encoding->fromUnicode( subsetString );
   }
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-  return OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+  OGRLayerH subsetLayer = OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+
+  // Check if first column is orig_ogc_fid
+  if ( origFidAddAttempted && subsetLayer )
+  {
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( subsetLayer );
+    if ( OGR_FD_GetFieldCount( fdef ) > 0 )
+    {
+      OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, 0 );
+      origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), "orig_ogc_fid" ) == 0;
+    }
+  }
+
+  return subsetLayer;
 }
 
 void QgsOgrProvider::open( OpenMode mode )
@@ -4363,10 +4367,40 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
         errCause = QObject::tr( "Success" );
         break;
     }
-    errCause = QObject::tr( "GDAL result code: %s" ).arg( errCause );
+    errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
     return error == OGRERR_NONE;
   }
   // This should never happen:
-  errCause = QObject::tr( "Layer not found: %s" ).arg( uri );
+  errCause = QObject::tr( "Layer not found: %1" ).arg( uri );
   return false;
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for OGR vector source select
+class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    virtual QString text() const override { return QObject::tr( "Vector" ); }
+    virtual int ordering() const override { return 10; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsOgrSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsOgrVectorSourceSelectProvider;
+
+  return providers;
+}
+
+#endif

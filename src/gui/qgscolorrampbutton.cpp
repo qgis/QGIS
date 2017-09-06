@@ -337,7 +337,7 @@ void QgsColorRampButton::loadColorRamp()
   QAction *selectedItem = qobject_cast<QAction *>( sender() );
   if ( selectedItem )
   {
-    QString name = selectedItem->text();
+    QString name = selectedItem->iconText();
     setColorRampName( name );
     setColorRampFromName( name );
   }

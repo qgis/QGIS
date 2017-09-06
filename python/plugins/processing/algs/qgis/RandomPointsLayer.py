@@ -63,7 +63,7 @@ class RandomPointsLayer(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()

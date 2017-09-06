@@ -43,7 +43,7 @@
 //
 //QGIS Includes
 //
-#include <qgisplugin.h>
+#include "qgisplugin.h"
 class QgisInterface;
 class QgsGeorefPluginGui;
 

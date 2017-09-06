@@ -15,7 +15,6 @@
 
 #include "qgsstatisticalsummary.h"
 #include <limits>
-#include <qmath.h>
 #include <QString>
 #include <QObject>
 
@@ -72,8 +71,8 @@ void QgsStatisticalSummary::addValue( double value )
 {
   mCount++;
   mSum += value;
-  mMin = qMin( mMin, value );
-  mMax = qMax( mMax, value );
+  mMin = std::min( mMin, value );
+  mMax = std::max( mMax, value );
 
   if ( mStatistics & QgsStatisticalSummary::Majority || mStatistics & QgsStatisticalSummary::Minority || mStatistics & QgsStatisticalSummary::Variety )
     mValueCount.insert( value, mValueCount.value( value, 0 ) + 1 );
@@ -126,8 +125,8 @@ void QgsStatisticalSummary::finalize()
       double diff = value - mMean;
       sumSquared += diff * diff;
     }
-    mStdev = qPow( sumSquared / mValues.count(), 0.5 );
-    mSampleStdev = qPow( sumSquared / ( mValues.count() - 1 ), 0.5 );
+    mStdev = std::pow( sumSquared / mValues.count(), 0.5 );
+    mSampleStdev = std::pow( sumSquared / ( mValues.count() - 1 ), 0.5 );
   }
 
   if ( mStatistics & QgsStatisticalSummary::Median

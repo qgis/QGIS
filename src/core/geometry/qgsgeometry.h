@@ -112,7 +112,7 @@ class CORE_EXPORT QgsGeometry
       AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
       AddPartNotMultiGeometry, //!< The source geometry is not multi
       /* Add ring issues*/
-      AddRingNotClosed, //!< The imput ring is not closed
+      AddRingNotClosed, //!< The input ring is not closed
       AddRingNotValid, //!< The input ring is not valid
       AddRingCrossesExistingRings, //!< The input ring crosses existing rings (it is not disjoint)
       AddRingNotInExistingFeature, //!< The input ring doesn't have any existing ring to fit into
@@ -270,6 +270,45 @@ class CORE_EXPORT QgsGeometry
      * \param geom geometry to find minimum distance to
      */
     double distance( const QgsGeometry &geom ) const;
+
+    /**
+     * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
+     *
+     * This algorithm is an approximation to the standard Hausdorff distance. This approximation is exact or close enough for a large
+     * subset of useful cases. Examples of these are:
+     *
+     * - computing distance between Linestrings that are roughly parallel to each other,
+     * and roughly equal in length. This occurs in matching linear networks.
+     * - Testing similarity of geometries.
+     *
+     * If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
+     *
+     * In case of error -1 will be returned.
+     *
+     * \since QGIS 3.0
+     * \see hausdorffDistanceDensify()
+     */
+    double hausdorffDistance( const QgsGeometry &geom ) const;
+
+    /**
+     * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
+     *
+     * This function accepts a \a densifyFraction argument. The function performs a segment
+     * densification before computing the discrete Hausdorff distance. The \a densifyFraction parameter
+     * sets the fraction by which to densify each segment. Each segment will be split into a
+     * number of equal-length subsegments, whose fraction of the total length is
+     * closest to the given fraction.
+     *
+     * This method can be used when the default approximation provided by hausdorffDistance()
+     * is not sufficient. Decreasing the \a densifyFraction parameter will make the
+     * distance returned approach the true Hausdorff distance for the geometries.
+     *
+     * In case of error -1 will be returned.
+     *
+     * \since QGIS 3.0
+     * \see hausdorffDistance()
+     */
+    double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
 
     /**
      * Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
@@ -559,6 +598,15 @@ class CORE_EXPORT QgsGeometry
      * \see boundingBox()
      */
     QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
+
+    /**
+     * Returns the minimal enclosing circle for the geometry.
+     * \param center Center of the minimal enclosing circle returneds
+     * \param radius Radius of the minimal enclosing circle returned
+     * \param segments Number of segments used to segment geometry. \see QgsEllipse::toPolygon()
+     * \since QGIS 3.0
+     */
+    QgsGeometry minimalEnclosingCircle( QgsPointXY &center SIP_OUT, double &radius SIP_OUT, unsigned int segments = 36 ) const;
 
     /**
      * Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries
@@ -1191,12 +1239,13 @@ class CORE_EXPORT QgsGeometry
     int vertexNrFromVertexId( QgsVertexId i ) const;
 
     /**
-     * Returns an error string referring to an error that was produced
-     * when this geometry was created.
+     * Returns an error string referring to the last error encountered
+     * either when this geometry was created or when an operation
+     * was performed on the geometry.
      *
      * \since QGIS 3.0
      */
-    QString error() const;
+    QString lastError() const;
 
     /**
      * Return GEOS context handle
@@ -1443,6 +1492,9 @@ class CORE_EXPORT QgsGeometry
   private:
 
     QgsGeometryPrivate *d; //implicitly shared data pointer
+
+    //! Last error encountered
+    mutable QString mLastError;
 
     void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
 

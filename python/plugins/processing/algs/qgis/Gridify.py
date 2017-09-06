@@ -42,7 +42,7 @@ class Gridify(QgisFeatureBasedAlgorithm):
     VSPACING = 'VSPACING'
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

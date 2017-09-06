@@ -56,6 +56,7 @@ from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  #
 
 from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
+                       QgsFeatureRequest,
                        QgsMapLayer,
                        QgsProject,
                        QgsApplication,
@@ -82,7 +83,8 @@ class AlgorithmsTest(object):
             algorithm_tests = yaml.load(stream)
 
         if 'tests' in algorithm_tests and algorithm_tests['tests'] is not None:
-            for algtest in algorithm_tests['tests']:
+            for idx, algtest in enumerate(algorithm_tests['tests']):
+                print('About to start {} of {}: "{}"'.format(idx, len(algorithm_tests['tests']), algtest['name']))
                 yield self.check_algorithm, algtest['name'], algtest
 
     def check_algorithm(self, name, defs):
@@ -101,6 +103,7 @@ class AlgorithmsTest(object):
             alg = ScriptAlgorithm(filePath)
             alg.initAlgorithm()
         else:
+            print('Running alg: "{}"'.format(defs['algorithm']))
             alg = QgsApplication.processingRegistry().createAlgorithmById(defs['algorithm'])
 
         parameters = {}
@@ -123,6 +126,10 @@ class AlgorithmsTest(object):
         # ignore user setting for invalid geometry handling
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
+
+        if 'skipInvalid' in defs and defs['skipInvalid']:
+            context.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
+
         feedback = QgsProcessingFeedback()
 
         if expectFailure:
@@ -302,7 +309,7 @@ class AlgorithmsTest(object):
                 strhash = hashlib.sha224(dataArray.data).hexdigest()
 
                 if not isinstance(expected_result['hash'], str):
-                    self.assertTrue(strhash in expected_result['hash'])
+                    self.assertIn(strhash, expected_result['hash'])
                 else:
                     self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:

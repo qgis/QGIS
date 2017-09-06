@@ -18,6 +18,7 @@
 #define QGSCUSTOMIZATION_H
 
 #include "ui_qgscustomizationdialogbase.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 #include <QDomNode>
@@ -76,6 +77,8 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     void apply();
 
     void cancel();
+
+    void showHelp();
 
     // Reset values from settings
     void reset();

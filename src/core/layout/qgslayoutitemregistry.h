@@ -263,8 +263,16 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 #ifndef SIP_RUN
 ///@cond TEMPORARY
 //simple item for testing
+#ifdef ANDROID
+// For some reason, the Android NDK toolchain requires this to link properly.
+// Note to self: Please try to remove this again once Qt ships their libs built with gcc-5
+class CORE_EXPORT TestLayoutItem : public QgsLayoutItem
+#else
 class TestLayoutItem : public QgsLayoutItem
+#endif
 {
+    Q_OBJECT
+
   public:
 
     TestLayoutItem( QgsLayout *layout );
@@ -272,15 +280,13 @@ class TestLayoutItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 102; }
-    QString stringType() const override { return QStringLiteral( "ItemTest" ); }
+    virtual QString stringType() const override { return QStringLiteral( "ItemTest" ); }
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
   private:
     QColor mColor;
     QgsFillSymbol *mShapeStyleSymbol = nullptr;
 };
-
-
 ///@endcond
 #endif
 

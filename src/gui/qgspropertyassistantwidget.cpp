@@ -226,7 +226,7 @@ void QgsPropertyAssistantWidget::updatePreview()
   {
     const QSize minSize( node->minimumIconSize() );
     node->setIconSize( minSize );
-    widthMax = qMax( minSize.width(), widthMax );
+    widthMax = std::max( minSize.width(), widthMax );
     QStandardItem *item = new QStandardItem( node->data( Qt::DecorationRole ).value<QPixmap>(), QString::number( breaks[i] ) );
     item->setEditable( false );
     mPreviewList.appendRow( item );
@@ -287,8 +287,8 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
     const double value = e.evaluate( &context ).toDouble( &ok );
     if ( ok )
     {
-      max = qMax( max, value );
-      min = qMin( min, value );
+      max = std::max( max, value );
+      min = std::min( min, value );
       found = true;
     }
   }

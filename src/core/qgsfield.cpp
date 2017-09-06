@@ -21,7 +21,6 @@
 #include "qgssettings.h"
 
 #include <QDataStream>
-#include <QtCore/qmath.h>
 #include <QIcon>
 
 /***************************************************************************
@@ -249,14 +248,14 @@ bool QgsField::convertCompatible( QVariant &v ) const
       return false;
     }
 
-    double round = qgsRound( dbl );
+    double round = std::round( dbl );
     if ( round  > INT_MAX || round < -INT_MAX )
     {
       //double too large to fit in int
       v = QVariant( d->type );
       return false;
     }
-    v = QVariant( qRound( dbl ) );
+    v = QVariant( static_cast< int >( std::round( dbl ) ) );
     return true;
   }
 
@@ -268,9 +267,9 @@ bool QgsField::convertCompatible( QVariant &v ) const
 
   if ( d->type == QVariant::Double && d->precision > 0 )
   {
-    double s = qPow( 10, d->precision );
+    double s = std::pow( 10, d->precision );
     double d = v.toDouble() * s;
-    v = QVariant( ( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
+    v = QVariant( ( d < 0 ? std::ceil( d - 0.5 ) : std::floor( d + 0.5 ) ) / s );
     return true;
   }
 

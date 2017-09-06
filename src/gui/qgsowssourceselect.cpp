@@ -413,7 +413,7 @@ void QgsOWSSourceSelect::populateCrs()
         break;
 
       // save first CRS in case the current CRS is not available
-      if ( it == mSelectedLayersCRSs.begin() )
+      if ( it == mSelectedLayersCRSs.constBegin() )
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
@@ -421,7 +421,7 @@ void QgsOWSSourceSelect::populateCrs()
         defaultCRS = *it;
     }
 
-    if ( it == mSelectedLayersCRSs.end() )
+    if ( it == mSelectedLayersCRSs.constEnd() )
     {
       // not found
       mSelectedCRS = defaultCRS;

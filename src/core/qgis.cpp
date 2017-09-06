@@ -177,7 +177,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QList<QVariant> &lhsl = lhs.toList();
       const QList<QVariant> &rhsl = rhs.toList();
 
-      int i, n = qMin( lhsl.size(), rhsl.size() );
+      int i, n = std::min( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
         ;
 
@@ -192,7 +192,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QStringList &lhsl = lhs.toStringList();
       const QStringList &rhsl = rhs.toStringList();
 
-      int i, n = qMin( lhsl.size(), rhsl.size() );
+      int i, n = std::min( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i] == rhsl[i]; i++ )
         ;
 

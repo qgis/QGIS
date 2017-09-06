@@ -91,8 +91,10 @@ class CORE_EXPORT QgsPointXY
      */
     QgsPointXY( const QgsPoint &point );
 
-    ~QgsPointXY()
-    {}
+    // IMPORTANT - while QgsPointXY is inherited by QgsReferencedPointXY, we do NOT want a virtual destructor here
+    // because this class MUST be lightweight and we don't want the cost of the vtable here.
+    // see https://github.com/qgis/QGIS/pull/4720#issuecomment-308652392
+    ~QgsPointXY() = default;
 
     /** Sets the x value of the point
      * \param x x coordinate
@@ -260,6 +262,12 @@ class CORE_EXPORT QgsPointXY
     //! Divides the coordinates in this point by a scalar quantity in place
     QgsPointXY &operator/=( double scalar ) { mX /= scalar; mY /= scalar; return *this; }
 
+    //! Allows direct construction of QVariants from points.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
@@ -309,6 +317,7 @@ class CORE_EXPORT QgsPointXY
 
 }; // class QgsPoint
 
+Q_DECLARE_METATYPE( QgsPointXY )
 
 inline bool operator==( const QgsPointXY &p1, const QgsPointXY &p2 ) SIP_SKIP
 {

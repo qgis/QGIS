@@ -241,14 +241,14 @@ void QgsGrassVectorMapLayer::load()
                   case DB_C_TYPE_INT:
                     iv = db_get_value_int( value );
                     variant = QVariant( iv );
-                    mMinMax[i].first = qMin( mMinMax[i].first, ( double )iv );
-                    mMinMax[i].second = qMin( mMinMax[i].second, ( double )iv );
+                    mMinMax[i].first = std::min( mMinMax[i].first, ( double )iv );
+                    mMinMax[i].second = std::min( mMinMax[i].second, ( double )iv );
                     break;
                   case DB_C_TYPE_DOUBLE:
                     dv = db_get_value_double( value );
                     variant = QVariant( dv );
-                    mMinMax[i].first = qMin( mMinMax[i].first, dv );
-                    mMinMax[i].second = qMin( mMinMax[i].second, dv );
+                    mMinMax[i].first = std::min( mMinMax[i].first, dv );
+                    mMinMax[i].second = std::min( mMinMax[i].second, dv );
                     break;
                   case DB_C_TYPE_STRING:
                     // Store as byte array so that codec may be used later
@@ -332,10 +332,10 @@ void QgsGrassVectorMapLayer::close()
   }
 }
 
-QStringList QgsGrassVectorMapLayer::fieldNames( QgsFields &fields )
+QStringList QgsGrassVectorMapLayer::fieldNames( const QgsFields &fields )
 {
   QStringList list;
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const QgsField &field : fields )
   {
     list << field.name();
   }
@@ -598,7 +598,7 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
 
   QgsFields catFields;
   catFields.append( QgsField( mFieldInfo->key, QVariant::Int, QStringLiteral( "integer" ) ) );
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const QgsField &field : fields )
   {
     catFields.append( field );
   }
@@ -643,7 +643,7 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
 
   if ( mFieldInfo )
   {
-    Q_FOREACH ( const QgsField &field, fields )
+    for ( const QgsField &field : fields )
     {
       mTableFields.append( field );
       mAttributeFields.append( field );

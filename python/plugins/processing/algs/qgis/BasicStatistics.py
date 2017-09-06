@@ -81,7 +81,7 @@ class BasicStatisticsForField(QgisAlgorithm):
                        'count,distinct,unique,variance,median,quartile,range,majority,minority').split(',')
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()

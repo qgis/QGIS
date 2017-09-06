@@ -160,7 +160,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
     }
   }
 
-  return QgsPointLocator::Match( QgsPointLocator::Vertex, nullptr, 0, sqrt( minSqrDist ), minP );
+  return QgsPointLocator::Match( QgsPointLocator::Vertex, nullptr, 0, std::sqrt( minSqrDist ), minP );
 }
 
 
@@ -265,7 +265,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
         if ( mSnappingConfig.intersectionSnapping() )
         {
           edges << loc->edgesInRect( pointMap, tolerance );
-          maxSnapIntTolerance = qMax( maxSnapIntTolerance, tolerance );
+          maxSnapIntTolerance = std::max( maxSnapIntTolerance, tolerance );
         }
       }
     }
@@ -380,7 +380,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
         {
           // use area as big as we think may fit into our limit
           QgsPointXY c = entry.second.center();
-          double halfSide = sqrt( indexReasonableArea ) / 2;
+          double halfSide = std::sqrt( indexReasonableArea ) / 2;
           QgsRectangle rect( c.x() - halfSide, c.y() - halfSide,
                              c.x() + halfSide, c.y() + halfSide );
           loc->setExtent( &rect );

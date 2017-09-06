@@ -110,10 +110,10 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
 
     QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0.0, 0.0 );
 
-    double xMinPos = qMin( -halfSymbolSize, offset.x() - fillSymbolBleed );
-    double xMaxPos = qMax( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
-    double yMinPos = qMin( -halfSymbolSize, offset.y() - fillSymbolBleed );
-    double yMaxPos = qMax( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
+    double xMinPos = std::min( -halfSymbolSize, offset.x() - fillSymbolBleed );
+    double xMaxPos = std::max( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
+    double yMinPos = std::min( -halfSymbolSize, offset.y() - fillSymbolBleed );
+    double yMaxPos = std::max( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
     mBoundingRect = QRectF( xMinPos, yMinPos, xMaxPos - xMinPos, yMaxPos - yMinPos );
   }
 }
@@ -187,7 +187,7 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   int cursorSensitivity = 7;
 
   if ( mAnnotation && mAnnotation->hasFixedMapPosition() &&
-       qAbs( itemPos.x() ) < cursorSensitivity && qAbs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
+       std::fabs( itemPos.x() ) < cursorSensitivity && std::fabs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
   {
     return MoveMapPosition;
   }
@@ -196,10 +196,10 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0, 0 );
 
   bool left, right, up, down;
-  left = qAbs( itemPos.x() - offset.x() ) < cursorSensitivity;
-  right = qAbs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
-  up = qAbs( itemPos.y() - offset.y() ) < cursorSensitivity;
-  down = qAbs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
+  left = std::fabs( itemPos.x() - offset.x() ) < cursorSensitivity;
+  right = std::fabs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
+  up = std::fabs( itemPos.y() - offset.y() ) < cursorSensitivity;
+  down = std::fabs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
 
   if ( left && up )
   {

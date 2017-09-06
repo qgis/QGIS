@@ -72,7 +72,8 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   //insert attributes into combo box
   if ( layer )
   {
-    Q_FOREACH ( const QgsField &f, layer->fields() )
+    const QgsFields layerFields = layer->fields();
+    for ( const QgsField &f : layerFields )
     {
       mLabelFieldComboBox->addItem( f.name() );
     }
@@ -124,7 +125,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( mRenderer->placement() ) );
 
   //scale dependent labeling
-  mMinLabelScaleWidget->setScale( qMax( mRenderer->minimumLabelScale(), 0.0 ) );
+  mMinLabelScaleWidget->setScale( std::max( mRenderer->minimumLabelScale(), 0.0 ) );
   if ( mRenderer->minimumLabelScale() > 0 )
   {
     mScaleDependentLabelsCheckBox->setCheckState( Qt::Checked );

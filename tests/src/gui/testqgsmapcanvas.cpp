@@ -22,7 +22,6 @@
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>
 #include <qgsmaptoolpan.h>
-#include "qgstestutils.h"
 
 namespace QTest
 {

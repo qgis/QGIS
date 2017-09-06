@@ -60,7 +60,7 @@ double QgsLayoutPageCollection::maximumPageWidth() const
   double maxWidth = 0;
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
   {
-    maxWidth = qMax( maxWidth, mLayout->convertToLayoutUnits( page->pageSize() ).width() );
+    maxWidth = std::max( maxWidth, mLayout->convertToLayoutUnits( page->pageSize() ).width() );
   }
   return maxWidth;
 }

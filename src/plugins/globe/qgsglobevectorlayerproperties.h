@@ -19,8 +19,8 @@
 #include <QIcon>
 
 #include "ui_qgsglobevectorlayerpropertiespage.h"
-#include <qgsmaplayerconfigwidget.h>
-#include <qgsmaplayerconfigwidgetfactory.h>
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 #include <osgEarthSymbology/AltitudeSymbol>
 
 class QgsGlobeVectorLayerConfig;
@@ -32,6 +32,7 @@ class QListWidgetItem;
 
 class QgsGlobeVectorLayerConfig : public QObject
 {
+    Q_OBJECT
   public:
     enum RenderingMode
     {

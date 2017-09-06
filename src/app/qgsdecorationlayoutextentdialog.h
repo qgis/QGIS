@@ -21,6 +21,7 @@
 #include <QDialog>
 #include "qgis_app.h"
 #include "qgstextrenderer.h"
+#include "qgshelp.h"
 #include <memory>
 
 class QgsDecorationLayoutExtent;
@@ -38,6 +39,7 @@ class APP_EXPORT QgsDecorationLayoutExtentDialog : public QDialog, private Ui::Q
     void apply();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
+    void showHelp();
 
 
   private:

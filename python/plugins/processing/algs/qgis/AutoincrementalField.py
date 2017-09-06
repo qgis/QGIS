@@ -37,7 +37,7 @@ class AutoincrementalField(QgisFeatureBasedAlgorithm):
         self.current = 0
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def name(self):
         return 'addautoincrementalfield'

@@ -178,7 +178,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
           QgsFeatureIterator it = childLayer->getFeatures( req );
           QVector<QVariant> attributeWidgetCaches;
           int fieldIndex = 0;
-          Q_FOREACH ( const QgsField &field, childLayer->fields() )
+          for ( const auto &field : childLayer->fields() )
           {
             QgsEditorWidgetSetup setup = field.editorWidgetSetup();
             QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );

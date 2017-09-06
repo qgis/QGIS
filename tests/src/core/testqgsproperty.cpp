@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgstestutils.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 #include "qgsvectorlayer.h"
@@ -804,7 +803,7 @@ void TestQgsProperty::genericNumericTransformer()
   //test exponential scaling
   t.setExponent( 1.5 );
   QCOMPARE( t.value( 100 ), 10.0 );
-  QVERIFY( qgsDoubleNear( t.value( 150 ), 13.5355, 0.001 ) );
+  QGSCOMPARENEAR( t.value( 150 ), 13.5355, 0.001 );
   QCOMPARE( t.value( 200 ), 20.0 );
 
   //as expression
@@ -1010,18 +1009,18 @@ void TestQgsProperty::sizeScaleTransformer()
   //test area scaling
   t.setType( QgsSizeScaleTransformer::Area );
   QCOMPARE( t.size( 100 ), 10.0 );
-  QVERIFY( qgsDoubleNear( t.size( 150 ), 17.0711, 0.001 ) );
+  QGSCOMPARENEAR( t.size( 150 ), 17.0711, 0.001 );
   QCOMPARE( t.size( 200 ), 20.0 );
   //test flannery scaling
   t.setType( QgsSizeScaleTransformer::Flannery );
   QCOMPARE( t.size( 100 ), 10.0 );
-  QVERIFY( qgsDoubleNear( t.size( 150 ), 16.7362, 0.001 ) );
+  QGSCOMPARENEAR( t.size( 150 ), 16.7362, 0.001 );
   QCOMPARE( t.size( 200 ), 20.0 );
   //test exponential scaling
   t.setType( QgsSizeScaleTransformer::Exponential );
   t.setExponent( 1.5 );
   QCOMPARE( t.size( 100 ), 10.0 );
-  QVERIFY( qgsDoubleNear( t.size( 150 ), 13.5355, 0.001 ) );
+  QGSCOMPARENEAR( t.size( 150 ), 13.5355, 0.001 );
   QCOMPARE( t.size( 200 ), 20.0 );
 
   //as expression

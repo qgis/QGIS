@@ -55,10 +55,10 @@ class ExportGeometryInfo(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
 
     def tags(self):
-        return self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
+        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -80,7 +80,7 @@ class ExportGeometryInfo(QgisAlgorithm):
         return 'exportaddgeometrycolumns'
 
     def displayName(self):
-        return self.tr('Export/Add geometry columns')
+        return self.tr('Export geometry columns')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

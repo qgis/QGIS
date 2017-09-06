@@ -1538,6 +1538,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void updateCrsStatusBar();
 
+    void onFocusChanged( QWidget *oldWidget, QWidget *newWidget );
+
   signals:
 
     /**
@@ -2122,6 +2124,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLocatorWidget *mLocatorWidget = nullptr;
 
     QgsStatusBar *mStatusBar = nullptr;
+
+    QTime mLastRenderTime;
+    double mLastRenderTimeSeconds = 0;
+    QTimer mRenderProgressBarTimer;
+    QMetaObject::Connection mRenderProgressBarTimerConnection;
 
     friend class TestQgisAppPython;
 };

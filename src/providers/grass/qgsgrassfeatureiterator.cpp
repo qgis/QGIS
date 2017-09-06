@@ -65,7 +65,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source,
   // multiple iterators if features are edited -> lock only critical sections
 
   // Create selection
-  int size = 1 + qMax( Vect_get_num_lines( mSource->map() ), Vect_get_num_areas( mSource->map() ) );
+  int size = 1 + std::max( Vect_get_num_lines( mSource->map() ), Vect_get_num_areas( mSource->map() ) );
   QgsDebugMsg( QString( "mSelection.resize(%1)" ).arg( size ) );
   mSelection.resize( size );
 

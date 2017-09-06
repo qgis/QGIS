@@ -278,7 +278,7 @@ int QgsComposerTableV2::rowsVisible( double frameHeight, int firstRow, bool incl
   if ( includeEmptyRows && contentHeight > 0 )
   {
     double rowHeight = ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
-    currentRow += qMax( floor( contentHeight / rowHeight ), 0.0 );
+    currentRow += std::max( std::floor( contentHeight / rowHeight ), 0.0 );
   }
 
   return currentRow - firstRow - 1;
@@ -320,9 +320,9 @@ QPair<int, int> QgsComposerTableV2::rowRange( const int frameIndex ) const
   }
 
   //using zero based indexes
-  int firstVisible = qMin( rowsAlreadyShown, mTableContents.length() );
+  int firstVisible = std::min( rowsAlreadyShown, mTableContents.length() );
   int possibleRowsVisible = rowsVisible( frameIndex, rowsAlreadyShown, false );
-  int lastVisible = qMin( firstVisible + possibleRowsVisible, mTableContents.length() );
+  int lastVisible = std::min( firstVisible + possibleRowsVisible, mTableContents.length() );
 
   return qMakePair( firstVisible, lastVisible );
 }
@@ -947,7 +947,7 @@ bool QgsComposerTableV2::calculateMaxColumnWidths()
         currentCellTextWidth = 0;
         Q_FOREACH ( const QString &line, multiLineSplit )
         {
-          currentCellTextWidth = qMax( currentCellTextWidth, QgsComposerUtils::textWidthMM( mContentFont, line ) );
+          currentCellTextWidth = std::max( currentCellTextWidth, QgsComposerUtils::textWidthMM( mContentFont, line ) );
         }
         widths[ row * cols + col ] = currentCellTextWidth;
       }
@@ -967,7 +967,7 @@ bool QgsComposerTableV2::calculateMaxColumnWidths()
     double maxColWidth = 0;
     for ( int row = 0; row < mTableContents.count() + 1; ++row )
     {
-      maxColWidth = qMax( widths[ row * cols + col ], maxColWidth );
+      maxColWidth = std::max( widths[ row * cols + col ], maxColWidth );
     }
     mMaxColumnWidthMap.insert( col, maxColWidth );
   }
@@ -1024,7 +1024,7 @@ bool QgsComposerTableV2::calculateMaxRowHeights()
     double maxRowHeight = 0;
     for ( int col = 0; col < cols; ++col )
     {
-      maxRowHeight = qMax( heights[ row * cols + col ], maxRowHeight );
+      maxRowHeight = std::max( heights[ row * cols + col ], maxRowHeight );
     }
     mMaxRowHeightMap.insert( row, maxRowHeight );
   }
@@ -1161,7 +1161,7 @@ bool QgsComposerTableV2::textRequiresWrapping( const QString &text, double colum
   double currentTextWidth = 0;
   Q_FOREACH ( const QString &line, multiLineSplit )
   {
-    currentTextWidth = qMax( currentTextWidth, QgsComposerUtils::textWidthMM( font, line ) );
+    currentTextWidth = std::max( currentTextWidth, QgsComposerUtils::textWidthMM( font, line ) );
   }
 
   return ( currentTextWidth > columnWidth );

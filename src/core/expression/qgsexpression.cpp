@@ -149,7 +149,8 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
     case QVariant::List:
     {
       QStringList quotedValues;
-      Q_FOREACH ( const QVariant &v, value.toList() )
+      const QVariantList values = value.toList();
+      for ( const QVariant &v : values )
       {
         quotedValues += quotedValue( v );
       }
@@ -175,7 +176,8 @@ int QgsExpression::functionIndex( const QString &name )
   {
     if ( QString::compare( name, QgsExpression::Functions()[i]->name(), Qt::CaseInsensitive ) == 0 )
       return i;
-    Q_FOREACH ( const QString &alias, QgsExpression::Functions()[i]->aliases() )
+    const QStringList aliases = QgsExpression::Functions()[i]->aliases();
+    for ( const QString &alias : aliases )
     {
       if ( QString::compare( name, alias, Qt::CaseInsensitive ) == 0 )
         return i;
@@ -506,7 +508,7 @@ QString QgsExpression::helpText( QString name )
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),
                               f.mDescription ) );
 
-  Q_FOREACH ( const HelpVariant &v, f.mVariants )
+  for ( const HelpVariant &v : qgsAsConst( f.mVariants ) )
   {
     if ( f.mVariants.size() > 1 )
     {
@@ -538,7 +540,7 @@ QString QgsExpression::helpText( QString name )
         helpContents += '(';
 
         QString delim;
-        Q_FOREACH ( const HelpArg &a, v.mArguments )
+        for ( const HelpArg &a : qgsAsConst( v.mArguments ) )
         {
           helpContents += delim;
           delim = QStringLiteral( ", " );
@@ -564,7 +566,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
 
-      Q_FOREACH ( const HelpArg &a, v.mArguments )
+      for ( const HelpArg &a : qgsAsConst( v.mArguments ) )
       {
         if ( a.mSyntaxOnly )
           continue;
@@ -579,7 +581,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
 
-      Q_FOREACH ( const HelpExample &e, v.mExamples )
+      for ( const HelpExample &e : qgsAsConst( v.mExamples ) )
       {
         helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
 

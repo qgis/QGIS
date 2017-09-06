@@ -193,6 +193,8 @@ class GdalUtils(object):
     def escapeAndJoin(strList):
         joined = ''
         for s in strList:
+            if not isinstance(s, str):
+                s = str(s)
             if s and s[0] != '-' and ' ' in s:
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
                           + '"'

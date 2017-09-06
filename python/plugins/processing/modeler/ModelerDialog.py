@@ -659,6 +659,7 @@ class ModelerDialog(BASE, WIDGET):
                         name = alg.group()
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
+                        groupItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                         if provider.id() in ('qgis', 'native'):
                             groupItem.setIcon(0, provider.icon())
                             qgis_groups[alg.group()] = groupItem
@@ -672,6 +673,7 @@ class ModelerDialog(BASE, WIDGET):
                 providerItem.setText(0, provider.name())
                 providerItem.setToolTip(0, provider.name())
                 providerItem.setIcon(0, provider.icon())
+                providerItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                 for groupItem in list(groups.values()):
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

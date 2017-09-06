@@ -153,12 +153,6 @@ Compare two doubles using specified number of significant digits
  :rtype: bool
 %End
 
-double qgsRound( double x );
-%Docstring
-A round function which returns a double to guard against overflows
- :rtype: float
-%End
-
 double qgsRound( double number, double places );
 %Docstring
  Returns a double ``number``, rounded (as close as possible) to the specified number of ``places``.
@@ -166,6 +160,8 @@ double qgsRound( double number, double places );
 .. versionadded:: 3.0
  :rtype: float
 %End
+
+
 
 double qgsPermissiveToDouble( QString string, bool &ok );
 %Docstring

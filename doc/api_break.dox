@@ -249,6 +249,8 @@ Removed Classes        {#qgis_api_break_3_0_removed_classes}
 - QgsAnnotationItem was removed. This was replaced by QgsAnnotation and QgsMapCanvasAnnotationItem.
 - QgsAttributeAction was removed, and replaced by QgsActionManager.
 - QgsAttributeEditor was removed. Use QgsEditorWidgetRegistry::create() instead.
+- Bezier3D.
+- CloughTocherInterpolator.
 - QgsColorbutton was removed. QgsColorButtonV2 has now been renamed to QgsColorButton. Hence, QgsColorButtonV2 does not exist anymore.
 - QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
 All the functionality from the old QgsColorDialog has been moved to the new class.
@@ -266,10 +268,12 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsDataDefinedButton was removed. Use QgsPropertyOverrideButton instead.
 - QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsPropertyOverrideButton
 - QgsDefaultPluginLayerLegend was removed. Use QgsMapLayer::setLegend() to provide legend nodes for plugin layers.
+- DualEdgeTriangulation
 - QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsFileDropEdit was removed. Use QgsFileWidget instead.
 - QgsFormAnnotationItem. Use QgsFormAnnotation instead.
 - QgsGeometryAnalyzer. Use the equivalent Processing algorithms instead.
+- HalfEdge.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
 - QgsGenericProjectionSelector. Use QgsProjectionSelectionTreeWidget instead.
@@ -282,11 +286,16 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
   - addLegendLayerActionForLayer() moved to QgisInterface::addCustomActionForLayer()
   - removeLegendLayerAction() moved to QgisInterface::removeCustomActionForLayerType()
 - QgsLegendModel was removed.
+- Line3D.
+- LinTriangleInterpolator.
 - QgsMapCanvasLayer. Map canvas and overview canvas are updated separately with their own setLayers() calls.
 - QgsMapCanvasMap. It is an internal class used by map canvas.
 - QgsMapLayerRegistry. Its functionality has been moved to QgsProject.
 - QgsMapRenderer. It has been replaced by QgsMapRendererJob with subclasses and QgsMapSettings.
 - QgsMapToolTouch. The touch navigation functionality is now built into the standard QgsMapToolPan tool.
+- Node.
+- NormVecDecorator.
+- ParametericLine.
 - QgsPhotoWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
 - QgsPointSample. Use the Processing "Random Points in Polygon" algorithm instead.
 - QgsPseudoColorShader. This shader has been broken for some time and was replaced by QgsSingleBandPseudoColorRenderer.
@@ -302,10 +311,14 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsSvgAnnotationItem. Use QgsSvgAnnotation instead.
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
 - QgsTextAnnotationItem. Use QgsTextAnnotation instead.
+- QgsTransectSample. This class was unused and unmaintained.
+- TriangleInterpolator.
+- Triangulation.
+- TriDecorator.
 - QgsSnapper. Use QgsSnappingUtils instead.
 - QgsSnappingResult. Use QgsSnappingUtils instead.
 - QgsMapCanvasSnapper. Use QgsMapCanvas::snappingUtils() instead.
-
+- Vector3D
 
 General changes        {#qgis_api_break_3_0_global}
 ---------------
@@ -1348,6 +1361,13 @@ QgsGraduatedRenderer        {#qgis_api_break_3_0_QgsGraduatedRenderer}
 - setInvertedColorRamp() and invertedColorRamp() functions are gone, QgsColorRamp now responsible for invert
 - createRenderer() and updateColorRamp()'s inverted parameter is gone
 
+
+QgsGridFileWriter       {#qgis_api_break_3_0_QgsGridFileWriter}
+-----------------
+
+- writeFile() now takes an optional QgsFeedback argument instead of using a QProgressDialog
+
+
 QgsGroupWMSDataDialog        {#qgis_api_break_3_0_QgsGroupWMSDataDialog}
 ---------------------
 
@@ -1889,7 +1909,8 @@ QgsRasterCalculator     {#qgis_api_break_3_0_QgsRasterCalculator}
 -------------------
 
 - Cancelled (Result enum value) has been renamed to Canceled  <!--#spellok-->
-
+- processCalculation() now uses an optional QgsFeedback instead of QProgressDialog
+for progress reports and cancelation.
 
 QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 ---------------------
@@ -1972,6 +1993,11 @@ QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 - `createFromXML()` has been renamed to `QgsRelation::createFromXml()`
 - `setRelationName()` has been renamed to `QgsRelation::setName()`
 - `setRelationId()` has been renamed to `QgsRelation::setId()`
+
+QgsRelief        {#qgis_api_break_3_0_QgsRelief}
+---------
+
+- processRaster() now uses a QgsFeedback object instead of a QProgressDialog
 
 
 QgsRenderChecker        {#qgis_api_break_3_0_QgsRenderChecker}
@@ -2308,6 +2334,12 @@ QgsSymbolsListWidget        {#qgis_api_break_3_0_QgsSymbolsListWidget}
 
 - expressionContext(), setExpressionContext(), setMapCanvas() and mapCanvas() have been removed in favor of setContext()/context()
 
+
+QgsTINInterpolator        {#qgis_api_break_3_0_QgsTINInterpolator}
+------------------
+
+- The constructor takes a QgsFeedback argument instead of using a QProgressDialog.
+- setExportTriangulationToFile() and setTriangulationFilePath() were removed. Use setTriangulationSink() instead.
 
 QgsTolerance        {#qgis_api_break_3_0_QgsTolerance}
 ------------

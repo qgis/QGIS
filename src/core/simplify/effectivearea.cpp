@@ -43,7 +43,7 @@ static void destroy_minheap( MINHEAP tree )
  */
 static double triarea2d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint &P3 )
 {
-  return qAbs( 0.5 * ( ( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
+  return std::fabs( 0.5 * ( ( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
 }
 
 /**
@@ -65,7 +65,7 @@ static double triarea3d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint 
   cy = az * bx - ax * bz;
   cz = ax * by - ay * bx;
 
-  area = qAbs( 0.5 * ( sqrt( cx * cx + cy * cy + cz * cz ) ) );
+  area = std::fabs( 0.5 * ( std::sqrt( cx * cx + cy * cy + cz * cz ) ) );
   return area;
 }
 

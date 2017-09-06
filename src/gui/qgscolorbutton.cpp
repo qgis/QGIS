@@ -73,7 +73,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   mMinimumSize = QSize( 120, 28 );
 #endif
 
-  mMinimumSize.setHeight( qMax( static_cast<int>( fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
+  mMinimumSize.setHeight( std::max( static_cast<int>( fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 }
 
 

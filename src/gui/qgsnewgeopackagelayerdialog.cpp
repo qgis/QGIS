@@ -351,6 +351,13 @@ bool QgsNewGeoPackageLayerDialog::apply()
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>
                                ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
+  // z-coordinate & m-value.
+  if ( mGeometryWithZCheckBox->isChecked() )
+    wkbType = OGR_GT_SetZ( wkbType );
+
+  if ( mGeometryWithMCheckBox->isChecked() )
+    wkbType = OGR_GT_SetM( wkbType );
+
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
   QgsCoordinateReferenceSystem srs = mCrsSelector->crs();

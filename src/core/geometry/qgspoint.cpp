@@ -43,14 +43,14 @@ QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wk
     Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
     mWkbType = wkbType;
   }
-  else if ( qIsNaN( z ) )
+  else if ( std::isnan( z ) )
   {
-    if ( qIsNaN( m ) )
+    if ( std::isnan( m ) )
       mWkbType = QgsWkbTypes::Point;
     else
       mWkbType = QgsWkbTypes::PointM;
   }
-  else if ( qIsNaN( m ) )
+  else if ( std::isnan( m ) )
     mWkbType = QgsWkbTypes::PointZ;
   else
     mWkbType = QgsWkbTypes::PointZM;
@@ -101,9 +101,9 @@ bool QgsPoint::operator==( const QgsPoint &pt ) const
   equal &= qgsDoubleNear( pt.x(), mX, 1E-8 );
   equal &= qgsDoubleNear( pt.y(), mY, 1E-8 );
   if ( QgsWkbTypes::hasZ( type ) )
-    equal &= qgsDoubleNear( pt.z(), mZ, 1E-8 ) || ( qIsNaN( pt.z() ) && qIsNaN( mZ ) );
+    equal &= qgsDoubleNear( pt.z(), mZ, 1E-8 ) || ( std::isnan( pt.z() ) && std::isnan( mZ ) );
   if ( QgsWkbTypes::hasM( type ) )
-    equal &= qgsDoubleNear( pt.m(), mM, 1E-8 ) || ( qIsNaN( pt.m() ) && qIsNaN( mM ) );
+    equal &= qgsDoubleNear( pt.m(), mM, 1E-8 ) || ( std::isnan( pt.m() ) && std::isnan( mM ) );
 
   return equal;
 }
@@ -480,12 +480,12 @@ QPointF QgsPoint::toQPointF() const
 
 double QgsPoint::distance( double x, double y ) const
 {
-  return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+  return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
 }
 
 double QgsPoint::distance( const QgsPoint &other ) const
 {
-  return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+  return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
 }
 
 double QgsPoint::distanceSquared( double x, double y ) const
@@ -501,10 +501,10 @@ double QgsPoint::distanceSquared( const QgsPoint &other ) const
 double QgsPoint::distance3D( double x, double y, double z ) const
 {
   double zDistSquared = 0.0;
-  if ( is3D() || !qIsNaN( z ) )
+  if ( is3D() || !std::isnan( z ) )
     zDistSquared = ( mZ - z ) * ( mZ - z );
 
-  return sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared );
+  return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared );
 }
 
 double QgsPoint::distance3D( const QgsPoint &other ) const
@@ -513,13 +513,13 @@ double QgsPoint::distance3D( const QgsPoint &other ) const
   if ( is3D() || other.is3D() )
     zDistSquared = ( mZ - other.z() ) * ( mZ - other.z() );
 
-  return sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + zDistSquared );
+  return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + zDistSquared );
 }
 
 double QgsPoint::distanceSquared3D( double x, double y, double z ) const
 {
   double zDistSquared = 0.0;
-  if ( is3D() || !qIsNaN( z ) )
+  if ( is3D() || !std::isnan( z ) )
     zDistSquared = ( mZ - z ) * ( mZ - z );
 
   return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) + zDistSquared;
@@ -538,7 +538,7 @@ double QgsPoint::azimuth( const QgsPoint &other ) const
 {
   double dx = other.x() - mX;
   double dy = other.y() - mY;
-  return ( atan2( dx, dy ) * 180.0 / M_PI );
+  return ( std::atan2( dx, dy ) * 180.0 / M_PI );
 }
 
 double QgsPoint::inclination( const QgsPoint &other ) const
@@ -550,7 +550,7 @@ double QgsPoint::inclination( const QgsPoint &other ) const
   }
   double dz = other.z() - mZ;
 
-  return ( acos( dz / distance ) * 180.0 / M_PI );
+  return ( std::acos( dz / distance ) * 180.0 / M_PI );
 }
 
 QgsPoint QgsPoint::project( double distance, double azimuth, double inclination ) const
@@ -559,22 +559,22 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   double radsXy = azimuth * M_PI / 180.0;
   double dx = 0.0, dy = 0.0, dz = 0.0;
 
-  inclination = fmod( inclination, 360.0 );
+  inclination = std::fmod( inclination, 360.0 );
 
   if ( !qgsDoubleNear( inclination, 90.0 ) )
     pType = QgsWkbTypes::addZ( pType );
 
   if ( !is3D() && qgsDoubleNear( inclination, 90.0 ) )
   {
-    dx = distance * sin( radsXy );
-    dy = distance * cos( radsXy );
+    dx = distance * std::sin( radsXy );
+    dy = distance * std::cos( radsXy );
   }
   else
   {
     double radsZ = inclination * M_PI / 180.0;
-    dx = distance * sin( radsZ ) * sin( radsXy );
-    dy = distance * sin( radsZ ) * cos( radsXy );
-    dz = distance * cos( radsZ );
+    dx = distance * std::sin( radsZ ) * std::sin( radsXy );
+    dy = distance * std::sin( radsZ ) * std::cos( radsXy );
+    dz = distance * std::cos( radsZ );
   }
 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );

@@ -19,9 +19,9 @@
 #include <QVector>
 #include <QVariant>
 
-#include <qgspoint.h>
-#include <qgscoordinatereferencesystem.h>
-#include <qgsdistancearea.h>
+#include "qgspoint.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdistancearea.h"
 #include "qgis_analysis.h"
 
 #ifdef SIP_RUN

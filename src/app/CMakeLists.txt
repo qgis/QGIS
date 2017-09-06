@@ -516,6 +516,15 @@ IF(PEDANTIC)
   ENDIF(MSVC)
 ENDIF(PEDANTIC)
 
+IF(MSVC)
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+SET_SOURCE_FILES_PROPERTIES(
+  qgisapp.cpp
+  main.cpp
+  qgscrashhandler.cpp
+  PROPERTIES COMPILE_FLAGS -wd4091)
+ENDIF(MSVC)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/composer

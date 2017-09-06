@@ -100,7 +100,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     }
     ++idx;
   }
-  ui.comboBoxInputLayer->setCurrentIndex( qMax( 0, currIdx ) );
+  ui.comboBoxInputLayer->setCurrentIndex( std::max( 0, currIdx ) );
 }
 
 QgsVectorLayer *QgsGeometryCheckerSetupTab::getSelectedLayer()

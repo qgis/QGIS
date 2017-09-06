@@ -77,6 +77,8 @@ class QgsGrassObjectItemBase
 
 class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemBase
 {
+    Q_OBJECT
+
   public:
     QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path );
 

@@ -22,6 +22,7 @@
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+#include "qgshelp.h"
 #include "qgis_app.h"
 
 class QDialog;
@@ -174,6 +175,8 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     void on_selectionListWidget_currentRowChanged( int index );
 
     void defaultExpressionChanged();
+
+    void showHelp();
 
   private:
     QgsVectorLayer *mLayer = nullptr;

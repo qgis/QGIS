@@ -578,8 +578,8 @@ void QgsComposerPicture::setSceneRect( const QRectF &rectangle )
 
       //if height has changed more than width, then fix width and set height correspondingly
       //else, do the opposite
-      if ( qAbs( rect().width() - rectangle.width() ) <
-           qAbs( rect().height() - rectangle.height() ) )
+      if ( std::fabs( rect().width() - rectangle.width() ) <
+           std::fabs( rect().height() - rectangle.height() ) )
       {
         newRect.setHeight( targetImageSize.height() * newRect.width() / targetImageSize.width() );
       }

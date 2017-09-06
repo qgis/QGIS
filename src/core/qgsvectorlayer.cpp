@@ -257,7 +257,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     layer->setDefaultValueExpression( i, defaultValueExpression( i ) );
 
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> constraints = fieldConstraintsAndStrength( i );
-    for ( QgsFieldConstraints::Constraint c : constraints.keys() )
+    Q_FOREACH ( QgsFieldConstraints::Constraint c,  constraints.keys() )
     {
       layer->setFieldConstraint( i, c, constraints.value( c ) );
     }
@@ -770,8 +770,8 @@ bool QgsVectorLayer::countSymbolFeatures()
   if ( !mFeatureCounter )
   {
     mFeatureCounter = new QgsVectorLayerFeatureCounter( this );
-    connect( mFeatureCounter, &QgsTask::taskCompleted, [ = ]() { onSymbolsCounted(); mFeatureCounter = nullptr; } );
-    connect( mFeatureCounter, &QgsTask::taskTerminated, [ = ]() { mFeatureCounter = nullptr; } );
+    connect( mFeatureCounter, &QgsTask::taskCompleted, this, &QgsVectorLayer::onFeatureCounterCompleted );
+    connect( mFeatureCounter, &QgsTask::taskTerminated, this, &QgsVectorLayer::onFeatureCounterTerminated );
 
     QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
@@ -947,7 +947,12 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   bool success = mEditBuffer->addFeature( feature );
 
   if ( success )
+  {
     updateExtents();
+
+    if ( mJoinBuffer->containsJoins() )
+      success = mJoinBuffer->addFeature( feature );
+  }
 
   return success;
 }
@@ -2258,10 +2263,26 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
-  if ( !mEditBuffer || !mDataProvider )
-    return false;
+  switch ( fields().fieldOrigin( field ) )
+  {
+    case QgsFields::OriginJoin:
+      return mJoinBuffer->changeAttributeValue( fid, field, newValue, oldValue );
 
-  return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+    case QgsFields::OriginProvider:
+    case QgsFields::OriginEdit:
+    case QgsFields::OriginExpression:
+    {
+      if ( !mEditBuffer || !mDataProvider )
+        return false;
+      else
+        return mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+    }
+
+    case QgsFields::OriginUnknown:
+      return false;
+  }
+
+  return false;
 }
 
 bool QgsVectorLayer::addAttribute( const QgsField &field )
@@ -2409,6 +2430,9 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   if ( !mEditBuffer )
     return false;
 
+  if ( mJoinBuffer->containsJoins() )
+    mJoinBuffer->deleteFeature( fid );
+
   bool res = mEditBuffer->deleteFeature( fid );
   if ( res )
   {
@@ -2426,6 +2450,9 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
     QgsDebugMsg( "Cannot delete features (mEditBuffer==NULL)" );
     return false;
   }
+
+  if ( mJoinBuffer->containsJoins() )
+    mJoinBuffer->deleteFeatures( fids );
 
   bool res = mEditBuffer->deleteFeatures( fids );
 
@@ -2609,9 +2636,11 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
   bool res = mEditBuffer->addFeatures( features );
   updateExtents();
 
+  if ( res && mJoinBuffer->containsJoins() )
+    res = mJoinBuffer->addFeatures( features );
+
   return res;
 }
-
 
 void QgsVectorLayer::setCoordinateSystem()
 {
@@ -3916,7 +3945,8 @@ QString QgsVectorLayer::htmlMetadata() const
   }
   else
   {
-    QString typeString( QgsWkbTypes::geometryDisplayString( geometryType() ) );
+    QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
+                        QgsWkbTypes::displayString( wkbType() ) ) );
     myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) % tr( "Geometry" ) % QLatin1String( "</td><td>" ) % typeString % QLatin1String( "</td></tr>\n" );
   }
 
@@ -4003,6 +4033,17 @@ QString QgsVectorLayer::htmlMetadata() const
 void QgsVectorLayer::invalidateSymbolCountedFlag()
 {
   mSymbolFeatureCounted = false;
+}
+
+void QgsVectorLayer::onFeatureCounterCompleted()
+{
+  onSymbolsCounted();
+  mFeatureCounter = nullptr;
+}
+
+void QgsVectorLayer::onFeatureCounterTerminated()
+{
+  mFeatureCounter = nullptr;
 }
 
 void QgsVectorLayer::onJoinedFieldsChanged()
@@ -4254,11 +4295,12 @@ QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> 
 
   QString name = mFields.at( fieldIndex ).name();
 
-  for ( QPair< QString, QgsFieldConstraints::Constraint > p : mFieldConstraintStrength.keys() )
+  QMap< QPair< QString, QgsFieldConstraints::Constraint >, QgsFieldConstraints::ConstraintStrength >::const_iterator conIt = mFieldConstraintStrength.constBegin();
+  for ( ; conIt != mFieldConstraintStrength.constEnd(); ++conIt )
   {
-    if ( p.first == name )
+    if ( conIt.key().first == name )
     {
-      m[ p.second ] = mFieldConstraintStrength.value( p );
+      m[ conIt.key().second ] = mFieldConstraintStrength.value( conIt.key() );
     }
   }
 
