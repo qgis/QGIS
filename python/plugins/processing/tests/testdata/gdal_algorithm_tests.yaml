@@ -16,228 +16,6 @@ tests:
           - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
           - '  NoData Value=-32768'
 
-#  - algorithm: gdal:ogrinfo
-#    name: ogrinfo
-#    params:
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#      SUMMARY_ONLY: 'True'
-#    results:
-#      OUTPUT:
-#        name: expected/gdal/vector_info.html
-#        type: regex
-#        rules:
-#          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
-#          - 'Geometry: Line String'
-#          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
-#
-#  - algorithm: gdal:buffervectors
-#    name: Buffer lines
-#    params:
-#      DISSOLVEALL: false
-#      DISTANCE: 1.0
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#    expectedFailure:
-#      - int(1)
-#
-#  - algorithm: gdal:buffervectors
-#    name: Basic polygon buffer
-#    params:
-#      DISSOLVEALL: false
-#      DISTANCE: 0.5
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_polys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: gdal:buffervectors
-#    name: Polygon buffer with dissolve
-#    params:
-#      DISSOLVEALL: true
-#      DISTANCE: 0.5
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_polys_dissolve.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-  - algorithm: gdal:createpointsalonglines
-    name: Points along lines
-    params:
-      DISTANCE: 0.25
-      GEOMETRY: geometry
-      INPUT:
-        name: lines.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/gdal/points_along_lines.gml
-        type: vector
-        pk: fid
-        compare:
-          ignore_crs_check: true
-
-#  - algorithm: gdal:offsetlinesforlines
-#    name: Offset lines for lines (right-handed)
-#    params:
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#         name: lines.gml
-#         type: vector
-#      RADIUS: -0.5
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/offset_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: gdal:singlesidedbufferforlines
-#    name: One-side buffer for lines (left-handed)
-#    params:
-#      DISSOLVEALL: false
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      LEFTRIGHT: '1'
-#      MULTI: false
-#      RADIUS: 0.5
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/one_side_buffer.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: gdal:cliprasterbyextent
-#    name: Clip raster by extent and change no data values
-#    params:
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      NO_DATA: '-9999'
-#      PREDICTOR: 1
-#      PROJWIN: 18.67460436727692,18.698371162148714,45.78995019401027,45.804344168369234
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: df5de501bcec0c10f738d77f3b48d5545b48f0a22e0e028a8b1ccbe7
-#        type: rasterhash
-#
-#  - algorithm: gdal:cliprasterbymasklayer
-#    name: Clip raster by mask layer
-#    params:
-#      ALPHA_BAND: false
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      CROP_TO_CUTLINE: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      KEEP_RESOLUTION: false
-#      MASK:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      NO_DATA: ''
-#      PREDICTOR: 1
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: 4f4720e4efe59a7f238f622659917bbeb5262369d15d5e2917dbcf8b
-#        type: rasterhash
-#
-#  - algorithm: gdal:cliprasterbymasklayer
-#    name: Clip raster by mask layer and change no data value
-#    params:
-#      ALPHA_BAND: false
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      CROP_TO_CUTLINE: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      KEEP_RESOLUTION: false
-#      MASK:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      NO_DATA: '-9999'
-#      PREDICTOR: 1
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: 1e0252e63c65dcf4ed1f2b17d2490d3e0331aeb59d8f59b59554f442
-#        type: rasterhash
-#
-#  - algorithm: gdal:cliprasterbymasklayer
-#    name: Clip raster by mask layer and add alpha band
-#    params:
-#      ALPHA_BAND: true
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      CROP_TO_CUTLINE: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      KEEP_RESOLUTION: false
-#      MASK:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      NO_DATA: ''
-#      PREDICTOR: 1
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: 8f69431c6ff7db5174c1ca8e879ae39582fd4ce86f9b53edae0f38ce
-#        type: rasterhash
-
   - algorithm: gdal:aspect
     name: Aspect
     params:
@@ -452,6 +230,155 @@ tests:
         hash: 9913a7c0e1ced2c2ce1cd8f0e8103475bc2b0dd4d1d0adafe4920f93
         type: rasterhash
 
+  - algorithm: gdal:cliprasterbymasklayer
+    name: Clip raster by mask layer
+    params:
+      ALPHA_BAND: false
+      BIGTIFF: '0'
+      COMPRESS: '4'
+      CROP_TO_CUTLINE: true
+      INPUT:
+        name: dem.tif
+        type: raster
+      JPEGCOMPRESSION: 75
+      KEEP_RESOLUTION: false
+      MASK:
+        name: custom/polygon_mask.gml
+        type: vector
+      NO_DATA: ''
+      PREDICTOR: 1
+      RTYPE: '5'
+      TFW: false
+      TILED: false
+      ZLEVEL: 6
+    results:
+      OUTPUT:
+        hash: 4f4720e4efe59a7f238f622659917bbeb5262369d15d5e2917dbcf8b
+        type: rasterhash
+
+#  - algorithm: gdal:ogrinfo
+#    name: ogrinfo
+#    params:
+#      INPUT:
+#        name: lines.gml
+#        type: vector
+#      SUMMARY_ONLY: 'True'
+#    results:
+#      OUTPUT:
+#        name: expected/gdal/vector_info.html
+#        type: regex
+#        rules:
+#          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+#          - 'Geometry: Line String'
+#          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+#
+#  - algorithm: gdal:buffervectors
+#    name: Buffer lines
+#    params:
+#      DISSOLVEALL: false
+#      DISTANCE: 1.0
+#      GEOMETRY: geometry
+#      INPUT_LAYER:
+#        name: lines.gml
+#        type: vector
+#      MULTI: false
+#    results:
+#      OUTPUT_LAYER:
+#        name: expected/gdal/buffer_lines.gml
+#        type: vector
+#        compare:
+#          geometry:
+#            precision: 7
+#    expectedFailure:
+#      - int(1)
+#
+#  - algorithm: gdal:buffervectors
+#    name: Basic polygon buffer
+#    params:
+#      DISSOLVEALL: false
+#      DISTANCE: 0.5
+#      GEOMETRY: geometry
+#      INPUT_LAYER:
+#        name: polys.gml
+#        type: vector
+#      MULTI: false
+#    results:
+#      OUTPUT_LAYER:
+#        name: expected/gdal/buffer_polys.gml
+#        type: vector
+#        compare:
+#          geometry:
+#            precision: 7
+#
+#  - algorithm: gdal:buffervectors
+#    name: Polygon buffer with dissolve
+#    params:
+#      DISSOLVEALL: true
+#      DISTANCE: 0.5
+#      GEOMETRY: geometry
+#      INPUT_LAYER:
+#        name: polys.gml
+#        type: vector
+#      MULTI: false
+#    results:
+#      OUTPUT_LAYER:
+#        name: expected/gdal/buffer_polys_dissolve.gml
+#        type: vector
+#        compare:
+#          geometry:
+#            precision: 7
+#
+  - algorithm: gdal:createpointsalonglines
+    name: Points along lines
+    params:
+      DISTANCE: 0.25
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/gdal/points_along_lines.gml
+        type: vector
+        pk: fid
+        compare:
+          ignore_crs_check: true
+
+#  - algorithm: gdal:offsetlinesforlines
+#    name: Offset lines for lines (right-handed)
+#    params:
+#      GEOMETRY: geometry
+#      INPUT_LAYER:
+#         name: lines.gml
+#         type: vector
+#      RADIUS: -0.5
+#    results:
+#      OUTPUT_LAYER:
+#        name: expected/gdal/offset_lines.gml
+#        type: vector
+#        compare:
+#          geometry:
+#            precision: 7
+#
+#  - algorithm: gdal:singlesidedbufferforlines
+#    name: One-side buffer for lines (left-handed)
+#    params:
+#      DISSOLVEALL: false
+#      GEOMETRY: geometry
+#      INPUT_LAYER:
+#        name: lines.gml
+#        type: vector
+#      LEFTRIGHT: '1'
+#      MULTI: false
+#      RADIUS: 0.5
+#    results:
+#      OUTPUT_LAYER:
+#        name: expected/gdal/one_side_buffer.gml
+#        type: vector
+#        compare:
+#          geometry:
+#            precision: 7
+#
 #  - algorithm: gdal:merge
 #    name: Merge 2 raster layers
 #    params:

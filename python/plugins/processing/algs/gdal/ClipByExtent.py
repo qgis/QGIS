@@ -61,6 +61,8 @@ class ClipByExtent(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Clipping extent')))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -68,8 +70,6 @@ class ClipByExtent(GdalAlgorithm):
                                                        maxValue=99999999.999999,
                                                        defaultValue=0.0,
                                                        optional=True))
-        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
-                                                       self.tr('Clipping extent')))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation parameters'),
