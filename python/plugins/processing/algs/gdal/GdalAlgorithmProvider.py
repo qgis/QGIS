@@ -42,6 +42,7 @@ from .ColorRelief import ColorRelief
 from .contour import contour
 from .fillnodata import fillnodata
 from .gdal2tiles import gdal2tiles
+from .gdal2xyz import gdal2xyz
 from .gdaltindex import gdaltindex
 from .GridAverage import GridAverage
 from .GridDataMetrics import GridDataMetrics
@@ -69,7 +70,6 @@ from .warp import warp
 # from .gdaladdo import gdaladdo
 # from .rasterize import rasterize
 # from .extractprojection import ExtractProjection
-# from .gdal2xyz import gdal2xyz
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 
@@ -145,6 +145,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             contour(),
             fillnodata(),
             gdal2tiles(),
+            gdal2xyz(),
             gdaltindex(),
             GridAverage(),
             GridDataMetrics(),
@@ -171,7 +172,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdaladdo(),
             # rasterize(),
             # ExtractProjection(),
-            # gdal2xyz(),
             # gdalcalc(),
             # rasterize_over(),
             # ----- OGR tools -----
