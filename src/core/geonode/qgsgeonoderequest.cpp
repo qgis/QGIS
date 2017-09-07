@@ -393,7 +393,8 @@ bool QgsGeoNodeRequest::request( QString endPoint )
   abort();
   mIsAborted = false;
   QgsMessageLog::logMessage( mBaseUrl, tr( "GeoNode" ) );
-  QString url = mBaseUrl + endPoint;
+  // Handle case where the endpoint is full url
+  QString url = endPoint.startsWith( mBaseUrl ) ? endPoint : mBaseUrl + endPoint;
   QgsMessageLog::logMessage( url, tr( "GeoNode" ) );
   setProtocol( url.split( "://" )[0] );
   QUrl layerUrl( url );
