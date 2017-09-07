@@ -438,7 +438,7 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="5" column="0" colspan="5">
+                  <item row="4" column="0" colspan="5">
                    <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
                     <property name="toolTip">
                      <string>Checking this setting avoids visible edge artifacts when rendering this project as separate map tiles. Rendering performance will be degraded.</string>
@@ -485,16 +485,6 @@
                      </widget>
                     </item>
                    </layout>
-                  </item>
-                  <item row="4" column="0">
-                   <widget class="QCheckBox" name="mTrustProjectCheckBox">
-                    <property name="toolTip">
-                     <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized views.</string>
-                    </property>
-                    <property name="text">
-                     <string>Trust project when data source has no metadata</string>
-                    </property>
-                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -2498,6 +2488,16 @@
              </property>
              <property name="text">
               <string>Evaluate default values on provider side</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="mTrustProjectCheckBox">
+             <property name="toolTip">
+              <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized views.</string>
+             </property>
+             <property name="text">
+              <string>Trust project when data source has no metadata</string>
              </property>
             </widget>
            </item>
