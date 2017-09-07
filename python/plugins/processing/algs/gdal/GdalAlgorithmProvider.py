@@ -41,6 +41,7 @@ from .ClipByMask import ClipByMask
 from .ColorRelief import ColorRelief
 from .contour import contour
 from .fillnodata import fillnodata
+from .gdal2tiles import gdal2tiles
 from .gdaltindex import gdaltindex
 from .GridAverage import GridAverage
 from .GridDataMetrics import GridDataMetrics
@@ -71,7 +72,6 @@ from .warp import warp
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 # from .retile import retile
-# from .gdal2tiles import gdal2tiles
 
 from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
 from .ogr2ogrtopostgis import Ogr2OgrToPostGis
@@ -144,6 +144,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ColorRelief(),
             contour(),
             fillnodata(),
+            gdal2tiles(),
             gdaltindex(),
             GridAverage(),
             GridDataMetrics(),
@@ -173,7 +174,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdalcalc(),
             # rasterize_over(),
             # retile(),
-            # gdal2tiles(),
             # ----- OGR tools -----
             Ogr2OgrPointsOnLines(),
             Ogr2OgrToPostGis(),
