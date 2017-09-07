@@ -474,7 +474,7 @@ QgsAction             {#qgis_api_break_3_0_QgsAction}
 QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizingDockWidget}
 -------------------------------
 
-- canvasReleaseEvent() does not take second argument anymore. Map tools are expected to clear CAD points themselves whenever needed.
+- canvasPressEvent(), canvasReleaseEvent(), canvasMoveEvent() were removed. Handling of events is done in QgsMapToolAdvancedDigitizing.
 - snappingMode() was removed. Advanced digitizing now always uses project's snapping configuration.
 
 

@@ -864,6 +864,15 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     }
   }
 
+  if ( res )
+  {
+    emit popWarning();
+  }
+  else
+  {
+    emit pushWarning( tr( "Some constraints are incompatible. Resulting point might be incorrect." ) );
+  }
+
   return res;
 }
 
@@ -950,66 +959,6 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   }
 
   return true;
-}
-
-bool QgsAdvancedDigitizingDockWidget::canvasPressEvent( QgsMapMouseEvent *e )
-{
-  applyConstraints( e );
-  return mCadEnabled && mConstructionMode;
-}
-
-bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent *e )
-{
-  if ( !mCadEnabled )
-    return false;
-
-  emit popWarning();
-
-  if ( e->button() == Qt::RightButton )
-  {
-    clear();
-    return false;
-  }
-
-  applyConstraints( e );
-
-  if ( alignToSegment( e ) )
-  {
-    // launch a fake move event so rubber bands of map tools will be adapted with new constraints
-    // emit pointChanged( e );
-
-    // Parallel or perpendicular mode and snapped to segment
-    // this has emitted the lockAngle signal
-    return true;
-  }
-
-  addPoint( e->mapPoint() );
-
-  releaseLocks( false );
-
-  return mConstructionMode;
-}
-
-bool QgsAdvancedDigitizingDockWidget::canvasMoveEvent( QgsMapMouseEvent *e )
-{
-  if ( !mCadEnabled )
-    return false;
-
-  if ( !applyConstraints( e ) )
-  {
-    emit pushWarning( tr( "Some constraints are incompatible. Resulting point might be incorrect." ) );
-  }
-  else
-  {
-    emit popWarning();
-  }
-
-  // perpendicular/parallel constraint
-  // do a soft lock when snapping to a segment
-  alignToSegment( e, CadConstraint::SoftLock );
-  mCadPaintItem->update();
-
-  return false;
 }
 
 bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent *e )
@@ -1265,6 +1214,11 @@ void QgsAdvancedDigitizingDockWidget::disable()
   mCurrentMapToolSupportsCad = false;
 
   setCadEnabled( false );
+}
+
+void QgsAdvancedDigitizingDockWidget::updateCadPaintItem()
+{
+  mCadPaintItem->update();
 }
 
 void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )

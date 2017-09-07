@@ -172,33 +172,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  Disables the CAD tools when hiding the dock
 %End
 
-    bool canvasPressEvent( QgsMapMouseEvent *e );
-%Docstring
- Will react on a canvas press event
-
- \param e A mouse event (may be modified)
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
-    bool canvasReleaseEvent( QgsMapMouseEvent *e );
-%Docstring
- Will react on a canvas release event
-
- \param e A mouse event (may be modified)
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
-    bool canvasMoveEvent( QgsMapMouseEvent *e );
-%Docstring
- Will react on a canvas move event
-
- \param e A mouse event (may be modified)
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 %Docstring
  Filter key events to e.g. toggle construction mode or adapt constraints
@@ -212,6 +185,17 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 %Docstring
 :return: false if no solution was found (invalid constraints)
  :rtype: bool
+%End
+
+    bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
+%Docstring
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void releaseLocks( bool releaseRepeatingLocks = true );
+%Docstring
+.. versionadded:: 3.0
 %End
 
     void clear();
@@ -268,6 +252,12 @@ Constraint on a common angle
     void clearPoints();
 %Docstring
  Removes all points from the CAD point list
+.. versionadded:: 3.0
+%End
+
+    void addPoint( const QgsPointXY &point );
+%Docstring
+ Adds point to the CAD point list
 .. versionadded:: 3.0
 %End
 
@@ -339,6 +329,11 @@ return the action used to enable/disable the tools
     void disable();
 %Docstring
  Disable the widget. Normally done automatically from QgsMapToolAdvancedDigitizing.deactivate().
+%End
+
+    void updateCadPaintItem();
+%Docstring
+.. versionadded:: 3.0
 %End
 
   signals:

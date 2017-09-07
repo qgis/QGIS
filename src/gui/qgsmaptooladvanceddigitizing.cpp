@@ -28,7 +28,9 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    if ( mCadDockWidget->canvasPressEvent( e ) )
+    mCadDockWidget->applyConstraints( e );  // updates event's map point
+
+    if ( mCadDockWidget->constructionMode() )
       return;  // decided to eat the event and not pass it to the map tool (construction mode)
   }
   else if ( isAutoSnapEnabled() )
@@ -43,8 +45,27 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    if ( mCadDockWidget->canvasReleaseEvent( e ) )
-      return;  // decided to eat the event and not pass it to the map tool (construction mode or picking a segment)
+    if ( e->button() == Qt::RightButton )
+    {
+      mCadDockWidget->clear();
+    }
+    else
+    {
+      mCadDockWidget->applyConstraints( e );  // updates event's map point
+
+      if ( mCadDockWidget->alignToSegment( e ) )
+      {
+        // Parallel or perpendicular mode and snapped to segment: do not pass the event to map tool
+        return;
+      }
+
+      mCadDockWidget->addPoint( e->mapPoint() );
+
+      mCadDockWidget->releaseLocks( false );
+
+      if ( mCadDockWidget->constructionMode() )
+        return;  // decided to eat the event and not pass it to the map tool (construction mode)
+    }
   }
   else if ( isAutoSnapEnabled() )
   {
@@ -58,8 +79,12 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    if ( mCadDockWidget->canvasMoveEvent( e ) )
-      return;  // decided to eat the event and not pass it to the map tool (never happens currently)
+    mCadDockWidget->applyConstraints( e );     // updates event's map point
+
+    // perpendicular/parallel constraint
+    // do a soft lock when snapping to a segment
+    mCadDockWidget->alignToSegment( e, QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+    mCadDockWidget->updateCadPaintItem();
   }
   else if ( isAutoSnapEnabled() )
   {
