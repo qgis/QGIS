@@ -115,7 +115,7 @@ class translate(GdalAlgorithm):
         arguments = []
 
         crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
-        if crs:
+        if crs.isValid():
             arguments.append('-a_srs')
             arguments.append(crs.authid())
 

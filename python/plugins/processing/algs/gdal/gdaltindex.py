@@ -146,7 +146,7 @@ class gdaltindex(GdalAlgorithm):
         if crs_format:
             arguments.append('-src_srs_format {}'.format(self.modes[crs_format][1]))
 
-        if target_crs:
+        if target_crs.isValid():
             arguments.append('-t_srs {}'.format(target_crs.authid()))
 
         if outFormat:

@@ -161,11 +161,11 @@ class warp(GdalAlgorithm):
         resolution = self.parameterAsDouble(parameters, self.TARGET_RESOLUTION, context)
 
         arguments = []
-        if sourceCrs:
+        if sourceCrs.isValid():
             arguments.append('-s_srs')
             arguments.append(sourceCrs.authid())
 
-        if targetCrs:
+        if targetCrs.isValid():
             arguments.append('-t_srs')
             arguments.append(targetCrs.authid())
 
