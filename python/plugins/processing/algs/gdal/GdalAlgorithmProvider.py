@@ -55,6 +55,7 @@ from .nearblack import nearblack
 from .pct2rgb import pct2rgb
 from .polygonize import polygonize
 from .proximity import proximity
+from .retile import retile
 from .rgb2pct import rgb2pct
 from .roughness import roughness
 from .sieve import sieve
@@ -71,7 +72,6 @@ from .warp import warp
 # from .gdal2xyz import gdal2xyz
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
-# from .retile import retile
 
 from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
 from .ogr2ogrtopostgis import Ogr2OgrToPostGis
@@ -158,6 +158,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             pct2rgb(),
             polygonize(),
             proximity(),
+            retile(),
             rgb2pct(),
             roughness(),
             sieve(),
@@ -173,7 +174,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdal2xyz(),
             # gdalcalc(),
             # rasterize_over(),
-            # retile(),
             # ----- OGR tools -----
             Ogr2OgrPointsOnLines(),
             Ogr2OgrToPostGis(),
