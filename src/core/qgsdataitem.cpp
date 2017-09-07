@@ -546,31 +546,7 @@ QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QStr
   , mUri( uri )
   , mLayerType( layerType )
 {
-  switch ( layerType )
-  {
-    case Point:
-      mIconName = QStringLiteral( "/mIconPointLayer.svg" );
-      break;
-    case Line:
-      mIconName = QStringLiteral( "/mIconLineLayer.svg" );
-      break;
-    case Polygon:
-      mIconName = QStringLiteral( "/mIconPolygonLayer.svg" );
-      break;
-    // TODO add a new icon for generic Vector layers
-    case Vector :
-      mIconName = QStringLiteral( "/mIconPolygonLayer.svg" );
-      break;
-    case TableLayer:
-      mIconName = QStringLiteral( "/mIconTableLayer.svg" );
-      break;
-    case Raster:
-      mIconName = QStringLiteral( "/mIconRaster.svg" );
-      break;
-    default:
-      mIconName = QStringLiteral( "/mIconLayer.png" );
-      break;
-  }
+  mIconName = iconName( layerType );
 }
 
 QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
@@ -586,6 +562,36 @@ QString QgsLayerItem::layerTypeAsString( const QgsLayerItem::LayerType &layerTyp
 {
   static int enumIdx = staticMetaObject.indexOfEnumerator( "LayerType" );
   return staticMetaObject.enumerator( enumIdx ).valueToKey( layerType );
+}
+
+QString QgsLayerItem::iconName( const QgsLayerItem::LayerType &layerType )
+{
+  switch ( layerType )
+  {
+    case Point:
+      return QStringLiteral( "/mIconPointLayer.svg" );
+      break;
+    case Line:
+      return QStringLiteral( "/mIconLineLayer.svg" );
+      break;
+    case Polygon:
+      return QStringLiteral( "/mIconPolygonLayer.svg" );
+      break;
+    // TODO add a new icon for generic Vector layers
+    case Vector :
+      return QStringLiteral( "/mIconPolygonLayer.svg" );
+      break;
+    case TableLayer:
+    case Table:
+      return QStringLiteral( "/mIconTableLayer.svg" );
+      break;
+    case Raster:
+      return QStringLiteral( "/mIconRaster.svg" );
+      break;
+    default:
+      return QStringLiteral( "/mIconLayer.png" );
+      break;
+  }
 }
 
 bool QgsLayerItem::equal( const QgsDataItem *other )
