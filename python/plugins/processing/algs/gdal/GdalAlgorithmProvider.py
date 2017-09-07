@@ -43,6 +43,7 @@ from .contour import contour
 from .fillnodata import fillnodata
 from .gdal2tiles import gdal2tiles
 from .gdal2xyz import gdal2xyz
+from .gdaladdo import gdaladdo
 from .gdaltindex import gdaltindex
 from .GridAverage import GridAverage
 from .GridDataMetrics import GridDataMetrics
@@ -67,7 +68,6 @@ from .tri import tri
 from .warp import warp
 
 # from .merge import merge
-# from .gdaladdo import gdaladdo
 # from .rasterize import rasterize
 # from .extractprojection import ExtractProjection
 # from .gdalcalc import gdalcalc
@@ -146,6 +146,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             fillnodata(),
             gdal2tiles(),
             gdal2xyz(),
+            gdaladdo(),
             gdaltindex(),
             GridAverage(),
             GridDataMetrics(),
@@ -169,7 +170,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             tri(),
             warp(),
             # merge(),
-            # gdaladdo(),
             # rasterize(),
             # ExtractProjection(),
             # gdalcalc(),
