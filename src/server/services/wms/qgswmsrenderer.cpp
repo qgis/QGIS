@@ -998,7 +998,13 @@ namespace QgsWms
     QByteArray ba;
 
     QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
-    if ( infoFormat == QgsWmsParameters::Format::TEXT )
+
+    if ( infoFormat == QgsWmsParameters::Format::NONE )
+    {
+      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
+                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
+    }
+    else if ( infoFormat == QgsWmsParameters::Format::TEXT )
       ba = convertFeatureInfoToText( result );
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
       ba = convertFeatureInfoToHtml( result );
