@@ -133,7 +133,8 @@ typedef bool deleteStyleById_t(
 QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 const QString &baseName,
                                 const QString &providerKey,
-                                bool loadDefaultStyleFlag )
+                                bool loadDefaultStyleFlag,
+                                bool readExtentFromXml )
   : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
   , mDataProvider( nullptr )
   , mProviderKey( providerKey )
@@ -153,6 +154,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   , mLazyExtent( true )
   , mSymbolFeatureCounted( false )
   , mEditCommandActive( false )
+  , mReadExtentFromXml( readExtentFromXml )
 
 {
   mActions = new QgsActionManager( this );
@@ -222,6 +224,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   layer->setAttributeTableConfig( attributeTableConfig() );
   layer->setFeatureBlendMode( featureBlendMode() );
   layer->setOpacity( opacity() );
+  layer->setReadExtentFromXml( readExtentFromXml() );
 
   Q_FOREACH ( const QgsAction &action, actions()->actions() )
   {
@@ -779,9 +782,11 @@ bool QgsVectorLayer::countSymbolFeatures()
   return true;
 }
 
-void QgsVectorLayer::updateExtents()
+void QgsVectorLayer::updateExtents( bool force )
 {
-  mValidExtent = false;
+  // do not update extent by default when trust project option is activated
+  if ( force || !mReadExtentFromXml || ( mReadExtentFromXml && mXmlExtent.isNull() ) )
+    mValidExtent = false;
 }
 
 void QgsVectorLayer::setExtent( const QgsRectangle &r )
@@ -797,6 +802,14 @@ QgsRectangle QgsVectorLayer::extent() const
 
   if ( !isSpatial() )
     return rect;
+
+
+  if ( !mValidExtent && mLazyExtent && mDataProvider && !mDataProvider->hasMetadata() && mReadExtentFromXml && !mXmlExtent.isNull() )
+  {
+    mExtent = mXmlExtent;
+    mValidExtent = true;
+    mLazyExtent = false;
+  }
 
   if ( !mValidExtent && mLazyExtent && mDataProvider )
   {
@@ -1428,6 +1441,16 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsReadWriteCont
 
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
+  // read extent
+  if ( mReadExtentFromXml )
+  {
+    QDomNode extentNode = layer_node.namedItem( QStringLiteral( "extent" ) );
+    if ( !extentNode.isNull() )
+    {
+      mXmlExtent = QgsXmlUtils::readRectangle( extentNode.toElement() );
+    }
+  }
+
   return mValid;               // should be true if read successfully
 
 } // void QgsVectorLayer::readXml
@@ -1476,12 +1499,28 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
 bool QgsVectorLayer::setDataProvider( QString const &provider )
 {
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
+
+  // primary key unicity is tested at construction time, so it has to be set
+  // before initializing postgres provider
+  QString checkUnicityKey = QStringLiteral( "checkPrimaryKeyUnicity" );
+  QString dataSource = mDataSource;
+  if ( provider.compare( QLatin1String( "postgres" ) ) == 0 )
+  {
+    QgsDataSourceUri uri( dataSource );
+
+    if ( uri.hasParam( checkUnicityKey ) )
+      uri.removeParam( checkUnicityKey );
+
+    uri.setParam( checkUnicityKey, mReadExtentFromXml ? "0" : "1" );
+    dataSource = uri.uri( false );
+  }
+
   // XXX when execution gets here.
 
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
   delete mDataProvider;
-  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider( provider, mDataSource ) );
+  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider( provider, dataSource ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( " unable to get data provider" );
@@ -1500,7 +1539,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   }
 
   // TODO: Check if the provider has the capability to send fullExtentCalculated
-  connect( mDataProvider, &QgsVectorDataProvider::fullExtentCalculated, this, &QgsVectorLayer::updateExtents );
+  connect( mDataProvider, &QgsVectorDataProvider::fullExtentCalculated, this, [ = ] { updateExtents(); } );
 
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
@@ -1537,7 +1576,11 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
     QgsDebugMsg( "Beautified layer name " + name() );
 
     // deal with unnecessary schema qualification to make v.in.ogr happy
-    mDataSource = mDataProvider->dataSourceUri();
+    // and remove unnecessary key
+    QgsDataSourceUri dataProviderUri( mDataProvider->dataSourceUri() );
+    if ( dataProviderUri.hasParam( checkUnicityKey ) )
+      dataProviderUri.removeParam( checkUnicityKey );
+    mDataSource = dataProviderUri.uri( false );
   }
   else if ( mProviderKey == QLatin1String( "osm" ) )
   {
@@ -4417,4 +4460,14 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   }
 
   return labeling;
+}
+
+void QgsVectorLayer::setReadExtentFromXml( bool readExtentFromXml )
+{
+  mReadExtentFromXml = readExtentFromXml;
+}
+
+bool QgsVectorLayer::readExtentFromXml() const
+{
+  return mReadExtentFromXml;
 }

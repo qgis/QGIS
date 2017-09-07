@@ -480,6 +480,7 @@ void QgsProject::clear()
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
+  mTrustLayerMetadata = false;
   mCustomVariables.clear();
 
   mEmbeddedLayers.clear();
@@ -717,6 +718,12 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   if ( type == QLatin1String( "vector" ) )
   {
     mapLayer = new QgsVectorLayer;
+
+    // apply specific settings to vector layer
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer ) )
+    {
+      vl->setReadExtentFromXml( mTrustLayerMetadata );
+    }
   }
   else if ( type == QLatin1String( "raster" ) )
   {
@@ -890,6 +897,14 @@ bool QgsProject::readProjectFile( const QString &filename )
     QDomElement evaluateDefaultValuesElement = nl.at( 0 ).toElement();
     if ( evaluateDefaultValuesElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mEvaluateDefaultValues = true;
+  }
+
+  nl = doc->elementsByTagName( QStringLiteral( "trust" ) );
+  if ( nl.count() )
+  {
+    QDomElement trustElement = nl.at( 0 ).toElement();
+    if ( trustElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+      mTrustLayerMetadata = true;
   }
 
   // read the layer tree from project file
@@ -1295,6 +1310,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement evaluateDefaultValuesNode = doc->createElement( QStringLiteral( "evaluateDefaultValues" ) );
   evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? "1" : "0" );
   qgisNode.appendChild( evaluateDefaultValuesNode );
+
+  QDomElement trustNode = doc->createElement( QStringLiteral( "trust" ) );
+  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? "1" : "0" );
+  qgisNode.appendChild( trustNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
@@ -2259,4 +2278,18 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   }
 
   return defaultCrs;
+}
+
+void QgsProject::setTrustLayerMetadata( bool trust )
+{
+  mTrustLayerMetadata = trust;
+
+  Q_FOREACH ( QgsMapLayer *layer, mapLayers().values() )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vl )
+    {
+      vl->setReadExtentFromXml( trust );
+    }
+  }
 }

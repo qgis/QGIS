@@ -1387,7 +1387,7 @@ void QgsVectorLayerProperties::setPbnQueryBuilderEnabled()
 
 void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
 {
-  mLayer->updateExtents();
+  mLayer->updateExtents( true ); // force update whatever options activated
   mMetadataFilled = false;
 }
 

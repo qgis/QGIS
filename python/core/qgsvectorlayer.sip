@@ -315,7 +315,8 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
     };
 
     QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true );
+                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
+                    bool readExtentFromXml = false );
 %Docstring
  Constructor - creates a vector layer
 
@@ -328,6 +329,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
  \param  baseName The name used to represent the layer in the legend
  \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
  \param  loadDefaultStyleFlag whether to load the default style
+ \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
 %End
 
 
@@ -1727,6 +1729,25 @@ Returns the current blending mode for features
 .. versionadded:: 3.0
 %End
 
+    void setReadExtentFromXml( bool readExtentFromXml );
+%Docstring
+ Flag allowing to indicate if the extent has to be read from the XML
+ document when data source has no metadata or if the data provider has
+ to determine it.
+
+.. versionadded:: 3.0
+%End
+
+    bool readExtentFromXml() const;
+%Docstring
+ Returns true if the extent is read from the XML document when data
+ source has no metadata, false if it's the data provider which determines
+ it.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -1772,10 +1793,12 @@ Returns the current blending mode for features
 .. seealso:: selectByIds()
 %End
 
-    virtual void updateExtents();
+    virtual void updateExtents( bool force = false );
 %Docstring
  Update the extents for the layer. This is necessary if features are
   added/deleted or the layer has been subsetted.
+
+ \param force true to update layer extent even if it's read from xml by default, false otherwise
 %End
 
     bool startEditing();

@@ -48,6 +48,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+    enum Relkind
+    {
+      Unknown,
+      OrdinaryTable, // r
+      Index, // i
+      Sequence, // s
+      View, // v
+      MaterializedView, // m
+      CompositeType, // c
+      ToastTable, // t
+      ForeignTable // f
+    };
+    Q_ENUM( Relkind );
 
     /** Import a vector layer into the database
      * \param options options for provider, specified via a map of option name
@@ -184,6 +197,17 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
+    /** Returns true if the data source has metadata, false otherwise. For
+     * example, if the kind of relation for the layer is a view or a
+     * materialized view, then no metadata are associated with the data
+     * source.
+     *
+     * \returns true if data source has metadata, false otherwise.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool hasMetadata() const override;
+
   signals:
 
     /**
@@ -206,6 +230,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void repaintRequested();
 
   private:
+    Relkind relkind() const;
 
     bool declareCursor( const QString &cursorName,
                         const QgsAttributeList &fetchAttributes,
@@ -407,6 +432,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setTransaction( QgsTransaction *transaction ) override;
 
     QHash<int, QString> mDefaultValues;
+
+    bool mCheckPrimaryKeyUnicity = true;
 };
 
 

@@ -28,11 +28,14 @@ from qgis.core import (
     NULL,
     QgsVectorLayerUtils,
     QgsSettings,
-    QgsTransactionGroup
+    QgsTransactionGroup,
+    QgsReadWriteContext,
+    QgsRectangle
 )
 from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtXml import QDomDocument
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
 
@@ -717,6 +720,94 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(namelist, [])
         self.assertEqual(desclist, [])
         self.assertEqual(errmsg, "")
+
+    def testHasMetadata(self):
+        # views don't have metadata
+        vl = QgsVectorLayer('{} table="qgis_test"."{}" key="pk" sql='.format(self.dbconn, 'bikes_view'), "bikes_view", "postgres")
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.dataProvider().hasMetadata())
+
+        # ordinary tables have metadata
+        vl = QgsVectorLayer('%s table="qgis_test"."someData" sql=' % (self.dbconn), "someData", "postgres")
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().hasMetadata())
+
+    def testReadExtentOnView(self):
+        # vector layer based on view
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data_view" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl0.isValid())
+        self.assertFalse(vl0.dataProvider().hasMetadata())
+
+        # set a custom extent
+        originalExtent = vl0.extent()
+
+        customExtent = QgsRectangle(-80, 80, -70, 90)
+        vl0.setExtent(customExtent)
+
+        # write xml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(vl0.writeLayerXml(elem, doc, QgsReadWriteContext()))
+
+        # read xml with the custom extent. It should not be used by default
+        vl1 = QgsVectorLayer()
+        vl1.readLayerXml(elem, QgsReadWriteContext())
+        self.assertTrue(vl1.isValid())
+
+        self.assertEqual(vl1.extent(), originalExtent)
+
+        # read xml with custom extent with readExtent option. Extent read from
+        # xml document should be used because we have a view
+        vl2 = QgsVectorLayer()
+        vl2.setReadExtentFromXml(True)
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertTrue(vl2.isValid())
+
+        self.assertEqual(vl2.extent(), customExtent)
+
+        # but a force update on extent should allow retrieveing the data
+        # provider extent
+        vl2.updateExtents()
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertEqual(vl2.extent(), customExtent)
+
+        vl2.updateExtents(force=True)
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertEqual(vl2.extent(), originalExtent)
+
+    def testReadExtentOnTable(self):
+        # vector layer based on a standard table
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl0.isValid())
+        self.assertTrue(vl0.dataProvider().hasMetadata())
+
+        # set a custom extent
+        originalExtent = vl0.extent()
+
+        customExtent = QgsRectangle(-80, 80, -70, 90)
+        vl0.setExtent(customExtent)
+
+        # write xml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("maplayer")
+        self.assertTrue(vl0.writeLayerXml(elem, doc, QgsReadWriteContext()))
+
+        # read xml with the custom extent. It should not be used by default
+        vl1 = QgsVectorLayer()
+        vl1.readLayerXml(elem, QgsReadWriteContext())
+        self.assertTrue(vl1.isValid())
+
+        self.assertEqual(vl1.extent(), originalExtent)
+
+        # read xml with custom extent with readExtent option. Extent read from
+        # xml document should NOT be used because we don't have a view or a
+        # materialized view
+        vl2 = QgsVectorLayer()
+        vl2.setReadExtentFromXml(True)
+        vl2.readLayerXml(elem, QgsReadWriteContext())
+        self.assertTrue(vl2.isValid())
+
+        self.assertEqual(vl2.extent(), originalExtent)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

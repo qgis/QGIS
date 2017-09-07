@@ -708,6 +708,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   mEvaluateDefaultValues->setChecked( QgsProject::instance()->evaluateDefaultValues() );
+  mTrustProjectCheckBox->setChecked( QgsProject::instance()->trustLayerMetadata() );
 
   // Variables editor
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
@@ -764,6 +765,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setTitle( title() );
   QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
+  QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
 
   // set the mouse display precision method and the
   // number of decimal places for the manual option

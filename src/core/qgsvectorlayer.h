@@ -389,10 +389,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param  baseName The name used to represent the layer in the legend
      * \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
      * \param  loadDefaultStyleFlag whether to load the default style
+     * \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
      *
      */
     QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true );
+                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
+                    bool readExtentFromXml = false );
 
 
     virtual ~QgsVectorLayer();
@@ -1604,6 +1606,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 
+    /**
+     * Flag allowing to indicate if the extent has to be read from the XML
+     * document when data source has no metadata or if the data provider has
+     * to determine it.
+     *
+     * \since QGIS 3.0
+     */
+    void setReadExtentFromXml( bool readExtentFromXml );
+
+    /**
+     * Returns true if the extent is read from the XML document when data
+     * source has no metadata, false if it's the data provider which determines
+     * it.
+     *
+     * \since QGIS 3.0
+     */
+    bool readExtentFromXml() const;
+
   public slots:
 
     /**
@@ -1651,8 +1671,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Update the extents for the layer. This is necessary if features are
      *  added/deleted or the layer has been subsetted.
+     *
+     * \param force true to update layer extent even if it's read from xml by default, false otherwise
      */
-    virtual void updateExtents();
+    virtual void updateExtents( bool force = false );
 
     /**
      * Make layer editable.
@@ -2040,6 +2062,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! True while an undo command is active
     bool mEditCommandActive;
+
+    bool mReadExtentFromXml;
+    QgsRectangle mXmlExtent;
 
     QgsFeatureIds mDeletedFids;
 

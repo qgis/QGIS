@@ -2491,6 +2491,16 @@
              </property>
             </widget>
            </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="mTrustProjectCheckBox">
+             <property name="toolTip">
+              <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized views.</string>
+             </property>
+             <property name="text">
+              <string>Trust project when data source has no metadata</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="mTab_Variables">
