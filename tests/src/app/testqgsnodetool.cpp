@@ -63,6 +63,7 @@ class TestQgsNodeTool : public QObject
     void testMoveMultipleVertices();
     void testMoveVertexTopo();
     void testDeleteVertexTopo();
+    void testActiveLayerPriority();
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -530,6 +531,51 @@ void TestQgsNodeTool::testDeleteVertexTopo()
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 
   QgsProject::instance()->setTopologicalEditing( false );
+}
+
+void TestQgsNodeTool::testActiveLayerPriority()
+{
+  // check that features from current layer get priority when picking points
+
+  // create a temporary line layer that has a common vertex with existing line layer at (1, 1)
+  QgsVectorLayer *layerLine2 = new QgsVectorLayer( "LineString?crs=EPSG:27700", "layer line 2", "memory" );
+  QVERIFY( layerLine2->isValid() );
+  QgsPolyline line1;
+  line1 << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 0 );
+  QgsFeature lineF1;
+  lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
+  layerLine2->startEditing();
+  layerLine2->addFeature( lineF1 );
+  QgsFeatureId fidLineF1 = lineF1.id();
+  QCOMPARE( layerLine2->featureCount(), ( long )1 );
+  QgsProject::instance()->addMapLayer( layerLine2 );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << layerLine2 );
+
+  // make one layer active and check its vertex is used
+
+  mCanvas->setCurrentLayer( mLayerLine );
+
+  mouseClick( 1, 1, Qt::LeftButton );
+  mouseClick( 0, 0, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 0 0, 1 3)" ) );
+  QCOMPARE( layerLine2->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(0 1, 1 1, 1 0)" ) );
+  mLayerLine->undoStack()->undo();
+
+  // make the other layer active and check its vertex is used
+
+  mCanvas->setCurrentLayer( layerLine2 );
+
+  mouseClick( 1, 1, Qt::LeftButton );
+  mouseClick( 0, 0, Qt::LeftButton );
+
+  QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+  QCOMPARE( layerLine2->getFeature( fidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(0 1, 0 0, 1 0)" ) );
+  layerLine2->undoStack()->undo();
+
+  // get rid of the temporary layer
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
+  QgsProject::instance()->removeMapLayer( layerLine2 );
 }
 
 QGSTEST_MAIN( TestQgsNodeTool )
