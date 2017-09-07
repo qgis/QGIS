@@ -139,6 +139,7 @@ bool QgsAuxiliaryLayer::addAuxiliaryField( const QgsPropertyDefinition &definiti
   const QgsField af = createAuxiliaryField( definition );
   const bool rc = addAttribute( af );
   updateFields();
+  mLayer->updateFields();
 
   if ( rc )
   {
@@ -214,7 +215,7 @@ bool QgsAuxiliaryLayer::save()
   return rc;
 }
 
-int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, const QString &providerId, QgsVectorLayer *layer )
+int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *layer, const QString &providerId )
 {
   int index = -1;
 
@@ -296,7 +297,7 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
   int p = -1;
   QgsPropertyDefinition aDef = propertyDefinitionFromIndex( index );
 
-  if ( aDef.origin().compare( "labeling" ) == 0 )
+  if ( aDef.origin().compare( QStringLiteral( "labeling" ) ) == 0 )
   {
     const QgsPropertiesDefinition defs = QgsPalLayerSettings::propertyDefinitions();
     QgsPropertiesDefinition::const_iterator it = defs.constBegin();
@@ -309,9 +310,22 @@ int QgsAuxiliaryLayer::propertyFromIndex( int index ) const
       }
     }
   }
-  else if ( aDef.origin().compare( "symbol" ) == 0 )
+  else if ( aDef.origin().compare( QStringLiteral( "symbol" ) ) == 0 )
   {
     const QgsPropertiesDefinition defs = QgsSymbolLayer::propertyDefinitions();
+    QgsPropertiesDefinition::const_iterator it = defs.constBegin();
+    for ( ; it != defs.constEnd(); ++it )
+    {
+      if ( it->name().compare( aDef.name(), Qt::CaseInsensitive ) == 0 )
+      {
+        p = it.key();
+        break;
+      }
+    }
+  }
+  else if ( aDef.origin().compare( QStringLiteral( "diagram" ) ) == 0 )
+  {
+    const QgsPropertiesDefinition defs = QgsDiagramLayerSettings::propertyDefinitions();
     QgsPropertiesDefinition::const_iterator it = defs.constBegin();
     for ( ; it != defs.constEnd(); ++it )
     {
@@ -443,10 +457,13 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
       }
     }
   }
-  else if ( origin.compare( "user", Qt::CaseInsensitive ) == 0 )
+  else
   {
-    def.setOrigin( "user" );
-    def.setComment( propertyName );
+    def.setOrigin( origin );
+    def.setName( propertyName );
+
+    if ( parts.size() == 3 )
+      def.setComment( parts[2] );
   }
 
   return def;
@@ -475,12 +492,15 @@ QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QgsProject &project, bool copy )
 {
   initTmpFileName();
 
-  const QFileInfo info = project.fileInfo();
-  const QString path = info.path() + QDir::separator() + info.baseName();
-  const QString asFileName = path + "." + QgsAuxiliaryStorage::extension();
-  mFileName = asFileName;
+  if ( !project.fileInfo().fileName().isEmpty() )
+  {
+    const QFileInfo info = project.fileInfo();
+    const QString path = info.path() + QDir::separator() + info.baseName();
+    const QString asFileName = path + "." + QgsAuxiliaryStorage::extension();
+    mFileName = asFileName;
+  }
 
-  sqlite3 *handler = open( asFileName );
+  sqlite3 *handler = open( mFileName );
   close( handler );
 }
 
@@ -551,6 +571,7 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
     }
 
     alayer = new QgsAuxiliaryLayer( field.name(), currentFileName(), table, layer );
+    alayer->startEditing();
     close( handler );
   }
 

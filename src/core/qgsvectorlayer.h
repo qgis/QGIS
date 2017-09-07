@@ -788,15 +788,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Loads the auxiliary layer for this vector layer. If there's no
      * corresponding table in the database, then nothing happens and false is
-     * returned.
+     * returned. The key is optional because if this layer has been read from
+     * a XML document, then the key read in this document is used by default.
      *
      * \param storage The auxiliary storage where to look for the table
+     * \param key The key to use for joining.
      *
      * \returns true if the auxiliary layer is well loaded, false otherwise
      *
      * \since QGIS 3.0
      */
-    bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage );
+    bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
 
     /**
      * Sets the current auxiliary layer. The auxiliary layer is automatically

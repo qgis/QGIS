@@ -72,6 +72,7 @@ void QgsNewAuxiliaryFieldDialog::accept()
     }
 
     def.setOrigin( "user" );
+    def.setName( "custom" );
   }
 
   QString fieldName = QgsAuxiliaryLayer::nameFromProperty( def, true );

@@ -774,13 +774,15 @@ Return the provider type for this layer
  :rtype: str
 %End
 
-    bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage );
+    bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
 %Docstring
  Loads the auxiliary layer for this vector layer. If there's no
  corresponding table in the database, then nothing happens and false is
- returned.
+ returned. The key is optional because if this layer has been read from
+ a XML document, then the key read in this document is used by default.
 
  \param storage The auxiliary storage where to look for the table
+ \param key The key to use for joining.
 
  :return: true if the auxiliary layer is well loaded, false otherwise
 

@@ -4269,15 +4269,19 @@ QString QgsVectorLayer::loadNamedStyle( const QString &theURI, bool &resultFlag 
   return loadNamedStyle( theURI, resultFlag, false );
 }
 
-bool QgsVectorLayer::loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage )
+bool QgsVectorLayer::loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key )
 {
   bool rc = false;
 
-  if ( storage.isValid() && !mAuxiliaryLayerKey.isEmpty() )
+  QString joinKey = mAuxiliaryLayerKey;
+  if ( !key.isEmpty() )
+    joinKey = key;
+
+  if ( storage.isValid() && !joinKey.isEmpty() )
   {
     QgsAuxiliaryLayer *alayer = nullptr;
 
-    int idx = fields().lookupField( mAuxiliaryLayerKey );
+    int idx = fields().lookupField( joinKey );
 
     if ( idx >= 0 )
     {
@@ -4296,6 +4300,8 @@ bool QgsVectorLayer::loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage )
 
 void QgsVectorLayer::setAuxiliaryLayer( QgsAuxiliaryLayer *alayer )
 {
+  mAuxiliaryLayerKey.clear();
+
   if ( mAuxiliaryLayer )
     removeJoin( mAuxiliaryLayer->id() );
 
@@ -4305,6 +4311,8 @@ void QgsVectorLayer::setAuxiliaryLayer( QgsAuxiliaryLayer *alayer )
 
     if ( !alayer->isEditable() )
       alayer->startEditing();
+
+    mAuxiliaryLayerKey = alayer->joinInfo().targetFieldName();
   }
 
   mAuxiliaryLayer.reset( alayer );
