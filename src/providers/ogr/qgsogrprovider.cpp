@@ -39,6 +39,7 @@ email                : sherman at mrcc.com
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
 #include "qgsogrsourceselect.h"
+#include "qgsgeopackagesourceselect.h"
 #endif
 
 #include "qgis.h"
@@ -697,7 +698,6 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName )
 
 QStringList QgsOgrProvider::subLayers() const
 {
-  QgsDebugMsg( "Entered." );
   if ( !mValid )
   {
     return QStringList();
@@ -710,6 +710,10 @@ QStringList QgsOgrProvider::subLayers() const
   {
     OGRLayerH layer = OGR_DS_GetLayer( ogrDataSource, i );
     OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( layer );
+    // Get first column name,
+    // TODO: add support for multiple
+    OGRGeomFieldDefnH geomH = OGR_FD_GetGeomFieldDefn( fdef, 0 );
+    QString geometryColumnName = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
     QString layerName = QString::fromUtf8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
@@ -738,7 +742,7 @@ QStringList QgsOgrProvider::subLayers() const
 
       QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
-      mSubLayerList << QStringLiteral( "%1:%2:%3:%4" ).arg( i ).arg( layerName, layerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( layerFeatureCount ), geom );
+      mSubLayerList << QStringLiteral( "%1:%2:%3:%4:%5" ).arg( i ).arg( layerName, layerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( layerFeatureCount ), geom, geometryColumnName );
     }
     else
     {
@@ -792,13 +796,12 @@ QStringList QgsOgrProvider::subLayers() const
       {
         QString geom = ogrWkbGeometryTypeName( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() );
 
-        QString sl = QStringLiteral( "%1:%2:%3:%4" ).arg( i ).arg( layerName ).arg( fCount.value( countIt.key() ) ).arg( geom );
+        QString sl = QStringLiteral( "%1:%2:%3:%4:%5" ).arg( i ).arg( layerName ).arg( fCount.value( countIt.key() ) ).arg( geom, geometryColumnName );
         QgsDebugMsg( "sub layer: " + sl );
         mSubLayerList << sl;
       }
     }
   }
-
   return mSubLayerList;
 }
 
