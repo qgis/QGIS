@@ -141,7 +141,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * In addition, query functions such as childGroups(), childKeys(), and allKeys()
      * are based on the group. By default, no group is set.
      */
-    void beginGroup( const QString &prefix );
+    void beginGroup( const QString &prefix, const QgsSettings::Section section = QgsSettings::NoSection );
     //! Resets the group to what it was before the corresponding beginGroup() call.
     void endGroup();
     //! Returns a list of all keys, including subkeys, that can be read using the QSettings object.
@@ -218,8 +218,8 @@ class CORE_EXPORT QgsSettings : public QObject
      * loop at regular intervals, so you normally don't need to call it yourself.
      */
     void sync();
-    //! Removes the setting key and any sub-settings of key.
-    void remove( const QString &key );
+    //! Removes the setting key and any sub-settings of key in a section.
+    void remove( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection );
     //! Return the sanitized and prefixed key
     QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
     //! Removes all entries in the user settings
