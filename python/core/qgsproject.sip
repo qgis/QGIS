@@ -811,6 +811,7 @@ Returns the number of registered layers.
  :rtype: bool
 %End
 
+
     QgsAuxiliaryStorage *auxiliaryStorage();
 %Docstring
  Returns the current auxiliary storage.
