@@ -59,16 +59,9 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingOutputHtml)
 from qgis.utils import iface
 
-#from processing.core.GeoAlgorithm import GeoAlgorithm (replaced by QgsProcessingAlgorithm)
 from processing.core.ProcessingConfig import ProcessingConfig
-#from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException (replaced by QgsProcessingException).
 
 from processing.core.parameters import (getParameterFromString)
-#from processing.core.outputs import (getOutputFromString,
-#                                     OutputRaster,
-#                                     OutputVector,
-#                                     OutputFile,
-#                                     OutputHTML)
 
 from .Grass7Utils import Grass7Utils
 
@@ -183,7 +176,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def defineCharacteristicsFromFile(self):
         """
         Create algorithm parameters and outputs from a text file.
-        
         """
         with open(self.descriptionFile) as lines:
             # First line of the file is the Grass algorithm name
@@ -308,6 +300,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.region =  self.parameterAsExtent(parameters,
                                               self.GRASS_REGION_EXTENT_PARAMETER,
                                               context)
+        QgsMessageLog.logMessage('processAlgorithm self.region: {}'.format(self.region.isEmpty()), 'Grass7', QgsMessageLog.INFO)                
         # GRASS cell size
         self.cellSize = self.parameterAsString(parameters,
                                          self.GRASS_REGION_CELLSIZE_PARAMETER,
@@ -426,14 +419,13 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 if not paramName in parameters:
                     continue
                 layer = self.parameterAsRasterLayer(parameters, paramName, context)
-                layerSrc = self.parameterAsCompatibleSourceLayerPath(parameters, paramName, context,
-                                                                 QgsVectorFileWriter.supportedFormatExtensions())
-
+                layerSrc = parameters[paramName]
                 # Check if the layer hasn't already been exported in, for
                 # example, previous GRASS calls in this session
                 if paramName in self.exportedLayers:
                     continue
                 else:
+                    layers.append(layer)
                     self.setSessionProjectionFromLayer(layer)
                     self.commands.append(self.exportRasterLayer(paramName, layerSrc))
             # Vector inputs needs to be imported into temp GRASS DB
@@ -441,9 +433,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 if not paramName in parameters:
                     continue
                 layer = self.parameterAsVectorLayer(parameters, paramName, context)
-                layerSrc = self.parameterAsCompatibleSourceLayerPath(parameters, paramName, context,
-                                                                 QgsVectorFileWriter.supportedFormatExtensions())
-
+                layerSrc = self.parameterAsCompatibleSourceLayerPath(
+                    parameters, paramName, context,
+                    self.provider().supportedOutputVectorLayerExtensions()
+                )
+                                                   
                 if paramName in self.exportedLayers:
                     continue
                 else:
@@ -482,11 +476,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.setSessionProjectionFromProject()
 
         # Build GRASS region
-        if not self.region:
+        if self.region.isEmpty():
             self.region = QgsProcessingUtils.combineLayerExtents(layers)
         command = 'g.region n={} s={} e={} w={}'.format(
             self.region.yMaximum(), self.region.yMinimum(),
-            self.region.xMinimum(), self.region.xMaximum()
+            self.region.xMaximum(), self.region.xMinimum()
         )
         # TODO Handle cell size
         #if not self.cellSize:
@@ -625,7 +619,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     self.commands.append(command)
                     self.outputCommands.append(command)
                 else:
-                    command += ' {} output="{}"'.format(uniqName, fileName)
+                    command += '{} output="{}"'.format(uniqName, fileName)
                     self.commands.append(command)
                     self.outputCommands.append(command)
 
@@ -712,6 +706,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             Grass7Utils.projectionSet = True
 
     def exportRasterLayer(self, layerKey, layerSrc):
+        """
+        Creates a dedicated command to load a raster into
+        temporary GRASS DB.
+        """
         # TODO: handle multiple bands
         destFilename = 'a' + os.path.basename(self.getTempFilename())
         self.exportedLayers[layerKey] = destFilename

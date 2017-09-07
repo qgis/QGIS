@@ -30,13 +30,15 @@ import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider,
+                       QgsVectorFileWriter,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
 from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
 #from .nviz7 import nviz7
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -124,7 +126,18 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return QgsApplication.iconPath("providerGrass.svg")
 
     def supportedOutputVectorLayerExtensions(self):
-        return ['shp']
+        # We use the same extensions than QGIS because:
+        # - QGIS is using OGR like GRASS
+        # - There are very chances than OGR version used in GRASS is
+        # different from QGIS OGR version. 
+        return QgsVectorFileWriter.supportedFormatExtensions()
+    
+    def supportedOutputRasterLayerExtensions(self):
+        # We use the same extensions than GDAL because:
+        # - GRASS is also using GDAL for raster imports.
+        # - Chances that GRASS is compiled with another version of
+        # GDAL than QGIS are very limited! 
+        return GdalUtils.getSupportedRasterExtensions()
 
     def canBeActivated(self):
         return not bool(Grass7Utils.checkGrass7IsInstalled())
