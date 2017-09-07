@@ -596,6 +596,10 @@ void QgsNodeTool::removeTemporaryRubberBands()
 
 QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
 {
+  QgsSnappingUtils *snapUtils = canvas()->snappingUtils();
+  QgsSnappingConfig oldConfig = snapUtils->config();
+  QgsPointLocator::Match m;
+
   QgsPointXY mapPoint = toMapCoordinates( e->pos() );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
@@ -604,21 +608,44 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   config.setMode( QgsSnappingConfig::AdvancedConfiguration );
   config.setIntersectionSnapping( false );  // only snap to layers
 
-  Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
+  // if there is a current layer, it should have priority over other layers
+  // because sometimes there may be match from multiple layers at one location
+  // and selecting current layer is an easy way for the user to prioritize a layer
+  if ( QgsVectorLayer *currentVlayer = currentVectorLayer() )
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( !vlayer )
-      continue;
+    if ( currentVlayer->isEditable() )
+    {
+      Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( !vlayer )
+          continue;
 
-    config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
-                                         vlayer->isEditable(), QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
+        config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
+                                             vlayer == currentVlayer, QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
+      }
+
+      snapUtils->setConfig( config );
+      m = snapUtils->snapToMap( mapPoint );
+    }
   }
 
-  QgsSnappingUtils *snapUtils = canvas()->snappingUtils();
-  QgsSnappingConfig oldConfig = snapUtils->config();
-  snapUtils->setConfig( config );
+  // if there is no match from the current layer, try to use any editable vector layer
+  if ( !m.isValid() )
+  {
+    Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( !vlayer )
+        continue;
 
-  QgsPointLocator::Match m = snapUtils->snapToMap( mapPoint );
+      config.setIndividualLayerSettings( vlayer, QgsSnappingConfig::IndividualLayerSettings(
+                                           vlayer->isEditable(), QgsSnappingConfig::VertexAndSegment, tol, QgsTolerance::ProjectUnits ) );
+    }
+
+    snapUtils->setConfig( config );
+    m = snapUtils->snapToMap( mapPoint );
+  }
 
   // try to stay snapped to previously used feature
   // so the highlight does not jump around at nodes where features are joined
