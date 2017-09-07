@@ -9,34 +9,58 @@
   <gml:featureMember>
     <ogr:stats_by_category fid="stats_by_category.0">
       <ogr:id2>2</ogr:id2>
+      <ogr:count>2</ogr:count>
+      <ogr:unique>2</ogr:unique>
       <ogr:min>1</ogr:min>
       <ogr:max>4</ogr:max>
-      <ogr:mean>2.5</ogr:mean>
-      <ogr:stddev>2.12132034355964</ogr:stddev>
+      <ogr:range>3</ogr:range>
       <ogr:sum>5</ogr:sum>
-      <ogr:count>2</ogr:count>
+      <ogr:mean>2.5</ogr:mean>
+      <ogr:median>2.5</ogr:median>
+      <ogr:stddev>1.5</ogr:stddev>
+      <ogr:minority>1</ogr:minority>
+      <ogr:majority>1</ogr:majority>
+      <ogr:q1>1</ogr:q1>
+      <ogr:q3>4</ogr:q3>
+      <ogr:iqr>3</ogr:iqr>
     </ogr:stats_by_category>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:stats_by_category fid="stats_by_category.1">
       <ogr:id2>1</ogr:id2>
+      <ogr:count>2</ogr:count>
+      <ogr:unique>2</ogr:unique>
       <ogr:min>2</ogr:min>
       <ogr:max>5</ogr:max>
-      <ogr:mean>3.5</ogr:mean>
-      <ogr:stddev>2.12132034355964</ogr:stddev>
+      <ogr:range>3</ogr:range>
       <ogr:sum>7</ogr:sum>
-      <ogr:count>2</ogr:count>
+      <ogr:mean>3.5</ogr:mean>
+      <ogr:median>3.5</ogr:median>
+      <ogr:stddev>1.5</ogr:stddev>
+      <ogr:minority>2</ogr:minority>
+      <ogr:majority>2</ogr:majority>
+      <ogr:q1>2</ogr:q1>
+      <ogr:q3>5</ogr:q3>
+      <ogr:iqr>3</ogr:iqr>
     </ogr:stats_by_category>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:stats_by_category fid="stats_by_category.2">
       <ogr:id2>0</ogr:id2>
+      <ogr:count>5</ogr:count>
+      <ogr:unique>5</ogr:unique>
       <ogr:min>3</ogr:min>
       <ogr:max>9</ogr:max>
-      <ogr:mean>6.6</ogr:mean>
-      <ogr:stddev>2.30217288664427</ogr:stddev>
+      <ogr:range>6</ogr:range>
       <ogr:sum>33</ogr:sum>
-      <ogr:count>5</ogr:count>
+      <ogr:mean>6.6</ogr:mean>
+      <ogr:median>7</ogr:median>
+      <ogr:stddev>2.0591260281974</ogr:stddev>
+      <ogr:minority>3</ogr:minority>
+      <ogr:majority>3</ogr:majority>
+      <ogr:q1>6</ogr:q1>
+      <ogr:q3>8</ogr:q3>
+      <ogr:iqr>2</ogr:iqr>
     </ogr:stats_by_category>
   </gml:featureMember>
 </ogr:FeatureCollection>

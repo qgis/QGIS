@@ -3476,3 +3476,74 @@ tests:
         name: expected/collect_two_fields.gml
         type: vector
 
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (float field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_float.gml
+        type: vector
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (string field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: name
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_string.gml
+        type: vector
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (two category fields)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_two_fields.gml
+        type: vector
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (no value field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_no_value.gml
+        type: vector
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (date field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - date
+      INPUT:
+        name: custom/datetimes.tab
+        type: vector
+      VALUES_FIELD_NAME: date
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_date.gml
+        type: vector
