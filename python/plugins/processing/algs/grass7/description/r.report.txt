@@ -9,4 +9,4 @@ QgsProcessingParameterBoolean|-h|Suppress page headers|True
 QgsProcessingParameterBoolean|-f|Use formfeeds between pages|True
 QgsProcessingParameterBoolean|-e|Scientific format|True
 QgsProcessingParameterBoolean|-n|Do not report no data cells|True
-OutputHTML|html|Report
+QgsProcessingParameterFileDestination|output|Name for output file to hold the report|Txt files (*.txt)|None|True

@@ -36,6 +36,7 @@ from qgis.PyQt.QtCore import QCoreApplication, QUrl
 
 from qgis.core import (QgsRasterLayer,
                        QgsApplication,
+                       QgsMapLayer,
                        QgsProcessingUtils,
                        QgsMessageLog,
                        QgsVectorFileWriter,
@@ -407,7 +408,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def processInputs(self, parameters, context):
         """Prepare the GRASS import commands"""
-        layers=[]
+        inputLayers=[]
         inputs = [p for p in self.parameterDefinitions()
                   if isinstance(p, (QgsProcessingParameterVectorLayer,
                                     QgsProcessingParameterRasterLayer,
@@ -425,11 +426,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 if paramName in self.exportedLayers:
                     continue
                 else:
-                    layers.append(layer)
+                    inputLayers.append(layer)
                     self.setSessionProjectionFromLayer(layer)
                     self.commands.append(self.exportRasterLayer(paramName, layerSrc))
             # Vector inputs needs to be imported into temp GRASS DB
-            if isinstance(param, QgsProcessingParameterVectorLayer):
+            elif isinstance(param, QgsProcessingParameterVectorLayer):
                 if not paramName in parameters:
                     continue
                 layer = self.parameterAsVectorLayer(parameters, paramName, context)
@@ -441,43 +442,35 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 if paramName in self.exportedLayers:
                     continue
                 else:
-                    layers.append(layer)
+                    inputLayers.append(layer)
                     self.setSessionProjectionFromLayer(layer)
                     self.commands.append(self.exportVectorLayer(paramName, layerSrc))
             # TODO: find the best replacement for ParameterTable
             #if isinstance(param, ParameterTable):
             #    pass
-            if isinstance(param, QgsProcessingParameterMultipleLayers):
-                if not param.name() in parameters:
+            elif isinstance(param, QgsProcessingParameterMultipleLayers):
+                if not paramName in parameters:
                     continue
-                value = parameters[param.name()]
-                layers = value.split(';')
-                if layers is None or len(layers) == 0:
-                    continue
-                if param.datatype == dataobjects.TYPE_RASTER:
-                    for layer in layers:
-                        if layer in list(self.exportedLayers.keys()):
-                            continue
-                        else:
-                            self.setSessionProjectionFromLayer(layer, self.commands)
-                            self.commands.append(self.exportRasterLayer(layer))
-                elif param.datatype in [dataobjects.TYPE_VECTOR_ANY,
-                                        dataobjects.TYPE_VECTOR_LINE,
-                                        dataobjects.TYPE_VECTOR_POLYGON,
-                                        dataobjects.TYPE_VECTOR_POINT]:
-                    for layer in layers:
-                        if layer in list(self.exportedLayers.keys()):
-                            continue
-                        else:
-                            self.setSessionProjectionFromLayer(layer)
-                            self.commands.append(self.exportVectorLayer(layer))
-
+                layers = self.parameterAsLayerList(parameters, paramName, context)
+                for idx, layer in enumerate(layers):
+                    layerName = '{}_{}'.format(paramName, idx)
+                    layerSrc = layer.source()
+                    if layerName not in self.exportedLayers:
+                        inputLayers.append(layer)
+                        self.setSessionProjectionFromLayer(layer)
+                        # Add a raster layer
+                        if layer.type() == QgsMapLayer.RasterLayer:
+                            self.commands.append(self.exportRasterLayer(layerName, layerSrc))
+                        # Add a vector layer
+                        elif layer.type() == QgsMapLayer.VectorLayer:
+                            self.commands.append(self.exportVectorLayer(layerName, layerSrc))
+                        
         # If projection has not already be set, use the project
         self.setSessionProjectionFromProject()
 
         # Build GRASS region
         if self.region.isEmpty():
-            self.region = QgsProcessingUtils.combineLayerExtents(layers)
+            self.region = QgsProcessingUtils.combineLayerExtents(inputLayers)
         command = 'g.region n={} s={} e={} w={}'.format(
             self.region.yMaximum(), self.region.yMinimum(),
             self.region.xMaximum(), self.region.xMinimum()
@@ -498,7 +491,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param parameters:
         """
         noOutputs = [o for o in self.parameterDefinitions() if o not in self.destinationParameterDefinitions()]
-        QgsMessageLog.logMessage('processCommand', 'Grass7', QgsMessageLog.INFO)
         command = '{} '.format(self.grass7Name)
         command += '{}'.join(self.hardcodedStrings)
 
@@ -526,18 +518,18 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         parameters, paramName, context,
                         QgsVectorFileWriter.supportedFormatExtensions()
                     )
-
-            # TODO: handle multipleLayers!
-            #elif isinstance(param, QgsProcessingParameterMultipleLayers):
-            #    s = param.value
-            #    for layer in list(self.exportedLayers.keys()):
-            #        s = s.replace(layer, self.exportedLayers[layer])
-            #    s = s.replace(';', ',')
-            #    command += ' ' + param.name() + '=' + s
+            # MultipleLayers
+            elif isinstance(param, QgsProcessingParameterMultipleLayers):
+                layers = self.parameterAsLayerList(parameters, paramName, context)
+                values = []
+                for idx in range(len(layers)):
+                    layerName = '{}_{}'.format(paramName, idx)
+                    values.append(self.exportedLayers[layerName])
+                value = ','.join(values)
             # For booleans, we just add the parameter name
             elif isinstance(param, QgsProcessingParameterBoolean):
                 if self.parameterAsBool(parameters, paramName, context):
-                    value = paramName
+                    command += ' {}'.format(paramName)
             # For enumeration, we need to grab the string value
             elif isinstance(param, QgsProcessingParameterEnum):
                 idx = self.parameterAsEnum(parameters, paramName, context)
@@ -562,10 +554,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         # Handle outputs
         for out in self.destinationParameterDefinitions():
             outName = out.name()
+            # For File destination
             if isinstance(out, QgsProcessingParameterFileDestination):
-                command += ' > {}'.format(self.parameterAsFileOutput(parameters, outName, context))
-            # TODO: handle OutputHTML
-            #elif not isinstance(out, OutputHTML):
+                command += ' {}="{}"'.format(outName,
+                    self.parameterAsFileOutput(parameters, outName, context))
             else:
                 # We add an output name to make sure it is unique if the session
                 # uses this algorithm several times.
@@ -583,7 +575,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         
     def processOutputs(self, parameters, context):
         """Prepare the GRASS v.out.ogr commands"""
-        # TODO: use outputDefinitions() or destionationParametersDefinitions() ?
         # TODO: support multiple raster formats.
         # TODO: support multiple vector formats.
         for out in self.destinationParameterDefinitions():

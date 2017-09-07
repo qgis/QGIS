@@ -59,6 +59,7 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProcessingParameterField,
                        QgsProcessingParameterRasterDestination,  # NOQA
                        QgsProcessingParameterVectorDestination,  # NOQA
+                       QgsProcessingParameterFileDestination,
                        QgsProcessingParameterString,  # NOQA
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
@@ -676,9 +677,14 @@ def getParameterFromString(s):
                     params[3] = True if params[3].lower() == 'true' else False
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterFileDestination:
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+
             param = clazz(*params)
             if isAdvanced:
                 param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+
             return param
         else:
             return None
