@@ -2258,6 +2258,8 @@ void TestQgsProcessing::parameterLayerList()
   QVERIFY( !def->checkValueIsAcceptable( true ) );
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() ) );
   QVERIFY( def->checkValueIsAcceptable( QStringList() << "layer12312312" << "layerB" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariantList() << "layer12312312" << "layerB" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
@@ -3183,6 +3185,8 @@ void TestQgsProcessing::parameterField()
   QVERIFY( def->checkValueIsAcceptable( QVariantList() << "a" << "b" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringList() ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
 
   params.insert( "non_optional", QString( "a;b" ) );
   fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
