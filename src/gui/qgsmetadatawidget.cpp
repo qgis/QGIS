@@ -248,7 +248,7 @@ void QgsMetadataWidget::fillComboBox()
   comboType->clear();
   QMap<QString, QString> types = parseTypes();
   int i = 0;
-  for ( QString type : types.keys() )
+  for ( const QString type : types.keys() )
   {
     comboType->insertItem( i, type );
     comboType->setItemData( i, types.value( type ), Qt::ToolTipRole );
@@ -261,7 +261,7 @@ void QgsMetadataWidget::fillComboBox()
   comboLanguage->clear();
   QMap<QString, QString> countries = parseLanguages();
   i = 0;
-  for ( QString countryCode : countries.keys() )
+  for ( const QString countryCode : countries.keys() )
   {
     comboLanguage->insertItem( i, countryCode );
     comboLanguage->setItemData( i, countries.value( countryCode ), Qt::ToolTipRole );
@@ -335,7 +335,7 @@ void QgsMetadataWidget::setPropertiesFromLayer()
 
   // Licenses
   tabLicenses->setRowCount( 0 );
-  for ( QString licence : mMetadata.licenses() )
+  for ( const QString licence : mMetadata.licenses() )
   {
     int currentRow = tabLicenses->rowCount();
     tabLicenses->setRowCount( currentRow + 1 );
@@ -358,7 +358,7 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   }
 
   // Links
-  for ( QgsLayerMetadata::Link link : mMetadata.links() )
+  for ( const QgsLayerMetadata::Link link : mMetadata.links() )
   {
     int row = mLinksModel->rowCount();
     mLinksModel->setItem( row, 0, new QStandardItem( link.name ) );
@@ -438,7 +438,7 @@ bool QgsMetadataWidget::checkMetadata()
   if ( results == false )
   {
     errors = QStringLiteral();
-    for ( QgsMetadataValidator::ValidationResult result : validationResults )
+    for ( const QgsMetadataValidator::ValidationResult result : validationResults )
     {
       errors += QLatin1String( "<b>" ) % result.section;
       if ( ! result.identifier.isNull() )
