@@ -39,7 +39,7 @@ email                : sherman at mrcc.com
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
 #include "qgsogrsourceselect.h"
-#include "qgsgeopackagesourceselect.h"
+#include "qgsogrdbsourceselect.h"
 #endif
 
 #include "qgis.h"
@@ -712,8 +712,12 @@ QStringList QgsOgrProvider::subLayers() const
     OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( layer );
     // Get first column name,
     // TODO: add support for multiple
+    QString geometryColumnName;
     OGRGeomFieldDefnH geomH = OGR_FD_GetGeomFieldDefn( fdef, 0 );
-    QString geometryColumnName = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
+    if ( geomH )
+    {
+      geometryColumnName = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
+    }
     QString layerName = QString::fromUtf8( OGR_FD_GetName( fdef ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
@@ -4374,12 +4378,48 @@ class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
+//! Provider for GPKG vector source select
+class QgsGeoPackageSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    virtual QString text() const override { return QObject::tr( "GeoPackage" ); }
+    virtual int ordering() const override { return 45; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeoPackageLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsOgrDbSourceSelect( QStringLiteral( "GPKG" ), QObject::tr( "GeoPackage" ), QObject::tr( "GeoPackage Database (*.gpkg)" ), parent, fl, widgetMode );
+    }
+};
+
+
+/* This has been tested and works just fine:
+//! Provider for SQLite vector source select
+class QgsSpatiaLiteSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    virtual QString text() const override { return QObject::tr( "SQLite" ); }
+    virtual int ordering() const override { return 46; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mIconSpatialite.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsOgrDbSourceSelect( QStringLiteral( "SQLite" ), QObject::tr( "SQLite" ),  QObject::tr( "SpatiaLite Database (*.db *.sqlite)" ), parent, fl, widgetMode );
+    }
+};
+//*/
+
+
 QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
 
   *providers
-      << new QgsOgrVectorSourceSelectProvider;
+      << new QgsOgrVectorSourceSelectProvider
+      << new QgsGeoPackageSourceSelectProvider;
+  // << new QgsSpatiaLiteSourceSelectProvider;
 
   return providers;
 }
