@@ -328,11 +328,11 @@ void QgsNodeTool::clearDragBands()
   mDragPointMarkers.clear();
   mDragPointMarkersOffset.clear();
 
-  Q_FOREACH ( const StraightBand &b, mDragStraightBands )
+  for ( const StraightBand &b : qgsAsConst( mDragStraightBands ) )
     delete b.band;
   mDragStraightBands.clear();
 
-  Q_FOREACH ( const CircularBand &b, mDragCircularBands )
+  for ( const CircularBand &b : qgsAsConst( mDragCircularBands ) )
     delete b.band;
   mDragCircularBands.clear();
 }
@@ -348,7 +348,7 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     QgsPointLocator::Match m = snapToEditableLayer( e );
     if ( m.hasVertex() )
     {
-      Q_FOREACH ( const Vertex &selectedNode, mSelectedNodes )
+      for ( const Vertex &selectedNode : qgsAsConst( mSelectedNodes ) )
       {
         if ( selectedNode.layer == m.layer() && selectedNode.fid == m.featureId() && selectedNode.vertexId == m.vertexIndex() )
         {
@@ -418,7 +418,7 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QList<Vertex> nodes;
 
     // for each editable layer, select nodes
-    Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
+    for ( QgsMapLayer *layer : canvas()->layers() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer || !vlayer->isEditable() || !vlayer->isSpatial() )
@@ -476,7 +476,7 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   // into CAD dock widget in order to make it behave as we need
   if ( !mOverrideCadPoints.isEmpty() )
   {
-    Q_FOREACH ( const QgsPointXY &pt, mOverrideCadPoints )
+    for ( const QgsPointXY &pt : qgsAsConst( mOverrideCadPoints ) )
     {
       QMouseEvent mouseEvent( QEvent::MouseButtonRelease,
                               toCanvasCoordinates( pt ),
@@ -615,7 +615,7 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   {
     if ( currentVlayer->isEditable() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
+      for ( QgsMapLayer *layer : canvas()->layers() )
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vlayer )
@@ -633,7 +633,7 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   // if there is no match from the current layer, try to use any editable vector layer
   if ( !m.isValid() )
   {
-    Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
+    for ( QgsMapLayer *layer : canvas()->layers() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
@@ -792,7 +792,7 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPoint( pX ), QgsPoint( p0 ), QgsPoint( p1 ), points );
       mEdgeBand->reset();
-      Q_FOREACH ( const QgsPoint &pt, points )
+      for ( const QgsPoint &pt : qgsAsConst( points ) )
         mEdgeBand->addPoint( pt );
     }
     else if ( isCircularVertex( geom, m.vertexIndex() + 1 ) )
@@ -803,7 +803,7 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPoint( p0 ), QgsPoint( p1 ), QgsPoint( pX ), points );
       mEdgeBand->reset();
-      Q_FOREACH ( const QgsPoint &pt, points )
+      for ( const QgsPoint &pt : qgsAsConst( points ) )
         mEdgeBand->addPoint( pt );
     }
     else
@@ -983,7 +983,7 @@ void QgsNodeTool::deleteNodeEditorSelection()
   QgsVectorLayer *layer = mSelectedFeature->vlayer();
   QgsFeatureId fid = mSelectedFeature->featureId();
   QgsGeometry geometry = cachedGeometry( layer, fid );
-  Q_FOREACH ( QgsVertexEntry *vertex, selFeatureVertices )
+  for ( QgsVertexEntry *vertex : qgsAsConst( selFeatureVertices ) )
   {
     if ( vertex->isSelected() )
     {
@@ -1062,7 +1062,7 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointXY &mapPoint, const Qgs
   QgsPointXY origDraggingVertexPoint = geom.vertexAt( mDraggingVertex->vertexId );
 
   // if there are other highlighted nodes, they should be dragged as well with their offset
-  Q_FOREACH ( const Vertex &v, mSelectedNodes )
+  for ( const Vertex &v : qgsAsConst( mSelectedNodes ) )
   {
     if ( v != *mDraggingVertex )
     {
@@ -1084,13 +1084,13 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointXY &mapPoint, const Qgs
   {
     // support for topo editing - find extra features
     // that have coincident point with the vertex being dragged
-    Q_FOREACH ( QgsMapLayer *layer, canvas()->layers() )
+    for ( QgsMapLayer *layer : canvas()->layers() )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer || !vlayer->isEditable() )
         continue;
 
-      Q_FOREACH ( const QgsPointLocator::Match &otherMatch, layerVerticesSnappedToPoint( vlayer, mapPoint ) )
+      for ( const QgsPointLocator::Match &otherMatch : layerVerticesSnappedToPoint( vlayer, mapPoint ) )
       {
         if ( otherMatch.layer() == m.layer() &&
              otherMatch.featureId() == m.featureId() &&
@@ -1108,7 +1108,7 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointXY &mapPoint, const Qgs
 
   QSet<Vertex> movingVertices;
   movingVertices << *mDraggingVertex;
-  Q_FOREACH ( const Vertex &v, mDraggingExtraVertices )
+  for ( const Vertex &v : qgsAsConst( mDraggingExtraVertices ) )
     movingVertices << v;
 
   QgsPointXY dragVertexMapPoint = m.point();
@@ -1124,7 +1124,7 @@ void QgsNodeTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertices,
   // i.e. every circular band is defined by its middle circular vertex
   QSet<Vertex> verticesInCircularBands;
 
-  Q_FOREACH ( const Vertex &v, movingVertices )
+  for ( const Vertex &v : qgsAsConst( movingVertices ) )
   {
     int v0idx, v1idx;
     QgsGeometry geom = cachedGeometry( v.layer, v.fid );
@@ -1337,7 +1337,7 @@ void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsP
 
   QgsPointXY layerPoint = toLayerCoordinates( m.layer(), mapPoint );
 
-  Q_FOREACH ( const Vertex &v, movingVertices )
+  for ( const Vertex &v : qgsAsConst( movingVertices ) )
   {
     mDraggingExtraVertices << v;
     mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - QgsPoint( layerPoint ) );
@@ -1455,7 +1455,7 @@ void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator:
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
     // this requires that the snapping match is to a segment and the segment layer's CRS
     // is the same (otherwise we would need to reproject the point and it will not be coincident)
-    Q_FOREACH ( QgsVectorLayer *layer, edits.keys() )
+    for ( QgsVectorLayer *layer : edits.keys() )
     {
       if ( layer->crs() == mapPointMatch->layer()->crs() )
       {
@@ -1550,11 +1550,11 @@ void QgsNodeTool::deleteVertex()
   {
     // if topo editing is enabled, delete all the vertices that are on the same location
     QSet<Vertex> topoVerticesToDelete;
-    Q_FOREACH ( const Vertex &vertexToDelete, toDelete )
+    for ( const Vertex &vertexToDelete : toDelete )
     {
       QgsPointXY layerPt = cachedGeometryForVertex( vertexToDelete ).vertexAt( vertexToDelete.vertexId );
       QgsPointXY mapPt = toMapCoordinates( vertexToDelete.layer, layerPt );
-      Q_FOREACH ( const QgsPointLocator::Match &otherMatch, layerVerticesSnappedToPoint( vertexToDelete.layer, mapPt ) )
+      for ( const QgsPointLocator::Match &otherMatch : layerVerticesSnappedToPoint( vertexToDelete.layer, mapPt ) )
       {
         Vertex otherVertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
         if ( toDelete.contains( otherVertex ) || topoVerticesToDelete.contains( otherVertex ) )
@@ -1569,7 +1569,7 @@ void QgsNodeTool::deleteVertex()
 
   // switch from a plain list to dictionary { layer: { fid: [vertexNr1, vertexNr2, ...] } }
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > > toDeleteGrouped;
-  Q_FOREACH ( const Vertex &vertex, toDelete )
+  for ( const Vertex &vertex : toDelete )
   {
     toDeleteGrouped[vertex.layer][vertex.fid].append( vertex.vertexId );
   }
@@ -1605,7 +1605,7 @@ void QgsNodeTool::deleteVertex()
           }
         }
         // now delete the duplicities
-        Q_FOREACH ( int duplicateVertexIndex, duplicateVertexIndices )
+        for ( int duplicateVertexIndex : duplicateVertexIndices )
           vertexIds.removeOne( duplicateVertexIndex );
       }
     }
@@ -1629,7 +1629,7 @@ void QgsNodeTool::deleteVertex()
 
       bool res = QgsVectorLayer::Success;
       std::sort( vertexIds.begin(), vertexIds.end(), std::greater<int>() );
-      Q_FOREACH ( int vertexId, vertexIds )
+      for ( int vertexId : vertexIds )
       {
         if ( res != QgsVectorLayer::EmptyGeometry )
           res = layer->deleteVertex( fid, vertexId );
@@ -1684,7 +1684,7 @@ void QgsNodeTool::setHighlightedNodes( QList<Vertex> listNodes )
   mSelectedNodesMarkers.clear();
   mSelectedNodes.clear();
 
-  Q_FOREACH ( const Vertex &node, listNodes )
+  for ( const Vertex &node : qgsAsConst( listNodes ) )
   {
     QgsGeometry geom = cachedGeometryForVertex( node );
     QgsVertexId vid;
@@ -1703,7 +1703,7 @@ void QgsNodeTool::setHighlightedNodes( QList<Vertex> listNodes )
 
 void QgsNodeTool::setHighlightedNodesVisible( bool visible )
 {
-  Q_FOREACH ( QgsVertexMarker *marker, mSelectedNodesMarkers )
+  for ( QgsVertexMarker *marker : qgsAsConst( mSelectedNodesMarkers ) )
     marker->setVisible( visible );
 }
 
@@ -1798,7 +1798,7 @@ void QgsNodeTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
   QgsGeometryUtils::segmentizeArc( QgsPoint( v0 ), QgsPoint( v1 ), QgsPoint( v2 ), points );
   // it would be useful to have QgsRubberBand::setPoints() call
   band->reset();
-  Q_FOREACH ( const QgsPoint &p, points )
+  for ( const QgsPoint &p : points )
     band->addPoint( p );
 }
 
