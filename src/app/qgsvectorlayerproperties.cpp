@@ -454,6 +454,11 @@ void QgsVectorLayerProperties::syncToLayer()
   mRefreshLayerIntervalSpinBox->setEnabled( mLayer->hasAutoRefreshEnabled() );
   mRefreshLayerIntervalSpinBox->setValue( mLayer->autoRefreshInterval() / 1000.0 );
 
+  mRefreshLayerNotificationCheckBox->setChecked( mLayer->isRefreshOnNotifyEnabled() );
+  mNotificationMessageCheckBox->setChecked( !mLayer->refreshOnNotifyMessage().isEmpty() );
+  mNotifyMessagValueLineEdit->setText( mLayer->refreshOnNotifyMessage() );
+
+
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
@@ -631,6 +636,9 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
   mLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
+
+  mLayer->setRefreshOnNotifyEnabled( mRefreshLayerNotificationCheckBox->isChecked() );
+  mLayer->setRefreshOnNofifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessagValueLineEdit->text() : QString() );
 
   mOldJoins = mLayer->vectorJoins();
 

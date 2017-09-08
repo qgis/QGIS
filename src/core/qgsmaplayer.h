@@ -847,6 +847,37 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 
+    /**
+     * Set whether provider notification is connected to triggerRepaint
+     *
+     * \since QGIS 3.0
+     */
+    void setRefreshOnNotifyEnabled( bool enabled );
+
+    /**
+     * Set the notification message that triggers repaine
+     * If refresh on notification is enabled, the notification will triggerRepaint only
+     * if the notification message is equal to \param message
+     *
+     * \since QGIS 3.0
+     */
+    void setRefreshOnNofifyMessage( const QString &message ) { mRefreshOnNofifyMessage = message; }
+
+    /**
+     * Returns the message that should be notified by the provider to triggerRepaint
+     *
+     * \since QGIS 3.0
+     */
+    QString refreshOnNotifyMessage() const { return mRefreshOnNofifyMessage; }
+
+    /**
+     * Returns true if the refresh on provider nofification is enabled
+     *
+     * \since QGIS 3.0
+     */
+    bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
+
+
   signals:
 
     //! Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar)
@@ -930,6 +961,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     void metadataChanged();
+
+  private slots:
+
+    void onNotifiedTriggerRepaint( const QString &message );
 
   protected:
 
@@ -1029,6 +1064,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Checks whether a new set of dependencies will introduce a cycle
     bool hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const;
+
+    bool mIsRefreshOnNofifyEnabled = false;
+    QString mRefreshOnNofifyMessage;
 
   private:
 

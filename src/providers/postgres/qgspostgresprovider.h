@@ -32,6 +32,7 @@ class QgsGeometry;
 class QgsPostgresFeatureIterator;
 class QgsPostgresSharedData;
 class QgsPostgresTransaction;
+class QgsPostgresListener;
 
 #include "qgsdatasourceuri.h"
 
@@ -207,6 +208,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \since QGIS 3.0
      */
     virtual bool hasMetadata() const override;
+
+    /**
+     * Launch a listening thead to listen to postgres NOTIFY on "qgis" channel
+     * the notification is transformed into a Qt signal.
+     *
+     * \since QGIS 3.0
+     */
+    void setListening( bool isListening ) override;
 
   signals:
 
@@ -434,6 +443,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QHash<int, QString> mDefaultValues;
 
     bool mCheckPrimaryKeyUnicity = true;
+
+    std::unique_ptr< QgsPostgresListener > mListener;
 };
 
 

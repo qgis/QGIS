@@ -77,8 +77,9 @@ class CORE_EXPORT QgsAction
      * \param capture              If this is set to true, the output will be captured when an action is run
      * \param shortTitle           A short string used to label user interface elements like buttons
      * \param actionScopes         A set of scopes in which this action will be available
+     * \param notificationMessage  A particular message which reception will trigger the action
      */
-    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>() )
+    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() )
       : mType( type )
       , mDescription( description )
       , mShortTitle( shortTitle )
@@ -86,6 +87,7 @@ class CORE_EXPORT QgsAction
       , mCommand( action )
       , mCaptureOutput( capture )
       , mActionScopes( actionScopes )
+      , mNotificationMessage( notificationMessage )
       , mId( QUuid::createUuid() )
     {}
 
@@ -123,6 +125,13 @@ class CORE_EXPORT QgsAction
      * \since QGIS 3.0
      */
     QString command() const { return mCommand; }
+
+    /**
+     * Returns the notification message that triggers the action
+     *
+     * \since QGIS 3.0
+     */
+    QString notificationMessage() const { return mNotificationMessage; }
 
     //! The action type
     ActionType type() const { return mType; }
@@ -190,6 +199,7 @@ class CORE_EXPORT QgsAction
     QString mCommand;
     bool mCaptureOutput = false;
     QSet<QString> mActionScopes;
+    QString mNotificationMessage;
     mutable std::shared_ptr<QAction> mAction;
     QUuid mId;
 };

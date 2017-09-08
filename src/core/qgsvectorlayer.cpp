@@ -4434,3 +4434,4 @@ bool QgsVectorLayer::readExtentFromXml() const
 {
   return mReadExtentFromXml;
 }
+
