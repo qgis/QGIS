@@ -21,30 +21,6 @@
 
 
 /**
- * Holds the information about a gpkg layer
- */
-class QgsGeoPackageLayerInfo
-{
-  public:
-    QgsGeoPackageLayerInfo( const QString &path, const QString &uri, const QString &name, const QgsLayerItem::LayerType &type )
-      : mPath( path )
-      , mUri( uri )
-      , mName( name )
-      , mType( type )
-    {
-    }
-    const QString path() const { return mPath; }
-    const QString uri() const { return mUri; }
-    const QString name() const { return mName; }
-    QgsLayerItem::LayerType type() const { return mType; }
-  private:
-    QString mPath;
-    QString mUri;
-    QString mName;
-    QgsLayerItem::LayerType mType = QgsLayerItem::LayerType::NoType;
-};
-
-/**
  * \brief The QgsGeoPackageAbstractLayerItem class is the base class for GeoPackage raster and vector layers
  */
 class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
@@ -94,8 +70,6 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 
   public:
     QgsGeoPackageConnectionItem( QgsDataItem *parent, QString name, QString path );
-    //! Extract layers information from the geopackage
-    QList<QgsGeoPackageLayerInfo *> subLayers( const QString &path ) const;
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
@@ -142,10 +116,6 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
     void connectionsChanged();
     void createDatabase();
 #endif
-
-  private:
-    bool storeConnection( const QString &path );
-
 };
 
 
