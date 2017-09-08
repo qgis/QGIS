@@ -7,22 +7,6 @@
  ************************************************************************/
 
 
-
-
-struct QgsServiceLayerDetail
-{
-%TypeHeaderCode
-#include <qgsgeonoderequest.h>
-%End
-  QUuid uuid;
-  QString name;
-  QString typeName;
-  QString title;
-  QString wmsURL;
-  QString wfsURL;
-  QString xyzURL;
-};
-
 struct QgsGeoNodeStyle
 {
 %TypeHeaderCode
@@ -43,6 +27,17 @@ class QgsGeoNodeRequest : QObject
 %End
   public:
 
+    struct ServiceLayerDetail
+    {
+      QUuid uuid;
+      QString name;
+      QString typeName;
+      QString title;
+      QString wmsURL;
+      QString wfsURL;
+      QString xyzURL;
+    };
+
     explicit QgsGeoNodeRequest( bool forceRefresh, QObject *parent = 0 );
 %Docstring
  Constructor for QgsGeoNodeRequest.
@@ -57,9 +52,9 @@ class QgsGeoNodeRequest : QObject
  :rtype: bool
 %End
 
-    QList<QgsServiceLayerDetail> getLayers();
+    QList<QgsGeoNodeRequest::ServiceLayerDetail> getLayers();
 %Docstring
- :rtype: list of QgsServiceLayerDetail
+ :rtype: list of QgsGeoNodeRequest.ServiceLayerDetail
 %End
 
     QList<QgsGeoNodeStyle> getStyles( const QString &layerName );

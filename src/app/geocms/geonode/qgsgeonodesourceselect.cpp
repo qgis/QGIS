@@ -154,7 +154,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
   QgsGeoNodeRequest geonodeRequest( url, true );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  const QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
+  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.getLayers();
   QApplication::restoreOverrideCursor();
 
   if ( !layers.empty() )
@@ -173,7 +173,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
   if ( !layers.isEmpty() )
   {
-    for ( const QgsServiceLayerDetail &layer : layers )
+    for ( const QgsGeoNodeRequest::ServiceLayerDetail &layer : layers )
     {
       QUuid uuid = layer.uuid;
 

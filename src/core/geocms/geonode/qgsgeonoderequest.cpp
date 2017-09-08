@@ -57,9 +57,9 @@ void QgsGeoNodeRequest::abort()
   }
 }
 
-QList<QgsServiceLayerDetail> QgsGeoNodeRequest::getLayers()
+QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::getLayers()
 {
-  QList<QgsServiceLayerDetail> layers;
+  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
   bool success = request( QStringLiteral( "/api/layers/" ) );
   if ( !success )
   {
@@ -240,9 +240,9 @@ void QgsGeoNodeRequest::replyFinished()
 
 }
 
-QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( const QByteArray &layerResponse )
+QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( const QByteArray &layerResponse )
 {
-  QList<QgsServiceLayerDetail> layers;
+  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
   if ( layerResponse.isEmpty() )
   {
     return layers;
@@ -270,7 +270,7 @@ QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( const QByteArray &l
   {
     for ( const QVariant &layer : qgsAsConst( layerList ) )
     {
-      QgsServiceLayerDetail layerStruct;
+      QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
       const QVariantMap layerMap = layer.toMap();
       // Find WMS and WFS. XYZ is not available
       // Trick to get layer's typename from distribution_url or detail_url
@@ -309,7 +309,7 @@ QList<QgsServiceLayerDetail> QgsGeoNodeRequest::parseLayers( const QByteArray &l
   {
     for ( const QVariant &layer : qgsAsConst( layerList ) )
     {
-      QgsServiceLayerDetail layerStruct;
+      QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
       const QVariantMap layerMap = layer.toMap();
       // Find WMS, WFS, and XYZ link
       const QVariantList layerLinks = layerMap.value( QStringLiteral( "links" ) ).toList();
@@ -387,14 +387,14 @@ QStringList QgsGeoNodeRequest::serviceUrls( const QString &serviceType )
 {
   QStringList urls;
 
-  const QList<QgsServiceLayerDetail> layers = getLayers();
+  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = getLayers();
 
   if ( layers.empty() )
   {
     return urls;
   }
 
-  for ( const QgsServiceLayerDetail &layer : layers )
+  for ( const QgsGeoNodeRequest::ServiceLayerDetail &layer : layers )
   {
     QString url;
     if ( QString::compare( serviceType, QStringLiteral( "wms" ), Qt::CaseInsensitive ) == 0 )
@@ -430,14 +430,14 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( const QString &serviceType )
 {
   QgsStringMap urls;
 
-  const QList<QgsServiceLayerDetail> layers = getLayers();
+  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = getLayers();
 
   if ( layers.empty() )
   {
     return urls;
   }
 
-  for ( const QgsServiceLayerDetail &layer : layers )
+  for ( const QgsGeoNodeRequest::ServiceLayerDetail &layer : layers )
   {
     QString url;
 

@@ -129,7 +129,7 @@ void TestQgsGeoNodeConnection::testLayerAPI()
   }
 
   QgsGeoNodeRequest geonodeRequest( mKartozaGeoNodeQGISServerURL, true );
-  QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
+  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.getLayers();
   QString msg = QStringLiteral( "Number of layers: %1" ).arg( layers.count() );
   QgsDebugMsg( msg );
   QVERIFY( layers.count() > 0 );

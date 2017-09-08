@@ -249,7 +249,7 @@ void QgsGeoNodeNewConnection::testConnection()
   QString url = txtUrl->text();
   QgsGeoNodeRequest geonodeRequest( url, true );
 
-  QList<QgsServiceLayerDetail> layers = geonodeRequest.getLayers();
+  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.getLayers();
   QApplication::restoreOverrideCursor();
 
   if ( !layers.empty() )

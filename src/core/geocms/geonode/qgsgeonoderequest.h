@@ -17,28 +17,10 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
-#include <qnetworkreply.h>
+#include <QNetworkReply>
 #include <QDomDocument>
-
-
 #include <QObject>
 #include <QUuid>
-
-struct CORE_EXPORT QgsServiceLayerDetail
-{
-#ifdef SIP_RUN
-  % TypeHeaderCode
-#include <qgsgeonoderequest.h>
-  % End
-#endif
-  QUuid uuid;
-  QString name;
-  QString typeName;
-  QString title;
-  QString wmsURL;
-  QString wfsURL;
-  QString xyzURL;
-};
 
 struct CORE_EXPORT QgsGeoNodeStyle
 {
@@ -59,6 +41,17 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     Q_OBJECT
   public:
 
+    struct ServiceLayerDetail
+    {
+      QUuid uuid;
+      QString name;
+      QString typeName;
+      QString title;
+      QString wmsURL;
+      QString wfsURL;
+      QString xyzURL;
+    };
+
     /**
      * Constructor for QgsGeoNodeRequest.
      *
@@ -70,7 +63,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
     bool request( const QString &endPoint );
 
-    QList<QgsServiceLayerDetail> getLayers();
+    QList<QgsGeoNodeRequest::ServiceLayerDetail> getLayers();
 
     QList<QgsGeoNodeStyle> getStyles( const QString &layerName );
 
@@ -97,7 +90,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
     void setProtocol( const QString &protocol );
 
   private:
-    QList<QgsServiceLayerDetail> parseLayers( const QByteArray &layerResponse );
+    QList<QgsGeoNodeRequest::ServiceLayerDetail> parseLayers( const QByteArray &layerResponse );
     QgsGeoNodeStyle retrieveStyle( const QString &styleUrl );
 
   signals:
