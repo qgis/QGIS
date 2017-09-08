@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ClipByMask.py
+    ClipRasterByExtent.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Alexander Bruy
@@ -30,29 +30,25 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
-                       QgsProcessing,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
+                       QgsProcessingParameterExtent,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
+
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ClipByMask(GdalAlgorithm):
+class ClipRasterByExtent(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    MASK = 'MASK'
+    EXTENT = 'PROJWIN'
     NODATA = 'NODATA'
-    ALPHA_BAND = 'ALPHA_BAND'
-    CROP_TO_CUTLINE = 'CROP_TO_CUTLINE'
-    KEEP_RESOLUTION = 'KEEP_RESOLUTION'
     OPTIONS = 'OPTIONS'
     DATA_TYPE = 'DATA_TYPE'
     OUTPUT = 'OUTPUT'
@@ -65,23 +61,13 @@ class ClipByMask(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterVectorLayer(self.MASK,
-                                                            self.tr('Mask layer'),
-                                                            [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Clipping extent')))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        defaultValue=0.0,
                                                        optional=True))
-        self.addParameter(QgsProcessingParameterBoolean(self.ALPHA_BAND,
-                                                        self.tr('Create and output alpha band'),
-                                                        defaultValue=False))
-        self.addParameter(QgsProcessingParameterBoolean(self.CROP_TO_CUTLINE,
-                                                        self.tr('Crop the extent of the target dataset to the extent of the cutline'),
-                                                        defaultValue=True))
-        self.addParameter(QgsProcessingParameterBoolean(self.KEEP_RESOLUTION,
-                                                        self.tr('Keep resolution of output raster'),
-                                                        defaultValue=False))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation parameters'),
@@ -102,57 +88,45 @@ class ClipByMask(GdalAlgorithm):
         self.addParameter(dataType_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
-                                                                  self.tr('Clipped (mask)')))
+                                                                  self.tr('Clipped (extent)')))
 
     def name(self):
-        return 'cliprasterbymasklayer'
+        return 'cliprasterbyextent'
 
     def displayName(self):
-        return self.tr('Clip raster by mask layer')
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
+        return self.tr('Clip raster by extent')
 
     def group(self):
         return self.tr('Raster extraction')
 
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
+
+    def commandName(self):
+        return "gdal_translate"
+
     def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
-
-        maskLayer = self.parameterAsVectorLayer(parameters, self.MASK, context)
-        connectionString = GdalUtils.ogrConnectionString(maskLayer.source(), context)
-
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         arguments = []
+        arguments.append('-projwin')
+        arguments.append(str(bbox.xMinimum()))
+        arguments.append(str(bbox.yMaximum()))
+        arguments.append(str(bbox.xMaximum()))
+        arguments.append(str(bbox.yMinimum()))
+
+        if nodata:
+            arguments.append('-a_nodata {}'.format(nodata))
+
         arguments.append('-ot')
         arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
 
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
-
-        if self.parameterAsBool(self.KEEP_RESOLUTION):
-            arguments.append('-tr')
-            arguments.append(str(inLayer.rasterUnitsPerPixelX()))
-            arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
-            arguments.append('-tap')
-
-        arguments.append('-cutline')
-        arguments.append(connectionString)
-        if maskLayer.subsetString():
-            arguments.append('-cwhere')
-            arguments.append(maskLayer.subsetString())
-
-        if self.parameterAsBool(self.CROP_TO_CUTLINE):
-            arguments.append('-crop_to_cutline')
-
-        if self.parameterAsBool(self.ALPHA_BAND):
-            arguments.append('-dstalpha')
-
-        if nodata:
-            arguments.append('-dstnodata {}'.format(nodata))
 
         if options:
             arguments.append('-co')
@@ -161,4 +135,4 @@ class ClipByMask(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdalwarp', GdalUtils.escapeAndJoin(arguments)]
+        return ['gdal_translate', GdalUtils.escapeAndJoin(arguments)]

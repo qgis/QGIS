@@ -36,11 +36,12 @@ from .GdalUtils import GdalUtils
 from .AssignProjection import AssignProjection
 from .aspect import aspect
 from .buildvrt import buildvrt
-from .ClipByExtent import ClipByExtent
-from .ClipByMask import ClipByMask
+from .ClipRasterByExtent import ClipRasterByExtent
+from .ClipRasterByMask import ClipRasterByMask
 from .ColorRelief import ColorRelief
 from .contour import contour
 from .fillnodata import fillnodata
+from .gdalinfo import gdalinfo
 from .gdal2tiles import gdal2tiles
 from .gdal2xyz import gdal2xyz
 from .gdaladdo import gdaladdo
@@ -52,7 +53,6 @@ from .GridInverseDistanceNearestNeighbor import GridInverseDistanceNearestNeighb
 from .GridLinear import GridLinear
 from .GridNearestNeighbor import GridNearestNeighbor
 from .hillshade import hillshade
-from .information import information
 from .nearblack import nearblack
 from .pct2rgb import pct2rgb
 from .polygonize import polygonize
@@ -73,8 +73,9 @@ from .warp import warp
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 
-from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
-from .ogr2ogrtopostgis import Ogr2OgrToPostGis
+from .ogrinfo import ogrinfo
+from .OgrToPostGis import OgrToPostGis
+from .PointsAlongLines import PointsAlongLines
 
 # from .ogr2ogr import Ogr2Ogr
 # from .ogr2ogrclip import Ogr2OgrClip
@@ -85,7 +86,6 @@ from .ogr2ogrtopostgis import Ogr2OgrToPostGis
 # from .onesidebuffer import OneSideBuffer
 # from .offsetcurve import OffsetCurve
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
-# from .ogrinfo import OgrInfo
 # from .ogrsql import OgrSql
 
 pluginPath = os.path.normpath(os.path.join(
@@ -139,11 +139,12 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             AssignProjection(),
             aspect(),
             buildvrt(),
-            ClipByExtent(),
-            ClipByMask(),
+            ClipRasterByExtent(),
+            ClipRasterByMask(),
             ColorRelief(),
             contour(),
             fillnodata(),
+            gdalinfo(),
             gdal2tiles(),
             gdal2xyz(),
             gdaladdo(),
@@ -155,7 +156,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             GridLinear(),
             GridNearestNeighbor(),
             hillshade(),
-            information(),
             nearblack(),
             pct2rgb(),
             polygonize(),
@@ -175,9 +175,9 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdalcalc(),
             # rasterize_over(),
             # ----- OGR tools -----
-            Ogr2OgrPointsOnLines(),
-            Ogr2OgrToPostGis(),
-            # OgrInfo(),
+            ogrinfo(),
+            OgrToPostGis(),
+            PointsAlongLines(),
             # Ogr2Ogr(),
             # Ogr2OgrClip(),
             # Ogr2OgrClipExtent(),

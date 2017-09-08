@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ogr2ogrpointsonlines.py
+    PointsAlongLines.py
     ---------------------
     Date                 : Janaury 2015
     Copyright            : (C) 2015 by Giovanni Manghi
@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -39,7 +38,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import isWindows
 
 
-class Ogr2OgrPointsOnLines(GdalAlgorithm):
+class PointsAlongLines(GdalAlgorithm):
 
     OUTPUT = 'OUTPUT'
     INPUT = 'INPUT'
@@ -65,7 +64,7 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT, self.tr('Points along lines'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
-        return 'createpointsalonglines'
+        return 'pointsalonglines'
 
     def displayName(self):
         return self.tr('Create points along lines')
@@ -124,4 +123,4 @@ class Ogr2OgrPointsOnLines(GdalAlgorithm):
         return commands
 
     def commandName(self):
-        return "ogr2ogr"
+        return 'ogr2ogr'
