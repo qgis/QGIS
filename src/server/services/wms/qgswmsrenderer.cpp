@@ -1322,8 +1322,8 @@ namespace QgsWms
 
       if ( !validLayer )
       {
-        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                      QStringLiteral( "Layer '%1' not found" ).arg( queryLayer ) );
+        QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
+        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
       }
     }
 
