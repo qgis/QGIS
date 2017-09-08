@@ -77,7 +77,7 @@ QList<QAction *> QgsGeoNodeConnectionItem::actions()
 
 void QgsGeoNodeConnectionItem::editConnection()
 {
-  QgsGeoNodeNewConnection nc( nullptr, mConnection->connName() );
+  QgsGeoNodeNewConnection nc( nullptr, mConnection->connectionName() );
   nc.setWindowTitle( tr( "Modify GeoNode connection" ) );
 
   if ( nc.exec() )
@@ -89,7 +89,7 @@ void QgsGeoNodeConnectionItem::editConnection()
 
 QgsGeoNodeServiceItem::QgsGeoNodeServiceItem( QgsDataItem *parent, QgsGeoNodeConnection *conn, QString serviceName, QString path )
   : QgsDataCollectionItem( parent, serviceName, path )
-  , mName( conn->connName() )
+  , mName( conn->connectionName() )
   , mServiceName( serviceName )
   , mConnection( conn )
 {

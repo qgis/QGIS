@@ -284,6 +284,7 @@
 %Include fieldformatter/qgsrelationreferencefieldformatter.sip
 %Include fieldformatter/qgsvaluemapfieldformatter.sip
 %Include fieldformatter/qgsvaluerelationfieldformatter.sip
+%Include geocms/geonode/qgsgeonodeconnection.sip
 %Include gps/qgsqtlocationconnection.sip
 %Include gps/qgsgpsconnectionregistry.sip
 %Include qgsapplication.sip

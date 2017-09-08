@@ -76,8 +76,8 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
     void loadGeonodeConnection();
     void filterChanged( const QString &text );
     void treeViewSelectionChanged();
-    void populateConnectionList();
-    void setConnectionListPosition();
+    void populateConnectionList( const QString &selectedConnectionName = QString() );
+    void setConnectionListPosition( const QString &selectedConnectionName = QString() );
     void showHelp();
 
 };

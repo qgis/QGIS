@@ -83,7 +83,7 @@ void QgsGeoNodeSourceSelect::addConnectionsEntryList()
 
   if ( nc.exec() )
   {
-    populateConnectionList();
+    populateConnectionList( nc.name() );
     emit connectionsChanged();
   }
 }
@@ -95,7 +95,7 @@ void QgsGeoNodeSourceSelect::modifyConnectionsEntryList()
 
   if ( nc.exec() )
   {
-    populateConnectionList();
+    populateConnectionList( nc.name() );
     emit connectionsChanged();
   }
 }
@@ -119,23 +119,21 @@ void QgsGeoNodeSourceSelect::deleteConnectionsEntryList()
   }
 }
 
-void QgsGeoNodeSourceSelect::populateConnectionList()
+void QgsGeoNodeSourceSelect::populateConnectionList( const QString &selectedConnectionName )
 {
   cmbConnections->clear();
   cmbConnections->addItems( QgsGeoNodeConnectionUtils::connectionList() );
 
-  setConnectionListPosition();
+  setConnectionListPosition( selectedConnectionName );
 }
 
-void QgsGeoNodeSourceSelect::setConnectionListPosition()
+void QgsGeoNodeSourceSelect::setConnectionListPosition( const QString &selectedConnectionName )
 {
-  QString toSelect = QgsGeoNodeConnectionUtils::selectedConnection();
-
-  cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
+  cmbConnections->setCurrentIndex( cmbConnections->findText( selectedConnectionName ) );
 
   if ( cmbConnections->currentIndex() < 0 )
   {
-    if ( toSelect.isNull() )
+    if ( selectedConnectionName.isEmpty() )
       cmbConnections->setCurrentIndex( 0 );
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );

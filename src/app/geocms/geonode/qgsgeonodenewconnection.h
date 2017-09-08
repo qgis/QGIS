@@ -30,6 +30,9 @@ class QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnect
     //! Constructor
     QgsGeoNodeNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
+    //! Returns the new connection name
+    QString name() const;
+
   public slots:
     void accept() override;
     void okButtonBehavior( const QString & );

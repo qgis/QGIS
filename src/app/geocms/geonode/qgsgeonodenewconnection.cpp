@@ -127,6 +127,11 @@ QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString
   connect( btnConnect, &QPushButton::clicked, this, &QgsGeoNodeNewConnection::testConnection );
 }
 
+QString QgsGeoNodeNewConnection::name() const
+{
+  return txtName->text();
+}
+
 void QgsGeoNodeNewConnection::accept()
 {
   QgsSettings settings;
