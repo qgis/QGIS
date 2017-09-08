@@ -73,6 +73,7 @@ from .warp import warp
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 
+from .OffsetCurve import OffsetCurve
 from .ogrinfo import ogrinfo
 from .OgrToPostGis import OgrToPostGis
 from .PointsAlongLines import PointsAlongLines
@@ -84,7 +85,6 @@ from .PointsAlongLines import PointsAlongLines
 # from .ogr2ogrbuffer import Ogr2OgrBuffer
 # from .ogr2ogrdissolve import Ogr2OgrDissolve
 # from .onesidebuffer import OneSideBuffer
-# from .offsetcurve import OffsetCurve
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 # from .ogrsql import OgrSql
 
@@ -175,6 +175,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdalcalc(),
             # rasterize_over(),
             # ----- OGR tools -----
+            OffsetCurve(),
             ogrinfo(),
             OgrToPostGis(),
             PointsAlongLines(),
@@ -185,7 +186,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # Ogr2OgrBuffer(),
             # Ogr2OgrDissolve(),
             # OneSideBuffer(),
-            # OffsetCurve(),
             # Ogr2OgrTableToPostGisList(),
             # OgrSql(),
         ]

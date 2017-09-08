@@ -338,22 +338,22 @@ tests:
         compare:
           ignore_crs_check: true
 
-#  - algorithm: gdal:offsetlinesforlines
-#    name: Offset lines for lines (right-handed)
-#    params:
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#         name: lines.gml
-#         type: vector
-#      RADIUS: -0.5
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/offset_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: gdal:offsetcurve
+    name: Offset curve (right-handed)
+    params:
+      GEOMETRY: geometry
+      INPUT_LAYER:
+         name: lines.gml
+         type: vector
+      RADIUS: -0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/offset_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: gdal:singlesidedbufferforlines
 #    name: One-side buffer for lines (left-handed)
 #    params:
@@ -429,4 +429,3 @@ tests:
 #          geometry:
 #            precision: 7
 #
-
