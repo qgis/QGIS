@@ -58,11 +58,7 @@ typedef QVector<QVector<QgsPointXY>> QgsPolygon;
 #endif
 
 //! A collection of QgsPoints that share a common collection of attributes
-#ifndef SIP_RUN
 typedef QVector<QgsPointXY> QgsMultiPoint;
-#else
-typedef QVector<QgsPointXY> QgsMultiPoint;
-#endif
 
 //! A collection of QgsPolylines that share a common collection of attributes
 #ifndef SIP_RUN
@@ -599,15 +595,12 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry orientedMinimumBoundingBox( double &area SIP_OUT, double &angle SIP_OUT, double &width SIP_OUT, double &height SIP_OUT ) const;
 
-#ifndef SIP_RUN
-
     /**
      * Returns the oriented minimum bounding box for the geometry, which is the smallest (by area)
      * rotated rectangle which fully encompasses the geometry.
      * \since QGIS 3.0
      */
-    QgsGeometry orientedMinimumBoundingBox( ) const;
-#endif
+    QgsGeometry orientedMinimumBoundingBox() const SIP_SKIP;
 
     /**
      * Returns the minimal enclosing circle for the geometry.
@@ -618,15 +611,12 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry minimalEnclosingCircle( QgsPointXY &center SIP_OUT, double &radius SIP_OUT, unsigned int segments = 36 ) const;
 
-#ifndef SIP_RUN
-
     /**
      * Returns the minimal enclosing circle for the geometry.
      * \param segments Number of segments used to segment geometry. \see QgsEllipse::toPolygon()
      * \since QGIS 3.0
      */
-    QgsGeometry minimalEnclosingCircle( unsigned int segments = 36 ) const;
-#endif
+    QgsGeometry minimalEnclosingCircle( unsigned int segments = 36 ) const SIP_SKIP;
 
     /**
      * Attempts to orthogonalize a line or polygon geometry by shifting vertices to make the geometries
