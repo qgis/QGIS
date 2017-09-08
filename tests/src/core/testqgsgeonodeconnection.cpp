@@ -65,8 +65,6 @@ class TestQgsGeoNodeConnection: public QObject
 
     QString mKartozaGeoNodeGeoServerName;
     QString mKartozaGeoNodeGeoServerURL;
-
-    bool mSkipRemoteTest;
 };
 
 // Runs before all unit tests
@@ -82,9 +80,6 @@ void TestQgsGeoNodeConnection::initTestCase()
   mKartozaGeoNodeGeoServerName = QStringLiteral( "Staging Kartoza GeoNode GeoServer" );
   mKartozaGeoNodeGeoServerURL = QStringLiteral( "http://staginggs.geonode.kartoza.com" );
 
-  // Change it to skip remote testing
-  mSkipRemoteTest = true;
-
   // Add Demo GeoNode Connection
   QgsSettings settings;
 
@@ -99,7 +94,7 @@ void TestQgsGeoNodeConnection::initTestCase()
 // Test the creation of geonode connection
 void TestQgsGeoNodeConnection::testCreation()
 {
-  if ( mSkipRemoteTest )
+  if ( QgsTest::isTravis() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
@@ -128,7 +123,7 @@ void TestQgsGeoNodeConnection::testCreation()
 // Test Layer API
 void TestQgsGeoNodeConnection::testLayerAPI()
 {
-  if ( mSkipRemoteTest )
+  if ( QgsTest::isTravis() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
@@ -143,7 +138,7 @@ void TestQgsGeoNodeConnection::testLayerAPI()
 // Test Style API
 void TestQgsGeoNodeConnection::testStyleAPI()
 {
-  if ( mSkipRemoteTest )
+  if ( QgsTest::isTravis() )
   {
     QSKIP( "Skip remote test for faster testing" );
   }
