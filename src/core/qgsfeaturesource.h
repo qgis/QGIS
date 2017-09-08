@@ -117,6 +117,11 @@ class CORE_EXPORT QgsFeatureSource
      */
     virtual QgsRectangle sourceExtent() const;
 
+    /**
+     * Returns a list of all feature IDs for features present in the source.
+     */
+    virtual QgsFeatureIds allFeatureIds() const;
+
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSource * )
