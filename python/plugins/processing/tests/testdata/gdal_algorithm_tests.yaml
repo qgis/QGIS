@@ -306,21 +306,21 @@ tests:
 #        hash: 2d0585dc8166fbe3cec7d9e6fd66e95cc9bdb1043b3b0fa7cbdfef4c
 #        type: rasterhash
 
-# - algorithm: gdal:ogrinfo
-#    name: ogrinfo
-#    params:
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#      SUMMARY_ONLY: 'True'
-#    results:
-#      OUTPUT:
-#        name: expected/gdal/vector_info.html
-#        type: regex
-#        rules:
-#          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
-#          - 'Geometry: Line String'
-#          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+ - algorithm: gdal:ogrinfo
+    name: ogrinfo
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      SUMMARY_ONLY: 'True'
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info.html
+        type: regex
+        rules:
+          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+          - 'Geometry: Line String'
+          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
 
   - algorithm: gdal:pointsalonglines
     name: Points along lines
