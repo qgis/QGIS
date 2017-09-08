@@ -272,7 +272,7 @@ namespace QgsWms
   }
 
 
-  QByteArray *QgsRenderer::getPrint( const QString &formatString )
+  QByteArray QgsRenderer::getPrint( const QString &formatString )
   {
     QStringList layersList, stylesList, layerIdList;
     QgsMapSettings mapSettings;
@@ -330,8 +330,9 @@ namespace QgsWms
       return nullptr;
     }
 
-    QByteArray *ba = nullptr;
     c->setPlotStyle( QgsComposition::Print );
+
+    QByteArray ba;
 
     //SVG export without a running X-Server is a problem. See e.g. http://developer.qt.nokia.com/forums/viewthread/2038
     if ( formatString.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
@@ -339,8 +340,7 @@ namespace QgsWms
       c->setPlotStyle( QgsComposition::Print );
 
       QSvgGenerator generator;
-      ba = new QByteArray();
-      QBuffer svgBuffer( ba );
+      QBuffer svgBuffer( &ba );
       generator.setOutputDevice( &svgBuffer );
       int width = ( int )( c->paperWidth() * c->printResolution() / 25.4 ); //width in pixel
       int height = ( int )( c->paperHeight() * c->printResolution() / 25.4 ); //height in pixel
@@ -363,8 +363,7 @@ namespace QgsWms
     {
       QImage image = c->printPageAsRaster( 0 ); //can only return the first page if pixmap is requested
 
-      ba = new QByteArray();
-      QBuffer buffer( ba );
+      QBuffer buffer( &ba );
       buffer.open( QIODevice::WriteOnly );
       image.save( &buffer, formatString.toLocal8Bit().data(), -1 );
     }
@@ -380,8 +379,7 @@ namespace QgsWms
       }
 
       c->exportAsPDF( tempFile.fileName() );
-      ba = new QByteArray();
-      *ba = tempFile.readAll();
+      ba = tempFile.readAll();
     }
     else //unknown format
     {
@@ -642,7 +640,7 @@ namespace QgsWms
     infoPoint->setY( mapSettings.extent().yMaximum() - j * yRes - yRes / 2.0 );
   }
 
-  QByteArray *QgsRenderer::getFeatureInfo( const QString &version )
+  QByteArray QgsRenderer::getFeatureInfo( const QString &version )
   {
     // Verifying Mandatory parameters
     // The QUERY_LAYERS parameter is Mandatory
@@ -735,16 +733,15 @@ namespace QgsWms
 
     QDomDocument result = featureInfoDocument( layers, mapSettings, outputImage.get(), version );
 
-    QByteArray *ba = nullptr;
-    ba = new QByteArray();
+    QByteArray ba;
 
     QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
     if ( infoFormat == QgsWmsParameters::Format::TEXT )
-      *ba = convertFeatureInfoToText( result );
+      ba = convertFeatureInfoToText( result );
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
-      *ba = convertFeatureInfoToHtml( result );
+      ba = convertFeatureInfoToHtml( result );
     else
-      *ba = result.toByteArray();
+      ba = result.toByteArray();
 
     return ba;
   }

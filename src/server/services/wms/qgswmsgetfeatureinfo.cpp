@@ -33,11 +33,10 @@ namespace QgsWms
     QgsServerRequest::Parameters params = request.parameters();
     QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
 
-    std::unique_ptr<QByteArray> result( renderer.getFeatureInfo( version ) );
     QString infoFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
 
     response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
-    response.write( *result );
+    response.write( renderer.getFeatureInfo( version ) );
   }
 
 

@@ -111,12 +111,12 @@ namespace QgsWms
       /** Returns printed page as binary
         \param formatString out: format of the print output (e.g. pdf, svg, png, ...)
         \returns printed page as binary or 0 in case of error*/
-      QByteArray *getPrint( const QString &formatString );
+      QByteArray getPrint( const QString &formatString );
 
       /** Creates an xml document that describes the result of the getFeatureInfo request.
        * May throw an exception
        */
-      QByteArray *getFeatureInfo( const QString &version = "1.3.0" );
+      QByteArray getFeatureInfo( const QString &version = "1.3.0" );
 
     private:
 
