@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgeopackageconnection.cpp  -  selector for geopackage
+    qgsogrdbconnection.cpp
                              -------------------
     begin                : August 2017
     copyright            : (C) 2017 by Alessandro Pasotti
@@ -18,72 +18,76 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgssettings.h"
-#include "qgsgeopackageconnection.h"
+#include "qgsogrdbconnection.h"
 #include "qgslogger.h"
 #include <QInputDialog>
 #include <QMessageBox>
 
-const QString QgsGeoPackageConnection::SETTINGS_PREFIX = QStringLiteral( "providers/geopackage" );
 
 
-QgsGeoPackageConnection::QgsGeoPackageConnection( const QString &connName )
+QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &settingsKey )
   : mConnName( connName )
 {
+  mSettingsKey = settingsKey ;
   QgsSettings settings;
-
-  QString key = QStringLiteral( "%1/%2/path" ).arg( connectionsPath( ), mConnName );
+  QString key = QStringLiteral( "%1/%2/path" ).arg( connectionsPath( settingsKey ), mConnName );
   mPath = settings.value( key ).toString();
 }
 
-QgsGeoPackageConnection::~QgsGeoPackageConnection()
+QgsOgrDbConnection::~QgsOgrDbConnection()
 {
 
 }
 
-QgsDataSourceUri QgsGeoPackageConnection::uri()
+QgsDataSourceUri QgsOgrDbConnection::uri()
 {
   QgsDataSourceUri uri;
   uri.setEncodedUri( mPath );
   return uri;
 }
 
-void QgsGeoPackageConnection::setPath( const QString &path )
+void QgsOgrDbConnection::setPath( const QString &path )
 {
   mPath = path;
 }
 
-void QgsGeoPackageConnection::save( )
+void QgsOgrDbConnection::save( )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1/%2/path" ).arg( connectionsPath( ), mConnName ), mPath );
+  settings.setValue( QStringLiteral( "%1/%2/path" ).arg( connectionsPath( mSettingsKey ), mConnName ), mPath );
 }
 
-QString QgsGeoPackageConnection::connectionsPath()
+QString QgsOgrDbConnection::fullKey( const QString &settingsKey )
 {
-  return QStringLiteral( "%1/connections" ).arg( SETTINGS_PREFIX );
+  return QStringLiteral( "providers/ogr/%1" ).arg( settingsKey );
 }
 
-QStringList QgsGeoPackageConnection::connectionList()
+QString QgsOgrDbConnection::connectionsPath( const QString &settingsKey )
+{
+  return QStringLiteral( "%1/connections" ).arg( fullKey( settingsKey ) );
+}
+
+const QStringList QgsOgrDbConnection::connectionList( const QString &settingsKey )
 {
   QgsSettings settings;
-  settings.beginGroup( connectionsPath( ) );
+  settings.beginGroup( connectionsPath( settingsKey ) );
   return settings.childGroups();
 }
 
-QString QgsGeoPackageConnection::selectedConnection()
+QString QgsOgrDbConnection::selectedConnection( const QString &settingsKey )
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "%1/selected" ).arg( SETTINGS_PREFIX ) ).toString();
+  return settings.value( QStringLiteral( "%1/selected" ).arg( connectionsPath( settingsKey ) ) ).toString();
 }
 
-void QgsGeoPackageConnection::setSelectedConnection( const QString &name )
+void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const QString &settingsKey )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "%1/selected" ).arg( SETTINGS_PREFIX ), name );
+  settings.setValue( QStringLiteral( "%1/selected" ).arg( connectionsPath( settingsKey ) ), connName );
 }
 
-void QgsGeoPackageConnection::deleteConnection( const QString &name )
+void QgsOgrDbConnection::deleteConnection( const QString &connName, const QString &settingsKey )
 {
   QgsSettings settings;
-  settings.remove( QStringLiteral( "%1/%2" ).arg( connectionsPath(), name ) );
+  settings.remove( QStringLiteral( "%1/%2" ).arg( connectionsPath( settingsKey ), connName ) );
 }
