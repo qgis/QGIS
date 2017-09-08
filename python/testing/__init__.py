@@ -105,7 +105,11 @@ class TestCase(_TestCase):
 
         def sort_by_pk_or_fid(f):
             if 'pk' in kwargs and kwargs['pk'] is not None:
-                return f[kwargs['pk']]
+                key = kwargs['pk']
+                if isinstance(key, list) or isinstance(key, tuple):
+                    return [f[k] for k in key]
+                else:
+                    return f[kwargs['pk']]
             else:
                 return f.id()
 
