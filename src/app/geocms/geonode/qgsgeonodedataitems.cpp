@@ -179,10 +179,12 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
   }
 
   // add new action menus to the layer item
+  QList<QAction *> actions;
+#if 0
   QAction *actionCopyStyle = new QAction( tr( "Copy Style" ), this );
   QAction *actionPasteStyle = new QAction( tr( "Paste Style" ), this );
-  QList<QAction *> actions;
   actions << actionCopyStyle << actionPasteStyle;
+#endif
 
   Q_FOREACH ( QgsDataItem *item, serviceItems.keys() )
   {
