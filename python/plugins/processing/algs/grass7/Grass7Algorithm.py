@@ -263,34 +263,42 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             self.params.append(param)
 
     def getDefaultCellSize(self, parameters, context):
+        """
+        Determine a default cell size from all the raster layers.
+        """
+        if self.cellSize:
+            return True
+        
         cellsize = 0
-        for param in self.parameterDefinitions():
-            if param.name() in parameters:
-                value = parameters[param.name()]
-                if isinstance(param, QgsProcessingParameterRasterLayer):
-                    layer =  self.parameterAsExtent(parameters, paramName, context)
-                    #if isinstance(value, QgsRasterLayer):
-                    #    layer = value
-                    #else:
-                    #    layer = QgsProcessingUtils.mapLayerFromString(param.value, context)
-                    cellsize = max(cellsize, (layer.extent().xMaximum() -
-                                              layer.extent().xMinimum()) /
-                                   layer.width())
-                elif isinstance(param, QgsProcessingParameterMultipleLayers):
-                    # TODO: finish
-                    layers = value.split(';')
-                    for layername in layers:
-                        layer = QgsProcessingUtils.mapLayerFromString(layername, context)
-                        if isinstance(layer, QgsRasterLayer):
-                            cellsize = max(cellsize, (
-                                layer.extent().xMaximum() -
-                                layer.extent().xMinimum()) /
-                                layer.width()
-                            )
+        parameters = [p for p in self.parameterDefinitions()
+                      if isinstance(p, (QgsProcessingParameterRasterLayer,
+                                       QgsProcessingParameterMultipleLayers))]
+        cz = lambda l, cellsize: max(cellsize, (l.extent().xMaximum() - l.extent().xMinimum()) / l.width())
+        
+        for param in parameters:
+            paramName = param.name()
+            if isinstance(param, QgsProcessingParameterRasterLayer):
+                layer =  self.parameterAsExtent(parameters, paramName, context)
+                cellsize = max(cellsize, (layer.extent().xMaximum() -
+                                          layer.extent().xMinimum()) /
+                               layer.width())
+                #cellsize = cz(layer, cellsize)
+            elif isinstance(param, QgsProcessingParameterMultipleLayers):
+                layers = self.parameterAsLayerList(parameters, paramName, context)
+                for layer in layers:
+                    if layer.type() == QgsMapLayer.RasterLayer:
+                        #cellsize = cz(layer, cellsize)
+                        cellsize = max(cellsize, (
+                            layer.extent().xMaximum() -
+                            layer.extent().xMinimum()) /
+                            layer.width())
 
+        QgsMessageLog.logMessage('cellSize: {}'.format(cellsize), 'Grass7', QgsMessageLog.INFO)                
         if cellsize == 0:
-            cellsize = 100
-        return cellsize
+            return False
+        else:
+            self.cellSize = cellsize
+            return True
 
     def grabDefaultGrassParameters(self, parameters, context):
         """
@@ -475,10 +483,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             self.region.yMaximum(), self.region.yMinimum(),
             self.region.xMaximum(), self.region.xMinimum()
         )
-        # TODO Handle cell size
-        #if not self.cellSize:
-        #    self.cellSize = self.getDefaultCellSize(parameters, context)
-        #command += ' res={}'.format(self.cellSize)
+        # Handle cell size
+        if self.getDefaultCellSize(parameters, context):
+            command += ' res={}'.format(self.cellSize)
+        
+        # Handle align to resolution
         if self.alignToResolution:
             command += ' -a'
 
