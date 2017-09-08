@@ -3490,6 +3490,10 @@ tests:
       OUTPUT:
         name: expected/stats_by_cat_float.gml
         type: vector
+        pk: name
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:statisticsbycategories
     name: Stats by cat (string field)
@@ -3504,6 +3508,10 @@ tests:
       OUTPUT:
         name: expected/stats_by_cat_string.gml
         type: vector
+        pk: intval
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:statisticsbycategories
     name: Stats by cat (two category fields)
@@ -3519,6 +3527,12 @@ tests:
       OUTPUT:
         name: expected/stats_by_cat_two_fields.gml
         type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:statisticsbycategories
     name: Stats by cat (no value field)
@@ -3533,6 +3547,12 @@ tests:
       OUTPUT:
         name: expected/stats_by_cat_no_value.gml
         type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: qgis:statisticsbycategories
     name: Stats by cat (date field)
@@ -3547,3 +3567,7 @@ tests:
       OUTPUT:
         name: expected/stats_by_cat_date.gml
         type: vector
+        pk: date
+        compare:
+          fields:
+            fid: skip
