@@ -5,6 +5,8 @@
  begin                : 5.9.2017
  copyright            : (C) 2017 by Alessandro Pasotti
  email                : apasotti at boundlessgeo dot com
+ based on work by     : (C) 2008 by Sandro Furieri for spatialite source sel.
+ email                : a.furieri@lqt.it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsgeopackagetablemodel.cpp - QgsGeoPackageTableModel
+  qgsogrdbtablemodel.cpp - QgsOgrDbTableModel
 
  ---------------------
  begin                : 5.9.2017
