@@ -119,7 +119,7 @@ void QgsOgrDbSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
 
 void QgsOgrDbSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
 {
-  mBuildQueryButton->setEnabled( index.parent().isValid() );
+  mBuildQueryButton->setEnabled( index.parent().isValid() && mTablesTreeView->currentIndex().data( Qt::UserRole + 2 ) != QStringLiteral( "Raster" ) );
 }
 
 void QgsOgrDbSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
