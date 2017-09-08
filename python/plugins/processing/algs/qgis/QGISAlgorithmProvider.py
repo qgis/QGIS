@@ -134,7 +134,6 @@ from .Ruggedness import Ruggedness
 from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
-from .SelectByLocation import SelectByLocation
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
 from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .SetMValue import SetMValue
@@ -167,7 +166,6 @@ from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
-# from .ExtractByLocation import ExtractByLocation
 # from .SpatialJoin import SpatialJoin
 
 pluginPath = os.path.normpath(os.path.join(
@@ -183,7 +181,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         ExtractByLocation(),
         #         SpatialJoin(),
         #         ]
         algs = [AddTableField(),
@@ -280,7 +277,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SaveSelectedFeatures(),
                 SelectByAttribute(),
                 SelectByExpression(),
-                SelectByLocation(),
                 ServiceAreaFromLayer(),
                 ServiceAreaFromPoint(),
                 SetMValue(),
