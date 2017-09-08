@@ -42,7 +42,6 @@ class ExtractByLocation(QgisAlgorithm):
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
     PREDICATE = 'PREDICATE'
-    PRECISION = 'PRECISION'
     OUTPUT = 'OUTPUT'
 
     def tags(self):
@@ -73,9 +72,6 @@ class ExtractByLocation(QgisAlgorithm):
                                              self.tr('Geometric predicate'),
                                              self.predicates,
                                              multiple=True))
-        self.addParameter(ParameterNumber(self.PRECISION,
-                                          self.tr('Precision'),
-                                          0.0, None, 0.0))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
     def name(self):
@@ -90,7 +86,6 @@ class ExtractByLocation(QgisAlgorithm):
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = QgsProcessingUtils.mapLayerFromString(filename, context)
         predicates = self.getParameterValue(self.PREDICATE)
-        precision = self.getParameterValue(self.PRECISION)
 
         index = QgsProcessingUtils.createSpatialIndex(layer, context)
 
@@ -106,13 +101,12 @@ class ExtractByLocation(QgisAlgorithm):
         features = QgsProcessingUtils.getFeatures(selectLayer, context)
         total = 100.0 / selectLayer.featureCount() if selectLayer.featureCount() else 0
         for current, f in enumerate(features):
-            geom = vector.snapToPrecision(f.geometry(), precision)
+            geom = f.geometry()
             bbox = geom.boundingBox()
-            bbox.grow(0.51 * precision)
             intersects = index.intersects(bbox)
             request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
             for feat in layer.getFeatures(request):
-                tmpGeom = vector.snapToPrecision(feat.geometry(), precision)
+                tmpGeom = feat.geometry()
                 res = False
                 for predicate in predicates:
                     if predicate == 'disjoint':

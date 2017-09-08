@@ -216,22 +216,6 @@ def checkMinDistance(point, index, distance, points):
     return True
 
 
-def snapToPrecision(geom, precision):
-    snapped = QgsGeometry(geom)
-    if precision == 0.0:
-        return snapped
-
-    i = 0
-    p = snapped.vertexAt(i)
-    while p.x() != 0.0 and p.y() != 0.0:
-        x = round(p.x() / precision, 0) * precision
-        y = round(p.y() / precision, 0) * precision
-        snapped.moveVertex(x, y, i)
-        i = i + 1
-        p = snapped.vertexAt(i)
-    return QgsPointXY(snapped.x(), snapped.y())
-
-
 NOGEOMETRY_EXTENSIONS = [
     u'csv',
     u'dbf',

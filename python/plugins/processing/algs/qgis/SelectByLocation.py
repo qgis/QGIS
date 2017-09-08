@@ -31,12 +31,10 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsGeometry,
                        QgsFeatureRequest,
-                       QgsProcessingUtils,
                        QgsProcessing,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterNumber,
                        QgsProcessingOutputVectorLayer,
                        QgsVectorLayer)
 
@@ -52,7 +50,6 @@ class SelectByLocation(QgisAlgorithm):
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
     PREDICATE = 'PREDICATE'
-    PRECISION = 'PRECISION'
     METHOD = 'METHOD'
     OUTPUT = 'OUTPUT'
 
@@ -98,9 +95,6 @@ class SelectByLocation(QgisAlgorithm):
                                                      allowMultiple=True, defaultValue=[0]))
         self.addParameter(QgsProcessingParameterFeatureSource(self.INTERSECT,
                                                               self.tr('By comparing to the features from'), types=[QgsProcessing.TypeVectorAnyGeometry]))
-        self.addParameter(QgsProcessingParameterNumber(self.PRECISION,
-                                                       self.tr('Precision'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, defaultValue=0.0))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
                                                      self.tr('Modify current selection by'),
                                                      options=self.methods, defaultValue=0))
@@ -121,7 +115,6 @@ class SelectByLocation(QgisAlgorithm):
         # we actually test the reverse of what the user wants (allowing us
         # to prepare geometries and optimise the algorithm)
         predicates = [self.reversed_predicates[self.predicates[i][0]] for i in self.parameterAsEnums(parameters, self.PREDICATE, context)]
-        precision = self.parameterAsDouble(parameters, self.PRECISION, context)
 
         if 'disjoint' in predicates:
             disjoint_set = select_layer.allFeatureIds()
@@ -142,7 +135,6 @@ class SelectByLocation(QgisAlgorithm):
             engine = QgsGeometry.createGeometryEngine(f.geometry().geometry())
             engine.prepareGeometry()
             bbox = f.geometry().boundingBox()
-            bbox.grow(0.51 * precision)
 
             request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setFilterRect(bbox).setSubsetOfAttributes([])
             for test_feat in select_layer.getFeatures(request):

@@ -50,7 +50,6 @@ class SpatialJoin(QgisAlgorithm):
     TARGET = "TARGET"
     JOIN = "JOIN"
     PREDICATE = "PREDICATE"
-    PRECISION = 'PRECISION'
     SUMMARY = "SUMMARY"
     STATS = "STATS"
     KEEP = "KEEP"
@@ -93,9 +92,6 @@ class SpatialJoin(QgisAlgorithm):
                                              self.tr('Geometric predicate'),
                                              self.predicates,
                                              multiple=True))
-        self.addParameter(ParameterNumber(self.PRECISION,
-                                          self.tr('Precision'),
-                                          0.0, None, 0.0))
         self.addParameter(ParameterSelection(self.SUMMARY,
                                              self.tr('Attribute summary'), self.summarys))
         self.addParameter(ParameterString(self.STATS,
@@ -115,7 +111,6 @@ class SpatialJoin(QgisAlgorithm):
         target = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.TARGET), context)
         join = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.JOIN), context)
         predicates = self.getParameterValue(self.PREDICATE)
-        precision = self.getParameterValue(self.PRECISION)
 
         summary = self.getParameterValue(self.SUMMARY) == 1
         keep = self.getParameterValue(self.KEEP) == 1
@@ -169,20 +164,19 @@ class SpatialJoin(QgisAlgorithm):
         for c, f in enumerate(features):
             atMap1 = f.attributes()
             outFeat.setGeometry(f.geometry())
-            inGeom = vector.snapToPrecision(f.geometry(), precision)
+            inGeom = f.geometry()
             none = True
             joinList = []
             if inGeom.type() == QgsWkbTypes.PointGeometry:
                 bbox = inGeom.buffer(10, 2).boundingBox()
             else:
                 bbox = inGeom.boundingBox()
-            bbox.grow(0.51 * precision)
             joinList = index.intersects(bbox)
             if len(joinList) > 0:
                 count = 0
                 for i in joinList:
                     inFeatB = mapP2[i]
-                    inGeomB = vector.snapToPrecision(inFeatB.geometry(), precision)
+                    inGeomB = inFeatB.geometry()
 
                     res = False
                     for predicate in predicates:
