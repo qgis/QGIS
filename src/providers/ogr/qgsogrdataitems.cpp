@@ -217,7 +217,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   QgsRasterLayer rlayer( path, QStringLiteral( "gdal_tmp" ), QStringLiteral( "gdal" ), false );
   if ( rlayer.dataProvider()->subLayers( ).size() > 0 )
   {
-    Q_FOREACH ( const QString &uri, rlayer.dataProvider()->subLayers( ) )
+    const QStringList layers( rlayer.dataProvider()->subLayers( ) );
+    for ( const QString &uri : layers )
     {
       QStringList pieces = uri.split( ':' );
       QString name = pieces.value( pieces.length() - 1 );

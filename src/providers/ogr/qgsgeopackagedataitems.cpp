@@ -197,8 +197,8 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   QStringList importResults;
   bool hasError = false;
 
-  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &dropUri, lst )
+  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &dropUri : lst )
   {
     // Check that we are not copying over self
     if ( dropUri.uri.startsWith( mPath ) )
@@ -239,8 +239,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
 
         // check if the destination layer already exists
         bool exists = false;
-        // Q_FOREACH won't detach ...
-        const QVector< QgsDataItem *> c = children();
+        const QVector< QgsDataItem *> c( children() );
         for ( const auto child : c )
         {
           if ( child->name() == dropUri.name )
@@ -380,7 +379,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
         QStringList optionalTables;
         optionalTables << QStringLiteral( "gpkg_extensions" )
                        << QStringLiteral( "gpkg_metadata_reference" );
-        Q_FOREACH ( const QString &tableName, optionalTables )
+        for ( const QString &tableName : qgsAsConst( optionalTables ) )
         {
           char *sql = sqlite3_mprintf( "DELETE FROM %w WHERE table_name = '%q'",
                                        tableName.toUtf8().constData(),
@@ -496,7 +495,8 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
   // Check if the layer is in the registry
   const QgsMapLayer *projectLayer = nullptr;
-  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  const QMap<QString, QgsMapLayer *> mapLayers( QgsProject::instance()->mapLayers() );
+  for ( const QgsMapLayer *layer :  mapLayers )
   {
     if ( layer->publicSource() == mUri )
     {
