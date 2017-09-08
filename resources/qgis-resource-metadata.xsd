@@ -84,7 +84,7 @@
       <xs:element name="license" type="xs:string" minOccurs="1" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>License associated with a given resource (examples: http://opendefinition.org/licenses/).</xs:documentation>
-				</xs:annotation>        
+				</xs:annotation>
       </xs:element>
 			<xs:element name="encoding" type="xs:string" minOccurs="0">
 				<xs:annotation>
@@ -122,7 +122,7 @@
         <xs:annotation>
     	    <xs:documentation>Freeform description of the history or lineage of the resource.</xs:documentation>
         </xs:annotation>
-      </xs:element> 
+      </xs:element>
 		</xs:sequence>
 		<xs:attribute name="version" use="required" fixed="1.0">
 			<xs:annotation>
@@ -339,11 +339,11 @@
 		<xs:attributeGroup ref="rm:linkAttrs"/>
 	</xs:complexType>
 	<xs:attributeGroup name="linkAttrs">
-		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="type" type="xs:string"/>
-		<xs:attribute name="description" type="xs:string" use="optional"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string" use="required"/>
 		<xs:attribute name="url" type="xs:anyURI" use="required"/>
-		<xs:attribute name="format" type="xs:string" use="optional"/>
+    <xs:attribute name="description" type="xs:string" use="optional"/>
+    <xs:attribute name="format" type="xs:string" use="optional"/>
 		<xs:attribute name="mimeType" type="xs:string" use="optional"/>
 		<xs:attribute name="size" type="xs:string" use="optional"/>
 	</xs:attributeGroup>

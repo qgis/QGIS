@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsLayerMetadata.
 
+Run with: ctest -V -R PyQgsLayerMetadata
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -13,6 +15,8 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
+
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsLayerMetadata,
                        QgsCoordinateReferenceSystem,
@@ -58,8 +62,10 @@ class TestQgsLayerMetadata(unittest.TestCase):
         self.assertEqual(m.fees(), 'fees')
 
         m.setConstraints([QgsLayerMetadata.Constraint('constraint a'), QgsLayerMetadata.Constraint('constraint b')])
+        m.addConstraint(QgsLayerMetadata.Constraint('constraint c'))
         self.assertEqual(m.constraints()[0].constraint, 'constraint a')
         self.assertEqual(m.constraints()[1].constraint, 'constraint b')
+        self.assertEqual(m.constraints()[2].constraint, 'constraint c')
 
         m.setRights(['right a', 'right b'])
         self.assertEqual(m.rights(), ['right a', 'right b'])
@@ -235,7 +241,10 @@ class TestQgsLayerMetadata(unittest.TestCase):
         m.setRights(['Copyright foo 2017'])
         m.setLicenses(['WTFPL'])
         m.setHistory(['history a', 'history b'])
-        m.setKeywords({'GEMET': ['kw1', 'kw2']})
+        m.setKeywords({
+            'GEMET': ['kw1', 'kw2'],
+            'gmd:topicCategory': ['natural'],
+        })
         m.setEncoding('utf-8')
         m.setCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'))
 
@@ -244,7 +253,15 @@ class TestQgsLayerMetadata(unittest.TestCase):
         se.extentCrs = QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326')
         se.bounds = QgsBox3d(-180, -90, 0, 180, 90, 0)
         e.setSpatialExtents([se])
-        e.setTemporalExtents([QgsDateTimeRange(QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)), QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)))])
+        dates = [
+            QgsDateTimeRange(
+                QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)),
+                QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47))),
+            QgsDateTimeRange(
+                QDateTime(QDate(2010, 12, 17), QTime(9, 30, 47)),
+                QDateTime(QDate(2020, 12, 17), QTime(9, 30, 47)))
+        ]
+        e.setTemporalExtents(dates)
         m.setExtent(e)
 
         c = QgsLayerMetadata.Contact()
@@ -307,7 +324,9 @@ class TestQgsLayerMetadata(unittest.TestCase):
         self.assertEqual(m.licenses(), ['WTFPL'])
         self.assertEqual(m.history(), ['history a', 'history b'])
         self.assertEqual(m.encoding(), 'utf-8')
-        self.assertEqual(m.keywords(), {'GEMET': ['kw1', 'kw2']})
+        self.assertEqual(
+            m.keywords(),
+            {'GEMET': ['kw1', 'kw2'], 'gmd:topicCategory': ['natural']})
         self.assertEqual(m.crs().authid(), 'EPSG:4326')
 
         extent = m.extent().spatialExtents()[0]
@@ -318,6 +337,8 @@ class TestQgsLayerMetadata(unittest.TestCase):
         self.assertEqual(extent.bounds.yMaximum(), 90.0)
         self.assertEqual(m.extent().temporalExtents()[0].begin(), QDateTime(QDate(2001, 12, 17), QTime(9, 30, 47)))
         self.assertTrue(m.extent().temporalExtents()[0].isInstant())
+        self.assertFalse(m.extent().temporalExtents()[1].isInstant())
+        self.assertEqual(m.extent().temporalExtents()[1].end(), QDateTime(QDate(2020, 12, 17), QTime(9, 30, 47)))
 
         self.assertEqual(m.contacts()[0].name, 'John Smith')
         self.assertEqual(m.contacts()[0].organization, 'ACME')
@@ -366,6 +387,25 @@ class TestQgsLayerMetadata(unittest.TestCase):
         # read back from layer and check result
         m2 = QgsLayerMetadata()
         m2.readFromLayer(vl)
+        self.checkExpectedMetadata(m2)
+
+    def testSaveReadFromXml(self):
+        """
+        Test saving and reading metadata from a XML.
+        """
+        vl = QgsVectorLayer('Point', 'test', 'memory')
+        self.assertTrue(vl.isValid())
+
+        # save metadata to XML
+        m = self.createTestMetadata()
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("metadata")
+        self.assertTrue(m.writeMetadataXml(elem, doc))
+
+        # read back from XML and check result
+        m2 = QgsLayerMetadata()
+        m2.readMetadataXml(elem)
         self.checkExpectedMetadata(m2)
 
     def testValidateNative(self):  # spellok
