@@ -482,6 +482,47 @@ class QgsConvexHullAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 };
 
+
+/**
+ * Native select by location algorithm
+ */
+class QgsSelectByLocationAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsSelectByLocationAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "selectbylocation" ); }
+    QString displayName() const override { return QObject::tr( "Select by location" ); }
+    virtual QStringList tags() const override { return QObject::tr( "select,intersects,intersecting,disjoint,touching,within,contains,overlaps,relation" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector selection" ); }
+    QString shortHelpString() const override;
+    QgsSelectByLocationAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    enum Predicate
+    {
+      Intersects,
+      Contains,
+      Disjoint,
+      IsEqual,
+      Touches,
+      Overlaps,
+      Within,
+      Crosses,
+    };
+
+    Predicate reversePredicate( Predicate predicate ) const;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H

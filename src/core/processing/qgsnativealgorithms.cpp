@@ -76,6 +76,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
+  addAlgorithm( new QgsSelectByLocationAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -1337,8 +1338,184 @@ QgsCollectAlgorithm *QgsCollectAlgorithm::createInstance() const
   return new QgsCollectAlgorithm();
 }
 
+
+
+void QgsSelectByLocationAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  QStringList predicates = QStringList() << QObject::tr( "intersects" )
+                           << QObject::tr( "contains" )
+                           << QObject::tr( "is disjoint" )
+                           << QObject::tr( "equals" )
+                           << QObject::tr( "touches" )
+                           << QObject::tr( "overlaps" )
+                           << QObject::tr( "within" )
+                           << QObject::tr( "crosses" );
+
+  QStringList methods = QStringList() << QObject::tr( "creating new selection" )
+                        << QObject::tr( "adding to current selection" )
+                        << QObject::tr( "select within current selection" )
+                        << QObject::tr( "removing from current selection" );
+
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Select features from" ),
+                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+
+
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "PREDICATE" ),
+                QObject::tr( "Where the features are (geometric predicate)" ),
+                predicates, true, QVariant::fromValue( QList< int >() << 0 ) ) );
+
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
+                QObject::tr( "By comparing to the features from" ),
+                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
+                QObject::tr( "Modify current selection by" ),
+                methods, false, 0 ) );
+}
+
+QString QgsSelectByLocationAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a selection in a vector layer. The criteria for selecting "
+                      "features is based on the spatial relationship between each feature and the features in an additional layer." );
+}
+
+QgsSelectByLocationAlgorithm *QgsSelectByLocationAlgorithm::createInstance() const
+{
+  return new QgsSelectByLocationAlgorithm();
+}
+
+QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer::SelectBehavior method = static_cast< QgsVectorLayer::SelectBehavior >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  QgsFeatureSource *intersectSource = parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context );
+  const QList< int > selectedPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
+
+  // build a list of 'reversed' predicates, because in this function
+  // we actually test the reverse of what the user wants (allowing us
+  // to prepare geometries and optimise the algorithm)
+  QList< Predicate > predicates;
+  for ( int i : selectedPredicates )
+  {
+    predicates << reversePredicate( static_cast< Predicate >( i ) );
+  }
+
+  QgsFeatureIds disjointSet;
+  if ( predicates.contains( Disjoint ) )
+    disjointSet = selectLayer->allFeatureIds();
+
+  QgsFeatureIds selectedSet;
+  QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( selectLayer->crs() );
+  QgsFeatureIterator fIt = intersectSource->getFeatures( request );
+  double step = intersectSource->featureCount() > 0 ? 100.0 / intersectSource->featureCount() : 1;
+  int current = 0;
+  QgsFeature f;
+  while ( fIt.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+      break;
+
+    if ( !f.hasGeometry() )
+      continue;
+
+    std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( f.geometry().geometry() ) );
+    engine->prepareGeometry();
+    QgsRectangle bbox = f.geometry().boundingBox();
+
+    request = QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setFilterRect( bbox ).setSubsetOfAttributes( QgsAttributeList() );
+    QgsFeatureIterator testFeatureIt = selectLayer->getFeatures( request );
+    QgsFeature testFeature;
+    while ( testFeatureIt.nextFeature( testFeature ) )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      if ( selectedSet.contains( testFeature.id() ) )
+      {
+        // already added this one, no need for further tests
+        continue;
+      }
+
+      for ( Predicate predicate : qgsAsConst( predicates ) )
+      {
+        bool isMatch = false;
+        switch ( predicate )
+        {
+          case Intersects:
+            isMatch = engine->intersects( testFeature.geometry().geometry() );
+            break;
+          case Contains:
+            isMatch = engine->contains( testFeature.geometry().geometry() );
+            break;
+          case Disjoint:
+            if ( engine->intersects( testFeature.geometry().geometry() ) )
+            {
+              disjointSet.remove( testFeature.id() );
+            }
+            break;
+          case IsEqual:
+            isMatch = engine->isEqual( testFeature.geometry().geometry() );
+            break;
+          case Touches:
+            isMatch = engine->touches( testFeature.geometry().geometry() );
+            break;
+          case Overlaps:
+            isMatch = engine->overlaps( testFeature.geometry().geometry() );
+            break;
+          case Within:
+            isMatch = engine->within( testFeature.geometry().geometry() );
+            break;
+          case Crosses:
+            isMatch = engine->crosses( testFeature.geometry().geometry() );
+            break;
+        }
+        if ( isMatch )
+          selectedSet.insert( testFeature.id() );
+      }
+
+    }
+
+    feedback->setProgress( int( current * step ) );
+  }
+
+  if ( predicates.contains( Disjoint ) )
+  {
+    selectedSet = selectedSet.unite( disjointSet );
+  }
+
+  selectLayer->selectByIds( selectedSet, method );
+  QVariantMap results;
+  results.insert( QStringLiteral( "OUTPUT" ), parameters.value( QStringLiteral( "INPUT" ) ) );
+  return results;
+}
+
+QgsSelectByLocationAlgorithm::Predicate QgsSelectByLocationAlgorithm::reversePredicate( QgsSelectByLocationAlgorithm::Predicate predicate ) const
+{
+  switch ( predicate )
+  {
+    case Intersects:
+      return Intersects;
+    case Contains:
+      return Within;
+    case Disjoint:
+      return Disjoint;
+    case IsEqual:
+      return IsEqual;
+    case Touches:
+      return Touches;
+    case Overlaps:
+      return Overlaps;
+    case Within:
+      return Contains;
+    case Crosses:
+      return Crosses;
+  }
+  // no warnings
+  return Intersects;
+}
+
+
+
 ///@endcond
-
-
 
 
