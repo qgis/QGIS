@@ -84,7 +84,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
 
         vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
-        self.assertEqual(vl.dataProvider().subLayers(), ['0:test:0:CurvePolygon'])
+        self.assertEqual(vl.dataProvider().subLayers(), ['0:test:0:CurvePolygon:geom'])
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])
