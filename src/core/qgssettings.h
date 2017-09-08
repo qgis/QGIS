@@ -150,6 +150,8 @@ class CORE_EXPORT QgsSettings : public QObject
     QStringList childKeys() const;
     //! Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
     QStringList childGroups() const;
+    //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
+    QStringList globalChildGroups() const;
     //! Return the path to the Global Settings QSettings storage file
     static QString globalSettingsPath() { return sGlobalSettingsPath; }
     //! Set the Global Settings QSettings storage file

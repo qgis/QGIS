@@ -785,35 +785,6 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
-
-  // SetUp the QgsSettings Global Settings:
-  // - use the path specified with --globalsettingsfile path,
-  // - use the environment if not found
-  // - use a default location as a fallback
-  if ( globalsettingsfile.isEmpty() )
-  {
-    globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
-  }
-  if ( globalsettingsfile.isEmpty() )
-  {
-    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
-    if ( QFile::exists( default_globalsettingsfile ) )
-    {
-      globalsettingsfile = default_globalsettingsfile;
-    }
-  }
-  if ( !globalsettingsfile.isEmpty() )
-  {
-    if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
-    {
-      QgsMessageLog::logMessage( QString( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
-    }
-    else
-    {
-      QgsMessageLog::logMessage( QString( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
-    }
-  }
-
   QgsSettings settings;
   if ( configLocalStorageLocation.isEmpty() )
   {
@@ -847,6 +818,34 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+
+  // SetUp the QgsSettings Global Settings:
+  // - use the path specified with --globalsettingsfile path,
+  // - use the environment if not found
+  // - use a default location as a fallback
+  if ( globalsettingsfile.isEmpty() )
+  {
+    globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
+  }
+  if ( globalsettingsfile.isEmpty() )
+  {
+    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
+    if ( QFile::exists( default_globalsettingsfile ) )
+    {
+      globalsettingsfile = default_globalsettingsfile;
+    }
+  }
+  if ( !globalsettingsfile.isEmpty() )
+  {
+    if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
+    {
+      QgsMessageLog::logMessage( QString( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QString( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+  }
 
 #ifdef Q_OS_MAC
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
