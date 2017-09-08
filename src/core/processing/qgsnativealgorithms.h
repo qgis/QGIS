@@ -484,9 +484,34 @@ class QgsConvexHullAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 
 /**
+ * Base class for location based extraction/selection algorithms.
+ */
+class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
+{
+
+  protected:
+
+    enum Predicate
+    {
+      Intersects,
+      Contains,
+      Disjoint,
+      IsEqual,
+      Touches,
+      Overlaps,
+      Within,
+      Crosses,
+    };
+
+    Predicate reversePredicate( Predicate predicate ) const;
+    QStringList predicateOptionsList() const;
+    void process( QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, std::function<void ( const QgsFeature & )> handleFeatureFunction, bool onlyRequireTargetIds, QgsFeedback *feedback );
+};
+
+/**
  * Native select by location algorithm
  */
-class QgsSelectByLocationAlgorithm : public QgsProcessingAlgorithm
+class QgsSelectByLocationAlgorithm : public QgsLocationBasedAlgorithm
 {
 
   public:
@@ -505,21 +530,29 @@ class QgsSelectByLocationAlgorithm : public QgsProcessingAlgorithm
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
                                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-  private:
+};
 
-    enum Predicate
-    {
-      Intersects,
-      Contains,
-      Disjoint,
-      IsEqual,
-      Touches,
-      Overlaps,
-      Within,
-      Crosses,
-    };
+/**
+ * Native extract by location algorithm
+ */
+class QgsExtractByLocationAlgorithm : public QgsLocationBasedAlgorithm
+{
 
-    Predicate reversePredicate( Predicate predicate ) const;
+  public:
+
+    QgsExtractByLocationAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "extractbylocation" ); }
+    QString displayName() const override { return QObject::tr( "Extract by location" ); }
+    virtual QStringList tags() const override { return QObject::tr( "extract,filter,intersects,intersecting,disjoint,touching,within,contains,overlaps,relation" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector selection" ); }
+    QString shortHelpString() const override;
+    QgsExtractByLocationAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
