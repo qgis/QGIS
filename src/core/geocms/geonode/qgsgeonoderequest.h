@@ -22,6 +22,12 @@
 #include <QObject>
 #include <QUuid>
 
+/**
+ * \ingroup core
+ * \class QgsGeoNodeStyle
+ * \brief Encapsulates information about a GeoNode layer style.
+ * \since QGIS 3.0
+ */
 struct CORE_EXPORT QgsGeoNodeStyle
 {
 #ifdef SIP_RUN
@@ -29,26 +35,56 @@ struct CORE_EXPORT QgsGeoNodeStyle
 #include <qgsgeonoderequest.h>
   % End
 #endif
+
+  //! Unique style ID
   QString id;
+
+  //! Style name
   QString name;
+
+  //! Style title
   QString title;
+
+  //! DOM documenting containing style
   QDomDocument body;
+
+  //! Associated URL
   QString styleUrl;
 };
 
+/**
+ * \ingroup core
+ * \class QgsGeoNodeRequest
+ * \brief Request handler for GeoNode servers.
+ *
+ * QgsGeoNodeRequest handles requesting and parsing service details from a GeoNode
+ * server instance, for instance requesting all available layers or layer styles.
+ *
+ * \since QGIS 3.0
+ */
 class CORE_EXPORT QgsGeoNodeRequest : public QObject
 {
     Q_OBJECT
   public:
 
+    /**
+     * Service layer details for an individual layer from a GeoNode connection.
+     */
     struct ServiceLayerDetail
     {
+      //! Unique identifier (generate on the client side, not at the GeoNode server)
       QUuid uuid;
+      //! Layer name
       QString name;
+      //! Layer type name
       QString typeName;
+      //! Layer title
       QString title;
+      //! WMS URL for layer
       QString wmsURL;
+      //! WFS URL for layer
       QString wfsURL;
+      //! XYZ tileserver URL for layer
       QString xyzURL;
     };
 
@@ -57,62 +93,161 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
      *
      * If \a forceRefresh is false, then cached copies of the request may be reused.
      */
-    explicit QgsGeoNodeRequest( bool forceRefresh, QObject *parent = nullptr );
     QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = nullptr );
+
     virtual ~QgsGeoNodeRequest();
 
-    bool request( const QString &endPoint );
+    /**
+     * Triggers a new request to the GeoNode server, with the requested \a endPoint.
+     * Any existing request will be aborted.
+     *
+     * Calling this method does not block while waiting for a result.
+     *
+     * \warning When using the non-blocking methods in this class, sending
+     * overlapping requests results in undefined behavior. Use separate instances
+     * of QgsGeoNodeRequest instead to avoid this.
+     *
+     * \see requestBlocking()
+     */
+    void request( const QString &endPoint );
 
-    QList<QgsGeoNodeRequest::ServiceLayerDetail> getLayers();
+    /**
+     * Triggers a new request to the GeoNode server, with the requested \a endPoint.
+     * Any existing request will be aborted.
+     *
+     * Calling this method will block while waiting for a result. It should not be
+     * used from any code which potentially blocks operation in the main GUI thread.
+     *
+     * \see request()
+     */
+    bool requestBlocking( const QString &endPoint );
 
-    QList<QgsGeoNodeStyle> getStyles( const QString &layerName );
+    /**
+     * Triggers a new request to fetch the list of available layers from the
+     * server. When complete, the layersFetched() signal will be emitted
+     * with the result.
+     *
+     * This method is non-blocking and returns immediately.
+     *
+     * \warning When using the non-blocking methods in this class, sending
+     * overlapping requests results in undefined behavior. Use separate instances
+     * of QgsGeoNodeRequest instead to avoid this.
+     *
+     * \see layersFetched()
+     * \see fetchLayersBlocking()
+     */
+    void fetchLayers();
 
-    QgsGeoNodeStyle getDefaultStyle( const QString &layerName );
+    /**
+     * Requests the list of available layers from the server.
+     *
+     * This method is blocking and will wait for results from the server before returning.
+     * Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
+     *
+     * \see fetchLayers()
+     */
+    QList<QgsGeoNodeRequest::ServiceLayerDetail> fetchLayersBlocking();
 
-    QgsGeoNodeStyle getStyle( const QString &styleID );
+    /**
+     * Requests the list of available styles for the layer
+     * with matching \a layerName from the server.
+     *
+     * This method is blocking and will wait for results from the server before returning.
+     * Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
+     *
+     */
+    QList<QgsGeoNodeStyle> fetchStylesBlocking( const QString &layerName );
 
-    //! Obtain list of unique URLs in the geonode
-    QStringList serviceUrls( const QString &serviceType );
+    /**
+     * Requests the default style for the layer with matching \a layerName from the server.
+     *
+     * This method is blocking and will wait for results from the server before returning.
+     * Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
+     */
+    QgsGeoNodeStyle fetchDefaultStyleBlocking( const QString &layerName );
 
-    //! Obtain map of layer name and url for a service type
-    QgsStringMap serviceUrlData( const QString &serviceType );
+    /**
+     * Requests the details for the style with matching \a styleId from the server.
+     *
+     * This method is blocking and will wait for results from the server before returning.
+     * Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
+     */
+    QgsGeoNodeStyle fetchStyleBlocking( const QString &styleId );
 
+    /**
+     * Requests the list of unique URLs for available services with matching \a serviceType from the server.
+     *
+     * This method is blocking and will wait for results from the server before returning.
+     * Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
+     */
+    QStringList fetchServiceUrlsBlocking( const QString &serviceType );
+
+    /**
+     * Obtains a map of layer name to URL for available services with matching \a serviceType from the server.
+     *
+     * This method is blocking and will wait for results from the server before returning.
+     * Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
+     */
+    QgsStringMap fetchServiceUrlDataBlocking( const QString &serviceType );
+
+    /**
+     * Returns the most recent error string for any encountered errors, or an empty string if
+     * no errors have been encountered.
+     */
     QString lastError() const { return mError; }
 
-    QByteArray response() const { return mHttpGeoNodeResponse; }
+    /**
+     * Returns the most recent response obtained from the server.
+     */
+    QByteArray lastResponse() const { return mHttpGeoNodeResponse; }
 
-    QNetworkReply *reply() const { return mGeoNodeReply; }
+    /**
+     * Returns the network protocol (e.g. 'http') used for connecting with the server.
+     * \see setProtocol()
+     */
+    QString protocol() const;
 
-    //! Abort network request immediately
-    void abort();
-
-    QString getProtocol() const;
+    /**
+     * Sets the network \a protocol (e.g. 'http') used for connecting with the server.
+     * \see protocol()
+     */
     void setProtocol( const QString &protocol );
 
-  private:
-    QList<QgsGeoNodeRequest::ServiceLayerDetail> parseLayers( const QByteArray &layerResponse );
-    QgsGeoNodeStyle retrieveStyle( const QString &styleUrl );
+  public slots:
+
+    /**
+     * Aborts any active network request immediately.
+     */
+    void abort();
 
   signals:
-    //! \brief emit a signal to be caught by qgisapp and display a statusQString on status bar
+
+    /**
+     * Emitted when the status of an ongoing request is changed.
+     */
     void statusChanged( const QString &statusQString );
 
-    //! \brief emit a signal once the request is finished
+    /**
+     * Emitted when the existing request has been completed.
+     */
     void requestFinished();
 
-  protected slots:
+    /**
+     * Emitted when the result of a fetchLayers call has been received and processed.
+     */
+    void layersFetched( const QList<QgsGeoNodeRequest::ServiceLayerDetail> &layers );
+
+  private slots:
     void replyFinished();
     void replyProgress( qint64, qint64 );
 
-  protected:
+  private:
 
     //! URL part of URI (httpuri)
     QString mProtocol;
 
     //! URL part of URI (httpuri)
     QString mBaseUrl;
-
-//  QgsWmsAuthorization mAuth;
 
     //! The reply to the geonode request
     QNetworkReply *mGeoNodeReply = nullptr;
@@ -128,6 +263,11 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
 
     bool mIsAborted = false;
     bool mForceRefresh = false;
+
+    QList<QgsGeoNodeRequest::ServiceLayerDetail> parseLayers( const QByteArray &layerResponse );
+    QgsGeoNodeStyle retrieveStyle( const QString &styleUrl );
+
+    QNetworkReply *requestUrl( const QString &url );
 
 };
 

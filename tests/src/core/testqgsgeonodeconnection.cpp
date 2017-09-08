@@ -129,7 +129,7 @@ void TestQgsGeoNodeConnection::testLayerAPI()
   }
 
   QgsGeoNodeRequest geonodeRequest( mKartozaGeoNodeQGISServerURL, true );
-  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.getLayers();
+  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.fetchLayersBlocking();
   QString msg = QStringLiteral( "Number of layers: %1" ).arg( layers.count() );
   QgsDebugMsg( msg );
   QVERIFY( layers.count() > 0 );
@@ -144,17 +144,17 @@ void TestQgsGeoNodeConnection::testStyleAPI()
   }
 
   QgsGeoNodeRequest geonodeRequest( mKartozaGeoNodeQGISServerURL, true );
-  QgsGeoNodeStyle defaultStyle = geonodeRequest.getDefaultStyle( QStringLiteral( "airports" ) );
+  QgsGeoNodeStyle defaultStyle = geonodeRequest.fetchDefaultStyleBlocking( QStringLiteral( "airports" ) );
   QVERIFY( !defaultStyle.name.isEmpty() );
   QVERIFY( defaultStyle.body.toString().startsWith( QStringLiteral( "<qgis" ) ) );
   QVERIFY( defaultStyle.body.toString().contains( QStringLiteral( "</qgis>" ) ) );
 
-  QgsGeoNodeStyle geoNodeStyle = geonodeRequest.getStyle( "76" );
+  QgsGeoNodeStyle geoNodeStyle = geonodeRequest.fetchStyleBlocking( "76" );
   QVERIFY( !geoNodeStyle.name.isEmpty() );
   QVERIFY( geoNodeStyle.body.toString().startsWith( QStringLiteral( "<qgis" ) ) );
   QVERIFY( geoNodeStyle.body.toString().contains( QStringLiteral( "</qgis>" ) ) );
 
-  QList<QgsGeoNodeStyle> geoNodeStyles = geonodeRequest.getStyles( QStringLiteral( "airports" ) );
+  QList<QgsGeoNodeStyle> geoNodeStyles = geonodeRequest.fetchStylesBlocking( QStringLiteral( "airports" ) );
   QgsDebugMsg( geoNodeStyles.count() );
   QVERIFY( geoNodeStyles.count() == 2 );
 

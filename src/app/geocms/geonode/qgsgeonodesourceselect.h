@@ -42,10 +42,15 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
   public:
 
     QgsGeoNodeSourceSelect( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    ~QgsGeoNodeSourceSelect();
 
   public slots:
 
     void addButtonClicked() override;
+
+  signals:
+
+    void abortRequests();
 
   private:
 

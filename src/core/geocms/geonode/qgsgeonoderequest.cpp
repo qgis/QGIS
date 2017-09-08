@@ -27,13 +27,6 @@
 #include <QUrl>
 #include <QDomDocument>
 
-QgsGeoNodeRequest::QgsGeoNodeRequest( bool forceRefresh, QObject *parent )
-  : QObject( parent )
-  , mForceRefresh( forceRefresh )
-{
-
-}
-
 QgsGeoNodeRequest::QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent )
   : QObject( parent )
   , mBaseUrl( baseUrl )
@@ -57,27 +50,51 @@ void QgsGeoNodeRequest::abort()
   }
 }
 
-QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::getLayers()
+void QgsGeoNodeRequest::fetchLayers()
 {
-  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
-  bool success = request( QStringLiteral( "/api/layers/" ) );
-  if ( !success )
+  request( QStringLiteral( "/api/layers/" ) );
+  QObject *obj = new QObject( this );
+
+  connect( this, &QgsGeoNodeRequest::requestFinished, obj, [obj, this ]
   {
-    return layers;
-  }
-  return parseLayers( this->response() );
+    QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
+    if ( mError.isEmpty() )
+    {
+      layers = parseLayers( this->lastResponse() );
+    }
+    emit layersFetched( layers );
+
+    obj->deleteLater();
+  } );
 }
 
-QgsGeoNodeStyle QgsGeoNodeRequest::getDefaultStyle( const QString &layerName )
+QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::fetchLayersBlocking()
+{
+  QList<QgsGeoNodeRequest::ServiceLayerDetail> layers;
+
+  QEventLoop loop;
+  connect( this, &QgsGeoNodeRequest::requestFinished, &loop, &QEventLoop::quit );
+  QObject *obj = new QObject( this );
+  connect( this, &QgsGeoNodeRequest::layersFetched, obj, [&]( const QList<QgsGeoNodeRequest::ServiceLayerDetail> &fetched )
+  {
+    layers = fetched;
+  } );
+  fetchLayers();
+  loop.exec( QEventLoop::ExcludeUserInputEvents );
+  delete obj;
+  return layers;
+}
+
+QgsGeoNodeStyle QgsGeoNodeRequest::fetchDefaultStyleBlocking( const QString &layerName )
 {
   QgsGeoNodeStyle defaultStyle;
-  bool success = request( QStringLiteral( "/api/layers?name=" )  + layerName );
+  bool success = requestBlocking( QStringLiteral( "/api/layers?name=" )  + layerName );
   if ( !success )
   {
     return defaultStyle;
   }
 
-  const QJsonDocument jsonDocument = QJsonDocument::fromJson( this->response() );
+  const QJsonDocument jsonDocument = QJsonDocument::fromJson( this->lastResponse() );
   const QJsonObject jsonObject = jsonDocument.object();
   const QList<QVariant> layers = jsonObject.toVariantMap().value( QStringLiteral( "objects" ) ).toList();
   if ( layers.count() < 1 )
@@ -92,16 +109,16 @@ QgsGeoNodeStyle QgsGeoNodeRequest::getDefaultStyle( const QString &layerName )
 
 }
 
-QList<QgsGeoNodeStyle> QgsGeoNodeRequest::getStyles( const QString &layerName )
+QList<QgsGeoNodeStyle> QgsGeoNodeRequest::fetchStylesBlocking( const QString &layerName )
 {
   QList<QgsGeoNodeStyle> geoNodeStyles;
-  bool success = request( QStringLiteral( "/api/styles?layer__name=" ) + layerName );
+  bool success = requestBlocking( QStringLiteral( "/api/styles?layer__name=" ) + layerName );
   if ( !success )
   {
     return geoNodeStyles;
   }
 
-  const QJsonDocument jsonDocument = QJsonDocument::fromJson( this->response() );
+  const QJsonDocument jsonDocument = QJsonDocument::fromJson( this->lastResponse() );
   const QJsonObject jsobObject = jsonDocument.object();
   const QList<QVariant> styles = jsobObject.toVariantMap().value( QStringLiteral( "objects" ) ).toList();
 
@@ -120,9 +137,9 @@ QList<QgsGeoNodeStyle> QgsGeoNodeRequest::getStyles( const QString &layerName )
 
 }
 
-QgsGeoNodeStyle QgsGeoNodeRequest::getStyle( const QString &styleID )
+QgsGeoNodeStyle QgsGeoNodeRequest::fetchStyleBlocking( const QString &styleId )
 {
-  QString endPoint = QStringLiteral( "/api/styles/" ) + styleID;
+  QString endPoint = QStringLiteral( "/api/styles/" ) + styleId;
 
   return retrieveStyle( endPoint );
 }
@@ -134,7 +151,7 @@ void QgsGeoNodeRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
   emit statusChanged( msg );
 }
 
-QString QgsGeoNodeRequest::getProtocol() const
+QString QgsGeoNodeRequest::protocol() const
 {
   return mProtocol;
 }
@@ -159,7 +176,6 @@ void QgsGeoNodeRequest::replyFinished()
         emit statusChanged( QStringLiteral( "GeoNode request redirected." ) );
 
         const QUrl &toUrl = redirect.toUrl();
-        mGeoNodeReply->request();
         if ( toUrl == mGeoNodeReply->url() )
         {
           mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
@@ -237,7 +253,6 @@ void QgsGeoNodeRequest::replyFinished()
   }
 
   emit requestFinished();
-
 }
 
 QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( const QByteArray &layerResponse )
@@ -354,12 +369,12 @@ QgsGeoNodeStyle QgsGeoNodeRequest::retrieveStyle( const QString &styleUrl )
 {
   QgsGeoNodeStyle geoNodeStyle;
 
-  bool success = request( styleUrl );
+  bool success = requestBlocking( styleUrl );
   if ( !success )
   {
     return geoNodeStyle;
   }
-  const QJsonDocument jsonDocument = QJsonDocument::fromJson( this->response() );
+  const QJsonDocument jsonDocument = QJsonDocument::fromJson( this->lastResponse() );
   const QJsonObject jsonObject = jsonDocument.object();
 
   const QVariantMap jsonMap = jsonObject.toVariantMap();
@@ -368,13 +383,13 @@ QgsGeoNodeStyle QgsGeoNodeRequest::retrieveStyle( const QString &styleUrl )
   geoNodeStyle.title = jsonMap.value( QStringLiteral( "title" ) ).toString();
   geoNodeStyle.styleUrl = jsonMap.value( QStringLiteral( "style_url" ) ).toString();
 
-  success = request( geoNodeStyle.styleUrl );
+  success = requestBlocking( geoNodeStyle.styleUrl );
   if ( !success )
   {
     return geoNodeStyle;
   }
 
-  success = geoNodeStyle.body.setContent( this->response() );
+  success = geoNodeStyle.body.setContent( this->lastResponse() );
   if ( !success )
   {
     return geoNodeStyle;
@@ -383,11 +398,11 @@ QgsGeoNodeStyle QgsGeoNodeRequest::retrieveStyle( const QString &styleUrl )
   return geoNodeStyle;
 }
 
-QStringList QgsGeoNodeRequest::serviceUrls( const QString &serviceType )
+QStringList QgsGeoNodeRequest::fetchServiceUrlsBlocking( const QString &serviceType )
 {
   QStringList urls;
 
-  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = getLayers();
+  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = fetchLayersBlocking();
 
   if ( layers.empty() )
   {
@@ -415,7 +430,7 @@ QStringList QgsGeoNodeRequest::serviceUrls( const QString &serviceType )
 
     if ( !url.contains( QLatin1String( "://" ) ) )
     {
-      url.prepend( getProtocol() );
+      url.prepend( protocol() );
     }
     if ( !urls.contains( url ) )
     {
@@ -426,11 +441,11 @@ QStringList QgsGeoNodeRequest::serviceUrls( const QString &serviceType )
   return urls;
 }
 
-QgsStringMap QgsGeoNodeRequest::serviceUrlData( const QString &serviceType )
+QgsStringMap QgsGeoNodeRequest::fetchServiceUrlDataBlocking( const QString &serviceType )
 {
   QgsStringMap urls;
 
-  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = getLayers();
+  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = fetchLayersBlocking();
 
   if ( layers.empty() )
   {
@@ -460,7 +475,7 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( const QString &serviceType )
     QString layerName = layer.name;
     if ( !url.contains( QLatin1String( "://" ) ) )
     {
-      url.prepend( getProtocol() );
+      url.prepend( protocol() );
     }
     if ( !urls.contains( url ) )
     {
@@ -471,7 +486,7 @@ QgsStringMap QgsGeoNodeRequest::serviceUrlData( const QString &serviceType )
   return urls;
 }
 
-bool QgsGeoNodeRequest::request( const QString &endPoint )
+void QgsGeoNodeRequest::request( const QString &endPoint )
 {
   abort();
   mIsAborted = false;
@@ -480,25 +495,35 @@ bool QgsGeoNodeRequest::request( const QString &endPoint )
   QgsDebugMsg( "Requesting to " + url );
   setProtocol( url.split( QStringLiteral( "://" ) ).at( 0 ) );
   QUrl layerUrl( url );
-  layerUrl.setScheme( getProtocol() );
+  layerUrl.setScheme( protocol() );
 
   mError.clear();
 
+  mGeoNodeReply = requestUrl( url );
+  connect( mGeoNodeReply, &QNetworkReply::finished, this, &QgsGeoNodeRequest::replyFinished, Qt::DirectConnection );
+  connect( mGeoNodeReply, &QNetworkReply::downloadProgress, this, &QgsGeoNodeRequest::replyProgress, Qt::DirectConnection );
+}
+
+bool QgsGeoNodeRequest::requestBlocking( const QString &endPoint )
+{
+  request( endPoint );
+
+  QEventLoop loop;
+  connect( this, &QgsGeoNodeRequest::requestFinished, &loop, &QEventLoop::quit );
+  loop.exec( QEventLoop::ExcludeUserInputEvents );
+
+  return mError.isEmpty();
+}
+
+QNetworkReply *QgsGeoNodeRequest::requestUrl( const QString &url )
+{
   QNetworkRequest request( url );
   // Add authentication check here
 
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mForceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-  mGeoNodeReply = QgsNetworkAccessManager::instance()->get( request );
-
-  connect( mGeoNodeReply, &QNetworkReply::finished, this, &QgsGeoNodeRequest::replyFinished, Qt::DirectConnection );
-  connect( mGeoNodeReply, &QNetworkReply::downloadProgress, this, &QgsGeoNodeRequest::replyProgress, Qt::DirectConnection );
-
-  QEventLoop loop;
-  connect( this, &QgsGeoNodeRequest::requestFinished, &loop, &QEventLoop::quit );
-
-  loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-  return mError.isEmpty();
+  return QgsNetworkAccessManager::instance()->get( request );
 }
+
+

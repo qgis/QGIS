@@ -72,6 +72,11 @@ QgsGeoNodeSourceSelect::QgsGeoNodeSourceSelect( QWidget *parent, Qt::WindowFlags
   treeView->setModel( mModelProxy );
 }
 
+QgsGeoNodeSourceSelect::~QgsGeoNodeSourceSelect()
+{
+  emit abortRequests();
+}
+
 void QgsGeoNodeSourceSelect::addConnectionsEntryList()
 {
   QgsGeoNodeNewConnection nc( this );
@@ -147,141 +152,146 @@ void QgsGeoNodeSourceSelect::showHelp()
 
 void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 {
-  QApplication::setOverrideCursor( Qt::BusyCursor );
   QgsGeoNodeConnection connection( cmbConnections->currentText() );
 
   QString url = connection.uri().param( QStringLiteral( "url" ) );
-  QgsGeoNodeRequest geonodeRequest( url, true );
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-  const QList<QgsGeoNodeRequest::ServiceLayerDetail> layers = geonodeRequest.getLayers();
-  QApplication::restoreOverrideCursor();
-
-  if ( !layers.empty() )
+  QgsGeoNodeRequest *geonodeRequest = new QgsGeoNodeRequest( url, true );
+  connect( this, &QgsGeoNodeSourceSelect::abortRequests, geonodeRequest, &QgsGeoNodeRequest::abort );
+  connect( geonodeRequest, &QgsGeoNodeRequest::requestFinished, geonodeRequest, [geonodeRequest]
   {
-    QgsDebugMsg( QStringLiteral( "Success, non empty layers %1" ).arg( layers.count( ) ) );
-  }
-  else
+    QApplication::restoreOverrideCursor();
+    geonodeRequest->deleteLater();
+  } );
+  connect( geonodeRequest, &QgsGeoNodeRequest::layersFetched, this, [ = ]( const QList< QgsGeoNodeRequest::ServiceLayerDetail > layers )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Failed, empty layers" ), tr( "GeoNode" ) );
-  }
-
-  if ( mModel )
-  {
-    mModel->removeRows( 0, mModel->rowCount() );
-  }
-
-  if ( !layers.isEmpty() )
-  {
-    for ( const QgsGeoNodeRequest::ServiceLayerDetail &layer : layers )
+    if ( !layers.empty() )
     {
-      QUuid uuid = layer.uuid;
+      QgsDebugMsg( QStringLiteral( "Success, non empty layers %1" ).arg( layers.count( ) ) );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Failed, empty layers" ), tr( "GeoNode" ) );
+    }
 
-      QString wmsURL = layer.wmsURL;
-      QString wfsURL = layer.wfsURL;
-      QString xyzURL = layer.xyzURL;
+    if ( mModel )
+    {
+      mModel->removeRows( 0, mModel->rowCount() );
+    }
 
-      if ( !wmsURL.isEmpty() )
+    if ( !layers.isEmpty() )
+    {
+      for ( const QgsGeoNodeRequest::ServiceLayerDetail &layer : layers )
       {
-        QStandardItem *titleItem = new QStandardItem( layer.title );
-        QStandardItem *nameItem;
-        if ( !layer.name.isEmpty() )
+        QUuid uuid = layer.uuid;
+
+        QString wmsURL = layer.wmsURL;
+        QString wfsURL = layer.wfsURL;
+        QString xyzURL = layer.xyzURL;
+
+        if ( !wmsURL.isEmpty() )
         {
-          nameItem = new QStandardItem( layer.name );
+          QStandardItem *titleItem = new QStandardItem( layer.title );
+          QStandardItem *nameItem;
+          if ( !layer.name.isEmpty() )
+          {
+            nameItem = new QStandardItem( layer.name );
+          }
+          else
+          {
+            nameItem = new QStandardItem( layer.title );
+          }
+          QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
+          QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WMS" ) );
+
+          QString typeName = layer.typeName;
+
+          titleItem->setData( uuid,  Qt::UserRole + 1 );
+          titleItem->setData( wmsURL,  Qt::UserRole + 2 );
+          titleItem->setData( typeName,  Qt::UserRole + 3 );
+          typedef QList< QStandardItem * > StandardItemList;
+          mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
         }
         else
         {
-          nameItem = new QStandardItem( layer.title );
+          QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have WMS url." ).arg( layer.title ), 3 );
         }
-        QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
-        QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WMS" ) );
-
-        QString typeName = layer.typeName;
-
-        titleItem->setData( uuid,  Qt::UserRole + 1 );
-        titleItem->setData( wmsURL,  Qt::UserRole + 2 );
-        titleItem->setData( typeName,  Qt::UserRole + 3 );
-        typedef QList< QStandardItem * > StandardItemList;
-        mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have WMS url." ).arg( layer.title ), 3 );
-      }
-      if ( !wfsURL.isEmpty() )
-      {
-        QStandardItem *titleItem = new QStandardItem( layer.title );
-        QStandardItem *nameItem;
-        if ( !layer.name.isEmpty() )
+        if ( !wfsURL.isEmpty() )
         {
-          nameItem = new QStandardItem( layer.name );
+          QStandardItem *titleItem = new QStandardItem( layer.title );
+          QStandardItem *nameItem;
+          if ( !layer.name.isEmpty() )
+          {
+            nameItem = new QStandardItem( layer.name );
+          }
+          else
+          {
+            nameItem = new QStandardItem( layer.title );
+          }
+          QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
+          QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WFS" ) );
+
+          QString typeName = layer.typeName;
+
+          titleItem->setData( uuid,  Qt::UserRole + 1 );
+          titleItem->setData( wfsURL,  Qt::UserRole + 2 );
+          titleItem->setData( typeName,  Qt::UserRole + 3 );
+          typedef QList< QStandardItem * > StandardItemList;
+          mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
         }
         else
         {
-          nameItem = new QStandardItem( layer.title );
+          QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have WFS url." ).arg( layer.title ), 3 );
         }
-        QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
-        QStandardItem *webServiceTypeItem = new QStandardItem( tr( "WFS" ) );
-
-        QString typeName = layer.typeName;
-
-        titleItem->setData( uuid,  Qt::UserRole + 1 );
-        titleItem->setData( wfsURL,  Qt::UserRole + 2 );
-        titleItem->setData( typeName,  Qt::UserRole + 3 );
-        typedef QList< QStandardItem * > StandardItemList;
-        mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have WFS url." ).arg( layer.title ), 3 );
-      }
-      if ( !xyzURL.isEmpty() )
-      {
-        QStandardItem *titleItem = new QStandardItem( layer.title );
-        QStandardItem *nameItem;
-        if ( !layer.name.isEmpty() )
+        if ( !xyzURL.isEmpty() )
         {
-          nameItem = new QStandardItem( layer.name );
+          QStandardItem *titleItem = new QStandardItem( layer.title );
+          QStandardItem *nameItem;
+          if ( !layer.name.isEmpty() )
+          {
+            nameItem = new QStandardItem( layer.name );
+          }
+          else
+          {
+            nameItem = new QStandardItem( layer.title );
+          }
+          QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
+          QStandardItem *webServiceTypeItem = new QStandardItem( tr( "XYZ" ) );
+
+          QString typeName = layer.typeName;
+
+          titleItem->setData( uuid,  Qt::UserRole + 1 );
+          titleItem->setData( xyzURL,  Qt::UserRole + 2 );
+          titleItem->setData( typeName,  Qt::UserRole + 3 );
+          typedef QList< QStandardItem * > StandardItemList;
+          mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
         }
         else
         {
-          nameItem = new QStandardItem( layer.title );
+          QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have XYZ url." ).arg( layer.title ), 3 );
         }
-        QStandardItem *serviceTypeItem = new QStandardItem( tr( "Layer" ) );
-        QStandardItem *webServiceTypeItem = new QStandardItem( tr( "XYZ" ) );
-
-        QString typeName = layer.typeName;
-
-        titleItem->setData( uuid,  Qt::UserRole + 1 );
-        titleItem->setData( xyzURL,  Qt::UserRole + 2 );
-        titleItem->setData( typeName,  Qt::UserRole + 3 );
-        typedef QList< QStandardItem * > StandardItemList;
-        mModel->appendRow( StandardItemList() << titleItem << nameItem << serviceTypeItem << webServiceTypeItem );
-      }
-      else
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Layer %1 does not have XYZ url." ).arg( layer.title ), 3 );
       }
     }
-  }
 
-  else
-  {
-    QMessageBox::critical( this, tr( "Connect to GeoNode" ), tr( "Cannot get any feature services" ) );
-  }
-
-  treeView->resizeColumnToContents( MODEL_IDX_TITLE );
-  treeView->resizeColumnToContents( MODEL_IDX_NAME );
-  treeView->resizeColumnToContents( MODEL_IDX_TYPE );
-  treeView->resizeColumnToContents( MODEL_IDX_WEB_SERVICE );
-  for ( int i = MODEL_IDX_TITLE; i < MODEL_IDX_WEB_SERVICE; i++ )
-  {
-    if ( treeView->columnWidth( i ) > 210 )
+    else
     {
-      treeView->setColumnWidth( i, 210 );
+      QMessageBox::critical( this, tr( "Connect to GeoNode" ), tr( "Cannot get any feature services" ) );
     }
-  }
-  QApplication::restoreOverrideCursor();
+
+    treeView->resizeColumnToContents( MODEL_IDX_TITLE );
+    treeView->resizeColumnToContents( MODEL_IDX_NAME );
+    treeView->resizeColumnToContents( MODEL_IDX_TYPE );
+    treeView->resizeColumnToContents( MODEL_IDX_WEB_SERVICE );
+    for ( int i = MODEL_IDX_TITLE; i < MODEL_IDX_WEB_SERVICE; i++ )
+    {
+      if ( treeView->columnWidth( i ) > 210 )
+      {
+        treeView->setColumnWidth( i, 210 );
+      }
+    }
+  } );
+
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+  geonodeRequest->fetchLayers();
 }
 
 void QgsGeoNodeSourceSelect::saveGeonodeConnection()

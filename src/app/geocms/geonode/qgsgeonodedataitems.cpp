@@ -38,9 +38,9 @@ QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
   QString url = mConnection->uri().param( QStringLiteral( "url" ) );
   QgsGeoNodeRequest geonodeRequest( url, true );
 
-  QStringList wmsUrl = geonodeRequest.serviceUrls( QStringLiteral( "WMS" ) );
-  QStringList wfsUrl = geonodeRequest.serviceUrls( QStringLiteral( "WFS" ) );
-  QStringList xyzUrl = geonodeRequest.serviceUrls( QStringLiteral( "XYZ" ) );
+  QStringList wmsUrl = geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WMS" ) );
+  QStringList wfsUrl = geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) );
+  QStringList xyzUrl = geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "XYZ" ) );
 
   if ( !wmsUrl.isEmpty() )
   {
