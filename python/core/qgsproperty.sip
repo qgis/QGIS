@@ -107,13 +107,17 @@ class QgsPropertyDefinition
 
     QString origin() const;
 %Docstring
- Returns the origin of the property
+ Returns the origin of the property. For example, a PAL property has an
+ origin set to "labeling" while a diagram property has an origin set to
+ "diagram".
  :rtype: str
 %End
 
     void setOrigin( const QString &origin );
 %Docstring
- Sets origin of the property
+ Sets the origin of the property. For example, a PAL property has an
+ origin set to "labeling" while a diagram property has an origin set to
+ "diagram".
 %End
 
     QString description() const;

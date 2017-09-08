@@ -143,12 +143,16 @@ class CORE_EXPORT QgsPropertyDefinition
     void setName( const QString &name ) { mName = name; }
 
     /**
-     * Returns the origin of the property
+     * Returns the origin of the property. For example, a PAL property has an
+     * origin set to "labeling" while a diagram property has an origin set to
+     * "diagram".
      */
     QString origin() const { return mOrigin; }
 
     /**
-     * Sets origin of the property
+     * Sets the origin of the property. For example, a PAL property has an
+     * origin set to "labeling" while a diagram property has an origin set to
+     * "diagram".
      */
     void setOrigin( const QString &origin ) { mOrigin = origin; }
 
