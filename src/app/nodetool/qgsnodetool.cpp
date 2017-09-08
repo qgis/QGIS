@@ -418,7 +418,8 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QList<Vertex> nodes;
 
     // for each editable layer, select nodes
-    for ( QgsMapLayer *layer : canvas()->layers() )
+    const auto layers = canvas()->layers();
+    for ( QgsMapLayer *layer : layers )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer || !vlayer->isEditable() || !vlayer->isSpatial() )
@@ -615,7 +616,8 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   {
     if ( currentVlayer->isEditable() )
     {
-      for ( QgsMapLayer *layer : canvas()->layers() )
+      const auto layers = canvas()->layers();
+      for ( QgsMapLayer *layer : layers )
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vlayer )
@@ -633,7 +635,8 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   // if there is no match from the current layer, try to use any editable vector layer
   if ( !m.isValid() )
   {
-    for ( QgsMapLayer *layer : canvas()->layers() )
+    const auto layers = canvas()->layers();
+    for ( QgsMapLayer *layer : layers )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer )
@@ -1084,7 +1087,8 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointXY &mapPoint, const Qgs
   {
     // support for topo editing - find extra features
     // that have coincident point with the vertex being dragged
-    for ( QgsMapLayer *layer : canvas()->layers() )
+    const auto layers = canvas()->layers();
+    for ( QgsMapLayer *layer : layers )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !vlayer || !vlayer->isEditable() )
