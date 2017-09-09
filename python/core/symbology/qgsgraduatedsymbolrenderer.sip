@@ -254,6 +254,7 @@ Moves the category at index position from to index position to.
       Jenks,
       StdDev,
       Pretty,
+      AroundZero,
       Custom
     };
 
