@@ -137,8 +137,8 @@ QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, Q
 QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  QList<QgsOgrDbLayerInfo *> layers = QgsOgrLayerItem::subLayers( mPath, QStringLiteral( "GPKG" ) );
-  for ( const QgsOgrDbLayerInfo *info : qgsAsConst( layers ) )
+  const auto layers = QgsOgrLayerItem::subLayers( mPath, QStringLiteral( "GPKG" ) );
+  for ( const QgsOgrDbLayerInfo *info : layers )
   {
     if ( info->layerType() == QgsLayerItem::LayerType::Raster )
     {
@@ -197,7 +197,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   QStringList importResults;
   bool hasError = false;
 
-  const QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  const auto lst = QgsMimeDataUtils::decodeUriList( data );
   for ( const QgsMimeDataUtils::Uri &dropUri : lst )
   {
     // Check that we are not copying over self
@@ -239,8 +239,8 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
 
         // check if the destination layer already exists
         bool exists = false;
-        const QVector< QgsDataItem *> c( children() );
-        for ( const auto child : c )
+        const auto c( children() );
+        for ( const QgsDataItem *child : c )
         {
           if ( child->name() == dropUri.name )
           {
@@ -495,7 +495,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
   // Check if the layer is in the registry
   const QgsMapLayer *projectLayer = nullptr;
-  const QMap<QString, QgsMapLayer *> mapLayers( QgsProject::instance()->mapLayers() );
+  const auto mapLayers( QgsProject::instance()->mapLayers() );
   for ( const QgsMapLayer *layer :  mapLayers )
   {
     if ( layer->publicSource() == mUri )
