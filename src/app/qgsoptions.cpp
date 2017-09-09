@@ -1662,14 +1662,6 @@ QStringList QgsOptions::i18nList()
   return myList;
 }
 
-void QgsOptions::on_mRestoreDefaultWindowStateBtn_clicked()
-{
-  // richard
-  if ( QMessageBox::warning( this, tr( "Restore UI defaults" ), tr( "Are you sure to reset the UI to default (needs restart)?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
-    return;
-  mSettings->setValue( QStringLiteral( "/qgis/restoreDefaultWindowState" ), true );
-}
-
 void QgsOptions::on_mCustomVariablesChkBx_toggled( bool chkd )
 {
   mAddCustomVarBtn->setEnabled( chkd );
