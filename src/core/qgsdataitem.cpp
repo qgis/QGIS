@@ -765,7 +765,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     }
 
   }
-
+  mLastScan = QDateTime::currentDateTime();
   return children;
 }
 
@@ -794,6 +794,11 @@ void QgsDirectoryItem::setState( State state )
 
 void QgsDirectoryItem::directoryChanged()
 {
+  // If the last scan was less than 10 seconds ago, skip this
+  if ( mLastScan.msecsTo( QDateTime::currentDateTime() ) < 10000 )
+  {
+    return;
+  }
   if ( state() == Populating )
   {
     // schedule to refresh later, because refresh() simply returns if Populating
