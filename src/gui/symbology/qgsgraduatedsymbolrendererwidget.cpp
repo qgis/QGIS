@@ -815,22 +815,22 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
       return;
   }
-  
-  // For the AroundZero method, display a warning if data are not around zero and stop //p
+
+  // For the AroundZero method, display a warning if data are not around zero and stop
   if ( QgsGraduatedSymbolRenderer::AroundZero == mode )
   {
     int attrNum = mLayer->fields().lookupField( attrName );
-    
-    bool negativeValuesPresent = mLayer->minimumValue(attrNum).toDouble() < 0;
-    bool positiveValuesPresent = mLayer->maximumValue(attrNum).toDouble() > 0;
-    
-    if (negativeValuesPresent != positiveValuesPresent)
+
+    bool negativeValuesPresent = mLayer->minimumValue( attrNum ).toDouble() < 0;
+    bool positiveValuesPresent = mLayer->maximumValue( attrNum ).toDouble() > 0;
+
+    if ( negativeValuesPresent != positiveValuesPresent )
     {
-      QMessageBox::information( this, tr ( "Warning" ), tr( "Symmetric classification around zero only applies to data with both positive and negative values" ) );    
+      QMessageBox::information( this, tr( "Warning" ), tr( "Symmetric classification around zero only applies to data with both positive and negative values" ) );
       return;
     }
   }
-  
+
   // create and set new renderer
   mRenderer->setClassAttribute( attrName );
   mRenderer->setMode( mode );

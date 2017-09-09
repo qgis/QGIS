@@ -564,23 +564,23 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
 }
 
 static QList<double> _calcAroundZeroBreaks( double minimum, double maximum, int classes )
-{  
+{
   // we will use prettyBreaks and merge the classes around zero
   // and remove the classes that are above the existing opposite
   // sign classes to keep colors symmetrically balanced around zero
-  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, classes ); 
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, classes );
 
-  breaks.removeAt( breaks.indexOf(0) );
-  
+  breaks.removeAt( breaks.indexOf( 0 ) );
+
   std::sort( breaks.begin(), breaks.end() );
-  double absMin = qMin( qAbs(maximum), qAbs( minimum ) );
-  
-  for ( int i = 1; i < breaks.size()-1; ++i ) //not the first nor the last (expect them to be ordered)
+  double absMin = qMin( qAbs( maximum ), qAbs( minimum ) );
+
+  for ( int i = 1; i < breaks.size() - 1; ++i ) //not the first nor the last (expect them to be ordered)
   {
-    if ( qAbs( breaks.at(i) ) > absMin )
+    if ( qAbs( breaks.at( i ) ) > absMin )
     {
-        breaks.removeAt(i);
-        --i;
+      breaks.removeAt( i );
+      --i;
     }
   }
   return breaks;
@@ -1143,9 +1143,9 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
   else if ( mMode == Pretty )
     modeString = QStringLiteral( "pretty" );
   else if ( mMode == AroundZero )
-    modeString = QStringLiteral( "aroundZero" );    
-    
-    
+    modeString = QStringLiteral( "aroundZero" );
+
+
   if ( !modeString.isEmpty() )
   {
     QDomElement modeElem = doc.createElement( QStringLiteral( "mode" ) );
