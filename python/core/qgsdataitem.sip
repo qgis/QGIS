@@ -257,8 +257,6 @@ Create path component replacing path separators
  :rtype: str
 %End
 
-    void setActions( QList<QAction *> actions );
-
     static void deleteLater( QVector<QgsDataItem *> &items );
 
     void moveToThread( QThread *targetThread );
