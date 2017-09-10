@@ -74,7 +74,7 @@ class QgsGeoNodeConnectionUtils
 
     static void deleteConnection( const QString &name );
 %Docstring
- Deletes the GeoNode connection with matcing ``name``.
+ Deletes the GeoNode connection with matching ``name``.
 %End
 
     static QString pathGeoNodeConnection();

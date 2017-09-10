@@ -85,7 +85,7 @@ class CORE_EXPORT QgsGeoNodeConnectionUtils
     static QStringList connectionList();
 
     /**
-     * Deletes the GeoNode connection with matcing \a name.
+     * Deletes the GeoNode connection with matching \a name.
      */
     static void deleteConnection( const QString &name );
 
