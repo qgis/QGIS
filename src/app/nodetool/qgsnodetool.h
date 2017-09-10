@@ -299,11 +299,6 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! to stick with the same highlighted feature next time if there are more options
     std::unique_ptr<QgsPointLocator::Match> mLastSnap;
 
-    //! List of two points that will be forced into CAD dock with fake mouse events
-    //! to allow correct functioning of node tool with CAD dock.
-    //! (CAD dock does various assumptions that work with simple capture tools, but not with node tool)
-    QList<QgsPointXY> mOverrideCadPoints;
-
     //! When double-clicking to add a new vertex, this member keeps the snap
     //! match from "press" event used to be used in following "release" event
     std::unique_ptr<QgsPointLocator::Match> mNewVertexFromDoubleClick;

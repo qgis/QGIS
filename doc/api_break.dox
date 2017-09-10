@@ -474,7 +474,7 @@ QgsAction             {#qgis_api_break_3_0_QgsAction}
 QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizingDockWidget}
 -------------------------------
 
-- canvasReleaseEvent takes now QgsAdvancedDigitizingDockWidget::CaptureMode as second argument.
+- canvasPressEvent(), canvasReleaseEvent(), canvasMoveEvent() were removed. Handling of events is done in QgsMapToolAdvancedDigitizing.
 - snappingMode() was removed. Advanced digitizing now always uses project's snapping configuration.
 
 
@@ -1577,7 +1577,8 @@ QgsMapMouseEvent        {#qgis_api_break_3_0_QgsMapMouseEvent}
 ----------------
 
 - SnappingMode enum was removed.
-- snapPoint() and snapSegment() do not take SnappingMode argument anymore. Snapping is done according to project's snapping configuration.
+- snapPoint() does not take SnappingMode argument anymore. Snapping is done according to project's snapping configuration.
+- snapSegment() was removed.
 
 
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
@@ -1622,6 +1623,13 @@ QgsMapTool        {#qgis_api_break_3_0_QgsMapTool}
 
 - renderComplete() was removed. Map tools must not directly depend on rendering progress.
 - isTransient() and isEditTool() were removed. Use flags() instead.
+
+
+QgsMapToolAdvancedDigitizing         {#qgis_api_break_3_0_QgsMapToolAdvancedDigitizing}
+----------------------------
+
+- setMode() was replaced by setAdvancedDigitizingAllowed() and setAutoSnapEnabled()
+- mode() and CaptureMode enum have been moved to QgsMapToolCapture subclass
 
 
 QgsMapToolCapture        {#qgis_api_break_3_0_QgsMapToolCapture}

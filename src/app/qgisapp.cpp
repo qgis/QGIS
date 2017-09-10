@@ -3178,7 +3178,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mSvgAnnotation->setAction( mActionSvgAnnotation );
   mMapTools.mAnnotation = new QgsMapToolAnnotation( mMapCanvas );
   mMapTools.mAnnotation->setAction( mActionAnnotation );
-  mMapTools.mAddFeature = new QgsMapToolAddFeature( mMapCanvas );
+  mMapTools.mAddFeature = new QgsMapToolAddFeature( mMapCanvas, QgsMapToolCapture::CaptureNone );
   mMapTools.mAddFeature->setAction( mActionAddFeature );
   mMapTools.mCircularStringCurvePoint = new QgsMapToolCircularStringCurvePoint( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mCircularStringCurvePoint->setAction( mActionCircularStringCurvePoint );

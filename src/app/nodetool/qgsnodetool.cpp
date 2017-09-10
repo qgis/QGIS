@@ -200,6 +200,8 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 QgsNodeTool::QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
 {
+  setAdvancedDigitizingAllowed( false );
+
   mSnapMarker = new QgsVertexMarker( canvas );
   mSnapMarker->setIconType( QgsVertexMarker::ICON_CROSS );
   mSnapMarker->setColor( Qt::magenta );
@@ -472,22 +474,6 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   mSelectionRectStartPos.reset();
-
-  // there may be a temporary list of points (up to two) that need to be injected
-  // into CAD dock widget in order to make it behave as we need
-  if ( !mOverrideCadPoints.isEmpty() )
-  {
-    for ( const QgsPointXY &pt : qgsAsConst( mOverrideCadPoints ) )
-    {
-      QMouseEvent mouseEvent( QEvent::MouseButtonRelease,
-                              toCanvasCoordinates( pt ),
-                              Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-      QgsMapMouseEvent me( canvas(), &mouseEvent );
-      cadDockWidget()->canvasReleaseEvent( &me, QgsAdvancedDigitizingDockWidget::ManyPoints );
-    }
-
-    mOverrideCadPoints.clear();
-  }
 }
 
 void QgsNodeTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
@@ -1029,7 +1015,7 @@ void QgsNodeTool::startDragging( QgsMapMouseEvent *e )
     return;
 
   // activate advanced digitizing dock
-  setMode( CaptureLine );
+  setAdvancedDigitizingAllowed( true );
 
   // adding a new vertex instead of moving a vertex
   if ( m.hasEdge() )
@@ -1080,8 +1066,7 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointXY &mapPoint, const Qgs
     }
   }
 
-  mOverrideCadPoints.clear();
-  mOverrideCadPoints << m.point() << m.point();
+  cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
 
   if ( QgsProject::instance()->topologicalEditing() )
   {
@@ -1260,7 +1245,7 @@ void QgsNodeTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
   Q_ASSERT( m.hasEdge() );
 
   // activate advanced digitizing dock
-  setMode( CaptureLine );
+  setAdvancedDigitizingAllowed( true );
 
   mDraggingVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() + 1 ) );
   mDraggingVertexType = AddingVertex;
@@ -1281,8 +1266,7 @@ void QgsNodeTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
   if ( v1.x() != 0 || v1.y() != 0 )
     addDragBand( map_v1, m.point() );
 
-  mOverrideCadPoints.clear();
-  mOverrideCadPoints << m.point() << m.point();
+  cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
 }
 
 void QgsNodeTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint )
@@ -1290,7 +1274,7 @@ void QgsNodeTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint )
   Q_ASSERT( mMouseAtEndpoint );
 
   // activate advanced digitizing dock
-  setMode( CaptureLine );
+  setAdvancedDigitizingAllowed( true );
 
   mDraggingVertex.reset( new Vertex( mMouseAtEndpoint->layer, mMouseAtEndpoint->fid, mMouseAtEndpoint->vertexId ) );
   mDraggingVertexType = AddingEndpoint;
@@ -1306,8 +1290,8 @@ void QgsNodeTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint )
   // setup CAD dock previous points to endpoint and the previous point
   QgsPointXY pt0 = geom.vertexAt( adjacentVertexIndexToEndpoint( geom, mMouseAtEndpoint->vertexId ) );
   QgsPointXY pt1 = geom.vertexAt( mMouseAtEndpoint->vertexId );
-  mOverrideCadPoints.clear();
-  mOverrideCadPoints << pt0 << pt1;
+
+  cadDockWidget()->setPoints( QList<QgsPointXY>() << pt0 << pt1 );
 }
 
 void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint )
@@ -1315,7 +1299,7 @@ void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsP
   Q_ASSERT( m.hasEdge() );
 
   // activate advanced digitizing
-  setMode( CaptureLine );
+  setAdvancedDigitizingAllowed( true );
 
   mDraggingEdge = true;
   mDraggingExtraVertices.clear();
@@ -1347,21 +1331,14 @@ void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsP
     mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - QgsPoint( layerPoint ) );
   }
 
-  mOverrideCadPoints.clear();
-  mOverrideCadPoints << m.point() << m.point();
+  cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
 }
 
 void QgsNodeTool::stopDragging()
 {
   // deactivate advanced digitizing
-  setMode( CaptureNone );
-
-  // stop adv digitizing
-  QMouseEvent mouseEvent( QEvent::MouseButtonRelease,
-                          QPoint(),
-                          Qt::RightButton, Qt::RightButton, Qt::NoModifier );
-  QgsMapMouseEvent me( canvas(), &mouseEvent );
-  cadDockWidget()->canvasReleaseEvent( &me, QgsAdvancedDigitizingDockWidget::SinglePoint );
+  setAdvancedDigitizingAllowed( false );
+  cadDockWidget()->clear();  // clear cad points and release locks
 
   mDraggingVertex.reset();
   mDraggingVertexType = NotDragging;
@@ -1399,7 +1376,7 @@ void QgsNodeTool::moveEdge( const QgsPointXY &mapPoint )
 void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match *mapPointMatch )
 {
   // deactivate advanced digitizing
-  setMode( CaptureNone );
+  setAdvancedDigitizingAllowed( false );
 
   QgsVectorLayer *dragLayer = mDraggingVertex->layer;
   QgsFeatureId dragFid = mDraggingVertex->fid;
