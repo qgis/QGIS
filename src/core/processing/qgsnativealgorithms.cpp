@@ -1422,6 +1422,7 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
   double step = intersectSource->featureCount() > 0 ? 100.0 / intersectSource->featureCount() : 1;
   int current = 0;
   QgsFeature f;
+  std::unique_ptr< QgsGeometryEngine > engine;
   while ( fIt.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
@@ -1430,10 +1431,9 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
     if ( !f.hasGeometry() )
       continue;
 
-    std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( f.geometry().geometry() ) );
-    engine->prepareGeometry();
-    QgsRectangle bbox = f.geometry().boundingBox();
+    engine.reset();
 
+    QgsRectangle bbox = f.geometry().boundingBox();
     request = QgsFeatureRequest().setFilterRect( bbox );
     if ( onlyRequireTargetIds )
       request.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() );
@@ -1449,6 +1449,12 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
       {
         // already added this one, no need for further tests
         continue;
+      }
+
+      if ( !engine )
+      {
+        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().geometry() ) );
+        engine->prepareGeometry();
       }
 
       for ( Predicate predicate : qgsAsConst( predicates ) )
