@@ -650,4 +650,4 @@ class FeatureSourceTestCase(object):
 
     def testAllFeatureIds(self):
         ids = set([f.id() for f in self.source.getFeatures()])
-        self.assertEqual(set(self.source.allFeatureIds()),ids)
+        self.assertEqual(set(self.source.allFeatureIds()), ids)

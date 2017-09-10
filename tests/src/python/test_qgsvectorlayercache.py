@@ -37,6 +37,7 @@ from qgis.core import (QgsWkbTypes,
 from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
+
 start_app()
 
 
@@ -102,6 +103,11 @@ class TestQgsVectorLayerCache(unittest.TestCase, FeatureSourceTestCase):
 
     def testMaximumValue(self):
         """ Skip max values test - not implemented by the cache (yet)
+        """
+        pass
+
+    def testAllFeatureIds(self):
+        """ Skip allFeatureIds test - not implemented by the cache (yet)
         """
         pass
 
