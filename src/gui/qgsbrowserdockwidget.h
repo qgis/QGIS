@@ -47,9 +47,10 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     /**
       * Constructor for QgsBrowserDockWidget
       * \param name name of the widget
+      * \param browserModel instance of the (shared) browser model
       * \param parent parent widget
       */
-    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *model, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBrowserDockWidget();
     //! Add directory to favorites
     void addFavoriteDirectory( const QString &favDir );

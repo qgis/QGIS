@@ -169,7 +169,7 @@ void QgsBrowserModel::removeRootItems()
   mRootItems.clear();
 }
 
-void QgsBrowserModel::init()
+void QgsBrowserModel::initialize()
 {
   if ( ! mInitialized )
   {

@@ -183,9 +183,9 @@ Returns true if the model has been initialized
  :rtype: bool
 %End
 
-    void init();
+    void initialize();
 %Docstring
-Delayied initialization
+Delayied initialization, needed because the provider registry must be already populated
 %End
 
   protected:

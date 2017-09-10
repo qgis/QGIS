@@ -38,9 +38,9 @@
 
 #include <QDragEnterEvent>
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel *model, QWidget *parent )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
-  , mModel( model )
+  , mModel( browserModel )
   , mProxyModel( nullptr )
   , mPropertiesWidgetEnabled( false )
   , mPropertiesWidgetHeight( 0 )
@@ -114,7 +114,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   // delayed initialization of the model
   if ( !mModel->initialized( ) )
   {
-    mModel->init();
+    mModel->initialize();
   }
   if ( ! mProxyModel )
   {

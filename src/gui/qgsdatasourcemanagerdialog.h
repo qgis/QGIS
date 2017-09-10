@@ -49,6 +49,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
   public:
 
     /** QgsDataSourceManagerDialog constructor
+      * \param browserModel instance of the (shared) browser model
       * \param parent the object
       * \param canvas a pointer to the map canvas
       * \param fl window flags
