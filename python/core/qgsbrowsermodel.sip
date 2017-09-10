@@ -177,12 +177,24 @@ Reload the whole model
 Hide the given path in the browser model
 %End
 
+    bool initialized( );
+%Docstring
+Returns true if the model has been initialized
+ :rtype: bool
+%End
+
+    void init();
+%Docstring
+Delayied initialization
+%End
+
   protected:
     void addRootItems();
 %Docstring
 Populates the model
 %End
     void removeRootItems();
+
 
 };
 

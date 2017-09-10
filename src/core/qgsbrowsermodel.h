@@ -167,6 +167,12 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     //! Hide the given path in the browser model
     void hidePath( QgsDataItem *item );
 
+    //! Returns true if the model has been initialized
+    bool initialized( ) { return mInitialized;  }
+
+    //! Delayied initialization
+    void init();
+
   protected:
     //! Populates the model
     void addRootItems();
@@ -175,6 +181,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QVector<QgsDataItem *> mRootItems;
     QgsFavoritesItem *mFavorites = nullptr;
     QgsDirectoryItem *mProjectHome = nullptr;
+
+  private:
+    bool mInitialized = false;
 };
 
 #endif // QGSBROWSERMODEL_H

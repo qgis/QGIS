@@ -45,9 +45,6 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent )
   : QAbstractItemModel( parent )
 
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
-  connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsBrowserModel::updateProjectHome );
-  addRootItems();
 }
 
 QgsBrowserModel::~QgsBrowserModel()
@@ -170,6 +167,17 @@ void QgsBrowserModel::removeRootItems()
   }
 
   mRootItems.clear();
+}
+
+void QgsBrowserModel::init()
+{
+  if ( ! mInitialized )
+  {
+    connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsBrowserModel::updateProjectHome );
+    addRootItems();
+    mInitialized = true;
+  }
 }
 
 

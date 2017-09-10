@@ -38,8 +38,10 @@
 
 #include <QDragEnterEvent>
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QWidget *parent )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel *model, QWidget *parent )
   : QgsDockWidget( parent )
+  , mModel( model )
+  , mProxyModel( nullptr )
   , mPropertiesWidgetEnabled( false )
   , mPropertiesWidgetHeight( 0 )
 {
@@ -110,9 +112,12 @@ QgsBrowserDockWidget::~QgsBrowserDockWidget()
 void QgsBrowserDockWidget::showEvent( QShowEvent *e )
 {
   // delayed initialization of the model
-  if ( !mModel )
+  if ( !mModel->initialized( ) )
   {
-    mModel = new QgsBrowserModel( mBrowserView );
+    mModel->init();
+  }
+  if ( ! mProxyModel )
+  {
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
