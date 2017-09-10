@@ -566,11 +566,11 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
       QString url = connection.uri().param( "url" );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
-      QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WMS" ) ) );
+      const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WMS" ) ) );
 
       if ( !encodedUris.isEmpty() )
       {
-        Q_FOREACH ( QString encodedUri, encodedUris )
+        for ( const QString &encodedUri : encodedUris )
         {
           QgsDebugMsg( encodedUri );
           QgsDataSourceUri uri;
@@ -612,16 +612,18 @@ QVector<QgsDataItem *> QgsXyzTileDataItemProvider::createDataItems( const QStrin
       QString url = connection.uri().param( "url" );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
-      QgsStringMap urlData( geonodeRequest.fetchServiceUrlDataBlocking( QStringLiteral( "XYZ" ) ) );
+      const QgsStringMap urlData( geonodeRequest.fetchServiceUrlDataBlocking( QStringLiteral( "XYZ" ) ) );
 
       if ( !urlData.isEmpty() )
       {
-        Q_FOREACH ( QString layerName, urlData.keys() )
+        auto urlDataIt = urlData.constBegin();
+        for ( ; urlDataIt != urlData.constEnd(); ++urlDataIt )
         {
-          QgsDebugMsg( urlData[ layerName] );
+          const QString layerName = urlDataIt.key();
+          QgsDebugMsg( urlDataIt.value() );
           QgsDataSourceUri uri;
           uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-          uri.setParam( QStringLiteral( "url" ), urlData[ layerName ] );
+          uri.setParam( QStringLiteral( "url" ), urlDataIt.value() );
 
           QgsDataItem *item = new QgsXyzLayerItem( parentItem, layerName, path, uri.encodedUri() );
           if ( item )

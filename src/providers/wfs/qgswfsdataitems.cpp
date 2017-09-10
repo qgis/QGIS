@@ -251,14 +251,14 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
       QString url = connection.uri().param( "url" );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
-      QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) ) );
+      const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) ) );
 
       if ( !encodedUris.isEmpty() )
       {
-        Q_FOREACH ( QString encodedUri, encodedUris )
+        for ( const QString &encodedUri : encodedUris )
         {
           QgsWFSDataSourceURI uri( encodedUri );
-          QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( uri.uri() ) ) );
+          QgsDebugMsg( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri() ) );
 
           QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri() );
           if ( item )

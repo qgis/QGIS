@@ -137,7 +137,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
 
     QVector<QgsDataItem *> items;
     QList<QgsDataItemProvider *> *providerList = dataItemProvidersFn();
-    Q_FOREACH ( QgsDataItemProvider *pr, *providerList )
+    for ( QgsDataItemProvider *pr : qgsAsConst( *providerList ) )
     {
       if ( !pr->name().startsWith( mServiceName ) )
         continue;
@@ -160,7 +160,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
       return items;
     }
 
-    Q_FOREACH ( QgsDataItem *item, items )
+    for ( QgsDataItem *item : qgsAsConst( items ) )
     {
       item->populate( true ); // populate in foreground - this is already run in a thread
 
@@ -178,12 +178,15 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
     skipProvider = true;
   }
 
-  Q_FOREACH ( QgsDataItem *item, serviceItems.keys() )
+  auto serviceItemIt = serviceItems.constBegin();
+  for ( ; serviceItemIt != serviceItems.constEnd(); ++serviceItemIt )
   {
-    QString providerKey = serviceItems.value( item );
+    QgsDataItem *item = serviceItemIt.key();
+    QString providerKey = serviceItemIt.value();
 
     // Add layers directly to service item
-    Q_FOREACH ( QgsDataItem *subItem, item->children() )
+    const QVector< QgsDataItem * > serviceChildItems = item->children();
+    for ( QgsDataItem *subItem : serviceChildItems )
     {
       if ( subItem->path().endsWith( QStringLiteral( "error" ) ) )
       {
@@ -205,7 +208,8 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
 void QgsGeoNodeServiceItem::replacePath( QgsDataItem *item, QString before, QString after )
 {
   item->setPath( item->path().replace( before, after ) );
-  Q_FOREACH ( QgsDataItem *subItem, item->children() )
+  const QVector< QgsDataItem * > children = item->children();
+  for ( QgsDataItem *subItem : children )
   {
     replacePath( subItem, before, after );
   }
@@ -224,7 +228,8 @@ QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsGeoNodeConnectionUtils::connectionList() )
+  const QStringList names = QgsGeoNodeConnectionUtils::connectionList();
+  for ( const QString &connName : names )
   {
     std::unique_ptr< QgsGeoNodeConnection > connection( new QgsGeoNodeConnection( connName ) );
     QString path = mPath + '/' + connName;

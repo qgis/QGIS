@@ -209,7 +209,8 @@ void QgsGeoNodeRequest::replyFinished()
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mGeoNodeReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
-          Q_FOREACH ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+          const QNetworkCacheMetaData::RawHeaderList cmdHeaders = cmd.rawHeaders();
+          for ( const QNetworkCacheMetaData::RawHeader &h : cmdHeaders )
           {
             if ( h.first != QStringLiteral( "Cache-Control" ) )
               hl.append( h );
