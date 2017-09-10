@@ -1450,6 +1450,11 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
         // already added this one, no need for further tests
         continue;
       }
+      if ( predicates.count() == 1 && predicates.at( 0 ) == Disjoint && !disjointSet.contains( testFeature.id() ) )
+      {
+        // calculating only the disjoint set, and we've already eliminated this feature so no need for further tests
+        continue;
+      }
 
       if ( !engine )
       {
