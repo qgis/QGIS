@@ -359,14 +359,19 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitempage.cpp
   layout/qgslayoutitemregistry.cpp
   layout/qgslayoutitemshape.cpp
+  layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
+  layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsnapper.cpp
+  layout/qgslayoutundocommand.cpp
+  layout/qgslayoutundostack.cpp
   layout/qgslayoututils.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
+  layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsize.cpp
 
   pal/costcalculator.cpp
@@ -935,12 +940,16 @@ SET(QGIS_CORE_HDRS
 
   layout/qgslayoutcontext.h
   layout/qgslayoutgridsettings.h
+  layout/qgslayoutitemundocommand.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
+  layout/qgslayoutserializableobject.h
   layout/qgslayoutsize.h
   layout/qgslayoutsnapper.h
+  layout/qgslayoutundocommand.h
+  layout/qgslayoutundostack.h
   layout/qgslayoututils.h
 
   metadata/qgslayermetadata.h

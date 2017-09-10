@@ -69,6 +69,15 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
      * Constructor for QgsLayoutItemPage, with the specified parent \a layout.
      */
     explicit QgsLayoutItemPage( QgsLayout *layout SIP_TRANSFERTHIS );
+
+    /**
+     * Returns a new page item for the specified \a layout.
+     *
+     * The caller takes responsibility for deleting the returned object.
+     */
+    static QgsLayoutItemPage *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
+
+
     int type() const override { return QgsLayoutItemRegistry::LayoutPage; }
     QString stringType() const override { return QStringLiteral( "ItemPaper" ); }
 
@@ -109,6 +118,8 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok SIP_OUT = nullptr );
 
     void attemptResize( const QgsLayoutSize &size ) override;
+
+    QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
   public slots:
 

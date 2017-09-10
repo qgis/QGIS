@@ -49,7 +49,7 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   , mMarginX( 1.0 )
   , mMarginY( 1.0 )
   , mFontColor( QColor( 0, 0, 0 ) )
-  , mHAlignment( Qt::AlignLeft )
+  , mHAlignment( Qt::AlignJustify )
   , mVAlignment( Qt::AlignTop )
   , mDistanceArea( nullptr )
 {

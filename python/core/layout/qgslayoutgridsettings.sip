@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutGridSettings
+class QgsLayoutGridSettings : QgsLayoutSerializableObject
 {
 %Docstring
  Contains settings relating to the appearance, spacing and offset for layout grids.
@@ -27,10 +27,14 @@ class QgsLayoutGridSettings
       StyleCrosses
     };
 
-    QgsLayoutGridSettings();
+    QgsLayoutGridSettings( QgsLayout *layout );
 %Docstring
  Constructor for QgsLayoutGridSettings.
 %End
+
+    virtual QString stringType() const;
+    virtual QgsLayout *layout();
+
 
     void setResolution( const QgsLayoutMeasurement &resolution );
 %Docstring
@@ -90,6 +94,22 @@ class QgsLayoutGridSettings
 .. seealso:: setStyle()
 .. seealso:: pen()
  :rtype: Style
+%End
+
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+%Docstring
+ Stores the grid's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+.. seealso:: readXml()
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+%Docstring
+ Sets the grid's state from a DOM element. gridElement is the DOM node corresponding to the grid.
+.. seealso:: writeXml()
+ :rtype: bool
 %End
 
 };

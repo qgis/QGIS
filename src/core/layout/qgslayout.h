@@ -24,6 +24,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
+#include "qgslayoutundostack.h"
 
 class QgsLayoutItemMap;
 
@@ -33,7 +34,7 @@ class QgsLayoutItemMap;
  * \brief Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator
+class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
 {
     Q_OBJECT
 
@@ -59,8 +60,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     QgsLayout( QgsProject *project );
 
-    ~QgsLayout();
-
     /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
      * a new layout.
@@ -85,6 +84,31 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see name()
      */
     void setName( const QString &name ) { mName = name; }
+
+    /**
+     * Returns a list of layout items of a specific type.
+     * \note not available in Python bindings
+     */
+    template<class T> void layoutItems( QList<T *> &itemList ) SIP_SKIP
+    {
+      itemList.clear();
+      QList<QGraphicsItem *> graphicsItemList = items();
+      QList<QGraphicsItem *>::iterator itemIt = graphicsItemList.begin();
+      for ( ; itemIt != graphicsItemList.end(); ++itemIt )
+      {
+        T *item = dynamic_cast<T *>( *itemIt );
+        if ( item )
+        {
+          itemList.push_back( item );
+        }
+      }
+    }
+
+    /**
+     * Returns the layout item with matching \a uuid unique identifier, or a nullptr
+     * if a matching item could not be found.
+     */
+    QgsLayoutItem *itemByUuid( const QString &uuid );
 
     /**
      * Sets the native measurement \a units for the layout. These also form the default unit
@@ -285,6 +309,33 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void addLayoutItem( QgsLayoutItem *item SIP_TRANSFER );
 
+    /**
+     * Returns the layout's state encapsulated in a DOM element.
+     * \see readXml()
+     */
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets the collection's state from a DOM element. \a layoutElement is the DOM node corresponding to the layout.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    /**
+     * Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
+     * and it's associated objects.
+     */
+    QgsLayoutUndoStack *undoStack();
+
+    /**
+     * Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
+     * and it's associated objects.
+     */
+    SIP_SKIP const QgsLayoutUndoStack *undoStack() const;
+
+    QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = nullptr ) SIP_FACTORY override;
+
+
   public slots:
 
     /**
@@ -313,9 +364,14 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutGridSettings mGridSettings;
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
+    std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
 
-    std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
+    //! Writes only the layout settings (not member settings like grid settings, etc) to XML
+    void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    //! Reads only the layout settings (not member settings like grid settings, etc) from XML
+    bool readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    friend class QgsLayoutUndoCommand;
 };
 
 #endif //QGSLAYOUT_H

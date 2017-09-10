@@ -44,6 +44,7 @@
 #include <QDesktopWidget>
 #include <QSlider>
 #include <QLabel>
+#include <QUndoView>
 
 
 //add some nice zoom levels for zoom comboboxes
@@ -286,15 +287,28 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGuideDock->setUserVisible( true );
   } );
 
+  mUndoDock = new QgsDockWidget( tr( "Command history" ), this );
+  mUndoDock->setObjectName( QStringLiteral( "CommandDock" ) );
+  mPanelsMenu->addAction( mUndoDock->toggleViewAction() );
+  mUndoView = new QUndoView( this );
+  mUndoDock->setWidget( mUndoView );
+
   addDockWidget( Qt::RightDockWidgetArea, mItemDock );
   addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
   addDockWidget( Qt::RightDockWidgetArea, mGuideDock );
+  addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
 
   createLayoutPropertiesWidget();
 
+  mUndoDock->show();
   mItemDock->show();
   mGeneralDock->show();
 
+  mActionUndo->setEnabled( false );
+  mActionRedo->setEnabled( false );
+
+  tabifyDockWidget( mGeneralDock, mUndoDock );
+  tabifyDockWidget( mItemDock, mUndoDock );
   tabifyDockWidget( mGeneralDock, mItemDock );
 
   restoreWindowState();
@@ -324,6 +338,12 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
   mActionShowGuides->setChecked( mLayout->guides().visible() );
   mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
+
+  connect( mLayout->undoStack()->stack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
+  connect( mLayout->undoStack()->stack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
+  connect( mActionUndo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::undo );
+  connect( mActionRedo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::redo );
+  mUndoView->setStack( mLayout->undoStack()->stack() );
 
   createLayoutPropertiesWidget();
 }
@@ -357,8 +377,14 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
 
   delete mItemPropertiesStack->takeMainPanel();
   widget->setDockMode( true );
+  connect( item, &QgsLayoutItem::destroyed, widget.get(), [this]
+  {
+    delete mItemPropertiesStack->takeMainPanel();
+  } );
+
   mItemPropertiesStack->setMainPanel( widget.release() );
   mItemDock->setUserVisible( true );
+
 }
 
 void QgsLayoutDesignerDialog::open()
@@ -612,12 +638,17 @@ void QgsLayoutDesignerDialog::addPages()
 
     }
 
+    if ( dlg.numberPages() > 1 )
+      mLayout->undoStack()->beginMacro( tr( "Add pages" ) );
     for ( int i = 0; i < dlg.numberPages(); ++i )
     {
       QgsLayoutItemPage *page = new QgsLayoutItemPage( mLayout );
       page->setPageSize( dlg.pageSize() );
       mLayout->pageCollection()->insertPage( page, firstPagePosition + i );
     }
+    if ( dlg.numberPages() > 1 )
+      mLayout->undoStack()->endMacro();
+
   }
 }
 

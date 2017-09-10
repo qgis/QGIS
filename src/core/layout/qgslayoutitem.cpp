@@ -18,6 +18,7 @@
 #include "qgslayout.h"
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"
+#include "qgslayoutitemundocommand.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -258,6 +259,11 @@ bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &do
   }
 
   return readPropertiesFromElement( itemElem, doc, context );
+}
+
+QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutItemUndoCommand( this, text, id, parent );
 }
 
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )

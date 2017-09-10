@@ -20,9 +20,11 @@
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutguidecollection.h"
+#include "qgslayoutserializableobject.h"
 #include <QPen>
 
 class QgsLayout;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -31,7 +33,7 @@ class QgsLayout;
  * snapping points to the nearest grid coordinate/snap line when possible.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutSnapper
+class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 {
 
   public:
@@ -41,11 +43,14 @@ class CORE_EXPORT QgsLayoutSnapper
      */
     QgsLayoutSnapper( QgsLayout *layout );
 
+    QString stringType() const override { return QStringLiteral( "LayoutSnapper" ); }
+    QgsLayout *layout() override;
+
     /**
      * Sets the snap \a tolerance (in pixels) to use when snapping.
      * \see snapTolerance()
      */
-    void setSnapTolerance( const int snapTolerance ) { mTolerance = snapTolerance; }
+    void setSnapTolerance( const int snapTolerance );
 
     /**
      * Returns the snap tolerance (in pixels) to use when snapping.
@@ -63,7 +68,7 @@ class CORE_EXPORT QgsLayoutSnapper
      * Sets whether snapping to grid is \a enabled.
      * \see snapToGrid()
      */
-    void setSnapToGrid( bool enabled ) { mSnapToGrid = enabled; }
+    void setSnapToGrid( bool enabled );
 
     /**
      * Returns true if snapping to guides is enabled.
@@ -75,7 +80,7 @@ class CORE_EXPORT QgsLayoutSnapper
      * Sets whether snapping to guides is \a enabled.
      * \see snapToGuides()
      */
-    void setSnapToGuides( bool enabled ) { mSnapToGuides = enabled; }
+    void setSnapToGuides( bool enabled );
 
     /**
      * Snaps a layout coordinate \a point. If \a point was snapped, \a snapped will be set to true.
@@ -115,13 +120,35 @@ class CORE_EXPORT QgsLayoutSnapper
      */
     double snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
 
+    /**
+     * Stores the snapper's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
+     * \see readXml()
+     */
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Sets the snapper's state from a DOM element. snapperElement is the DOM node corresponding to the snapper.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+
   private:
+
+    // Used for 'collapsing' undo commands
+    enum UndoCommand
+    {
+      UndoTolerance = 1,
+      UndoSnapToGrid,
+      UndoSnapToGuides,
+    };
 
     QgsLayout *mLayout = nullptr;
 
     int mTolerance = 5;
     bool mSnapToGrid = false;
     bool mSnapToGuides = true;
+
+    friend class QgsLayoutSnapperUndoCommand;
 
 };
 

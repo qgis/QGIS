@@ -17,22 +17,19 @@
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutguidecollection.h"
+#include "qgsreadwritecontext.h"
+#include "qgsproject.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : QGraphicsScene()
   , mProject( project )
   , mSnapper( QgsLayoutSnapper( this ) )
+  , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
-  , mGuideCollection( new QgsLayoutGuideCollection( this, mPageCollection.get() ) )
+  , mUndoStack( new QgsLayoutUndoStack( this ) )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
-}
-
-QgsLayout::~QgsLayout()
-{
-  // delete guide collection FIRST, since it depends on the page collection
-  mGuideCollection.reset();
 }
 
 void QgsLayout::initializeDefaults()
@@ -41,11 +38,27 @@ void QgsLayout::initializeDefaults()
   QgsLayoutItemPage *page = new QgsLayoutItemPage( this );
   page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
   mPageCollection->addPage( page );
+  mUndoStack->stack()->clear();
 }
 
 QgsProject *QgsLayout::project() const
 {
   return mProject;
+}
+
+QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
+{
+  QList<QgsLayoutItem *> itemList;
+  layoutItems( itemList );
+  Q_FOREACH ( QgsLayoutItem *item, itemList )
+  {
+    if ( item->uuid() == uuid )
+    {
+      return item;
+    }
+  }
+
+  return nullptr;
 }
 
 double QgsLayout::convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const
@@ -80,12 +93,12 @@ QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const Qg
 
 QgsLayoutGuideCollection &QgsLayout::guides()
 {
-  return *mGuideCollection;
+  return mPageCollection->guides();
 }
 
 const QgsLayoutGuideCollection &QgsLayout::guides() const
 {
-  return *mGuideCollection;
+  return mPageCollection->guides();
 }
 
 QgsExpressionContext QgsLayout::createExpressionContext() const
@@ -194,6 +207,109 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 {
   addItem( item );
   updateBounds();
+}
+
+QgsLayoutUndoStack *QgsLayout::undoStack()
+{
+  return mUndoStack.get();
+}
+
+const QgsLayoutUndoStack *QgsLayout::undoStack() const
+{
+  return mUndoStack.get();
+}
+
+///@cond PRIVATE
+class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
+{
+  public:
+
+    QgsLayoutUndoCommand( QgsLayout *layout, const QString &text, int id, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsAbstractLayoutUndoCommand( text, id, parent )
+      , mLayout( layout )
+    {}
+
+  protected:
+
+    void saveState( QDomDocument &stateDoc ) const override
+    {
+      stateDoc.clear();
+      QDomElement documentElement = stateDoc.createElement( QStringLiteral( "UndoState" ) );
+      mLayout->writeXmlLayoutSettings( documentElement, stateDoc, QgsReadWriteContext() );
+      stateDoc.appendChild( documentElement );
+    }
+
+    void restoreState( QDomDocument &stateDoc ) override
+    {
+      if ( !mLayout )
+      {
+        return;
+      }
+
+      mLayout->readXmlLayoutSettings( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext() );
+      mLayout->project()->setDirty( true );
+    }
+
+  private:
+
+    QgsLayout *mLayout = nullptr;
+};
+///@endcond
+
+QgsAbstractLayoutUndoCommand *QgsLayout::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutUndoCommand( this, text, id, parent );
+}
+
+void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
+{
+  mCustomProperties.writeXml( element, document );
+  element.setAttribute( QStringLiteral( "name" ), mName );
+  element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
+}
+
+QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  QDomElement element = document.createElement( QStringLiteral( "Layout" ) );
+  auto save = [&]( const QgsLayoutSerializableObject * object )->bool
+  {
+    return object->writeXml( element, document, context );
+  };
+  save( &mSnapper );
+  save( &mGridSettings );
+  save( mPageCollection.get() );
+
+  writeXmlLayoutSettings( element, document, context );
+  return element;
+}
+
+bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &, const QgsReadWriteContext & )
+{
+  mCustomProperties.readXml( layoutElement );
+  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
+  setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
+  return true;
+}
+
+bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  if ( layoutElement.nodeName() != QString( "Layout" ) )
+  {
+    return false;
+  }
+
+  auto restore = [&]( QgsLayoutSerializableObject * object )->bool
+  {
+    return object->readXml( layoutElement, document, context );
+  };
+
+  readXmlLayoutSettings( layoutElement, document, context );
+
+  restore( mPageCollection.get() );
+  restore( &mSnapper );
+  restore( &mGridSettings );
+
+  return true;
 }
 
 void QgsLayout::updateBounds()

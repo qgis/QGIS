@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
+class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInterface
 {
 %Docstring
  Base class for graphical items within a QgsLayout.
@@ -218,6 +218,9 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
    Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
  :rtype: bool
 %End
+
+    virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
+
 
   public slots:
 

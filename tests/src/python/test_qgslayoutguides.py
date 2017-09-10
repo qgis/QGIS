@@ -19,7 +19,7 @@ from qgis.core import (QgsProject,
                        QgsLayoutGuide,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
-                       QgsLayoutPoint,
+                       QgsReadWriteContext,
                        QgsLayoutItemPage,
                        QgsLayoutGuideCollection,
                        QgsLayoutGuideProxyModel)
@@ -27,6 +27,7 @@ from qgis.PyQt.QtCore import (QModelIndex)
 from qgis.PyQt.QtGui import (QPen,
                              QColor)
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
 
@@ -314,6 +315,55 @@ class TestQgsLayoutGuide(unittest.TestCase):
         guides.setVisible(True)
         self.assertTrue(g1.item().isVisible())
         self.assertTrue(g2.item().isVisible())
+
+    def testReadWriteXml(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults()
+        guides = l.guides()
+
+        # add some guides
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
+        guides.addGuide(g1)
+        g2 = QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(6, QgsUnitTypes.LayoutInches), l.pageCollection().page(0))
+        guides.addGuide(g2)
+
+        guides.setVisible(False)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        self.assertTrue(guides.writeXml(elem, doc, QgsReadWriteContext()))
+
+        l2 = QgsLayout(p)
+        l2.initializeDefaults()
+        guides2 = l2.guides()
+
+        self.assertTrue(guides2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        guide_list = guides2.guidesOnPage(0)
+        self.assertEqual(len(guide_list), 2)
+
+        self.assertEqual(guide_list[0].orientation(), QgsLayoutGuide.Horizontal)
+        self.assertEqual(guide_list[0].position().length(), 5.0)
+        self.assertEqual(guide_list[0].position().units(), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(guide_list[1].orientation(), QgsLayoutGuide.Vertical)
+        self.assertEqual(guide_list[1].position().length(), 6.0)
+        self.assertEqual(guide_list[1].position().units(), QgsUnitTypes.LayoutInches)
+
+    def testGuideLayoutPosition(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults()
+        guides = l.guides()
+
+        # add some guides
+        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(1, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
+        guides.addGuide(g1)
+
+        # set position in layout units (mm)
+        guides.setGuideLayoutPosition(g1, 50)
+
+        self.assertEqual(g1.position().length(), 5.0)
+        self.assertEqual(g1.position().units(), QgsUnitTypes.LayoutCentimeters)
 
 
 if __name__ == '__main__':

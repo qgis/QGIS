@@ -62,6 +62,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionUndo"/>
+   <addaction name="mActionRedo"/>
   </widget>
   <widget class="QToolBar" name="mToolsToolbar">
    <property name="windowTitle">
@@ -134,7 +136,15 @@
     <addaction name="mPanelsMenu"/>
     <addaction name="mActionToggleFullScreen"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="mActionUndo"/>
+    <addaction name="mActionRedo"/>
+   </widget>
    <addaction name="mLayoutMenu"/>
+   <addaction name="menuEdit"/>
    <addaction name="mMenuView"/>
    <addaction name="mItemMenu"/>
   </widget>
@@ -393,6 +403,37 @@
   <action name="mActionLayoutProperties">
    <property name="text">
     <string>Layout Properties…</string>
+   </property>
+  </action>
+  <action name="mActionUndo">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/mActionUndo.svg</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Revert last change</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="mActionRedo">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRedo.svg</normaloff>:/images/themes/default/mActionRedo.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Restore last change</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>

@@ -19,6 +19,7 @@
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutitemundocommand.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
@@ -40,6 +41,12 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
   mGrid.reset( new QgsLayoutItemPageGrid( pos().x(), pos().y(), rect().width(), rect().height(), mLayout ) );
   mGrid->setParentItem( this );
+}
+
+QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout, const QVariantMap &settings )
+{
+  Q_UNUSED( settings );
+  return new QgsLayoutItemPage( layout );
 }
 
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
@@ -117,6 +124,37 @@ void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size )
   mGrid->setRect( 0, 0, rect().width(), rect().height() );
 
   mLayout->guides().update();
+}
+
+///@cond PRIVATE
+class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
+{
+  public:
+
+    QgsLayoutItemPageUndoCommand( QgsLayoutItemPage *page, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsLayoutItemUndoCommand( page, text, id, parent )
+    {}
+
+    void restoreState( QDomDocument &stateDoc ) override
+    {
+      QgsLayoutItemUndoCommand::restoreState( stateDoc );
+      layout()->pageCollection()->reflow();
+    }
+
+  protected:
+
+    QgsLayoutItem *recreateItem( int, QgsLayout *layout ) override
+    {
+      QgsLayoutItemPage *page = new QgsLayoutItemPage( layout );
+      layout->pageCollection()->addPage( page );
+      return page;
+    }
+};
+///@endcond
+
+QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutItemPageUndoCommand( this, text, id, parent );
 }
 
 void QgsLayoutItemPage::redraw()
