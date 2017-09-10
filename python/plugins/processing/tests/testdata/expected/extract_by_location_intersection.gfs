@@ -12,5 +12,21 @@
       <ExtentYMin>-3.00000</ExtentYMin>
       <ExtentYMax>3.00000</ExtentYMax>
     </DatasetSpecificInfo>
+    <PropertyDefn>
+      <Name>name</Name>
+      <ElementPath>name</ElementPath>
+      <Type>String</Type>
+      <Width>5</Width>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>intval</Name>
+      <ElementPath>intval</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>floatval</Name>
+      <ElementPath>floatval</ElementPath>
+      <Type>Real</Type>
+    </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>

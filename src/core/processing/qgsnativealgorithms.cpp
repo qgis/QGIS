@@ -1493,6 +1493,7 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
 
     }
 
+    current += 1;
     feedback->setProgress( current * step );
   }
 
@@ -1594,7 +1595,7 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
     QgsFeature f = feature;
     sink->addFeature( f, QgsFeatureSink::FastInsert );
   };
-  process( input, intersectSource, selectedPredicates, addToSink, true, feedback );
+  process( input, intersectSource, selectedPredicates, addToSink, false, feedback );
 
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), dest );
