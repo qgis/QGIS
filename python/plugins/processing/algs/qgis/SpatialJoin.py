@@ -89,10 +89,16 @@ class SpatialJoin(QgisAlgorithm):
                                           self.tr('Target vector layer')))
         self.addParameter(ParameterVector(self.JOIN,
                                           self.tr('Join vector layer')))
-        self.addParameter(ParameterSelection(self.PREDICATE,
-                                             self.tr('Geometric predicate'),
-                                             self.predicates,
-                                             multiple=True))
+        self.addParameter(ParameterSelection(
+            self.PREDICATE,
+            self.tr('Geometric predicate'),
+            self.predicates,
+            multiple=True,
+            metadata={
+                'widget_wrapper': {
+                    'class': 'processing.gui.wrappers.SelectionWidgetWrapper',
+                    'useCheckBoxes': True,
+                    'columns': 2}}))
         self.addParameter(ParameterNumber(self.PRECISION,
                                           self.tr('Precision'),
                                           0.0, None, 0.0))
