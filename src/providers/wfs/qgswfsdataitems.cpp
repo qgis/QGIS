@@ -32,6 +32,9 @@
 #include <QCoreApplication>
 #include <QEventLoop>
 
+//
+// QgsWfsLayerItem
+//
 
 QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString )
   : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, QStringLiteral( "WFS" ) )
@@ -47,7 +50,9 @@ QgsWfsLayerItem::~QgsWfsLayerItem()
 {
 }
 
-////
+//
+// QgsWfsConnectionItem
+//
 
 QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
   : QgsDataCollectionItem( parent, name, path )
@@ -130,8 +135,9 @@ void QgsWfsConnectionItem::deleteConnection()
 #endif
 
 
-//////
-
+//
+// QgsWfsRootItem
+//
 
 QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
@@ -196,8 +202,9 @@ void QgsWfsRootItem::newConnection()
 #endif
 
 
-//////
-
+//
+// QgsWfsDataItemProvider
+//
 
 QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
@@ -273,7 +280,6 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
   return items;
 }
 
-// ---------------------------------------------------------------------------
 
 #ifdef HAVE_GUI
 QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
