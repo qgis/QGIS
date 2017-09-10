@@ -28,6 +28,7 @@
 #include <QString>
 #include <QTreeWidget>
 #include <QVector>
+#include <QDateTime>
 
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
@@ -482,6 +483,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
   private:
     QFileSystemWatcher *mFileSystemWatcher = nullptr;
     bool mRefreshLater;
+    QDateTime mLastScan;
 };
 
 /** \ingroup core
