@@ -48,7 +48,7 @@ email                : morb at ozemail dot com dot au
 
 struct QgsGeometryPrivate
 {
-  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ) {}
+  QgsGeometryPrivate(): ref( 1 ) {}
   ~QgsGeometryPrivate() { delete geometry; }
   QAtomicInt ref;
   QgsAbstractGeometry *geometry = nullptr;

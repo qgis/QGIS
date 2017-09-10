@@ -24,7 +24,7 @@
 
 QgsRatioLockButton::QgsRatioLockButton( QWidget *parent )
   : QToolButton( parent )
-  , mLocked( false )
+
 
 {
   setMinimumSize( QSize( 24, 24 ) );

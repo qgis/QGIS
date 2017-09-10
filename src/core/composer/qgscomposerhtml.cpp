@@ -40,17 +40,12 @@
 QgsComposerHtml::QgsComposerHtml( QgsComposition *c, bool createUndoCommands )
   : QgsComposerMultiFrame( c, createUndoCommands )
   , mContentMode( QgsComposerHtml::Url )
-  , mWebPage( nullptr )
   , mLoaded( false )
   , mHtmlUnitsToMM( 1.0 )
-  , mRenderedPage( nullptr )
   , mEvaluateExpressions( true )
   , mUseSmartBreaks( true )
   , mMaxBreakDistance( 10 )
-  , mExpressionLayer( nullptr )
-  , mDistanceArea( nullptr )
   , mEnableUserStylesheet( false )
-  , mFetcher( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();

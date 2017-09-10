@@ -41,8 +41,6 @@
 
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition *composition )
   : QgsComposerItem( composition )
-  , mComposerMap( nullptr )
-  , mStyle( nullptr )
   , mSegmentMillimeters( 0.0 )
 {
   applyDefaultSettings();

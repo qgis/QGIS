@@ -38,10 +38,6 @@
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QTableView( parent )
-  , mFilterModel( nullptr )
-  , mFeatureSelectionModel( nullptr )
-  , mFeatureSelectionManager( nullptr )
-  , mActionPopup( nullptr )
   , mRowSectionAnchor( 0 )
   , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {

@@ -33,7 +33,7 @@
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
   : QFrame( parent )
-  , mCurrentItem( nullptr )
+
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );

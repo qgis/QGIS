@@ -31,8 +31,6 @@ QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas )
   , mStartRotation( 0.0 )
   , mCurrentRotation( 0.0 )
   , mCurrentMouseAzimuth( 0.0 )
-  , mRotationItem( nullptr )
-  , mRotationPreviewBox( nullptr )
   , mCtrlPressed( false )
 {
 }

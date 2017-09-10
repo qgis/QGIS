@@ -55,7 +55,6 @@ int QgsGmlFeatureClass::fieldIndex( const QString &name )
 // --------------------------- QgsGmlSchema -------------------------------
 QgsGmlSchema::QgsGmlSchema()
   : QObject()
-  , mCurrentFeature( nullptr )
   , mFeatureCount( 0 )
   , mLevel( 0 )
   , mSkipLevel( std::numeric_limits<int>::max() )

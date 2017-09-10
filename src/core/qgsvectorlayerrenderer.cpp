@@ -45,11 +45,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mInterruptionChecker( context )
   , mLayer( layer )
   , mFields( layer->fields() )
-  , mRenderer( nullptr )
   , mLabeling( false )
   , mDiagrams( false )
-  , mLabelProvider( nullptr )
-  , mDiagramProvider( nullptr )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 

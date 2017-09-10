@@ -26,8 +26,7 @@
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
-  , mMessageBar( nullptr )
-  , mMapCanvas( nullptr )
+
 {
   setupUi( this );
 

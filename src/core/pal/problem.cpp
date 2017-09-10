@@ -61,15 +61,8 @@ Problem::Problem()
   , all_nblp( 0 )
   , nbft( 0 )
   , displayAll( false )
-  , labelPositionCost( nullptr )
-  , nbOlap( nullptr )
-  , featStartId( nullptr )
-  , featNbLp( nullptr )
-  , inactiveCost( nullptr )
-  , sol( nullptr )
   , nbActive( 0 )
   , nbOverlap( 0.0 )
-  , pal( nullptr )
 {
   bbox[0] = 0;
   bbox[1] = 0;

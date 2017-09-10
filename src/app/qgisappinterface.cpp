@@ -51,7 +51,6 @@
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
-  , mTimer( nullptr )
   , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals

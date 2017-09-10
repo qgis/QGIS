@@ -56,7 +56,7 @@
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mService( service )
-  , mCurrentTileset( nullptr )
+
 {
   setupUi( this );
   setupButtons( buttonBox );

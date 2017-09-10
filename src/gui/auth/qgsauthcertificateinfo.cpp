@@ -59,16 +59,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
   , mTrustCacheRebuilt( false )
   , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
   , mCurrentTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-  , mSecGeneral( nullptr )
-  , mSecDetails( nullptr )
-  , mSecPemText( nullptr )
-  , mGrpSubj( nullptr )
-  , mGrpIssu( nullptr )
-  , mGrpCert( nullptr )
-  , mGrpPkey( nullptr )
-  , mGrpExts( nullptr )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -917,7 +908,7 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
     QWidget *parent,
     const QList<QSslCertificate> &connectionCAs )
   : QDialog( parent )
-  , mCertInfoWdgt( nullptr )
+
 {
   setWindowTitle( tr( "Certificate Information" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

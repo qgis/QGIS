@@ -66,8 +66,7 @@ QgsRasterFileWriter::QgsRasterFileWriter( const QString &outputUrl )
   , mMaxTileHeight( 500 )
   , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
   , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-  , mPipe( nullptr )
-  , mInput( nullptr )
+
 {
 
 }
@@ -81,8 +80,7 @@ QgsRasterFileWriter::QgsRasterFileWriter()
   , mMaxTileHeight( 500 )
   , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
   , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-  , mPipe( nullptr )
-  , mInput( nullptr )
+
 {
 
 }

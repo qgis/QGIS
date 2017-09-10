@@ -76,11 +76,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   , mDefaultGreenBand( 0 )
   , mDefaultBlueBand( 0 )
   , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
-  , mRendererWidget( nullptr )
   , mGradientHeight( 0.0 )
   , mGradientWidth( 0.0 )
   , mMapCanvas( canvas )
-  , mHistogramWidget( nullptr )
   , mMetadataFilled( false )
 {
   mGrayMinimumMaximumEstimated = true;

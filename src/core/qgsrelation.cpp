@@ -22,9 +22,7 @@
 #include "qgsvectorlayer.h"
 
 QgsRelation::QgsRelation()
-  : mReferencingLayer( nullptr )
-  , mReferencedLayer( nullptr )
-  , mValid( false )
+  : mValid( false )
 {
 }
 

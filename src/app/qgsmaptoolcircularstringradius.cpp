@@ -30,7 +30,7 @@ QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCaptur
   : QgsMapToolAddCircularString( parentTool, canvas, mode )
   , mTemporaryEndPoint( QgsPoint() )
   , mRadius( 0.0 )
-  , mRadiusSpinBox( nullptr )
+
 {
 
 }

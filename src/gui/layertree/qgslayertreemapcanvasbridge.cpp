@@ -27,7 +27,6 @@ QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, Qg
   : QObject( parent )
   , mRoot( root )
   , mCanvas( canvas )
-  , mOverviewCanvas( nullptr )
   , mPendingCanvasUpdate( false )
   , mAutoSetupOnFirstLayer( true )
   , mLastLayerCount( !root->findLayers().isEmpty() )

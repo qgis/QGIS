@@ -18,7 +18,7 @@
 
 QgsComposerItemComboBox::QgsComposerItemComboBox( QWidget *parent, QgsComposition *composition )
   : QComboBox( parent )
-  , mProxyModel( nullptr )
+
 {
   setComposition( composition );
 

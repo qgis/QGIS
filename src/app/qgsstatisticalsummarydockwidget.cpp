@@ -73,7 +73,7 @@ QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() 
 
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
-  , mLayer( nullptr )
+
 {
   setupUi( this );
 

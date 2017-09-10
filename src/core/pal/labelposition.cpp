@@ -49,7 +49,6 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   , alpha( alpha )
   , w( w )
   , h( h )
-  , nextPart( nullptr )
   , partId( -1 )
   , reversed( isReversed )
   , upsideDown( false )

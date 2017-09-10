@@ -95,7 +95,6 @@ class QgsFeatureIteratorDataStream : public IDataStream
     //! constructor - needs to load all data to a vector for later access when bulk loading
     explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
       : mFi( fi )
-      , mNextData( nullptr )
       , mFeedback( feedback )
     {
       readNextEntry();

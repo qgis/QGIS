@@ -2845,23 +2845,19 @@ QgsAuthManager::QgsAuthManager()
   : QObject()
   , mAuthInit( false )
   , mAuthDbPath( QString() )
-  , mQcaInitializer( nullptr )
   , mMasterPass( QString() )
   , mPassTries( 0 )
   , mAuthDisabled( false )
-  , mScheduledDbEraseTimer( nullptr )
   , mScheduledDbErase( false )
   , mScheduledDbEraseRequestWait( 3 )
   , mScheduledDbEraseRequestEmitted( false )
   , mScheduledDbEraseRequestCount( 0 )
-  , mMutex( nullptr )
   , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
   , mPasswordHelperVerificationError( false )
   , mPasswordHelperErrorMessage( "" )
   , mPasswordHelperErrorCode( QKeychain::NoError )
   , mPasswordHelperLoggingEnabled( false )
   , mPasswordHelperFailedInit( false )
-
 {
   mMutex = new QMutex( QMutex::Recursive );
   connect( this, &QgsAuthManager::messageOut,

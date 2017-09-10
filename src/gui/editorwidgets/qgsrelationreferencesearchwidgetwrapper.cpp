@@ -27,8 +27,6 @@
 
 QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mWidget( nullptr )
-  , mLayer( nullptr )
   , mCanvas( canvas )
 {
 

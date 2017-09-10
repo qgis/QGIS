@@ -81,13 +81,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mLayer( lyr )
   , mMetadataFilled( false )
   , mOriginalSubsetSQL( lyr->subsetString() )
-  , mSaveAsMenu( nullptr )
-  , mLoadStyleMenu( nullptr )
-  , mRendererDialog( nullptr )
-  , labelingDialog( nullptr )
-  , mActionDialog( nullptr )
-  , diagramPropertiesDialog( nullptr )
-  , mFieldsPropertiesDialog( nullptr )
+
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );

@@ -35,11 +35,6 @@
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
-  , mModel( nullptr )
-  , mCurrentEditSelectionModel( nullptr )
-  , mFeatureSelectionModel( nullptr )
-  , mFeatureSelectionManager( nullptr )
-  , mItemDelegate( nullptr )
   , mEditSelectionDrag( false )
   , mRowAnchor( 0 )
 {

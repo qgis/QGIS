@@ -23,12 +23,6 @@
 QgsOSMXmlImport::QgsOSMXmlImport( const QString &xmlFilename, const QString &dbFilename )
   : mXmlFileName( xmlFilename )
   , mDbFileName( dbFilename )
-  , mDatabase( nullptr )
-  , mStmtInsertNode( nullptr )
-  , mStmtInsertNodeTag( nullptr )
-  , mStmtInsertWay( nullptr )
-  , mStmtInsertWayNode( nullptr )
-  , mStmtInsertWayTag( nullptr )
 {
 
 }

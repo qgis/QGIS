@@ -55,7 +55,7 @@
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent )
   : QgsMapLayerConfigWidget( lyr, nullptr, parent )
   , mRasterLayer( lyr )
-  , mRendererWidget( nullptr )
+
 {
   setupUi( this );
 

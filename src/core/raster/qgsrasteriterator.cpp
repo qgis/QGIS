@@ -20,7 +20,6 @@
 
 QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input )
   : mInput( input )
-  , mFeedback( nullptr )
   , mMaximumTileWidth( DEFAULT_MAXIMUM_TILE_WIDTH )
   , mMaximumTileHeight( DEFAULT_MAXIMUM_TILE_HEIGHT )
 {

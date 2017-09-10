@@ -29,9 +29,6 @@ email                : even.rouault at spatialys.com
 
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mTableSelectedCallback( nullptr )
-  , mSQLValidatorCallback( nullptr )
-  , mFocusedObject( nullptr )
   , mAlreadyModifyingFields( false )
   , mDistinct( false )
 {

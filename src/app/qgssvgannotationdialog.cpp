@@ -29,7 +29,7 @@
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mItem( item )
-  , mEmbeddedWidget( nullptr )
+
 {
   setupUi( this );
   setWindowTitle( tr( "SVG annotation" ) );
@@ -51,8 +51,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog()
   : QDialog()
-  , mItem( nullptr )
-  , mEmbeddedWidget( nullptr )
+
 {
 
 }

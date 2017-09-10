@@ -136,26 +136,17 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 bool loadDefaultStyleFlag,
                                 bool readExtentFromXml )
   : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
-  , mDataProvider( nullptr )
   , mProviderKey( providerKey )
   , mReadOnly( false )
   , mWkbType( QgsWkbTypes::Unknown )
-  , mRenderer( nullptr )
-  , mLabeling( nullptr )
   , mLabelFontNotFoundNotified( false )
   , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
   , mVertexMarkerOnlyForSelection( false )
-  , mEditBuffer( nullptr )
-  , mJoinBuffer( nullptr )
-  , mExpressionFieldBuffer( nullptr )
-  , mDiagramRenderer( nullptr )
-  , mDiagramLayerSettings( nullptr )
   , mValidExtent( false )
   , mLazyExtent( true )
   , mSymbolFeatureCounted( false )
   , mEditCommandActive( false )
   , mReadExtentFromXml( readExtentFromXml )
-
 {
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();

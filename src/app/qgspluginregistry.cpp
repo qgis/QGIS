@@ -55,8 +55,7 @@ QgsPluginRegistry *QgsPluginRegistry::instance()
 }
 
 QgsPluginRegistry::QgsPluginRegistry()
-  : mPythonUtils( nullptr )
-  , mQgisInterface( nullptr )
+
 {
 // constructor does nothing
 }

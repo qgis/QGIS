@@ -100,7 +100,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   , mEnabledCapabilities( 0 )
   , mConnectionRO( nullptr )
   , mConnectionRW( nullptr )
-  , mTransaction( nullptr )
+
 {
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );

@@ -27,7 +27,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-QgsCurvePolygon::QgsCurvePolygon(): QgsSurface(), mExteriorRing( nullptr )
+QgsCurvePolygon::QgsCurvePolygon(): QgsSurface()
 {
   mWkbType = QgsWkbTypes::CurvePolygon;
 }
@@ -39,7 +39,7 @@ QgsCurvePolygon::~QgsCurvePolygon()
 
 QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   : QgsSurface( p )
-  , mExteriorRing( nullptr )
+
 {
   mWkbType = p.mWkbType;
   if ( p.mExteriorRing )

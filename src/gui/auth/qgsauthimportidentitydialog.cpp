@@ -55,8 +55,7 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
   , mIdentityType( CertIdentity )
   , mPkiBundle( QgsPkiBundle() )
   , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

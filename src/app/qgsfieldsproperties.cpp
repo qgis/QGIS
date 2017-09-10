@@ -45,9 +45,7 @@
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
-  , mDesignerTree( nullptr )
-  , mFieldsList( nullptr )
-  , mRelationsList( nullptr )
+
 {
   if ( !layer )
     return;
@@ -1084,12 +1082,12 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
   , mLabelOnTop( false )
   , mConstraints( 0 )
   , mConstraintDescription( QString() )
-  , mButton( nullptr )
+
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
-  : mButton( nullptr )
+
 {
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin

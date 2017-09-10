@@ -312,9 +312,7 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 
 QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
-  , mActionPopup( nullptr )
   , mCanvas( canvas )
-  , mDock( nullptr )
 {
   setupUi( this );
 

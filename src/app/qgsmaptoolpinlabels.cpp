@@ -32,7 +32,7 @@ QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas )
   : QgsMapToolLabel( canvas )
   , mDragging( false )
   , mShowPinned( false )
-  , mRubberBand( nullptr )
+
 {
   mToolName = tr( "Pin labels" );
 

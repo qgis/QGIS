@@ -272,13 +272,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
   : QDialog( parent, f )
   , mComposerTable( table )
   , mVectorLayer( vLayer )
-  , mColumnModel( nullptr )
-  , mSortedProxyModel( nullptr )
-  , mAvailableSortProxyModel( nullptr )
-  , mColumnAlignmentDelegate( nullptr )
-  , mColumnSourceDelegate( nullptr )
-  , mColumnSortOrderDelegate( nullptr )
-  , mColumnWidthDelegate( nullptr )
+
 {
   setupUi( this );
 

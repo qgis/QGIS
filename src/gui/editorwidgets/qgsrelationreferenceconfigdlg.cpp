@@ -24,7 +24,7 @@
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
-  , mReferencedLayer( nullptr )
+
 {
   setupUi( this );
 

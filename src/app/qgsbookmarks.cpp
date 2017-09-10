@@ -34,8 +34,7 @@
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
   : QgsDockWidget( parent )
-  , mQgisModel( nullptr )
-  , mProjectModel( nullptr )
+
 {
   setupUi( this );
   restorePosition();

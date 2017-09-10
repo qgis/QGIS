@@ -41,16 +41,8 @@
 
 QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   : QWidget( parent )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
-  , mRootCaSecItem( nullptr )
-  , mFileCaSecItem( nullptr )
-  , mDbCaSecItem( nullptr )
   , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-  , mUtilitiesMenu( nullptr )
   , mDisabled( false )
-  , mActionDefaultTrustPolicy( nullptr )
-  , mActionShowTrustedCAs( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

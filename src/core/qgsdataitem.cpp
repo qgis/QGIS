@@ -663,7 +663,6 @@ QgsDataCollectionItem::~QgsDataCollectionItem()
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
   , mDirPath( path )
-  , mFileSystemWatcher( nullptr )
   , mRefreshLater( false )
 {
   mType = Directory;
@@ -673,7 +672,6 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, co
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
   , mDirPath( dirPath )
-  , mFileSystemWatcher( nullptr )
   , mRefreshLater( false )
 {
   mType = Directory;

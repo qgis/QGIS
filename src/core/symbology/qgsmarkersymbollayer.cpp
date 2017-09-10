@@ -2456,8 +2456,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
 //////////
 
 QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, QChar chr, double pointSize, const QColor &color, double angle )
-  : mFontMetrics( nullptr )
-  , mChrWidth( 0 )
+  : mChrWidth( 0 )
 {
   mFontFamily = fontFamily;
   mChr = chr;

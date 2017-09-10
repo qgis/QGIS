@@ -82,9 +82,8 @@ void QgsAttributeTableDialog::updateMultiEditButtonState()
 
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
-  , mDock( nullptr )
   , mLayer( layer )
-  , mCurrentSearchWidgetWrapper( nullptr )
+
 {
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
   setupUi( this );

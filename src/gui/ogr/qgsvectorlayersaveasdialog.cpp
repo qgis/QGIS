@@ -37,7 +37,6 @@ static const int COLUMN_IDX_EXPORT_AS_DISPLAYED_VALUE = 2;
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mCRS( srsid )
-  , mLayer( 0 )
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )

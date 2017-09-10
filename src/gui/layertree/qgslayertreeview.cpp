@@ -29,8 +29,7 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QTreeView( parent )
-  , mDefaultActions( nullptr )
-  , mMenuProvider( nullptr )
+
 {
   setHeaderHidden( true );
 

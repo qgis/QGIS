@@ -42,15 +42,7 @@
 QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
   , mEditorContext()
-  , mMasterModel( nullptr )
-  , mFilterModel( nullptr )
-  , mFeatureListModel( nullptr )
-  , mAttributeForm( nullptr )
-  , mHorizontalHeaderMenu( nullptr )
-  , mLayerCache( nullptr )
-  , mProgressDlg( nullptr )
-  , mFeatureSelectionManager( nullptr )
-  , mAttributeEditorScrollArea( nullptr )
+
 {
   setupUi( this );
 

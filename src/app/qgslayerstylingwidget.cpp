@@ -52,9 +52,6 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
   , mLayerPage( 1 )
   , mMapCanvas( canvas )
   , mBlockAutoApply( false )
-  , mCurrentLayer( nullptr )
-  , mLabelingWidget( nullptr )
-  , mRasterStyleWidget( nullptr )
   , mPageFactories( pages )
 {
   setupUi( this );

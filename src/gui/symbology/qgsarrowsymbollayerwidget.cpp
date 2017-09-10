@@ -19,7 +19,7 @@
 
 QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
-  , mLayer( nullptr )
+
 {
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );

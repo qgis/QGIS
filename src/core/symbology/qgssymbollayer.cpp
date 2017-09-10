@@ -172,7 +172,7 @@ QgsSymbolLayer::QgsSymbolLayer( QgsSymbol::SymbolType type, bool locked )
   , mEnabled( true )
   , mLocked( locked )
   , mRenderingPass( 0 )
-  , mPaintEffect( nullptr )
+
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );

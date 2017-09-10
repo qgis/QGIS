@@ -133,8 +133,6 @@ class GEOSGeomScopedPtr
 
 QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision )
   : QgsGeometryEngine( geometry )
-  , mGeos( nullptr )
-  , mGeosPrepared( nullptr )
   , mPrecision( precision )
 {
   cacheGeos();

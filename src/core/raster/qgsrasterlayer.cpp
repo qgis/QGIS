@@ -98,7 +98,7 @@ QgsRasterLayer::QgsRasterLayer()
   : QgsMapLayer( RasterLayer )
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
-  , mDataProvider( nullptr )
+
 {
   init();
   mValid = false;
@@ -112,7 +112,6 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
-  , mDataProvider( nullptr )
   , mProviderKey( providerKey )
 {
   QgsDebugMsgLevel( "Entered", 4 );

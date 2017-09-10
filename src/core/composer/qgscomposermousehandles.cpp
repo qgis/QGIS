@@ -42,8 +42,7 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
   , mResizeMoveY( 0 )
   , mIsDragging( false )
   , mIsResizing( false )
-  , mHAlignSnapItem( nullptr )
-  , mVAlignSnapItem( nullptr )
+
 {
   //listen for selection changes, and update handles accordingly
   connect( mComposition, &QGraphicsScene::selectionChanged, this, &QgsComposerMouseHandles::selectionChanged );

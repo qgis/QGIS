@@ -29,8 +29,6 @@ const int QgsComposerRuler::VALID_SCALE_MAGNITUDES[] = {1, 10, 100, 1000, 10000}
 QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
   : QWidget( nullptr )
   , mDirection( d )
-  , mComposition( nullptr )
-  , mLineSnapItem( nullptr )
   , mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );

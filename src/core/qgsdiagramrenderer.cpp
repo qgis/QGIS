@@ -396,8 +396,7 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
 }
 
 QgsDiagramRenderer::QgsDiagramRenderer()
-  : mDiagram( nullptr )
-  , mShowAttributeLegend( true )
+  : mShowAttributeLegend( true )
 {
 }
 

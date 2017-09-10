@@ -51,7 +51,7 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   , mFontColor( QColor( 0, 0, 0 ) )
   , mHAlignment( Qt::AlignJustify )
   , mVAlignment( Qt::AlignTop )
-  , mDistanceArea( nullptr )
+
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();

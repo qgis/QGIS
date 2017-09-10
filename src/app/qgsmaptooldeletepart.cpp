@@ -29,8 +29,6 @@
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , vlayer( nullptr )
-  , mRubberBand( nullptr )
   , mPressedFid( 0 )
   , mPressedPartNum( 0 )
 {

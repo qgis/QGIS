@@ -369,9 +369,6 @@ QgsColorWheel::QgsColorWheel( QWidget *parent )
   , mMargin( 4 )
   , mWheelThickness( 18 )
   , mClickedPart( QgsColorWheel::None )
-  , mWheelImage( nullptr )
-  , mTriangleImage( nullptr )
-  , mWidgetImage( nullptr )
   , mWheelDirty( true )
   , mTriangleDirty( true )
 {
@@ -742,7 +739,6 @@ void QgsColorWheel::createTriangle()
 QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
   : QgsColorWidget( parent, component )
   , mMargin( 2 )
-  , mBoxImage( nullptr )
   , mDirty( true )
 {
   setFocusPolicy( Qt::StrongFocus );
@@ -1271,8 +1267,7 @@ void QgsColorRampWidget::setColorFromPoint( QPointF point )
 
 QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponent component )
   : QgsColorWidget( parent, component )
-  , mRampWidget( nullptr )
-  , mSpinBox( nullptr )
+
 {
   QHBoxLayout *hLayout = new QHBoxLayout();
   hLayout->setMargin( 0 );
@@ -1400,8 +1395,6 @@ int QgsColorSliderWidget::convertDisplayToReal( const int displayValue ) const
 
 QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   : QgsColorWidget( parent )
-  , mLineEdit( nullptr )
-  , mMenuButton( nullptr )
   , mFormat( QgsColorTextWidget::HexRgb )
 {
   QHBoxLayout *hLayout = new QHBoxLayout();

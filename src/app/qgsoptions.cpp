@@ -79,7 +79,7 @@
  */
 QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOptionsWidgetFactory *> &optionsFactories )
   : QgsOptionsDialogBase( QStringLiteral( "Options" ), parent, fl )
-  , mSettings( nullptr )
+
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );

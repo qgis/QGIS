@@ -636,9 +636,7 @@ QgsCustomization *QgsCustomization::instance()
 }
 
 QgsCustomization::QgsCustomization()
-  : pDialog( nullptr )
-  , mEnabled( false )
-  , mSettings( nullptr )
+  : mEnabled( false )
   , mStatusPath( QStringLiteral( "/Customization/status" ) )
 {
 

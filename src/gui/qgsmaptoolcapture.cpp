@@ -41,10 +41,6 @@
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
   , mCaptureMode( mode )
-  , mRubberBand( nullptr )
-  , mTempRubberBand( nullptr )
-  , mValidator( nullptr )
-  , mSnappingMarker( nullptr )
 #ifdef Q_OS_WIN
   , mSkipNextContextMenuEvent( 0 )
 #endif

@@ -62,7 +62,6 @@
 
 QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
-  , mNmea( nullptr )
   , mpCanvas( thepCanvas )
 {
   setupUi( this );

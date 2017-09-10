@@ -23,7 +23,6 @@
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
   : QWidget( parent )
-  , mLayer( nullptr )
   , mEditIndex( 0 )
   , mEditing( false )
 {

@@ -232,7 +232,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsVectorLayer *mLayer = nullptr;
 
     QgsSymbolSelectorWidget *mSymbolSelector = nullptr;
-    QgsSymbol *mSymbol; // a clone of original symbol
+    QgsSymbol *mSymbol = nullptr; // a clone of original symbol
 
     QgsSymbolWidgetContext mContext;
 };

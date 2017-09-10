@@ -27,10 +27,7 @@
 
 QgsValueRelationSearchWidgetWrapper::QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mComboBox( nullptr )
-  , mListWidget( nullptr )
-  , mLineEdit( nullptr )
-  , mLayer( nullptr )
+
 {
 }
 

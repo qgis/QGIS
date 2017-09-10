@@ -2407,7 +2407,7 @@ void QgsSVGFillSymbolLayerWidget::on_mSvgStrokeWidthUnitWidget_changed()
 /////////////
 
 QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ):
-  QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
+  QgsSymbolLayerWidget( parent, vl )
 {
   setupUi( this );
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -2509,7 +2509,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetUnitWidget_changed()
 /////////////
 
 QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ):
-  QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
+  QgsSymbolLayerWidget( parent, vl )
 {
   setupUi( this );
   mHorizontalDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -3202,7 +3202,7 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 
 QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
-  , mLayer( nullptr )
+
 {
   setupUi( this );
   modificationExpressionSelector->setMultiLine( true );

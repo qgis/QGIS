@@ -31,9 +31,7 @@
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   : QWidget( parent )
   , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
-  , mRootSslConfigItem( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

@@ -40,7 +40,7 @@ QgsComposerArrow::QgsComposerArrow( QgsComposition *c )
   , mArrowHeadStrokeColor( Qt::black )
   , mArrowHeadFillColor( Qt::black )
   , mBoundsBehavior( 24 )
-  , mLineSymbol( nullptr )
+
 {
   init();
 }
@@ -54,7 +54,7 @@ QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsCo
   , mArrowHeadStrokeColor( Qt::black )
   , mArrowHeadFillColor( Qt::black )
   , mBoundsBehavior( 24 )
-  , mLineSymbol( nullptr )
+
 {
   mStartXIdx = mStopPoint.x() < mStartPoint.x();
   mStartYIdx = mStopPoint.y() < mStartPoint.y();

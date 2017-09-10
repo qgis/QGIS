@@ -41,7 +41,6 @@
 
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mMinMaxWidget( nullptr )
   , mDisableMinMaxWidgetRefresh( false )
   , mMinMaxOrigin( 0 )
 {

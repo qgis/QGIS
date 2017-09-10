@@ -271,7 +271,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool mBuildSpatialIndex;
     mutable bool mUseSpatialIndex;
     mutable bool mCachedUseSpatialIndex;
-    mutable QgsSpatialIndex *mSpatialIndex;
+    mutable QgsSpatialIndex *mSpatialIndex = nullptr;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;

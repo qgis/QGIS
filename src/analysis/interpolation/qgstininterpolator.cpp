@@ -31,8 +31,6 @@
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation, QgsFeedback *feedback )
   : QgsInterpolator( inputData )
-  , mTriangulation( nullptr )
-  , mTriangleInterpolator( nullptr )
   , mIsInitialized( false )
   , mFeedback( feedback )
   , mInterpolation( interpolation )

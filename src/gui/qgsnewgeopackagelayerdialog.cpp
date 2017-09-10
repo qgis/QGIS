@@ -44,7 +44,6 @@
 
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mOkButton( nullptr )
   , mTableNameEdited( false )
   , mLayerIdentifierEdited( false )
 {

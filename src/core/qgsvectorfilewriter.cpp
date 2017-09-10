@@ -82,15 +82,10 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QString *newFilename,
   SymbologyExport symbologyExport
 )
-  : mDS( nullptr )
-  , mLayer( nullptr )
-  , mOgrRef( nullptr )
-  , mError( NoError )
-  , mCodec( nullptr )
+  : mError( NoError )
   , mWkbType( geometryType )
   , mSymbologyExport( symbologyExport )
   , mSymbologyScale( 1.0 )
-  , mFieldValueConverter( nullptr )
 {
   init( vectorFileName, fileEncoding, fields,  geometryType,
         srs, driverName, datasourceOptions, layerOptions, newFilename, nullptr,
@@ -110,15 +105,10 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
     FieldValueConverter *fieldValueConverter,
     const QString &layerName,
     ActionOnExistingFile action )
-  : mDS( nullptr )
-  , mLayer( nullptr )
-  , mOgrRef( nullptr )
-  , mError( NoError )
-  , mCodec( nullptr )
+  : mError( NoError )
   , mWkbType( geometryType )
   , mSymbologyExport( symbologyExport )
   , mSymbologyScale( 1.0 )
-  , mFieldValueConverter( nullptr )
 {
   init( vectorFileName, fileEncoding, fields, geometryType, srs, driverName,
         datasourceOptions, layerOptions, newFilename, fieldValueConverter,
@@ -2335,7 +2325,7 @@ QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
   , overrideGeometryType( QgsWkbTypes::Unknown )
   , forceMulti( false )
   , includeZ( false )
-  , fieldValueConverter( nullptr )
+
 {
 }
 

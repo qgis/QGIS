@@ -27,9 +27,6 @@ QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
   , mCanvas( canvas )
   , mCursor( Qt::CrossCursor )
-  , mAction( nullptr )
-  , mButton( nullptr )
-  , mToolName( QString() )
 {
 }
 

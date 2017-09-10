@@ -33,9 +33,7 @@
 QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
   : QWidget( parent )
   , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
-  , mRootCertIdentItem( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

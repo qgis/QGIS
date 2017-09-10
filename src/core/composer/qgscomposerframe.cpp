@@ -38,7 +38,6 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf
 
 QgsComposerFrame::QgsComposerFrame()
   : QgsComposerItem( 0, 0, 0, 0, nullptr )
-  , mMultiFrame( nullptr )
   , mHidePageIfEmpty( false )
   , mHideBackgroundIfEmpty( false )
 {

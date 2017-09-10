@@ -27,7 +27,7 @@
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mItem( item )
-  , mEmbeddedWidget( nullptr )
+
 {
   setupUi( this );
   setWindowTitle( tr( "HTML Annotation" ) );

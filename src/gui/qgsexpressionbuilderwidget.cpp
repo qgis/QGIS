@@ -42,8 +42,6 @@
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
   , mAutoSave( true )
-  , mLayer( nullptr )
-  , highlighter( nullptr )
   , mExpressionValid( false )
   , mProject( QgsProject::instance() )
 {

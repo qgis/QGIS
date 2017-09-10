@@ -25,7 +25,7 @@ QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFram
 {
 }
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( QLatin1String( "" ), nullptr ), mMultiFrame( nullptr ), mFirstRun( false )
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( QLatin1String( "" ), nullptr ),  mFirstRun( false )
 {
 }
 

@@ -33,7 +33,7 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
     const QgsVectorLayer *layer )
   : QToolButton( parent )
   , mVectorLayer( layer )
-  , mExpressionContextGenerator( nullptr )
+
 {
   setFocusPolicy( Qt::StrongFocus );
 

@@ -68,7 +68,7 @@ QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDen
   , mDescription( description )
   , mElseRule( elseRule )
   , mIsActive( true )
-  , mFilter( nullptr )
+
 {
   mRuleKey = QUuid::createUuid().toString();
   initFilter();

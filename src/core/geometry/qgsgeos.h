@@ -261,7 +261,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
 
   private:
-    mutable GEOSGeometry *mGeos;
+    mutable GEOSGeometry *mGeos = nullptr;
     const GEOSPreparedGeometry *mGeosPrepared = nullptr;
     double mPrecision;
 
