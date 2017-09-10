@@ -658,12 +658,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double centerY = 0;
   circleCenterRadius( circlePoint1, circlePoint2, circlePoint3, radius, centerX, centerY );
 
-  QgsDebugMsg( QString( "Center: POINT(%1 %2) - Radius: %3 - Reversed: %4" )
-               .arg( centerX ) .arg( centerY ) .arg( radius ) .arg( reversed ) );
-
   if ( circlePoint1 != circlePoint3 && ( radius < 0 || qgsDoubleNear( segSide, 0.0 ) ) ) //points are colinear
   {
-    QgsDebugMsg( QString( "Collinear curve" ) );
     points.append( p1 );
     points.append( p2 );
     points.append( p3 );
@@ -676,17 +672,11 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     double halfAngle = std::acos( -tolerance / radius + 1 );
     increment = 2 * halfAngle;
   }
-  QgsDebugMsg( QString( "Increment: %1" ).arg( increment ) );
 
   //angles of pt1, pt2, pt3
   double a1 = std::atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
   double a2 = std::atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
   double a3 = std::atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
-
-  QgsDebugMsg( QString( "a1:%1 (%4) a2:%2 (%5) a3:%3 (%6)" )
-               .arg( a1 ).arg( a2 ).arg( a3 )
-               .arg( a1 * 180 / M_PI ).arg( a2 * 180 / M_PI ).arg( a3 * 180 / M_PI )
-             );
 
   // Make segmentation symmetric
   const bool symmetric = true;
@@ -694,16 +684,11 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   {
     double angle = a3 - a1;
     if ( angle < 0 ) angle += M_PI * 2;
-    QgsDebugMsg( QString( "total angle: %1 (%2)" )
-                 .arg( angle ) .arg( angle * 180 / M_PI )
-               );
 
     /* Number of segments in output */
     int segs = ceil( angle / increment );
     /* Tweak increment to be regular for all the arc */
     increment = angle / segs;
-
-    QgsDebugMsg( QString( "symmetric adjusted increment:%1" ) .arg( increment ) );
   }
 
   /* Adjust a3 up so we can increment from a1 to a3 cleanly */
@@ -711,11 +696,6 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     a3 += 2.0 * M_PI;
   if ( a2 < a1 )
     a2 += 2.0 * M_PI;
-
-  QgsDebugMsg( QString( "ADJUSTED - a1:%1 (%4) a2:%2 (%5) a3:%3 (%6)" )
-               .arg( a1 ).arg( a2 ).arg( a3 )
-               .arg( a1 * 180 / M_PI ).arg( a2 * 180 / M_PI ).arg( a3 * 180 / M_PI )
-             );
 
   double x, y;
   double z = 0;
@@ -731,12 +711,6 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     if ( hasM )
       pointWkbType = QgsWkbTypes::addM( pointWkbType );
 
-    QgsDebugMsg( QString( "a1:%1 (%2), a3:%3 (%4), inc:%5" )
-                 . arg( a1 ).  arg( a1 * 180 / M_PI )
-                 . arg( a3 ).  arg( a3 * 180 / M_PI )
-                 . arg( increment )
-               );
-
     // As we're adding the last point in any case, we'll avoid
     // including a point which is at less than 1% increment distance
     // from it (may happen to find them due to numbers approximation).
@@ -745,11 +719,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     //      from requested MaxAngle and less for MaxError.
     double tolError = increment / 100;
     double stopAngle = a3 - tolError;
-    QgsDebugMsg( QString( "stopAngle: %1 (%2)" ) . arg( stopAngle ) .arg( stopAngle * 180 / M_PI ) );
     for ( double angle = a1 + increment; angle < stopAngle; angle += increment )
     {
-      QgsDebugMsg( QString( "SA - %1 (%2)" ) . arg( angle ) .arg( angle * 180 / M_PI ) );
-
       x = centerX + radius * std::cos( angle );
       y = centerY + radius * std::sin( angle );
 
@@ -762,11 +733,9 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
         m = interpolateArcValue( angle, a1, a2, a3, circlePoint1.m(), circlePoint2.m(), circlePoint3.m() );
       }
 
-      QgsDebugMsg( QString( " -> POINT(%1 %2)" ) . arg( x ) .arg( y ) );
       stringPoints.insert( stringPoints.size(), QgsPoint( pointWkbType, x, y, z, m ) );
     }
   }
-  QgsDebugMsg( QString( " appending last point -> POINT(%1 %2)" ) .  arg( circlePoint3.x() ) .arg( circlePoint3.y() ) );
   stringPoints.insert( stringPoints.size(), circlePoint3 );
 
   // TODO: check if or implement QgsPointSequence directly taking an iterator to append
