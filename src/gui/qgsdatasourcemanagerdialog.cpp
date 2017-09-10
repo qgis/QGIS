@@ -28,7 +28,7 @@
 #include "qgsmessagelog.h"
 #include "qgsgui.h"
 
-QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *&browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
+QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
   QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
   ui( new Ui::QgsDataSourceManagerDialog ),
   mPreviousRow( -1 ),
