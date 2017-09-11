@@ -693,7 +693,7 @@ bool QgsGeos::topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPoin
     }
     GEOSGeom_destroy_r( geosinit.ctxt, intersectionGeom );
   }
-  CATCH_GEOS_WITH_ERRMSG( 1 )
+  CATCH_GEOS_WITH_ERRMSG( true )
 
   return true;
 }
