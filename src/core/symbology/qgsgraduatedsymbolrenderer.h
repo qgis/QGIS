@@ -209,12 +209,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
+    
     //! Recalculate classes for a layer
     //! \param vlayer  The layer being rendered (from which data values are calculated)
     //! \param mode    The calculation mode
     //! \param nclasses The number of classes to calculate (approximate for some modes)
     //! \since QGIS 2.6
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+    //! \param useAroundZeroMode  A bool indicating if we want to center everything on zero (currently used only with prettyBreaks)
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useAroundZeroMode );
 
     //! Return the label format used to generate default classification labels
     //! \since QGIS 2.6
@@ -364,6 +366,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
     bool mCounting;
+    //bool mAroundZeroMode;
 
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 
