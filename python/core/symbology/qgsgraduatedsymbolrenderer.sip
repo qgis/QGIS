@@ -51,7 +51,7 @@ Creates a DOM element representing the range in SLD format.
 :param element: destination DOM element
 :param props: graduated renderer properties
 :param firstRange: set to true if the range is the first range, where the lower value uses a <= test
-                   rather than a < test.
+rather than a < test.
 %End
 
   protected:
@@ -120,9 +120,9 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
     ~QgsGraduatedSymbolRenderer();
 
-    virtual QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 
-    virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
@@ -137,7 +137,7 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) const;
+    virtual QgsSymbolList symbols( QgsRenderContext &context );
 
 
     QString classAttribute() const;
@@ -178,7 +178,7 @@ value becomes a break between two classes.
 
 :param breakValue: position to insert break
 :param updateSymbols: set to true to reapply ramp colors to the new
-                      symbol ranges
+symbol ranges
 
 .. versionadded:: 2.9
 %End
@@ -285,8 +285,8 @@ set mAstride, a bool saying if we want to have a central class astride the pivot
 %Docstring
 Recalculate classes for a layer
 
-:param vlayer: The layer being rendered (from which data values are calculated)
-:param mode: The calculation mode
+:param vlayer:  The layer being rendered (from which data values are calculated)
+:param mode:    The calculation mode
 :param nclasses: The number of classes to calculate (approximate for some modes)
 
 .. versionadded:: 2.6
@@ -299,7 +299,7 @@ Recalculate classes for a layer
 
     const QgsRendererRangeLabelFormat &labelFormat() const;
 %Docstring
-Returns the label format used to generate default classification labels
+Return the label format used to generate default classification labels
 
 .. versionadded:: 2.6
 %End
@@ -361,7 +361,7 @@ create renderer from XML element
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
-    virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
 
 
     QgsSymbol *sourceSymbol();
@@ -433,14 +433,14 @@ set varying symbol size for classes
 
     double minSymbolSize() const;
 %Docstring
-Returns the min symbol size when graduated by size
+return the min symbol size when graduated by size
 
 .. versionadded:: 2.10
 %End
 
     double maxSymbolSize() const;
 %Docstring
-Returns the max symbol size when graduated by size
+return the max symbol size when graduated by size
 
 .. versionadded:: 2.10
 %End
@@ -453,7 +453,7 @@ Returns the max symbol size when graduated by size
 
     GraduatedMethod graduatedMethod() const;
 %Docstring
-Returns the method used for graduation (either size or color)
+return the method used for graduation (either size or color)
 
 .. versionadded:: 2.10
 %End
@@ -510,9 +510,9 @@ Will return null if the functionality is disabled.
 
 
 
-    QgsSymbol *symbolForValue( double value ) const;
+    QgsSymbol *symbolForValue( double value );
 %Docstring
-Gets the symbol which is used to represent ``value``.
+attribute index (derived from attribute name in startRender)
 %End
 
     QString legendKeyForValue( double value ) const;

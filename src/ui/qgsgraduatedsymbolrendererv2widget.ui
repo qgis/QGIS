@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>442</width>
+    <width>952</width>
     <height>554</height>
    </rect>
   </property>
@@ -206,7 +206,7 @@ Negative rounds to powers of 10</string>
        <property name="value">
         <double>1.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -238,7 +238,7 @@ Negative rounds to powers of 10</string>
        <property name="value">
         <double>10.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -316,6 +316,9 @@ Negative rounds to powers of 10</string>
          </item>
          <item>
           <widget class="QComboBox" name="cboGraduatedMode">
+           <property name="editable">
+            <bool>false</bool>
+           </property>
            <item>
             <property name="text">
              <string>Equal Interval</string>
@@ -342,6 +345,9 @@ Negative rounds to powers of 10</string>
             </property>
            </item>
           </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget" native="true"/>
          </item>
          <item>
           <spacer name="horizontalSpacer_4">
@@ -384,6 +390,80 @@ Negative rounds to powers of 10</string>
             <number>5</number>
            </property>
           </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QCheckBox" name="cbxClassifySymmetric">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="visible">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Symmetric around:</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <property name="tristate">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsDoubleSpinBox" name="spinSymmetryPointForOtherMethods">
+           <property name="specialValueText">
+            <string/>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cboSymmetryPointForPretty"/>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbxAstride">
+           <property name="text">
+            <string>with a class astride that value</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
