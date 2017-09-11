@@ -1,6 +1,6 @@
 Running Average
 table_calculus
-ParameterTable|INPUT|Input|False
-ParameterTableField|FIELD|Attribute|INPUT|-1|False
-ParameterNumber|COUNT|Number of Records|0.0|None|10
+QgsProcessingParameterFeatureSource|INPUT|Input|5|None|False
+QgsProcessingParameterField|FIELD|Attribute|None|INPUT|-1|False|False
+QgsProcessingParameterNumber|COUNT|Number of Records|QgsProcessingParameterNumber.Integer|10|False|0.0|None
 OutputTable|OUTPUT|Output

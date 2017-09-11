@@ -1,6 +1,6 @@
 Single Value Decomposition (OpenCV)
 imagery_opencv
-ParameterRaster|INPUT|Input|False
-OutputRaster|OUTPUT|Output
-ParameterNumber|RANGE_MIN|Range (Min)|None|None|None
-ParameterNumber|RANGE_MAX|Range (Max)|None|None|None
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
+QgsProcessingParameterRasterDestination|OUTPUT|Output
+QgsProcessingParameterNumber|RANGE_MIN|Range (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterNumber|RANGE_MAX|Range (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None

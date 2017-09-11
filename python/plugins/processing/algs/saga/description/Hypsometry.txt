@@ -1,10 +1,10 @@
 Hypsometry
 ta_morphometry
-ParameterRaster|ELEVATION|Elevation|False
-ParameterNumber|COUNT|Number of Classes|None|None|100.0
-ParameterSelection|SORTING|Sort|[0] up;[1] down
-ParameterSelection|METHOD|Classification Constant|[0] height;[1] area
-ParameterBoolean|BZRANGE         |Use Z-Range|True
-ParameterNumber|ZRANGE_MIN|Z-Range Min|None|None|0.0
-ParameterNumber|ZRANGE_MAX|Z-Range Max|None|None|1000.0
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
+QgsProcessingParameterNumber|COUNT|Number of Classes|QgsProcessingParameterNumber.Double|100.0|False|None|None
+QgsProcessingParameterEnum|SORTING|Sort|[0] up;[1] down
+QgsProcessingParameterEnum|METHOD|Classification Constant|[0] height;[1] area
+QgsProcessingParameterBoolean|BZRANGE         |Use Z-Range|True
+QgsProcessingParameterNumber|ZRANGE_MIN|Z-Range Min|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|ZRANGE_MAX|Z-Range Max|QgsProcessingParameterNumber.Double|1000.0|False|None|None
 OutputTable|TABLE|Hypsometry

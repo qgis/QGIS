@@ -1,7 +1,7 @@
 Average With Thereshold 1
 contrib_perego
-ParameterRaster|INPUT|Input|False
-OutputRaster|RESULT|AWT Grid
-ParameterNumber|RX|Radius X| 1|None| 1
-ParameterNumber|RY|Radius Y| 1|None| 1
-ParameterNumber|THRESH|Threshold|None|None| 2.000000
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
+QgsProcessingParameterRasterDestination|RESULT|AWT Grid
+QgsProcessingParameterNumber|RX|Radius X|QgsProcessingParameterNumber.Integer|1|False| 1|None
+QgsProcessingParameterNumber|RY|Radius Y|QgsProcessingParameterNumber.Integer|1|False| 1|None
+QgsProcessingParameterNumber|THRESH|Threshold|QgsProcessingParameterNumber.Double|2.000000|False|None|None
