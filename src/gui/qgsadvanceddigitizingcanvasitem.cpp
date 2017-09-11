@@ -42,7 +42,8 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter* painter )
     return;
 
   QgsRectangle mapRect = mMapCanvas->extent();
-  setRect( mapRect );
+  if ( rect() != mapRect )
+    setRect( mapRect );
 
   int nPoints = mAdvancedDigitizingDockWidget->pointsCount();
   if ( !nPoints )
