@@ -2141,7 +2141,7 @@ bool QgsProject::unzip( const QString &filename )
   }
 
   // keep the archive and remove the temporary .qgs file
-  mArchive.reset( archive.release() );
+  mArchive = std::move( archive );
   mArchive->clearProjectFile();
 
   return true;
