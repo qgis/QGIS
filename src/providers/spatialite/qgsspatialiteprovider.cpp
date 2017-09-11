@@ -3687,7 +3687,7 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
     return uniqueValues;
   }
 
-  while ( 1 )
+  while ( true )
   {
     // this one is an infinitive loop, intended to fetch any row
     int ret = sqlite3_step( stmt );
