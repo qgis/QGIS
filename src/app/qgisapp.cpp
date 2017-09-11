@@ -607,7 +607,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   : QMainWindow( parent, fl )
   , mSplash( splash )
   , mShowProjectionTab( false )
-  , mProjectLastModified()
 {
   if ( sInstance )
   {
@@ -1219,7 +1218,6 @@ QgisApp::QgisApp()
   , mPrevScreenModeMaximized( false )
   , mSaveRollbackInProgress( false )
   , mTrustedMacros( false )
-  , mProjectLastModified()
   , mProjOpen( 0 )
 {
   sInstance = this;

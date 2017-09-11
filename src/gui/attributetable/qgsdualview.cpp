@@ -41,8 +41,6 @@
 
 QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
-  , mEditorContext()
-
 {
   setupUi( this );
 
