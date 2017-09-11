@@ -23,6 +23,9 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsowssourceselect.h"
 #endif
+#include "qgsgeonodeconnection.h"
+#include "qgsgeonodenewconnection.h"
+#include "qgsgeonodedataitems.h"
 
 #include "qgsapplication.h"
 
@@ -259,26 +262,22 @@ void QgsOWSRootItem::newConnection()
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
 
-QGISEXTERN int dataCapabilities()
+QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
 {
-  return QgsDataProvider::Net;
+  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+
+  *providers
+         << new QgsOwsDataItemProvider
+         << new QgsGeoNodeDataItemProvider;
+
+  return providers;
 }
 
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
+QgsDataItem *QgsOwsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
   {
     return new QgsOWSRootItem( parentItem, QStringLiteral( "OWS" ), QStringLiteral( "ows:" ) );
   }
-  return nullptr;
-}
-
-//QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
-QGISEXTERN QDialog *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-{
-  Q_UNUSED( parent );
-  Q_UNUSED( fl );
-  Q_UNUSED( widgetMode );
-  //return new QgsOWSSourceSelect( parent, fl, widgetMode );
   return nullptr;
 }

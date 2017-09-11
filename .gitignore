@@ -23,7 +23,7 @@
 /CMakeLists.txt.user
 /CMakeLists.txt.user.*
 api_doc
-build*
+*build*
 debian/*.debhelper
 debian/*.substvars
 desktop.ini
