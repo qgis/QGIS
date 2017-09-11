@@ -44,11 +44,6 @@ CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
 
 }
 
-CloughTocherInterpolator::~CloughTocherInterpolator()
-{
-  //nothing to do
-}
-
 void CloughTocherInterpolator::setTriangulation( NormVecDecorator *tin )
 {
   mTIN = tin;

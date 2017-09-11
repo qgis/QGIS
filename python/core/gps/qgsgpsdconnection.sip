@@ -21,7 +21,6 @@ class QgsGpsdConnection: QgsNMEAConnection
 %End
   public:
     QgsGpsdConnection( const QString &host, qint16 port, const QString &device );
-    ~QgsGpsdConnection();
 
 };
 

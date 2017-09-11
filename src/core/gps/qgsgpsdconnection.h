@@ -30,7 +30,6 @@ class CORE_EXPORT QgsGpsdConnection: public QgsNMEAConnection
     Q_OBJECT
   public:
     QgsGpsdConnection( const QString &host, qint16 port, const QString &device );
-    ~QgsGpsdConnection();
 
   private slots:
     void connected();

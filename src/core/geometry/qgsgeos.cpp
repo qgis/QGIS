@@ -95,8 +95,6 @@ class GEOSInit
       finishGEOS_r( ctxt );
     }
 
-  private:
-
     GEOSInit( const GEOSInit &rh ) = delete;
     GEOSInit &operator=( const GEOSInit &rh ) = delete;
 };
@@ -115,6 +113,10 @@ class GEOSGeomScopedPtr
   public:
     explicit GEOSGeomScopedPtr( GEOSGeometry *geom = nullptr ) : mGeom( geom ) {}
     ~GEOSGeomScopedPtr() { GEOSGeom_destroy_r( geosinit.ctxt, mGeom ); }
+
+    GEOSGeomScopedPtr( const GEOSGeomScopedPtr &rh ) = delete;
+    GEOSGeomScopedPtr &operator=( const GEOSGeomScopedPtr &rh ) = delete;
+
     GEOSGeometry *get() const { return mGeom; }
     operator bool() const { return nullptr != mGeom; }
     void reset( GEOSGeometry *geom )
@@ -126,9 +128,6 @@ class GEOSGeomScopedPtr
   private:
     GEOSGeometry *mGeom = nullptr;
 
-  private:
-    GEOSGeomScopedPtr( const GEOSGeomScopedPtr &rh ) = delete;
-    GEOSGeomScopedPtr &operator=( const GEOSGeomScopedPtr &rh ) = delete;
 };
 
 QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision )

@@ -54,12 +54,6 @@ QgsPluginRegistry *QgsPluginRegistry::instance()
   return sInstance;
 }
 
-QgsPluginRegistry::QgsPluginRegistry()
-
-{
-// constructor does nothing
-}
-
 void QgsPluginRegistry::setQgisInterface( QgisInterface *iface )
 {
   mQgisInterface = iface;
