@@ -2040,7 +2040,7 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
   for ( size_t i = 0; i < data->controllist.size(); ++i )
   {
     const DRW_Coord &p = *data->controllist[i];
-    cps.push_back( QgsVector( p.x, p.y ) );
+    cps.emplace_back( QgsVector( p.x, p.y ) );
   }
 
   if ( data->ncontrol == 0 && data->degree != 2 )
@@ -2048,7 +2048,7 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
     for ( std::vector<DRW_Coord *>::size_type i = 0; i < data->fitlist.size(); ++i )
     {
       const DRW_Coord &p = *data->fitlist[i];
-      cps.push_back( QgsVector( p.x, p.y ) );
+      cps.emplace_back( QgsVector( p.x, p.y ) );
     }
   }
 
