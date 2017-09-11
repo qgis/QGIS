@@ -241,7 +241,6 @@ QgsAbstractGeometry *QgsTriangle::toCurveType() const
 void QgsTriangle::addInteriorRing( QgsCurve *ring )
 {
   Q_UNUSED( ring );
-  return;
 }
 
 bool QgsTriangle::deleteVertex( QgsVertexId position )

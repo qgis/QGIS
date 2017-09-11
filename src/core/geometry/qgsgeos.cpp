@@ -300,8 +300,6 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
   {
     subdivideRecursive( clipPart2.get(), maxNodes, depth, parts, halfClipRect2 );
   }
-
-  return;
 }
 
 QgsAbstractGeometry *QgsGeos::subdivide( int maxNodes, QString *errorMsg ) const

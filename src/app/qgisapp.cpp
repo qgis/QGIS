@@ -5550,7 +5550,6 @@ void QgisApp::openProject( const QString &fileName )
     // error handling and reporting is in addProject() function
     addProject( fileName );
   }
-  return;
 }
 
 /**
@@ -11823,7 +11822,6 @@ void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
 
     messageBar()->pushMessage( title, smalltext );
   }
-  return;
 }
 
 void QgisApp::updateUndoActions()
