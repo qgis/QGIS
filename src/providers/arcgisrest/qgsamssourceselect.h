@@ -37,6 +37,9 @@ class QgsAmsSourceSelect: public QgsArcGisServiceSourceSelect
                          const QString &crs = QString(),
                          const QString &filter = QString(),
                          const QgsRectangle &bBox = QgsRectangle() ) const override;
+  private:
+    //! A layer is added from the dialog
+    virtual void addServiceLayer( QString uri, QString typeName );
 };
 
 #endif // QGSAMSSOURCESELECT_H

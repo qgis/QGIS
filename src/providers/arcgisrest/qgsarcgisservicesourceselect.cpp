@@ -354,7 +354,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString uri = getLayerURI( connection, layerTitle, layerName, pCrsString, filter, layerExtent );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
-    emit addLayer( uri, layerName );
+    addServiceLayer( uri, layerName );
   }
   accept();
 }
