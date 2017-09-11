@@ -125,6 +125,12 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
+    def supportsNonFileBasedOutput(self):
+        """
+        GRASS7 Provider doesn't support non file based outputs
+        """
+        return False
+    
     def supportedOutputVectorLayerExtensions(self):
         # We use the same extensions than QGIS because:
         # - QGIS is using OGR like GRASS
