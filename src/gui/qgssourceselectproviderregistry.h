@@ -37,6 +37,10 @@ class QgsSourceSelectProvider;
 class GUI_EXPORT QgsSourceSelectProviderRegistry
 {
   public:
+
+    /**
+     * Constructor for QgsSourceSelectProviderRegistry.
+     */
     QgsSourceSelectProviderRegistry() = default;
 
     ~QgsSourceSelectProviderRegistry();

@@ -30,6 +30,10 @@
 class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResampler
 {
   public:
+
+    /**
+     * Constructor for QgsBilinearRasterResampler.
+     */
     QgsBilinearRasterResampler() = default;
 
     void resample( const QImage &srcImage, QImage &dstImage ) override;

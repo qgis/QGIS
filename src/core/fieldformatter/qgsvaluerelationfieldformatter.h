@@ -49,6 +49,9 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
 
     typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
 
+    /**
+     * Constructor for QgsValueRelationFieldFormatter.
+     */
     QgsValueRelationFieldFormatter() = default;
 
     QString id() const override;

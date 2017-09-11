@@ -76,6 +76,10 @@ email                : sherman at mrcc.com
 class QgsMapCanvas::CanvasProperties
 {
   public:
+
+    /**
+     * Constructor for CanvasProperties.
+     */
     CanvasProperties() = default;
 
     //!Flag to indicate status of mouse button

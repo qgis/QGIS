@@ -20,7 +20,11 @@ class QgsLabelSearchTree
 #include "qgslabelsearchtree.h"
 %End
   public:
+
     QgsLabelSearchTree();
+%Docstring
+ Constructor for QgsLabelSearchTree.
+%End
     ~QgsLabelSearchTree();
 
 

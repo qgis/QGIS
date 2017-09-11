@@ -111,10 +111,16 @@ static GEOSInit geosinit;
 class GEOSGeomScopedPtr
 {
   public:
+
+    /**
+     * Constructor for GEOSGeomScopedPtr, owning the specified \a geom.
+     */
     explicit GEOSGeomScopedPtr( GEOSGeometry *geom = nullptr ) : mGeom( geom ) {}
     ~GEOSGeomScopedPtr() { GEOSGeom_destroy_r( geosinit.ctxt, mGeom ); }
 
+    //! GEOSGeomScopedPtr cannot be copied
     GEOSGeomScopedPtr( const GEOSGeomScopedPtr &rh ) = delete;
+    //! GEOSGeomScopedPtr cannot be copied
     GEOSGeomScopedPtr &operator=( const GEOSGeomScopedPtr &rh ) = delete;
 
     GEOSGeometry *get() const { return mGeom; }

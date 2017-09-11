@@ -41,6 +41,9 @@ class CORE_EXPORT QgsCredentials
 {
   public:
 
+    /**
+     * Destructor.
+     */
     virtual ~QgsCredentials() = default;
 
     bool get( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() );

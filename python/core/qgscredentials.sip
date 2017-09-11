@@ -30,6 +30,9 @@ class QgsCredentials
   public:
 
     virtual ~QgsCredentials();
+%Docstring
+ Destructor.
+%End
 
     bool get( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
 %Docstring

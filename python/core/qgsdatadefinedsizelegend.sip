@@ -25,7 +25,11 @@ class QgsDataDefinedSizeLegend
 #include "qgsdatadefinedsizelegend.h"
 %End
   public:
+
     QgsDataDefinedSizeLegend();
+%Docstring
+ Constructor for QgsDataDefinedSizeLegend.
+%End
 
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
 %Docstring
