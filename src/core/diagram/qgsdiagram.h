@@ -37,6 +37,7 @@ class QgsAttributes;
 class CORE_EXPORT QgsDiagram
 {
   public:
+
     virtual ~QgsDiagram() { clearCache(); }
 
     /** Returns an instance that is equivalent to this one
@@ -73,6 +74,10 @@ class CORE_EXPORT QgsDiagram
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const = 0;
 
   protected:
+
+    /**
+     * Constructor for QgsDiagram.
+     */
     QgsDiagram() = default;
     QgsDiagram( const QgsDiagram &other );
 

@@ -75,6 +75,10 @@ class CORE_EXPORT QgsCredentials
     QMutex *mutex() { return &mMutex; }
 
   protected:
+
+    /**
+     * Constructor for QgsCredentials.
+     */
     QgsCredentials() = default;
 
     //! request a password

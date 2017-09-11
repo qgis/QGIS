@@ -29,6 +29,10 @@
 class CORE_EXPORT QgsReadWriteContext
 {
   public:
+
+    /**
+     * Constructor for QgsReadWriteContext.
+     */
     QgsReadWriteContext() = default;
 
     //! Returns path resolver for conversion between relative and absolute paths

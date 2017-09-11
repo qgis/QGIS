@@ -131,6 +131,10 @@ class ANALYSIS_EXPORT QgsGraphVertex
 class ANALYSIS_EXPORT QgsGraph
 {
   public:
+
+    /**
+     * Constructor for QgsGraph.
+     */
     QgsGraph() = default;
 
     // Graph constructing methods

@@ -73,7 +73,11 @@ retrieves instance
 %End
 
   protected:
+
     QgsCredentials();
+%Docstring
+ Constructor for QgsCredentials.
+%End
 
     virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() ) = 0;
 %Docstring
