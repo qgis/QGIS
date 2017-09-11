@@ -185,7 +185,7 @@ Returns true if the model has been initialized
 
     void initialize();
 %Docstring
-Delayied initialization, needed because the provider registry must be already populated
+Delayed initialization, needed because the provider registry must be already populated
 %End
 
   protected:

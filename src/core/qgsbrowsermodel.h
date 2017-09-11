@@ -170,7 +170,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     //! Returns true if the model has been initialized
     bool initialized( ) { return mInitialized;  }
 
-    //! Delayied initialization, needed because the provider registry must be already populated
+    //! Delayed initialization, needed because the provider registry must be already populated
     void initialize();
 
   protected:
