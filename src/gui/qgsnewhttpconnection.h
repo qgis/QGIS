@@ -49,23 +49,39 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     Q_DECLARE_FLAGS( ConnectionTypes, ConnectionType )
 
     /**
+     * Flags controlling dialog behavior.
+     * \since QGIS 3.0
+     */
+    enum Flag
+    {
+      FlagShowTestConnection = 1 << 1, //!< Display the 'test connection' button
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Constructor for QgsNewHttpConnection.
      *
      * The \a types argument dictates which connection type settings should be
      * shown in the dialog.
      *
+     * The \a flags argument allows specifying flags which control the dialog behavior
+     * and appearance.
      */
     QgsNewHttpConnection( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                           QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
                           const QString &baseKey = "qgis/connections-wms/",
                           const QString &connectionName = QString(),
+                          QgsNewHttpConnection::Flags flags = 0,
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   public slots:
-    // Saves the connection to ~/.qt/qgisrc
+
     void accept() override;
-    void on_txtName_textChanged( const QString & );
-    void on_txtUrl_textChanged( const QString & );
+
+  private slots:
+
+    void nameChanged( const QString & );
+    void urlChanged( const QString & );
 
   private:
 
@@ -80,5 +96,6 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNewHttpConnection::ConnectionTypes )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNewHttpConnection::Flags )
 
 #endif //  QGSNEWHTTPCONNECTION_H

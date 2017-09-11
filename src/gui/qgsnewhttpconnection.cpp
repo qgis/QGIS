@@ -25,7 +25,7 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 
-QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &baseKey, const QString &connectionName, Qt::WindowFlags fl )
+QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &baseKey, const QString &connectionName, QgsNewHttpConnection::Flags flags, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mTypes( types )
   , mBaseKey( baseKey )
@@ -76,8 +76,23 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
     cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
-    cbxIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
-    cbxInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
+    if ( mTypes & ConnectionWfs && mTypes & ConnectionWms )
+    {
+      cbxWfsIgnoreAxisOrientation->setChecked( settings.value( key + "/wfs/ignoreAxisOrientation", false ).toBool() );
+      cbxWfsInvertAxisOrientation->setChecked( settings.value( key + "/wfs/invertAxisOrientation", false ).toBool() );
+      cbxWmsIgnoreAxisOrientation->setChecked( settings.value( key + "/wms/ignoreAxisOrientation", false ).toBool() );
+      cbxWmsInvertAxisOrientation->setChecked( settings.value( key + "/wms/invertAxisOrientation", false ).toBool() );
+    }
+    else if ( mTypes & ConnectionWfs )
+    {
+      cbxWfsIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
+      cbxWfsInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
+    }
+    else
+    {
+      cbxWmsIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
+      cbxWmsInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
+    }
     cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
     cbxSmoothPixmapTransform->setChecked( settings.value( key + "/smoothPixmapTransform", false ).toBool() );
 
@@ -126,58 +141,45 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     }
   }
 
-  if ( !( mTypes & ConnectionWms ) )
+  if ( !( mTypes & ConnectionWms ) && !( mTypes & ConnectionWcs ) )
   {
-    if ( !( mTypes & ConnectionWcs ) &&
-         !( mTypes & ConnectionWfs ) )
-    {
-      cbxIgnoreAxisOrientation->setVisible( false );
-      cbxInvertAxisOrientation->setVisible( false );
-      mGroupBox->layout()->removeWidget( cbxIgnoreAxisOrientation );
-      mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
-    }
-
-    if ( mTypes & ConnectionWfs )
-    {
-      cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation (WFS 1.1/WFS 2.0)" ) );
-    }
-
-    if ( mTypes & ConnectionWcs )
-    {
-      cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
-      cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation" ) );
-    }
-    else
-    {
-      cbxIgnoreGetMapURI->setVisible( false );
-      cbxSmoothPixmapTransform->setVisible( false );
-      mGroupBox->layout()->removeWidget( cbxIgnoreGetMapURI );
-      mGroupBox->layout()->removeWidget( cbxSmoothPixmapTransform );
-    }
-
-    cbxIgnoreGetFeatureInfoURI->setVisible( false );
-    mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
-
-    cmbDpiMode->setVisible( false );
-    mGroupBox->layout()->removeWidget( cmbDpiMode );
-    lblDpiMode->setVisible( false );
-    mGroupBox->layout()->removeWidget( lblDpiMode );
-
-    txtReferer->setVisible( false );
-    mGroupBox->layout()->removeWidget( txtReferer );
-    lblReferer->setVisible( false );
-    mGroupBox->layout()->removeWidget( lblReferer );
+    mWmsOptionsGroupBox->setVisible( false );
+    mGroupBox->layout()->removeWidget( mWmsOptionsGroupBox );
   }
-
   if ( !( mTypes & ConnectionWfs ) )
   {
-    lblVersion->setVisible( false );
-    cmbVersion->setVisible( false );
-    mGroupBox->layout()->removeWidget( cmbVersion );
-    lblMaxNumFeatures->setVisible( false );
-    mGroupBox->layout()->removeWidget( lblMaxNumFeatures );
-    txtMaxNumFeatures->setVisible( false );
-    mGroupBox->layout()->removeWidget( txtMaxNumFeatures );
+    mWfsOptionsGroupBox->setVisible( false );
+    mGroupBox->layout()->removeWidget( mWfsOptionsGroupBox );
+  }
+
+  if ( mTypes & ConnectionWcs )
+  {
+    cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
+    cbxWmsIgnoreAxisOrientation->setText( tr( "Ignore axis orientation" ) );
+    if ( !( mTypes & ConnectionWms ) )
+    {
+      mWmsOptionsGroupBox->setTitle( tr( "WCS Options" ) );
+
+      cbxIgnoreGetFeatureInfoURI->setVisible( false );
+      mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+
+      cmbDpiMode->setVisible( false );
+      mGroupBox->layout()->removeWidget( cmbDpiMode );
+      lblDpiMode->setVisible( false );
+      mGroupBox->layout()->removeWidget( lblDpiMode );
+
+      txtReferer->setVisible( false );
+      mGroupBox->layout()->removeWidget( txtReferer );
+      lblReferer->setVisible( false );
+      mGroupBox->layout()->removeWidget( lblReferer );
+    }
+  }
+
+
+  if ( !( flags & FlagShowTestConnection ) )
+  {
+    mTestConnectionButton->hide();
+    mGroupBox->layout()->removeWidget( mTestConnectionButton );
   }
 
   // Adjust height
@@ -185,16 +187,19 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   adjustSize();
   resize( w, height() );
 
-  on_txtName_textChanged( connectionName );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::nameChanged );
+  connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::urlChanged );
+
+  nameChanged( connectionName );
 }
 
-void QgsNewHttpConnection::on_txtName_textChanged( const QString &text )
+void QgsNewHttpConnection::nameChanged( const QString &text )
 {
   Q_UNUSED( text );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
 }
 
-void QgsNewHttpConnection::on_txtUrl_textChanged( const QString &text )
+void QgsNewHttpConnection::urlChanged( const QString &text )
 {
   Q_UNUSED( text );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
@@ -258,12 +263,22 @@ void QgsNewHttpConnection::accept()
 
   settings.setValue( key + "/url", url.toString() );
 
-  if ( mBaseKey == QLatin1String( "qgis/connections-wms/" ) ||
-       mBaseKey == QLatin1String( "qgis/connections-wcs/" ) ||
-       mBaseKey == QLatin1String( "qgis/connections-wfs/" ) )
+  if ( mTypes & ConnectionWfs && mTypes & ConnectionWms )
   {
-    settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
-    settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
+    settings.setValue( key + "/wfs/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
+    settings.setValue( key + "/wms/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
+    settings.setValue( key + "/wfs/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
+    settings.setValue( key + "/wms/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
+  }
+  else if ( mTypes & ConnectionWfs )
+  {
+    settings.setValue( key + "/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
+    settings.setValue( key + "/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
+  }
+  else
+  {
+    settings.setValue( key + "/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
+    settings.setValue( key + "/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
   }
 
   if ( mBaseKey == QLatin1String( "qgis/connections-wms/" ) || mBaseKey == QLatin1String( "qgis/connections-wcs/" ) )
