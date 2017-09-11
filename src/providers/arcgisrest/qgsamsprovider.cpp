@@ -464,7 +464,7 @@ class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
 
     virtual QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
     virtual QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
-    virtual int ordering() const override { return 130; }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
     virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
