@@ -133,7 +133,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void startDragging( QgsMapMouseEvent *e );
 
-    void startDraggingMoveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &m );
+    void startDraggingMoveVertex( const QgsPointLocator::Match &m );
 
     //! Get list of matches of all vertices of a layer exactly snapped to a map point
     QList<QgsPointLocator::Match> layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint );

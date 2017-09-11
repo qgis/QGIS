@@ -1030,11 +1030,11 @@ void QgsNodeTool::startDragging( QgsMapMouseEvent *e )
   }
   else   // vertex
   {
-    startDraggingMoveVertex( e->mapPoint(), m );
+    startDraggingMoveVertex( m );
   }
 }
 
-void QgsNodeTool::startDraggingMoveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &m )
+void QgsNodeTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 {
   Q_ASSERT( m.hasVertex() );
 
@@ -1079,7 +1079,7 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointXY &mapPoint, const Qgs
       if ( !vlayer || !vlayer->isEditable() )
         continue;
 
-      for ( const QgsPointLocator::Match &otherMatch : layerVerticesSnappedToPoint( vlayer, mapPoint ) )
+      for ( const QgsPointLocator::Match &otherMatch : layerVerticesSnappedToPoint( vlayer, m.point() ) )
       {
         if ( otherMatch.layer() == m.layer() &&
              otherMatch.featureId() == m.featureId() &&
