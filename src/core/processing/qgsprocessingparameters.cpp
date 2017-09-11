@@ -2301,6 +2301,9 @@ bool QgsProcessingParameterField::checkValueIsAcceptable( const QVariant &input,
   {
     if ( !mAllowMultiple )
       return false;
+
+    if ( input.toList().isEmpty() && !( mFlags & FlagOptional ) )
+      return false;
   }
   else if ( input.type() == QVariant::String )
   {
