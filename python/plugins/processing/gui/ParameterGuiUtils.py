@@ -77,7 +77,7 @@ def getFileFilter(param):
         return QgsProviderRegistry.instance().fileVectorFilters()
     elif param.type() == 'vector':
         return QgsProviderRegistry.instance().fileVectorFilters()
-    elif param.type() == 'fileOut':
+    elif param.type() == 'fileDestination':
         return tr('All files (*.*)') + ';;' + param.fileFilter()
 
     return ''
