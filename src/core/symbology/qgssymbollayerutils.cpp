@@ -4068,6 +4068,24 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     breaks[breaks.count() - 1] = maximum;
   }
 
+  // because sometimes when number of classes is big,
+  // break supposed to be at zero is something like -2.22045e-16
+  if ( minimum < 0.0 && maximum > 0.0 ) //then there should be a zero somewhere
+  {
+    QList<double> breaksMinusZero; // compute difference "each break - 0"
+    for ( int i = 0; i < breaks.count(); i++ )
+    {
+      breaksMinusZero.append( breaks[i] - 0.0 );
+    }
+    int posOfMin = 0;
+    for ( int i = 1; i < breaks.count(); i++ ) // find position of minimal difference
+    {
+      if ( std::abs( breaksMinusZero[i] ) < std::abs( breaksMinusZero[i - 1] ) )
+        posOfMin = i;
+    }
+    breaks[posOfMin] = 0.0;
+  }
+
   return breaks;
 }
 

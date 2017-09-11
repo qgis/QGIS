@@ -223,13 +223,65 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setMode( Mode mode ) { mMode = mode; }
 
     /**
+     * get mUseSymmetricMode, which says if we want to classify symmetric around a given value
+     * \since QGIS 3.2
+     */
+    bool useSymmetricMode() { return mUseSymmetricMode; }
+
+    /**
+     * set mUseSymmetricMode, which says if we want to classify symmetric around a given value
+     * \since QGIS 3.2
+     */
+    void setUseSymmetricMode( bool useSymmetricMode ) { mUseSymmetricMode = useSymmetricMode; }
+
+    /**
+     * get mSymmetryPoint, the pivot value for symmetric classification
+     * \since QGIS 3.2
+     */
+    double symmetryPoint() { return mSymmetryPoint; }
+
+    /**
+     * set the pivot point
+     * \since QGIS 3.2
+     */
+    void setSymmetryPoint( double symmetryPoint ) { mSymmetryPoint = symmetryPoint; }
+
+    /**
+     * get mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+     * \since QGIS 3.2
+     */
+    QStringList listForCboPrettyBreaks() { return mListForCboPrettyBreaks; }
+
+    /**
+     * set mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+     * \since QGIS 3.2
+     */
+    void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; }
+
+    /**
+     *  get mAstride, a bool saying if we want to have a central class astride the pivot value
+     * \since QGIS 3.2
+     */
+    bool astride() { return mAstride; }
+
+    /**
+     * set mAstride, a bool saying if we want to have a central class astride the pivot value
+     * \since QGIS 3.2
+     */
+    void setAstride( bool astride ) { mAstride = astride; }
+
+    /**
      * Recalculate classes for a layer
      * \param vlayer  The layer being rendered (from which data values are calculated)
      * \param mode    The calculation mode
      * \param nclasses The number of classes to calculate (approximate for some modes)
      * \since QGIS 2.6
+     * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+     * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+     * \since QGIS 3.2
      */
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
 
     /**
      * Returns the label format used to generate default classification labels
@@ -258,6 +310,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param attrName attribute to classify
      * \param classes number of classes
      * \param mode classification mode
+     * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+     * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+     * \param listForCboPrettyBreaks The list of potential pivot values for symmetric mode with prettybreaks mode
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \param symbol base symbol
      * \param ramp color ramp for classes
      * \param legendFormat
@@ -267,6 +323,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
         const QString &attrName,
         int classes,
         Mode mode,
+        bool useSymmetricMode,
+        double symmetryPoint,
+        QStringList listForCboPrettyBreaks,
+        bool astride,
         QgsSymbol *symbol SIP_TRANSFER,
         QgsColorRamp *ramp SIP_TRANSFER,
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
@@ -396,6 +456,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString mAttrName;
     QgsRangeList mRanges;
     Mode mMode = Custom;
+    bool mUseSymmetricMode;
+    double mSymmetryPoint;
+    QStringList mListForCboPrettyBreaks;
+    bool mAstride;
     std::unique_ptr<QgsSymbol> mSourceSymbol;
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
     QgsRendererRangeLabelFormat mLabelFormat;
@@ -403,6 +467,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsExpression> mExpression;
     GraduatedMethod mGraduatedMethod = GraduatedColor;
     //! attribute index (derived from attribute name in startRender)
+
     int mAttrNum = -1;
     bool mCounting = false;
 
