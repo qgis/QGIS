@@ -344,7 +344,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
       QString baseUri = pieces.at( 1 );
       QString layerName = pieces.at( 2 );
       sqlite3 *handle;
-      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
+      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
       if ( status != SQLITE_OK )
       {
         errCause = sqlite3_errmsg( handle );
@@ -365,8 +365,8 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
         status = sqlite3_exec(
                    handle,                              /* An open database */
                    sql,                                 /* SQL to be evaluated */
-                   NULL,                                /* Callback function */
-                   NULL,                                /* 1st argument to callback */
+                   nullptr,                                /* Callback function */
+                   nullptr,                                /* 1st argument to callback */
                    &errmsg                              /* Error msg written here */
                  );
         sqlite3_free( sql );
@@ -382,9 +382,9 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
+            nullptr,                                /* Callback function */
+            nullptr,                                /* 1st argument to callback */
+            nullptr                                 /* Error msg written here */
           );
           sqlite3_free( sql );
         }
@@ -395,9 +395,9 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
+            nullptr,                                /* Callback function */
+            nullptr,                                /* 1st argument to callback */
+            nullptr                                 /* Error msg written here */
           );
           sqlite3_free( sql );
         }
@@ -407,9 +407,9 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
+            nullptr,                                /* Callback function */
+            nullptr,                                /* 1st argument to callback */
+            nullptr                                 /* Error msg written here */
           );
           sqlite3_free( sql );
         }
@@ -418,9 +418,9 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           ( void )sqlite3_exec(
             handle,                              /* An open database */
             "VACUUM",                            /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
+            nullptr,                                /* Callback function */
+            nullptr,                                /* 1st argument to callback */
+            nullptr                                 /* Error msg written here */
           );
         }
 

@@ -56,7 +56,7 @@ QgsMapCanvasTracer::~QgsMapCanvasTracer()
 
 QgsMapCanvasTracer *QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas *canvas )
 {
-  return sTracers.value( canvas, 0 );
+  return sTracers.value( canvas, nullptr );
 }
 
 void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVertex )

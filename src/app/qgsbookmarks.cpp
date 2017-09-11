@@ -660,7 +660,7 @@ QAbstractTableModel *QgsMergedBookmarksTableModel::qgisModel()
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
   QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
-  if ( qgisModel == NULL )
+  if ( qgisModel == nullptr )
   {
     modelTo.insertRow( -1 );
     for ( int column = 1 ; column < modelFrom.columnCount() ; column++ )

@@ -1271,7 +1271,7 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
   double myMinVal, myMaxVal;
   int myBinCount;
 
-  GUIntBig *myHistogramArray = 0;
+  GUIntBig *myHistogramArray = nullptr;
   CPLErr myError = GDALGetDefaultHistogramEx( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
                    nullptr, nullptr );

@@ -502,7 +502,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mypCurve->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
     }
 
-    QwtPlotHistogram *mypHisto = 0;
+    QwtPlotHistogram *mypHisto = nullptr;
     if ( ! myDrawLines )
     {
       mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( myIteratorInt ) );
