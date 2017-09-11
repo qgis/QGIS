@@ -26,7 +26,7 @@
 #include <QSslError>
 #endif
 
-QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool enableGuiNotifications, QString authcfg )
+QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool enableGuiNotifications, const QString &authcfg )
   : mUrl( url )
   , mDownloadCanceled( false )
   , mGuiNotificationsEnabled( enableGuiNotifications )

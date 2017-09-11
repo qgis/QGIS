@@ -44,8 +44,8 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
     void showHelp();
 
   private:
-    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, QString layer, QString table );
-    void createGroup( QgsLayerTreeGroup *group, QString name, QStringList layers, bool visible );
+    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, const QString &layer, const QString &table );
+    void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible );
     void updateUI();
     void expandInserts();
     void updateCheckState( Qt::CheckState state );

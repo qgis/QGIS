@@ -249,7 +249,7 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
 }
 
 QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
-    std::function<QgsGeometry( const QList< QgsGeometry >& )> collector, int maxQueueLength )
+    const std::function<QgsGeometry( const QList< QgsGeometry >& )> &collector, int maxQueueLength )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -1399,7 +1399,7 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
 void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
     QgsFeatureSource *intersectSource,
     const QList< int > &selectedPredicates,
-    std::function < void( const QgsFeature & ) > handleFeatureFunction,
+    const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
     bool onlyRequireTargetIds,
     QgsFeedback *feedback )
 {

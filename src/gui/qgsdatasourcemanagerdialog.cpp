@@ -78,7 +78,7 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
   delete ui;
 }
 
-void QgsDataSourceManagerDialog::openPage( QString pageName )
+void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 {
   int pageIdx = mPageNames.indexOf( pageName );
   if ( pageIdx != -1 )
@@ -122,7 +122,7 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
 }
 
 
-void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, QString toolTip )
+void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, const QString &toolTip )
 {
   mPageNames.append( providerKey );
   ui->mOptionsStackedWidget->addWidget( dlg );

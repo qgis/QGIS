@@ -32,7 +32,7 @@ class QgsPGRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsPGRootItem( QgsDataItem *parent, QString name, QString path );
+    QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -55,7 +55,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsPGConnectionItem( QgsDataItem *parent, QString name, QString path );
+    QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;

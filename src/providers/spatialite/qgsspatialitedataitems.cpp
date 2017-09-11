@@ -34,7 +34,7 @@
 
 QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
 
-QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType )
+QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
 {
   setState( Populated ); // no children are expected
@@ -76,7 +76,7 @@ void QgsSLLayerItem::deleteLayer()
 
 // ------
 
-QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, QString name, QString path )
+QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
@@ -275,7 +275,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 
 // ---------------------------------------------------------------------------
 
-QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, QString name, QString path )
+QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;

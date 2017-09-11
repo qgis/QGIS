@@ -61,7 +61,7 @@ class CORE_EXPORT QgsProviderMetadata
      * \since QGIS 3.0
      * \note not available in Python bindings
      */
-    SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, QgsProviderMetadata::CreateDataProviderFunction createFunc );
+    SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
     /** This returns the unique key associated with the provider
 

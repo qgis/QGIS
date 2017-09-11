@@ -155,7 +155,7 @@ class CORE_EXPORT QgsSettings : public QObject
     //! Return the path to the Global Settings QSettings storage file
     static QString globalSettingsPath() { return sGlobalSettingsPath; }
     //! Set the Global Settings QSettings storage file
-    static bool setGlobalSettingsPath( QString path );
+    static bool setGlobalSettingsPath( const QString &path );
     //! Adds prefix to the current group and starts reading from an array. Returns the size of the array.
     int beginReadArray( const QString &prefix );
 
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     static QString sGlobalSettingsPath;
     void init();
-    QString sanitizeKey( QString key ) const;
+    QString sanitizeKey( const QString &key ) const;
     QSettings *mUserSettings = nullptr;
     QSettings *mGlobalSettings = nullptr;
     bool mUsingGlobalArray = false;

@@ -131,8 +131,8 @@ QgsStaticExpressionFunction::QgsStaticExpressionFunction( const QString &fnname,
     FcnEval fcn,
     const QString &group,
     const QString &helpText,
-    std::function < bool ( const QgsExpressionNodeFunction *node ) > usesGeometry,
-    std::function < QSet<QString>( const QgsExpressionNodeFunction *node ) > referencedColumns,
+    const std::function < bool ( const QgsExpressionNodeFunction *node ) > &usesGeometry,
+    const std::function < QSet<QString>( const QgsExpressionNodeFunction *node ) > &referencedColumns,
     bool lazyEval,
     const QStringList &aliases,
     bool handlesNull )
@@ -182,7 +182,7 @@ bool QgsStaticExpressionFunction::prepare( const QgsExpressionNodeFunction *node
   return true;
 }
 
-void QgsStaticExpressionFunction::setIsStaticFunction( std::function<bool ( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> isStatic )
+void QgsStaticExpressionFunction::setIsStaticFunction( const std::function<bool ( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> &isStatic )
 {
   mIsStaticFunc = isStatic;
 }
@@ -193,7 +193,7 @@ void QgsStaticExpressionFunction::setIsStatic( bool isStatic )
   mIsStatic = isStatic;
 }
 
-void QgsStaticExpressionFunction::setPrepareFunction( std::function<bool ( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> prepareFunc )
+void QgsStaticExpressionFunction::setPrepareFunction( const std::function<bool ( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> &prepareFunc )
 {
   mPrepareFunc = prepareFunc;
 }

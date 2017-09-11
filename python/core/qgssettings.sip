@@ -166,7 +166,7 @@ Returns a list of all key top-level groups (same as childGroups) but only for gr
 Return the path to the Global Settings QSettings storage file
  :rtype: str
 %End
-    static bool setGlobalSettingsPath( QString path );
+    static bool setGlobalSettingsPath( const QString &path );
 %Docstring
 Set the Global Settings QSettings storage file
  :rtype: bool

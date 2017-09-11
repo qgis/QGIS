@@ -72,7 +72,7 @@ class QgsGeometryEditUtils
      */
     static std::unique_ptr< QgsAbstractGeometry > avoidIntersections( const QgsAbstractGeometry &geom,
         const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 };
 
 #endif // QGSGEOMETRYEDITUTILS_H

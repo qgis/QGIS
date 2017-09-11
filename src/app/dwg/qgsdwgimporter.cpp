@@ -75,7 +75,7 @@ QgsDwgImporter::QgsDwgImporter( const QString &database, const QgsCoordinateRefe
   QgsDebugMsg( QString( "CRS %1[%2]: %3" ).arg( mCrs ).arg( ( qint64 ) mCrsH, 0, 16 ).arg( crswkt ) );
 }
 
-bool QgsDwgImporter::exec( QString sql, bool logError )
+bool QgsDwgImporter::exec( const QString &sql, bool logError )
 {
   if ( !mDs )
   {
@@ -104,7 +104,7 @@ bool QgsDwgImporter::exec( QString sql, bool logError )
   return false;
 }
 
-OGRLayerH QgsDwgImporter::query( QString sql )
+OGRLayerH QgsDwgImporter::query( const QString &sql )
 {
   if ( !mDs )
   {
@@ -259,7 +259,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
 
   struct field
   {
-    field( QString name, OGRFieldType ogrType, int width = -1, int precision = -1 )
+    field( const QString &name, OGRFieldType ogrType, int width = -1, int precision = -1 )
       : mName( name ), mOgrType( ogrType ), mWidth( width ), mPrecision( precision )
     {}
 
@@ -271,7 +271,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
 
   struct table
   {
-    table( QString name, QString desc, OGRwkbGeometryType wkbType, QList<field> fields )
+    table( const QString &name, const QString &desc, OGRwkbGeometryType wkbType, const QList<field> &fields )
       : mName( name ), mDescription( desc ), mWkbType( wkbType ), mFields( fields )
     {}
 
@@ -931,7 +931,7 @@ void QgsDwgImporter::addLayer( const DRW_Layer &data )
   OGR_F_Destroy( f );
 }
 
-void QgsDwgImporter::setString( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, const std::string &value ) const
+void QgsDwgImporter::setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const std::string &value ) const
 {
   int idx = OGR_FD_GetFieldIndex( dfn, field.toLower().toUtf8().constData() );
   if ( idx < 0 )
@@ -942,7 +942,7 @@ void QgsDwgImporter::setString( OGRFeatureDefnH dfn, OGRFeatureH f, QString fiel
   OGR_F_SetFieldString( f, idx, value.c_str() );
 }
 
-void QgsDwgImporter::setDouble( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, double value ) const
+void QgsDwgImporter::setDouble( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, double value ) const
 {
   int idx = OGR_FD_GetFieldIndex( dfn, field.toLower().toUtf8().constData() );
   if ( idx < 0 )
@@ -953,7 +953,7 @@ void QgsDwgImporter::setDouble( OGRFeatureDefnH dfn, OGRFeatureH f, QString fiel
   OGR_F_SetFieldDouble( f, idx, value );
 }
 
-void QgsDwgImporter::setInteger( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, int value ) const
+void QgsDwgImporter::setInteger( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, int value ) const
 {
   int idx = OGR_FD_GetFieldIndex( dfn, field.toLower().toUtf8().constData() );
   if ( idx < 0 )
@@ -964,7 +964,7 @@ void QgsDwgImporter::setInteger( OGRFeatureDefnH dfn, OGRFeatureH f, QString fie
   OGR_F_SetFieldInteger( f, idx, value );
 }
 
-void QgsDwgImporter::setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, const DRW_Coord &p ) const
+void QgsDwgImporter::setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const DRW_Coord &p ) const
 {
   QVector<double> ext( 3 );
   ext[0] = p.x;

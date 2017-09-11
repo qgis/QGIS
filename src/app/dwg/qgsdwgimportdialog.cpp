@@ -267,7 +267,7 @@ void QgsDwgImportDialog::on_pbImportDrawing_clicked()
   on_pbLoadDatabase_clicked();
 }
 
-QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, QString layerFilter, QString table )
+QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const QString &layerFilter, const QString &table )
 {
   QgsVectorLayer *l = new QgsVectorLayer( QString( "%1|layername=%2" ).arg( leDatabase->text(), table ), table, "ogr", false );
   l->setSubsetString( QString( "%1space=0 AND block=-1" ).arg( layerFilter ) );
@@ -283,7 +283,7 @@ QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, QStrin
   return l;
 }
 
-void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, QString name, QStringList layers, bool visible )
+void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible )
 {
   QgsLayerTreeGroup *layerGroup = group->addGroup( name );
   QgsDebugMsg( QString( " %1" ).arg( name ) ) ;

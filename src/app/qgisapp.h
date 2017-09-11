@@ -165,8 +165,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   public:
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true,
-             bool skipVersionCheck = false, const QString rootProfileLocation = QString(),
-             const QString activeProfile = QString(),
+             bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),
+             const QString &activeProfile = QString(),
              QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
@@ -377,7 +377,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param title
      * \param message
      */
-    void showSystemNotification( const QString title, const QString message );
+    void showSystemNotification( const QString &title, const QString &message );
 
 
     //! Actions to be inserted in menus and toolbars
@@ -793,7 +793,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
-    void dataSourceManager( QString pageName = QString() );
+    void dataSourceManager( const QString &pageName = QString() );
 
     /** Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
@@ -1599,7 +1599,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   private:
     void startProfile( const QString &name );
     void endProfile();
-    void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, QString name );
+    void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
 
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * \returns true if any items were loaded

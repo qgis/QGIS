@@ -46,7 +46,7 @@ QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path,
   return nullptr;
 }
 
-QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, QString name, QString path )
+QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
@@ -120,7 +120,7 @@ void QgsGeoPackageRootItem::createDatabase()
 #endif
 
 
-QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, QString name, QString path )
+QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
   , mPath( path )
 {
@@ -328,7 +328,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
 }
 
 
-bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri, QString &errCause )
+bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString &uri, QString &errCause )
 {
   bool result = false;
   // Better safe than sorry
@@ -526,7 +526,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 
 }
 
-QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, QgsLayerItem::LayerType layerType, QString providerKey )
+QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
 {
   setState( Populated ); // no children are expected
@@ -539,14 +539,14 @@ bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
 }
 
 
-QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType )
+QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
 
 }
 
 
-QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, QString name, QString path, QString uri )
+QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, QgsLayerItem::LayerType::Raster, QStringLiteral( "gdal" ) )
 {
 

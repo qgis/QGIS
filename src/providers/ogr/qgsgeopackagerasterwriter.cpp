@@ -24,7 +24,7 @@
 
 #include <QMessageBox>
 
-QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri sourceUri, const QString outputUrl ):
+QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &outputUrl ):
   mSourceUri( sourceUri ),
   mOutputUrl( outputUrl )
 {

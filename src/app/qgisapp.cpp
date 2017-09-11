@@ -603,7 +603,7 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString rootProfileLocation, const QString activeProfile, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
   , mShowProjectionTab( false )
@@ -1505,7 +1505,7 @@ bool QgisApp::event( QEvent *event )
   return done;
 }
 
-void QgisApp::dataSourceManager( QString pageName )
+void QgisApp::dataSourceManager( const QString &pageName )
 {
   if ( ! mDataSourceManagerDialog )
   {
@@ -11768,7 +11768,7 @@ void QgisApp::endProfile()
   QgsApplication::profiler()->end();
 }
 
-void QgisApp::functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, QString name )
+void QgisApp::functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name )
 {
   startProfile( name );
   ( instance->*fnc )();
@@ -12484,7 +12484,7 @@ QMenu *QgisApp::createPopupMenu()
 }
 
 
-void QgisApp::showSystemNotification( const QString title, const QString message )
+void QgisApp::showSystemNotification( const QString &title, const QString &message )
 {
   // Menubar icon is hidden by default. Show to enable notification bubbles
   mTray->show();

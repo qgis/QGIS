@@ -19,7 +19,7 @@
 ///@cond PRIVATE
 
 
-QgsGeoPackageRasterWriterTask::QgsGeoPackageRasterWriterTask( const QgsMimeDataUtils::Uri sourceUri, const QString destinationPath )
+QgsGeoPackageRasterWriterTask::QgsGeoPackageRasterWriterTask( const QgsMimeDataUtils::Uri &sourceUri, const QString &destinationPath )
   : QgsTask( tr( "Saving %1" ).arg( destinationPath ), QgsTask::CanCancel )
   , mWriter( sourceUri, destinationPath )
   , mFeedback( new QgsFeedback() )

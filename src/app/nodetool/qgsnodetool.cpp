@@ -1784,7 +1784,7 @@ void QgsNodeTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
 }
 
 
-void QgsNodeTool::validationErrorFound( QgsGeometry::Error e )
+void QgsNodeTool::validationErrorFound( const QgsGeometry::Error &e )
 {
   QgsGeometryValidator *validator = qobject_cast<QgsGeometryValidator *>( sender() );
   if ( !validator )

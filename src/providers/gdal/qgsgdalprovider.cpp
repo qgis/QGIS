@@ -103,7 +103,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
   return true;
 }
 
-QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
+QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   : QgsRasterDataProvider( uri )
   , mUpdate( false )
   , mValid( false )

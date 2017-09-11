@@ -90,7 +90,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void deleteNodeEditorSelection();
 
-    void validationErrorFound( QgsGeometry::Error e );
+    void validationErrorFound( const QgsGeometry::Error &e );
 
     void validationFinished();
 
