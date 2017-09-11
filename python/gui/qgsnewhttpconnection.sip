@@ -21,9 +21,27 @@ class QgsNewHttpConnection : QDialog
 #include "qgsnewhttpconnection.h"
 %End
   public:
-    QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0, const QString &baseKey = "qgis/connections-wms/", const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
+    enum ConnectionType
+    {
+      ConnectionWfs,
+      ConnectionWms,
+      ConnectionWcs,
+      ConnectionOther,
+    };
+    typedef QFlags<QgsNewHttpConnection::ConnectionType> ConnectionTypes;
+
+
+    QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0,
+                          QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
+                          const QString &baseKey = "qgis/connections-wms/",
+                          const QString &connectionName = QString(),
+                          Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
-Constructor
+ Constructor for QgsNewHttpConnection.
+
+ The ``types`` argument dictates which connection type settings should be
+ shown in the dialog.
 %End
 
   public slots:
@@ -33,6 +51,9 @@ Constructor
     void on_txtUrl_textChanged( const QString & );
 
 };
+
+QFlags<QgsNewHttpConnection::ConnectionType> operator|(QgsNewHttpConnection::ConnectionType f1, QFlags<QgsNewHttpConnection::ConnectionType> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

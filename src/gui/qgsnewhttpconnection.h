@@ -34,8 +34,32 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     Q_OBJECT
 
   public:
-    //! Constructor
-    QgsNewHttpConnection( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &baseKey = "qgis/connections-wms/", const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
+    /**
+     * Available connection types for configuring in the dialog.
+     * \since QGIS 3.0
+     */
+    enum ConnectionType
+    {
+      ConnectionWfs = 1 << 1, //!< WFS connection
+      ConnectionWms = 1 << 2, //!< WMS connection
+      ConnectionWcs = 1 << 3, //!< WCS connection
+      ConnectionOther = 1 << 4, //!< Other connection type
+    };
+    Q_DECLARE_FLAGS( ConnectionTypes, ConnectionType )
+
+    /**
+     * Constructor for QgsNewHttpConnection.
+     *
+     * The \a types argument dictates which connection type settings should be
+     * shown in the dialog.
+     *
+     */
+    QgsNewHttpConnection( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                          QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
+                          const QString &baseKey = "qgis/connections-wms/",
+                          const QString &connectionName = QString(),
+                          Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   public slots:
     // Saves the connection to ~/.qt/qgisrc
@@ -44,6 +68,9 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void on_txtUrl_textChanged( const QString & );
 
   private:
+
+    ConnectionTypes mTypes = ConnectionWms;
+
     QString mBaseKey;
     QString mCredentialsBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
@@ -51,5 +78,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void showHelp();
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNewHttpConnection::ConnectionTypes )
 
 #endif //  QGSNEWHTTPCONNECTION_H

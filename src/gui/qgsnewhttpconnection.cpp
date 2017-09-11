@@ -25,12 +25,11 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 
-QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString &baseKey, const QString &connName, Qt::WindowFlags fl )
+QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &baseKey, const QString &connectionName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
+  , mTypes( types )
   , mBaseKey( baseKey )
   , mOriginalConnName( connName )
-
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );
@@ -64,16 +63,16 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   mAuthConfigSelect = new QgsAuthConfigSelect( this );
   tabAuth->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
 
-  if ( !connName.isEmpty() )
+  if ( !connectionName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
 
     QgsSettings settings;
 
-    QString key = mBaseKey + connName;
-    QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connName;
-    txtName->setText( connName );
+    QString key = mBaseKey + connectionName;
+    QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
+    txtName->setText( connectionName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
     cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
@@ -127,10 +126,10 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     }
   }
 
-  if ( mBaseKey != QLatin1String( "qgis/connections-wms/" ) )
+  if ( !( mTypes & ConnectionWms ) )
   {
-    if ( mBaseKey != QLatin1String( "qgis/connections-wcs/" ) &&
-         mBaseKey != QLatin1String( "qgis/connections-wfs/" ) )
+    if ( !( mTypes & ConnectionWcs ) &&
+         !( mTypes & ConnectionWfs ) )
     {
       cbxIgnoreAxisOrientation->setVisible( false );
       cbxInvertAxisOrientation->setVisible( false );
@@ -138,12 +137,12 @@ QgsNewHttpConnection::QgsNewHttpConnection(
       mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
     }
 
-    if ( mBaseKey == QLatin1String( "qgis/connections-wfs/" ) )
+    if ( mTypes & ConnectionWfs )
     {
       cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation (WFS 1.1/WFS 2.0)" ) );
     }
 
-    if ( mBaseKey == QLatin1String( "qgis/connections-wcs/" ) )
+    if ( mTypes & ConnectionWcs )
     {
       cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
       cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation" ) );
@@ -170,7 +169,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     mGroupBox->layout()->removeWidget( lblReferer );
   }
 
-  if ( mBaseKey != QLatin1String( "qgis/connections-wfs/" ) )
+  if ( !( mTypes & ConnectionWfs ) )
   {
     lblVersion->setVisible( false );
     cmbVersion->setVisible( false );
@@ -186,7 +185,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   adjustSize();
   resize( w, height() );
 
-  on_txtName_textChanged( connName );
+  on_txtName_textChanged( connectionName );
 }
 
 void QgsNewHttpConnection::on_txtName_textChanged( const QString &text )

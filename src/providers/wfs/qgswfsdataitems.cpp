@@ -116,7 +116,7 @@ QList<QAction *> QgsWfsConnectionItem::actions()
 
 void QgsWfsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS, mName );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, mName );
   nc.setWindowTitle( tr( "Modify WFS Connection" ) );
 
   if ( nc.exec() )
@@ -191,7 +191,7 @@ void QgsWfsRootItem::connectionsChanged()
 
 void QgsWfsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
   nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   if ( nc.exec() )

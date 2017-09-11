@@ -70,7 +70,7 @@ void QgsAmsRootItem::connectionsChanged()
 
 void QgsAmsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
   nc.setWindowTitle( tr( "Create a New ArcGisMapServer Connection" ) );
 
   if ( nc.exec() )
@@ -153,7 +153,7 @@ QList<QAction *> QgsAmsConnectionItem::actions()
 
 void QgsAmsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
   nc.setWindowTitle( tr( "Modify ArcGisMapServer Connection" ) );
 
   if ( nc.exec() )
