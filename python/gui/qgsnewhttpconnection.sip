@@ -55,10 +55,41 @@ class QgsNewHttpConnection : QDialog
  and appearance.
 %End
 
+    QString name() const;
+%Docstring
+ Returns the current connection name.
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    QString url() const;
+%Docstring
+ Returns the current connection url.
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
   public slots:
 
     virtual void accept();
 
+
+  protected:
+
+    virtual bool validate();
+%Docstring
+ Returns true if dialog settings are valid, or false if current
+ settings are not valid and the dialog should not be acceptable.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    QPushButton *testConnectButton();
+%Docstring
+ Returns the "test connection" button.
+.. versionadded:: 3.0
+ :rtype: QPushButton
+%End
 
 };
 

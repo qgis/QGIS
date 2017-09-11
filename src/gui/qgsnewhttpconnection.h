@@ -74,6 +74,18 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
                           QgsNewHttpConnection::Flags flags = 0,
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
+    /**
+     * Returns the current connection name.
+     * \since QGIS 3.0
+     */
+    QString name() const;
+
+    /**
+     * Returns the current connection url.
+     * \since QGIS 3.0
+     */
+    QString url() const;
+
   public slots:
 
     void accept() override;
@@ -82,6 +94,22 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
     void nameChanged( const QString & );
     void urlChanged( const QString & );
+    void updateOkButtonState();
+
+  protected:
+
+    /**
+     * Returns true if dialog settings are valid, or false if current
+     * settings are not valid and the dialog should not be acceptable.
+     * \since QGIS 3.0
+     */
+    virtual bool validate();
+
+    /**
+     * Returns the "test connection" button.
+     * \since QGIS 3.0
+     */
+    QPushButton *testConnectButton();
 
   private:
 

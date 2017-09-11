@@ -190,7 +190,21 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::nameChanged );
   connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::urlChanged );
 
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::updateOkButtonState );
+  connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::updateOkButtonState );
+
   nameChanged( connectionName );
+}
+
+QString QgsNewHttpConnection::name() const
+{
+  return txtName->text();
+}
+
+QString QgsNewHttpConnection::url() const
+{
+  return txtUrl->text();
 }
 
 void QgsNewHttpConnection::nameChanged( const QString &text )
@@ -205,11 +219,16 @@ void QgsNewHttpConnection::urlChanged( const QString &text )
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
 }
 
-void QgsNewHttpConnection::accept()
+void QgsNewHttpConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && !txtUrl->text().isEmpty();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
+bool QgsNewHttpConnection::validate()
 {
   QgsSettings settings;
   QString key = mBaseKey + txtName->text();
-  QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + txtName->text();
 
   // warn if entry was renamed to an existing connection
   if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
@@ -219,7 +238,7 @@ void QgsNewHttpConnection::accept()
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
-    return;
+    return false;
   }
 
   if ( !txtPassword->text().isEmpty() &&
@@ -228,8 +247,25 @@ void QgsNewHttpConnection::accept()
                               trUtf8( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
-    return;
+    return false;
   }
+
+  return true;
+}
+
+QPushButton *QgsNewHttpConnection::testConnectButton()
+{
+  return mTestConnectionButton;
+}
+
+void QgsNewHttpConnection::accept()
+{
+  QgsSettings settings;
+  QString key = mBaseKey + txtName->text();
+  QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + txtName->text();
+
+  if ( !validate() )
+    return;
 
   // on rename delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )

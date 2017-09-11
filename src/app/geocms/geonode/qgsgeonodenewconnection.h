@@ -18,11 +18,9 @@
 #ifndef QGSGEONODENEWCONNECTION_H
 #define QGSGEONODENEWCONNECTION_H
 
-#include "ui_qgsnewgeonodeconnectionbase.h"
-#include "qgsguiutils.h"
-#include "qgsauthconfigselect.h"
+#include "qgsnewhttpconnection.h"
 
-class QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnectionBase
+class QgsGeoNodeNewConnection : public QgsNewHttpConnection
 {
     Q_OBJECT
 
@@ -30,20 +28,15 @@ class QgsGeoNodeNewConnection : public QDialog, private Ui::QgsNewGeoNodeConnect
     //! Constructor
     QgsGeoNodeNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    //! Returns the new connection name
-    QString name() const;
-
   public slots:
-    void accept() override;
-    void okButtonBehavior( const QString & );
+
     //! Test the connection using the parameters supplied
     void testConnection();
 
-  private:
-    QString mBaseKey;
-    QString mCredentialsBaseKey;
-    QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
+  protected:
+
+    bool validate() override;
+
 };
 
 #endif //QGSGEONODENEWCONNECTION_H
