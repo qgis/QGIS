@@ -7,7 +7,6 @@
  ************************************************************************/
 
 
-
 class QgsSingleSymbolRenderer : QgsFeatureRenderer
 {
 

@@ -20,8 +20,7 @@
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgsexpression.h"
-
-class QgsDataDefinedSizeLegend;
+#include "qgsdatadefinedsizelegend.h"
 
 /** \ingroup core
  * \class QgsSingleSymbolRenderer

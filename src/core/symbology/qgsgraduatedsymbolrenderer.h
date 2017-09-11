@@ -21,9 +21,10 @@
 #include "qgssymbol.h"
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
+#include "qgsdatadefinedsizelegend.h"
+
 #include <QRegExp>
 
-class QgsDataDefinedSizeLegend;
 
 /** \ingroup core
  * \class QgsRendererRange

@@ -21,10 +21,10 @@
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgscolorramp.h"
+#include "qgsdatadefinedsizelegend.h"
 
 #include <QHash>
 
-class QgsDataDefinedSizeLegend;
 class QgsVectorLayer;
 
 /** \ingroup core
