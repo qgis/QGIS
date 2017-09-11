@@ -97,8 +97,8 @@ class GEOSInit
 
   private:
 
-    GEOSInit( const GEOSInit &rh );
-    GEOSInit &operator=( const GEOSInit &rh );
+    GEOSInit( const GEOSInit &rh ) = delete;
+    GEOSInit &operator=( const GEOSInit &rh ) = delete;
 };
 
 static GEOSInit geosinit;
@@ -127,8 +127,8 @@ class GEOSGeomScopedPtr
     GEOSGeometry *mGeom = nullptr;
 
   private:
-    GEOSGeomScopedPtr( const GEOSGeomScopedPtr &rh );
-    GEOSGeomScopedPtr &operator=( const GEOSGeomScopedPtr &rh );
+    GEOSGeomScopedPtr( const GEOSGeomScopedPtr &rh ) = delete;
+    GEOSGeomScopedPtr &operator=( const GEOSGeomScopedPtr &rh ) = delete;
 };
 
 QgsGeos::QgsGeos( const QgsAbstractGeometry *geometry, double precision )

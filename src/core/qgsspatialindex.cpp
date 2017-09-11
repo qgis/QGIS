@@ -226,7 +226,7 @@ class QgsSpatialIndexData : public QSharedData
 
   private:
 
-    QgsSpatialIndexData &operator=( const QgsSpatialIndexData &rh );
+    QgsSpatialIndexData &operator=( const QgsSpatialIndexData &rh ) = delete;
 };
 
 // -------------------------------------------------------------------------
