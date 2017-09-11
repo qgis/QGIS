@@ -578,7 +578,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     {
       point.setX( previousPt.x() + mXConstraint->value() );
     }
-    if ( !mSnappedSegment.isEmpty() && !mXConstraint->isLocked() )
+    if ( !mSnappedSegment.isEmpty() && !mYConstraint->isLocked() )
     {
       // intersect with snapped segment line at X ccordinate
       const double dx = mSnappedSegment.at( 1 ).x() - mSnappedSegment.at( 0 ).x();
@@ -605,7 +605,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     {
       point.setY( previousPt.y() + mYConstraint->value() );
     }
-    if ( !mSnappedSegment.isEmpty() && !mYConstraint->isLocked() )
+    if ( !mSnappedSegment.isEmpty() && !mXConstraint->isLocked() )
     {
       // intersect with snapped segment line at Y ccordinate
       const double dy = mSnappedSegment.at( 1 ).y() - mSnappedSegment.at( 0 ).y();
