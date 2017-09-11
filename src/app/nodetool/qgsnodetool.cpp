@@ -1291,7 +1291,7 @@ void QgsNodeTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint )
   QgsPointXY pt0 = geom.vertexAt( adjacentVertexIndexToEndpoint( geom, mMouseAtEndpoint->vertexId ) );
   QgsPointXY pt1 = geom.vertexAt( mMouseAtEndpoint->vertexId );
 
-  cadDockWidget()->setPoints( QList<QgsPointXY>() << pt0 << pt1 );
+  cadDockWidget()->setPoints( QList<QgsPointXY>() << pt0 << pt1 << pt1 );
 }
 
 void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint )
