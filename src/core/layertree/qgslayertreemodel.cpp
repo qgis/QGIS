@@ -1423,7 +1423,7 @@ Qt::ItemFlags QgsLayerTreeModel::legendNodeFlags( QgsLayerTreeModelLegendNode *n
 
 bool QgsLayerTreeModel::legendEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const
 {
-  return mLegend[nodeLayer].embeddedNodeInParent != nullptr;
+  return static_cast< bool >( mLegend[nodeLayer].embeddedNodeInParent );
 }
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeModel::legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const

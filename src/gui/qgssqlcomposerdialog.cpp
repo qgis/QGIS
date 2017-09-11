@@ -268,7 +268,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   if ( sql.hasParserError() )
     return;
   const QgsSQLStatement::NodeSelect *nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
-  if ( nodeSelect == nullptr )
+  if ( !nodeSelect )
     return;
   mDistinct = nodeSelect->distinct();
   QList<QgsSQLStatement::NodeSelectedColumn *> columns = nodeSelect->columns();
@@ -292,7 +292,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
 
   QString whereText;
   QgsSQLStatement::Node *where = nodeSelect->where();
-  if ( where != nullptr )
+  if ( where )
     whereText = where->dump();
 
   QString orderText;

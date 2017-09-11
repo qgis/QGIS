@@ -147,7 +147,7 @@ void QgsDwgImporter::startTransaction()
 
 void QgsDwgImporter::commitTransaction()
 {
-  Q_ASSERT( mDs != nullptr );
+  Q_ASSERT( mDs );
 
   if ( mInTransaction && GDALDatasetCommitTransaction( mDs ) != OGRERR_NONE )
   {
@@ -1402,7 +1402,7 @@ bool QgsDwgImporter::curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoun
   {
     size_t i0 = i % vertexnum;
 
-    Q_ASSERT( data.vertlist[i0] != nullptr );
+    Q_ASSERT( data.vertlist[i0] );
     QgsDebugMsgLevel( QString( "%1: %2,%3 bulge:%4" ).arg( i ).arg( data.vertlist[i0]->x ).arg( data.vertlist[i0]->y ).arg( data.vertlist[i0]->bulge ), 5 );
 
     QgsPoint p( QgsWkbTypes::PointZ, data.vertlist[i0]->x, data.vertlist[i0]->y, data.elevation );

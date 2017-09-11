@@ -1201,7 +1201,7 @@ bool QgsOgrProvider::isValid() const
 // may accept any geometry type)
 OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
 {
-  if ( hGeom == nullptr )
+  if ( !hGeom )
     return hGeom;
   OGRwkbGeometryType layerGeomType = OGR_L_GetGeomType( ogrLayer );
   OGRwkbGeometryType flattenLayerGeomType = wkbFlatten( layerGeomType );
@@ -3234,10 +3234,10 @@ void QgsOgrProviderUtils::OGRDestroyWrapper( OGRDataSourceH ogrDataSource )
     OGRLayerH hSqlLyr = OGR_DS_ExecuteSQL( ogrDataSource,
                                            "PRAGMA journal_mode = delete",
                                            nullptr, nullptr );
-    if ( hSqlLyr != nullptr )
+    if ( hSqlLyr )
     {
       OGRFeatureH hFeat = OGR_L_GetNextFeature( hSqlLyr );
-      if ( hFeat != nullptr )
+      if ( hFeat )
       {
         const char *pszRet = OGR_F_GetFieldAsString( hFeat, 0 );
         bSuccess = EQUAL( pszRet, "delete" );
@@ -4004,7 +4004,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   OGRFeatureH hFeature = OGR_L_GetNextFeature( hLayer );
   bool bNew = true;
 
-  if ( hFeature != nullptr )
+  if ( hFeature )
   {
     QgsSettings settings;
     // Only used in tests. Do not define it for interactive implication

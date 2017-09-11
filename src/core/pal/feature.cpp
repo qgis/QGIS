@@ -1194,7 +1194,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     }
 
     LabelPosition *slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
-    if ( slp == nullptr )
+    if ( !slp )
       continue;
 
     // If we placed too many characters upside down
@@ -1208,7 +1208,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
         slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
       }
     }
-    if ( slp == nullptr )
+    if ( !slp )
       continue;
 
     // evaluate cost

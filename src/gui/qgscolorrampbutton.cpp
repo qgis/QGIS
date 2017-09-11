@@ -176,7 +176,7 @@ void QgsColorRampButton::showColorRampDialog()
 
 void QgsColorRampButton::setToDefaultColorRamp()
 {
-  if ( mDefaultColorRamp == nullptr )
+  if ( !mDefaultColorRamp )
   {
     return;
   }
@@ -249,7 +249,7 @@ void QgsColorRampButton::prepareMenu()
   mMenu->addSeparator();
 
   //show default color option if set
-  if ( mDefaultColorRamp != nullptr )
+  if ( mDefaultColorRamp )
   {
     QAction *defaultColorRampAction = new QAction( tr( "Default color ramp" ), this );
     defaultColorRampAction->setIcon( createMenuIcon( mDefaultColorRamp ) );
@@ -509,7 +509,7 @@ void QgsColorRampButton::setRandomColorRamp()
 void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
 {
   QgsColorRamp *backgroundColorRamp = colorramp;
-  if ( colorramp == nullptr )
+  if ( !colorramp )
   {
     backgroundColorRamp = mColorRamp;
   }
@@ -625,7 +625,7 @@ bool QgsColorRampButton::showNull() const
 
 bool QgsColorRampButton::isNull() const
 {
-  return mColorRamp == nullptr;
+  return !mColorRamp;
 }
 
 void QgsColorRampButton::rampWidgetUpdated()

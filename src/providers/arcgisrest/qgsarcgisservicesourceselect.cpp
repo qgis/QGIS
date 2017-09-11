@@ -112,7 +112,7 @@ QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
 void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
 {
   QLayoutItem *item = nullptr;
-  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) != nullptr )
+  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) )
   {
     delete item->widget();
     delete item;
