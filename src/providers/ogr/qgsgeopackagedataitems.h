@@ -19,6 +19,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 
+
 /**
  * \brief The QgsGeoPackageAbstractLayerItem class is the base class for GeoPackage raster and vector layers
  */
@@ -69,7 +70,6 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 
   public:
     QgsGeoPackageConnectionItem( QgsDataItem *parent, QString name, QString path );
-
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
@@ -116,10 +116,6 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
     void connectionsChanged();
     void createDatabase();
 #endif
-
-  private:
-    bool storeConnection( const QString &path );
-
 };
 
 

@@ -14,20 +14,26 @@
  ***************************************************************************/
 
 #include "qgsogrdataitems.h"
+#include "qgsogrdbconnection.h"
 
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 
 #include <QFileInfo>
 #include <QTextStream>
 #include <QAction>
 #include <QMessageBox>
+#include <QInputDialog>
+#include <QFileDialog>
 
 #include <ogr_srs_api.h>
 #include <cpl_error.h>
 #include <cpl_conv.h>
+#include <gdal.h>
 
 // these are defined in qgsogrprovider.cpp
 QGISEXTERN QStringList fileExtensions();
@@ -105,6 +111,156 @@ bool QgsOgrLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   }
 
   return true;
+}
+
+QgsLayerItem::LayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometryType )
+{
+  if ( geometryType.contains( QStringLiteral( "Point" ), Qt::CaseInsensitive ) )
+  {
+    return QgsLayerItem::LayerType::Point;
+  }
+  else if ( geometryType.contains( QStringLiteral( "Polygon" ), Qt::CaseInsensitive ) )
+  {
+    return QgsLayerItem::LayerType::Polygon;
+  }
+  else if ( geometryType.contains( QStringLiteral( "LineString" ), Qt::CaseInsensitive ) )
+  {
+    return QgsLayerItem::LayerType::Line;
+  }
+  else if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
+  {
+    return QgsLayerItem::LayerType::Vector;
+  }
+  // To be moved in a parent class that would also work for gdal and rasters
+  else if ( geometryType.contains( QStringLiteral( "Raster" ), Qt::CaseInsensitive ) )
+  {
+    return QgsLayerItem::LayerType::Raster;
+  }
+  return QgsLayerItem::LayerType::TableLayer;
+}
+
+QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, const QString &driver )
+{
+
+  QList<QgsOgrDbLayerInfo *> children;
+
+  // Vector layers
+  QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ) );
+  if ( ! layer.isValid( ) )
+  {
+    QgsDebugMsgLevel( tr( "Layer is not a valid %1 Vector layer %2" ).arg( path ), 3 );
+  }
+  else
+  {
+    // Collect mixed-geom layers
+    QMultiMap<int, QStringList> subLayersMap;
+    const QStringList subLayersList( layer.dataProvider()->subLayers( ) );
+    for ( const QString &descriptor : subLayersList )
+    {
+      QStringList pieces = descriptor.split( ':' );
+      subLayersMap.insert( pieces[0].toInt(), pieces );
+    }
+    int prevIdx = -1;
+    for ( const int &idx : subLayersMap.keys( ) )
+    {
+      if ( idx == prevIdx )
+      {
+        continue;
+      }
+      prevIdx = idx;
+      QList<QStringList> values = subLayersMap.values( idx );
+      for ( int i = 0; i < values.size(); ++i )
+      {
+        QStringList pieces = values.at( i );
+        QString layerId = pieces[0];
+        QString name = pieces[1];
+        // QString featuresCount = pieces[2]; // Not used
+        QString geometryType = pieces[3];
+        QString geometryColumn = pieces[4];
+        QgsLayerItem::LayerType layerType;
+        layerType = QgsOgrLayerItem::layerTypeFromDb( geometryType );
+        // example URI for mixed-geoms geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
+        // example URI for mixed-geoms attr table:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layername=MyLayer|layerid=7'
+        // example URI for single geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=6'
+        QString uri;
+        if ( layerType != QgsLayerItem::LayerType::NoType )
+        {
+          if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
+          {
+            QgsDebugMsgLevel( QStringLiteral( "Layer %1 is a geometry collection: skipping %2" ).arg( name, path ), 3 );
+          }
+          else
+          {
+            if ( values.size() > 1 )
+            {
+              uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( path, layerId, geometryType );
+            }
+            else
+            {
+              uri = QStringLiteral( "%1|layerid=%2" ).arg( path, layerId );
+            }
+            QgsDebugMsgLevel( QStringLiteral( "Adding %1 Vector item %2 %3 %4" ).arg( driver, name, uri, geometryType ), 3 );
+            children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, layerType ) );
+          }
+        }
+        else
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Layer type is not a supported %1 Vector layer %2" ).arg( driver, path ), 3 );
+          uri = QStringLiteral( "%1|layerid=%2|layername=%3" ).arg( path, layerId, name );
+          children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, QgsLayerItem::LayerType::TableLayer ) );
+        }
+        QgsDebugMsgLevel( QStringLiteral( "Adding %1 Vector item %2 %3 %4" ).arg( driver, name, uri, geometryType ), 3 );
+      }
+    }
+  }
+  // Raster layers
+  QgsRasterLayer rlayer( path, QStringLiteral( "gdal_tmp" ), QStringLiteral( "gdal" ), false );
+  if ( rlayer.dataProvider()->subLayers( ).size() > 0 )
+  {
+    const QStringList layers( rlayer.dataProvider()->subLayers( ) );
+    for ( const QString &uri : layers )
+    {
+      QStringList pieces = uri.split( ':' );
+      QString name = pieces.value( pieces.length() - 1 );
+      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
+      children.append( new QgsOgrDbLayerInfo( path, uri, name, QStringLiteral( "" ), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
+    }
+  }
+  else if ( rlayer.isValid( ) )
+  {
+    // Get the identifier
+    GDALAllRegister();
+    // do not print errors, but write to debug
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    CPLErrorReset();
+    GDALDatasetH hDS = GDALOpen( path.toUtf8().constData(), GA_ReadOnly );
+    CPLPopErrorHandler();
+
+    if ( ! hDS )
+    {
+      QgsDebugMsg( QString( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+
+    }
+    else
+    {
+      QString uri( QStringLiteral( "%1:%1" ).arg( driver, path ) );
+      QString name = GDALGetMetadataItem( hDS, "IDENTIFIER", NULL );
+      GDALClose( hDS );
+      // Fallback: will not be able to delete the table
+      if ( name.isEmpty() )
+      {
+        name = QFileInfo( path ).fileName();
+      }
+      else
+      {
+        uri += QStringLiteral( ":%1" ).arg( name );
+      }
+
+      QgsDebugMsgLevel( QStringLiteral( "Adding %1 Raster item %2 %3" ).arg( driver, name, path ), 3 );
+      children.append( new QgsOgrDbLayerInfo( path, uri, name, QStringLiteral( "" ), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
+    }
+  }
+  return children;
 }
 
 QString QgsOgrLayerItem::layerName() const
@@ -265,6 +421,38 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 
   return children;
 }
+
+bool QgsOgrDataCollectionItem::storeConnection( const QString &path, const QString &ogrDriverName )
+{
+  QFileInfo fileInfo( path );
+  QString connName = fileInfo.fileName();
+  if ( ! path.isEmpty() )
+  {
+    bool ok = true;
+    while ( ok && ! QgsOgrDbConnection( connName, ogrDriverName ).path( ).isEmpty( ) )
+    {
+
+      connName = QInputDialog::getText( nullptr, tr( "Cannot add connection '%1'" ).arg( connName ),
+                                        tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
+                                        QLatin1String( "" ), &ok );
+    }
+    if ( ok && ! connName.isEmpty() )
+    {
+      QgsOgrDbConnection connection( connName, ogrDriverName );
+      connection.setPath( path );
+      connection.save();
+      return true;
+    }
+  }
+  return false;
+}
+
+bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName )
+{
+  QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open %1" ).arg( name ), "", extensions );
+  return storeConnection( path, ogrDriverName );
+}
+
 
 // ---------------------------------------------------------------------------
 

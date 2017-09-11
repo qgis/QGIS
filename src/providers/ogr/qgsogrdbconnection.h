@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgeopackageconnection.h  -  GeoPackage connection
+    qgsogrdbconnection.h  -  QgsOgrDbConnection
                              -------------------
     begin                : August 2017
     copyright            : (C) 2017 by Alessandro Pasotti
@@ -15,32 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEOPACKAGECONNECTION_H
-#define QGSGEOPACKAGECONNECTION_H
+#ifndef QGSGOGRDBSCONNECTION_H
+#define QGSGOGRDBSCONNECTION_H
 
 #include "qgsdatasourceuri.h"
 
 #include <QStringList>
 
 /*!
- * \brief   Connections management
+ * \brief  Generic OGR DB Connections management
  */
-class QgsGeoPackageConnection : public QObject
+class QgsOgrDbConnection : public QObject
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    explicit QgsGeoPackageConnection( const QString &connName );
+    explicit QgsOgrDbConnection( const QString &connName, const QString &settingsKey );
 
-    ~QgsGeoPackageConnection();
+    ~QgsOgrDbConnection();
 
-    static QStringList connectionList();
-
-    static void deleteConnection( const QString &name );
-
-    static QString selectedConnection();
-    static void setSelectedConnection( const QString &name );
+    static const QStringList connectionList( const QString &settingsKey );
+    static void deleteConnection( const QString &connName, const QString &settingsKey );
+    static QString selectedConnection( const QString &settingsKey );
+    static void setSelectedConnection( const QString &connName, const QString &settingsKey );
 
   public:
     //! Return the uri
@@ -54,14 +52,14 @@ class QgsGeoPackageConnection : public QObject
     void setPath( const QString &path );
     //! Store the connection data in the settings
     void save();
-    const static QString SETTINGS_PREFIX;
 
   private:
-
-    static QString connectionsPath( );
+    static QString fullKey( const QString &settingsKey );
+    static QString connectionsPath( const QString &settingsKey );
     QString mConnName;
     QString mPath;
+    QString mSettingsKey;
 
 };
 
-#endif // QGSGEOPACKAGECONNECTION_H
+#endif // QGSGOGRDBSCONNECTION_H

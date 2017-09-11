@@ -414,7 +414,14 @@ Returns provider key
 
     static QString layerTypeAsString( const LayerType &layerType );
 %Docstring
- Returns the string representatio of the given ``layerType``
+ Returns the string representation of the given ``layerType``
+.. versionadded:: 3
+ :rtype: str
+%End
+
+    static QString iconName( const LayerType &layerType );
+%Docstring
+ Returns the icon name of the given ``layerType``
 .. versionadded:: 3
  :rtype: str
 %End

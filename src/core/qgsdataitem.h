@@ -384,10 +384,15 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      */
     virtual QString comments() const { return QString(); }
 
-    /** Returns the string representatio of the given \a layerType
+    /** Returns the string representation of the given \a layerType
      * \since QGIS 3
      */
     static QString layerTypeAsString( const LayerType &layerType );
+
+    /** Returns the icon name of the given \a layerType
+     * \since QGIS 3
+     */
+    static QString iconName( const LayerType &layerType );
 
   protected:
 
