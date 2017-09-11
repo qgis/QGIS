@@ -55,6 +55,7 @@ from .VectorGrid import VectorGrid
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .ExtractByLocation import ExtractByLocation
+from .ExtractByExpression import ExtractByExpression
 from .PointsInPolygon import PointsInPolygon
 from .PointsInPolygonUnique import PointsInPolygonUnique
 from .PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -192,7 +193,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         ZonalStatistics(), PointsFromPolygons(),
                         PointsFromLines(), RandomPointsExtent(),
                         RandomPointsLayer(), RandomPointsPolygonsFixed(),
-                        RandomPointsPolygonsVariable(),
+                        RandomPointsPolygonsVariable(), ExtractByExpression(),
                         RandomPointsAlongLines(), PointsToPaths(),
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
