@@ -516,23 +516,6 @@ void QgsVectorLayer::selectAll()
   selectByIds( allFeatureIds() );
 }
 
-QgsFeatureIds QgsVectorLayer::allFeatureIds() const
-{
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFlags( QgsFeatureRequest::NoGeometry )
-                                        .setSubsetOfAttributes( QgsAttributeList() ) );
-
-  QgsFeatureIds ids;
-
-  QgsFeature fet;
-  while ( fit.nextFeature( fet ) )
-  {
-    ids << fet.id();
-  }
-
-  return ids;
-}
-
 void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle &rect )
 {
   // normalize the rectangle

@@ -230,7 +230,10 @@ def createTest(text):
             else:
                 params[param.name()] = float(token)
         elif isinstance(param, QgsProcessingParameterEnum):
-            params[param.name()] = int(token)
+            if isinstance(token, list):
+                params[param.name()] = [int(t) for t in token]
+            else:
+                params[param.name()] = int(token)
         elif token:
             if token[0] == '"':
                 token = token[1:]

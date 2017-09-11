@@ -608,9 +608,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Select all the features
     void selectAll();
 
-    //! Get all feature Ids
-    QgsFeatureIds allFeatureIds() const;
-
     /**
      * Invert selection of features found within the search rectangle (in layer's coordinates)
      *

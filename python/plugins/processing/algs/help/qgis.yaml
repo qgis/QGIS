@@ -189,9 +189,6 @@ qgis:extractbyexpression: >
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
 
-qgis:extractbylocation: >
-  This algorithm creates a new vector layer that only contains matching features from an input layer. The criteria for adding features to the resulting layer is defined based on the spatial relationship between each feature and the features in an additional layer.
-
 qgis:extractnodes: >
   This algorithm takes a line or polygon layer and generates a point layer with points representing the nodes in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
 
@@ -518,10 +515,6 @@ qgis:selectbyexpression: >
   This algorithm creates a selection in a vector layer. The criteria for selecting features is based on a QGIS expression.
 
   For more information about expressions see the <a href ="{qgisdocs}/user_manual/working_with_vector/expression.html">user manual</a>
-
-
-qgis:selectbylocation: >
-  This algorithm creates a selection in a vector layer. The criteria for selecting features is based on the spatial relationship between each feature and the features in an additional layer.
 
 qgis:setmvalue: >
   This algorithm sets the M value for geometries in a layer.

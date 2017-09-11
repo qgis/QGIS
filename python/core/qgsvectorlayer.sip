@@ -576,12 +576,6 @@ Select not selected features and deselect selected ones
 Select all the features
 %End
 
-    QgsFeatureIds allFeatureIds() const;
-%Docstring
-Get all feature Ids
- :rtype: QgsFeatureIds
-%End
-
     void invertSelectionInRectangle( QgsRectangle &rect );
 %Docstring
  Invert selection of features found within the search rectangle (in layer's coordinates)

@@ -166,8 +166,6 @@ from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
-# from .ExtractByLocation import ExtractByLocation
-# from .SelectByLocation import SelectByLocation
 # from .SpatialJoin import SpatialJoin
 
 pluginPath = os.path.normpath(os.path.join(
@@ -183,8 +181,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         # algs = [
-        #         SelectByLocation(),
-        #         ExtractByLocation(),
         #         SpatialJoin(),
         #         ]
         algs = [AddTableField(),
