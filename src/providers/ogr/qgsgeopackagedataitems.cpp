@@ -54,11 +54,6 @@ QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, QString name,
   populate();
 }
 
-QgsGeoPackageRootItem::~QgsGeoPackageRootItem()
-{
-
-}
-
 QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;

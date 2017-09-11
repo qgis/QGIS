@@ -76,10 +76,6 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget()
 {
 }
 
-QgsComposerHtmlWidget::~QgsComposerHtmlWidget()
-{
-}
-
 void QgsComposerHtmlWidget::blockSignals( bool block )
 {
   mUrlLineEdit->blockSignals( block );

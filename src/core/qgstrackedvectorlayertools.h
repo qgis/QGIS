@@ -26,7 +26,7 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 {
     Q_OBJECT
   public:
-    QgsTrackedVectorLayerTools();
+    QgsTrackedVectorLayerTools() = default;
 
     bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const override;
     bool startEditing( QgsVectorLayer *layer ) const override;

@@ -30,10 +30,6 @@ QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle *tool, Qt::WindowFlags 
   setupUi( this );
 }
 
-QgsDisplayAngle::~QgsDisplayAngle()
-{
-}
-
 void QgsDisplayAngle::setValueInRadians( double value )
 {
   mValue = value;

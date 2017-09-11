@@ -30,9 +30,8 @@
 #include "qgssymbol.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
+#include "qgsdatadefinedsizelegend.h"
 
-
-class QgsDataDefinedSizeLegend;
 class QgsDiagram;
 class QgsDiagramRenderer;
 class QgsFeature;

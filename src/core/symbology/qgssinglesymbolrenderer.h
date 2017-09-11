@@ -31,7 +31,6 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsSingleSymbolRenderer( QgsSymbol *symbol SIP_TRANSFER );
-    ~QgsSingleSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;

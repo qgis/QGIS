@@ -227,10 +227,6 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
 
 // -----
 
-QgsMapLayerStyle::QgsMapLayerStyle()
-{
-}
-
 QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
   : mXmlData( xmlData )
 {

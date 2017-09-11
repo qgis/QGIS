@@ -104,11 +104,6 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
   connect( mFontButton, &QgsFontButton::changed, this, &QgsComposerScaleBarWidget::fontChanged );
 }
 
-QgsComposerScaleBarWidget::~QgsComposerScaleBarWidget()
-{
-
-}
-
 void QgsComposerScaleBarWidget::setGuiElements()
 {
   if ( !mComposerScaleBar )

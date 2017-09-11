@@ -48,10 +48,6 @@ QgsClipboard::QgsClipboard()
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );
 }
 
-QgsClipboard::~QgsClipboard()
-{
-}
-
 void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
 {
   if ( !src )

@@ -34,7 +34,7 @@ class QDomNode;
 class CORE_EXPORT QgsObjectCustomProperties
 {
   public:
-    QgsObjectCustomProperties();
+    QgsObjectCustomProperties() = default;
 
     //! Return list of stored keys
     QStringList keys() const;

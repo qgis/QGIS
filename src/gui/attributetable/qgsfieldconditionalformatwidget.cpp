@@ -52,10 +52,6 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   setPresets( defaultPresets() );
 }
 
-QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
-{
-}
-
 void QgsFieldConditionalFormatWidget::setExpression()
 {
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );

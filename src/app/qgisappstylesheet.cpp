@@ -31,10 +31,6 @@ QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   setActiveValues();
 }
 
-QgisAppStyleSheet::~QgisAppStyleSheet()
-{
-}
-
 QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 {
   QMap<QString, QVariant> opts;

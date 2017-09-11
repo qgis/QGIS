@@ -27,10 +27,6 @@ QgsMapToolCircularStringCurvePoint::QgsMapToolCircularStringCurvePoint( QgsMapTo
 
 }
 
-QgsMapToolCircularStringCurvePoint::~QgsMapToolCircularStringCurvePoint()
-{
-}
-
 void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

@@ -35,11 +35,6 @@ QgsMapToolCircularStringRadius::QgsMapToolCircularStringRadius( QgsMapToolCaptur
 
 }
 
-QgsMapToolCircularStringRadius::~QgsMapToolCircularStringRadius()
-{
-
-}
-
 void QgsMapToolCircularStringRadius::deactivate()
 {
   deleteRadiusSpinBox();

@@ -29,10 +29,6 @@ QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
 {
 }
 
-QgsMapToolReshape::~QgsMapToolReshape()
-{
-}
-
 void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer //todo: move this to a function in parent class to avoid duplication

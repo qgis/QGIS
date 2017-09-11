@@ -32,7 +32,7 @@ class CORE_EXPORT QgsRasterTransparency
 {
 
   public:
-    QgsRasterTransparency();
+    QgsRasterTransparency() = default;
 
     //
     // Structs to hold transparent pixel vlaues

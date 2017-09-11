@@ -33,9 +33,6 @@
 const char NS_SEPARATOR = '?';
 const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
 
-QgsGmlFeatureClass::QgsGmlFeatureClass()
-{
-}
 
 QgsGmlFeatureClass::QgsGmlFeatureClass( const QString &name, const QString &path )
   : mName( name )

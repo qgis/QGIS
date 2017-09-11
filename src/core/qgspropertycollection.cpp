@@ -359,9 +359,6 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
 // QgsPropertyCollectionStack
 //
 
-QgsPropertyCollectionStack::QgsPropertyCollectionStack()
-{}
-
 QgsPropertyCollectionStack::~QgsPropertyCollectionStack()
 {
   clear();

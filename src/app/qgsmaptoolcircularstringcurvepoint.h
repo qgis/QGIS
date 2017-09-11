@@ -25,7 +25,6 @@ class QgsMapToolCircularStringCurvePoint: public QgsMapToolAddCircularString
 
   public:
     QgsMapToolCircularStringCurvePoint( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolCircularStringCurvePoint();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

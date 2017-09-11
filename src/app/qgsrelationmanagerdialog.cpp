@@ -30,10 +30,6 @@ QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relation
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRelationManagerDialog::onSelectionChanged );
 }
 
-QgsRelationManagerDialog::~QgsRelationManagerDialog()
-{
-}
-
 void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layers )
 {
   mLayers = layers;

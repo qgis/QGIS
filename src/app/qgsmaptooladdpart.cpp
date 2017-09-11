@@ -35,10 +35,6 @@ QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddPart::stopCapturing );
 }
 
-QgsMapToolAddPart::~QgsMapToolAddPart()
-{
-}
-
 void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )

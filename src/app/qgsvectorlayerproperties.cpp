@@ -332,11 +332,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
 
-} // QgsVectorLayerProperties ctor
-
-
-QgsVectorLayerProperties::~QgsVectorLayerProperties()
-{
 }
 
 void QgsVectorLayerProperties::toggleEditing()

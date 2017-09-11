@@ -101,11 +101,6 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   refreshStatisticsMenu();
 }
 
-QgsStatisticalSummaryDockWidget::~QgsStatisticalSummaryDockWidget()
-{
-
-}
-
 void QgsStatisticalSummaryDockWidget::refreshStatistics()
 {
   if ( !mLayer || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )

@@ -69,8 +69,6 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     QgsClipboard();
 
-    virtual ~QgsClipboard();
-
     /**
      *  Place a copy of the selected features from the specified layer on
      *  the internal clipboard, destroying the previous contents.

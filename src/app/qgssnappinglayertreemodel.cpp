@@ -147,10 +147,6 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QObje
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
 }
 
-QgsSnappingLayerTreeModel::~QgsSnappingLayerTreeModel()
-{
-}
-
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );

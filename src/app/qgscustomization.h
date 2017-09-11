@@ -148,7 +148,7 @@ class APP_EXPORT QgsCustomization : public QObject
 
   protected:
     QgsCustomization();
-    ~QgsCustomization();
+    ~QgsCustomization() = default;
     QgsCustomizationDialog *pDialog = nullptr;
 
     bool mEnabled;

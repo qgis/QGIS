@@ -20,13 +20,6 @@
 
 #include <QPainter>
 
-
-
-QgsDiagram::QgsDiagram()
-{
-
-}
-
 QgsDiagram::QgsDiagram( const QgsDiagram &other )
 {
   Q_UNUSED( other );

@@ -52,10 +52,6 @@ bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
 // QgsPluginLayerRegistry
 //
 
-QgsPluginLayerRegistry::QgsPluginLayerRegistry()
-{
-}
-
 QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
 {
   if ( !mPluginLayerTypes.isEmpty() )

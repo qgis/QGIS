@@ -72,7 +72,7 @@ class CORE_EXPORT QgsCredentials
     QMutex *mutex() { return &mMutex; }
 
   protected:
-    QgsCredentials();
+    QgsCredentials() = default;
 
     //! request a password
     virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) = 0;

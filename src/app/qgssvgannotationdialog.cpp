@@ -56,11 +56,6 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog()
 
 }
 
-QgsSvgAnnotationDialog::~QgsSvgAnnotationDialog()
-{
-
-}
-
 void QgsSvgAnnotationDialog::on_mBrowseToolButton_clicked()
 {
   QString directory;

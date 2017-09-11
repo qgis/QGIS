@@ -36,7 +36,6 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
 
   public:
     QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair> &tabList, QWidget *parent = nullptr );
-    ~QgsAddTabOrGroup();
 
     QString name();
 

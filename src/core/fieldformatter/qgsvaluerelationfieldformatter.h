@@ -49,7 +49,7 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
 
     typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
 
-    QgsValueRelationFieldFormatter();
+    QgsValueRelationFieldFormatter() = default;
 
     QString id() const override;
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;

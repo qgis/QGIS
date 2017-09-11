@@ -85,11 +85,6 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsComposerObject::PictureSvgStrokeWidth );
 }
 
-QgsComposerPictureWidget::~QgsComposerPictureWidget()
-{
-
-}
-
 void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 {
   QgsSettings s;

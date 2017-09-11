@@ -28,7 +28,6 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     Q_OBJECT
   public:
     QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposerFrame *frame );
-    ~QgsComposerHtmlWidget();
 
   private slots:
     void on_mUrlLineEdit_editingFinished();

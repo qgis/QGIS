@@ -268,7 +268,7 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 {
   public:
 
-    QgsProjectColorScheme();
+    QgsProjectColorScheme() = default;
 
     virtual QString schemeName() const override { return QObject::tr( "Project colors" ); }
 

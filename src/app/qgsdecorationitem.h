@@ -46,8 +46,6 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     //! Constructor
     QgsDecorationItem( QObject *parent = nullptr );
 
-    virtual ~ QgsDecorationItem();
-
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool enabled() const { return mEnabled; }
 

@@ -46,11 +46,6 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
-QgsFormAnnotationDialog::~QgsFormAnnotationDialog()
-{
-
-}
-
 void QgsFormAnnotationDialog::applySettingsToItem()
 {
   //apply settings from embedded item widget

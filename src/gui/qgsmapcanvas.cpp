@@ -76,9 +76,7 @@ email                : sherman at mrcc.com
 class QgsMapCanvas::CanvasProperties
 {
   public:
-    CanvasProperties()
-
-    { }
+    CanvasProperties() = default;
 
     //!Flag to indicate status of mouse button
     bool mouseButtonDown{ false };

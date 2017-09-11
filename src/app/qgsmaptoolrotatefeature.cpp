@@ -78,10 +78,6 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
   setFocusProxy( mAngleSpinBox );
 }
 
-QgsAngleMagnetWidget::~QgsAngleMagnetWidget()
-{
-}
-
 void QgsAngleMagnetWidget::setAngle( double angle )
 {
   const int magnet = mMagnetSpinBox->value();

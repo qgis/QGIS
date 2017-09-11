@@ -105,10 +105,6 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid,
   connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsComposerMapGridWidget::annotationFontChanged );
 }
 
-QgsComposerMapGridWidget::~QgsComposerMapGridWidget()
-{
-}
-
 void QgsComposerMapGridWidget::populateDataDefinedButtons()
 {
   // none for now

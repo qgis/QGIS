@@ -114,10 +114,6 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   connect( mContentFontToolButton, &QgsFontButton::changed, this, &QgsComposerAttributeTableWidget::contentFontChanged );
 }
 
-QgsComposerAttributeTableWidget::~QgsComposerAttributeTableWidget()
-{
-}
-
 void QgsComposerAttributeTableWidget::on_mRefreshPushButton_clicked()
 {
   if ( !mComposerTable )

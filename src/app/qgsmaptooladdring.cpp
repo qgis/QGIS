@@ -33,10 +33,6 @@ QgsMapToolAddRing::QgsMapToolAddRing( QgsMapCanvas *canvas )
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddRing::stopCapturing );
 }
 
-QgsMapToolAddRing::~QgsMapToolAddRing()
-{
-}
-
 void QgsMapToolAddRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
 

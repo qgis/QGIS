@@ -198,7 +198,7 @@ class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
   public:
     typedef QPair<QString, QString> TableColumnPair;
 
-    QgsSQLStatementCollectTableNames() {}
+    QgsSQLStatementCollectTableNames() = default;
 
     void visit( const QgsSQLStatement::NodeColumnRef &n ) override;
     void visit( const QgsSQLStatement::NodeTableDef &n ) override;

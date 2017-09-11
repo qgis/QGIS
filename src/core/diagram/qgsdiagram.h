@@ -73,7 +73,7 @@ class CORE_EXPORT QgsDiagram
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const = 0;
 
   protected:
-    QgsDiagram();
+    QgsDiagram() = default;
     QgsDiagram( const QgsDiagram &other );
 
     /** Changes the pen width to match the current settings and rendering context

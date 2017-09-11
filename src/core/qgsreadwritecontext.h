@@ -29,7 +29,7 @@
 class CORE_EXPORT QgsReadWriteContext
 {
   public:
-    QgsReadWriteContext();
+    QgsReadWriteContext() = default;
 
     //! Returns path resolver for conversion between relative and absolute paths
     const QgsPathResolver &pathResolver() const { return mPathResolver; }

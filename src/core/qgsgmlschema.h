@@ -39,7 +39,7 @@ class QgsFeature;
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
-    QgsGmlFeatureClass();
+    QgsGmlFeatureClass() = default;
     QgsGmlFeatureClass( const QString &name, const QString &path );
 
     QList<QgsField> &fields() { return  mFields; }

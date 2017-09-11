@@ -124,11 +124,6 @@ QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( n
   setupUi( this );
 }
 
-QgsComposerLegendWidget::~QgsComposerLegendWidget()
-{
-
-}
-
 void QgsComposerLegendWidget::setGuiElements()
 {
   if ( !mLegend )

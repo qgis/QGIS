@@ -103,7 +103,6 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 
   public:
     QgsGeoPackageRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsGeoPackageRootItem();
 
     QVector<QgsDataItem *> createChildren() override;
 

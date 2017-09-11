@@ -130,11 +130,6 @@ QgsCompositionWidget::QgsCompositionWidget()
   setupUi( this );
 }
 
-QgsCompositionWidget::~QgsCompositionWidget()
-{
-
-}
-
 void QgsCompositionWidget::populateDataDefinedButtons()
 {
   if ( !mComposition )

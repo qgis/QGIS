@@ -30,7 +30,7 @@
 class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResampler
 {
   public:
-    QgsBilinearRasterResampler();
+    QgsBilinearRasterResampler() = default;
 
     void resample( const QImage &srcImage, QImage &dstImage ) override;
     QString type() const override { return QStringLiteral( "bilinear" ); }

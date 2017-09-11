@@ -58,7 +58,7 @@ class CORE_EXPORT QgsRasterPipe
       HueSaturationRole = 7
     };
 
-    QgsRasterPipe();
+    QgsRasterPipe() = default;
     QgsRasterPipe( const QgsRasterPipe &pipe ) SIP_SKIP;
 
     ~QgsRasterPipe();

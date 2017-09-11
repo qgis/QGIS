@@ -1,12 +1,6 @@
 #include "qgsruntimeprofiler.h"
 #include "qgslogger.h"
 
-
-QgsRuntimeProfiler::QgsRuntimeProfiler()
-{
-
-}
-
 void QgsRuntimeProfiler::beginGroup( const QString &name )
 {
   mGroupStack.push( name );

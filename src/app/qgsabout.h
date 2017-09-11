@@ -26,7 +26,7 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
     Q_OBJECT
   public:
     QgsAbout( QWidget *parent );
-    ~QgsAbout();
+
     void setVersion( const QString &v );
     static QString fileSystemSafe( const QString &string );
 

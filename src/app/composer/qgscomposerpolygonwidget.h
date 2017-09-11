@@ -31,7 +31,6 @@ class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     Q_OBJECT
   public:
     explicit QgsComposerPolygonWidget( QgsComposerPolygon *composerPolygon );
-    ~QgsComposerPolygonWidget();
 
   private:
     QgsComposerPolygon *mComposerPolygon = nullptr;

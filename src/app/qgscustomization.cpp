@@ -644,10 +644,6 @@ QgsCustomization::QgsCustomization()
   mEnabled = settings.value( QStringLiteral( "UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
 }
 
-QgsCustomization::~QgsCustomization()
-{
-}
-
 void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
 {
   // collect tree items even if the customization is disabled

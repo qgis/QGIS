@@ -53,7 +53,6 @@ class QgsComposerConfigObject: public QObject
     Q_OBJECT
   public:
     QgsComposerConfigObject( QWidget *parent, QgsComposerObject *composerObject );
-    ~QgsComposerConfigObject();
 
     /** Registers a data defined button, setting up its initial value, connections and description.
      * \param button button to register
@@ -126,7 +125,6 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     Q_OBJECT
   public:
     QgsComposerItemWidget( QWidget *parent, QgsComposerItem *item );
-    ~QgsComposerItemWidget();
 
     //! A combination of upper/middle/lower and left/middle/right
     QgsComposerItem::ItemPositionMode positionMode() const;

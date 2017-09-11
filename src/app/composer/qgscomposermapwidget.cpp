@@ -122,10 +122,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   blockAllSignals( false );
 }
 
-QgsComposerMapWidget::~QgsComposerMapWidget()
-{
-}
-
 void QgsComposerMapWidget::populateDataDefinedButtons()
 {
   updateDataDefinedButton( mScaleDDBtn );
