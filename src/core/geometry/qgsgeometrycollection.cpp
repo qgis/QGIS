@@ -344,7 +344,7 @@ QgsRectangle QgsGeometryCollection::boundingBox() const
 
 QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
 {
-  if ( mGeometries.size() < 1 )
+  if ( mGeometries.empty() )
   {
     return QgsRectangle();
   }

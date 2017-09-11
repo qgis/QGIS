@@ -154,7 +154,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
     }
   }
 
-  if ( mCaCerts.certificates().size() < 1 )
+  if ( mCaCerts.certificates().empty() )
   {
     setupError( tr( "Could not populate QCA certificate collection" ) );
     return false;

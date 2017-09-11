@@ -524,7 +524,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( QgsFeatureId featureI
 
 QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
 {
-  if ( mFeatureList.size() < 1 )
+  if ( mFeatureList.empty() )
   {
     return QgsAttributes();
   }

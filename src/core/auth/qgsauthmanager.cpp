@@ -2235,7 +2235,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
 
 bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
 {
-  if ( certs.size() < 1 )
+  if ( certs.isEmpty() )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
     return false;
@@ -2542,7 +2542,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSsl
 
 bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &certs )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
     return false;

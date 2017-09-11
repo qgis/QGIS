@@ -1071,7 +1071,7 @@ void QgsDxfExport::writeEntities()
       else
       {
         QgsSymbolList symbolList = renderer->symbolsForFeature( fet, ctx );
-        if ( symbolList.size() < 1 )
+        if ( symbolList.empty() )
         {
           continue;
         }

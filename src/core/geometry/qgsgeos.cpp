@@ -2522,7 +2522,7 @@ GEOSGeometry *QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeometry
   GEOSGeom_destroy_r( geosinit.ctxt, mergedLines );
 
   GEOSGeometry *result = nullptr;
-  if ( resultLineParts.size() < 1 )
+  if ( resultLineParts.empty() )
     return nullptr;
 
   if ( resultLineParts.size() == 1 ) //the whole result was reshaped

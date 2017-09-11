@@ -215,7 +215,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   }
   // Raster layers
   QgsRasterLayer rlayer( path, QStringLiteral( "gdal_tmp" ), QStringLiteral( "gdal" ), false );
-  if ( rlayer.dataProvider()->subLayers( ).size() > 0 )
+  if ( !rlayer.dataProvider()->subLayers( ).empty() )
   {
     const QStringList layers( rlayer.dataProvider()->subLayers( ) );
     for ( const QString &uri : layers )

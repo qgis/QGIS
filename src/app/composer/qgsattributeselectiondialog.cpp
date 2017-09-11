@@ -340,7 +340,7 @@ void QgsAttributeSelectionDialog::on_mColumnUpPushButton_clicked()
 {
   //move selected row up
   QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  if ( viewSelection.size() > 0 )
+  if ( !viewSelection.empty() )
   {
     int selectedRow = viewSelection.indexes().at( 0 ).row();
     mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftUp );
@@ -351,7 +351,7 @@ void QgsAttributeSelectionDialog::on_mColumnDownPushButton_clicked()
 {
   //move selected row down
   QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  if ( viewSelection.size() > 0 )
+  if ( !viewSelection.empty() )
   {
     int selectedRow = viewSelection.indexes().at( 0 ).row();
     mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftDown );

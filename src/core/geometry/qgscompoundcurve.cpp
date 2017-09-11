@@ -87,7 +87,7 @@ void QgsCompoundCurve::clear()
 
 QgsRectangle QgsCompoundCurve::calculateBoundingBox() const
 {
-  if ( mCurves.size() < 1 )
+  if ( mCurves.empty() )
   {
     return QgsRectangle();
   }
@@ -282,7 +282,7 @@ double QgsCompoundCurve::length() const
 
 QgsPoint QgsCompoundCurve::startPoint() const
 {
-  if ( mCurves.size() < 1 )
+  if ( mCurves.empty() )
   {
     return QgsPoint();
   }
@@ -291,7 +291,7 @@ QgsPoint QgsCompoundCurve::startPoint() const
 
 QgsPoint QgsCompoundCurve::endPoint() const
 {
-  if ( mCurves.size() < 1 )
+  if ( mCurves.empty() )
   {
     return QgsPoint();
   }
@@ -301,7 +301,7 @@ QgsPoint QgsCompoundCurve::endPoint() const
 void QgsCompoundCurve::points( QgsPointSequence &pts ) const
 {
   pts.clear();
-  if ( mCurves.size() < 1 )
+  if ( mCurves.empty() )
   {
     return;
   }
@@ -489,7 +489,7 @@ void QgsCompoundCurve::drawAsPolygon( QPainter &p ) const
 bool QgsCompoundCurve::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
-  if ( curveIds.size() < 1 )
+  if ( curveIds.empty() )
   {
     return false;
   }

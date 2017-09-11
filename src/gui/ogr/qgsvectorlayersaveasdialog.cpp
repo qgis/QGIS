@@ -471,7 +471,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
   if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
   {
-    if ( driverMetaData.driverOptions.size() != 0 )
+    if ( !driverMetaData.driverOptions.empty() )
     {
       mDatasourceOptionsGroupBox->setVisible( true );
       QList<QPair<QLabel *, QWidget *> > controls = createControls( driverMetaData.driverOptions );
@@ -488,7 +488,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
       mDatasourceOptionsGroupBox->setVisible( false );
     }
 
-    if ( driverMetaData.layerOptions.size() != 0 )
+    if ( !driverMetaData.layerOptions.empty() )
     {
       mLayerOptionsGroupBox->setVisible( true );
       QList<QPair<QLabel *, QWidget *> > controls = createControls( driverMetaData.layerOptions );

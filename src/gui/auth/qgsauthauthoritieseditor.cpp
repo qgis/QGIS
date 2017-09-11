@@ -212,7 +212,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate> 
     QgsAuthAuthoritiesEditor::CaType catype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )
@@ -251,7 +251,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
     QgsAuthAuthoritiesEditor::CaType catype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )

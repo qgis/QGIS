@@ -189,7 +189,7 @@ QgsRubberBand *QgsMapToolRotateLabel::createRotationPreviewBox()
 {
   delete mRotationPreviewBox;
   QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
-  if ( boxPoints.size() < 1 )
+  if ( boxPoints.empty() )
   {
     return nullptr;
   }
@@ -210,7 +210,7 @@ void QgsMapToolRotateLabel::setRotationPreviewBox( double rotation )
 
   mRotationPreviewBox->reset();
   QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
-  if ( boxPoints.size() < 1 )
+  if ( boxPoints.empty() )
   {
     return;
   }

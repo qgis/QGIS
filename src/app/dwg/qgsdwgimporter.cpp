@@ -811,7 +811,7 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
   }
 
   QString typeName( data.name.c_str() ), dash( "" );
-  if ( upath.size() > 0 )
+  if ( !upath.empty() )
   {
     QStringList l;
     if ( upath[0] < 0 )
@@ -1486,7 +1486,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
                       .arg( p1.asWkt() ), 5
                     );
 
-    if ( s.size() > 0 && ( width != staWidth || width != endWidth || hadBulge != hasBulge ) )
+    if ( !s.empty() && ( width != staWidth || width != endWidth || hadBulge != hasBulge ) )
     {
       if ( hadBulge )
       {
@@ -1536,7 +1536,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
     if ( staWidth == endWidth )
     {
-      if ( s.size() == 0 )
+      if ( s.empty() )
       {
         s << p0;
         hadBulge = hasBulge;
@@ -1604,7 +1604,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
     }
   }
 
-  if ( s.size() > 0 )
+  if ( !s.empty() )
   {
     if ( hadBulge )
     {
@@ -1685,7 +1685,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
                       .arg( p1.asWkt() ), 5
                     );
 
-    if ( s.size() > 0 && ( width != staWidth || width != endWidth || hadBulge != hasBulge ) )
+    if ( !s.empty() && ( width != staWidth || width != endWidth || hadBulge != hasBulge ) )
     {
       if ( hadBulge )
       {
@@ -1737,7 +1737,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
     if ( staWidth == endWidth )
     {
-      if ( s.size() == 0 )
+      if ( s.empty() )
       {
         s << p0;
         hadBulge = hasBulge;
@@ -1810,7 +1810,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
     }
   }
 
-  if ( s.size() > 0 )
+  if ( !s.empty() )
   {
     if ( hadBulge )
     {
@@ -2052,7 +2052,7 @@ void QgsDwgImporter::addSpline( const DRW_Spline *data )
     }
   }
 
-  if ( cps.size() > 0 && data->flags & 1 )
+  if ( !cps.empty() && data->flags & 1 )
   {
     for ( int i = 0; i < data->degree; ++i )
       cps.push_back( cps[i] );

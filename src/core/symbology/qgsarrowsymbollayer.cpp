@@ -802,7 +802,7 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
 
 void QgsArrowSymbolLayer::setColor( const QColor &c )
 {
-  if ( mSymbol.get() )
+  if ( mSymbol )
     mSymbol->setColor( c );
 
   mColor = c;

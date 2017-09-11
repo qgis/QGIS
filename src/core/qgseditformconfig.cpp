@@ -413,7 +413,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   node.appendChild( editorLayoutElem );
 
   // tabs and groups of edit form
-  if ( tabs().size() > 0 && d->mConfiguredRootContainer )
+  if ( !tabs().empty() && d->mConfiguredRootContainer )
   {
     QDomElement tabsElem = doc.createElement( QStringLiteral( "attributeEditorForm" ) );
 

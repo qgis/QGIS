@@ -1154,7 +1154,7 @@ int QgsVectorLayer::addPart( const QList<QgsPointXY> &points )
 
   //number of selected features must be 1
 
-  if ( mSelectedFeatureIds.size() < 1 )
+  if ( mSelectedFeatureIds.empty() )
   {
     QgsDebugMsg( "Number of selected features <1" );
     return 4;
@@ -1180,7 +1180,7 @@ int QgsVectorLayer::addPart( const QgsPointSequence &points )
 
   //number of selected features must be 1
 
-  if ( mSelectedFeatureIds.size() < 1 )
+  if ( mSelectedFeatureIds.empty() )
   {
     QgsDebugMsg( "Number of selected features <1" );
     return 4;
@@ -1206,7 +1206,7 @@ int QgsVectorLayer::addPart( QgsCurve *ring )
 
   //number of selected features must be 1
 
-  if ( mSelectedFeatureIds.size() < 1 )
+  if ( mSelectedFeatureIds.empty() )
   {
     QgsDebugMsg( "Number of selected features <1" );
     return 4;

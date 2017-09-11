@@ -223,7 +223,7 @@ void QgsGml::handleProgressEvent( qint64 progress, qint64 totalSteps )
 
 void QgsGml::calculateExtentFromFeatures()
 {
-  if ( mFeatures.size() < 1 )
+  if ( mFeatures.empty() )
   {
     return;
   }

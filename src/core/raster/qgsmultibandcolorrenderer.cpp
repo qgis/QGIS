@@ -157,7 +157,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   {
     bands << mBlueBand;
   }
-  if ( bands.size() < 1 )
+  if ( bands.empty() )
   {
     // no need to draw anything if no band is set
     // TODO:: we should probably return default color block

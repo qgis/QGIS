@@ -170,7 +170,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLPoint( const QDomElement &geometryElemen
     }
   }
 
-  if ( pointCoordinate.size() < 1 )
+  if ( pointCoordinate.empty() )
   {
     return QgsGeometry();
   }
@@ -416,7 +416,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
       {
         continue;
       }
-      if ( currentPoint.size() < 1 )
+      if ( currentPoint.empty() )
       {
         continue;
       }
@@ -436,7 +436,7 @@ QgsGeometry QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement &geometryE
       {
         continue;
       }
-      if ( currentPoint.size() < 1 )
+      if ( currentPoint.empty() )
       {
         continue;
       }
@@ -2950,7 +2950,7 @@ QString QgsOgcUtilsSQLStatementToFilter::getGeometryColumnSRSName( const QgsSQLS
       }
     }
   }
-  if ( mLayerProperties.size() != 0 &&
+  if ( !mLayerProperties.empty() &&
        mLayerProperties.at( 0 ).mGeometryAttribute.compare( col->name(), Qt::CaseInsensitive ) == 0 )
   {
     return  mLayerProperties.at( 0 ).mSRSName;
@@ -3337,7 +3337,7 @@ QDomElement QgsOgcUtilsSQLStatementToFilter::toOgcFilter( const QgsSQLStatement:
   QList<QDomElement> listElem;
 
   if ( mFilterVersion != QgsOgcUtils::FILTER_FES_2_0 &&
-       ( node->tables().size() != 1 || node->joins().size() != 0 ) )
+       ( node->tables().size() != 1 || !node->joins().empty() ) )
   {
     mErrorMessage = QObject::tr( "Joins are only supported with WFS 2.0" );
     return QDomElement();

@@ -141,7 +141,7 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertifica
     QgsAuthIdentitiesEditor::IdentityType identype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )
@@ -180,7 +180,7 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificat
     QgsAuthIdentitiesEditor::IdentityType identype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )

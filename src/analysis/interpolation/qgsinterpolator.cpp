@@ -37,7 +37,7 @@ QgsInterpolator::QgsInterpolator()
 
 int QgsInterpolator::cacheBaseData()
 {
-  if ( mLayerData.size() < 1 )
+  if ( mLayerData.empty() )
   {
     return 0;
   }

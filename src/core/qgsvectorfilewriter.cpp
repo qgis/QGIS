@@ -2628,7 +2628,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( fet.geometry().geometry() ) )
       continue;
 
-    if ( attributes.size() < 1 && options.skipAttributeCreation )
+    if ( attributes.empty() && options.skipAttributeCreation )
     {
       fet.initAttributes( 0 );
     }

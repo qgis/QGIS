@@ -190,7 +190,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString geomName = itemFromIndex( geomSibling )->text();
 
   QList<QStandardItem *> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
-  if ( schemaItems.size() < 1 )
+  if ( schemaItems.empty() )
   {
     return;
   }

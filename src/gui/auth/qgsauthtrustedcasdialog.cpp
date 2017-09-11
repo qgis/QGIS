@@ -134,7 +134,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToGroup( const QList<QSslCertificate> &
     QgsAuthTrustedCAsDialog::CaType catype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )
@@ -173,7 +173,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToItem( const QList<QSslCertificate> &c
     QgsAuthTrustedCAsDialog::CaType catype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )

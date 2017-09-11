@@ -841,7 +841,7 @@ void QgsAttributeTableDialog::on_mActionRemoveAttribute_triggered()
   if ( dialog.exec() == QDialog::Accepted )
   {
     QList<int> attributes = dialog.selectedAttributes();
-    if ( attributes.size() < 1 )
+    if ( attributes.empty() )
     {
       return;
     }

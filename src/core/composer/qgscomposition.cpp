@@ -2200,7 +2200,7 @@ QGraphicsLineItem *QgsComposition::nearestSnapLine( const bool horizontal, const
 int QgsComposition::boundingRectOfSelectedItems( QRectF &bRect )
 {
   QList<QgsComposerItem *> selectedItems = selectedComposerItems();
-  if ( selectedItems.size() < 1 )
+  if ( selectedItems.empty() )
   {
     return 1;
   }

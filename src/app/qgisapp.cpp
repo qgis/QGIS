@@ -4149,7 +4149,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   QStringList sublayers = layer->subLayers();
   QgsDebugMsg( QString( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
 
-  if ( sublayers.size() < 1 )
+  if ( sublayers.empty() )
     return;
 
   // if promptLayers=Load all, load all sublayers without prompting
@@ -4256,7 +4256,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
 {
   // return false if layer is empty or raster has no sublayers
-  if ( !layer || layer->providerType() != QLatin1String( "gdal" ) || layer->subLayers().size() < 1 )
+  if ( !layer || layer->providerType() != QLatin1String( "gdal" ) || layer->subLayers().empty() )
     return false;
 
   QgsSettings settings;
@@ -6151,7 +6151,7 @@ void QgisApp::refreshFeatureActions()
 
   //add actions registered in QgsMapLayerActionRegistry
   QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
-  if ( !actions.isEmpty() && registeredActions.size() > 0 )
+  if ( !actions.isEmpty() && !registeredActions.empty() )
   {
     //add a separator between user defined and standard actions
     mFeatureActionMenu->addSeparator();

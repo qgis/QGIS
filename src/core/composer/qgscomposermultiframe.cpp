@@ -68,7 +68,7 @@ void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
 
 void QgsComposerMultiFrame::recalculateFrameSizes()
 {
-  if ( mFrameItems.size() < 1 )
+  if ( mFrameItems.empty() )
   {
     return;
   }
@@ -182,7 +182,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
 void QgsComposerMultiFrame::recalculateFrameRects()
 {
-  if ( mFrameItems.size() < 1 )
+  if ( mFrameItems.empty() )
   {
     //no frames, nothing to do
     return;

@@ -671,7 +671,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   }
 
   //sort joins by dependency
-  if ( mFetchJoinInfo.size() > 0 )
+  if ( !mFetchJoinInfo.empty() )
   {
     createOrderedJoinList();
   }

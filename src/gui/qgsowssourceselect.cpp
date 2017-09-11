@@ -701,7 +701,7 @@ void QgsOWSSourceSelect::on_mSearchTableWidget_itemSelectionChanged()
 void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.empty() )
   {
     return;
   }
@@ -720,7 +720,7 @@ void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
 void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.empty() )
   {
     return;
   }
