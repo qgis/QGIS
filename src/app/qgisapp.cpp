@@ -6590,9 +6590,9 @@ class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConvert
   public:
     QgisAppFieldValueConverter( QgsVectorLayer *vl, const QgsAttributeList &attributesAsDisplayedValues );
 
-    virtual QgsField fieldDefinition( const QgsField &field ) override;
+    QgsField fieldDefinition( const QgsField &field ) override;
 
-    virtual QVariant convert( int idx, const QVariant &value ) override;
+    QVariant convert( int idx, const QVariant &value ) override;
 
     QgisAppFieldValueConverter *clone() const override;
 
@@ -9196,7 +9196,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
   public:
     explicit QgsPythonRunnerImpl( QgsPythonUtils *pythonUtils ) : mPythonUtils( pythonUtils ) {}
 
-    virtual bool runCommand( QString command, QString messageOnError = QString() ) override
+    bool runCommand( QString command, QString messageOnError = QString() ) override
     {
 #ifdef WITH_BINDINGS
       if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -9207,7 +9207,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
       return false;
     }
 
-    virtual bool evalCommand( QString command, QString &result ) override
+    bool evalCommand( QString command, QString &result ) override
     {
 #ifdef WITH_BINDINGS
       if ( mPythonUtils && mPythonUtils->isEnabled() )

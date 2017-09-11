@@ -146,7 +146,7 @@ class OneFeatureFilter : public QgsPointLocator::MatchFilter
       , fid( fid )
     {}
 
-    virtual bool acceptMatch( const QgsPointLocator::Match &match ) override
+    bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
       return match.layer() == layer && match.featureId() == fid;
     }
@@ -167,7 +167,7 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
     MatchCollectingFilter( QgsNodeTool *nodetool )
       : nodetool( nodetool ) {}
 
-    virtual bool acceptMatch( const QgsPointLocator::Match &match ) override
+    bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
       if ( match.distance() > 0 )
         return false;
