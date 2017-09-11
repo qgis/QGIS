@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <QFileInfo>
 #include <QSettings>
 #include <QDir>
