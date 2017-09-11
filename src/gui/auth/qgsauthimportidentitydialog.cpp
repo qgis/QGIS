@@ -331,7 +331,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
   }
   else
   {
-    isvalid = isvalid && true;
+    isvalid = isvalid;
   }
 
   if ( isvalid )

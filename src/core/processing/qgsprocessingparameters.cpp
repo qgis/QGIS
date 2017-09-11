@@ -1158,10 +1158,7 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
   }
 
   // try as layer extent
-  if ( QgsProcessingUtils::mapLayerFromString( input.toString(), *context ) )
-    return true;
-
-  return false;
+  return QgsProcessingUtils::mapLayerFromString( input.toString(), *context );
 }
 
 QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
@@ -1649,10 +1646,7 @@ bool QgsProcessingParameterNumber::checkValueIsAcceptable( const QVariant &input
   if ( !ok )
     return mFlags & FlagOptional;
 
-  if ( res < mMin || res > mMax )
-    return false;
-
-  return true;
+  return !( res < mMin || res > mMax );
 }
 
 QString QgsProcessingParameterNumber::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const

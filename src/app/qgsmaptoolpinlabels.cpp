@@ -473,8 +473,5 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
     vlayer->endEditCommand();
   }
 
-  if ( writeFailed )
-    return false;
-
-  return true;
+  return !writeFailed;
 }

@@ -609,8 +609,7 @@ void QgsColorRampButton::setDefaultColorRamp( QgsColorRamp *colorramp )
 
 bool QgsColorRampButton::isRandomColorRamp() const
 {
-  QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( mColorRamp );
-  return randomRamp ? true : false;
+  return dynamic_cast<QgsRandomColorRamp *>( mColorRamp );
 }
 
 void QgsColorRampButton::setShowNull( bool showNull )

@@ -92,10 +92,7 @@ bool QgsBox3d::intersects( const QgsBox3d &other ) const
 
   double z1 = ( mZmin > other.mZmin ? mZmin : other.mZmin );
   double z2 = ( mZmax < other.mZmax ? mZmax : other.mZmax );
-  if ( z1 > z2 )
-    return false;
-
-  return true;
+  return z1 <= z2;
 }
 
 bool QgsBox3d::contains( const QgsBox3d &other ) const

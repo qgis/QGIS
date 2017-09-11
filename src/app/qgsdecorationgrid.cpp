@@ -753,11 +753,9 @@ bool QgsDecorationGrid::isDirty()
 {
   // checks if stored map units is undefined or different from canvas map units
   // or if interval is 0
-  if ( mMapUnits == QgsUnitTypes::DistanceUnknownUnit ||
-       mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
-       qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 ) )
-    return true;
-  return false;
+  return mMapUnits == QgsUnitTypes::DistanceUnknownUnit ||
+         mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
+         qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 );
 }
 
 void QgsDecorationGrid::setDirty( bool dirty )

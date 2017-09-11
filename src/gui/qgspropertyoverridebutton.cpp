@@ -319,7 +319,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     ddTitleAct->setText( ddTitle + " (" + ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" ) ) + ')' );
     mDefineMenu->addAction( mActionActive );
     mActionActive->setText( mProperty.isActive() ? tr( "Deactivate" ) : tr( "Activate" ) );
-    mActionActive->setData( QVariant( mProperty.isActive() ? false : true ) );
+    mActionActive->setData( QVariant( !mProperty.isActive() ) );
   }
 
   if ( !mFullDescription.isEmpty() )

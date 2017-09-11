@@ -166,10 +166,7 @@ bool FeaturePart::hasSameLabelFeatureAs( FeaturePart *part ) const
 
   // any part of joined features are also treated as having the same label feature
   int connectedFeatureId = mLF->layer()->connectedFeatureId( mLF->id() );
-  if ( connectedFeatureId >= 0 && connectedFeatureId == mLF->layer()->connectedFeatureId( part->featureId() ) )
-    return true;
-
-  return false;
+  return connectedFeatureId >= 0 && connectedFeatureId == mLF->layer()->connectedFeatureId( part->featureId() );
 }
 
 LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const

@@ -33,11 +33,7 @@ QgsValueRelationSearchWidgetWrapper::QgsValueRelationSearchWidgetWrapper( QgsVec
 
 bool QgsValueRelationSearchWidgetWrapper::applyDirectly()
 {
-  if ( mLineEdit )
-  {
-    return false;
-  }
-  return true;
+  return !mLineEdit;
 }
 
 QString QgsValueRelationSearchWidgetWrapper::expression()

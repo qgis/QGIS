@@ -360,10 +360,7 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
     return false;
 
   double lambdaw = QgsVector( inter.x() - q1.x(), inter.y() - q1.y() ) * w;
-  if ( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance )
-    return false;
-
-  return true;
+  return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
 }
 
 QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )

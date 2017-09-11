@@ -657,9 +657,7 @@ bool DualEdgeTriangulation::calcNormal( double x, double y, Vector3D *result )
 {
   if ( result && mTriangleInterpolator )
   {
-    if ( !mTriangleInterpolator->calcNormVec( x, y, result ) )
-    {return false;}
-    return true;
+    return mTriangleInterpolator->calcNormVec( x, y, result );
   }
   else
   {
@@ -672,9 +670,7 @@ bool DualEdgeTriangulation::calcPoint( double x, double y, QgsPoint *result )
 {
   if ( result && mTriangleInterpolator )
   {
-    if ( !mTriangleInterpolator->calcPoint( x, y, result ) )
-    {return false;}
-    return true;
+    return mTriangleInterpolator->calcPoint( x, y, result );
   }
   else
   {
@@ -1737,14 +1733,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     bool twoforcededges;//flag to decide, if edges should be added to the maps. Do not add them if true
 
 
-    if ( ( mHalfEdge[i]->getForced() || edgeOnConvexHull( i ) ) && ( mHalfEdge[mHalfEdge[i]->getNext()]->getForced() || edgeOnConvexHull( mHalfEdge[i]->getNext() ) ) )
-    {
-      twoforcededges = true;
-    }
-    else
-    {
-      twoforcededges = false;
-    }
+    twoforcededges = ( mHalfEdge[i]->getForced() || edgeOnConvexHull( i ) ) && ( mHalfEdge[mHalfEdge[i]->getNext()]->getForced() || edgeOnConvexHull( mHalfEdge[i]->getNext() ) );
 
     if ( angle < mintol && !twoforcededges )
     {
@@ -2063,32 +2052,11 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 
 
-          if ( ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) )
-          {
-            twoforcededges1 = true;
-          }
-          else
-          {
-            twoforcededges1 = false;
-          }
+          twoforcededges1 = ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) );
 
-          if ( ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) )
-          {
-            twoforcededges2 = true;
-          }
-          else
-          {
-            twoforcededges2 = false;
-          }
+          twoforcededges2 = ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) );
 
-          if ( ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) )
-          {
-            twoforcededges3 = true;
-          }
-          else
-          {
-            twoforcededges3 = false;
-          }
+          twoforcededges3 = ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) );
 
 
           //update the settings related to ed1
@@ -2276,32 +2244,11 @@ void DualEdgeTriangulation::ruppertRefinement()
         //todo: put all three edges on the dontexamine list if two edges are forced or convex hull edges
         bool twoforcededges1, twoforcededges2, twoforcededges3;
 
-        if ( ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) )
-        {
-          twoforcededges1 = true;
-        }
-        else
-        {
-          twoforcededges1 = false;
-        }
+        twoforcededges1 = ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) );
 
-        if ( ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) )
-        {
-          twoforcededges2 = true;
-        }
-        else
-        {
-          twoforcededges2 = false;
-        }
+        twoforcededges2 = ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) );
 
-        if ( ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) )
-        {
-          twoforcededges3 = true;
-        }
-        else
-        {
-          twoforcededges3 = false;
-        }
+        twoforcededges3 = ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) );
 
 
         //update the settings related to ed1

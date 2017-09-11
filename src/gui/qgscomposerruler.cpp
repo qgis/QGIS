@@ -411,11 +411,11 @@ void QgsComposerRuler::mouseReleaseEvent( QMouseEvent *event )
   bool removeItem = false;
   if ( mDirection == Horizontal )
   {
-    removeItem = pos.x() < 0 ? true : false;
+    removeItem = pos.x() < 0;
   }
   else
   {
-    removeItem = pos.y() < 0 ? true : false;
+    removeItem = pos.y() < 0;
   }
 
   if ( removeItem )

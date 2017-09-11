@@ -71,7 +71,6 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( true )
   {
     mCurrentMouseAzimuth = convertAzimuth( mRotationPoint.azimuth( toMapCoordinates( e->pos() ) ) );
 

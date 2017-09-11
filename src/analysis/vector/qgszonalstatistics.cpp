@@ -495,11 +495,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
 
 bool QgsZonalStatistics::validPixel( float value ) const
 {
-  if ( value == mInputNodataValue || std::isnan( value ) )
-  {
-    return false;
-  }
-  return true;
+  return !( value == mInputNodataValue || std::isnan( value ) );
 }
 
 QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )

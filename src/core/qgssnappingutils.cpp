@@ -92,10 +92,7 @@ bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &
 
   QgsRectangle aoi( areaOfInterest );
   aoi.scale( 0.999 );
-  if ( ( mStrategy == IndexHybrid || mStrategy == IndexExtent ) && loc->hasIndex() && ( !loc->extent() || loc->extent()->contains( aoi ) ) )
-    return true;
-
-  return false; // the index - even if it exists - is not suitable
+  return ( mStrategy == IndexHybrid || mStrategy == IndexExtent ) && loc->hasIndex() && ( !loc->extent() || loc->extent()->contains( aoi ) ); // the index - even if it exists - is not suitable
 }
 
 
