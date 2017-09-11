@@ -1983,8 +1983,7 @@ QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, 
       operand = nodeFromOgcFilter( operandElem, errorMessage );
       if ( !operand )
       {
-        if ( root )
-          delete root;
+        delete root;
 
         errorMessage = QObject::tr( "'%1' is an invalid or not supported content for ogc:Literal" ).arg( operandElem.tagName() );
         return nullptr;
@@ -2075,14 +2074,9 @@ QgsExpressionNode *QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement &element
 
   if ( !operand || !lowerBound || !operand2 || !upperBound )
   {
-    if ( operand )
-      delete operand;
-
-    if ( lowerBound )
-      delete lowerBound;
-
-    if ( upperBound )
-      delete upperBound;
+    delete operand;
+    delete lowerBound;
+    delete upperBound;
 
     errorMessage = QObject::tr( "missing some required sub-elements in ogc:PropertyIsBetween" );
     return nullptr;

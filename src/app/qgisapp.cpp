@@ -4402,8 +4402,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     {
       QString msg = tr( "%1 is not a valid or recognized data source" ).arg( composedURI );
       messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
-      if ( layer )
-        delete layer;
+      delete layer;
     }
   }
 

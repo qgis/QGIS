@@ -1032,7 +1032,8 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     QString previousSubset = mSubsetString;
     mSubsetString = nonNullSubset;
     mSubsetExpression = expression;
-    if ( tmpSubsetExpression ) delete tmpSubsetExpression;
+    delete tmpSubsetExpression;
+
     // Update the feature count and extents if requested
 
     // Usage of updateFeatureCount is a bit painful, basically expect that it

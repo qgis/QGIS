@@ -114,9 +114,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     mError = ErrInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
 
-    if ( vectorProvider )
-      delete vectorProvider;
-
+    delete vectorProvider;
     return;
   }
 
