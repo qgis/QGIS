@@ -171,10 +171,6 @@ class QgsWMSServer: public QgsOWSServer
                                     const QString& version,
                                     const QString& infoFormat ) const;
 
-    /** Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles
-       @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
-    QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS, double scaleDenominator = -1 ) const;
-
     /** Record which symbols would be used if the map was in the current configuration of mMapRenderer. This is useful for content-based legend*/
     void runHitTest( QPainter* painter, HitTest& hitTest );
     /** Record which symbols within one layer would be rendered with the given renderer context*/
