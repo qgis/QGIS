@@ -228,8 +228,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param mode    The calculation mode
      * \param nclasses The number of classes to calculate (approximate for some modes)
      * \since QGIS 2.6
+     * \param useAroundZeroMode  A bool indicating if we want to center everything on zero (currently used only with prettyBreaks)
      */
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useAroundZeroMode );
 
     /**
      * Return the label format used to generate default classification labels
@@ -403,8 +404,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsExpression> mExpression;
     GraduatedMethod mGraduatedMethod = GraduatedColor;
     //! attribute index (derived from attribute name in startRender)
+<<<<<<< ae4d26a675ff8a9d140ffaf340587113c19d60b4
     int mAttrNum = -1;
     bool mCounting = false;
+=======
+    int mAttrNum;
+    bool mCounting;
+    //bool mAroundZeroMode;
+>>>>>>> Put the method as a checkbox in the prettybreaks method, instead of in the menu. The checkbox is activated on ly if there both positive and negative values
 
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 

@@ -268,13 +268,14 @@ Moves the category at index position from to index position to.
 %End
     void setMode( Mode mode );
 
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useAroundZeroMode );
 %Docstring
  Recalculate classes for a layer
  \param vlayer  The layer being rendered (from which data values are calculated)
  \param mode    The calculation mode
  \param nclasses The number of classes to calculate (approximate for some modes)
-.. versionadded:: 2.6
+ \param useAroundZeroMode  A bool indicating if we want to center everything on zero (currently used only with prettyBreaks)
+.. versionadded:: 3.0
 %End
 
     const QgsRendererRangeLabelFormat &labelFormat() const;
@@ -459,7 +460,6 @@ create renderer from XML element
 
     QgsSymbol *symbolForValue( double value );
 %Docstring
-attribute index (derived from attribute name in startRender)
  :rtype: QgsSymbol
 %End
 

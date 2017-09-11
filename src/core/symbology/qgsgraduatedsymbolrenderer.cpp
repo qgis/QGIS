@@ -765,6 +765,32 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
 } //_calcJenksBreaks
 
 
+static void _centerBreaksAroundZero( QList<double> &breaks )
+{
+  //  merge the classes around zero and remove the classes 
+  // that are above the existing opposite sign classes 
+  // to keep colors symmetrically balanced around zero
+  
+  if (breaks.indexOf( 0 ) != -1) // in case 0 is not found
+  {
+    breaks.removeAt( breaks.indexOf( 0 ) );
+  }
+  std::sort( breaks.begin(), breaks.end() );
+  double minimum = breaks[0];
+  double maximum = breaks[ breaks.size() - 1 ];
+  double absMin = qMin( qAbs( maximum ), qAbs( minimum ) );
+
+  for ( int i = 1; i < breaks.size() - 1; ++i ) //not the first nor the last (expect them to be ordered)
+  {
+    if ( qAbs( breaks.at( i ) ) > absMin )
+    {
+      breaks.removeAt( i );
+      --i;
+    }
+  }
+}
+
+
 QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   QgsVectorLayer *vlayer,
   const QString &attrName,
@@ -781,11 +807,11 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   r->setSourceColorRamp( ramp->clone() );
   r->setMode( mode );
   r->setLabelFormat( labelFormat );
-  r->updateClasses( vlayer, mode, classes );
+  r->updateClasses( vlayer, mode, classes, false );
   return r;
 }
 
-void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses )
+void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useAroundZeroMode)
 {
   if ( mAttrName.isEmpty() )
     return;
@@ -833,6 +859,10 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   else if ( mode == Pretty )
   {
     breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
+    if (true == useAroundZeroMode)
+    {
+      _centerBreaksAroundZero( breaks );
+    }
   }
   else if ( mode == Quantile || mode == Jenks || mode == StdDev )
   {
@@ -898,6 +928,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   }
   updateColorRamp( nullptr );
 }
+
 
 QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {

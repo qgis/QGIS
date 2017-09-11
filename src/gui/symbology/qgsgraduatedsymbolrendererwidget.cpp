@@ -500,9 +500,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( btnDeleteAllClasses, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::deleteAllClasses );
   connect( btnGraduatedAdd, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::addClass );
   connect( cbxLinkBoundaries, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::toggleBoundariesLink );
-
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed );
-
+  connect( cbxSymmetricAroundZero, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connectUpdateHandlers();
 
   // initialize from previously set renderer
@@ -794,6 +793,8 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   }
 
   QgsGraduatedSymbolRenderer::Mode mode;
+  bool useAroundZeroMode = false; 
+  
   if ( cboGraduatedMode->currentIndex() == 0 )
     mode = QgsGraduatedSymbolRenderer::EqualInterval;
   else if ( cboGraduatedMode->currentIndex() == 2 )
@@ -812,9 +813,34 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
       return;
   }
-
+  
+  if ( QgsGraduatedSymbolRenderer::Pretty == mode)
+  {
+    cbxSymmetricAroundZero->setVisible(true);
+    
+    int attrNum = mLayer->fields().lookupField( attrName );
+    bool negativeValuesPresent = mLayer->minimumValue( attrNum ).toDouble() < 0;
+    bool positiveValuesPresent = mLayer->maximumValue( attrNum ).toDouble() > 0;
+    //checkbox is displayed only when there is both positive and negative data
+    if ( negativeValuesPresent && positiveValuesPresent ) 
+    {
+      cbxSymmetricAroundZero->setEnabled( true );
+      if ( cbxSymmetricAroundZero->isChecked() )
+      {
+        useAroundZeroMode = true;
+      }
+    }
+    else
+    {
+      cbxSymmetricAroundZero->setEnabled( false );
+    }
+  }
+  else
+  {
+    cbxSymmetricAroundZero->setVisible(false);
+  }
+  
   // create and set new renderer
-
   mRenderer->setClassAttribute( attrName );
   mRenderer->setMode( mode );
 
@@ -833,7 +859,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  mRenderer->updateClasses( mLayer, mode, nclasses );
+  mRenderer->updateClasses( mLayer, mode, nclasses, useAroundZeroMode );
 
   if ( methodComboBox->currentIndex() == 1 )
     mRenderer->setSymbolSizes( minSizeSpinBox->value(), maxSizeSpinBox->value() );
