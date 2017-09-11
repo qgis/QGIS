@@ -39,7 +39,7 @@ QGISEXTERN bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri
 
 
 // ---------------------------------------------------------------------------
-QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, QString name, QString path )
+QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
@@ -706,7 +706,7 @@ bool QgsPGSchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
 }
 
 // ---------------------------------------------------------------------------
-QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, QString name, QString path )
+QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;

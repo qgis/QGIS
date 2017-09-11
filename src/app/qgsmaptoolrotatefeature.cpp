@@ -78,10 +78,6 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
   setFocusProxy( mAngleSpinBox );
 }
 
-QgsAngleMagnetWidget::~QgsAngleMagnetWidget()
-{
-}
-
 void QgsAngleMagnetWidget::setAngle( double angle )
 {
   const int magnet = mMagnetSpinBox->value();
@@ -128,12 +124,9 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
 
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mRubberBand( nullptr )
   , mRotation( 0 )
   , mRotationOffset( 0 )
-  , mAnchorPoint( nullptr )
   , mRotationActive( false )
-  , mRotationWidget( nullptr )
 {
 }
 

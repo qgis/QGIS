@@ -107,7 +107,11 @@ class QgsGraph
 #include "qgsgraph.h"
 %End
   public:
+
     QgsGraph();
+%Docstring
+ Constructor for QgsGraph.
+%End
 
 
     int addVertex( const QgsPointXY &pt );

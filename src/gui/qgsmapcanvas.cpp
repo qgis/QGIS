@@ -76,13 +76,14 @@ email                : sherman at mrcc.com
 class QgsMapCanvas::CanvasProperties
 {
   public:
-    CanvasProperties()
-      : mouseButtonDown( false )
-      , panSelectorDown( false )
-    { }
+
+    /**
+     * Constructor for CanvasProperties.
+     */
+    CanvasProperties() = default;
 
     //!Flag to indicate status of mouse button
-    bool mouseButtonDown;
+    bool mouseButtonDown{ false };
 
     //! Last seen point of the mouse
     QPoint mouseLastXY;
@@ -91,7 +92,7 @@ class QgsMapCanvas::CanvasProperties
     QPoint rubberStartPoint;
 
     //! Flag to indicate the pan selector key is held down by user
-    bool panSelectorDown;
+    bool panSelectorDown{ false };
 };
 
 
@@ -99,25 +100,14 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   : QGraphicsView( parent )
   , mCanvasProperties( new CanvasProperties )
-  , mMap( nullptr )
   , mFrozen( false )
   , mRefreshScheduled( false )
   , mRenderFlag( true ) // by default, the canvas is rendered
-  , mCurrentLayer( nullptr )
-  , mScene( nullptr )
-  , mMapTool( nullptr )
-  , mLastNonZoomMapTool( nullptr )
   , mLastExtentIndex( -1 )
   , mWheelZoomFactor( 2.0 )
-  , mJob( nullptr )
   , mJobCanceled( false )
-  , mLabelingResults( nullptr )
   , mUseParallelRendering( false )
   , mDrawRenderingStats( false )
-  , mCache( nullptr )
-  , mResizeTimer( nullptr )
-  , mPreviewEffect( nullptr )
-  , mSnappingUtils( nullptr )
   , mScaleLocked( false )
   , mExpressionContextScope( tr( "Map Canvas" ) )
   , mZoomDragging( false )

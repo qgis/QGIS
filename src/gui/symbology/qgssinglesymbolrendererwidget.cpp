@@ -34,7 +34,7 @@ QgsRendererWidget *QgsSingleSymbolRendererWidget::create( QgsVectorLayer *layer,
 
 QgsSingleSymbolRendererWidget::QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
+
 {
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")

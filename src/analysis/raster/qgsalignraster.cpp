@@ -116,7 +116,6 @@ static CPLErr rescalePostWarpChunkProcessor( void *pKern, void *pArg )
 
 
 QgsAlignRaster::QgsAlignRaster()
-  : mProgressHandler( nullptr )
 {
   // parameters
   mCellSizeX = mCellSizeY = 0;

@@ -241,7 +241,6 @@ QgsAbstractGeometry *QgsTriangle::toCurveType() const
 void QgsTriangle::addInteriorRing( QgsCurve *ring )
 {
   Q_UNUSED( ring );
-  return;
 }
 
 bool QgsTriangle::deleteVertex( QgsVertexId position )
@@ -541,12 +540,7 @@ double QgsTriangle::inscribedRadius() const
 
 bool QgsTriangle::validateGeom( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
 {
-  if ( ( ( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) )
-  {
-    return false;
-  }
-
-  return true;
+  return !( ( ( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) );
 }
 
 QgsCircle QgsTriangle::inscribedCircle() const

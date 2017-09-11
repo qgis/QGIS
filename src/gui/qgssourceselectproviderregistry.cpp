@@ -21,12 +21,6 @@
 
 typedef QList<QgsSourceSelectProvider *> *sourceSelectProviders_t();
 
-
-QgsSourceSelectProviderRegistry::QgsSourceSelectProviderRegistry()
-{
-  // Initialization is delayed
-}
-
 QgsSourceSelectProviderRegistry::~QgsSourceSelectProviderRegistry()
 {
   qDeleteAll( mProviders );

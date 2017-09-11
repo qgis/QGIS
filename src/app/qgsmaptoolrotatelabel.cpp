@@ -31,8 +31,6 @@ QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas )
   , mStartRotation( 0.0 )
   , mCurrentRotation( 0.0 )
   , mCurrentMouseAzimuth( 0.0 )
-  , mRotationItem( nullptr )
-  , mRotationPreviewBox( nullptr )
   , mCtrlPressed( false )
 {
 }
@@ -73,7 +71,6 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  if ( true )
   {
     mCurrentMouseAzimuth = convertAzimuth( mRotationPoint.azimuth( toMapCoordinates( e->pos() ) ) );
 
@@ -192,7 +189,7 @@ QgsRubberBand *QgsMapToolRotateLabel::createRotationPreviewBox()
 {
   delete mRotationPreviewBox;
   QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
-  if ( boxPoints.size() < 1 )
+  if ( boxPoints.empty() )
   {
     return nullptr;
   }
@@ -213,7 +210,7 @@ void QgsMapToolRotateLabel::setRotationPreviewBox( double rotation )
 
   mRotationPreviewBox->reset();
   QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
-  if ( boxPoints.size() < 1 )
+  if ( boxPoints.empty() )
   {
     return;
   }

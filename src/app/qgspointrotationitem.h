@@ -33,7 +33,6 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     };
 
     QgsPointRotationItem( QgsMapCanvas *canvas );
-    ~QgsPointRotationItem();
 
     void paint( QPainter *painter ) override;
 

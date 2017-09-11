@@ -1347,10 +1347,7 @@ bool QgsExpressionNodeCondition::needsGeometry() const
       return true;
   }
 
-  if ( mElseExp && mElseExp->needsGeometry() )
-    return true;
-
-  return false;
+  return mElseExp && mElseExp->needsGeometry();
 }
 
 QgsExpressionNode *QgsExpressionNodeCondition::clone() const

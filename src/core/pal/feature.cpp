@@ -166,10 +166,7 @@ bool FeaturePart::hasSameLabelFeatureAs( FeaturePart *part ) const
 
   // any part of joined features are also treated as having the same label feature
   int connectedFeatureId = mLF->layer()->connectedFeatureId( mLF->id() );
-  if ( connectedFeatureId >= 0 && connectedFeatureId == mLF->layer()->connectedFeatureId( part->featureId() ) )
-    return true;
-
-  return false;
+  return connectedFeatureId >= 0 && connectedFeatureId == mLF->layer()->connectedFeatureId( part->featureId() );
 }
 
 LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
@@ -1194,7 +1191,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
     }
 
     LabelPosition *slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
-    if ( slp == nullptr )
+    if ( !slp )
       continue;
 
     // If we placed too many characters upside down
@@ -1208,7 +1205,7 @@ int FeaturePart::createCurvedCandidatesAlongLine( QList< LabelPosition * > &lPos
         slp = curvedPlacementAtOffset( mapShape, path_distances, orientation, 1, i, reversed, flip );
       }
     }
-    if ( slp == nullptr )
+    if ( !slp )
       continue;
 
     // evaluate cost

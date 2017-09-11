@@ -79,10 +79,7 @@ bool QgsSnapIndex::SegmentSnapItem::getIntersection( const QgsPoint &p1, const Q
     return false;
 
   double lambdaw = QgsVector( inter.x() - q1.x(), inter.y() - q1.y() ) * w;
-  if ( lambdaw < 0. + 1E-8 || lambdaw >= wl - 1E-8 )
-    return false;
-
-  return true;
+  return !( lambdaw < 0. + 1E-8 || lambdaw >= wl - 1E-8 );
 }
 
 bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPoint &p, QgsPoint &pProj )

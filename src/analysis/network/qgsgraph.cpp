@@ -20,10 +20,6 @@
 
 #include "qgsgraph.h"
 
-QgsGraph::QgsGraph()
-{
-}
-
 int QgsGraph::addVertex( const QgsPointXY &pt )
 {
   mGraphVertexes.append( QgsGraphVertex( pt ) );

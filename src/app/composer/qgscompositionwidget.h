@@ -39,7 +39,6 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     Q_OBJECT
   public:
     QgsCompositionWidget( QWidget *parent, QgsComposition *c );
-    ~QgsCompositionWidget();
 
   public slots:
     void on_mPaperSizeComboBox_currentIndexChanged( const QString &text );

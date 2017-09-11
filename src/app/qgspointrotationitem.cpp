@@ -31,11 +31,6 @@ QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas *canvas )
   setSymbol( im );
 }
 
-QgsPointRotationItem::~QgsPointRotationItem()
-{
-
-}
-
 void QgsPointRotationItem::paint( QPainter *painter )
 {
   if ( !painter )

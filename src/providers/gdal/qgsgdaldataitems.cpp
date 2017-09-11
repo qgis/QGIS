@@ -24,7 +24,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
-                                    QString name, QString path, QString uri,
+                                    const QString &name, const QString &path, const QString &uri,
                                     QStringList *sublayers )
   : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
 {

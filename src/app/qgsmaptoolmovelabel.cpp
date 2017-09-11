@@ -29,10 +29,6 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
   mToolName = tr( "Move label" );
 }
 
-QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
-{
-}
-
 void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
 {
   deleteRubberBands();

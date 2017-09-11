@@ -19,7 +19,7 @@
 
 QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
-  , mLayer( nullptr )
+
 {
   setupUi( this );
 

@@ -26,7 +26,7 @@ QgsRendererWidget *QgsNullSymbolRendererWidget::create( QgsVectorLayer *layer, Q
 
 QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
+
 {
   if ( renderer )
   {

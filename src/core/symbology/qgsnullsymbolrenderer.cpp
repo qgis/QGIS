@@ -68,7 +68,7 @@ void QgsNullSymbolRenderer::startRender( QgsRenderContext &context, const QgsFie
 
 void QgsNullSymbolRenderer::stopRender( QgsRenderContext &context )
 {
-  if ( mSymbol.get() )
+  if ( mSymbol )
   {
     mSymbol->stopRender( context );
   }

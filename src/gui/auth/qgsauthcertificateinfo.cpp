@@ -59,16 +59,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
   , mTrustCacheRebuilt( false )
   , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
   , mCurrentTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-  , mSecGeneral( nullptr )
-  , mSecDetails( nullptr )
-  , mSecPemText( nullptr )
-  , mGrpSubj( nullptr )
-  , mGrpIssu( nullptr )
-  , mGrpCert( nullptr )
-  , mGrpPkey( nullptr )
-  , mGrpExts( nullptr )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -163,7 +154,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
     }
   }
 
-  if ( mCaCerts.certificates().size() < 1 )
+  if ( mCaCerts.certificates().empty() )
   {
     setupError( tr( "Could not populate QCA certificate collection" ) );
     return false;
@@ -917,7 +908,7 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
     QWidget *parent,
     const QList<QSslCertificate> &connectionCAs )
   : QDialog( parent )
-  , mCertInfoWdgt( nullptr )
+
 {
   setWindowTitle( tr( "Certificate Information" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

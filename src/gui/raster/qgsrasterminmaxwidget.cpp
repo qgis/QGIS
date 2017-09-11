@@ -32,7 +32,6 @@ const int IDX_UPDATED_CANVAS = 2;
 QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
-  , mCanvas( nullptr )
   , mLastRectangleValid( false )
   , mBandsChanged( false )
 {

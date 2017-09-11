@@ -43,9 +43,7 @@ const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
-  , mCache( nullptr )
-  , mRenderingTime( 0 )
-  , mFeatureFilterProvider( nullptr )
+
 {
 }
 

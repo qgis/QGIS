@@ -56,23 +56,16 @@ QgsComposerView::QgsComposerView( QWidget *parent, const char *name, Qt::WindowF
   : QGraphicsView( parent )
   , mCurrentTool( Select )
   , mPreviousTool( Select )
-  , mRubberBandItem( nullptr )
-  , mRubberBandLineItem( nullptr )
-  , mMoveContentItem( nullptr )
   , mMarqueeSelect( false )
   , mMarqueeZoom( false )
   , mTemporaryZoomStatus( QgsComposerView::Inactive )
   , mPaintingEnabled( true )
-  , mHorizontalRuler( nullptr )
-  , mVerticalRuler( nullptr )
   , mMoveContentSearchRadius( 25 )
-  , mNodesItem( nullptr )
   , mNodesItemIndex( -1 )
   , mToolPanning( false )
   , mMousePanning( false )
   , mKeyPanning( false )
   , mMovingItemContent( false )
-  , mPreviewEffect( nullptr )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );

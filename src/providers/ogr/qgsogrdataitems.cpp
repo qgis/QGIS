@@ -43,7 +43,7 @@ QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
 
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
-                                  QString name, QString path, QString uri, LayerType layerType, bool isSubLayer )
+                                  const QString &name, const QString &path, const QString &uri, LayerType layerType, bool isSubLayer )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
   mIsSubLayer = isSubLayer;
@@ -215,7 +215,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   }
   // Raster layers
   QgsRasterLayer rlayer( path, QStringLiteral( "gdal_tmp" ), QStringLiteral( "gdal" ), false );
-  if ( rlayer.dataProvider()->subLayers( ).size() > 0 )
+  if ( !rlayer.dataProvider()->subLayers( ).empty() )
   {
     const QStringList layers( rlayer.dataProvider()->subLayers( ) );
     for ( const QString &uri : layers )
@@ -395,7 +395,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
 
 // ----
 
-QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem *parent, QString name, QString path )
+QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
 }

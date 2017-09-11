@@ -28,8 +28,6 @@
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , vlayer( nullptr )
-  , mRubberBand( nullptr )
   , mPressedFid( 0 )
   , mPressedPartNum( 0 )
   , mPressedRingNum( 0 )

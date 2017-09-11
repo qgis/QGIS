@@ -23,7 +23,7 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolCapture
   public:
     //! \since QGIS 2.12
     QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode );
-    virtual ~QgsMapToolAddFeature();
+
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     bool addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal = true );

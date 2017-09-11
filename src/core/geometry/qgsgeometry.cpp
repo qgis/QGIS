@@ -48,7 +48,7 @@ email                : morb at ozemail dot com dot au
 
 struct QgsGeometryPrivate
 {
-  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ) {}
+  QgsGeometryPrivate(): ref( 1 ) {}
   ~QgsGeometryPrivate() { delete geometry; }
   QAtomicInt ref;
   QgsAbstractGeometry *geometry = nullptr;
@@ -2145,7 +2145,7 @@ QPolygonF QgsGeometry::asQPolygonF() const
   else if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::Polygon25D )
   {
     QgsPolygon polygon = asPolygon();
-    if ( polygon.size() < 1 )
+    if ( polygon.empty() )
       return result;
     polyline = polygon.at( 0 );
   }
@@ -2575,7 +2575,7 @@ void QgsGeometry::convertPolygon( const QgsPolygonV2 &input, QgsPolygon &output 
 {
   output.clear();
   QgsCoordinateSequence coords = input.coordinateSequence();
-  if ( coords.size() < 1 )
+  if ( coords.empty() )
   {
     return;
   }

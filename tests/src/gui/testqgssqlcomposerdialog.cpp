@@ -418,7 +418,7 @@ void TestQgsSQLComposerDialog::testJoins()
 
   QTableWidget *table = getTableJoins( d );
   QCOMPARE( table->rowCount(), 1 );
-  QCOMPARE( table->item( 0, 0 ) != nullptr, true );
+  QVERIFY( table->item( 0, 0 ) );
   table->item( 0, 0 )->setText( QStringLiteral( "join_table" ) );
   table->item( 0, 1 )->setText( QStringLiteral( "join_expr" ) );
 
@@ -461,7 +461,7 @@ void TestQgsSQLComposerDialog::testJoins()
 
   QTest::mouseClick( getAddJoinButton( d ), Qt::LeftButton );
   QCOMPARE( table->rowCount(), 1 );
-  QCOMPARE( table->item( 0, 0 ) != nullptr, true );
+  QVERIFY( table->item( 0, 0 ) );
 }
 
 QGSTEST_MAIN( TestQgsSQLComposerDialog )

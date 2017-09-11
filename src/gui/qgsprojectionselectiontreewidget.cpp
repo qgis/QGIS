@@ -29,9 +29,6 @@
 
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent )
   : QWidget( parent )
-  , mUserProjList( nullptr )
-  , mGeoList( nullptr )
-  , mProjList( nullptr )
   , mProjListDone( false )
   , mUserProjListDone( false )
   , mRecentProjListDone( false )

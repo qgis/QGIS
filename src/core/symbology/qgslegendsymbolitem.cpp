@@ -19,9 +19,7 @@
 #include "qgssymbol.h"
 
 QgsLegendSymbolItem::QgsLegendSymbolItem()
-  : mSymbol( nullptr )
-  , mCheckable( false )
-  , mOriginalSymbolPointer( nullptr )
+  : mCheckable( false )
   , mScaleMinDenom( -1 )
   , mScaleMaxDenom( -1 )
   , mLevel( 0 )
@@ -42,8 +40,7 @@ QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol *symbol, const QString &labe
 }
 
 QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other )
-  : mSymbol( nullptr )
-  , mOriginalSymbolPointer( nullptr )
+
 {
   *this = other;
 }

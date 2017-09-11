@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <QFileInfo>
 #include <QSettings>
 #include <QDir>
@@ -24,7 +24,7 @@
 
 QString QgsSettings::sGlobalSettingsPath = QString();
 
-bool QgsSettings::setGlobalSettingsPath( QString path )
+bool QgsSettings::setGlobalSettingsPath( const QString &path )
 {
   if ( QFileInfo::exists( path ) )
   {
@@ -279,7 +279,7 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
 }
 
 // To lower case and clean the path
-QString QgsSettings::sanitizeKey( QString key ) const
+QString QgsSettings::sanitizeKey( const QString &key ) const
 {
   return QDir::cleanPath( key );
 }

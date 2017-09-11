@@ -365,8 +365,7 @@ QgsAbstractLabelProvider *QgsLabelFeature::provider() const
 }
 
 QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QString &providerId )
-  : mEngine( nullptr )
-  , mLayerId( layer ? layer->id() : QString() )
+  : mLayerId( layer ? layer->id() : QString() )
   , mLayer( layer )
   , mProviderId( providerId )
   , mFlags( DrawLabels )

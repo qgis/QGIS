@@ -33,8 +33,6 @@ class QgsOgrDbConnection : public QObject
     //! Constructor
     explicit QgsOgrDbConnection( const QString &connName, const QString &settingsKey );
 
-    ~QgsOgrDbConnection();
-
     static const QStringList connectionList( const QString &settingsKey );
     static void deleteConnection( const QString &connName, const QString &settingsKey );
     static QString selectedConnection( const QString &settingsKey );

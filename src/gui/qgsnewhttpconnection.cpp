@@ -30,7 +30,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   : QDialog( parent, fl )
   , mBaseKey( baseKey )
   , mOriginalConnName( connName )
-  , mAuthConfigSelect( nullptr )
+
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );

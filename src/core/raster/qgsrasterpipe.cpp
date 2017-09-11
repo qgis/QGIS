@@ -29,10 +29,6 @@
 #include "qgsrasterprojector.h"
 #include "qgsrasternuller.h"
 
-QgsRasterPipe::QgsRasterPipe()
-{
-}
-
 QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
 {
   for ( int i = 0; i < pipe.size(); i++ )

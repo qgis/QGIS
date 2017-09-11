@@ -192,7 +192,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   if ( d.exec() != QDialog::Accepted )
     return;
 
-  mSourceSymbol.reset( newSymbol.release() );
+  mSourceSymbol = std::move( newSymbol );
   QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize() );
   btnChangeSymbol->setIcon( icon );
 

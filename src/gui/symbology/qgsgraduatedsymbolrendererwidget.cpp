@@ -47,7 +47,6 @@
 ///@cond PRIVATE
 
 QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent ) : QAbstractItemModel( parent )
-  , mRenderer( nullptr )
   , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
 {
 }
@@ -423,8 +422,7 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
 
 QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
-  , mModel( nullptr )
+
 {
 
 

@@ -25,7 +25,6 @@
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayer( nullptr )
   , mAllowExpression( false )
   , mAllowEmpty( false )
 {

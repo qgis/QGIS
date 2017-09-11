@@ -67,7 +67,6 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
   , mLayerValid( false )
   , mValid( false )
-  , mFile( nullptr )
   , mGeomRep( GeomNone )
   , mFieldCount( 0 )
   , mXFieldIndex( -1 )
@@ -76,17 +75,14 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri )
   , mWktHasPrefix( false )
   , mXyDms( false )
   , mSubsetString( QLatin1String( "" ) )
-  , mSubsetExpression( nullptr )
   , mBuildSubsetIndex( true )
   , mUseSubsetIndex( false )
   , mMaxInvalidLines( 50 )
   , mShowInvalidLines( true )
   , mRescanRequired( false )
-  , mCrs()
   , mWkbType( QgsWkbTypes::NoGeometry )
   , mGeometryType( QgsWkbTypes::UnknownGeometry )
   , mBuildSpatialIndex( false )
-  , mSpatialIndex( nullptr )
 {
 
   // Add supported types to enable creating expression fields in field calculator
@@ -1036,7 +1032,8 @@ bool QgsDelimitedTextProvider::setSubsetString( const QString &subset, bool upda
     QString previousSubset = mSubsetString;
     mSubsetString = nonNullSubset;
     mSubsetExpression = expression;
-    if ( tmpSubsetExpression ) delete tmpSubsetExpression;
+    delete tmpSubsetExpression;
+
     // Update the feature count and extents if requested
 
     // Usage of updateFeatureCount is a bit painful, basically expect that it
@@ -1205,11 +1202,11 @@ class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "delimitedtext" ); }
-    virtual QString text() const override { return QObject::tr( "Delimited Text" ); }
-    virtual int ordering() const override { return 30; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "delimitedtext" ); }
+    QString text() const override { return QObject::tr( "Delimited Text" ); }
+    int ordering() const override { return 30; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDelimitedTextLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsDelimitedTextSourceSelect( parent, fl, widgetMode );
     }

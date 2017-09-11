@@ -29,8 +29,6 @@ const int QgsComposerRuler::VALID_SCALE_MAGNITUDES[] = {1, 10, 100, 1000, 10000}
 QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
   : QWidget( nullptr )
   , mDirection( d )
-  , mComposition( nullptr )
-  , mLineSnapItem( nullptr )
   , mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
@@ -413,11 +411,11 @@ void QgsComposerRuler::mouseReleaseEvent( QMouseEvent *event )
   bool removeItem = false;
   if ( mDirection == Horizontal )
   {
-    removeItem = pos.x() < 0 ? true : false;
+    removeItem = pos.x() < 0;
   }
   else
   {
-    removeItem = pos.y() < 0 ? true : false;
+    removeItem = pos.y() < 0;
   }
 
   if ( removeItem )

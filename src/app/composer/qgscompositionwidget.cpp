@@ -125,14 +125,9 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget *parent, QgsComposition *c )
 
 QgsCompositionWidget::QgsCompositionWidget()
   : QgsPanelWidget( nullptr )
-  , mComposition( nullptr )
+
 {
   setupUi( this );
-}
-
-QgsCompositionWidget::~QgsCompositionWidget()
-{
-
 }
 
 void QgsCompositionWidget::populateDataDefinedButtons()

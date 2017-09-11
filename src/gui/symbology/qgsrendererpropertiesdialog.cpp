@@ -86,9 +86,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
   : QDialog( parent )
   , mLayer( layer )
   , mStyle( style )
-  , mActiveWidget( nullptr )
-  , mPaintEffect( nullptr )
-  , mMapCanvas( nullptr )
+
 {
   setupUi( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );

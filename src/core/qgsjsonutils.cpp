@@ -287,7 +287,7 @@ QString QgsJsonUtils::encodeValue( const QVariant &value )
   }
 }
 
-QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer, QVector<QVariant> attributeWidgetCaches )
+QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
 {
   QgsFields fields = feature.fields();
   QString attrs;

@@ -100,7 +100,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   , mEnabledCapabilities( 0 )
   , mConnectionRO( nullptr )
   , mConnectionRW( nullptr )
-  , mTransaction( nullptr )
+
 {
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
@@ -4837,11 +4837,11 @@ class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spell
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "postgres" ); }
-    virtual QString text() const override { return QObject::tr( "PostgreSQL" ); }
-    virtual int ordering() const override { return 40; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "postgres" ); }
+    QString text() const override { return QObject::tr( "PostgreSQL" ); }
+    int ordering() const override { return 40; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsPgSourceSelect( parent, fl, widgetMode );
     }

@@ -51,8 +51,6 @@ bool QgsComposerAttributeTableCompareV2::operator()( const QgsComposerTableRow &
 QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition *composition, bool createUndoCommands )
   : QgsComposerTableV2( composition, createUndoCommands )
   , mSource( LayerAttributes )
-  , mCurrentAtlasLayer( nullptr )
-  , mComposerMap( nullptr )
   , mMaximumNumberOfFeatures( 30 )
   , mShowUniqueRowsOnly( false )
   , mShowOnlyVisibleFeatures( false )

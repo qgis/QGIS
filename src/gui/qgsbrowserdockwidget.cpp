@@ -40,8 +40,6 @@
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QWidget *parent )
   : QgsDockWidget( parent )
-  , mModel( nullptr )
-  , mProxyModel( nullptr )
   , mPropertiesWidgetEnabled( false )
   , mPropertiesWidgetHeight( 0 )
 {

@@ -34,8 +34,6 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     //! Constructor
     explicit QgsAppPluginManagerInterface( QgsPluginManager *pluginManager );
 
-    ~QgsAppPluginManagerInterface();
-
     //! remove Python plugins from the metadata registry (c++ plugins stay)
     void clearPythonPluginMetadata() override;
 

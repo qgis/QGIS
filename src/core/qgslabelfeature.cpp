@@ -17,10 +17,8 @@
 #include "qgsgeometry.h"
 
 QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size )
-  : mLayer( nullptr )
-  , mId( id )
+  : mId( id )
   , mGeometry( geometry )
-  , mObstacleGeometry( nullptr )
   , mSize( size )
   , mPriority( -1 )
   , mZIndex( 0 )
@@ -34,9 +32,6 @@ QgsLabelFeature::QgsLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSize
   , mAlwaysShow( false )
   , mIsObstacle( false )
   , mObstacleFactor( 1 )
-  , mInfo( nullptr )
-  , mPermissibleZoneGeos( nullptr )
-  , mPermissibleZoneGeosPrepared( nullptr )
 {
 }
 

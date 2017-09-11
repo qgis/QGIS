@@ -32,7 +32,7 @@ QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas )
   : QgsMapToolLabel( canvas )
   , mDragging( false )
   , mShowPinned( false )
-  , mRubberBand( nullptr )
+
 {
   mToolName = tr( "Pin labels" );
 
@@ -473,8 +473,5 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
     vlayer->endEditCommand();
   }
 
-  if ( writeFailed )
-    return false;
-
-  return true;
+  return !writeFailed;
 }

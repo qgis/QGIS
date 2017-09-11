@@ -103,7 +103,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
   return true;
 }
 
-QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
+QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   : QgsRasterDataProvider( uri )
   , mUpdate( false )
   , mValid( false )
@@ -1271,7 +1271,7 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
   double myMinVal, myMaxVal;
   int myBinCount;
 
-  GUIntBig *myHistogramArray = 0;
+  GUIntBig *myHistogramArray = nullptr;
   CPLErr myError = GDALGetDefaultHistogramEx( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
                    nullptr, nullptr );
@@ -3055,11 +3055,11 @@ class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "gdal" ); }
-    virtual QString text() const override { return QObject::tr( "Raster" ); }
-    virtual int ordering() const override { return 20; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "gdal" ); }
+    QString text() const override { return QObject::tr( "Raster" ); }
+    int ordering() const override { return 20; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsGdalSourceSelect( parent, fl, widgetMode );
     }

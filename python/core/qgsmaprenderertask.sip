@@ -48,7 +48,7 @@ class QgsMapRendererTask : QgsTask
  Adds ``annotations`` to be rendered on the map.
 %End
 
-    void addDecorations( QList< QgsMapDecoration * > decorations );
+    void addDecorations( const QList<QgsMapDecoration *> &decorations );
 %Docstring
  Adds ``decorations`` to be rendered on the map.
 %End

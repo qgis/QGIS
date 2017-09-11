@@ -66,8 +66,7 @@ QgsRasterFileWriter::QgsRasterFileWriter( const QString &outputUrl )
   , mMaxTileHeight( 500 )
   , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
   , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-  , mPipe( nullptr )
-  , mInput( nullptr )
+
 {
 
 }
@@ -81,8 +80,7 @@ QgsRasterFileWriter::QgsRasterFileWriter()
   , mMaxTileHeight( 500 )
   , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
   , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-  , mPipe( nullptr )
-  , mInput( nullptr )
+
 {
 
 }
@@ -333,9 +331,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, feedback );
   }
 
-  if ( destProvider )
-    delete destProvider;
-
+  delete destProvider;
   return error;
 }
 
@@ -618,8 +614,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     ++fileIndex;
   }
 
-  if ( destProvider )
-    delete destProvider;
+  delete destProvider;
 
   qgsFree( redData );
   qgsFree( greenData );

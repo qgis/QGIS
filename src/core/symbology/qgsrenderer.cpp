@@ -60,7 +60,6 @@ QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   , mUsingSymbolLevels( false )
   , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
   , mCurrentVertexMarkerSize( 3 )
-  , mPaintEffect( nullptr )
   , mForceRaster( false )
   , mOrderByEnabled( false )
 {

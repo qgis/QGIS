@@ -18,10 +18,6 @@
 #include "qgsgpsconnectionregistry.h"
 #include "qgsgpsconnection.h"
 
-QgsGPSConnectionRegistry::QgsGPSConnectionRegistry()
-{
-}
-
 QgsGPSConnectionRegistry::~QgsGPSConnectionRegistry()
 {
   qDeleteAll( mConnections );

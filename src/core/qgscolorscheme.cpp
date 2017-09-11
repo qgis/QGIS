@@ -198,11 +198,6 @@ QgsCustomColorScheme *QgsCustomColorScheme::clone() const
 }
 
 
-QgsProjectColorScheme::QgsProjectColorScheme()
-{
-
-}
-
 QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
   Q_UNUSED( context );

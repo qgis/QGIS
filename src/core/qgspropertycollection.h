@@ -368,7 +368,10 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 {
   public:
 
-    QgsPropertyCollectionStack();
+    /**
+     * Constructor for QgsPropertyCollectionStack.
+     */
+    QgsPropertyCollectionStack() = default;
 
     ~QgsPropertyCollectionStack();
 

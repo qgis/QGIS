@@ -66,7 +66,10 @@ class CORE_EXPORT QgsPluginLayerRegistry
 {
   public:
 
-    QgsPluginLayerRegistry();
+    /**
+     * Constructor for QgsPluginLayerRegistry.
+     */
+    QgsPluginLayerRegistry() = default;
     ~QgsPluginLayerRegistry();
 
     //! QgsPluginLayerRegistry cannot be copied.

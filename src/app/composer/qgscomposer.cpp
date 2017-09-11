@@ -2136,7 +2136,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
     }
     QStringList s = dlg.selectedFiles();
-    if ( s.size() < 1 || s.at( 0 ).isEmpty() )
+    if ( s.empty() || s.at( 0 ).isEmpty() )
     {
       return;
     }

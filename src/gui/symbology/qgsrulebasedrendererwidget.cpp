@@ -602,8 +602,6 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   : QgsPanelWidget( parent )
   , mRule( rule )
   , mLayer( layer )
-  , mSymbolSelector( nullptr )
-  , mSymbol( nullptr )
   , mContext( context )
 {
   setupUi( this );

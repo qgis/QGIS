@@ -34,7 +34,7 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName,
   , mTolerance( 3 )
   , mToleranceUnit( QgsUnitTypes::RenderMillimeters )
   , mDrawLabels( true )
-  , mSpatialIndex( nullptr )
+
 {
   mRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PointGeometry ) );
 }

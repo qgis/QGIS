@@ -39,7 +39,11 @@ class QgsSizeScaleTransformer;
 class CORE_EXPORT QgsDataDefinedSizeLegend
 {
   public:
-    QgsDataDefinedSizeLegend();
+
+    /**
+     * Constructor for QgsDataDefinedSizeLegend.
+     */
+    QgsDataDefinedSizeLegend() = default;
 
     //! Copy constructor
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );

@@ -28,7 +28,7 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
     Q_OBJECT
 
   public:
-    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer *layer, QWidget *parent = nullptr );
+    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     QgsAttributeActionPropertiesDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 

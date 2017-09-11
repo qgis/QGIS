@@ -29,10 +29,6 @@ QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceMo
   setSourceModel( sourceModel );
 }
 
-QgsFeatureListModel::~QgsFeatureListModel()
-{
-}
-
 void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceModel )
 {
   QAbstractProxyModel::setSourceModel( sourceModel );

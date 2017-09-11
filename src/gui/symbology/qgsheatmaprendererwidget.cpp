@@ -64,7 +64,7 @@ QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
 
 QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
+
 {
   if ( !layer )
   {

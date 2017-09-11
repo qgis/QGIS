@@ -173,9 +173,7 @@ bool QgsRectangle::intersects( const QgsRectangle &rect ) const
     return false;
   double y1 = ( mYmin > rect.mYmin ? mYmin : rect.mYmin );
   double y2 = ( mYmax < rect.mYmax ? mYmax : rect.mYmax );
-  if ( y1 > y2 )
-    return false;
-  return true;
+  return y1 <= y2;
 }
 
 bool QgsRectangle::contains( const QgsRectangle &rect ) const

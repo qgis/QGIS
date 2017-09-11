@@ -31,12 +31,6 @@ bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationIt
   return qgsVariantLessThan( p1.value, p2.value );
 }
 
-
-QgsValueRelationFieldFormatter::QgsValueRelationFieldFormatter()
-{
-
-}
-
 QString QgsValueRelationFieldFormatter::id() const
 {
   return QStringLiteral( "ValueRelation" );

@@ -1321,7 +1321,7 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
 {
-  setRelative( mRelative ? false : true );
+  setRelative( !mRelative );
 }
 
 QgsPointXY QgsAdvancedDigitizingDockWidget::currentPoint( bool *exist ) const

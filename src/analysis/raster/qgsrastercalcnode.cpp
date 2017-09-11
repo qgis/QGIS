@@ -19,28 +19,20 @@
 
 QgsRasterCalcNode::QgsRasterCalcNode()
   : mType( tNumber )
-  , mLeft( nullptr )
-  , mRight( nullptr )
   , mNumber( 0 )
-  , mMatrix( nullptr )
   , mOperator( opNONE )
 {
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
   : mType( tNumber )
-  , mLeft( nullptr )
-  , mRight( nullptr )
   , mNumber( number )
-  , mMatrix( nullptr )
   , mOperator( opNONE )
 {
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( QgsRasterMatrix *matrix )
   : mType( tMatrix )
-  , mLeft( nullptr )
-  , mRight( nullptr )
   , mNumber( 0 )
   , mMatrix( matrix )
   , mOperator( opNONE )
@@ -53,18 +45,14 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
   , mLeft( left )
   , mRight( right )
   , mNumber( 0 )
-  , mMatrix( nullptr )
   , mOperator( op )
 {
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( const QString &rasterName )
   : mType( tRasterRef )
-  , mLeft( nullptr )
-  , mRight( nullptr )
   , mNumber( 0 )
   , mRasterName( rasterName )
-  , mMatrix( nullptr )
   , mOperator( opNONE )
 {
   if ( mRasterName.startsWith( '"' ) && mRasterName.endsWith( '"' ) )

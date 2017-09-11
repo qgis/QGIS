@@ -458,7 +458,6 @@ QgsGradientFillSymbolLayer::QgsGradientFillSymbolLayer( const QColor &color, con
     GradientColorType colorType, GradientType gradientType,
     GradientCoordinateMode coordinateMode, GradientSpread spread )
   : mGradientColorType( colorType )
-  , mGradientRamp( nullptr )
   , mGradientType( gradientType )
   , mCoordinateMode( coordinateMode )
   , mGradientSpread( spread )
@@ -950,8 +949,6 @@ QgsShapeburstFillSymbolLayer::QgsShapeburstFillSymbolLayer( const QColor &color,
   , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
   , mColorType( colorType )
   , mColor2( color2 )
-  , mGradientRamp( nullptr )
-  , mTwoColorGradientRamp( nullptr )
   , mIgnoreRings( false )
   , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
@@ -2297,7 +2294,7 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   , mLineAngle( 45.0 )
   , mOffset( 0.0 )
   , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-  , mFillLineSymbol( nullptr )
+
 {
   setSubSymbol( new QgsLineSymbol() );
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
@@ -3000,7 +2997,6 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
-  , mMarkerSymbol( nullptr )
   , mDistanceX( 15 )
   , mDistanceXUnit( QgsUnitTypes::RenderMillimeters )
   , mDistanceY( 15 )

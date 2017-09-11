@@ -65,11 +65,6 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
   projectRead();
 }
 
-QgsDecorationScaleBar::~QgsDecorationScaleBar()
-{
-
-}
-
 void QgsDecorationScaleBar::projectRead()
 {
   QgsDecorationItem::projectRead();

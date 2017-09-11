@@ -807,7 +807,7 @@ void QgsCompoundColorWidget::updateActionsForCurrentScheme()
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
 
   QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
-  mActionRemovePalette->setEnabled( userScheme ? true : false );
+  mActionRemovePalette->setEnabled( static_cast< bool >( userScheme ) );
   if ( userScheme )
   {
     mActionShowInButtons->setEnabled( true );

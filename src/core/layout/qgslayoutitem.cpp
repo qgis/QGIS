@@ -27,7 +27,7 @@
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   : QgsLayoutObject( layout )
-  , QGraphicsRectItem( 0 )
+  , QGraphicsRectItem( nullptr )
   , mUuid( QUuid::createUuid().toString() )
 {
   setZValue( QgsLayout::ZItem );

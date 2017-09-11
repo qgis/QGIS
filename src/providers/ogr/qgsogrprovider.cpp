@@ -1201,7 +1201,7 @@ bool QgsOgrProvider::isValid() const
 // may accept any geometry type)
 OGRGeometryH QgsOgrProvider::ConvertGeometryIfNecessary( OGRGeometryH hGeom )
 {
-  if ( hGeom == nullptr )
+  if ( !hGeom )
     return hGeom;
   OGRwkbGeometryType layerGeomType = OGR_L_GetGeomType( ogrLayer );
   OGRwkbGeometryType flattenLayerGeomType = wkbFlatten( layerGeomType );
@@ -1448,7 +1448,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         break;
       case QVariant::LongLong:
       {
-        const char *pszDataTypes = GDALGetMetadataItem( ogrDriver, GDAL_DMD_CREATIONFIELDDATATYPES, NULL );
+        const char *pszDataTypes = GDALGetMetadataItem( ogrDriver, GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
         if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
           type = OFTInteger64;
         else
@@ -3218,7 +3218,7 @@ void QgsOgrProviderUtils::OGRDestroyWrapper( OGRDataSourceH ogrDataSource )
   QString datasetName( QString::fromUtf8( OGR_DS_GetName( ogrDataSource ) ) );
   if ( ogrDriverName == QLatin1String( "GPKG" ) &&
        IsLocalFile( datasetName ) &&
-       !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", NULL ) )
+       !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) )
   {
     // We need to reset all iterators on layers, otherwise we will not
     // be able to change journal_mode.
@@ -3233,11 +3233,11 @@ void QgsOgrProviderUtils::OGRDestroyWrapper( OGRDataSourceH ogrDataSource )
     bool bSuccess = false;
     OGRLayerH hSqlLyr = OGR_DS_ExecuteSQL( ogrDataSource,
                                            "PRAGMA journal_mode = delete",
-                                           NULL, NULL );
-    if ( hSqlLyr != NULL )
+                                           nullptr, nullptr );
+    if ( hSqlLyr )
     {
       OGRFeatureH hFeat = OGR_L_GetNextFeature( hSqlLyr );
-      if ( hFeat != NULL )
+      if ( hFeat )
       {
         const char *pszRet = OGR_F_GetFieldAsString( hFeat, 0 );
         bSuccess = EQUAL( pszRet, "delete" );
@@ -3259,8 +3259,8 @@ void QgsOgrProviderUtils::OGRDestroyWrapper( OGRDataSourceH ogrDataSource )
     {
       QgsDebugMsg( "GPKG: Trying again" );
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
-      ogrDataSource = OGROpen( datasetName.toUtf8().constData(), TRUE, NULL );
-      CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", NULL );
+      ogrDataSource = OGROpen( datasetName.toUtf8().constData(), TRUE, nullptr );
+      CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", nullptr );
       if ( ogrDataSource )
       {
 #ifdef QGISDEBUG
@@ -3563,7 +3563,7 @@ void QgsOgrProvider::open( OpenMode mode )
   {
     if ( QFileInfo( mFilePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 &&
          IsLocalFile( mFilePath ) &&
-         !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", NULL ) &&
+         !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
          QgsSettings().value( QStringLiteral( "qgis/walForSqlite3" ), true ).toBool() )
     {
       // For GeoPackage, we force opening of the file in WAL (Write Ahead Log)
@@ -3574,7 +3574,7 @@ void QgsOgrProvider::open( OpenMode mode )
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     }
     ogrDataSource = QgsOgrProviderUtils::OGROpenWrapper( mFilePath.toUtf8().constData(), true, &ogrDriver );
-    CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", NULL );
+    CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", nullptr );
   }
 
   mValid = false;
@@ -4004,7 +4004,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   OGRFeatureH hFeature = OGR_L_GetNextFeature( hLayer );
   bool bNew = true;
 
-  if ( hFeature != NULL )
+  if ( hFeature )
   {
     QgsSettings settings;
     // Only used in tests. Do not define it for interactive implication
@@ -4325,7 +4325,7 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
                                  subsetString,
                                  ogrGeometryType );
 
-  OGRDataSourceH hDS = GDALOpenEx( filePath.toLocal8Bit().data(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, NULL, NULL, NULL );
+  OGRDataSourceH hDS = GDALOpenEx( filePath.toLocal8Bit().data(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
   if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )
   {
     if ( layerIndex == -1 )
@@ -4389,11 +4389,11 @@ class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
-    virtual QString text() const override { return QObject::tr( "Vector" ); }
-    virtual int ordering() const override { return 10; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    QString text() const override { return QObject::tr( "Vector" ); }
+    int ordering() const override { return 10; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsOgrSourceSelect( parent, fl, widgetMode );
     }
@@ -4405,11 +4405,11 @@ class QgsGeoPackageSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
-    virtual QString text() const override { return QObject::tr( "GeoPackage" ); }
-    virtual int ordering() const override { return 45; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeoPackageLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "ogr" ); }
+    QString text() const override { return QObject::tr( "GeoPackage" ); }
+    int ordering() const override { return 45; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeoPackageLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsOgrDbSourceSelect( QStringLiteral( "GPKG" ), QObject::tr( "GeoPackage" ), QObject::tr( "GeoPackage Database (*.gpkg)" ), parent, fl, widgetMode );
     }

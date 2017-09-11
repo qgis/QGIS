@@ -31,7 +31,6 @@ class QgsAtlasCompositionWidget:
     Q_OBJECT
   public:
     QgsAtlasCompositionWidget( QWidget *parent, QgsComposition *c );
-    ~QgsAtlasCompositionWidget();
 
   public slots:
     void on_mUseAtlasCheckBox_stateChanged( int state );

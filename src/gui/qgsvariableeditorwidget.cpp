@@ -252,9 +252,7 @@ void QgsVariableEditorWidget::selectionChanged()
 
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   : QTreeWidget( parent )
-  , mEditorDelegate( nullptr )
   , mEditableScopeIndex( -1 )
-  , mContext( nullptr )
 {
   // init icons
   if ( mExpandIcon.isNull() )

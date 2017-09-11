@@ -49,10 +49,7 @@
 static const int SYMBOL_LAYER_ITEM_TYPE = QStandardItem::UserType + 1;
 
 DataDefinedRestorer::DataDefinedRestorer( QgsSymbol *symbol, const QgsSymbolLayer *symbolLayer )
-  : mMarker( nullptr )
-  , mMarkerSymbolLayer( nullptr )
-  , mLine( nullptr )
-  , mLineSymbolLayer( nullptr )
+
 {
   if ( symbolLayer->type() == QgsSymbol::Marker && symbol->type() == QgsSymbol::Marker )
   {
@@ -220,7 +217,6 @@ class SymbolLayerItem : public QStandardItem
 
 QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent )
   : QgsPanelWidget( parent )
-  , mAdvancedMenu( nullptr )
   , mVectorLayer( vl )
 {
 #ifdef Q_OS_MAC

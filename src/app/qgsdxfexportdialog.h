@@ -47,7 +47,6 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     Q_OBJECT
   public:
     QgsVectorLayerAndAttributeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
-    ~QgsVectorLayerAndAttributeModel();
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;

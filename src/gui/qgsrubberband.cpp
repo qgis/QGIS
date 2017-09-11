@@ -198,7 +198,7 @@ void QgsRubberBand::movePoint( const QgsPointXY &p, int geometryIndex )
     return;
   }
 
-  if ( mPoints.at( geometryIndex ).size() < 1 )
+  if ( mPoints.at( geometryIndex ).empty() )
   {
     return;
   }

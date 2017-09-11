@@ -57,7 +57,7 @@ class QgsOgrLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsOgrLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType, bool isSubLayer = false );
+    QgsOgrLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, bool isSubLayer = false );
 
     bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
@@ -81,7 +81,7 @@ class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOgrDataCollectionItem( QgsDataItem *parent, QString name, QString path );
+    QgsOgrDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
 

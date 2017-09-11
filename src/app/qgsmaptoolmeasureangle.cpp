@@ -29,8 +29,7 @@
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mRubberBand( nullptr )
-  , mResultDisplay( nullptr )
+
 {
   mToolName = tr( "Measure angle" );
 
@@ -45,7 +44,7 @@ QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
 
 void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 )
+  if ( !mRubberBand || mAnglePoints.empty() || mAnglePoints.size() > 2 )
   {
     return;
   }
@@ -90,7 +89,7 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
     mAnglePoints.clear();
   }
 
-  if ( mAnglePoints.size() < 1 )
+  if ( mAnglePoints.empty() )
   {
     if ( !mResultDisplay )
     {

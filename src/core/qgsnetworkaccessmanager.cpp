@@ -48,7 +48,7 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
-    QgsNetworkProxyFactory() {}
+    QgsNetworkProxyFactory() = default;
 
     QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery &query = QNetworkProxyQuery() ) override
     {

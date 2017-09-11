@@ -2235,7 +2235,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
 
 bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
 {
-  if ( certs.size() < 1 )
+  if ( certs.isEmpty() )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
     return false;
@@ -2542,7 +2542,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSsl
 
 bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &certs )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
     return false;
@@ -2845,23 +2845,19 @@ QgsAuthManager::QgsAuthManager()
   : QObject()
   , mAuthInit( false )
   , mAuthDbPath( QString() )
-  , mQcaInitializer( nullptr )
   , mMasterPass( QString() )
   , mPassTries( 0 )
   , mAuthDisabled( false )
-  , mScheduledDbEraseTimer( nullptr )
   , mScheduledDbErase( false )
   , mScheduledDbEraseRequestWait( 3 )
   , mScheduledDbEraseRequestEmitted( false )
   , mScheduledDbEraseRequestCount( 0 )
-  , mMutex( nullptr )
   , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
   , mPasswordHelperVerificationError( false )
   , mPasswordHelperErrorMessage( "" )
   , mPasswordHelperErrorCode( QKeychain::NoError )
   , mPasswordHelperLoggingEnabled( false )
   , mPasswordHelperFailedInit( false )
-
 {
   mMutex = new QMutex( QMutex::Recursive );
   connect( this, &QgsAuthManager::messageOut,

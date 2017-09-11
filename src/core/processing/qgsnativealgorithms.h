@@ -139,7 +139,7 @@ class QgsCollectorAlgorithm : public QgsProcessingAlgorithm
   protected:
 
     QVariantMap processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
-                                   std::function<QgsGeometry( const QList< QgsGeometry >& )> collector, int maxQueueLength = 0 );
+                                   const std::function<QgsGeometry( const QList<QgsGeometry>& )> &collector, int maxQueueLength = 0 );
 };
 
 /**
@@ -505,7 +505,7 @@ class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
 
     Predicate reversePredicate( Predicate predicate ) const;
     QStringList predicateOptionsList() const;
-    void process( QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, std::function<void ( const QgsFeature & )> handleFeatureFunction, bool onlyRequireTargetIds, QgsFeedback *feedback );
+    void process( QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsFeedback *feedback );
 };
 
 /**

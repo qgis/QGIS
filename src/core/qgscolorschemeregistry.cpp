@@ -22,10 +22,6 @@
 #include <QFileInfoList>
 
 
-QgsColorSchemeRegistry::QgsColorSchemeRegistry()
-{
-}
-
 QgsColorSchemeRegistry::~QgsColorSchemeRegistry()
 {
   qDeleteAll( mColorSchemeList );

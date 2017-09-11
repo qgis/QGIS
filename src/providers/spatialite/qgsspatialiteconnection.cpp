@@ -751,7 +751,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
     return nullptr;
   }
   // activating Foreign Key constraints
-  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, 0, nullptr );
+  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 
   QgsDebugMsg( "Connection to the database was successful" );
 

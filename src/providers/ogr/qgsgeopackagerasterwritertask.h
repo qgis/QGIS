@@ -45,7 +45,7 @@ class QgsGeoPackageRasterWriterTask : public QgsTask
      * Constructor for QgsVectorFileWriterTask. Takes a source \a layer, destination \a fileName
      * and save \a options.
      */
-    QgsGeoPackageRasterWriterTask( const QgsMimeDataUtils::Uri sourceUri, const QString destinationPath );
+    QgsGeoPackageRasterWriterTask( const QgsMimeDataUtils::Uri &sourceUri, const QString &destinationPath );
 
     virtual void cancel() override;
 

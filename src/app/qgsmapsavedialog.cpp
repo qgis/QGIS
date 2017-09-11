@@ -40,7 +40,7 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QList< QgsDecorationItem * > decorations, QList< QgsAnnotation *> annotations, DialogType type )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsDecorationItem *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )
   , mMapCanvas( mapCanvas )

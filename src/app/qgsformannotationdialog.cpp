@@ -27,7 +27,7 @@
 QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mItem( item )
-  , mEmbeddedWidget( nullptr )
+
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
@@ -44,11 +44,6 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsFormAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
-}
-
-QgsFormAnnotationDialog::~QgsFormAnnotationDialog()
-{
-
 }
 
 void QgsFormAnnotationDialog::applySettingsToItem()

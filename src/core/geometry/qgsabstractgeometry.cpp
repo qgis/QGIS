@@ -271,6 +271,6 @@ QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, Segmenta
 
 QgsAbstractGeometry *QgsAbstractGeometry::toCurveType() const
 {
-  return 0;
+  return nullptr;
 }
 

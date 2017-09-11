@@ -1560,7 +1560,7 @@ QString QgsFilledMarkerSymbolLayer::layerType() const
 
 void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  if ( mFill.get() )
+  if ( mFill )
   {
     mFill->startRender( context.renderContext(), context.fields() );
   }
@@ -1570,7 +1570,7 @@ void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsFilledMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  if ( mFill.get() )
+  if ( mFill )
   {
     mFill->stopRender( context.renderContext() );
   }
@@ -2456,8 +2456,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
 //////////
 
 QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, QChar chr, double pointSize, const QColor &color, double angle )
-  : mFontMetrics( nullptr )
-  , mChrWidth( 0 )
+  : mChrWidth( 0 )
 {
   mFontFamily = fontFamily;
   mChr = chr;

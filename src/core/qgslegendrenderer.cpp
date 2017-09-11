@@ -159,7 +159,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 
       // Group subitems
       QList<Atom> groupAtoms = createAtomList( nodeGroup, splitLayer );
-      bool hasSubItems = groupAtoms.size() > 0;
+      bool hasSubItems = !groupAtoms.empty();
 
       if ( nodeLegendStyle( nodeGroup ) != QgsLegendStyle::Hidden )
       {

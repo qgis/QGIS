@@ -45,10 +45,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   : QWidget( parent )
   , mSymbol( symbol )
   , mStyle( style )
-  , mAdvancedMenu( nullptr )
-  , mClipFeaturesAction( nullptr )
   , mLayer( layer )
-  , mMapCanvas( nullptr )
 {
   setupUi( this );
   spinAngle->setClearValue( 0 );

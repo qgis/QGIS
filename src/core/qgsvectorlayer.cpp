@@ -136,26 +136,17 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 bool loadDefaultStyleFlag,
                                 bool readExtentFromXml )
   : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
-  , mDataProvider( nullptr )
   , mProviderKey( providerKey )
   , mReadOnly( false )
   , mWkbType( QgsWkbTypes::Unknown )
-  , mRenderer( nullptr )
-  , mLabeling( nullptr )
   , mLabelFontNotFoundNotified( false )
   , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
   , mVertexMarkerOnlyForSelection( false )
-  , mEditBuffer( nullptr )
-  , mJoinBuffer( nullptr )
-  , mExpressionFieldBuffer( nullptr )
-  , mDiagramRenderer( nullptr )
-  , mDiagramLayerSettings( nullptr )
   , mValidExtent( false )
   , mLazyExtent( true )
   , mSymbolFeatureCounted( false )
   , mEditCommandActive( false )
   , mReadExtentFromXml( readExtentFromXml )
-
 {
   mActions = new QgsActionManager( this );
   mConditionalStyles = new QgsConditionalLayerStyles();
@@ -667,7 +658,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 
 bool QgsVectorLayer::labelsEnabled() const
 {
-  return mLabeling != nullptr;
+  return static_cast< bool >( mLabeling );
 }
 
 bool QgsVectorLayer::diagramsEnabled() const
@@ -1163,7 +1154,7 @@ int QgsVectorLayer::addPart( const QList<QgsPointXY> &points )
 
   //number of selected features must be 1
 
-  if ( mSelectedFeatureIds.size() < 1 )
+  if ( mSelectedFeatureIds.empty() )
   {
     QgsDebugMsg( "Number of selected features <1" );
     return 4;
@@ -1189,7 +1180,7 @@ int QgsVectorLayer::addPart( const QgsPointSequence &points )
 
   //number of selected features must be 1
 
-  if ( mSelectedFeatureIds.size() < 1 )
+  if ( mSelectedFeatureIds.empty() )
   {
     QgsDebugMsg( "Number of selected features <1" );
     return 4;
@@ -1215,7 +1206,7 @@ int QgsVectorLayer::addPart( QgsCurve *ring )
 
   //number of selected features must be 1
 
-  if ( mSelectedFeatureIds.size() < 1 )
+  if ( mSelectedFeatureIds.empty() )
   {
     QgsDebugMsg( "Number of selected features <1" );
     return 4;
@@ -4260,7 +4251,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   Q_FOREACH ( const QgsMapLayerDependency &dep, mDependencies )
   {
     QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( dep.layerId() ) );
-    if ( lyr == nullptr )
+    if ( !lyr )
       continue;
     disconnect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::dataChanged );
     disconnect( lyr, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayer::dataChanged );
@@ -4280,7 +4271,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   Q_FOREACH ( const QgsMapLayerDependency &dep, mDependencies )
   {
     QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( dep.layerId() ) );
-    if ( lyr == nullptr )
+    if ( !lyr )
       continue;
     connect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::dataChanged );
     connect( lyr, &QgsVectorLayer::featureDeleted, this, &QgsVectorLayer::dataChanged );

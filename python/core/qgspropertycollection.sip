@@ -368,6 +368,9 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
   public:
 
     QgsPropertyCollectionStack();
+%Docstring
+ Constructor for QgsPropertyCollectionStack.
+%End
 
     ~QgsPropertyCollectionStack();
 

@@ -157,7 +157,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
       if ( labChanged || diagChanged )
       {
         // TODO: highlight features (maybe with QTimer?)
-        labelChanged = labelChanged || true;
+        labelChanged = true;
       }
     }
   }
@@ -173,7 +173,7 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent *e )
         mCurrentLabel.pos = pos;
 
         if ( showHide( vlayer, false ) )
-          labelChanged = labelChanged || true;
+          labelChanged = true;
       }
     }
   }

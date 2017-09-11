@@ -41,9 +41,6 @@ class APP_EXPORT QgsStatusBarMagnifierWidget : public QWidget
       */
     QgsStatusBarMagnifierWidget( QWidget *parent = nullptr );
 
-
-    virtual ~QgsStatusBarMagnifierWidget();
-
     void setDefaultFactor( double factor );
 
     /** Set the font of the text

@@ -69,10 +69,6 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
   checkDefinitionValid();
 }
 
-QgsJoinDialog::~QgsJoinDialog()
-{
-}
-
 void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
 {
   mJoinLayerComboBox->setLayer( joinInfo.joinLayer() );

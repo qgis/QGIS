@@ -141,14 +141,10 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QObje
   : QSortFilterProxyModel( parent )
   , mProject( project )
   , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
-  , mLayerTreeModel( nullptr )
+
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
-}
-
-QgsSnappingLayerTreeModel::~QgsSnappingLayerTreeModel()
-{
 }
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const

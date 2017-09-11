@@ -120,20 +120,20 @@ void QgsPaperGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *ite
 
 //QgsPaperItem
 
-QgsPaperItem::QgsPaperItem( QgsComposition *c ): QgsComposerItem( c, false ),
-  mPageGrid( nullptr )
+QgsPaperItem::QgsPaperItem( QgsComposition *c ): QgsComposerItem( c, false )
+
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition ): QgsComposerItem( x, y, width, height, composition, false ),
-  mPageGrid( nullptr ), mPageMargin( 0 )
+  mPageMargin( 0 )
 {
   initialize();
 }
 
 QgsPaperItem::QgsPaperItem(): QgsComposerItem( nullptr, false ),
-  mPageGrid( nullptr ), mPageMargin( 0 )
+  mPageMargin( 0 )
 {
   initialize();
 }

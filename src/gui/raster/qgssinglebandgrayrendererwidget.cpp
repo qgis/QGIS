@@ -23,7 +23,6 @@
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mMinMaxWidget( nullptr )
   , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );

@@ -70,7 +70,7 @@ class CORE_EXPORT QgsTracer : public QObject
     bool init();
 
     //! Whether the internal data structures have been initialized
-    bool isInitialized() const { return mGraph != nullptr; }
+    bool isInitialized() const { return static_cast< bool >( mGraph ); }
 
     //! Whether there was an error during graph creation due to noding exception,
     //! indicating some input data topology problems

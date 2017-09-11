@@ -31,7 +31,7 @@
 #include <QFileDialog>
 #include <QImageWriter>
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer *layer, QWidget *parent )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
 {

@@ -14,7 +14,11 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
 #include "qgstrackedvectorlayertools.h"
 %End
   public:
+
     QgsTrackedVectorLayerTools();
+%Docstring
+ Constructor for QgsTrackedVectorLayerTools.
+%End
 
     virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const;
 

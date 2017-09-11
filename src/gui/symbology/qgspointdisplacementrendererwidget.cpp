@@ -32,7 +32,7 @@ QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *l
 
 QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
+
 {
   if ( !layer )
   {

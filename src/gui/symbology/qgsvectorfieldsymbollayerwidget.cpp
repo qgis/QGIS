@@ -16,7 +16,7 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ): QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
+QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ): QgsSymbolLayerWidget( parent, vl )
 {
   setupUi( this );
 

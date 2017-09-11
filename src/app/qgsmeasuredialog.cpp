@@ -154,7 +154,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     double area = mDa.measurePolygon( tmpPoints );
     editTotal->setText( formatArea( area ) );
   }
-  else if ( !mMeasureArea && mTool->points().size() >= 1 )
+  else if ( !mMeasureArea && !mTool->points().empty() )
   {
     QList< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );

@@ -20,9 +20,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 
-QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
-{
-}
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other )
   : mType( other.mType )

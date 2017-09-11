@@ -59,10 +59,6 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget *parent, QgsCompos
   updateGuiElements();
 }
 
-QgsAtlasCompositionWidget::~QgsAtlasCompositionWidget()
-{
-}
-
 void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
 {
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();

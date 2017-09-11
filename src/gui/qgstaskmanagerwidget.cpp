@@ -479,7 +479,6 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
 
 QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent )
   : QToolButton( parent )
-  , mProgressBar( nullptr )
   , mManager( manager )
 {
   setAutoRaise( true );

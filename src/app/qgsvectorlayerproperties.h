@@ -25,6 +25,8 @@
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "layertree/qgslayertree.h"
 #include "layertree/qgslayertreemodel.h"
 #include "layertree/qgslayertreegroup.h"
 #include "qgis_app.h"
@@ -55,7 +57,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     };
 
     QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsVectorLayerProperties();
+
     //! Returns the display name entered in the dialog
     QString displayName();
     void setRendererDirty( bool ) {}

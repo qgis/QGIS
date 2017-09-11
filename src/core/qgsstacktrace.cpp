@@ -161,11 +161,6 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 }
 #endif
 
-QgsStackTrace::QgsStackTrace()
-{
-
-}
-
 bool QgsStackTrace::StackLine::isQgisModule() const
 {
   return moduleName.contains( "qgis", Qt::CaseInsensitive );

@@ -16,10 +16,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 
-QgsSymbolWidgetContext::QgsSymbolWidgetContext()
-  : mMapCanvas( nullptr )
-{}
-
 QgsSymbolWidgetContext::QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other )
   : mMapCanvas( other.mMapCanvas )
   , mAdditionalScopes( other.mAdditionalScopes )

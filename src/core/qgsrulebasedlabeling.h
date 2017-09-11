@@ -358,7 +358,6 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
     QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop = true );
-    ~QgsRuleBasedLabelProvider();
 
     // reimplemented
 

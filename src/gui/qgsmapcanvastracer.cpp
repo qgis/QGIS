@@ -33,8 +33,7 @@ QHash<QgsMapCanvas *, QgsMapCanvasTracer *> QgsMapCanvasTracer::sTracers;
 QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar )
   : mCanvas( canvas )
   , mMessageBar( messageBar )
-  , mLastMessage( nullptr )
-  , mActionEnableTracing( nullptr )
+
 {
   sTracers.insert( canvas, this );
 
@@ -57,7 +56,7 @@ QgsMapCanvasTracer::~QgsMapCanvasTracer()
 
 QgsMapCanvasTracer *QgsMapCanvasTracer::tracerForCanvas( QgsMapCanvas *canvas )
 {
-  return sTracers.value( canvas, 0 );
+  return sTracers.value( canvas, nullptr );
 }
 
 void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVertex )

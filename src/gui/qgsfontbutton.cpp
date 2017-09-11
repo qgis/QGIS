@@ -34,7 +34,7 @@
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Text Format" ) : dialogTitle )
-  , mMenu( nullptr )
+
 {
   setText( tr( "Font" ) );
 

@@ -606,9 +606,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! \note not available in Python bindings
     OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType ) SIP_SKIP;
 
-    OGRDataSourceH mDS;
-    OGRLayerH mLayer;
-    OGRSpatialReferenceH mOgrRef;
+    OGRDataSourceH mDS = nullptr;
+    OGRLayerH mLayer = nullptr;
+    OGRSpatialReferenceH mOgrRef = nullptr;
 
     QgsFields mFields;
 

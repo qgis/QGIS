@@ -39,14 +39,12 @@ QString QgsOSMDownload::queryFromRect( const QgsRectangle &rect )
 
 QgsOSMDownload::QgsOSMDownload()
   : mServiceUrl( defaultServiceUrl() )
-  , mReply( nullptr )
 {
 }
 
 QgsOSMDownload::QgsOSMDownload( const QString &query )
   : mServiceUrl( defaultServiceUrl() )
   , mQuery( query )
-  , mReply( nullptr )
 {
 }
 

@@ -334,7 +334,8 @@ QgsColorRamp *QgsLimitedRandomColorRamp::create( const QgsStringMap &props )
 
 double QgsLimitedRandomColorRamp::value( int index ) const
 {
-  if ( mColors.size() < 1 ) return 0;
+  if ( mColors.empty() )
+    return 0;
   return static_cast< double >( index ) / ( mColors.size() - 1 );
 }
 
@@ -548,7 +549,8 @@ QList<int> QgsColorBrewerColorRamp::listSchemeVariants( const QString &schemeNam
 
 double QgsColorBrewerColorRamp::value( int index ) const
 {
-  if ( mPalette.size() < 1 ) return 0;
+  if ( mPalette.empty() )
+    return 0;
   return static_cast< double >( index ) / ( mPalette.size() - 1 );
 }
 
@@ -865,7 +867,7 @@ QList<QColor> QgsPresetSchemeColorRamp::colors() const
 
 double QgsPresetSchemeColorRamp::value( int index ) const
 {
-  if ( mColors.size() < 1 )
+  if ( mColors.empty() )
     return 0;
   return static_cast< double >( index ) / ( mColors.size() - 1 );
 }

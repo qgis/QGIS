@@ -25,9 +25,6 @@
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mLineEdit( nullptr )
-  , mCheckbox( nullptr )
-  , mContainer( nullptr )
   , mCaseString( QStringLiteral( "LIKE" ) )
 {
 }

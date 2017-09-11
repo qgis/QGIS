@@ -615,11 +615,8 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 
 
 QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsRectangle *extent )
-  : mStorage( nullptr )
-  , mRTree( nullptr )
-  , mIsEmptyLayer( false )
+  : mIsEmptyLayer( false )
   , mLayer( layer )
-  , mExtent( nullptr )
 {
   if ( destCRS.isValid() )
   {

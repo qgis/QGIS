@@ -23,7 +23,7 @@
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   : mLayer( layer )
-  , mOverriddenOriginalStyle( nullptr )
+
 {
   reset();
 }
@@ -226,10 +226,6 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
 
 
 // -----
-
-QgsMapLayerStyle::QgsMapLayerStyle()
-{
-}
 
 QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
   : mXmlData( xmlData )

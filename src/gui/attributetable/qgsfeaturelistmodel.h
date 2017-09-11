@@ -60,7 +60,6 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
   public:
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = 0 );
-    virtual ~QgsFeatureListModel();
 
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
     QgsVectorLayerCache *layerCache();

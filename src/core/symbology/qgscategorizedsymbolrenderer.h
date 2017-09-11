@@ -79,7 +79,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
-    ~QgsCategorizedSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;

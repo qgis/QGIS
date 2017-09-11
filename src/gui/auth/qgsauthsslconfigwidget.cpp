@@ -45,17 +45,8 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   : QWidget( parent )
   , mCert( nullptr )
   , mConnectionCAs( connectionCAs )
-  , mProtocolItem( nullptr )
-  , mProtocolCmbBx( nullptr )
-  , mIgnoreErrorsItem( nullptr )
-  , mVerifyModeItem( nullptr )
-  , mVerifyPeerCmbBx( nullptr )
-  , mVerifyDepthItem( nullptr )
-  , mVerifyDepthSpnBx( nullptr )
   , mCanSave( false )
   , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -593,7 +584,7 @@ void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
 
 QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent, const QSslCertificate &cert, const QString &hostport )
   : QDialog( parent )
-  , mSslConfigWdgt( nullptr )
+
 {
   setWindowTitle( tr( "Custom Certificate Configuration" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

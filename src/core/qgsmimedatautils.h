@@ -35,7 +35,7 @@ class CORE_EXPORT QgsMimeDataUtils
     struct CORE_EXPORT Uri
     {
       //! Constructs invalid URI
-      Uri();
+      Uri() = default;
       //! Constructs URI from encoded data
       explicit Uri( QString &encData );
 

@@ -27,10 +27,7 @@
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
-  , mRubberBand( nullptr )
-  , mTempRubberBand( nullptr )
   , mShowCenterPointRubberBand( false )
-  , mCenterPointRubberBand( nullptr )
 {
   if ( mCanvas )
   {

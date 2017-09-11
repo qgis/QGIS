@@ -34,11 +34,6 @@ QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &
   mPath = settings.value( key ).toString();
 }
 
-QgsOgrDbConnection::~QgsOgrDbConnection()
-{
-
-}
-
 QgsDataSourceUri QgsOgrDbConnection::uri()
 {
   QgsDataSourceUri uri;

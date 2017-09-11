@@ -1281,10 +1281,7 @@ bool QgsSymbolLayerUtils::hasWellKnownMark( QDomElement &element )
     return false;
 
   QDomElement wellKnownNameElem = markElem.firstChildElement( QStringLiteral( "WellKnownName" ) );
-  if ( wellKnownNameElem.isNull() )
-    return false;
-
-  return true;
+  return !wellKnownNameElem.isNull();
 }
 
 
@@ -1396,10 +1393,7 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
 
   bool ok;
   double angle = angleFunc.toDouble( &ok );
-  if ( !ok || qgsDoubleNear( angle, 0.0 ) )
-    return false;
-
-  return true;
+  return !( !ok || qgsDoubleNear( angle, 0.0 ) );
 }
 
 bool QgsSymbolLayerUtils::needPointPatternFill( QDomElement &element )

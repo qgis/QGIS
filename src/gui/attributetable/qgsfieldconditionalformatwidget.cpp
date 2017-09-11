@@ -23,7 +23,6 @@
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
   : QWidget( parent )
-  , mLayer( nullptr )
   , mEditIndex( 0 )
   , mEditing( false )
 {
@@ -51,10 +50,6 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   btnChangeIcon->setSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   setPresets( defaultPresets() );
-}
-
-QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
-{
 }
 
 void QgsFieldConditionalFormatWidget::setExpression()

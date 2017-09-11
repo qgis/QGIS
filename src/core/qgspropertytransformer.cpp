@@ -135,24 +135,6 @@ QgsGenericNumericTransformer::QgsGenericNumericTransformer( double minValue, dou
   , mExponent( exponent )
 {}
 
-QgsGenericNumericTransformer::QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other )
-  : QgsPropertyTransformer( other )
-  , mMinOutput( other.mMinOutput )
-  , mMaxOutput( other.mMaxOutput )
-  , mNullOutput( other.mNullOutput )
-  , mExponent( other.mExponent )
-{}
-
-QgsGenericNumericTransformer &QgsGenericNumericTransformer::operator=( const QgsGenericNumericTransformer &other )
-{
-  QgsPropertyTransformer::operator=( other );
-  mMinOutput = other.mMinOutput;
-  mMaxOutput = other.mMaxOutput;
-  mNullOutput = other.mNullOutput;
-  mExponent = other.mExponent;
-  return *this;
-}
-
 QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone() const
 {
   std::unique_ptr< QgsGenericNumericTransformer > t( new QgsGenericNumericTransformer( mMinValue,
@@ -323,26 +305,6 @@ QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValu
   , mExponent( exponent )
 {
   setType( type );
-}
-
-QgsSizeScaleTransformer::QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other )
-  : QgsPropertyTransformer( other )
-  , mType( other.mType )
-  , mMinSize( other.mMinSize )
-  , mMaxSize( other.mMaxSize )
-  , mNullSize( other.mNullSize )
-  , mExponent( other.mExponent )
-{}
-
-QgsSizeScaleTransformer &QgsSizeScaleTransformer::operator=( const QgsSizeScaleTransformer &other )
-{
-  QgsPropertyTransformer::operator=( other );
-  mType = other.mType;
-  mMinSize = other.mMinSize;
-  mMaxSize = other.mMaxSize;
-  mNullSize = other.mNullSize;
-  mExponent = other.mExponent;
-  return *this;
 }
 
 QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone() const

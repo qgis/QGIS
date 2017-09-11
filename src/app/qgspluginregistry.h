@@ -96,7 +96,7 @@ class APP_EXPORT QgsPluginRegistry
 
   protected:
     //! protected constructor
-    QgsPluginRegistry();
+    QgsPluginRegistry() = default;
 
     //! Try to load and get metadata from c++ plugin, return true on success
     bool checkCppPlugin( const QString &pluginFullPath );

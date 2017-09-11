@@ -603,41 +603,10 @@ static bool cmpByText_( QAction *a, QAction *b )
 QgisApp *QgisApp::sInstance = nullptr;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString rootProfileLocation, const QString activeProfile, QWidget *parent, Qt::WindowFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
-  , mNonEditMapTool( nullptr )
-  , mScaleWidget( nullptr )
-  , mMagnifierWidget( nullptr )
-  , mCoordsEdit( nullptr )
-  , mRotationLabel( nullptr )
-  , mRotationEdit( nullptr )
-  , mRotationEditValidator( nullptr )
-  , mProgressBar( nullptr )
-  , mRenderSuppressionCBox( nullptr )
-  , mOnTheFlyProjectionStatusLabel( nullptr )
-  , mOnTheFlyProjectionStatusButton( nullptr )
-  , mMessageButton( nullptr )
-  , mFeatureActionMenu( nullptr )
-  , mPopupMenu( nullptr )
-  , mDatabaseMenu( nullptr )
-  , mWebMenu( nullptr )
-  , mToolPopupOverviews( nullptr )
-  , mToolPopupDisplay( nullptr )
-  , mLayerTreeCanvasBridge( nullptr )
   , mSplash( splash )
-  , mInternalClipboard( nullptr )
   , mShowProjectionTab( false )
-  , mPythonUtils( nullptr )
-  , mSnappingWidget( nullptr )
-  , mMapStylingDock( nullptr )
-  , mComposerManager( nullptr )
-  , mpTileScaleWidget( nullptr )
-  , mpGpsWidget( nullptr )
-  , mTracer( nullptr )
-  , mSnappingUtils( nullptr )
-  , mProjectLastModified()
-  , mWelcomePage( nullptr )
-  , mCentralContainer( nullptr )
 {
   if ( sInstance )
   {
@@ -1240,90 +1209,15 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
 QgisApp::QgisApp()
   : QMainWindow( nullptr, 0 )
-  , mStyleSheetBuilder( nullptr )
-  , mActionPluginSeparator1( nullptr )
-  , mActionPluginSeparator2( nullptr )
-  , mActionRasterSeparator( nullptr )
-  , mMapToolGroup( nullptr )
-  , mPreviewGroup( nullptr )
 #ifdef Q_OS_MAC
   , mWindowMenu( nullptr )
 #endif
-  , mPanelMenu( nullptr )
-  , mToolbarMenu( nullptr )
-  , mLayerTreeDock( nullptr )
-  , mLayerOrderDock( nullptr )
-  , mOverviewDock( nullptr )
-  , mpGpsDock( nullptr )
-  , mLogDock( nullptr )
-  , mNonEditMapTool( nullptr )
-  , mTaskManagerWidget( nullptr )
-  , mScaleWidget( nullptr )
-  , mMagnifierWidget( nullptr )
-  , mCoordsEdit( nullptr )
-  , mRotationLabel( nullptr )
-  , mRotationEdit( nullptr )
-  , mRotationEditValidator( nullptr )
-  , mProgressBar( nullptr )
-  , mRenderSuppressionCBox( nullptr )
-  , mOnTheFlyProjectionStatusLabel( nullptr )
-  , mOnTheFlyProjectionStatusButton( nullptr )
-  , mMessageButton( nullptr )
-  , mFeatureActionMenu( nullptr )
-  , mPopupMenu( nullptr )
-  , mDatabaseMenu( nullptr )
-  , mWebMenu( nullptr )
-  , mConfigMenu( nullptr )
-  , mToolPopupOverviews( nullptr )
-  , mToolPopupDisplay( nullptr )
-  , mMapCanvas( nullptr )
-  , mOverviewCanvas( nullptr )
-  , mLayerTreeView( nullptr )
-  , mLayerTreeCanvasBridge( nullptr )
-  , mMapLayerOrder( nullptr )
-  , mOverviewMapCursor( nullptr )
-  , mMapWindow( nullptr )
-  , mQgisInterface( nullptr )
-  , mSplash( nullptr )
-  , mInternalClipboard( nullptr )
   , mShowProjectionTab( false )
-  , mpMapTipsTimer( nullptr )
-  , mpMaptip( nullptr )
   , mMapTipsVisible( false )
   , mFullScreenMode( false )
   , mPrevScreenModeMaximized( false )
   , mSaveRollbackInProgress( false )
-  , mPythonUtils( nullptr )
-  , mUndoWidget( nullptr )
-  , mUndoDock( nullptr )
-  , mBrowserWidget( nullptr )
-  , mBrowserWidget2( nullptr )
-  , mAdvancedDigitizingDockWidget( nullptr )
-  , mStatisticalSummaryDockWidget( nullptr )
-  , mBookMarksDockWidget( nullptr )
-  , mSnappingWidget( nullptr )
-  , mSnappingDialogContainer( nullptr )
-  , mSnappingDialog( nullptr )
-  , mPluginManager( nullptr )
-  , mMapStylingDock( nullptr )
-  , mMapStyleWidget( nullptr )
-  , mComposerManager( nullptr )
-  , mpTileScaleWidget( nullptr )
-  , mpGpsWidget( nullptr )
-  , mLastMapToolMessage( nullptr )
-  , mLogViewer( nullptr )
   , mTrustedMacros( false )
-  , mMacrosWarn( nullptr )
-  , mUserInputDockWidget( nullptr )
-  , mVectorLayerTools( nullptr )
-  , mTracer( nullptr )
-  , mActionFilterLegend( nullptr )
-  , mActionStyleDock( nullptr )
-  , mLegendExpressionFilterButton( nullptr )
-  , mSnappingUtils( nullptr )
-  , mProjectLastModified()
-  , mWelcomePage( nullptr )
-  , mCentralContainer( nullptr )
   , mProjOpen( 0 )
 {
   sInstance = this;
@@ -1611,7 +1505,7 @@ bool QgisApp::event( QEvent *event )
   return done;
 }
 
-void QgisApp::dataSourceManager( QString pageName )
+void QgisApp::dataSourceManager( const QString &pageName )
 {
   if ( ! mDataSourceManagerDialog )
   {
@@ -4255,7 +4149,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   QStringList sublayers = layer->subLayers();
   QgsDebugMsg( QString( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
 
-  if ( sublayers.size() < 1 )
+  if ( sublayers.empty() )
     return;
 
   // if promptLayers=Load all, load all sublayers without prompting
@@ -4362,7 +4256,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
 {
   // return false if layer is empty or raster has no sublayers
-  if ( !layer || layer->providerType() != QLatin1String( "gdal" ) || layer->subLayers().size() < 1 )
+  if ( !layer || layer->providerType() != QLatin1String( "gdal" ) || layer->subLayers().empty() )
     return false;
 
   QgsSettings settings;
@@ -4508,8 +4402,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     {
       QString msg = tr( "%1 is not a valid or recognized data source" ).arg( composedURI );
       messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
-      if ( layer )
-        delete layer;
+      delete layer;
     }
   }
 
@@ -5657,7 +5550,6 @@ void QgisApp::openProject( const QString &fileName )
     // error handling and reporting is in addProject() function
     addProject( fileName );
   }
-  return;
 }
 
 /**
@@ -6258,7 +6150,7 @@ void QgisApp::refreshFeatureActions()
 
   //add actions registered in QgsMapLayerActionRegistry
   QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer );
-  if ( !actions.isEmpty() && registeredActions.size() > 0 )
+  if ( !actions.isEmpty() && !registeredActions.empty() )
   {
     //add a separator between user defined and standard actions
     mFeatureActionMenu->addSeparator();
@@ -6697,9 +6589,9 @@ class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConvert
   public:
     QgisAppFieldValueConverter( QgsVectorLayer *vl, const QgsAttributeList &attributesAsDisplayedValues );
 
-    virtual QgsField fieldDefinition( const QgsField &field ) override;
+    QgsField fieldDefinition( const QgsField &field ) override;
 
-    virtual QVariant convert( int idx, const QVariant &value ) override;
+    QVariant convert( int idx, const QVariant &value ) override;
 
     QgisAppFieldValueConverter *clone() const override;
 
@@ -8704,7 +8596,7 @@ void QgisApp::layerSubsetString()
 
   if ( !vlayer->vectorJoins().isEmpty() )
   {
-    if ( QMessageBox::question( NULL, tr( "Filter on joined fields" ),
+    if ( QMessageBox::question( nullptr, tr( "Filter on joined fields" ),
                                 tr( "You are about to set a subset filter on a layer that has joined fields. "
                                     "Joined fields cannot be filtered, unless you convert the layer to a virtual layer first. "
                                     "Would you like to create a virtual layer out of this layer first?" ),
@@ -9303,7 +9195,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
   public:
     explicit QgsPythonRunnerImpl( QgsPythonUtils *pythonUtils ) : mPythonUtils( pythonUtils ) {}
 
-    virtual bool runCommand( QString command, QString messageOnError = QString() ) override
+    bool runCommand( QString command, QString messageOnError = QString() ) override
     {
 #ifdef WITH_BINDINGS
       if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -9314,7 +9206,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
       return false;
     }
 
-    virtual bool evalCommand( QString command, QString &result ) override
+    bool evalCommand( QString command, QString &result ) override
     {
 #ifdef WITH_BINDINGS
       if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -11875,7 +11767,7 @@ void QgisApp::endProfile()
   QgsApplication::profiler()->end();
 }
 
-void QgisApp::functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, QString name )
+void QgisApp::functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name )
 {
   startProfile( name );
   ( instance->*fnc )();
@@ -11930,7 +11822,6 @@ void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
 
     messageBar()->pushMessage( title, smalltext );
   }
-  return;
 }
 
 void QgisApp::updateUndoActions()
@@ -12591,7 +12482,7 @@ QMenu *QgisApp::createPopupMenu()
 }
 
 
-void QgisApp::showSystemNotification( const QString title, const QString message )
+void QgisApp::showSystemNotification( const QString &title, const QString &message )
 {
   // Menubar icon is hidden by default. Show to enable notification bubbles
   mTray->show();
