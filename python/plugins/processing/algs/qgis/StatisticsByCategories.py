@@ -62,7 +62,8 @@ class StatisticsByCategories(QgisAlgorithm):
                                                       parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Numeric))
         self.addParameter(QgsProcessingParameterField(self.CATEGORIES_FIELD_NAME,
                                                       self.tr('Field with categories'),
-                                                      parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any))
+                                                      parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any,
+                                                      optional=TRUE))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Statistics by category')))
 
@@ -90,7 +91,10 @@ class StatisticsByCategories(QgisAlgorithm):
             feedback.setProgress(int(current * total))
             attrs = feat.attributes()
             try:
-                value = float(attrs[value_field_index])
+                if value_field_index > 0:
+                    value = float(attrs[value_field_index])
+                else:
+                    value = 0
                 cat = attrs[category_field_index]
                 if cat not in values:
                     values[cat] = []
