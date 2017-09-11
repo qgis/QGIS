@@ -208,7 +208,6 @@ void QgsArcGisServiceSourceSelect::refresh()
 
 void QgsArcGisServiceSourceSelect::addEntryToServerList()
 {
-
   QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
   nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
 
