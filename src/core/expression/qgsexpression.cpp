@@ -290,7 +290,7 @@ bool QgsExpression::needsGeometry() const
 
 void QgsExpression::initGeomCalculator()
 {
-  if ( d->mCalc.get() )
+  if ( d->mCalc )
     return;
 
   // Use planimetric as default

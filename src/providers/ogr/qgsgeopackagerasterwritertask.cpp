@@ -30,7 +30,7 @@ QgsGeoPackageRasterWriterTask::QgsGeoPackageRasterWriterTask( const QgsMimeDataU
 void QgsGeoPackageRasterWriterTask::cancel()
 {
   mError = QgsGeoPackageRasterWriter::WriterError::ErrUserCanceled;
-  mFeedback.get()->cancel();
+  mFeedback->cancel();
 }
 
 bool QgsGeoPackageRasterWriterTask::run()
