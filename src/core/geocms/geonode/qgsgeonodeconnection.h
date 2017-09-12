@@ -59,6 +59,18 @@ class CORE_EXPORT QgsGeoNodeConnection
      */
     void setUri( const QgsDataSourceUri &uri );
 
+    /**
+     * Adds uri parameters relating to the settings for a WMS layer on the connection to a QgsDataSourceUri \a uri.
+     * \see addWmsWcsConnectionSettings()
+     */
+    QgsDataSourceUri &addWmsConnectionSettings( QgsDataSourceUri &uri ) const;
+
+    /**
+     * Adds uri parameters relating to the settings for a WFS layer on the connection to a QgsDataSourceUri \a uri.
+     * \see addWmsWcsConnectionSettings()
+     */
+    QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri ) const;
+
   private:
 
     //! The connection name
@@ -66,6 +78,8 @@ class CORE_EXPORT QgsGeoNodeConnection
 
     //! Property of mUri
     QgsDataSourceUri mUri;
+
+    QString settingsKey() const;
 };
 
 /**

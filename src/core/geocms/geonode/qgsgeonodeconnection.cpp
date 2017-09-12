@@ -17,6 +17,7 @@
 #include "qgsgeonodeconnection.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
+#include "qgsowsconnection.h"
 
 const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnection = "qgis/connections-geonode";
 const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnectionDetails = "qgis/GeoNode";
@@ -27,21 +28,21 @@ QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &name )
   QgsSettings settings;
 
 //  settings.Section
-  QString key = QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/" ) + mConnName;
+  QString key = settingsKey();
   QString credentialsKey = QgsGeoNodeConnectionUtils::pathGeoNodeConnectionDetails() + QStringLiteral( "/" ) + mConnName;
 
-  mUri.setParam( QStringLiteral( "url" ), settings.value( key + QStringLiteral( "/url" ), QString(), QgsSettings::Providers ).toString() );
+  mUri.setParam( QStringLiteral( "url" ), settings.value( key + QStringLiteral( "/url" ), QString() ).toString() );
 
   // Check for credentials and prepend to the connection info
-  QString username = settings.value( credentialsKey + QStringLiteral( "/username" ), QString(), QgsSettings::Providers ).toString();
-  QString password = settings.value( credentialsKey + QStringLiteral( "/password" ), QString(), QgsSettings::Providers ).toString();
+  QString username = settings.value( credentialsKey + QStringLiteral( "/username" ), QString() ).toString();
+  QString password = settings.value( credentialsKey + QStringLiteral( "/password" ), QString() ).toString();
   if ( !username.isEmpty() )
   {
     mUri.setParam( QStringLiteral( "username" ), username );
     mUri.setParam( QStringLiteral( "password" ), password );
   }
 
-  QString authcfg = settings.value( credentialsKey + QStringLiteral( "/authcfg" ), QString(), QgsSettings::Providers ).toString();
+  QString authcfg = settings.value( credentialsKey + QStringLiteral( "/authcfg" ), QString() ).toString();
   if ( !authcfg.isEmpty() )
   {
     mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
@@ -68,6 +69,21 @@ void QgsGeoNodeConnection::setConnectionName( const QString &connName )
 void QgsGeoNodeConnection::setUri( const QgsDataSourceUri &uri )
 {
   mUri = uri;
+}
+
+QgsDataSourceUri &QgsGeoNodeConnection::addWmsConnectionSettings( QgsDataSourceUri &uri ) const
+{
+  return QgsOwsConnection::addWmsWcsConnectionSettings( uri, settingsKey() + QStringLiteral( "/wms" ) );
+}
+
+QgsDataSourceUri &QgsGeoNodeConnection::addWfsConnectionSettings( QgsDataSourceUri &uri ) const
+{
+  return QgsOwsConnection::addWfsConnectionSettings( uri, settingsKey() + QStringLiteral( "/wfs" ) );
+}
+
+QString QgsGeoNodeConnection::settingsKey() const
+{
+  return QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + QStringLiteral( "/" ) + mConnName;
 }
 
 

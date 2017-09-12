@@ -51,6 +51,20 @@ class QgsGeoNodeConnection
 .. seealso:: uri()
 %End
 
+    QgsDataSourceUri &addWmsConnectionSettings( QgsDataSourceUri &uri ) const;
+%Docstring
+ Adds uri parameters relating to the settings for a WMS layer on the connection to a QgsDataSourceUri ``uri``.
+.. seealso:: addWmsWcsConnectionSettings()
+ :rtype: QgsDataSourceUri
+%End
+
+    QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri ) const;
+%Docstring
+ Adds uri parameters relating to the settings for a WFS layer on the connection to a QgsDataSourceUri ``uri``.
+.. seealso:: addWmsWcsConnectionSettings()
+ :rtype: QgsDataSourceUri
+%End
+
 };
 
 class QgsGeoNodeConnectionUtils
