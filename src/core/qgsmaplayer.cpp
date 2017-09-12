@@ -544,7 +544,9 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
     mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
   }
 
-  mMetadata.readFromLayer( this );
+  // mMetadata.readFromLayer( this );
+  QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
+  mMetadata.readMetadataXml( metadataElem );
 
   return true;
 } // bool QgsMapLayer::readLayerXML
@@ -809,6 +811,11 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement mySrsElement = document.createElement( QStringLiteral( "srs" ) );
   mCRS.writeXml( mySrsElement, document );
   layerElement.appendChild( mySrsElement );
+
+  // layer metadata
+  QDomElement myMetadataElem = document.createElement( QStringLiteral( "resourceMetadata" ) );
+  mMetadata.writeMetadataXml( myMetadataElem, document );
+  layerElement.appendChild( myMetadataElem );
 
   // now append layer node to map layer node
 
@@ -1674,7 +1681,7 @@ void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
 {
   mMetadata = metadata;
-  mMetadata.saveToLayer( this );
+//  mMetadata.saveToLayer( this );
   emit metadataChanged();
 }
 

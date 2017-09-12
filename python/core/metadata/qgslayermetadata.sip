@@ -382,6 +382,13 @@ class QgsLayerMetadata
  :rtype: QgsLayerMetadata.ConstraintList
 %End
 
+    void addConstraint( const QgsLayerMetadata::Constraint &constraint );
+%Docstring
+ Adds an individual constraint to the existing constraints.
+.. seealso:: constraints()
+.. seealso:: setConstraints()
+%End
+
     void setConstraints( const QgsLayerMetadata::ConstraintList &constraints );
 %Docstring
  Sets the list of ``constraints`` associated with using the resource.
@@ -639,6 +646,25 @@ class QgsLayerMetadata
 %Docstring
  Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.customProperty() ).
 .. seealso:: saveToLayer()
+%End
+
+    bool readMetadataXml( const QDomElement &metadataElement );
+%Docstring
+ Sets state from Dom document
+ \param metadataElement The Dom element corresponding to ``resourceMetadata'' tag
+
+ :return: true if successful
+ :rtype: bool
+%End
+
+    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+%Docstring
+ Stores state in Dom node
+ \param metadataElement is a Dom element corresponding to ``resourceMetadata'' tag
+ \param document is a the dom document being written
+
+ :return: true if successful
+ :rtype: bool
 %End
 
 };
