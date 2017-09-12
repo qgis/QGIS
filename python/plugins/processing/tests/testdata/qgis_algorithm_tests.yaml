@@ -614,3 +614,15 @@ tests:
       OUTPUT:
         name: expected/single_to_multi.gml
         type: vector
+
+  - algorithm: qgis:extractbyexpression
+    name: Test (qgis:extractbyexpression)
+    params:
+      EXPRESSION: left("Name", 1) = 'A'
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_expression.gml
+        type: vector
