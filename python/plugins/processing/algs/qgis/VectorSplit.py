@@ -74,7 +74,7 @@ class VectorSplit(GeoAlgorithm):
         crs = layer.crs()
         geomType = layer.wkbType()
 
-        total = 100.0 / len(uniqueValues)
+        total = 100.0 / len(uniqueValues) if len(uniqueValues) > 0 else 1
 
         for current, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())

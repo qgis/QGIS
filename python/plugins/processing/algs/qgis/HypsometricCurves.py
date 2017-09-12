@@ -100,7 +100,7 @@ class HypsometricCurves(GeoAlgorithm):
         memRasterDriver = gdal.GetDriverByName('MEM')
 
         features = vector.features(layer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
 
         for current, f in enumerate(features):
             geom = f.geometry()

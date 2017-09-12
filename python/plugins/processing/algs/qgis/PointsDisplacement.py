@@ -67,7 +67,7 @@ class PointsDisplacement(GeoAlgorithm):
 
         features = vector.features(layer)
 
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
 
         duplicates = dict()
         for current, f in enumerate(features):
@@ -80,7 +80,7 @@ class PointsDisplacement(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
         current = 0
-        total = 100.0 / len(duplicates)
+        total = 100.0 / len(duplicates) if len(duplicates) > 0 else 1
         progress.setPercentage(0)
 
         fullPerimeter = 2 * math.pi

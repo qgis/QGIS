@@ -75,7 +75,7 @@ class HubLines(GeoAlgorithm):
 
         spokes = vector.features(layerSpoke)
         hubs = vector.features(layerHub)
-        total = 100.0 / len(spokes)
+        total = 100.0 / len(spokes) if len(spokes) > 0 else 1
 
         for current, spokepoint in enumerate(spokes):
             p = spokepoint.geometry().boundingBox().center()

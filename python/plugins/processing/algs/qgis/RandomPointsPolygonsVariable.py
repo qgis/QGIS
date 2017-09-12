@@ -109,7 +109,7 @@ class RandomPointsPolygonsVariable(GeoAlgorithm):
             nPoints = 0
             nIterations = 0
             maxIterations = pointCount * 200
-            total = 100.0 / pointCount
+            total = 100.0 / pointCount if pointCount > 0 else 1
 
             random.seed()
 

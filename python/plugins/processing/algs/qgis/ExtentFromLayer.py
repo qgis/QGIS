@@ -125,7 +125,7 @@ class ExtentFromLayer(GeoAlgorithm):
 
     def featureExtent(self, layer, writer, progress):
         features = vector.features(layer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         feat = QgsFeature()
         for current, f in enumerate(features):
             rect = f.geometry().boundingBox()

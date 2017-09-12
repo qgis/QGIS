@@ -152,7 +152,7 @@ class SpatialJoin(GeoAlgorithm):
             mapP2[f.id()] = QgsFeature(f)
 
         features = vector.features(target)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for c, f in enumerate(features):
             atMap1 = f.attributes()
             outFeat.setGeometry(f.geometry())

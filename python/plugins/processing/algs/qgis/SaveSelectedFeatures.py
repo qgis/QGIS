@@ -60,7 +60,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         if vectorLayer.selectedFeatureCount() == 0:
             raise GeoAlgorithmExecutionException(self.tr('There are no selected features in the input layer.'))
 
-        total = 100.0 / int(vectorLayer.selectedFeatureCount())
+        total = 100.0 / vectorLayer.selectedFeatureCount() if vectorLayer.selectedFeatureCount() > 0 else 1
         for current, feat in enumerate(features):
             writer.addFeature(feat)
             progress.setPercentage(int(current * total))

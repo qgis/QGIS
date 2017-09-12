@@ -56,7 +56,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
 
         features = vector.features(layer)
 
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         geoms = dict()
         for current, f in enumerate(features):
             geoms[f.id()] = QgsGeometry(f.geometry())
@@ -71,7 +71,7 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
                 if g.isGeosEqual(cleaned[j]):
                     del cleaned[j]
 
-        total = 100.0 / len(cleaned)
+        total = 100.0 / len(cleaned) if len(cleaned) > 0 else 1
         request = QgsFeatureRequest().setFilterFids(cleaned.keys())
         for current, f in enumerate(layer.getFeatures(request)):
             writer.addFeature(f)

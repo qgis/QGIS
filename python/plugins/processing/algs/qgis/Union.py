@@ -86,7 +86,7 @@ class Union(GeoAlgorithm):
         count = 0
         nElement = 0
         featuresA = vector.features(vlayerA)
-        nFeat = len(featuresA)
+        nFeat = len(featuresA) if len(featuresA) > 0 else 1
         for inFeatA in featuresA:
             progress.setPercentage(nElement / float(nFeat) * 50)
             nElement += 1
@@ -188,7 +188,7 @@ class Union(GeoAlgorithm):
         atMapA = [None] * length
 
         featuresA = vector.features(vlayerB)
-        nFeat = len(featuresA)
+        nFeat = len(featuresA) if len(featuresA) else 1
         for inFeatA in featuresA:
             progress.setPercentage(nElement / float(nFeat) * 100)
             add = False

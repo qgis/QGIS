@@ -66,7 +66,7 @@ class SplitLinesWithLines(GeoAlgorithm):
 
         outFeat = QgsFeature()
         features = vector.features(layerA)
-        total = 100.0 / float(len(features))
+        total = 100.0 / len(features) if len(features) > 0 else 1
 
         for current, inFeatA in enumerate(features):
             inGeom = QgsGeometry(inFeatA.geometry())

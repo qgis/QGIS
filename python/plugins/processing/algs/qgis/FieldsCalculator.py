@@ -130,7 +130,7 @@ class FieldsCalculator(GeoAlgorithm):
         calculationSuccess = True
 
         features = vector.features(layer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
 
         rownum = 1
         for current, f in enumerate(features):

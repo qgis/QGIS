@@ -79,7 +79,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
         geom = QgsGeometry()
 
         features = vector.features(polyLayer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for current, ftPoly in enumerate(features):
             geom = ftPoly.geometry()
             engine = QgsGeometry.createGeometryEngine(geom.geometry())

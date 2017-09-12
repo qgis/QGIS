@@ -76,7 +76,7 @@ class Delaunay(GeoAlgorithm):
         ptNdx = -1
         c = voronoi.Context()
         features = vector.features(layer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for current, inFeat in enumerate(features):
             geom = QgsGeometry(inFeat.geometry())
             point = geom.asPoint()
@@ -100,7 +100,7 @@ class Delaunay(GeoAlgorithm):
         triangles = c.triangles
         feat = QgsFeature()
 
-        total = 100.0 / len(triangles)
+        total = 100.0 / len(triangles) if len(triangles) > 0 else 1
         for current, triangle in enumerate(triangles):
             indicies = list(triangle)
             indicies.append(indicies[0])
