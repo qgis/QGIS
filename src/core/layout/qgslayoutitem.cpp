@@ -41,6 +41,10 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   mItemPosition = QgsLayoutPoint( scenePos().x(), scenePos().y(), initialUnits );
   mItemSize = QgsLayoutSize( rect().width(), rect().height(), initialUnits );
 
+  // required to initially setup background/frame style
+  refreshBackgroundColor( false );
+  refreshFrame( false );
+
   initConnectionsToLayout();
 }
 
@@ -136,7 +140,9 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       // painter is already scaled to dots
       // need to translate so that item origin is at 0,0 in painter coordinates (not bounding rect origin)
       p.translate( -boundingRect().x() * context.scaleFactor(), -boundingRect().y() * context.scaleFactor() );
+      drawBackground( context );
       draw( context, itemStyle );
+      drawFrame( context );
       p.end();
 
       painter->save();
@@ -153,9 +159,15 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     painter->save();
     preparePainter( painter );
     QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
+    drawBackground( context );
+
     // scale painter from mm to dots
     painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
     draw( context, itemStyle );
+
+    painter->scale( context.scaleFactor(), context.scaleFactor() );
+    drawFrame( context );
+
     painter->restore();
   }
 }
@@ -266,6 +278,66 @@ QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text,
   return new QgsLayoutItemUndoCommand( this, text, id, parent );
 }
 
+void QgsLayoutItem::setFrameEnabled( bool drawFrame )
+{
+  if ( drawFrame == mFrame )
+  {
+    //no change
+    return;
+  }
+
+  mFrame = drawFrame;
+  refreshFrame( true );
+  emit frameChanged();
+}
+
+void QgsLayoutItem::setFrameStrokeColor( const QColor &color )
+{
+  if ( mFrameColor == color )
+  {
+    //no change
+    return;
+  }
+  mFrameColor = color;
+  // apply any datadefined overrides
+  refreshFrame( true );
+  emit frameChanged();
+}
+
+void QgsLayoutItem::setFrameStrokeWidth( const QgsLayoutMeasurement &width )
+{
+  if ( mFrameWidth == width )
+  {
+    //no change
+    return;
+  }
+  mFrameWidth = width;
+  refreshFrame();
+  emit frameChanged();
+}
+
+void QgsLayoutItem::setFrameJoinStyle( const Qt::PenJoinStyle style )
+{
+  if ( mFrameJoinStyle == style )
+  {
+    //no change
+    return;
+  }
+  mFrameJoinStyle = style;
+
+  QPen itemPen = pen();
+  itemPen.setJoinStyle( mFrameJoinStyle );
+  setPen( itemPen );
+  emit frameChanged();
+}
+
+void QgsLayoutItem::setBackgroundColor( const QColor &color )
+{
+  mBackgroundColor = color;
+  // apply any datadefined overrides
+  refreshBackgroundColor( true );
+}
+
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
 {
   if ( !mLayout )
@@ -337,6 +409,14 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   {
     refreshItemRotation();
   }
+  if ( property == QgsLayoutObject::FrameColor || property == QgsLayoutObject::AllProperties )
+  {
+    refreshFrame( false );
+  }
+  if ( property == QgsLayoutObject::BackgroundColor || property == QgsLayoutObject::AllProperties )
+  {
+    refreshBackgroundColor( false );
+  }
 }
 
 void QgsLayoutItem::setItemRotation( const double angle )
@@ -400,6 +480,32 @@ void QgsLayoutItem::drawDebugRect( QPainter *painter )
   painter->setBrush( QColor( 100, 255, 100, 200 ) );
   painter->drawRect( rect() );
   painter->restore();
+}
+
+void QgsLayoutItem::drawFrame( QgsRenderContext &context )
+{
+  if ( !mFrame || !context.painter() )
+    return;
+
+  QPainter *p = context.painter();
+  p->save();
+  p->setPen( pen() );
+  p->setBrush( Qt::NoBrush );
+  p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  p->restore();
+}
+
+void QgsLayoutItem::drawBackground( QgsRenderContext &context )
+{
+  if ( !mBackground || !context.painter() )
+    return;
+
+  QPainter *p = context.painter();
+  p->save();
+  p->setBrush( brush() );
+  p->setPen( Qt::NoPen );
+  p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  p->restore();
 }
 
 void QgsLayoutItem::setFixedSize( const QgsLayoutSize &size )
@@ -592,4 +698,57 @@ QSizeF QgsLayoutItem::applyFixedSize( const QSizeF &targetSize )
 void QgsLayoutItem::refreshItemRotation()
 {
   setItemRotation( itemRotation() );
+}
+
+void QgsLayoutItem::refreshFrame( bool updateItem )
+{
+  if ( !mFrame )
+  {
+    setPen( Qt::NoPen );
+    return;
+  }
+
+  //data defined stroke color set?
+  bool ok = false;
+  QColor frameColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::FrameColor, createExpressionContext(), mFrameColor, &ok );
+  QPen itemPen = pen();
+  if ( ok )
+  {
+    itemPen.setColor( frameColor );
+  }
+  else
+  {
+    itemPen.setColor( mFrameColor );
+  }
+
+  if ( mLayout )
+    itemPen.setWidthF( mLayout->convertToLayoutUnits( mFrameWidth ) );
+  else
+    itemPen.setWidthF( mFrameWidth.length() );
+
+  setPen( itemPen );
+
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
+void QgsLayoutItem::refreshBackgroundColor( bool updateItem )
+{
+  //data defined fill color set?
+  bool ok = false;
+  QColor backgroundColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::BackgroundColor, createExpressionContext(), mBackgroundColor, &ok );
+  if ( ok )
+  {
+    setBrush( QBrush( backgroundColor, Qt::SolidPattern ) );
+  }
+  else
+  {
+    setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+  }
+  if ( updateItem )
+  {
+    update();
+  }
 }

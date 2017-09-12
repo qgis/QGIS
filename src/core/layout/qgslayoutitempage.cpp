@@ -224,6 +224,11 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   painter->restore();
 }
 
+void QgsLayoutItemPage::drawFrame( QgsRenderContext & )
+{}
+
+void QgsLayoutItemPage::drawBackground( QgsRenderContext & )
+{}
 
 //
 // QgsLayoutItemPageGrid

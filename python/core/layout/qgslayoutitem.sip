@@ -222,6 +222,113 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
 
 
+    bool hasFrame() const;
+%Docstring
+ Returns true if the item includes a frame.
+.. seealso:: setFrameEnabled()
+.. seealso:: frameStrokeWidth()
+.. seealso:: frameJoinStyle()
+.. seealso:: frameStrokeColor()
+ :rtype: bool
+%End
+
+    virtual void setFrameEnabled( bool drawFrame );
+%Docstring
+ Sets whether this item has a frame drawn around it or not.
+.. seealso:: hasFrame()
+.. seealso:: setFrameStrokeWidth()
+.. seealso:: setFrameJoinStyle()
+.. seealso:: setFrameStrokeColor()
+%End
+
+    void setFrameStrokeColor( const QColor &color );
+%Docstring
+ Sets the frame stroke ``color``.
+.. seealso:: frameStrokeColor()
+.. seealso:: setFrameEnabled()
+.. seealso:: setFrameJoinStyle()
+.. seealso:: setFrameStrokeWidth()
+%End
+
+    QColor frameStrokeColor() const;
+%Docstring
+ Returns the frame's stroke color. This is only used if hasFrame() returns true.
+.. seealso:: hasFrame()
+.. seealso:: setFrameStrokeColor()
+.. seealso:: frameJoinStyle()
+.. seealso:: setFrameStrokeColor()
+ :rtype: QColor
+%End
+
+    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+%Docstring
+ Sets the frame stroke ``width``.
+.. seealso:: frameStrokeWidth()
+.. seealso:: setFrameEnabled()
+.. seealso:: setFrameJoinStyle()
+.. seealso:: setFrameStrokeColor()
+%End
+
+    QgsLayoutMeasurement frameStrokeWidth() const;
+%Docstring
+ Returns the frame's stroke width. This is only used if hasFrame() returns true.
+.. seealso:: hasFrame()
+.. seealso:: setFrameStrokeWidth()
+.. seealso:: frameJoinStyle()
+.. seealso:: frameStrokeColor()
+ :rtype: QgsLayoutMeasurement
+%End
+
+    Qt::PenJoinStyle frameJoinStyle() const;
+%Docstring
+ Returns the join style used for drawing the item's frame.
+.. seealso:: hasFrame()
+.. seealso:: setFrameJoinStyle()
+.. seealso:: frameStrokeWidth()
+.. seealso:: frameStrokeColor()
+ :rtype: Qt.PenJoinStyle
+%End
+
+    void setFrameJoinStyle( const Qt::PenJoinStyle style );
+%Docstring
+ Sets the join ``style`` used when drawing the item's frame.
+.. seealso:: setFrameEnabled()
+.. seealso:: frameJoinStyle()
+.. seealso:: setFrameStrokeWidth()
+.. seealso:: setFrameStrokeColor()
+%End
+
+    bool hasBackground() const;
+%Docstring
+ Returns true if the item has a background.
+.. seealso:: setBackgroundEnabled()
+.. seealso:: backgroundColor()
+ :rtype: bool
+%End
+
+    void setBackgroundEnabled( bool drawBackground );
+%Docstring
+ Sets whether this item has a background drawn under it or not.
+.. seealso:: hasBackground()
+.. seealso:: setBackgroundColor()
+%End
+
+    QColor backgroundColor() const;
+%Docstring
+ Returns the background color for this item. This is only used if hasBackground()
+ returns true.
+.. seealso:: setBackgroundColor()
+.. seealso:: hasBackground()
+ :rtype: QColor
+%End
+
+    void setBackgroundColor( const QColor &color );
+%Docstring
+ Sets the background ``color`` for this item.
+.. seealso:: backgroundColor()
+.. seealso:: setBackgroundEnabled()
+%End
+
   public slots:
 
     virtual void refresh();
@@ -258,6 +365,13 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: itemRotation()
 %End
 
+  signals:
+
+    void frameChanged();
+%Docstring
+ Emitted if the item's frame style changes.
+%End
+
   protected:
 
     virtual void drawDebugRect( QPainter *painter );
@@ -272,6 +386,16 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  Draws the item's contents using the specified render ``context``.
  Note that the context's painter has been scaled so that painter units are pixels.
  Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
+%End
+
+    virtual void drawFrame( QgsRenderContext &context );
+%Docstring
+ Draws the frame around the item.
+%End
+
+    virtual void drawBackground( QgsRenderContext &context );
+%Docstring
+ Draws the background for the item.
 %End
 
     virtual void setFixedSize( const QgsLayoutSize &size );
@@ -312,6 +436,20 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  such as data defined rotation.
 .. seealso:: refreshItemSize()
 .. seealso:: refreshItemPosition()
+%End
+
+    void refreshFrame( bool updateItem = true );
+%Docstring
+ Refresh item's frame, considering data defined colors and frame size.
+ If ``updateItem`` is set to false, the item will not be automatically updated
+ after the frame is set and a later call to update() must be made.
+%End
+
+    void refreshBackgroundColor( bool updateItem = true );
+%Docstring
+ Refresh item's background color, considering data defined colors.
+ If ``updateItem`` is set to false, the item will not be automatically updated
+ after the frame color is set and a later call to update() must be made.
 %End
 
     QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;

@@ -23,6 +23,7 @@
 #include "qgslayoutpoint.h"
 #include "qgsrendercontext.h"
 #include "qgslayoutundocommand.h"
+#include "qgslayoutmeasurement.h"
 #include <QGraphicsRectItem>
 
 class QgsLayout;
@@ -230,6 +231,107 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
+    /**
+     * Returns true if the item includes a frame.
+     * \see setFrameEnabled()
+     * \see frameStrokeWidth()
+     * \see frameJoinStyle()
+     * \see frameStrokeColor()
+     */
+    bool hasFrame() const { return mFrame; }
+
+    /**
+     * Sets whether this item has a frame drawn around it or not.
+     * \see hasFrame()
+     * \see setFrameStrokeWidth()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    virtual void setFrameEnabled( bool drawFrame );
+
+    /**
+     * Sets the frame stroke \a color.
+     * \see frameStrokeColor()
+     * \see setFrameEnabled()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeWidth()
+     */
+    void setFrameStrokeColor( const QColor &color );
+
+    /**
+     * Returns the frame's stroke color. This is only used if hasFrame() returns true.
+     * \see hasFrame()
+     * \see setFrameStrokeColor()
+     * \see frameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    QColor frameStrokeColor() const { return mFrameColor; }
+
+    /**
+     * Sets the frame stroke \a width.
+     * \see frameStrokeWidth()
+     * \see setFrameEnabled()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+
+    /**
+     * Returns the frame's stroke width. This is only used if hasFrame() returns true.
+     * \see hasFrame()
+     * \see setFrameStrokeWidth()
+     * \see frameJoinStyle()
+     * \see frameStrokeColor()
+     */
+    QgsLayoutMeasurement frameStrokeWidth() const { return mFrameWidth; }
+
+    /**
+     * Returns the join style used for drawing the item's frame.
+     * \see hasFrame()
+     * \see setFrameJoinStyle()
+     * \see frameStrokeWidth()
+     * \see frameStrokeColor()
+     */
+    Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
+
+    /**
+     * Sets the join \a style used when drawing the item's frame.
+     * \see setFrameEnabled()
+     * \see frameJoinStyle()
+     * \see setFrameStrokeWidth()
+     * \see setFrameStrokeColor()
+     */
+    void setFrameJoinStyle( const Qt::PenJoinStyle style );
+
+    /**
+     * Returns true if the item has a background.
+     * \see setBackgroundEnabled()
+     * \see backgroundColor()
+     */
+    bool hasBackground() const { return mBackground; }
+
+    /**
+     * Sets whether this item has a background drawn under it or not.
+     * \see hasBackground()
+     * \see setBackgroundColor()
+     */
+    void setBackgroundEnabled( bool drawBackground ) { mBackground = drawBackground; }
+
+    /**
+     * Returns the background color for this item. This is only used if hasBackground()
+     * returns true.
+     * \see setBackgroundColor()
+     * \see hasBackground()
+     */
+    QColor backgroundColor() const { return mBackgroundColor; }
+
+    /**
+     * Sets the background \a color for this item.
+     * \see backgroundColor()
+     * \see setBackgroundEnabled()
+     */
+    void setBackgroundColor( const QColor &color );
+
   public slots:
 
     /**
@@ -265,6 +367,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     */
     virtual void rotateItem( const double angle, const QPointF &transformOrigin );
 
+  signals:
+
+    /**
+     * Emitted if the item's frame style changes.
+     */
+    void frameChanged();
+
   protected:
 
     /**
@@ -280,6 +389,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
      */
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
+
+    /**
+     * Draws the frame around the item.
+     */
+    virtual void drawFrame( QgsRenderContext &context );
+
+    /**
+     * Draws the background for the item.
+     */
+    virtual void drawBackground( QgsRenderContext &context );
 
     /**
      * Sets a fixed \a size for the layout item, which prevents it from being freely
@@ -320,6 +439,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see refreshItemPosition()
      */
     void refreshItemRotation();
+
+    /**
+     * Refresh item's frame, considering data defined colors and frame size.
+     * If \a updateItem is set to false, the item will not be automatically updated
+     * after the frame is set and a later call to update() must be made.
+     */
+    void refreshFrame( bool updateItem = true );
+
+    /**
+     * Refresh item's background color, considering data defined colors.
+     * If \a updateItem is set to false, the item will not be automatically updated
+     * after the frame color is set and a later call to update() must be made.
+     */
+    void refreshBackgroundColor( bool updateItem = true );
 
     /**
      * Adjusts the specified \a point at which a \a reference position of the item
@@ -372,6 +505,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
+
+    //! True if item has a frame
+    bool mFrame = false;
+    //! Item frame color
+    QColor mFrameColor = QColor( 0, 0, 0 );
+    //! Item frame width
+    QgsLayoutMeasurement mFrameWidth = QgsLayoutMeasurement( 0.3, QgsUnitTypes::LayoutMillimeters );
+    //! Frame join style
+    Qt::PenJoinStyle mFrameJoinStyle = Qt::MiterJoin;
+
+    //! True if item has a background
+    bool mBackground = true;
+    //! Background color
+    QColor mBackgroundColor = QColor( 255, 255, 255 );
 
     void initConnectionsToLayout();
 
