@@ -29,7 +29,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   : QDialog( parent, fl )
   , mTypes( types )
   , mBaseKey( baseKey )
-  , mOriginalConnName( connName )
+  , mOriginalConnName( connectionName )
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );
