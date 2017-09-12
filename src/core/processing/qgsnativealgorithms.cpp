@@ -1527,7 +1527,7 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
 void QgsLocationBasedAlgorithm::addPredicateParameter()
 {
   std::unique_ptr< QgsProcessingParameterEnum > predicateParam( new QgsProcessingParameterEnum( QStringLiteral( "PREDICATE" ),
-      QObject::tr( "Where the features are (geometric predicate)" ),
+      QObject::tr( "Where the features (geometric predicate)" ),
       predicateOptionsList(), true, QVariant::fromValue( QList< int >() << 0 ) ) );
 
   QVariantMap predicateMetadata;
@@ -1568,14 +1568,14 @@ QgsLocationBasedAlgorithm::Predicate QgsLocationBasedAlgorithm::reversePredicate
 
 QStringList QgsLocationBasedAlgorithm::predicateOptionsList() const
 {
-  return QStringList() << QObject::tr( "intersects" )
-         << QObject::tr( "contains" )
-         << QObject::tr( "is disjoint" )
-         << QObject::tr( "equals" )
-         << QObject::tr( "touches" )
-         << QObject::tr( "overlaps" )
-         << QObject::tr( "within" )
-         << QObject::tr( "crosses" );
+  return QStringList() << QObject::tr( "intersect" )
+         << QObject::tr( "contain" )
+         << QObject::tr( "disjoint" )
+         << QObject::tr( "equal" )
+         << QObject::tr( "touch" )
+         << QObject::tr( "overlap" )
+         << QObject::tr( "are within" )
+         << QObject::tr( "cross" );
 }
 
 
