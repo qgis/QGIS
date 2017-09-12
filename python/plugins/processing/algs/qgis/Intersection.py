@@ -105,6 +105,13 @@ class Intersection(GeoAlgorithm):
                             'algorithm.'.format(inFeatA.id())))
             atMapA = inFeatA.attributes()
             intersects = index.intersects(geom.boundingBox())
+
+            engine = None
+            if len(intersects) > 0:
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(geom.geometry())
+                engine.prepareGeometry()
+
             for inFeatB in vlayerB.getFeatures(QgsFeatureRequest().setFilterFids(intersects)):
                 tmpGeom = QgsGeometry(inFeatB.geometry())
                 if not geom:
@@ -121,7 +128,7 @@ class Intersection(GeoAlgorithm):
                                 '(feature {}). Unable to complete intersection '
                                 'algorithm.'.format(inFeatB.id())))
 
-                if geom.intersects(tmpGeom):
+                if engine.intersects(tmpGeom.geometry()):
                     atMapB = inFeatB.attributes()
                     int_geom = QgsGeometry(geom.intersection(tmpGeom))
                     if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
@@ -129,7 +136,7 @@ class Intersection(GeoAlgorithm):
                         int_geom = QgsGeometry()
                         if int_com is not None:
                             int_sym = geom.symDifference(tmpGeom)
-                            if int_sym:
+                            if int_sym is not None:
                                 diff_geom = int_com.difference(int_sym)
                                 int_geom = QgsGeometry(diff_geom)
 
