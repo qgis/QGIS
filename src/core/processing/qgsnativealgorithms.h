@@ -504,6 +504,7 @@ class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
       Crosses,
     };
 
+    void addPredicateParameter();
     Predicate reversePredicate( Predicate predicate ) const;
     QStringList predicateOptionsList() const;
     void process( QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsFeedback *feedback );
