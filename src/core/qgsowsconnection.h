@@ -44,6 +44,29 @@ class CORE_EXPORT QgsOwsConnection : public QObject
      */
     QgsOwsConnection( const QString &service, const QString &connName );
 
+    /**
+     * Returns the connection name.
+     * \since QGIS 3.0
+     */
+    QString connectionName() const;
+
+    /**
+     * Returns connection info string.
+     * \since QGIS 3.0
+     */
+    QString connectionInfo() const;
+
+    /**
+     * Returns a string representing the service type, e.g. "WMS".
+     * \since QGIS 3.0
+     */
+    QString service() const;
+
+    /**
+     * Returns the connection uri.
+     */
+    QgsDataSourceUri uri() const;
+
     //! Returns the list of connections for the specified service
     static QStringList connectionList( const QString &service );
 
@@ -55,14 +78,15 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     //! Marks the specified connection for the specified service as selected
     static void setSelectedConnection( const QString &service, const QString &name );
 
-    QString mConnName;
-    //! Returns the connection uri
-    QgsDataSourceUri uri() const;
-    QString mConnectionInfo;
-
   protected:
     QgsDataSourceUri mUri;
+
+  private:
+
+    QString mConnName;
     QString mService;
+    QString mConnectionInfo;
+
 };
 
 

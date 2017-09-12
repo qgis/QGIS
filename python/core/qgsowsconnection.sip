@@ -28,6 +28,33 @@ class QgsOwsConnection : QObject
  \param connName connection name
 %End
 
+    QString connectionName() const;
+%Docstring
+ Returns the connection name.
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    QString connectionInfo() const;
+%Docstring
+ Returns connection info string.
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    QString service() const;
+%Docstring
+ Returns a string representing the service type, e.g. "WMS".
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    QgsDataSourceUri uri() const;
+%Docstring
+ Returns the connection uri.
+ :rtype: QgsDataSourceUri
+%End
+
     static QStringList connectionList( const QString &service );
 %Docstring
 Returns the list of connections for the specified service
@@ -49,15 +76,8 @@ Retrieves the selected connection for the specified service
 Marks the specified connection for the specified service as selected
 %End
 
-    QString mConnName;
-    QgsDataSourceUri uri() const;
-%Docstring
-Returns the connection uri
- :rtype: QgsDataSourceUri
-%End
-    QString mConnectionInfo;
-
   protected:
+
 };
 
 
