@@ -70,8 +70,6 @@ class ModelerParametersDialog(QDialog):
         self.setModal(True)
         # The algorithm to define in this dialog. It is an instance of GeoAlgorithm
         self._alg = alg
-        # The resulting algorithm after the user clicks on OK. it is an instance of the container Algorithm class
-        self.alg = None
         # The model this algorithm is going to be added to
         self.model = model
         # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
@@ -348,21 +346,20 @@ class ModelerParametersDialog(QDialog):
             dep_ids.append(availableDependencies[selected].childId())  # spellok
         alg.setDependencies(dep_ids)
 
-        try:
-            self._alg.processBeforeAddingToModeler(alg, self.model)
-        except:
-            pass
+        #try:
+        #    self._alg.processBeforeAddingToModeler(alg, self.model)
+        #except:
+        #    pass
 
         return alg
 
     def okPressed(self):
-        self.alg = self.createAlgorithm()
-        if self.alg is not None:
-            self.close()
+        alg = self.createAlgorithm()
+        if alg is not None:
+            self.accept()
 
     def cancelPressed(self):
-        self.alg = None
-        self.close()
+        self.reject()
 
     def openHelp(self):
         algHelp = self._alg.help()
