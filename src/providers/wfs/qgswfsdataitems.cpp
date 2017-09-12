@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
 #include "qgswfsconstants.h"
@@ -20,6 +21,8 @@
 #include "qgswfsdataitems.h"
 #include "qgswfsdatasourceuri.h"
 #include "qgssettings.h"
+#include "qgsgeonodeconnection.h"
+#include "qgsgeonoderequest.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
@@ -29,6 +32,9 @@
 #include <QCoreApplication>
 #include <QEventLoop>
 
+//
+// QgsWfsLayerItem
+//
 
 QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString )
   : QgsLayerItem( parent, title, parent->path() + '/' + name, QString(), QgsLayerItem::Vector, QStringLiteral( "WFS" ) )
@@ -44,7 +50,9 @@ QgsWfsLayerItem::~QgsWfsLayerItem()
 {
 }
 
-////
+//
+// QgsWfsConnectionItem
+//
 
 QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
   : QgsDataCollectionItem( parent, name, path )
@@ -108,7 +116,7 @@ QList<QAction *> QgsWfsConnectionItem::actions()
 
 void QgsWfsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS, mName );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, mName );
   nc.setWindowTitle( tr( "Modify WFS Connection" ) );
 
   if ( nc.exec() )
@@ -127,8 +135,9 @@ void QgsWfsConnectionItem::deleteConnection()
 #endif
 
 
-//////
-
+//
+// QgsWfsRootItem
+//
 
 QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
@@ -182,7 +191,7 @@ void QgsWfsRootItem::connectionsChanged()
 
 void QgsWfsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( nullptr, QgsWFSConstants::CONNECTIONS_WFS );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
   nc.setWindowTitle( tr( "Create a New WFS Connection" ) );
 
   if ( nc.exec() )
@@ -192,7 +201,85 @@ void QgsWfsRootItem::newConnection()
 }
 #endif
 
-// ---------------------------------------------------------------------------
+
+//
+// QgsWfsDataItemProvider
+//
+
+QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  QgsDebugMsg( "thePath = " + path );
+  if ( path.isEmpty() )
+  {
+    return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );
+  }
+
+  // path schema: wfs:/connection name (used by OWS)
+  if ( path.startsWith( QLatin1String( "wfs:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsWfsConnection::connectionList().contains( connectionName ) )
+    {
+      QgsWfsConnection connection( connectionName );
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, connection.uri().uri() );
+    }
+  }
+  else if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
+    {
+      QgsGeoNodeConnection connection( connectionName );
+
+      QString url = connection.uri().param( "url" );
+      QgsGeoNodeRequest geonodeRequest( url, true );
+
+      QgsWFSDataSourceURI sourceUri( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) )[0] );
+
+      QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ) );
+
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri() );
+    }
+  }
+
+  return nullptr;
+}
+
+QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &path, QgsDataItem *parentItem )
+{
+  QVector<QgsDataItem *> items;
+  if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
+    {
+      QgsGeoNodeConnection connection( connectionName );
+
+      QString url = connection.uri().param( "url" );
+      QgsGeoNodeRequest geonodeRequest( url, true );
+
+      const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) ) );
+
+      if ( !encodedUris.isEmpty() )
+      {
+        for ( const QString &encodedUri : encodedUris )
+        {
+          QgsWFSDataSourceURI uri( encodedUri );
+          QgsDebugMsg( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri() ) );
+
+          QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri() );
+          if ( item )
+          {
+            items.append( item );
+          }
+        }
+      }
+    }
+  }
+
+  return items;
+}
+
 
 #ifdef HAVE_GUI
 QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
@@ -226,4 +313,13 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   }
 
   return nullptr;
+}
+
+QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
+{
+  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+
+  *providers << new QgsWfsDataItemProvider;
+
+  return providers;
 }

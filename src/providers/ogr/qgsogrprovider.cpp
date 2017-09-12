@@ -4402,7 +4402,7 @@ class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 
     QString providerKey() const override { return QStringLiteral( "ogr" ); }
     QString text() const override { return QObject::tr( "Vector" ); }
-    int ordering() const override { return 10; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 10; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddOgrLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
@@ -4418,7 +4418,7 @@ class QgsGeoPackageSourceSelectProvider : public QgsSourceSelectProvider
 
     QString providerKey() const override { return QStringLiteral( "ogr" ); }
     QString text() const override { return QObject::tr( "GeoPackage" ); }
-    int ordering() const override { return 45; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 45; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGeoPackageLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
@@ -4435,7 +4435,7 @@ class QgsSpatiaLiteSourceSelectProvider : public QgsSourceSelectProvider
 
     virtual QString providerKey() const override { return QStringLiteral( "ogr" ); }
     virtual QString text() const override { return QObject::tr( "SQLite" ); }
-    virtual int ordering() const override { return 46; }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 46; }
     virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mIconSpatialite.svg" ) ); }
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

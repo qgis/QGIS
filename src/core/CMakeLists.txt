@@ -458,7 +458,6 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
 
-
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
@@ -466,6 +465,9 @@ SET(QGIS_CORE_SRCS
   fieldformatter/qgsrelationreferencefieldformatter.cpp
   fieldformatter/qgsvaluemapfieldformatter.cpp
   fieldformatter/qgsvaluerelationfieldformatter.cpp
+
+  geocms/geonode/qgsgeonodeconnection.cpp
+  geocms/geonode/qgsgeonoderequest.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -681,6 +683,8 @@ SET(QGIS_CORE_MOC_HDRS
 
   geometry/qgspoint.h
 
+  geocms/geonode/qgsgeonoderequest.h
+
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
@@ -707,6 +711,7 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreemodellegendnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
+
   qgsuserprofilemanager.h
 )
 
@@ -1084,6 +1089,8 @@ SET(QGIS_CORE_HDRS
   fieldformatter/qgsvaluemapfieldformatter.h
   fieldformatter/qgsvaluerelationfieldformatter.h
 
+  geocms/geonode/qgsgeonodeconnection.h
+
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
 )
@@ -1098,6 +1105,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${LIBZIP_INCLUDE_DIR}
   annotations
   auth
   composer
@@ -1106,6 +1114,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   fieldformatter
   geometry
+  geocms
+  geocms/geonode
   layertree
   layout
   metadata

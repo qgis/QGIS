@@ -12,7 +12,6 @@ SET (WMS_SRCS
 SET (WMS_MOC_HDRS
   qgswmscapabilities.h
   qgswmsprovider.h
-  qgswmsconnection.h
   qgswmsdataitems.h
 )
 
@@ -38,6 +37,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui

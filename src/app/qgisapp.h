@@ -124,6 +124,7 @@ class QgsDiagramProperties;
 class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
 class QgsBrowserModel;
+class QgsGeoCmsProviderRegistry;
 
 
 #include <QMainWindow>

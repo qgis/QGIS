@@ -2319,7 +2319,7 @@ class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
 
     virtual QString providerKey() const override { return QStringLiteral( "mssql" ); }
     virtual QString text() const override { return QObject::tr( "MSSQL" ); }
-    virtual int ordering() const override { return 60; }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 30; }
     virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ); }
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

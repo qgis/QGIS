@@ -2,6 +2,7 @@ usr/lib/qgis/crssync
 usr/lib/qgis/plugins/libbasicauthmethod.so
 usr/lib/qgis/plugins/libdelimitedtextprovider.so
 usr/lib/qgis/plugins/libgdalprovider.so
+usr/lib/qgis/plugins/libgeonodeprovider.so
 usr/lib/qgis/plugins/libgpxprovider.so
 usr/lib/qgis/plugins/libidentcertauthmethod.so
 usr/lib/qgis/plugins/libmssqlprovider.so
