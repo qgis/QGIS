@@ -96,7 +96,7 @@ QStringList QgsGeoNodeConnectionUtils::connectionList()
 {
   QgsSettings settings;
   // Add Section manually
-  settings.beginGroup( QStringLiteral( "providers/qgis/connections-geonode" ) );
+  settings.beginGroup( QStringLiteral( "qgis/connections-geonode" ) );
   return settings.childGroups();
 }
 
@@ -104,8 +104,8 @@ void QgsGeoNodeConnectionUtils::deleteConnection( const QString &name )
 {
   QgsSettings settings;
   // Add Section manually
-  settings.remove( QStringLiteral( "providers/qgis/connections-geonode/" ) + name );
-  settings.remove( QStringLiteral( "providers/qgis/geonode/" ) + name );
+  settings.remove( QStringLiteral( "qgis/connections-geonode/" ) + name );
+  settings.remove( QStringLiteral( "qgis/geonode/" ) + name );
 }
 
 QString QgsGeoNodeConnectionUtils::pathGeoNodeConnection()

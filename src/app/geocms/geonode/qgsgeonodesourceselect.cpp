@@ -150,7 +150,7 @@ void QgsGeoNodeSourceSelect::showHelp()
 
 void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 {
-  QgsGeoNodeConnection connection( cmbConnections->currentText() );
+  QgsGeoNodeConnection connection = currentConnection();
 
   QString url = connection.uri().param( QStringLiteral( "url" ) );
   QgsGeoNodeRequest *geonodeRequest = new QgsGeoNodeRequest( url, true );
@@ -360,6 +360,8 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
     return;
   }
 
+  QgsGeoNodeConnection connection = currentConnection();
+
   QModelIndexList modelIndexList = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < modelIndexList.size(); i++ )
   {
@@ -396,6 +398,8 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       QString styles;
       QString contextualWMSLegend( QStringLiteral( "0" ) );
 
+      connection.addWmsConnectionSettings( uri );
+
       uri.setParam( QStringLiteral( "contextualWMSLegend" ), contextualWMSLegend );
       uri.setParam( QStringLiteral( "layers" ), layerName );
       uri.setParam( QStringLiteral( "styles" ), styles );
@@ -414,25 +418,28 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       // typeName, titleName, sql,
       // Build url for WFS
       // restrictToRequestBBOX='1' srsname='EPSG:26719' typename='geonode:cab_mun' url='http://demo.geonode.org/geoserver/geonode/wms' table=\"\" sql="
-      QString uri;
-      uri += QStringLiteral( " restrictToRequestBBOX='1'" );
-      uri += QStringLiteral( " srsname='%1'" ).arg( crs );
+      QgsDataSourceUri uri;
+
+      uri.setParam( QStringLiteral( "restrictToRequestBBOX" ), "1" );
+      uri.setParam( QStringLiteral( "srsname" ), crs );
       if ( serviceURL.contains( QStringLiteral( "qgis-server" ) ) )
       {
         // I need to do this since the typename used in qgis-server is without the workspace.
         QString qgisServerTypeName = QString( typeName ).split( ':' ).last();
-        uri += QStringLiteral( " typename='%1'" ).arg( qgisServerTypeName );
+        uri.setParam( QStringLiteral( "typename" ), qgisServerTypeName );
       }
       else
       {
-        uri += QStringLiteral( " typename='%1'" ).arg( typeName );
+        uri.setParam( QStringLiteral( "typename" ), typeName );
       }
-      uri += QStringLiteral( " url='%1'" ).arg( serviceURL );
-      uri += QStringLiteral( " table=\"\"" );
-      uri += QStringLiteral( " sql=" );
+      uri.setParam( QStringLiteral( "url" ), serviceURL );
+      //uri.setParam( QStringLiteral( "table" ), QStringLiteral( "\"\"" ) );
+      //uri.setParam( QStringLiteral( "sql" ), QString() );
 
-      QgsDebugMsg( "Add WFS from GeoNode : " + uri + " and typename: " + typeName );
-      emit addVectorLayer( uri, typeName, QStringLiteral( "WFS" ) );
+      connection.addWfsConnectionSettings( uri );
+
+      QgsDebugMsg( "Add WFS from GeoNode : " + uri.uri() + " and typename: " + typeName );
+      emit addVectorLayer( uri.uri(), typeName, QStringLiteral( "WFS" ) );
     }
     else if ( webServiceType == QStringLiteral( "XYZ" ) )
     {
@@ -457,4 +464,9 @@ void QgsGeoNodeSourceSelect::updateButtonStateForAvailableConnections()
   btnEdit->setEnabled( connectionsAvailable );
   btnDelete->setEnabled( connectionsAvailable );
   btnSave->setEnabled( connectionsAvailable );
+}
+
+QgsGeoNodeConnection QgsGeoNodeSourceSelect::currentConnection() const
+{
+  return QgsGeoNodeConnection( cmbConnections->currentText() );
 }

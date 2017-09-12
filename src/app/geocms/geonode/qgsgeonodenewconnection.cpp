@@ -21,7 +21,7 @@
 #include "qgsgeonoderequest.h"
 
 QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
-  : QgsNewHttpConnection( parent, 0, QgsGeoNodeConnectionUtils::pathGeoNodeConnection(), connName, QgsNewHttpConnection::FlagShowTestConnection, fl )
+  : QgsNewHttpConnection( parent, 0, QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + '/', connName, QgsNewHttpConnection::FlagShowTestConnection, fl )
 {
   setWindowTitle( tr( "Create a New GeoNode Connection" ) );
 

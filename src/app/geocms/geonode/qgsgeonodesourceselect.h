@@ -26,6 +26,7 @@
 #include "qgsapplication.h"
 #include "ui_qgsgeonodesourceselectbase.h"
 #include "qgis_gui.h"
+#include "qgsgeonodeconnection.h"
 
 class QgsGeonodeItemDelegate : public QItemDelegate
 {
@@ -66,6 +67,7 @@ class QgsGeoNodeSourceSelect: public QgsAbstractDataSourceWidget, private Ui::Qg
     QModelIndex mSQLIndex;
 
     void updateButtonStateForAvailableConnections();
+    QgsGeoNodeConnection currentConnection() const;
 
   private slots:
     void addConnectionsEntryList();
