@@ -103,7 +103,7 @@ class SpatialJoin(QgisAlgorithm):
                                                allowMultiple=True, defaultValue=[0])
         predicate.setMetadata({
             'widget_wrapper': {
-                'class': 'processing.gui.wrappers.SelectionWidgetWrapper',
+                'class': 'processing.gui.wrappers.EnumWidgetWrapper',
                 'useCheckBoxes': True,
                 'columns': 2}})
         self.addParameter(predicate)
