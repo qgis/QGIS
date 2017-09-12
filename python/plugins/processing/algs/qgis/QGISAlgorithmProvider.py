@@ -150,6 +150,7 @@ from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
+from .SpatialJoin import SpatialJoin
 from .SplitWithLines import SplitWithLines
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
@@ -166,7 +167,6 @@ from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
-# from .SpatialJoin import SpatialJoin
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -180,9 +180,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        # algs = [
-        #         SpatialJoin(),
-        #         ]
         algs = [AddTableField(),
                 Aggregate(),
                 Aspect(),
@@ -293,6 +290,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),
+                SpatialJoin(),
                 SplitWithLines(),
                 StatisticsByCategories(),
                 SumLines(),

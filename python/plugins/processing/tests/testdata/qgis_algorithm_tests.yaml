@@ -3624,3 +3624,160 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects)
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 0
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect.gml
+        type: vector
+        pk:
+        - name
+        - id
+        - id2
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects), discard no match
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 0
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect_discardnomatch.gml
+        type: vector
+        pk:
+        - name
+        - id
+        - id2
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects), first match only
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 1
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect_first_only.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+            id: skip # cant check these - order of match is not predictable
+            id2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects), first match only, discard no match
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: expected/join_by_location_intersect_first_only.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 1
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect_first_only_discardnomatch.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+            id: skip # cant check these - order of match is not predictable
+            id2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects), subset of fields
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      METHOD: 0
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect_subset_fields.gml
+        type: vector
+        pk:
+        - name
+        - id
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (touches)
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 0
+      PREDICATE:
+      - 3
+    results:
+      OUTPUT:
+        name: expected/join_by_location_touches.gml
+        type: vector
+        pk:
+        - name
+        - id
+        - id2
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
