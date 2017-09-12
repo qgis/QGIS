@@ -3623,7 +3623,13 @@ void QgsOgrProvider::open( OpenMode mode )
       // check that the initial encoding setting is fit for this layer
       setEncoding( encoding() );
 
-      mValid = setSubsetString( mSubsetString );
+      // Ensure subset is set (setSubsetString does nothing if the passed sql subset string is equal to mSubsetString, which is the case when reloading the dataset)
+      QString origSubsetString = mSubsetString;
+      mSubsetString = "";
+      // Block signals to avoid endless recusion reloadData -> emit dataChanged -> reloadData
+      blockSignals( true );
+      mValid = setSubsetString( origSubsetString );
+      blockSignals( false );
       if ( mValid )
       {
         if ( mode == OpenModeInitial )
