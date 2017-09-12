@@ -32,11 +32,6 @@ class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsPointXY;
 
-// tolerances for soft constraints (last values, and common angles)
-// for angles, both tolerance in pixels and degrees are used for better performance
-static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15 SIP_SKIP;
-static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10 SIP_SKIP;
-
 /** \ingroup gui
  * \brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
@@ -187,10 +182,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         bool mRelative;
         double mValue;
     };
-
-    //! performs the intersection of a circle and a line
-    //! \note from the two solutions, the intersection will be set to the closest point
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection );
 
     /**
      * Create an advanced digitizing dock widget
@@ -393,15 +384,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! defines the additional constraint to be used (no/parallel/perpendicular)
     void lockAdditionalConstraint( AdditionalConstraint constraint );
 
-    QList<QgsPointXY> snapSegment( const QgsPointLocator::Match &snapMatch );
-
     /**
-     * Returns the first snapped segment. Will try to snap a segment according to the event's snapping mode.
+     * Returns the first snapped segment. Will try to snap a segment using all layers
      * \param originalMapPoint point to be snapped (in map coordinates)
      * \param snapped if given, determines if a segment has been snapped
-     * \param allLayers if true, override snapping mode
      */
-    QList<QgsPointXY> snapSegment( const QgsPointXY &originalMapPoint, bool *snapped = nullptr, bool allLayers = false ) const;
+    QList<QgsPointXY> snapSegmentToAllLayers( const QgsPointXY &originalMapPoint, bool *snapped = nullptr ) const;
 
     //! update the current point in the CAD point list
     void updateCurrentPoint( const QgsPointXY &point );
@@ -431,6 +419,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \param convertExpression set to true to update widget contents to calculated expression value
      */
     void updateConstraintValue( CadConstraint *constraint, const QString &textValue, bool convertExpression = false );
+
+    //! Updates values of constraints that are not locked based on the current point
+    void updateUnlockedConstraintValues( const QgsPointXY &point );
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;

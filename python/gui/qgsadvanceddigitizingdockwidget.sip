@@ -11,7 +11,6 @@
 
 
 
-
 class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
 %Docstring
@@ -150,14 +149,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 %End
 
     };
-
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection );
-%Docstring
-.. note::
-
-   from the two solutions, the intersection will be set to the closest point
- :rtype: bool
-%End
 
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
