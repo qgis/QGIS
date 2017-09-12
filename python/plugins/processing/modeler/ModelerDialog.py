@@ -597,7 +597,7 @@ class ModelerDialog(BASE, WIDGET):
             from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
             for i, out in enumerate(alg.modelOutputs()):
                 alg.modelOutput(out).setPosition(alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
-                                                                                  ModelerGraphicItem.BOX_HEIGHT))
+                                                                          ModelerGraphicItem.BOX_HEIGHT))
             self.model.addChildAlgorithm(alg)
             self.repaintModel()
             self.hasChanged = True
