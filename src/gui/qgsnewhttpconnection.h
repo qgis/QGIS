@@ -111,6 +111,27 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      */
     QPushButton *testConnectButton();
 
+    /**
+     * Returns the QSettings key for WFS related settings for the connection.
+     * \see wmsSettingsKey()
+     * \since QGIS 3.0
+     */
+    virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
+
+    /**
+     * Returns the QSettings key for WMS related settings for the connection.
+     * \see wfsSettingsKey()
+     * \since QGIS 3.0
+     */
+    virtual QString wmsSettingsKey( const QString &base, const QString &connectionName ) const;
+
+    /**
+     * Triggers a resync of the GUI widgets for the service specific settings (i.e. WFS
+     * and WMS related settings).
+     * \since QGIS 3.0
+     */
+    void updateServiceSpecificSettings();
+
   private:
 
     ConnectionTypes mTypes = ConnectionWms;

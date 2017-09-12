@@ -75,60 +75,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     txtName->setText( connectionName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
-    cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
-    if ( mTypes & ConnectionWfs && mTypes & ConnectionWms )
-    {
-      cbxWfsIgnoreAxisOrientation->setChecked( settings.value( key + "/wfs/ignoreAxisOrientation", false ).toBool() );
-      cbxWfsInvertAxisOrientation->setChecked( settings.value( key + "/wfs/invertAxisOrientation", false ).toBool() );
-      cbxWmsIgnoreAxisOrientation->setChecked( settings.value( key + "/wms/ignoreAxisOrientation", false ).toBool() );
-      cbxWmsInvertAxisOrientation->setChecked( settings.value( key + "/wms/invertAxisOrientation", false ).toBool() );
-    }
-    else if ( mTypes & ConnectionWfs )
-    {
-      cbxWfsIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
-      cbxWfsInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
-    }
-    else
-    {
-      cbxWmsIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
-      cbxWmsInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
-    }
-    cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
-    cbxSmoothPixmapTransform->setChecked( settings.value( key + "/smoothPixmapTransform", false ).toBool() );
-
-    int dpiIdx;
-    switch ( settings.value( key + "/dpiMode", 7 ).toInt() )
-    {
-      case 0: // off
-        dpiIdx = 1;
-        break;
-      case 1: // QGIS
-        dpiIdx = 2;
-        break;
-      case 2: // UMN
-        dpiIdx = 3;
-        break;
-      case 4: // GeoServer
-        dpiIdx = 4;
-        break;
-      default: // other => all
-        dpiIdx = 0;
-        break;
-    }
-    cmbDpiMode->setCurrentIndex( dpiIdx );
-
-    QString version = settings.value( key + "/version" ).toString();
-    int versionIdx = 0; // AUTO
-    if ( version == QLatin1String( "1.0.0" ) )
-      versionIdx = 1;
-    else if ( version == QLatin1String( "1.1.0" ) )
-      versionIdx = 2;
-    else if ( version == QLatin1String( "2.0.0" ) )
-      versionIdx = 3;
-    cmbVersion->setCurrentIndex( versionIdx );
-
-    txtReferer->setText( settings.value( key + "/referer" ).toString() );
-    txtMaxNumFeatures->setText( settings.value( key + "/maxnumfeatures" ).toString() );
+    updateServiceSpecificSettings();
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
@@ -258,6 +205,65 @@ QPushButton *QgsNewHttpConnection::testConnectButton()
   return mTestConnectionButton;
 }
 
+QString QgsNewHttpConnection::wfsSettingsKey( const QString &base, const QString &connectionName ) const
+{
+  return base + connectionName;
+}
+
+QString QgsNewHttpConnection::wmsSettingsKey( const QString &base, const QString &connectionName ) const
+{
+  return base + connectionName;
+}
+
+void QgsNewHttpConnection::updateServiceSpecificSettings()
+{
+  QgsSettings settings;
+  QString wfsKey = wfsSettingsKey( mBaseKey, mOriginalConnName );
+  QString wmsKey = wmsSettingsKey( mBaseKey, mOriginalConnName );
+
+  cbxIgnoreGetMapURI->setChecked( settings.value( wmsKey + "/ignoreGetMapURI", false ).toBool() );
+  cbxWfsIgnoreAxisOrientation->setChecked( settings.value( wfsKey + "/ignoreAxisOrientation", false ).toBool() );
+  cbxWfsInvertAxisOrientation->setChecked( settings.value( wfsKey + "/invertAxisOrientation", false ).toBool() );
+  cbxWmsIgnoreAxisOrientation->setChecked( settings.value( wmsKey + "/ignoreAxisOrientation", false ).toBool() );
+  cbxWmsInvertAxisOrientation->setChecked( settings.value( wmsKey + "/invertAxisOrientation", false ).toBool() );
+  cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( wmsKey + "/ignoreGetFeatureInfoURI", false ).toBool() );
+  cbxSmoothPixmapTransform->setChecked( settings.value( wmsKey + "/smoothPixmapTransform", false ).toBool() );
+
+  int dpiIdx;
+  switch ( settings.value( wmsKey + "/dpiMode", 7 ).toInt() )
+  {
+    case 0: // off
+      dpiIdx = 1;
+      break;
+    case 1: // QGIS
+      dpiIdx = 2;
+      break;
+    case 2: // UMN
+      dpiIdx = 3;
+      break;
+    case 4: // GeoServer
+      dpiIdx = 4;
+      break;
+    default: // other => all
+      dpiIdx = 0;
+      break;
+  }
+  cmbDpiMode->setCurrentIndex( dpiIdx );
+
+  QString version = settings.value( wfsKey + "/version" ).toString();
+  int versionIdx = 0; // AUTO
+  if ( version == QLatin1String( "1.0.0" ) )
+    versionIdx = 1;
+  else if ( version == QLatin1String( "1.1.0" ) )
+    versionIdx = 2;
+  else if ( version == QLatin1String( "2.0.0" ) )
+    versionIdx = 3;
+  cmbVersion->setCurrentIndex( versionIdx );
+
+  txtReferer->setText( settings.value( wmsKey + "/referer" ).toString() );
+  txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
+}
+
 void QgsNewHttpConnection::accept()
 {
   QgsSettings settings;
@@ -299,28 +305,21 @@ void QgsNewHttpConnection::accept()
 
   settings.setValue( key + "/url", url.toString() );
 
-  if ( mTypes & ConnectionWfs && mTypes & ConnectionWms )
-  {
-    settings.setValue( key + "/wfs/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
-    settings.setValue( key + "/wms/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
-    settings.setValue( key + "/wfs/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
-    settings.setValue( key + "/wms/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
-  }
-  else if ( mTypes & ConnectionWfs )
-  {
-    settings.setValue( key + "/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
-    settings.setValue( key + "/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
-  }
-  else
-  {
-    settings.setValue( key + "/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
-    settings.setValue( key + "/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
-  }
+  QString wfsKey = wfsSettingsKey( mBaseKey, txtName->text() );
+  QString wmsKey = wmsSettingsKey( mBaseKey, txtName->text() );
 
-  if ( mBaseKey == QLatin1String( "qgis/connections-wms/" ) || mBaseKey == QLatin1String( "qgis/connections-wcs/" ) )
+  if ( mTypes & ConnectionWfs )
   {
-    settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
-    settings.setValue( key + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
+    settings.setValue( wfsKey + "/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
+    settings.setValue( wfsKey + "/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
+  }
+  if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
+  {
+    settings.setValue( wmsKey + "/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
+    settings.setValue( wmsKey + "/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
+
+    settings.setValue( wmsKey + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
+    settings.setValue( wmsKey + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
 
     int dpiMode = 0;
     switch ( cmbDpiMode->currentIndex() )
@@ -342,13 +341,15 @@ void QgsNewHttpConnection::accept()
         break;
     }
 
-    settings.setValue( key + "/dpiMode", dpiMode );
+    settings.setValue( wmsKey + "/dpiMode", dpiMode );
+
+    settings.setValue( wmsKey + "/referer", txtReferer->text() );
   }
-  if ( mBaseKey == QLatin1String( "qgis/connections-wms/" ) )
+  if ( mTypes & ConnectionWms )
   {
-    settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+    settings.setValue( wmsKey + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
   }
-  if ( mBaseKey == QLatin1String( "qgis/connections-wfs/" ) )
+  if ( mTypes & ConnectionWfs )
   {
     QString version = QStringLiteral( "auto" );
     switch ( cmbVersion->currentIndex() )
@@ -366,12 +367,10 @@ void QgsNewHttpConnection::accept()
         version = QStringLiteral( "2.0.0" );
         break;
     }
-    settings.setValue( key + "/version", version );
+    settings.setValue( wfsKey + "/version", version );
 
-    settings.setValue( key + "/maxnumfeatures", txtMaxNumFeatures->text() );
+    settings.setValue( wfsKey + "/maxnumfeatures", txtMaxNumFeatures->text() );
   }
-
-  settings.setValue( key + "/referer", txtReferer->text() );
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );

@@ -37,6 +37,9 @@ class QgsGeoNodeNewConnection : public QgsNewHttpConnection
 
     bool validate() override;
 
+    QString wfsSettingsKey( const QString &base, const QString &connectionName ) const override;
+    QString wmsSettingsKey( const QString &base, const QString &connectionName ) const override;
+
 };
 
 #endif //QGSGEONODENEWCONNECTION_H

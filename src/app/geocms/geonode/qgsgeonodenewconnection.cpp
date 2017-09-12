@@ -21,9 +21,12 @@
 #include "qgsgeonoderequest.h"
 
 QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
-  : QgsNewHttpConnection( parent, 0, QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + '/', connName, QgsNewHttpConnection::FlagShowTestConnection, fl )
+  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs | QgsNewHttpConnection::ConnectionWms,
+                          QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + '/', connName, QgsNewHttpConnection::FlagShowTestConnection, fl )
 {
   setWindowTitle( tr( "Create a New GeoNode Connection" ) );
+
+  updateServiceSpecificSettings();
 
   connect( testConnectButton(), &QPushButton::clicked, this, &QgsGeoNodeNewConnection::testConnection );
 }
@@ -61,4 +64,14 @@ bool QgsGeoNodeNewConnection::validate()
     return false;
   }
   return QgsNewHttpConnection::validate();
+}
+
+QString QgsGeoNodeNewConnection::wfsSettingsKey( const QString &, const QString &connectionName ) const
+{
+  return QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + '/' + connectionName + QStringLiteral( "/wfs" );
+}
+
+QString QgsGeoNodeNewConnection::wmsSettingsKey( const QString &, const QString &connectionName ) const
+{
+  return QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + '/' + connectionName + QStringLiteral( "/wms" );
 }

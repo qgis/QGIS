@@ -91,6 +91,29 @@ class QgsNewHttpConnection : QDialog
  :rtype: QPushButton
 %End
 
+    virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
+%Docstring
+ Returns the QSettings key for WFS related settings for the connection.
+.. seealso:: wmsSettingsKey()
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    virtual QString wmsSettingsKey( const QString &base, const QString &connectionName ) const;
+%Docstring
+ Returns the QSettings key for WMS related settings for the connection.
+.. seealso:: wfsSettingsKey()
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    void updateServiceSpecificSettings();
+%Docstring
+ Triggers a resync of the GUI widgets for the service specific settings (i.e. WFS
+ and WMS related settings).
+.. versionadded:: 3.0
+%End
+
 };
 
 QFlags<QgsNewHttpConnection::ConnectionType> operator|(QgsNewHttpConnection::ConnectionType f1, QFlags<QgsNewHttpConnection::ConnectionType> f2);
