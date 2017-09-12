@@ -1081,10 +1081,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   QgsStyle::defaultStyle();
   endProfile();
 
-  startProfile( QStringLiteral( "Loading GeoCMS providers" ) );
-  mGeoCmsProviderRegistry.reset( new QgsGeoCmsProviderRegistry() );
-  endProfile();
-
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
   QgsMessageLog::logMessage( QgsApplication::showSettings(), QString(), QgsMessageLog::INFO );

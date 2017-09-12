@@ -278,3 +278,12 @@ QgsDataItem *QgsGeoNodeDataItemProvider::createDataItem( const QString &path, Qg
 
   return nullptr;
 }
+
+QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
+{
+  QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
+
+  *providers << new QgsGeoNodeDataItemProvider();
+
+  return providers;
+}

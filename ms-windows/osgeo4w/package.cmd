@@ -301,6 +301,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/geonodeprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^

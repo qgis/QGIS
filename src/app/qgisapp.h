@@ -146,7 +146,6 @@ class QgsGeoCmsProviderRegistry;
 #include "qgsrasterminmaxorigin.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsoptionswidgetfactory.h"
-#include "geocms/qgsgeocmsproviderregistry.h"
 
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
@@ -2077,8 +2076,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     double mLastRenderTimeSeconds = 0;
     QTimer mRenderProgressBarTimer;
     QMetaObject::Connection mRenderProgressBarTimerConnection;
-
-    std::unique_ptr< QgsGeoCmsProviderRegistry > mGeoCmsProviderRegistry;
 
     QgsBrowserModel *mBrowserModel = nullptr;
 

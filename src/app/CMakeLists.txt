@@ -153,11 +153,6 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
-  geocms/qgsgeocmsproviderregistry.cpp
-  geocms/geonode/qgsgeonodedataitems.cpp
-  geocms/geonode/qgsgeonodenewconnection.cpp
-  geocms/geonode/qgsgeonodesourceselect.cpp
-
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutguidewidget.cpp
@@ -338,10 +333,6 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
-  geocms/geonode/qgsgeonodedataitems.h
-  geocms/geonode/qgsgeonodenewconnection.h
-  geocms/geonode/qgsgeonodesourceselect.h
-
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutdesignerdialog.h
@@ -507,8 +498,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/openstreetmap
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
-  ${CMAKE_SOURCE_DIR}/src/app/geocms
-  ${CMAKE_SOURCE_DIR}/src/app/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
