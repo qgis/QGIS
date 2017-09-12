@@ -68,7 +68,7 @@ class VectorTest(unittest.TestCase):
         os.mkdir(tmpdir)
 
         def linkTestfile(f, t):
-            os.link(os.path.join(dataFolder, f), os.path.join(tmpdir, t))
+            os.symlink(os.path.join(dataFolder, f), os.path.join(tmpdir, t))
 
         # URI from OGR provider
         linkTestfile('geom_data.csv', 'a.csv')
