@@ -555,7 +555,12 @@ bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
     uri += QString( "|geometrytype=%1" ).arg( ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
   }
 
-  setDataSourceUri( uri );
+  if ( uri != dataSourceUri() )
+  {
+    QgsOgrConnPool::instance()->unref( dataSourceUri() );
+    setDataSourceUri( uri );
+    QgsOgrConnPool::instance()->ref( dataSourceUri() );
+  }
 
   OGR_L_ResetReading( ogrLayer );
 
