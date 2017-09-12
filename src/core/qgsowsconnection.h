@@ -67,6 +67,20 @@ class CORE_EXPORT QgsOwsConnection : public QObject
      */
     QgsDataSourceUri uri() const;
 
+    /**
+     * Adds uri parameters relating to the settings for a WMS or WCS connection to a QgsDataSourceUri \a uri.
+     * Connection settings are taken from the specified QSettings \a settingsKey.
+     * \since QGIS 3.0
+     */
+    static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+
+    /**
+     * Adds uri parameters relating to the settings for a WFS connection to a QgsDataSourceUri \a uri.
+     * Connection settings are taken from the specified QSettings \a settingsKey.
+     * \since QGIS 3.0
+     */
+    static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+
     //! Returns the list of connections for the specified service
     static QStringList connectionList( const QString &service );
 
@@ -86,6 +100,8 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     QString mConnName;
     QString mService;
     QString mConnectionInfo;
+
+    static void addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
 
 };
 

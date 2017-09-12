@@ -55,6 +55,22 @@ class QgsOwsConnection : QObject
  :rtype: QgsDataSourceUri
 %End
 
+    static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+%Docstring
+ Adds uri parameters relating to the settings for a WMS or WCS connection to a QgsDataSourceUri ``uri``.
+ Connection settings are taken from the specified QSettings ``settingsKey``.
+.. versionadded:: 3.0
+ :rtype: QgsDataSourceUri
+%End
+
+    static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+%Docstring
+ Adds uri parameters relating to the settings for a WFS connection to a QgsDataSourceUri ``uri``.
+ Connection settings are taken from the specified QSettings ``settingsKey``.
+.. versionadded:: 3.0
+ :rtype: QgsDataSourceUri
+%End
+
     static QStringList connectionList( const QString &service );
 %Docstring
 Returns the list of connections for the specified service
