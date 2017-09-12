@@ -2184,7 +2184,7 @@ QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry *> &geometries,
 {
   GEOSGeometry **const lineGeosGeometries = new GEOSGeometry*[ geometries.size()];
   int validLines = 0;
-  Q_FOREACH ( const QgsAbstractGeometry *g, geometries )
+  for ( const QgsAbstractGeometry *g : geometries )
   {
     GEOSGeometry *l = asGeos( g );
     if ( l )

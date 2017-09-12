@@ -47,7 +47,7 @@ QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
     mExteriorRing = static_cast<QgsCurve *>( p.mExteriorRing->clone() );
   }
 
-  Q_FOREACH ( const QgsCurve *ring, p.mInteriorRings )
+  for ( const QgsCurve *ring : p.mInteriorRings )
   {
     mInteriorRings.push_back( static_cast<QgsCurve *>( ring->clone() ) );
   }
@@ -64,7 +64,7 @@ QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
       mExteriorRing = static_cast<QgsCurve *>( p.mExteriorRing->clone() );
     }
 
-    Q_FOREACH ( const QgsCurve *ring, p.mInteriorRings )
+    for ( const QgsCurve *ring : p.mInteriorRings )
     {
       mInteriorRings.push_back( static_cast<QgsCurve *>( ring->clone() ) );
     }
@@ -154,7 +154,8 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
 
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : QString(), isMeasure() ? "M" : QString() );
 
-  Q_FOREACH ( const QString &childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
+  const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
+  for ( const QString &childWkt : blocks )
   {
     QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
@@ -195,7 +196,7 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
     hasZ = hasZ || mExteriorRing->is3D();
     hasM = hasM || mExteriorRing->isMeasure();
   }
-  Q_FOREACH ( const QgsCurve *curve, mInteriorRings )
+  for ( const QgsCurve *curve : qgsAsConst( mInteriorRings ) )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -229,7 +230,7 @@ QByteArray QgsCurvePolygon::asWkb() const
     binarySize += wkb.length();
     wkbForRings << wkb;
   }
-  Q_FOREACH ( const QgsCurve *curve, mInteriorRings )
+  for ( const QgsCurve *curve : mInteriorRings )
   {
     QByteArray wkb( curve->asWkb() );
     binarySize += wkb.length();
@@ -242,7 +243,7 @@ QByteArray QgsCurvePolygon::asWkb() const
   wkbPtr << static_cast<char>( QgsApplication::endian() );
   wkbPtr << static_cast<quint32>( wkbType() );
   wkbPtr << static_cast<quint32>( wkbForRings.count() );
-  Q_FOREACH ( const QByteArray &wkb, wkbForRings )
+  for ( const QByteArray &wkb : qgsAsConst( wkbForRings ) )
   {
     wkbPtr << wkb;
   }
@@ -262,7 +263,7 @@ QString QgsCurvePolygon::asWkt( int precision ) const
     }
     wkt += childWkt + ',';
   }
-  Q_FOREACH ( const QgsCurve *curve, mInteriorRings )
+  for ( const QgsCurve *curve : mInteriorRings )
   {
     QString childWkt = curve->asWkt( precision );
     if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
@@ -494,7 +495,7 @@ void QgsCurvePolygon::setExteriorRing( QgsCurve *ring )
   }
 
   //match dimensionality for rings
-  Q_FOREACH ( QgsCurve *ring, mInteriorRings )
+  for ( QgsCurve *ring : qgsAsConst( mInteriorRings ) )
   {
     if ( is3D() )
       ring->addZValue();
@@ -515,7 +516,7 @@ void QgsCurvePolygon::setInteriorRings( const QList<QgsCurve *> &rings )
   mInteriorRings.clear();
 
   //add rings one-by-one, so that they can each be converted to the correct type for the CurvePolygon
-  Q_FOREACH ( QgsCurve *ring, rings )
+  for ( QgsCurve *ring : rings )
   {
     addInteriorRing( ring );
   }
@@ -601,7 +602,7 @@ void QgsCurvePolygon::transform( const QgsCoordinateTransform &ct, QgsCoordinate
     mExteriorRing->transform( ct, d, transformZ );
   }
 
-  Q_FOREACH ( QgsCurve *curve, mInteriorRings )
+  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
   {
     curve->transform( ct, d, transformZ );
   }
@@ -615,7 +616,7 @@ void QgsCurvePolygon::transform( const QTransform &t )
     mExteriorRing->transform( t );
   }
 
-  Q_FOREACH ( QgsCurve *curve, mInteriorRings )
+  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
   {
     curve->transform( t );
   }
@@ -868,7 +869,7 @@ bool QgsCurvePolygon::addZValue( double zValue )
 
   if ( mExteriorRing )
     mExteriorRing->addZValue( zValue );
-  Q_FOREACH ( QgsCurve *curve, mInteriorRings )
+  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
   {
     curve->addZValue( zValue );
   }
@@ -885,7 +886,7 @@ bool QgsCurvePolygon::addMValue( double mValue )
 
   if ( mExteriorRing )
     mExteriorRing->addMValue( mValue );
-  Q_FOREACH ( QgsCurve *curve, mInteriorRings )
+  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
   {
     curve->addMValue( mValue );
   }
@@ -901,7 +902,7 @@ bool QgsCurvePolygon::dropZValue()
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropZValue();
-  Q_FOREACH ( QgsCurve *curve, mInteriorRings )
+  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
   {
     curve->dropZValue();
   }
@@ -917,7 +918,7 @@ bool QgsCurvePolygon::dropMValue()
   mWkbType = QgsWkbTypes::dropM( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropMValue();
-  Q_FOREACH ( QgsCurve *curve, mInteriorRings )
+  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
   {
     curve->dropMValue();
   }

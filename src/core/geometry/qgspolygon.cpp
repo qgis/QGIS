@@ -145,7 +145,7 @@ QByteArray QgsPolygonV2::asWkb() const
   {
     binarySize += sizeof( quint32 ) + mExteriorRing->numPoints() * ( 2 + mExteriorRing->is3D() + mExteriorRing->isMeasure() ) * sizeof( double );
   }
-  Q_FOREACH ( const QgsCurve *curve, mInteriorRings )
+  for ( const QgsCurve *curve : mInteriorRings )
   {
     binarySize += sizeof( quint32 ) + curve->numPoints() * ( 2 + curve->is3D() + curve->isMeasure() ) * sizeof( double );
   }
@@ -162,7 +162,7 @@ QByteArray QgsPolygonV2::asWkb() const
     mExteriorRing->points( pts );
     QgsGeometryUtils::pointsToWKB( wkb, pts, mExteriorRing->is3D(), mExteriorRing->isMeasure() );
   }
-  Q_FOREACH ( const QgsCurve *curve, mInteriorRings )
+  for ( const QgsCurve *curve : mInteriorRings )
   {
     QgsPointSequence pts;
     curve->points( pts );
@@ -231,7 +231,7 @@ void QgsPolygonV2::setExteriorRing( QgsCurve *ring )
   setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
 
   //match dimensionality for rings
-  Q_FOREACH ( QgsCurve *ring, mInteriorRings )
+  for ( QgsCurve *ring : qgsAsConst( mInteriorRings ) )
   {
     ring->convertTo( mExteriorRing->wkbType() );
   }

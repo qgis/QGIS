@@ -731,9 +731,9 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    QList<QgsGeometry> parts = asGeometryCollection();
+    const QList<QgsGeometry> parts = asGeometryCollection();
     QList<QgsGeometry> results;
-    Q_FOREACH ( const QgsGeometry &part, parts )
+    for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.removeInteriorRings( minimumRingArea );
       if ( result )
@@ -743,7 +743,7 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    Q_FOREACH ( const QgsGeometry &result, results )
+    for ( const QgsGeometry &result : qgsAsConst( results ) )
     {
       first.addPart( result );
     }
@@ -1634,9 +1634,9 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    QList<QgsGeometry> parts = asGeometryCollection();
+    const QList<QgsGeometry> parts = asGeometryCollection();
     QList<QgsGeometry> results;
-    Q_FOREACH ( const QgsGeometry &part, parts )
+    for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, miterLimit );
       if ( result )
@@ -1646,7 +1646,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    Q_FOREACH ( const QgsGeometry &result, results )
+    for ( const QgsGeometry &result : qgsAsConst( results ) )
     {
       first.addPart( result );
     }
@@ -1676,9 +1676,9 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    QList<QgsGeometry> parts = asGeometryCollection();
+    const QList<QgsGeometry> parts = asGeometryCollection();
     QList<QgsGeometry> results;
-    Q_FOREACH ( const QgsGeometry &part, parts )
+    for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, miterLimit );
       if ( result )
@@ -1688,7 +1688,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    Q_FOREACH ( const QgsGeometry &result, results )
+    for ( const QgsGeometry &result : qgsAsConst( results ) )
     {
       first.addPart( result );
     }
@@ -1719,9 +1719,9 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    QList<QgsGeometry> parts = asGeometryCollection();
+    const QList<QgsGeometry> parts = asGeometryCollection();
     QList<QgsGeometry> results;
-    Q_FOREACH ( const QgsGeometry &part, parts )
+    for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.extendLine( startDistance, endDistance );
       if ( result )
@@ -1731,7 +1731,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    Q_FOREACH ( const QgsGeometry &result, results )
+    for ( const QgsGeometry &result : qgsAsConst( results ) )
     {
       first.addPart( result );
     }

@@ -64,7 +64,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 
   if ( !linesToProcess.empty() )
   {
-    Q_FOREACH ( QgsLineString *line, linesToProcess )
+    for ( QgsLineString *line : qgsAsConst( linesToProcess ) )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 
@@ -505,7 +505,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    Q_FOREACH ( QgsAbstractGeometry *g, geometryList )
+    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
     {
       first.addPart( g );
     }
@@ -663,7 +663,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    Q_FOREACH ( QgsAbstractGeometry *g, geometryList )
+    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
     {
       first.addPart( g );
     }
@@ -698,7 +698,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    Q_FOREACH ( QgsAbstractGeometry *g, geometryList )
+    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
     {
       first.addPart( g );
     }

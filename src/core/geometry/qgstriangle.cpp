@@ -181,7 +181,8 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : QString(), isMeasure() ? "M" : QString() );
 
-  Q_FOREACH ( const QString &childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
+  const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
+  for ( const QString &childWkt : blocks )
   {
     QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 

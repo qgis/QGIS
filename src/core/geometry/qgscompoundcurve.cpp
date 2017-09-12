@@ -52,7 +52,7 @@ bool QgsCompoundCurve::operator!=( const QgsCurve &other ) const
 QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( curve )
 {
   mWkbType = QgsWkbTypes::CompoundCurve;
-  Q_FOREACH ( const QgsCurve *c, curve.mCurves )
+  for ( const QgsCurve *c : curve.mCurves )
   {
     mCurves.append( static_cast<QgsCurve *>( c->clone() ) );
   }
@@ -64,7 +64,7 @@ QgsCompoundCurve &QgsCompoundCurve::operator=( const QgsCompoundCurve &curve )
   {
     clearCache();
     QgsCurve::operator=( curve );
-    Q_FOREACH ( const QgsCurve *c, curve.mCurves )
+    for ( const QgsCurve *c : curve.mCurves )
     {
       mCurves.append( static_cast<QgsCurve *>( c->clone() ) );
     }
@@ -153,7 +153,8 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
 
   QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : QString(), isMeasure() ? "M" : QString() );
 
-  Q_FOREACH ( const QString &childWkt, QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType ) )
+  const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
+  for ( const QString &childWkt : blocks )
   {
     QPair<QgsWkbTypes::Type, QString> childParts = QgsGeometryUtils::wktReadBlock( childWkt );
 
@@ -177,7 +178,7 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
   //if so, update the type dimensionality of the compound curve to match
   bool hasZ = false;
   bool hasM = false;
-  Q_FOREACH ( const QgsCurve *curve, mCurves )
+  for ( const QgsCurve *curve : qgsAsConst( mCurves ) )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -196,7 +197,7 @@ QByteArray QgsCompoundCurve::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   QList<QByteArray> wkbForCurves;
-  Q_FOREACH ( const QgsCurve *curve, mCurves )
+  for ( const QgsCurve *curve : mCurves )
   {
     QByteArray wkbForCurve = curve->asWkb();
     binarySize += wkbForCurve.length();
@@ -209,7 +210,7 @@ QByteArray QgsCompoundCurve::asWkb() const
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mCurves.size() );
-  Q_FOREACH ( const QByteArray &wkbForCurve, wkbForCurves )
+  for ( const QByteArray &wkbForCurve : qgsAsConst( wkbForCurves ) )
   {
     wkb << wkbForCurve;
   }
@@ -219,7 +220,7 @@ QByteArray QgsCompoundCurve::asWkb() const
 QString QgsCompoundCurve::asWkt( int precision ) const
 {
   QString wkt = wktTypeStr() + " (";
-  Q_FOREACH ( const QgsCurve *curve, mCurves )
+  for ( const QgsCurve *curve : mCurves )
   {
     QString childWkt = curve->asWkt( precision );
     if ( qgsgeometry_cast<const QgsLineString *>( curve ) )
@@ -249,7 +250,7 @@ QDomElement QgsCompoundCurve::asGML2( QDomDocument &doc, int precision, const QS
 QDomElement QgsCompoundCurve::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement compoundCurveElem = doc.createElementNS( ns, QStringLiteral( "CompositeCurve" ) );
-  Q_FOREACH ( const QgsCurve *curve, mCurves )
+  for ( const QgsCurve *curve : mCurves )
   {
     QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
     QDomElement curveElem = curve->asGML3( doc, precision, ns );
@@ -338,7 +339,7 @@ bool QgsCompoundCurve::isEmpty() const
   if ( mCurves.isEmpty() )
     return true;
 
-  Q_FOREACH ( QgsCurve *curve, mCurves )
+  for ( QgsCurve *curve : mCurves )
   {
     if ( !curve->isEmpty() )
       return false;
@@ -448,7 +449,7 @@ void QgsCompoundCurve::draw( QPainter &p ) const
 
 void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
-  Q_FOREACH ( QgsCurve *curve, mCurves )
+  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
   {
     curve->transform( ct, d, transformZ );
   }
@@ -457,7 +458,7 @@ void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinat
 
 void QgsCompoundCurve::transform( const QTransform &t )
 {
-  Q_FOREACH ( QgsCurve *curve, mCurves )
+  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
   {
     curve->transform( t );
   }
@@ -753,7 +754,7 @@ double QgsCompoundCurve::vertexAngle( QgsVertexId vertex ) const
 QgsCompoundCurve *QgsCompoundCurve::reversed() const
 {
   QgsCompoundCurve *clone = new QgsCompoundCurve();
-  Q_FOREACH ( QgsCurve *curve, mCurves )
+  for ( QgsCurve *curve : mCurves )
   {
     QgsCurve *reversedCurve = curve->reversed();
     clone->addCurve( reversedCurve );
@@ -768,7 +769,7 @@ bool QgsCompoundCurve::addZValue( double zValue )
 
   mWkbType = QgsWkbTypes::addZ( mWkbType );
 
-  Q_FOREACH ( QgsCurve *curve, mCurves )
+  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
   {
     curve->addZValue( zValue );
   }
@@ -783,7 +784,7 @@ bool QgsCompoundCurve::addMValue( double mValue )
 
   mWkbType = QgsWkbTypes::addM( mWkbType );
 
-  Q_FOREACH ( QgsCurve *curve, mCurves )
+  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
   {
     curve->addMValue( mValue );
   }
@@ -797,7 +798,7 @@ bool QgsCompoundCurve::dropZValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  Q_FOREACH ( QgsCurve *curve, mCurves )
+  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
   {
     curve->dropZValue();
   }
@@ -811,7 +812,7 @@ bool QgsCompoundCurve::dropMValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );
-  Q_FOREACH ( QgsCurve *curve, mCurves )
+  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
   {
     curve->dropMValue();
   }

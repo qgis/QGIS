@@ -245,7 +245,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   QList< QgsAbstractGeometry * > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
-  Q_FOREACH ( QgsVectorLayer *currentLayer, avoidIntersectionsLayers )
+  for ( QgsVectorLayer *currentLayer : avoidIntersectionsLayers )
   {
     QgsFeatureIds ignoreIds;
     QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.constFind( currentLayer );
