@@ -89,7 +89,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
 
         features = vector.features(layer)
         count = len(features)
-        total = 100.0 / count
+        total = 100.0 / count if count > 0 else 1
         for current, feat in enumerate(features):
             neighbourID = spatialIndex.nearestNeighbor(
                 feat.geometry().asPoint(), 2)[1]

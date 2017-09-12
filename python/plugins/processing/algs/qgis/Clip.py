@@ -96,7 +96,7 @@ class Clip(GeoAlgorithm):
                 continue
 
             if single_clip_feature:
-                total = 100.0 / len(input_features)
+                total = 100.0 / len(features) if len(features) > 0 else 1
             else:
                 total = 0
 

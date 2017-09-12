@@ -137,7 +137,7 @@ class ExecuteSQL(GeoAlgorithm):
             vLayer.crs())
 
         features = vector.features(vLayer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             outFeat.setAttributes(inFeat.attributes())

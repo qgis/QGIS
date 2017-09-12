@@ -67,7 +67,7 @@ class MergeLines(GeoAlgorithm):
                 layer.crs())
 
         features = vector.features(layer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
 
         for current, inFeat in enumerate(features):
             outFeat = QgsFeature()

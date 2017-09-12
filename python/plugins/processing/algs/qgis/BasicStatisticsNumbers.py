@@ -124,7 +124,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
 
         features = vector.features(layer)
         count = len(features)
-        total = 100.0 / float(count)
+        total = 100.0 / count if count > 0 else 1
         for current, ft in enumerate(features):
             value = ft[fieldName]
             if value or value == 0:

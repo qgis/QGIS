@@ -63,7 +63,7 @@ class EquivalentNumField(GeoAlgorithm):
         classes = {}
 
         features = vector.features(vlayer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for current, feature in enumerate(features):
             progress.setPercentage(int(current * total))
             inGeom = feature.geometry()

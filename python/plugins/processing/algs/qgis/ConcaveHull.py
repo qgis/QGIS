@@ -77,7 +77,7 @@ class ConcaveHull(GeoAlgorithm):
         # Get max edge length from Delaunay triangles
         progress.setText(self.tr('Computing edges max length...'))
         features = delaunay_layer.getFeatures()
-        counter = 50. / delaunay_layer.featureCount()
+        counter = 50. / delaunay_layer.featureCount() if delaunay_layer.featureCount() > 0 else 1
         lengths = []
         edges = {}
         for feat in features:
@@ -90,7 +90,7 @@ class ConcaveHull(GeoAlgorithm):
 
         # Get features with longest edge longer than alpha*max_length
         progress.setText(self.tr('Removing features...'))
-        counter = 50. / len(edges)
+        counter = 50. / len(edges) if len(edges) > 0 else 1
         i = 0
         ids = []
         for id, max_len in edges.iteritems():

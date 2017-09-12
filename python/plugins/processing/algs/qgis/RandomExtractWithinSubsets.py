@@ -93,7 +93,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
 
         selran = []
         current = 0
-        total = 100.0 / (featureCount * len(unique))
+        total = 100.0 / (featureCount * len(unique)) if featureCount * len(unique) > 0 else 1
         features = vector.features(layer)
 
         if not len(unique) == featureCount:
@@ -121,7 +121,7 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
             selran = range(featureCount)
 
         features = vector.features(layer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for (i, feat) in enumerate(features):
             if i in selran:
                 writer.addFeature(feat)

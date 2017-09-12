@@ -80,7 +80,7 @@ class ExtractByLocation(GeoAlgorithm):
 
         selectedSet = []
         features = vector.features(selectLayer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for current, f in enumerate(features):
             geom = vector.snapToPrecision(f.geometry(), precision)
             bbox = vector.bufferedBoundingBox(geom.boundingBox(), 0.51 * precision)

@@ -44,7 +44,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve,
 
     current = 0
     features = vector.features(layer)
-    total = 100.0 / float(len(features))
+    total = 100.0 / len(features) if len(features) > 0 else 1
 
     # With dissolve
     if dissolve:

@@ -117,7 +117,7 @@ class HubDistance(GeoAlgorithm):
 
         # Scan source points, find nearest hub, and write to output file
         features = vector.features(layerPoints)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for current, f in enumerate(features):
             src = f.geometry().boundingBox().center()
 

@@ -94,7 +94,7 @@ class MeanCoords(GeoAlgorithm):
         )
 
         features = vector.features(layer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         means = {}
         for current, feat in enumerate(features):
             progress.setPercentage(int(current * total))
@@ -122,7 +122,7 @@ class MeanCoords(GeoAlgorithm):
             means[clazz] = (cx, cy, totalweight)
 
         current = 0
-        total = 100.0 / len(means)
+        total = 100.0 / len(means) if len(means) > 0 else 1
         for (clazz, values) in means.iteritems():
             if values[2]:
                 outFeat = QgsFeature()

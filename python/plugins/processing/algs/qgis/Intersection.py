@@ -86,7 +86,7 @@ class Intersection(GeoAlgorithm):
         outFeat = QgsFeature()
         index = vector.spatialindex(vlayerB)
         selectionA = vector.features(vlayerA)
-        total = 100.0 / len(selectionA)
+        total = 100.0 / len(selectionA) if len(selectionA) > 0 else 1
         for current, inFeatA in enumerate(selectionA):
             progress.setPercentage(int(current * total))
             geom = inFeatA.geometry()

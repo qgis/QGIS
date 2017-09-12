@@ -92,7 +92,7 @@ class LinesIntersection(GeoAlgorithm):
 
         outFeat = QgsFeature()
         features = vector.features(layerA)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         hasIntersections = False
 
         for current, inFeatA in enumerate(features):

@@ -78,7 +78,7 @@ class Dissolve(GeoAlgorithm):
                                              vlayerA.crs())
         outFeat = QgsFeature()
         features = vector.features(vlayerA)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
 
         if not useField:
             first = True
@@ -154,7 +154,7 @@ class Dissolve(GeoAlgorithm):
 
                 geometry_dict[index_attrs].append(tmpInGeom)
 
-            nFeat = len(attribute_dict)
+            nFeat = len(attribute_dict) if len(attribute_dict) > 0 else 1
 
             nElement = 0
             for key, value in geometry_dict.items():

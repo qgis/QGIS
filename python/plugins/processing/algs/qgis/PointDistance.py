@@ -126,7 +126,7 @@ class PointDistance(GeoAlgorithm):
         distArea = QgsDistanceArea()
 
         features = vector.features(inLayer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             inID = unicode(inFeat.attributes()[inIdx])
@@ -166,7 +166,7 @@ class PointDistance(GeoAlgorithm):
 
         first = True
         features = vector.features(inLayer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
             inID = unicode(inFeat.attributes()[inIdx])

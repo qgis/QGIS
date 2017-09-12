@@ -118,7 +118,7 @@ class FieldsMapper(GeoAlgorithm):
         outFeat = QgsFeature()
         features = vector.features(layer)
         if len(features):
-            total = 100.0 / len(features)
+            total = 100.0 / len(features) if len(features) > 0 else 1
             for current, inFeat in enumerate(features):
                 rownum = current + 1
 

@@ -85,7 +85,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
         fit = layer.getFeatures()
         inFeat = QgsFeature()
-        total = 100.0 / layer.featureCount()
+        total = 100.0 / layer.featureCount() if layer.featureCount() > 0 else 1
         newgeometry = QgsGeometry()
         first = True
         while fit.nextFeature(inFeat):
@@ -112,7 +112,7 @@ class OrientedMinimumBoundingBox(GeoAlgorithm):
 
     def featureOmbb(self, layer, writer, progress):
         features = vector.features(layer)
-        total = 100.0 / len(features)
+        total = 100.0 / len(features) if len(features) > 0 else 1
         outFeat = QgsFeature()
         for current, inFeat in enumerate(features):
             geometry, area, perim, angle, width, height = self.OMBBox(
