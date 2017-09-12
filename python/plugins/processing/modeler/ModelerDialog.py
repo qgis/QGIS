@@ -588,17 +588,17 @@ class ModelerDialog(BASE, WIDGET):
             pass
         if not dlg:
             dlg = ModelerParametersDialog(alg, self.model)
-        dlg.exec_()
-        if dlg.alg is not None:
+        if dlg.exec_():
+            alg = dlg.createAlgorithm()
             if pos is None:
-                dlg.alg.setPosition(self.getPositionForAlgorithmItem())
+                alg.setPosition(self.getPositionForAlgorithmItem())
             else:
-                dlg.alg.setPosition(pos)
+                alg.setPosition(pos)
             from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-            for i, out in enumerate(dlg.alg.modelOutputs()):
-                dlg.alg.modelOutput(out).setPosition(dlg.alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
+            for i, out in enumerate(alg.modelOutputs()):
+                alg.modelOutput(out).setPosition(alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
                                                                                   ModelerGraphicItem.BOX_HEIGHT))
-            self.model.addChildAlgorithm(dlg.alg)
+            self.model.addChildAlgorithm(alg)
             self.repaintModel()
             self.hasChanged = True
 

@@ -210,10 +210,10 @@ class ModelerGraphicItem(QGraphicsItem):
                 pass
             if not dlg:
                 dlg = ModelerParametersDialog(self.element.algorithm(), self.model, self.element.childId())
-            dlg.exec_()
-            if dlg.alg is not None:
-                dlg.alg.setChildId(self.element.childId())
-                self.updateAlgorithm(dlg.alg)
+            if dlg.exec_():
+                alg = dlg.createAlgorithm()
+                alg.setChildId(self.element.childId())
+                self.updateAlgorithm(alg)
                 self.scene.dialog.repaintModel()
 
     def updateAlgorithm(self, alg):
