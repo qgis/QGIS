@@ -352,28 +352,35 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.grabDefaultGrassParameters(parameters, context)
         
         # Handle ext functions for inputs/command/outputs
-        if self.module:
-            if hasattr(self.module, 'processInputs'):
-                func = getattr(self.module, 'processInputs')
-                func(self)
-            else:
-                self.processInputs(parameters, context)
+        # if self.module:
+        #     if hasattr(self.module, 'processInputs'):
+        #         func = getattr(self.module, 'processInputs')
+        #         func(self)
+        #     else:
+        #         self.processInputs(parameters, context)
 
-            if hasattr(self.module, 'processCommand'):
-                func = getattr(self.module, 'processCommand')
-                func(self)
-            else:
-                self.processCommand()
+        #     if hasattr(self.module, 'processCommand'):
+        #         func = getattr(self.module, 'processCommand')
+        #         func(self)
+        #     else:
+        #         self.processCommand()
 
-            if hasattr(self.module, 'processOutputs'):
-                func = getattr(self.module, 'processOutputs')
-                func(self)
+        #     if hasattr(self.module, 'processOutputs'):
+        #         func = getattr(self.module, 'processOutputs')
+        #         func(self)
+        #     else:
+        #         self.processOutputs()
+        # else:
+        #     self.processInputs(parameters, context)
+        #     self.processCommand(parameters, context)
+        #     self.processOutputs(parameters, context)
+        # Handle ext methods for input/command/outputs
+        for fName in ['Inputs', 'Command', 'Outputs']:
+            fullName = 'process{}'.format(fName)
+            if self.module and hasattr(self.module, fullName):
+                getattr(self.module, fullName)(self, parameters, context)
             else:
-                self.processOutputs()
-        else:
-            self.processInputs(parameters, context)
-            self.processCommand(parameters, context)
-            self.processOutputs(parameters, context)
+                getattr(self, fullName)(parameters, context)
 
         # Run GRASS
         loglines = []
@@ -468,7 +475,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         # Add a vector layer
                         elif layer.type() == QgsMapLayer.VectorLayer:
                             self.commands.append(self.exportVectorLayer(layerName, layerSrc))
-                        
+        self.postInputs()
+                
+    def postInputs(self):
+        """
+        After layer imports, we need to update some internal parameters
+        """
         # If projection has not already be set, use the project
         self.setSessionProjectionFromProject()
 
@@ -647,17 +659,22 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.outputCommands.append(command)
         QgsMessageLog.logMessage('processOutputs. Commands: {}'.format(self.commands), 'Grass7', QgsMessageLog.INFO)
         
-    def exportRasterLayer(self, layerKey, layerSrc):
+    def exportRasterLayer(self, layerKey, layerSrc, external=True, band=1):
         """
         Creates a dedicated command to load a raster into
         temporary GRASS DB.
+        :layerKey: name of the parameter
+        :layerSrc: file path of raster layer
+        :external: use r.external (r.in.gdal if False).                           
+        :band: import only this band (if None, all bands are imported).
         """
-        # TODO: handle multiple bands
-        #destFileName = QgsProcessingUtils.generateTempFilename(layerKey)
         destFilename = 'a' + os.path.basename(getTempFilename())
         self.exportedLayers[layerKey] = destFilename
-        command = 'r.external input="{}" band=1 output={} --overwrite -o'.format(
-            layerSrc, destFilename)
+        command = '{0] input="{1}"{2}output={3} --overwrite -o'.format(
+            'r.external' if external else 'r.in.gdal',
+            layerSrc,
+            ' band={} 'format(band) if band else '',
+            destFilename)
         return command
         
     def exportVectorLayer(self, layerKey, layerSrc):
