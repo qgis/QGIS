@@ -12,7 +12,6 @@ SET (WMS_SRCS
 SET (WMS_MOC_HDRS
   qgswmscapabilities.h
   qgswmsprovider.h
-  qgswmsconnection.h
   qgswmsdataitems.h
 )
 

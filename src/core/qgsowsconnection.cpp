@@ -45,8 +45,6 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   QString key = "qgis/connections-" + mService.toLower() + '/' + mConnName;
   QString credentialsKey = "qgis/" + mService + '/' + mConnName;
 
-  QStringList connStringParts;
-
   mConnectionInfo = settings.value( key + "/url" ).toString();
   mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url" ).toString() );
 
@@ -67,10 +65,19 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
+  QString referer = settings.value( key + "/referer" ).toString();
+  if ( !referer.isEmpty() )
+  {
+    mUri.setParam( QStringLiteral( "referer" ), referer );
+  }
+
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
   bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
   bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
+  bool smoothPixmapTransform = settings.value( key + "/smoothPixmapTransform", false ).toBool();
+  QString dpiMode = settings.value( key + "/dpiMode", "all" ).toString();
+
   if ( ignoreGetMap )
   {
     mUri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
@@ -86,6 +93,14 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   if ( invertAxisOrientation )
   {
     mUri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
+  }
+  if ( smoothPixmapTransform )
+  {
+    mUri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
+  }
+  if ( !dpiMode.isEmpty() )
+  {
+    mUri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
   }
 
   QgsDebugMsg( QString( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
