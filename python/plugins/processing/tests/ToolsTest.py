@@ -25,28 +25,17 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
+import os
+import shutil
+import tempfile
+
 from qgis.testing import start_app, unittest
 from processing.tests.TestData import points2
 from processing.tools import vector
 from qgis.core import (QgsVectorLayer, QgsFeatureRequest)
 from processing.core.ProcessingConfig import ProcessingConfig
 
-import os.path
-import errno
-import shutil
-
-dataFolder = os.path.join(os.path.dirname(__file__), '../../../../tests/testdata/')
-tmpBaseFolder = os.path.join(os.sep, 'tmp', 'qgis_test', str(os.getpid()))
-
-
-def mkDirP(path):
-    try:
-        os.makedirs(path)
-    except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 start_app()
 
@@ -55,54 +44,50 @@ class VectorTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        mkDirP(tmpBaseFolder)
+        cls.cleanup_paths = []
 
     @classmethod
     def tearDownClass(cls):
-        shutil.rmtree(tmpBaseFolder)
-        pass
+        for path in cls.cleanup_paths:
+            shutil.rmtree(path)
 
-    # See http://hub.qgis.org/issues/15698
-    def test_ogrLayerName(self):
-        tmpdir = os.path.join(tmpBaseFolder, 'ogrLayerName')
-        os.mkdir(tmpdir)
+    def testOgrLayerNameExtraction(self):
+        outdir = tempfile.mkdtemp()
+        self.cleanup_paths.append(outdir)
 
-        def linkTestfile(f, t):
-            os.link(os.path.join(dataFolder, f), os.path.join(tmpdir, t))
+        def _copyFile(dst):
+            shutil.copyfile(os.path.join(testDataPath, 'custom', 'grass7', 'weighted.csv'), dst)
 
-        # URI from OGR provider
-        linkTestfile('geom_data.csv', 'a.csv')
-        name = vector.ogrLayerName(tmpdir)
+        # OGR provider - single layer
+        _copyFile(os.path.join(outdir, 'a.csv'))
+        name = vector.ogrLayerName(outdir)
         self.assertEqual(name, 'a')
 
-        # URI from OGR provider
-        linkTestfile('wkt_data.csv', 'b.csv')
-        name = vector.ogrLayerName(tmpdir + '|layerid=0')
-        self.assertEqual(name, 'a')
-        name = vector.ogrLayerName(tmpdir + '|layerid=1')
+        # OGR provider - multiple layers
+        _copyFile(os.path.join(outdir, 'b.csv'))
+        name = vector.ogrLayerName(outdir + '|layerid=0')
         self.assertEqual(name, 'b')
+        name = vector.ogrLayerName(outdir + '|layerid=1')
+        self.assertEqual(name, 'a')
 
-        # URI from OGR provider
-        name = vector.ogrLayerName(tmpdir + '|layerid=2')
-        self.assertEqual(name, 'invalid-layerid')
+        name = vector.ogrLayerName(outdir + '|layerid=2')
+        self.assertIsNone(name)
 
-        # URI from OGR provider
-        name = vector.ogrLayerName(tmpdir + '|layername=f')
-        self.assertEqual(name, 'f') # layername takes precedence
+        # OGR provider - layername takes precedence
+        name = vector.ogrLayerName(outdir + '|layername=f')
+        self.assertEqual(name, 'f')
 
-        # URI from OGR provider
-        name = vector.ogrLayerName(tmpdir + '|layerid=0|layername=f2')
-        self.assertEqual(name, 'f2') # layername takes precedence
+        name = vector.ogrLayerName(outdir + '|layerid=0|layername=f')
+        self.assertEqual(name, 'f')
 
-        # URI from OGR provider
-        name = vector.ogrLayerName(tmpdir + '|layername=f2|layerid=0')
-        self.assertEqual(name, 'f2') # layername takes precedence
+        name = vector.ogrLayerName(outdir + '|layername=f|layerid=0')
+        self.assertEqual(name, 'f')
 
-        # URI from Sqlite provider
+        # SQLiite provider
         name = vector.ogrLayerName('dbname=\'/tmp/x.sqlite\' table="t" (geometry) sql=')
         self.assertEqual(name, 't')
 
-        # URI from PostgreSQL provider
+        # PostgreSQL provider
         name = vector.ogrLayerName('port=5493 sslmode=disable key=\'edge_id\' srid=0 type=LineString table="city_data"."edge" (geom) sql=')
         self.assertEqual(name, 'city_data.edge')
 

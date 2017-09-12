@@ -525,26 +525,6 @@ def ogrConnectionString(uri):
     return '"' + ogrstr + '"'
 
 
-#
-# The uri parameter is an URI from any QGIS provider,
-# so could have different formats.
-# Example formats:
-#
-# -- PostgreSQL provider
-# port=5493 sslmode=disable key='edge_id' srid=0 type=LineString table="city_data"."edge" (geom) sql=
-#
-# -- Spatialite provider
-# dbname='/tmp/x.sqlite' table="t" (geometry) sql='
-#
-# -- OGR provider (single-layer directory)
-# /tmp/x.gdb
-#
-# -- OGR provider (multi-layer directory)
-# /tmp/x.gdb|layerid=1
-#
-# -- OGR provider (multi-layer directory)
-# /tmp/x.gdb|layername=thelayer
-#
 def ogrLayerName(uri):
 
     # handle URIs of database providers
@@ -580,10 +560,10 @@ def ogrLayerName(uri):
             # take precedence
     ds = ogr.Open(ogruri)
     if not ds:
-        return "invalid-uri"
+        return None
     ly = ds.GetLayer(layerid)
     if not ly:
-        return "invalid-layerid"
+        return None
     name = ly.GetName()
     return name
 
