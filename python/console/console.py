@@ -56,12 +56,6 @@ def show_console():
         if _console.isVisible():
             _console.activate()
 
-    # Shows help on first launch of the console
-    settings = QgsSettings()
-    if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
-        QgsHelp.openHelp("plugins/python_console.html")
-        settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
-
     return _console
 
 
