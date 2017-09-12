@@ -2535,19 +2535,23 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   {
     return 1;
   }
-  QMap<int, QVariant> attributes;
+  QgsRasterIdentifyResult identifyResult;
   // use context extent, width height (comes with request) to use WCS cache
   // We can only use context if raster is not reprojected, otherwise it is difficult
   // to guess correct source resolution
   if ( mMapRenderer->hasCrsTransformEnabled() && layer->dataProvider()->crs() != mMapRenderer->destinationCrs() )
   {
-    attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue ).results();
+    identifyResult = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue );
   }
   else
   {
-    attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() ).results();
+    identifyResult = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() );
   }
 
+  if ( !identifyResult.isValid() )
+    return 1;
+
+  QMap<int, QVariant> attributes = identifyResult.results();
   if ( infoFormat == "application/vnd.ogc.gml" )
   {
     QgsFeature feature;
