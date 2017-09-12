@@ -32,6 +32,7 @@ class QgsBrowserDockWidget;
 class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsAbstractDataSourceWidget;
+class QgsBrowserModel;
 
 /** \ingroup gui
  * The QgsDataSourceManagerDialog class embeds the browser panel and all
@@ -48,11 +49,12 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
   public:
 
     /** QgsDataSourceManagerDialog constructor
+      * \param browserModel instance of the (shared) browser model
       * \param parent the object
       * \param canvas a pointer to the map canvas
       * \param fl window flags
       */
-    explicit QgsDataSourceManagerDialog( QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    explicit QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog();
 
     /**

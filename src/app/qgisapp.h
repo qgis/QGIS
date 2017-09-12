@@ -123,6 +123,8 @@ class QgsLayerStylingWidget;
 class QgsDiagramProperties;
 class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
+class QgsBrowserModel;
+
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -2073,6 +2075,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     double mLastRenderTimeSeconds = 0;
     QTimer mRenderProgressBarTimer;
     QMetaObject::Connection mRenderProgressBarTimerConnection;
+
+    QgsBrowserModel *mBrowserModel = nullptr;
 
     friend class TestQgisAppPython;
 };

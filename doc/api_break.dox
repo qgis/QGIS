@@ -557,6 +557,15 @@ QgsBrowserModel        {#qgis_api_break_3_0_QgsBrowserModel}
 
 - addFavouriteDirectory has been renamed to addFavoriteDirectory
 - removeFavourite has been renamed to removeFavorite
+- initialize  has been added
+- initialized has been added
+
+
+QgsBrowserDockWidget    {#qgis_api_break_3_0_QgsBrowserDockWidget}
+--------------------
+
+- The constructor for QgsBrowserDockWidget has changed: a QgsBrowserModel instance is now an argument.
+
 
 QgsCachedFeatureIterator        {#qgis_api_break_3_0_QgsQgsCachedFeatureIterator}
 ------------------------

@@ -765,7 +765,6 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     }
 
   }
-
   return children;
 }
 
@@ -781,6 +780,7 @@ void QgsDirectoryItem::setState( State state )
       mFileSystemWatcher->addPath( mDirPath );
       connect( mFileSystemWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsDirectoryItem::directoryChanged );
     }
+    mLastScan = QDateTime::currentDateTime();
   }
   else if ( state == NotPopulated )
   {
@@ -794,6 +794,11 @@ void QgsDirectoryItem::setState( State state )
 
 void QgsDirectoryItem::directoryChanged()
 {
+  // If the last scan was less than 10 seconds ago, skip this
+  if ( mLastScan.msecsTo( QDateTime::currentDateTime() ) < QgsSettings().value( QStringLiteral( "browser/minscaninterval" ), 10000 ).toInt() )
+  {
+    return;
+  }
   if ( state() == Populating )
   {
     // schedule to refresh later, because refresh() simply returns if Populating

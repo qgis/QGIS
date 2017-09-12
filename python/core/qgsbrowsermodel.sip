@@ -177,12 +177,24 @@ Reload the whole model
 Hide the given path in the browser model
 %End
 
+    bool initialized( ) const;
+%Docstring
+Returns true if the model has been initialized
+ :rtype: bool
+%End
+
+    void initialize();
+%Docstring
+Delayed initialization, needed because the provider registry must be already populated
+%End
+
   protected:
     void addRootItems();
 %Docstring
 Populates the model
 %End
     void removeRootItems();
+
 
 };
 
