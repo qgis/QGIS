@@ -177,7 +177,7 @@ Reload the whole model
 Hide the given path in the browser model
 %End
 
-    bool initialized( );
+    bool initialized( ) const;
 %Docstring
 Returns true if the model has been initialized
  :rtype: bool

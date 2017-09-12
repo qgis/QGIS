@@ -168,7 +168,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void hidePath( QgsDataItem *item );
 
     //! Returns true if the model has been initialized
-    bool initialized( ) { return mInitialized;  }
+    bool initialized( ) const { return mInitialized;  }
 
     //! Delayed initialization, needed because the provider registry must be already populated
     void initialize();
