@@ -19,6 +19,8 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapserviceexception.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
@@ -43,6 +45,73 @@ QgsWMSConfigParser::QgsWMSConfigParser()
 QgsWMSConfigParser::~QgsWMSConfigParser()
 {
 
+}
+
+QStringList QgsWMSConfigParser::layerSet( const QStringList &layersList,
+    const QStringList &stylesList,
+    const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator ) const
+{
+  Q_UNUSED( destCRS );
+  QStringList layerKeys;
+  QStringList::const_iterator llstIt;
+  QStringList::const_iterator slstIt;
+  QgsMapLayer* theMapLayer = nullptr;
+  QgsMessageLog::logMessage( QString( "Calculating layerset using %1 layers, %2 styles and CRS %3" ).arg( layersList.count() ).arg( stylesList.count() ).arg( destCRS.description() ) );
+  for ( llstIt = layersList.begin(), slstIt = stylesList.begin(); llstIt != layersList.end(); ++llstIt )
+  {
+    QString styleName;
+    if ( slstIt != stylesList.end() )
+    {
+      styleName = *slstIt;
+    }
+    QgsMessageLog::logMessage( "Trying to get layer " + *llstIt + "//" + styleName );
+
+    //does the layer name appear several times in the layer list?
+    //if yes, layer caching must be disabled because several named layers could have
+    //several user styles
+    bool allowCaching = true;
+    if ( layersList.count( *llstIt ) > 1 )
+    {
+      allowCaching = false;
+    }
+
+    QList<QgsMapLayer*> layerList = mapLayerFromStyle( *llstIt, styleName, allowCaching );
+    int listIndex;
+
+    for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
+    {
+      theMapLayer = layerList.at( listIndex );
+      if ( theMapLayer )
+      {
+        QString lName =  theMapLayer->name();
+        if ( useLayerIDs() )
+          lName = theMapLayer->id();
+        else if ( !theMapLayer->shortName().isEmpty() )
+          lName = theMapLayer->shortName();
+        QgsMessageLog::logMessage( QString( "Checking layer: %1" ).arg( lName ) );
+        //test if layer is visible in requested scale
+        bool useScaleConstraint = ( scaleDenominator > 0 && theMapLayer->hasScaleBasedVisibility() );
+        if ( !useScaleConstraint ||
+             ( theMapLayer->minimumScale() <= scaleDenominator && theMapLayer->maximumScale() >= scaleDenominator ) )
+        {
+          layerKeys.push_front( theMapLayer->id() );
+          QgsMapLayerRegistry::instance()->addMapLayers(
+            QList<QgsMapLayer *>() << theMapLayer, false, false );
+        }
+      }
+      else
+      {
+        QgsMessageLog::logMessage( "Layer or style not defined, aborting" );
+        throw QgsMapServiceException( "LayerNotDefined", "Layer '" + *llstIt + "' and/or style '" + styleName + "' not defined" );
+      }
+    }
+
+    if ( slstIt != stylesList.end() )
+    {
+      ++slstIt;
+    }
+  }
+  return layerKeys;
 }
 
 QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
@@ -144,10 +213,11 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     }
 
     //layers / styles
-    QStringList layerSet;
+    QgsCoordinateReferenceSystem dummyCRS;
+    QStringList mapLayerSet;
     if ( currentMap->keepLayerSet() )
     {
-      layerSet = currentMap->layerSet();
+      mapLayerSet = currentMap->layerSet();
     }
     else
     {
@@ -169,6 +239,8 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
         wmsStyleList = styles.split( "," );
       }
 
+      mapLayerSet = layerSet( wmsLayerList, wmsStyleList, dummyCRS );
+      /*
       for ( int i = 0; i < wmsLayerList.size(); ++i )
       {
         QString styleName;
@@ -185,15 +257,16 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
           }
         }
       }
+      * */
     }
 
     //save layer list prior to adding highlight layers
-    QStringList bkLayerSet = layerSet;
+    QStringList bkLayerSet = mapLayerSet;
 
     //add highlight layers
-    highlightLayers.append( addHighlightLayers( parameterMap, layerSet, mapId + ":" ) );
+    highlightLayers.append( addHighlightLayers( parameterMap, mapLayerSet, mapId + ":" ) );
 
-    currentMap->setLayerSet( layerSet );
+    currentMap->setLayerSet( mapLayerSet );
     currentMap->setKeepLayerSet( true );
 
     //remove highlight layers from the composer legends
@@ -233,8 +306,8 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
 
       // get model and layer tree root of the legend
       QgsLegendModelV2* model = currentLegend->modelV2();
-      QStringList layerSet = map->layerSet();
-      setLayerIdsToLegendModel( model, layerSet, map->scale() );
+      QStringList mapLayerSet = map->layerSet();
+      setLayerIdsToLegendModel( model, mapLayerSet, map->scale() );
     }
   }
 

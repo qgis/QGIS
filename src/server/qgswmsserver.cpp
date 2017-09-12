@@ -779,7 +779,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   }
 
   QgsCoordinateReferenceSystem dummyCRS;
-  QStringList layerIds = layerSet( layersList, stylesList, dummyCRS, scaleDenominator );
+  QStringList layerIds = mConfigParser->layerSet( layersList, stylesList, dummyCRS, scaleDenominator );
   if ( layerIds.size() < 1 )
   {
     return nullptr;
@@ -1690,7 +1690,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
   }
 
   //get the layer registered in QgsMapLayerRegistry and apply possible filters
-  ( void )layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
+  ( void )mConfigParser->layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
 
   //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
   //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
@@ -1967,7 +1967,7 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   QgsRectangle mapExtent = mMapRenderer->extent();
   mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
 
-  layerIdList = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
+  layerIdList = mConfigParser->layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
 #ifdef QGISDEBUG
   QgsMessageLog::logMessage( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
 #endif
@@ -2595,73 +2595,6 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
     }
   }
   return 0;
-}
-
-QStringList QgsWMSServer::layerSet( const QStringList &layersList,
-                                    const QStringList &stylesList,
-                                    const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator ) const
-{
-  Q_UNUSED( destCRS );
-  QStringList layerKeys;
-  QStringList::const_iterator llstIt;
-  QStringList::const_iterator slstIt;
-  QgsMapLayer* theMapLayer = nullptr;
-  QgsMessageLog::logMessage( QString( "Calculating layerset using %1 layers, %2 styles and CRS %3" ).arg( layersList.count() ).arg( stylesList.count() ).arg( destCRS.description() ) );
-  for ( llstIt = layersList.begin(), slstIt = stylesList.begin(); llstIt != layersList.end(); ++llstIt )
-  {
-    QString styleName;
-    if ( slstIt != stylesList.end() )
-    {
-      styleName = *slstIt;
-    }
-    QgsMessageLog::logMessage( "Trying to get layer " + *llstIt + "//" + styleName );
-
-    //does the layer name appear several times in the layer list?
-    //if yes, layer caching must be disabled because several named layers could have
-    //several user styles
-    bool allowCaching = true;
-    if ( layersList.count( *llstIt ) > 1 )
-    {
-      allowCaching = false;
-    }
-
-    QList<QgsMapLayer*> layerList = mConfigParser->mapLayerFromStyle( *llstIt, styleName, allowCaching );
-    int listIndex;
-
-    for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
-    {
-      theMapLayer = layerList.at( listIndex );
-      if ( theMapLayer )
-      {
-        QString lName =  theMapLayer->name();
-        if ( mConfigParser && mConfigParser->useLayerIDs() )
-          lName = theMapLayer->id();
-        else if ( !theMapLayer->shortName().isEmpty() )
-          lName = theMapLayer->shortName();
-        QgsMessageLog::logMessage( QString( "Checking layer: %1" ).arg( lName ) );
-        //test if layer is visible in requested scale
-        bool useScaleConstraint = ( scaleDenominator > 0 && theMapLayer->hasScaleBasedVisibility() );
-        if ( !useScaleConstraint ||
-             ( theMapLayer->minimumScale() <= scaleDenominator && theMapLayer->maximumScale() >= scaleDenominator ) )
-        {
-          layerKeys.push_front( theMapLayer->id() );
-          QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << theMapLayer, false, false );
-        }
-      }
-      else
-      {
-        QgsMessageLog::logMessage( "Layer or style not defined, aborting" );
-        throw QgsMapServiceException( "LayerNotDefined", "Layer '" + *llstIt + "' and/or style '" + styleName + "' not defined" );
-      }
-    }
-
-    if ( slstIt != stylesList.end() )
-    {
-      ++slstIt;
-    }
-  }
-  return layerKeys;
 }
 
 
