@@ -26,7 +26,7 @@ __copyright__ = '(C) 2015, Arnaud Morvan'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
     QRadioButton,
@@ -35,7 +35,10 @@ from qgis.PyQt.QtWidgets import (
     QSizePolicy,
     QSpacerItem,
     QWidget,
+    QMenu,
+    QAction
 )
+from qgis.PyQt.QtGui import QCursor
 
 
 class CheckboxesPanel(QWidget):
@@ -69,6 +72,28 @@ class CheckboxesPanel(QWidget):
         layout.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum),
                        0, columns)
         self.setLayout(layout)
+
+        if multiple:
+            self.setContextMenuPolicy(Qt.CustomContextMenu)
+            self.customContextMenuRequested.connect(self.showPopupMenu)
+
+    def showPopupMenu(self):
+        popup_menu = QMenu()
+        select_all_action = QAction(self.tr('Select All'), popup_menu)
+        select_all_action.triggered.connect(self.selectAll)
+        clear_all_action = QAction(self.tr('Clear Selection'), popup_menu)
+        clear_all_action.triggered.connect(self.deselectAll)
+        popup_menu.addAction(select_all_action)
+        popup_menu.addAction(clear_all_action)
+        popup_menu.exec_(QCursor.pos())
+
+    def selectAll(self):
+        for (v, button) in self._buttons:
+            button.setChecked(True)
+
+    def deselectAll(self):
+        for (v, button) in self._buttons:
+            button.setChecked(False)
 
     def value(self):
         if self._multiple:
