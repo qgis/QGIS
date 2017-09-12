@@ -56,6 +56,8 @@ class CheckboxesPanel(QWidget):
         self._buttonGroup = QButtonGroup()
         self._buttonGroup.setExclusive(not multiple)
         layout = QGridLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setMargin(0)
         for i, (v, t) in enumerate(self._options):
             if multiple:
                 button = QCheckBox(t)
