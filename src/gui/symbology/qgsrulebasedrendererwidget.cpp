@@ -396,10 +396,12 @@ void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsRuleBasedRendererWidget::setRenderingOrder()
 {
-  QgsSymbolLevelsDialog dlg( mRenderer->legendSymbolItems(), true, this );
+  QgsSymbolLevelsDialog dlg( mRenderer, true, this );
   dlg.setForceOrderingEnabled( true );
-
-  dlg.exec();
+  if ( dlg.exec() )
+  {
+    emit widgetChanged();
+  }
 }
 
 void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int newSize )

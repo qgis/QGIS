@@ -8,6 +8,7 @@
 
 
 
+
 class QgsSymbolLevelsDialog : QDialog
 {
 
@@ -15,6 +16,10 @@ class QgsSymbolLevelsDialog : QDialog
 #include "qgssymbollevelsdialog.h"
 %End
   public:
+    QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent = 0 );
+%Docstring
+Constructor for QgsSymbolLevelsDialog
+%End
 
     ~QgsSymbolLevelsDialog();
 
@@ -33,8 +38,11 @@ class QgsSymbolLevelsDialog : QDialog
   protected:
 
 
+
+
   private:
     QgsSymbolLevelsDialog();
+
 };
 
 

@@ -20,8 +20,9 @@
 #include <QList>
 #include <QItemDelegate>
 
-#include "qgsrenderer.h"
 #include "qgshelp.h"
+#include "qgsrenderer.h"
+
 #include "ui_qgssymbollevelsdialogbase.h"
 #include "qgis_gui.h"
 
@@ -32,8 +33,8 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
 {
     Q_OBJECT
   public:
-    //! \note not available in Python bindings
-    QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, bool usingSymbolLevels, QWidget *parent = nullptr ) SIP_SKIP;
+    //! Constructor for QgsSymbolLevelsDialog
+    QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent = nullptr );
 
     ~QgsSymbolLevelsDialog();
 
@@ -48,6 +49,9 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
     void renderingPassChanged( int row, int column );
 
   private slots:
+    //! Apply button
+    void apply();
+
     void showHelp();
 
   protected:
@@ -58,13 +62,17 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog, private Ui::QgsSymbolLe
 
     //! maximal number of layers from all symbols
     int mMaxLayers;
+
+    QgsFeatureRenderer *mRenderer;
     QgsLegendSymbolList mList;
+
     //! whether symbol layers always should be used (default false)
     bool mForceOrderingEnabled;
 
   private:
 #ifdef SIP_RUN
     QgsSymbolLevelsDialog();
+
 #endif
 };
 

@@ -28,8 +28,9 @@
 
 ////////////////
 
-QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, bool usingSymbolLevels, QWidget *parent )
+QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent )
   : QDialog( parent )
+  , mRenderer( renderer )
   , mForceOrderingEnabled( false )
 {
   setupUi( this );
@@ -42,13 +43,17 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( const QgsLegendSymbolList &list, b
   chkEnable->setChecked( usingSymbolLevels );
 
   connect( chkEnable, &QAbstractButton::clicked, this, &QgsSymbolLevelsDialog::updateUi );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsSymbolLevelsDialog::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSymbolLevelsDialog::showHelp );
 
-  // only consider entries with symbols
-  Q_FOREACH ( const QgsLegendSymbolItem &item, list )
+  if ( mRenderer )
   {
-    if ( item.symbol() )
-      mList << item;
+    // only consider entries with symbols
+    Q_FOREACH ( const QgsLegendSymbolItem &item, mRenderer->legendSymbolItems() )
+    {
+      if ( item.symbol() )
+        mList << item;
+    }
   }
 
   int maxLayers = 0;
@@ -126,6 +131,20 @@ void QgsSymbolLevelsDialog::populateTable()
 void QgsSymbolLevelsDialog::updateUi()
 {
   tableLevels->setEnabled( chkEnable->isChecked() );
+}
+
+void QgsSymbolLevelsDialog::apply()
+{
+  for ( int i = 0; i < mList.count(); i++ )
+  {
+    QgsSymbol *sym = mList.at( i ).symbol();
+    for ( int layer = 0; layer < sym->symbolLayerCount(); layer++ )
+    {
+      mRenderer->setLegendSymbolItem( mList.at( i ).ruleKey(), sym->clone() );
+    }
+  }
+
+  mRenderer->setUsingSymbolLevels( usingLevels() );
 }
 
 void QgsSymbolLevelsDialog::setDefaultLevels()

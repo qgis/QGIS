@@ -251,11 +251,9 @@ void QgsRendererWidget::changeSymbolAngle()
 
 void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
 {
-  QgsSymbolLevelsDialog dlg( r->legendSymbolItems(), r->usingSymbolLevels(), this );
-
+  QgsSymbolLevelsDialog dlg( r, r->usingSymbolLevels(), this );
   if ( dlg.exec() )
   {
-    r->setUsingSymbolLevels( dlg.usingLevels() );
     emit widgetChanged();
   }
 }
