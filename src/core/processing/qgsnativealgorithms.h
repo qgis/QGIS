@@ -579,6 +579,59 @@ class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 };
 
+/**
+ * Native merge lines algorithm.
+ */
+class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsMergeLinesAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "mergelines" ); }
+    QString displayName() const override { return QObject::tr( "Merge lines" ); }
+    virtual QStringList tags() const override { return QObject::tr( "line,merge,join,parts" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsMergeLinesAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Merged" ); }
+    QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorLine; }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override { return QgsWkbTypes::MultiLineString; }
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+};
+
+/**
+ * Native smooth algorithm.
+ */
+class QgsSmoothAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsSmoothAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "smoothgeometry" ); }
+    QString displayName() const override { return QObject::tr( "Smooth geometries" ); }
+    virtual QStringList tags() const override { return QObject::tr( "smooth,curve,generalize,round,bend,corners" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsSmoothAlgorithm *createInstance() const override SIP_FACTORY;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Smoothed" ); }
+    QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorLine; }
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    int mIterations = 1;
+    double mOffset = 0.25;
+    double mMaxAngle = 0;
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H

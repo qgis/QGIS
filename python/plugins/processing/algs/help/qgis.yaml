@@ -302,11 +302,6 @@ qgis:meancoordinates: >
 
   If an attribute is selected in the  <Unique ID field> parameters, features will be grouped according to values in this field. Instead of a single point with the center of mass of the whole layer, the  output layer will contain a center of mass for the features in each category.
 
-qgis:mergelines: >
-  This algorithm joins all connected parts of MultiLineString geometries into single LineString geometries.
-
-  If any parts of the input MultiLineString geometries are not connected, the resultant geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts.
-
 qgis:mergevectorlayers: >
   This algorithm combines multiple vector layers of the same geometry type into a single one.
 
@@ -546,15 +541,6 @@ qgis:singlesidedbuffer: >
   The join style parameter specifies whether round, miter or beveled joins should be used when buffering corners in a line.
 
   The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the buffer to use when creating a mitered join.
-
-qgis:smoothgeometry: >
-  This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the same features as the ones in the input layer, but with geometries containing a higher number of vertices and corners in the geometries smoothed out.
-
-  The iterations parameter dictates how many smoothing iterations will be applied to each geometry. A higher number of iterations results in smoother geometries with the cost of greater number of nodes in the geometries.
-
-  The offset parameter controls how "tightly" the smoothed geometries follow the original geometries. Smaller values results in a tighter fit, and larger values will create a looser fit.
-
-  The maximum angle parameter can be used to prevent smoothing of nodes with large angles. Any node where the angle of the segments to either side is larger than this will not be smoothed. For example, setting the maximum angle to 90 degrees or lower would preserve right angles in the geometry.
 
 qgis:snapgeometries: >
   This algorithm snaps the geometries in a layer. Snapping can be done either to the geometries from another layer, or to geometries within the same layer.
