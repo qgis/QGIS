@@ -556,6 +556,29 @@ class QgsExtractByLocationAlgorithm : public QgsLocationBasedAlgorithm
 
 };
 
+/**
+ * Native repair geometries algorithm.
+ */
+class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsFixGeometriesAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "fixgeometries" ); }
+    QString displayName() const override { return QObject::tr( "Fix geometries" ); }
+    virtual QStringList tags() const override { return QObject::tr( "repair,invalid,geometry,make,valid" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsFixGeometriesAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Fixed geometries" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type type ) const override { return QgsWkbTypes::multiType( type ); }
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H

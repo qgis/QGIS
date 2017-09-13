@@ -928,7 +928,7 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
   }
   else
   {
-    QgsDebugMsg( "original geom converted to GEOS" );
+    QgsDebugMsgLevel( "original geom converted to GEOS", 4 );
   }
 
   GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
