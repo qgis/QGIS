@@ -882,6 +882,8 @@ void QgsOfflineEditing::applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlit
   for ( int i = 0; i < values.size(); i++ )
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
+    // TODO: check if changeGeometry success and find a way to
+    //       interrupt applyGeometryChanges if it fail
     remoteLayer->changeGeometry( fid, QgsGeometry::fromWkt( values.at( i ).geom_wkt ) );
 
     emit progressUpdated( i + 1 );

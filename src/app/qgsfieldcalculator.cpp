@@ -295,7 +295,12 @@ void QgsFieldCalculator::accept()
         if ( value.canConvert< QgsGeometry >() )
         {
           QgsGeometry geom = value.value< QgsGeometry >();
-          mVectorLayer->changeGeometry( feature.id(), &geom );
+          if ( !mVectorLayer->changeGeometry( feature.id(), &geom ) )
+          {
+            calculationSuccess = false;
+            error = tr( "Invalid edit operation see the log for more info" );
+            break;
+          }
         }
       }
       else

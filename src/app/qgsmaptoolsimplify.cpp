@@ -176,17 +176,31 @@ void QgsMapToolSimplify::storeSimplified()
   double layerTolerance = QgsTolerance::toleranceInMapUnits( mTolerance, vlayer, mCanvas->mapSettings(), mToleranceUnits );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
+  bool success = true;
   Q_FOREACH ( const QgsFeature& feat, mSelectedFeatures )
   {
     if ( QgsGeometry* g = feat.constGeometry()->simplify( layerTolerance ) )
     {
-      vlayer->changeGeometry( feat.id(), g );
+      if ( !vlayer->changeGeometry( feat.id(), g ) )
+      {
+        emit messageEmitted( tr( "Invalid edit operation see the log for more info" ) );
+        success = false;
+      }
       delete g;
+
+      if ( !success )
+        break;
     }
   }
-  vlayer->endEditCommand();
-
-  clearSelection();
+  if ( success )
+  {
+    vlayer->endEditCommand();
+    clearSelection();
+  }
+  else
+  {
+    vlayer->destroyEditCommand();
+  }
 
   vlayer->triggerRepaint();
 }
