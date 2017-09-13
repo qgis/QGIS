@@ -615,6 +615,25 @@ void QgsTracer::setExtent( const QgsRectangle &extent )
   invalidateGraph();
 }
 
+void QgsTracer::setOffset( double offset )
+{
+  mOffset = offset;
+}
+
+void QgsTracer::offsetParameters( int &quadSegments, int &joinStyle, double &miterLimit )
+{
+  quadSegments = mOffsetSegments;
+  joinStyle = mOffsetJoinStyle;
+  miterLimit = mOffsetMiterLimit;
+}
+
+void QgsTracer::setOffsetParameters( int quadSegments, int joinStyle, double miterLimit )
+{
+  mOffsetSegments = quadSegments;
+  mOffsetJoinStyle = joinStyle;
+  mOffsetMiterLimit = miterLimit;
+}
+
 bool QgsTracer::init()
 {
   if ( mGraph )
@@ -694,6 +713,28 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
   QgsDebugMsg( QString( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ) );
 
   resetGraph( *mGraph );
+
+  if ( !points.isEmpty() && mOffset != 0 )
+  {
+    QList<QgsPointXY> pointsInput( points.toList() );
+    QgsLineString linestring( pointsInput );
+    std::unique_ptr<QgsGeometryEngine> linestringEngine( QgsGeometry::createGeometryEngine( &linestring ) );
+    std::unique_ptr<QgsAbstractGeometry> linestringOffset( linestringEngine->offsetCurve( mOffset, mOffsetSegments, mOffsetJoinStyle, mOffsetMiterLimit ) );
+    if ( QgsLineString *ls2 = qgsgeometry_cast<QgsLineString *>( linestringOffset.get() ) )
+    {
+      points.clear();
+      for ( int i = 0; i < ls2->numPoints(); ++i )
+        points << QgsPointXY( ls2->pointN( i ) );
+
+      // sometimes (with negative offset?) the resulting curve is reversed
+      if ( points.count() >= 2 )
+      {
+        double diff = points[0].distance( p1 );
+        if ( !qgsDoubleNear( diff, mOffset ) )
+          std::reverse( points.begin(), points.end() );
+      }
+    }
+  }
 
   if ( error )
     *error = points.isEmpty() ? ErrNoPath : ErrNone;

@@ -225,22 +225,37 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   if ( points.isEmpty() )
     return false; // ignore the vertex - can't find path to the end point!
 
+  // normally we skip the first vertex because it is already included, but if we
+  // use offset then we may need to include it
+  int indexStart = 1;
+  if ( !mCaptureCurve.isEmpty() )
+  {
+    QgsPoint lp; // in layer coords
+    if ( nextPoint( QgsPoint( points[0] ), lp ) != 0 )
+      return false;
+    QgsPoint last;
+    QgsVertexId::VertexType type;
+    mCaptureCurve.pointAt( mCaptureCurve.numPoints() - 1, last, type );
+    if ( last != lp )
+      indexStart = 0;
+  }
+
   // transform points
   QgsPointSequence layerPoints;
   QgsPoint lp; // in layer coords
-  for ( int i = 1; i < points.count(); ++i )
+  for ( int i = 0; i < points.count(); ++i )
   {
     if ( nextPoint( QgsPoint( points[i] ), lp ) != 0 )
       return false;
     layerPoints << lp;
   }
 
-  for ( int i = 1; i < points.count(); ++i )
+  for ( int i = indexStart; i < points.count(); ++i )
   {
-    if ( points[i] == points[i - 1] )
+    if ( i > 0 && points[i] == points[i - 1] )
       continue; // avoid duplicate vertices if there are any
     mRubberBand->addPoint( points[i], i == points.count() - 1 );
-    mCaptureCurve.addVertex( layerPoints[i - 1] );
+    mCaptureCurve.addVertex( layerPoints[i] );
     mSnappingMatches.append( QgsPointLocator::Match() );
   }
 

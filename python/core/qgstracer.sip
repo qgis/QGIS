@@ -62,6 +62,25 @@ Get extent to which graph's features will be limited (empty extent means no limi
 Set extent to which graph's features will be limited (empty extent means no limit)
 %End
 
+    double offset() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: float
+%End
+    void setOffset( double offset );
+%Docstring
+.. versionadded:: 3.0
+%End
+
+    void offsetParameters( int &quadSegments /Out/, int &joinStyle /Out/, double &miterLimit /Out/ );
+%Docstring
+.. versionadded:: 3.0
+%End
+    void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
+%Docstring
+.. versionadded:: 3.0
+%End
+
     int maxFeatureCount() const;
 %Docstring
 Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
