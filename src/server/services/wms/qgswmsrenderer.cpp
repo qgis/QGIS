@@ -62,6 +62,7 @@
 #include "qgsannotationmanager.h"
 #include "qgsannotation.h"
 #include "qgsvectorlayerlabeling.h"
+#include "qgsvectorlayerfeaturecounter.h"
 #include "qgspallabeling.h"
 #include "qgslayerrestorer.h"
 #include "qgsdxfexport.h"
@@ -2823,6 +2824,7 @@ namespace QgsWms
 
     // build layer tree
     rootGroup.clear();
+    QList<QgsVectorLayerFeatureCounter *> counters;
     Q_FOREACH ( QgsMapLayer *ml, layers )
     {
       QgsLayerTreeLayer *lt = rootGroup.addLayer( ml );
@@ -2830,6 +2832,15 @@ namespace QgsWms
 
       if ( !ml->title().isEmpty() )
         lt->setName( ml->title() );
+
+      if ( ml->type() != QgsMapLayer::VectorLayer || !showFeatureCount )
+        continue;
+
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      QgsVectorLayerFeatureCounter *counter = vl->countSymbolFeatures();
+      if ( !counter )
+        continue;
+      counters.append( counter );
     }
 
     // build legend model
@@ -2905,6 +2916,13 @@ namespace QgsWms
           }
         }
       }
+    }
+
+    for ( QgsVectorLayerFeatureCounter *c : counters )
+    {
+      if ( !c )
+        continue;
+      c->waitForFinished();
     }
 
     return legendModel;
