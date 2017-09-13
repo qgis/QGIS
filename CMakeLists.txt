@@ -499,6 +499,9 @@ IF (WITH_CORE)
       IF (POLICY CMP0042) # in CMake 3.0.0+
         SET (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
       ENDIF (POLICY CMP0042)
+      IF (POLICY CMP0068) # in CMake 3.9.0+
+        cmake_policy(SET CMP0068 NEW)
+      ENDIF (POLICY CMP0068)
       # for Mac OS X, everything is put inside an application bundle
       # save the root install prefix for the app later
       SET (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
