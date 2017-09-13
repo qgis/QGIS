@@ -101,7 +101,7 @@ class StatisticsByCategories(QgisAlgorithm):
             """
             Adds a field to the output, keeping the same data type as the value_field
             """
-            field = value_field
+            field = QgsField(value_field)
             field.setName(name)
             fields.append(field)
 
