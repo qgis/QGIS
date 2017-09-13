@@ -48,17 +48,17 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     /**
      * Set the source field from the layer.
      */
-    void setAutoSource();
+    void setAutoSource() const;
 
     /**
      * Add a new vocabulary.
      */
-    void addVocabulary();
+    void addVocabulary() const;
 
     /**
      * Remove a selected vocabulary.
      */
-    void removeVocabulary();
+    void removeVocabulary() const;
 
     /**
      * Add a new licence.
@@ -68,7 +68,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     /**
      * Remove a selected licence.
      */
-    void removeLicence();
+    void removeLicence() const;
 
     /**
      * Add a new right.
@@ -78,57 +78,57 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     /**
      * Remove a selected right.
      */
-    void removeRight();
+    void removeRight() const;
 
     /**
      * Set the CRS field from the layer.
      */
-    void setAutoCrs();
+    void setAutoCrs() const;
 
     /**
      * Add a new contact.
      */
-    void addContact();
+    void addContact() const;
 
     /**
      * Remove a selected contact.
      */
-    void removeContact();
+    void removeContact() const;
 
     /**
      * Update the contact details according to the selection in the contact list.
      */
-    void updateContactDetails();
+    void updateContactDetails() const;
 
     /**
      * Add a new link.
      */
-    void addLink();
+    void addLink() const;
 
     /**
      * Remove a selected link.
      */
-    void removeLink();
+    void removeLink() const;
 
     /**
      * Function to fill combobox like language, type.
      */
-    void fillComboBox();
+    void fillComboBox() const;
 
     /**
      * Fill the wizard from values in the layer metadata object.
      */
-    void setPropertiesFromLayer();
+    void setPropertiesFromLayer() const;
 
     /**
      * Save all fields in a QgsLayerMetadata object.
      */
-    void saveMetadata( QgsLayerMetadata &layerMetadata );
+    void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
 
     /**
      * Check if values in the wizard are correct.
      */
-    bool checkMetadata();
+    bool checkMetadata() const;
 
     /**
      * Returns a list of languages available by default in the wizard.
@@ -163,10 +163,10 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void acceptMetadata();
 
   private:
-    void updatePanel();
-    void addDefaultCategory();
+    void updatePanel() const;
+    void addDefaultCategory() const;
     void addNewCategory();
-    void removeCategory();
+    void removeCategory() const;
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
     QgsLayerMetadata mMetadata;
@@ -174,7 +174,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     QStringListModel *mCategoriesModel = nullptr;
     QStringListModel *mDefaultCategoriesModel = nullptr;
     QStringListModel *mRightsModel = nullptr;
-    void syncFromCategoriesTabToKeywordsTab();
+    void syncFromCategoriesTabToKeywordsTab() const;
 };
 
 #ifndef SIP_RUN
