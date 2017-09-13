@@ -2729,7 +2729,7 @@ tests:
 #        name: expected/zonal_statistics.gml
 #        type: vector
 
-  - algorithm: qgis:fixgeometries
+  - algorithm: native:fixgeometries
     name: Fix geometries
     params:
       INPUT:

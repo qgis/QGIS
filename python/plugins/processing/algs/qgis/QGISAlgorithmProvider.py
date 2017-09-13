@@ -75,7 +75,6 @@ from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .FixedDistanceBuffer import FixedDistanceBuffer
-from .FixGeometry import FixGeometry
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
 from .Gridify import Gridify
@@ -216,7 +215,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FieldsPyculator(),
                 FindProjection(),
                 FixedDistanceBuffer(),
-                FixGeometry(),
                 GeometryByExpression(),
                 GeometryConvert(),
                 Gridify(),

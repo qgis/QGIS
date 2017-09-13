@@ -222,11 +222,6 @@ qgis:fixeddistancebuffer: >
 
   The miter limit parameter is only applicable for miter join styles, and controls the maximum distance from the offset curve to use when creating a mitered join.
 
-qgis:fixgeometries: >
-  This algorithm attempts to create a valid representation of a given invalid geometry without losing any of the input vertices. Already-valid geometries are returned without further intervention. Always outputs multi-geometry layer.
-
-  NOTE: M values will be dropped from the output.
-
 qgis:frequencyanalysis: >
   This algorithm generates a table with frequency analysis of the values of a selected attribute from an input vector layer
 

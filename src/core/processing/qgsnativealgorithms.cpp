@@ -78,6 +78,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsSelectByLocationAlgorithm() );
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
+  addAlgorithm( new QgsFixGeometriesAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -1614,5 +1615,56 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
 }
 
 
+QString QgsFixGeometriesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm attempts to create a valid representation of a given invalid geometry without "
+                      "losing any of the input vertices. Already-valid geometries are returned without further intervention. "
+                      "Always outputs multi-geometry layer.\n\n"
+                      "NOTE: M values will be dropped from the output." );
+}
+
+QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
+{
+  return new QgsFixGeometriesAlgorithm();
+}
+
+QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  if ( !feature.hasGeometry() )
+    return feature;
+
+  QgsFeature outputFeature = feature;
+
+  QgsGeometry outputGeometry = outputFeature.geometry().makeValid();
+  if ( !outputGeometry )
+  {
+    feedback->pushInfo( QObject::tr( "makeValid failed for feature %1 " ).arg( feature.id() ) );
+    outputFeature.clearGeometry();
+    return outputFeature;
+  }
+
+  if ( outputGeometry.wkbType() == QgsWkbTypes::Unknown ||
+       QgsWkbTypes::flatType( outputGeometry.geometry()->wkbType() ) == QgsWkbTypes::GeometryCollection )
+  {
+    // keep only the parts of the geometry collection with correct type
+    const QList< QgsGeometry > tmpGeometries = outputGeometry.asGeometryCollection();
+    QList< QgsGeometry > matchingParts;
+    for ( const QgsGeometry &g : tmpGeometries )
+    {
+      if ( g.type() == feature.geometry().type() )
+        matchingParts << g;
+    }
+    if ( !matchingParts.empty() )
+      outputGeometry = QgsGeometry::collectGeometry( matchingParts );
+    else
+      outputGeometry = QgsGeometry();
+  }
+
+  outputGeometry.convertToMultiType();
+  outputFeature.setGeometry( outputGeometry );
+  return outputFeature;
+}
+
 ///@endcond
+
 
