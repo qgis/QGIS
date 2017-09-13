@@ -18,7 +18,7 @@
 #ifndef QGSLOCATORFILTER_H
 #define QGSLOCATORFILTER_H
 
-#include "qgis_gui.h"
+#include "qgis_core.h"
 #include "qgslocatorcontext.h"
 #include "qgslogger.h"
 #include <QString>
@@ -30,11 +30,11 @@ class QgsLocatorFilter;
 
 /**
  * \class QgsLocatorResult
- * \ingroup gui
+ * \ingroup core
  * Encapsulates properties of an individual matching result found by a QgsLocatorFilter.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsLocatorResult
+class CORE_EXPORT QgsLocatorResult
 {
   public:
 
@@ -90,11 +90,11 @@ class GUI_EXPORT QgsLocatorResult
 
 /**
  * \class QgsLocatorFilter
- * \ingroup gui
+ * \ingroup core
  * Abstract base class for filters which collect locator results.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsLocatorFilter : public QObject
+class CORE_EXPORT QgsLocatorFilter : public QObject
 {
     Q_OBJECT
 

@@ -175,8 +175,6 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutviewtooltemporarymousepan.cpp
   layout/qgslayoutviewtoolzoom.cpp
 
-  locator/qgslocator.cpp
-  locator/qgslocatorfilter.cpp
   locator/qgslocatorwidget.cpp
 
   ogr/qgsogrhelperfunctions.cpp
@@ -667,8 +665,6 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutviewtooltemporarymousepan.h
   layout/qgslayoutviewtoolzoom.h
 
-  locator/qgslocator.h
-  locator/qgslocatorfilter.h
   locator/qgslocatorwidget.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
@@ -768,8 +764,6 @@ SET(QGIS_GUI_HDRS
 
   layout/qgslayoutviewmouseevent.h
   layout/qgslayoutviewrubberband.h
-
-  locator/qgslocatorcontext.h
 
   raster/qgsrasterrendererwidget.h
 

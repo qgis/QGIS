@@ -18,7 +18,7 @@
 #ifndef QGSLOCATOR_H
 #define QGSLOCATOR_H
 
-#include "qgis_gui.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
@@ -30,7 +30,7 @@
 
 /**
  * \class QgsLocator
- * \ingroup gui
+ * \ingroup core
  * Handles the management of QgsLocatorFilter objects and async collection of search results from them.
  *
  * QgsLocator acts as both a registry for QgsLocatorFilter objects and a means of firing up
@@ -51,7 +51,7 @@
  *
  * \since QGIS 3.0
 */
-class GUI_EXPORT QgsLocator : public QObject
+class CORE_EXPORT QgsLocator : public QObject
 {
     Q_OBJECT
 

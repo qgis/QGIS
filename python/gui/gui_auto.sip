@@ -46,7 +46,6 @@
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
 %Include layout/qgslayoutviewmouseevent.sip
 %Include layout/qgslayoutviewrubberband.sip
-%Include locator/qgslocatorcontext.sip
 %Include raster/qgsrasterrendererwidget.sip
 %Include symbology/qgssymbolwidgetcontext.sip
 %Include qgisinterface.sip
@@ -295,7 +294,5 @@
 %Include layout/qgslayoutviewtooltemporarykeyzoom.sip
 %Include layout/qgslayoutviewtooltemporarymousepan.sip
 %Include layout/qgslayoutviewtoolzoom.sip
-%Include locator/qgslocator.sip
-%Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatorwidget.sip
 %Include qgsadvanceddigitizingcanvasitem.sip

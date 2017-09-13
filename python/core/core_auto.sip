@@ -251,6 +251,7 @@
 %Include symbology/qgsvectorfieldsymbollayer.sip
 %Include symbology/qgsgeometrygeneratorsymbollayer.sip
 %Include layertree/qgslayertreeutils.sip
+%Include locator/qgslocatorcontext.sip
 %Include geometry/qgsabstractgeometry.sip
 %Include geometry/qgsbox3d.sip
 %Include geometry/qgscircularstring.sip
@@ -374,6 +375,9 @@
 %Include composer/qgscomposition.sip
 %Include composer/qgsgroupungroupitemscommand.sip
 %Include composer/qgslayoutmanager.sip
+%Include locator/qgslocator.sip
+%Include locator/qgslocatorfilter.sip
+%Include locator/qgslocatormodel.sip
 %Include processing/qgsprocessingalgrunnertask.sip
 %Include processing/qgsprocessingfeedback.sip
 %Include processing/qgsprocessingprovider.sip
