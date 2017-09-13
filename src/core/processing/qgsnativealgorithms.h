@@ -24,6 +24,7 @@
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingprovider.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 
 ///@cond PRIVATE
 
@@ -632,6 +633,35 @@ class QgsSmoothAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     double mMaxAngle = 0;
 };
 
+/**
+ * Native simplify algorithm.
+ */
+class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsSimplifyAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "simplifygeometries" ); }
+    QString displayName() const override { return QObject::tr( "Simplify geometries" ); }
+    virtual QStringList tags() const override { return QObject::tr( "simplify,generalize,douglas,peucker,visvalingam" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsSimplifyAlgorithm *createInstance() const override SIP_FACTORY;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+
+  protected:
+    QString outputName() const override { return QObject::tr( "Simplified" ); }
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    double mTolerance = 1.0;
+    QgsMapToPixelSimplifier::SimplifyAlgorithm mMethod = QgsMapToPixelSimplifier::Distance;
+    std::unique_ptr< QgsMapToPixelSimplifier > mSimplifier;
+
+};
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H

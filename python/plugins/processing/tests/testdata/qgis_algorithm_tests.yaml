@@ -1209,7 +1209,7 @@ tests:
         name: expected/extract_nodes_lines.gml
         type: vector
 
-  - algorithm: qgis:simplifygeometries
+  - algorithm: native:simplifygeometries
     name: Simplify (lines)
     params:
       INPUT:
@@ -1221,7 +1221,7 @@ tests:
         name: expected/simplify_lines.gml
         type: vector
 
-  - algorithm: qgis:simplifygeometries
+  - algorithm: native:simplifygeometries
     name: Simplify (multilines)
     params:
       INPUT:
@@ -1233,7 +1233,7 @@ tests:
         name: expected/simplify_multilines.gml
         type: vector
 
-  - algorithm: qgis:simplifygeometries
+  - algorithm: native:simplifygeometries
     name: Simplify (visval)
     params:
       INPUT:
@@ -1249,7 +1249,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:simplifygeometries
+  - algorithm: native:simplifygeometries
     name: Simplify (grid)
     params:
       INPUT:
