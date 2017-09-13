@@ -490,6 +490,10 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderStyle, borderWidth, size ) )
     return nullptr;
 
+  const QString uom = element.attribute( QString( "uom" ), "" );
+  size = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, size );
+  borderWidth = QgsSymbolLayerV2Utils::sizeInPixelsFromSldUom( uom, borderWidth );
+
   double angle = 0.0;
   QString angleFunc;
   if ( QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
@@ -501,6 +505,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   }
 
   QgsEllipseSymbolLayerV2 *m = new QgsEllipseSymbolLayerV2();
+  m->setOutputUnit( QgsSymbolV2::Pixel );
   m->setSymbolName( name );
   m->setFillColor( fillColor );
   m->setOutlineColor( borderColor );

@@ -7,24 +7,15 @@
       <se:FeatureTypeStyle>
         <se:Rule>
           <se:Name>Single symbol</se:Name>
-          <se:PointSymbolizer>
+          <se:PointSymbolizer uom="http://www.opengeospatial.org/se/units/metre">
             <se:Graphic>
-              <se:Displacement>
-                <se:DisplacementX>3.3</se:DisplacementX>
-                <se:DisplacementY>6.6</se:DisplacementY>
-              </se:Displacement>
-              <se:Mark>
-                <se:WellKnownName>pentagon</se:WellKnownName>
-                <se:Fill>
-                  <se:SvgParameter name="fill">#68a0f4</se:SvgParameter>
-                </se:Fill>
-                <se:Stroke>
-                  <se:SvgParameter name="stroke">#5500ff</se:SvgParameter>
-                </se:Stroke>
-              </se:Mark>
-              <se:Size>6</se:Size>
+              <se:ExternalGraphic>
+                <OnlineResource xlink:type="simple" xlink:href="file:///gpsicons/skull.svg"/>
+                <Format>image/svg+xml</Format>
+              </se:ExternalGraphic>
+              <se:Size>12</se:Size>
               <se:Rotation>
-                <ogc:Literal>10</ogc:Literal>
+                <ogc:Literal>45</ogc:Literal>
               </se:Rotation>
             </se:Graphic>
           </se:PointSymbolizer>
