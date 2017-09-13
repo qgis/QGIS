@@ -528,11 +528,6 @@ qgis:setzvalue: >
 
   If Z values already exist in the layer, they will be overwritten with the new value. If no Z values exist, the geometry will be upgraded to include Z values and the specified value used as the initial Z value for all geometries.
 
-qgis:simplifygeometries: >
-  This algorithm simplifies the geometries in a line or polygon layer. It creates a new layer with the same features as the ones in the input layer, but with geometries containing a lower number of vertices.
-
-  The algorithm gives a choice of simplification methods, including distance based (the "Douglas-Peucker" algorithm), area based ("Visvalingam" algorithm) and snapping geometries to grid.
-
 qgis:singlesidedbuffer: >
   This algorithm buffers lines by a specified distance on one side of the line only.
 
