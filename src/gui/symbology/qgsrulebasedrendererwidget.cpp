@@ -396,10 +396,24 @@ void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsRuleBasedRendererWidget::setRenderingOrder()
 {
-  QgsSymbolLevelsDialog dlg( mRenderer->legendSymbolItems(), true, this );
-  dlg.setForceOrderingEnabled( true );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer, true, panel );
+    widget->setForceOrderingEnabled( true );
+    widget->setPanelTitle( tr( "Symbol Levels" ) );
+    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+    panel->openPanel( widget );
+    return;
+  }
 
-  dlg.exec();
+  QgsSymbolLevelsDialog dlg( mRenderer, true, panel );
+  dlg.setForceOrderingEnabled( true );
+  if ( dlg.exec() )
+  {
+    emit widgetChanged();
+  }
 }
 
 void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int newSize )
