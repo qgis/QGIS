@@ -267,11 +267,17 @@ qgis:joinattributesbylocation: >
 
   The additional attributes and their values are taken from a second vector layer. A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
 
-
 qgis:joinattributestable: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
 
   The additional attributes and their values are taken from a second vector layer. An attribute is selected in each of them to define the join criteria.
+
+qgis:joinbylocationsummary: >
+  This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
+
+  The additional attributes and their values are taken from a second vector layer. A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
+
+  The algorithm calculates a statistical summary for the values from matching features in the second layer (e.g. maximum value, mean value, etc).
 
 qgis:keepnbiggestparts: >
   This algorithm takes a polygon layer and creates a new polygon layer in which multipart geometries have been removed, leaving only the n largest (in terms of area) parts.

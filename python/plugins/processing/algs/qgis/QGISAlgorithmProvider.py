@@ -151,6 +151,7 @@ from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
 from .SpatialJoin import SpatialJoin
+from .SpatialJoinSummary import SpatialJoinSummary
 from .SplitWithLines import SplitWithLines
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
@@ -291,6 +292,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),
                 SpatialJoin(),
+                SpatialJoinSummary(),
                 SplitWithLines(),
                 StatisticsByCategories(),
                 SumLines(),

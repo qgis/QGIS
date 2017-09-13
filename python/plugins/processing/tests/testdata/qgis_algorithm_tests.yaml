@@ -3781,3 +3781,160 @@ tests:
           fields:
             fid: skip
             fid_2: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location (summary), intersects
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      - id2
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_intersect.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location (summary), intersects, discard no matching
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      - id2
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_intersect_discardnomatch.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location (summary), subset of stats
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      - id2
+      PREDICATE:
+      - 0
+      SUMMARIES:
+      - 0
+      - 2
+      - 5
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_subset_stats.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location (summary), touching
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      PREDICATE:
+      - 3
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_touches.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by Location (summary), string field
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: custom/points.shp
+        type: vector
+      JOIN:
+        name: polys.gml
+        type: vector
+      JOIN_FIELDS:
+      - name
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_string.gml
+        type: vector
+        pk:
+        - id
+        - id2
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by Location (summary), date
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points_with_date.shp
+        type: vector
+      JOIN_FIELDS:
+      - date
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_date.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
