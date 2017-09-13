@@ -23,28 +23,23 @@
 #include <QTableWidgetItem>
 #include <QItemDelegate>
 #include <QSpinBox>
-
+#include <QDialogButtonBox>
 
 
 ////////////////
 
-QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent )
-  : QDialog( parent )
+QgsSymbolLevelsWidget::QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent )
+  : QgsPanelWidget( parent )
   , mRenderer( renderer )
   , mForceOrderingEnabled( false )
 {
   setupUi( this );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/symbolLevelsDlg/geometry" ) ).toByteArray() );
-
   tableLevels->setItemDelegate( new SpinBoxDelegate( this ) );
 
   chkEnable->setChecked( usingSymbolLevels );
 
-  connect( chkEnable, &QAbstractButton::clicked, this, &QgsSymbolLevelsDialog::updateUi );
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsSymbolLevelsDialog::apply );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSymbolLevelsDialog::showHelp );
+  connect( chkEnable, &QAbstractButton::clicked, this, &QgsSymbolLevelsWidget::updateUi );
 
   if ( mRenderer )
   {
@@ -89,16 +84,10 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool
 
   populateTable();
 
-  connect( tableLevels, &QTableWidget::cellChanged, this, &QgsSymbolLevelsDialog::renderingPassChanged );
+  connect( tableLevels, &QTableWidget::cellChanged, this, &QgsSymbolLevelsWidget::renderingPassChanged );
 }
 
-QgsSymbolLevelsDialog::~QgsSymbolLevelsDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/symbolLevelsDlg/geometry" ), saveGeometry() );
-}
-
-void QgsSymbolLevelsDialog::populateTable()
+void QgsSymbolLevelsWidget::populateTable()
 {
   for ( int row = 0; row < mList.count(); row++ )
   {
@@ -128,12 +117,13 @@ void QgsSymbolLevelsDialog::populateTable()
 
 }
 
-void QgsSymbolLevelsDialog::updateUi()
+void QgsSymbolLevelsWidget::updateUi()
 {
   tableLevels->setEnabled( chkEnable->isChecked() );
+  emit widgetChanged();
 }
 
-void QgsSymbolLevelsDialog::apply()
+void QgsSymbolLevelsWidget::apply()
 {
   for ( int i = 0; i < mList.count(); i++ )
   {
@@ -147,7 +137,7 @@ void QgsSymbolLevelsDialog::apply()
   mRenderer->setUsingSymbolLevels( usingLevels() );
 }
 
-void QgsSymbolLevelsDialog::setDefaultLevels()
+void QgsSymbolLevelsWidget::setDefaultLevels()
 {
   for ( int i = 0; i < mList.count(); i++ )
   {
@@ -159,12 +149,12 @@ void QgsSymbolLevelsDialog::setDefaultLevels()
   }
 }
 
-bool QgsSymbolLevelsDialog::usingLevels() const
+bool QgsSymbolLevelsWidget::usingLevels() const
 {
   return chkEnable->isChecked();
 }
 
-void QgsSymbolLevelsDialog::renderingPassChanged( int row, int column )
+void QgsSymbolLevelsWidget::renderingPassChanged( int row, int column )
 {
   if ( row < 0 || row >= mList.count() )
     return;
@@ -172,9 +162,11 @@ void QgsSymbolLevelsDialog::renderingPassChanged( int row, int column )
   if ( column < 0 || column > sym->symbolLayerCount() )
     return;
   sym->symbolLayer( column - 1 )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );
+
+  emit widgetChanged();
 }
 
-void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
+void QgsSymbolLevelsWidget::setForceOrderingEnabled( bool enabled )
 {
   mForceOrderingEnabled = enabled;
   if ( enabled )
@@ -186,11 +178,24 @@ void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
     chkEnable->show();
 }
 
-void QgsSymbolLevelsDialog::showHelp()
+QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent )
+  : QDialog( parent )
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#symbols-levels" ) );
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  mWidget = new QgsSymbolLevelsWidget( renderer, usingSymbolLevels );
+  vLayout->addWidget( mWidget );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, mWidget, &QgsSymbolLevelsWidget::apply );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QgsSymbolLevelsDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QgsSymbolLevelsDialog::reject );
+  vLayout->addWidget( bbox );
+  setLayout( vLayout );
 }
 
+void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
+{
+  mWidget->setForceOrderingEnabled( enabled );
+}
 
 /// @cond PRIVATE
 

@@ -9,31 +9,40 @@
 
 
 
-class QgsSymbolLevelsDialog : QDialog
+class QgsSymbolLevelsWidget : QgsPanelWidget
 {
+%Docstring
+ A widget which allows the user to modify the rendering order of symbol layers.
+.. seealso:: QgsSymbolLevelsDialog
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgssymbollevelsdialog.h"
 %End
   public:
-    QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent = 0 );
+    QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsSymbolLevelsDialog
+Constructor for QgsSymbolLevelsWidget
 %End
-
-    ~QgsSymbolLevelsDialog();
 
     bool usingLevels() const;
 %Docstring
+Returns whether the level ordering is enabled
  :rtype: bool
 %End
 
     void setForceOrderingEnabled( bool enabled );
+%Docstring
+ Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
+ \param enabled toggle level ordering
+%End
 
   public slots:
-    void updateUi();
-
-    void renderingPassChanged( int row, int column );
+    void apply();
+%Docstring
+Apply button
+%End
 
   protected:
 
@@ -41,7 +50,28 @@ Constructor for QgsSymbolLevelsDialog
 
 
   private:
-    QgsSymbolLevelsDialog();
+    QgsSymbolLevelsWidget();
+
+};
+
+class QgsSymbolLevelsDialog : QDialog
+{
+%Docstring
+ A dialog which allows the user to modify the rendering order of symbol layers.
+.. seealso:: QgsSymbolLevelsWidget
+%End
+
+%TypeHeaderCode
+#include "qgssymbollevelsdialog.h"
+%End
+  public:
+
+    QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSymbolLevelsDialog.
+%End
+
+    void setForceOrderingEnabled( bool enabled );
 
 };
 
