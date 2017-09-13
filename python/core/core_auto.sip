@@ -168,6 +168,7 @@
 %Include layout/qgslayoututils.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip
+%Include metadata/qgslayermetadataformatter.sip
 %Include processing/qgsprocessing.sip
 %Include processing/qgsprocessingalgorithm.sip
 %Include processing/qgsprocessingcontext.sip
