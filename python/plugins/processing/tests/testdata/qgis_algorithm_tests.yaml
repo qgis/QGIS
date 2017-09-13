@@ -588,7 +588,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:mergelines
+  - algorithm: native:mergelines
     name: Merge lines algorithm
     params:
       INPUT:
@@ -1265,7 +1265,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:smoothgeometry
+  - algorithm: native:smoothgeometry
     name: Smooth (lines)
     params:
       INPUT:
@@ -1279,7 +1279,7 @@ tests:
         name: expected/smoothed_lines.gml
         type: vector
 
-  - algorithm: qgis:smoothgeometry
+  - algorithm: native:smoothgeometry
     name: Smooth (lines, with max angle)
     params:
       INPUT:

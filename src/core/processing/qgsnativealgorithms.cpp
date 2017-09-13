@@ -79,6 +79,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSelectByLocationAlgorithm() );
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
+  addAlgorithm( new QgsMergeLinesAlgorithm() );
+  addAlgorithm( new QgsSmoothAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -1665,6 +1667,89 @@ QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature,
   return outputFeature;
 }
 
-///@endcond
 
+QString QgsMergeLinesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm joins all connected parts of MultiLineString geometries into single LineString geometries.\n\n"
+                      "If any parts of the input MultiLineString geometries are not connected, the resultant "
+                      "geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts." );
+}
+
+QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
+{
+  return new QgsMergeLinesAlgorithm();
+}
+
+QgsFeature QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  if ( !feature.hasGeometry() )
+    return feature;
+
+  QgsFeature out = feature;
+  QgsGeometry outputGeometry = feature.geometry().mergeLines();
+  if ( !outputGeometry )
+    feedback->reportError( QObject::tr( "Error merging lines for feature %1" ).arg( feature.id() ) );
+
+  out.setGeometry( outputGeometry );
+  return out;
+}
+
+QString QgsSmoothAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the "
+                      "same features as the ones in the input layer, but with geometries containing a higher number of vertices "
+                      "and corners in the geometries smoothed out.\n\n"
+                      "The iterations parameter dictates how many smoothing iterations will be applied to each "
+                      "geometry. A higher number of iterations results in smoother geometries with the cost of "
+                      "greater number of nodes in the geometries.\n\n"
+                      "The offset parameter controls how \"tightly\" the smoothed geometries follow the original geometries. "
+                      "Smaller values results in a tighter fit, and larger values will create a looser fit.\n\n"
+                      "The maximum angle parameter can be used to prevent smoothing of "
+                      "nodes with large angles. Any node where the angle of the segments to either "
+                      "side is larger than this will not be smoothed. For example, setting the maximum "
+                      "angle to 90 degrees or lower would preserve right angles in the geometry." );
+}
+
+QgsSmoothAlgorithm *QgsSmoothAlgorithm::createInstance() const
+{
+  return new QgsSmoothAlgorithm();
+}
+
+void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ITERATIONS" ),
+                QObject::tr( "Iterations" ), QgsProcessingParameterNumber::Integer,
+                1, false, 1, 10 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "OFFSET" ),
+                QObject::tr( "Offset" ), QgsProcessingParameterNumber::Double,
+                0.25, false, 0.0, 0.5 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ANGLE" ),
+                QObject::tr( "Maximum node angle to smooth" ), QgsProcessingParameterNumber::Double,
+                180.0, false, 0.0, 180.0 ) );
+}
+
+bool QgsSmoothAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mIterations = parameterAsInt( parameters, QStringLiteral( "ITERATIONS" ), context );
+  mOffset = parameterAsDouble( parameters, QStringLiteral( "OFFSET" ), context );
+  mMaxAngle = parameterAsDouble( parameters, QStringLiteral( "MAX_ANGLE" ), context );
+  return true;
+}
+
+QgsFeature QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    QgsGeometry outputGeometry = f.geometry().smooth( mIterations, mOffset, -1, mMaxAngle );
+    if ( !outputGeometry )
+    {
+      feedback->reportError( QObject::tr( "Error smoothing geometry %1" ).arg( feature.id() ) );
+    }
+    f.setGeometry( outputGeometry );
+  }
+  return f;
+}
+
+///@endcond
 

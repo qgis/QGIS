@@ -95,7 +95,6 @@ from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
-from .MergeLines import MergeLines
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
@@ -145,7 +144,6 @@ from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SimplifyGeometries import SimplifyGeometries
 from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
-from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
@@ -235,7 +233,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 LinesToPolygons(),
                 MeanCoords(),
                 Merge(),
-                MergeLines(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
@@ -285,7 +282,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SimplifyGeometries(),
                 SingleSidedBuffer(),
                 Slope(),
-                Smooth(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),
