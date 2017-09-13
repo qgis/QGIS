@@ -67,13 +67,13 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
     void onCurrentLayerChanged();
 
   private:
+    static QHash<QgsMapCanvas*, QgsMapCanvasTracer*>& tracers();
+
     QgsMapCanvas* mCanvas;
     QgsMessageBar* mMessageBar;
     QgsMessageBarItem* mLastMessage;
 
     QAction* mActionEnableTracing;
-
-    static QHash<QgsMapCanvas*, QgsMapCanvasTracer*> sTracers;
 };
 
 #endif // QGSMAPCANVASTRACER_H
