@@ -103,8 +103,8 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         f1 = QgsFeature(layer.fields(), 1)
         f1.setGeometry(QgsGeometry.fromMultiPolyline(multiline))
         f1.setAttributes(["test", 123])
-        self.assertTrue(layer.addFeatures([f1]))
-        self.assertFalse(layer.commitChanges())
+        self.assertFalse(layer.addFeatures([f1]))
+        # self.assertFalse(layer.commitChanges())
 
     def testAddMultipleFeatures(self):
         # test adding multiple features to an edit buffer
