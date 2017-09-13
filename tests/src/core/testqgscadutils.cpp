@@ -240,18 +240,98 @@ void TestQgsCadUtils::testCommonAngle()
 
 void TestQgsCadUtils::testDistance()
 {
-  // TODO:
+  QgsCadUtils::AlignMapPointContext context( baseContext() );
+
+  // without distance constraint
+  QgsCadUtils::AlignMapPointOutput res0 = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 20 ), context );
+  QVERIFY( res0.valid );
+  QCOMPARE( res0.softLockCommonAngle, -1 );
+  QCOMPARE( res0.finalMapPoint, QgsPointXY( 45, 20 ) );
+
   // dist
-  // dist+x / dist+y
+  context.distanceConstraint = QgsCadUtils::AlignMapPointConstraint( true, true, 5 );
+  QgsCadUtils::AlignMapPointOutput res1 = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 20 ), context );
+  QVERIFY( res1.valid );
+  QCOMPARE( res1.finalMapPoint, QgsPointXY( 35, 20 ) );
+
+  // dist+x
+  double d = 5 * sqrt( 2 ) / 2.;   // sine/cosine of 45 times radius of our distance constraint
+  double expectedX1 = 30 + d;
+  double expectedY1 = 20 + d;
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, expectedX1 );
+  QgsCadUtils::AlignMapPointOutput res2 = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 25 ), context );
+  QVERIFY( res2.valid );
+  QCOMPARE( res2.finalMapPoint, QgsPointXY( expectedX1, expectedY1 ) );
+
+  // dist+x invalid
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 1000 );
+  QgsCadUtils::AlignMapPointOutput res2x = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 25 ), context );
+  QVERIFY( !res2x.valid );
+
+  // dist+y
+  double expectedX2 = 30 + d;
+  double expectedY2 = 20 - d;
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, expectedY2 );
+  QgsCadUtils::AlignMapPointOutput res3 = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 15 ), context );
+  QVERIFY( res3.valid );
+  QCOMPARE( res3.finalMapPoint, QgsPointXY( expectedX2, expectedY2 ) );
+
+  // dist+y invalid
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 1000 );
+  QgsCadUtils::AlignMapPointOutput res3x = QgsCadUtils::alignMapPoint( QgsPointXY( 45, 15 ), context );
+  QVERIFY( !res3x.valid );
+
   // dist+angle
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.angleConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 45 );
+  QgsCadUtils::AlignMapPointOutput res4 = QgsCadUtils::alignMapPoint( QgsPointXY( 25, 15 ), context );
+  QVERIFY( res4.valid );
+  QCOMPARE( res4.finalMapPoint, QgsPointXY( 30 - d, 20 - d ) );
 }
 
 void TestQgsCadUtils::testEdge()
 {
-  // TODO:
-  // x+edge / y+edge
+  QgsCadUtils::AlignMapPointContext context( baseContext() );
+  context.cadPointList = QList<QgsPointXY>() << QgsPointXY() << QgsPointXY( 40, 30 ) << QgsPointXY( 40, 40 );
+
+  QgsPointXY edgePt( 20, 15 );  // in the middle of the triangle polygon's edge
+
+  // x+edge
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 40 );
+  QgsCadUtils::AlignMapPointOutput res0 = QgsCadUtils::alignMapPoint( edgePt, context );
+  QVERIFY( res0.valid );
+  QCOMPARE( res0.finalMapPoint, QgsPointXY( 40, 5 ) );
+
+  // y+edge
+  context.xConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 30 );
+  QgsCadUtils::AlignMapPointOutput res1 = QgsCadUtils::alignMapPoint( edgePt, context );
+  QVERIFY( res1.valid );
+  //qDebug() << res1.finalMapPoint.toString();
+  QCOMPARE( res1.finalMapPoint, QgsPointXY( -10, 30 ) );
+
   // angle+edge
+  context.yConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.angleConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 90 );
+  QgsCadUtils::AlignMapPointOutput res2 = QgsCadUtils::alignMapPoint( edgePt, context );
+  QVERIFY( res2.valid );
+  QCOMPARE( res2.finalMapPoint, QgsPointXY( 40, 5 ) );
+
+  context.angleConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 0 );
+  QgsCadUtils::AlignMapPointOutput res3 = QgsCadUtils::alignMapPoint( edgePt, context );
+  QVERIFY( res3.valid );
+  QCOMPARE( res3.finalMapPoint, QgsPointXY( -10, 30 ) );
+
   // distance+edge
+  context.angleConstraint = QgsCadUtils::AlignMapPointConstraint();
+  context.distanceConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 50 );
+  QgsCadUtils::AlignMapPointOutput res4 = QgsCadUtils::alignMapPoint( edgePt, context );
+  QVERIFY( res4.valid );
+  qDebug() << res4.finalMapPoint.toString();
+  // there is a tiny numerical error, so exact test with QgsPointXY does not work here
+  QCOMPARE( res4.finalMapPoint.x(), -10. );
+  QCOMPARE( res4.finalMapPoint.y(), 30. );
 }
 
 QGSTEST_MAIN( TestQgsCadUtils )

@@ -24,6 +24,7 @@
 class QgsSnappingUtils;
 
 /**
+ * \ingroup core
  * The QgsCadUtils class provides routines for CAD editing.
  *
  * \since QGIS 3.0
@@ -58,15 +59,15 @@ class CORE_EXPORT QgsCadUtils
       double mapUnitsPerPixel;
 
       //! Constraint for X coordinate
-      AlignMapPointConstraint xConstraint;
+      QgsCadUtils::AlignMapPointConstraint xConstraint;
       //! Constraint for Y coordinate
-      AlignMapPointConstraint yConstraint;
+      QgsCadUtils::AlignMapPointConstraint yConstraint;
       //! Constraint for distance
-      AlignMapPointConstraint distanceConstraint;
+      QgsCadUtils::AlignMapPointConstraint distanceConstraint;
       //! Constraint for angle
-      AlignMapPointConstraint angleConstraint;
+      QgsCadUtils::AlignMapPointConstraint angleConstraint;
       //! Constraint for soft lock to a common angle
-      AlignMapPointConstraint commonAngleConstraint;
+      QgsCadUtils::AlignMapPointConstraint commonAngleConstraint;
 
       //! List of recent CAD points in map coordinates. These are used to turn relative constraints to absolute.
       //! First point is the most recent point. Currently using only "previous" point (index 1) and "penultimate"
@@ -97,7 +98,7 @@ class CORE_EXPORT QgsCadUtils
      * Returns a structure containing aligned map point, whether the constraints are valid and
      * some extra information.
      */
-    static AlignMapPointOutput alignMapPoint( const QgsPointXY &originalMapPoint, const AlignMapPointContext &ctx );
+    static QgsCadUtils::AlignMapPointOutput alignMapPoint( const QgsPointXY &originalMapPoint, const QgsCadUtils::AlignMapPointContext &ctx );
 
 };
 

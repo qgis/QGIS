@@ -15,6 +15,7 @@
 %Include qgscachedfeatureiterator.sip
 %Include qgscacheindex.sip
 %Include qgscacheindexfeatureid.sip
+%Include qgscadutils.sip
 %Include qgsclipper.sip
 %Include qgscolorramp.sip
 %Include qgscolorscheme.sip
