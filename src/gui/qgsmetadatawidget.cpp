@@ -647,7 +647,6 @@ void QgsMetadataWidget::acceptMetadata()
 
   // Save layer metadata properties
   mLayer->setMetadata( mMetadata );
-  hide();
 }
 
 void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab() const

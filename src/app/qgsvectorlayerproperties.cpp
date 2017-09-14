@@ -499,6 +499,7 @@ void QgsVectorLayerProperties::apply()
 
   // save metadata
   mMetadataWidget->acceptMetadata();
+  mMetadataFilled = false;
 
   //
   // Set up sql subset query if applicable
