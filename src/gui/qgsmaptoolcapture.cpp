@@ -142,6 +142,12 @@ QgsPointXY QgsMapToolCapture::tracingStartPoint()
     QgsMapLayer *layer = mCanvas->currentLayer();
     if ( !layer )
       return QgsPointXY();
+
+    // if we have starting point from previous trace, then preferably use that one
+    // (useful when tracing with offset)
+    if ( mTracingStartPoint != QgsPointXY() )
+      return mTracingStartPoint;
+
     QgsPoint v = mCaptureCurve.endPoint();
     return toMapCoordinates( layer, QgsPointXY( v.x(), v.y() ) );
   }
@@ -178,6 +184,15 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
 
   if ( mCaptureMode == CapturePolygon )
     mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
+
+  // if there is offset, we need to add the previous point as well otherwise there may be a gap
+  // between the existing rubber band and temporary rubber band
+  if ( mRubberBand->numberOfVertices() != 0 )
+  {
+    QgsPointXY lastPoint = *mRubberBand->getPoint( 0, mRubberBand->numberOfVertices() - 1 );
+    if ( points[0] != lastPoint )
+      mTempRubberBand->addPoint( lastPoint, false );
+  }
 
   //  update rubberband
   for ( int i = 0; i < points.count(); ++i )
@@ -237,7 +252,11 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     QgsVertexId::VertexType type;
     mCaptureCurve.pointAt( mCaptureCurve.numPoints() - 1, last, type );
     if ( last != lp )
+    {
+      // last captured point and first point of the trace are not the same (different offset maybe)
+      // so we need to use also the first point of the trace
       indexStart = 0;
+    }
   }
 
   // transform points
@@ -434,6 +453,10 @@ int QgsMapToolCapture::addVertex( const QgsPointXY &point, const QgsPointLocator
     traceCreated = tracingAddVertex( point );
   }
 
+  // keep new tracing start point if we created a trace. This is useful when tracing with
+  // offset so that the user stays "snapped"
+  mTracingStartPoint = traceCreated ? point : QgsPointXY();
+
   if ( !traceCreated )
   {
     // ordinary digitizing
@@ -514,6 +537,8 @@ QList<QgsPointLocator::Match> QgsMapToolCapture::snappingMatches() const
 
 void QgsMapToolCapture::undo()
 {
+  mTracingStartPoint = QgsPointXY();
+
   if ( mRubberBand )
   {
     int rubberBandSize = mRubberBand->numberOfVertices();
@@ -599,6 +624,8 @@ void QgsMapToolCapture::stopCapturing()
   }
 
   mGeomErrors.clear();
+
+  mTracingStartPoint = QgsPointXY();
 
 #ifdef Q_OS_WIN
   Q_FOREACH ( QWidget *w, qApp->topLevelWidgets() )

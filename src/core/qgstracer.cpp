@@ -729,8 +729,10 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
       // sometimes (with negative offset?) the resulting curve is reversed
       if ( points.count() >= 2 )
       {
-        double diff = points[0].distance( p1 );
-        if ( !qgsDoubleNear( diff, mOffset ) )
+        QgsPointXY res1 = points.first(), res2 = points.last();
+        double diffNormal = res1.distance( p1 ) + res2.distance( p2 );
+        double diffReversed = res1.distance( p2 ) + res2.distance( p1 );
+        if ( diffReversed < diffNormal )
           std::reverse( points.begin(), points.end() );
       }
     }

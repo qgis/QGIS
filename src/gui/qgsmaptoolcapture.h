@@ -240,6 +240,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     QgsVertexMarker *mSnappingMarker = nullptr;
 
+    //! Keeps point (in map units) snapped to a segment where we most recently finished tracing,
+    //! so that we can use as the starting point for further tracing. This is useful mainly when
+    //! tracing with offset: without knowledge of this point user would need to click a segment
+    //! again after every time a new trace with offset is created (to get new "anchor" point)
+    QgsPointXY mTracingStartPoint;
+
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;
 #endif
