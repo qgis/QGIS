@@ -1842,7 +1842,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( !featureSource )
     return QVariantMap();
 
-  QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
+  QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, featureSource->sourceCrs() );
   bool clip = parameterAsBool( parameters, QStringLiteral( "CLIP" ), context );
 
   // if clipping, we force multi output
