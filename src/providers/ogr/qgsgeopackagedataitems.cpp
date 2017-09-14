@@ -528,6 +528,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
 {
+  mToolTip = uri;
   setState( Populated ); // no children are expected
 }
 
