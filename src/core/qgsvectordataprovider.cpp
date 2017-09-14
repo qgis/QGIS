@@ -714,6 +714,16 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry* ge
     outputGeom->addMValue();
   }
 
+  // remove Z if provider does not have
+  if ( !QgsWKBTypes::hasZ( providerGeomType ) && QgsWKBTypes::hasZ( geometry->wkbType() ) )
+  {
+    if ( !outputGeom )
+    {
+      outputGeom = geometry->clone();
+    }
+    outputGeom->dropZValue();
+  }
+
   if ( outputGeom )
   {
     return new QgsGeometry( outputGeom );

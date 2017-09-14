@@ -20,7 +20,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
                        QgsPoint,
-                       QgsField)
+                       QgsField,
+                       QgsWKBTypes,
+                       QGis)
 from qgis.testing import start_app, unittest
 start_app()
 
@@ -100,11 +102,13 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             [QgsPoint(1, 1), QgsPoint(2, 2)],
             [QgsPoint(3, 3), QgsPoint(4, 4)],
         ]
+        geom = QgsGeometry.fromMultiPolyline(multiline)
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromMultiPolyline(multiline))
+        f1.setGeometry(geom)
         f1.setAttributes(["test", 123])
-        self.assertFalse(layer.addFeatures([f1]))
-        # self.assertFalse(layer.commitChanges())
+
+        self.assertTrue(QgsWKBTypes.isMultiType(QGis.fromOldWkbType(geom.wkbType())))
+        self.assertFalse((layer.editBuffer().addFeatures([f1])))
 
     def testAddMultipleFeatures(self):
         # test adding multiple features to an edit buffer
