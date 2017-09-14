@@ -448,7 +448,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString &ur
 
 void QgsGeoPackageConnectionItem::deleteConnection()
 {
-  QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GeoPackage" ) );
+  QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GPKG" ) );
   mParent->refreshConnections();
 }
 
@@ -458,7 +458,7 @@ void QgsGeoPackageConnectionItem::addTable()
   QgsNewGeoPackageLayerDialog dialog( nullptr );
   QFileInfo fileInfo( mPath );
   QString connName = fileInfo.fileName();
-  QgsOgrDbConnection connection( connName, QStringLiteral( "GeoPackage" ) );
+  QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
   if ( ! connection.path().isEmpty() )
   {
     dialog.setDatabasePath( connection.path() );
