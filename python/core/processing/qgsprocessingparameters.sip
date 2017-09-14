@@ -534,9 +534,13 @@ class QgsProcessingParameters
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
+                                           const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
  Evaluates the parameter with matching ``definition`` to a rectangular extent.
+
+ If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
+ reprojected so that it is in the specified ``crs``. In this case the extent of the reproject rectangle will be returned.
  :rtype: QgsRectangle
 %End
 

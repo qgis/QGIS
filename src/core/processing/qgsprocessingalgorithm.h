@@ -648,8 +648,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Evaluates the parameter with matching \a name to a rectangular extent.
+     *
+     * If \a crs is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
+     * reprojected so that it is in the specified \a crs. In this case the extent of the reproject rectangle will be returned.
      */
-    QgsRectangle parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QgsRectangle parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
+                                    const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a point.

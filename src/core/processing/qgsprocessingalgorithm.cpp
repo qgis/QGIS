@@ -550,9 +550,9 @@ QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsCrs( const QVari
   return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, context );
 }
 
-QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
 {
-  return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, context, crs );
 }
 
 QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const

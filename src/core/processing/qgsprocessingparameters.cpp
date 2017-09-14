@@ -22,6 +22,7 @@
 #include "qgsprocessingoutputs.h"
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsreferencedgeometry.h"
 #include <functional>
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
@@ -484,12 +485,29 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
   return crs;
 }
 
-QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
+    const QgsCoordinateReferenceSystem &crs )
 {
   if ( !definition )
     return QgsRectangle();
 
   QVariant val = parameters.value( definition->name() );
+
+  if ( val.canConvert< QgsRectangle >() )
+  {
+    return val.value<QgsRectangle>();
+  }
+  if ( val.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
+    if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
+    {
+      QgsCoordinateTransform ct( rr.crs(), crs );
+      return ct.transformBoundingBox( rr );
+    }
+    return rr;
+  }
+
   QString rectText;
   if ( val.canConvert<QgsProperty>() )
     rectText = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
@@ -1131,6 +1149,17 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
   if ( input.canConvert<QgsProperty>() )
   {
     return true;
+  }
+
+  if ( input.canConvert< QgsRectangle >() )
+  {
+    QgsRectangle r = input.value<QgsRectangle>();
+    return !r.isNull();
+  }
+  if ( input.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle r = input.value<QgsReferencedRectangle>();
+    return !r.isNull();
   }
 
   if ( input.type() != QVariant::String || input.toString().isEmpty() )
