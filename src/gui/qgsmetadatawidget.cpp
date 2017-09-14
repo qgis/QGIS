@@ -74,7 +74,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   tabLinks->setItemDelegate( new LinkItemDelegate() );
 
   connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWidget::updatePanel );
-  connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::setAutoSource );
+  connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::fillSourceFromLayer );
   connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::addVocabulary );
   connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::removeVocabulary );
   connect( btnAddRight, &QPushButton::clicked, this, &QgsMetadataWidget::addRight );
@@ -83,7 +83,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeLicence );
   connect( btnAddConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::addConstraint );
   connect( btnRemoveConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::removeConstraint );
-  connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::setAutoCrs );
+  connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::fillCrsFromLayer );
   connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWidget::addContact );
   connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWidget::removeContact );
   connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWidget::updateContactDetails );
@@ -102,7 +102,7 @@ QgsMetadataWidget::~QgsMetadataWidget()
 {
 }
 
-void QgsMetadataWidget::setAutoSource() const
+void QgsMetadataWidget::fillSourceFromLayer() const
 {
   lineEditIdentifier->setText( mLayer->publicSource() );
 }
@@ -192,7 +192,7 @@ void QgsMetadataWidget::removeConstraint() const
   mConstraintsModel->removeRow( selectedRows[0].row() );
 }
 
-void QgsMetadataWidget::setAutoCrs() const
+void QgsMetadataWidget::fillCrsFromLayer() const
 {
   selectionCrs->setCrs( mLayer->crs() );
 }

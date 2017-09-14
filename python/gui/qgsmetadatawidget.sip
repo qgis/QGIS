@@ -29,9 +29,9 @@ class QgsMetadataWidget : QWidget
 %End
     ~QgsMetadataWidget();
 
-    void setAutoSource() const;
+    void fillSourceFromLayer() const;
 %Docstring
- Set the source field from the layer.
+ Fill the source field from the layer.
 %End
 
     void addVocabulary() const;
@@ -74,9 +74,9 @@ class QgsMetadataWidget : QWidget
  Remove a constraint.
 %End
 
-    void setAutoCrs() const;
+    void fillCrsFromLayer() const;
 %Docstring
- Set the CRS field from the layer.
+ Fill the CRS field from the layer.
 %End
 
     void addContact() const;

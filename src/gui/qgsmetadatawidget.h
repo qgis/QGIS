@@ -46,9 +46,9 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     ~QgsMetadataWidget();
 
     /**
-     * Set the source field from the layer.
+     * Fill the source field from the layer.
      */
-    void setAutoSource() const;
+    void fillSourceFromLayer() const;
 
     /**
      * Add a new vocabulary.
@@ -91,9 +91,9 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeConstraint() const;
 
     /**
-     * Set the CRS field from the layer.
+     * Fill the CRS field from the layer.
      */
-    void setAutoCrs() const;
+    void fillCrsFromLayer() const;
 
     /**
      * Add a new contact.
