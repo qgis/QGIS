@@ -153,6 +153,6 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-f {}'.format(outFormat))
 
         arguments.append(output)
-        arguments.extend(' '.join(layers))
+        arguments.append(' '.join(layers))
 
         return ['gdaltindex', GdalUtils.escapeAndJoin(arguments)]

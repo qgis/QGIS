@@ -133,7 +133,7 @@ class ClipRasterByMask(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
-        if self.parameterAsBool(self.KEEP_RESOLUTION):
+        if self.parameterAsBool(parameters, self.KEEP_RESOLUTION, context):
             arguments.append('-tr')
             arguments.append(str(inLayer.rasterUnitsPerPixelX()))
             arguments.append(str(-inLayer.rasterUnitsPerPixelY()))
@@ -145,10 +145,10 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append('-cwhere')
             arguments.append(maskLayer.subsetString())
 
-        if self.parameterAsBool(self.CROP_TO_CUTLINE):
+        if self.parameterAsBool(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append('-crop_to_cutline')
 
-        if self.parameterAsBool(self.ALPHA_BAND):
+        if self.parameterAsBool(parameters, self.ALPHA_BAND, context):
             arguments.append('-dstalpha')
 
         if nodata:

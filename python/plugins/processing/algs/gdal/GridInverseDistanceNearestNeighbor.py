@@ -128,7 +128,7 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
         self.addParameter(dataType_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
-                                                                  self.tr('Interpolated (IDW)')))
+                                                                  self.tr('Interpolated (IDW with NN search)')))
 
     def name(self):
         return 'gridinversedistancenearestneighbor'
@@ -171,6 +171,7 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.append('-co')
             arguments.append(options)

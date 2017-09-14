@@ -89,15 +89,15 @@ class fillnodata(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-md')
-        arguments.append(str(self.parameterAsInt(self.DISTANCE)))
+        arguments.append(str(self.parameterAsInt(parameters, self.DISTANCE, context)))
 
-        nIterations = self.parameterAsInt(self.ITERATIONS)
+        nIterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
         if nIterations:
             arguments.append('-si')
             arguments.append(str(nIterations))
 
         arguments.append('-b')
-        arguments.append(str(self.parameterAsInt(self.BAND)))
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
         if self.parameterAsBool(parameters, self.NO_MASK, context):
             arguments.append('-nomask')

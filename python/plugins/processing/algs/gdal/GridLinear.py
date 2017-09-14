@@ -103,7 +103,7 @@ class GridLinear(GdalAlgorithm):
         self.addParameter(dataType_param)
 
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
-                                                                  self.tr('Interpolated (IDW)')))
+                                                                  self.tr('Interpolated (Linear)')))
 
     def name(self):
         return 'gridlinear'
@@ -142,6 +142,7 @@ class GridLinear(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.append('-co')
             arguments.append(options)

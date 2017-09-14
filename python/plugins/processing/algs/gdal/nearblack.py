@@ -92,6 +92,8 @@ class nearblack(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+
+        arguments = []
         arguments.append(inLayer.source())
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)

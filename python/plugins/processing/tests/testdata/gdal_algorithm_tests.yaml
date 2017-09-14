@@ -1,30 +1,14 @@
 tests:
 
-  - algorithm: gdal:gdalinfo
-    name: gdalinfo
-    params:
-      INPUT:
-        name: raster.tif
-        type: raster
-      NOGCP: false
-      NOMETADATA: false
-    results:
-      OUTPUT:
-        name: expected/gdal/raster_info.html
-        type: regex
-        rules:
-          - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
-          - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
-          - '  NoData Value=-32768'
-
   - algorithm: gdal:aspect
-    name: Aspect
+    name: Aspect (gdaldem)
     params:
       BAND: 1
       COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
+      OPTIONS: ''
       TRIG_ANGLE: false
       ZERO_FLAT: false
       ZEVENBERGEN: false
@@ -33,77 +17,255 @@ tests:
         hash: 8436df662a44a00762aa29768e5d6ecfaf2d42e9a4da02d8afc6e3f6
         type: rasterhash
 
-  - algorithm: gdal:hillshade
-    name: Hillshade
+  - algorithm: gdal:cliprasterbyextent
+    name: Clip raster by extent (gdal_transform)
     params:
-      ALTITUDE: 45.0
-      AZIMUTH: 315.0
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: 0.0
+      OPTIONS: ''
+      PROJWIN: 18.673038221977773,18.699957975064194,45.782253906735804,45.80350236352593
+    results:
+      OUTPUT:
+        hash: f4dd2d3693afe0b95a6b6d0c98a57331b8f7c6a61a372f52da912c07
+        type: rasterhash
+
+  - algorithm: gdal:cliprasterbymasklayer
+    name: Clip raster by mask layer (gdalwarp)
+    params:
+      ALPHA_BAND: false
+      CROP_TO_CUTLINE: true
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      KEEP_RESOLUTION: false
+      MASK:
+        name: custom/polygon_mask.gml
+        type: vector
+      NODATA: 0.0
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        hash: 4f4720e4efe59a7f238f622659917bbeb5262369d15d5e2917dbcf8b
+        type: rasterhash
+
+  - algorithm: gdal:colorrelief
+    name: Color relief (gdaldem)
+    params:
       BAND: 1
+      COLOR_TABLE:
+        name: custom/color_relief.txt
+        type: file
       COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
+      MATCH_MODE: 1
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        hash: 3d1b5ddaf0e9763164b7865e5e4ac2d55c4993aa52de2705f2ba4232
+        type: rasterhash
+
+  - algorithm: gdal:contour
+    name: Contour (gdal_contour)
+    params:
+      BAND: 1
+      CREATE_3D: false
+      FIELD_NAME: ELEV
+      IGNORE_NODATA: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      INTERVAL: 10.0
+      NODATA: 0.0
+      OFFSET: 0.0
+    results:
+      OUTPUT:
+        name: expected/gdal/contour.gml
+        type: vector
+
+  - algorithm: gdal:gdalinfo
+    name: gdalinfo
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      MIN_MAX: false
+      NOGCP: true
+      NO_METADATA: true
+      STATS: false
+    results:
+      OUTPUT:
+        name: expected/gdal/raster_info.html
+        type: regex
+        rules:
+          - 'Origin = \(18.666297944200000,45.811701437600000\)'
+          - 'Band 1 Block=373x5 Type=Float32, ColorInterp=Gray'
+          - '  NoData Value=-99999'
+
+  - algorithm: gdal:gdal2xyz
+    name: gdal2xyz
+    params:
+      BAND: 1
+      CSV: false
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/gdal/xyz.csv
+        type: file
+
+  - algorithm: gdal:tileindex
+    name: Tile index (gdaltindex)
+    params:
+      ABSOLUTE_PATH: true
+      CRS_FIELD_NAME: ''
+      CRS_FORMAT: 0
+      LAYERS:
+        params:
+        - name: dem.tif
+          type: raster
+        type: multi
+      PATH_FIELD_NAME: location
+      PROJ_DIFFERENCE: false
+    results:
+      OUTPUT:
+        name: expected/gdal/tile_index.gml
+        type: vector
+
+  - algorithm: gdal:gridaverage
+    name: Moving average interpolation (gdal_grid)
+    params:
+      ANGLE: 0.0
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      MIN_POINTS: 0
+      NODATA: 0.0
+      OPTIONS: ''
+      RADIUS_1: 5.0
+      RADIUS_2: 5.0
+    results:
+      OUTPUT:
+        hash: 1c3adf57a7e319582736a1a222211e2360115fc930d6a12415dbdec3
+        type: rasterhash
+
+  - algorithm: gdal:griddatametrics
+    name: Data metrics interpolation (gdal_grid)
+    params:
+      ANGLE: 0.0
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      METRIC: 2
+      MIN_POINTS: 0
+      NODATA: 0.0
+      OPTIONS: ''
+      RADIUS_1: 5.0
+      RADIUS_2: 5.0
+    results:
+      OUTPUT:
+        hash: 11075786ce1a8f5875c203a881f39bb49e7d9f9adcb83c286c72b644
+        type: rasterhash
+
+  - algorithm: gdal:gridinversedistance
+    name: Inverse distance to a power interpolation (gdal_grid)
+    params:
+      ANGLE: 0.0
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      MAX_POINTS: 0
+      MIN_POINTS: 0
+      NODATA: 0.0
+      OPTIONS: ''
+      POWER: 2.0
+      RADIUS_1: 0.0
+      RADIUS_2: 0.0
+      SMOOTHING: 0.0
+    results:
+      OUTPUT:
+        hash: 26658f6dd6a1dd4b576b2e71d3b31f1679d7144b8e53fb58502eff64
+        type: rasterhash
+
+  - algorithm: gdal:gridinversedistancenearestneighbor
+    name: Inverse distance to a power with nearest neighbor searching (gdal_grid)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      MAX_POINTS: 0
+      MIN_POINTS: 0
+      NODATA: 0.0
+      OPTIONS: ''
+      POWER: 2.0
+      RADIUS: 5.0
+      SMOOTHING: 0.0
+    results:
+      OUTPUT:
+        hash: 34fb2b6dc92f5f4147bf136a46dd872f4f94d3bca259d10c8c388620
+        type: rasterhash
+
+  - algorithm: gdal:gridlinear
+    name: Linear interpolation (gdal_grid)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      NODATA: 0.0
+      OPTIONS: ''
+      RADIUS: -1.0
+    results:
+      OUTPUT:
+        hash: aca7c839c679613f4910cbdea660359f1551c104c57fea9a61795668
+        type: rasterhash
+
+  - algorithm: gdal:gridnearestneighbor
+    name: Nearest neighbor interpolation (gdal_grid)
+    params:
+      ANGLE: 0.0
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      NODATA: 0.0
+      OPTIONS: ''
+      RADIUS_1: 0.0
+      RADIUS_2: 0.0
+    results:
+      OUTPUT:
+        hash: 354f728b1dd133ad3db28a51b956bf3108615d31363f3a55b2ce04b9
+        type: rasterhash
+
+  - algorithm: gdal:hillshade
+    name: Hillshade (gdaldem)
+    params:
+      ALTITUDE: 45.0
+      AZIMUTH: 315.0
+      BAND: 1
+      COMBINED: false
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      MULTIDIRECTIONAL: false
+      OPTIONS: ''
       SCALE: 1.0
       ZEVENBERGEN: false
       Z_FACTOR: 1.0
     results:
       OUTPUT:
         hash: e5cf91b875b918682e456463165eddc4af4ae8855b143068e198ce2a
-        type: rasterhash
-
-  - algorithm: gdal:slope
-    name: Slope
-    params:
-      AS_PERCENT: false
-      BAND: 1
-      COMPUTE_EDGES: false
-      INPUT:
-        name: dem.tif
-        type: raster
-      SCALE: 1.0
-      ZEVENBERGEN: false
-    results:
-      OUTPUT:
-        hash: 319c470de3315f440371d5df8a6e478a8ecaf1cf904a013dbf1b3a6a
-        type: rasterhash
-
-  - algorithm: gdal:roughness
-    name: Roughness
-    params:
-      BAND: 1
-      COMPUTE_EDGES: false
-      INPUT:
-        name: dem.tif
-        type: raster
-    results:
-      OUTPUT:
-        hash: ee2b317e022da1001378fac60c9b613a74d3566b9870f9d121e6e322
-        type: rasterhash
-
-  - algorithm: gdal:triterrainruggednessindex
-    name: Terrain ruggedness index
-    params:
-      BAND: 1
-      COMPUTE_EDGES: false
-      INPUT:
-        name: dem.tif
-        type: raster
-    results:
-      OUTPUT:
-        hash: c888764a08fae72a129dfff4947149c3185532373d33d4537ecf409c
-        type: rasterhash
-
-  - algorithm: gdal:tpitopographicpositionindex
-    name: Topographic position index
-    params:
-      BAND: 1
-      COMPUTE_EDGES: false
-      INPUT:
-        name: dem.tif
-        type: raster
-    results:
-      OUTPUT:
-        hash: 4af1fe42d2a75c92eb9edcad9d77bd6cae958c0212de11e320fad689
         type: rasterhash
 
   - algorithm: gdal:nearblack
@@ -119,159 +281,132 @@ tests:
         hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
         type: rasterhash
 
-  - algorithm: gdal:colorrelief
-    name: Color relief
+  - algorithm: gdal:polygonize
+    name: Polygonize
     params:
       BAND: 1
-      COLOR_TABLE:
-        name: custom/color_relief.txt
-        type: file
+      EIGHT_CONNECTEDNESS: false
+      FIELD: DN
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/gdal/polygonize.gml
+        type: vector
+
+  - algorithm: gdal:proximity
+    name: Proximity
+    params:
+      BAND: 1
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      MAX_DISTANCE: 0.0
+      NODATA: 0.0
+      OPTIONS: ''
+      REPLACE: 0.0
+      UNITS: 1
+      VALUES: '90'
+    results:
+      OUTPUT:
+        hash: 32802271d1ce083ca14078bfefaef6300ae8809af11f6a4270583d0c
+        type: rasterhash
+
+  - algorithm: gdal:roughness
+    name: Roughness
+    params:
+      BAND: 1
       COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
-      MATCH_MODE: '0'
+      OPTIONS: ''
     results:
       OUTPUT:
-        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        hash: ee2b317e022da1001378fac60c9b613a74d3566b9870f9d121e6e322
         type: rasterhash
 
-  - algorithm: gdal:gridaverage
-    name: Moving Average interpolation
+  - algorithm: gdal:sieve
+    name: Sieve
     params:
-      ANGLE: 0.0
-      INPUT:
-        name: custom/points_values.gml
-        type: vector
-      MIN_POINTS: 0.0
-      NODATA: 0.0
-      RADIUS_1: 0.01
-      RADIUS_2: 0.01
-      RTYPE: '5'
-      Z_FIELD: EC
-    results:
-      OUTPUT:
-        hash: 3542d928bccee955b1c426cac7b698c603c9a385429ca529758083bf
-        type: rasterhash
-
-  - algorithm: gdal:griddatametrics
-    name: Data Metrics interpolation
-    params:
-      ANGLE: 0.0
-      INPUT:
-        name: custom/points_values.gml
-        type: vector
-      METRIC: '1'
-      MIN_POINTS: 0.0
-      NODATA: 0.0
-      RADIUS_1: 0.01
-      RADIUS_2: 0.02
-      RTYPE: '5'
-      Z_FIELD: EC
-    results:
-      OUTPUT:
-        hash: 220953299b18286b57ce093a054323e59add7c78c0429a02e51b4ad4
-        type: rasterhash
-
-  - algorithm: gdal:gridinversedistance
-    name: IDW interpolation
-    params:
-      ANGLE: 0.0
-      INPUT:
-        name: custom/points_values.gml
-        type: vector
-      MAX_POINTS: 0.0
-      MIN_POINTS: 0.0
-      NODATA: 0.0
-      POWER: 2.0
-      RADIUS_1: 0.0
-      RADIUS_2: 0.0
-      RTYPE: '5'
-      SMOTHING: 0.0
-      Z_FIELD: EC
-    results:
-      OUTPUT:
-        hash: 2033731d6fd653da391a2633158f0ea755d96e1b2b2c60a9100332b1
-        type: rasterhash
-
-  - algorithm: gdal:gridnearestneighbor
-    name: Nearest Neighbor interpolation
-    params:
-      ANGLE: 0.0
-      INPUT:
-        name: custom/points_values.gml
-        type: vector
-      NODATA: 0.0
-      RADIUS_1: 0.01
-      RADIUS_2: 0.02
-      RTYPE: '5'
-      Z_FIELD: EC
-    results:
-      OUTPUT:
-        hash: 6ee933d53e1a2ffadfd88333919255e68bb945e833e50d112124bfd5
-        type: rasterhash
-
-  - algorithm: gdal:cliprasterbyextent
-    name: Clip raster by extent
-    params:
-      BIGTIFF: '0'
-      COMPRESS: '4'
+      EIGHT_CONNECTEDNESS: false
       INPUT:
         name: dem.tif
         type: raster
-      JPEGCOMPRESSION: 75
-      PREDICTOR: 1
-      PROJWIN: 18.67551824296977,18.697800756150787,45.78984181545589,45.804309302274866
-      RTYPE: '5'
-      TFW: false
-      TILED: false
-      ZLEVEL: 6
+      MASK_LAYER:
+        name: dem.tif
+        type: raster
+      NO_MASK: false
+      THRESHOLD: 10
     results:
       OUTPUT:
-        hash: 9913a7c0e1ced2c2ce1cd8f0e8103475bc2b0dd4d1d0adafe4920f93
+        hash: 1ea6a8c838add299dc3f6f9f529eb5945664f68bae97be9ca80b1754
         type: rasterhash
 
-  - algorithm: gdal:cliprasterbymasklayer
-    name: Clip raster by mask layer
+  - algorithm: gdal:slope
+    name: Slope
     params:
-      ALPHA_BAND: false
-      BIGTIFF: '0'
-      COMPRESS: '4'
-      CROP_TO_CUTLINE: true
+      AS_PERCENT: false
+      BAND: 1
+      COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
-      JPEGCOMPRESSION: 75
-      KEEP_RESOLUTION: false
-      MASK:
-        name: custom/polygon_mask.gml
-        type: vector
-      NO_DATA: ''
-      PREDICTOR: 1
-      RTYPE: '5'
-      TFW: false
-      TILED: false
-      ZLEVEL: 6
+      OPTIONS: ''
+      SCALE: 1.0
+      ZEVENBERGEN: false
     results:
       OUTPUT:
-        hash: 4f4720e4efe59a7f238f622659917bbeb5262369d15d5e2917dbcf8b
+        hash: 319c470de3315f440371d5df8a6e478a8ecaf1cf904a013dbf1b3a6a
         type: rasterhash
 
-  - algorithm: gdal:proximity
-    name: Proximity raster
+  - algorithm: gdal:tpitopographicpositionindex
+    name: Topographic position index
     params:
-      BUF_VAL: -1
+      BAND: 1
+      COMPUTE_EDGES: false
       INPUT:
-        name: custom/dem_boolean.tif
+        name: dem.tif
         type: raster
-      MAX_DIST: -1
-      NODATA: -1
-      RTYPE: '5'
-      UNITS: '0'
-      VALUES: '1'
+      OPTIONS: ''
     results:
       OUTPUT:
-        hash: a497763f44380ec33acab572a926a6516e875f2284fc55e702abbdfc
+        hash: 4af1fe42d2a75c92eb9edcad9d77bd6cae958c0212de11e320fad689
+        type: rasterhash
+
+  - algorithm: gdal:triterrainruggednessindex
+    name: Terrain ruggedness index
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        hash: c888764a08fae72a129dfff4947149c3185532373d33d4537ecf409c
+        type: rasterhash
+
+  - algorithm: gdal:warpreproject
+    name: Warp (gdalwarp)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      MULTITHREADING: false
+      NODATA: 0.0
+      OPTIONS: ''
+      RESAMPLING: 4
+      SOURCE_CRS: EPSG:4326
+      TARGET_CRS: EPSG:3857
+      TARGET_RESOLUTION: 0.0
+    results:
+      OUTPUT:
+        hash: 77045222f6f9d8e5fda795d1d5288eae400c51522e621861aeab68e0
         type: rasterhash
 
 #  - algorithm: gdal:merge

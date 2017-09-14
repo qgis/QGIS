@@ -87,7 +87,7 @@ class sieve(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-st')
-        arguments.append(str(self.parameterAsInt(self.THRESHOLD)))
+        arguments.append(str(self.parameterAsInt(parameters, self.THRESHOLD, context)))
 
         if self.parameterAsBool(parameters, self.EIGHT_CONNECTEDNESS, context):
             arguments.append('-8')

@@ -186,6 +186,7 @@ class GridInverseDistance(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.append('-co')
             arguments.append(options)

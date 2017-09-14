@@ -25,6 +25,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
