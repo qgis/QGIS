@@ -848,6 +848,12 @@ void TestQgsProcessing::algorithm()
   QVERIFY( !r.algorithmById( "p1:alg3" ) );
   QVERIFY( !r.algorithmById( "px:alg1" ) );
 
+  // test that algorithmById can transparently map 'qgis' algorithms across to matching 'native' algorithms
+  // this allows us the freedom to convert qgis python algs to c++ without breaking api or existing models
+  QCOMPARE( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "qgis:dissolve" ) )->id(), QStringLiteral( "native:dissolve" ) );
+  QCOMPARE( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "qgis:clip" ) )->id(), QStringLiteral( "native:clip" ) );
+  QVERIFY( !QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "qgis:notanalg" ) ) );
+
   // createAlgorithmById
   QVERIFY( !r.createAlgorithmById( "p1:alg3" ) );
   std::unique_ptr< QgsProcessingAlgorithm > creation( r.createAlgorithmById( "p1:alg1" ) );
