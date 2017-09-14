@@ -1256,6 +1256,15 @@ Get timeout for timed messages: default of 5 seconds
  \note
  added in version 2.7
 %End
+
+    void connectionsChanged();
+%Docstring
+ Emitted when connections have changed, this signal is forwarded
+ to the GUI elements that needs to be updated (i.e. the source
+ select dialogs and the browser widgets)
+.. versionadded:: 3.0
+%End
+
 };
 
 /************************************************************************

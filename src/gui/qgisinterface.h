@@ -796,6 +796,15 @@ class GUI_EXPORT QgisInterface : public QObject
      * added in version 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
+
+    /**
+     * Emitted when connections have changed, this signal is forwarded
+     * to the GUI elements that needs to be updated (i.e. the source
+     * select dialogs and the browser widgets)
+     * \since QGIS 3.0
+     */
+    void connectionsChanged();
+
 };
 Q_NOWARN_DEPRECATED_POP
 
