@@ -174,7 +174,6 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions()
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
   lst.append( actionAddTable );
 
-
   return lst;
 }
 #endif
@@ -463,9 +462,9 @@ void QgsGeoPackageConnectionItem::addTable()
   {
     dialog.setDatabasePath( connection.path() );
     dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-    if ( dialog.exec() == QMessageBox::Ok )
+    if ( dialog.exec() == QDialog::Accepted )
     {
-      mParent->refreshConnections();
+      refreshConnections();
     }
   }
   else
