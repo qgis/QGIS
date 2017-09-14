@@ -1195,6 +1195,23 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
+  if ( value.canConvert< QgsRectangle >() )
+  {
+    QgsRectangle r = value.value<QgsRectangle>();
+    return QStringLiteral( "QgsRectangle( %1, %2, %3, %4 )" ).arg( qgsDoubleToString( r.xMinimum() ),
+           qgsDoubleToString( r.yMinimum() ),
+           qgsDoubleToString( r.xMaximum() ),
+           qgsDoubleToString( r.yMaximum() ) );
+  }
+  if ( value.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
+    return QStringLiteral( "QgsReferencedRectangle( QgsRectangle( %1, %2, %3, %4 ), QgsCoordinateReferenceSystem( '%5' ) )" ).arg( qgsDoubleToString( r.xMinimum() ),
+           qgsDoubleToString( r.yMinimum() ),
+           qgsDoubleToString( r.xMaximum() ),
+           qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+  }
+
   QVariantMap p;
   p.insert( name(), value );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
