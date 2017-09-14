@@ -541,7 +541,23 @@ class QgsProcessingParameters
 
  If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
  reprojected so that it is in the specified ``crs``. In this case the extent of the reproject rectangle will be returned.
+
+.. seealso:: parameterAsExtentGeometry()
  :rtype: QgsRectangle
+%End
+
+    static QgsGeometry parameterAsExtentGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
+        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+ Evaluates the parameter with matching ``definition`` to a rectangular extent, and returns a geometry covering this extent.
+
+ If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
+ reprojected so that it is in the specified ``crs``. Unlike parameterAsExtent(), the reprojected rectangle returned by this function
+ will no longer be a rectangle itself (i.e. this method returns the geometry of the actual reprojected rectangle, while parameterAsExtent() returns
+ just the extent of the reprojected rectangle).
+
+.. seealso:: parameterAsExtent()
+ :rtype: QgsGeometry
 %End
 
     static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );

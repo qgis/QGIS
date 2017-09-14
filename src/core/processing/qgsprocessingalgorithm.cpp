@@ -555,6 +555,11 @@ QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &param
   return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, context, crs );
 }
 
+QgsGeometry QgsProcessingAlgorithm::parameterAsExtentGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs )
+{
+  return QgsProcessingParameters::parameterAsExtentGeometry( parameterDefinition( name ), parameters, context, crs );
+}
+
 QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
 {
   return QgsProcessingParameters::parameterAsPoint( parameterDefinition( name ), parameters, context );

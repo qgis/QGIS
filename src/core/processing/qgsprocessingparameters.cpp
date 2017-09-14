@@ -539,6 +539,36 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   return QgsRectangle();
 }
 
+QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( !definition )
+    return QgsGeometry();
+
+  QVariant val = parameters.value( definition->name() );
+
+  if ( val.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
+    QgsGeometry g = QgsGeometry::fromRect( rr );
+    if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
+    {
+      g = g.densifyByCount( 20 );
+      QgsCoordinateTransform ct( rr.crs(), crs );
+      try
+      {
+        g.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming extent geometry" ) );
+      }
+      return g;
+    }
+  }
+
+  return QgsGeometry::fromRect( parameterAsExtent( definition, parameters, context, crs ) );
+}
+
 QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   if ( !definition )

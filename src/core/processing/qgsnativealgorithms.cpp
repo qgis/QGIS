@@ -1854,7 +1854,7 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( !sink )
     return QVariantMap();
 
-  QgsGeometry clipGeom = QgsGeometry::fromRect( extent );
+  QgsGeometry clipGeom = parameterAsExtentGeometry( parameters, QStringLiteral( "EXTENT" ), context, featureSource->sourceCrs() );
 
   double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
   QgsFeatureIterator inputIt = featureSource->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( QgsFeatureRequest::ExactIntersect ) );

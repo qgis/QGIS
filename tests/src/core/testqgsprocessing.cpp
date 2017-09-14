@@ -1912,6 +1912,9 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.yMinimum(),  12.2, 0.001 );
   QGSCOMPARENEAR( ext.yMaximum(), 14.4, 0.001 );
 
+  QgsGeometry gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QCOMPARE( gExt.exportToWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
+
   // QgsReferencedRectangle
   params.insert( "non_optional", QgsReferencedRectangle( QgsRectangle( 1.1, 2.2, 3.3, 4.4 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
   ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context );
@@ -1927,13 +1930,22 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.yMinimum(),  244963, 100 );
   QGSCOMPARENEAR( ext.yMaximum(), 490287, 100 );
 
+  // as reprojected geometry
+  gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QCOMPARE( gExt.geometry()->vertexCount(), 85 );
+  ext = gExt.boundingBox();
+  QGSCOMPARENEAR( ext.xMinimum(), 122451, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 367354, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  244963, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 490287, 100 );
+
   QCOMPARE( def->valueAsPythonString( "1,2,3,4", context ), QStringLiteral( "'1,2,3,4'" ) );
   QCOMPARE( def->valueAsPythonString( r1->id(), context ), QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( r1 ), context ), QString( "'" ) + testDataDir + QStringLiteral( "tenbytenraster.asc'" ) );
   QCOMPARE( def->valueAsPythonString( raster2, context ), QString( "'" ) + testDataDir + QStringLiteral( "landsat.tif'" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
-  QCOMPARE( def->valueAsPythonString( QgsRectangle( 11.1, 12.2, 13.3, 14.4 ), context ), QStringLiteral( "QgsRectangle( 11.1, 12.2, 13.3, 14.4 )" ) );
-  QCOMPARE( def->valueAsPythonString( QgsReferencedRectangle( QgsRectangle( 11.1, 12.2, 13.3, 14.4 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ), context ), QStringLiteral( "QgsReferencedRectangle( QgsRectangle( 11.1, 12.2, 13.3, 14.4 ), QgsCoordinateReferenceSystem( 'EPSG:4326' ) )" ) );
+  QCOMPARE( def->valueAsPythonString( QgsRectangle( 11, 12, 13, 14 ), context ), QStringLiteral( "QgsRectangle( 11, 12, 13, 14 )" ) );
+  QCOMPARE( def->valueAsPythonString( QgsReferencedRectangle( QgsRectangle( 11, 12, 13, 14 ), QgsCoordinateReferenceSystem( "epsg:4326" ) ), context ), QStringLiteral( "QgsReferencedRectangle( QgsRectangle( 11, 12, 13, 14 ), QgsCoordinateReferenceSystem( 'EPSG:4326' ) )" ) );
 
   QString code = def->asScriptCode();
   QCOMPARE( code, QStringLiteral( "##non_optional=extent 1,2,3,4" ) );
