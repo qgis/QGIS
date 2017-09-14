@@ -60,12 +60,14 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProcessingParameterRasterDestination,  # NOQA
                        QgsProcessingParameterVectorDestination,  # NOQA
                        QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterString,  # NOQA
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber)
 # TODELETE
 from qgis.core import (QgsMessageLog)
+
 from processing.tools.vector import resolveFieldIndex
 from processing.tools import dataobjects
 from processing.core.outputs import OutputNumber, OutputRaster, OutputVector

@@ -72,6 +72,12 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             Grass7Utils.GRASS_HELP_PATH,
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
+        # Add a setting for using v.external instead of v.in.ogr
+        ProcessingConfig.addSetting(Setting(
+            self.name(),
+            Grass7Utils.GRASS_USE_VEXTERNAL,
+            self.tr('For vector layers, use v.external (faster) instead of v.in.ogr'), 
+            True))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
@@ -83,6 +89,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
+        ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
 
     def isActive(self):
         return ProcessingConfig.getSetting('ACTIVATE_GRASS7')

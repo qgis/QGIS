@@ -27,44 +27,39 @@ __revision__ = '$Format:%H$'
 
 
 def processInputs(alg, parameters, context):
-    # We need to import all the bands and color tables of the input raster
     if 'input' in alg.exportedLayers:
         return
-    raster = alg.parameterAsRasterLayer(parameters, 'input', context)
-    alg.setSessionProjectionFromLayer(raster)
-    alg.prepareInputs()
+    
+    # We need to import all the bands and color tables of the input raster
+    alg.loadRasterLayerFromParameter('input', parameters, context, False, None)
+    alg.postInputs(parameters, context)
     
 def processCommand(alg, parameters, context):
-    # We need to introduce something clever:
     # if the input raster is multiband: export each component directly
-    raster = alg.exportedLayers[alg.getParameterValue('input')]
+    rasterInput = alg.exportedLayers['input']
+    raster = alg.parameterAsRasterLayer(parameters, 'input', context)
     for color in ['red', 'green', 'blue']:
-        alg.exportedLayers[alg.getOutputValue(color)] = color + alg.uniqueSuffix
-
-    commands = ["if [ $(g.list type=rast pattern='{}.*' | wc -l) -eq \"0\" ]; then".format(raster)]
-    commands.append("  r.rgb input={} red={} green={} blue={} --overwrite".format(
-        raster,
-        alg.exportedLayers[alg.getOutputValue('red')],
-        alg.exportedLayers[alg.getOutputValue('green')],
-        alg.exportedLayers[alg.getOutputValue('blue')]
-    ))
-    commands.append("fi")
-    alg.commands.extend(commands)
-
+        alg.exportedLayers[color] = color + alg.uniqueSuffix
+        
+    # If the raster is not multiband, really do r.rgb
+    if raster.bandCount() == 1:
+        alg.commands.append("  r.rgb input={} red={} green={} blue={} --overwrite".format(
+            rasterInput,
+            alg.exportedLayers['red'],
+            alg.exportedLayers['green'],
+            alg.exportedLayers['blue']
+        ))
 
 def processOutputs(alg, parameters, context):
-    raster = alg.exportedLayers[alg.getParameterValue('input')]
-    commands = ["if [ $(g.list type=rast pattern='{}.*' | wc -l) -eq \"0\" ]; then".format(raster)]
-    for color in ['red', 'green', 'blue']:
-        commands.append("  r.out.gdal -t input={} output={} createopt=\"TFW=YES,COMPRESS=LZW\" --overwrite".format(
-            alg.exportedLayers[alg.getOutputValue(color)],
-            alg.getOutputValue(color)
-        ))
-    commands.append("else")
-    for color in ['red', 'green', 'blue']:
-        commands.append("  r.out.gdal -t input={} output={} createopt=\"TFW=YES,COMPRESS=LZW\" --overwrite".format(
-            '{}.{}'.format(raster, color),
-            alg.getOutputValue(color)
-        ))
-    commands.append("fi")
-    alg.commands.extend(commands)
+    raster = alg.parameterAsRasterLayer(parameters, 'input', context)
+
+    # if the raster was monoband, export from r.rgb
+    if raster.bandCount() == 1:
+        for color in ['red', 'green', 'blue']:
+            alg.exportRasterLayerFromOutput(color, parameters, context, True)
+    # otherwise, export directly from the multibands
+    else:
+        for color in ['red', 'green', 'blue']:
+            fileName = alg.parameterAsOutputLayer(parameters, color, context)
+            grassName = '{}{}'.format(alg.exportedLayers['input'], color)
+            alg.exportRasterLayer(grassName, fileName, True)

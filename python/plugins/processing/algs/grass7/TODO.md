@@ -10,13 +10,19 @@ QGIS3 Processing Port
 * Replace all parameters by QgsProcessingParameters.
 * Re-enable GRASS algorithm by default.
 * Add GRASS 7.2 new algorithms.
-* Improve unit tests
-* GRASS_REGION_CELLSIZE_PARAMETER is integer or double?
-* GRASS_SNAP_TOLERANCE_PARAMETER is integer or double?
-* Do we need to use QgsProcessingParameters::parameterFromScriptCode for description files?
-  We don't NEED but we have to improve getParameterFromString (or use an internal method) at least.
-  There is also a problem for parameterFromScriptCode: it doesn't use description very well.
-  We can also use parameterFromVariantMap and a custom internal Grass7Algorithm getParameterFromString.
+* Improve unit tests.
+* Use some raster/vector layers with spacename into their path.
+* Better support for files output that are not HTML.
+* Use prepareAlgorithm for algorithm preparation.
+* Opens HTML files in Viewer.
+* Support ParameterTable.
+* Remove specific algorithms code in Grass7Algorithm.py (move them in ext).
+* Convert all ext scripts.
+* Support OutputFolder.
+* Support multiple output raster formats.
+* Support multiple output vector formats.
+* Support multiple bands input rasters.
+* Review all the methods of QgsProcessingAlgorithm.
 * Make tests under MS-Windows 7 for Utf-8 support.
 
 Unit tests
