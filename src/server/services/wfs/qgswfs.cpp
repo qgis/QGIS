@@ -23,6 +23,7 @@
 #include "qgsmodule.h"
 #include "qgswfsutils.h"
 #include "qgswfsgetcapabilities.h"
+#include "qgswfsgetcapabilities_1_0_0.h"
 #include "qgswfsgetfeature.h"
 #include "qgswfsdescribefeaturetype.h"
 #include "qgswfstransaction.h"
@@ -71,7 +72,15 @@ namespace QgsWfs
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          writeGetCapabilities( mServerIface, project, versionString, request, response );
+          // Supports WFS 1.0.0
+          if ( QSTR_COMPARE( versionString, "1.0.0" ) )
+          {
+            v1_0_0::writeGetCapabilities( mServerIface, project, versionString, request, response );
+          }
+          else
+          {
+            writeGetCapabilities( mServerIface, project, versionString, request, response );
+          }
         }
         else if ( QSTR_COMPARE( req, "GetFeature" ) )
         {

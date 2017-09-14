@@ -6,6 +6,7 @@ SET (wfs_SRCS
   qgswfs.cpp
   qgswfsutils.cpp
   qgswfsgetcapabilities.cpp
+  qgswfsgetcapabilities_1_0_0.cpp
   qgswfsdescribefeaturetype.cpp
   qgswfsgetfeature.cpp
   qgswfstransaction.cpp

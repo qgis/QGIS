@@ -29,7 +29,7 @@ namespace QgsWfs
 {
   QString implementationVersion()
   {
-    return QStringLiteral( "1.0.0" );
+    return QStringLiteral( "1.1.0" );
   }
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
