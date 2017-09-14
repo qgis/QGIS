@@ -272,7 +272,11 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString& file )
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
     f.setGeometry( new QgsGeometry( error->location().clone() ) );
-    layer->dataProvider()->addFeatures( QgsFeatureList() << f );
+    if ( !layer->dataProvider()->addFeatures( QgsFeatureList() << f ) )
+    {
+      delete layer;
+      return false;
+    }
   }
 
   // Remove existing layer with same uri

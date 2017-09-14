@@ -432,7 +432,8 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
 
 
   //now add the new features to this vectorlayer
-  L->editBuffer()->addFeatures( newFeatures );
+  if ( !L->editBuffer()->addFeatures( newFeatures ) )
+    returnCode = 7; // "No feature split done" + "The geometry is invalid. Please repair before trying to split it."
 
   return returnCode;
 }
