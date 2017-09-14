@@ -61,7 +61,7 @@ class GPKGDBPlugin(DBPlugin):
 
     @classmethod
     def connectionSettingsKey(self):
-        return '/providers/geopackage/connections'
+        return 'providers/ogr/GPKG/connections'
 
     def databasesFactory(self, connection, uri):
         return GPKGDatabase(connection, uri)
