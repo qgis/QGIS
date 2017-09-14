@@ -118,7 +118,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Identify layers</string>
+           <string>Identify Layers</string>
           </property>
           <property name="toolTip">
            <string>Identifiable layers</string>
@@ -130,7 +130,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Default styles</string>
+           <string>Default Styles</string>
           </property>
           <property name="toolTip">
            <string>Default styles</string>
@@ -142,10 +142,10 @@
          </item>
          <item>
           <property name="text">
-           <string>OWS server</string>
+           <string>QGIS Server</string>
           </property>
           <property name="toolTip">
-           <string>WMS/WFS Server Configuration</string>
+           <string>WMS/WFS/WCS Server Configuration</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -259,8 +259,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>597</width>
-                <height>656</height>
+                <width>565</width>
+                <height>697</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -770,8 +770,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>779</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -829,7 +829,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>133</width>
+                <width>132</width>
                 <height>100</height>
                </rect>
               </property>
@@ -915,8 +915,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>297</width>
-                <height>532</height>
+                <width>269</width>
+                <height>597</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1338,8 +1338,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>667</width>
-                <height>2305</height>
+                <width>598</width>
+                <height>2361</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2418,8 +2418,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>168</width>
-                <height>46</height>
+                <width>156</width>
+                <height>59</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2573,15 +2573,32 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2591,26 +2608,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
