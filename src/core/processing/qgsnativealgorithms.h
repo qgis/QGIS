@@ -662,6 +662,32 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     std::unique_ptr< QgsMapToPixelSimplifier > mSimplifier;
 
 };
+
+
+/**
+ * Native extract/clip by extent algorithm.
+ */
+class QgsExtractByExtentAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsExtractByExtentAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "extractbyextent" ); }
+    QString displayName() const override { return QObject::tr( "Extract/clip by extent" ); }
+    virtual QStringList tags() const override { return QObject::tr( "clip,extract,intersect,intersection,mask,extent" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector overlay" ); }
+    QString shortHelpString() const override;
+    QgsExtractByExtentAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H

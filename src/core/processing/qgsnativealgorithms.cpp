@@ -82,6 +82,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMergeLinesAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );
   addAlgorithm( new QgsSimplifyAlgorithm() );
+  addAlgorithm( new QgsExtractByExtentAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -1811,7 +1812,77 @@ QgsFeature QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsP
   return f;
 }
 
+
+
+
+void QgsExtractByExtentAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CLIP" ), QObject::tr( "Clip features to extent" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted" ) ) );
+}
+
+QString QgsExtractByExtentAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a new vector layer that only contains features which fall within a specified extent. "
+                      "Any features which intersect the extent will be included.\n\n"
+                      "Optionally, feature geometries can also be clipped to the extent. If this option is selected, then the output "
+                      "geometries will automatically be converted to multi geometries to ensure uniform output geometry types." );
+}
+
+QgsExtractByExtentAlgorithm *QgsExtractByExtentAlgorithm::createInstance() const
+{
+  return new QgsExtractByExtentAlgorithm();
+}
+
+QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !featureSource )
+    return QVariantMap();
+
+  QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
+  bool clip = parameterAsBool( parameters, QStringLiteral( "CLIP" ), context );
+
+  // if clipping, we force multi output
+  QgsWkbTypes::Type outType = clip ? QgsWkbTypes::multiType( featureSource->wkbType() ) : featureSource->wkbType();
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), outType, featureSource->sourceCrs() ) );
+
+  if ( !sink )
+    return QVariantMap();
+
+  QgsGeometry clipGeom = QgsGeometry::fromRect( extent );
+
+  double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
+  QgsFeatureIterator inputIt = featureSource->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+  QgsFeature f;
+  int i = -1;
+  while ( inputIt.nextFeature( f ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    if ( clip )
+    {
+      QgsGeometry g = f.geometry().intersection( clipGeom );
+      g.convertToMultiType();
+      f.setGeometry( g );
+    }
+
+    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    feedback->setProgress( i * step );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
 ///@endcond
-
-
 

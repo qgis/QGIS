@@ -3938,3 +3938,29 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: native:extractbyextent
+    name: Extract by extent
+    params:
+      CLIP: false
+      EXTENT: -1.1650000000000003,4.775,-2.444285714285715,3.4171428571428573
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_by_extent.gml
+        type: vector
+
+  - algorithm: native:extractbyextent
+    name: Extract by extent (clipped)
+    params:
+      CLIP: true
+      EXTENT: -1.1650000000000003,4.775,-2.444285714285715,3.4171428571428573
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_by_extent_clip.gml
+        type: vector
