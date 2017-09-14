@@ -688,7 +688,7 @@ namespace QgsWms
     return version;
   }
 
-  double QgsWmsParameters::toDouble( QVariant value, QVariant defaultValue, bool *error ) const
+  double QgsWmsParameters::toDouble( QVariant value, const QVariant &defaultValue, bool *error ) const
   {
     double val = defaultValue.toDouble();
     QString valStr = value.toString();
@@ -733,7 +733,7 @@ namespace QgsWms
     return val;
   }
 
-  bool QgsWmsParameters::toBool( QVariant value, QVariant defaultValue ) const
+  bool QgsWmsParameters::toBool( QVariant value, const QVariant &defaultValue ) const
   {
     bool val = defaultValue.toBool();
     QString valStr = value.toString();
@@ -754,7 +754,7 @@ namespace QgsWms
     return toBool( value( p, mapId ), defaultValue( p, mapId ) );
   }
 
-  int QgsWmsParameters::toInt( QVariant value, QVariant defaultValue, bool *error ) const
+  int QgsWmsParameters::toInt( QVariant value, const QVariant &defaultValue, bool *error ) const
   {
     int val = defaultValue.toInt();
     QString valStr = value.toString();
@@ -799,7 +799,7 @@ namespace QgsWms
     return val;
   }
 
-  QColor QgsWmsParameters::toColor( QVariant value, QVariant defaultValue, bool *error ) const
+  QColor QgsWmsParameters::toColor( QVariant value, const QVariant &defaultValue, bool *error ) const
   {
     *error = false;
     QColor c = defaultValue.value<QColor>();
