@@ -64,6 +64,16 @@ class QgsMetadataWidget : QWidget
  Remove a selected right.
 %End
 
+    void addConstraint() const;
+%Docstring
+ Add a new constraint.
+%End
+
+    void removeConstraint() const;
+%Docstring
+ Remove a constraint.
+%End
+
     void setAutoCrs() const;
 %Docstring
  Set the CRS field from the layer.

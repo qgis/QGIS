@@ -33,8 +33,9 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
 {
   setupUi( this );
   mMetadata = layer->metadata();
+  tabWidget->setCurrentIndex( 0 );
 
-  // Disable the encoding
+  // Disable the encoding and contacts
   encodingFrame->setHidden( true );
   tabWidget->removeTab( 5 );
 
@@ -47,14 +48,21 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   listDefaultCategories->setModel( mDefaultCategoriesModel );
 
   // Categories
-  mCategoriesModel = new QStringListModel();
+  mCategoriesModel = new QStringListModel( );
   listCategories->setModel( mCategoriesModel );
 
   // Rights
-  mRightsModel = new QStringListModel();
+  mRightsModel = new QStringListModel( );
   listRights->setModel( mRightsModel );
 
-  tabWidget->setCurrentIndex( 0 );
+  // Setup the constraints view
+  mConstraintsModel = new QStandardItemModel();
+  mConstraintsModel->setColumnCount( 2 );
+  QStringList constraintheaders;
+  constraintheaders << tr( "Type" ) << tr( "Constraint" );
+  mConstraintsModel->setHorizontalHeaderLabels( constraintheaders );
+  tabConstraints->setModel( mConstraintsModel );
+  tabConstraints->setItemDelegate( new ConstraintItemDelegate() );
 
   // Setup the link view
   mLinksModel = new QStandardItemModel();
@@ -73,6 +81,8 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   connect( btnRemoveRight, &QPushButton::clicked, this, &QgsMetadataWidget::removeRight );
   connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWidget::addLicence );
   connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeLicence );
+  connect( btnAddConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::addConstraint );
+  connect( btnRemoveConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::removeConstraint );
   connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::setAutoCrs );
   connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWidget::addContact );
   connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWidget::removeContact );
@@ -167,6 +177,19 @@ void QgsMetadataWidget::removeRight() const
     list.removeOne( item.toString() );
     mRightsModel->setStringList( list );
   }
+}
+
+void QgsMetadataWidget::addConstraint() const
+{
+  int row = mConstraintsModel->rowCount();
+  mConstraintsModel->setItem( row, 0, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
+  mConstraintsModel->setItem( row, 1, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
+}
+
+void QgsMetadataWidget::removeConstraint() const
+{
+  QModelIndexList selectedRows = tabConstraints->selectionModel()->selectedRows();
+  mConstraintsModel->removeRow( selectedRows[0].row() );
 }
 
 void QgsMetadataWidget::setAutoCrs() const
@@ -348,6 +371,15 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
   // Rights
   mRightsModel->setStringList( mMetadata.rights() );
 
+  // Constraints
+  const QList<QgsLayerMetadata::Constraint> &constraints = mMetadata.constraints();
+  for ( const QgsLayerMetadata::Constraint &constraint : constraints )
+  {
+    int row = mConstraintsModel->rowCount();
+    mConstraintsModel->setItem( row, 0, new QStandardItem( constraint.type ) );
+    mConstraintsModel->setItem( row, 1, new QStandardItem( constraint.constraint ) );
+  }
+
   // CRS
   if ( mMetadata.crs().isValid() )
   {
@@ -400,6 +432,17 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 
   // Rights
   layerMetadata.setRights( mRightsModel->stringList() );
+
+  // Constraints
+  QList<QgsLayerMetadata::Constraint> constraints;
+  for ( int row = 0 ; row < mConstraintsModel->rowCount() ; row++ )
+  {
+    struct QgsLayerMetadata::Constraint constraint = QgsLayerMetadata::Constraint();
+    constraint.type = mConstraintsModel->item( row, 0 )->text();
+    constraint.constraint = mConstraintsModel->item( row, 1 )->text();
+    constraints.append( constraint );
+  }
+  layerMetadata.setConstraints( constraints );
 
   // CRS
   if ( selectionCrs->crs().isValid() )
@@ -702,6 +745,24 @@ QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionView
     model->setStringList( QgsMetadataWidget::parseMimeTypes() );
     mimeEditor->setModel( model );
     return mimeEditor;
+  }
+
+  return QStyledItemDelegate::createEditor( parent, option, index );
+}
+
+QWidget *ConstraintItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  if ( index.column() == 0 )
+  {
+    // Constraint type
+    QComboBox *typeEditor = new QComboBox( parent );
+    typeEditor->setEditable( true );
+    QStringList types;
+    types << QString( "access" ) << QString( "use" ) << QString( "other" );
+    QStringListModel *model = new QStringListModel( parent );
+    model->setStringList( types );
+    typeEditor->setModel( model );
+    return typeEditor;
   }
 
   return QStyledItemDelegate::createEditor( parent, option, index );

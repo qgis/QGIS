@@ -81,6 +81,16 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeRight() const;
 
     /**
+     * Add a new constraint.
+     */
+    void addConstraint() const;
+
+    /**
+     * Remove a constraint.
+     */
+    void removeConstraint() const;
+
+    /**
      * Set the CRS field from the layer.
      */
     void setAutoCrs() const;
@@ -170,6 +180,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
     QgsLayerMetadata mMetadata;
+    QStandardItemModel *mConstraintsModel = nullptr;
     QStandardItemModel *mLinksModel = nullptr;
     QStringListModel *mCategoriesModel = nullptr;
     QStringListModel *mDefaultCategoriesModel = nullptr;
@@ -186,7 +197,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
  *
  * \since QGIS 3.0
  */
-
 class LinkItemDelegate : public QStyledItemDelegate
 {
 
@@ -196,6 +206,26 @@ class LinkItemDelegate : public QStyledItemDelegate
 
     /**
      * Create a special editor with a QCombobox in the link view.
+     */
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+};
+
+/**
+ * \ingroup gui
+ * \class ConstraintItemDelegate
+ * \brief Special delegate for the constraint view in the metadata wizard.
+ *
+ * \since QGIS 3.0
+ */
+class ConstraintItemDelegate : public QStyledItemDelegate
+{
+
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Create a special editor with a QCombobox in the constraint view.
      */
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 };
