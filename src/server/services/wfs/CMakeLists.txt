@@ -10,12 +10,19 @@ SET (wfs_SRCS
   qgswfsdescribefeaturetype.cpp
   qgswfsgetfeature.cpp
   qgswfstransaction.cpp
+  qgswfsparameters.cpp
+)
+
+SET (wfs_MOC_HDRS
+  qgswfsparameters.h
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (wfs MODULE ${wfs_SRCS})
+QT5_WRAP_CPP(wfs_MOC_SRCS ${wfs_MOC_HDRS})
+
+ADD_LIBRARY (wfs MODULE ${wfs_SRCS} ${wfs_MOC_SRCS} ${wfs_MOC_HDRS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -31,10 +38,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
-  ../../../core 
+  ../../../core
   ../../../core/dxf
   ../../../core/expression
-  ../../../core/geometry 
+  ../../../core/geometry
   ../../../core/metadata
   ../../../core/raster
   ../../../core/symbology
