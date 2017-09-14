@@ -726,27 +726,27 @@ class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInte
     QProgressDialog *mDialog = nullptr;
 };
 
-bool QgsVectorLayer::countSymbolFeatures()
+QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
-  if ( mSymbolFeatureCounted )
-    return true;
+  if ( mSymbolFeatureCounted || mFeatureCounter )
+    return mFeatureCounter;
 
   mSymbolFeatureCountMap.clear();
 
   if ( !mValid )
   {
     QgsDebugMsg( "invoked with invalid layer" );
-    return false;
+    return mFeatureCounter;
   }
   if ( !mDataProvider )
   {
     QgsDebugMsg( "invoked with null mDataProvider" );
-    return false;
+    return mFeatureCounter;
   }
   if ( !mRenderer )
   {
     QgsDebugMsg( "invoked with null mRenderer" );
-    return false;
+    return mFeatureCounter;
   }
 
   if ( !mFeatureCounter )
@@ -758,7 +758,7 @@ bool QgsVectorLayer::countSymbolFeatures()
     QgsApplication::taskManager()->addTask( mFeatureCounter );
   }
 
-  return true;
+  return mFeatureCounter;
 }
 
 void QgsVectorLayer::updateExtents( bool force )

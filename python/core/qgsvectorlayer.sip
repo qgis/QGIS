@@ -854,20 +854,21 @@ Return the provider type for this layer
 .. versionadded:: 2.10
 %End
 
-    bool countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures();
 %Docstring
  Count features for symbols.
- The method will return immediately. You will need to connect to the
- symbolFeatureCountMapChanged() signal to be notified when the freshly updated
- feature counts are ready.
+ The method will return the feature counter task. You will need to
+ connect to the symbolFeatureCountMapChanged() signal to be
+ notified when the freshly updated feature counts are ready.
 
 .. note::
 
-   If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
-       task and call waitForFinished().
+   If the count features for symbols has been already done a
+       None is returned. If you need to wait for the results,
+       you can call waitForFinished() on the feature counter.
 
 .. versionadded:: 3.0
- :rtype: bool
+ :rtype: QgsVectorLayerFeatureCounter
 %End
 
     virtual bool setSubsetString( const QString &subset );
