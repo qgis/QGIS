@@ -121,6 +121,16 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeLink() const;
 
     /**
+     * Add a new history.
+     */
+    void addHistory();
+
+    /**
+     * Remove a selected history.
+     */
+    void removeHistory() const;
+
+    /**
      * Function to fill combobox like language, type.
      */
     void fillComboBox() const;
@@ -185,6 +195,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     QStringListModel *mCategoriesModel = nullptr;
     QStringListModel *mDefaultCategoriesModel = nullptr;
     QStringListModel *mRightsModel = nullptr;
+    QStringListModel *mHistoryModel = nullptr;
     void syncFromCategoriesTabToKeywordsTab() const;
 };
 

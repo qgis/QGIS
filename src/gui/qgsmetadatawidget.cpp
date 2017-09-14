@@ -73,6 +73,11 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   tabLinks->setModel( mLinksModel );
   tabLinks->setItemDelegate( new LinkItemDelegate() );
 
+  // History
+  mHistoryModel = new QStringListModel();
+  listHistory->setModel( mHistoryModel );
+
+  // Connect signals and slots
   connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWidget::updatePanel );
   connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::fillSourceFromLayer );
   connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::addVocabulary );
@@ -89,6 +94,8 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWidget::updateContactDetails );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWidget::addLink );
   connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWidget::removeLink );
+  connect( btnAddHistory, &QPushButton::clicked, this, &QgsMetadataWidget::addHistory );
+  connect( btnRemoveHistory, &QPushButton::clicked, this, &QgsMetadataWidget::removeHistory );
   connect( btnNewCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addNewCategory );
   connect( btnAddDefaultCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addDefaultCategory );
   connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeCategory );
@@ -262,6 +269,31 @@ void QgsMetadataWidget::removeLink() const
   mLinksModel->removeRow( selectedRows[0].row() );
 }
 
+void QgsMetadataWidget::addHistory()
+{
+  QString newHistory = QInputDialog::getText( this, tr( "New History" ), tr( "New History" ) );
+  QStringList existingHistory = mHistoryModel->stringList();
+  if ( ! existingHistory.contains( newHistory ) )
+  {
+    existingHistory.append( newHistory );
+    mHistoryModel->setStringList( existingHistory );
+  }
+}
+
+void QgsMetadataWidget::removeHistory() const
+{
+  QItemSelectionModel *selection = listHistory->selectionModel();
+  if ( selection->hasSelection() )
+  {
+    QModelIndex indexElementSelectionne = selection->currentIndex();
+
+    QVariant item = mHistoryModel->data( indexElementSelectionne, Qt::DisplayRole );
+    QStringList list = mHistoryModel->stringList();
+    list.removeOne( item.toString() );
+    mHistoryModel->setStringList( list );
+  }
+}
+
 void QgsMetadataWidget::fillComboBox() const
 {
   // Set default values in type combobox
@@ -399,6 +431,9 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
     mLinksModel->setItem( row, 5, new QStandardItem( link.mimeType ) );
     mLinksModel->setItem( row, 6, new QStandardItem( link.size ) );
   }
+
+  // History
+  mHistoryModel->setStringList( mMetadata.history() );
 }
 
 void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
@@ -465,6 +500,9 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
     links.append( link );
   }
   layerMetadata.setLinks( links );
+
+  // History
+  layerMetadata.setHistory( mHistoryModel->stringList() );
 }
 
 bool QgsMetadataWidget::checkMetadata() const

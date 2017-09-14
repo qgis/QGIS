@@ -104,6 +104,16 @@ class QgsMetadataWidget : QWidget
  Remove a selected link.
 %End
 
+    void addHistory();
+%Docstring
+ Add a new history.
+%End
+
+    void removeHistory() const;
+%Docstring
+ Remove a selected history.
+%End
+
     void fillComboBox() const;
 %Docstring
  Function to fill combobox like language, type.
