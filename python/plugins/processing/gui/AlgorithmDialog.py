@@ -218,7 +218,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             feedback.pushInfo(self.tr('Input parameters:'))
             display_params = []
             for k, v in parameters.items():
-                display_params.append( "'" + k + "' : " + self.alg.parameterDefinition(k).valueAsPythonString(v,context))
+                display_params.append("'" + k + "' : " + self.alg.parameterDefinition(k).valueAsPythonString(v, context))
             feedback.pushCommandInfo('{ ' + ', '.join(display_params) + ' }')
             feedback.pushInfo('')
             start_time = time.time()
