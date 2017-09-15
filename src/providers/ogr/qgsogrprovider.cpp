@@ -3179,7 +3179,16 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   if ( hIdentifiedDriver &&
        strcmp( GDALGetDriverShortName( hIdentifiedDriver ), "GML" ) == 0 )
   {
-    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "FORCE_SRS_DETECTION", "YES" );
+    // There's currently a bug in the OGR GML driver. If a .gfs file exists
+    // and FORCE_SRS_DETECTION is set, then OGR_L_GetFeatureCount() returns
+    // twice the number of features. And as, the .gfs contains the SRS, there
+    // is no need to turn this option on.
+    // https://trac.osgeo.org/gdal/ticket/7046
+    VSIStatBufL sStat;
+    if ( VSIStatL( CPLResetExtension( pszPath, "gfs" ), &sStat ) != 0 )
+    {
+      papszOpenOptions = CSLSetNameValue( papszOpenOptions, "FORCE_SRS_DETECTION", "YES" );
+    }
   }
 
   const int nOpenFlags = GDAL_OF_VECTOR | ( bUpdate ? GDAL_OF_UPDATE : 0 );
