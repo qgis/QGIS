@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    offsetcurve.py
+    Buffer.py
     ---------------------
     Date                 : Janaury 2015
     Copyright            : (C) 2015 by Giovanni Manghi
@@ -28,19 +28,24 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputVectorLayer)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class OffsetCurve(GdalAlgorithm):
+class Buffer(GdalAlgorithm):
 
     INPUT = 'INPUT'
+    FIELD = 'FIELD'
     GEOMETRY = 'GEOMETRY'
     DISTANCE = 'DISTANCE'
+    DISSOLVE = 'DISSOLVE'
+    EXPLODE_COLLECTIONS = 'EXPLODE_COLLECTIONS'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -49,15 +54,27 @@ class OffsetCurve(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'),
-                                                              [QgsProcessing.TypeVectorLine]))
+                                                              self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Offset distance (left-sided: positive, right-sided: negative)'),
+                                                       self.tr('Buffer distance'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=10))
+                                                       minValue=0.0,
+                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Dissolve by attribute'),
+                                                      None,
+                                                      self.INPUT,
+                                                      QgsProcessingParameterField.Any,
+                                                      optional=True))
+        self.addParameter(QgsProcessingParameterBoolean(self.DISSOLVE,
+                                                        self.tr('Dissolve all results'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.EXPLODE_COLLECTIONS,
+                                                        self.tr('Produce one feature for each geometry in any kind of geometry collection in the source file'),
+                                                        defaultValue=False))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
@@ -67,14 +84,14 @@ class OffsetCurve(GdalAlgorithm):
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
-                                                                  self.tr('Offset curve'),
-                                                                  QgsProcessing.TypeVectorLine))
+                                                                  self.tr('Buffer'),
+                                                                  QgsProcessing.TypeVectorPolygon))
 
     def name(self):
-        return 'offsetcurve'
+        return 'buffervectors'
 
     def displayName(self):
-        return self.tr('Offset curve')
+        return self.tr('Buffer vectors')
 
     def group(self):
         return self.tr('Vector geoprocessing')
@@ -86,6 +103,8 @@ class OffsetCurve(GdalAlgorithm):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+        dissolve = self.parameterAsString(parameters, self.DISSOLVE, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -98,8 +117,18 @@ class OffsetCurve(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        sql = "SELECT ST_OffsetCurve({}, {}), * FROM '{}'".format(geometry, distance, layerName)
+        if dissolve or field:
+            sql = "SELECT ST_Union(ST_Buffer({}, {})), * FROM '{}'".format(geometry, distance, layerName)
+        else:
+            sql = "SELECT ST_Buffer({}, {}), * FROM '{}'".format(geometry, distance, layerName)
+
+        if fieldName:
+            sql = '{} GROUP BY {}'.format(sql, fieldName)
+
         arguments.append(sql)
+
+        if self.parameterAsBool(parameters, self.EXPLODE_COLLECTIONS, context):
+            arguments.append('-explodecollections')
 
         if options:
             arguments.append(options)
