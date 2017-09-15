@@ -30,8 +30,10 @@
  *
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsCustomDropHandler
+class GUI_EXPORT QgsCustomDropHandler : public QObject
 {
+    Q_OBJECT
+
   public:
     virtual ~QgsCustomDropHandler() = default;
 

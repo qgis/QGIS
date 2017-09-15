@@ -8,7 +8,7 @@
 
 
 
-class QgsCustomDropHandler
+class QgsCustomDropHandler : QObject
 {
 %Docstring
  Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.
