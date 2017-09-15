@@ -80,8 +80,69 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsMergeLinesAlgorithm() );
+  addAlgorithm( new QgsSaveSelectedFeatures() );
   addAlgorithm( new QgsSmoothAlgorithm() );
   addAlgorithm( new QgsSimplifyAlgorithm() );
+}
+
+void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Selected features" ), QgsProcessing::TypeVectorPoint ) );
+}
+
+QString QgsSaveSelectedFeatures::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a new layer with all the selected features in a given vector layer.\n\n"
+                      "If the selected layer has no selected features, all features will be added to the resulting feature." );
+}
+
+QgsSaveSelectedFeatures *QgsSaveSelectedFeatures::createInstance() const
+{
+  return new QgsSaveSelectedFeatures();
+}
+
+QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, selectLayer->fields(), selectLayer->wkbType(), selectLayer->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+  QgsFeatureIterator it;
+  QgsFeature feat;
+
+  int count = selectLayer->selectedFeatureCount();
+  if ( count > 0 )
+  {
+    it = selectLayer->getSelectedFeatures();
+  }
+  else
+  {
+    count = selectLayer->featureCount();
+    it = selectLayer->getFeatures();
+  }
+
+  int current = 0;
+  double step = count > 0 ? 100.0 / count : 1;
+
+  while ( it.nextFeature( feat ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+
+    feedback->setProgress( current++ * step );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )

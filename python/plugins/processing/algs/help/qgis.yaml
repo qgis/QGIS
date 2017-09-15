@@ -499,11 +499,6 @@ qgis:reprojectlayer: >
 
   Attributes are not modified by this algorithm.
 
-qgis:saveselectedfeatures: >
-  This algorithm creates a new layer with all the selected features in a given vector layer.
-
-  If the selected layer has no selected features, all features will be added to the resulting feature.
-
 qgis:selectbyattribute: >
   This algorithm creates a selection in a vector layer. The criteria for selected features is defined based on the values of an attribute from the input layer.
 

@@ -129,7 +129,6 @@ from .RegularPoints import RegularPoints
 from .Relief import Relief
 from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
-from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
@@ -266,7 +265,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Relief(),
                 ReverseLineDirection(),
                 Ruggedness(),
-                SaveSelectedFeatures(),
                 SelectByAttribute(),
                 SelectByExpression(),
                 ServiceAreaFromLayer(),
