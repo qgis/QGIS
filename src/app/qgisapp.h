@@ -792,7 +792,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
 
     /**
-     * \brief dataSourceManager Open the DataSourceManager dialog/dock
+     * \brief dataSourceManager Open the DataSourceManager dialog
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
@@ -857,6 +857,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! set the active layer
     bool setActiveLayer( QgsMapLayer * );
+
+    /** Reload connections emitting the connectionsChanged signal
+     * \since QGIS 3.0
+     */
+    void reloadConnections();
 
   protected:
 

@@ -933,7 +933,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, &QgsClipboard::changed, this, &QgisApp::clipboardChanged );
-  mQgisInterface = new QgisAppInterface( this ); // create the interfce
+  mQgisInterface = new QgisAppInterface( this ); // create the interface
 
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
@@ -9664,6 +9664,11 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 
   mLayerTreeView->setCurrentLayer( layer );
   return true;
+}
+
+void QgisApp::reloadConnections()
+{
+  emit( connectionsChanged( ) );
 }
 
 

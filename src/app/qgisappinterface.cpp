@@ -171,6 +171,11 @@ void QgisAppInterface::newProject( bool promptToSaveFlag )
   qgis->fileNew( promptToSaveFlag );
 }
 
+void QgisAppInterface::reloadConnections()
+{
+  qgis->reloadConnections( );
+}
+
 QgsMapLayer *QgisAppInterface::activeLayer()
 {
   return qgis->activeLayer();
