@@ -10,7 +10,7 @@
       <gml:coord><gml:X>6</gml:X><gml:Y>3</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                                                                                        
+                                                                                                                                                              
   <gml:featureMember>
     <ogr:extract_by_extent fid="polys.0">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-1,-1 -1,3 3,3 3,2 2,2 2,-1 -1,-1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>

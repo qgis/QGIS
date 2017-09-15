@@ -6,9 +6,9 @@
     <GeometryType>3</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
-      <FeatureCount>3</FeatureCount>
+      <FeatureCount>2</FeatureCount>
       <ExtentXMin>-1.00000</ExtentXMin>
-      <ExtentXMax>10.00000</ExtentXMax>
+      <ExtentXMax>6.00000</ExtentXMax>
       <ExtentYMin>-3.00000</ExtentYMin>
       <ExtentYMax>3.00000</ExtentYMax>
     </DatasetSpecificInfo>
@@ -26,8 +26,7 @@
     <PropertyDefn>
       <Name>floatval</Name>
       <ElementPath>floatval</ElementPath>
-      <Type>String</Type>
-      <Width>18</Width>
+      <Type>Real</Type>
     </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>
