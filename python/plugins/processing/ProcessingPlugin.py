@@ -32,13 +32,16 @@ import os
 import sys
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from qgis.gui import QgsOptionsWidgetFactory
+                       QgsProcessingUtils,
+                       QgsProcessingModelAlgorithm)
+from qgis.gui import (QgsOptionsWidgetFactory,
+                      QgsCustomDropHandler)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon
 
 from processing.core.Processing import Processing
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
@@ -66,6 +69,23 @@ class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
         return ConfigOptionsPage(parent)
 
 
+class ProcessingDropHandler(QgsCustomDropHandler):
+
+    def handleFileDrop(self, file):
+        if not file.lower().endswith('.model3'):
+            return False
+
+        alg = QgsProcessingModelAlgorithm()
+        if not alg.fromFile(file):
+            return False
+
+        alg.setProvider(QgsApplication.processingRegistry().providerById('model'))
+        dlg = AlgorithmDialog(alg)
+        dlg.setAttribute(Qt.WA_DeleteOnClose)
+        dlg.show()
+        return True
+
+
 class ProcessingPlugin(object):
 
     def __init__(self, iface):
@@ -73,6 +93,8 @@ class ProcessingPlugin(object):
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr('Processing'))
         iface.registerOptionsWidgetFactory(self.options_factory)
+        self.drop_handler = ProcessingDropHandler()
+        iface.registerCustomDropHandler(self.drop_handler)
         self.locator_filter = AlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.locator_filter)
         Processing.initialize()
@@ -159,6 +181,7 @@ class ProcessingPlugin(object):
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
         self.iface.deregisterLocatorFilter(self.locator_filter)
+        self.iface.unregisterCustomDropHandler(self.drop_handler)
 
         removeMenus()
         Processing.deinitialize()

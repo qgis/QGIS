@@ -1333,6 +1333,14 @@ void QgisApp::dropEvent( QDropEvent *event )
   timer->setSingleShot( true );
   timer->setInterval( 50 );
 
+  // first, allow custom handlers to directly operate on the mime data
+  const QList<QPointer<QgsCustomDropHandler >> handlers = mCustomDropHandlers;
+  for ( QgsCustomDropHandler *handler : handlers )
+  {
+    if ( handler )
+      handler->handleMimeData( event->mimeData() );
+  }
+
   // get the file list
   QList<QUrl>::iterator i;
   QList<QUrl>urls = event->mimeData()->urls();
@@ -1392,40 +1400,49 @@ void QgisApp::dropEvent( QDropEvent *event )
       files << fileName;
     }
   }
-  timer->setProperty( "files", files );
 
   QgsMimeDataUtils::UriList lst;
   if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
     lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
   }
-  timer->setProperty( "uris", QVariant::fromValue( lst ) );
 
-  connect( timer, &QTimer::timeout, this, &QgisApp::dropEventTimeout );
+  connect( timer, &QTimer::timeout, this, [this, timer, files, lst]
+  {
+    freezeCanvases();
+
+    for ( const QString &file : qgsAsConst( files ) )
+    {
+      bool handled = false;
+
+      // give custom drop handlers first priority at handling the file
+      const QList<QPointer<QgsCustomDropHandler >>handlers = mCustomDropHandlers;
+      for ( QgsCustomDropHandler *handler : handlers )
+      {
+        if ( handler && handler->handleFileDrop( file ) )
+        {
+          handled = true;
+          break;
+        }
+      }
+
+      if ( !handled )
+        openFile( file );
+    }
+
+    if ( !lst.isEmpty() )
+    {
+      handleDropUriList( lst );
+    }
+
+    freezeCanvases( false );
+    refreshMapCanvas();
+
+    timer->deleteLater();
+  } );
 
   event->acceptProposedAction();
   timer->start();
-}
-
-void QgisApp::dropEventTimeout()
-{
-  freezeCanvases();
-  QStringList files = sender()->property( "files" ).toStringList();
-  sender()->deleteLater();
-
-  Q_FOREACH ( const QString &file, files )
-  {
-    openFile( file );
-  }
-
-  QgsMimeDataUtils::UriList lst = sender()->property( "uris" ).value<QgsMimeDataUtils::UriList>();
-  if ( !lst.isEmpty() )
-  {
-    handleDropUriList( lst );
-  }
-
-  freezeCanvases( false );
-  refreshMapCanvas();
 }
 
 void QgisApp::annotationCreated( QgsAnnotation *annotation )
@@ -1474,9 +1491,9 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       Q_FOREACH ( QgsCustomDropHandler *handler, mCustomDropHandlers )
       {
-        if ( handler->key() == u.providerKey )
+        if ( handler && handler->customUriProviderKey() == u.providerKey )
         {
-          handler->handleDrop( u );
+          handler->handleCustomUriDrop( u );
           break;
         }
       }

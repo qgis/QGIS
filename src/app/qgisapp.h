@@ -1511,9 +1511,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Set the layer for the map style dock. Doesn't show the style dock
     void setMapStyleDockLayer( QgsMapLayer *layer );
 
-    //! Handles processing of dropped mimedata
-    void dropEventTimeout();
-
     void annotationCreated( QgsAnnotation *annotation );
 
     void updateCrsStatusBar();
@@ -2056,7 +2053,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
-    QList<QgsCustomDropHandler *> mCustomDropHandlers;
+    QList<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
 
     QDateTime mProjectLastModified;
 
