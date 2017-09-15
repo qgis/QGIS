@@ -94,7 +94,7 @@ void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
 QString QgsSaveSelectedFeatures::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a new layer with all the selected features in a given vector layer.\n\n"
-                      "If the selected layer has no selected features, all features will be added to the resulting feature." );
+                      "If the selected layer has no selected features, the newly created layer will be empty." );
 }
 
 QgsSaveSelectedFeatures *QgsSaveSelectedFeatures::createInstance() const
@@ -111,23 +111,13 @@ QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parame
   if ( !sink )
     return QVariantMap();
 
-  QgsFeatureIterator it;
-  QgsFeature feat;
 
   int count = selectLayer->selectedFeatureCount();
-  if ( count > 0 )
-  {
-    it = selectLayer->getSelectedFeatures();
-  }
-  else
-  {
-    count = selectLayer->featureCount();
-    it = selectLayer->getFeatures();
-  }
-
   int current = 0;
   double step = count > 0 ? 100.0 / count : 1;
 
+  QgsFeatureIterator it = selectLayer->getSelectedFeatures();;
+  QgsFeature feat;
   while ( it.nextFeature( feat ) )
   {
     if ( feedback->isCanceled() )
