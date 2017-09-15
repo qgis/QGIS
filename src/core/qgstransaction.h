@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include <QString>
 #include <QObject>
+#include <QStack>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -117,6 +118,45 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      */
     static bool supportsTransaction( const QgsVectorLayer *layer );
 
+    /**
+     * creates a save point
+     * returns empty string on error
+     * returns the last created savepoint if it's not dirty
+     * \since QGIS 3.0
+     */
+    QString createSavepoint( QString &error SIP_OUT );
+
+    /**
+     * creates a save point
+     * returns empty string on error
+     * \since QGIS 3.0
+     */
+    QString createSavepoint( const QString &savePointId, QString &error SIP_OUT );
+
+    /**
+     * rollback to save point, the save point is maintained and is "undertied"
+     * \since QGIS 3.0
+     */
+    bool rollbackToSavepoint( const QString &name, QString &error SIP_OUT );
+
+    /**
+     * dirty save point such that next call to createSavepoint will create a new one
+     * \since QGIS 3.0
+     */
+    void dirtyLastSavePoint();
+
+    /**
+     * returns savepoints
+     * \since QGIS 3.0
+     */
+    QList< QString > savePoints() const { return QList< QString >::fromVector( mSavepoints ); }
+
+    /**
+     * returns the last created savepoint
+     * \since QGIS 3.0
+     */
+    bool lastSavePointIsDirty() const { return mLastSavePointIsDirty; }
+
   signals:
 
     /**
@@ -136,6 +176,9 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
 
     bool mTransactionActive;
     QSet<QgsVectorLayer *> mLayers;
+
+    QStack< QString > mSavepoints;
+    bool mLastSavePointIsDirty;
 
     void setLayerTransactionIds( QgsTransaction *transaction );
 
