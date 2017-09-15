@@ -59,6 +59,7 @@ class PointSelectionPanel(BASE, WIDGET):
 
             self.tool = PointMapTool(canvas)
             self.tool.canvasClicked.connect(self.updatePoint)
+            self.tool.complete.connect(self.pointPicked)
         else:
             self.prevMapTool = None
             self.tool = None
@@ -81,8 +82,9 @@ class PointSelectionPanel(BASE, WIDGET):
     def updatePoint(self, point, button):
         s = '{},{}'.format(point.x(), point.y())
         self.crs = QgsProject.instance().crs()
-
         self.leText.setText(s)
+
+    def pointPicked(self):
         canvas = iface.mapCanvas()
         canvas.setMapTool(self.prevMapTool)
         self.dialog.showNormal()
