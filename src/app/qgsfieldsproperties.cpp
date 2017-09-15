@@ -397,9 +397,9 @@ void QgsFieldsProperties::loadRelations()
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         nmCombo->addItem( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
-      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relation.id() );
+      const QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
-      const QVariant nmrelcfg = setup.config().value( QStringLiteral( "nm-rel" ) );
+      const QVariant nmrelcfg =  editFormConfig.widgetConfig( relation.id() ).value( QStringLiteral( "nm-rel" ) );
 
       int idx =  nmCombo->findData( nmrelcfg.toString() );
 
