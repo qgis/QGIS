@@ -81,6 +81,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Start a new blank project
     void newProject( bool promptToSaveFlag = false ) override;
 
+    /**
+     * Triggered by plugins when connections have changed.
+     * This is forwarded to the GUI elements that needs to be updated (i.e. the source
+     * select dialogs and the browser widgets)
+     * \since QGIS 3.0
+     */
+    void reloadConnections( ) override;
+
     //! Get pointer to the active layer (layer selected in the legend)
     QgsMapLayer *activeLayer() override;
 

@@ -165,6 +165,15 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Start a blank project
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
 
+    /**
+     * Triggered when connections have changed.
+     * This calls reloadConnections in the main application and triggers a signal that is
+     * forwarder to the GUI elements that needs to be updated (i.e. the source
+     * select dialogs and the browser widgets)
+     * \since QGIS 3.0
+     */
+    virtual void reloadConnections( ) = 0;
+
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;
 
@@ -796,14 +805,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * added in version 2.7
      */
     void layerSavedAs( QgsMapLayer *l, const QString &path );
-
-    /**
-     * Emitted when connections have changed, this signal is forwarded
-     * to the GUI elements that needs to be updated (i.e. the source
-     * select dialogs and the browser widgets)
-     * \since QGIS 3.0
-     */
-    void connectionsChanged();
 
 };
 Q_NOWARN_DEPRECATED_POP
