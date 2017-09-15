@@ -114,7 +114,7 @@ void QgsVectorLayerUndoPassthroughCommandAddFeatures::undo()
 void QgsVectorLayerUndoPassthroughCommandAddFeatures::redo()
 {
   mFeatures = mInitialFeatures;
-  if ( setSavePoint() and mBuffer->L->dataProvider()->addFeatures( mFeatures ) )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->addFeatures( mFeatures ) )
   {
     for ( const QgsFeature &f : qgsAsConst( mFeatures ) )
     {
@@ -146,7 +146,7 @@ void QgsVectorLayerUndoPassthroughCommandDeleteFeatures::undo()
 
 void QgsVectorLayerUndoPassthroughCommandDeleteFeatures::redo()
 {
-  if ( setSavePoint() and mBuffer->L->dataProvider()->deleteFeatures( mFids ) )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->deleteFeatures( mFids ) )
   {
     for ( const QgsFeatureId &id : mFids )
     {
@@ -179,7 +179,7 @@ void QgsVectorLayerUndoPassthroughCommandChangeGeometry::redo()
 {
   QgsGeometryMap geomMap;
   geomMap.insert( mFid, mNewGeom );
-  if ( setSavePoint() and mBuffer->L->dataProvider()->changeGeometryValues( geomMap ) )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->changeGeometryValues( geomMap ) )
   {
     emit mBuffer->geometryChanged( mFid, mNewGeom );
   }
@@ -212,7 +212,7 @@ void QgsVectorLayerUndoPassthroughCommandChangeAttribute::redo()
   map.insert( mField, mNewValue );
   QgsChangedAttributesMap attribMap;
   attribMap.insert( mFid, map );
-  if ( setSavePoint() and mBuffer->L->dataProvider()->changeAttributeValues( attribMap ) )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->changeAttributeValues( attribMap ) )
   {
     emit mBuffer->attributeValueChanged( mFid, mField, mNewValue );
   }
@@ -233,7 +233,7 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::undo()
   // note that the deleteAttribute here is only necessary to inform the provider that
   // an attribute is removed after the rollBackToSavePoint
   const int attr = mBuffer->L->dataProvider()->fieldNameIndex( mField.name() );
-  if ( mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr ) and rollBackToSavePoint() )
+  if ( mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr ) && rollBackToSavePoint() )
   {
     mBuffer->updateLayerFields();
     emit mBuffer->attributeDeleted( attr );
@@ -246,7 +246,7 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::undo()
 
 void QgsVectorLayerUndoPassthroughCommandAddAttribute::redo()
 {
-  if ( setSavePoint() and mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField ) )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField ) )
   {
     mBuffer->updateLayerFields();
     const int attr =  mBuffer->L->dataProvider()->fieldNameIndex( mField.name() );
@@ -268,7 +268,7 @@ void QgsVectorLayerUndoPassthroughCommandDeleteAttribute::undo()
 {
   // note that the addAttributes here is only necessary to inform the provider that
   // an attribute is added back after the rollBackToSavePoint
-  if ( mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField )  and rollBackToSavePoint() )
+  if ( mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField )  && rollBackToSavePoint() )
   {
     mBuffer->updateLayerFields();
     const int attr = mBuffer->L->dataProvider()->fieldNameIndex( mField.name() );
@@ -283,7 +283,7 @@ void QgsVectorLayerUndoPassthroughCommandDeleteAttribute::undo()
 void QgsVectorLayerUndoPassthroughCommandDeleteAttribute::redo()
 {
   const int attr = mBuffer->L->dataProvider()->fieldNameIndex( mField.name() );
-  if ( setSavePoint() and mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr ) )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr ) )
   {
     mBuffer->updateLayerFields();
     emit mBuffer->attributeDeleted( attr );
@@ -308,7 +308,7 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::undo()
   // an attribute is renamed after the rollBackToSavePoint
   QgsFieldNameMap map;
   map[ mAttr ] = mOldName;
-  if ( mBuffer->L->dataProvider()->renameAttributes( map ) and rollBackToSavePoint() )
+  if ( mBuffer->L->dataProvider()->renameAttributes( map ) && rollBackToSavePoint() )
   {
     mBuffer->updateLayerFields();
     emit mBuffer->attributeRenamed( mAttr, mOldName );
@@ -323,7 +323,7 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::redo()
 {
   QgsFieldNameMap map;
   map[ mAttr ] = mNewName;
-  if ( setSavePoint() and mBuffer->L->dataProvider()->renameAttributes( map ) )
+  if ( setSavePoint() && mBuffer->L->dataProvider()->renameAttributes( map ) )
   {
     mBuffer->updateLayerFields();
     emit mBuffer->attributeRenamed( mAttr, mNewName );
