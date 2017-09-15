@@ -589,7 +589,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \note not available in Python bindings
      * \since QGIS 3.0
      */
-    static Qgs3DRendererRegistry *renderer3DRegistry() SIP_SKIP;
+    static Qgs3DRendererRegistry *renderer3DRegistry();
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.

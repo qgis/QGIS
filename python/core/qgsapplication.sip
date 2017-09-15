@@ -704,6 +704,15 @@ Returns path to the build output directory. Valid only when running from build d
  :rtype: QgsFieldFormatterRegistry
 %End
 
+    static Qgs3DRendererRegistry *renderer3DRegistry();
+%Docstring
+ Returns registry of available 3D renderers.
+.. note::
+
+   not available in Python bindings
+.. versionadded:: 3.0
+ :rtype: Qgs3DRendererRegistry
+%End
 
     static QString nullRepresentation();
 %Docstring

@@ -2,6 +2,7 @@
 #define QGS3DRENDERERREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 #include <QMap>
 
@@ -19,17 +20,29 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
 {
   public:
 
-    Qgs3DRendererAbstractMetadata( const QString &name );
+    virtual ~Qgs3DRendererAbstractMetadata();
 
-    QString name() const;
+    /**
+     * Returns unique identifier of the 3D renderer class
+     */
+    QString type() const;
 
-    /** Return new instance of the renderer given the DOM element. Returns NULL on error.
-     * Pure virtual function: must be implemented in derived classes.  */
-    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0;
+    /**
+     * Returns new instance of the renderer given the DOM element. Returns NULL on error.
+     * Pure virtual function: must be implemented in derived classes.
+     */
+    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 SIP_FACTORY;
 
   protected:
-    //! name used within QGIS for identification (the same what renderer's type() returns)
-    QString mName;
+
+    /**
+     * Constructor of the base class
+     */
+    explicit Qgs3DRendererAbstractMetadata( const QString &type );
+
+  protected:
+    //! Type used within QGIS for identification (the same what renderer's type() returns)
+    QString mType;
 };
 
 
@@ -45,13 +58,24 @@ class CORE_EXPORT Qgs3DRendererRegistry
 
     ~Qgs3DRendererRegistry();
 
-    //! takes ownership
-    void addRenderer( Qgs3DRendererAbstractMetadata *metadata );
+    /**
+     * Registers a new 3D renderer type. The call takes ownership of the passed metadata object.
+     */
+    void addRenderer( Qgs3DRendererAbstractMetadata *metadata SIP_TRANSFER );
 
-    void removeRenderer( const QString &name );
+    /**
+     * Unregisters a 3D renderer type
+     */
+    void removeRenderer( const QString &type );
 
-    Qgs3DRendererAbstractMetadata *rendererMetadata( const QString &name ) const;
+    /**
+     * Returns metadata for a 3D renderer type (may be used to create a new instance of the type)
+     */
+    Qgs3DRendererAbstractMetadata *rendererMetadata( const QString &type ) const;
 
+    /**
+     * Returns a list of all available 3D renderer types.
+     */
     QStringList renderersList() const;
 
   private:

@@ -1,14 +1,18 @@
 #include "qgs3drendererregistry.h"
 
 
-Qgs3DRendererAbstractMetadata::Qgs3DRendererAbstractMetadata( const QString &name )
-  : mName( name )
+Qgs3DRendererAbstractMetadata::Qgs3DRendererAbstractMetadata( const QString &type )
+  : mType( type )
 {
 }
 
-QString Qgs3DRendererAbstractMetadata::name() const
+Qgs3DRendererAbstractMetadata::~Qgs3DRendererAbstractMetadata()
 {
-  return mName;
+}
+
+QString Qgs3DRendererAbstractMetadata::type() const
+{
+  return mType;
 }
 
 
@@ -26,17 +30,17 @@ Qgs3DRendererRegistry::~Qgs3DRendererRegistry()
 
 void Qgs3DRendererRegistry::addRenderer( Qgs3DRendererAbstractMetadata *metadata )
 {
-  mRenderers.insert( metadata->name(), metadata );
+  mRenderers.insert( metadata->type(), metadata );
 }
 
-void Qgs3DRendererRegistry::removeRenderer( const QString &name )
+void Qgs3DRendererRegistry::removeRenderer( const QString &type )
 {
-  delete mRenderers.take( name );
+  delete mRenderers.take( type );
 }
 
-Qgs3DRendererAbstractMetadata *Qgs3DRendererRegistry::rendererMetadata( const QString &name ) const
+Qgs3DRendererAbstractMetadata *Qgs3DRendererRegistry::rendererMetadata( const QString &type ) const
 {
-  return mRenderers.value( name );
+  return mRenderers.value( type );
 }
 
 QStringList Qgs3DRendererRegistry::renderersList() const

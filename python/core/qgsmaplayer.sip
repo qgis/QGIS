@@ -760,7 +760,24 @@ Return pointer to layer's undo stack
  :rtype: QgsMapLayerStyleManager
 %End
 
+    void setRenderer3D( QgsAbstract3DRenderer *renderer /Transfer/ );
+%Docstring
+ Sets 3D renderer for the layer. Takes ownership of the renderer.
+.. note::
 
+   not available in Python bindings
+.. versionadded:: 3.0
+%End
+
+    QgsAbstract3DRenderer *renderer3D() const;
+%Docstring
+ Returns 3D renderer associated with the layer. May be null.
+.. note::
+
+   not available in Python bindings
+.. versionadded:: 3.0
+ :rtype: QgsAbstract3DRenderer
+%End
 
     bool isInScaleRange( double scale ) const;
 %Docstring

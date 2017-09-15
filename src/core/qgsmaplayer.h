@@ -686,14 +686,14 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note not available in Python bindings
      * \since QGIS 3.0
      */
-    void setRenderer3D( QgsAbstract3DRenderer *renderer SIP_TRANSFER ) SIP_SKIP;
+    void setRenderer3D( QgsAbstract3DRenderer *renderer SIP_TRANSFER );
 
     /**
      * Returns 3D renderer associated with the layer. May be null.
      * \note not available in Python bindings
      * \since QGIS 3.0
      */
-    QgsAbstract3DRenderer *renderer3D() const SIP_SKIP;
+    QgsAbstract3DRenderer *renderer3D() const;
 
     /** Tests whether the layer should be visible at the specified \a scale.
      *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
