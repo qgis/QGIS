@@ -120,7 +120,7 @@ void QgsGeoPackageRootItem::createDatabase()
 #endif
 
 
-QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
+QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
   , mPath( path )
 {
@@ -129,7 +129,7 @@ QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, c
 
 
 
-QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
+QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
   const auto layers = QgsOgrLayerItem::subLayers( mPath, QStringLiteral( "GPKG" ) );
@@ -148,30 +148,31 @@ QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
   return children;
 }
 
-bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
+bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
 {
   if ( type() != other->type() )
   {
     return false;
   }
-  const QgsGeoPackageConnectionItem *o = dynamic_cast<const QgsGeoPackageConnectionItem *>( other );
+  const QgsGeoPackageCollectionItem *o = dynamic_cast<const QgsGeoPackageCollectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
 
 }
 
 #ifdef HAVE_GUI
 
-QList<QAction *> QgsGeoPackageConnectionItem::actions()
+QList<QAction *> QgsGeoPackageCollectionItem::actions()
 {
   QList<QAction *> lst;
 
-  QAction *actionDeleteConnection = new QAction( tr( "Remove connection" ), this );
-  connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
-  lst.append( actionDeleteConnection );
+  // Add to stored connections
+  QAction *actionAddConnection = new QAction( tr( "Add connection" ), this );
+  connect( actionAddConnection, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addConnection );
+  lst.append( actionAddConnection );
 
   // Add table to existing DB
   QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), this );
-  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
+  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addTable );
   lst.append( actionAddTable );
 
   return lst;
@@ -180,7 +181,7 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions()
 
 
 
-bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
+bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
 
   if ( !QgsMimeDataUtils::isUriList( data ) )
@@ -327,7 +328,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
 }
 
 
-bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString &uri, QString &errCause )
+bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &uri, QString &errCause )
 {
   bool result = false;
   // Better safe than sorry
@@ -444,6 +445,40 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString &ur
   return result;
 }
 
+QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
+  : QgsGeoPackageCollectionItem( parent, name, path )
+{
+
+}
+
+bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
+{
+  if ( type() != other->type() )
+  {
+    return false;
+  }
+  const QgsGeoPackageConnectionItem *o = dynamic_cast<const QgsGeoPackageConnectionItem *>( other );
+  return o && mPath == o->mPath && mName == o->mName;
+
+}
+
+#ifdef HAVE_GUI
+QList<QAction *> QgsGeoPackageConnectionItem::actions()
+{
+  QList<QAction *> lst;
+
+  QAction *actionDeleteConnection = new QAction( tr( "Remove connection" ), this );
+  connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
+  lst.append( actionDeleteConnection );
+
+  // Add table to existing DB
+  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), this );
+  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
+  lst.append( actionAddTable );
+
+
+  return lst;
+}
 
 void QgsGeoPackageConnectionItem::deleteConnection()
 {
@@ -451,8 +486,8 @@ void QgsGeoPackageConnectionItem::deleteConnection()
   mParent->refreshConnections();
 }
 
-#ifdef HAVE_GUI
-void QgsGeoPackageConnectionItem::addTable()
+
+void QgsGeoPackageCollectionItem::addTable()
 {
   QgsNewGeoPackageLayerDialog dialog( nullptr );
   QFileInfo fileInfo( mPath );
@@ -472,6 +507,14 @@ void QgsGeoPackageConnectionItem::addTable()
     QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exists or the path is empy!" ).arg( connName ) );
   }
 }
+
+void QgsGeoPackageCollectionItem::addConnection()
+{
+  QgsOgrDbConnection connection( mName, QStringLiteral( "GeoPackage" ) );
+  connection.save();
+  emit connectionsChanged();
+}
+
 #endif
 
 #ifdef HAVE_GUI
@@ -554,7 +597,7 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 
 bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
-  return QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( mUri, errCause );
+  return QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( mUri, errCause );
 }
 
 

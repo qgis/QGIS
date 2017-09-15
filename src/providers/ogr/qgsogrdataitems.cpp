@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsgeopackagedataitems.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -567,9 +568,19 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 #endif
   }
 
-  // return item without testing if:
-  // scanExtSetting
-  // or zipfile and scan zip == "Basic scan"
+  // Filters out the OGR/GDAL supported formats that can contain multiple layers
+  // and should be treated like a DB: GeoPackage and SQLite
+  // NOTE: this formats are scanned for rasters too and they must
+  //       be skipped by "gdal" provider or the rasters will be listed
+  //       twice. ogrSupportedDbLayersExtensions must be kept in sync
+  //       with the companion variable (same name) in the gdal provider
+  //       class
+  // TODO: add more OGR supported multiple layers formats here!
+  QStringList ogrSupportedDbLayersExtensions;
+  ogrSupportedDbLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" );
+
+  // Fast track: return item without testing if:
+  // scanExtSetting or zipfile and scan zip == "Basic scan"
   if ( scanExtSetting ||
        ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
   {
@@ -596,13 +607,18 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     // Handle collections
     // Check if the layer has sublayers by comparing the extension
     QgsDataItem *item;
-    QStringList multipleLayersExtensions;
-    // TODO: add more OGR supported multiple layers formats here!
-    multipleLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" );
-    if ( ! multipleLayersExtensions.contains( suffix ) )
+    if ( ! ogrSupportedDbLayersExtensions.contains( suffix ) )
+    {
       item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
+    }
+    else if ( suffix.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      item = new QgsGeoPackageCollectionItem( parentItem, name, path );
+    }
     else
+    {
       item = new QgsOgrDataCollectionItem( parentItem, name, path );
+    }
 
     if ( item )
       return item;
@@ -625,10 +641,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( GDALGetDriverShortName( hDriver ) ), 2 );
 
-  int numLayers = GDALDatasetGetLayerCount( hDataSource );
-
   QgsDataItem *item = nullptr;
 
+  int numLayers = OGR_DS_GetLayerCount( hDataSource );
   if ( numLayers == 1 )
   {
     QgsDebugMsgLevel( QString( "using name = %1" ).arg( name ), 2 );
@@ -638,6 +653,10 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   {
     QgsDebugMsgLevel( QString( "using name = %1" ).arg( name ), 2 );
     item = new QgsOgrDataCollectionItem( parentItem, name, path );
+  }
+  else if ( suffix.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+  {
+    item = new QgsGeoPackageCollectionItem( parentItem, name, path );
   }
 
   GDALClose( hDataSource );

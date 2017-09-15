@@ -64,12 +64,16 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
 };
 
 
-class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
+/**
+ * \brief The QgsGeoPackageCollectionItem class is the base class for
+ *        GeoPackage container
+ */
+class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
 
   public:
-    QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
+    QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path );
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
@@ -87,13 +91,37 @@ class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
 
   public slots:
 #ifdef HAVE_GUI
-    void editConnection();
-    void deleteConnection();
     void addTable();
+    void addConnection();
 #endif
 
   protected:
     QString mPath;
+};
+
+
+/**
+ * \brief The QgsGeoPackageConnectionItem class adds the stored
+ *        connection management to QgsGeoPackageCollectionItem
+ */
+class QgsGeoPackageConnectionItem : public QgsGeoPackageCollectionItem
+{
+    Q_OBJECT
+
+  public:
+    QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
+    virtual bool equal( const QgsDataItem *other ) override;
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions() override;
+#endif
+
+  public slots:
+#ifdef HAVE_GUI
+    void editConnection();
+    void deleteConnection();
+#endif
+
 };
 
 
