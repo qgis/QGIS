@@ -157,7 +157,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
-        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context)
+        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context, network.sourceCrs())
         endPoints = self.parameterAsSource(parameters, self.END_POINTS, context)
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 

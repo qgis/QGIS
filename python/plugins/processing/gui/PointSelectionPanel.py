@@ -28,6 +28,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import (QgsProject,
+                       QgsReferencedPointXY,
+                       QgsPointXY)
 from qgis.PyQt import uic
 
 from qgis.utils import iface
@@ -48,6 +51,7 @@ class PointSelectionPanel(BASE, WIDGET):
         self.btnSelect.clicked.connect(self.selectOnCanvas)
 
         self.dialog = dialog
+        self.crs = QgsProject.instance().crs()
 
         if iface is not None:
             canvas = iface.mapCanvas()
@@ -76,6 +80,7 @@ class PointSelectionPanel(BASE, WIDGET):
 
     def updatePoint(self, point, button):
         s = '{},{}'.format(point.x(), point.y())
+        self.crs = QgsProject.instance().crs()
 
         self.leText.setText(s)
         canvas = iface.mapCanvas()
@@ -86,7 +91,15 @@ class PointSelectionPanel(BASE, WIDGET):
 
     def getValue(self):
         if str(self.leText.text()).strip() != '':
-            return str(self.leText.text())
+            try:
+                parts = self.leText.text().split(',')
+                parts = [float(p) for p in parts]
+                r = QgsReferencedPointXY(QgsPointXY(parts[0], parts[1]),
+                                         self.crs)
+                return r
+
+            except:
+                return str(self.leText.text())
         else:
             return None
 

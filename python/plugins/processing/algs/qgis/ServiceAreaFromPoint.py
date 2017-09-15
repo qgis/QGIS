@@ -163,7 +163,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
-        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context)
+        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context, network.sourceCrs())
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
         travelCost = self.parameterAsDouble(parameters, self.TRAVEL_COST, context)
 

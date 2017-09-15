@@ -34,6 +34,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
+                       QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsFields,
@@ -158,7 +159,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
         startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
-        endPoint = self.parameterAsPoint(parameters, self.END_POINT, context)
+        endPoint = self.parameterAsPoint(parameters, self.END_POINT, context, network.sourceCrs())
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 
         directionFieldName = self.parameterAsString(parameters, self.DIRECTION_FIELD, context)
