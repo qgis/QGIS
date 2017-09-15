@@ -73,6 +73,7 @@ from .warp import warp
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 
+from .Buffer import Buffer
 from .OffsetCurve import OffsetCurve
 from .ogrinfo import ogrinfo
 from .OgrToPostGis import OgrToPostGis
@@ -82,7 +83,6 @@ from .PointsAlongLines import PointsAlongLines
 # from .ogr2ogrclip import Ogr2OgrClip
 # from .ogr2ogrclipextent import Ogr2OgrClipExtent
 # from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
-# from .ogr2ogrbuffer import Ogr2OgrBuffer
 # from .ogr2ogrdissolve import Ogr2OgrDissolve
 # from .onesidebuffer import OneSideBuffer
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
@@ -175,6 +175,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # gdalcalc(),
             # rasterize_over(),
             # ----- OGR tools -----
+            Buffer(),
             OffsetCurve(),
             ogrinfo(),
             OgrToPostGis(),
@@ -183,7 +184,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             # Ogr2OgrClip(),
             # Ogr2OgrClipExtent(),
             # Ogr2OgrToPostGisList(),
-            # Ogr2OgrBuffer(),
             # Ogr2OgrDissolve(),
             # OneSideBuffer(),
             # Ogr2OgrTableToPostGisList(),

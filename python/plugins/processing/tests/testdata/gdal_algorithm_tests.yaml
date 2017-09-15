@@ -489,6 +489,62 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: gdal:buffervectors
+    name: Buffer lines
+    params:
+      DISSOLVEALL: false
+      DISTANCE: 1.0
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      MULTI: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/buffer_lines.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+    expectedFailure:
+      - int(1)
+
+  - algorithm: gdal:buffervectors
+    name: Basic polygon buffer
+    params:
+      DISSOLVEALL: false
+      DISTANCE: 0.5
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/buffer_polys.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
+  - algorithm: gdal:buffervectors
+    name: Polygon buffer with dissolve
+    params:
+      DISSOLVEALL: true
+      DISTANCE: 0.5
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: polys.gml
+        type: vector
+      MULTI: false
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/buffer_polys_dissolve.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+
 #  - algorithm: gdal:singlesidedbufferforlines
 #    name: One-side buffer for lines (left-handed)
 #    params:
@@ -503,62 +559,6 @@ tests:
 #    results:
 #      OUTPUT_LAYER:
 #        name: expected/gdal/one_side_buffer.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: gdal:buffervectors
-#    name: Buffer lines
-#    params:
-#      DISSOLVEALL: false
-#      DISTANCE: 1.0
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#    expectedFailure:
-#      - int(1)
-#
-#  - algorithm: gdal:buffervectors
-#    name: Basic polygon buffer
-#    params:
-#      DISSOLVEALL: false
-#      DISTANCE: 0.5
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_polys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: gdal:buffervectors
-#    name: Polygon buffer with dissolve
-#    params:
-#      DISSOLVEALL: true
-#      DISTANCE: 0.5
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_polys_dissolve.gml
 #        type: vector
 #        compare:
 #          geometry:
