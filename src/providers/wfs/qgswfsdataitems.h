@@ -79,6 +79,21 @@ class QgsWfsLayerItem : public QgsLayerItem
     QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
     ~QgsWfsLayerItem();
 
+  public slots:
+    //! get style of the active data item (geonode layer item) and copy it to the clipboard
+
+    /**
+       \param sourceItem  The data item where the style will be taken from
+                                        (defaults to the active data item on the browser dock widget)
+     */
+    void copyStyle();
+    //! paste style on the clipboard to the active data item (geonode layer item) and push it to the source
+
+    /**
+       \param destinationItem  The data item that the clipboard will be pasted to
+                                (defaults to the active data item on the browser dock widget)
+     */
+    //    void pasteStyle( QgsDataItem *destinationItem = nullptr );
 };
 
 
