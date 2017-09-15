@@ -3166,8 +3166,25 @@ void QgsOgrProvider::forceReload()
 GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUpdate, GDALDriverH *phDriver )
 {
   CPLErrorReset();
+
+  char **papszOpenOptions = nullptr;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
+  const char *apszAllowedDrivers[] = { "GML", nullptr };
+  GDALDriverH hIdentifiedDriver =
+    GDALIdentifyDriverEx( pszPath, GDAL_OF_VECTOR, apszAllowedDrivers, nullptr );
+#else
+  GDALDriverH hIdentifiedDriver =
+    GDALIdentifyDriver( pszPath, nullptr );
+#endif
+  if ( hIdentifiedDriver &&
+       strcmp( GDALGetDriverShortName( hIdentifiedDriver ), "GML" ) == 0 )
+  {
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "FORCE_SRS_DETECTION", "YES" );
+  }
+
   const int nOpenFlags = GDAL_OF_VECTOR | ( bUpdate ? GDAL_OF_UPDATE : 0 );
-  GDALDatasetH hDS = GDALOpenEx( pszPath, nOpenFlags, nullptr, nullptr, nullptr );
+  GDALDatasetH hDS = GDALOpenEx( pszPath, nOpenFlags, nullptr, papszOpenOptions, nullptr );
+  CSLDestroy( papszOpenOptions );
   if ( !hDS )
   {
     if ( phDriver )
