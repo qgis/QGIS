@@ -83,6 +83,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSmoothAlgorithm() );
   addAlgorithm( new QgsSimplifyAlgorithm() );
   addAlgorithm( new QgsExtractByExtentAlgorithm() );
+  addAlgorithm( new QgsExtentToLayerAlgorithm() );
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -1884,5 +1885,49 @@ QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &pa
   return outputs;
 }
 
-///@endcond
 
+void QgsExtentToLayerAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "INPUT" ), QObject::tr( "Extent" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extent" ), QgsProcessing::TypeVectorPolygon ) );
+}
+
+QString QgsExtentToLayerAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a new vector layer that contains a single feature with geometry matching an extent parameter.\n\n"
+                      "It can be used in models to convert an extent into a layer which can be used for other algorithms which require "
+                      "a layer based input." );
+}
+
+QgsExtentToLayerAlgorithm *QgsExtentToLayerAlgorithm::createInstance() const
+{
+  return new QgsExtentToLayerAlgorithm();
+}
+
+QVariantMap QgsExtentToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsCoordinateReferenceSystem crs = parameterAsExtentCrs( parameters, QStringLiteral( "INPUT" ), context );
+  QgsGeometry geom = parameterAsExtentGeometry( parameters, QStringLiteral( "INPUT" ), context );
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::Polygon, crs ) );
+  if ( !sink )
+    return QVariantMap();
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( geom );
+  sink->addFeature( f, QgsFeatureSink::FastInsert );
+
+  feedback->setProgress( 100 );
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
+///@endcond
