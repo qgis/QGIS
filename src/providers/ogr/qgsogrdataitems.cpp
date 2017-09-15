@@ -51,13 +51,13 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   setState( Populated ); // children are not expected
 
   OGRRegisterAll();
-  OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( mPath.toUtf8().constData(), true, &hDriver );
+  GDALDriverH hDriver;
+  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), true, &hDriver );
 
   if ( hDataSource )
   {
-    QString driverName = OGR_Dr_GetName( hDriver );
-    OGR_DS_Destroy( hDataSource );
+    QString driverName = GDALGetDriverShortName( hDriver );
+    GDALClose( hDataSource );
 
     if ( driverName == QLatin1String( "ESRI Shapefile" ) )
       mCapabilities |= SetCrs;
@@ -336,9 +336,9 @@ void QgsOgrLayerItem::deleteLayer()
 
 // -------
 
-static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId, bool isSubLayer = false )
+static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name, QString path, GDALDatasetH hDataSource, int layerId, bool isSubLayer = false )
 {
-  OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, layerId );
+  OGRLayerH hLayer = GDALDatasetGetLayer( hDataSource, layerId );
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
@@ -404,11 +404,11 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
-  OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( mPath.toUtf8().constData(), false, &hDriver );
+  GDALDriverH hDriver;
+  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), false, &hDriver );
   if ( !hDataSource )
     return children;
-  int numLayers = OGR_DS_GetLayerCount( hDataSource );
+  int numLayers = GDALDatasetGetLayerCount( hDataSource );
 
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
@@ -417,7 +417,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
     children.append( item );
   }
 
-  OGR_DS_Destroy( hDataSource );
+  GDALClose( hDataSource );
 
   return children;
 }
@@ -576,20 +576,21 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     // if this is a VRT file make sure it is vector VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )
     {
-      OGRSFDriverH hDriver = OGRGetDriverByName( "VRT" );
+      GDALDriverH hDriver = GDALGetDriverByName( "OGR_VRT" );
       if ( hDriver )
       {
         // do not print errors, but write to debug
         CPLPushErrorHandler( CPLQuietErrorHandler );
         CPLErrorReset();
-        OGRDataSourceH hDataSource = OGR_Dr_Open( hDriver, path.toLocal8Bit().constData(), 0 );
+        GDALDatasetH hDataSource = GDALOpenEx(
+                                     path.toLocal8Bit().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
         CPLPopErrorHandler();
         if ( ! hDataSource )
         {
           QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
           return nullptr;
         }
-        OGR_DS_Destroy( hDataSource );
+        GDALClose( hDataSource );
       }
     }
     // Handle collections
@@ -609,22 +610,22 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   // test that file is valid with OGR
   OGRRegisterAll();
-  OGRSFDriverH hDriver;
+  GDALDriverH hDriver;
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::OGROpenWrapper( path.toUtf8().constData(), false, &hDriver );
+  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, &hDriver );
   CPLPopErrorHandler();
 
   if ( ! hDataSource )
   {
-    QgsDebugMsg( QString( "OGROpen error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path ) );
+    QgsDebugMsg( QString( "GDALOpen error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path ) );
     return nullptr;
   }
 
-  QgsDebugMsgLevel( QString( "OGR Driver : %1" ).arg( OGR_Dr_GetName( hDriver ) ), 2 );
+  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( GDALGetDriverShortName( hDriver ) ), 2 );
 
-  int numLayers = OGR_DS_GetLayerCount( hDataSource );
+  int numLayers = GDALDatasetGetLayerCount( hDataSource );
 
   QgsDataItem *item = nullptr;
 
@@ -639,6 +640,6 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     item = new QgsOgrDataCollectionItem( parentItem, name, path );
   }
 
-  OGR_DS_Destroy( hDataSource );
+  GDALClose( hDataSource );
   return item;
 }

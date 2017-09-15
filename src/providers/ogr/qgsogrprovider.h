@@ -30,7 +30,7 @@ class QgsVectorLayerExporter;
 
 class QgsOgrFeatureIterator;
 
-#include <ogr_api.h>
+#include <gdal.h>
 
 /**
   \class QgsOgrProvider
@@ -179,7 +179,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QMap<int, QString> mDefaultValues;
 
     bool mFirstFieldIsFid;
-    OGRDataSourceH ogrDataSource;
+    GDALDatasetH mGDALDataset;
     mutable OGREnvelope *mExtent;
     bool mForceRecomputeExtent;
 
@@ -212,11 +212,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    // OGR Driver that was actually used to open the layer
-    OGRSFDriverH ogrDriver;
+    // GDAL Driver that was actually used to open the layer
+    GDALDriverH mGDALDriver;
 
-    // Friendly name of the OGR Driver that was actually used to open the layer
-    QString ogrDriverName;
+    // Friendly name of the GDAL Driver that was actually used to open the layer
+    QString mGDALDriverName;
 
     bool mValid;
 
@@ -232,7 +232,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Calls OGR_L_SyncToDisk and recreates the spatial index if present
     bool syncToDisc();
 
-    OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds );
+    OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds );
 
     friend class QgsOgrFeatureSource;
 
@@ -264,15 +264,15 @@ class QgsOgrProviderUtils
 {
   public:
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
-    static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
-    static QByteArray quotedIdentifier( QByteArray field, const QString &ogrDriverName );
+    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
+    static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
 
     /** Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value );
 
-    static OGRDataSourceH OGROpenWrapper( const char *pszPath, bool bUpdate, OGRSFDriverH *phDriver );
-    static void OGRDestroyWrapper( OGRDataSourceH ogrDataSource );
+    static GDALDatasetH GDALOpenWrapper( const char *pszPath, bool bUpdate, GDALDriverH *phDriver );
+    static void GDALCloseWrapper( GDALDatasetH mhDS );
 };
 
 #endif // QGSOGRPROVIDER_H
