@@ -168,7 +168,7 @@ class GUI_EXPORT QgisInterface : public QObject
     /**
      * Triggered when connections have changed.
      * This calls reloadConnections in the main application and triggers a signal that is
-     * forwarder to the GUI elements that needs to be updated (i.e. the source
+     * forwarded to the GUI elements that needs to be updated (i.e. the source
      * select dialogs and the browser widgets)
      * \since QGIS 3.0
      */
