@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ClipVectorByExtent.py
+    ClipVectorByMask.py
     ---------------------
     Date                 : November 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -27,18 +27,17 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterExtent,
                        QgsProcessingParameterString,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class ClipVectorByExtent(GdalAlgorithm):
+class ClipVectorByMask(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    EXTENT = 'EXTENT'
+    MASK = 'MASK'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -48,8 +47,9 @@ class ClipVectorByExtent(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
-                                                       self.tr('Clipping extent')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.MASK,
+                                                              self.tr('Mask layer'),
+                                                              [QgsProcessing.TypeVectorPolygon]))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation options'),
@@ -59,13 +59,13 @@ class ClipVectorByExtent(GdalAlgorithm):
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
-                                                                  self.tr('Clipped (extent)')))
+                                                                  self.tr('Clipped (mask)')))
 
     def name(self):
-        return 'clipvectorbyextent'
+        return 'clipvectorbypolygon'
 
     def displayName(self):
-        return self.tr('Clip vector by extent')
+        return self.tr('Clip vector by mask layer')
 
     def group(self):
         return self.tr('Vector geoprocessing')
@@ -74,24 +74,22 @@ class ClipVectorByExtent(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
-        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
+        inLayer, inLayerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         arguments = []
-        arguments.append('-spat')
-        arguments.append(str(extent.xMinimum()))
-        arguments.append(str(extent.yMaximum()))
-        arguments.append(str(extent.xMaximum()))
-        arguments.append(str(extent.yMinimum()))
-        arguments.append('-clipsrc spat_extent')
+        arguments.append('-clipsrc')
+        arguments.append(maskLayer)
+        arguments.append('-clipsrclayer')
+        arguments.append(maskLayerName)
 
         arguments.append(output)
-        arguments.append(ogrLayer)
-        arguments.append(layerName)
+        arguments.append(inLayer)
+        arguments.append(inLayerName)
 
         if options:
             arguments.append(options)
