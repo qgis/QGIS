@@ -1333,6 +1333,13 @@ void QgisApp::dropEvent( QDropEvent *event )
   timer->setSingleShot( true );
   timer->setInterval( 50 );
 
+  // first, allow custom handlers to directly operate on the mime data
+  const QList<QgsCustomDropHandler *> handlers = mCustomDropHandlers;
+  for ( QgsCustomDropHandler *handler : handlers )
+  {
+    handler->handleMimeData( event->mimeData() );
+  }
+
   // get the file list
   QList<QUrl>::iterator i;
   QList<QUrl>urls = event->mimeData()->urls();
@@ -1405,7 +1412,21 @@ void QgisApp::dropEvent( QDropEvent *event )
 
     for ( const QString &file : qgsAsConst( files ) )
     {
-      openFile( file );
+      bool handled = false;
+
+      // give custom drop handlers first priority at handling the file
+      const QList<QgsCustomDropHandler *> handlers = mCustomDropHandlers;
+      for ( QgsCustomDropHandler *handler : handlers )
+      {
+        if ( handler->handleFileDrop( file ) )
+        {
+          handled = true;
+          break;
+        }
+      }
+
+      if ( !handled )
+        openFile( file );
     }
 
     if ( !lst.isEmpty() )
