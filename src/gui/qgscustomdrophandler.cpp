@@ -15,7 +15,12 @@
 
 #include "qgscustomdrophandler.h"
 
-void QgsCustomDropHandler::handleDrop( const QgsMimeDataUtils::Uri &uri ) const
+QString QgsCustomDropHandler::customUriProviderKey() const
+{
+  return QString();
+}
+
+void QgsCustomDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const
 {
   Q_UNUSED( uri );
 }

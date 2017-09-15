@@ -1491,9 +1491,9 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     {
       Q_FOREACH ( QgsCustomDropHandler *handler, mCustomDropHandlers )
       {
-        if ( handler && handler->key() == u.providerKey )
+        if ( handler && handler->customUriProviderKey() == u.providerKey )
         {
-          handler->handleDrop( u );
+          handler->handleCustomUriDrop( u );
           break;
         }
       }

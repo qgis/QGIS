@@ -12,12 +12,25 @@ class QgsCustomDropHandler : QObject
 {
 %Docstring
  Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.
- Implementations will be used when a QgsMimeDataUtils.Uri has layerType equal to "custom",
- and the providerKey is equal to key() returned by the implementation.
 
- Alternatively, implementations can override the handleMimeData() or handleFileDrop()
- methods to handle QMimeData and file drops directly. Reimplementation of these methods
- does not rely on key() matching.
+ Implementations have three approaches they can use to handle drops.
+
+ 1. The simplest approach is to implement handeFileDrop() when they need to handle
+ dropped files (i.e. with mime type "text/uri-list").
+
+ 2. Reimplement handleCustomUriDrop() when they want to handle dropped custom
+ QgsMimeDataUtils.Uri entries, for instance handling dropping custom entries
+ from the browser tree (with mime type "application/x-vnd.qgis.qgis.uri"). In
+ this case the implementation's customUriProviderKey() must match the uri
+ entry's providerKey.
+
+ 3. Reimplement handleMimeData() to directly handle dropped QMimeData.
+ Subclasses should take care when overriding this method. When a drop event
+ occurs, Qt will lock the source application of the drag for the duration
+ of the drop event handling via handleMimeData() (e.g. dragging files from
+ explorer to QGIS will lock the explorer window until the drop handling has
+ been complete). Accordingly handleMimeData() implementations must return
+ quickly and defer any intensive or slow processing.
 
 .. versionadded:: 3.0
 %End
@@ -28,15 +41,25 @@ class QgsCustomDropHandler : QObject
   public:
     virtual ~QgsCustomDropHandler();
 
-    virtual QString key() const = 0;
+    virtual QString customUriProviderKey() const;
 %Docstring
-Type of custom URI recognized by the handler
+ Type of custom URI recognized by the handler. This must match
+ the URI entry's providerKey in order for handleCustomUriDrop()
+ to be called.
+
+.. seealso:: handleCustomUriDrop()
  :rtype: str
 %End
 
-    virtual void handleDrop( const QgsMimeDataUtils::Uri &uri ) const;
+    virtual void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const;
 %Docstring
-Method called from QGIS after a drop event with custom URI known by the handler
+ Called from QGIS after a drop event with custom URI known by the handler.
+
+ In order for handleCustomUriDrop() to be called, subclasses must
+ also implement customUriProviderKey() to indicate the providerKey
+ value which the handler accepts.
+
+.. seealso:: customUriProviderKey()
 %End
 
     virtual void handleMimeData( const QMimeData *data );
