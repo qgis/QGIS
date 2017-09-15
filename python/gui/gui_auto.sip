@@ -1,7 +1,6 @@
 // Include auto-generated SIP files
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributeforminterface.sip
-%Include qgscustomdrophandler.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsexpressionbuilderdialog.sip
 %Include qgsgeometryrubberband.sip
@@ -91,6 +90,7 @@
 %Include qgsconfigureshortcutsdialog.sip
 %Include qgscredentialdialog.sip
 %Include qgscurveeditorwidget.sip
+%Include qgscustomdrophandler.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdetaileditemwidget.sip
 %Include qgsdial.sip
