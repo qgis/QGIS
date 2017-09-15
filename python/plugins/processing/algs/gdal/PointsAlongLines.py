@@ -29,7 +29,6 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingOutputVectorLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessing)
 
