@@ -1138,19 +1138,22 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
 
             widget.setLayout(layout)
 
+            if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
+                self.combo.setShowCrs(True)
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 self.combo.setAllowEmptyLayer(True)
 
             filters = QgsMapLayerProxyModel.Filters()
             if QgsProcessing.TypeVectorAnyGeometry in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
-                filters = QgsMapLayerProxyModel.VectorLayer
+                filters = QgsMapLayerProxyModel.HasGeometry
             if QgsProcessing.TypeVectorPoint in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PointLayer
             if QgsProcessing.TypeVectorLine in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.LineLayer
             if QgsProcessing.TypeVectorPolygon in self.param.dataTypes():
                 filters |= QgsMapLayerProxyModel.PolygonLayer
-            self.combo.setFilters(filters)
+            if filters:
+                self.combo.setFilters(filters)
 
             self.combo.setExcludedProviders(['grass'])
             try:
