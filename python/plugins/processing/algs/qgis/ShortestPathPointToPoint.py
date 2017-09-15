@@ -206,7 +206,7 @@ class ShortestPathPointToPoint(QgisAlgorithm):
             multiplier = 3600
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(context.project().crs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
         feedback.pushInfo(self.tr('Building graph...'))

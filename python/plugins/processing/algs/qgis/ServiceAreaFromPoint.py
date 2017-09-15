@@ -200,7 +200,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
                                                multiplier * 1000.0 / 3600.0)
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(context.project().crs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
         feedback.pushInfo(self.tr('Building graph...'))

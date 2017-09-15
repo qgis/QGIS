@@ -36,6 +36,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
+                       QgsFeatureRequest,
                        QgsFields,
                        QgsField,
                        QgsMessageLog,
@@ -206,7 +207,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             multiplier = 3600
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(context.project().crs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
 
@@ -237,7 +238,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
         nPoints = len(snappedPoints)
         total = 100.0 / nPoints if nPoints else 1
-        for i in range(1, count + 1):
+        for i in range(1, nPoints + 1):
             if feedback.isCanceled():
                 break
 
