@@ -696,10 +696,24 @@ class QgsProcessingAlgorithm
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    QgsPointXY parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QgsPointXY parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
+                                 const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
 %Docstring
  Evaluates the parameter with matching ``name`` to a point.
+
+ If ``crs`` is set then the point will be automatically
+ reprojected so that it is in the specified ``crs``.
+
+.. seealso:: parameterAsPointCrs()
  :rtype: QgsPointXY
+%End
+
+    QgsCoordinateReferenceSystem parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+ Returns the coordinate reference system associated with an point parameter value.
+
+.. seealso:: parameterAsPoint()
+ :rtype: QgsCoordinateReferenceSystem
 %End
 
     QString parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

@@ -503,7 +503,14 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
     {
       QgsCoordinateTransform ct( rr.crs(), crs );
-      return ct.transformBoundingBox( rr );
+      try
+      {
+        return ct.transformBoundingBox( rr );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming extent geometry" ) );
+      }
     }
     return rr;
   }
@@ -588,10 +595,33 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
     return QgsCoordinateReferenceSystem();
 }
 
-QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs )
 {
   if ( !definition )
     return QgsPointXY();
+
+  QVariant val = parameters.value( definition->name() );
+  if ( val.canConvert< QgsPointXY >() )
+  {
+    return val.value<QgsPointXY>();
+  }
+  if ( val.canConvert< QgsReferencedPointXY >() )
+  {
+    QgsReferencedPointXY rp = val.value<QgsReferencedPointXY>();
+    if ( crs.isValid() && rp.crs().isValid() && crs != rp.crs() )
+    {
+      QgsCoordinateTransform ct( rp.crs(), crs );
+      try
+      {
+        return ct.transform( rp );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming point geometry" ) );
+      }
+    }
+    return rp;
+  }
 
   QString pointText = parameterAsString( definition, parameters, context );
   if ( pointText.isEmpty() )
@@ -612,6 +642,25 @@ QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParamet
   }
 
   return QgsPointXY();
+}
+
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  QVariant val = parameters.value( definition->name() );
+
+  if ( val.canConvert< QgsReferencedPointXY >() )
+  {
+    QgsReferencedPointXY rr = val.value<QgsReferencedPointXY>();
+    if ( rr.crs().isValid() )
+    {
+      return rr.crs();
+    }
+  }
+
+  if ( context.project() )
+    return context.project()->crs();
+  else
+    return QgsCoordinateReferenceSystem();
 }
 
 QString QgsProcessingParameters::parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -1296,6 +1345,15 @@ bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &input,
     return true;
   }
 
+  if ( input.canConvert< QgsPointXY >() )
+  {
+    return true;
+  }
+  if ( input.canConvert< QgsReferencedPointXY >() )
+  {
+    return true;
+  }
+
   if ( input.type() == QVariant::String )
   {
     if ( input.toString().isEmpty() )
@@ -1313,6 +1371,28 @@ bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &input,
   }
   else
     return false;
+}
+
+QString QgsProcessingParameterPoint::valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const
+{
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert< QgsPointXY >() )
+  {
+    QgsPointXY r = value.value<QgsPointXY>();
+    return QStringLiteral( "QgsPointXY( %1, %2 )" ).arg( qgsDoubleToString( r.x() ),
+           qgsDoubleToString( r.y() ) );
+  }
+  if ( value.canConvert< QgsReferencedPointXY >() )
+  {
+    QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
+    return QStringLiteral( "QgsReferencedPointXY( QgsPointXY( %1, %2 ), QgsCoordinateReferenceSystem( '%3' ) )" ).arg( qgsDoubleToString( r.x() ),
+           qgsDoubleToString( r.y() ),
+           r.crs().authid() );
+  }
+
+  return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
 
 QgsProcessingParameterPoint *QgsProcessingParameterPoint::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
