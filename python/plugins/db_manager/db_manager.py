@@ -57,6 +57,7 @@ class DBManager(QMainWindow):
 
         self.tabs.currentChanged.connect(self.tabChanged)
         self.tree.selectedItemChanged.connect(self.itemChanged)
+        self.tree.model().dataChanged.connect(self.iface.reloadConnections)
         self.itemChanged(None)
 
     def closeEvent(self, e):
