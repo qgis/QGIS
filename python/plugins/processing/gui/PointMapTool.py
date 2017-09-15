@@ -38,7 +38,7 @@ class PointMapTool(QgsMapToolEmitPoint):
         QgsMapToolEmitPoint.__init__(self, canvas)
 
         self.canvas = canvas
-        self.cursor = Qt.ArrowCursor
+        self.cursor = Qt.CrossCursor
 
     def activate(self):
         self.canvas.setCursor(self.cursor)
