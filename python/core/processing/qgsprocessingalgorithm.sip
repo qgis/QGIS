@@ -662,10 +662,38 @@ class QgsProcessingAlgorithm
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    QgsRectangle parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+    QgsRectangle parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
+                                    const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
 %Docstring
  Evaluates the parameter with matching ``name`` to a rectangular extent.
+
+ If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
+ reprojected so that it is in the specified ``crs``. In this case the extent of the reproject rectangle will be returned.
+
+.. seealso:: parameterAsExtentGeometry()
  :rtype: QgsRectangle
+%End
+
+    QgsGeometry parameterAsExtentGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
+                                           const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+ Evaluates the parameter with matching ``name`` to a rectangular extent, and returns a geometry covering this extent.
+
+ If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
+ reprojected so that it is in the specified ``crs``. Unlike parameterAsExtent(), the reprojected rectangle returned by this function
+ will no longer be a rectangle itself (i.e. this method returns the geometry of the actual reprojected rectangle, while parameterAsExtent() returns
+ just the extent of the reprojected rectangle).
+
+.. seealso:: parameterAsExtent()
+ :rtype: QgsGeometry
+%End
+
+    QgsCoordinateReferenceSystem parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+ Returns the coordinate reference system associated with an extent parameter value.
+
+.. seealso:: parameterAsExtent()
+ :rtype: QgsCoordinateReferenceSystem
 %End
 
     QgsPointXY parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

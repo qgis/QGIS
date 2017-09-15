@@ -22,6 +22,7 @@
 #include "qgsprocessingoutputs.h"
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsreferencedgeometry.h"
 #include <functional>
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
@@ -484,12 +485,29 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
   return crs;
 }
 
-QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
+    const QgsCoordinateReferenceSystem &crs )
 {
   if ( !definition )
     return QgsRectangle();
 
   QVariant val = parameters.value( definition->name() );
+
+  if ( val.canConvert< QgsRectangle >() )
+  {
+    return val.value<QgsRectangle>();
+  }
+  if ( val.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
+    if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
+    {
+      QgsCoordinateTransform ct( rr.crs(), crs );
+      return ct.transformBoundingBox( rr );
+    }
+    return rr;
+  }
+
   QString rectText;
   if ( val.canConvert<QgsProperty>() )
     rectText = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
@@ -519,6 +537,55 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     return layer->extent();
 
   return QgsRectangle();
+}
+
+QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs )
+{
+  if ( !definition )
+    return QgsGeometry();
+
+  QVariant val = parameters.value( definition->name() );
+
+  if ( val.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
+    QgsGeometry g = QgsGeometry::fromRect( rr );
+    if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
+    {
+      g = g.densifyByCount( 20 );
+      QgsCoordinateTransform ct( rr.crs(), crs );
+      try
+      {
+        g.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming extent geometry" ) );
+      }
+      return g;
+    }
+  }
+
+  return QgsGeometry::fromRect( parameterAsExtent( definition, parameters, context, crs ) );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+{
+  QVariant val = parameters.value( definition->name() );
+
+  if ( val.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
+    if ( rr.crs().isValid() )
+    {
+      return rr.crs();
+    }
+  }
+
+  if ( context.project() )
+    return context.project()->crs();
+  else
+    return QgsCoordinateReferenceSystem();
 }
 
 QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -1133,6 +1200,17 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
     return true;
   }
 
+  if ( input.canConvert< QgsRectangle >() )
+  {
+    QgsRectangle r = input.value<QgsRectangle>();
+    return !r.isNull();
+  }
+  if ( input.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle r = input.value<QgsReferencedRectangle>();
+    return !r.isNull();
+  }
+
   if ( input.type() != QVariant::String || input.toString().isEmpty() )
     return mFlags & FlagOptional;
 
@@ -1165,6 +1243,23 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
 {
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.canConvert< QgsRectangle >() )
+  {
+    QgsRectangle r = value.value<QgsRectangle>();
+    return QStringLiteral( "QgsRectangle( %1, %2, %3, %4 )" ).arg( qgsDoubleToString( r.xMinimum() ),
+           qgsDoubleToString( r.yMinimum() ),
+           qgsDoubleToString( r.xMaximum() ),
+           qgsDoubleToString( r.yMaximum() ) );
+  }
+  if ( value.canConvert< QgsReferencedRectangle >() )
+  {
+    QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
+    return QStringLiteral( "QgsReferencedRectangle( QgsRectangle( %1, %2, %3, %4 ), QgsCoordinateReferenceSystem( '%5' ) )" ).arg( qgsDoubleToString( r.xMinimum() ),
+           qgsDoubleToString( r.yMinimum() ),
+           qgsDoubleToString( r.xMaximum() ),
+           qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+  }
 
   QVariantMap p;
   p.insert( name(), value );
