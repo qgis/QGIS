@@ -545,22 +545,21 @@ tests:
           geometry:
             precision: 7
 
-#  - algorithm: gdal:singlesidedbufferforlines
-#    name: One-side buffer for lines (left-handed)
-#    params:
-#      DISSOLVEALL: false
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      LEFTRIGHT: '1'
-#      MULTI: false
-#      RADIUS: 0.5
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/one_side_buffer.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
+  - algorithm: gdal:singlesidedbuffer
+    name: One-side buffer for lines (left-handed)
+    params:
+      DISSOLVEALL: false
+      GEOMETRY: geometry
+      INPUT_LAYER:
+        name: lines.gml
+        type: vector
+      LEFTRIGHT: '1'
+      MULTI: false
+      RADIUS: 0.5
+    results:
+      OUTPUT_LAYER:
+        name: expected/gdal/one_side_buffer.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7

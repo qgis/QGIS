@@ -77,6 +77,7 @@ from .Buffer import Buffer
 from .OffsetCurve import OffsetCurve
 from .ogrinfo import ogrinfo
 from .OgrToPostGis import OgrToPostGis
+from .OneSideBuffer import OneSideBuffer
 from .PointsAlongLines import PointsAlongLines
 
 # from .ogr2ogr import Ogr2Ogr
@@ -84,7 +85,6 @@ from .PointsAlongLines import PointsAlongLines
 # from .ogr2ogrclipextent import Ogr2OgrClipExtent
 # from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 # from .ogr2ogrdissolve import Ogr2OgrDissolve
-# from .onesidebuffer import OneSideBuffer
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 # from .ogrsql import OgrSql
 
@@ -179,13 +179,13 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             OffsetCurve(),
             ogrinfo(),
             OgrToPostGis(),
+            OneSideBuffer(),
             PointsAlongLines(),
             # Ogr2Ogr(),
             # Ogr2OgrClip(),
             # Ogr2OgrClipExtent(),
             # Ogr2OgrToPostGisList(),
             # Ogr2OgrDissolve(),
-            # OneSideBuffer(),
             # Ogr2OgrTableToPostGisList(),
             # OgrSql(),
         ]

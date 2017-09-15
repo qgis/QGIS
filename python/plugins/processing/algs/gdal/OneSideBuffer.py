@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    Buffer.py
+    OneSideBuffer.py
     ---------------------
     Date                 : Janaury 2015
     Copyright            : (C) 2015 by Giovanni Manghi
@@ -28,20 +28,21 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class Buffer(GdalAlgorithm):
+class OneSideBuffer(GdalAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
+    BUFFER_SIDE = 'BUFFER_SIDE'
     GEOMETRY = 'GEOMETRY'
     DISTANCE = 'DISTANCE'
     DISSOLVE = 'DISSOLVE'
@@ -53,16 +54,23 @@ class Buffer(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
+        self.bufferSides = [self.tr('Right'), self.tr('Left')]
+
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
+                                                              self.tr('Input layer'),
+                                                              [QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
                                                        self.tr('Geometry column name'),
                                                        defaultValue='geometry'))
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
                                                        self.tr('Buffer distance'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0,
-                                                       defaultValue=10.0))
+                                                       defaultValue=10))
+        self.addParameter(QgsProcessingParameterEnum(self.BUFFER_SIDE,
+                                                     self.tr('Buffer side'),
+                                                     options=self.bufferSides,
+                                                     allowMultiple=False,
+                                                     defaultValue=0))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Dissolve by attribute'),
                                                       None,
@@ -84,14 +92,14 @@ class Buffer(GdalAlgorithm):
         self.addParameter(options_param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
-                                                                  self.tr('Buffer'),
+                                                                  self.tr('One-sided buffer'),
                                                                   QgsProcessing.TypeVectorPolygon))
 
     def name(self):
-        return 'buffervectors'
+        return 'onesidebuffer'
 
     def displayName(self):
-        return self.tr('Buffer vectors')
+        return self.tr('One side buffer')
 
     def group(self):
         return self.tr('Vector geoprocessing')
@@ -103,6 +111,7 @@ class Buffer(GdalAlgorithm):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
+        side = self.parameterAsEnum(parameters, self.BUFFER_SIDE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         dissolve = self.parameterAsString(parameters, self.DISSOLVE, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
@@ -118,12 +127,12 @@ class Buffer(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_Buffer({}, {})), * FROM '{}'".format(geometry, distance, layerName)
+            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM '{}'".format(geometry, distance, side, layerName)
         else:
-            sql = "SELECT ST_Buffer({}, {}), * FROM '{}'".format(geometry, distance, layerName)
+            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}), * FROM '{}'".format(geometry, distance, side, layerName)
 
         if fieldName:
-            sql = '{} GROUP BY {}'.format(sql, fieldName)
+            sql = '"{} GROUP BY {}"'.format(sql, fieldName)
 
         arguments.append(sql)
 
