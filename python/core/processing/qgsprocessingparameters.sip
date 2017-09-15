@@ -543,6 +543,7 @@ class QgsProcessingParameters
  reprojected so that it is in the specified ``crs``. In this case the extent of the reproject rectangle will be returned.
 
 .. seealso:: parameterAsExtentGeometry()
+.. seealso:: parameterAsExtentCrs()
  :rtype: QgsRectangle
 %End
 
@@ -557,7 +558,16 @@ class QgsProcessingParameters
  just the extent of the reprojected rectangle).
 
 .. seealso:: parameterAsExtent()
+.. seealso:: parameterAsExtentCrs()
  :rtype: QgsGeometry
+%End
+
+    static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+ Returns the coordinate reference system associated with an extent parameter value.
+
+.. seealso:: parameterAsExtent()
+ :rtype: QgsCoordinateReferenceSystem
 %End
 
     static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );

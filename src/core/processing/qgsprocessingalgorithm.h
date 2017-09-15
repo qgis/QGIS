@@ -671,6 +671,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
                                            const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
+     * Returns the coordinate reference system associated with an extent parameter value.
+     *
+     * \see parameterAsExtent()
+     */
+    QgsCoordinateReferenceSystem parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a name to a point.
      */
     QgsPointXY parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

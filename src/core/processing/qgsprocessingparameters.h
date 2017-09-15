@@ -570,6 +570,7 @@ class CORE_EXPORT QgsProcessingParameters
      * reprojected so that it is in the specified \a crs. In this case the extent of the reproject rectangle will be returned.
      *
      * \see parameterAsExtentGeometry()
+     * \see parameterAsExtentCrs()
      */
     static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
                                            const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
@@ -583,9 +584,17 @@ class CORE_EXPORT QgsProcessingParameters
      * just the extent of the reprojected rectangle).
      *
      * \see parameterAsExtent()
+     * \see parameterAsExtentCrs()
      */
     static QgsGeometry parameterAsExtentGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
         const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+
+    /**
+     * Returns the coordinate reference system associated with an extent parameter value.
+     *
+     * \see parameterAsExtent()
+     */
+    static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a point.

@@ -688,6 +688,14 @@ class QgsProcessingAlgorithm
  :rtype: QgsGeometry
 %End
 
+    QgsCoordinateReferenceSystem parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+ Returns the coordinate reference system associated with an extent parameter value.
+
+.. seealso:: parameterAsExtent()
+ :rtype: QgsCoordinateReferenceSystem
+%End
+
     QgsPointXY parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 %Docstring
  Evaluates the parameter with matching ``name`` to a point.
