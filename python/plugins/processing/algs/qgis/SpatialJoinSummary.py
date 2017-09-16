@@ -110,10 +110,16 @@ class SpatialJoinSummary(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.JOIN,
                                                               self.tr('Join layer'),
                                                               [QgsProcessing.TypeVectorAnyGeometry]))
-        self.addParameter(QgsProcessingParameterEnum(self.PREDICATE,
-                                                     self.tr('Geometric predicate'),
-                                                     options=[p[1] for p in self.predicates],
-                                                     allowMultiple=True, defaultValue=[0]))
+        predicate = QgsProcessingParameterEnum(self.PREDICATE,
+                                               self.tr('Geometric predicate'),
+                                               options=[p[1] for p in self.predicates],
+                                               allowMultiple=True, defaultValue=[0])
+        predicate.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers.EnumWidgetWrapper',
+                'useCheckBoxes': True,
+                'columns': 2}})
+        self.addParameter(predicate)
         self.addParameter(QgsProcessingParameterField(self.JOIN_FIELDS,
                                                       self.tr('Fields to summarise (leave empty to use all fields)'),
                                                       parentLayerParameterName=self.JOIN,
