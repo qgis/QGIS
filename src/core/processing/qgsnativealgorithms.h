@@ -49,6 +49,29 @@ class QgsNativeAlgorithms: public QgsProcessingProvider
 };
 
 /**
+ * Native save selected features algorithm.
+ */
+class QgsSaveSelectedFeatures : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsSaveSelectedFeatures() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "saveselectedfeatures" ); }
+    QString displayName() const override { return QObject::tr( "Save Selected Features" ); }
+    QStringList tags() const override { return QObject::tr( "selection,save" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general" ); }
+    QString shortHelpString() const override;
+    QgsSaveSelectedFeatures *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+};
+
+/**
  * Native centroid algorithm.
  */
 class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
