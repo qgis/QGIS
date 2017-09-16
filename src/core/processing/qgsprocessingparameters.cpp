@@ -1988,7 +1988,11 @@ bool QgsProcessingParameterEnum::checkValueIsAcceptable( const QVariant &input, 
     if ( !mAllowMultiple )
       return false;
 
-    Q_FOREACH ( const QVariant &val, input.toList() )
+    const QVariantList values = input.toList();
+    if ( values.empty() && !( mFlags & FlagOptional ) )
+      return false;
+
+    for ( const QVariant &val : values )
     {
       bool ok = false;
       int res = val.toInt( &ok );

@@ -2784,6 +2784,7 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( def->checkValueIsAcceptable( "1" ) );
   QVERIFY( !def->checkValueIsAcceptable( "1,2" ) );
   QVERIFY( def->checkValueIsAcceptable( 0 ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" ) );
   QVERIFY( !def->checkValueIsAcceptable( 15 ) );
@@ -2853,6 +2854,7 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( def->checkValueIsAcceptable( "1" ) );
   QVERIFY( def->checkValueIsAcceptable( "1,2" ) );
   QVERIFY( def->checkValueIsAcceptable( 0 ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) ); // since non-optional, empty list not allowed
   QVERIFY( def->checkValueIsAcceptable( QVariantList() << 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" ) );
   QVERIFY( !def->checkValueIsAcceptable( 15 ) );
@@ -2893,6 +2895,7 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( def->checkValueIsAcceptable( "1" ) );
   QVERIFY( !def->checkValueIsAcceptable( "1,2" ) );
   QVERIFY( def->checkValueIsAcceptable( 0 ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariantList() ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" ) );
   QVERIFY( !def->checkValueIsAcceptable( 15 ) );
@@ -2925,6 +2928,7 @@ void TestQgsProcessing::parameterEnum()
   QVERIFY( def->checkValueIsAcceptable( "1" ) );
   QVERIFY( def->checkValueIsAcceptable( "1,2" ) );
   QVERIFY( def->checkValueIsAcceptable( 0 ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariantList() ) );
   QVERIFY( def->checkValueIsAcceptable( QVariantList() << 1 ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "a" ) );
   QVERIFY( !def->checkValueIsAcceptable( 15 ) );

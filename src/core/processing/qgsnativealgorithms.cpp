@@ -1356,12 +1356,7 @@ void QgsSelectByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Select features from" ),
                 QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
-
-
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "PREDICATE" ),
-                QObject::tr( "Where the features are (geometric predicate)" ),
-                predicateOptionsList(), true, QVariant::fromValue( QList< int >() << 0 ) ) );
-
+  addPredicateParameter();
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
                 QObject::tr( "By comparing to the features from" ),
                 QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
@@ -1529,6 +1524,23 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
   }
 }
 
+void QgsLocationBasedAlgorithm::addPredicateParameter()
+{
+  std::unique_ptr< QgsProcessingParameterEnum > predicateParam( new QgsProcessingParameterEnum( QStringLiteral( "PREDICATE" ),
+      QObject::tr( "Where the features (geometric predicate)" ),
+      predicateOptionsList(), true, QVariant::fromValue( QList< int >() << 0 ) ) );
+
+  QVariantMap predicateMetadata;
+  QVariantMap widgetMetadata;
+  widgetMetadata.insert( QStringLiteral( "class" ), QStringLiteral( "processing.gui.wrappers.EnumWidgetWrapper" ) );
+  widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
+  widgetMetadata.insert( QStringLiteral( "columns" ), 2 );
+  predicateMetadata.insert( QStringLiteral( "widget_wrapper" ), widgetMetadata );
+  predicateParam->setMetadata( predicateMetadata );
+
+  addParameter( predicateParam.release() );
+}
+
 QgsLocationBasedAlgorithm::Predicate QgsLocationBasedAlgorithm::reversePredicate( QgsLocationBasedAlgorithm::Predicate predicate ) const
 {
   switch ( predicate )
@@ -1556,14 +1568,14 @@ QgsLocationBasedAlgorithm::Predicate QgsLocationBasedAlgorithm::reversePredicate
 
 QStringList QgsLocationBasedAlgorithm::predicateOptionsList() const
 {
-  return QStringList() << QObject::tr( "intersects" )
-         << QObject::tr( "contains" )
-         << QObject::tr( "is disjoint" )
-         << QObject::tr( "equals" )
-         << QObject::tr( "touches" )
-         << QObject::tr( "overlaps" )
-         << QObject::tr( "within" )
-         << QObject::tr( "crosses" );
+  return QStringList() << QObject::tr( "intersect" )
+         << QObject::tr( "contain" )
+         << QObject::tr( "disjoint" )
+         << QObject::tr( "equal" )
+         << QObject::tr( "touch" )
+         << QObject::tr( "overlap" )
+         << QObject::tr( "are within" )
+         << QObject::tr( "cross" );
 }
 
 
@@ -1572,11 +1584,7 @@ void QgsExtractByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Extract features from" ),
                 QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
-
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "PREDICATE" ),
-                QObject::tr( "Where the features are (geometric predicate)" ),
-                predicateOptionsList(), true, QVariant::fromValue( QList< int >() << 0 ) ) );
-
+  addPredicateParameter();
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
                 QObject::tr( "By comparing to the features from" ),
                 QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
