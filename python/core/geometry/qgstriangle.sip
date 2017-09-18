@@ -69,7 +69,7 @@ class QgsTriangle : QgsPolygonV2
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );

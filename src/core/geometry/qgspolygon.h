@@ -53,7 +53,7 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
 
     /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
      \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
     void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
     //overridden to handle LineString25D rings

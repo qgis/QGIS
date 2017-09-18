@@ -3010,6 +3010,7 @@ void TestQgsGeometry::polygon()
   p10.addInteriorRing( ring );
   QVERIFY( !( p10 == p10b ) );
   QVERIFY( p10 != p10b );
+
   ring = new QgsLineString();
   ring->setPoints( QgsPointSequence() << QgsPoint( 2, 1 )
                    << QgsPoint( 2, 9 ) << QgsPoint( 9, 9 )
@@ -3067,6 +3068,23 @@ void TestQgsGeometry::polygon()
   //surfaceToPolygon - should be identical given polygon has no curves
   std::unique_ptr< QgsPolygonV2 > surface( p12.surfaceToPolygon() );
   QCOMPARE( *surface, p12 );
+
+  //toCurveType
+  std::unique_ptr< QgsCurvePolygon > curveType( p12.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygonZM );
+  QCOMPARE( curveType->exteriorRing()->numPoints(), 5 );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  QCOMPARE( curveType->numInteriorRings(), 1 );
+  QCOMPARE( curveType->interiorRing( 0 )->numPoints(), 5 );
+  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 ) );
+  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) );
+  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 ) );
+  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
 
   //to/fromWKB
   QgsPolygonV2 p16;

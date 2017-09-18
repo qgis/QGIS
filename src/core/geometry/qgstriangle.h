@@ -76,7 +76,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
     //! Inherited method not used. You cannot add an interior ring into a triangle.
     void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;

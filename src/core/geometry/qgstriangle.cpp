@@ -231,7 +231,7 @@ QgsPolygonV2 *QgsTriangle::surfaceToPolygon() const
   return toPolygon();
 }
 
-QgsAbstractGeometry *QgsTriangle::toCurveType() const
+QgsCurvePolygon *QgsTriangle::toCurveType() const
 {
   std::unique_ptr<QgsCurvePolygon> curvePolygon( new QgsCurvePolygon() );
   curvePolygon->setExteriorRing( mExteriorRing->clone() );

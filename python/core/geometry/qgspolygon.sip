@@ -42,12 +42,12 @@ class QgsPolygonV2: QgsCurvePolygon
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 %Docstring
  Returns the geometry converted to the more generic curve type QgsCurvePolygon
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsAbstractGeometry
+ :rtype: QgsCurvePolygon
 %End
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );

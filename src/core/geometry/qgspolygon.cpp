@@ -300,7 +300,7 @@ QgsPolygonV2 *QgsPolygonV2::surfaceToPolygon() const
   return clone();
 }
 
-QgsAbstractGeometry *QgsPolygonV2::toCurveType() const
+QgsCurvePolygon *QgsPolygonV2::toCurveType() const
 {
   QgsCurvePolygon *curvePolygon = new QgsCurvePolygon();
   curvePolygon->setExteriorRing( mExteriorRing->clone() );
