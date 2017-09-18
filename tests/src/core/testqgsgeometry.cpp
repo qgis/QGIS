@@ -3489,6 +3489,11 @@ void TestQgsGeometry::triangle()
   QVERIFY( !t1.exteriorRing() );
   QVERIFY( !t1.interiorRing( 0 ) );
 
+  // invalid triangles
+  QgsTriangle invalid( QgsPointXY( 0, 0 ), QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
+  QVERIFY( invalid.isEmpty() );
+  invalid = QgsTriangle( QPointF( 0, 0 ), QPointF( 0, 0 ), QPointF( 10, 10 ) );
+  QVERIFY( invalid.isEmpty() );
   //set exterior ring
 
   //try with no ring
@@ -3580,6 +3585,14 @@ void TestQgsGeometry::triangle()
   ext = new QgsLineString();
   t2.clear();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 5, 10 ) );
+  t2.setExteriorRing( ext );
+  QVERIFY( t2.isEmpty() );
+
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
+  t2.setExteriorRing( ext );
+  QVERIFY( t2.isEmpty() );
+
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
   t2.setExteriorRing( ext );
   QVERIFY( t2.isEmpty() );
 
@@ -3906,6 +3919,26 @@ void TestQgsGeometry::triangle()
   pt1 = QgsPoint( 0, 0 );
   QVERIFY( !t11.moveVertex( id, pt1 ) );
 
+  //toCurveType
+  QgsTriangle t12( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) );
+  std::unique_ptr< QgsCurvePolygon > curveType( t12.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygon );
+  QCOMPARE( curveType->exteriorRing()->numPoints(), 4 );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 7, 4 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 13, 3 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 9, 6 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( 7, 4 ) );
+  QCOMPARE( curveType->numInteriorRings(), 0 );
+
+  // boundary
+  QVERIFY( !QgsTriangle().boundary() );
+  std::unique_ptr< QgsCurve > boundary( QgsTriangle( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) ).boundary() );
+  QCOMPARE( boundary->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( boundary->numPoints(), 4 );
+  QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 7, 4 ) );
+  QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 13, 3 ) );
+  QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 9, 6 ) );
+  QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( 7, 4 ) );
 }
 
 void TestQgsGeometry::ellipse()

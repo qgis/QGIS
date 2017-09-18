@@ -346,7 +346,7 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
   clearCache();
 }
 
-QgsAbstractGeometry *QgsTriangle::boundary() const
+QgsCurve *QgsTriangle::boundary() const
 {
   if ( !mExteriorRing )
     return nullptr;

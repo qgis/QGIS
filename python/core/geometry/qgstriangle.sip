@@ -95,7 +95,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
 
-    virtual QgsAbstractGeometry *boundary() const /Factory/;
+    virtual QgsCurve *boundary() const /Factory/;
 
 
     QgsPoint vertexAt( int atVertex ) const;
