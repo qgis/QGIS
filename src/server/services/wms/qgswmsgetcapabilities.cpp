@@ -842,6 +842,7 @@ namespace QgsWms
           if ( projectSettings )
           {
             layerElem.setAttribute( QStringLiteral( "visible" ), treeGroupChild->isVisible() );
+            layerElem.setAttribute( QStringLiteral( "mutuallyExclusive" ), treeGroupChild->isMutuallyExclusive() );
           }
 
           QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
