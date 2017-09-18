@@ -1,5 +1,6 @@
 /***************************************************************************
-    qgsogrdbconnection.cpp
+    qgsogrdbconnection.cpp  QgsOgrDbConnection handles connection storage
+                            for OGR/GDAL file-based DBs (i.e. GeoPackage)
                              -------------------
     begin                : August 2017
     copyright            : (C) 2017 by Alessandro Pasotti
