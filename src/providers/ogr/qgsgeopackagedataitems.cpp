@@ -512,6 +512,7 @@ void QgsGeoPackageCollectionItem::addTable()
 void QgsGeoPackageCollectionItem::addConnection()
 {
   QgsOgrDbConnection connection( mName, QStringLiteral( "GPKG" ) );
+  connection.setPath( mPath );
   connection.save();
   mParent->refreshConnections();
 }
