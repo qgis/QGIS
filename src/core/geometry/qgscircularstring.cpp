@@ -619,7 +619,7 @@ void QgsCircularString::drawAsPolygon( QPainter &p ) const
 
 bool QgsCircularString::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
-  if ( position.vertex > mX.size() || position.vertex < 1 )
+  if ( position.vertex >= mX.size() || position.vertex < 1 )
   {
     return false;
   }
