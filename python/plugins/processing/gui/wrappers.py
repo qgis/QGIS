@@ -763,7 +763,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             try:
                 layer = self.combo.currentLayer()
-                if layer:
+                if layer is not None:
                     return layer
                 else:
                     return self.combo.currentText()
@@ -1226,7 +1226,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             try:
                 layer = self.combo.currentLayer()
-                if layer:
+                if layer is not None:
                     return layer
                 else:
                     return self.combo.currentText()
