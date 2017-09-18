@@ -144,7 +144,9 @@ Create new data item.
     virtual  QList<QMenu *> menus();
 %Docstring
  Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
- the item. Subclasses should override this to provide actions.
+ the item. Subclasses should override this to provide actions. Ownership of the returned menus is unchanged.
+ Implementations should take care to ensure that created menus are correctly parented
+ (e.g. by setting the parent to the data item) to avoid leaking the returned menus.
 %End
 
     virtual bool acceptDrop();

@@ -77,10 +77,11 @@ void QgsWfsLayerItem::copyStyle()
 {
   QString layerUri = this->uri();
 
-  QgsGeoNodeConnection *connection = nullptr;
-  Q_FOREACH ( const QString &connName, QgsGeoNodeConnectionUtils::connectionList() )
+  std::unique_ptr< QgsGeoNodeConnection > connection;
+  const QStringList connections = QgsGeoNodeConnectionUtils::connectionList();
+  for ( const QString &connName : connections )
   {
-    connection = new QgsGeoNodeConnection( connName );
+    connection.reset( new QgsGeoNodeConnection( connName ) );
     if ( layerUri.contains( connection->uri().uri() ) )
       break;
   }
@@ -99,7 +100,7 @@ void QgsWfsLayerItem::copyStyle()
   }
 
   QString url( connection->uri().encodedUri() );
-  QgsGeoNodeRequest geoNodeRequest( url.replace( QStringLiteral( "url=" ), QStringLiteral( "" ) ), true );
+  QgsGeoNodeRequest geoNodeRequest( url.replace( QString( "url=" ), QString( "" ) ), true );
   QgsGeoNodeStyle style = geoNodeRequest.fetchDefaultStyleBlocking( this->name() );
   if ( style.name.isEmpty() )
   {
@@ -120,7 +121,10 @@ void QgsWfsLayerItem::copyStyle()
   mdata->setData( QGSCLIPBOARD_STYLE_MIME, style.body.toByteArray() );
   mdata->setText( style.body.toString() );
   // Copies data in text form as well, so the XML can be pasted into a text editor
+#ifdef Q_OS_LINUX
   clipboard->setMimeData( mdata, QClipboard::Clipboard );
+#endif
+  clipboard->setMimeData( mdata, QClipboard::Selection );
   // Enables the paste menu element
   // actionPasteStyle->setEnabled( true );
 }
