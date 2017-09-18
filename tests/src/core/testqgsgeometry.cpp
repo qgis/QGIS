@@ -4313,7 +4313,7 @@ void TestQgsGeometry::regularPolygon()
   QgsRegularPolygon rp1 = QgsRegularPolygon();
   QCOMPARE( rp1.center(), QgsPoint() );
   QCOMPARE( rp1.firstVertex(), QgsPoint() );
-  QCOMPARE( rp1.numberSides(), 0 );
+  QCOMPARE( rp1.numberSides(), static_cast< unsigned int >( 0 ) );
   QCOMPARE( rp1.radius(), 0.0 );
   QVERIFY( rp1.isEmpty() );
 
@@ -4327,7 +4327,7 @@ void TestQgsGeometry::regularPolygon()
   QVERIFY( !rp2.isEmpty() );
   QCOMPARE( rp2.center(), QgsPoint() );
   QCOMPARE( rp2.firstVertex(), QgsPoint( 0, 5 ) );
-  QCOMPARE( rp2.numberSides(), 5 );
+  QCOMPARE( rp2.numberSides(), static_cast< unsigned int>( 5 ) );
   QCOMPARE( rp2.radius(), 5.0 );
   QGSCOMPARENEAR( rp2.apothem(), 4.0451, 10E-4 );
   QVERIFY( rp2 ==  QgsRegularPolygon( QgsPoint(), -5, 0, 5, QgsRegularPolygon::InscribedCircle ) );
@@ -4367,16 +4367,16 @@ void TestQgsGeometry::regularPolygon()
 
   rp7.setNumberSides( 2 );
   QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.numberSides(), 0 );
+  QCOMPARE( rp7.numberSides(), static_cast< unsigned int >( 0 ) );
   rp7.setNumberSides( 5 );
   QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.numberSides(), 5 );
+  QCOMPARE( rp7.numberSides(), static_cast< unsigned int >( 5 ) );
   rp7.setNumberSides( 2 );
   QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.numberSides(), 5 );
+  QCOMPARE( rp7.numberSides(), static_cast< unsigned int >( 5 ) );
   rp7.setNumberSides( 3 );
   QVERIFY( rp7.isEmpty() );
-  QCOMPARE( rp7.numberSides(), 3 );
+  QCOMPARE( rp7.numberSides(), static_cast< unsigned int >( 3 ) );
 
   rp7.setRadius( -6 );
   QVERIFY( !rp7.isEmpty() );
