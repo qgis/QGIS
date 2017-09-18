@@ -53,6 +53,13 @@ def createEmptyLinestringLayer():
     return layer
 
 
+def createEmptyMultiLinestringLayer():
+    layer = QgsVectorLayer("MultiLinestring?field=fldtxt:string&field=fldint:integer",
+                           "addfeat", "memory")
+    assert layer.isValid()
+    return layer
+
+
 class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
     def testAddFeatures(self):
@@ -109,6 +116,35 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         self.assertTrue(QgsWKBTypes.isMultiType(QGis.fromOldWkbType(geom.wkbType())))
         self.assertFalse((layer.editBuffer().addFeatures([f1])))
+
+        # check is possibile to adapt single to multi
+        # This test should belog to vectordataprovider test
+        layer = createEmptyMultiLinestringLayer()
+        self.assertTrue(layer.startEditing())
+        self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        line = [
+            QgsPoint(1, 1), QgsPoint(2, 2), QgsPoint(3, 3)
+        ]
+        geom = QgsGeometry.fromPolyline(line)
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(geom)
+        f1.setAttributes(["test", 123])
+
+        self.assertTrue(QgsWKBTypes.isSingleType(QGis.fromOldWkbType(geom.wkbType())))
+        self.assertTrue((layer.editBuffer().addFeatures([f1])))
+
+        # check is possibile to adapt 3D geom to 2D provider type
+        # This test should belog to vectordataprovider test
+        layer = createEmptyLayer()
+        self.assertTrue(layer.startEditing())
+        self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        geom = QgsGeometry.fromPoint(QgsPoint(1, 1))
+        geom.geometry().addZValue(1)
+        self.assertTrue(QgsWKBTypes.hasZ(geom.geometry().wkbType()))
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(geom)
+        f1.setAttributes(["test", 123])
+        self.assertTrue((layer.editBuffer().addFeatures([f1])))
 
     def testAddMultipleFeatures(self):
         # test adding multiple features to an edit buffer
