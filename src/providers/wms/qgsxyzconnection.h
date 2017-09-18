@@ -32,7 +32,7 @@ struct QgsXyzConnection
   QString password;
   // Referer
   QString referer;
-  bool hidden;
+  bool hidden = false;
 
   QString encodedUri() const;
 };

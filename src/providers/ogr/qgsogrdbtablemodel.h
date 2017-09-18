@@ -54,7 +54,7 @@ class QgsOgrDbTableModel : public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
     QString mPath;
 
     QIcon iconForType( QgsWkbTypes::Type type ) const;
