@@ -124,6 +124,7 @@ QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, c
   : QgsDataCollectionItem( parent, name, path )
   , mPath( path )
 {
+  mToolTip = path;
   mCapabilities |= Collapse;
 }
 
@@ -510,9 +511,9 @@ void QgsGeoPackageCollectionItem::addTable()
 
 void QgsGeoPackageCollectionItem::addConnection()
 {
-  QgsOgrDbConnection connection( mName, QStringLiteral( "GeoPackage" ) );
+  QgsOgrDbConnection connection( mName, QStringLiteral( "GPKG" ) );
   connection.save();
-  emit connectionsChanged();
+  mParent->refreshConnections();
 }
 
 #endif
