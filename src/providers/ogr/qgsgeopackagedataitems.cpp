@@ -166,10 +166,19 @@ QList<QAction *> QgsGeoPackageCollectionItem::actions()
 {
   QList<QAction *> lst;
 
-  // Add to stored connections
-  QAction *actionAddConnection = new QAction( tr( "Add connection" ), this );
-  connect( actionAddConnection, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addConnection );
-  lst.append( actionAddConnection );
+  if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( mName ) )
+  {
+    QAction *actionDeleteConnection = new QAction( tr( "Remove connection" ), this );
+    connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
+    lst.append( actionDeleteConnection );
+  }
+  else
+  {
+    // Add to stored connections
+    QAction *actionAddConnection = new QAction( tr( "Add connection" ), this );
+    connect( actionAddConnection, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addConnection );
+    lst.append( actionAddConnection );
+  }
 
   // Add table to existing DB
   QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), this );
@@ -481,7 +490,7 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions()
   return lst;
 }
 
-void QgsGeoPackageConnectionItem::deleteConnection()
+void QgsGeoPackageCollectionItem::deleteConnection()
 {
   QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GPKG" ) );
   mParent->refreshConnections();

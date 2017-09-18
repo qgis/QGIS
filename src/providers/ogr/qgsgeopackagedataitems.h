@@ -93,6 +93,7 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     void addTable();
     void addConnection();
+    void deleteConnection();
 #endif
 
   protected:
@@ -119,7 +120,6 @@ class QgsGeoPackageConnectionItem : public QgsGeoPackageCollectionItem
   public slots:
 #ifdef HAVE_GUI
     void editConnection();
-    void deleteConnection();
 #endif
 
 };
