@@ -141,20 +141,10 @@ Create new data item.
  :rtype: list of QAction
 %End
 
-    void setActions( QList<QAction *> actions );
-%Docstring
- Sets the actions for the data item.
-%End
-
     virtual  QList<QMenu *> menus();
 %Docstring
  Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
  the item. Subclasses should override this to provide actions.
-%End
-
-    void setMenus( QList<QMenu *> menus );
-%Docstring
- Sets the menus for the data item.
 %End
 
     virtual bool acceptDrop();

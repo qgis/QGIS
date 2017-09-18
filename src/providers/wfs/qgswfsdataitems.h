@@ -79,6 +79,8 @@ class QgsWfsLayerItem : public QgsLayerItem
     QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
     ~QgsWfsLayerItem();
 
+    virtual QList<QMenu *> menus() override;
+
   public slots:
     //! get style of the active data item (geonode layer item) and copy it to the clipboard
 

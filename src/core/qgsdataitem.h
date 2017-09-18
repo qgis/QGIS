@@ -148,20 +148,10 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual QList<QAction *> actions( QWidget *parent );
 
-    /**
-     * Sets the actions for the data item.
-     */
-    void setActions( QList<QAction *> actions ) { mActions = actions; }
-
     /** Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
      * the item. Subclasses should override this to provide actions.
      */
-    virtual  QList<QMenu *> menus() { return mMenus; }
-
-    /**
-     * Sets the menus for the data item.
-     */
-    void setMenus( QList<QMenu *> menus ) { mMenus = menus; }
+    virtual  QList<QMenu *> menus() { return QList<QMenu *>(); }
 
     /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
@@ -293,8 +283,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     QString mIconName;
     QIcon mIcon;
     QMap<QString, QIcon> mIconMap;
-    QList<QAction *> mActions;
-    QList<QMenu *> mMenus;
 
   public slots:
 

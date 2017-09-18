@@ -49,11 +49,18 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
   mIconName = QStringLiteral( "mIconConnect.png" );
+}
+
+QgsWfsLayerItem::~QgsWfsLayerItem()
+{
+}
+
+QList<QMenu *> QgsWfsLayerItem::menus()
+{
+  QList<QMenu *> menus;
 
   if ( mPath.startsWith( QLatin1String( "geonode:/" ) ) )
   {
-    QList<QMenu *> menus;
-
     QAction *actionCopyStyle = new QAction( tr( "Copy Style" ), this );
     connect( actionCopyStyle, &QAction::triggered, this, &QgsWfsLayerItem::copyStyle );
 
@@ -61,12 +68,9 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
     menuStyleManager->setTitle( tr( "Styles" ) );
     menuStyleManager->addAction( actionCopyStyle );
     menus << menuStyleManager;
-    setMenus( menus );
   }
-}
 
-QgsWfsLayerItem::~QgsWfsLayerItem()
-{
+  return menus;
 }
 
 void QgsWfsLayerItem::copyStyle()
