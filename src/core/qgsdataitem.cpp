@@ -345,8 +345,16 @@ void QgsDataItem::refresh()
 
 void QgsDataItem::refreshConnections()
 {
-  refresh();
-  emit connectionsChanged();
+  // Walk up until the root node is reached
+  if ( mParent )
+  {
+    mParent->refreshConnections();
+  }
+  else
+  {
+    refresh();
+    emit connectionsChanged();
+  }
 }
 
 void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
