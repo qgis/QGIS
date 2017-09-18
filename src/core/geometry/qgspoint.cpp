@@ -276,7 +276,7 @@ QString QgsPoint::asJSON( int precision ) const
 
 void QgsPoint::draw( QPainter &p ) const
 {
-  p.drawRect( mX - 2, mY - 2, 4, 4 );
+  p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) );
 }
 
 void QgsPoint::clear()

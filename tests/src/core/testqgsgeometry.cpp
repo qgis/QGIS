@@ -611,6 +611,7 @@ void TestQgsGeometry::point()
 
   //bad WKT
   QVERIFY( !p14.fromWkt( "Polygon()" ) );
+  QVERIFY( !p14.fromWkt( "Point(1 )" ) );
 
   //asGML2
   QgsPoint exportPoint( 1, 2 );
@@ -626,6 +627,9 @@ void TestQgsGeometry::point()
   QCOMPARE( elemToString( exportPoint.asGML3( doc ) ), expectedGML3 );
   QString expectedGML3prec3( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0.333 0.667</pos></Point>" ) );
   QCOMPARE( elemToString( exportPointFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
+  QgsPoint exportPointZ( 1, 2, 3 );
+  QString expectedGML2Z( QStringLiteral( "<Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"3\">1 2 3</pos></Point>" ) );
+  QGSCOMPAREGML( elemToString( exportPointZ.asGML3( doc, 3 ) ), expectedGML2Z );
 
   //asJSON
   QString expectedJson( QStringLiteral( "{\"type\": \"Point\", \"coordinates\": [1, 2]}" ) );
@@ -4010,8 +4014,14 @@ void TestQgsGeometry::ellipse()
   QGSCOMPARENEARPOINT( q.at( 1 ), pts.at( 1 ), 2 );
   QGSCOMPARENEARPOINT( q.at( 2 ), pts.at( 2 ), 2 );
   QGSCOMPARENEARPOINT( q.at( 3 ), pts.at( 3 ), 2 );
+
+  QVERIFY( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).points( 2 ).isEmpty() ); // segments too low
+
   // linestring
   QgsLineString *l = new QgsLineString();
+
+  l = QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toLineString( 2 );
+  QVERIFY( l->isEmpty() ); // segments too low
 
   l = QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toLineString( 4 );
   QCOMPARE( l->numPoints(), 4 );
@@ -4021,6 +4031,9 @@ void TestQgsGeometry::ellipse()
 
   // polygon
   QgsPolygonV2 *p1 = new QgsPolygonV2();
+
+  p1 = QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toPolygon( 2 );
+  QVERIFY( p1->isEmpty() ); // segments too low
 
   p1 = QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toPolygon( 4 );
   q = QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).quadrant();
@@ -4420,6 +4433,18 @@ void TestQgsGeometry::regularPolygon()
   QCOMPARE( rp8.interiorAngle(), 60.0 );
   QCOMPARE( rp8.centralAngle(), 120.0 );
 
+  //points
+  rp8 = QgsRegularPolygon(); // empty
+  QgsPointSequence points = rp8.points();
+  QVERIFY( points.isEmpty() );
+  rp8 = QgsRegularPolygon( QgsPoint(), QgsPoint( 0, 5 ), 3, QgsRegularPolygon::InscribedCircle );
+  points = rp8.points();
+  QCOMPARE( points.count(), 3 );
+  QCOMPARE( points.at( 0 ), QgsPoint( 0, 5 ) );
+  QGSCOMPARENEAR( points.at( 1 ).x(), 4.33, 0.01 );
+  QGSCOMPARENEAR( points.at( 1 ).y(), -2.4999, 0.01 );
+  QGSCOMPARENEAR( points.at( 2 ).x(), -4.33, 0.01 );
+  QGSCOMPARENEAR( points.at( 2 ).y(), -2.4999, 0.01 );
 
   //test conversions
   // circle
@@ -4435,13 +4460,17 @@ void TestQgsGeometry::regularPolygon()
 
   QgsRegularPolygon rp10 = QgsRegularPolygon( QgsPoint( 0, 0 ), QgsPoint( 0, 4 ), 4 );
   QList<QgsTriangle> rp10_tri = rp10.triangulate();
-  QCOMPARE( rp10_tri.length(), ( int )rp10.numberSides() );
+  QCOMPARE( rp10_tri.length(), static_cast< int >( rp10.numberSides() ) );
   QVERIFY( rp10_tri.at( 0 ) == QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 4 ), rp10.center() ) );
   QVERIFY( rp10_tri.at( 1 ) == QgsTriangle( QgsPoint( 0, 4 ), QgsPoint( 4, 4 ), rp10.center() ) );
   QVERIFY( rp10_tri.at( 2 ) == QgsTriangle( QgsPoint( 4, 4 ), QgsPoint( 4, 0 ), rp10.center() ) );
   QVERIFY( rp10_tri.at( 3 ) == QgsTriangle( QgsPoint( 4, 0 ), QgsPoint( 0, 0 ), rp10.center() ) );
 
+  QVERIFY( QgsRegularPolygon().triangulate().isEmpty() );
+
   // polygon
+  QVERIFY( QgsRegularPolygon().toPolygon()->isEmpty() );
+
   QgsPointSequence ptsPol;
   std::unique_ptr< QgsPolygonV2 > pol( new QgsPolygonV2() );
   pol.reset( rp10.toPolygon() );
@@ -4457,6 +4486,7 @@ void TestQgsGeometry::regularPolygon()
   QVERIFY( ptsPol.at( 4 ) == QgsPoint( 0, 0 ) );
   ptsPol.pop_back();
 
+  QVERIFY( QgsRegularPolygon( QgsPoint(), QgsPoint( 0, 5 ), 1, QgsRegularPolygon::InscribedCircle ).toLineString()->isEmpty() );
   std::unique_ptr< QgsLineString > l( new QgsLineString() );
   l.reset( rp10.toLineString() );
   QCOMPARE( l->numPoints(), 4 );
