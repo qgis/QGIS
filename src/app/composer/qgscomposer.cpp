@@ -76,6 +76,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QIcon>
+#include <QImageWriter>
 #include <QLabel>
 #include <QMatrix>
 #include <QMenuBar>
@@ -2069,7 +2070,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         outputFilePath = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
       }
 
-      saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+      saveOk = saveImage( image, outputFilePath, fileNExt.second );
 
       if ( !saveOk )
       {
@@ -2269,7 +2270,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
           imageFilename = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         }
 
-        bool saveOk = image.save( imageFilename, format.toLocal8Bit().constData() );
+        bool saveOk =  saveImage( image, imageFilename, format );
         if ( !saveOk )
         {
           QMessageBox::warning( this, tr( "Atlas processing error" ),
@@ -2309,6 +2310,16 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mView->setPaintingEnabled( true );
     QApplication::restoreOverrideCursor();
   }
+}
+
+bool QgsComposer::saveImage( const QImage &img, const QString &imageFilename, const QString &imageFormat )
+{
+  QImageWriter w( imageFilename, imageFormat.toLocal8Bit().constData() );
+  if ( imageFormat.compare( "tiff", Qt::CaseInsensitive ) == 0 || imageFormat.compare( "tif", Qt::CaseInsensitive ) == 0 )
+  {
+    w.setCompression( 1 ); //use LZW compression
+  }
+  return w.write( img );
 }
 
 void QgsComposer::on_mActionExportAtlasAsSVG_triggered()
