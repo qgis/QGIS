@@ -64,6 +64,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     virtual QString storageType() const override;
     virtual QStringList subLayers() const override;
+    virtual uint subLayerCount() const override { return mTables.size(); }
     virtual QVariant minimumValue( int index ) const override;
     virtual QVariant maximumValue( int index ) const override;
     virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;

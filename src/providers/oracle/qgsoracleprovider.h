@@ -90,9 +90,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
 
     /** Return the number of layers for the current data source
-     * \note Should this be subLayerCount() instead?
      */
-    size_t layerCount() const;
+    virtual uint subLayerCount() const override;
 
     long featureCount() const override;
 

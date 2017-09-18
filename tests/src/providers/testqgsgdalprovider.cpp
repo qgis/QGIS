@@ -49,6 +49,8 @@ class TestQgsGdalProvider : public QObject
     void invalidNoDataInSourceIgnored();
     void isRepresentableValue();
     void mask();
+    void geopackageSubLayers();
+    void geopackageOpen();
 
   private:
     QString mTestDataDir;
@@ -212,10 +214,48 @@ void TestQgsGdalProvider::mask()
     QCOMPARE( rp->colorInterpretation( 4 ), static_cast<int>( QgsRaster::AlphaBand ) );
     QCOMPARE( rp->bandScale( 4 ), 1.0 );
     QCOMPARE( rp->bandOffset( 4 ), 0.0 );
+    QCOMPARE( rp->subLayerCount(), 0u );
     QgsRectangle rect( 0, 0, 162, 150 );
     QgsRasterBlock *block = rp->block( 4, rect, 162, 150 );
     QVERIFY( block );
     delete block;
+  }
+  delete provider;
+}
+
+void TestQgsGdalProvider::geopackageSubLayers()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/provider/gdal_sample_v1.2_no_extensions.gpkg";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster );
+  QVERIFY( ! provider->isValid() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  if ( rp )
+  {
+    QCOMPARE( rp->subLayerCount(), 2u );
+    QCOMPARE( rp->subLayers().join( '#' ), QStringLiteral( "GPKG:%1:byte_png"
+              "#GPKG:%1:byte_jpeg" ).arg( raster ) );
+  }
+  delete provider;
+}
+
+
+void TestQgsGdalProvider::geopackageOpen()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/provider/gdal_sample_v1.2_no_extensions.gpkg";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), QStringLiteral( "GPKG:%1:byte_png" ).arg( raster ) );
+  QVERIFY( provider->isValid() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  if ( rp )
+  {
+    QCOMPARE( rp->subLayerCount(), 0u );
+    QCOMPARE( rp->bandCount(), 4 );
+    QCOMPARE( rp->dataType( 4 ), Qgis::Byte );
+    QCOMPARE( rp->sourceDataType( 4 ), Qgis::Byte );
+    QCOMPARE( rp->colorInterpretation( 4 ), static_cast<int>( QgsRaster::AlphaBand ) );
+    QCOMPARE( rp->bandScale( 4 ), 1.0 );
+    QCOMPARE( rp->bandOffset( 4 ), 0.0 );
   }
   delete provider;
 }

@@ -711,7 +711,7 @@ QStringList QgsOgrProvider::subLayers() const
   if ( !mSubLayerList.isEmpty() )
     return mSubLayerList;
 
-  for ( unsigned int i = 0; i < layerCount() ; i++ )
+  for ( unsigned int i = 0; i < subLayerCount() ; i++ )
   {
     OGRLayerH layer = OGR_DS_GetLayer( ogrDataSource, i );
     OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( layer );
@@ -813,6 +813,7 @@ QStringList QgsOgrProvider::subLayers() const
   }
   return mSubLayerList;
 }
+
 
 void QgsOgrProvider::setEncoding( const QString &e )
 {
@@ -1158,13 +1159,12 @@ void QgsOgrProvider::invalidateCachedExtent( bool bForceRecomputeExtent )
   mExtent = nullptr;
 }
 
-size_t QgsOgrProvider::layerCount() const
+uint QgsOgrProvider::subLayerCount() const
 {
   if ( !mValid )
     return 0;
   return OGR_DS_GetLayerCount( ogrDataSource );
-} // QgsOgrProvider::layerCount()
-
+}
 
 /**
  * Return the feature type
