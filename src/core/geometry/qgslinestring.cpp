@@ -663,7 +663,7 @@ void QgsLineString::drawAsPolygon( QPainter &p ) const
   p.drawPolygon( asQPolygonF() );
 }
 
-QgsAbstractGeometry *QgsLineString::toCurveType() const
+QgsCompoundCurve *QgsLineString::toCurveType() const
 {
   QgsCompoundCurve *compoundCurve = new QgsCompoundCurve();
   compoundCurve->addCurve( clone() );

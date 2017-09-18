@@ -12,7 +12,6 @@
 
 
 
-
 class QgsLineString: QgsCurve
 {
 %Docstring
@@ -151,12 +150,12 @@ class QgsLineString: QgsCurve
 Closes the line string by appending the first point to the end of the line, if it is not already closed.
 %End
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsCompoundCurve *toCurveType() const /Factory/;
 
 %Docstring
  Returns the geometry converted to the more generic curve type QgsCompoundCurve
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsAbstractGeometry
+ :rtype: QgsCompoundCurve
 %End
 
     void extend( double startDistance, double endDistance );

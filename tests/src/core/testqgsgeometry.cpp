@@ -1046,6 +1046,20 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromArray5.yAt( 1 ), 12.0 );
   QCOMPARE( fromArray5.xAt( 2 ), 3.0 );
   QCOMPARE( fromArray5.yAt( 2 ), 13.0 );
+  // unbalanced -> z truncated
+  zz = QVector< double >() << 21 << 22 << 23 << 24;
+  fromArray5 = QgsLineString( xx, yy, zz );
+  QCOMPARE( fromArray5.wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( fromArray5.numPoints(), 3 );
+  QCOMPARE( fromArray5.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray5.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray5.zAt( 0 ), 21.0 );
+  QCOMPARE( fromArray5.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray5.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray5.zAt( 1 ), 22.0 );
+  QCOMPARE( fromArray5.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray5.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray5.zAt( 2 ), 23.0 );
   // with m
   QVector< double > mm;
   xx = QVector< double >() << 1 << 2 << 3;
@@ -1074,6 +1088,20 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromArray7.yAt( 1 ), 12.0 );
   QCOMPARE( fromArray7.xAt( 2 ), 3.0 );
   QCOMPARE( fromArray7.yAt( 2 ), 13.0 );
+  // unbalanced -> m truncated
+  mm = QVector< double >() << 21 << 22 << 23 << 24;
+  fromArray7 = QgsLineString( xx, yy, QVector< double >(), mm );
+  QCOMPARE( fromArray7.wkbType(), QgsWkbTypes::LineStringM );
+  QCOMPARE( fromArray7.numPoints(), 3 );
+  QCOMPARE( fromArray7.xAt( 0 ), 1.0 );
+  QCOMPARE( fromArray7.yAt( 0 ), 11.0 );
+  QCOMPARE( fromArray7.mAt( 0 ), 21.0 );
+  QCOMPARE( fromArray7.xAt( 1 ), 2.0 );
+  QCOMPARE( fromArray7.yAt( 1 ), 12.0 );
+  QCOMPARE( fromArray7.mAt( 1 ), 22.0 );
+  QCOMPARE( fromArray7.xAt( 2 ), 3.0 );
+  QCOMPARE( fromArray7.yAt( 2 ), 13.0 );
+  QCOMPARE( fromArray7.mAt( 2 ), 23.0 );
   // zm
   xx = QVector< double >() << 1 << 2 << 3;
   yy = QVector< double >() << 11 << 12 << 13;
@@ -1096,6 +1124,14 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromArray8.mAt( 2 ), 33.0 );
 
   // from QList<QgsPointXY>
+  QgsLineString fromPtsA = QgsLineString( QVector< QgsPoint >() );
+  QVERIFY( fromPtsA.isEmpty() );
+  QCOMPARE( fromPtsA.wkbType(), QgsWkbTypes::LineString );
+
+  fromPtsA = QgsLineString( QVector< QgsPoint >()  << QgsPoint( 1, 2, 0, 4, QgsWkbTypes::PointM ) );
+  QCOMPARE( fromPtsA.numPoints(), 1 );
+  QCOMPARE( fromPtsA.wkbType(), QgsWkbTypes::LineStringM );
+
   QList<QgsPointXY> ptsA;
   ptsA << QgsPointXY( 1, 2 ) << QgsPointXY( 11, 12 ) << QgsPointXY( 21, 22 );
   QgsLineString fromPts( ptsA );
@@ -1540,6 +1576,8 @@ void TestQgsGeometry::lineString()
                 << QgsPoint( QgsWkbTypes::PointM, 7, 8, 0, 13 ) );
   QVERIFY( !( e5 == e6 ) ); //different m values
   QVERIFY( e5 != e6 );
+
+  QVERIFY( e6 != QgsCircularString() );
 
   //close/isClosed
   QgsLineString l11;
@@ -2529,6 +2567,25 @@ void TestQgsGeometry::lineString()
   QCOMPARE( extend1.pointN( 0 ), QgsPoint( QgsWkbTypes::Point, -1, 0 ) );
   QCOMPARE( extend1.pointN( 1 ), QgsPoint( QgsWkbTypes::Point, 1, 0 ) );
   QCOMPARE( extend1.pointN( 2 ), QgsPoint( QgsWkbTypes::Point, 1, 3 ) );
+
+  // addToPainterPath (note most tests are in test_qgsgeometry.py)
+  QgsLineString path;
+  QPainterPath pPath;
+  path.addToPainterPath( pPath );
+  QVERIFY( pPath.isEmpty() );
+  path.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
+  path.addToPainterPath( pPath );
+  QVERIFY( !pPath.isEmpty() );
+
+  // toCurveType
+  QgsLineString curveLine1;
+  curveLine1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) );
+  std::unique_ptr< QgsCompoundCurve > curveType( curveLine1.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CompoundCurve );
+  QCOMPARE( curveType->numPoints(), 2 );
+  QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 1, 2 ) );
+  QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 11, 12 ) );
+
 }
 
 void TestQgsGeometry::polygon()

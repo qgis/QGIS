@@ -24,7 +24,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscurve.h"
-
+#include "qgscompoundcurve.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
         \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsCompoundCurve *toCurveType() const override SIP_FACTORY;
 
     /**
      * Extends the line geometry by extrapolating out the start or end of the line
