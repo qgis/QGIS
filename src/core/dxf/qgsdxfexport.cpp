@@ -1002,7 +1002,7 @@ void QgsDxfExport::writeEntities()
     renderer->startRender( ctx, vl->fields() );
 
     QStringList attributes = renderer->usedAttributes();
-    int attrIdx = mLayerNameAttribute.value( vl->id(), 1 );
+    int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
     if ( vl->fields().exists( attrIdx ) )
     {
       QString layerAttr = vl->fields().at( attrIdx ).name();
