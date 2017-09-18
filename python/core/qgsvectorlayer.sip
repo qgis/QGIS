@@ -349,19 +349,20 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
 
     QString storageType() const;
 %Docstring
-Returns the permanent storage type for this layer as a friendly name.
+ Returns the permanent storage type for this layer as a friendly name.
+ This is obtained from the data provider and does not follow any standard.
  :rtype: str
 %End
 
     QString capabilitiesString() const;
 %Docstring
-Capabilities for this layer in a friendly format.
+ Capabilities for this layer, comma separated and translated.
  :rtype: str
 %End
 
     QString dataComment() const;
 %Docstring
-Returns a comment for the data in the layer
+ Returns a description for this layer as defined in the data provider.
  :rtype: str
 %End
 

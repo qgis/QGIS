@@ -413,13 +413,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual QgsVectorLayer *clone() const override SIP_FACTORY;
 
-    //! Returns the permanent storage type for this layer as a friendly name.
+    /**
+     * Returns the permanent storage type for this layer as a friendly name.
+     * This is obtained from the data provider and does not follow any standard.
+     */
     QString storageType() const;
 
-    //! Capabilities for this layer in a friendly format.
+    /**
+     * Capabilities for this layer, comma separated and translated.
+     */
     QString capabilitiesString() const;
 
-    //! Returns a comment for the data in the layer
+    /**
+     * Returns a description for this layer as defined in the data provider.
+     */
     QString dataComment() const;
 
     /**
