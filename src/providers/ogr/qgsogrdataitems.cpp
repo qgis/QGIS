@@ -578,6 +578,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   // TODO: add more OGR supported multiple layers formats here!
   QStringList ogrSupportedDbLayersExtensions;
   ogrSupportedDbLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" );
+  QStringList ogrSupportedDbDriverNames;
+  ogrSupportedDbDriverNames << QLatin1String( "GPKG" ) << QLatin1String( "db" );
 
   // Fast track: return item without testing if:
   // scanExtSetting or zipfile and scan zip == "Basic scan"
@@ -624,13 +626,16 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
       return item;
   }
 
+  // Slow track: scan file contents
+  QgsDataItem *item = nullptr;
+
   // test that file is valid with OGR
   OGRRegisterAll();
-  GDALDriverH hDriver;
+  OGRSFDriverH hDriver;
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, &hDriver );
   CPLPopErrorHandler();
 
   if ( ! hDataSource )
@@ -639,26 +644,24 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     return nullptr;
   }
 
-  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( GDALGetDriverShortName( hDriver ) ), 2 );
-
-  QgsDataItem *item = nullptr;
-
+  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( OGR_Dr_GetName( hDriver ) ), 2 );
+  QString ogrDriverName = OGR_Dr_GetName( hDriver );
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
-  if ( numLayers == 1 )
-  {
-    QgsDebugMsgLevel( QString( "using name = %1" ).arg( name ), 2 );
-    item = dataItemForLayer( parentItem, name, path, hDataSource, 0 );
-  }
-  else if ( numLayers > 1 )
-  {
-    QgsDebugMsgLevel( QString( "using name = %1" ).arg( name ), 2 );
-    item = new QgsOgrDataCollectionItem( parentItem, name, path );
-  }
-  else if ( suffix.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+
+  // GeoPackage needs a specialized data item, mainly because of raster deletion not
+  // yet implemented in GDAL (2.2.1)
+  if ( ogrDriverName == QLatin1String( "GPKG" ) )
   {
     item = new QgsGeoPackageCollectionItem( parentItem, name, path );
   }
-
-  GDALClose( hDataSource );
+  else if ( numLayers > 1 || ogrSupportedDbDriverNames.contains( ogrDriverName ) )
+  {
+    item = new QgsOgrDataCollectionItem( parentItem, name, path );
+  }
+  else
+  {
+    item = dataItemForLayer( parentItem, name, path, hDataSource, 0 );
+  }
+  OGR_DS_Destroy( hDataSource );
   return item;
 }
