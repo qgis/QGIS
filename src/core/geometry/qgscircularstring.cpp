@@ -38,7 +38,26 @@ bool QgsCircularString::operator==( const QgsCurve &other ) const
   if ( !otherLine )
     return false;
 
-  return *otherLine == *this;
+  if ( mWkbType != otherLine->mWkbType )
+    return false;
+
+  if ( mX.count() != otherLine->mX.count() )
+    return false;
+
+  for ( int i = 0; i < mX.count(); ++i )
+  {
+    if ( !qgsDoubleNear( mX.at( i ), otherLine->mX.at( i ) )
+         || !qgsDoubleNear( mY.at( i ), otherLine->mY.at( i ) ) )
+      return false;
+
+    if ( is3D() && !qgsDoubleNear( mZ.at( i ), otherLine->mZ.at( i ) ) )
+      return false;
+
+    if ( isMeasure() && !qgsDoubleNear( mM.at( i ), otherLine->mM.at( i ) ) )
+      return false;
+  }
+
+  return true;
 }
 
 bool QgsCircularString::operator!=( const QgsCurve &other ) const
