@@ -308,9 +308,6 @@ override_dh_auto_install:
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages
 
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mimelnk/application
-	install -o root -g root -m 644 $(CURDIR)/debian/mime/application/* $(CURDIR)/debian/tmp/usr/share/mimelnk/application
-
 	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
