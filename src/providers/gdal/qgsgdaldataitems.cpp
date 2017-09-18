@@ -251,9 +251,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   //       class
   // TODO: add more OGR supported multiple layers formats here!
   QStringList ogrSupportedDbLayersExtensions;
-  ogrSupportedDbLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" );
+  ogrSupportedDbLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" ) << QLatin1String( "gdb" );
   QStringList ogrSupportedDbDriverNames;
-  ogrSupportedDbDriverNames << QLatin1String( "GPKG" ) << QLatin1String( "db" );
+  ogrSupportedDbDriverNames << QLatin1String( "GPKG" ) << QLatin1String( "db" ) << QLatin1String( "gdb" );
 
   // return item without testing if:
   // scanExtSetting

@@ -38,6 +38,7 @@
 
 // these are defined in qgsogrprovider.cpp
 QGISEXTERN QStringList fileExtensions();
+QGISEXTERN QStringList directoryExtensions();
 QGISEXTERN QStringList wildcards();
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
@@ -506,11 +507,13 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QgsDebugMsgLevel( "thePath= " + path + " tmpPath= " + tmpPath + " name= " + name
                     + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
-  // allow only normal files or VSIFILE items to continue
-  if ( !info.isFile() && vsiPrefix == QLatin1String( "" ) )
-    return nullptr;
-
   QStringList myExtensions = fileExtensions();
+  QStringList dirExtensions = directoryExtensions();
+
+  // allow only normal files, supported directories, or VSIFILE items to continue
+  bool isOgrSupportedDirectory = info.isDir() && dirExtensions.contains( suffix );
+  if ( !isOgrSupportedDirectory && !info.isFile() && vsiPrefix == QLatin1String( "" ) )
+    return nullptr;
 
   // skip *.aux.xml files (GDAL auxiliary metadata files),
   // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
@@ -527,7 +530,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
   // because OGR drive can open also .dbf, .shx.
-  if ( myExtensions.indexOf( suffix ) < 0 )
+  if ( myExtensions.indexOf( suffix ) < 0 && !dirExtensions.contains( suffix ) )
   {
     bool matches = false;
     Q_FOREACH ( const QString &wildcard, wildcards() )
@@ -577,9 +580,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   //       class
   // TODO: add more OGR supported multiple layers formats here!
   QStringList ogrSupportedDbLayersExtensions;
-  ogrSupportedDbLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" );
+  ogrSupportedDbLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" ) << QStringLiteral( "gdb" );
   QStringList ogrSupportedDbDriverNames;
-  ogrSupportedDbDriverNames << QLatin1String( "GPKG" ) << QLatin1String( "db" );
+  ogrSupportedDbDriverNames << QLatin1String( "GPKG" ) << QLatin1String( "db" ) << QStringLiteral( "gdb" );
 
   // Fast track: return item without testing if:
   // scanExtSetting or zipfile and scan zip == "Basic scan"
