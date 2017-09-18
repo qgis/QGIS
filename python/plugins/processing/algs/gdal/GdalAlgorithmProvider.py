@@ -77,12 +77,12 @@ from .Buffer import Buffer
 from .ClipVectorByExtent import ClipVectorByExtent
 from .ClipVectorByMask import ClipVectorByMask
 from .OffsetCurve import OffsetCurve
+from .ogr2ogr import ogr2ogr
 from .ogrinfo import ogrinfo
 from .OgrToPostGis import OgrToPostGis
 from .OneSideBuffer import OneSideBuffer
 from .PointsAlongLines import PointsAlongLines
 
-# from .ogr2ogr import Ogr2Ogr
 # from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 # from .ogr2ogrdissolve import Ogr2OgrDissolve
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
@@ -179,11 +179,11 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ClipVectorByExtent(),
             ClipVectorByMask(),
             OffsetCurve(),
+            ogr2ogr(),
             ogrinfo(),
             OgrToPostGis(),
             OneSideBuffer(),
             PointsAlongLines(),
-            # Ogr2Ogr(),
             # Ogr2OgrToPostGisList(),
             # Ogr2OgrDissolve(),
             # Ogr2OgrTableToPostGisList(),
