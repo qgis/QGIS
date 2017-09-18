@@ -112,6 +112,11 @@ class QgsLayoutUndoObjectInterface
 %End
   public:
 
+    ~QgsLayoutUndoObjectInterface();
+%Docstring
+ Destructor for QgsLayoutUndoObjectInterface.
+%End
+
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = 0 ) = 0 /Factory/;
 %Docstring
  Creates a new layout undo command with the specified ``text`` and ``parent``.

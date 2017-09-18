@@ -130,6 +130,11 @@ class CORE_EXPORT QgsLayoutUndoObjectInterface
   public:
 
     /**
+     * Destructor for QgsLayoutUndoObjectInterface.
+     */
+    ~QgsLayoutUndoObjectInterface() = default;
+
+    /**
      * Creates a new layout undo command with the specified \a text and \a parent.
      *
      * The \a id argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
