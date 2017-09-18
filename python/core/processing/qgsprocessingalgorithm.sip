@@ -795,6 +795,12 @@ class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
  :rtype: QgsProcessing.SourceType
 %End
 
+    virtual QgsProcessingFeatureSource::Flag sourceFlags() const;
+%Docstring
+ Returns the processing feature source flags to be used in the algorithm.
+ :rtype: QgsProcessingFeatureSource.Flag
+%End
+
     virtual QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const;
 %Docstring
  Maps the input WKB geometry type (``inputWkbType``) to the corresponding
