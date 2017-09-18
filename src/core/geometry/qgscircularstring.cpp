@@ -65,6 +65,11 @@ bool QgsCircularString::operator!=( const QgsCurve &other ) const
   return !operator==( other );
 }
 
+QString QgsCircularString::geometryType() const
+{
+  return QStringLiteral( "CircularString" );
+}
+
 QgsCircularString *QgsCircularString::clone() const
 {
   return new QgsCircularString( *this );
@@ -580,7 +585,9 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
     {
       path.lineTo( pt.at( j ).x(), pt.at( j ).y() );
     }
+#if 0
     //arcTo( path, QPointF( mX[i], mY[i] ), QPointF( mX[i + 1], mY[i + 1] ), QPointF( mX[i + 2], mY[i + 2] ) );
+#endif
   }
 
   //if number of points is even, connect to last point with straight line (even though the circular string is not valid)
@@ -590,6 +597,7 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
   }
 }
 
+#if 0
 void QgsCircularString::arcTo( QPainterPath &path, QPointF pt1, QPointF pt2, QPointF pt3 )
 {
   double centerX, centerY, radius;
@@ -602,6 +610,7 @@ void QgsCircularString::arcTo( QPainterPath &path, QPointF pt1, QPointF pt2, QPo
   double diameter = 2 * radius;
   path.arcTo( centerX - radius, centerY - radius, diameter, diameter, p1Angle, sweepAngle );
 }
+#endif
 
 void QgsCircularString::drawAsPolygon( QPainter &p ) const
 {
@@ -814,6 +823,11 @@ void QgsCircularString::sumUpArea( double &sum ) const
       sum -= circleChordArea;
     }
   }
+}
+
+bool QgsCircularString::hasCurvedSegments() const
+{
+  return true;
 }
 
 double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, double y2, double x3, double y3,

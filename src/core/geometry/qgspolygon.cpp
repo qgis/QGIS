@@ -66,6 +66,11 @@ bool QgsPolygonV2::operator!=( const QgsPolygonV2 &other ) const
   return !operator==( other );
 }
 
+QString QgsPolygonV2::geometryType() const
+{
+  return QStringLiteral( "Polygon" );
+}
+
 QgsPolygonV2 *QgsPolygonV2::clone() const
 {
   return new QgsPolygonV2( *this );

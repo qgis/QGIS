@@ -107,6 +107,7 @@ class QgsCircularString: QgsCurve
 
     virtual bool hasCurvedSegments() const;
 
+
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
 %Docstring

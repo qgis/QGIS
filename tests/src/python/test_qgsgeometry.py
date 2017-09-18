@@ -4299,6 +4299,11 @@ class TestQgsGeometry(unittest.TestCase):
                   'wkt': 'LineString (20 30, 50 30, 50 90)',
                   'reference_image': 'linestring',
                   'as_polygon_reference_image': 'linestring_aspolygon',
+                  'use_pen': True},
+                 {'name': 'CircularString',
+                  'wkt': 'CircularString (20 30, 50 30, 50 90)',
+                  'reference_image': 'circularstring',
+                  'as_polygon_reference_image': 'circularstring_aspolygon',
                   'use_pen': True}
                  ]
 
