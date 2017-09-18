@@ -535,11 +535,13 @@ void QgsLineString::setPoints( const QgsPointSequence &points )
     mY[i] = points.at( i ).y();
     if ( hasZ )
     {
-      mZ[i] = points.at( i ).z();
+      double z = points.at( i ).z();
+      mZ[i] = std::isnan( z ) ? 0 : z;
     }
     if ( hasM )
     {
-      mM[i] = points.at( i ).m();
+      double m = points.at( i ).m();
+      mM[i] = std::isnan( m ) ? 0 : m;
     }
   }
 }

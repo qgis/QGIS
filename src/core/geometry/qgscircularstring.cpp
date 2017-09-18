@@ -496,11 +496,13 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
     mY[i] = points[i].y();
     if ( hasZ )
     {
-      mZ[i] = points[i].z();
+      double z = points.at( i ).z();
+      mZ[i] = std::isnan( z ) ? 0 : z;
     }
     if ( hasM )
     {
-      mM[i] = points[i].m();
+      double m = points.at( i ).m();
+      mM[i] = std::isnan( m ) ? 0 : m;
     }
   }
 }

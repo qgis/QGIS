@@ -80,8 +80,8 @@ QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, dou
   : QgsAbstractGeometry()
   , mX( x )
   , mY( y )
-  , mZ( z )
-  , mM( m )
+  , mZ( QgsWkbTypes::hasZ( wkbType ) ? z : std::numeric_limits<double>::quiet_NaN() )
+  , mM( QgsWkbTypes::hasM( wkbType ) ? m : std::numeric_limits<double>::quiet_NaN() )
 {
   Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
   mWkbType = wkbType;
