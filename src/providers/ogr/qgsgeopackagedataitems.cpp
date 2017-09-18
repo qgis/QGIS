@@ -28,6 +28,7 @@
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsgeopackagerasterwritertask.h"
+#include "qgstaskmanager.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -191,6 +192,10 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   QStringList importResults;
   bool hasError = false;
 
+  // Main task
+  std::unique_ptr< QgsGeoPackageImportTask > mainTask( new QgsGeoPackageImportTask( tr( "GeoPackage import" ) ) );
+  QgsTaskList importTasks;
+
   const auto lst = QgsMimeDataUtils::decodeUriList( data );
   for ( const QgsMimeDataUtils::Uri &dropUri : lst )
   {
@@ -252,10 +257,11 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
             options.insert( QStringLiteral( "layerName" ), dropUri.name );
-
-            std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner ) );
+            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner ) ;
+            mainTask->addSubTask( exportTask, importTasks );
+            importTasks << exportTask;
             // when export is successful:
-            connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
+            connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
             {
               // this is gross - TODO - find a way to get access to messageBar from data items
               QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
@@ -263,7 +269,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             } );
 
             // when an error occurs:
-            connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+            connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
             {
               if ( error != QgsVectorLayerExporter::ErrUserCanceled )
               {
@@ -274,14 +280,14 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
               }
             } );
 
-            QgsApplication::taskManager()->addTask( exportTask.release() );
           }
           else  // Import raster
           {
-
-            std::unique_ptr< QgsGeoPackageRasterWriterTask > exportTask( new QgsGeoPackageRasterWriterTask( dropUri, mPath ) );
+            QgsGeoPackageRasterWriterTask  *exportTask = new QgsGeoPackageRasterWriterTask( dropUri, mPath ) ;
+            mainTask->addSubTask( exportTask, importTasks );
+            importTasks << exportTask;
             // when export is successful:
-            connect( exportTask.get(), &QgsGeoPackageRasterWriterTask::writeComplete, this, [ = ]()
+            connect( exportTask, &QgsGeoPackageRasterWriterTask::writeComplete, this, [ = ]()
             {
               // this is gross - TODO - find a way to get access to messageBar from data items
               QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
@@ -289,7 +295,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             } );
 
             // when an error occurs:
-            connect( exportTask.get(), &QgsGeoPackageRasterWriterTask::errorOccurred, this, [ = ]( QgsGeoPackageRasterWriter::WriterError error, const QString & errorMessage )
+            connect( exportTask, &QgsGeoPackageRasterWriterTask::errorOccurred, this, [ = ]( QgsGeoPackageRasterWriter::WriterError error, const QString & errorMessage )
             {
               if ( error != QgsGeoPackageRasterWriter::WriterError::ErrUserCanceled )
               {
@@ -304,7 +310,6 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
               deleteGeoPackageRasterLayer( QStringLiteral( "GPKG:%1:%2" ).arg( mPath, dropUri.name ), deleteErr );
             } );
 
-            QgsApplication::taskManager()->addTask( exportTask.release() );
           }
         } // do not overwrite
       }
@@ -322,6 +327,10 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     output->setTitle( tr( "Import to GeoPackage database" ) );
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
     output->showMessage();
+  }
+  else if ( ! importTasks.isEmpty() )
+  {
+    QgsApplication::taskManager()->addTask( mainTask.release() );
   }
   return true;
 }

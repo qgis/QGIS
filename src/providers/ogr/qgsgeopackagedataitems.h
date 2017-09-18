@@ -18,6 +18,7 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
+#include "qgstaskmanager.h"
 
 
 /**
@@ -128,5 +129,24 @@ class QgsGeoPackageDataItemProvider : public QgsDataItemProvider
 };
 
 
+class QgsGeoPackageImportTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    QgsGeoPackageImportTask( const QString &desc = QString() ) : QgsTask( desc ) {}
+
+    void emitProgressChanged( double progress ) { setProgress( progress ); }
+
+
+  protected:
+
+    bool run() override
+    {
+      return true;
+    }
+
+};
 
 #endif // QGSGEOPACKAGEDATAITEMS_H
