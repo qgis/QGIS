@@ -456,7 +456,7 @@ void QgsCircularString::setPoints( const QgsPointSequence &points )
 
   if ( points.empty() )
   {
-    mWkbType = QgsWkbTypes::Unknown;
+    mWkbType = QgsWkbTypes::CircularString;
     mX.clear();
     mY.clear();
     mZ.clear();
