@@ -389,7 +389,7 @@ int QgsCircularString::numPoints() const
 
 QgsPoint QgsCircularString::pointN( int i ) const
 {
-  if ( std::min( mX.size(), mY.size() ) <= i )
+  if ( i < 0 || std::min( mX.size(), mY.size() ) <= i )
   {
     return QgsPoint();
   }
