@@ -1432,7 +1432,7 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
 {
   QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
   QgsVectorLayer::SelectBehavior method = static_cast< QgsVectorLayer::SelectBehavior >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
-  QgsFeatureSource *intersectSource = parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context );
+  std::unique_ptr< QgsFeatureSource > intersectSource( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
   const QList< int > selectedPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
 
   QgsFeatureIds selectedIds;
@@ -1440,7 +1440,7 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
   {
     selectedIds.insert( feature.id() );
   };
-  process( selectLayer, intersectSource, selectedPredicates, addToSelection, true, feedback );
+  process( selectLayer, intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
 
   selectLayer->selectByIds( selectedIds, method );
   QVariantMap results;
@@ -1657,8 +1657,8 @@ QgsExtractByLocationAlgorithm *QgsExtractByLocationAlgorithm::createInstance() c
 
 QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsFeatureSource *input = parameterAsSource( parameters, QStringLiteral( "INPUT" ), context );
-  QgsFeatureSource *intersectSource = parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context );
+  std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsFeatureSource > intersectSource( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
   const QList< int > selectedPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, input->fields(), input->wkbType(), input->sourceCrs() ) );
@@ -1671,7 +1671,7 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
     QgsFeature f = feature;
     sink->addFeature( f, QgsFeatureSink::FastInsert );
   };
-  process( input, intersectSource, selectedPredicates, addToSink, false, feedback );
+  process( input.get(), intersectSource.get(), selectedPredicates, addToSink, false, feedback );
 
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), dest );
