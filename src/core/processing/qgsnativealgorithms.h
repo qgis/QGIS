@@ -24,6 +24,7 @@
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingprovider.h"
+#include "qgsprocessingutils.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 
 ///@cond PRIVATE
@@ -598,6 +599,7 @@ class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsFixGeometriesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    QgsProcessingFeatureSource::Flag sourceFlags() const override { return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks; }
     QString outputName() const override { return QObject::tr( "Fixed geometries" ); }
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type type ) const override { return QgsWkbTypes::multiType( type ); }
     QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
