@@ -504,8 +504,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
   QVariant result;
   if ( context )
   {
-    QString cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter );
-
+    QString cacheKey;
     QgsExpression subExp( subExpression );
     QgsExpression filterExp( parameters.filter );
     if ( filterExp.referencedVariables().contains( "parent" )
@@ -513,7 +512,12 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
          || subExp.referencedVariables().contains( "parent" )
          || subExp.referencedVariables().contains( QString() ) )
     {
-      cacheKey += ':' + qHash( context->feature() );
+      cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5%6" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter,
+                 QString::number( context->feature().id() ), QString( qHash( context->feature() ) ) );
+    }
+    else
+    {
+      cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4" ).arg( vl->id(), QString::number( aggregate ), subExpression, parameters.filter );
     }
 
     if ( context && context->hasCachedValue( cacheKey ) )
