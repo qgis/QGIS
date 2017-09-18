@@ -276,7 +276,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
         const QString &driverName = "ESRI Shapefile",
         bool onlySelected = false,
-        QString *errorMessage = nullptr,
+        QString *errorMessage SIP_OUT = nullptr,
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QgsCoordinateTransform &ct,
         const QString &driverName = "ESRI Shapefile",
         bool onlySelected = false,
-        QString *errorMessage = nullptr,
+        QString *errorMessage SIP_OUT = nullptr,
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QString &fileName,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = nullptr,
-        QString *errorMessage = nullptr );
+        QString *errorMessage SIP_OUT = nullptr );
 
     //! Create a new vector file writer
     QgsVectorFileWriter( const QString &vectorFileName,
