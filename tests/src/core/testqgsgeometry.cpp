@@ -45,7 +45,6 @@
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
 #include "qgscurvepolygon.h"
-#include "qgscompoundcurve.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
