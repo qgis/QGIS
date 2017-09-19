@@ -88,7 +88,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       else if ( geomType == QgsWkbTypes::PolygonGeometry )
       {
         QString errMsg;
-        QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( *layerFeatureB.geometry(), &errMsg );
+        QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( layerFeatureB.geometry(), &errMsg );
         if ( diffGeom && diffGeom->area() < mContext->tolerance )
         {
           duplicates[layerFeatureB.layer().id()].append( layerFeatureB.feature().id() );
@@ -152,7 +152,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
         }
         else if ( geomType == QgsWkbTypes::PolygonGeometry )
         {
-          QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( *layerFeatureB.geometry() );
+          QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( layerFeatureB.geometry() );
           if ( diffGeom && diffGeom->area() < mContext->tolerance )
           {
             featurePoolB->deleteFeature( featureB );

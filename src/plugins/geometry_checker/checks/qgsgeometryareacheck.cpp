@@ -180,7 +180,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
   QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), mContext->tolerance );
-  QgsAbstractGeometry *combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
+  QgsAbstractGeometry *combinedGeom = geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {
     return false;

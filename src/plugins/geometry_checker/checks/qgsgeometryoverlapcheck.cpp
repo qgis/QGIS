@@ -53,9 +53,9 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &err
         continue;
       }
       QString errMsg;
-      if ( geomEngineA->overlaps( *layerFeatureB.geometry(), &errMsg ) )
+      if ( geomEngineA->overlaps( layerFeatureB.geometry(), &errMsg ) )
       {
-        QgsAbstractGeometry *interGeom = geomEngineA->intersection( *layerFeatureB.geometry() );
+        QgsAbstractGeometry *interGeom = geomEngineA->intersection( layerFeatureB.geometry() );
         if ( interGeom && !interGeom->isEmpty() )
         {
           QgsGeometryCheckerUtils::filter1DTypes( interGeom );
@@ -99,12 +99,12 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, true );
   QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->reducedTolerance );
 
-  if ( !geomEngineA->overlaps( *layerFeatureB.geometry() ) )
+  if ( !geomEngineA->overlaps( layerFeatureB.geometry() ) )
   {
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometry *interGeom = geomEngineA->intersection( *layerFeatureB.geometry(), &errMsg );
+  QgsAbstractGeometry *interGeom = geomEngineA->intersection( layerFeatureB.geometry(), &errMsg );
   if ( !interGeom )
   {
     error->setFixFailed( tr( "Failed to compute intersection between overlapping features: %1" ).arg( errMsg ) );
@@ -137,7 +137,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   }
   else if ( method == Subtract )
   {
-    QgsAbstractGeometry *diff1 = geomEngineA->difference( *interPart, &errMsg );
+    QgsAbstractGeometry *diff1 = geomEngineA->difference( interPart, &errMsg );
     if ( !diff1 || diff1->isEmpty() )
     {
       delete diff1;
@@ -148,7 +148,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
       QgsGeometryCheckerUtils::filter1DTypes( diff1 );
     }
     QSharedPointer<QgsGeometryEngine> geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->reducedTolerance );
-    QgsAbstractGeometry *diff2 = geomEngineB->difference( *interPart, &errMsg );
+    QgsAbstractGeometry *diff2 = geomEngineB->difference( interPart, &errMsg );
     if ( !diff2 || diff2->isEmpty() )
     {
       delete diff2;

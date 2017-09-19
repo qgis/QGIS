@@ -49,7 +49,7 @@ void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError 
             continue;
           }
           QSharedPointer<QgsGeometryEngine> testGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( testPoly, mContext->tolerance );
-          if ( testGeomEngine->contains( *point ) )
+          if ( testGeomEngine->contains( point ) )
           {
             // Check whether point does not lie on a ring boundary
             bool touchesBoundary = false;

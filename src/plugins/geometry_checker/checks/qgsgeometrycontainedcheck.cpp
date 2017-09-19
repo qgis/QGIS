@@ -46,7 +46,7 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
         continue;
       }
       QString errMsg;
-      if ( geomEngineA->within( *layerFeatureB.geometry(), &errMsg ) )
+      if ( geomEngineA->within( layerFeatureB.geometry(), &errMsg ) )
       {
         errors.append( new QgsGeometryContainedCheckError( this, layerFeatureA, layerFeatureA.geometry()->centroid(), layerFeatureB ) );
       }
@@ -79,7 +79,7 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
 
   QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
 
-  if ( !geomEngineA->within( *layerFeatureB.geometry() ) )
+  if ( !geomEngineA->within( layerFeatureB.geometry() ) )
   {
     error->setObsolete();
     return;

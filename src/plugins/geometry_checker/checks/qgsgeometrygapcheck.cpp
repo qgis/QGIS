@@ -84,13 +84,13 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
 
   // Buffer envelope
   geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope, mContext->tolerance );
-  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, GEOSBUF_CAP_SQUARE, GEOSBUF_JOIN_MITRE, 4. );
+  QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, GEOSBUF_CAP_SQUARE, GEOSBUF_JOIN_MITRE, 4. );  //#spellok  //#spellok
   delete envelope;
   envelope = bufEnvelope;
 
   // Compute difference between envelope and union to obtain gap polygons
   geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope, mContext->tolerance );
-  QgsAbstractGeometry *diffGeom = geomEngine->difference( *unionGeom, &errMsg );
+  QgsAbstractGeometry *diffGeom = geomEngine->difference( unionGeom, &errMsg );
   if ( !diffGeom )
   {
     messages.append( tr( "Gap check: %1" ).arg( errMsg ) );
@@ -220,7 +220,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
   QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom, mContext->tolerance );
-  QgsAbstractGeometry *combinedGeom = geomEngine->combine( *QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg );
+  QgsAbstractGeometry *combinedGeom = geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg );
   delete errLayerGeom;
   if ( !combinedGeom || combinedGeom->isEmpty() )
   {
