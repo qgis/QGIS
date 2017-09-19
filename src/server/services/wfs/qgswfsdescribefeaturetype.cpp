@@ -22,6 +22,7 @@
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgswfsdescribefeaturetype.h"
+#include "qgswfsparameters.h"
 
 #include "qgsproject.h"
 #include "qgsexception.h"
@@ -53,6 +54,13 @@ namespace QgsWfs
     QDomDocument doc;
 
     QgsServerRequest::Parameters parameters = request.parameters();
+    QgsWfsParameters wfsParameters( parameters );
+    QgsWfsParameters::Format oFormat = wfsParameters.outputFormat();
+
+    // test oFormat
+    if ( oFormat == QgsWfsParameters::Format::NONE )
+      throw QgsBadRequestException( QStringLiteral( "Invalid WFS Parameter" ),
+                                    "OUTPUTFORMAT " + wfsParameters.outputFormatAsString() + "is not supported" );
 
     QgsAccessControl *accessControl = serverIface->accessControls();
 
@@ -71,7 +79,10 @@ namespace QgsWfs
     //xsd:import
     QDomElement importElement = doc.createElement( QStringLiteral( "import" )/*xsd:import*/ );
     importElement.setAttribute( QStringLiteral( "namespace" ),  GML_NAMESPACE );
-    importElement.setAttribute( QStringLiteral( "schemaLocation" ), QStringLiteral( "http://schemas.opengis.net/gml/2.1.2/feature.xsd" ) );
+    if ( oFormat == QgsWfsParameters::Format::GML2 )
+      importElement.setAttribute( QStringLiteral( "schemaLocation" ), QStringLiteral( "http://schemas.opengis.net/gml/2.1.2/feature.xsd" ) );
+    else if ( oFormat == QgsWfsParameters::Format::GML3 )
+      importElement.setAttribute( QStringLiteral( "schemaLocation" ), QStringLiteral( "http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" ) );
     schemaElement.appendChild( importElement );
 
     QStringList typeNameList;
