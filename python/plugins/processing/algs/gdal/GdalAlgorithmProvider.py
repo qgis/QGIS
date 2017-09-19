@@ -77,6 +77,7 @@ from .Buffer import Buffer
 from .ClipVectorByExtent import ClipVectorByExtent
 from .ClipVectorByMask import ClipVectorByMask
 from .Dissolve import Dissolve
+from .ExecuteSql import ExecuteSql
 from .OffsetCurve import OffsetCurve
 from .ogr2ogr import ogr2ogr
 from .ogrinfo import ogrinfo
@@ -86,7 +87,6 @@ from .PointsAlongLines import PointsAlongLines
 
 # from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
-# from .ogrsql import OgrSql
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -179,6 +179,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ClipVectorByExtent(),
             ClipVectorByMask(),
             Dissolve(),
+            ExecuteSql(),
             OffsetCurve(),
             ogr2ogr(),
             ogrinfo(),
@@ -187,7 +188,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             PointsAlongLines(),
             # Ogr2OgrToPostGisList(),
             # Ogr2OgrTableToPostGisList(),
-            # OgrSql(),
         ]
         for a in self.algs:
             self.addAlgorithm(a)

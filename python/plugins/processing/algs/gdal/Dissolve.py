@@ -95,8 +95,7 @@ class Dissolve(GdalAlgorithm):
             self.addParameter(param)
 
         self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
-                                                                  self.tr('Buffer'),
-                                                                  QgsProcessing.TypeVectorPolygon))
+                                                                  self.tr('Dissolved')))
 
     def name(self):
         return 'dissolve'
