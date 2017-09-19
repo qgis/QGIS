@@ -396,12 +396,12 @@ void QgsCompoundCurve::addCurve( QgsCurve *c )
 {
   if ( c )
   {
-    mCurves.append( c );
-
-    if ( mWkbType == QgsWkbTypes::Unknown )
+    if ( mCurves.empty() )
     {
       setZMTypeFromSubGeometry( c, QgsWkbTypes::CompoundCurve );
     }
+
+    mCurves.append( c );
 
     if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( c->wkbType() ) )
     {
