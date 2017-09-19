@@ -345,8 +345,16 @@ void QgsDataItem::refresh()
 
 void QgsDataItem::refreshConnections()
 {
-  refresh();
-  emit connectionsChanged();
+  // Walk up until the root node is reached
+  if ( mParent )
+  {
+    mParent->refreshConnections();
+  }
+  else
+  {
+    refresh();
+    emit connectionsChanged();
+  }
 }
 
 void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
@@ -695,6 +703,8 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
   QVector<QgsDataItem *> children;
   QDir dir( mDirPath );
 
+  const QList<QgsDataItemProvider *> providers = QgsApplication::dataItemProviderRegistry()->providers();
+
   QStringList entries = dir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
   Q_FOREACH ( const QString &subdir, entries )
   {
@@ -711,6 +721,19 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     QString path = mPath + '/' + subdir; // may differ from subdirPath
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
+
+    bool handledByProvider = false;
+    for ( QgsDataItemProvider *provider : providers )
+    {
+      if ( provider->handlesDirectoryPath( path ) )
+      {
+        handledByProvider = true;
+        break;
+      }
+    }
+    if ( handledByProvider )
+      continue;
+
     QgsDirectoryItem *item = new QgsDirectoryItem( this, subdir, subdirPath, path );
     // propagate signals up to top
 
@@ -747,7 +770,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       }
     }
 
-    Q_FOREACH ( QgsDataItemProvider *provider, QgsApplication::dataItemProviderRegistry()->providers() )
+    for ( QgsDataItemProvider *provider : providers )
     {
       int capabilities = provider->capabilities();
 
@@ -1312,7 +1335,6 @@ QVector<QgsDataItem *> QgsZipItem::createChildren()
           // the item comes with zipped file name, set the name to relative path within zip file
           item->setName( fileName );
           children.append( item );
-          break;
         }
         else
         {

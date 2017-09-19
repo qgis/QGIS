@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsgeopackagedataitems.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -37,6 +38,7 @@
 
 // these are defined in qgsogrprovider.cpp
 QGISEXTERN QStringList fileExtensions();
+QGISEXTERN QStringList directoryExtensions();
 QGISEXTERN QStringList wildcards();
 
 QGISEXTERN bool deleteLayer( const QString &uri, const QString &errCause );
@@ -505,11 +507,13 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QgsDebugMsgLevel( "thePath= " + path + " tmpPath= " + tmpPath + " name= " + name
                     + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
-  // allow only normal files or VSIFILE items to continue
-  if ( !info.isFile() && vsiPrefix == QLatin1String( "" ) )
-    return nullptr;
-
   QStringList myExtensions = fileExtensions();
+  QStringList dirExtensions = directoryExtensions();
+
+  // allow only normal files, supported directories, or VSIFILE items to continue
+  bool isOgrSupportedDirectory = info.isDir() && dirExtensions.contains( suffix );
+  if ( !isOgrSupportedDirectory && !info.isFile() && vsiPrefix == QLatin1String( "" ) )
+    return nullptr;
 
   // skip *.aux.xml files (GDAL auxiliary metadata files),
   // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
@@ -526,7 +530,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
   // because OGR drive can open also .dbf, .shx.
-  if ( myExtensions.indexOf( suffix ) < 0 )
+  if ( myExtensions.indexOf( suffix ) < 0 && !dirExtensions.contains( suffix ) )
   {
     bool matches = false;
     Q_FOREACH ( const QString &wildcard, wildcards() )
@@ -567,9 +571,21 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 #endif
   }
 
-  // return item without testing if:
-  // scanExtSetting
-  // or zipfile and scan zip == "Basic scan"
+  // Filters out the OGR/GDAL supported formats that can contain multiple layers
+  // and should be treated like a DB: GeoPackage and SQLite
+  // NOTE: this formats are scanned for rasters too and they must
+  //       be skipped by "gdal" provider or the rasters will be listed
+  //       twice. ogrSupportedDbLayersExtensions must be kept in sync
+  //       with the companion variable (same name) in the gdal provider
+  //       class
+  // TODO: add more OGR supported multiple layers formats here!
+  QStringList ogrSupportedDbLayersExtensions;
+  ogrSupportedDbLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" ) << QStringLiteral( "gdb" );
+  QStringList ogrSupportedDbDriverNames;
+  ogrSupportedDbDriverNames << QLatin1String( "GPKG" ) << QLatin1String( "db" ) << QStringLiteral( "gdb" );
+
+  // Fast track: return item without testing if:
+  // scanExtSetting or zipfile and scan zip == "Basic scan"
   if ( scanExtSetting ||
        ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
   {
@@ -596,25 +612,33 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     // Handle collections
     // Check if the layer has sublayers by comparing the extension
     QgsDataItem *item;
-    QStringList multipleLayersExtensions;
-    // TODO: add more OGR supported multiple layers formats here!
-    multipleLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" );
-    if ( ! multipleLayersExtensions.contains( suffix ) )
+    if ( ! ogrSupportedDbLayersExtensions.contains( suffix ) )
+    {
       item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
+    }
+    else if ( suffix.compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+    {
+      item = new QgsGeoPackageCollectionItem( parentItem, name, path );
+    }
     else
+    {
       item = new QgsOgrDataCollectionItem( parentItem, name, path );
+    }
 
     if ( item )
       return item;
   }
 
+  // Slow track: scan file contents
+  QgsDataItem *item = nullptr;
+
   // test that file is valid with OGR
   OGRRegisterAll();
-  GDALDriverH hDriver;
+  OGRSFDriverH hDriver;
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, &hDriver );
   CPLPopErrorHandler();
 
   if ( ! hDataSource )
@@ -623,23 +647,33 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     return nullptr;
   }
 
-  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( GDALGetDriverShortName( hDriver ) ), 2 );
+  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( OGR_Dr_GetName( hDriver ) ), 2 );
+  QString ogrDriverName = OGR_Dr_GetName( hDriver );
+  int numLayers = OGR_DS_GetLayerCount( hDataSource );
 
-  int numLayers = GDALDatasetGetLayerCount( hDataSource );
-
-  QgsDataItem *item = nullptr;
-
-  if ( numLayers == 1 )
+  // GeoPackage needs a specialized data item, mainly because of raster deletion not
+  // yet implemented in GDAL (2.2.1)
+  if ( ogrDriverName == QLatin1String( "GPKG" ) )
   {
-    QgsDebugMsgLevel( QString( "using name = %1" ).arg( name ), 2 );
-    item = dataItemForLayer( parentItem, name, path, hDataSource, 0 );
+    item = new QgsGeoPackageCollectionItem( parentItem, name, path );
   }
-  else if ( numLayers > 1 )
+  else if ( numLayers > 1 || ogrSupportedDbDriverNames.contains( ogrDriverName ) )
   {
-    QgsDebugMsgLevel( QString( "using name = %1" ).arg( name ), 2 );
     item = new QgsOgrDataCollectionItem( parentItem, name, path );
   }
-
-  GDALClose( hDataSource );
+  else
+  {
+    item = dataItemForLayer( parentItem, name, path, hDataSource, 0 );
+  }
+  OGR_DS_Destroy( hDataSource );
   return item;
+}
+
+QGISEXTERN bool handlesDirectoryPath( const QString &path )
+{
+  QFileInfo info( path );
+  QString suffix = info.suffix().toLower();
+
+  QStringList dirExtensions = directoryExtensions();
+  return dirExtensions.contains( suffix );
 }

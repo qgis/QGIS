@@ -2171,6 +2171,8 @@ QString createFilters( const QString &type )
   static QString sDirectoryDrivers;
   //! Extensions
   static QStringList sExtensions;
+  //! Directory extensions
+  static QStringList sDirectoryExtensions;
   //! Wildcards
   static QStringList sWildcards;
 
@@ -2238,6 +2240,8 @@ QString createFilters( const QString &type )
       else if ( driverName.startsWith( QLatin1String( "FileGDB" ) ) )
       {
         sDirectoryDrivers += QObject::tr( "ESRI FileGDB" ) + ",FileGDB;";
+        if ( !sDirectoryExtensions.contains( QStringLiteral( "gdb" ) ) )
+          sDirectoryExtensions << QStringLiteral( "gdb" );
       }
       else if ( driverName.startsWith( QLatin1String( "PGeo" ) ) )
       {
@@ -2352,6 +2356,8 @@ QString createFilters( const QString &type )
       else if ( driverName.startsWith( QLatin1String( "OpenFileGDB" ) ) )
       {
         sDirectoryDrivers += QObject::tr( "OpenFileGDB" ) + ",OpenFileGDB;";
+        if ( !sDirectoryExtensions.contains( QStringLiteral( "gdb" ) ) )
+          sDirectoryExtensions << QStringLiteral( "gdb" );
       }
       else if ( driverName.startsWith( QLatin1String( "PostgreSQL" ) ) )
       {
@@ -2567,6 +2573,10 @@ QString createFilters( const QString &type )
   {
     return sExtensions.join( QStringLiteral( "|" ) );
   }
+  if ( type == QStringLiteral( "directory_extensions" ) )
+  {
+    return sDirectoryExtensions.join( QStringLiteral( "|" ) );
+  }
   if ( type == QLatin1String( "wildcards" ) )
   {
     return sWildcards.join( QStringLiteral( "|" ) );
@@ -2621,6 +2631,11 @@ QString QgsOgrProvider::directoryDrivers() const
 QGISEXTERN QStringList fileExtensions()
 {
   return  createFilters( QStringLiteral( "extensions" ) ).split( '|' );
+}
+
+QGISEXTERN QStringList directoryExtensions()
+{
+  return createFilters( QStringLiteral( "directory_extensions" ) ).split( '|' );
 }
 
 QGISEXTERN QStringList wildcards()

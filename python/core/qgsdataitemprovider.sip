@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsDataItemProvider
 {
 %Docstring
@@ -53,6 +55,20 @@ Caller takes responsibility of deleting created items.
 %Docstring
 Caller takes responsibility of deleting created items.
  :rtype: list of QgsDataItem
+%End
+
+    virtual bool handlesDirectoryPath( const QString &path );
+%Docstring
+ Returns true if the provider will handle the directory at the specified ``path``.
+
+ If the provider indicates that it will handle the directory, the default creation and
+ population of directory items for the path will be avoided and it is left to the
+ provider to correctly populate relevant entries for the path.
+
+ The default implementation returns false for all paths.
+
+.. versionadded:: 3.0
+ :rtype: bool
 %End
 };
 

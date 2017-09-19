@@ -9690,7 +9690,7 @@ bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 
 void QgisApp::reloadConnections()
 {
-  emit( connectionsChanged( ) );
+  emit connectionsChanged( );
 }
 
 
