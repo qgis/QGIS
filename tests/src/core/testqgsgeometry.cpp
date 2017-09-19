@@ -1558,35 +1558,34 @@ void TestQgsGeometry::circularString()
 
   //2d line
   l24.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                 << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
-  QVERIFY( l24.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 6.0, 7.0 ) ) );
+                 << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  QVERIFY( l24.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 4.0, 7.0 ) ) );
   QCOMPARE( l24.numPoints(), 5 );
   QVERIFY( !l24.is3D() );
   QVERIFY( !l24.isMeasure() );
   QCOMPARE( l24.wkbType(), QgsWkbTypes::CircularString );
   QCOMPARE( l24.pointN( 0 ), QgsPoint( 1.0, 2.0 ) );
-  QCOMPARE( l24.pointN( 1 ), QgsPoint( 6.0, 7.0 ) );
-  // note - the next point is just testing current behavior - I do NOT know if this is the correct value!
-  QGSCOMPARENEAR( l24.pointN( 2 ).x(), -0.66, 0.01 );
-  QGSCOMPARENEAR( l24.pointN( 2 ).y(), -0.745, 0.01 );
+  QCOMPARE( l24.pointN( 1 ), QgsPoint( 4.0, 7.0 ) );
+  QGSCOMPARENEAR( l24.pointN( 2 ).x(), 7.192236, 0.01 );
+  QGSCOMPARENEAR( l24.pointN( 2 ).y(), 9.930870, 0.01 );
   QCOMPARE( l24.pointN( 3 ), QgsPoint( 11.0, 12.0 ) );
-  QCOMPARE( l24.pointN( 4 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( l24.pointN( 4 ), QgsPoint( 1.0, 22.0 ) );
 
   QVERIFY( l24.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 8.0, 9.0 ) ) );
-  QVERIFY( l24.insertVertex( QgsVertexId( 0, 0, 2 ), QgsPoint( 18.0, 19.0 ) ) );
+  QVERIFY( l24.insertVertex( QgsVertexId( 0, 0, 2 ), QgsPoint( 18.0, 16.0 ) ) );
   QCOMPARE( l24.numPoints(), 9 );
   QCOMPARE( l24.pointN( 0 ), QgsPoint( 1.0, 2.0 ) );
-  QGSCOMPARENEAR( l24.pointN( 1 ).x(), -0.63, 0.01 );
-  QGSCOMPARENEAR( l24.pointN( 1 ).y(), -0.774, 0.01 );
+  QGSCOMPARENEAR( l24.pointN( 1 ).x(), 4.363083, 0.01 );
+  QGSCOMPARENEAR( l24.pointN( 1 ).y(), 5.636917, 0.01 );
   QCOMPARE( l24.pointN( 2 ), QgsPoint( 8.0, 9.0 ) );
-  QCOMPARE( l24.pointN( 3 ), QgsPoint( 18.0, 19.0 ) );
-  QGSCOMPARENEAR( l24.pointN( 4 ).x(), -0.658, 0.01 );
-  QGSCOMPARENEAR( l24.pointN( 4 ).y(), -0.753, 0.01 );
-  QCOMPARE( l24.pointN( 5 ), QgsPoint( 6.0, 7.0 ) );
-  QGSCOMPARENEAR( l24.pointN( 6 ).x(), -0.666, 0.01 );
-  QGSCOMPARENEAR( l24.pointN( 6 ).y(), -0.745, 0.01 );
+  QCOMPARE( l24.pointN( 3 ), QgsPoint( 18.0, 16.0 ) );
+  QGSCOMPARENEAR( l24.pointN( 4 ).x(), 5.876894, 0.01 );
+  QGSCOMPARENEAR( l24.pointN( 4 ).y(), 8.246211, 0.01 );
+  QCOMPARE( l24.pointN( 5 ), QgsPoint( 4.0, 7.0 ) );
+  QGSCOMPARENEAR( l24.pointN( 6 ).x(), 7.192236, 0.01 );
+  QGSCOMPARENEAR( l24.pointN( 6 ).y(), 9.930870, 0.01 );
   QCOMPARE( l24.pointN( 7 ), QgsPoint( 11.0, 12.0 ) );
-  QCOMPARE( l24.pointN( 8 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( l24.pointN( 8 ), QgsPoint( 1.0, 22.0 ) );
 
   //insert vertex at end
   QVERIFY( !l24.insertVertex( QgsVertexId( 0, 0, 9 ), QgsPoint( 31.0, 32.0 ) ) );
@@ -1615,11 +1614,11 @@ void TestQgsGeometry::circularString()
 
   //insert 4d vertex in 2d line
   l24.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
-                 << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
-  QVERIFY( l24.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( QgsWkbTypes::PointZM, 101, 102, 103, 104 ) ) );
+                 << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  QVERIFY( l24.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( QgsWkbTypes::PointZM, 2, 4, 103, 104 ) ) );
   QCOMPARE( l24.numPoints(), 5 );
   QCOMPARE( l24.wkbType(), QgsWkbTypes::CircularString );
-  QCOMPARE( l24.pointN( 1 ), QgsPoint( QgsWkbTypes::Point, 101, 102 ) );
+  QCOMPARE( l24.pointN( 1 ), QgsPoint( QgsWkbTypes::Point, 2, 4 ) );
 
   //move vertex
 
@@ -6353,14 +6352,14 @@ void TestQgsGeometry::curvePolygon()
   QgsRectangle bBox = boundingBoxPoly.boundingBox(); //no crash!
 
   ext = new QgsCircularString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 ) << QgsPoint( 2, 0, 3 )
-                  << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 10, 2 ) << QgsPoint( 0, 18, 3 )
+                  << QgsPoint( -1, 4, 4 ) << QgsPoint( 0, 0, 1 ) );
   boundingBoxPoly.setExteriorRing( ext );
   bBox = boundingBoxPoly.boundingBox();
-  QGSCOMPARENEAR( bBox.xMinimum(), 0, 0.001 );
-  QGSCOMPARENEAR( bBox.xMaximum(), 2, 0.001 );
-  QGSCOMPARENEAR( bBox.yMinimum(), 0, 0.001 );
-  QGSCOMPARENEAR( bBox.yMaximum(), 0.5, 0.001 );
+  QGSCOMPARENEAR( bBox.xMinimum(), -1.435273, 0.001 );
+  QGSCOMPARENEAR( bBox.xMaximum(), 1.012344, 0.001 );
+  QGSCOMPARENEAR( bBox.yMinimum(), 0.000000, 0.001 );
+  QGSCOMPARENEAR( bBox.yMaximum(), 18, 0.001 );
 
   //surfaceToPolygon
   QgsCurvePolygon p12a;
@@ -6368,12 +6367,12 @@ void TestQgsGeometry::curvePolygon()
   QVERIFY( surface->isEmpty() );
 
   ext = new QgsCircularString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 2, 0 )
-                  << QgsPoint( 1, 0.5 ) << QgsPoint( 0, 0 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 3 ) << QgsPoint( 2, 4 )
+                  << QgsPoint( -1, 5 ) << QgsPoint( 0, 6 ) );
   p12a.setExteriorRing( ext );
   surface.reset( p12a.surfaceToPolygon() );
   QCOMPARE( surface->wkbType(), QgsWkbTypes::Polygon );
-  QCOMPARE( surface->exteriorRing()->nCoordinates(), 110 );
+  QCOMPARE( surface->exteriorRing()->nCoordinates(), 290 );
   QVERIFY( surface->exteriorRing()->isClosed() );
   // too many vertices to actually check the result, let's just make sure the bounding boxes are similar
   QgsRectangle r1 = ext->boundingBox();
@@ -6389,7 +6388,7 @@ void TestQgsGeometry::curvePolygon()
   p12a.addInteriorRing( ring );
   surface.reset( p12a.surfaceToPolygon() );
   QCOMPARE( surface->wkbType(), QgsWkbTypes::Polygon );
-  QCOMPARE( surface->exteriorRing()->nCoordinates(), 110 );
+  QCOMPARE( surface->exteriorRing()->nCoordinates(), 290 );
   QVERIFY( surface->exteriorRing()->isClosed() );
   QCOMPARE( surface->numInteriorRings(), 1 );
   // too many vertices to actually check the result, let's just make sure the bounding boxes are similar
@@ -6406,20 +6405,20 @@ void TestQgsGeometry::curvePolygon()
   QVERIFY( surface->isEmpty() );
 
   ext = new QgsCircularString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 2, 0 )
-                  << QgsPoint( 1, 0.5 ) << QgsPoint( 0, 0 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 10 ) << QgsPoint( 0, 18 )
+                  << QgsPoint( -1, 4 ) << QgsPoint( 0, 0 ) );
   p12a.setExteriorRing( ext );
   surface.reset( p12a.toPolygon() );
   QCOMPARE( surface->wkbType(), QgsWkbTypes::Polygon );
-  QCOMPARE( surface->exteriorRing()->nCoordinates(), 110 );
+  QCOMPARE( surface->exteriorRing()->nCoordinates(), 64 );
   QVERIFY( surface->exteriorRing()->isClosed() );
   // too many vertices to actually check the result, let's just make sure the bounding boxes are similar
   r1 = ext->boundingBox();
   r2 = surface->exteriorRing()->boundingBox();
-  QGSCOMPARENEAR( r1.xMinimum(), r2.xMinimum(), 0.0001 );
-  QGSCOMPARENEAR( r1.xMaximum(), r2.xMaximum(), 0.0001 );
-  QGSCOMPARENEAR( r1.yMinimum(), r2.yMinimum(), 0.0001 );
-  QGSCOMPARENEAR( r1.yMaximum(), r2.yMaximum(), 0.0001 );
+  QGSCOMPARENEAR( r1.xMinimum(), r2.xMinimum(), 0.01 );
+  QGSCOMPARENEAR( r1.xMaximum(), r2.xMaximum(), 0.01 );
+  QGSCOMPARENEAR( r1.yMinimum(), r2.yMinimum(), 0.01 );
+  QGSCOMPARENEAR( r1.yMaximum(), r2.yMaximum(), 0.01 );
   ring = new QgsCircularString();
   ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
                    << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
@@ -6427,7 +6426,7 @@ void TestQgsGeometry::curvePolygon()
   p12a.addInteriorRing( ring );
   surface.reset( p12a.toPolygon() );
   QCOMPARE( surface->wkbType(), QgsWkbTypes::Polygon );
-  QCOMPARE( surface->exteriorRing()->nCoordinates(), 110 );
+  QCOMPARE( surface->exteriorRing()->nCoordinates(), 64 );
   QVERIFY( surface->exteriorRing()->isClosed() );
   QCOMPARE( surface->numInteriorRings(), 1 );
   // too many vertices to actually check the result, let's just make sure the bounding boxes are similar
@@ -6721,15 +6720,15 @@ void TestQgsGeometry::curvePolygon()
 
   // add interior rings
   QgsCircularString removeRingsRing1;
-  removeRingsRing1.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 0.1, 0, 2 ) << QgsPoint( 0.2, 0, 3 )
-                              << QgsPoint( 0.1, 0.05, 4 ) << QgsPoint( 0, 0, 1 ) );
+  removeRingsRing1.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 0.1, 1, 2 ) << QgsPoint( 0, 2, 3 )
+                              << QgsPoint( -0.1, 1.2, 4 ) << QgsPoint( 0, 0, 1 ) );
   QgsCircularString removeRingsRing2;
-  removeRingsRing2.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 ) << QgsPoint( 2, 0, 3 )
-                              << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
+  removeRingsRing2.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 0.01, 0.1, 2 ) << QgsPoint( 0, 0.2, 3 )
+                              << QgsPoint( -0.01, 0.12, 4 ) << QgsPoint( 0, 0, 1 ) );
   removeRings1.setInteriorRings( QList< QgsCurve * >() << removeRingsRing1.clone() << removeRingsRing2.clone() );
 
   // remove ring with size filter
-  removeRings1.removeInteriorRings( 0.1 );
+  removeRings1.removeInteriorRings( 0.05 );
   QCOMPARE( removeRings1.numInteriorRings(), 1 );
 
   // remove ring with no size filter
