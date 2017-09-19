@@ -370,13 +370,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     //implementation of inherited methods
     bool isEmpty() const override { return false; }
-    virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
-    virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
-    virtual int dimension() const override { return 0; }
-    virtual QgsPoint *clone() const override SIP_FACTORY;
+    QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
+    QString geometryType() const override { return QStringLiteral( "Point" ); }
+    int dimension() const override { return 0; }
+    QgsPoint *clone() const override SIP_FACTORY;
     void clear() override;
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    virtual bool fromWkt( const QString &wkt ) override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkt( const QString &wkt ) override;
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
@@ -386,18 +386,16 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
     void transform( const QTransform &t ) override;
-    virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual int nCoordinates() const override { return 1; }
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsCoordinateSequence coordinateSequence() const override;
+    int nCoordinates() const override { return 1; }
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
-                                   double epsilon ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT, double epsilon ) const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
     /** Angle undefined. Always returns 0.0
@@ -405,15 +403,16 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
         \returns 0.0*/
     double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
 
-    virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }
-    virtual int ringCount( int /*part*/ = 0 ) const override { return 1; }
-    virtual int partCount() const override { return 1; }
-    virtual QgsPoint vertexAt( QgsVertexId /*id*/ ) const override { return *this; }
+    int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }
+    int ringCount( int /*part*/ = 0 ) const override { return 1; }
+    int partCount() const override { return 1; }
+    QgsPoint vertexAt( QgsVertexId /*id*/ ) const override { return *this; }
+    QgsPoint *toCurveType() const override SIP_FACTORY;
 
-    virtual bool addZValue( double zValue = 0 ) override;
-    virtual bool addMValue( double mValue = 0 ) override;
-    virtual bool dropZValue() override;
-    virtual bool dropMValue() override;
+    bool addZValue( double zValue = 0 ) override;
+    bool addMValue( double mValue = 0 ) override;
+    bool dropZValue() override;
+    bool dropMValue() override;
     bool convertTo( QgsWkbTypes::Type type ) override;
 
 #ifndef SIP_RUN

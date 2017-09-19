@@ -34,6 +34,11 @@ QgsMultiSurface *QgsMultiSurface::clone() const
   return new QgsMultiSurface( *this );
 }
 
+QgsMultiSurface *QgsMultiSurface::toCurveType() const
+{
+  return clone();
+}
+
 bool QgsMultiSurface::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt,

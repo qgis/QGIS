@@ -30,6 +30,11 @@ QgsMultiPointV2 *QgsMultiPointV2::clone() const
   return new QgsMultiPointV2( *this );
 }
 
+QgsMultiPointV2 *QgsMultiPointV2::toCurveType() const
+{
+  return clone();
+}
+
 bool QgsMultiPointV2::fromWkt( const QString &wkt )
 {
   QString collectionWkt( wkt );

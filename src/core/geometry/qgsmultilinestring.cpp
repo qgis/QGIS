@@ -109,7 +109,7 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
-QgsAbstractGeometry *QgsMultiLineString::toCurveType() const
+QgsMultiCurve *QgsMultiLineString::toCurveType() const
 {
   QgsMultiCurve *multiCurve = new QgsMultiCurve();
   for ( int i = 0; i < mGeometries.size(); ++i )

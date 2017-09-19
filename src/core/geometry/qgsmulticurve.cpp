@@ -33,6 +33,11 @@ QgsMultiCurve *QgsMultiCurve::clone() const
   return new QgsMultiCurve( *this );
 }
 
+QgsMultiCurve *QgsMultiCurve::toCurveType() const
+{
+  return clone();
+}
+
 bool QgsMultiCurve::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt,

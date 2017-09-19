@@ -29,7 +29,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
     QgsMultiLineString();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiLineString" ); }
+    QString geometryType() const override { return QStringLiteral( "MultiLineString" ); }
     QgsMultiLineString *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
@@ -42,11 +42,11 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QString asJSON( int precision = 17 ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiCurve
     \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsMultiCurve *toCurveType() const override SIP_FACTORY;
 
 #ifndef SIP_RUN
 
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 #endif
   protected:
 
-    virtual bool wktOmitChildType() const override { return true; }
+    bool wktOmitChildType() const override { return true; }
 };
 
 #endif // QGSMULTILINESTRINGV2_H

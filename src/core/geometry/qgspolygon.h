@@ -35,11 +35,11 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
     bool operator==( const QgsPolygonV2 &other ) const;
     bool operator!=( const QgsPolygonV2 &other ) const;
 
-    virtual QString geometryType() const override;
-    virtual QgsPolygonV2 *clone() const override SIP_FACTORY;
+    QString geometryType() const override;
+    QgsPolygonV2 *clone() const override SIP_FACTORY;
     void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
 
     // inherited: bool fromWkt( const QString &wkt );
 
@@ -57,9 +57,9 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
 
     void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
     //overridden to handle LineString25D rings
-    virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
+    void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     /**
      * Returns the distance from a point to the boundary of the polygon (either the

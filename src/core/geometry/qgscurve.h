@@ -39,7 +39,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual bool operator==( const QgsCurve &other ) const = 0;
     virtual bool operator!=( const QgsCurve &other ) const = 0;
 
-    virtual QgsCurve *clone() const override = 0 SIP_FACTORY;
+    QgsCurve *clone() const override = 0 SIP_FACTORY;
 
     /** Returns the starting point of the curve.
      * \see endPoint
@@ -86,8 +86,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     virtual void sumUpArea( double &sum SIP_OUT ) const = 0;
 
-    virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
+    QgsCoordinateSequence coordinateSequence() const override;
+    bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
     /** Returns the point and vertex id of a point within the curve.
      * \param node node number, where the first node is 0
@@ -102,19 +102,20 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      */
     virtual QgsCurve *reversed() const = 0 SIP_FACTORY;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     /** Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    virtual int vertexCount( int part = 0, int ring = 0 ) const override;
-    virtual int ringCount( int part = 0 ) const override;
-    virtual int partCount() const override;
-    virtual QgsPoint vertexAt( QgsVertexId id ) const override;
+    int vertexCount( int part = 0, int ring = 0 ) const override;
+    int ringCount( int part = 0 ) const override;
+    int partCount() const override;
+    QgsPoint vertexAt( QgsVertexId id ) const override;
+    QgsCurve *toCurveType() const override SIP_FACTORY;
 
-    virtual QgsRectangle boundingBox() const override;
+    QgsRectangle boundingBox() const override;
 
     /** Returns the x-coordinate of the specified node in the line string.
     * \param index index of node, where the first node in the line is 0
@@ -160,7 +161,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
   protected:
 
-    virtual void clearCache() const override;
+    void clearCache() const override;
 
   private:
 

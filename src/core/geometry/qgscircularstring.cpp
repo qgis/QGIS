@@ -70,6 +70,11 @@ QString QgsCircularString::geometryType() const
   return QStringLiteral( "CircularString" );
 }
 
+int QgsCircularString::dimension() const
+{
+  return 1;
+}
+
 QgsCircularString *QgsCircularString::clone() const
 {
   return new QgsCircularString( *this );

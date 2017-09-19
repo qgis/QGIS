@@ -925,3 +925,8 @@ bool QgsCurvePolygon::dropMValue()
   clearCache();
   return true;
 }
+
+QgsCurvePolygon *QgsCurvePolygon::toCurveType() const
+{
+  return clone();
+}

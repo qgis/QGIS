@@ -37,13 +37,13 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon &operator=( const QgsCurvePolygon &p );
     ~QgsCurvePolygon();
 
-    virtual QString geometryType() const override { return QStringLiteral( "CurvePolygon" ); }
-    virtual int dimension() const override { return 2; }
-    virtual QgsCurvePolygon *clone() const override SIP_FACTORY;
+    QString geometryType() const override { return QStringLiteral( "CurvePolygon" ); }
+    int dimension() const override { return 2; }
+    QgsCurvePolygon *clone() const override SIP_FACTORY;
     void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    virtual bool fromWkt( const QString &wkt ) override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkt( const QString &wkt ) override;
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
@@ -52,10 +52,10 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QString asJSON( int precision = 17 ) const override;
 
     //surface interface
-    virtual double area() const override;
-    virtual double perimeter() const override;
+    double area() const override;
+    double perimeter() const override;
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //curve polygon interface
     int numInteriorRings() const;
@@ -99,21 +99,19 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );
 
-    virtual void draw( QPainter &p ) const override;
+    void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
     void transform( const QTransform &t ) override;
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override;
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    bool deleteVertex( QgsVertexId position ) override;
 
-    virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual int nCoordinates() const override;
+    QgsCoordinateSequence coordinateSequence() const override;
+    int nCoordinates() const override;
     bool isEmpty() const override;
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
-                                   double epsilon ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT, double epsilon ) const override;
 
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
@@ -130,16 +128,17 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const override;
-    virtual int ringCount( int /*part*/ = 0 ) const override { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
-    virtual int partCount() const override { return ringCount() > 0 ? 1 : 0; }
-    virtual QgsPoint vertexAt( QgsVertexId id ) const override;
+    int vertexCount( int /*part*/ = 0, int ring = 0 ) const override;
+    int ringCount( int /*part*/ = 0 ) const override { return ( nullptr != mExteriorRing ) + mInteriorRings.size(); }
+    int partCount() const override { return ringCount() > 0 ? 1 : 0; }
+    QgsPoint vertexAt( QgsVertexId id ) const override;
 
-    virtual bool addZValue( double zValue = 0 ) override;
-    virtual bool addMValue( double mValue = 0 ) override;
-    virtual bool dropZValue() override;
-    virtual bool dropMValue() override;
+    bool addZValue( double zValue = 0 ) override;
+    bool addMValue( double mValue = 0 ) override;
+    bool dropZValue() override;
+    bool dropMValue() override;
 
+    QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 #ifndef SIP_RUN
 
     /**
@@ -167,7 +166,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurve *mExteriorRing = nullptr;
     QList<QgsCurve *> mInteriorRings;
 
-    virtual QgsRectangle calculateBoundingBox() const override;
+    QgsRectangle calculateBoundingBox() const override;
 };
 
 #endif // QGSCURVEPOLYGONV2_H

@@ -126,6 +126,11 @@ QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
   return v;
 }
 
+QgsCurve *QgsCurve::toCurveType() const
+{
+  return clone();
+}
+
 QgsRectangle QgsCurve::boundingBox() const
 {
   if ( mBoundingBox.isNull() )

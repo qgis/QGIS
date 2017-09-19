@@ -29,8 +29,9 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
     QgsMultiSurface();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
+    QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
     QgsMultiSurface *clone() const override SIP_FACTORY;
+    QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -43,9 +44,9 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
 #ifndef SIP_RUN
 

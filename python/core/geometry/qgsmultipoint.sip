@@ -23,6 +23,8 @@ class QgsMultiPointV2: QgsGeometryCollection
     virtual QString geometryType() const;
     virtual QgsMultiPointV2 *clone() const /Factory/;
 
+    virtual QgsMultiPointV2 *toCurveType() const /Factory/;
+
 
     virtual bool fromWkt( const QString &wkt );
 
@@ -37,12 +39,14 @@ class QgsMultiPointV2: QgsGeometryCollection
     virtual int nCoordinates() const;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+
 %Docstring
 Adds a geometry and takes ownership. Returns true in case of success
  :rtype: bool
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
 
   protected:
 

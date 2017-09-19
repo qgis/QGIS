@@ -372,12 +372,12 @@ Returns the centroid of the geometry
  :rtype: QgsAbstractGeometry
 %End
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsAbstractGeometry *toCurveType() const = 0 /Factory/;
 %Docstring
  Returns the geometry converted to the more generic curve type.
-E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
-QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
-:return: the converted geometry. Caller takes ownership*
+ E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
+ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
+ :return: the converted geometry. Caller takes ownership
  :rtype: QgsAbstractGeometry
 %End
 

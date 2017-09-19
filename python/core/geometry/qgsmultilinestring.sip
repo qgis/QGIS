@@ -35,17 +35,18 @@ class QgsMultiLineString: QgsMultiCurve
 
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+
 %Docstring
 Adds a geometry and takes ownership. Returns true in case of success
  :rtype: bool
 %End
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsMultiCurve *toCurveType() const /Factory/;
 
 %Docstring
  Returns the geometry converted to the more generic curve type QgsMultiCurve
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsAbstractGeometry
+ :rtype: QgsMultiCurve
 %End
 
   protected:

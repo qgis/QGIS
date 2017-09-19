@@ -379,6 +379,11 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   }
 }
 
+QgsPoint *QgsPoint::toCurveType() const
+{
+  return clone();
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

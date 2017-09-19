@@ -29,11 +29,14 @@ class QgsPolygonV2: QgsCurvePolygon
 %End
 
     virtual QString geometryType() const;
+
     virtual QgsPolygonV2 *clone() const /Factory/;
+
     virtual void clear();
 
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
 
 
     virtual QByteArray asWkb() const;
@@ -54,7 +57,9 @@ class QgsPolygonV2: QgsCurvePolygon
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
 
+
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
 
     double pointDistanceToBoundary( double x, double y ) const;
 %Docstring

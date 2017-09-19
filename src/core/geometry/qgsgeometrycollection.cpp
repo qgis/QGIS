@@ -698,6 +698,16 @@ bool QgsGeometryCollection::dropMValue()
   return true;
 }
 
+QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
+{
+  std::unique_ptr< QgsGeometryCollection > newCollection( new QgsGeometryCollection() );
+  for ( QgsAbstractGeometry *geom : mGeometries )
+  {
+    newCollection->addGeometry( geom->toCurveType() );
+  }
+  return newCollection.release();
+}
+
 bool QgsGeometryCollection::wktOmitChildType() const
 {
   return false;

@@ -333,10 +333,13 @@ class QgsPoint: QgsAbstractGeometry
     virtual QString geometryType() const;
     virtual int dimension() const;
     virtual QgsPoint *clone() const /Factory/;
+
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
     virtual bool fromWkt( const QString &wkt );
+
     virtual QByteArray asWkb() const;
 
     virtual QString asWkt( int precision = 17 ) const;
@@ -354,16 +357,18 @@ class QgsPoint: QgsAbstractGeometry
     virtual void transform( const QTransform &t );
 
     virtual QgsCoordinateSequence coordinateSequence() const;
+
     virtual int nCoordinates() const;
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
-                                   QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
-                                   double epsilon ) const;
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/, double epsilon ) const;
+
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
 
 
@@ -379,11 +384,17 @@ class QgsPoint: QgsAbstractGeometry
     virtual int ringCount( int /*part*/ = 0 ) const;
     virtual int partCount() const;
     virtual QgsPoint vertexAt( QgsVertexId /*id*/ ) const;
+    virtual QgsPoint *toCurveType() const /Factory/;
+
 
     virtual bool addZValue( double zValue = 0 );
+
     virtual bool addMValue( double mValue = 0 );
+
     virtual bool dropZValue();
+
     virtual bool dropMValue();
+
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 

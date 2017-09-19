@@ -125,7 +125,7 @@ bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
-QgsAbstractGeometry *QgsMultiPolygonV2::toCurveType() const
+QgsMultiSurface *QgsMultiPolygonV2::toCurveType() const
 {
   QgsMultiSurface *multiSurface = new QgsMultiSurface();
   for ( int i = 0; i < mGeometries.size(); ++i )

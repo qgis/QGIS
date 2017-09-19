@@ -39,7 +39,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual bool operator!=( const QgsCurve &other ) const override;
 
     virtual QString geometryType() const override;
-    virtual int dimension() const override { return 1; }
+    virtual int dimension() const override;
     virtual QgsCircularString *clone() const override SIP_FACTORY;
     virtual void clear() override;
 
