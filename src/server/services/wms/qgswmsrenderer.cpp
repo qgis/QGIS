@@ -1640,18 +1640,24 @@ namespace QgsWms
     {
       return false;
     }
-    QMap<int, QVariant> attributes;
+
+    QgsRasterIdentifyResult identifyResult;
     // use context extent, width height (comes with request) to use WCS cache
     // We can only use context if raster is not reprojected, otherwise it is difficult
     // to guess correct source resolution
     if ( layer->dataProvider()->crs() != mapSettings.destinationCrs() )
     {
-      attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue ).results();
+      identifyResult = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue );
     }
     else
     {
-      attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue, mapSettings.extent(), mapSettings.outputSize().width(), mapSettings.outputSize().height() ).results();
+      identifyResult = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue, mapSettings.extent(), mapSettings.outputSize().width(), mapSettings.outputSize().height() );
     }
+
+    if ( !identifyResult.isValid() )
+      return false;
+
+    QMap<int, QVariant> attributes = identifyResult.results();
 
     if ( mWmsParameters.infoFormat() == QgsWmsParameters::Format::GML )
     {
