@@ -41,7 +41,19 @@ bool QgsCompoundCurve::operator==( const QgsCurve &other ) const
   if ( !otherCurve )
     return false;
 
-  return *otherCurve == *this;
+  if ( mWkbType != otherCurve->mWkbType )
+    return false;
+
+  if ( mCurves.size() != otherCurve->mCurves.size() )
+    return false;
+
+  for ( int i = 0; i < mCurves.size(); ++i )
+  {
+    if ( *mCurves.at( i ) != *otherCurve->mCurves.at( i ) )
+      return false;
+  }
+
+  return true;
 }
 
 bool QgsCompoundCurve::operator!=( const QgsCurve &other ) const
