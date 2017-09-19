@@ -533,6 +533,9 @@ Check if the given path is hidden from the browser model
  :rtype: bool
 %End
 
+    virtual QList<QAction *> actions();
+
+
 
   public slots:
     virtual void childrenCreated();
