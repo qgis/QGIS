@@ -52,7 +52,7 @@ class FieldsPyculator(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     RESULT_VAR_NAME = 'value'
 
-    TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
+    TYPES = [QVariant.LongLong, QVariant.Double, QVariant.String]
 
     def group(self):
         return self.tr('Vector table')
