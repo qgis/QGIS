@@ -2550,6 +2550,8 @@ in code which previously passed a null pointer to QgsVectorFileWriter.
 - setSymbologyScaleDenominator() and symbologyScaleDenominator() were renamed to setSymbologyScale() and symbologyScale()
 for consistency with other parts of the QGIS API.
 - The addFeature which takes a renderer argument was renamed to addFeatureWithStyle.
+- static `writeAsVectorFormat` calls no longer take a errorMessage argument in
+  python and instead return a `(errorCode, errorMessage)` tuple.
 
 
 QgsWMSLegendNode        {#qgis_api_break_3_0_QgsWMSLegendNode}
