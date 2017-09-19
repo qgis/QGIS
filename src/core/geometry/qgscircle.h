@@ -143,21 +143,13 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMajorAxis( const double semiMajorAxis ) override
-    {
-      mSemiMajorAxis = std::fabs( semiMajorAxis );
-      mSemiMinorAxis = mSemiMajorAxis;
-    }
+    void setSemiMajorAxis( const double semiMajorAxis ) override;
 
     /** Inherited method. Use setRadius instead.
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMinorAxis( const double semiMinorAxis ) override
-    {
-      mSemiMajorAxis = std::fabs( semiMinorAxis );
-      mSemiMinorAxis = mSemiMajorAxis;
-    }
+    void setSemiMinorAxis( const double semiMinorAxis ) override;
 
     //! Returns the radius of the circle
     double radius() const {return mSemiMajorAxis;}

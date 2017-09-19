@@ -133,6 +133,7 @@ class QgsCircle : QgsEllipse
 
 
     virtual void setSemiMajorAxis( const double semiMajorAxis );
+
 %Docstring
  Inherited method. Use setRadius instead.
 .. seealso:: radius()
@@ -140,6 +141,7 @@ class QgsCircle : QgsEllipse
 %End
 
     virtual void setSemiMinorAxis( const double semiMinorAxis );
+
 %Docstring
  Inherited method. Use setRadius instead.
 .. seealso:: radius()

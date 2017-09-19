@@ -262,16 +262,10 @@ bool QgsAbstractGeometry::hasCurvedSegments() const
   return false;
 }
 
-
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( toleranceType );
   return clone();
-}
-
-QgsAbstractGeometry *QgsAbstractGeometry::toCurveType() const
-{
-  return nullptr;
 }
 

@@ -28,9 +28,19 @@ QgsMultiCurve::QgsMultiCurve()
   mWkbType = QgsWkbTypes::MultiCurve;
 }
 
+QString QgsMultiCurve::geometryType() const
+{
+  return QStringLiteral( "MultiCurve" );
+}
+
 QgsMultiCurve *QgsMultiCurve::clone() const
 {
   return new QgsMultiCurve( *this );
+}
+
+QgsMultiCurve *QgsMultiCurve::toCurveType() const
+{
+  return clone();
 }
 
 bool QgsMultiCurve::fromWkt( const QString &wkt )

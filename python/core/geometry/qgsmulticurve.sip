@@ -21,7 +21,10 @@ class QgsMultiCurve: QgsGeometryCollection
   public:
     QgsMultiCurve();
     virtual QString geometryType() const;
+
     virtual QgsMultiCurve *clone() const /Factory/;
+
+    virtual QgsMultiCurve *toCurveType() const /Factory/;
 
 
     virtual bool fromWkt( const QString &wkt );
@@ -35,6 +38,7 @@ class QgsMultiCurve: QgsGeometryCollection
 
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+
 %Docstring
 Adds a geometry and takes ownership. Returns true in case of success
  :rtype: bool
@@ -48,6 +52,7 @@ Adds a geometry and takes ownership. Returns true in case of success
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
 
 
 };

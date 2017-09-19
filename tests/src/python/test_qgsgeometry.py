@@ -35,8 +35,11 @@ from qgis.core import (
     QgsPolygonV2,
     QgsCoordinateTransform,
     QgsRectangle,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsRenderChecker
 )
+from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath
 
 from qgis.testing import (
     start_app,
@@ -56,6 +59,9 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGeometry(unittest.TestCase):
+
+    def setUp(self):
+        self.report = "<h1>Python QgsGeometry Tests</h1>\n"
 
     def testBool(self):
         """ Test boolean evaluation of QgsGeometry """
@@ -2256,6 +2262,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPoint25D), 'MultiPoint25D')
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiLineString25D), 'MultiLineString25D')
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPolygon25D), 'MultiPolygon25D')
+        self.assertEqual(QgsWkbTypes.displayString(9999999), '')
 
         # test parseType method
         self.assertEqual(QgsWkbTypes.parseType('point( 1 2 )'), QgsWkbTypes.Point)
@@ -3204,6 +3211,14 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, True, False), QgsWkbTypes.MultiSurfaceZ)
         self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, False, True), QgsWkbTypes.MultiSurfaceM)
         self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, True, True), QgsWkbTypes.MultiSurfaceZM)
+
+    def testGeometryDisplayString(self):
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.PointGeometry), 'Point')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.LineGeometry), 'Line')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.PolygonGeometry), 'Polygon')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.UnknownGeometry), 'Unknown geometry')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.NullGeometry), 'No geometry')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(999999), 'Invalid type')
 
     def testDeleteVertexCircularString(self):
 
@@ -4250,6 +4265,77 @@ class TestQgsGeometry(unittest.TestCase):
             exp = t[3]
             self.assertAlmostEqual(o, exp, 5,
                                    "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
+
+    def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
+        image = QImage(200, 200, QImage.Format_RGB32)
+        image.fill(QColor(0, 0, 0))
+
+        painter = QPainter(image)
+        if use_pen:
+            painter.setPen(QPen(QColor(255, 255, 255), 4))
+        else:
+            painter.setBrush(QBrush(QColor(255, 255, 255)))
+
+        if as_painter_path:
+            path = QPainterPath()
+            geom.geometry().addToPainterPath(path)
+            painter.drawPath(path)
+        else:
+            if as_polygon:
+                geom.geometry().drawAsPolygon(painter)
+            else:
+                geom.draw(painter)
+        painter.end()
+        return image
+
+    def testGeometryDraw(self):
+        '''Tests drawing geometries'''
+
+        tests = [{'name': 'Point',
+                  'wkt': 'Point (40 60)',
+                  'reference_image': 'point',
+                  'use_pen': False},
+                 {'name': 'LineString',
+                  'wkt': 'LineString (20 30, 50 30, 50 90)',
+                  'reference_image': 'linestring',
+                  'as_polygon_reference_image': 'linestring_aspolygon',
+                  'use_pen': True},
+                 {'name': 'CircularString',
+                  'wkt': 'CircularString (20 30, 50 30, 50 90)',
+                  'reference_image': 'circularstring',
+                  'as_polygon_reference_image': 'circularstring_aspolygon',
+                  'use_pen': True}
+                 ]
+
+        for test in tests:
+            geom = QgsGeometry.fromWkt(test['wkt'])
+            self.assertTrue(geom and not geom.isNull(), 'Could not create geometry {}'.format(test['wkt']))
+            rendered_image = self.renderGeometry(geom, test['use_pen'])
+            assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+
+            if hasattr(geom.geometry(), 'addToPainterPath'):
+                # also check using painter path
+                rendered_image = self.renderGeometry(geom, test['use_pen'], as_painter_path=True)
+                assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+
+            if 'as_polygon_reference_image' in test:
+                rendered_image = self.renderGeometry(geom, False, True)
+                assert self.imageCheck(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image)
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'geometry_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("geometry")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':

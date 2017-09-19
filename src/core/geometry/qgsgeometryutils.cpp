@@ -617,14 +617,18 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, c
   double p1Angle = QgsGeometryUtils::ccwAngle( cp1.y() - mY, cp1.x() - mX );
   double p2Angle = QgsGeometryUtils::ccwAngle( cp2.y() - mY, cp2.x() - mX );
   double p3Angle = QgsGeometryUtils::ccwAngle( cp3.y() - mY, cp3.x() - mX );
+  double angle = 0;
   if ( circleClockwise( p1Angle, p2Angle, p3Angle ) )
   {
-    return lineAngle( tangentPoint.x(), tangentPoint.y(), mX, mY );
+    angle = lineAngle( tangentPoint.x(), tangentPoint.y(), mX, mY ) - M_PI_2;
   }
   else
   {
-    return lineAngle( mX, mY, tangentPoint.x(), tangentPoint.y() );
+    angle = lineAngle( mX, mY, tangentPoint.x(), tangentPoint.y() ) - M_PI_2;
   }
+  if ( angle < 0 )
+    angle += 2 * M_PI;
+  return angle;
 }
 
 void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM )

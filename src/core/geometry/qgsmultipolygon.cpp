@@ -28,6 +28,11 @@ QgsMultiPolygonV2::QgsMultiPolygonV2()
   mWkbType = QgsWkbTypes::MultiPolygon;
 }
 
+QString QgsMultiPolygonV2::geometryType() const
+{
+  return QStringLiteral( "MultiPolygon" );
+}
+
 QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
 {
   return new QgsMultiPolygonV2( *this );
@@ -125,7 +130,7 @@ bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
-QgsAbstractGeometry *QgsMultiPolygonV2::toCurveType() const
+QgsMultiSurface *QgsMultiPolygonV2::toCurveType() const
 {
   QgsMultiSurface *multiSurface = new QgsMultiSurface();
   for ( int i = 0; i < mGeometries.size(); ++i )
@@ -168,4 +173,9 @@ QgsAbstractGeometry *QgsMultiPolygonV2::boundary() const
     return nullptr;
   }
   return multiLine;
+}
+
+bool QgsMultiPolygonV2::wktOmitChildType() const
+{
+  return true;
 }

@@ -196,21 +196,6 @@ std::unique_ptr< QgsMultiPolygonV2 > QgsGeometryFactory::fromMultiPolygon( const
   return mp;
 }
 
-std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromRect( const QgsRectangle &rect )
-{
-  QgsPolyline ring;
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-  ring.append( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
-  ring.append( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-
-  QgsPolygon polygon;
-  polygon.append( ring );
-
-  return fromPolygon( polygon );
-}
-
 std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolyline &polyline )
 {
   QVector< double > x;

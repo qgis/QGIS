@@ -80,8 +80,8 @@ QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, dou
   : QgsAbstractGeometry()
   , mX( x )
   , mY( y )
-  , mZ( z )
-  , mM( m )
+  , mZ( QgsWkbTypes::hasZ( wkbType ) ? z : std::numeric_limits<double>::quiet_NaN() )
+  , mM( QgsWkbTypes::hasM( wkbType ) ? m : std::numeric_limits<double>::quiet_NaN() )
 {
   Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
   mWkbType = wkbType;
@@ -276,7 +276,7 @@ QString QgsPoint::asJSON( int precision ) const
 
 void QgsPoint::draw( QPainter &p ) const
 {
-  p.drawRect( mX - 2, mY - 2, 4, 4 );
+  p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) );
 }
 
 void QgsPoint::clear()
@@ -319,9 +319,21 @@ QgsCoordinateSequence QgsPoint::coordinateSequence() const
   return cs;
 }
 
+int QgsPoint::nCoordinates() const
+{
+  return 1;
+}
+
 QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;
+}
+
+bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
+{
+  Q_UNUSED( position );
+  Q_UNUSED( vertex );
+  return false;
 }
 
 /***************************************************************************
@@ -345,6 +357,12 @@ bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
     mM = newPos.mM;
   }
   return true;
+}
+
+bool QgsPoint::deleteVertex( QgsVertexId position )
+{
+  Q_UNUSED( position );
+  return false;
 }
 
 double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
@@ -377,6 +395,37 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   {
     return false;
   }
+}
+
+double QgsPoint::vertexAngle( QgsVertexId vertex ) const
+{
+  Q_UNUSED( vertex );
+  return 0.0;
+}
+
+int QgsPoint::vertexCount( int, int ) const
+{
+  return 1;
+}
+
+int QgsPoint::ringCount( int ) const
+{
+  return 1;
+}
+
+int QgsPoint::partCount() const
+{
+  return 1;
+}
+
+QgsPoint QgsPoint::vertexAt( QgsVertexId ) const
+{
+  return *this;
+}
+
+QgsPoint *QgsPoint::toCurveType() const
+{
+  return clone();
 }
 
 /***************************************************************************
@@ -578,4 +627,24 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   }
 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
+}
+
+bool QgsPoint::isEmpty() const
+{
+  return false;
+}
+
+QgsRectangle QgsPoint::boundingBox() const
+{
+  return QgsRectangle( mX, mY, mX, mY );
+}
+
+QString QgsPoint::geometryType() const
+{
+  return QStringLiteral( "Point" );
+}
+
+int QgsPoint::dimension() const
+{
+  return 0;
 }

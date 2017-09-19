@@ -639,6 +639,16 @@ int QgsGeometryCollection::ringCount( int part ) const
   return mGeometries[part]->ringCount();
 }
 
+int QgsGeometryCollection::partCount() const
+{
+  return mGeometries.size();
+}
+
+QgsPoint QgsGeometryCollection::vertexAt( QgsVertexId id ) const
+{
+  return mGeometries[id.part]->vertexAt( id );
+}
+
 bool QgsGeometryCollection::addZValue( double zValue )
 {
   if ( QgsWkbTypes::hasZ( mWkbType ) )
@@ -696,6 +706,16 @@ bool QgsGeometryCollection::dropMValue()
   }
   clearCache();
   return true;
+}
+
+QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
+{
+  std::unique_ptr< QgsGeometryCollection > newCollection( new QgsGeometryCollection() );
+  for ( QgsAbstractGeometry *geom : mGeometries )
+  {
+    newCollection->addGeometry( geom->toCurveType() );
+  }
+  return newCollection.release();
 }
 
 bool QgsGeometryCollection::wktOmitChildType() const
