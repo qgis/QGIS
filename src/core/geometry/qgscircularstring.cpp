@@ -893,6 +893,12 @@ void QgsCircularString::insertVertexBetween( int after, int before, int pointOnC
 
 double QgsCircularString::vertexAngle( QgsVertexId vId ) const
 {
+  if ( numPoints() < 3 )
+  {
+    //undefined
+    return 0.0;
+  }
+
   int before = vId.vertex - 1;
   int vertex = vId.vertex;
   int after = vId.vertex + 1;
