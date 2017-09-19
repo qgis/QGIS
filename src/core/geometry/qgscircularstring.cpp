@@ -119,20 +119,8 @@ QgsRectangle QgsCircularString::segmentBoundingBox( const QgsPoint &pt1, const Q
   QgsGeometryUtils::circleCenterRadius( pt1, pt2, pt3, radius, centerX, centerY );
 
   double p1Angle = QgsGeometryUtils::ccwAngle( pt1.y() - centerY, pt1.x() - centerX );
-  if ( p1Angle > 360 )
-  {
-    p1Angle -= 360;
-  }
   double p2Angle = QgsGeometryUtils::ccwAngle( pt2.y() - centerY, pt2.x() - centerX );
-  if ( p2Angle > 360 )
-  {
-    p2Angle -= 360;
-  }
   double p3Angle = QgsGeometryUtils::ccwAngle( pt3.y() - centerY, pt3.x() - centerX );
-  if ( p3Angle > 360 )
-  {
-    p3Angle -= 360;
-  }
 
   //start point, end point and compass points in between can be on bounding box
   QgsRectangle bbox( pt1.x(), pt1.y(), pt1.x(), pt1.y() );
@@ -556,13 +544,6 @@ void QgsCircularString::transform( const QTransform &t )
     mY[i] = y;
   }
 }
-
-#if 0
-void QgsCircularString::clip( const QgsRectangle &rect )
-{
-  //todo...
-}
-#endif
 
 void QgsCircularString::addToPainterPath( QPainterPath &path ) const
 {
