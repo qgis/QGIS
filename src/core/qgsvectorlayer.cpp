@@ -1725,10 +1725,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
       QString field = defaultElem.attribute( QStringLiteral( "field" ), QString() );
       QString expression = defaultElem.attribute( QStringLiteral( "expression" ), QString() );
+      bool applyOnUpdate = defaultElem.attribute( QStringLiteral( "applyOnUpdate" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
       if ( field.isEmpty() || expression.isEmpty() )
         continue;
 
-      mDefaultExpressionMap.insert( field, expression );
+      mDefaultExpressionMap.insert( field, QgsDefaultValue( expression, applyOnUpdate ) );
     }
   }
 
@@ -2074,7 +2075,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   {
     QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
     defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
-    defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueExpression() );
+    defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValue().expression() );
+    defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValue().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
     defaultsElem.appendChild( defaultElem );
   }
   node.appendChild( defaultsElem );
@@ -2918,14 +2920,14 @@ void QgsVectorLayer::updateFields()
 
     mFields[ index ].setAlias( aliasIt.value() );
   }
-  QMap< QString, QString >::const_iterator defaultIt = mDefaultExpressionMap.constBegin();
+  QMap< QString, QgsDefaultValue >::const_iterator defaultIt = mDefaultExpressionMap.constBegin();
   for ( ; defaultIt != mDefaultExpressionMap.constEnd(); ++defaultIt )
   {
     int index = mFields.lookupField( defaultIt.key() );
     if ( index < 0 )
       continue;
 
-    mFields[ index ].setDefaultValueExpression( defaultIt.value() );
+    mFields[ index ].setDefaultValue( defaultIt.value() );
   }
 
   QMap< QString, QgsFieldConstraints::Constraints >::const_iterator constraintIt = mFieldConstraints.constBegin();
@@ -3004,7 +3006,7 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature &feature, Qgs
   if ( index < 0 || index >= mFields.count() )
     return QVariant();
 
-  QString expression = mFields.at( index ).defaultValueExpression();
+  QString expression = mFields.at( index ).defaultValue().expression();
   if ( expression.isEmpty() )
     return mDataProvider->defaultValue( index );
 
@@ -3061,12 +3063,13 @@ void QgsVectorLayer::setDefaultValueExpression( int index, const QString &expres
   updateFields();
 }
 
+// TODO to QgsDefaultValue defaultValueDenfinition( int index )
 QString QgsVectorLayer::defaultValueExpression( int index ) const
 {
   if ( index < 0 || index >= mFields.count() )
     return QString();
   else
-    return mFields.at( index ).defaultValueExpression();
+    return mFields.at( index ).defaultValue().expression();
 }
 
 QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const

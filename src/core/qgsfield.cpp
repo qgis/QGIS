@@ -165,14 +165,14 @@ void QgsField::setComment( const QString &comment )
   d->comment = comment;
 }
 
-QString QgsField::defaultValueExpression() const
+QgsDefaultValue QgsField::defaultValue() const
 {
-  return d->defaultValueExpression;
+  return d->defaultValue;
 }
 
-void QgsField::setDefaultValueExpression( const QString &expression )
+void QgsField::setDefaultValue( const QgsDefaultValue &defaultValue )
 {
-  d->defaultValueExpression = expression;
+  d->defaultValue = defaultValue;
 }
 
 void QgsField::setConstraints( const QgsFieldConstraints &constraints )
@@ -307,7 +307,8 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
   out << field.precision();
   out << field.comment();
   out << field.alias();
-  out << field.defaultValueExpression();
+  out << field.defaultValue().expression();
+  out << field.defaultValue().applyOnUpdate();
   out << field.constraints().constraints();
   out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) );
   out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintUnique ) );
@@ -335,7 +336,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   field.setPrecision( static_cast< int >( precision ) );
   field.setComment( comment );
   field.setAlias( alias );
-  field.setDefaultValueExpression( defaultValueExpression );
+  field.setDefaultValue( defaultValueExpression );
   QgsFieldConstraints fieldConstraints;
   if ( constraints & QgsFieldConstraints::ConstraintNotNull )
   {
