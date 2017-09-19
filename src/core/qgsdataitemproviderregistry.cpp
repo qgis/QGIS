@@ -36,6 +36,14 @@ typedef QList<QgsDataItemProvider *> *dataItemProviders_t();
 class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 {
   public:
+
+    /**
+     * QgsDataItemProviderFromPlugin constructor
+     * \param name plugin name
+     * \param capabilitiesFunc function pointer to the data capabilities
+     * \param dataItemFunc function pointer to the data items
+     * \param handlesDirectoryPathFunc function pointer to handlesDirectoryPath
+     */
     QgsDataItemProviderFromPlugin( const QString &name, dataCapabilities_t *capabilitiesFunc, dataItem_t *dataItemFunc, handlesDirectoryPath_t *handlesDirectoryPathFunc )
       : mName( name )
       , mCapabilitiesFunc( capabilitiesFunc )
