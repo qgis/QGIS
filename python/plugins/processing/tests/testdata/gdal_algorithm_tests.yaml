@@ -441,6 +441,143 @@ tests:
 #        hash: 2d0585dc8166fbe3cec7d9e6fd66e95cc9bdb1043b3b0fa7cbdfef4c
 #        type: rasterhash
 
+  - algorithm: gdal:buffervectors
+    name: Buffer lines
+    params:
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_lines.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: BUffer lines with dissolve
+    params:
+      DISSOLVE: true
+      DISTANCE: 1.0
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_lines_dissolve.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: Buffer polygons
+    params:
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_polys.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: Buffer polygons with dissolve
+    params:
+      DISSOLVE: true
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_polys_dissolve.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip lines by polygons
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      MASK:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines_by_polygon.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip lines by multipolygons
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      MASK:
+        name: multipolys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines_by_multipolygon.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip points by polygons
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      MASK:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_points_by_polygon.gml
+        type: vector
+
+  - algorithm: gdal:executesql
+    name: Execute SQL
+    params:
+      DIALECT: 0
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+      SQL: SELECT * FROM polys2 WHERE intval=2
+    results:
+      OUTPUT:
+        name: expected/gdal/execute_sql.gml
+        type: vector
+
+  - algorithm: gdal:offsetcurve
+    name: Offset curve (right-sided)
+    params:
+      DISTANCE: -0.5
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/offset_lines.gml
+        type: vector
+
  - algorithm: gdal:ogrinfo
     name: ogrinfo
     params:
@@ -457,6 +594,23 @@ tests:
           - 'Geometry: Line String'
           - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
 
+  - algorithm: gdal:onesidebuffer
+    name: One-sided buffer (left-handed)
+    params:
+      BUFFER_SIDE: 1
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/one_side_buffer.gml
+        type: vector
+
   - algorithm: gdal:pointsalonglines
     name: Points along lines
     params:
@@ -465,101 +619,8 @@ tests:
       INPUT:
         name: lines.gml
         type: vector
+      OPTIONS: ''
     results:
       OUTPUT:
         name: expected/gdal/points_along_lines.gml
         type: vector
-        pk: fid
-        compare:
-          ignore_crs_check: true
-
-  - algorithm: gdal:offsetcurve
-    name: Offset curve (right-handed)
-    params:
-      GEOMETRY: geometry
-      INPUT_LAYER:
-         name: lines.gml
-         type: vector
-      RADIUS: -0.5
-    results:
-      OUTPUT_LAYER:
-        name: expected/gdal/offset_lines.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 7
-
-  - algorithm: gdal:buffervectors
-    name: Buffer lines
-    params:
-      DISSOLVEALL: false
-      DISTANCE: 1.0
-      GEOMETRY: geometry
-      INPUT_LAYER:
-        name: lines.gml
-        type: vector
-      MULTI: false
-    results:
-      OUTPUT_LAYER:
-        name: expected/gdal/buffer_lines.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 7
-    expectedFailure:
-      - int(1)
-
-  - algorithm: gdal:buffervectors
-    name: Basic polygon buffer
-    params:
-      DISSOLVEALL: false
-      DISTANCE: 0.5
-      GEOMETRY: geometry
-      INPUT_LAYER:
-        name: polys.gml
-        type: vector
-      MULTI: false
-    results:
-      OUTPUT_LAYER:
-        name: expected/gdal/buffer_polys.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 7
-
-  - algorithm: gdal:buffervectors
-    name: Polygon buffer with dissolve
-    params:
-      DISSOLVEALL: true
-      DISTANCE: 0.5
-      GEOMETRY: geometry
-      INPUT_LAYER:
-        name: polys.gml
-        type: vector
-      MULTI: false
-    results:
-      OUTPUT_LAYER:
-        name: expected/gdal/buffer_polys_dissolve.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 7
-
-  - algorithm: gdal:singlesidedbuffer
-    name: One-side buffer for lines (left-handed)
-    params:
-      DISSOLVEALL: false
-      GEOMETRY: geometry
-      INPUT_LAYER:
-        name: lines.gml
-        type: vector
-      LEFTRIGHT: '1'
-      MULTI: false
-      RADIUS: 0.5
-    results:
-      OUTPUT_LAYER:
-        name: expected/gdal/one_side_buffer.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 7

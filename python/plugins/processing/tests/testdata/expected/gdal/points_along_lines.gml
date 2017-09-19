@@ -12,33 +12,33 @@
   </gml:boundedBy>
                                                                                                                                                          
   <gml:featureMember>
-    <ogr:SELECT fid="lines.0">
+    <ogr:points_along_lines fid="lines.0">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.70710678118655,2.0</gml:coordinates></gml:Point></ogr:geometryProperty>
-    </ogr:SELECT>
+    </ogr:points_along_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:SELECT fid="lines.1">
+    <ogr:points_along_lines fid="lines.1">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>-0.5,-1.0</gml:coordinates></gml:Point></ogr:geometryProperty>
-    </ogr:SELECT>
+    </ogr:points_along_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:SELECT fid="lines.2">
+    <ogr:points_along_lines fid="lines.2">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>2,1</gml:coordinates></gml:Point></ogr:geometryProperty>
-    </ogr:SELECT>
+    </ogr:points_along_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:SELECT fid="lines.3">
+    <ogr:points_along_lines fid="lines.3">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.5,1.0</gml:coordinates></gml:Point></ogr:geometryProperty>
-    </ogr:SELECT>
+    </ogr:points_along_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:SELECT fid="lines.4">
+    <ogr:points_along_lines fid="lines.4">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7.75,-3.0</gml:coordinates></gml:Point></ogr:geometryProperty>
-    </ogr:SELECT>
+    </ogr:points_along_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:SELECT fid="lines.5">
+    <ogr:points_along_lines fid="lines.5">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7,-2</gml:coordinates></gml:Point></ogr:geometryProperty>
-    </ogr:SELECT>
+    </ogr:points_along_lines>
   </gml:featureMember>
 </ogr:FeatureCollection>
