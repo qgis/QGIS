@@ -417,13 +417,12 @@ void QgsCompoundCurve::addCurve( QgsCurve *c )
 
 void QgsCompoundCurve::removeCurve( int i )
 {
-  if ( mCurves.size() - 1  < i )
+  if ( i < 0 || i >= mCurves.size() )
   {
     return;
   }
 
-  delete ( mCurves.at( i ) );
-  mCurves.removeAt( i );
+  delete mCurves.takeAt( i );
   clearCache();
 }
 
