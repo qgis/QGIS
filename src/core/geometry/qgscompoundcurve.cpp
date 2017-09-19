@@ -385,7 +385,7 @@ QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationTole
 
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
 {
-  if ( i >= mCurves.size() )
+  if ( i < 0 || i >= mCurves.size() )
   {
     return nullptr;
   }
