@@ -61,10 +61,11 @@ QList<QMenu *> QgsWfsLayerItem::menus()
 
   if ( mPath.startsWith( QLatin1String( "geonode:/" ) ) )
   {
-    QAction *actionCopyStyle = new QAction( tr( "Copy Style" ), this );
+    QMenu *menuStyleManager = new QMenu();
+
+    QAction *actionCopyStyle = new QAction( tr( "Copy Style" ), menuStyleManager );
     connect( actionCopyStyle, &QAction::triggered, this, &QgsWfsLayerItem::copyStyle );
 
-    QMenu *menuStyleManager = new QMenu();
     menuStyleManager->setTitle( tr( "Styles" ) );
     menuStyleManager->addAction( actionCopyStyle );
     menus << menuStyleManager;
@@ -122,9 +123,9 @@ void QgsWfsLayerItem::copyStyle()
   mdata->setText( style.body.toString() );
   // Copies data in text form as well, so the XML can be pasted into a text editor
 #ifdef Q_OS_LINUX
-  clipboard->setMimeData( mdata, QClipboard::Clipboard );
-#endif
   clipboard->setMimeData( mdata, QClipboard::Selection );
+#endif
+  clipboard->setMimeData( mdata, QClipboard::Clipboard );
   // Enables the paste menu element
   // actionPasteStyle->setEnabled( true );
 }

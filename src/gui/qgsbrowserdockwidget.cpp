@@ -216,7 +216,8 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   {
     for ( QMenu *mn : menus )
     {
-      menu->addMenu( mn );
+      QMenu *newMenu = menu->addMenu( mn->title() );  // this method will transfer the ownership
+      newMenu->addActions( mn->actions() );
     }
   }
 
