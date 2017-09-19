@@ -193,7 +193,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   bool hasError = false;
 
   // Main task
-  std::unique_ptr< QgsGeoPackageImportTask > mainTask( new QgsGeoPackageImportTask( tr( "GeoPackage import" ) ) );
+  std::unique_ptr< QgsConcurrentFileWriterImportTask > mainTask( new QgsConcurrentFileWriterImportTask( tr( "GeoPackage import" ) ) );
   QgsTaskList importTasks;
 
   const auto lst = QgsMimeDataUtils::decodeUriList( data );
