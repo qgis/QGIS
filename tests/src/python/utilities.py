@@ -121,7 +121,7 @@ def writeShape(theMemoryLayer, theFileName):
         myOptions,
         myLayerOptions,
         mySkipAttributesFlag)
-    self.assertEqual(myResult, QgsVectorFileWriter.NoError, myErrorMessage)
+    assert myResult == QgsVectorFileWriter.NoError, 'Writing shape failed, Error {} ({})'.format(myResult, myErrorMessage)
 
 
 def doubleNear(a, b, tol=0.0000000001):
