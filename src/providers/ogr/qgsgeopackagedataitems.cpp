@@ -328,7 +328,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
-  else if ( ! importTasks.isEmpty() )
+  if ( ! importTasks.isEmpty() )
   {
     QgsApplication::taskManager()->addTask( mainTask.release() );
   }
