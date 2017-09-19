@@ -209,15 +209,14 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
   }
 
-  const QList<QMenu *> menus = item->menus();
+  const QList<QMenu *> menus = item->menus( menu );
   QList<QAction *> actions = item->actions( menu );
 
   if ( !menus.isEmpty() )
   {
     for ( QMenu *mn : menus )
     {
-      QMenu *newMenu = menu->addMenu( mn->title() );  // this method will transfer the ownership
-      newMenu->addActions( mn->actions() );
+      menu->addMenu( mn );
     }
   }
 
