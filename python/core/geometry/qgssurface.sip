@@ -25,6 +25,9 @@ class QgsSurface: QgsAbstractGeometry
  :rtype: QgsPolygonV2
 %End
 
+    virtual QgsSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+                                       double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+
     virtual QgsRectangle boundingBox() const;
 %Docstring
  Returns the minimal bounding box for the geometry

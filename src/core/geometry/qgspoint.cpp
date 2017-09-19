@@ -22,6 +22,8 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+
+#include <cmath>
 #include <QPainter>
 #include <QRegularExpression>
 
@@ -116,6 +118,28 @@ bool QgsPoint::operator!=( const QgsPoint &pt ) const
 QgsPoint *QgsPoint::clone() const
 {
   return new QgsPoint( *this );
+}
+
+QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+                                   double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const
+{
+  // helper function
+  auto gridifyValue = []( double value, double spacing, bool extraCondition = true ) -> double
+  {
+    if ( spacing > 0 && extraCondition )
+      return  std::round( value / spacing ) * spacing;
+    else
+      return value;
+  };
+
+  // Get the new values
+  auto x = gridifyValue( mX, hSpacing );
+  auto y = gridifyValue( mY, vSpacing );
+  auto z = gridifyValue( mZ, dSpacing, QgsWkbTypes::hasZ( mWkbType ) );
+  auto m = gridifyValue( mM, mSpacing, QgsWkbTypes::hasM( mWkbType ) );
+
+  // return the new object
+  return new QgsPoint( mWkbType, x, y, z, m );
 }
 
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
@@ -578,4 +602,10 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   }
 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
+}
+
+QgsPoint *QgsPoint::createEmptyWithSameType() const
+{
+  double nan = std::numeric_limits<double>::quiet_NaN();
+  return new QgsPoint( nan, nan, nan, nan, mWkbType );
 }

@@ -40,6 +40,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     virtual QString geometryType() const override { return QStringLiteral( "CompoundCurve" ); }
     virtual int dimension() const override { return 1; }
+    virtual QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
     virtual QgsCompoundCurve *clone() const override SIP_FACTORY;
     virtual void clear() override;
 

@@ -30,6 +30,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
   public:
     QgsMultiSurface();
     virtual QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
+    virtual QgsMultiSurface *createEmptyWithSameType() const override SIP_FACTORY;
     QgsMultiSurface *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;

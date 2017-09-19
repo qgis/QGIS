@@ -24,6 +24,8 @@
 #include "qgspolygon.h"
 #include "qgswkbptr.h"
 #include "qgsmulticurve.h"
+
+#include <memory>
 #include <QPainter>
 #include <QPainterPath>
 
@@ -35,6 +37,13 @@ QgsCurvePolygon::QgsCurvePolygon(): QgsSurface()
 QgsCurvePolygon::~QgsCurvePolygon()
 {
   clear();
+}
+
+QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
+{
+  auto result = new QgsCurvePolygon();
+  result->mWkbType = mWkbType;
+  return result;
 }
 
 QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
@@ -434,6 +443,49 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
     }
     return multiCurve;
   }
+}
+
+QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+    double tolerance, SegmentationToleranceType toleranceType ) const
+{
+  if ( !mExteriorRing )
+    return nullptr;
+
+  std::unique_ptr<QgsPolygonV2> polygon;
+  if ( QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Triangle ||  QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Polygon )
+  {
+    polygon = std::unique_ptr<QgsPolygonV2> { static_cast< QgsPolygonV2 const *>( this )->createEmptyWithSameType() };
+  }
+  else
+  {
+    polygon = std::unique_ptr<QgsPolygonV2> { new QgsPolygonV2() };
+    polygon->mWkbType = QgsWkbTypes::zmType( QgsWkbTypes::Polygon, QgsWkbTypes::hasZ( mWkbType ), QgsWkbTypes::hasM( mWkbType ) );
+  }
+
+  // exterior ring
+  auto exterior = std::unique_ptr<QgsCurve> { mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
+
+  if ( !exterior )
+    return nullptr;
+
+  polygon->mExteriorRing = exterior.release();
+
+  //interior rings
+  for ( auto interior : mInteriorRings )
+  {
+    if ( !interior )
+      continue;
+
+    QgsCurve *gridifiedInterior = interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
+
+    if ( !gridifiedInterior )
+      continue;
+
+    polygon->mInteriorRings.append( gridifiedInterior );
+  }
+
+  return polygon.release();
+
 }
 
 QgsPolygonV2 *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const

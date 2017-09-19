@@ -28,6 +28,13 @@ QgsMultiCurve::QgsMultiCurve()
   mWkbType = QgsWkbTypes::MultiCurve;
 }
 
+QgsMultiCurve *QgsMultiCurve::createEmptyWithSameType() const
+{
+  auto result = new QgsMultiCurve();
+  result->mWkbType = mWkbType;
+  return result;
+}
+
 QgsMultiCurve *QgsMultiCurve::clone() const
 {
   return new QgsMultiCurve( *this );

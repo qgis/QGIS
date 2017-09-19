@@ -30,6 +30,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
   public:
     QgsMultiLineString();
     virtual QString geometryType() const override { return QStringLiteral( "MultiLineString" ); }
+    virtual QgsMultiLineString *createEmptyWithSameType() const override SIP_FACTORY;
     QgsMultiLineString *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;

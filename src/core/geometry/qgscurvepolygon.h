@@ -39,6 +39,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     virtual QString geometryType() const override { return QStringLiteral( "CurvePolygon" ); }
     virtual int dimension() const override { return 2; }
+    virtual QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
     virtual QgsCurvePolygon *clone() const override SIP_FACTORY;
     void clear() override;
 
@@ -56,6 +57,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual double perimeter() const override;
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
     virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    virtual QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
+                                            double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
     //curve polygon interface
     int numInteriorRings() const;
