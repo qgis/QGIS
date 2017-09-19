@@ -32,21 +32,6 @@ namespace QgsWms
     return QStringLiteral( "1.3.0" );
   }
 
-  // Return the wms config parser (Transitional)
-  QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface )
-  {
-    QString configFilePath = serverIface->configFilePath();
-
-    QgsWmsConfigParser *parser  = QgsConfigCache::instance()->wmsConfiguration( configFilePath, serverIface->accessControls() );
-    if ( !parser )
-    {
-      throw QgsServiceException(
-        QStringLiteral( "WMS configuration error" ),
-        QStringLiteral( "There was an error reading the project file or the SLD configuration" ) );
-    }
-    return parser;
-  }
-
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project )
   {
     QUrl href;

@@ -31,7 +31,7 @@ namespace QgsWms
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params );
 
     QString infoFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
 

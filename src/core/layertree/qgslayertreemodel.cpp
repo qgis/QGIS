@@ -767,6 +767,9 @@ void QgsLayerTreeModel::nodeLayerWillBeUnloaded()
 
 void QgsLayerTreeModel::layerLegendChanged()
 {
+  if ( !mRootNode )
+    return;
+
   if ( !testFlag( ShowLegend ) )
     return;
 

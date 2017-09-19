@@ -59,6 +59,19 @@ namespace QgsWms
     QColor mBufferColor;
   };
 
+  struct QgsWmsParametersComposerMap
+  {
+    int mId; // composer map id
+    bool mHasExtent; // does the request contains extent for this composer map
+    QgsRectangle mExtent; // the request extent for this composer map
+    float mScale = -1;
+    float mRotation;
+    float mGridX = 0;
+    float mGridY = 0;
+    QList<QgsWmsParametersLayer> mLayers; // list of layers for this composer map
+    QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
+  };
+
   class QgsWmsParameters
   {
       Q_GADGET
@@ -122,7 +135,12 @@ namespace QgsWms
         WMS_PRECISION,
         TRANSPARENT,
         BGCOLOR,
-        DPI
+        DPI,
+        TEMPLATE,
+        EXTENT,
+        ROTATION,
+        GRID_INTERVAL_X,
+        GRID_INTERVAL_Y
       };
       Q_ENUM( ParameterName )
 
@@ -767,26 +785,67 @@ namespace QgsWms
        */
       int dpiAsInt() const;
 
+      /** Returns TEMPLATE parameter or an empty string if not defined.
+       * \returns TEMPLATE parameter
+       */
+      QString composerTemplate() const;
+
+      /** Returns the requested parameters for a composer map parameter.
+       * An exception is raised if parameters are defined and cannot be
+       * converted like EXTENT, SCALE, ROTATION, GRID_INTERVAL_X and
+       * GRID_INTERVAL_Y.
+       * \param mapId the composer map id.
+       * \returns parameters for the composer map.
+       * \throws QgsBadRequestException
+       */
+      QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
+
     private:
       QString name( ParameterName name ) const;
       void raiseError( ParameterName name ) const;
+      void raiseError( ParameterName name, int mapId ) const;
       void raiseError( const QString &msg ) const;
       void initParameters();
+      void save( const Parameter &parameter );
       QVariant value( ParameterName name ) const;
       QVariant defaultValue( ParameterName name ) const;
+      void save( const Parameter &parameter, int mapId );
+      QVariant value( ParameterName name, int mapId ) const;
+      QVariant defaultValue( ParameterName name, int mapId ) const;
       void log( const QString &msg ) const;
-      void save( const Parameter &parameter );
+      double toDouble( const QVariant &value, const QVariant &defaultValue, bool *error = Q_NULLPTR ) const;
       double toDouble( ParameterName name ) const;
+      double toDouble( ParameterName name, int mapId ) const;
+      bool toBool( const QVariant &value, const QVariant &defaultValue ) const;
       bool toBool( ParameterName name ) const;
+      bool toBool( ParameterName name, int mapId ) const;
+      int toInt( const QVariant &value, const QVariant &defaultValue, bool *error = Q_NULLPTR ) const;
       int toInt( ParameterName name ) const;
+      int toInt( ParameterName name, int mapId ) const;
+      QColor toColor( const QVariant &value, const QVariant &defaultValue, bool *error = Q_NULLPTR ) const;
       QColor toColor( ParameterName name ) const;
+      QColor toColor( ParameterName name, int mapId ) const;
+      QgsRectangle toRectangle( const QVariant &value, bool *error = Q_NULLPTR ) const;
+      QgsRectangle toRectangle( ParameterName name ) const;
+      QgsRectangle toRectangle( ParameterName name, int mapId ) const;
       QStringList toStringList( ParameterName name, char delimiter = ',' ) const;
-      QList<int> toIntList( QStringList l, ParameterName name ) const;
-      QList<float> toFloatList( QStringList l, ParameterName name ) const;
-      QList<QColor> toColorList( QStringList l, ParameterName name ) const;
+      QStringList toStringList( ParameterName name, int mapId, char delimiter = ',' ) const;
+      QList<int> toIntList( const QStringList &l, bool *error = Q_NULLPTR ) const;
+      QList<int> toIntList( const QStringList &l, ParameterName name ) const;
+      QList<int> toIntList( const QStringList &l, ParameterName name, int mapId ) const;
+      QList<float> toFloatList( const QStringList &l, bool *error = Q_NULLPTR ) const;
+      QList<float> toFloatList( const QStringList &l, ParameterName name ) const;
+      QList<float> toFloatList( const QStringList &l, ParameterName name, int mapId ) const;
+      QList<QColor> toColorList( const QStringList &l, bool *error = Q_NULLPTR ) const;
+      QList<QColor> toColorList( const QStringList &l, ParameterName name ) const;
+      QList<QColor> toColorList( const QStringList &l, ParameterName name, int mapId ) const;
+      QList<QgsGeometry> toGeomList( const QStringList &l, bool *error = Q_NULLPTR ) const;
+      QList<QgsGeometry> toGeomList( const QStringList &l, ParameterName name ) const;
+      QList<QgsGeometry> toGeomList( const QStringList &l, ParameterName name, int mapId ) const;
 
       QgsServerRequest::Parameters mRequestParameters;
       QMap<ParameterName, Parameter> mParameters;
+      QMap<int, QMap<ParameterName, Parameter>> mComposerParameters;
       QList<QgsProjectVersion> mVersions;
   };
 }
