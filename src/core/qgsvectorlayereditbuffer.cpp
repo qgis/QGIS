@@ -113,9 +113,6 @@ void QgsVectorLayerEditBuffer::updateChangedAttributes( QgsFeature &f )
   f.setAttributes( attrs );
 }
 
-
-
-
 bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
 {
   QgsVectorDataProvider* provider = L->dataProvider();
@@ -134,7 +131,6 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
   L->undoStack()->push( new QgsVectorLayerUndoCommandAddFeature( this, f ) );
   return true;
 }
-
 
 bool QgsVectorLayerEditBuffer::addFeatures( QgsFeatureList& features )
 {
@@ -186,6 +182,13 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds& fids )
 
 bool QgsVectorLayerEditBuffer::adaptGeometry( QgsGeometry* geom )
 {
+  /* this routine was introduced to fi the following issue:
+   * https://issues.qgis.org/issues/15741
+   * and later used in changeGeometry and addFeature to
+   * fix also the following issue
+   * https://issues.qgis.org/issues/16948
+   * https://issues.qgis.org/issues/15741
+   */
   QgsVectorDataProvider* provider = L->dataProvider();
   if ( geom && geom->geometry() &&
        !geom->isEmpty() &&

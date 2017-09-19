@@ -715,6 +715,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry* ge
   }
 
   // remove Z if provider does not have
+  // control added to fix https://issues.qgis.org/issues/16927
   if ( !QgsWKBTypes::hasZ( providerGeomType ) && QgsWKBTypes::hasZ( geometry->wkbType() ) )
   {
     if ( !outputGeom )
@@ -725,6 +726,7 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry* ge
   }
 
   // remove M if provider does not have
+  // control added as follow-up of https://issues.qgis.org/issues/16927
   if ( !QgsWKBTypes::hasM( providerGeomType ) && QgsWKBTypes::hasM( geometry->wkbType() ) )
   {
     if ( !outputGeom )
