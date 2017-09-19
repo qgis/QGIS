@@ -1,0 +1,105 @@
+Content-Length: 3001
+Content-Type: text/xml; charset=utf-8
+
+<WFS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns="http://www.opengis.net/wfs" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" xmlns:ogc="http://www.opengis.net/ogc" version="1.0.0" xmlns:xlink="http://www.w3.org/1999/xlink" updateSequence="0">
+ <Service>
+  <Name>WFS</Name>
+  <Title>QGIS TestProject</Title>
+  <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
+  <OnlineResource/>
+ </Service>
+ <Capability>
+  <Request>
+   <GetCapabilities>
+    <DCPType>
+     <HTTP>
+      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     </HTTP>
+    </DCPType>
+    <DCPType>
+     <HTTP>
+      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     </HTTP>
+    </DCPType>
+   </GetCapabilities>
+   <DescribeFeatureType>
+    <SchemaDescriptionLanguage>
+     <XMLSCHEMA/>
+    </SchemaDescriptionLanguage>
+    <DCPType>
+     <HTTP>
+      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     </HTTP>
+    </DCPType>
+    <DCPType>
+     <HTTP>
+      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     </HTTP>
+    </DCPType>
+   </DescribeFeatureType>
+   <GetFeature>
+    <ResultFormat>
+     <GML2/>
+     <GML3/>
+     <GeoJSON/>
+    </ResultFormat>
+    <DCPType>
+     <HTTP>
+      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     </HTTP>
+    </DCPType>
+    <DCPType>
+     <HTTP>
+      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     </HTTP>
+    </DCPType>
+   </GetFeature>
+   <Transaction>
+    <DCPType>
+     <HTTP>
+      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     </HTTP>
+    </DCPType>
+   </Transaction>
+  </Request>
+ </Capability>
+ <FeatureTypeList>
+  <Operations>
+   <Query/>
+  </Operations>
+  <FeatureType>
+   <Name>testlayer</Name>
+   <Title>A test vector layer</Title>
+   <Abstract>A test vector layer with unicode òà</Abstract>
+   <SRS>EPSG:4326</SRS>
+   <LatLongBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+   <Operations>
+    <Query/>
+    <Insert/>
+    <Update/>
+    <Delete/>
+   </Operations>
+  </FeatureType>
+ </FeatureTypeList>
+ <ogc:Filter_Capabilities>
+  <ogc:Spatial_Capabilities>
+   <ogc:Spatial_Operators>
+    <ogc:BBOX/>
+    <ogc:Disjoint/>
+    <ogc:Intersect/>
+    <ogc:Touches/>
+    <ogc:Crosses/>
+    <ogc:Contains/>
+    <ogc:Overlaps/>
+    <ogc:Within/>
+   </ogc:Spatial_Operators>
+  </ogc:Spatial_Capabilities>
+  <ogc:Scalar_Capabilities>
+   <ogc:Comparison_Operators>
+    <ogc:Simple_Comparisons/>
+    <ogc:Between/>
+    <ogc:Like/>
+   </ogc:Comparison_Operators>
+  </ogc:Scalar_Capabilities>
+ </ogc:Filter_Capabilities>
+</WFS_Capabilities>

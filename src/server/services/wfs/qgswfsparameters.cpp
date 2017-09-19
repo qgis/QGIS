@@ -136,12 +136,25 @@ namespace QgsWfs
     else if ( fStr.compare( QLatin1String( "geojson" ), Qt::CaseInsensitive ) == 0 )
       f = Format::GeoJSON;
 
+    if ( f == Format::NONE &&
+         request().compare( QLatin1String( "describefeaturetype" ), Qt::CaseInsensitive ) == 0 &&
+         fStr.compare( QLatin1String( "xmlschema" ), Qt::CaseInsensitive ) == 0 )
+      f = Format::GML2;
+
     return f;
   }
 
   QString QgsWfsParameters::srsName() const
   {
     return value( ParameterName::SRSNAME ).toString();
+  }
+
+  QString QgsWfsParameters::request() const
+  {
+    if ( mRequestParameters.contains( "REQUEST" ) )
+      return mRequestParameters["REQUEST"];
+    else
+      return QString();
   }
 
   QString QgsWfsParameters::version() const

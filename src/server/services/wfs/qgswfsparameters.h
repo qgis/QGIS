@@ -85,9 +85,6 @@ namespace QgsWfs
        */
       void dump() const;
 
-<<<<<<< HEAD
-      /** Returns VERSION parameter as a string or an empty string if not
-=======
       /**
        * Returns REQUEST parameter as a string or an empty string if not
        *  defined.
@@ -97,7 +94,6 @@ namespace QgsWfs
 
       /**
        * Returns VERSION parameter as a string or an empty string if not
->>>>>>> 747f00d... QgsWfsParameters
        *  defined.
        * \returns version
        */

@@ -1827,25 +1827,6 @@ class TestQgsServerWMS(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_BBox2")
 
-    # WCS tests
-    def wcs_request_compare(self, request):
-        project = self.projectPath
-        assert os.path.exists(project), "Project file not found: " + project
-
-        query_string = '?MAP=%s&SERVICE=WCS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
-        header, body = self._execute_request(query_string)
-        self.assert_headers(header, body)
-        response = header + body
-        reference_path = self.testdata_path + 'wcs_' + request.lower() + '.txt'
-        self.store_reference(reference_path, response)
-        f = open(reference_path, 'rb')
-        expected = f.read()
-        f.close()
-        response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
-        expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
-
-        self.assertXMLEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected.decode('utf-8'), response.decode('utf-8')))
-
 
 if __name__ == '__main__':
     unittest.main()
