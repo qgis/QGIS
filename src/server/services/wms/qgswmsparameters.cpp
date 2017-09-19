@@ -927,12 +927,12 @@ namespace QgsWms
     return value( name, mapId ).toString().split( delimiter, QString::SkipEmptyParts );
   }
 
-  QList<int> QgsWmsParameters::toIntList( QStringList l, bool *error ) const
+  QList<int> QgsWmsParameters::toIntList( const QStringList &l, bool *error ) const
   {
     *error = false;
     QList<int> elements;
 
-    Q_FOREACH ( QString element, l )
+    for ( const QString &element : l )
     {
       bool ok;
       int e = element.toInt( &ok );
@@ -951,7 +951,7 @@ namespace QgsWms
     return elements;
   }
 
-  QList<int> QgsWmsParameters::toIntList( QStringList l, ParameterName p ) const
+  QList<int> QgsWmsParameters::toIntList( const QStringList &l, ParameterName p ) const
   {
     bool error;
     QList<int> elements = toIntList( l, &error );
@@ -966,7 +966,7 @@ namespace QgsWms
     return elements;
   }
 
-  QList<int> QgsWmsParameters::toIntList( QStringList l, ParameterName p, int mapId ) const
+  QList<int> QgsWmsParameters::toIntList( const QStringList &l, ParameterName p, int mapId ) const
   {
     bool error;
     QList<int> elements = toIntList( l, &error );
@@ -981,12 +981,12 @@ namespace QgsWms
     return elements;
   }
 
-  QList<float> QgsWmsParameters::toFloatList( QStringList l, bool *error ) const
+  QList<float> QgsWmsParameters::toFloatList( const QStringList &l, bool *error ) const
   {
     *error = false;
     QList<float> elements;
 
-    Q_FOREACH ( QString element, l )
+    for ( const QString &element : l )
     {
       bool ok;
       float e = element.toFloat( &ok );
@@ -1005,7 +1005,7 @@ namespace QgsWms
     return elements;
   }
 
-  QList<float> QgsWmsParameters::toFloatList( QStringList l, ParameterName p ) const
+  QList<float> QgsWmsParameters::toFloatList( const QStringList &l, ParameterName p ) const
   {
     bool error;
     QList<float> elements = toFloatList( l, &error );
@@ -1020,7 +1020,7 @@ namespace QgsWms
     return elements;
   }
 
-  QList<float> QgsWmsParameters::toFloatList( QStringList l, ParameterName p, int mapId ) const
+  QList<float> QgsWmsParameters::toFloatList( const QStringList &l, ParameterName p, int mapId ) const
   {
     bool error;
     QList<float> elements = toFloatList( l, &error );
@@ -1035,12 +1035,12 @@ namespace QgsWms
     return elements;
   }
 
-  QList<QColor> QgsWmsParameters::toColorList( QStringList l, bool *error ) const
+  QList<QColor> QgsWmsParameters::toColorList( const QStringList &l, bool *error ) const
   {
     *error = false;
     QList<QColor> elements;
 
-    Q_FOREACH ( QString element, l )
+    for ( const QString &element : l )
     {
       QColor c = QColor( element );
 
@@ -1058,7 +1058,7 @@ namespace QgsWms
     return elements;
   }
 
-  QList<QColor> QgsWmsParameters::toColorList( QStringList l, ParameterName p ) const
+  QList<QColor> QgsWmsParameters::toColorList( const QStringList &l, ParameterName p ) const
   {
     bool error;
     QList<QColor> elements = toColorList( l, &error );
@@ -1073,7 +1073,7 @@ namespace QgsWms
     return elements;
   }
 
-  QList<QColor> QgsWmsParameters::toColorList( QStringList l, ParameterName p, int mapId ) const
+  QList<QColor> QgsWmsParameters::toColorList( const QStringList &l, ParameterName p, int mapId ) const
   {
     bool error;
     QList<QColor> elements = toColorList( l, &error );
@@ -1088,12 +1088,12 @@ namespace QgsWms
     return elements;
   }
 
-  QList<QgsGeometry> QgsWmsParameters::toGeomList( QStringList l, bool *error ) const
+  QList<QgsGeometry> QgsWmsParameters::toGeomList( const QStringList &l, bool *error ) const
   {
     *error = false;
     QList<QgsGeometry> geometries;
 
-    Q_FOREACH ( QString wkt, l )
+    for ( const QString &wkt : l )
     {
       QgsGeometry g( QgsGeometry::fromWkt( wkt ) );
 
@@ -1111,7 +1111,7 @@ namespace QgsWms
     return geometries;
   }
 
-  QList<QgsGeometry> QgsWmsParameters::toGeomList( QStringList l, ParameterName p ) const
+  QList<QgsGeometry> QgsWmsParameters::toGeomList( const QStringList &l, ParameterName p ) const
   {
     bool error;
     QList<QgsGeometry> elements = toGeomList( l, &error );
@@ -1126,7 +1126,7 @@ namespace QgsWms
     return elements;
   }
 
-  QList<QgsGeometry> QgsWmsParameters::toGeomList( QStringList l, ParameterName p, int mapId ) const
+  QList<QgsGeometry> QgsWmsParameters::toGeomList( const QStringList &l, ParameterName p, int mapId ) const
   {
     bool error;
     QList<QgsGeometry> elements = toGeomList( l, &error );
