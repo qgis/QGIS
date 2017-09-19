@@ -53,6 +53,7 @@ from .GridInverseDistanceNearestNeighbor import GridInverseDistanceNearestNeighb
 from .GridLinear import GridLinear
 from .GridNearestNeighbor import GridNearestNeighbor
 from .hillshade import hillshade
+from .merge import merge
 from .nearblack import nearblack
 from .pct2rgb import pct2rgb
 from .polygonize import polygonize
@@ -67,7 +68,6 @@ from .tpi import tpi
 from .tri import tri
 from .warp import warp
 
-# from .merge import merge
 # from .rasterize import rasterize
 # from .extractprojection import ExtractProjection
 # from .gdalcalc import gdalcalc
@@ -156,6 +156,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             GridLinear(),
             GridNearestNeighbor(),
             hillshade(),
+            merge(),
             nearblack(),
             pct2rgb(),
             polygonize(),
@@ -169,7 +170,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             tpi(),
             tri(),
             warp(),
-            # merge(),
             # rasterize(),
             # ExtractProjection(),
             # gdalcalc(),
