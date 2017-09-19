@@ -689,6 +689,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, co
 
 void QgsDirectoryItem::init()
 {
+  setToolTip( QDir::toNativeSeparators( mDirPath ) );
 }
 
 QIcon QgsDirectoryItem::icon()
