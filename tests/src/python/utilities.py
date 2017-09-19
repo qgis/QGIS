@@ -105,25 +105,23 @@ def writeShape(theMemoryLayer, theFileName):
     myFileName = os.path.join(str(QDir.tempPath()), theFileName)
     print(myFileName)
     # Explicitly giving all options, not really needed but nice for clarity
-    myErrorMessage = ''
     myOptions = []
     myLayerOptions = []
     mySelectedOnlyFlag = False
     mySkipAttributesFlag = False
     myGeoCrs = QgsCoordinateReferenceSystem()
     myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-    myResult = QgsVectorFileWriter.writeAsVectorFormat(
+    myResult, myErrorMessage = QgsVectorFileWriter.writeAsVectorFormat(
         theMemoryLayer,
         myFileName,
         'utf-8',
         myGeoCrs,
         'ESRI Shapefile',
         mySelectedOnlyFlag,
-        myErrorMessage,
         myOptions,
         myLayerOptions,
         mySkipAttributesFlag)
-    assert myResult == QgsVectorFileWriter.NoError
+    self.assertEqual(myResult, QgsVectorFileWriter.NoError, myErrorMessage)
 
 
 def doubleNear(a, b, tol=0.0000000001):
