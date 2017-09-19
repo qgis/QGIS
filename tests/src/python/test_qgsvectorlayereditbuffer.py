@@ -150,6 +150,18 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         f1.setAttributes(["test", 123])
         self.assertFalse((layer.editBuffer().addFeatures([f1])))
 
+        # check is possibile to adapt M geom to NOT M provider type
+        layer = createEmptyLayer()
+        self.assertTrue(layer.startEditing())
+        self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        geom = QgsGeometry.fromPoint(QgsPoint(1, 1))
+        geom.geometry().addMValue(1)
+        self.assertTrue(QgsWKBTypes.hasM(geom.geometry().wkbType()))
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(geom)
+        f1.setAttributes(["test", 123])
+        self.assertTrue((layer.editBuffer().addFeatures([f1])))
+
     def testAddMultipleFeatures(self):
         # test adding multiple features to an edit buffer
         layer = createEmptyLayer()

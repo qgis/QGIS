@@ -724,6 +724,16 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry* ge
     outputGeom->dropZValue();
   }
 
+  // remove M if provider does not have
+  if ( !QgsWKBTypes::hasM( providerGeomType ) && QgsWKBTypes::hasM( geometry->wkbType() ) )
+  {
+    if ( !outputGeom )
+    {
+      outputGeom = geometry->clone();
+    }
+    outputGeom->dropMValue();
+  }
+
   if ( outputGeom )
   {
     return new QgsGeometry( outputGeom );
