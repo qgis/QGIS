@@ -670,7 +670,7 @@ QgsDataCollectionItem::~QgsDataCollectionItem()
 //-----------------------------------------------------------------------
 
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, QDir::toNativeSeparators( name ), path )
   , mDirPath( path )
   , mRefreshLater( false )
 {
@@ -679,7 +679,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, co
 }
 
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, QDir::toNativeSeparators( name ), path )
   , mDirPath( dirPath )
   , mRefreshLater( false )
 {
