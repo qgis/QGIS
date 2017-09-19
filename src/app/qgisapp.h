@@ -82,6 +82,7 @@ class QNetworkProxy;
 class QAuthenticator;
 
 class QgsBrowserDockWidget;
+class QgsBrowserModel;
 class QgsAdvancedDigitizingDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
@@ -1724,6 +1725,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUndoWidget *mUndoWidget;
     QgsDockWidget *mUndoDock;
 
+    QgsBrowserModel *mBrowserModel;
     QgsBrowserDockWidget *mBrowserWidget;
     QgsBrowserDockWidget *mBrowserWidget2;
 

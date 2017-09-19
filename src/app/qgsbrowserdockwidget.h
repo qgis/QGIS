@@ -105,6 +105,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     Q_OBJECT
   public:
     explicit QgsBrowserDockWidget( const QString& name, QWidget *parent = nullptr );
+    explicit QgsBrowserDockWidget( const QString& name, QgsBrowserModel *model, QWidget *parent = nullptr );
     ~QgsBrowserDockWidget();
     void addFavouriteDirectory( const QString& favDir );
 
@@ -153,6 +154,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     float mPropertiesWidgetHeight;
 
   private:
+    void init( const QString& name );
 };
 
 

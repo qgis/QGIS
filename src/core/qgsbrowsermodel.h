@@ -129,6 +129,12 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     bool canFetchMore( const QModelIndex & parent ) const override;
     void fetchMore( const QModelIndex & parent ) override;
 
+    //! Returns true if the model has been initialized
+    bool initialized( ) const { return mInitialized; }
+
+    //! Delayed initialization
+    void init();
+
   signals:
     /** Emitted when item children fetch was finished */
     void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
@@ -158,6 +164,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QVector<QgsDataItem*> mRootItems;
     QgsFavouritesItem *mFavourites;
     QgsDirectoryItem *mProjectHome;
+
+  private:
+    bool mInitialized;
 };
 
 #endif // QGSBROWSERMODEL_H
