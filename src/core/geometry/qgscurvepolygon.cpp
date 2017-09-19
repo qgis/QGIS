@@ -26,6 +26,7 @@
 #include "qgsmulticurve.h"
 #include <QPainter>
 #include <QPainterPath>
+#include <memory>
 
 QgsCurvePolygon::QgsCurvePolygon(): QgsSurface()
 {
@@ -452,7 +453,10 @@ double QgsCurvePolygon::perimeter() const
 
 QgsPolygonV2 *QgsCurvePolygon::surfaceToPolygon() const
 {
-  QgsPolygonV2 *polygon = new QgsPolygonV2();
+  std::unique_ptr< QgsPolygonV2 > polygon( new QgsPolygonV2() );
+  if ( !mExteriorRing )
+    return polygon.release();
+
   polygon->setExteriorRing( exteriorRing()->curveToLine() );
   QList<QgsCurve *> interiors;
   int n = numInteriorRings();
@@ -462,11 +466,14 @@ QgsPolygonV2 *QgsCurvePolygon::surfaceToPolygon() const
     interiors.append( interiorRing( i )->curveToLine() );
   }
   polygon->setInteriorRings( interiors );
-  return polygon;
+  return polygon.release();
 }
 
 QgsAbstractGeometry *QgsCurvePolygon::boundary() const
 {
+  if ( !mExteriorRing )
+    return nullptr;
+
   if ( mInteriorRings.isEmpty() )
   {
     return mExteriorRing->clone();
@@ -486,12 +493,12 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
 
 QgsPolygonV2 *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
 {
+  std::unique_ptr< QgsPolygonV2 > poly( new QgsPolygonV2() );
   if ( !mExteriorRing )
   {
-    return nullptr;
+    return poly.release();
   }
 
-  QgsPolygonV2 *poly = new QgsPolygonV2();
   poly->setExteriorRing( mExteriorRing->curveToLine( tolerance, toleranceType ) );
 
   QList<QgsCurve *> rings;
@@ -501,7 +508,7 @@ QgsPolygonV2 *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranc
     rings.push_back( ( *it )->curveToLine( tolerance, toleranceType ) );
   }
   poly->setInteriorRings( rings );
-  return poly;
+  return poly.release();
 }
 
 int QgsCurvePolygon::numInteriorRings() const
