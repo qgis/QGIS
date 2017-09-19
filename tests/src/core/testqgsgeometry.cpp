@@ -45,6 +45,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
 #include "qgscurvepolygon.h"
+#include "qgscompoundcurve.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -4729,7 +4730,7 @@ void TestQgsGeometry::polygon()
   QgsLineString removeRingsRing1;
   removeRingsRing1.setPoints( QList<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 )  << QgsPoint( 0.1, 0.1 ) );
   QgsLineString removeRingsRing2;
-  removeRingsRing1.setPoints( QList<QgsPoint>() << QgsPoint( 0.6, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 )  << QgsPoint( 0.6, 0.8 ) );
+  removeRingsRing2.setPoints( QList<QgsPoint>() << QgsPoint( 0.6, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 )  << QgsPoint( 0.6, 0.8 ) );
   removeRings1.setInteriorRings( QList< QgsCurve * >() << removeRingsRing1.clone() << removeRingsRing2.clone() );
 
   // remove ring with size filter
@@ -6336,142 +6337,201 @@ void TestQgsGeometry::curvePolygon()
   p15 = p12;
   QCOMPARE( p12, p15 );
 
-#if 0
-  //surfaceToPolygon - should be identical given polygon has no curves
-  std::unique_ptr< QgsPolygonV2 > surface( p12.surfaceToPolygon() );
-  QCOMPARE( *surface, p12 );
+  // bounding box
+  QgsCurvePolygon boundingBoxPoly;
+  QgsRectangle bBox = boundingBoxPoly.boundingBox(); //no crash!
 
-  //toCurveType
-  std::unique_ptr< QgsCurvePolygon > curveType( p12.toCurveType() );
-  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygonZM );
-  QCOMPARE( curveType->exteriorRing()->numPoints(), 5 );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
-  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
-  QCOMPARE( curveType->numInteriorRings(), 1 );
-  QCOMPARE( curveType->interiorRing( 0 )->numPoints(), 5 );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 ) );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 ) );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
-  QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 ) << QgsPoint( 2, 0, 3 )
+                  << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
+  boundingBoxPoly.setExteriorRing( ext );
+  bBox = boundingBoxPoly.boundingBox();
+  QGSCOMPARENEAR( bBox.xMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( bBox.xMaximum(), 2, 0.001 );
+  QGSCOMPARENEAR( bBox.yMinimum(), 0, 0.001 );
+  QGSCOMPARENEAR( bBox.yMaximum(), 0.5, 0.001 );
+
+  //surfaceToPolygon
+  QgsCurvePolygon p12a;
+  std::unique_ptr< QgsPolygonV2 > surface( p12a.surfaceToPolygon() );
+  QVERIFY( surface->isEmpty() );
+
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 2, 0 )
+                  << QgsPoint( 1, 0.5 ) << QgsPoint( 0, 0 ) );
+  p12a.setExteriorRing( ext );
+  surface.reset( p12a.surfaceToPolygon() );
+  QCOMPARE( surface->wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( surface->exteriorRing()->nCoordinates(), 110 );
+  QVERIFY( surface->exteriorRing()->isClosed() );
+  // too many vertices to actually check the result, let's just make sure the bounding boxes are similar
+  QgsRectangle r1 = ext->boundingBox();
+  QgsRectangle r2 = surface->exteriorRing()->boundingBox();
+  QGSCOMPARENEAR( r1.xMinimum(), r2.xMinimum(), 0.0001 );
+  QGSCOMPARENEAR( r1.xMaximum(), r2.xMaximum(), 0.0001 );
+  QGSCOMPARENEAR( r1.yMinimum(), r2.yMinimum(), 0.0001 );
+  QGSCOMPARENEAR( r1.yMaximum(), r2.yMaximum(), 0.0001 );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  p12a.addInteriorRing( ring );
+  surface.reset( p12a.surfaceToPolygon() );
+  QCOMPARE( surface->wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( surface->exteriorRing()->nCoordinates(), 110 );
+  QVERIFY( surface->exteriorRing()->isClosed() );
+  QCOMPARE( surface->numInteriorRings(), 1 );
+  // too many vertices to actually check the result, let's just make sure the bounding boxes are similar
+  r1 = ring->boundingBox();
+  r2 = surface->interiorRing( 0 )->boundingBox();
+  QGSCOMPARENEAR( r1.xMinimum(), r2.xMinimum(), 0.0001 );
+  QGSCOMPARENEAR( r1.xMaximum(), r2.xMaximum(), 0.0001 );
+  QGSCOMPARENEAR( r1.yMinimum(), r2.yMinimum(), 0.0001 );
+  QGSCOMPARENEAR( r1.yMaximum(), r2.yMaximum(), 0.0001 );
+
+  //toPolygon
+  p12a = QgsCurvePolygon();
+  surface.reset( p12a.toPolygon() );
+  QVERIFY( surface->isEmpty() );
+
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 2, 0 )
+                  << QgsPoint( 1, 0.5 ) << QgsPoint( 0, 0 ) );
+  p12a.setExteriorRing( ext );
+  surface.reset( p12a.toPolygon() );
+  QCOMPARE( surface->wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( surface->exteriorRing()->nCoordinates(), 110 );
+  QVERIFY( surface->exteriorRing()->isClosed() );
+  // too many vertices to actually check the result, let's just make sure the bounding boxes are similar
+  r1 = ext->boundingBox();
+  r2 = surface->exteriorRing()->boundingBox();
+  QGSCOMPARENEAR( r1.xMinimum(), r2.xMinimum(), 0.0001 );
+  QGSCOMPARENEAR( r1.xMaximum(), r2.xMaximum(), 0.0001 );
+  QGSCOMPARENEAR( r1.yMinimum(), r2.yMinimum(), 0.0001 );
+  QGSCOMPARENEAR( r1.yMaximum(), r2.yMaximum(), 0.0001 );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  p12a.addInteriorRing( ring );
+  surface.reset( p12a.toPolygon() );
+  QCOMPARE( surface->wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( surface->exteriorRing()->nCoordinates(), 110 );
+  QVERIFY( surface->exteriorRing()->isClosed() );
+  QCOMPARE( surface->numInteriorRings(), 1 );
+  // too many vertices to actually check the result, let's just make sure the bounding boxes are similar
+  r1 = ring->boundingBox();
+  r2 = surface->interiorRing( 0 )->boundingBox();
+  QGSCOMPARENEAR( r1.xMinimum(), r2.xMinimum(), 0.0001 );
+  QGSCOMPARENEAR( r1.xMaximum(), r2.xMaximum(), 0.0001 );
+  QGSCOMPARENEAR( r1.yMinimum(), r2.yMinimum(), 0.0001 );
+  QGSCOMPARENEAR( r1.yMaximum(), r2.yMaximum(), 0.0001 );
+
+  //toCurveType - should be identical since it's already a curve
+  std::unique_ptr< QgsCurvePolygon > curveType( p12a.toCurveType() );
+  QCOMPARE( *curveType, p12a );
 
   //to/fromWKB
-  QgsPolygonV2 p16;
-  ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
-                  << QgsPoint( QgsWkbTypes::Point, 0, 10 ) << QgsPoint( QgsWkbTypes::Point, 10, 10 )
-                  << QgsPoint( QgsWkbTypes::Point, 10, 0 ) << QgsPoint( QgsWkbTypes::Point, 0, 0 ) );
+  QgsCurvePolygon p16;
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 2, 0 )
+                  << QgsPoint( 1, 0.5 ) << QgsPoint( 0, 0 ) );
   p16.setExteriorRing( ext );
-  ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::Point, 1, 9 ) << QgsPoint( QgsWkbTypes::Point, 9, 9 )
-                   << QgsPoint( QgsWkbTypes::Point, 9, 1 ) << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0.1, 0 ) << QgsPoint( 0.2, 0 )
+                   << QgsPoint( 0.1, 0.05 ) << QgsPoint( 0, 0 ) );
   p16.addInteriorRing( ring );
   QByteArray wkb16 = p16.asWkb();
-  QgsPolygonV2 p17;
+  QgsCurvePolygon p17;
   QgsConstWkbPtr wkb16ptr( wkb16 );
   p17.fromWkb( wkb16ptr );
   QCOMPARE( p16, p17 );
-  //PolygonZ
+  //CurvePolygonZ
   p16.clear();
   p17.clear();
-  ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 ) << QgsPoint( 2, 0, 3 )
+                  << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
   p16.setExteriorRing( ext );
-  ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 1, 9, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 9, 9, 3 )
-                   << QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 ) );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 0.1, 0, 2 ) << QgsPoint( 0.2, 0, 3 )
+                   << QgsPoint( 0.1, 0.05, 4 ) << QgsPoint( 0, 0, 1 ) );
   p16.addInteriorRing( ring );
   wkb16 = p16.asWkb();
   QgsConstWkbPtr wkb16ptr2( wkb16 );
   p17.fromWkb( wkb16ptr2 );
   QCOMPARE( p16, p17 );
-  //PolygonM
-  p16.clear();
-  p17.clear();
-  ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::PointM, 0, 10,  0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 )
-                  << QgsPoint( QgsWkbTypes::PointM, 10, 0,  0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) );
-  p16.setExteriorRing( ext );
-  ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 1, 0, 1 )
-                   << QgsPoint( QgsWkbTypes::PointM, 1, 9, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 9, 9, 0, 3 )
-                   << QgsPoint( QgsWkbTypes::PointM, 9, 1, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 1, 1, 0, 1 ) );
-  p16.addInteriorRing( ring );
+
+  // compound curve
+  QgsCompoundCurve *cCurve = new QgsCompoundCurve();
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 ) << QgsPoint( 2, 0, 3 )
+                  << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
+  cCurve->addCurve( ext );
+  p16.addInteriorRing( cCurve );
   wkb16 = p16.asWkb();
   QgsConstWkbPtr wkb16ptr3( wkb16 );
   p17.fromWkb( wkb16ptr3 );
   QCOMPARE( p16, p17 );
-  //PolygonZM
+
+  //CurvePolygonM
   p16.clear();
   p17.clear();
-  ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) << QgsPoint( QgsWkbTypes::PointM, 1, 0, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 2, 0, 0, 3 )
+                  << QgsPoint( QgsWkbTypes::PointM, 1, 0.5, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) );
   p16.setExteriorRing( ext );
-  ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) << QgsPoint( QgsWkbTypes::PointM, 0.1, 0, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 0.2, 0, 0, 3 )
+                   << QgsPoint( QgsWkbTypes::PointM, 0.1, 0.05, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) );
+  p16.addInteriorRing( ring );
+  wkb16 = p16.asWkb();
+  QgsConstWkbPtr wkb16ptr8( wkb16 );
+  p17.fromWkb( wkb16ptr8 );
+  QCOMPARE( p16, p17 );
+
+  //CurvePolygonZM
+  p16.clear();
+  p17.clear();
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 0, 11, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 0, 12, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 1, 0.5, 13, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) );
+  p16.setExteriorRing( ext );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 0.1, 0, 11, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 0.2, 0, 12, 3 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 0.1, 0.05, 13, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) );
   p16.addInteriorRing( ring );
   wkb16 = p16.asWkb();
   QgsConstWkbPtr wkb16ptr4( wkb16 );
   p17.fromWkb( wkb16ptr4 );
-  QCOMPARE( p16, p17 );
-  //Polygon25D
-  p16.clear();
-  p17.clear();
-  ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::Point25D, 10, 10, 3 )
-                  << QgsPoint( QgsWkbTypes::Point25D, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 ) );
-  p16.setExteriorRing( ext );
-  ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 1, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::Point25D, 1, 9, 2 ) << QgsPoint( QgsWkbTypes::Point25D, 9, 9, 3 )
-                   << QgsPoint( QgsWkbTypes::Point25D, 9, 1, 4 ) << QgsPoint( QgsWkbTypes::Point25D, 1, 1, 1 ) );
-  p16.addInteriorRing( ring );
-  wkb16 = p16.asWkb();
-  p17.clear();
-  QgsConstWkbPtr wkb16ptr5( wkb16 );
-  p17.fromWkb( wkb16ptr5 );
   QCOMPARE( p16, p17 );
 
   //bad WKB - check for no crash
   p17.clear();
   QgsConstWkbPtr nullPtr( nullptr, 0 );
   QVERIFY( !p17.fromWkb( nullPtr ) );
-  QCOMPARE( p17.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( p17.wkbType(), QgsWkbTypes::CurvePolygon );
   QgsPoint point( 1, 2 );
   QByteArray wkbPoint = point.asWkb();
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
   QVERIFY( !p17.fromWkb( wkbPointPtr ) );
-  QCOMPARE( p17.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( p17.wkbType(), QgsWkbTypes::CurvePolygon );
 
   //to/from WKT
-  QgsPolygonV2 p18;
-  ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
-                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  QgsCurvePolygon p18;
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 0, 11, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 0, 12, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 1, 0.5, 13, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) );
   p18.setExteriorRing( ext );
-  ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
-                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 0.1, 0, 11, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 0.2, 0, 12, 3 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 0.1, 0.05, 13, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) );
   p18.addInteriorRing( ring );
 
   QString wkt = p18.asWkt();
   QVERIFY( !wkt.isEmpty() );
-  QgsPolygonV2 p19;
+  QgsCurvePolygon p19;
   QVERIFY( p19.fromWkt( wkt ) );
   QCOMPARE( p18, p19 );
 
@@ -6482,75 +6542,80 @@ void TestQgsGeometry::curvePolygon()
   QCOMPARE( p19.numInteriorRings(), 0 );
   QVERIFY( !p19.is3D() );
   QVERIFY( !p19.isMeasure() );
-  QCOMPARE( p19.wkbType(), QgsWkbTypes::Polygon );
+  QCOMPARE( p19.wkbType(), QgsWkbTypes::CurvePolygon );
+
 
   //as JSON
-  QgsPolygonV2 exportPolygon;
-  ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
-                  << QgsPoint( QgsWkbTypes::Point, 0, 10 ) << QgsPoint( QgsWkbTypes::Point, 10, 10 )
-                  << QgsPoint( QgsWkbTypes::Point, 10, 0 ) << QgsPoint( QgsWkbTypes::Point, 0, 0 ) );
+  QgsCurvePolygon exportPolygon;
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 0, 11, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 0, 12, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 1, 0.5, 13, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) );
   exportPolygon.setExteriorRing( ext );
+
 
   // GML document for compare
   QDomDocument doc( "gml" );
 
   // as GML2
-  QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
-  QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
+  QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 1,0 2,0 2,0 2,0 2,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.7,0.3 1.7,0.3 1.7,0.3 1.7,0.3 1.7,0.3 1.6,0.3 1.6,0.3 1.6,0.3 1.6,0.4 1.6,0.4 1.6,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.3,0.5 1.3,0.5 1.3,0.5 1.3,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1,0.5 1,0.5 1,0.5 1,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.7,0.5 0.7,0.5 0.7,0.5 0.7,0.5 0.6,0.4 0.6,0.4 0.6,0.4 0.6,0.4 0.6,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.4,0.4 0.4,0.4 0.4,0.4 0.4,0.3 0.4,0.3 0.4,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.1,0.2 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0,0.1 0,0 0,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
+  QString res = elemToString( exportPolygon.asGML2( doc, 1 ) );
+  QGSCOMPAREGML( res, expectedSimpleGML2 );
 
   //as GML3
-  QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" ) );
+  QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></exterior></Polygon>" ) );
+  res = elemToString( exportPolygon.asGML3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedSimpleGML3 );
 
   // as JSON
-  QString expectedSimpleJson( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] }" );
-  QCOMPARE( exportPolygon.asJSON(), expectedSimpleJson );
+  QString expectedSimpleJson( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [1, 0], [2, 0], [2, 0], [2, 0], [2, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.4], [1.6, 0.4], [1.6, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.3], [0.4, 0.3], [0.4, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.1, 0.2], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0, 0.1], [0, 0], [0, 0], [0, 0]]] }" );
+  res = exportPolygon.asJSON( 1 );
+  QCOMPARE( res, expectedSimpleJson );
 
-  ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 1, 1 )
-                   << QgsPoint( QgsWkbTypes::Point, 1, 9 ) << QgsPoint( QgsWkbTypes::Point, 9, 9 )
-                   << QgsPoint( QgsWkbTypes::Point, 9, 1 ) << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 0.1, 0, 11, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 0.2, 0, 12, 3 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 0.1, 0.05, 13, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) );
   exportPolygon.addInteriorRing( ring );
 
-  QString expectedJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]], [ [1, 1], [1, 9], [9, 9], [9, 1], [1, 1]]] }" ) );
-  QCOMPARE( exportPolygon.asJSON(), expectedJson );
+  QString expectedJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [1, 0], [2, 0], [2, 0], [2, 0], [2, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.4], [1.6, 0.4], [1.6, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.3], [0.4, 0.3], [0.4, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.1, 0.2], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0, 0.1], [0, 0], [0, 0], [0, 0]], [ [0, 0], [0.1, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.2, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0.1, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]] }" ) );
+  res = exportPolygon.asJSON( 1 );
+  QCOMPARE( res, expectedJson );
 
-  QgsPolygonV2 exportPolygonFloat;
-  ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 10 / 9.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 ) << QgsPoint( QgsWkbTypes::Point, 100 / 9.0, 100 / 9.0 )
-                  << QgsPoint( QgsWkbTypes::Point, 100 / 9.0, 10 / 9.0 ) << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 10 / 9.0 ) );
+
+  QgsCurvePolygon exportPolygonFloat;
+  ext = new QgsCircularString();
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 1 / 3.0, 0, 11, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 2 / 3.0, 0, 12, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 1 / 3.0, 0.5, 13, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) );
   exportPolygonFloat.setExteriorRing( ext );
-  ring = new QgsLineString();
-  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 2 / 3.0 )
-                   << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 4 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 4 / 3.0 )
-                   << QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 2 / 3.0 ) );
+  ring = new QgsCircularString();
+  ring->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 0.1 / 3.0, 0, 11, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 0.2 / 3.0, 0, 12, 3 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 0.1 / 3.0, 0.05 / 3.0, 13, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 10, 1 ) );
   exportPolygonFloat.addInteriorRing( ring );
 
-  QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [1.111, 1.111], [1.111, 11.111], [11.111, 11.111], [11.111, 1.111], [1.111, 1.111]], [ [0.667, 0.667], [0.667, 1.333], [1.333, 1.333], [1.333, 0.667], [0.667, 0.667]]] }" ) );
+  QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0.333, 0], [0.667, 0], [0.669, 0.006], [0.671, 0.012], [0.673, 0.018], [0.676, 0.024], [0.677, 0.029], [0.679, 0.035], [0.681, 0.042], [0.683, 0.048], [0.684, 0.054], [0.686, 0.06], [0.687, 0.066], [0.688, 0.072], [0.689, 0.078], [0.69, 0.084], [0.691, 0.091], [0.692, 0.097], [0.693, 0.103], [0.693, 0.109], [0.694, 0.116], [0.694, 0.122], [0.694, 0.128], [0.694, 0.135], [0.694, 0.141], [0.694, 0.147], [0.694, 0.153], [0.694, 0.16], [0.693, 0.166], [0.693, 0.172], [0.692, 0.178], [0.692, 0.185], [0.691, 0.191], [0.69, 0.197], [0.689, 0.203], [0.687, 0.209], [0.686, 0.216], [0.685, 0.222], [0.683, 0.228], [0.682, 0.234], [0.68, 0.24], [0.678, 0.246], [0.676, 0.252], [0.674, 0.258], [0.672, 0.264], [0.67, 0.27], [0.668, 0.275], [0.665, 0.281], [0.663, 0.287], [0.66, 0.293], [0.657, 0.298], [0.654, 0.304], [0.652, 0.31], [0.649, 0.315], [0.645, 0.321], [0.642, 0.326], [0.639, 0.331], [0.636, 0.337], [0.632, 0.342], [0.628, 0.347], [0.625, 0.352], [0.621, 0.357], [0.617, 0.362], [0.613, 0.367], [0.609, 0.372], [0.605, 0.377], [0.601, 0.381], [0.597, 0.386], [0.592, 0.39], [0.588, 0.395], [0.584, 0.399], [0.579, 0.404], [0.574, 0.408], [0.57, 0.412], [0.565, 0.416], [0.56, 0.42], [0.555, 0.424], [0.55, 0.428], [0.545, 0.431], [0.54, 0.435], [0.535, 0.439], [0.529, 0.442], [0.524, 0.445], [0.519, 0.449], [0.513, 0.452], [0.508, 0.455], [0.502, 0.458], [0.497, 0.461], [0.491, 0.464], [0.485, 0.466], [0.48, 0.469], [0.474, 0.471], [0.468, 0.474], [0.462, 0.476], [0.456, 0.478], [0.451, 0.48], [0.445, 0.482], [0.439, 0.484], [0.433, 0.486], [0.426, 0.488], [0.42, 0.489], [0.414, 0.491], [0.408, 0.492], [0.402, 0.493], [0.396, 0.495], [0.39, 0.496], [0.383, 0.497], [0.377, 0.497], [0.371, 0.498], [0.365, 0.499], [0.358, 0.499], [0.352, 0.5], [0.346, 0.5], [0.34, 0.5], [0.333, 0.5], [0.327, 0.5], [0.321, 0.5], [0.314, 0.5], [0.308, 0.499], [0.302, 0.499], [0.296, 0.498], [0.289, 0.497], [0.283, 0.497], [0.277, 0.496], [0.271, 0.495], [0.265, 0.493], [0.259, 0.492], [0.252, 0.491], [0.246, 0.489], [0.24, 0.488], [0.234, 0.486], [0.228, 0.484], [0.222, 0.482], [0.216, 0.48], [0.21, 0.478], [0.204, 0.476], [0.198, 0.474], [0.193, 0.471], [0.187, 0.469], [0.181, 0.466], [0.176, 0.464], [0.17, 0.461], [0.164, 0.458], [0.159, 0.455], [0.153, 0.452], [0.148, 0.449], [0.143, 0.445], [0.137, 0.442], [0.132, 0.439], [0.127, 0.435], [0.122, 0.431], [0.117, 0.428], [0.112, 0.424], [0.107, 0.42], [0.102, 0.416], [0.097, 0.412], [0.092, 0.408], [0.088, 0.404], [0.083, 0.399], [0.079, 0.395], [0.074, 0.39], [0.07, 0.386], [0.066, 0.381], [0.061, 0.377], [0.057, 0.372], [0.053, 0.367], [0.049, 0.362], [0.046, 0.357], [0.042, 0.352], [0.038, 0.347], [0.035, 0.342], [0.031, 0.337], [0.028, 0.331], [0.024, 0.326], [0.021, 0.321], [0.018, 0.315], [0.015, 0.31], [0.012, 0.304], [0.009, 0.298], [0.007, 0.293], [0.004, 0.287], [0.001, 0.281], [-0.001, 0.275], [-0.003, 0.27], [-0.005, 0.264], [-0.008, 0.258], [-0.01, 0.252], [-0.012, 0.246], [-0.013, 0.24], [-0.015, 0.234], [-0.017, 0.228], [-0.018, 0.222], [-0.02, 0.216], [-0.021, 0.209], [-0.022, 0.203], [-0.023, 0.197], [-0.024, 0.191], [-0.025, 0.185], [-0.026, 0.178], [-0.026, 0.172], [-0.027, 0.166], [-0.027, 0.16], [-0.027, 0.153], [-0.028, 0.147], [-0.028, 0.141], [-0.028, 0.135], [-0.028, 0.128], [-0.027, 0.122], [-0.027, 0.116], [-0.027, 0.109], [-0.026, 0.103], [-0.025, 0.097], [-0.025, 0.091], [-0.024, 0.084], [-0.023, 0.078], [-0.022, 0.072], [-0.02, 0.066], [-0.019, 0.06], [-0.018, 0.054], [-0.016, 0.048], [-0.014, 0.042], [-0.013, 0.035], [-0.011, 0.029], [-0.009, 0.024], [-0.007, 0.018], [-0.005, 0.012], [-0.002, 0.006], [0, 0]], [ [0, 0], [0.033, 0], [0.067, 0], [0.066, 0.001], [0.066, 0.001], [0.065, 0.002], [0.065, 0.002], [0.064, 0.003], [0.064, 0.003], [0.063, 0.004], [0.063, 0.004], [0.062, 0.005], [0.062, 0.005], [0.061, 0.006], [0.061, 0.006], [0.06, 0.007], [0.06, 0.007], [0.059, 0.008], [0.059, 0.008], [0.058, 0.009], [0.057, 0.009], [0.057, 0.009], [0.056, 0.01], [0.056, 0.01], [0.055, 0.011], [0.054, 0.011], [0.054, 0.011], [0.053, 0.012], [0.052, 0.012], [0.052, 0.012], [0.051, 0.013], [0.051, 0.013], [0.05, 0.013], [0.049, 0.014], [0.049, 0.014], [0.048, 0.014], [0.047, 0.014], [0.046, 0.015], [0.046, 0.015], [0.045, 0.015], [0.044, 0.015], [0.044, 0.015], [0.043, 0.016], [0.042, 0.016], [0.042, 0.016], [0.041, 0.016], [0.04, 0.016], [0.039, 0.016], [0.039, 0.016], [0.038, 0.016], [0.037, 0.016], [0.037, 0.017], [0.036, 0.017], [0.035, 0.017], [0.034, 0.017], [0.034, 0.017], [0.033, 0.017], [0.032, 0.017], [0.032, 0.017], [0.031, 0.017], [0.03, 0.017], [0.029, 0.016], [0.029, 0.016], [0.028, 0.016], [0.027, 0.016], [0.027, 0.016], [0.026, 0.016], [0.025, 0.016], [0.024, 0.016], [0.024, 0.016], [0.023, 0.015], [0.022, 0.015], [0.022, 0.015], [0.021, 0.015], [0.02, 0.015], [0.02, 0.014], [0.019, 0.014], [0.018, 0.014], [0.017, 0.014], [0.017, 0.013], [0.016, 0.013], [0.016, 0.013], [0.015, 0.012], [0.014, 0.012], [0.014, 0.012], [0.013, 0.011], [0.012, 0.011], [0.012, 0.011], [0.011, 0.01], [0.01, 0.01], [0.01, 0.009], [0.009, 0.009], [0.009, 0.009], [0.008, 0.008], [0.008, 0.008], [0.007, 0.007], [0.006, 0.007], [0.006, 0.006], [0.005, 0.006], [0.005, 0.005], [0.004, 0.005], [0.004, 0.004], [0.003, 0.004], [0.003, 0.003], [0.002, 0.003], [0.002, 0.002], [0.001, 0.002], [0.001, 0.001], [0, 0.001], [0, 0]]] }" ) );
+  res = exportPolygonFloat.asJSON( 3 );
   QCOMPARE( exportPolygonFloat.asJSON( 3 ), expectedJsonPrec3 );
 
   // as GML2
-  QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs>" ) );
-  expectedGML2 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
-  QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedGML2 );
-  QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LinearRing></outerBoundaryIs>" ) );
-  expectedGML2prec3 += QStringLiteral( "<innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LinearRing></innerBoundaryIs></Polygon>" );
-  QGSCOMPAREGML( elemToString( exportPolygonFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 1,0 2,0 1.98685,0.01722 1.97341,0.03421 1.95967,0.05096 1.94564,0.06747 1.93133,0.08374 1.91674,0.09976 1.90188,0.11552 1.88674,0.13102 1.87134,0.14625 1.85567,0.16122 1.83975,0.17592 1.82358,0.19033 1.80716,0.20446 1.79049,0.21831 1.77359,0.23186 1.75646,0.24512 1.7391,0.25809 1.72151,0.27074 1.70371,0.2831 1.6857,0.29514 1.66748,0.30687 1.64907,0.31828 1.63045,0.32936 1.61165,0.34013 1.59267,0.35057 1.5735,0.36067 1.55417,0.37045 1.53466,0.37988 1.515,0.38898 1.49518,0.39773 1.47522,0.40614 1.45511,0.41421 1.43486,0.42192 1.41448,0.42928 1.39398,0.43629 1.37336,0.44294 1.35263,0.44923 1.33179,0.45516 1.31086,0.46073 1.28983,0.46594 1.26871,0.47078 1.24751,0.47525 1.22624,0.47936 1.2049,0.48309 1.18349,0.48646 1.16204,0.48945 1.14053,0.49208 1.11898,0.49432 1.0974,0.4962 1.07578,0.4977 1.05415,0.49883 1.0325,0.49958 1.01083,0.49995 0.98917,0.49995 0.9675,0.49958 0.94585,0.49883 0.92422,0.4977 0.9026,0.4962 0.88102,0.49432 0.85947,0.49208 0.83796,0.48945 0.81651,0.48646 0.7951,0.48309 0.77376,0.47936 0.75249,0.47525 0.73129,0.47078 0.71017,0.46594 0.68914,0.46073 0.66821,0.45516 0.64737,0.44923 0.62664,0.44294 0.60602,0.43629 0.58552,0.42928 0.56514,0.42192 0.54489,0.41421 0.52478,0.40614 0.50482,0.39773 0.485,0.38898 0.46534,0.37988 0.44583,0.37045 0.4265,0.36067 0.40733,0.35057 0.38835,0.34013 0.36955,0.32936 0.35093,0.31828 0.33252,0.30687 0.3143,0.29514 0.29629,0.2831 0.27849,0.27074 0.2609,0.25809 0.24354,0.24512 0.22641,0.23186 0.20951,0.21831 0.19284,0.20446 0.17642,0.19033 0.16025,0.17592 0.14433,0.16122 0.12866,0.14625 0.11326,0.13102 0.09812,0.11552 0.08326,0.09976 0.06867,0.08374 0.05436,0.06747 0.04033,0.05096 0.02659,0.03421 0.01315,0.01722 0,0</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0.1,0 0.2,0 0.19869,0.00172 0.19734,0.00342 0.19597,0.0051 0.19456,0.00675 0.19313,0.00837 0.19167,0.00998 0.19019,0.01155 0.18867,0.0131 0.18713,0.01463 0.18557,0.01612 0.18398,0.01759 0.18236,0.01903 0.18072,0.02045 0.17905,0.02183 0.17736,0.02319 0.17565,0.02451 0.17391,0.02581 0.17215,0.02707 0.17037,0.02831 0.16857,0.02951 0.16675,0.03069 0.16491,0.03183 0.16305,0.03294 0.16117,0.03401 0.15927,0.03506 0.15735,0.03607 0.15542,0.03704 0.15347,0.03799 0.1515,0.0389 0.14952,0.03977 0.14752,0.04061 0.14551,0.04142 0.14349,0.04219 0.14145,0.04293 0.1394,0.04363 0.13734,0.04429 0.13526,0.04492 0.13318,0.04552 0.13109,0.04607 0.12898,0.04659 0.12687,0.04708 0.12475,0.04753 0.12262,0.04794 0.12049,0.04831 0.11835,0.04865 0.1162,0.04895 0.11405,0.04921 0.1119,0.04943 0.10974,0.04962 0.10758,0.04977 0.10541,0.04988 0.10325,0.04996 0.10108,0.05 0.09892,0.05 0.09675,0.04996 0.09459,0.04988 0.09242,0.04977 0.09026,0.04962 0.0881,0.04943 0.08595,0.04921 0.0838,0.04895 0.08165,0.04865 0.07951,0.04831 0.07738,0.04794 0.07525,0.04753 0.07313,0.04708 0.07102,0.04659 0.06891,0.04607 0.06682,0.04552 0.06474,0.04492 0.06266,0.04429 0.0606,0.04363 0.05855,0.04293 0.05651,0.04219 0.05449,0.04142 0.05248,0.04061 0.05048,0.03977 0.0485,0.0389 0.04653,0.03799 0.04458,0.03704 0.04265,0.03607 0.04073,0.03506 0.03883,0.03401 0.03695,0.03294 0.03509,0.03183 0.03325,0.03069 0.03143,0.02951 0.02963,0.02831 0.02785,0.02707 0.02609,0.02581 0.02435,0.02451 0.02264,0.02319 0.02095,0.02183 0.01928,0.02045 0.01764,0.01903 0.01602,0.01759 0.01443,0.01612 0.01287,0.01463 0.01133,0.0131 0.00981,0.01155 0.00833,0.00998 0.00687,0.00837 0.00544,0.00675 0.00403,0.0051 0.00266,0.00342 0.00131,0.00172 0,0</coordinates></LinearRing></innerBoundaryIs></Polygon>" ) );
+  res = elemToString( exportPolygon.asGML2( doc, 5 ) );
+  QGSCOMPAREGML( res, expectedGML2 );
+
+  QString expectedGML2prec2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 1,0 2,0 1.99,0.02 1.97,0.03 1.96,0.05 1.95,0.07 1.93,0.08 1.92,0.1 1.9,0.12 1.89,0.13 1.87,0.15 1.86,0.16 1.84,0.18 1.82,0.19 1.81,0.2 1.79,0.22 1.77,0.23 1.76,0.25 1.74,0.26 1.72,0.27 1.7,0.28 1.69,0.3 1.67,0.31 1.65,0.32 1.63,0.33 1.61,0.34 1.59,0.35 1.57,0.36 1.55,0.37 1.53,0.38 1.52,0.39 1.5,0.4 1.48,0.41 1.46,0.41 1.43,0.42 1.41,0.43 1.39,0.44 1.37,0.44 1.35,0.45 1.33,0.46 1.31,0.46 1.29,0.47 1.27,0.47 1.25,0.48 1.23,0.48 1.2,0.48 1.18,0.49 1.16,0.49 1.14,0.49 1.12,0.49 1.1,0.5 1.08,0.5 1.05,0.5 1.03,0.5 1.01,0.5 0.99,0.5 0.97,0.5 0.95,0.5 0.92,0.5 0.9,0.5 0.88,0.49 0.86,0.49 0.84,0.49 0.82,0.49 0.8,0.48 0.77,0.48 0.75,0.48 0.73,0.47 0.71,0.47 0.69,0.46 0.67,0.46 0.65,0.45 0.63,0.44 0.61,0.44 0.59,0.43 0.57,0.42 0.54,0.41 0.52,0.41 0.5,0.4 0.48,0.39 0.47,0.38 0.45,0.37 0.43,0.36 0.41,0.35 0.39,0.34 0.37,0.33 0.35,0.32 0.33,0.31 0.31,0.3 0.3,0.28 0.28,0.27 0.26,0.26 0.24,0.25 0.23,0.23 0.21,0.22 0.19,0.2 0.18,0.19 0.16,0.18 0.14,0.16 0.13,0.15 0.11,0.13 0.1,0.12 0.08,0.1 0.07,0.08 0.05,0.07 0.04,0.05 0.03,0.03 0.01,0.02 0,0</coordinates></LinearRing></outerBoundaryIs><innerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0.1,0 0.2,0 0.2,0 0.2,0 0.2,0.01 0.19,0.01 0.19,0.01 0.19,0.01 0.19,0.01 0.19,0.01 0.19,0.01 0.19,0.02 0.18,0.02 0.18,0.02 0.18,0.02 0.18,0.02 0.18,0.02 0.18,0.02 0.17,0.03 0.17,0.03 0.17,0.03 0.17,0.03 0.17,0.03 0.16,0.03 0.16,0.03 0.16,0.03 0.16,0.04 0.16,0.04 0.16,0.04 0.15,0.04 0.15,0.04 0.15,0.04 0.15,0.04 0.15,0.04 0.14,0.04 0.14,0.04 0.14,0.04 0.14,0.04 0.14,0.04 0.13,0.05 0.13,0.05 0.13,0.05 0.13,0.05 0.12,0.05 0.12,0.05 0.12,0.05 0.12,0.05 0.12,0.05 0.11,0.05 0.11,0.05 0.11,0.05 0.11,0.05 0.11,0.05 0.1,0.05 0.1,0.05 0.1,0.05 0.1,0.05 0.09,0.05 0.09,0.05 0.09,0.05 0.09,0.05 0.09,0.05 0.08,0.05 0.08,0.05 0.08,0.05 0.08,0.05 0.08,0.05 0.07,0.05 0.07,0.05 0.07,0.05 0.07,0.05 0.06,0.04 0.06,0.04 0.06,0.04 0.06,0.04 0.06,0.04 0.05,0.04 0.05,0.04 0.05,0.04 0.05,0.04 0.05,0.04 0.04,0.04 0.04,0.04 0.04,0.04 0.04,0.03 0.04,0.03 0.04,0.03 0.03,0.03 0.03,0.03 0.03,0.03 0.03,0.03 0.03,0.03 0.02,0.02 0.02,0.02 0.02,0.02 0.02,0.02 0.02,0.02 0.02,0.02 0.01,0.02 0.01,0.01 0.01,0.01 0.01,0.01 0.01,0.01 0.01,0.01 0.01,0.01 0,0.01 0,0 0,0 0,0</coordinates></LinearRing></innerBoundaryIs></Polygon>" ) );
+  res = elemToString( exportPolygon.asGML2( doc, 2 ) );
+  QGSCOMPAREGML( res, expectedGML2prec2 );
 
   //as GML3
-  QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior>" ) );
-  expectedGML3 += QStringLiteral( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 1 1 9 9 9 9 1 1 1</posList></LinearRing></interior></Polygon>" );
+  QString expectedGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></exterior><interior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 0.10000000000000001 0 11 0.20000000000000001 0 12 0.10000000000000001 0.05 13 0 0 10</posList></ArcString></segments></Curve></interior></Polygon>" ) );
+  res = elemToString( exportPolygon.asGML3( doc ) );
+  QCOMPARE( res, expectedGML3 );
 
-  QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedGML3 );
-  QString expectedGML3prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.111 1.111 1.111 11.111 11.111 11.111 11.111 1.111 1.111 1.111</posList></LinearRing></exterior>" ) );
-  expectedGML3prec3 += QStringLiteral( "<interior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.667 0.667 0.667 1.333 1.333 1.333 1.333 0.667 0.667 0.667</posList></LinearRing></interior></Polygon>" );
-  QCOMPARE( elemToString( exportPolygonFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
+  QString expectedGML3prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></exterior><interior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 0.1 0 11 0.2 0 12 0.1 0.05 13 0 0 10</posList></ArcString></segments></Curve></interior></Polygon>" ) );
+  res = elemToString( exportPolygon.asGML3( doc, 3 ) );
+  QCOMPARE( res, expectedGML3prec3 );
 
   //removing the fourth to last vertex removes the whole ring
-  QgsPolygonV2 p20;
-  QgsLineString *p20ExteriorRing = new QgsLineString();
+  QgsCurvePolygon p20;
+  QgsCircularString *p20ExteriorRing = new QgsCircularString();
   p20ExteriorRing->setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   p20.setExteriorRing( p20ExteriorRing );
   QVERIFY( p20.exteriorRing() );
@@ -6558,108 +6623,85 @@ void TestQgsGeometry::curvePolygon()
   QVERIFY( !p20.exteriorRing() );
 
   //boundary
-  QgsLineString boundary1;
-  boundary1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
-  QgsPolygonV2 boundaryPolygon;
+  QgsCircularString boundary1;
+  boundary1.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 ) << QgsPoint( 2, 0, 3 )
+                       << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
+  QgsCurvePolygon boundaryPolygon;
   QVERIFY( !boundaryPolygon.boundary() );
 
   boundaryPolygon.setExteriorRing( boundary1.clone() );
   QgsAbstractGeometry *boundary = boundaryPolygon.boundary();
-  QgsLineString *lineBoundary = dynamic_cast< QgsLineString * >( boundary );
+  QgsCircularString *lineBoundary = dynamic_cast< QgsCircularString * >( boundary );
   QVERIFY( lineBoundary );
-  QCOMPARE( lineBoundary->numPoints(), 4 );
+  QCOMPARE( lineBoundary->numPoints(), 5 );
   QCOMPARE( lineBoundary->xAt( 0 ), 0.0 );
   QCOMPARE( lineBoundary->xAt( 1 ), 1.0 );
-  QCOMPARE( lineBoundary->xAt( 2 ), 1.0 );
-  QCOMPARE( lineBoundary->xAt( 3 ), 0.0 );
+  QCOMPARE( lineBoundary->xAt( 2 ), 2.0 );
+  QCOMPARE( lineBoundary->xAt( 3 ), 1.0 );
+  QCOMPARE( lineBoundary->xAt( 4 ), 0.0 );
   QCOMPARE( lineBoundary->yAt( 0 ), 0.0 );
   QCOMPARE( lineBoundary->yAt( 1 ), 0.0 );
-  QCOMPARE( lineBoundary->yAt( 2 ), 1.0 );
-  QCOMPARE( lineBoundary->yAt( 3 ), 0.0 );
+  QCOMPARE( lineBoundary->yAt( 2 ), 0.0 );
+  QCOMPARE( lineBoundary->yAt( 3 ), 0.5 );
+  QCOMPARE( lineBoundary->yAt( 4 ), 0.0 );
   delete boundary;
 
   // add interior rings
-  QgsLineString boundaryRing1;
-  boundaryRing1.setPoints( QList<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 )  << QgsPoint( 0.1, 0.1 ) );
-  QgsLineString boundaryRing2;
-  boundaryRing2.setPoints( QList<QgsPoint>() << QgsPoint( 0.8, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 )  << QgsPoint( 0.8, 0.8 ) );
+  QgsCircularString boundaryRing1;
+  boundaryRing1.setPoints( QList<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 ) );
+  QgsCircularString boundaryRing2;
+  boundaryRing2.setPoints( QList<QgsPoint>() << QgsPoint( 0.8, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 ) );
   boundaryPolygon.setInteriorRings( QList< QgsCurve * >() << boundaryRing1.clone() << boundaryRing2.clone() );
   boundary = boundaryPolygon.boundary();
-  QgsMultiLineString *multiLineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
+  QgsMultiCurve *multiLineBoundary = dynamic_cast< QgsMultiCurve * >( boundary );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 3 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 1.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.0 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 3 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 0.2 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 3 ), 0.1 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 4 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 0.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 0.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 3 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
-  QCOMPARE( dynamic_cast< QgsLineString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 3 ), 0.8 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->numPoints(), 5 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 0 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 1 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 2 ), 2.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 3 ), 1.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->xAt( 4 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 0 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 1 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 2 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 3 ), 0.5 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 0 ) )->yAt( 4 ), 0.0 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->numPoints(), 3 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 0 ), 0.1 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 1 ), 0.2 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->xAt( 2 ), 0.2 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 0 ), 0.1 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 1 ), 0.1 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 1 ) )->yAt( 2 ), 0.2 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->numPoints(), 3 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 0 ), 0.8 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 1 ), 0.9 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->xAt( 2 ), 0.9 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 0 ), 0.8 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 1 ), 0.8 );
+  QCOMPARE( dynamic_cast< QgsCircularString * >( multiLineBoundary->geometryN( 2 ) )->yAt( 2 ), 0.9 );
   boundaryPolygon.setInteriorRings( QList< QgsCurve * >() );
   delete boundary;
 
   //test boundary with z
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 )
-                       << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 )  << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) );
+                       << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   boundaryPolygon.setExteriorRing( boundary1.clone() );
   boundary = boundaryPolygon.boundary();
-  lineBoundary = dynamic_cast< QgsLineString * >( boundary );
+  lineBoundary = dynamic_cast< QgsCircularString * >( boundary );
   QVERIFY( lineBoundary );
-  QCOMPARE( lineBoundary->numPoints(), 4 );
-  QCOMPARE( lineBoundary->wkbType(), QgsWkbTypes::LineStringZ );
-  QCOMPARE( lineBoundary->zAt( 0 ), 10.0 );
-  QCOMPARE( lineBoundary->zAt( 1 ), 15.0 );
-  QCOMPARE( lineBoundary->zAt( 2 ), 20.0 );
-  QCOMPARE( lineBoundary->zAt( 3 ), 10.0 );
+  QCOMPARE( lineBoundary->numPoints(), 3 );
+  QCOMPARE( lineBoundary->wkbType(), QgsWkbTypes::CircularStringZ );
+  QCOMPARE( lineBoundary->pointN( 0 ).z(), 10.0 );
+  QCOMPARE( lineBoundary->pointN( 1 ).z(), 15.0 );
+  QCOMPARE( lineBoundary->pointN( 2 ).z(), 20.0 );
   delete boundary;
 
-  // point distance to boundary
-
-  QgsLineString pd1;
-  pd1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
-  QgsPolygonV2 pd;
-  // no meaning, but let's not crash
-  ( void )pd.pointDistanceToBoundary( 0, 0 );
-
-  pd.setExteriorRing( pd1.clone() );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0, 0.5 ), 0.0, 0.0000000001 );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.1, 0.5 ), 0.1, 0.0000000001 );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( -0.1, 0.5 ), -0.1, 0.0000000001 );
-  // with a ring
-  QgsLineString pdRing1;
-  pdRing1.setPoints( QList<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.6 )  << QgsPoint( 0.1, 0.6 ) << QgsPoint( 0.1, 0.1 ) );
-  pd.setInteriorRings( QList< QgsCurve * >() << pdRing1.clone() );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0, 0.5 ), 0.0, 0.0000000001 );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.1, 0.5 ), 0.0, 0.0000000001 );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.01, 0.5 ), 0.01, 0.0000000001 );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.08, 0.5 ), 0.02, 0.0000000001 );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( 0.12, 0.5 ), -0.02, 0.0000000001 );
-  QGSCOMPARENEAR( pd.pointDistanceToBoundary( -0.1, 0.5 ), -0.1, 0.0000000001 );
-
   // remove interior rings
-  QgsLineString removeRingsExt;
+  QgsCircularString removeRingsExt;
   removeRingsExt.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
-  QgsPolygonV2 removeRings1;
+  QgsCurvePolygon removeRings1;
   removeRings1.removeInteriorRings();
 
   removeRings1.setExteriorRing( boundary1.clone() );
@@ -6667,14 +6709,16 @@ void TestQgsGeometry::curvePolygon()
   QCOMPARE( removeRings1.numInteriorRings(), 0 );
 
   // add interior rings
-  QgsLineString removeRingsRing1;
-  removeRingsRing1.setPoints( QList<QgsPoint>() << QgsPoint( 0.1, 0.1 ) << QgsPoint( 0.2, 0.1 ) << QgsPoint( 0.2, 0.2 )  << QgsPoint( 0.1, 0.1 ) );
-  QgsLineString removeRingsRing2;
-  removeRingsRing1.setPoints( QList<QgsPoint>() << QgsPoint( 0.6, 0.8 ) << QgsPoint( 0.9, 0.8 ) << QgsPoint( 0.9, 0.9 )  << QgsPoint( 0.6, 0.8 ) );
+  QgsCircularString removeRingsRing1;
+  removeRingsRing1.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 0.1, 0, 2 ) << QgsPoint( 0.2, 0, 3 )
+                              << QgsPoint( 0.1, 0.05, 4 ) << QgsPoint( 0, 0, 1 ) );
+  QgsCircularString removeRingsRing2;
+  removeRingsRing2.setPoints( QgsPointSequence() << QgsPoint( 0, 0, 1 ) << QgsPoint( 1, 0, 2 ) << QgsPoint( 2, 0, 3 )
+                              << QgsPoint( 1, 0.5, 4 ) << QgsPoint( 0, 0, 1 ) );
   removeRings1.setInteriorRings( QList< QgsCurve * >() << removeRingsRing1.clone() << removeRingsRing2.clone() );
 
   // remove ring with size filter
-  removeRings1.removeInteriorRings( 0.0075 );
+  removeRings1.removeInteriorRings( 0.1 );
   QCOMPARE( removeRings1.numInteriorRings(), 1 );
 
   // remove ring with no size filter
@@ -6682,17 +6726,16 @@ void TestQgsGeometry::curvePolygon()
   QCOMPARE( removeRings1.numInteriorRings(), 0 );
 
   // cast
-  QVERIFY( !QgsPolygonV2().cast( nullptr ) );
-  QgsPolygonV2 pCast;
-  QVERIFY( QgsPolygonV2().cast( &pCast ) );
-  QgsPolygonV2 pCast2;
-  pCast2.fromWkt( QStringLiteral( "PolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
-  QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
-  pCast2.fromWkt( QStringLiteral( "PolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
-  QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
-  pCast2.fromWkt( QStringLiteral( "PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
-  QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
-#endif
+  QVERIFY( !QgsCurvePolygon().cast( nullptr ) );
+  QgsCurvePolygon pCast;
+  QVERIFY( QgsCurvePolygon().cast( &pCast ) );
+  QgsCurvePolygon pCast2;
+  pCast2.fromWkt( QStringLiteral( "CurvePolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
+  QVERIFY( QgsCurvePolygon().cast( &pCast2 ) );
+  pCast2.fromWkt( QStringLiteral( "CurvePolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
+  QVERIFY( QgsCurvePolygon().cast( &pCast2 ) );
+  pCast2.fromWkt( QStringLiteral( "CurvePolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
+  QVERIFY( QgsCurvePolygon().cast( &pCast2 ) );
 }
 
 void TestQgsGeometry::compoundCurve()

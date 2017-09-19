@@ -4337,5 +4337,6 @@ class TestQgsGeometry(unittest.TestCase):
         print((self.report))
         return result
 
+
 if __name__ == '__main__':
     unittest.main()
