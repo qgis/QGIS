@@ -83,7 +83,7 @@ bool QgsPolygonV2::fromWkb( QgsConstWkbPtr &wkbPtr )
   wkbPtr >> nRings;
   for ( int i = 0; i < nRings; ++i )
   {
-    QgsLineString *line = new QgsLineString();
+    std::unique_ptr< QgsLineString > line( new QgsLineString() );
     line->fromWkbPoints( ringType, wkbPtr );
     /*if ( !line->isRing() )
     {
@@ -92,11 +92,11 @@ bool QgsPolygonV2::fromWkb( QgsConstWkbPtr &wkbPtr )
 
     if ( !mExteriorRing )
     {
-      mExteriorRing = line;
+      mExteriorRing = std::move( line );
     }
     else
     {
-      mInteriorRings.append( line );
+      mInteriorRings.append( line.release() );
     }
   }
 
@@ -176,7 +176,6 @@ void QgsPolygonV2::setExteriorRing( QgsCurve *ring )
   {
     return;
   }
-  delete mExteriorRing;
 
   if ( ring->hasCurvedSegments() )
   {
@@ -192,7 +191,7 @@ void QgsPolygonV2::setExteriorRing( QgsCurve *ring )
     lineString->close();
   }
 
-  mExteriorRing = ring;
+  mExteriorRing.reset( ring );
 
   //set proper wkb type
   setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
@@ -241,7 +240,7 @@ double QgsPolygonV2::pointDistanceToBoundary( double x, double y ) const
   int numRings = mInteriorRings.size() + 1;
   for ( int ringIndex = 0; ringIndex < numRings; ++ringIndex )
   {
-    const QgsLineString *ring = static_cast< const QgsLineString * >( ringIndex == 0 ? mExteriorRing : mInteriorRings.at( ringIndex - 1 ) );
+    const QgsLineString *ring = static_cast< const QgsLineString * >( ringIndex == 0 ? mExteriorRing.get() : mInteriorRings.at( ringIndex - 1 ) );
 
     int len = ring->numPoints() - 1; //assume closed
     for ( int i = 0, j = len - 1; i < len; j = i++ )

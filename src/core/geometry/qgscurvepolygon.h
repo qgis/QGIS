@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgssurface.h"
+#include <memory>
 
 class QgsPolygonV2;
 
@@ -167,7 +168,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 #endif
   protected:
 
-    QgsCurve *mExteriorRing = nullptr;
+    std::unique_ptr< QgsCurve > mExteriorRing;
     QList<QgsCurve *> mInteriorRings;
 
     QgsRectangle calculateBoundingBox() const override;

@@ -166,7 +166,7 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
   line->fromWkbPoints( ringType, wkbPtr );
   if ( !mExteriorRing )
   {
-    mExteriorRing = line;
+    mExteriorRing.reset( line );
   }
 
   return true;
@@ -211,8 +211,7 @@ bool QgsTriangle::fromWkt( const QString &wkt )
     clear();
     return false;
   }
-  mExteriorRing = mInteriorRings.at( 0 );
-  mInteriorRings.removeFirst();
+  mExteriorRing.reset( mInteriorRings.takeFirst() );
 
   //scan through rings and check if dimensionality of rings is different to CurvePolygon.
   //if so, update the type dimensionality of the CurvePolygon to match
@@ -246,7 +245,7 @@ QgsCurvePolygon *QgsTriangle::toCurveType() const
 
 void QgsTriangle::addInteriorRing( QgsCurve *ring )
 {
-  Q_UNUSED( ring );
+  delete ring;
 }
 
 bool QgsTriangle::deleteVertex( QgsVertexId position )
@@ -283,14 +282,13 @@ bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
     return false;
   }
 
-  QgsCurve *ring = mExteriorRing;
-  int n = ring->numPoints();
-  bool success = ring->moveVertex( vId, newPos );
+  int n = mExteriorRing->numPoints();
+  bool success = mExteriorRing->moveVertex( vId, newPos );
   if ( success )
   {
     // If first or last vertex is moved, also move the last/first vertex
     if ( vId.vertex == 0 )
-      ring->moveVertex( QgsVertexId( vId.part, vId.ring, n - 1 ), newPos );
+      mExteriorRing->moveVertex( QgsVertexId( vId.part, vId.ring, n - 1 ), newPos );
     clearCache();
   }
   return success;
@@ -313,12 +311,14 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
 
   if ( ( ring->numPoints() > 4 ) || ( ring->numPoints() < 3 ) )
   {
+    delete ring;
     return;
   }
   else if ( ring->numPoints() == 4 )
   {
     if ( !ring->isClosed() )
     {
+      delete ring;
       return;
     }
   }
@@ -326,6 +326,7 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
   {
     if ( ring->isClosed() )
     {
+      delete ring;
       return;
     }
     QgsLineString *lineString = static_cast< QgsLineString *>( ring );
@@ -338,12 +339,11 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
 
   if ( !validateGeom( ring->vertexAt( QgsVertexId( 0, 0, 0 ) ), ring->vertexAt( QgsVertexId( 0, 0, 1 ) ), ring->vertexAt( QgsVertexId( 0, 0, 2 ) ) ) )
   {
+    delete ring;
     return;
   }
 
-  delete mExteriorRing;
-
-  mExteriorRing = ring;
+  mExteriorRing.reset( ring );
 
   //set proper wkb type
   setZMTypeFromSubGeometry( ring, QgsWkbTypes::Triangle );

@@ -55,7 +55,7 @@ QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   mWkbType = p.mWkbType;
   if ( p.mExteriorRing )
   {
-    mExteriorRing = static_cast<QgsCurve *>( p.mExteriorRing->clone() );
+    mExteriorRing.reset( static_cast<QgsCurve *>( p.mExteriorRing->clone() ) );
   }
 
   for ( const QgsCurve *ring : p.mInteriorRings )
@@ -72,7 +72,7 @@ QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
     QgsSurface::operator=( p );
     if ( p.mExteriorRing )
     {
-      mExteriorRing = static_cast<QgsCurve *>( p.mExteriorRing->clone() );
+      mExteriorRing.reset( static_cast<QgsCurve *>( p.mExteriorRing->clone() ) );
     }
 
     for ( const QgsCurve *ring : p.mInteriorRings )
@@ -129,8 +129,7 @@ QgsCurvePolygon *QgsCurvePolygon::clone() const
 void QgsCurvePolygon::clear()
 {
   mWkbType = QgsWkbTypes::CurvePolygon;
-  delete mExteriorRing;
-  mExteriorRing = nullptr;
+  mExteriorRing.reset();
   qDeleteAll( mInteriorRings );
   mInteriorRings.clear();
   clearCache();
@@ -154,7 +153,7 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   int nRings;
   wkbPtr >> nRings;
-  QgsCurve *currentCurve = nullptr;
+  std::unique_ptr< QgsCurve > currentCurve;
   for ( int i = 0; i < nRings; ++i )
   {
     QgsWkbTypes::Type curveType = wkbPtr.readHeader();
@@ -162,15 +161,15 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
     QgsWkbTypes::Type flatCurveType = QgsWkbTypes::flatType( curveType );
     if ( flatCurveType == QgsWkbTypes::LineString )
     {
-      currentCurve = new QgsLineString();
+      currentCurve.reset( new QgsLineString() );
     }
     else if ( flatCurveType == QgsWkbTypes::CircularString )
     {
-      currentCurve = new QgsCircularString();
+      currentCurve.reset( new QgsCircularString() );
     }
     else if ( flatCurveType == QgsWkbTypes::CompoundCurve )
     {
-      currentCurve = new QgsCompoundCurve();
+      currentCurve.reset( new QgsCompoundCurve() );
     }
     else
     {
@@ -179,11 +178,11 @@ bool QgsCurvePolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
     currentCurve->fromWkb( wkbPtr );  // also updates wkbPtr
     if ( i == 0 )
     {
-      mExteriorRing = currentCurve;
+      mExteriorRing = std::move( currentCurve );
     }
     else
     {
-      mInteriorRings.append( currentCurve );
+      mInteriorRings.append( currentCurve.release() );
     }
   }
 
@@ -233,8 +232,7 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
     return false;
   }
 
-  mExteriorRing = mInteriorRings.at( 0 );
-  mInteriorRings.removeFirst();
+  mExteriorRing.reset( mInteriorRings.takeFirst() );
 
   //scan through rings and check if dimensionality of rings is different to CurvePolygon.
   //if so, update the type dimensionality of the CurvePolygon to match
@@ -305,7 +303,7 @@ QString QgsCurvePolygon::asWkt( int precision ) const
   if ( mExteriorRing )
   {
     QString childWkt = mExteriorRing->asWkt( precision );
-    if ( qgsgeometry_cast<QgsLineString *>( mExteriorRing ) )
+    if ( qgsgeometry_cast<QgsLineString *>( mExteriorRing.get() ) )
     {
       // Type names of linear geometries are omitted
       childWkt = childWkt.mid( childWkt.indexOf( '(' ) );
@@ -518,7 +516,7 @@ int QgsCurvePolygon::numInteriorRings() const
 
 const QgsCurve *QgsCurvePolygon::exteriorRing() const
 {
-  return mExteriorRing;
+  return mExteriorRing.get();
 }
 
 const QgsCurve *QgsCurvePolygon::interiorRing( int i ) const
@@ -536,8 +534,7 @@ void QgsCurvePolygon::setExteriorRing( QgsCurve *ring )
   {
     return;
   }
-  delete mExteriorRing;
-  mExteriorRing = ring;
+  mExteriorRing.reset( ring );
 
   //set proper wkb type
   if ( QgsWkbTypes::flatType( wkbType() ) == QgsWkbTypes::Polygon )
@@ -737,7 +734,7 @@ double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,
     return -1;
   }
   QList<QgsCurve *> segmentList;
-  segmentList.append( mExteriorRing );
+  segmentList.append( mExteriorRing.get() );
   segmentList.append( mInteriorRings );
   return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Ring, pt, segmentPt,  vertexAfter, leftOf, epsilon );
 }
@@ -761,7 +758,7 @@ bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
   }
   else
   {
-    QgsCurve *ring = vId.ring == 0 ? mExteriorRing : mInteriorRings[vId.ring - 1];
+    QgsCurve *ring = vId.ring == 0 ? mExteriorRing.get() : mInteriorRings[vId.ring - 1];
 
     if ( ring->nextVertex( vId, vertex ) )
     {
@@ -785,7 +782,7 @@ bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPoint &vertex )
     return false;
   }
 
-  QgsCurve *ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
+  QgsCurve *ring = vId.ring == 0 ? mExteriorRing.get() : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   bool success = ring->insertVertex( QgsVertexId( 0, 0, vId.vertex ), vertex );
   if ( !success )
@@ -811,7 +808,7 @@ bool QgsCurvePolygon::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
     return false;
   }
 
-  QgsCurve *ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
+  QgsCurve *ring = vId.ring == 0 ? mExteriorRing.get() : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   bool success = ring->moveVertex( vId, newPos );
   if ( success )
@@ -833,18 +830,17 @@ bool QgsCurvePolygon::deleteVertex( QgsVertexId vId )
     return false;
   }
 
-  QgsCurve *ring = vId.ring == 0 ? mExteriorRing : mInteriorRings.at( vId.ring - 1 );
+  QgsCurve *ring = vId.ring == 0 ? mExteriorRing.get() : mInteriorRings.at( vId.ring - 1 );
   int n = ring->numPoints();
   if ( n <= 4 )
   {
     //no points will be left in ring, so remove whole ring
     if ( vId.ring == 0 )
     {
-      delete mExteriorRing;
-      mExteriorRing = nullptr;
+      mExteriorRing.reset();
       if ( !mInteriorRings.isEmpty() )
       {
-        mExteriorRing = mInteriorRings.takeFirst();
+        mExteriorRing.reset( mInteriorRings.takeFirst() );
       }
     }
     else
@@ -901,7 +897,7 @@ double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
     return false;
   }
 
-  QgsCurve *ring = vertex.ring == 0 ? mExteriorRing : mInteriorRings[vertex.ring - 1];
+  QgsCurve *ring = vertex.ring == 0 ? mExteriorRing.get() : mInteriorRings[vertex.ring - 1];
   return ring->vertexAngle( vertex );
 }
 
