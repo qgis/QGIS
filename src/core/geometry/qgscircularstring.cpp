@@ -766,6 +766,9 @@ bool QgsCircularString::pointAt( int node, QgsPoint &point, QgsVertexId::VertexT
 
 void QgsCircularString::sumUpArea( double &sum ) const
 {
+  if ( numPoints() < 3 )
+    return;
+
   int maxIndex = numPoints() - 1;
 
   for ( int i = 0; i < maxIndex; i += 2 )
