@@ -34,6 +34,7 @@ typedef QList<int> QgsAttributeList SIP_SKIP;
 
 #include "qgseditorwidgetsetup.h"
 #include "qgsfieldconstraints.h"
+#include "qgsdefaultvalue.h"
 
 /** \class QgsField
   * \ingroup core
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString comment READ comment WRITE setComment )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
-    Q_PROPERTY( QString defaultValueExpression READ defaultValueExpression WRITE setDefaultValueExpression )
+    Q_PROPERTY( QgsDefaultValue defaultValue READ defaultValue WRITE setDefaultValue )
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
 
   public:
@@ -199,7 +200,7 @@ class CORE_EXPORT QgsField
      * \since QGIS 3.0
      * \see setDefaultValueExpression()
      */
-    QString defaultValueExpression() const;
+    QgsDefaultValue defaultValue() const;
 
     /** Sets an expression to use when calculating the default value for the field.
      * \param expression expression to evaluate when calculating default values for field. Pass
@@ -207,7 +208,7 @@ class CORE_EXPORT QgsField
      * \since QGIS 3.0
      * \see defaultValueExpression()
      */
-    void setDefaultValueExpression( const QString &expression );
+    void setDefaultValue( const QgsDefaultValue &defaultValue );
 
     /**
      * Returns constraints which are present for the field.

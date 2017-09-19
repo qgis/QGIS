@@ -178,17 +178,17 @@ Gets variant type of the field as it will be retrieved from data source
  Set the field comment
 %End
 
-    QString defaultValueExpression() const;
+    QgsDefaultValue defaultValue() const;
 %Docstring
  Returns the expression used when calculating the default value for the field.
  :return: expression evaluated when calculating default values for field, or an
  empty string if no default is set
 .. versionadded:: 3.0
 .. seealso:: setDefaultValueExpression()
- :rtype: str
+ :rtype: QgsDefaultValue
 %End
 
-    void setDefaultValueExpression( const QString &expression );
+    void setDefaultValue( const QgsDefaultValue &defaultValue );
 %Docstring
  Sets an expression to use when calculating the default value for the field.
  \param expression expression to evaluate when calculating default values for field. Pass

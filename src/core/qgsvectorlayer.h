@@ -1999,7 +1999,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsStringMap mAttributeAliasMap;
 
     //! Map which stores default value expressions for fields
-    QgsStringMap mDefaultExpressionMap;
+    QMap<QString, QgsDefaultValue> mDefaultExpressionMap;
 
     //! Map which stores constraints for fields
     QMap< QString, QgsFieldConstraints::Constraints > mFieldConstraints;
