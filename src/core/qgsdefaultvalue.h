@@ -21,6 +21,29 @@
 #include <QString>
 #include <QObject>
 
+
+/**
+ * \ingroup core
+ *
+ * \brief The QgsDefaultValue class provides a container for managing client
+ *        side default values for fields.
+ *
+ * A QgsDefaultValue consists of an expression string that will be evaluated
+ * on the client when a defeault field value needs to be generated.
+ *
+ * Usual values for such an expression are
+ *
+ * - `now()` for a timestamp for a record
+ * - `@some_variable` to insert a project or application level variable like
+ *   the username of the one digitizing a feature
+ * - `$length` to insert a derived attribute of a geometry
+ *
+ * QgsDefaultValue also has a `applyOnUpdate` flag which will indicate that a
+ * default value should also be applied when a feature is updated. If this is
+ * not set, the default value will only be used when a feature is created.
+ *
+ * \since QGIS 3.0
+ */
 class CORE_EXPORT QgsDefaultValue
 {
     Q_GADGET
@@ -29,13 +52,35 @@ class CORE_EXPORT QgsDefaultValue
     Q_PROPERTY( bool applyOnUpdate READ applyOnUpdate WRITE setApplyOnUpdate )
 
   public:
+
+    /**
+     * Create a new default value with the given \a expression and \a applyOnUpdate flag.
+     */
     QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
     bool operator==( const QgsDefaultValue &other ) const;
 
+    /**
+     * The expression will be evaluated whenever a default value needs
+     * to be calculated for a field.
+     */
     QString expression() const;
+
+    /**
+     * The expression will be evaluated whenever a default value needs
+     * to be calculated for a field.
+     */
     void setExpression( const QString &expression );
 
+    /**
+     * The applyOnUpdate flag determines if this expression should also be
+     * applied when a feature is updated or only when it's created.
+     */
     bool applyOnUpdate() const;
+
+    /**
+     * The applyOnUpdate flag determines if this expression should also be
+     * applied when a feature is updated or only when it's created.
+     */
     void setApplyOnUpdate( bool applyOnUpdate );
 
   private:
