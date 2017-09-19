@@ -127,25 +127,9 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
   if ( L->mUpdatedFields.count() != f.attributes().count() )
     return false;
 
-  // TODO: check correct geometry type
   // if not then try to convert to a compatible geometry type
-  if ( f.geometry() && f.geometry()->geometry() &&
-       !f.geometry()->isEmpty() &&
-       f.geometry()->wkbType() != provider->geometryType() )
-  {
-    // check if provider do strict geometry control
-    // otherwise leave to the commit to rise provider errors
-    if ( provider->doesStrictFeatureTypeCheck() )
-    {
-      QgsGeometry* newGeom = provider->convertToProviderType( f.geometry() );
-      if ( !newGeom )
-      {
-        QgsMessageLog::logMessage( tr( "ERROR: feature not added - geometry type is not compatible with the current layer.", "not added feature" ) );
-        return false;
-      }
-      f.setGeometry( newGeom );
-    }
-  }
+  if ( !adaptGeometry( f.geometry() ) )
+    return false;
 
   L->undoStack()->push( new QgsVectorLayerUndoCommandAddFeature( this, f ) );
   return true;
@@ -200,6 +184,28 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds& fids )
   return true;
 }
 
+bool QgsVectorLayerEditBuffer::adaptGeometry( QgsGeometry* geom )
+{
+  QgsVectorDataProvider* provider = L->dataProvider();
+  if ( geom && geom->geometry() &&
+       !geom->isEmpty() &&
+       geom->wkbType() != provider->geometryType() )
+  {
+    // check if provider do strict geometry control
+    // otherwise leave to the commit to rise provider errors
+    if ( provider->doesStrictFeatureTypeCheck() )
+    {
+      QgsGeometry* newGeom = provider->convertToProviderType( geom );
+      if ( !newGeom )
+      {
+        QgsMessageLog::logMessage( tr( "ERROR: geometry type is not compatible with the layer.", "not compatible geometry" ) );
+        return false;
+      }
+      geom = newGeom;
+    }
+  }
+  return true;
+}
 
 bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 {
@@ -216,29 +222,14 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
   else if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
     return false;
 
-
-  // TODO: check compatible geometry
   // if not then try to convert to a compatible geometry type
-  QgsGeometry* newGeom = nullptr;
-  QgsVectorDataProvider* provider = L->dataProvider();
-  if ( geom && geom->geometry() &&
-       !geom->isEmpty() &&
-       geom->wkbType() != provider->geometryType() )
+  if ( !adaptGeometry( geom ) )
   {
-    // check if provider do strict geometry control
-    // otherwise leave to the commit to rise provider errors
-    if ( provider->doesStrictFeatureTypeCheck() )
-    {
-      newGeom = provider->convertToProviderType( geom );
-      if ( !newGeom )
-      {
-        QgsMessageLog::logMessage( tr( "ERROR: feature %1 not updated - geometry type is not compatible with the layer.", "not added feature" ).arg( fid ) );
-        return false;
-      }
-    }
+    QgsMessageLog::logMessage( tr( "ERROR: feature %1 not updated", "not updated feature" ).arg( fid ) );
+    return false;
   }
 
-  L->undoStack()->push( new QgsVectorLayerUndoCommandChangeGeometry( this, fid, newGeom ? newGeom : geom ) );
+  L->undoStack()->push( new QgsVectorLayerUndoCommandChangeGeometry( this, fid, geom ) );
   return true;
 }
 
@@ -343,40 +334,6 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
   // yes                no                    => changeGeometryValues
   // no                 yes                   => changeAttributeValues
   // yes                yes                   => changeFeatures
-
-  // to fix https://issues.qgis.org/issues/15741
-  // first of all check if feature to add is compatible with provider type
-  // this check have to be done before all checks to avoid to clear internal
-  // buffer if some of next steps success.
-  if ( success && !mAddedFeatures.isEmpty() )
-  {
-    if ( cap & QgsVectorDataProvider::AddFeatures )
-    {
-      if ( provider->doesStrictFeatureTypeCheck() )
-      {
-        QgsFeatureMap::iterator featureIt = mAddedFeatures.begin();
-        for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
-        {
-          if ( !featureIt->geometry() ||
-               featureIt->geometry()->isEmpty() ||
-               featureIt->geometry()->wkbType() == provider->geometryType() )
-            continue;
-
-          if ( !provider->convertToProviderType( featureIt->geometry() ) )
-          {
-            commitErrors << tr( "ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.", "not added features count", mAddedFeatures.size() );
-            success = false;
-            break;
-          }
-        }
-      }
-    }
-    else
-    {
-      commitErrors << tr( "ERROR: %n feature(s) not added - provider doesn't support adding features.", "not added features count", mAddedFeatures.size() );
-      success = false;
-    }
-  }
 
   //
   // update geometries
