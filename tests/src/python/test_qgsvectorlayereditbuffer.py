@@ -118,7 +118,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertFalse((layer.editBuffer().addFeatures([f1])))
 
         # check is possibile to adapt single to multi
-        # This test should belog to vectordataprovider test
+        # This test should belong to vectordataprovider test
         layer = createEmptyMultiLinestringLayer()
         self.assertTrue(layer.startEditing())
         self.assertEqual(layer.editBuffer().addedFeatures(), {})
@@ -133,18 +133,22 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertTrue(QgsWKBTypes.isSingleType(QGis.fromOldWkbType(geom.wkbType())))
         self.assertTrue((layer.editBuffer().addFeatures([f1])))
 
-        # check is possibile to adapt 3D geom to 2D provider type
-        # This test should belog to vectordataprovider test
-        layer = createEmptyLayer()
+        # check that is NOT possibile to adapt Multi to single if only one simple geometry
+        # This because to avoid to have a bunch of successful import for that
+        # thac can be converted and other feature that fails => better leave to
+        # the user the explicit work to convert to singletype
+        layer = createEmptyLinestringLayer()
         self.assertTrue(layer.startEditing())
         self.assertEqual(layer.editBuffer().addedFeatures(), {})
-        geom = QgsGeometry.fromPoint(QgsPoint(1, 1))
-        geom.geometry().addZValue(1)
-        self.assertTrue(QgsWKBTypes.hasZ(geom.geometry().wkbType()))
+        multiline = [
+            [QgsPoint(1, 1), QgsPoint(2, 2), QgsPoint(3, 3)]
+        ]
+        geom = QgsGeometry.fromMultiPolyline(multiline)
+        self.assertTrue(QgsWKBTypes.isMultiType(QGis.fromOldWkbType(geom.wkbType())))
         f1 = QgsFeature(layer.fields(), 1)
         f1.setGeometry(geom)
         f1.setAttributes(["test", 123])
-        self.assertTrue((layer.editBuffer().addFeatures([f1])))
+        self.assertFalse((layer.editBuffer().addFeatures([f1])))
 
     def testAddMultipleFeatures(self):
         # test adding multiple features to an edit buffer
