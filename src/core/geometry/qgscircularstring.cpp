@@ -701,7 +701,6 @@ void QgsCircularString::deleteVertex( int i )
 
 double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
-  Q_UNUSED( epsilon );
   double minDist = std::numeric_limits<double>::max();
   QgsPoint minDistSegmentPoint;
   QgsVertexId minDistVertexAfter;
@@ -925,10 +924,6 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
     }
     if ( vId.vertex >= numPoints() - 1 )
     {
-      if ( numPoints() < 3 )
-      {
-        return 0.0;
-      }
       int a = numPoints() - 3;
       int b = numPoints() - 2;
       int c = numPoints() - 1;

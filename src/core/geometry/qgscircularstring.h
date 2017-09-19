@@ -93,7 +93,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT,
-                                   bool *leftOf SIP_OUT, double epsilon ) const override;
+                                   bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
 
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
     void sumUpArea( double &sum SIP_OUT ) const override;

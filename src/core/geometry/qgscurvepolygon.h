@@ -111,7 +111,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
     bool isEmpty() const override;
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT, double epsilon ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
 
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 

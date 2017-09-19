@@ -99,8 +99,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
-                                   double epsilon ) const override;
+                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr,
+                                   double epsilon = 4 * DBL_EPSILON ) const override;
 
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
 

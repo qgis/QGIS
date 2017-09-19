@@ -136,7 +136,7 @@ Adds an interior ring to the geometry (takes ownership)
 
     virtual bool isEmpty() const;
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/, double epsilon ) const;
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;

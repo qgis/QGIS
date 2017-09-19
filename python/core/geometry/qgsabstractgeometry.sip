@@ -275,7 +275,7 @@ class QgsAbstractGeometry
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/,
-                                   bool *leftOf /Out/, double epsilon ) const = 0;
+                                   bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const = 0;
 %Docstring
  Searches for the closest segment of the geometry to a given point.
  \param pt specifies the point to find closest segment to

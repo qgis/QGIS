@@ -579,6 +579,10 @@ void TestQgsGeometry::point()
   std::unique_ptr< QgsPoint >clone( p10.clone() );
   QVERIFY( p10 == *clone );
 
+  //toCurveType
+  clone.reset( p10.toCurveType() );
+  QVERIFY( p10 == *clone );
+
   //assignment
   QgsPoint original( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, -4.0 );
   QgsPoint assigned( 6.0, 7.0 );
@@ -742,7 +746,7 @@ void TestQgsGeometry::point()
   QgsPoint closest;
   QgsVertexId after;
   // return error - points have no segments
-  QVERIFY( p20.closestSegment( QgsPoint( 4.0, 6.0 ), closest, after, 0, 0 ) < 0 );
+  QVERIFY( p20.closestSegment( QgsPoint( 4.0, 6.0 ), closest, after ) < 0 );
 
   //nextVertex
   QgsPoint p21( 3.0, 4.0 );
@@ -2002,68 +2006,68 @@ void TestQgsGeometry::circularString()
   QgsCircularString l35;
   bool leftOf = false;
   p = QgsPoint(); // reset all coords to zero
-  ( void )l35.closestSegment( QgsPoint( 1, 2 ), p, v, 0, 0 ); //empty line, just want no crash
+  ( void )l35.closestSegment( QgsPoint( 1, 2 ), p, v ); //empty line, just want no crash
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
-  QVERIFY( l35.closestSegment( QgsPoint( 5, 10 ), p, v, 0, 0 ) < 0 );
+  QVERIFY( l35.closestSegment( QgsPoint( 5, 10 ), p, v ) < 0 );
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf, 0 ), 2.0, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf ), 2.0, 0.0001 );
   QCOMPARE( p, QgsPoint( 5, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf, 0 ),  1.583512, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ),  1.583512, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.84, 0.01 );
   QGSCOMPARENEAR( p.y(), 11.49, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 11.5 ), p, v, &leftOf, 0 ), 1.288897, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 11.5 ), p, v, &leftOf ), 1.288897, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.302776, 0.01 );
   QGSCOMPARENEAR( p.y(), 10.7, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 7, 16 ), p, v, &leftOf, 0 ), 3.068288, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 7, 16 ), p, v, &leftOf ), 3.068288, 0.0001 );
   QGSCOMPARENEAR( p.x(), 5.981872, 0.01 );
   QGSCOMPARENEAR( p.y(), 14.574621, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 13.5 ), p, v, &leftOf, 0 ), 1.288897, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 13.5 ), p, v, &leftOf ), 1.288897, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.302776, 0.01 );
   QGSCOMPARENEAR( p.y(), 14.3, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, true );
   // point directly on segment
-  QCOMPARE( l35.closestSegment( QgsPoint( 5, 15 ), p, v, &leftOf, 0 ), 0.0 );
+  QCOMPARE( l35.closestSegment( QgsPoint( 5, 15 ), p, v, &leftOf ), 0.0 );
   QCOMPARE( p, QgsPoint( 5, 15 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
 
   //clockwise string
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 15 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 10 ) );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf, 0 ), 2, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf ), 2, 0.0001 );
   QGSCOMPARENEAR( p.x(), 5, 0.01 );
   QGSCOMPARENEAR( p.y(), 10, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf, 0 ),  1.583512, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ),  1.583512, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.84, 0.01 );
   QGSCOMPARENEAR( p.y(), 11.49, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 11.5 ), p, v, &leftOf, 0 ), 1.288897, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 11.5 ), p, v, &leftOf ), 1.288897, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.302776, 0.01 );
   QGSCOMPARENEAR( p.y(), 10.7, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 7, 16 ), p, v, &leftOf, 0 ), 3.068288, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 7, 16 ), p, v, &leftOf ), 3.068288, 0.0001 );
   QGSCOMPARENEAR( p.x(), 5.981872, 0.01 );
   QGSCOMPARENEAR( p.y(), 14.574621, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 13.5 ), p, v, &leftOf, 0 ), 1.288897, 0.0001 );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 13.5 ), p, v, &leftOf ), 1.288897, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.302776, 0.01 );
   QGSCOMPARENEAR( p.y(), 14.3, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, false );
   // point directly on segment
-  QCOMPARE( l35.closestSegment( QgsPoint( 5, 15 ), p, v, &leftOf, 0 ), 0.0 );
+  QCOMPARE( l35.closestSegment( QgsPoint( 5, 15 ), p, v, &leftOf ), 0.0 );
   QCOMPARE( p, QgsPoint( 5, 15 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
 
@@ -3670,30 +3674,30 @@ void TestQgsGeometry::lineString()
   QgsLineString l35;
   bool leftOf = false;
   p = QgsPoint(); // reset all coords to zero
-  ( void )l35.closestSegment( QgsPoint( 1, 2 ), p, v, 0, 0 ); //empty line, just want no crash
+  ( void )l35.closestSegment( QgsPoint( 1, 2 ), p, v ); //empty line, just want no crash
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
-  QVERIFY( l35.closestSegment( QgsPoint( 5, 10 ), p, v, 0, 0 ) < 0 );
+  QVERIFY( l35.closestSegment( QgsPoint( 5, 10 ), p, v ) < 0 );
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 10 ) );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf, 0 ), 2.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf ), 2.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 5, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf, 0 ), 1.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ), 1.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 8, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 9 ), p, v, &leftOf, 0 ), 1.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 9 ), p, v, &leftOf ), 1.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 8, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 11, 9 ), p, v, &leftOf, 0 ), 2.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 11, 9 ), p, v, &leftOf ), 2.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 10, 10 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, false );
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 )
                  << QgsPoint( 10, 10 )
                  << QgsPoint( 10, 15 ) );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 11, 12 ), p, v, &leftOf, 0 ), 1.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 11, 12 ), p, v, &leftOf ), 1.0, 4 * DBL_EPSILON );
   QCOMPARE( p, QgsPoint( 10, 12 ) );
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, false );
@@ -6829,7 +6833,7 @@ void TestQgsGeometry::multiPoint()
   QgsPoint closest;
   QgsVertexId after;
   // return error - points have no segments
-  QVERIFY( boundaryMP.closestSegment( QgsPoint( 0.5, 0.5 ), closest, after, 0, 0 ) < 0 );
+  QVERIFY( boundaryMP.closestSegment( QgsPoint( 0.5, 0.5 ), closest, after ) < 0 );
 }
 
 void TestQgsGeometry::multiLineString()

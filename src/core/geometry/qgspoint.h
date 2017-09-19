@@ -395,7 +395,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
 
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT, double epsilon ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
     /** Angle undefined. Always returns 0.0
