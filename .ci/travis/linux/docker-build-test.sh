@@ -26,9 +26,9 @@ export PGDATABASE=qgis_test
 
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
 
-mkdir -p build-docker &&
+mkdir -p build &&
 
-pushd build-docker
+pushd build
 
 cmake \
  -GNinja \
