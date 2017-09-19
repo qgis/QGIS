@@ -28,13 +28,9 @@ class QgsPolygonV2: QgsCurvePolygon
 
     virtual void clear();
 
-
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
-
-
     virtual QByteArray asWkb() const;
-
 
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 

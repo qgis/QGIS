@@ -4436,6 +4436,9 @@ void TestQgsGeometry::polygon()
   //surfaceToPolygon - should be identical given polygon has no curves
   std::unique_ptr< QgsPolygonV2 > surface( p12.surfaceToPolygon() );
   QCOMPARE( *surface, p12 );
+  //toPolygon - should be identical given polygon has no curves
+  std::unique_ptr< QgsPolygonV2 > toP( p12.toPolygon() );
+  QCOMPARE( *toP, p12 );
 
   //toCurveType
   std::unique_ptr< QgsCurvePolygon > curveType( p12.toCurveType() );
@@ -4788,6 +4791,230 @@ void TestQgsGeometry::polygon()
   QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
   pCast2.fromWkt( QStringLiteral( "PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
   QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
+
+  //transform
+  //CRS transform
+  QgsCoordinateReferenceSystem sourceSrs;
+  sourceSrs.createFromSrid( 3994 );
+  QgsCoordinateReferenceSystem destSrs;
+  destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
+  QgsCoordinateTransform tr( sourceSrs, destSrs );
+
+  // 2d CRS transform
+  QgsPolygonV2 pTransform;
+  QgsLineString l21;
+  l21.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 )
+                 << QgsPoint( 6274985, -3526584 )
+                 << QgsPoint( 6474985, -3526584 )
+                 << QgsPoint( 6374985, -3626584 ) );
+  pTransform.setExteriorRing( l21.clone() );
+  pTransform.addInteriorRing( l21.clone() );
+  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  const QgsLineString *extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
+  QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).x(),  174.581448, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).x(),  176.958633, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).x(),  175.771, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().yMaximum(), -38.7999, 0.001 );
+  const QgsLineString *intR = static_cast< const QgsLineString * >( pTransform.interiorRing( 0 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).x(),  174.581448, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).x(),  176.958633, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).x(),  175.771, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().yMaximum(), -38.7999, 0.001 );
+
+  //3d CRS transform
+  QgsLineString l22;
+  l22.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 6274985, -3526584, 3, 4 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 5, 6 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 ) );
+  pTransform.clear();
+  pTransform.setExteriorRing( l22.clone() );
+  pTransform.addInteriorRing( l22.clone() );
+  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
+  QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).x(),  174.581448, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).x(),  176.958633, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 5.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 6.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).x(),  175.771, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().yMaximum(), -38.7999, 0.001 );
+  intR = static_cast< const QgsLineString * >( pTransform.interiorRing( 0 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).x(),  174.581448, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).x(),  176.958633, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 5.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 6.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).x(),  175.771, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( pTransform.interiorRing( 0 )->boundingBox().yMaximum(), -38.7999, 0.001 );
+
+  //reverse transform
+  pTransform.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
+  QGSCOMPARENEAR( extR->pointN( 0 ).x(), 6374984, 100 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).y(), -3626584, 100 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).x(), 6274984, 100 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).y(), -3526584, 100 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).x(),  6474984, 100 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).y(), -3526584, 100 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 5.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 6.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).x(),  6374984, 100 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).y(), -3626584, 100 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().xMinimum(), 6274984, 100 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().yMinimum(), -3626584, 100 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().xMaximum(), 6474984, 100 );
+  QGSCOMPARENEAR( pTransform.exteriorRing()->boundingBox().yMaximum(), -3526584, 100 );
+  intR = static_cast< const QgsLineString * >( pTransform.interiorRing( 0 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).x(), 6374984, 100 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).y(), -3626584, 100 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).x(), 6274984, 100 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).y(), -3526584, 100 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).x(),  6474984, 100 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).y(), -3526584, 100 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 5.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 6.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).x(),  6374984, 100 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).y(), -3626584, 100 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMinimum(), 6274984, 100 );
+  QGSCOMPARENEAR( intR->boundingBox().yMinimum(), -3626584, 100 );
+  QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 6474984, 100 );
+  QGSCOMPARENEAR( intR->boundingBox().yMaximum(), -3526584, 100 );
+
+  //z value transform
+  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), -19.249066, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), -19.148357, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), -19.092128, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), -19.249066, 0.001 );
+  intR = static_cast< const QgsLineString * >( pTransform.interiorRing( 0 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), -19.249066, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), -19.148357, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), -19.092128, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), -19.249066, 0.001 );
+  pTransform.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  extR = static_cast< const QgsLineString * >( pTransform.exteriorRing() );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 5, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 1, 0.001 );
+  intR = static_cast< const QgsLineString * >( pTransform.interiorRing( 0 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 1, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 3, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 5, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 1, 0.001 );
+
+  //QTransform transform
+  QTransform qtr = QTransform::fromScale( 2, 3 );
+  QgsLineString l23;
+  l23.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 1, 12, 23, 24 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
+  QgsPolygonV2 pTransform2;
+  pTransform2.setExteriorRing( l23.clone() );
+  pTransform2.addInteriorRing( l23.clone() );
+  pTransform2.transform( qtr );
+
+  extR = static_cast< const QgsLineString * >( pTransform2.exteriorRing() );
+  QGSCOMPARENEAR( extR->pointN( 0 ).x(), 2, 100 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).y(), 6, 100 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).x(), 22, 100 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).y(), 36, 100 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 13.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 14.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).x(),  2, 100 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).y(), 36, 100 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 23.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 24.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).x(), 2, 100 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).y(), 6, 100 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( pTransform2.exteriorRing()->boundingBox().xMinimum(), 2, 0.001 );
+  QGSCOMPARENEAR( pTransform2.exteriorRing()->boundingBox().yMinimum(), 6, 0.001 );
+  QGSCOMPARENEAR( pTransform2.exteriorRing()->boundingBox().xMaximum(), 22, 0.001 );
+  QGSCOMPARENEAR( pTransform2.exteriorRing()->boundingBox().yMaximum(), 36, 0.001 );
+  intR = static_cast< const QgsLineString * >( pTransform2.interiorRing( 0 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).x(), 2, 100 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).y(), 6, 100 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).x(), 22, 100 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).y(), 36, 100 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 13.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 14.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).x(),  2, 100 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).y(), 36, 100 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 23.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 24.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).x(), 2, 100 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).y(), 6, 100 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMinimum(), 2, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().yMinimum(), 6, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 22, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().yMaximum(), 36, 0.001 );
+
+
 }
 
 void TestQgsGeometry::triangle()

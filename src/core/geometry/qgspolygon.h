@@ -35,17 +35,8 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
     QString geometryType() const override;
     QgsPolygonV2 *clone() const override SIP_FACTORY;
     void clear() override;
-
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
-
-    // inherited: bool fromWkt( const QString &wkt );
-
     QByteArray asWkb() const override;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    // inherited: QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    // inherited: QString asJSON( int precision = 17 ) const;
-
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
     /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
