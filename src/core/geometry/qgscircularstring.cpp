@@ -755,7 +755,7 @@ double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentP
 
 bool QgsCircularString::pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const
 {
-  if ( node >= numPoints() )
+  if ( node < 0 || node >= numPoints() )
   {
     return false;
   }
