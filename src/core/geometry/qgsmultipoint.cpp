@@ -25,6 +25,11 @@ QgsMultiPointV2::QgsMultiPointV2()
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
+QString QgsMultiPointV2::geometryType() const
+{
+  return QStringLiteral( "MultiPoint" );
+}
+
 QgsMultiPointV2 *QgsMultiPointV2::clone() const
 {
   return new QgsMultiPointV2( *this );
@@ -100,6 +105,11 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   return json;
 }
 
+int QgsMultiPointV2::nCoordinates() const
+{
+  return mGeometries.size();
+}
+
 bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
 {
   if ( !qgsgeometry_cast<QgsPoint *>( g ) )
@@ -114,4 +124,9 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
 QgsAbstractGeometry *QgsMultiPointV2::boundary() const
 {
   return nullptr;
+}
+
+bool QgsMultiPointV2::wktOmitChildType() const
+{
+  return true;
 }

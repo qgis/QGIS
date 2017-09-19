@@ -21,6 +21,7 @@ class QgsMultiSurface: QgsGeometryCollection
   public:
     QgsMultiSurface();
     virtual QString geometryType() const;
+
     virtual QgsMultiSurface *clone() const /Factory/;
 
     virtual QgsMultiSurface *toCurveType() const /Factory/;

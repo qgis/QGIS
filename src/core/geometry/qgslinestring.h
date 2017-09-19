@@ -162,8 +162,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //reimplemented methods
 
-    QString geometryType() const override { return QStringLiteral( "LineString" ); }
-    int dimension() const override { return 1; }
+    QString geometryType() const override;
+    int dimension() const override;
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
     bool isEmpty() const override;
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override  SIP_FACTORY;
 
     int numPoints() const override;
-    int nCoordinates() const override { return mX.size(); }
+    int nCoordinates() const override;
     void points( QgsPointSequence &pt SIP_OUT ) const override;
 
     void draw( QPainter &p ) const override;

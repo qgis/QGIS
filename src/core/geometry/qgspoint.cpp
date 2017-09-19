@@ -319,9 +319,21 @@ QgsCoordinateSequence QgsPoint::coordinateSequence() const
   return cs;
 }
 
+int QgsPoint::nCoordinates() const
+{
+  return 1;
+}
+
 QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;
+}
+
+bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
+{
+  Q_UNUSED( position );
+  Q_UNUSED( vertex );
+  return false;
 }
 
 /***************************************************************************
@@ -345,6 +357,12 @@ bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
     mM = newPos.mM;
   }
   return true;
+}
+
+bool QgsPoint::deleteVertex( QgsVertexId position )
+{
+  Q_UNUSED( position );
+  return false;
 }
 
 double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
@@ -377,6 +395,32 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   {
     return false;
   }
+}
+
+double QgsPoint::vertexAngle( QgsVertexId vertex ) const
+{
+  Q_UNUSED( vertex );
+  return 0.0;
+}
+
+int QgsPoint::vertexCount( int, int ) const
+{
+  return 1;
+}
+
+int QgsPoint::ringCount( int ) const
+{
+  return 1;
+}
+
+int QgsPoint::partCount() const
+{
+  return 1;
+}
+
+QgsPoint QgsPoint::vertexAt( QgsVertexId ) const
+{
+  return *this;
 }
 
 QgsPoint *QgsPoint::toCurveType() const
@@ -583,4 +627,24 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   }
 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
+}
+
+bool QgsPoint::isEmpty() const
+{
+  return false;
+}
+
+QgsRectangle QgsPoint::boundingBox() const
+{
+  return QgsRectangle( mX, mY, mX, mY );
+}
+
+QString QgsPoint::geometryType() const
+{
+  return QStringLiteral( "Point" );
+}
+
+int QgsPoint::dimension() const
+{
+  return 0;
 }

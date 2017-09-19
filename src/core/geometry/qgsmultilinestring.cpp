@@ -28,6 +28,11 @@ QgsMultiLineString::QgsMultiLineString()
   mWkbType = QgsWkbTypes::MultiLineString;
 }
 
+QString QgsMultiLineString::geometryType() const
+{
+  return QStringLiteral( "MultiLineString" );
+}
+
 QgsMultiLineString *QgsMultiLineString::clone() const
 {
   return new QgsMultiLineString( *this );
@@ -117,5 +122,10 @@ QgsMultiCurve *QgsMultiLineString::toCurveType() const
     multiCurve->addGeometry( mGeometries.at( i )->clone() );
   }
   return multiCurve;
+}
+
+bool QgsMultiLineString::wktOmitChildType() const
+{
+  return true;
 }
 

@@ -639,6 +639,16 @@ int QgsGeometryCollection::ringCount( int part ) const
   return mGeometries[part]->ringCount();
 }
 
+int QgsGeometryCollection::partCount() const
+{
+  return mGeometries.size();
+}
+
+QgsPoint QgsGeometryCollection::vertexAt( QgsVertexId id ) const
+{
+  return mGeometries[id.part]->vertexAt( id );
+}
+
 bool QgsGeometryCollection::addZValue( double zValue )
 {
   if ( QgsWkbTypes::hasZ( mWkbType ) )

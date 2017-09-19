@@ -29,7 +29,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 {
   public:
     QgsMultiPolygonV2();
-    QString geometryType() const override { return QStringLiteral( "MultiPolygon" ); }
+    QString geometryType() const override;
     QgsMultiPolygonV2 *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 
   protected:
 
-    bool wktOmitChildType() const override { return true; }
+    bool wktOmitChildType() const override;
 };
 
 #endif // QGSMULTIPOLYGONV2_H

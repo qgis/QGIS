@@ -61,7 +61,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool operator==( const QgsTriangle &other ) const;
     bool operator!=( const QgsTriangle &other ) const;
 
-    QString geometryType() const override { return QStringLiteral( "Triangle" ); }
+    QString geometryType() const override;
     QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 

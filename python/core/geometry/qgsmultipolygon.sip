@@ -21,6 +21,7 @@ class QgsMultiPolygonV2: QgsMultiSurface
   public:
     QgsMultiPolygonV2();
     virtual QString geometryType() const;
+
     virtual QgsMultiPolygonV2 *clone() const /Factory/;
 
 
@@ -55,6 +56,7 @@ Adds a geometry and takes ownership. Returns true in case of success
   protected:
 
     virtual bool wktOmitChildType() const;
+
 };
 
 /************************************************************************

@@ -29,7 +29,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
     QgsMultiSurface();
-    QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
+    QString geometryType() const override;
     QgsMultiSurface *clone() const override SIP_FACTORY;
     QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 

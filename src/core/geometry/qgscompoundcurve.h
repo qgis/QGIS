@@ -38,8 +38,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual bool operator==( const QgsCurve &other ) const override;
     virtual bool operator!=( const QgsCurve &other ) const override;
 
-    virtual QString geometryType() const override { return QStringLiteral( "CompoundCurve" ); }
-    virtual int dimension() const override { return 1; }
+    virtual QString geometryType() const override;
+    virtual int dimension() const override;
     virtual QgsCompoundCurve *clone() const override SIP_FACTORY;
     virtual void clear() override;
 

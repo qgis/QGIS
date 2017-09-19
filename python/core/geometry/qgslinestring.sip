@@ -168,7 +168,9 @@ Closes the line string by appending the first point to the end of the line, if i
 
 
     virtual QString geometryType() const;
+
     virtual int dimension() const;
+
     virtual QgsLineString *clone() const /Factory/;
 
     virtual void clear();
@@ -212,6 +214,7 @@ Closes the line string by appending the first point to the end of the line, if i
     virtual int numPoints() const;
 
     virtual int nCoordinates() const;
+
     virtual void points( QgsPointSequence &pt /Out/ ) const;
 
 

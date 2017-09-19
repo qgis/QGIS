@@ -28,6 +28,11 @@ QgsMultiPolygonV2::QgsMultiPolygonV2()
   mWkbType = QgsWkbTypes::MultiPolygon;
 }
 
+QString QgsMultiPolygonV2::geometryType() const
+{
+  return QStringLiteral( "MultiPolygon" );
+}
+
 QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
 {
   return new QgsMultiPolygonV2( *this );
@@ -168,4 +173,9 @@ QgsAbstractGeometry *QgsMultiPolygonV2::boundary() const
     return nullptr;
   }
   return multiLine;
+}
+
+bool QgsMultiPolygonV2::wktOmitChildType() const
+{
+  return true;
 }

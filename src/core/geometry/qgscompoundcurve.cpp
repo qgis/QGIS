@@ -49,6 +49,16 @@ bool QgsCompoundCurve::operator!=( const QgsCurve &other ) const
   return !operator==( other );
 }
 
+QString QgsCompoundCurve::geometryType() const
+{
+  return QStringLiteral( "CompoundCurve" );
+}
+
+int QgsCompoundCurve::dimension() const
+{
+  return 1;
+}
+
 QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( curve )
 {
   mWkbType = QgsWkbTypes::CompoundCurve;

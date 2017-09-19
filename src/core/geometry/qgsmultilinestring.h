@@ -29,7 +29,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
     QgsMultiLineString();
-    QString geometryType() const override { return QStringLiteral( "MultiLineString" ); }
+    QString geometryType() const override;
     QgsMultiLineString *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 #endif
   protected:
 
-    bool wktOmitChildType() const override { return true; }
+    bool wktOmitChildType() const override;
 };
 
 #endif // QGSMULTILINESTRINGV2_H

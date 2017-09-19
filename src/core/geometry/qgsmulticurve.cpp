@@ -28,6 +28,11 @@ QgsMultiCurve::QgsMultiCurve()
   mWkbType = QgsWkbTypes::MultiCurve;
 }
 
+QString QgsMultiCurve::geometryType() const
+{
+  return QStringLiteral( "MultiCurve" );
+}
+
 QgsMultiCurve *QgsMultiCurve::clone() const
 {
   return new QgsMultiCurve( *this );

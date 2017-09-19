@@ -152,7 +152,9 @@ Adds a geometry and takes ownership. Returns true in case of success.
     virtual int ringCount( int part = 0 ) const;
 
     virtual int partCount() const;
+
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
+
 
     virtual bool addZValue( double zValue = 0 );
 

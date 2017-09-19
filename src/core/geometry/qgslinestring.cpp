@@ -370,6 +370,11 @@ int QgsLineString::numPoints() const
   return mX.size();
 }
 
+int QgsLineString::nCoordinates() const
+{
+  return mX.size();
+}
+
 QgsPoint QgsLineString::pointN( int i ) const
 {
   if ( i < 0 || i >= mX.size() )
@@ -696,6 +701,16 @@ void QgsLineString::extend( double startDistance, double endDistance )
     mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
     mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
   }
+}
+
+QString QgsLineString::geometryType() const
+{
+  return QStringLiteral( "LineString" );
+}
+
+int QgsLineString::dimension() const
+{
+  return 1;
 }
 
 /***************************************************************************

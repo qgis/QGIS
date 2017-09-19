@@ -21,6 +21,7 @@ class QgsMultiLineString: QgsMultiCurve
   public:
     QgsMultiLineString();
     virtual QString geometryType() const;
+
     virtual QgsMultiLineString *clone() const /Factory/;
 
 
@@ -52,6 +53,7 @@ Adds a geometry and takes ownership. Returns true in case of success
   protected:
 
     virtual bool wktOmitChildType() const;
+
 };
 
 /************************************************************************

@@ -329,9 +329,13 @@ class QgsPoint: QgsAbstractGeometry
 %End
 
     virtual bool isEmpty() const;
+
     virtual QgsRectangle boundingBox() const;
+
     virtual QString geometryType() const;
+
     virtual int dimension() const;
+
     virtual QgsPoint *clone() const /Factory/;
 
     virtual void clear();
@@ -359,13 +363,16 @@ class QgsPoint: QgsAbstractGeometry
     virtual QgsCoordinateSequence coordinateSequence() const;
 
     virtual int nCoordinates() const;
+
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
 
     virtual bool deleteVertex( QgsVertexId position );
+
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
@@ -373,6 +380,7 @@ class QgsPoint: QgsAbstractGeometry
 
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
+
 %Docstring
  Angle undefined. Always returns 0.0
 \param vertex the vertex id
@@ -381,9 +389,13 @@ class QgsPoint: QgsAbstractGeometry
 %End
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const;
+
     virtual int ringCount( int /*part*/ = 0 ) const;
+
     virtual int partCount() const;
+
     virtual QgsPoint vertexAt( QgsVertexId /*id*/ ) const;
+
     virtual QgsPoint *toCurveType() const /Factory/;
 
 

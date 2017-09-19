@@ -29,6 +29,11 @@ QgsMultiSurface::QgsMultiSurface()
   mWkbType = QgsWkbTypes::MultiSurface;
 }
 
+QString QgsMultiSurface::geometryType() const
+{
+  return QStringLiteral( "MultiSurface" );
+}
+
 QgsMultiSurface *QgsMultiSurface::clone() const
 {
   return new QgsMultiSurface( *this );

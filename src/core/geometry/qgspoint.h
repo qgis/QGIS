@@ -369,10 +369,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint operator-( QgsVector v ) const { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
     //implementation of inherited methods
-    bool isEmpty() const override { return false; }
-    QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
-    QString geometryType() const override { return QStringLiteral( "Point" ); }
-    int dimension() const override { return 0; }
+    bool isEmpty() const override;
+    QgsRectangle boundingBox() const override;
+    QString geometryType() const override;
+    int dimension() const override;
     QgsPoint *clone() const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
@@ -387,13 +387,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
                     bool transformZ = false ) override;
     void transform( const QTransform &t ) override;
     QgsCoordinateSequence coordinateSequence() const override;
-    int nCoordinates() const override { return 1; }
+    int nCoordinates() const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //low-level editing
-    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
+    bool deleteVertex( QgsVertexId position ) override;
 
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
@@ -401,12 +401,12 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     /** Angle undefined. Always returns 0.0
         \param vertex the vertex id
         \returns 0.0*/
-    double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
+    double vertexAngle( QgsVertexId vertex ) const override;
 
-    int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }
-    int ringCount( int /*part*/ = 0 ) const override { return 1; }
-    int partCount() const override { return 1; }
-    QgsPoint vertexAt( QgsVertexId /*id*/ ) const override { return *this; }
+    int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override;
+    int ringCount( int /*part*/ = 0 ) const override;
+    int partCount() const override;
+    QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
     QgsPoint *toCurveType() const override SIP_FACTORY;
 
     bool addZValue( double zValue = 0 ) override;

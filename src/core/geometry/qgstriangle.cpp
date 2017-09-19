@@ -107,6 +107,11 @@ bool QgsTriangle::operator!=( const QgsTriangle &other ) const
   return !operator==( other );
 }
 
+QString QgsTriangle::geometryType() const
+{
+  return QStringLiteral( "Triangle" );
+}
+
 void QgsTriangle::clear()
 {
   QgsCurvePolygon::clear();
