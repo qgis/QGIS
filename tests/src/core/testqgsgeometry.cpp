@@ -1005,6 +1005,9 @@ void TestQgsGeometry::circularString()
   QVERIFY( l1.hasCurvedSegments() );
   QCOMPARE( l1.area(), 0.0 );
   QCOMPARE( l1.perimeter(), 0.0 );
+  QgsPointSequence pts;
+  l1.points( pts );
+  QVERIFY( pts.empty() );
 
   //setPoints
   QgsCircularString l2;
@@ -1021,6 +1024,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( l2.hasCurvedSegments() );
   QCOMPARE( l2.area(), 0.0 );
   QCOMPARE( l2.perimeter(), 0.0 );
+  l2.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1.0, 2.0 ) );
 
   //setting first vertex should set linestring z/m type
   QgsCircularString l3;
@@ -1030,6 +1035,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( !l3.isMeasure() );
   QCOMPARE( l3.wkbType(), QgsWkbTypes::CircularStringZ );
   QCOMPARE( l3.wktTypeStr(), QString( "CircularStringZ" ) );
+  l3.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3.0 ) );
 
   QgsCircularString l4;
   l4.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1.0, 2.0, 0.0, 3.0 ) );
@@ -1038,6 +1045,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( l4.isMeasure() );
   QCOMPARE( l4.wkbType(), QgsWkbTypes::CircularStringM );
   QCOMPARE( l4.wktTypeStr(), QString( "CircularStringM" ) );
+  l4.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1.0, 2.0, 0.0, 3.0 ) );
 
   QgsCircularString l5;
   l5.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
@@ -1046,6 +1055,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( l5.isMeasure() );
   QCOMPARE( l5.wkbType(), QgsWkbTypes::CircularStringZM );
   QCOMPARE( l5.wktTypeStr(), QString( "CircularStringZM" ) );
+  l5.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
 
   //clear
   l5.clear();
@@ -1072,6 +1083,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( !l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::CircularString );
   QVERIFY( l8.hasCurvedSegments() );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
 
   //setPoints with empty list, should clear linestring
   l8.setPoints( QgsPointSequence() );
@@ -1082,6 +1095,8 @@ void TestQgsGeometry::circularString()
   QCOMPARE( l8.ringCount(), 0 );
   QCOMPARE( l8.partCount(), 0 );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::CircularString );
+  l8.points( pts );
+  QVERIFY( pts.empty() );
 
   //setPoints with z
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 2, 3, 4 ) );
@@ -1089,6 +1104,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( l8.is3D() );
   QVERIFY( !l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::CircularStringZ );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 2, 3, 4 ) );
 
   //setPoints with m
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ) << QgsPoint( QgsWkbTypes::PointM, 2, 3, 0, 4 ) );
@@ -1096,6 +1113,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( !l8.is3D() );
   QVERIFY( l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::CircularStringM );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ) << QgsPoint( QgsWkbTypes::PointM, 2, 3, 0, 4 ) );
 
   //setPoints with zm
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 3, 4, 5 ) );
@@ -1103,6 +1122,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( l8.is3D() );
   QVERIFY( l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::CircularStringZM );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 3, 4, 5 ) );
 
   //setPoints with MIXED dimensionality of points
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointM, 2, 3, 0, 5 ) );
@@ -1110,6 +1131,8 @@ void TestQgsGeometry::circularString()
   QVERIFY( l8.is3D() );
   QVERIFY( l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::CircularStringZM );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 3, 0, 5 ) );
 
   //test point
   QCOMPARE( l8.pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) );
@@ -2542,6 +2565,9 @@ void TestQgsGeometry::lineString()
   QVERIFY( !l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::LineString );
   QVERIFY( !l8.hasCurvedSegments() );
+  QgsPointSequence pts;
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
 
   //setPoints with empty list, should clear linestring
   l8.setPoints( QgsPointSequence() );
@@ -2552,6 +2578,8 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l8.ringCount(), 0 );
   QCOMPARE( l8.partCount(), 0 );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::LineString );
+  l8.points( pts );
+  QVERIFY( pts.isEmpty() );
 
   //setPoints with z
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 2, 3, 4 ) );
@@ -2559,6 +2587,8 @@ void TestQgsGeometry::lineString()
   QVERIFY( l8.is3D() );
   QVERIFY( !l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::LineStringZ );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 2, 3, 4 ) );
 
   //setPoints with 25d
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 1, 2, 4 ) << QgsPoint( QgsWkbTypes::Point25D, 2, 3, 4 ) );
@@ -2567,6 +2597,8 @@ void TestQgsGeometry::lineString()
   QVERIFY( !l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::LineString25D );
   QCOMPARE( l8.pointN( 0 ), QgsPoint( QgsWkbTypes::Point25D, 1, 2, 4 ) );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 1, 2, 4 ) << QgsPoint( QgsWkbTypes::Point25D, 2, 3, 4 ) );
 
   //setPoints with m
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ) << QgsPoint( QgsWkbTypes::PointM, 2, 3, 0, 4 ) );
@@ -2574,6 +2606,8 @@ void TestQgsGeometry::lineString()
   QVERIFY( !l8.is3D() );
   QVERIFY( l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::LineStringM );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ) << QgsPoint( QgsWkbTypes::PointM, 2, 3, 0, 4 ) );
 
   //setPoints with zm
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 3, 4, 5 ) );
@@ -2581,6 +2615,8 @@ void TestQgsGeometry::lineString()
   QVERIFY( l8.is3D() );
   QVERIFY( l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::LineStringZM );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 3, 4, 5 ) );
 
   //setPoints with MIXED dimensionality of points
   l8.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointM, 2, 3, 0, 5 ) );
@@ -2588,6 +2624,8 @@ void TestQgsGeometry::lineString()
   QVERIFY( l8.is3D() );
   QVERIFY( l8.isMeasure() );
   QCOMPARE( l8.wkbType(), QgsWkbTypes::LineStringZM );
+  l8.points( pts );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) << QgsPoint( QgsWkbTypes::PointZM, 2, 3, 0, 5 ) );
 
   //test point
   QCOMPARE( l8.pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 5 ) );
