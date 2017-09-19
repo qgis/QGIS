@@ -24,6 +24,10 @@ class QgsDataItem;
 
 class QString;
 
+//! handlesDirectoryPath function
+typedef bool handlesDirectoryPath_t( const QString &path ) SIP_SKIP;
+
+
 /** \ingroup core
  * This is the interface for those who want to add custom data items to the browser tree.
  *
@@ -54,6 +58,19 @@ class CORE_EXPORT QgsDataItemProvider
     //! Create a vector of instances of QgsDataItem (or null) for given path and parent item.
     //! Caller takes responsibility of deleting created items.
     virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) { Q_UNUSED( path ); Q_UNUSED( parentItem ); return QVector<QgsDataItem *>(); }
+
+    /**
+     * Returns true if the provider will handle the directory at the specified \a path.
+     *
+     * If the provider indicates that it will handle the directory, the default creation and
+     * population of directory items for the path will be avoided and it is left to the
+     * provider to correctly populate relevant entries for the path.
+     *
+     * The default implementation returns false for all paths.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool handlesDirectoryPath( const QString &path );
 };
 
 #endif // QGSDATAITEMPROVIDER_H

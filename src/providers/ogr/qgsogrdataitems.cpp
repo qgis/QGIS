@@ -668,3 +668,12 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   OGR_DS_Destroy( hDataSource );
   return item;
 }
+
+QGISEXTERN bool handlesDirectoryPath( const QString &path )
+{
+  QFileInfo info( path );
+  QString suffix = info.suffix().toLower();
+
+  QStringList dirExtensions = directoryExtensions();
+  return dirExtensions.contains( suffix );
+}
