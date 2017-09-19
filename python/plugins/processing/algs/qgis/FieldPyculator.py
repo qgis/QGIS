@@ -97,8 +97,8 @@ class FieldsPyculator(QgisAlgorithm):
         globalExpression = self.parameterAsString(parameters, self.GLOBAL, context)
 
         fields = source.fields()
-        fields.append(QgsField(field_name, self.TYPES[field_type], '',
-                               width, precision))
+        field = QgsField(field_name, field_type, '', width, precision)
+        fields.append(field)
         new_ns = {}
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
