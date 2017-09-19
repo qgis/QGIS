@@ -873,7 +873,8 @@ double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, do
 
   if ( leftOf )
   {
-    *leftOf = clockwise ? sqrDistance > radius : sqrDistance < radius;
+    double sqrDistancePointToCenter = ( pt.x() - centerX ) * ( pt.x() - centerX ) + ( pt.y() - centerY ) * ( pt.y() - centerY );
+    *leftOf = clockwise ? sqrDistancePointToCenter > radius * radius : sqrDistancePointToCenter < radius * radius;
   }
 
   return sqrDistance;
