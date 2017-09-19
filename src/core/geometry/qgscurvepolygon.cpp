@@ -37,6 +37,16 @@ QgsCurvePolygon::~QgsCurvePolygon()
   clear();
 }
 
+QString QgsCurvePolygon::geometryType() const
+{
+  return QStringLiteral( "CurvePolygon" );
+}
+
+int QgsCurvePolygon::dimension() const
+{
+  return 2;
+}
+
 QgsCurvePolygon::QgsCurvePolygon( const QgsCurvePolygon &p )
   : QgsSurface( p )
 
@@ -70,6 +80,44 @@ QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
     }
   }
   return *this;
+}
+
+bool QgsCurvePolygon::operator==( const QgsCurvePolygon &other ) const
+{
+  //run cheap checks first
+  if ( mWkbType != other.mWkbType )
+    return false;
+
+  if ( ( !mExteriorRing && other.mExteriorRing ) || ( mExteriorRing && !other.mExteriorRing ) )
+    return false;
+
+  if ( mInteriorRings.count() != other.mInteriorRings.count() )
+    return false;
+
+  // compare rings
+  if ( mExteriorRing && other.mExteriorRing )
+  {
+    if ( *mExteriorRing != *other.mExteriorRing )
+      return false;
+  }
+
+  for ( int i = 0; i < mInteriorRings.count(); ++i )
+  {
+    if ( ( !mInteriorRings.at( i ) && other.mInteriorRings.at( i ) ) ||
+         ( mInteriorRings.at( i ) && !other.mInteriorRings.at( i ) ) )
+      return false;
+
+    if ( mInteriorRings.at( i ) && other.mInteriorRings.at( i ) &&
+         *mInteriorRings.at( i ) != *other.mInteriorRings.at( i ) )
+      return false;
+  }
+
+  return true;
+}
+
+bool QgsCurvePolygon::operator!=( const QgsCurvePolygon &other ) const
+{
+  return !operator==( other );
 }
 
 QgsCurvePolygon *QgsCurvePolygon::clone() const
@@ -853,6 +901,16 @@ double QgsCurvePolygon::vertexAngle( QgsVertexId vertex ) const
 int QgsCurvePolygon::vertexCount( int /*part*/, int ring ) const
 {
   return ring == 0 ? mExteriorRing->vertexCount() : mInteriorRings[ring - 1]->vertexCount();
+}
+
+int QgsCurvePolygon::ringCount( int ) const
+{
+  return ( nullptr != mExteriorRing ) + mInteriorRings.size();
+}
+
+int QgsCurvePolygon::partCount() const
+{
+  return ringCount() > 0 ? 1 : 0;
 }
 
 QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const

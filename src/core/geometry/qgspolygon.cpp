@@ -28,44 +28,6 @@ QgsPolygonV2::QgsPolygonV2()
   mWkbType = QgsWkbTypes::Polygon;
 }
 
-bool QgsPolygonV2::operator==( const QgsPolygonV2 &other ) const
-{
-  //run cheap checks first
-  if ( mWkbType != other.mWkbType )
-    return false;
-
-  if ( ( !mExteriorRing && other.mExteriorRing ) || ( mExteriorRing && !other.mExteriorRing ) )
-    return false;
-
-  if ( mInteriorRings.count() != other.mInteriorRings.count() )
-    return false;
-
-  // compare rings
-  if ( mExteriorRing && other.mExteriorRing )
-  {
-    if ( *mExteriorRing != *other.mExteriorRing )
-      return false;
-  }
-
-  for ( int i = 0; i < mInteriorRings.count(); ++i )
-  {
-    if ( ( !mInteriorRings.at( i ) && other.mInteriorRings.at( i ) ) ||
-         ( mInteriorRings.at( i ) && !other.mInteriorRings.at( i ) ) )
-      return false;
-
-    if ( mInteriorRings.at( i ) && other.mInteriorRings.at( i ) &&
-         *mInteriorRings.at( i ) != *other.mInteriorRings.at( i ) )
-      return false;
-  }
-
-  return true;
-}
-
-bool QgsPolygonV2::operator!=( const QgsPolygonV2 &other ) const
-{
-  return !operator==( other );
-}
-
 QString QgsPolygonV2::geometryType() const
 {
   return QStringLiteral( "Polygon" );

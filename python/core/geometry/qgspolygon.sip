@@ -22,12 +22,6 @@ class QgsPolygonV2: QgsCurvePolygon
   public:
     QgsPolygonV2();
 
-    bool operator==( const QgsPolygonV2 &other ) const;
-    bool operator!=( const QgsPolygonV2 &other ) const;
-%Docstring
- :rtype: bool
-%End
-
     virtual QString geometryType() const;
 
     virtual QgsPolygonV2 *clone() const /Factory/;

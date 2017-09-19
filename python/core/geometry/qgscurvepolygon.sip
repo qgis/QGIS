@@ -23,10 +23,19 @@ class QgsCurvePolygon: QgsSurface
   public:
     QgsCurvePolygon();
     QgsCurvePolygon( const QgsCurvePolygon &p );
+
+    bool operator==( const QgsCurvePolygon &other ) const;
+    bool operator!=( const QgsCurvePolygon &other ) const;
+%Docstring
+ :rtype: bool
+%End
+
     ~QgsCurvePolygon();
 
     virtual QString geometryType() const;
+
     virtual int dimension() const;
+
     virtual QgsCurvePolygon *clone() const /Factory/;
 
     virtual void clear();
@@ -163,10 +172,12 @@ Adds an interior ring to the geometry (takes ownership)
  :rtype: float
 %End
 
-    virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const;
+    virtual int vertexCount( int part = 0, int ring = 0 ) const;
 
-    virtual int ringCount( int /*part*/ = 0 ) const;
+    virtual int ringCount( int part = 0 ) const;
+
     virtual int partCount() const;
+
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
 
