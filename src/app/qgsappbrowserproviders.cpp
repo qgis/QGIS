@@ -15,6 +15,7 @@
 
 #include "qgsappbrowserproviders.h"
 #include "qgisapp.h"
+#include <QDesktopServices>
 
 //
 // QgsQlrDataItem
@@ -208,12 +209,17 @@ bool QgsPyDataItem::handleDoubleClick()
 
 QList<QAction *> QgsPyDataItem::actions()
 {
-  QAction *runScript = new QAction( tr( "Run Script" ), this );
+  QAction *runScript = new QAction( tr( "&Run Script" ), this );
   connect( runScript, &QAction::triggered, this, [ = ]
   {
     QgisApp::instance()->runScript( path() );
   } );
-  return QList<QAction *>() << runScript ;
+  QAction *editScript = new QAction( tr( "Open in External &Editor" ), this );
+  connect( editScript, &QAction::triggered, this, [ = ]
+  {
+    QDesktopServices::openUrl( QUrl::fromLocalFile( path() ) );
+  } );
+  return QList<QAction *>() << runScript << editScript;
 }
 
 //
