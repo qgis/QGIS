@@ -47,3 +47,8 @@ void QgsDefaultValue::setApplyOnUpdate( bool applyOnUpdate )
 {
   mApplyOnUpdate = applyOnUpdate;
 }
+
+bool QgsDefaultValue::isValid() const
+{
+  return mExpression.isEmpty();
+}

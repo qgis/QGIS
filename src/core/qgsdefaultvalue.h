@@ -83,6 +83,12 @@ class CORE_EXPORT QgsDefaultValue
      */
     void setApplyOnUpdate( bool applyOnUpdate );
 
+    /**
+     * Returns if this default value is should be applied.
+     * \returns false if the expression is a null string.
+     */
+    bool isValid() const;
+
   private:
     QString mExpression;
     bool mApplyOnUpdate = false;

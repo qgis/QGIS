@@ -1319,7 +1319,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void updateFields();
 
-    /** Returns the calculated default value for the specified field index. The default
+    /**
+     * Returns the calculated default value for the specified field index. The default
      * value may be taken from a client side default value expression (see setDefaultValueExpression())
      * or taken from the underlying data provider.
      * \param index field index
@@ -1335,25 +1336,30 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
                            QgsExpressionContext *context = nullptr ) const;
 
-    /** Sets an expression to use when calculating the default value for a field.
+    /**
+     * Sets the definition of the expression to use when calculating the default value for a field.
      * \param index field index
-     * \param expression expression to evaluate when calculating default values for field. Pass
+     * \param definition default value definition to use and evaluate
+     * when calculating default values for field. Pass
      * an empty expression to clear the default.
+     *
      * \since QGIS 3.0
      * \see defaultValue()
-     * \see defaultValueExpression()
+     * \see defaultValueDefinition()
      */
-    void setDefaultValueExpression( int index, const QString &expression );
+    void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
 
-    /** Returns the expression used when calculating the default value for a field.
+    /**
+     * Returns the definition of the expression used when calculating the default value for a field.
      * \param index field index
-     * \returns expression evaluated when calculating default values for field, or an
+     * \returns definition of the default value with the expression evaluated
+     * when calculating default values for field, or definition with an
      * empty string if no default is set
      * \since QGIS 3.0
      * \see defaultValue()
-     * \see setDefaultValueExpression()
+     * \see setDefaultValueDefinition()
      */
-    QString defaultValueExpression( int index ) const;
+    QgsDefaultValue defaultValueDefinition( int index ) const;
 
     /**
      * Returns any constraints which are present for a specified
