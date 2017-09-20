@@ -673,7 +673,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            QStringList()
                            << QStringLiteral( "CRLF" )
                            << QStringLiteral( "LF" ),
-                           QLatin1String( "" ), // Default value
+                           QString(), // Default value
                            true // Allow None
                          ) );
 
@@ -739,7 +739,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          QStringList()
                          << QStringLiteral( "CRLF" )
                          << QStringLiteral( "LF" ),
-                         QLatin1String( "" ), // Default value
+                         QString(), // Default value
                          true // Allow None
                        ) );
 
@@ -754,7 +754,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          << QStringLiteral( "AS_XYZ" )
                          << QStringLiteral( "AS_XY" )
                          << QStringLiteral( "AS_YX" ),
-                         QStringLiteral( "" ), // Default value
+                         QString(), // Default value
                          true // Allow None
                        ) );
 
@@ -1022,7 +1022,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                                         "Note that the schema file isn't actually accessed by OGR, so it "
                                         "is up to the user to ensure it will match the schema of the OGR "
                                         "produced GML data file." ),
-                           QLatin1String( "" )  // Default value
+                           QString()  // Default value
                          ) );
 
   datasetOptions.insert( QStringLiteral( "XSISCHEMA" ), new SetOption(
@@ -3215,7 +3215,7 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
       case QgsVectorFileWriter::String:
       {
         QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption *>( option );
-        if ( opt )
+        if ( opt && !opt->defaultValue.isNull() )
         {
           list.append( QStringLiteral( "%1=%2" ).arg( it.key(), opt->defaultValue ) );
         }
