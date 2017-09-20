@@ -240,5 +240,19 @@ class PyQgsOGRProvider(unittest.TestCase):
         os.unlink(datasource)
         self.assertFalse(os.path.exists(datasource))
 
+    def testGdb(self):
+        """ Test opening a GDB database layer"""
+        gdb_path = os.path.join(unitTestDataPath(), 'test_gdb.gdb')
+        for i in range(3):
+            l = QgsVectorLayer(gdb_path + '|layerid=' + str(i), 'test', 'ogr')
+            self.assertTrue(l.isValid())
+
+    def testGdbFilter(self):
+        """ Test opening a GDB database layer with filter"""
+        gdb_path = os.path.join(unitTestDataPath(), 'test_gdb.gdb')
+        l = QgsVectorLayer(gdb_path + '|layerid=1|subset="text" = \'shape 2\'', 'test', 'ogr')
+        self.assertTrue(l.isValid())
+
+
 if __name__ == '__main__':
     unittest.main()
