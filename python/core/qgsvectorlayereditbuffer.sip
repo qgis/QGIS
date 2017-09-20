@@ -148,4 +148,13 @@ class QgsVectorLayerEditBuffer : QObject
     void updateAttributeMapIndex( QgsAttributeMap& attrs, int index, int offset ) const;
 
     void updateLayerFields();
+
+    /** Apply geom modification basing on provider geometry type.
+     * Geom is modified only if successful convertion is possibile.
+     * In case of convertion a message is notified in the log
+     * @param geom pointer to the geometry that is adapted to provider
+     * @return bool true if success
+     * @note added in QGIS 2.18
+     */
+    bool adaptGeometry( QgsGeometry* geom );
 };
