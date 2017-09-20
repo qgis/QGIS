@@ -298,6 +298,7 @@ Create the instance from a DOM element with saved configuration
 %End
     virtual bool requiresAdvancedEffects() const;
 
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
 
   protected:
 };
