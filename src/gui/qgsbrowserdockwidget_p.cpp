@@ -234,7 +234,7 @@ void QgsBrowserDirectoryProperties::setItem( QgsDataItem *item )
   if ( !item )
     return;
 
-  mPathLabel->setText( directoryItem->dirPath() );
+  mPathLabel->setText( QDir::toNativeSeparators( directoryItem->dirPath() ) );
   mDirectoryWidget = new QgsDirectoryParamWidget( directoryItem->dirPath(), this );
   mLayout->addWidget( mDirectoryWidget );
 }

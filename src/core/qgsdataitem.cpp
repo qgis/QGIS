@@ -27,6 +27,7 @@
 #include <QTreeWidgetItem>
 #include <QVector>
 #include <QStyle>
+#include <QDesktopServices>
 
 #include "qgis.h"
 #include "qgsdataitem.h"
@@ -669,7 +670,7 @@ QgsDataCollectionItem::~QgsDataCollectionItem()
 //-----------------------------------------------------------------------
 
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, QDir::toNativeSeparators( name ), path )
   , mDirPath( path )
   , mRefreshLater( false )
 {
@@ -678,7 +679,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, co
 }
 
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, QDir::toNativeSeparators( name ), path )
   , mDirPath( dirPath )
   , mRefreshLater( false )
 {
@@ -688,6 +689,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, co
 
 void QgsDirectoryItem::init()
 {
+  setToolTip( QDir::toNativeSeparators( mDirPath ) );
 }
 
 QIcon QgsDirectoryItem::icon()
@@ -850,6 +852,18 @@ bool QgsDirectoryItem::hiddenPath( const QString &path )
                             QStringList() ).toStringList();
   int idx = hiddenItems.indexOf( path );
   return ( idx > -1 );
+}
+
+QList<QAction *> QgsDirectoryItem::actions()
+{
+  QList<QAction *> result;
+  QAction *openFolder = new QAction( tr( "Open Directory…" ), this );
+  connect( openFolder, &QAction::triggered, this, [ = ]
+  {
+    QDesktopServices::openUrl( QUrl::fromLocalFile( mDirPath ) );
+  } );
+  result << openFolder;
+  return result;
 }
 
 
