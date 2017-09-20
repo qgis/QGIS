@@ -53,7 +53,13 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    explicit QgsBrowserModel( QObject *parent = nullptr );
+
+    /**
+      * @brief QgsBrowserModel
+      * @param parent
+      * @param initialize immediately called init, default to true
+      */
+    explicit QgsBrowserModel( QObject *parent = nullptr , bool initialize = true );
     ~QgsBrowserModel();
 
     enum ItemDataRole

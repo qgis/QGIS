@@ -804,7 +804,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mSnappingDialog->setObjectName( "SnappingOption" );
   endProfile();
 
-  mBrowserModel = new QgsBrowserModel( this );
+  // Create the (shared) model with delayed initialization
+  mBrowserModel = new QgsBrowserModel( this, false );
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser Panel" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( "Browser" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );

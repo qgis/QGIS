@@ -47,12 +47,14 @@ static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
   return QString::localeAwareCompare( a->name(), b->name() ) < 0;
 }
 
-QgsBrowserModel::QgsBrowserModel( QObject *parent )
+QgsBrowserModel::QgsBrowserModel( QObject *parent, bool initialize )
     : QAbstractItemModel( parent )
     , mFavourites( nullptr )
     , mProjectHome( nullptr )
     , mInitialized( false )
 {
+  if ( initialize )
+    init();
 }
 
 QgsBrowserModel::~QgsBrowserModel()
