@@ -70,6 +70,13 @@ class QgsDefaultValue
  applied when a feature is updated or only when it's created.
 %End
 
+    bool isValid() const;
+%Docstring
+ Returns if this default value is should be applied.
+ :return: false if the expression is a null string.
+ :rtype: bool
+%End
+
 };
 
 /************************************************************************

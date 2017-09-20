@@ -244,7 +244,7 @@ QgsVectorLayer *QgsVectorLayer::clone() const
     layer->setFieldAlias( i, attributeAlias( i ) );
     layer->setEditorWidgetSetup( i, editorWidgetSetup( i ) );
     layer->setConstraintExpression( i, constraintExpression( i ), constraintDescription( i ) );
-    layer->setDefaultValueExpression( i, defaultValueExpression( i ) );
+    layer->setDefaultValueDefinition( i, defaultValueDefinition( i ) );
 
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> constraints = fieldConstraintsAndStrength( i );
     auto constraintIt = constraints.constBegin();
@@ -3047,24 +3047,23 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature &feature, Qgs
   return val;
 }
 
-void QgsVectorLayer::setDefaultValueExpression( int index, const QString &expression )
+void QgsVectorLayer::setDefaultValueDefinition( int index, const QgsDefaultValue &definition )
 {
   if ( index < 0 || index >= mFields.count() )
     return;
 
-  if ( expression.isEmpty() )
+  if ( definition.isValid() )
   {
     mDefaultExpressionMap.remove( mFields.at( index ).name() );
   }
   else
   {
-    mDefaultExpressionMap.insert( mFields.at( index ).name(), expression );
+    mDefaultExpressionMap.insert( mFields.at( index ).name(), definition );
   }
   updateFields();
 }
 
-// TODO to QgsDefaultValue defaultValueDenfinition( int index )
-QString QgsVectorLayer::defaultValueExpression( int index ) const
+QgsDefaultValue QgsVectorLayer::defaultValueDefinition( int index ) const
 {
   if ( index < 0 || index >= mFields.count() )
     return QString();

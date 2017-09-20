@@ -1406,27 +1406,30 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  :rtype: QVariant
 %End
 
-    void setDefaultValueExpression( int index, const QString &expression );
+    void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
 %Docstring
- Sets an expression to use when calculating the default value for a field.
+ Sets the definition of the expression to use when calculating the default value for a field.
  \param index field index
- \param expression expression to evaluate when calculating default values for field. Pass
+ \param definition default value definition to use and evaluate
+ when calculating default values for field. Pass
  an empty expression to clear the default.
+
 .. versionadded:: 3.0
 .. seealso:: defaultValue()
-.. seealso:: defaultValueExpression()
+.. seealso:: defaultValueDefinition()
 %End
 
-    QString defaultValueExpression( int index ) const;
+    QgsDefaultValue defaultValueDefinition( int index ) const;
 %Docstring
- Returns the expression used when calculating the default value for a field.
+ Returns the definition of the expression used when calculating the default value for a field.
  \param index field index
- :return: expression evaluated when calculating default values for field, or an
+ :return: definition of the default value with the expression evaluated
+ when calculating default values for field, or definition with an
  empty string if no default is set
 .. versionadded:: 3.0
 .. seealso:: defaultValue()
-.. seealso:: setDefaultValueExpression()
- :rtype: str
+.. seealso:: setDefaultValueDefinition()
+ :rtype: QgsDefaultValue
 %End
 
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;

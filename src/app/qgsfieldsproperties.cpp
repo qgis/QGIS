@@ -574,7 +574,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setConstraintExpression( cfg.mConstraint );
   attributeTypeDialog.setConstraintExpressionDescription( cfg.mConstraintDescription );
   attributeTypeDialog.setConstraintExpressionEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
-  attributeTypeDialog.setDefaultValueExpression( mLayer->defaultValueExpression( index ) );
+  attributeTypeDialog.setDefaultValueExpression( mLayer->defaultValueDefinition( index ).expression() );
 
   attributeTypeDialog.setEditorWidgetConfig( cfg.mEditorWidgetConfig );
   attributeTypeDialog.setEditorWidgetType( cfg.mEditorWidgetType );
@@ -601,7 +601,7 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   cfg.mConstraintDescription = attributeTypeDialog.constraintExpressionDescription();
   cfg.mConstraint = attributeTypeDialog.constraintExpression();
-  mLayer->setDefaultValueExpression( index, attributeTypeDialog.defaultValueExpression() );
+  mLayer->setDefaultValueDefinition( index, attributeTypeDialog.defaultValueExpression() );
 
   cfg.mEditorWidgetType = attributeTypeDialog.editorWidgetType();
   cfg.mEditorWidgetConfig = attributeTypeDialog.editorWidgetConfig();
