@@ -14,17 +14,13 @@ ccache -z
 
 cd /root/QGIS
 
-sleep 20
-
 printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=qgis_test\nuser=docker\npassword=docker" > ~/.pg_service.conf
 export PGUSER=docker
 export PGHOST=postgres
 export PGPASSWORD=docker
 export PGDATABASE=qgis_test
 
-# export PYTHONIOENCODING="utf-8"
-
-/root/QGIS/tests/testdata/provider/testdata_pg.sh
+# Build
 
 mkdir -p build &&
 
@@ -52,6 +48,9 @@ export CTEST_BUILD_COMMAND="/usr/bin/ninja"
 ls -la --full-time python/plugins/processing/tests/testdata/expected/polys_centroid.*
 
 ninja
+
+# Restore postgres test data
+/root/QGIS/tests/testdata/provider/testdata_pg.sh
 
 python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
 
