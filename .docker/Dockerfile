@@ -97,6 +97,7 @@ RUN echo "alias python=python3" >> ~/.bash_aliases
 ENV CC=/usr/lib/ccache/clang
 ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
+ENV LANG=C.UTF-8
 
 # RUN cmake --version
 # RUN ${CC} --version
