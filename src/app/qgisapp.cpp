@@ -5554,6 +5554,7 @@ void QgisApp::runScript( const QString &filePath )
 
   mPythonUtils->runString(
     QString( "import sys\n"
+             "from qgis.utils import iface\n"
              "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read())\n" ).arg( filePath )
     , tr( "Failed to run Python script:" ), false );
 #endif
