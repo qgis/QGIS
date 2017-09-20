@@ -103,10 +103,10 @@ class ProcessingDropHandler(QgsCustomDropHandler):
 class ProcessingModelItem(QgsDataItem):
 
     def __init__(self, parent, name, path):
-        super(ProcessingModelItem, self).__init__(QgsDataItem.Custom,parent,name,path)
-        self.setState(QgsDataItem.Populated ) #no children
+        super(ProcessingModelItem, self).__init__(QgsDataItem.Custom, parent, name, path)
+        self.setState(QgsDataItem.Populated)  # no children
         self.setIconName(":/images/themes/default/processingModel.svg")
-        self.setToolTip(QDir.toNativeSeparators(path) )
+        self.setToolTip(QDir.toNativeSeparators(path))
 
     def hasDragEnabled(self):
         return True
@@ -158,6 +158,7 @@ class ProcessingDataItemProvider(QgsDataItemProvider):
             if alg.fromFile(path):
                 return ProcessingModelItem(parentItem, alg.name(), path)
         return None
+
 
 class ProcessingPlugin(object):
 
