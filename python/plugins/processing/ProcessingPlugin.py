@@ -33,10 +33,14 @@ import sys
 
 from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsDataItemProvider,
+                       QgsDataProvider,
+                       QgsDataItem,
+                       QgsMimeDataUtils)
 from qgis.gui import (QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir, QFileInfo
 from qgis.PyQt.QtWidgets import QMenu, QAction
 from qgis.PyQt.QtGui import QIcon
 
@@ -74,7 +78,10 @@ class ProcessingDropHandler(QgsCustomDropHandler):
     def handleFileDrop(self, file):
         if not file.lower().endswith('.model3'):
             return False
+        self.runAlg(file)
 
+    @staticmethod
+    def runAlg(file):
         alg = QgsProcessingModelAlgorithm()
         if not alg.fromFile(file):
             return False
@@ -85,6 +92,72 @@ class ProcessingDropHandler(QgsCustomDropHandler):
         dlg.show()
         return True
 
+    def customUriProviderKey(self):
+        return 'processing'
+
+    def handleCustomUriDrop(self, uri):
+        path = uri.uri
+        self.runAlg(path)
+
+
+class ProcessingModelItem(QgsDataItem):
+
+    def __init__(self, parent, name, path):
+        super(ProcessingModelItem, self).__init__(QgsDataItem.Custom,parent,name,path)
+        self.setState(QgsDataItem.Populated ) #no children
+        self.setIconName(":/images/themes/default/processingModel.svg")
+        self.setToolTip(QDir.toNativeSeparators(path) )
+
+    def hasDragEnabled(self):
+        return True
+
+    def handleDoubleClick(self):
+        self.runModel()
+        return True
+
+    def mimeUri(self):
+        u = QgsMimeDataUtils.Uri()
+        u.layerType = "custom"
+        u.providerKey = "processing"
+        u.name = self.name()
+        u.uri = self.path()
+        return u
+
+    def runModel(self):
+        ProcessingDropHandler.runAlg(self.path())
+
+    def editModel(self):
+        dlg = ModelerDialog()
+        dlg.loadModel(self.path())
+        dlg.show()
+
+    def actions(self):
+        run_model_action = QAction(self.tr('&Run Model…'), self)
+        run_model_action.triggered.connect(self.runModel)
+        edit_model_action = QAction(self.tr('&Edit Model…'), self)
+        edit_model_action.triggered.connect(self.editModel)
+        return [run_model_action, edit_model_action]
+
+
+class ProcessingDataItemProvider(QgsDataItemProvider):
+
+    def __init__(self):
+        super(ProcessingDataItemProvider, self).__init__()
+
+    def name(self):
+        return 'processing'
+
+    def capabilities(self):
+        return QgsDataProvider.File
+
+    def createDataItem(self, path, parentItem):
+        file_info = QFileInfo(path)
+
+        if file_info.suffix().lower() == 'model3':
+            alg = QgsProcessingModelAlgorithm()
+            if alg.fromFile(path):
+                return ProcessingModelItem(parentItem, alg.name(), path)
+        return None
 
 class ProcessingPlugin(object):
 
@@ -95,6 +168,8 @@ class ProcessingPlugin(object):
         iface.registerOptionsWidgetFactory(self.options_factory)
         self.drop_handler = ProcessingDropHandler()
         iface.registerCustomDropHandler(self.drop_handler)
+        self.item_provider = ProcessingDataItemProvider()
+        QgsApplication.dataItemProviderRegistry().addProvider(self.item_provider)
         self.locator_filter = AlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.locator_filter)
         Processing.initialize()
@@ -182,6 +257,7 @@ class ProcessingPlugin(object):
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
         self.iface.deregisterLocatorFilter(self.locator_filter)
         self.iface.unregisterCustomDropHandler(self.drop_handler)
+        QgsApplication.dataItemProviderRegistry().removeProvider(self.item_provider)
 
         removeMenus()
         Processing.deinitialize()
