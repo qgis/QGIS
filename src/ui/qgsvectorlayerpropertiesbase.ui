@@ -327,7 +327,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>7</number>
+          <number>6</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -854,8 +854,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>302</width>
-                <height>372</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1193,8 +1193,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -1320,7 +1320,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>725</width>
-                <height>350</height>
+                <height>520</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -2073,15 +2073,15 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

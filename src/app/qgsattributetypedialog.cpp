@@ -39,8 +39,8 @@
 #include <climits>
 #include <cfloat>
 
-QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
-  : QDialog()
+QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QWidget( parent )
   , mLayer( vl )
   , mFieldIdx( fieldIdx )
 {
@@ -294,6 +294,12 @@ void QgsAttributeTypeDialog::setDefaultValueExpression( const QString &expressio
 {
   mExpressionWidget->setExpression( expression );
 }
+
+int QgsAttributeTypeDialog::fieldIdx() const
+{
+  return mFieldIdx;
+}
+
 
 QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
 {

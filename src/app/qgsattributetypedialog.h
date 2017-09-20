@@ -24,14 +24,14 @@
 #include "qgsvectordataprovider.h"
 #include "qgis_app.h"
 
-class QDialog;
+class QWidget;
 
-class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
+class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-    QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx );
+    QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
     ~QgsAttributeTypeDialog();
 
     /**
@@ -162,6 +162,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      * Sets the expression used for the field's default value
      */
     void setDefaultValueExpression( const QString &expression );
+
+    /**
+     * Returns the field id
+     */
+    int fieldIdx() const;
 
     QgsExpressionContext createExpressionContext() const override;
 

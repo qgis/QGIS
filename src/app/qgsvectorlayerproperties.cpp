@@ -92,6 +92,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , diagramPropertiesDialog( nullptr )
   , mFieldsPropertiesDialog( nullptr )
   , mSourceFieldsPropertiesDialog( nullptr )
+  , mAttributesFormPropertiesDialog( nullptr )
 {
   setupUi( this );
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -213,7 +214,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   //QgisApp::instance(), [ = ]( QgsMapLayer * layer ) { QgisApp::instance()->toggleEditing( layer ); } );
 
   mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame );
-  //mAttributesFormPropertiesDialog->layout()->setMargin( 0 );
+  mAttributesFormPropertiesDialog->layout()->setMargin( 0 );
   mAttributesFormFrame->setLayout( new QVBoxLayout( mAttributesFormFrame ) );
   mAttributesFormFrame->layout()->setMargin( 0 );
   mAttributesFormFrame->layout()->addWidget( mAttributesFormPropertiesDialog );
@@ -572,6 +573,8 @@ void QgsVectorLayerProperties::apply()
 
   // Apply fields settings
   mFieldsPropertiesDialog->apply();
+  // has to be done then mSourceFieldsPropertiesDialog->apply();
+  mAttributesFormPropertiesDialog->apply();
 
   if ( mLayer->renderer() )
   {

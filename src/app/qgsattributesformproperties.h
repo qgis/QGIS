@@ -41,13 +41,19 @@
 #include "qgsfieldcalculator.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsaddtaborgroup.h"
+#include "qgsattributetypedialog.h"
+#include "qgsgui.h"
+#include "qgseditorwidgetfactory.h"
+#include "qgseditorwidgetregistry.h"
 
 class DnDTree;
 
 class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAttributesFormProperties
 {
     Q_OBJECT
+
   public:
+
     enum FieldPropertiesRoles
     {
       DnDTreeRole = Qt::UserRole,
@@ -64,7 +70,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       bool showUnlinkButton;
     };
 
-    class DnDTreeItemData
+    class DnDTreeItemData : public QTreeWidgetItem
     {
       public:
         enum Type
@@ -74,6 +80,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
           Container
         };
 
+        //dave: do we need that
         DnDTreeItemData()
           : mType( Field )
           , mColumnCount( 1 )
@@ -122,22 +129,58 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         RelationEditorConfiguration mRelationEditorConfiguration;
     };
 
+
+    /**
+     * Holds the configuration for a field
+     */
+    class FieldConfig
+    {
+      public:
+        FieldConfig();
+        FieldConfig( QgsVectorLayer *layer, int idx );
+
+        bool mEditable;
+        bool mEditableEnabled;
+        bool mLabelOnTop;
+        QgsFieldConstraints::Constraints mConstraints;
+        QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
+        QString mConstraint;
+        QString mConstraintDescription;
+        QPushButton *mButton = nullptr;
+        QString mEditorWidgetType;
+        QMap<QString, QVariant> mEditorWidgetConfig;
+    };
+
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
     ~QgsAttributesFormProperties();
 
+    QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup = true );
+
     void init();
     void apply();
+
     void onAttributeSelectionChanged();
+
+    void loadRelations();
 
     void loadAttributeEditorTree( DnDTree *mTree );
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree* mTree);
 
   protected:
+    void updateButtons();
+
+    FieldConfig configForChild( int index );
+    void setConfigForChild( int index, const FieldConfig &cfg );
+
+    //QList<QgsRelation> mRelations;
     QgsVectorLayer *mLayer = nullptr;
 
     DnDTree *mDragTree = nullptr;
     DnDTree *mDropTree = nullptr;
+
+    QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
+
 
   private:
 
@@ -146,6 +189,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
   private slots:
   void addTabOrGroupButton();
   void removeTabOrGroupButton();
+  void loadAttributeTypeDialog( );
+  void storeAttributeTypeDialog( );
 };
 
 
@@ -179,6 +224,7 @@ class DnDTree : public QTreeWidget
 
     Type type;
 
+    QList<QTreeWidgetItem *> mIndexedWidgets;
   protected:
     virtual void dragMoveEvent( QDragMoveEvent *event ) override;
     virtual void dropEvent( QDropEvent *event ) override;
@@ -190,15 +236,16 @@ class DnDTree : public QTreeWidget
     virtual QStringList mimeTypes() const override;
     virtual QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
 
+
   private slots:
     void onItemDoubleClicked( QTreeWidgetItem *item, int column );
-    void attributeTypeDialog();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
 };
 
 
+Q_DECLARE_METATYPE( QgsAttributesFormProperties::FieldConfig )
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::DnDTreeItemData )
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H

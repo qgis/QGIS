@@ -581,8 +581,8 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setEditorWidgetConfig( cfg.mEditorWidgetConfig );
   attributeTypeDialog.setEditorWidgetType( cfg.mEditorWidgetType );
 
-  if ( !attributeTypeDialog.exec() )
-    return;
+  //if ( !attributeTypeDialog.exec() )
+  //  return;
 
   cfg.mEditable = attributeTypeDialog.fieldEditable();
   cfg.mLabelOnTop = attributeTypeDialog.labelOnTop();
@@ -1074,6 +1074,7 @@ void QgsFieldsProperties::apply()
   }
 
   mLayer->setEditFormConfig( editFormConfig );
+
 }
 /*
  * FieldConfig implementation
