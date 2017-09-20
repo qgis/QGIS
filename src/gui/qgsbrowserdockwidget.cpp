@@ -164,7 +164,7 @@ void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
   if ( item->handleDoubleClick() )
     return;
   else
-    addLayerAtIndex( index ); // default double click handler
+    addLayerAtIndex( index ); // default double-click handler
 }
 
 void QgsBrowserDockWidget::showContextMenu( QPoint pt )

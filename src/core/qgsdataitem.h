@@ -158,8 +158,8 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /**
      * Called when a user double clicks on the item. Subclasses should return true
-     * if they have implemented a double click handler and do not want the default
-     * double click behaviour for items.
+     * if they have implemented a double-click handler and do not want the default
+     * double-click behavior for items.
      * \since QGIS 3.0
      */
     virtual bool handleDoubleClick();
