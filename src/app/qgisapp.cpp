@@ -124,6 +124,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgisplugin.h"
 #include "qgsabout.h"
 #include "qgsalignrasterdialog.h"
+#include "qgsappbrowserproviders.h"
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
 #include "qgsactionmanager.h"
@@ -153,6 +154,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
 #include "qgscustomprojectiondialog.h"
+#include "qgsdataitemproviderregistry.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgsdoublespinbox.h"
@@ -974,6 +976,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mSplash->showMessage( tr( "Checking provider plugins" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   QgsApplication::initQgis();
+
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsQlrDataItemProvider() );
+  registerCustomDropHandler( new QgsQlrDropHandler() );
 
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();

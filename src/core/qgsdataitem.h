@@ -79,7 +79,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       Layer,
       Error,
       Favorites, //!< Represents a favorite item
-      Project //!< Represents a QGIS project
+      Project, //!< Represents a QGIS project
+      Custom, //!< Custom item type
     };
 
     Q_ENUM( Type );
@@ -154,6 +155,14 @@ class CORE_EXPORT QgsDataItem : public QObject
      * \see acceptDrop()
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
+
+    /**
+     * Called when a user double clicks on the item. Subclasses should return true
+     * if they have implemented a double-click handler and do not want the default
+     * double-click behavior for items.
+     * \since QGIS 3.0
+     */
+    virtual bool handleDoubleClick();
 
     /** Returns true if the item may be dragged.
      * Default implementation returns false.

@@ -503,23 +503,26 @@ class ModelerDialog(BASE, WIDGET):
                                                                 ModelerUtils.modelsFolders()[0],
                                                                 self.tr('Processing models (*.model3 *.MODEL3)'))
         if filename:
-            alg = QgsProcessingModelAlgorithm()
-            if alg.fromFile(filename):
-                self.model = alg
-                self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
-                self.textGroup.setText(alg.group())
-                self.textName.setText(alg.name())
-                self.repaintModel()
+            self.loadModel(filename)
 
-                self.view.centerOn(0, 0)
-                self.hasChanged = False
-            else:
-                QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
-                                         self.tr('Processing'),
-                                         QgsMessageLog.CRITICAL)
-                QMessageBox.critical(self, self.tr('Could not open model'),
-                                     self.tr('The selected model could not be loaded.\n'
-                                             'See the log for more information.'))
+    def loadModel(self, filename):
+        alg = QgsProcessingModelAlgorithm()
+        if alg.fromFile(filename):
+            self.model = alg
+            self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
+            self.textGroup.setText(alg.group())
+            self.textName.setText(alg.name())
+            self.repaintModel()
+
+            self.view.centerOn(0, 0)
+            self.hasChanged = False
+        else:
+            QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
+                                     self.tr('Processing'),
+                                     QgsMessageLog.CRITICAL)
+            QMessageBox.critical(self, self.tr('Could not open model'),
+                                 self.tr('The selected model could not be loaded.\n'
+                                         'See the log for more information.'))
 
     def repaintModel(self, controls=True):
         self.scene = ModelerScene(self, dialog=self)

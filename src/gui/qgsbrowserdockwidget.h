@@ -110,6 +110,9 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     //! Show event override
     void showEvent( QShowEvent *event ) override;
 
+  private slots:
+    void itemDoubleClicked( const QModelIndex &index );
+
   private:
     //! Refresh the model
     void refreshModel( const QModelIndex &index );

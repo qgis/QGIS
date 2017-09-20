@@ -49,7 +49,8 @@ class QgsDataItem : QObject
       Layer,
       Error,
       Favorites,
-      Project
+      Project,
+      Custom,
     };
 
 
@@ -150,6 +151,15 @@ Create new data item.
  Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
  accept dropped layers.
 .. seealso:: acceptDrop()
+ :rtype: bool
+%End
+
+    virtual bool handleDoubleClick();
+%Docstring
+ Called when a user double clicks on the item. Subclasses should return true
+ if they have implemented a double-click handler and do not want the default
+ double-click behavior for items.
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
