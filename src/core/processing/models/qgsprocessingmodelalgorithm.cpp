@@ -214,6 +214,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QTime totalTime;
   totalTime.start();
 
+  QgsProcessingModelFeedback modelFeedback( toExecute.count(), feedback );
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
   QVariantMap childResults;
@@ -225,6 +226,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
     executedAlg = false;
     Q_FOREACH ( const QString &childId, toExecute )
     {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
       if ( executed.contains( childId ) )
         continue;
 
@@ -260,7 +264,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       bool ok = false;
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
-      QVariantMap results = childAlg->run( childParams, context, feedback, &ok );
+      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok );
       childAlg.reset( nullptr );
       if ( !ok )
       {
@@ -280,8 +284,12 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       }
 
       executed.insert( childId );
+      modelFeedback.setCurrentStep( executed.count() );
       feedback->pushDebugInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
     }
+
+    if ( feedback && feedback->isCanceled() )
+      break;
   }
   feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
@@ -1123,4 +1131,65 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   return alg;
 }
 
+
+
+
+//
+// QgsProcessingModelFeedback
+//
+
+QgsProcessingModelFeedback::QgsProcessingModelFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
+  : mChildSteps( childAlgorithmCount )
+  , mFeedback( feedback )
+{
+  connect( mFeedback, &QgsFeedback::canceled, this, &QgsFeedback::cancel, Qt::DirectConnection );
+  connect( this, &QgsFeedback::progressChanged, this, &QgsProcessingModelFeedback::updateOverallProgress );
+}
+
+void QgsProcessingModelFeedback::setCurrentStep( int step )
+{
+  mCurrentStep = step;
+  mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps );
+}
+
+void QgsProcessingModelFeedback::setProgressText( const QString &text )
+{
+  mFeedback->setProgressText( text );
+}
+
+void QgsProcessingModelFeedback::reportError( const QString &error )
+{
+  mFeedback->reportError( error );
+}
+
+void QgsProcessingModelFeedback::pushInfo( const QString &info )
+{
+  mFeedback->pushInfo( info );
+}
+
+void QgsProcessingModelFeedback::pushCommandInfo( const QString &info )
+{
+  mFeedback->pushCommandInfo( info );
+}
+
+void QgsProcessingModelFeedback::pushDebugInfo( const QString &info )
+{
+  mFeedback->pushDebugInfo( info );
+}
+
+void QgsProcessingModelFeedback::pushConsoleInfo( const QString &info )
+{
+  mFeedback->pushConsoleInfo( info );
+}
+
+void QgsProcessingModelFeedback::updateOverallProgress( double progress )
+{
+  double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
+  double currentAlgorithmProgress = progress / mChildSteps;
+  mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
+}
+
+
+
 ///@endcond
+
