@@ -1309,7 +1309,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
     static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
-    //! Assembles mUpdatedFields considering provider fields, joined fields and added fields
+    /**
+     * Will regenerate the `fields` property of this layer by obtaining all fields
+     * from the dataProvider, joined fields and virtual fields. It will also
+     * take any changes made to default values into consideration.
+     *
+     * \note Unless the fields on the provider have directly been modified, there is
+     * no reason to call this method.
+     */
     void updateFields();
 
     /** Returns the calculated default value for the specified field index. The default
