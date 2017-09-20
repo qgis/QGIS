@@ -19,6 +19,9 @@
 #include "qgsdataprovider.h"
 #include "qgscustomdrophandler.h"
 
+/**
+ * Custom data item for QLR files.
+ */
 class QgsQlrDataItem : public QgsLayerItem
 {
     Q_OBJECT
@@ -31,6 +34,9 @@ class QgsQlrDataItem : public QgsLayerItem
 
 };
 
+/**
+ * Data item provider for showing QLR layer files in the browser.
+ */
 class QgsQlrDataItemProvider : public QgsDataItemProvider
 {
   public:
@@ -39,6 +45,9 @@ class QgsQlrDataItemProvider : public QgsDataItemProvider
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
+/**
+ * Handles drag and drop of QLR files to app.
+ */
 class QgsQlrDropHandler : public QgsCustomDropHandler
 {
   public:
@@ -46,5 +55,47 @@ class QgsQlrDropHandler : public QgsCustomDropHandler
     QString customUriProviderKey() const override;
     void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
 };
+
+/**
+ * Custom data item for QPT print template files.
+ */
+class QgsQptDataItem : public QgsDataItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsQptDataItem( QgsDataItem *parent, const QString &name, const QString &path );
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
+    bool handleDoubleClick() override;
+    QList< QAction * > actions() override;
+
+
+};
+
+/**
+ * Data item provider for showing QPT print templates in the browser.
+ */
+class QgsQptDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    int capabilities() override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+/**
+ * Handles drag and drop of QPT print templates to app.
+ */
+class QgsQptDropHandler : public QgsCustomDropHandler
+{
+  public:
+
+    QString customUriProviderKey() const override;
+    void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
+    bool handleFileDrop( const QString &file ) override;
+};
+
 
 #endif // QGSAPPBROWSERPROVIDERS_H
