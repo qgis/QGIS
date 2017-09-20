@@ -79,7 +79,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       Layer,
       Error,
       Favorites, //!< Represents a favorite item
-      Project //!< Represents a QGIS project
+      Project, //!< Represents a QGIS project
+      Custom, //!< Custom item type
     };
 
     Q_ENUM( Type );

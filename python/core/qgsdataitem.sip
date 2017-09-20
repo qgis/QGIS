@@ -49,7 +49,8 @@ class QgsDataItem : QObject
       Layer,
       Error,
       Favorites,
-      Project
+      Project,
+      Custom,
     };
 
 
