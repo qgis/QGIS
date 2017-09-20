@@ -510,6 +510,11 @@ bool QgsDataItem::equal( const QgsDataItem *other )
            mPath == other->path() );
 }
 
+bool QgsDataItem::handleDoubleClick()
+{
+  return false;
+}
+
 QgsDataItem::State QgsDataItem::state() const
 {
   return mState;

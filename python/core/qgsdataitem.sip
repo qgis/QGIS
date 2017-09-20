@@ -153,6 +153,15 @@ Create new data item.
  :rtype: bool
 %End
 
+    virtual bool handleDoubleClick();
+%Docstring
+ Called when a user double clicks on the item. Subclasses should return true
+ if they have implemented a double click handler and do not want the default
+ double click behaviour for items.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     virtual bool hasDragEnabled() const;
 %Docstring
  Returns true if the item may be dragged.

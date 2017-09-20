@@ -155,6 +155,14 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
+    /**
+     * Called when a user double clicks on the item. Subclasses should return true
+     * if they have implemented a double click handler and do not want the default
+     * double click behaviour for items.
+     * \since QGIS 3.0
+     */
+    virtual bool handleDoubleClick();
+
     /** Returns true if the item may be dragged.
      * Default implementation returns false.
      * A draggable item has to implement mimeUri() that will be used to pass data.

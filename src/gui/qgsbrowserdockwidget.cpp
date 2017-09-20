@@ -97,7 +97,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsBrowserDockWidget::setFilter );
   connect( group, &QActionGroup::triggered, this, &QgsBrowserDockWidget::setFilterSyntax );
   connect( mBrowserView, &QgsDockBrowserTreeView::customContextMenuRequested, this, &QgsBrowserDockWidget::showContextMenu );
-  connect( mBrowserView, &QgsDockBrowserTreeView::doubleClicked, this, &QgsBrowserDockWidget::addLayerAtIndex );
+  connect( mBrowserView, &QgsDockBrowserTreeView::doubleClicked, this, &QgsBrowserDockWidget::itemDoubleClicked );
   connect( mSplitter, &QSplitter::splitterMoved, this, &QgsBrowserDockWidget::splitterMoved );
 }
 
@@ -153,6 +153,18 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   }
 
   QgsDockWidget::showEvent( e );
+}
+
+void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
+{
+  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
+  if ( !item )
+    return;
+
+  if ( item->handleDoubleClick() )
+    return;
+  else
+    addLayerAtIndex( index ); // default double click handler
 }
 
 void QgsBrowserDockWidget::showContextMenu( QPoint pt )
