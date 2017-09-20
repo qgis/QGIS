@@ -215,6 +215,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open a composer template file and create a new composition
     void openTemplate( const QString &fileName );
 
+    /** Attempts to run a Python script
+     * \param filePath full path to Python script
+     * \since QGIS 2.7
+     */
+    void runScript( const QString &filePath );
+
     /** Opens a qgis project file
       \returns false if unable to open the project
       */
@@ -1123,12 +1129,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open the project file corresponding to the
     //! text)= of the given action.
     void openProject( QAction *action );
-
-    /** Attempts to run a Python script
-     * \param filePath full path to Python script
-     * \since QGIS 2.7
-     */
-    void runScript( const QString &filePath );
     //! Save the map view as an image - user is prompted for image name using a dialog
     void saveMapAsImage();
     //! Save the map view as a pdf - user is prompted for image name using a dialog

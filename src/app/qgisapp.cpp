@@ -981,10 +981,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   registerCustomDropHandler( new QgsQlrDropHandler() );
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsQptDataItemProvider() );
   registerCustomDropHandler( new QgsQptDropHandler() );
-
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   loadPythonSupport();
+
+#ifdef WITH_BINDINGS
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsPyDataItemProvider() );
+  registerCustomDropHandler( new QgsPyDropHandler() );
+#endif
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session

@@ -98,4 +98,46 @@ class QgsQptDropHandler : public QgsCustomDropHandler
 };
 
 
+
+/**
+ * Custom data item for py Python scripts.
+ */
+class QgsPyDataItem : public QgsDataItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsPyDataItem( QgsDataItem *parent, const QString &name, const QString &path );
+    bool hasDragEnabled() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
+    bool handleDoubleClick() override;
+    QList< QAction * > actions() override;
+
+
+};
+
+/**
+ * Data item provider for showing Python py scripts in the browser.
+ */
+class QgsPyDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    int capabilities() override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+/**
+ * Handles drag and drop of Python py scripts to app.
+ */
+class QgsPyDropHandler : public QgsCustomDropHandler
+{
+  public:
+
+    QString customUriProviderKey() const override;
+    void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const override;
+    bool handleFileDrop( const QString &file ) override;
+};
+
 #endif // QGSAPPBROWSERPROVIDERS_H
