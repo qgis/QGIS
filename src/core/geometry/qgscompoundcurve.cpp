@@ -407,9 +407,17 @@ void QgsCompoundCurve::addCurve( QgsCurve *c )
     {
       c->addZValue();
     }
+    else if ( !QgsWkbTypes::hasZ( mWkbType ) && QgsWkbTypes::hasZ( c->wkbType() ) )
+    {
+      c->dropZValue();
+    }
     if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( c->wkbType() ) )
     {
       c->addMValue();
+    }
+    else if ( !QgsWkbTypes::hasM( mWkbType ) && QgsWkbTypes::hasM( c->wkbType() ) )
+    {
+      c->dropMValue();
     }
     clearCache();
   }
