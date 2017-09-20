@@ -5,7 +5,7 @@ class QgsBrowserModel : QAbstractItemModel
 %End
 
   public:
-    explicit QgsBrowserModel( QObject *parent = 0 );
+    explicit QgsBrowserModel( QObject *parent = 0, bool initialize = true );
     ~QgsBrowserModel();
 
     enum ItemDataRole
@@ -80,6 +80,12 @@ class QgsBrowserModel : QAbstractItemModel
 
     bool canFetchMore( const QModelIndex & parent ) const;
     void fetchMore( const QModelIndex & parent );
+
+    //! Returns true if the model has been initialized
+    bool initialized( );
+
+    //! Delayed initialization
+    void init();
 
   signals:
     /** Emitted when item children fetch was finished */

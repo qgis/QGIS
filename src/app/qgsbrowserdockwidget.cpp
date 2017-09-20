@@ -261,12 +261,30 @@ void QgsBrowserPropertiesDialog::setItem( QgsDataItem* item )
   setWindowTitle( item->type() == QgsDataItem::Layer ? tr( "Layer Properties" ) : tr( "Directory Properties" ) );
 }
 
+
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QgsBrowserModel *model, QWidget * parent )
+    : QgsDockWidget( parent )
+    , mModel( model )
+    , mProxyModel( nullptr )
+    , mPropertiesWidgetEnabled( false )
+    , mPropertiesWidgetHeight( 0 )
+{
+  init( name );
+}
+
+
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * parent )
     : QgsDockWidget( parent )
     , mModel( nullptr )
     , mProxyModel( nullptr )
     , mPropertiesWidgetEnabled( false )
     , mPropertiesWidgetHeight( 0 )
+{
+  init( name );
+}
+
+
+void QgsBrowserDockWidget::init( const QString& name )
 {
   setupUi( this );
 
@@ -324,6 +342,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString& name, QWidget * paren
   connect( mSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( splitterMoved() ) );
 }
 
+
 QgsBrowserDockWidget::~QgsBrowserDockWidget()
 {
   QSettings settings;
@@ -334,11 +353,20 @@ QgsBrowserDockWidget::~QgsBrowserDockWidget()
 
 void QgsBrowserDockWidget::showEvent( QShowEvent * e )
 {
-  // delayed initialization of the model
+
   if ( !mModel )
   {
     mModel = new QgsBrowserModel( mBrowserView );
+  }
 
+  // delayed initialization of the model
+  if ( !mModel->initialized( ) )
+  {
+    mModel->init();
+  }
+
+  if ( ! mProxyModel )
+  {
     connect( QgisApp::instance(), SIGNAL( newProject() ), mModel, SLOT( updateProjectHome() ) );
 
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );

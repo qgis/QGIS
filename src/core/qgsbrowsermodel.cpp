@@ -47,14 +47,14 @@ static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
   return QString::localeAwareCompare( a->name(), b->name() ) < 0;
 }
 
-QgsBrowserModel::QgsBrowserModel( QObject *parent )
+QgsBrowserModel::QgsBrowserModel( QObject *parent, bool initialize )
     : QAbstractItemModel( parent )
     , mFavourites( nullptr )
     , mProjectHome( nullptr )
+    , mInitialized( false )
 {
-  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
-  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
-  addRootItems();
+  if ( initialize )
+    init();
 }
 
 QgsBrowserModel::~QgsBrowserModel()
@@ -572,5 +572,16 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
     mRootItems.remove( i );
     item->deleteLater();
     emit endRemoveRows();
+  }
+}
+
+void QgsBrowserModel::init()
+{
+  if ( ! mInitialized )
+  {
+    connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
+    connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
+    addRootItems();
+    mInitialized = true;
   }
 }

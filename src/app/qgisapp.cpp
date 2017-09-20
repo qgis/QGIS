@@ -116,6 +116,7 @@
 #include "qgsauthsslerrorsdialog.h"
 #endif
 #include "qgsbookmarks.h"
+#include "qgsbrowsermodel.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsclipboard.h"
@@ -803,12 +804,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mSnappingDialog->setObjectName( "SnappingOption" );
   endProfile();
 
-  mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser Panel" ), this );
+  // Create the (shared) model with delayed initialization
+  mBrowserModel = new QgsBrowserModel( this, false );
+  mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser Panel" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( "Browser" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
 
-  mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser Panel (2)" ), this );
+  mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser Panel (2)" ), mBrowserModel, this );
   mBrowserWidget2->setObjectName( "Browser2" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
   mBrowserWidget2->hide();
@@ -1147,6 +1150,7 @@ QgisApp::QgisApp()
     , mPythonUtils( nullptr )
     , mUndoWidget( nullptr )
     , mUndoDock( nullptr )
+    , mBrowserModel( nullptr )
     , mBrowserWidget( nullptr )
     , mBrowserWidget2( nullptr )
     , mAdvancedDigitizingDockWidget( nullptr )

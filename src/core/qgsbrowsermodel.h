@@ -53,7 +53,13 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    explicit QgsBrowserModel( QObject *parent = nullptr );
+
+    /**
+      * @brief QgsBrowserModel
+      * @param parent
+      * @param initialize immediately called init, default to true
+      */
+    explicit QgsBrowserModel( QObject *parent = nullptr , bool initialize = true );
     ~QgsBrowserModel();
 
     enum ItemDataRole
@@ -129,6 +135,12 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     bool canFetchMore( const QModelIndex & parent ) const override;
     void fetchMore( const QModelIndex & parent ) override;
 
+    //! Returns true if the model has been initialized
+    bool initialized( ) const { return mInitialized; }
+
+    //! Delayed initialization
+    void init();
+
   signals:
     /** Emitted when item children fetch was finished */
     void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
@@ -158,6 +170,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QVector<QgsDataItem*> mRootItems;
     QgsFavouritesItem *mFavourites;
     QgsDirectoryItem *mProjectHome;
+
+  private:
+    bool mInitialized;
 };
 
 #endif // QGSBROWSERMODEL_H
