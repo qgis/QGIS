@@ -428,6 +428,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   , mDynamicWriteAccess( false )
   , mShapefileMayBeCorrupted( false )
   , mUpdateModeStackDepth( 0 )
+  , mDeferRepack( false )
   , mCapabilities( 0 )
 {
   QgsApplication::registerOgrDrivers();
@@ -1971,11 +1972,14 @@ bool QgsOgrProvider::doInitialActionsForEdition()
   if ( !mValid )
     return false;
 
-  if ( !mWriteAccess && mWriteAccessPossible && mDynamicWriteAccess )
+  // If mUpdateModeStackDepth > 0, it means that an updateMode is already active and that we have write access
+  if ( mUpdateModeStackDepth == 0 )
   {
     QgsDebugMsg( "Enter update mode implictly" );
     if ( !enterUpdateMode() )
       return false;
+    // For implicitly entered updateMode, don't defer repacking
+    mDeferRepack = false;
   }
 
   return true;
@@ -3416,10 +3420,13 @@ bool QgsOgrProvider::syncToDisc()
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 
-  if ( mShapefileMayBeCorrupted )
-    repack();
+  if ( !mDeferRepack )
+  {
+    if ( mShapefileMayBeCorrupted )
+      repack();
 
-  mShapefileMayBeCorrupted = false;
+    mShapefileMayBeCorrupted = false;
+  }
 
   QgsOgrConnPool::instance()->ref( dataSourceUri() );
   if ( shapeIndex )
@@ -3844,6 +3851,7 @@ bool QgsOgrProvider::enterUpdateMode()
     }
   }
   ++mUpdateModeStackDepth;
+  mDeferRepack = true;
   return true;
 }
 
@@ -3859,6 +3867,15 @@ bool QgsOgrProvider::leaveUpdateMode()
     QgsMessageLog::logMessage( tr( "Unbalanced call to leaveUpdateMode() w.r.t. enterUpdateMode()" ), tr( "OGR" ) );
     mUpdateModeStackDepth = 0;
     return false;
+  }
+  if ( mDeferRepack && mUpdateModeStackDepth == 0 )
+  {
+    // Only repack once update mode is inactive
+    if ( mShapefileMayBeCorrupted )
+      repack();
+
+    mShapefileMayBeCorrupted = false;
+    mDeferRepack = false;
   }
   if ( !mDynamicWriteAccess )
   {
