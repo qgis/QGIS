@@ -73,7 +73,7 @@ int QgsCompoundCurve::dimension() const
 
 QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( curve )
 {
-  mWkbType = QgsWkbTypes::CompoundCurve;
+  mWkbType = curve.wkbType();
   for ( const QgsCurve *c : curve.mCurves )
   {
     mCurves.append( static_cast<QgsCurve *>( c->clone() ) );
