@@ -178,14 +178,14 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     void updateLayerFields();
 
-    /** Apply geom modification basing on provider geometry type.
-     * Geom is modified only if successful convertion is possibile.
+    /** Apply geometry modification basing on provider geometry type.
+     * Geometry is modified only if successful conversion is possible.
      * In case of conversion a message is sent to the log.
      * @param geometry pointer to the geometry that should be adapted to provider
      * @return bool true if success.
-     *  Success means that input geometry is changed because conversion is applied or
+     *  True: Input geometry is changed because conversion is applied or
      *  geometry is untouched if geometry conversion is not necessary.
-     *  Fail if conversion is not possible and geometry is untuched.
+     *  False: Conversion is not possible and geometry is untouched.
      * @note added in QGIS 2.18.14
      */
     bool adaptGeometry( QgsGeometry* geometry );
