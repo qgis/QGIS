@@ -7,5 +7,5 @@ usr/lib/python*/*-packages/qgis/networkanalysis/*
 usr/lib/python*/*-packages/qgis/PyQt/*
 usr/lib/python*/*-packages/qgis/server/*
 usr/lib/python*/*-packages/qgis/testing/*
-#sid stretch yakkety zesty#usr/lib/python*/*-packages/PyQt4/*.so
-#sid stretch yakkety zesty#usr/lib/python*/*-packages/PyQt4/uic/widget-plugins/qtwebkit.py
+#sid stretch yakkety zesty artful#usr/lib/python*/*-packages/PyQt4/*.so
+#sid stretch yakkety zesty artful#usr/lib/python*/*-packages/PyQt4/uic/widget-plugins/qtwebkit.py
