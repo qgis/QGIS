@@ -201,7 +201,7 @@ bool QgsVectorLayerEditBuffer::adaptGeometry( QgsGeometry* geometry )
       QgsGeometry* newGeom = provider->convertToProviderType( geometry );
       if ( !newGeom )
       {
-        QgsMessageLog::logMessage( tr( "ERROR: geometry type is not compatible with the layer.", "not compatible geometry" ) );
+        QgsMessageLog::logMessage( tr( "Geometry type is not compatible with the layer.", "not compatible geometry" ), "adaptGeometry", QgsMessageLog::CRITICAL );
         return false;
       }
       geometry = newGeom;
@@ -228,7 +228,7 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
   // if not then try to convert to a compatible geometry type
   if ( !adaptGeometry( geom ) )
   {
-    QgsMessageLog::logMessage( tr( "ERROR: feature %1 not updated", "not updated feature" ).arg( fid ) );
+    QgsMessageLog::logMessage( tr( "Feature %1 not updated", "not updated feature" ).arg( fid ), "changeGeometry", QgsMessageLog::CRITICAL );
     return false;
   }
 
