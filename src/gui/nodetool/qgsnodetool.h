@@ -18,7 +18,7 @@
 
 #include <memory>
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsgeometry.h"
 
@@ -56,7 +56,7 @@ uint qHash( const Vertex &v );
 
 
 
-class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
+class GUI_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:

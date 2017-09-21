@@ -367,7 +367,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
 
-#include "nodetool/qgsnodetool.h"
+#include "qgsnodetool.h"
 
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
