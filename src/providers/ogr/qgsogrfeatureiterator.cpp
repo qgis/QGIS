@@ -172,23 +172,28 @@ bool QgsOgrFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
 bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature& feature ) const
 {
   feature.setValid( false );
-  OGRFeatureH fet;
+  OGRFeatureH fet = 0;
   if ( mOrigFidAdded )
   {
     OGR_L_ResetReading( ogrLayer );
-    while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
+    int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
+    if ( lastField >= 0 )
     {
-      if (
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
-        OGR_F_GetFieldAsInteger64
-#else
-        OGR_F_GetFieldAsInteger
-#endif
-        ( fet, 0 ) == FID_TO_NUMBER( id ) )
+      while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
       {
-        break;
+        if (
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
+          OGR_F_GetFieldAsInteger64
+#else
+          OGR_F_GetFieldAsInteger
+#endif
+          ( fet, lastField ) == FID_TO_NUMBER( id ) )
+        {
+          break;
+        }
+        OGR_F_Destroy( fet );
       }
-      OGR_F_Destroy( fet );
     }
   }
   else

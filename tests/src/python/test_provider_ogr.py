@@ -17,7 +17,7 @@ import shutil
 import sys
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes
+from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWKBTypes, QgsFeature
 from qgis.testing import (
     start_app,
     unittest
@@ -239,6 +239,24 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         os.unlink(datasource)
         self.assertFalse(os.path.exists(datasource))
+
+    def testGdb(self):
+        """ Test opening a GDB database layer"""
+        gdb_path = os.path.join(unitTestDataPath(), 'test_gdb.gdb')
+        for i in range(3):
+            l = QgsVectorLayer(gdb_path + '|layerid=' + str(i), 'test', 'ogr')
+            self.assertTrue(l.isValid())
+
+    def testGdbFilter(self):
+        """ Test opening a GDB database layer with filter"""
+        gdb_path = os.path.join(unitTestDataPath(), 'test_gdb.gdb')
+        l = QgsVectorLayer(gdb_path + '|layerid=1|subset="text" = \'shape 2\'', 'test', 'ogr')
+        self.assertTrue(l.isValid())
+        it = l.getFeatures()
+        f = QgsFeature()
+        while it.nextFeature(f):
+            self.assertTrue(f.attribute("text") == "shape 2")
+
 
 if __name__ == '__main__':
     unittest.main()
