@@ -738,6 +738,54 @@ class QgsExtentToLayerAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native line intersection algorithm.
+ */
+class QgsLineIntersectionAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsLineIntersectionAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "lineintersections" ); }
+    QString displayName() const override { return QObject::tr( "Line intersections" ); }
+    virtual QStringList tags() const override { return QObject::tr( "line,intersection" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector overlay" ); }
+    QString shortHelpString() const override;
+    QgsLineIntersectionAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
+/**
+ * Native split with lines algorithm.
+ */
+class QgsSplitWithLinesAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsSplitWithLinesAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "splitwithlines" ); }
+    QString displayName() const override { return QObject::tr( "Split with lines" ); }
+    virtual QStringList tags() const override { return QObject::tr( "split,cut,lines" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector overlay" ); }
+    QString shortHelpString() const override;
+    QgsSplitWithLinesAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H
