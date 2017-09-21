@@ -193,6 +193,15 @@ class QgsProcessingUtils
  :rtype: str
 %End
 
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB );
+%Docstring
+ Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
+
+ Duplicate field names will be altered to "name_2", "name_3", etc, finding the first
+ non-duplicate name.
+ :rtype: QgsFields
+%End
+
 };
 
 class QgsProcessingFeatureSource : QgsFeatureSource

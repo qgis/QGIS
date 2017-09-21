@@ -555,6 +555,41 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   }
 }
 
+QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB )
+{
+  QgsFields outFields = fieldsA;
+  QSet< QString > usedNames;
+  for ( const QgsField &f : fieldsA )
+  {
+    usedNames.insert( f.name().toLower() );
+  }
+
+  for ( const QgsField &f : fieldsB )
+  {
+    if ( usedNames.contains( f.name().toLower() ) )
+    {
+      int idx = 2;
+      QString newName = f.name() + '_' + QString::number( idx );
+      while ( usedNames.contains( newName.toLower() ) )
+      {
+        idx++;
+        newName = f.name() + '_' + QString::number( idx );
+      }
+      QgsField newField = f;
+      newField.setName( newName );
+      outFields.append( newField );
+      usedNames.insert( newName.toLower() );
+    }
+    else
+    {
+      usedNames.insert( f.name().toLower() );
+      outFields.append( f );
+    }
+  }
+
+  return outFields;
+}
+
 
 //
 // QgsProcessingFeatureSource

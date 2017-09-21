@@ -174,29 +174,6 @@ def extractPoints(geom):
     return points
 
 
-def combineFields(fieldsA, fieldsB):
-    """Create single field map from two input field maps.
-    """
-    fields = []
-    fields.extend(fieldsA)
-    namesA = [str(f.name()).lower() for f in fieldsA]
-    for field in fieldsB:
-        name = str(field.name()).lower()
-        if name in namesA:
-            idx = 2
-            newName = name + '_' + str(idx)
-            while newName in namesA:
-                idx += 1
-                newName = name + '_' + str(idx)
-            field = QgsField(newName, field.type(), field.typeName())
-        fields.append(field)
-
-    real_fields = QgsFields()
-    for f in fields:
-        real_fields.append(f)
-    return real_fields
-
-
 def checkMinDistance(point, index, distance, points):
     """Check if distance from given point to all other points is greater
     than given value.
