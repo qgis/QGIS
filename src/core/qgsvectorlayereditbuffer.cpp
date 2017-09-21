@@ -180,7 +180,7 @@ bool QgsVectorLayerEditBuffer::deleteFeatures( const QgsFeatureIds& fids )
   return true;
 }
 
-bool QgsVectorLayerEditBuffer::adaptGeometry( QgsGeometry* geom )
+bool QgsVectorLayerEditBuffer::adaptGeometry( QgsGeometry* geometry )
 {
   /* this routine was introduced to fi the following issue:
    * https://issues.qgis.org/issues/15741
@@ -190,21 +190,21 @@ bool QgsVectorLayerEditBuffer::adaptGeometry( QgsGeometry* geom )
    * https://issues.qgis.org/issues/15741
    */
   QgsVectorDataProvider* provider = L->dataProvider();
-  if ( geom && geom->geometry() &&
-       !geom->isEmpty() &&
-       geom->wkbType() != provider->geometryType() )
+  if ( geometry && geometry->geometry() &&
+       !geometry->isEmpty() &&
+       geometry->wkbType() != provider->geometryType() )
   {
     // check if provider do strict geometry control
     // otherwise leave to the commit to rise provider errors
     if ( provider->doesStrictFeatureTypeCheck() )
     {
-      QgsGeometry* newGeom = provider->convertToProviderType( geom );
+      QgsGeometry* newGeom = provider->convertToProviderType( geometry );
       if ( !newGeom )
       {
         QgsMessageLog::logMessage( tr( "ERROR: geometry type is not compatible with the layer.", "not compatible geometry" ) );
         return false;
       }
-      geom = newGeom;
+      geometry = newGeom;
     }
   }
   return true;
