@@ -317,7 +317,7 @@ void QgsMetadataWidget::fillComboBox() const
   comboLanguage->setEditable( true );
   comboLanguage->clear();
   QMap<QString, QString> countries = parseLanguages();
-  const QStringList &k = types.keys();
+  const QStringList &k = countries.keys();
   i = 0;
   for ( const QString &countryCode : k )
   {
@@ -544,7 +544,7 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
   QMap<QString, QString> countries;
   countries.insert( QString(), QString() ); // We add an empty line, because it's not compulsory.
 
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "country_code_ISO_3166.csv" ) );
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "language_codes_ISO_639.csv" ) );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
@@ -558,8 +558,27 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
   {
     QByteArray line = file.readLine();
     QList<QByteArray> items = line.split( ',' );
-    countries.insert( items.at( 2 ).constData(), items.at( 0 ).constData() );
+    countries.insert( QString( items.at( 0 ).constData() ).trimmed(), QString( items.at( 1 ).constData() ).trimmed() );
   }
+  file.close();
+
+  path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "country_code_ISO_3166.csv" ) );
+  QFile secondFile( path );
+  if ( !secondFile.open( QIODevice::ReadOnly ) )
+  {
+    QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    return countries;
+  }
+
+  // Skip the first line of the CSV
+  secondFile.readLine();
+  while ( !secondFile.atEnd() )
+  {
+    QByteArray line = secondFile.readLine();
+    QList<QByteArray> items = line.split( ',' );
+    countries.insert( QString( items.at( 2 ).constData() ).trimmed(), QString( items.at( 0 ).constData() ).trimmed() );
+  }
+  secondFile.close();
   return countries;
 }
 
@@ -581,8 +600,9 @@ QStringList QgsMetadataWidget::parseLicenses()
   while ( !file.atEnd() )
   {
     QByteArray line = file.readLine();
-    wordList.append( line.split( ',' ).at( 0 ) );
+    wordList.append( line.split( ',' ).at( 0 ).trimmed() );
   }
+  file.close();
   return wordList;
 }
 
@@ -604,8 +624,9 @@ QStringList QgsMetadataWidget::parseLinkTypes()
   while ( !file.atEnd() )
   {
     QByteArray line = file.readLine();
-    wordList.append( line.split( ',' ).at( 0 ) );
+    wordList.append( line.split( ',' ).at( 0 ).trimmed() );
   }
+  file.close();
   return wordList;
 }
 
@@ -625,8 +646,9 @@ QStringList QgsMetadataWidget::parseMimeTypes()
   while ( !file.atEnd() )
   {
     QByteArray line = file.readLine();
-    wordList.append( line.split( ',' ).at( 0 ) );
+    wordList.append( line.split( ',' ).at( 0 ).trimmed() );
   }
+  file.close();
   return wordList;
 }
 
@@ -649,6 +671,7 @@ QMap<QString, QString> QgsMetadataWidget::parseTypes()
     QList<QByteArray> items = line.split( ';' );
     types.insert( items.at( 0 ).constData(), items.at( 1 ).constData() );
   }
+  file.close();
   return types;
 }
 
