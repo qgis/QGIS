@@ -35,7 +35,9 @@ QgsTask::QgsTask( const QString &name, const Flags &flags )
   , mTotalProgress( 0.0 )
   , mShouldTerminate( false )
   , mStartCount( 0 )
-{}
+{
+  mNotFinishedMutex.lock();
+}
 
 QgsTask::~QgsTask()
 {
@@ -142,26 +144,19 @@ QList<QgsMapLayer *> QgsTask::dependentLayers() const
   return _qgis_listQPointerToRaw( mDependentLayers );
 }
 
-bool QgsTask::waitForFinished( int timeout )
+bool QgsTask::waitForFinished( unsigned long timeout )
 {
-  QEventLoop loop;
   bool rv = true;
-
-  connect( this, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
-  connect( this, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
-  QTimer timer;
-
-  if ( timeout != -1 )
+  if ( mOverallStatus == Complete || mOverallStatus == Terminated )
   {
-    timer.start( timeout );
-    connect( &timer, &QTimer::timeout, [&rv]() { rv = false; } );
-    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    rv = true;
   }
-
-  if ( status() == QgsTask::Complete || status() == QgsTask::Terminated )
-    return true;
-  loop.exec();
-
+  else
+  {
+    if ( timeout == 0 )
+      timeout = ULONG_MAX;
+    rv = mTaskFinished.wait( &mNotFinishedMutex, timeout );
+  }
   return rv;
 }
 
@@ -249,9 +244,13 @@ void QgsTask::processSubTasksForCompletion()
   if ( mStatus == Complete && subTasksCompleted )
   {
     mOverallStatus = Complete;
+
     setProgress( 100.0 );
     emit statusChanged( Complete );
     emit taskCompleted();
+    mTaskFinished.wakeAll();
+    mNotFinishedMutex.unlock();
+    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Complete )
   {
@@ -275,8 +274,12 @@ void QgsTask::processSubTasksForTermination()
   if ( mStatus == Terminated && subTasksTerminated && mOverallStatus != Terminated )
   {
     mOverallStatus = Terminated;
+
     emit statusChanged( Terminated );
     emit taskTerminated();
+    mTaskFinished.wakeAll();
+    mNotFinishedMutex.unlock();
+    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Terminated && !subTasksTerminated )
   {

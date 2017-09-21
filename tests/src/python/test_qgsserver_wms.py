@@ -64,6 +64,7 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
 
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test is flaky on Travis environment')
     def test_project_wms(self):
         """Test some WMS request"""
         for request in ('GetCapabilities', 'GetProjectSettings', 'GetContext'):
