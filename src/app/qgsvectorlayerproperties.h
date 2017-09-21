@@ -59,17 +59,27 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! Returns the display name entered in the dialog
-    QString displayName();
-    void setRendererDirty( bool ) {}
+    QString displayName()
+    {
+      return txtDisplayName->text();
+    }
 
-    /** Adds an attribute to the table (but does not commit it yet)
-    \param field the field to add
-    \returns false in case of a name conflict, true in case of success */
+    /**
+     * Adds an attribute to the layer.
+     * The layer will need to be in edit mode. It will only be added to the provider when the edit buffer
+     * is committed.
+     * \param field the field to add
+     * \returns false in case of a name conflict, true in case of success
+     */
     bool addAttribute( const QgsField &field );
 
-    /** Deletes an attribute (but does not commit it)
-      \param name attribute name
-      \returns false in case of a non-existing attribute.*/
+    /**
+     * Deletes an attribute.
+     * The layer will need to be in edit mode. It will only be added to the provider when the edit buffer
+     * is committed.
+     * \param name attribute name
+     * \returns false in case of a non-existing attribute.
+     */
     bool deleteAttribute( int attr );
 
     //! Adds a properties page factory to the vector layer properties dialog.
@@ -206,8 +216,5 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void openPanel( QgsPanelWidget *panel );
 };
 
-inline QString QgsVectorLayerProperties::displayName()
-{
-  return txtDisplayName->text();
-}
+
 #endif
