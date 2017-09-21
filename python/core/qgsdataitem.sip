@@ -148,6 +148,7 @@ Create new data item.
  created menus is correctly handled by parenting them to the specified parent widget.
  \param parent a parent widget of the menu
  :return: list of menus
+.. versionadded:: 3.0
  :rtype: list of QMenu
 %End
 
