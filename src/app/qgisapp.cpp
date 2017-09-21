@@ -7162,7 +7162,7 @@ void QgisApp::mergeSelectedFeatures()
     if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val ) )
     {
       messageBar()->pushMessage(
-        tr( "Invalid result" ),
+        tr( "Merge features" ),
         tr( "Could not store value '%1' in field of type %2" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
         QgsMessageBar::WARNING );
     }
@@ -7180,7 +7180,7 @@ void QgisApp::mergeSelectedFeatures()
   if ( !vl->addFeature( newFeature, false ) )
   {
     messageBar()->pushMessage(
-      tr( "Invalid result" ),
+      tr( "Merge features" ),
       tr( "Invalid edit operation see the log for more info" ),
       QgsMessageBar::WARNING );
 
