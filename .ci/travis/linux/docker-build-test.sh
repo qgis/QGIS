@@ -1,28 +1,26 @@
 #!/usr/bin/env bash
 
-#set -e
+set -e
 
-# locale-gen en_US.UTF-8
-# export LANG=en_US.UTF-8
-# export LANGUAGE=en_US:en
-# export LC_ALL=en_US.UTF-8
-
-export CTEST_PARALLEL_LEVEL=1
+##############
+# Setup ccache
+##############
 export CCACHE_TEMPDIR=/tmp
 ccache -M 500M
 ccache -z
 
-cd /root/QGIS
+############################
+# Setup the (c)test environment
+############################
+export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+export CTEST_BUILD_COMMAND="/usr/bin/ninja"
+export CTEST_PARALLEL_LEVEL=1
 
-printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=qgis_test\nuser=docker\npassword=docker" > ~/.pg_service.conf
-export PGUSER=docker
-export PGHOST=postgres
-export PGPASSWORD=docker
-export PGDATABASE=qgis_test
-
-# Build
-
-mkdir -p build &&
+###########
+# Configure
+###########
+pushd /root/QGIS
+mkdir -p build
 
 pushd build
 
@@ -42,21 +40,37 @@ cmake \
  -DDISABLE_DEPRECATED=ON \
  -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS} ..
 
-export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
-export CTEST_BUILD_COMMAND="/usr/bin/ninja"
-
-ls -la --full-time python/plugins/processing/tests/testdata/expected/polys_centroid.*
-
+#######
+# Build
+#######
+echo "travis_fold:start:ninja-build.1"
 ninja
+echo "travis_fold:end:ninja-build.1"
 
+############################
 # Restore postgres test data
-/root/QGIS/tests/testdata/provider/testdata_pg.sh
+############################
+printf "[qgis_test]\nhost=postgres\nport=5432\ndbname=qgis_test\nuser=docker\npassword=docker" > ~/.pg_service.conf
+export PGUSER=docker
+export PGHOST=postgres
+export PGPASSWORD=docker
+export PGDATABASE=qgis_test
 
+pushd /root/QGIS
+/root/QGIS/tests/testdata/provider/testdata_pg.sh
+popd # /root/QGIS
+
+###########
+# Run tests
+###########
 python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
 
+########################
+# Show ccache statistics
+########################
 ccache -s
 
-popd
-
+popd # build
+popd # /root/QGIS
 
 [ -r /tmp/ctest-important.log ] && cat /tmp/ctest-important.log
