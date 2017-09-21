@@ -256,8 +256,16 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
       feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
-      //feedback->pushDebugInfo( "Parameters: " + ', '.join( [str( p ).strip() +
-      //           '=' + str( p.value ) for p in alg.algorithm.parameters] ) )
+
+      QStringList params;
+      for ( auto childParamIt = childParams.constBegin(); childParamIt != childParams.constEnd(); ++childParamIt )
+      {
+        params << QStringLiteral( "%1: %2" ).arg( childParamIt.key(),
+               child.algorithm()->parameterDefinition( childParamIt.key() )->valueAsPythonString( childParamIt.value(), context ) );
+      }
+
+      feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
+      feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
 
       QTime childTime;
       childTime.start();
@@ -285,7 +293,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       executed.insert( childId );
       modelFeedback.setCurrentStep( executed.count() );
-      feedback->pushDebugInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
+      feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
     }
 
     if ( feedback && feedback->isCanceled() )
