@@ -15,6 +15,7 @@ RUN  apt-get update \
     ccache \
     clang \
     cmake \
+    curl \
     dh-python \
     flex \
     gdal-bin \
