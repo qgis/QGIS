@@ -19,7 +19,7 @@
 #include "qgis_core.h"
 #include "qgsvectorlayertools.h"
 
-/** \ingroup gui
+/** \ingroup core
  * \class QgsTrackedVectorLayerTools
  */
 class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
