@@ -41,11 +41,11 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const 
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsSLLayerItem::actions()
+QList<QAction *> QgsSLLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer" ), this );
+  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer" ), parent );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsSLLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
 
@@ -165,15 +165,15 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsSLConnectionItem::actions()
+QList<QAction *> QgsSLConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  //QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  //QAction* actionEdit = new QAction( tr( "Edit..." ), parent );
   //connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   //lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsSLConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -295,15 +295,15 @@ QVector<QgsDataItem *> QgsSLRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsSLRootItem::actions()
+QList<QAction *> QgsSLRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsSLRootItem::newConnection );
   lst.append( actionNew );
 
-  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), this );
+  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), parent );
   connect( actionCreateDatabase, &QAction::triggered, this, &QgsSLRootItem::createDatabase );
   lst.append( actionCreateDatabase );
 

@@ -209,7 +209,7 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
   }
 
-  QList<QAction *> actions = item->actions();
+  QList<QAction *> actions = item->actions( menu );
   if ( !actions.isEmpty() )
   {
     if ( !menu->actions().isEmpty() )

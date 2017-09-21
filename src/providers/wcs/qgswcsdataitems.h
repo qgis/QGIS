@@ -30,7 +30,7 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
     virtual bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     QgsWcsCapabilities mWcsCapabilities;
@@ -74,7 +74,7 @@ class QgsWCSRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
 #endif
 

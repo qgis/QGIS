@@ -28,7 +28,7 @@ class QgsGeoNodeConnectionItem : public QgsDataCollectionItem
   public:
     QgsGeoNodeConnectionItem( QgsDataItem *parent, QString name, QString path, std::unique_ptr< QgsGeoNodeConnection > conn );
     QVector<QgsDataItem *> createChildren() override;
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 
     QString mGeoNodeName;
 
@@ -67,7 +67,7 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions( QWidget *parent ) override;
 
   private slots:
     void newConnection();

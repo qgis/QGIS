@@ -131,10 +131,13 @@ Create new data item.
  :rtype: QWidget
 %End
 
-    virtual QList<QAction *> actions();
+    virtual QList<QAction *> actions( QWidget *parent );
 %Docstring
  Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
  the item. Subclasses should override this to provide actions.
+
+ Subclasses should ensure that ownership of created actions is correctly handled by parenting them
+ to the specified parent widget.
  :rtype: list of QAction
 %End
 
@@ -543,7 +546,7 @@ Check if the given path is hidden from the browser model
  :rtype: bool
 %End
 
-    virtual QList<QAction *> actions();
+    virtual QList<QAction *> actions( QWidget *parent );
 
 
 

@@ -66,10 +66,10 @@ QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
   return services;
 }
 
-QList<QAction *> QgsGeoNodeConnectionItem::actions()
+QList<QAction *> QgsGeoNodeConnectionItem::actions( QWidget *parent )
 {
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), this );
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), this );
+  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
+  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsGeoNodeConnectionItem::editConnection );
   connect( actionDelete, &QAction::triggered, this, &QgsGeoNodeConnectionItem::deleteConnection );
   return QList<QAction *>() << actionEdit << actionDelete;
@@ -239,9 +239,9 @@ QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
   return connections;
 }
 
-QList<QAction *> QgsGeoNodeRootItem::actions()
+QList<QAction *> QgsGeoNodeRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsGeoNodeRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }

@@ -29,7 +29,7 @@ class QgsAmsRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
 #endif
 
@@ -49,7 +49,7 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:

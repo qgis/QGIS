@@ -511,6 +511,12 @@ bool QgsDataItem::equal( const QgsDataItem *other )
            mPath == other->path() );
 }
 
+QList<QAction *> QgsDataItem::actions( QWidget *parent )
+{
+  Q_UNUSED( parent );
+  return QList<QAction *>();
+}
+
 bool QgsDataItem::handleDoubleClick()
 {
   return false;
@@ -859,10 +865,10 @@ bool QgsDirectoryItem::hiddenPath( const QString &path )
   return ( idx > -1 );
 }
 
-QList<QAction *> QgsDirectoryItem::actions()
+QList<QAction *> QgsDirectoryItem::actions( QWidget *parent )
 {
   QList<QAction *> result;
-  QAction *openFolder = new QAction( tr( "Open Directory…" ), this );
+  QAction *openFolder = new QAction( tr( "Open Directory…" ), parent );
   connect( openFolder, &QAction::triggered, this, [ = ]
   {
     QDesktopServices::openUrl( QUrl::fromLocalFile( mDirPath ) );

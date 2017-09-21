@@ -28,7 +28,7 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
     virtual bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
@@ -51,7 +51,7 @@ class QgsOWSRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
 #endif
 
