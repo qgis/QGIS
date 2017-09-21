@@ -11070,6 +11070,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     QgsVectorDataProvider *dprovider = vlayer->dataProvider();
+    QString addFeatureText;
 
     bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
@@ -11173,6 +11174,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePoint.svg" ) ) );
+        addFeatureText = tr( "Add Point Feature" );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeaturePoint.svg" ) ) );
         mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureCopyPoint.svg" ) ) );
 
@@ -11202,6 +11204,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       else if ( vlayer->geometryType() == QgsWkbTypes::LineGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCaptureLine.svg" ) ) );
+        addFeatureText = tr( "Add Line Feature" );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureLine.svg" ) ) );
         mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureCopyLine.svg" ) ) );
 
@@ -11218,6 +11221,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       else if ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionCapturePolygon.svg" ) ) );
+        addFeatureText = tr( "Add Polygon Feature" );
         mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeature.svg" ) ) );
         mActionMoveFeatureCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMoveFeatureCopy.svg" ) ) );
 
@@ -11233,6 +11237,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewTableRow.svg" ) ) );
+        addFeatureText = tr( "Add Record" );
         mActionAddRing->setEnabled( false );
         mActionFillRing->setEnabled( false );
         mActionReshapeFeatures->setEnabled( false );
@@ -11244,6 +11249,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       }
 
       mActionOpenFieldCalc->setEnabled( true );
+      mActionAddFeature->setText( addFeatureText );
+      mActionAddFeature->setToolTip( addFeatureText );
+      QgsGui::shortcutsManager()->unregisterAction( mActionAddFeature );
+      QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut() );
     }
     else
     {
