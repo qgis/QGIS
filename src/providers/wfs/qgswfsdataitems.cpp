@@ -49,6 +49,7 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mBaseUri = uri.param( QString( "url" ) );
 }
 
 QgsWfsLayerItem::~QgsWfsLayerItem()
@@ -75,15 +76,15 @@ QList<QMenu *> QgsWfsLayerItem::menus( QWidget *parent )
 
 void QgsWfsLayerItem::copyStyle()
 {
-  QString layerUri = this->uri();
-
   std::unique_ptr< QgsGeoNodeConnection > connection;
   const QStringList connections = QgsGeoNodeConnectionUtils::connectionList();
   for ( const QString &connName : connections )
   {
     connection.reset( new QgsGeoNodeConnection( connName ) );
-    if ( layerUri.contains( connection->uri().uri() ) )
+    if ( mBaseUri.contains( connection->uri().param( QString( "url" ) ) ) )
       break;
+    else
+      connection.reset( nullptr );
   }
 
   if ( !connection )

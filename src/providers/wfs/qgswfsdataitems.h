@@ -81,7 +81,10 @@ class QgsWfsLayerItem : public QgsLayerItem
 
     virtual QList<QMenu *> menus( QWidget *parent ) override;
 
-  public slots:
+  protected:
+    QString mBaseUri;
+
+  private slots:
 
     /** Get style of the active data item (geonode layer item) and copy it to the clipboard.
      */
