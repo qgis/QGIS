@@ -2087,10 +2087,6 @@ void QgisApp::createMenus()
    * The User Interface Guidelines for each platform specify different locations
    * for the following items.
    *
-   * Project Properties:
-   * Gnome, Mac, Win - File/Project menu above print commands (Win doesn't specify)
-   * Kde - Settings menu
-   *
    * Custom CRS, Options:
    * Gnome - bottom of Edit menu
    * Mac - Application menu (moved automatically by Qt)
@@ -2115,20 +2111,11 @@ void QgisApp::createMenus()
   QDialogButtonBox::ButtonLayout layout =
     QDialogButtonBox::ButtonLayout( style()->styleHint( QStyle::SH_DialogButtonLayout, nullptr, this ) );
 
-  // Project Menu
-
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, &QMenu::triggered, this, static_cast < void ( QgisApp::* )( QAction *action ) >( &QgisApp::openProject ) );
   connect( mProjectFromTemplateMenu, &QMenu::triggered,
            this, &QgisApp::fileNewFromTemplateAction );
 
-  if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout || layout == QDialogButtonBox::WinLayout )
-  {
-    QAction *before = mActionNewPrintComposer;
-    mSettingsMenu->removeAction( mActionProjectProperties );
-    mProjectMenu->insertAction( before, mActionProjectProperties );
-    mProjectMenu->insertSeparator( before );
-  }
 
   // View Menu
 
@@ -2143,7 +2130,7 @@ void QgisApp::createMenus()
   else
   {
     // on the top of the settings menu
-    QAction *before = mActionProjectProperties;
+    QAction *before = mSettingsMenu->actions().first();
     mSettingsMenu->insertMenu( before, mPanelMenu );
     mSettingsMenu->insertMenu( before, mToolbarMenu );
     mSettingsMenu->insertAction( before, mActionToggleFullScreen );
