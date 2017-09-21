@@ -290,6 +290,8 @@ class CORE_EXPORT QgsTask : public QObject
     //! Status of this task and all subtasks
     TaskStatus mOverallStatus;
 
+    //! This mutex remains locked from initialization until the task finishes,
+    //! it's used as a trigger for waitForFinished.
     QMutex mNotFinishedMutex;
 
     //! Progress of this (parent) task alone
