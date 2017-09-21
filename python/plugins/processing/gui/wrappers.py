@@ -1269,6 +1269,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                 widget.addItem(self.NOT_SET, None)
             for f in fields:
                 widget.addItem(self.dialog.resolveValueDescription(f), f)
+            widget.setToolTip(
+                self.tr('Input parameter, or name of field (separate field names with ; for multiple field parameters)'))
             return widget
 
     def postInitialize(self, wrappers):
@@ -1297,6 +1299,8 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         else:
             self.widget.setLayer(self._layer)
             self.widget.setCurrentIndex(0)
+        if self.param.defaultValue() is not None:
+            self.setValue(self.param.defaultValue())
 
     def getFields(self):
         if self._layer is None:
@@ -1322,7 +1326,7 @@ class TableFieldWidgetWrapper(WidgetWrapper):
                 options = self.widget.options
                 selected = []
                 for i, opt in enumerate(options):
-                    if opt in value:
+                    if opt in value or opt==value:
                         selected.append(i)
                 self.widget.setSelectedItems(selected)
             else:

@@ -173,6 +173,16 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.multipleCheck.setChecked(self.param.allowMultiple())
             self.verticalLayout.addWidget(self.multipleCheck)
+
+            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
+            self.defaultTextBox = QLineEdit()
+            self.defaultTextBox.setToolTip(self.tr('Default field name, or ; separated list of field names for multiple field parameters'))
+            if self.param is not None:
+                default = self.param.defaultValue()
+                if default is not None:
+                    self.defaultTextBox.setText(str(default))
+            self.verticalLayout.addWidget(self.defaultTextBox)
+
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BAND or \
                 isinstance(self.param, QgsProcessingParameterBand):
             self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
@@ -339,7 +349,10 @@ class ModelerParameterDefinitionDialog(QDialog):
                 return
             parent = self.parentCombo.currentData()
             datatype = self.datatypeCombo.currentData()
-            self.param = QgsProcessingParameterField(name, description, None, parent, datatype, self.multipleCheck.isChecked())
+            default = self.defaultTextBox.text()
+            if not default:
+                default = None
+            self.param = QgsProcessingParameterField(name, description, defaultValue=default, parentLayerParameterName=parent, type=datatype, allowMultiple=self.multipleCheck.isChecked())
         elif (self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BAND or
               isinstance(self.param, QgsProcessingParameterBand)):
             if self.parentCombo.currentIndex() < 0:
