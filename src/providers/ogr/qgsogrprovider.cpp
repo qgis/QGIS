@@ -3453,8 +3453,8 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
   }
   else
   {
-    QByteArray sqlPart1 = "SELECT ";
-    QByteArray sqlPart3 = "* FROM " + quotedIdentifier( layerName, ogrDriverName )
+    QByteArray sqlPart1 = "SELECT *";
+    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, ogrDriverName )
                           + " WHERE " + encoding->fromUnicode( subsetString );
 
     origFidAddAttempted = true;
@@ -3466,7 +3466,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
       fidColumn = "FID";
     }
 
-    QByteArray sql = sqlPart1 + fidColumn + " as orig_ogc_fid, " + sqlPart3;
+    QByteArray sql = sqlPart1 + ", " + fidColumn + " as orig_ogc_fid" + sqlPart3;
     QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
 
@@ -3474,7 +3474,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
     if ( !subsetLayer )
     {
-      QByteArray sql = sqlPart1 + "FID as orig_ogc_fid, " + sqlPart3;
+      QByteArray sql = sqlPart1 + ", " + "FID as orig_ogc_fid" + sqlPart3;
       QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
       subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
     }
@@ -3488,13 +3488,14 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     }
   }
 
-  // Check if first column is orig_ogc_fid
+  // Check if last column is orig_ogc_fid
   if ( origFidAddAttempted && subsetLayer )
   {
     OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( subsetLayer );
-    if ( OGR_FD_GetFieldCount( fdef ) > 0 )
+    int fieldCount = OGR_FD_GetFieldCount( fdef );
+    if ( fieldCount > 0 )
     {
-      OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, 0 );
+      OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, fieldCount - 1 );
       origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), "orig_ogc_fid" ) == 0;
     }
   }
