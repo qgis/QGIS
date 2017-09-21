@@ -29,7 +29,8 @@
 #include "qgsapplication.h"
 
 QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
-  : QWidget( parent ), mLayer( layer )
+  : QWidget( parent ),
+    mLayer( layer )
 {
   setupUi( this );
   mMetadata = layer->metadata();
@@ -39,7 +40,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   encodingFrame->setHidden( true );
   tabWidget->removeTab( 5 );
 
-  // Default categories
+  // Default categories, we want them translated, so we are not using a CSV.
   mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
   mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
   mDefaultCategories << tr( "Utilities Communication" ) << tr( "Economy" ) << tr( "Society" ) << tr( "Imagery Base Maps Earth Cover" );
@@ -48,15 +49,15 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   listDefaultCategories->setModel( mDefaultCategoriesModel );
 
   // Categories
-  mCategoriesModel = new QStringListModel( );
+  mCategoriesModel = new QStringListModel( listCategories );
   listCategories->setModel( mCategoriesModel );
 
   // Rights
-  mRightsModel = new QStringListModel( );
+  mRightsModel = new QStringListModel( listRights );
   listRights->setModel( mRightsModel );
 
   // Setup the constraints view
-  mConstraintsModel = new QStandardItemModel();
+  mConstraintsModel = new QStandardItemModel( tabConstraints );
   mConstraintsModel->setColumnCount( 2 );
   QStringList constraintheaders;
   constraintheaders << tr( "Type" ) << tr( "Constraint" );
@@ -65,7 +66,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   tabConstraints->setItemDelegate( new ConstraintItemDelegate() );
 
   // Setup the link view
-  mLinksModel = new QStandardItemModel();
+  mLinksModel = new QStandardItemModel( tabLinks );
   mLinksModel->setColumnCount( 7 );
   QStringList headers = QStringList();
   headers << tr( "Name" ) << tr( "Type" ) << tr( "URL" ) << tr( "Description" ) << tr( "Format" ) << tr( "MIME" ) << tr( "Size" );
@@ -74,31 +75,31 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   tabLinks->setItemDelegate( new LinkItemDelegate() );
 
   // History
-  mHistoryModel = new QStringListModel();
+  mHistoryModel = new QStringListModel( listHistory );
   listHistory->setModel( mHistoryModel );
 
   // Connect signals and slots
   connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWidget::updatePanel );
   connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::fillSourceFromLayer );
   connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::addVocabulary );
-  connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::removeVocabulary );
+  connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedVocabulary );
   connect( btnAddRight, &QPushButton::clicked, this, &QgsMetadataWidget::addRight );
-  connect( btnRemoveRight, &QPushButton::clicked, this, &QgsMetadataWidget::removeRight );
+  connect( btnRemoveRight, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedRight );
   connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWidget::addLicence );
-  connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeLicence );
+  connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedLicence );
   connect( btnAddConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::addConstraint );
-  connect( btnRemoveConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::removeConstraint );
+  connect( btnRemoveConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedConstraint );
   connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::fillCrsFromLayer );
   connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWidget::addContact );
-  connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWidget::removeContact );
+  connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedContact );
   connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWidget::updateContactDetails );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWidget::addLink );
-  connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWidget::removeLink );
+  connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedLink );
   connect( btnAddHistory, &QPushButton::clicked, this, &QgsMetadataWidget::addHistory );
-  connect( btnRemoveHistory, &QPushButton::clicked, this, &QgsMetadataWidget::removeHistory );
+  connect( btnRemoveHistory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedHistory );
   connect( btnNewCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addNewCategory );
   connect( btnAddDefaultCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addDefaultCategory );
-  connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeCategory );
+  connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedCategory );
 
   fillComboBox();
   setPropertiesFromLayer();
@@ -129,10 +130,10 @@ void QgsMetadataWidget::addVocabulary() const
   tabKeywords->setItem( row, 1, pCell );
 }
 
-void QgsMetadataWidget::removeVocabulary() const
+void QgsMetadataWidget::removeSelectedVocabulary() const
 {
   QItemSelectionModel *selectionModel = tabKeywords->selectionModel();
-  QModelIndexList selectedRows = selectionModel->selectedRows();
+  const QModelIndexList selectedRows = selectionModel->selectedRows();
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabKeywords->model()->removeRow( selectedRows[i].row() );
@@ -151,10 +152,10 @@ void QgsMetadataWidget::addLicence()
   }
 }
 
-void QgsMetadataWidget::removeLicence() const
+void QgsMetadataWidget::removeSelectedLicence() const
 {
   QItemSelectionModel *selectionModel = tabLicenses->selectionModel();
-  QModelIndexList selectedRows = selectionModel->selectedRows();
+  const QModelIndexList selectedRows = selectionModel->selectedRows();
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabLicenses->model()->removeRow( selectedRows[i].row() );
@@ -172,7 +173,7 @@ void QgsMetadataWidget::addRight()
   }
 }
 
-void QgsMetadataWidget::removeRight() const
+void QgsMetadataWidget::removeSelectedRight() const
 {
   QItemSelectionModel *selection = listRights->selectionModel();
   if ( selection->hasSelection() )
@@ -193,9 +194,9 @@ void QgsMetadataWidget::addConstraint() const
   mConstraintsModel->setItem( row, 1, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
 }
 
-void QgsMetadataWidget::removeConstraint() const
+void QgsMetadataWidget::removeSelectedConstraint() const
 {
-  QModelIndexList selectedRows = tabConstraints->selectionModel()->selectedRows();
+  const QModelIndexList selectedRows = tabConstraints->selectionModel()->selectedRows();
   mConstraintsModel->removeRow( selectedRows[0].row() );
 }
 
@@ -222,10 +223,10 @@ void QgsMetadataWidget::addContact() const
   tabContacts->selectRow( row );
 }
 
-void QgsMetadataWidget::removeContact() const
+void QgsMetadataWidget::removeSelectedContact() const
 {
   QItemSelectionModel *selectionModel = tabContacts->selectionModel();
-  QModelIndexList selectedRows = selectionModel->selectedRows();
+  const QModelIndexList selectedRows = selectionModel->selectedRows();
   for ( int i = 0 ; i < selectedRows.size() ; i++ )
   {
     tabContacts->model()->removeRow( selectedRows[i].row() );
@@ -235,9 +236,9 @@ void QgsMetadataWidget::removeContact() const
 void QgsMetadataWidget::updateContactDetails() const
 {
   QItemSelectionModel *selectionModel = tabContacts->selectionModel();
-  QModelIndexList selectedRows = selectionModel->selectedRows();
+  const QModelIndexList selectedRows = selectionModel->selectedRows();
 
-  if ( selectedRows.size() > 0 )
+  if ( ! selectedRows.isEmpty() )
   {
     panelDetails->setDisabled( false );
     lineEditContactName->setText( tabContacts->item( selectedRows[0].row(), 0 )->text() );
@@ -263,9 +264,9 @@ void QgsMetadataWidget::addLink() const
   mLinksModel->setItem( row, 6, new QStandardItem() );
 }
 
-void QgsMetadataWidget::removeLink() const
+void QgsMetadataWidget::removeSelectedLink() const
 {
-  QModelIndexList selectedRows = tabLinks->selectionModel()->selectedRows();
+  const QModelIndexList selectedRows = tabLinks->selectionModel()->selectedRows();
   mLinksModel->removeRow( selectedRows[0].row() );
 }
 
@@ -280,7 +281,7 @@ void QgsMetadataWidget::addHistory()
   }
 }
 
-void QgsMetadataWidget::removeHistory() const
+void QgsMetadataWidget::removeSelectedHistory() const
 {
   QItemSelectionModel *selection = listHistory->selectionModel();
   if ( selection->hasSelection() )
@@ -450,7 +451,7 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
   QMap<QString, QStringList> keywords;
   for ( int i = 0 ; i < tabKeywords->rowCount() ; i++ )
   {
-    keywords.insert( tabKeywords->item( i, 0 )->text(), tabKeywords->item( i, 1 )->text().split( "," ) );
+    keywords.insert( tabKeywords->item( i, 0 )->text(), tabKeywords->item( i, 1 )->text().split( ',' ) );
   }
   layerMetadata.setKeywords( keywords );
 
@@ -480,10 +481,7 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
   layerMetadata.setConstraints( constraints );
 
   // CRS
-  if ( selectionCrs->crs().isValid() )
-  {
-    layerMetadata.setCrs( selectionCrs->crs() );
-  }
+  layerMetadata.setCrs( selectionCrs->crs() );
 
   // Links
   QList<QgsLayerMetadata::Link> links;
@@ -529,7 +527,7 @@ bool QgsMetadataWidget::checkMetadata() const
   }
   else
   {
-    errors = QStringLiteral( "Ok, it seems valid." );
+    errors = QString( tr( "Ok, it seems valid according to the QGIS Schema." ) );
   }
 
   QString myStyle = QgsApplication::reportStyleSheet();
@@ -543,15 +541,17 @@ bool QgsMetadataWidget::checkMetadata() const
 
 QMap<QString, QString> QgsMetadataWidget::parseLanguages()
 {
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "country_code_ISO_3166.csv" ) );
+  QMap<QString, QString> countries;
+  countries.insert( QString(), QString() ); // We add an empty line, because it's not compulsory.
+
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "country_code_ISO_3166.csv" ) );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
     QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    return countries;
   }
 
-  QMap<QString, QString> countries;
-  countries.insert( "", "" ); // We add an empty line, because it's not compulsory.
   // Skip the first line of the CSV
   file.readLine();
   while ( !file.atEnd() )
@@ -565,14 +565,17 @@ QMap<QString, QString> QgsMetadataWidget::parseLanguages()
 
 QStringList QgsMetadataWidget::parseLicenses()
 {
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "licenses.csv" ) );
+  QStringList wordList;
+  wordList.append( QString() ); // We add an empty line, because it's not compulsory.
+
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "licenses.csv" ) );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
     QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    return wordList;
   }
 
-  QStringList wordList;
   // Skip the first line of the CSV
   file.readLine();
   while ( !file.atEnd() )
@@ -585,14 +588,17 @@ QStringList QgsMetadataWidget::parseLicenses()
 
 QStringList QgsMetadataWidget::parseLinkTypes()
 {
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "LinkPropertyLookupTable.csv" ) );
+  QStringList wordList;
+  wordList.append( QString() ); // We add an empty line, because it's not compulsory.
+
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "LinkPropertyLookupTable.csv" ) );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
     QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    return wordList;
   }
 
-  QStringList wordList;
   // Skip the first line of the CSV
   file.readLine();
   while ( !file.atEnd() )
@@ -605,14 +611,17 @@ QStringList QgsMetadataWidget::parseLinkTypes()
 
 QStringList QgsMetadataWidget::parseMimeTypes()
 {
+  QStringList wordList;
+  wordList.append( QString() ); // We add an empty line, because it's not compulsory.
+
   QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "mime.csv" ) );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
     QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    return wordList;
   }
 
-  QStringList wordList;
   while ( !file.atEnd() )
   {
     QByteArray line = file.readLine();
@@ -623,15 +632,17 @@ QStringList QgsMetadataWidget::parseMimeTypes()
 
 QMap<QString, QString> QgsMetadataWidget::parseTypes()
 {
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "md_scope_codes.csv" ) );
+  QMap<QString, QString> types;
+  types.insert( QString(), QString() ); // We add an empty line, because it's not compulsory.
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "md_scope_codes.csv" ) );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
     QgsDebugMsg( QString( "Error while opening the CSV file: %1, %2 " ).arg( path, file.errorString() ) );
+    return types;
   }
 
-  QMap<QString, QString> types;
-  types.insert( "", "" ); // We add an empty line, because it's not compulsory.
+  types.insert( QString(), QString() ); // We add an empty line, because it's not compulsory.
   while ( !file.atEnd() )
   {
     QByteArray line = file.readLine();
@@ -653,7 +664,7 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab() const
 {
   if ( mCategoriesModel->rowCount() > 0 )
   {
-    QList<QTableWidgetItem *> categories = tabKeywords->findItems( "gmd:topicCategory", Qt::MatchExactly );
+    QList<QTableWidgetItem *> categories = tabKeywords->findItems( QStringLiteral( "gmd:topicCategory" ), Qt::MatchExactly );
     int row;
     if ( !categories.isEmpty() )
     {
@@ -664,7 +675,7 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab() const
       // Create a new line with 'gmd:topicCategory'
       addVocabulary();
       row = tabKeywords->rowCount() - 1;
-      tabKeywords->item( row, 0 )->setText( "gmd:topicCategory" );
+      tabKeywords->item( row, 0 )->setText( QStringLiteral( "gmd:topicCategory" ) );
     }
     tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( "," ) );
   }
@@ -674,11 +685,11 @@ void QgsMetadataWidget::updatePanel() const
 {
   int index = tabWidget->currentIndex();
   QString currentTabText = tabWidget->widget( index )->objectName();
-  if ( currentTabText == "tabCategoriesDialog" )
+  if ( currentTabText == QStringLiteral( "tabCategoriesDialog" ) )
   {
     // Categories tab
     // We need to take keywords and insert them into the list
-    QList<QTableWidgetItem *> categories = tabKeywords->findItems( "gmd:topicCategory", Qt::MatchExactly );
+    QList<QTableWidgetItem *> categories = tabKeywords->findItems( QStringLiteral( "gmd:topicCategory" ), Qt::MatchExactly );
     if ( !categories.isEmpty() )
     {
       int row = categories.at( 0 )->row();
@@ -689,13 +700,13 @@ void QgsMetadataWidget::updatePanel() const
       mCategoriesModel->setStringList( QStringList() );
     }
   }
-  else if ( currentTabText == "tabKeywordsDialog" )
+  else if ( currentTabText == QStringLiteral( "tabKeywordsDialog" ) )
   {
     // Keywords tab
     // We need to take categories and insert them into the table
     syncFromCategoriesTabToKeywordsTab();
   }
-  else if ( currentTabText == "tabValidationDialog" )
+  else if ( currentTabText == QStringLiteral( "tabValidationDialog" ) )
   {
     checkMetadata();
   }
@@ -706,7 +717,7 @@ void QgsMetadataWidget::addNewCategory()
   bool ok;
   QString text = QInputDialog::getText( this, tr( "New Category" ),
                                         tr( "New Category:" ), QLineEdit::Normal,
-                                        QString( "" ), &ok );
+                                        QString(), &ok );
   if ( ok && !text.isEmpty() )
   {
     QStringList list = mCategoriesModel->stringList();
@@ -739,7 +750,7 @@ void QgsMetadataWidget::addDefaultCategory() const
 }
 
 
-void QgsMetadataWidget::removeCategory() const
+void QgsMetadataWidget::removeSelectedCategory() const
 {
   QItemSelectionModel *selection = listCategories->selectionModel();
   if ( selection->hasSelection() )

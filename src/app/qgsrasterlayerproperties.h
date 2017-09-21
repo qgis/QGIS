@@ -22,7 +22,6 @@
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgsguiutils.h"
-#include "qgsmetadatawidget.h"
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgis_app.h"
@@ -32,6 +31,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsMapToolEmitPoint;
+class QgsMetadataWidget;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;

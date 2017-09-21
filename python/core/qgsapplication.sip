@@ -231,7 +231,8 @@ Returns the path to the translation directory.
 
     static QString metadataPath();
 %Docstring
-Returns the path to the metadata directory.
+ Returns the path to the metadata directory.
+.. versionadded:: 3.0
  :rtype: str
 %End
 

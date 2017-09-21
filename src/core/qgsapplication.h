@@ -237,7 +237,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the translation directory.
     static QString i18nPath();
 
-    //! Returns the path to the metadata directory.
+    /** Returns the path to the metadata directory.
+    * \since QGIS 3.0
+    */
     static QString metadataPath();
 
     //! Returns the path to the master qgis.db file.

@@ -46,101 +46,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     ~QgsMetadataWidget();
 
     /**
-     * Fill the source field from the layer.
-     */
-    void fillSourceFromLayer() const;
-
-    /**
-     * Add a new vocabulary.
-     */
-    void addVocabulary() const;
-
-    /**
-     * Remove a selected vocabulary.
-     */
-    void removeVocabulary() const;
-
-    /**
-     * Add a new licence.
-     */
-    void addLicence();
-
-    /**
-     * Remove a selected licence.
-     */
-    void removeLicence() const;
-
-    /**
-     * Add a new right.
-     */
-    void addRight();
-
-    /**
-     * Remove a selected right.
-     */
-    void removeRight() const;
-
-    /**
-     * Add a new constraint.
-     */
-    void addConstraint() const;
-
-    /**
-     * Remove a constraint.
-     */
-    void removeConstraint() const;
-
-    /**
-     * Fill the CRS field from the layer.
-     */
-    void fillCrsFromLayer() const;
-
-    /**
-     * Add a new contact.
-     */
-    void addContact() const;
-
-    /**
-     * Remove a selected contact.
-     */
-    void removeContact() const;
-
-    /**
-     * Update the contact details according to the selection in the contact list.
-     */
-    void updateContactDetails() const;
-
-    /**
-     * Add a new link.
-     */
-    void addLink() const;
-
-    /**
-     * Remove a selected link.
-     */
-    void removeLink() const;
-
-    /**
-     * Add a new history.
-     */
-    void addHistory();
-
-    /**
-     * Remove a selected history.
-     */
-    void removeHistory() const;
-
-    /**
-     * Function to fill combobox like language, type.
-     */
-    void fillComboBox() const;
-
-    /**
-     * Fill the wizard from values in the layer metadata object.
-     */
-    void setPropertiesFromLayer() const;
-
-    /**
      * Save all fields in a QgsLayerMetadata object.
      */
     void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
@@ -149,6 +54,11 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Check if values in the wizard are correct.
      */
     bool checkMetadata() const;
+
+    /**
+     * Saves the metadata to the layer.
+     */
+    void acceptMetadata();
 
     /**
      * Returns a list of languages available by default in the wizard.
@@ -177,16 +87,31 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     static QMap<QString, QString> parseTypes();
 
-    /**
-     * Saves the metadata to the layer.
-     */
-    void acceptMetadata();
-
   private:
     void updatePanel() const;
+    void fillSourceFromLayer() const;
+    void fillCrsFromLayer() const;
     void addDefaultCategory() const;
     void addNewCategory();
-    void removeCategory() const;
+    void removeSelectedCategory() const;
+    void addVocabulary() const;
+    void removeSelectedVocabulary() const;
+    void addLicence();
+    void removeSelectedLicence() const;
+    void addRight();
+    void removeSelectedRight() const;
+    void addConstraint() const;
+    void removeSelectedConstraint() const;
+    void addContact() const;
+    void removeSelectedContact() const;
+    void addLink() const;
+    void removeSelectedLink() const;
+    void addHistory();
+    void removeSelectedHistory() const;
+    void updateContactDetails() const;
+    void fillComboBox() const;
+    void setPropertiesFromLayer() const;
+    void syncFromCategoriesTabToKeywordsTab() const;
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
     QgsLayerMetadata mMetadata;
@@ -196,12 +121,13 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     QStringListModel *mDefaultCategoriesModel = nullptr;
     QStringListModel *mRightsModel = nullptr;
     QStringListModel *mHistoryModel = nullptr;
-    void syncFromCategoriesTabToKeywordsTab() const;
 };
 
 #ifndef SIP_RUN
 
+
 /**
+ \\\@cond PRIVATE
  * \ingroup gui
  * \class LinkItemDelegate
  * \brief Special delegate for the link view in the metadata wizard.
@@ -240,6 +166,10 @@ class ConstraintItemDelegate : public QStyledItemDelegate
      */
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 };
+
+/**
+ \\\@endcond
+ */
 
 #endif
 #endif
