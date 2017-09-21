@@ -153,8 +153,11 @@ class QgsVectorLayerEditBuffer : QObject
      * Geom is modified only if successful convertion is possibile.
      * In case of conversion a message is sent to the log.
      * @param geometry pointer to the geometry that should be adapted to provider
-     * @return bool true if success
-     * @note added in QGIS 2.18
+     * @return bool true if success.
+     *  Success means that input geometry is changed because conversion is applied or
+     *  geometry is untouched if geometry conversion is not necessary.
+     *  Fail if conversion is not possible and geometry is untuched.
+     * @note added in QGIS 2.18.14
      */
     bool adaptGeometry( QgsGeometry* geometry );
 };
