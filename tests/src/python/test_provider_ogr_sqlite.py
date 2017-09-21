@@ -245,7 +245,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
         vl = QgsVectorLayer(tmpfile + "|subset=type=2", 'test', 'ogr')
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.fields().at(0).name() == "orig_ogc_fid")
+        self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
 
         req = QgsFeatureRequest()
         req.setFilterExpression("value=16")
@@ -256,7 +256,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
         # Check that subset string is correctly set on reload
         vl.reload()
-        self.assertTrue(vl.fields().at(0).name() == "orig_ogc_fid")
+        self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
 
 
 if __name__ == '__main__':

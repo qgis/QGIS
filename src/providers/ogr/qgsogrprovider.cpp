@@ -3537,33 +3537,59 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
       layerName = encoding->fromUnicode( modifiedLayerName );
     }
   }
-  QByteArray sql;
+  OGRLayerH subsetLayer = 0;
   if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
-    sql = encoding->fromUnicode( subsetString );
+  {
+    QByteArray sql = encoding->fromUnicode( subsetString );
+
+    QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+    subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+  }
   else
   {
-    QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
+    QByteArray sqlPart1 = "SELECT *";
+    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, mGDALDriverName )
+                          + " WHERE " + encoding->fromUnicode( subsetString );
 
-    sql = QByteArray( "SELECT " );
-    if ( !fidColumn.isEmpty() )
+    origFidAddAttempted = true;
+
+    QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
+    // Fallback to FID if OGR_L_GetFIDColumn returns nothing
+    if ( fidColumn.isEmpty() )
     {
-      sql += fidColumn + " as orig_ogc_fid, ";
-      origFidAddAttempted = true;
+      fidColumn = "FID";
     }
-    sql += "* FROM " + quotedIdentifier( layerName, mGDALDriverName );
-    sql += " WHERE " + encoding->fromUnicode( subsetString );
+
+    QByteArray sql = sqlPart1 + ", " + fidColumn + " as orig_ogc_fid" + sqlPart3;
+    QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+    subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+
+    // See https://lists.osgeo.org/pipermail/qgis-developer/2017-September/049802.html
+    // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
+    if ( !subsetLayer )
+    {
+      QByteArray sql = sqlPart1 + ", " + "FID as orig_ogc_fid" + sqlPart3;
+      QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+      subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+    }
+    // If that also fails, just continue without the orig_ogc_fid
+    if ( !subsetLayer )
+    {
+      QByteArray sql = sqlPart1 + sqlPart3;
+      QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+      subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+      origFidAddAttempted = false;
+    }
   }
 
-  QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-  OGRLayerH subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
-
-  // Check if first column is orig_ogc_fid
+  // Check if last column is orig_ogc_fid
   if ( origFidAddAttempted && subsetLayer )
   {
     OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( subsetLayer );
-    if ( OGR_FD_GetFieldCount( fdef ) > 0 )
+    int fieldCount = OGR_FD_GetFieldCount( fdef );
+    if ( fieldCount > 0 )
     {
-      OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, 0 );
+      OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, fieldCount - 1 );
       origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), "orig_ogc_fid" ) == 0;
     }
   }
