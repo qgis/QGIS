@@ -782,7 +782,7 @@ void QgsOfflineEditing::applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlit
       field.setTypeName( typeName );
       if ( !remoteLayer->addAttribute( field ) )
       {
-        this->syncError = true;
+        syncError = true;
         return;
       }
     }
@@ -854,7 +854,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
 
     if ( !remoteLayer->addFeature( f, false ) )
     {
-      this->syncError = true;
+      syncError = true;
       return;
     }
 
@@ -875,7 +875,7 @@ void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer* remoteLayer, sqlit
     QgsFeatureId fid = remoteFid( db, layerId, *it );
     if ( !remoteLayer->deleteFeature( fid ) )
     {
-      this->syncError = true;
+      syncError = true;
       return;
     }
 
@@ -898,7 +898,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer* offlineLayer
     QgsDebugMsgLevel( QString( "Offline changeAttributeValue %1 = %2" ).arg( QString( attrLookup[ values.at( i ).attr ] ), values.at( i ).value ), 4 );
     if ( !remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value ) )
     {
-      this->syncError = true;
+      syncError = true;
       return;
     }
 
@@ -918,7 +918,7 @@ void QgsOfflineEditing::applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlit
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
     if ( !remoteLayer->changeGeometry( fid, QgsGeometry::fromWkt( values.at( i ).geom_wkt ) ) )
     {
-      this->syncError = true;
+      syncError = true;
       return;
     }
 
