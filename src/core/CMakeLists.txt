@@ -562,6 +562,7 @@ ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
+  qgsactionmanager.h
   qgsactionscoperegistry.h
   qgsanimatedicon.h
   qgsbrowsermodel.h

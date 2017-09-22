@@ -429,6 +429,18 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     QVariant providerProperty( int property, const QVariant &defaultValue ) const; // SIP_SKIP
 
+    /**
+     * Set whether the provider will listen to datasource notifications
+     * If set, the provider will issue notify signals.
+     *
+     * The default implementation does nothing.
+     *
+     * \see notify
+     *
+     * \since QGIS 3.0
+     */
+    virtual void setListening( bool isListening );
+
   signals:
 
     /**
@@ -446,6 +458,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *   feature ids should be invalidated.
      */
     void dataChanged();
+
+    /**
+     * Emitted when datasource issues a notification
+     *
+     * \see setListening
+     *
+     * \since QGIS 3.0
+     */
+    void notify( const QString &msg ) const;
+
 
   protected:
 

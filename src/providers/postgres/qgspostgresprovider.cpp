@@ -35,6 +35,7 @@
 #include "qgspostgresdataitems.h"
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
+#include "qgspostgreslistener.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgssettings.h"
@@ -307,6 +308,20 @@ QgsAbstractFeatureSource *QgsPostgresProvider::featureSource() const
 QgsPostgresConn *QgsPostgresProvider::connectionRO() const
 {
   return mTransaction ? mTransaction->connection() : mConnectionRO;
+}
+
+void QgsPostgresProvider::setListening( bool isListening )
+{
+  if ( isListening && !mListener )
+  {
+    mListener.reset( QgsPostgresListener::create( mUri.connectionInfo( false ) ).release() );
+    connect( mListener.get(), &QgsPostgresListener::notify, this, &QgsPostgresProvider::notify );
+  }
+  else if ( !isListening && mListener )
+  {
+    disconnect( mListener.get(), &QgsPostgresListener::notify, this, &QgsPostgresProvider::notify );
+    mListener.reset();
+  }
 }
 
 QgsPostgresConn *QgsPostgresProvider::connectionRW()

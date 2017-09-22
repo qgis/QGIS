@@ -861,6 +861,12 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static QgsExpressionContextScope *processingAlgorithmScope( const QgsProcessingAlgorithm *algorithm, const QVariantMap &parameters, QgsProcessingContext &context ) SIP_FACTORY;
 
+    /**
+     * Creates a new scope which contains variables and functions relating to provider notifications
+     * \param message the notification message
+     */
+    static QgsExpressionContextScope *notificationScope( const QString &message = QString() ) SIP_FACTORY;
+
     /** Registers all known core functions provided by QgsExpressionContextScope objects.
      */
     static void registerContextFunctions();

@@ -36,3 +36,8 @@ QVariant QgsDataProvider::providerProperty( int property, const QVariant &defaul
   return mProviderProperties.value( property, defaultValue );
 }
 
+void QgsDataProvider::setListening( bool isListening )
+{
+  Q_UNUSED( isListening );
+}
+

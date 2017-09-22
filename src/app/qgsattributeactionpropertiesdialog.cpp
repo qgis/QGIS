@@ -31,7 +31,7 @@
 #include <QFileDialog>
 #include <QImageWriter>
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, QgsVectorLayer *layer, QWidget *parent )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
 {
@@ -44,6 +44,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
   mIconPreview->setPixmap( QPixmap( iconPath ) );
   mActionText->setText( actionText );
   mCaptureOutput->setChecked( capture );
+  mNotificationMessage->setText( notificationMessage );
 
   init( actionScopes );
 }
@@ -101,6 +102,12 @@ QSet<QString> QgsAttributeActionPropertiesDialog::actionScopes() const
   return actionScopes;
 }
 
+QString QgsAttributeActionPropertiesDialog::notificationMessage() const
+{
+  return mNotificationMessage->text();
+}
+
+
 bool QgsAttributeActionPropertiesDialog::capture() const
 {
   return mCaptureOutput->isChecked();
@@ -118,6 +125,8 @@ QgsExpressionContext QgsAttributeActionPropertiesDialog::createExpressionContext
       context.appendScope( new QgsExpressionContextScope( actionScope.expressionContextScope() ) );
     }
   }
+
+  context << QgsExpressionContextUtils::notificationScope();
 
   return context;
 }

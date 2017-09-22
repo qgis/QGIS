@@ -703,6 +703,9 @@ void QgsExpression::initVariableHelp()
 
   //processing variables
   sVariableHelpTexts.insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
+
+  //provider notification
+  sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Contend of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )

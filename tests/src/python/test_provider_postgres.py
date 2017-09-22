@@ -17,6 +17,7 @@ import qgis  # NOQA
 import psycopg2
 
 import os
+import time
 
 from qgis.core import (
     QgsVectorLayer,
@@ -33,13 +34,13 @@ from qgis.core import (
     QgsRectangle
 )
 from qgis.gui import QgsGui
-from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
 
-start_app()
+QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
@@ -808,6 +809,42 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl2.isValid())
 
         self.assertEqual(vl2.extent(), originalExtent)
+
+    def testNotify(self):
+        vl0 = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
+        vl0.dataProvider().setListening(True)
+
+        class Notified(QObject):
+
+            def __init__(self):
+                super(Notified, self).__init__()
+                self.received = ""
+
+            def receive(self, msg):
+                self.received = msg
+
+        notified = Notified()
+        vl0.dataProvider().notify.connect(notified.receive)
+
+        vl0.dataProvider().setListening(True)
+
+        cur = self.con.cursor()
+        ok = False
+        start = time.time()
+        while True:
+            cur.execute("NOTIFY qgis, 'my message'")
+            self.con.commit()
+            QGISAPP.processEvents()
+            if notified.received == "my message":
+                ok = True
+                break
+            if (time.time() - start) > 5: # timeout
+                break
+
+        vl0.dataProvider().notify.disconnect(notified.receive)
+        vl0.dataProvider().setListening(False)
+
+        self.assertTrue(ok)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

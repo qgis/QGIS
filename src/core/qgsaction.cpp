@@ -119,6 +119,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
   mIcon = actionElement.attributeNode( QStringLiteral( "icon" ) ).value();
   mCaptureOutput = actionElement.attributeNode( QStringLiteral( "capture" ) ).value().toInt() != 0;
   mShortTitle = actionElement.attributeNode( QStringLiteral( "shortTitle" ) ).value();
+  mNotificationMessage = actionElement.attributeNode( QStringLiteral( "notificationMessage" ) ).value();
   mId = QUuid( actionElement.attributeNode( QStringLiteral( "id" ) ).value() );
   if ( mId.isNull() )
     mId = QUuid::createUuid();
@@ -133,6 +134,7 @@ void QgsAction::writeXml( QDomNode &actionsNode ) const
   actionSetting.setAttribute( QStringLiteral( "icon" ), mIcon );
   actionSetting.setAttribute( QStringLiteral( "action" ), mCommand );
   actionSetting.setAttribute( QStringLiteral( "capture" ), mCaptureOutput );
+  actionSetting.setAttribute( QStringLiteral( "notificationMessage" ), mNotificationMessage );
   actionSetting.setAttribute( QStringLiteral( "id" ), mId.toString() );
 
   Q_FOREACH ( const QString &scope, mActionScopes )
