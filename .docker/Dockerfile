@@ -3,8 +3,6 @@ MAINTAINER Denis Rouzaud <denis.rouzaud@gmail.com>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
 
-ENV CORES 8
-
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
   && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
@@ -99,14 +97,5 @@ ENV CC=/usr/lib/ccache/clang
 ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
-
-# RUN cmake --version
-# RUN ${CC} --version
-# RUN ${CXX} --version
-
-# RUN locale-gen en_US.UTF-8
-# ENV LANG=en_US.UTF-8
-# ENV LANGUAGE=en_US:en
-# ENV LC_ALL=en_US.UTF-8
 
 CMD /root/QGIS/.ci/travis/linux/docker-build-test.sh

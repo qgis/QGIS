@@ -17,10 +17,6 @@ set -e
 
 DIR=$(git rev-parse --show-toplevel)/.docker
 
-docker-compose -f $DOCKER_COMPOSE run --rm qgis-deps
-
 mkdir -p $CCACHE_DIR
 
 docker-compose -f $DOCKER_COMPOSE run --rm qgis-deps
-
-popd
