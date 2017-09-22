@@ -740,6 +740,11 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry* ge
   {
     return new QgsGeometry( outputGeom );
   }
+
+  QString msg = tr( "Geometry type %1 not compatible with provider type %2.", "not compatible geometry" )
+                .arg( QgsWKBTypes::displayString( geometry->wkbType() ) )
+                .arg( QgsWKBTypes::displayString( providerGeomType ) );
+  const_cast<QgsVectorDataProvider*>( this )->pushError( msg );
   return nullptr;
 }
 
