@@ -27,13 +27,8 @@ __revision__ = '$Format:%H$'
 
 import csv
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields,
-                       QgsField,
-                       QgsGeometry,
-                       QgsWkbTypes,
-                       QgsFeatureRequest,
-                       QgsPointXY)
+from qgis.core import (QgsWkbTypes,
+                       QgsFeatureRequest)
 
 
 def resolveFieldIndex(source, attr):
@@ -93,41 +88,6 @@ def values(source, *attributes):
             else:
                 ret[k] = [v]
     return ret
-
-
-def createUniqueFieldName(fieldName, fieldList):
-    def nextname(name):
-        num = 1
-        while True:
-            returnname = '{name}_{num}'.format(name=name[:8], num=num)
-            yield returnname
-            num += 1
-
-    def found(name):
-        return any(f.name() == name for f in fieldList)
-
-    shortName = fieldName[:10]
-
-    if not fieldList:
-        return shortName
-
-    if not found(shortName):
-        return shortName
-
-    for newname in nextname(shortName):
-        if not found(newname):
-            return newname
-
-
-def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
-    idx = layer.fields().lookupField(fieldName)
-    if idx == -1:
-        fn = createUniqueFieldName(fieldName, fieldList)
-        field = QgsField(fn, QVariant.Double, '', fieldLen, fieldPrec)
-        idx = len(fieldList)
-        fieldList.append(field)
-
-    return (idx, fieldList)
 
 
 def extractPoints(geom):
