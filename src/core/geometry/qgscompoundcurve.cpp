@@ -73,7 +73,7 @@ int QgsCompoundCurve::dimension() const
 
 QgsCompoundCurve::QgsCompoundCurve( const QgsCompoundCurve &curve ): QgsCurve( curve )
 {
-  mWkbType = QgsWkbTypes::CompoundCurve;
+  mWkbType = curve.wkbType();
   for ( const QgsCurve *c : curve.mCurves )
   {
     mCurves.append( static_cast<QgsCurve *>( c->clone() ) );
@@ -385,7 +385,7 @@ QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationTole
 
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
 {
-  if ( i >= mCurves.size() )
+  if ( i < 0 || i >= mCurves.size() )
   {
     return nullptr;
   }
@@ -396,20 +396,28 @@ void QgsCompoundCurve::addCurve( QgsCurve *c )
 {
   if ( c )
   {
-    mCurves.append( c );
-
-    if ( mWkbType == QgsWkbTypes::Unknown )
+    if ( mCurves.empty() )
     {
       setZMTypeFromSubGeometry( c, QgsWkbTypes::CompoundCurve );
     }
+
+    mCurves.append( c );
 
     if ( QgsWkbTypes::hasZ( mWkbType ) && !QgsWkbTypes::hasZ( c->wkbType() ) )
     {
       c->addZValue();
     }
+    else if ( !QgsWkbTypes::hasZ( mWkbType ) && QgsWkbTypes::hasZ( c->wkbType() ) )
+    {
+      c->dropZValue();
+    }
     if ( QgsWkbTypes::hasM( mWkbType ) && !QgsWkbTypes::hasM( c->wkbType() ) )
     {
       c->addMValue();
+    }
+    else if ( !QgsWkbTypes::hasM( mWkbType ) && QgsWkbTypes::hasM( c->wkbType() ) )
+    {
+      c->dropMValue();
     }
     clearCache();
   }
@@ -417,13 +425,12 @@ void QgsCompoundCurve::addCurve( QgsCurve *c )
 
 void QgsCompoundCurve::removeCurve( int i )
 {
-  if ( mCurves.size() - 1  < i )
+  if ( i < 0 || i >= mCurves.size() )
   {
     return;
   }
 
-  delete ( mCurves.at( i ) );
-  mCurves.removeAt( i );
+  delete mCurves.takeAt( i );
   clearCache();
 }
 
@@ -776,9 +783,9 @@ double QgsCompoundCurve::vertexAngle( QgsVertexId vertex ) const
 QgsCompoundCurve *QgsCompoundCurve::reversed() const
 {
   QgsCompoundCurve *clone = new QgsCompoundCurve();
-  for ( QgsCurve *curve : mCurves )
+  for ( int i = mCurves.count() - 1; i >= 0; --i )
   {
-    QgsCurve *reversedCurve = curve->reversed();
+    QgsCurve *reversedCurve = mCurves.at( i )->reversed();
     clone->addCurve( reversedCurve );
   }
   return clone;

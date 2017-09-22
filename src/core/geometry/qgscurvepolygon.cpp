@@ -626,12 +626,12 @@ void QgsCurvePolygon::removeInteriorRings( double minimumAllowedArea )
 
 void QgsCurvePolygon::draw( QPainter &p ) const
 {
+  if ( !mExteriorRing )
+    return;
+
   if ( mInteriorRings.empty() )
   {
-    if ( mExteriorRing )
-    {
-      mExteriorRing->drawAsPolygon( p );
-    }
+    mExteriorRing->drawAsPolygon( p );
   }
   else
   {
