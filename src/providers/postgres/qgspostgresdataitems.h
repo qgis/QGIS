@@ -39,7 +39,7 @@ class QgsPGRootItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
 
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     static QMainWindow *sMainWindow;
@@ -60,7 +60,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     virtual bool acceptDrop() override { return true; }
@@ -92,7 +92,7 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     virtual bool acceptDrop() override { return true; }
@@ -120,7 +120,7 @@ class QgsPGLayerItem : public QgsLayerItem
     QString createUri();
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
     virtual QString comments() const override;
 

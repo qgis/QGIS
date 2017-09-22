@@ -275,12 +275,12 @@ QString QgsOgrLayerItem::layerName() const
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsOgrLayerItem::actions()
+QList<QAction *> QgsOgrLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
   // Messages are different for files and tables
-  QString message = mIsSubLayer ? QObject::tr( "Delete layer '%1'..." ).arg( mName ) : QObject::tr( "Delete file '%1'..." ).arg( mUri );
-  QAction *actionDeleteLayer = new QAction( message, this );
+  QString message = mIsSubLayer ? QObject::tr( "Delete Layer '%1'..." ).arg( mName ) : QObject::tr( "Delete File '%1'..." ).arg( mUri );
+  QAction *actionDeleteLayer = new QAction( message, parent );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsOgrLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
   return lst;

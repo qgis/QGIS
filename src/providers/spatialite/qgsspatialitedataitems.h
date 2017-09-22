@@ -24,7 +24,7 @@ class QgsSLLayerItem : public QgsLayerItem
     QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
@@ -43,7 +43,7 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     virtual bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     virtual bool acceptDrop() override { return true; }
@@ -69,7 +69,7 @@ class QgsSLRootItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:

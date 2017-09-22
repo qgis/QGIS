@@ -99,15 +99,15 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWfsConnectionItem::actions()
+QList<QAction *> QgsWfsConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsWfsConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsWfsConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -166,11 +166,11 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWfsRootItem::actions()
+QList<QAction *> QgsWfsRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsWfsRootItem::newConnection );
   lst.append( actionNew );
 

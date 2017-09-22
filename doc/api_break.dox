@@ -961,6 +961,8 @@ QgsDataItem        {#qgis_api_break_3_0_QgsDataItem}
 - capabilities() has been removed. Use capabilities2() instead (TODO: rename back to capabilities()).
 - emitBeginInsertItems(), emitEndInsertItems(), emitBeginRemoveItems(), emitEndRemoveItems(), emitDataChanged(), emitStateChanged() have been removed.
 - Favourites was renamed to Favorites
+- actions() now requires a new QWidget parent argument. Subclasses should ensure that returned items have been
+correctly parented to this widget.
 
 QgsDataItemProviderRegistry        {#qgis_api_break_3_0_QgsDataItemProviderRegistry}
 ---------------------------

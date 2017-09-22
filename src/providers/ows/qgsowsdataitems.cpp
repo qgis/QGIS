@@ -134,15 +134,15 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsOWSConnectionItem::actions()
+QList<QAction *> QgsOWSConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsOWSConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsOWSConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -212,12 +212,13 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsOWSRootItem::actions()
+QList<QAction *> QgsOWSRootItem::actions( QWidget *parent )
 {
+  Q_UNUSED( parent );
   QList<QAction *> lst;
 
 #if 0
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 #endif

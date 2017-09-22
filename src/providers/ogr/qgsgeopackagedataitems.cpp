@@ -70,15 +70,15 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageRootItem::actions()
+QList<QAction *> QgsGeoPackageRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsGeoPackageRootItem::newConnection );
   lst.append( actionNew );
 
-  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), this );
+  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), parent );
   connect( actionCreateDatabase, &QAction::triggered, this, &QgsGeoPackageRootItem::createDatabase );
   lst.append( actionCreateDatabase );
 
@@ -163,26 +163,26 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
 
 #ifdef HAVE_GUI
 
-QList<QAction *> QgsGeoPackageCollectionItem::actions()
+QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
   if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( mName ) )
   {
-    QAction *actionDeleteConnection = new QAction( tr( "Remove connection" ), this );
+    QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), parent );
     connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
     lst.append( actionDeleteConnection );
   }
   else
   {
     // Add to stored connections
-    QAction *actionAddConnection = new QAction( tr( "Add connection" ), this );
+    QAction *actionAddConnection = new QAction( tr( "Add Connection" ), parent );
     connect( actionAddConnection, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addConnection );
     lst.append( actionAddConnection );
   }
 
   // Add table to existing DB
-  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), this );
+  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), parent );
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addTable );
   lst.append( actionAddTable );
 
@@ -482,16 +482,16 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageConnectionItem::actions()
+QList<QAction *> QgsGeoPackageConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionDeleteConnection = new QAction( tr( "Remove connection" ), this );
+  QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), parent );
   connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
   lst.append( actionDeleteConnection );
 
   // Add table to existing DB
-  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), this );
+  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table..." ), parent );
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
   lst.append( actionAddTable );
 
@@ -541,7 +541,7 @@ void QgsGeoPackageCollectionItem::addConnection()
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
 {
   QList<QAction *> lst;
-  QAction *actionDeleteLayer = new QAction( tr( "Delete layer '%1'..." ).arg( mName ), this );
+  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'..." ).arg( mName ), this );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
   return lst;

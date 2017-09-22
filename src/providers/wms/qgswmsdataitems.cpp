@@ -200,15 +200,15 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWMSConnectionItem::actions()
+QList<QAction *> QgsWMSConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsWMSConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsWMSConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -384,11 +384,11 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWMSRootItem::actions()
+QList<QAction *> QgsWMSRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsWMSRootItem::newConnection );
   lst.append( actionNew );
 
@@ -485,9 +485,9 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsXyzTileRootItem::actions()
+QList<QAction *> QgsXyzTileRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsXyzTileRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
@@ -514,15 +514,15 @@ QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString pat
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsXyzLayerItem::actions()
+QList<QAction *> QgsXyzLayerItem::actions( QWidget *parent )
 {
-  QList<QAction *> lst = QgsLayerItem::actions();
+  QList<QAction *> lst = QgsLayerItem::actions( parent );
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsXyzLayerItem::editConnection );
   lst << actionEdit;
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsXyzLayerItem::deleteConnection );
   lst << actionDelete;
 

@@ -81,7 +81,7 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     //! Return the layer type from \a geometryType
@@ -115,7 +115,7 @@ class QgsGeoPackageConnectionItem : public QgsGeoPackageCollectionItem
     virtual bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
@@ -137,7 +137,7 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
     void newConnection();

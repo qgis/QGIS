@@ -250,19 +250,19 @@ bool QgsDb2ConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsDb2ConnectionItem::actions()
+QList<QAction *> QgsDb2ConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionRefresh = new QAction( tr( "Refresh connection" ), this );
+  QAction *actionRefresh = new QAction( tr( "Refresh Connection" ), parent );
   connect( actionRefresh, &QAction::triggered, this, &QgsDb2ConnectionItem::refreshConnection );
   lst.append( actionRefresh );
 
-  QAction *actionEdit = new QAction( tr( "Edit connection..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsDb2ConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete connection" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsDb2ConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -430,14 +430,13 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsDb2RootItem::actions()
+QList<QAction *> QgsDb2RootItem::actions( QWidget *parent )
 {
   QList<QAction *> actionList;
 
-  QAction *action = new QAction( tr( "New Connection..." ), this );
+  QAction *action = new QAction( tr( "New Connection..." ), parent );
   connect( action, &QAction::triggered, this, &QgsDb2RootItem::newConnection );
   actionList.append( action );
-  QgsDebugMsg( "DB2: Browser Panel; New Connection option added." );
 
   return actionList;
 }

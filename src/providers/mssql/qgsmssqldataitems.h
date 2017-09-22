@@ -40,7 +40,7 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
@@ -60,7 +60,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     virtual bool acceptDrop() override { return true; }

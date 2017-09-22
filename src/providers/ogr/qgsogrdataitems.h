@@ -68,7 +68,7 @@ class QgsOgrLayerItem : public QgsLayerItem
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
   public slots:
     void deleteLayer();
 #endif

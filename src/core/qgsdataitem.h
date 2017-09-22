@@ -139,10 +139,14 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
 
-    /** Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
+    /**
+     * Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
      * the item. Subclasses should override this to provide actions.
+     *
+     * Subclasses should ensure that ownership of created actions is correctly handled by parenting them
+     * to the specified parent widget.
      */
-    virtual QList<QAction *> actions() { return QList<QAction *>(); }
+    virtual QList<QAction *> actions( QWidget *parent );
 
     /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
@@ -485,7 +489,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
 
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 
 
   public slots:

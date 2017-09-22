@@ -34,7 +34,7 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     virtual bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
@@ -102,7 +102,7 @@ class QgsWMSRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
 #endif
 
@@ -138,7 +138,7 @@ class QgsXyzTileRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   private slots:
@@ -155,7 +155,7 @@ class QgsXyzLayerItem : public QgsLayerItem
     QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri );
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
