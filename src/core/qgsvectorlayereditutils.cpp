@@ -84,6 +84,16 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
 
   QgsGeometry geometry = f.geometry();
 
+  QgsAbstractGeometry *abstractGeometry = geometry.geometry();
+
+  // Support Z value.
+  if ( abstractGeometry && QgsWkbTypes::hasZ( p.wkbType() ) )
+    abstractGeometry->addZValue( 0.0 );
+
+  // Support M value.
+  if ( abstractGeometry && QgsWkbTypes::hasM( p.wkbType() ) )
+    abstractGeometry->addMValue( 0.0 );
+
   geometry.moveVertex( p, atVertex );
 
   mLayer->editBuffer()->changeGeometry( atFeatureId, geometry );
