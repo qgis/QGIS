@@ -15,6 +15,7 @@
 
 #include "qgsappbrowserproviders.h"
 #include "qgisapp.h"
+#include <QDesktopServices>
 
 //
 // QgsQlrDataItem
@@ -77,4 +78,197 @@ void QgsQlrDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) 
 {
   QString path = uri.uri;
   QgisApp::instance()->openLayerDefinition( path );
+}
+
+//
+// QgsQptDataItemProvider
+//
+
+QString QgsQptDataItemProvider::name()
+{
+  return QStringLiteral( "QPT" );
+}
+
+int QgsQptDataItemProvider::capabilities()
+{
+  return QgsDataProvider::File;
+}
+
+QgsDataItem *QgsQptDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  QFileInfo fileInfo( path );
+
+  if ( fileInfo.suffix().compare( QStringLiteral( "qpt" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return new QgsQptDataItem( parentItem, fileInfo.fileName(), path );
+  }
+  return nullptr;
+}
+
+//
+// QgsQptDropHandler
+//
+
+QString QgsQptDropHandler::customUriProviderKey() const
+{
+  return QStringLiteral( "qpt" );
+}
+
+void QgsQptDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const
+{
+  QString path = uri.uri;
+  QgisApp::instance()->openTemplate( path );
+}
+
+bool QgsQptDropHandler::handleFileDrop( const QString &file )
+{
+  QFileInfo fi( file );
+  if ( fi.completeSuffix().compare( QStringLiteral( "qpt" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QgisApp::instance()->openTemplate( file );
+    return true;
+  }
+  return false;
+}
+
+//
+// QgsQptDataItem
+//
+
+QgsQptDataItem::QgsQptDataItem( QgsDataItem *parent, const QString &name, const QString &path )
+  : QgsDataItem( QgsDataItem::Custom, parent, name, path )
+{
+  setState( QgsDataItem::Populated ); // no children
+  setIconName( QStringLiteral( ":/images/icons/qgis-icon-16x16.png" ) );
+  setToolTip( QDir::toNativeSeparators( path ) );
+}
+
+bool QgsQptDataItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::Uri QgsQptDataItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.layerType = QStringLiteral( "custom" );
+  u.providerKey = QStringLiteral( "qpt" );
+  u.name = name();
+  u.uri = path();
+  return u;
+}
+
+bool QgsQptDataItem::handleDoubleClick()
+{
+  QgisApp::instance()->openTemplate( path() );
+  return true;
+}
+
+QList<QAction *> QgsQptDataItem::actions()
+{
+  QAction *newLayout = new QAction( tr( "New Layout from Template" ), this );
+  connect( newLayout, &QAction::triggered, this, [ = ]
+  {
+    QgisApp::instance()->openTemplate( path() );
+  } );
+  return QList<QAction *>() << newLayout;
+}
+
+//
+// QgsPyDataItem
+//
+
+QgsPyDataItem::QgsPyDataItem( QgsDataItem *parent, const QString &name, const QString &path )
+  : QgsDataItem( QgsDataItem::Custom, parent, name, path )
+{
+  setState( QgsDataItem::Populated ); // no children
+  setIconName( QStringLiteral( ":/images/icons/qgis-icon-16x16.png" ) );
+  setToolTip( QDir::toNativeSeparators( path ) );
+}
+
+bool QgsPyDataItem::hasDragEnabled() const
+{
+  return true;
+}
+
+QgsMimeDataUtils::Uri QgsPyDataItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+  u.layerType = QStringLiteral( "custom" );
+  u.providerKey = QStringLiteral( "py" );
+  u.name = name();
+  u.uri = path();
+  return u;
+}
+
+bool QgsPyDataItem::handleDoubleClick()
+{
+  QgisApp::instance()->runScript( path() );
+  return true;
+}
+
+QList<QAction *> QgsPyDataItem::actions()
+{
+  QAction *runScript = new QAction( tr( "&Run Script" ), this );
+  connect( runScript, &QAction::triggered, this, [ = ]
+  {
+    QgisApp::instance()->runScript( path() );
+  } );
+  QAction *editScript = new QAction( tr( "Open in External &Editor" ), this );
+  connect( editScript, &QAction::triggered, this, [ = ]
+  {
+    QDesktopServices::openUrl( QUrl::fromLocalFile( path() ) );
+  } );
+  return QList<QAction *>() << runScript << editScript;
+}
+
+//
+// QgsPyDataItemProvider
+//
+
+QString QgsPyDataItemProvider::name()
+{
+  return QStringLiteral( "py" );
+}
+
+int QgsPyDataItemProvider::capabilities()
+{
+  return QgsDataProvider::File;
+}
+
+QgsDataItem *QgsPyDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
+{
+  QFileInfo fileInfo( path );
+
+  if ( fileInfo.suffix().compare( QStringLiteral( "py" ), Qt::CaseInsensitive ) == 0 )
+  {
+    return new QgsPyDataItem( parentItem, fileInfo.fileName(), path );
+  }
+  return nullptr;
+}
+
+//
+// QgsPyDropHandler
+//
+
+QString QgsPyDropHandler::customUriProviderKey() const
+{
+  return QStringLiteral( "py" );
+}
+
+void QgsPyDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const
+{
+  QString path = uri.uri;
+  QgisApp::instance()->runScript( path );
+}
+
+bool QgsPyDropHandler::handleFileDrop( const QString &file )
+{
+  QFileInfo fi( file );
+  if ( fi.completeSuffix().compare( QStringLiteral( "py" ), Qt::CaseInsensitive ) == 0 )
+  {
+    QgisApp::instance()->runScript( file );
+    return true;
+  }
+  return false;
 }

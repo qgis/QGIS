@@ -979,10 +979,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsQlrDataItemProvider() );
   registerCustomDropHandler( new QgsQlrDropHandler() );
-
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsQptDataItemProvider() );
+  registerCustomDropHandler( new QgsQptDropHandler() );
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   loadPythonSupport();
+
+#ifdef WITH_BINDINGS
+  QgsApplication::dataItemProviderRegistry()->addProvider( new QgsPyDataItemProvider() );
+  registerCustomDropHandler( new QgsPyDropHandler() );
+#endif
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -5552,6 +5558,7 @@ void QgisApp::runScript( const QString &filePath )
 
   mPythonUtils->runString(
     QString( "import sys\n"
+             "from qgis.utils import iface\n"
              "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read())\n" ).arg( filePath )
     , tr( "Failed to run Python script:" ), false );
 #endif
