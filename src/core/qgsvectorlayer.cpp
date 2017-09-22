@@ -2809,8 +2809,8 @@ void QgsVectorLayer::beginEditCommand( const QString &text )
   }
   if ( mDataProvider->transaction() )
   {
-    QString ingnoredError;
-    mDataProvider->transaction()->createSavepoint( ingnoredError );
+    QString ignoredError;
+    mDataProvider->transaction()->createSavepoint( ignoredError );
   }
   undoStack()->beginMacro( text );
   mEditCommandActive = true;
