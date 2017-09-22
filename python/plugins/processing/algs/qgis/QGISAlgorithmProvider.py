@@ -91,7 +91,6 @@ from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
 from .JoinAttributes import JoinAttributes
-from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
 from .MeanCoords import MeanCoords
 from .Merge import Merge
@@ -147,7 +146,6 @@ from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
 from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
-from .SplitWithLines import SplitWithLines
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
@@ -227,7 +225,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoSpatialite(),
                 Intersection(),
                 JoinAttributes(),
-                LinesIntersection(),
                 LinesToPolygons(),
                 MeanCoords(),
                 Merge(),
@@ -283,7 +280,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 SpatialIndex(),
                 SpatialJoin(),
                 SpatialJoinSummary(),
-                SplitWithLines(),
                 StatisticsByCategories(),
                 SumLines(),
                 SymmetricalDifference(),

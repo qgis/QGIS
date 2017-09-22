@@ -43,6 +43,7 @@ from qgis.core import (NULL,
                        QgsDateTimeStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsProcessing,
+                       QgsProcessingUtils,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -247,7 +248,7 @@ class SpatialJoinSummary(QgisAlgorithm):
                         else:
                             addFieldKeepType(join_field, f[0])
 
-        out_fields = vector.combineFields(source_fields, fields_to_join)
+        out_fields = QgsProcessingUtils.combineFields(source_fields, fields_to_join)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                out_fields, source.wkbType(), source.sourceCrs())

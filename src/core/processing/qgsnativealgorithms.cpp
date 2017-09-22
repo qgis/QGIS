@@ -85,6 +85,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSimplifyAlgorithm() );
   addAlgorithm( new QgsExtractByExtentAlgorithm() );
   addAlgorithm( new QgsExtentToLayerAlgorithm() );
+  addAlgorithm( new QgsLineIntersectionAlgorithm() );
+  addAlgorithm( new QgsSplitWithLinesAlgorithm() );
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -1988,5 +1990,416 @@ QVariantMap QgsExtentToLayerAlgorithm::processAlgorithm( const QVariantMap &para
   return outputs;
 }
 
+void QgsLineIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
+                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
+                QObject::tr( "Intersect layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+
+  addParameter( new QgsProcessingParameterField(
+                  QStringLiteral( "INPUT_FIELDS" ),
+                  QObject::tr( "Input fields to keep (leave empty to keep all fields)" ), QVariant(),
+                  QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any,
+                  true, true ) );
+  addParameter( new QgsProcessingParameterField(
+                  QStringLiteral( "INTERSECT_FIELDS" ),
+                  QObject::tr( "Intersect fields to keep (leave empty to keep all fields)" ), QVariant(),
+                  QStringLiteral( "INTERSECT" ), QgsProcessingParameterField::Any,
+                  true, true ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersections" ), QgsProcessing::TypeVectorPoint ) );
+}
+
+QString QgsLineIntersectionAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer." );
+}
+
+QgsLineIntersectionAlgorithm *QgsLineIntersectionAlgorithm::createInstance() const
+{
+  return new QgsLineIntersectionAlgorithm();
+}
+
+QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > sourceA( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !sourceA )
+    return QVariantMap();
+
+  std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
+  if ( !sourceB )
+    return QVariantMap();
+
+  const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
+  const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "INTERSECT_FIELDS" ), context );
+
+  QgsFields outFieldsA;
+  QgsAttributeList fieldsAIndices;
+
+  if ( fieldsA.empty() )
+  {
+    outFieldsA = sourceA->fields();
+    for ( int i = 0; i < outFieldsA.count(); ++i )
+    {
+      fieldsAIndices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : fieldsA )
+    {
+      int index = sourceA->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        fieldsAIndices << index;
+        outFieldsA.append( sourceA->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsFields outFieldsB;
+  QgsAttributeList fieldsBIndices;
+
+  if ( fieldsB.empty() )
+  {
+    outFieldsB = sourceB->fields();
+    for ( int i = 0; i < outFieldsB.count(); ++i )
+    {
+      fieldsBIndices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : fieldsB )
+    {
+      int index = sourceB->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        fieldsBIndices << index;
+        outFieldsB.append( sourceB->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsFields outFields = QgsProcessingUtils::combineFields( outFieldsA, outFieldsB );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, QgsWkbTypes::Point,  sourceA->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+  QgsSpatialIndex spatialIndex( sourceB->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( sourceA->sourceCrs() ) ), feedback );
+  QgsFeature outFeature;
+  QgsFeatureIterator features = sourceA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( fieldsAIndices ) );
+  double step = sourceA->featureCount() > 0 ? 100.0 / sourceA->featureCount() : 1;
+  int i = 0;
+  QgsFeature inFeatureA;
+  while ( features.nextFeature( inFeatureA ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    if ( !inFeatureA.hasGeometry() )
+      continue;
+
+    QgsGeometry inGeom = inFeatureA.geometry();
+    QgsFeatureIds lines = spatialIndex.intersects( inGeom.boundingBox() ).toSet();
+    if ( !lines.empty() )
+    {
+      // use prepared geometries for faster intersection tests
+      std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( inGeom.geometry() ) );
+      engine->prepareGeometry();
+
+      QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( lines );
+      request.setDestinationCrs( sourceA->sourceCrs() );
+      request.setSubsetOfAttributes( fieldsBIndices );
+
+      QgsFeature inFeatureB;
+      QgsFeatureIterator featuresB = sourceB->getFeatures( request );
+      while ( featuresB.nextFeature( inFeatureB ) )
+      {
+        if ( feedback->isCanceled() )
+        {
+          break;
+        }
+
+        QgsGeometry tmpGeom = inFeatureB.geometry();
+        if ( engine->intersects( tmpGeom.geometry() ) )
+        {
+          QgsMultiPoint points;
+          QgsGeometry intersectGeom = inGeom.intersection( tmpGeom );
+          QgsAttributes outAttributes;
+          for ( int a : qgsAsConst( fieldsAIndices ) )
+          {
+            outAttributes.append( inFeatureA.attribute( a ) );
+          }
+          for ( int b : qgsAsConst( fieldsBIndices ) )
+          {
+            outAttributes.append( inFeatureB.attribute( b ) );
+          }
+          if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
+          {
+            if ( intersectGeom.isMultipart() )
+            {
+              points = intersectGeom.asMultiPoint();
+            }
+            else
+            {
+              points.append( intersectGeom.asPoint() );
+            }
+
+            for ( QgsPointXY j : qgsAsConst( points ) )
+            {
+              outFeature.setGeometry( QgsGeometry::fromPoint( j ) );
+              outFeature.setAttributes( outAttributes );
+              sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+            }
+          }
+        }
+      }
+    }
+
+    feedback->setProgress( i * step );
+
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
+void QgsSplitWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
+                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ),
+                QObject::tr( "Split layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Split" ) ) );
+}
+
+QString QgsSplitWithLinesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. "
+                      "Intersection between geometries in both layers are considered as split points.\n\n"
+                      "Output will contain multi geometries for split features." );
+}
+
+QgsSplitWithLinesAlgorithm *QgsSplitWithLinesAlgorithm::createInstance() const
+{
+  return new QgsSplitWithLinesAlgorithm();
+}
+
+QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    return QVariantMap();
+
+  std::unique_ptr< QgsFeatureSource > linesSource( parameterAsSource( parameters, QStringLiteral( "LINES" ), context ) );
+  if ( !linesSource )
+    return QVariantMap();
+
+  bool sameLayer = parameters.value( QStringLiteral( "INPUT" ) ) == parameters.value( QStringLiteral( "LINES" ) );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
+                                          QgsWkbTypes::multiType( source->wkbType() ),  source->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+  QgsSpatialIndex spatialIndex;
+  QMap< QgsFeatureId, QgsGeometry > splitGeoms;
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setDestinationCrs( source->sourceCrs() );
+
+  QgsFeatureIterator splitLines = linesSource->getFeatures( request );
+  QgsFeature aSplitFeature;
+  while ( splitLines.nextFeature( aSplitFeature ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
+    spatialIndex.insertFeature( aSplitFeature );
+  }
+
+  QgsFeature outFeat;
+  QgsFeatureIterator features = source->getFeatures();
+
+  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
+  int i = 0;
+  QgsFeature inFeatureA;
+  while ( features.nextFeature( inFeatureA ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    if ( !inFeatureA.hasGeometry() )
+    {
+      sink->addFeature( inFeatureA, QgsFeatureSink::FastInsert );
+      continue;
+    }
+
+    QgsGeometry inGeom = inFeatureA.geometry();
+    outFeat.setAttributes( inFeatureA.attributes() );
+
+    QList< QgsGeometry > inGeoms = inGeom.asGeometryCollection();
+
+    const QgsFeatureIds lines = spatialIndex.intersects( inGeom.boundingBox() ).toSet();
+    if ( !lines.empty() ) // has intersection of bounding boxes
+    {
+      QList< QgsGeometry > splittingLines;
+
+      // use prepared geometries for faster intersection tests
+      std::unique_ptr< QgsGeometryEngine > engine;
+
+      for ( QgsFeatureId line : lines )
+      {
+        // check if trying to self-intersect
+        if ( sameLayer && inFeatureA.id() == line )
+          continue;
+
+        QgsGeometry splitGeom = splitGeoms.value( line );
+        if ( !engine )
+        {
+          engine.reset( QgsGeometry::createGeometryEngine( inGeom.geometry() ) );
+          engine->prepareGeometry();
+        }
+
+        if ( engine->intersects( splitGeom.geometry() ) )
+        {
+          QList< QgsGeometry > splitGeomParts = splitGeom.asGeometryCollection();
+          splittingLines.append( splitGeomParts );
+        }
+      }
+
+      if ( !splittingLines.empty() )
+      {
+        for ( const QgsGeometry &splitGeom : qgsAsConst( splittingLines ) )
+        {
+          QList<QgsPointXY> splitterPList;
+          QList< QgsGeometry > outGeoms;
+
+          // use prepared geometries for faster intersection tests
+          std::unique_ptr< QgsGeometryEngine > splitGeomEngine( QgsGeometry::createGeometryEngine( splitGeom.geometry() ) );
+          splitGeomEngine->prepareGeometry();
+          while ( !inGeoms.empty() )
+          {
+            if ( feedback->isCanceled() )
+            {
+              break;
+            }
+
+            QgsGeometry inGeom = inGeoms.takeFirst();
+            if ( !inGeom )
+              continue;
+
+            if ( splitGeomEngine->intersects( inGeom.geometry() ) )
+            {
+              QgsGeometry before = inGeom;
+              if ( splitterPList.empty() )
+              {
+                const QgsCoordinateSequence sequence = splitGeom.geometry()->coordinateSequence();
+                for ( const QgsRingSequence &part : sequence )
+                {
+                  for ( const QgsPointSequence &ring : part )
+                  {
+                    for ( const QgsPoint &pt : ring )
+                    {
+                      splitterPList << QgsPointXY( pt );
+                    }
+                  }
+                }
+              }
+
+              QList< QgsGeometry > newGeometries;
+              QList<QgsPointXY> topologyTestPoints;
+              QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints );
+
+              // splitGeometry: If there are several intersections
+              // between geometry and splitLine, only the first one is considered.
+              if ( result == QgsGeometry::Success ) // split occurred
+              {
+                if ( inGeom.equals( before ) )
+                {
+                  // bug in splitGeometry: sometimes it returns 0 but
+                  // the geometry is unchanged
+                  outGeoms.append( inGeom );
+                }
+                else
+                {
+                  inGeoms.append( inGeom );
+                  inGeoms.append( newGeometries );
+                }
+              }
+              else
+              {
+                outGeoms.append( inGeom );
+              }
+            }
+            else
+            {
+              outGeoms.append( inGeom );
+            }
+
+          }
+          inGeoms = outGeoms;
+        }
+      }
+    }
+
+    QList< QgsGeometry > parts;
+    for ( const QgsGeometry &aGeom : qgsAsConst( inGeoms ) )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      bool passed = true;
+      if ( QgsWkbTypes::geometryType( aGeom.wkbType() ) == QgsWkbTypes::LineGeometry )
+      {
+        int numPoints = aGeom.geometry()->nCoordinates();
+
+        if ( numPoints <= 2 )
+        {
+          if ( numPoints == 2 )
+            passed = !static_cast< QgsCurve * >( aGeom.geometry() )->isClosed(); // tests if vertex 0 = vertex 1
+          else
+            passed = false; // sometimes splitting results in lines of zero length
+        }
+      }
+
+      if ( passed )
+        parts.append( aGeom );
+    }
+
+    if ( !parts.empty() )
+    {
+      outFeat.setGeometry( QgsGeometry::collectGeometry( parts ) );
+      sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+    }
+
+    feedback->setProgress( i * step );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
 
 ///@endcond
+
+

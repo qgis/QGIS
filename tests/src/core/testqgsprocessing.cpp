@@ -352,6 +352,7 @@ class TestQgsProcessing: public QObject
     void tempUtils();
     void convertCompatible();
     void create();
+    void combineFields();
 
   private:
 
@@ -5441,6 +5442,41 @@ void TestQgsProcessing::create()
   std::unique_ptr< QgsProcessingAlgorithm > newInstance( alg.create() );
   QVERIFY( newInstance.get() );
   QCOMPARE( newInstance->provider(), &p );
+}
+
+void TestQgsProcessing::combineFields()
+{
+  QgsFields a;
+  QgsFields b;
+  // combine empty fields
+  QgsFields res = QgsProcessingUtils::combineFields( a, b );
+  QVERIFY( res.isEmpty() );
+
+  // fields in a
+  a.append( QgsField( "name" ) );
+  res = QgsProcessingUtils::combineFields( a, b );
+  QCOMPARE( res.count(), 1 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "name" ) );
+  b.append( QgsField( "name" ) );
+  res = QgsProcessingUtils::combineFields( a, b );
+  QCOMPARE( res.count(), 2 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "name_2" ) );
+
+  a.append( QgsField( "NEW" ) );
+  res = QgsProcessingUtils::combineFields( a, b );
+  QCOMPARE( res.count(), 3 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "NEW" ) );
+  QCOMPARE( res.at( 2 ).name(), QStringLiteral( "name_2" ) );
+
+  b.append( QgsField( "new" ) );
+  res = QgsProcessingUtils::combineFields( a, b );
+  QCOMPARE( res.count(), 4 );
+  QCOMPARE( res.at( 0 ).name(), QStringLiteral( "name" ) );
+  QCOMPARE( res.at( 1 ).name(), QStringLiteral( "NEW" ) );
+  QCOMPARE( res.at( 2 ).name(), QStringLiteral( "name_2" ) );
+  QCOMPARE( res.at( 3 ).name(), QStringLiteral( "new_2" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

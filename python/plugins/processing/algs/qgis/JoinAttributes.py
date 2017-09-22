@@ -82,7 +82,7 @@ class JoinAttributes(QgisAlgorithm):
         joinField1Index = input.fields().lookupField(field)
         joinField2Index = input2.fields().lookupField(field2)
 
-        outFields = vector.combineFields(input.fields(), input2.fields())
+        outFields = QgsProcessingUtils.combineFields(input.fields(), input2.fields())
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                outFields, input.wkbType(), input.sourceCrs())

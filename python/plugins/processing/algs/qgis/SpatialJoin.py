@@ -37,6 +37,7 @@ from qgis.core import (QgsFields,
                        QgsFeatureRequest,
                        QgsGeometry,
                        QgsProcessing,
+                       QgsProcessingUtils,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -148,7 +149,7 @@ class SpatialJoin(QgisAlgorithm):
                 if idx >= 0:
                     fields_to_join.append(join_source.fields().at(idx))
 
-        out_fields = vector.combineFields(source_fields, fields_to_join)
+        out_fields = QgsProcessingUtils.combineFields(source_fields, fields_to_join)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                out_fields, source.wkbType(), source.sourceCrs())
