@@ -298,7 +298,7 @@ void QgsFieldCalculator::accept()
           if ( !mVectorLayer->changeGeometry( feature.id(), &geom ) )
           {
             calculationSuccess = false;
-            error = tr( "Invalid edit operation see the log for more info" );
+            error = tr( "Can not change geometry for feature: %1", "Field calculator" ).arg( feature.id() );
             break;
           }
         }

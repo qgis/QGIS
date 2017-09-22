@@ -320,7 +320,7 @@ void QgsOfflineEditing::synchronize()
         else
         {
           remoteLayer->rollBack();
-          showWarning( tr( "Syncronization failed. see log for more details" ) );
+          showWarning( tr( "Syncronization failed" ) );
         }
       }
       else
@@ -703,10 +703,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         }
 
         if ( !newLayer->addFeature( f, false ) )
-        {
-          showWarning( tr( "Invalid edit operation see the log for more info" ) );
           return nullptr;
-        }
 
         emit progressUpdated( featureCount++ );
       }

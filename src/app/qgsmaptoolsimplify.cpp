@@ -183,7 +183,6 @@ void QgsMapToolSimplify::storeSimplified()
     {
       if ( !vlayer->changeGeometry( feat.id(), g ) )
       {
-        emit messageEmitted( tr( "Invalid edit operation see the log for more info" ) );
         success = false;
       }
       delete g;

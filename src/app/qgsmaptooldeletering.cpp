@@ -115,7 +115,6 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QgsMapMouseEvent* e )
     vlayer->beginEditCommand( tr( "Ring deleted" ) );
     if ( !vlayer->changeGeometry( mPressedFid, g ) )
     {
-      emit messageEmitted( tr( "Invalid edit operation see the log for more info" ) );
       vlayer->destroyEditCommand();
       return;
     }

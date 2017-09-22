@@ -183,7 +183,6 @@ void QgsMapToolOffsetCurve::applyOffset()
   }
   else
   {
-    emit messageEmitted( tr( "Invalid edit operation see the log for more info" ) );
     layer->destroyEditCommand();
   }
 

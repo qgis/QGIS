@@ -7179,11 +7179,6 @@ void QgisApp::mergeSelectedFeatures()
   // addFeature can fail if newFeature has no compatibile geometry
   if ( !vl->addFeature( newFeature, false ) )
   {
-    messageBar()->pushMessage(
-      tr( "Merge features" ),
-      tr( "Invalid edit operation see the log for more info" ),
-      QgsMessageBar::WARNING );
-
     vl->destroyEditCommand();
   }
   else

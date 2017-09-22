@@ -250,7 +250,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       }
       if ( !newlayer->dataProvider()->addFeatures( features ) )
       {
-        QMessageBox::critical( this, tr( "Populate output Layer" ), tr( "See message log. Can not add features to output layer: %1." ).arg( filename ) );
+        QMessageBox::critical( this, tr( "Populate output Layer" ), tr( "Can not add features to output layer: %1." ).arg( filename ) );
         return;
       }
 

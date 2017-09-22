@@ -136,7 +136,6 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
     }
     else
     {
-      emit messageEmitted( tr( "Invalid edit operation see the log for more info" ) );
       vlayer->destroyEditCommand();
     }
 
