@@ -1361,9 +1361,17 @@ class TableFieldWidgetWrapper(WidgetWrapper):
             if self.param.allowMultiple():
                 options = self.widget.options
                 selected = []
-                for i, opt in enumerate(options):
-                    if opt in value or opt == value:
-                        selected.append(i)
+                if isinstance(value, str):
+                    value = value.split(';')
+
+                for v in value:
+                    for i, opt in enumerate(options):
+                        if opt == v:
+                            selected.append(i)
+                        # case insensitive check - only do if matching case value is not present
+                        elif v not in options and opt.lower() == v.lower():
+                            selected.append(i)
+
                 self.widget.setSelectedItems(selected)
             else:
                 self.widget.setField(value)
