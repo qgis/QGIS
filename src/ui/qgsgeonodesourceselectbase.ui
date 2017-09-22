@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add Geonode Layer</string>
+   <string>Add GeoNode Layer</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QGroupBox" name="GroupBox1">
      <property name="title">
-      <string>Geonode connections</string>
+      <string>GeoNode connections</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">

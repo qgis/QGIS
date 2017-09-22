@@ -43,13 +43,13 @@ void QgsGeoNodeNewConnection::testConnection()
   {
     QMessageBox::information( this,
                               tr( "Test connection" ),
-                              tr( "\nConnection to %1 was successful, \n\n%1 is a valid geonode instance.\n\n" ).arg( url() ) );
+                              tr( "\nConnection to %1 was successful, \n\n%1 is a valid GeoNode instance.\n\n" ).arg( url() ) );
   }
   else
   {
     QMessageBox::information( this,
                               tr( "Test connection" ),
-                              tr( "\nConnection failed, \n\nplease check whether %1 is a valid geonode instance.\n\n" ).arg( url() ) );
+                              tr( "\nConnection failed, \n\nplease check whether %1 is a valid GeoNode instance.\n\n" ).arg( url() ) );
   }
 }
 

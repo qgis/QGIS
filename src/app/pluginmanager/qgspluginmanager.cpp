@@ -900,7 +900,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
   {
     html += QLatin1String( "<br/>" );
-    QString changelog = tr( "Changelog:<br/>%1 <br/>" ).arg( metadata->value( QStringLiteral( "changelog" ) ) );
+    QString changelog = QStringLiteral( "%1:<br/>%2 <br/>" ).arg( tr( "Changelog" ), metadata->value( QStringLiteral( "changelog" ) ) );
     html += changelog.replace( '\n', QLatin1String( "<br/>" ) );
   }
 

@@ -1176,7 +1176,9 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 
 QString QgsBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." ) +
+         QStringLiteral( "\n\n" )  +
+         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const
@@ -1214,7 +1216,9 @@ QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, Q
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsOrientedMinimumBoundingBoxAlgorithm *QgsOrientedMinimumBoundingBoxAlgorithm::createInstance() const
@@ -1264,7 +1268,9 @@ void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
 
 QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
@@ -1305,7 +1311,9 @@ QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature 
 
 QString QgsConvexHullAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
@@ -1345,10 +1353,12 @@ QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, Qg
 QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a vector layer with singlepart geometries and generates a new one in which all geometries are "
-                      "multipart. Input features which are already multipart features will remain unchanged.\n\n"
-                      "This algorithm can be used to force geometries to multipart types in order to be compatibility with data providers "
-                      "with strict singlepart/multipart compatibility checks.\n\n"
-                      "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
+                      "multipart. Input features which are already multipart features will remain unchanged." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "This algorithm can be used to force geometries to multipart types in order to be compatibility with data providers "
+                      "with strict singlepart/multipart compatibility checks." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
 }
 
 QgsPromoteToMultipartAlgorithm *QgsPromoteToMultipartAlgorithm::createInstance() const
@@ -1387,10 +1397,12 @@ QString QgsCollectAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a vector layer and collects its geometries into new multipart geometries. One or more attributes can "
                       "be specified to collect only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
-                      "all geometries can be collected.\n\n"
-                      "All output geometries will be converted to multi geometries, even those with just a single part. "
-                      "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part.\n\n"
-                      "See the 'Promote to multipart' or 'Aggregate' algorithms for alternative options." );
+                      "all geometries can be collected." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "All output geometries will be converted to multi geometries, even those with just a single part. "
+                      "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Promote to multipart' or 'Aggregate' algorithms for alternative options." );
 }
 
 QgsCollectAlgorithm *QgsCollectAlgorithm::createInstance() const
