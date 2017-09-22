@@ -228,7 +228,7 @@ int QgsVectorLayerEditUtils::addPart( const QgsPointSequenceV2 &points, QgsFeatu
       geometry.convertToSingleType();
     }
     if ( !L->editBuffer()->changeGeometry( featureId, &geometry ) )
-      errorCode = 2; // ring is not a valid geometry
+      errorCode = 7; // update geometry error
   }
   return errorCode;
 }
@@ -268,7 +268,7 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
       geometry.convertToSingleType();
     }
     if ( !L->editBuffer()->changeGeometry( featureId, &geometry ) )
-      errorCode = 2; // ring is not a valid geometry
+      errorCode = 7; // update geometry error
   }
   return errorCode;
 }
