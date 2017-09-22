@@ -132,9 +132,9 @@ class ProcessingModelItem(QgsDataItem):
         dlg.show()
 
     def actions(self):
-        run_model_action = QAction(self.tr('&Run Model…'), self)
+        run_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Run Model…'), self)
         run_model_action.triggered.connect(self.runModel)
-        edit_model_action = QAction(self.tr('&Edit Model…'), self)
+        edit_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Edit Model…'), self)
         edit_model_action.triggered.connect(self.editModel)
         return [run_model_action, edit_model_action]
 
