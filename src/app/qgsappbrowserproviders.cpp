@@ -164,9 +164,9 @@ bool QgsQptDataItem::handleDoubleClick()
   return true;
 }
 
-QList<QAction *> QgsQptDataItem::actions()
+QList<QAction *> QgsQptDataItem::actions( QWidget *parent )
 {
-  QAction *newLayout = new QAction( tr( "New Layout from Template" ), this );
+  QAction *newLayout = new QAction( tr( "New Layout from Template" ), parent );
   connect( newLayout, &QAction::triggered, this, [ = ]
   {
     QgisApp::instance()->openTemplate( path() );
@@ -207,9 +207,9 @@ bool QgsPyDataItem::handleDoubleClick()
   return true;
 }
 
-QList<QAction *> QgsPyDataItem::actions()
+QList<QAction *> QgsPyDataItem::actions( QWidget *parent )
 {
-  QAction *runScript = new QAction( tr( "&Run Script" ), this );
+  QAction *runScript = new QAction( tr( "&Run Script" ), parent );
   connect( runScript, &QAction::triggered, this, [ = ]
   {
     QgisApp::instance()->runScript( path() );

@@ -69,7 +69,7 @@ class QgsQptDataItem : public QgsDataItem
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::Uri mimeUri() const override;
     bool handleDoubleClick() override;
-    QList< QAction * > actions() override;
+    QList< QAction * > actions( QWidget *parent ) override;
 
 
 };
@@ -112,7 +112,7 @@ class QgsPyDataItem : public QgsDataItem
     bool hasDragEnabled() const override;
     QgsMimeDataUtils::Uri mimeUri() const override;
     bool handleDoubleClick() override;
-    QList< QAction * > actions() override;
+    QList< QAction * > actions( QWidget *parent ) override;
 
 
 };
