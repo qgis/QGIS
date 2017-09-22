@@ -4304,7 +4304,20 @@ class TestQgsGeometry(unittest.TestCase):
                   'wkt': 'CircularString (20 30, 50 30, 50 90)',
                   'reference_image': 'circularstring',
                   'as_polygon_reference_image': 'circularstring_aspolygon',
-                  'use_pen': True}
+                  'use_pen': True},
+                 {'name': 'CurvePolygon',
+                  'wkt': 'CurvePolygon(CircularString (20 30, 50 30, 50 90, 10 50, 20 30))',
+                  'reference_image': 'curvepolygon_circularstring',
+                  'use_pen': False},
+                 {'name': 'CurvePolygonInteriorRings',
+                  'wkt': 'CurvePolygon(CircularString (20 30, 50 30, 50 90, 10 50, 20 30),LineString(30 45, 55 45, 30 75, 30 45))',
+                  'reference_image': 'curvepolygon_circularstring_interiorrings',
+                  'use_pen': False},
+                 {'name': 'CompoundCurve',
+                  'wkt': 'CompoundCurve(CircularString (20 30, 50 30, 50 90),LineString(50 90, 10 90))',
+                  'reference_image': 'compoundcurve',
+                  'use_pen': True,
+                  'as_polygon_reference_image': 'compoundcurve_aspolygon', }
                  ]
 
         for test in tests:
