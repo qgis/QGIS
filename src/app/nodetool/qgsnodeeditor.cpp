@@ -199,15 +199,18 @@ bool QgsNodeEditorModel::setData( const QModelIndex &index, const QVariant &valu
     return false;
   }
 
-  double x = ( index.column() == 0 ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
-  double y = ( index.column() == 1 ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
+  // Get double value wrt current locale.
+  QLocale locale;
+  double doubleValue = locale.toDouble( value.toString() );
+
+  double x = ( index.column() == 0 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
+  double y = ( index.column() == 1 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
 
   if ( index.column() == mRCol ) // radius modified
   {
     if ( index.row() == 0 || index.row() >= mSelectedFeature->vertexMap().count() - 1 )
       return false;
 
-    double r = value.toDouble();
     double x1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().x();
     double y1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().y();
     double x2 = x;
@@ -216,14 +219,14 @@ bool QgsNodeEditorModel::setData( const QModelIndex &index, const QVariant &valu
     double y3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().y();
 
     QgsPoint result;
-    if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, r, QgsPoint( x2, y2 ) ) )
+    if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, doubleValue, QgsPoint( x2, y2 ) ) )
     {
       x = result.x();
       y = result.y();
     }
   }
-  double z = ( index.column() == mZCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().z() );
-  double m = ( index.column() == mMCol ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().m() );
+  double z = ( index.column() == mZCol ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().z() );
+  double m = ( index.column() == mMCol ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().m() );
   QgsPoint p( QgsWkbTypes::PointZM, x, y, z, m );
 
   mLayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
