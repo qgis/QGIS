@@ -783,9 +783,9 @@ double QgsCompoundCurve::vertexAngle( QgsVertexId vertex ) const
 QgsCompoundCurve *QgsCompoundCurve::reversed() const
 {
   QgsCompoundCurve *clone = new QgsCompoundCurve();
-  for ( QgsCurve *curve : mCurves )
+  for ( int i = mCurves.count() - 1; i >= 0; --i )
   {
-    QgsCurve *reversedCurve = curve->reversed();
+    QgsCurve *reversedCurve = mCurves.at( i )->reversed();
     clone->addCurve( reversedCurve );
   }
   return clone;
