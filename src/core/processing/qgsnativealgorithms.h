@@ -786,6 +786,30 @@ class QgsSplitWithLinesAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native mean coordinates algorithm.
+ */
+class QgsMeanCoordinatesAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsMeanCoordinatesAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "meancoordinates" ); }
+    QString displayName() const override { return QObject::tr( "Mean coordinate(s)" ); }
+    virtual QStringList tags() const override { return QObject::tr( "mean,average,coordinate" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector analysis" ); }
+    QString shortHelpString() const override;
+    QgsMeanCoordinatesAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H

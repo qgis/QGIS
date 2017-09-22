@@ -90,34 +90,6 @@ def values(source, *attributes):
     return ret
 
 
-def extractPoints(geom):
-    points = []
-    if geom.type() == QgsWkbTypes.PointGeometry:
-        if geom.isMultipart():
-            points = geom.asMultiPoint()
-        else:
-            points.append(geom.asPoint())
-    elif geom.type() == QgsWkbTypes.LineGeometry:
-        if geom.isMultipart():
-            lines = geom.asMultiPolyline()
-            for line in lines:
-                points.extend(line)
-        else:
-            points = geom.asPolyline()
-    elif geom.type() == QgsWkbTypes.PolygonGeometry:
-        if geom.isMultipart():
-            polygons = geom.asMultiPolygon()
-            for poly in polygons:
-                for line in poly:
-                    points.extend(line)
-        else:
-            polygon = geom.asPolygon()
-            for line in polygon:
-                points.extend(line)
-
-    return points
-
-
 def checkMinDistance(point, index, distance, points):
     """Check if distance from given point to all other points is greater
     than given value.
