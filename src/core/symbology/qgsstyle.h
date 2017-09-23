@@ -36,6 +36,11 @@ class QDomElement;
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
+/*
+ * Constants used to describe copy-paste MIME types
+ */
+#define QGSCLIPBOARD_STYLE_MIME "application/qgis.style"
+
 /** \ingroup core
  *  A multimap to hold the smart group conditions as constraint and parameter pairs.
  *  Both the key and the value of the map are QString. The key is the constraint of the condition and the value is the parameter which is applied for the constraint.

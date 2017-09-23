@@ -148,6 +148,15 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual QList<QAction *> actions( QWidget *parent );
 
+    /** Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
+     * the item. Subclasses should override this to provide actions. Subclasses should ensure that ownership of
+     * created menus is correctly handled by parenting them to the specified parent widget.
+     * \param parent a parent widget of the menu
+     * \returns list of menus
+     * \since QGIS 3.0
+     */
+    virtual QList<QMenu *> menus( QWidget *parent );
+
     /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
      * \see handleDrop()

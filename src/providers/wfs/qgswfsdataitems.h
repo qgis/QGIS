@@ -79,6 +79,20 @@ class QgsWfsLayerItem : public QgsLayerItem
     QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
     ~QgsWfsLayerItem();
 
+    virtual QList<QMenu *> menus( QWidget *parent ) override;
+
+  protected:
+    QString mBaseUri;
+
+  private slots:
+
+    /** Get style of the active data item (geonode layer item) and copy it to the clipboard.
+     */
+    void copyStyle();
+
+    /** Paste style on the clipboard to the active data item (geonode layer item) and push it to the source.
+     */
+    //    void pasteStyle();
 };
 
 

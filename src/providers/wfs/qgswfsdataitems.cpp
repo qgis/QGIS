@@ -12,6 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QClipboard>
+#include <QMenu>
+
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
@@ -23,6 +27,7 @@
 #include "qgssettings.h"
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
+#include "qgsstyle.h"
 
 #ifdef HAVE_GUI
 #include "qgsnewhttpconnection.h"
@@ -44,10 +49,84 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
   mIconName = QStringLiteral( "mIconConnect.png" );
+  mBaseUri = uri.param( QString( "url" ) );
 }
 
 QgsWfsLayerItem::~QgsWfsLayerItem()
 {
+}
+
+QList<QMenu *> QgsWfsLayerItem::menus( QWidget *parent )
+{
+  QList<QMenu *> menus;
+
+  if ( mPath.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QMenu *menuStyleManager = new QMenu( tr( "Styles" ), parent );
+
+    QAction *actionCopyStyle = new QAction( tr( "Copy Style" ), menuStyleManager );
+    connect( actionCopyStyle, &QAction::triggered, this, &QgsWfsLayerItem::copyStyle );
+
+    menuStyleManager->addAction( actionCopyStyle );
+    menus << menuStyleManager;
+  }
+
+  return menus;
+}
+
+void QgsWfsLayerItem::copyStyle()
+{
+  std::unique_ptr< QgsGeoNodeConnection > connection;
+  const QStringList connections = QgsGeoNodeConnectionUtils::connectionList();
+  for ( const QString &connName : connections )
+  {
+    connection.reset( new QgsGeoNodeConnection( connName ) );
+    if ( mBaseUri.contains( connection->uri().param( QString( "url" ) ) ) )
+      break;
+    else
+      connection.reset( nullptr );
+  }
+
+  if ( !connection )
+  {
+    QString errorMsg( QStringLiteral( "Cannot get style for layer %1" ).arg( this->name() ) );
+    QgsDebugMsg( " Cannot get style: " + errorMsg );
+#if 0
+    // TODO: how to emit message from provider (which does not know about QgisApp)
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
+        errorMsg,
+        QgsMessageBar::CRITICAL, messageTimeout() );
+#endif
+    return;
+  }
+
+  QString url( connection->uri().encodedUri() );
+  QgsGeoNodeRequest geoNodeRequest( url.replace( QString( "url=" ), QString() ), true );
+  QgsGeoNodeStyle style = geoNodeRequest.fetchDefaultStyleBlocking( this->name() );
+  if ( style.name.isEmpty() )
+  {
+    QString errorMsg( QStringLiteral( "Cannot get style for layer %1" ).arg( this->name() ) );
+    QgsDebugMsg( " Cannot get style: " + errorMsg );
+#if 0
+    // TODO: how to emit message from provider (which does not know about QgisApp)
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
+        errorMsg,
+        QgsMessageBar::CRITICAL, messageTimeout() );
+#endif
+    return;
+  }
+
+  QClipboard *clipboard = QApplication::clipboard();
+
+  QMimeData *mdata = new QMimeData();
+  mdata->setData( QGSCLIPBOARD_STYLE_MIME, style.body.toByteArray() );
+  mdata->setText( style.body.toString() );
+  // Copies data in text form as well, so the XML can be pasted into a text editor
+  if ( clipboard->supportsSelection() )
+    clipboard->setMimeData( mdata, QClipboard::Selection );
+  clipboard->setMimeData( mdata, QClipboard::Clipboard );
+  // Enables the paste menu element
+  // actionPasteStyle->setEnabled( true );
 }
 
 //

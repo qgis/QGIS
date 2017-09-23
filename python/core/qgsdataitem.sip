@@ -141,6 +141,17 @@ Create new data item.
  :rtype: list of QAction
 %End
 
+    virtual QList<QMenu *> menus( QWidget *parent );
+%Docstring
+ Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
+ the item. Subclasses should override this to provide actions. Subclasses should ensure that ownership of
+ created menus is correctly handled by parenting them to the specified parent widget.
+ \param parent a parent widget of the menu
+ :return: list of menus
+.. versionadded:: 3.0
+ :rtype: list of QMenu
+%End
+
     virtual bool acceptDrop();
 %Docstring
  Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
