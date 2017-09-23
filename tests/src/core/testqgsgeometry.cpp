@@ -9261,345 +9261,423 @@ void TestQgsGeometry::compoundCurve()
   c30.addCurve( l30.clone() );
   QVERIFY( c30.isRing() );
 
-#if 0
   //coordinateSequence
+  QgsCompoundCurve c31;
   QgsCircularString l31;
-  QgsCoordinateSequence coords = l31.coordinateSequence();
+  QgsCoordinateSequence coords = c31.coordinateSequence();
   QCOMPARE( coords.count(), 1 );
   QCOMPARE( coords.at( 0 ).count(), 1 );
   QVERIFY( coords.at( 0 ).at( 0 ).isEmpty() );
   l31.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 )
                  << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 )
                  << QgsPoint( QgsWkbTypes::PointZM, 21, 22, 6, 7 ) );
-  coords = l31.coordinateSequence();
+  c31.addCurve( l31.clone() );
+  QgsLineString ls31;
+  ls31.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 21, 22, 6, 7 ) <<
+                  QgsPoint( QgsWkbTypes::PointZM, 31, 32, 16, 17 ) );
+  c31.addCurve( ls31.clone() );
+  coords = c31.coordinateSequence();
   QCOMPARE( coords.count(), 1 );
   QCOMPARE( coords.at( 0 ).count(), 1 );
-  QCOMPARE( coords.at( 0 ).at( 0 ).count(), 3 );
+  QCOMPARE( coords.at( 0 ).at( 0 ).count(), 4 );
   QCOMPARE( coords.at( 0 ).at( 0 ).at( 0 ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 ) );
   QCOMPARE( coords.at( 0 ).at( 0 ).at( 1 ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 ) );
   QCOMPARE( coords.at( 0 ).at( 0 ).at( 2 ), QgsPoint( QgsWkbTypes::PointZM, 21, 22, 6, 7 ) );
+  QCOMPARE( coords.at( 0 ).at( 0 ).at( 3 ), QgsPoint( QgsWkbTypes::PointZM, 31, 32, 16, 17 ) );
 
   //nextVertex
-
+  QgsCompoundCurve c32;
   QgsCircularString l32;
-  QgsVertexId v;
-  QgsPoint p;
-  QVERIFY( !l32.nextVertex( v, p ) );
-  v = QgsVertexId( 0, 0, -2 );
-  QVERIFY( !l32.nextVertex( v, p ) );
-  v = QgsVertexId( 0, 0, 10 );
-  QVERIFY( !l32.nextVertex( v, p ) );
+  QgsVertexId vId;
+  QVERIFY( !c32.nextVertex( vId, p ) );
+  vId = QgsVertexId( 0, 0, -2 );
+  QVERIFY( !c32.nextVertex( vId, p ) );
+  vId = QgsVertexId( 0, 0, 10 );
+  QVERIFY( !c32.nextVertex( vId, p ) );
   //CircularString
   l32.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) );
-  v = QgsVertexId( 0, 0, 2 ); //out of range
-  QVERIFY( !l32.nextVertex( v, p ) );
-  v = QgsVertexId( 0, 0, -5 );
-  QVERIFY( l32.nextVertex( v, p ) );
-  v = QgsVertexId( 0, 0, -1 );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 0 ) );
+  c32.addCurve( l32.clone() );
+  vId = QgsVertexId( 0, 0, 2 ); //out of range
+  QVERIFY( !c32.nextVertex( vId, p ) );
+  vId = QgsVertexId( 0, 0, -5 );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  vId = QgsVertexId( 0, 0, -1 );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( p, QgsPoint( 1, 2 ) );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( p, QgsPoint( 11, 12 ) );
-  QVERIFY( !l32.nextVertex( v, p ) );
-  v = QgsVertexId( 0, 1, 0 );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 1, 1 ) ); //test that ring number is maintained
+  QVERIFY( !c32.nextVertex( vId, p ) );
+  vId = QgsVertexId( 0, 1, 0 );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 1, 1 ) ); //test that ring number is maintained
   QCOMPARE( p, QgsPoint( 11, 12 ) );
-  v = QgsVertexId( 1, 0, 0 );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 1, 0, 1 ) ); //test that part number is maintained
+  vId = QgsVertexId( 1, 0, 0 );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 1, 0, 1 ) ); //test that part number is maintained
   QCOMPARE( p, QgsPoint( 11, 12 ) );
+  QgsLineString ls32;
+  ls32.setPoints( QgsPointSequence() << QgsPoint( 11, 12 ) << QgsPoint( 13, 14 ) );
+  c32.addCurve( ls32.clone() );
+  vId = QgsVertexId( 0, 0, 1 );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( p, QgsPoint( 13, 14 ) );
+  QVERIFY( !c32.nextVertex( vId, p ) );
 
   //CircularStringZ
   l32.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
-  v = QgsVertexId( 0, 0, -1 );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 0 ) );
+  c32.clear();
+  c32.addCurve( l32.clone() );
+  vId = QgsVertexId( 0, 0, -1 );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
-  QVERIFY( !l32.nextVertex( v, p ) );
+  QVERIFY( !c32.nextVertex( vId, p ) );
   //CircularStringM
   l32.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
-  v = QgsVertexId( 0, 0, -1 );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 0 ) );
+  c32.clear();
+  c32.addCurve( l32.clone() );
+  vId = QgsVertexId( 0, 0, -1 );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
-  QVERIFY( !l32.nextVertex( v, p ) );
+  QVERIFY( !c32.nextVertex( vId, p ) );
   //CircularStringZM
   l32.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
-  v = QgsVertexId( 0, 0, -1 );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 0 ) );
+  c32.clear();
+  c32.addCurve( l32.clone() );
+  vId = QgsVertexId( 0, 0, -1 );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
-  QVERIFY( l32.nextVertex( v, p ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( c32.nextVertex( vId, p ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
-  QVERIFY( !l32.nextVertex( v, p ) );
+  QVERIFY( !c32.nextVertex( vId, p ) );
 
   //vertexAt and pointAt
+  QgsCompoundCurve c33;
   QgsCircularString l33;
-  l33.vertexAt( QgsVertexId( 0, 0, -10 ) ); //out of bounds, check for no crash
-  l33.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
-  QgsVertexId::VertexType type;
-  QVERIFY( !l33.pointAt( -10, p, type ) );
-  QVERIFY( !l33.pointAt( 10, p, type ) );
+  c33.vertexAt( QgsVertexId( 0, 0, -10 ) ); //out of bounds, check for no crash
+  c33.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
+  QVERIFY( !c33.pointAt( -10, p, type ) );
+  QVERIFY( !c33.pointAt( 10, p, type ) );
   //CircularString
   l33.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
-  l33.vertexAt( QgsVertexId( 0, 0, -10 ) );
-  l33.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 1, 2 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 11, 12 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 1, 22 ) );
-  QVERIFY( !l33.pointAt( -10, p, type ) );
-  QVERIFY( !l33.pointAt( 10, p, type ) );
-  QVERIFY( l33.pointAt( 0, p, type ) );
+  c33.addCurve( l33.clone() );
+  c33.vertexAt( QgsVertexId( 0, 0, -10 ) );
+  c33.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 1, 2 ) );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 11, 12 ) );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 1, 22 ) );
+  QVERIFY( !c33.pointAt( -10, p, type ) );
+  QVERIFY( !c33.pointAt( 10, p, type ) );
+  QVERIFY( c33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 2 ) );
   QCOMPARE( type, QgsVertexId::SegmentVertex );
-  QVERIFY( l33.pointAt( 1, p, type ) );
+  QVERIFY( c33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( 11, 12 ) );
   QCOMPARE( type, QgsVertexId::CurveVertex );
-  QVERIFY( l33.pointAt( 2, p, type ) );
+  QVERIFY( c33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 22 ) );
   QCOMPARE( type, QgsVertexId::SegmentVertex );
+  QgsLineString ls33;
+  ls33.setPoints( QgsPointSequence() << QgsPoint( 1, 22 ) << QgsPoint( 3, 34 ) );
+  c33.addCurve( ls33.clone() );
+  QVERIFY( c33.pointAt( 3, p, type ) );
+  QCOMPARE( p, QgsPoint( 3, 34 ) );
+  QCOMPARE( type, QgsVertexId::SegmentVertex );
+
+  c33.clear();
   //CircularStringZ
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 )  << QgsPoint( QgsWkbTypes::PointZ, 1, 22, 23 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 22, 23 ) );
-  QVERIFY( l33.pointAt( 0, p, type ) );
+  c33.addCurve( l33.clone() );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 22, 23 ) );
+  QVERIFY( c33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
   QCOMPARE( type, QgsVertexId::SegmentVertex );
-  QVERIFY( l33.pointAt( 1, p, type ) );
+  QVERIFY( c33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
   QCOMPARE( type, QgsVertexId::CurveVertex );
-  QVERIFY( l33.pointAt( 2, p, type ) );
+  QVERIFY( c33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( 1, 22, 23 ) );
   QCOMPARE( type, QgsVertexId::SegmentVertex );
+
   //CircularStringM
+  c33.clear();
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) << QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
-  QVERIFY( l33.pointAt( 0, p, type ) );
+  c33.addCurve( l33.clone() );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
+  QVERIFY( c33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
   QCOMPARE( type, QgsVertexId::SegmentVertex );
-  QVERIFY( l33.pointAt( 1, p, type ) );
+  QVERIFY( c33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 14 ) );
   QCOMPARE( type, QgsVertexId::CurveVertex );
-  QVERIFY( l33.pointAt( 2, p, type ) );
+  QVERIFY( c33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointM, 1, 22, 0, 24 ) );
   QCOMPARE( type, QgsVertexId::SegmentVertex );
   //CircularStringZM
   l33.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
-  QCOMPARE( l33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
-  QVERIFY( l33.pointAt( 0, p, type ) );
+  c33.clear();
+  c33.addCurve( l33.clone() );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
+  QCOMPARE( c33.vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
+  QVERIFY( c33.pointAt( 0, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
   QCOMPARE( type, QgsVertexId::SegmentVertex );
-  QVERIFY( l33.pointAt( 1, p, type ) );
+  QVERIFY( c33.pointAt( 1, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
   QCOMPARE( type, QgsVertexId::CurveVertex );
-  QVERIFY( l33.pointAt( 2, p, type ) );
+  QVERIFY( c33.pointAt( 2, p, type ) );
   QCOMPARE( p, QgsPoint( QgsWkbTypes::PointZM, 1, 22, 23, 24 ) );
   QCOMPARE( type, QgsVertexId::SegmentVertex );
 
   //centroid
   QgsCircularString l34;
-  QCOMPARE( l34.centroid(), QgsPoint() );
+  QgsCompoundCurve c34;
+  QCOMPARE( c34.centroid(), QgsPoint() );
   l34.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
-  QCOMPARE( l34.centroid(), QgsPoint( 5, 10 ) );
+  c34.addCurve( l34.clone() );
+  QCOMPARE( c34.centroid(), QgsPoint( 5, 10 ) );
   l34.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 20, 10 ) << QgsPoint( 2, 9 ) );
-  QgsPoint centroid = l34.centroid();
+  c34.clear();
+  c34.addCurve( l34.clone() );
+  QgsPoint centroid = c34.centroid();
   QGSCOMPARENEAR( centroid.x(), 7.333, 0.001 );
   QGSCOMPARENEAR( centroid.y(), 6.333, 0.001 );
+  l34.setPoints( QgsPointSequence() << QgsPoint( 2, 9 ) << QgsPoint( 12, 9 ) << QgsPoint( 15, 19 ) );
+  c34.addCurve( l34.clone() );
+  centroid = c34.centroid();
+  QGSCOMPARENEAR( centroid.x(), 9.756646, 0.001 );
+  QGSCOMPARENEAR( centroid.y(), 8.229039, 0.001 );
 
   //closest segment
+  QgsCompoundCurve c35;
   QgsCircularString l35;
   bool leftOf = false;
   p = QgsPoint(); // reset all coords to zero
-  ( void )l35.closestSegment( QgsPoint( 1, 2 ), p, v ); //empty line, just want no crash
+  ( void )c35.closestSegment( QgsPoint( 1, 2 ), p, vId ); //empty line, just want no crash
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
-  QVERIFY( l35.closestSegment( QgsPoint( 5, 10 ), p, v ) < 0 );
+  c35.addCurve( l35.clone() );
+  QVERIFY( c35.closestSegment( QgsPoint( 5, 10 ), p, vId ) < 0 );
   l35.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf ), 2.0, 0.0001 );
+  c35.clear();
+  c35.addCurve( l35.clone() );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 4, 11 ), p, vId, &leftOf ), 2.0, 0.0001 );
   QCOMPARE( p, QgsPoint( 5, 10 ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ),  1.583512, 0.0001 );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 8, 11 ), p, vId, &leftOf ),  1.583512, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.84, 0.01 );
   QGSCOMPARENEAR( p.y(), 11.49, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 11.5 ), p, v, &leftOf ), 1.288897, 0.0001 );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 5.5, 11.5 ), p, vId, &leftOf ), 1.288897, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.302776, 0.01 );
   QGSCOMPARENEAR( p.y(), 10.7, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 7, 16 ), p, v, &leftOf ), 3.068288, 0.0001 );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 7, 16 ), p, vId, &leftOf ), 3.068288, 0.0001 );
   QGSCOMPARENEAR( p.x(), 5.981872, 0.01 );
   QGSCOMPARENEAR( p.y(), 14.574621, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 13.5 ), p, v, &leftOf ), 1.288897, 0.0001 );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 5.5, 13.5 ), p, vId, &leftOf ), 1.288897, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.302776, 0.01 );
   QGSCOMPARENEAR( p.y(), 14.3, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, true );
   // point directly on segment
-  QCOMPARE( l35.closestSegment( QgsPoint( 5, 15 ), p, v, &leftOf ), 0.0 );
+  QCOMPARE( c35.closestSegment( QgsPoint( 5, 15 ), p, vId, &leftOf ), 0.0 );
   QCOMPARE( p, QgsPoint( 5, 15 ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 2 ) );
 
-  //clockwise string
-  l35.setPoints( QgsPointSequence() << QgsPoint( 5, 15 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 10 ) );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 4, 11 ), p, v, &leftOf ), 2, 0.0001 );
-  QGSCOMPARENEAR( p.x(), 5, 0.01 );
-  QGSCOMPARENEAR( p.y(), 10, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QgsLineString ls35;
+  ls35.setPoints( QgsPointSequence() << QgsPoint( 5, 15 ) << QgsPoint( 5, 20 ) );
+  c35.addCurve( ls35.clone() );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 5.5, 16.5 ), p, vId, &leftOf ), 0.25, 0.0001 );
+  QGSCOMPARENEAR( p.x(), 5.0, 0.01 );
+  QGSCOMPARENEAR( p.y(), 16.5, 0.01 );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 3 ) );
   QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 8, 11 ), p, v, &leftOf ),  1.583512, 0.0001 );
-  QGSCOMPARENEAR( p.x(), 6.84, 0.01 );
-  QGSCOMPARENEAR( p.y(), 11.49, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 4.5, 16.5 ), p, vId, &leftOf ), 0.25, 0.0001 );
+  QGSCOMPARENEAR( p.x(), 5.0, 0.01 );
+  QGSCOMPARENEAR( p.y(), 16.5, 0.01 );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 3 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 11.5 ), p, v, &leftOf ), 1.288897, 0.0001 );
-  QGSCOMPARENEAR( p.x(), 6.302776, 0.01 );
-  QGSCOMPARENEAR( p.y(), 10.7, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
-  QCOMPARE( leftOf, false );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 7, 16 ), p, v, &leftOf ), 3.068288, 0.0001 );
-  QGSCOMPARENEAR( p.x(), 5.981872, 0.01 );
-  QGSCOMPARENEAR( p.y(), 14.574621, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 4.5, 21.5 ), p, vId, &leftOf ), 2.500000, 0.0001 );
+  QGSCOMPARENEAR( p.x(), 5.0, 0.01 );
+  QGSCOMPARENEAR( p.y(), 20.0, 0.01 );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 3 ) );
   QCOMPARE( leftOf, true );
-  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 5.5, 13.5 ), p, v, &leftOf ), 1.288897, 0.0001 );
-  QGSCOMPARENEAR( p.x(), 6.302776, 0.01 );
-  QGSCOMPARENEAR( p.y(), 14.3, 0.01 );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 5.5, 21.5 ), p, vId, &leftOf ), 2.500000, 0.0001 );
+  QGSCOMPARENEAR( p.x(), 5.0, 0.01 );
+  QGSCOMPARENEAR( p.y(), 20.0, 0.01 );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 3 ) );
   QCOMPARE( leftOf, false );
-  // point directly on segment
-  QCOMPARE( l35.closestSegment( QgsPoint( 5, 15 ), p, v, &leftOf ), 0.0 );
-  QCOMPARE( p, QgsPoint( 5, 15 ) );
-  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QGSCOMPARENEAR( c35.closestSegment( QgsPoint( 5, 20 ), p, vId, &leftOf ), 0.0000, 0.0001 );
+  QGSCOMPARENEAR( p.x(), 5.0, 0.01 );
+  QGSCOMPARENEAR( p.y(), 20.0, 0.01 );
+  QCOMPARE( vId, QgsVertexId( 0, 0, 3 ) );
 
   //sumUpArea
+  QgsCompoundCurve c36;
   QgsCircularString l36;
   double area = 1.0; //sumUpArea adds to area, so start with non-zero value
-  l36.sumUpArea( area );
+  c36.sumUpArea( area );
   QCOMPARE( area, 1.0 );
   l36.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
-  l36.sumUpArea( area );
+  c36.addCurve( l36.clone() );
+  c36.sumUpArea( area );
   QCOMPARE( area, 1.0 );
   l36.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 10 ) );
-  l36.sumUpArea( area );
+  c36.clear();
+  c36.addCurve( l36.clone() );
+  c36.sumUpArea( area );
   QCOMPARE( area, 1.0 );
   l36.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) );
-  l36.sumUpArea( area );
+  c36.clear();
+  c36.addCurve( l36.clone() );
+  c36.sumUpArea( area );
   QGSCOMPARENEAR( area, 4.141593, 0.0001 );
   l36.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) << QgsPoint( 0, 2 ) );
-  l36.sumUpArea( area );
+  c36.clear();
+  c36.addCurve( l36.clone() );
+  c36.sumUpArea( area );
   QGSCOMPARENEAR( area, 7.283185, 0.0001 );
   // full circle
   l36.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 0, 0 ) );
+  c36.clear();
+  c36.addCurve( l36.clone() );
   area = 0.0;
-  l36.sumUpArea( area );
+  c36.sumUpArea( area );
   QGSCOMPARENEAR( area, 12.566370614359172, 0.0001 );
 
   //boundingBox - test that bounding box is updated after every modification to the circular string
+  QgsCompoundCurve c37;
   QgsCircularString l37;
-  QVERIFY( l37.boundingBox().isNull() );
+  QVERIFY( c37.boundingBox().isNull() );
   l37.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 15 ) );
-  QCOMPARE( l37.boundingBox(), QgsRectangle( 5, 10, 10, 15 ) );
+  c37.addCurve( l37.clone() );
+  QCOMPARE( c37.boundingBox(), QgsRectangle( 5, 10, 10, 15 ) );
   l37.setPoints( QgsPointSequence() << QgsPoint( -5, -10 ) << QgsPoint( -6, -10 ) << QgsPoint( -5.5, -9 ) );
-  QCOMPARE( l37.boundingBox(), QgsRectangle( -6.125, -10.25, -5, -9 ) );
-  QByteArray wkbToAppend = l37.asWkb();
-  l37.clear();
-  QVERIFY( l37.boundingBox().isNull() );
+  c37.clear();
+  c37.addCurve( l37.clone() );
+  QCOMPARE( c37.boundingBox(), QgsRectangle( -6.125, -10.25, -5, -9 ) );
+  QByteArray wkbToAppend = c37.asWkb();
+  c37.clear();
+  QVERIFY( c37.boundingBox().isNull() );
   QgsConstWkbPtr wkbToAppendPtr( wkbToAppend );
   l37.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 15 ) );
-  QCOMPARE( l37.boundingBox(), QgsRectangle( 5, 10, 10, 15 ) );
-  l37.fromWkb( wkbToAppendPtr );
-  QCOMPARE( l37.boundingBox(), QgsRectangle( -6.125, -10.25, -5, -9 ) );
-  l37.fromWkt( QStringLiteral( "CircularString( 5 10, 6 10, 5.5 9 )" ) );
-  QCOMPARE( l37.boundingBox(), QgsRectangle( 5, 9, 6.125, 10.25 ) );
-  l37.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -1, 7 ) );
-  QgsRectangle r = l37.boundingBox();
+  c37.clear();
+  c37.addCurve( l37.clone() );
+  QCOMPARE( c37.boundingBox(), QgsRectangle( 5, 10, 10, 15 ) );
+  c37.fromWkb( wkbToAppendPtr );
+  QCOMPARE( c37.boundingBox(), QgsRectangle( -6.125, -10.25, -5, -9 ) );
+  c37.fromWkt( QStringLiteral( "CompoundCurve(CircularString( 5 10, 6 10, 5.5 9 ))" ) );
+  QCOMPARE( c37.boundingBox(), QgsRectangle( 5, 9, 6.125, 10.25 ) );
+  c37.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -1, 7 ) );
+  QgsRectangle r = c37.boundingBox();
   QGSCOMPARENEAR( r.xMinimum(), -3.014, 0.01 );
   QGSCOMPARENEAR( r.xMaximum(), 14.014, 0.01 );
   QGSCOMPARENEAR( r.yMinimum(), -7.0146, 0.01 );
   QGSCOMPARENEAR( r.yMaximum(), 12.4988, 0.01 );
-  l37.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -3, 10 ) );
-  r = l37.boundingBox();
+  c37.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( -3, 10 ) );
+  r = c37.boundingBox();
   QGSCOMPARENEAR( r.xMinimum(), -10.294, 0.01 );
   QGSCOMPARENEAR( r.xMaximum(), 12.294, 0.01 );
   QGSCOMPARENEAR( r.yMinimum(), 9, 0.01 );
   QGSCOMPARENEAR( r.yMaximum(), 31.856, 0.01 );
-  l37.deleteVertex( QgsVertexId( 0, 0, 1 ) );
-  r = l37.boundingBox();
+  c37.deleteVertex( QgsVertexId( 0, 0, 1 ) );
+  r = c37.boundingBox();
   QGSCOMPARENEAR( r.xMinimum(), 5, 0.01 );
   QGSCOMPARENEAR( r.xMaximum(), 6.125, 0.01 );
   QGSCOMPARENEAR( r.yMinimum(), 9, 0.01 );
   QGSCOMPARENEAR( r.yMaximum(), 10.25, 0.01 );
 
   //angle
+  QgsCompoundCurve c38;
   QgsCircularString l38;
-  ( void )l38.vertexAngle( QgsVertexId() ); //just want no crash
-  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
+  ( void )c38.vertexAngle( QgsVertexId() ); //just want no crash
+  ( void )c38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) );
-  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
+  c38.addCurve( l38.clone() );
+  ( void )c38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) );
-  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
-  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ); //just want no crash, any answer is meaningless
+  c38.clear();
+  c38.addCurve( l38.clone() );
+  ( void )c38.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
+  ( void )c38.vertexAngle( QgsVertexId( 0, 0, 1 ) ); //just want no crash, any answer is meaningless
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
+  c38.clear();
+  c38.addCurve( l38.clone() );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141593, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
-  ( void )l38.vertexAngle( QgsVertexId( 0, 0, 20 ) ); // no crash
+  c38.clear();
+  c38.addCurve( l38.clone() );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141593, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
+  ( void )c38.vertexAngle( QgsVertexId( 0, 0, 20 ) ); // no crash
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 )
                  << QgsPoint( -1, 3 ) << QgsPoint( 0, 4 ) );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 0, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 1.5708, 0.0001 );
+  c38.clear();
+  c38.addCurve( l38.clone() );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 0, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 0, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 1.5708, 0.0001 );
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 4 ) << QgsPoint( -1, 3 ) << QgsPoint( 0, 2 )
                  << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 4.712389, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141592, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 1.5708, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 3.141592, 0.0001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 4.712389, 0.0001 );
+  c38.clear();
+  c38.addCurve( l38.clone() );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 4.712389, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141592, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 3.141592, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 4.712389, 0.0001 );
 
   //closed circular string
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 0, 0.00001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141592, 0.00001 );
-  QGSCOMPARENEAR( l38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 0, 0.00001 );
+  c38.clear();
+  c38.addCurve( l38.clone() );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 0, 0.00001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141592, 0.00001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 0, 0.00001 );
 
-  //removing a vertex from a 3 point circular string should remove the whole line
+  //removing a vertex from a 3 point comound curveshould remove the whole line
   QgsCircularString l39;
+  QgsCompoundCurve c39;
   l39.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
-  QCOMPARE( l39.numPoints(), 3 );
-  l39.deleteVertex( QgsVertexId( 0, 0, 2 ) );
-  QCOMPARE( l39.numPoints(), 0 );
+  c39.addCurve( l39.clone() );
+  QCOMPARE( c39.numPoints(), 3 );
+  c39.deleteVertex( QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( c39.numPoints(), 0 );
 
   //boundary
+  QgsCompoundCurve cBoundary1;
   QgsCircularString boundary1;
-  QVERIFY( !boundary1.boundary() );
+  QVERIFY( !cBoundary1.boundary() );
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
-  QgsAbstractGeometry *boundary = boundary1.boundary();
+  cBoundary1.addCurve( boundary1.clone() );
+  QgsAbstractGeometry *boundary = cBoundary1.boundary();
   QgsMultiPointV2 *mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -9610,11 +9688,15 @@ void TestQgsGeometry::compoundCurve()
 
   // closed string = no boundary
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
-  QVERIFY( !boundary1.boundary() );
+  cBoundary1.clear();
+  cBoundary1.addCurve( boundary1.clone() );
+  QVERIFY( !cBoundary1.boundary() );
 
   //boundary with z
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
-  boundary = boundary1.boundary();
+  cBoundary1.clear();
+  cBoundary1.addCurve( boundary1.clone() );
+  boundary = cBoundary1.boundary();
   mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
@@ -9628,34 +9710,58 @@ void TestQgsGeometry::compoundCurve()
   delete boundary;
 
   // addToPainterPath (note most tests are in test_qgsgeometry.py)
+  QgsCompoundCurve ccPath;
   QgsCircularString path;
   QPainterPath pPath;
-  path.addToPainterPath( pPath );
+  ccPath.addToPainterPath( pPath );
   QVERIFY( pPath.isEmpty() );
   path.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 )
                   << QgsPoint( QgsWkbTypes::PointZ, 21, 2, 3 ) );
-  path.addToPainterPath( pPath );
+  ccPath.addCurve( path.clone() );
+  ccPath.addToPainterPath( pPath );
   QGSCOMPARENEAR( pPath.currentPosition().x(), 21.0, 0.01 );
   QGSCOMPARENEAR( pPath.currentPosition().y(), 2.0, 0.01 );
   QVERIFY( !pPath.isEmpty() );
+  QgsLineString lsPath;
+  lsPath.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 21, 2, 3 )
+                    << QgsPoint( QgsWkbTypes::PointZ, 31, 12, 3 ) );
+  ccPath.addCurve( lsPath.clone() );
+  pPath = QPainterPath();
+  ccPath.addToPainterPath( pPath );
+  QGSCOMPARENEAR( pPath.currentPosition().x(), 31.0, 0.01 );
+  QGSCOMPARENEAR( pPath.currentPosition().y(), 12.0, 0.01 );
 
   // even number of points - should still work
   pPath = QPainterPath();
   path.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 11, 12, 13 ) );
-  path.addToPainterPath( pPath );
+  ccPath.clear();
+  ccPath.addCurve( path.clone() );
+  ccPath.addToPainterPath( pPath );
   QGSCOMPARENEAR( pPath.currentPosition().x(), 11.0, 0.01 );
   QGSCOMPARENEAR( pPath.currentPosition().y(), 12.0, 0.01 );
   QVERIFY( !pPath.isEmpty() );
 
   // toCurveType
   QgsCircularString curveLine1;
+  QgsCompoundCurve cc1;
   curveLine1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
-  std::unique_ptr< QgsCurve > curveType( curveLine1.toCurveType() );
-  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CircularString );
+  cc1.addCurve( curveLine1.clone() );
+  std::unique_ptr< QgsCurve > curveType( cc1.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CompoundCurve );
   QCOMPARE( curveType->numPoints(), 3 );
   QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 1, 2 ) );
   QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 11, 12 ) );
   QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 1, 22 ) );
+  QgsLineString ccls1;
+  ccls1.setPoints( QgsPointSequence() << QgsPoint( 1, 22 ) << QgsPoint( 1, 25 ) );
+  cc1.addCurve( ccls1.clone() );
+  curveType.reset( cc1.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CompoundCurve );
+  QCOMPARE( curveType->numPoints(), 4 );
+  QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 1, 2 ) );
+  QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 11, 12 ) );
+  QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 1, 22 ) );
+  QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( 1, 25 ) );
 
   //test that area of a compound curve ring is equal to a closed linestring with the same vertices
   QgsCompoundCurve cc;
@@ -9678,7 +9784,6 @@ void TestQgsGeometry::compoundCurve()
   double lsArea = 0.0;
   ls.sumUpArea( lsArea );
   QGSCOMPARENEAR( ccArea, lsArea, 4 * DBL_EPSILON );
-#endif
 }
 
 void TestQgsGeometry::multiPoint()
