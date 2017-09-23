@@ -1174,7 +1174,7 @@ const QgsFields & QgsOgrProvider::fields() const
 }
 
 
-//TODO - add sanity check for shape file layers, to include cheking to
+//TODO - add sanity check for shape file layers, to include checking to
 //       see if the .shp, .dbf, .shx files are all present and the layer
 //       actually has features
 bool QgsOgrProvider::isValid()
@@ -3449,7 +3449,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     QByteArray sql = encoding->fromUnicode( subsetString );
 
     QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-    subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+    subsetLayer = OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
   }
   else
   {
@@ -3468,7 +3468,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
 
     QByteArray sql = sqlPart1 + ", " + fidColumn + " as orig_ogc_fid" + sqlPart3;
     QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-    subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+    subsetLayer = OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
 
     // See https://lists.osgeo.org/pipermail/qgis-developer/2017-September/049802.html
     // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
@@ -3476,14 +3476,14 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     {
       QByteArray sql = sqlPart1 + ", " + "FID as orig_ogc_fid" + sqlPart3;
       QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-      subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+      subsetLayer = OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
     }
     // If that also fails, just continue without the orig_ogc_fid
     if ( !subsetLayer )
     {
       QByteArray sql = sqlPart1 + sqlPart3;
       QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-      subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+      subsetLayer = OGR_DS_ExecuteSQL( ds, sql.constData(), nullptr, nullptr );
       origFidAddAttempted = false;
     }
   }
