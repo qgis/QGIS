@@ -81,6 +81,9 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
     def apply(self):
         self.config_widget.accept()
 
+    def helpKey(self):
+        return 'processing/toolbox.html#configuring-the-processing-framework'
+
 
 class ConfigDialog(BASE, WIDGET):
 
