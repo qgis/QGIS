@@ -92,7 +92,6 @@ from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
 from .JoinAttributes import JoinAttributes
 from .LinesToPolygons import LinesToPolygons
-from .MeanCoords import MeanCoords
 from .Merge import Merge
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
@@ -226,7 +225,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Intersection(),
                 JoinAttributes(),
                 LinesToPolygons(),
-                MeanCoords(),
                 Merge(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),

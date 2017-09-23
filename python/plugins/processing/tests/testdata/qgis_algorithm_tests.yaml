@@ -2665,7 +2665,7 @@ tests:
         name: expected/points_along_lines.gml
         type: vector
 
-  - algorithm: qgis:meancoordinates
+  - algorithm: native:meancoordinates
     name: standard mean coordinates
     params:
       INPUT:
@@ -2675,6 +2675,53 @@ tests:
       OUTPUT:
         name: expected/mean_coordinates.gml
         type: vector
+
+  - algorithm: native:meancoordinates
+    name: Mean coordinates, multiple grouped
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      UID: id2
+    results:
+      OUTPUT:
+        name: expected/mean_coordinates_unique_grouped.gml
+        type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:meancoordinates
+    name: Mean coordinates, unique field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      UID: id
+    results:
+      OUTPUT:
+        name: expected/mean_coordinates_unique_grouped_2.gml
+        type: vector
+        pk: id
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:meancoordinates
+    name: Mean coordinates, weighted
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      WEIGHT: id
+    results:
+      OUTPUT:
+        name: expected/unique_coordinates_weight.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
 
   - algorithm: native:collect
     name: single part to multipart

@@ -27,13 +27,8 @@ __revision__ = '$Format:%H$'
 
 import csv
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields,
-                       QgsField,
-                       QgsGeometry,
-                       QgsWkbTypes,
-                       QgsFeatureRequest,
-                       QgsPointXY)
+from qgis.core import (QgsWkbTypes,
+                       QgsFeatureRequest)
 
 
 def resolveFieldIndex(source, attr):
@@ -93,85 +88,6 @@ def values(source, *attributes):
             else:
                 ret[k] = [v]
     return ret
-
-
-def testForUniqueness(fieldList1, fieldList2):
-    '''Returns a modified version of fieldList2, removing naming
-    collisions with fieldList1.'''
-    changed = True
-    while changed:
-        changed = False
-        for i in range(0, len(fieldList1)):
-            for j in range(0, len(fieldList2)):
-                if fieldList1[i].name() == fieldList2[j].name():
-                    field = fieldList2[j]
-                    name = createUniqueFieldName(field.name(), fieldList1)
-                    fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
-                    changed = True
-    return fieldList2
-
-
-def createUniqueFieldName(fieldName, fieldList):
-    def nextname(name):
-        num = 1
-        while True:
-            returnname = '{name}_{num}'.format(name=name[:8], num=num)
-            yield returnname
-            num += 1
-
-    def found(name):
-        return any(f.name() == name for f in fieldList)
-
-    shortName = fieldName[:10]
-
-    if not fieldList:
-        return shortName
-
-    if not found(shortName):
-        return shortName
-
-    for newname in nextname(shortName):
-        if not found(newname):
-            return newname
-
-
-def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
-    idx = layer.fields().lookupField(fieldName)
-    if idx == -1:
-        fn = createUniqueFieldName(fieldName, fieldList)
-        field = QgsField(fn, QVariant.Double, '', fieldLen, fieldPrec)
-        idx = len(fieldList)
-        fieldList.append(field)
-
-    return (idx, fieldList)
-
-
-def extractPoints(geom):
-    points = []
-    if geom.type() == QgsWkbTypes.PointGeometry:
-        if geom.isMultipart():
-            points = geom.asMultiPoint()
-        else:
-            points.append(geom.asPoint())
-    elif geom.type() == QgsWkbTypes.LineGeometry:
-        if geom.isMultipart():
-            lines = geom.asMultiPolyline()
-            for line in lines:
-                points.extend(line)
-        else:
-            points = geom.asPolyline()
-    elif geom.type() == QgsWkbTypes.PolygonGeometry:
-        if geom.isMultipart():
-            polygons = geom.asMultiPolygon()
-            for poly in polygons:
-                for line in poly:
-                    points.extend(line)
-        else:
-            polygon = geom.asPolygon()
-            for line in polygon:
-                points.extend(line)
-
-    return points
 
 
 def checkMinDistance(point, index, distance, points):
