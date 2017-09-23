@@ -42,6 +42,7 @@ class QgsFieldsProperties;
 class QgsRendererPropertiesDialog;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
+class QgsMetadataWidget;
 class QgsPanelWidget;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
@@ -211,6 +212,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
 
     void showHelp();
+
+    QgsMetadataWidget *mMetadataWidget = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

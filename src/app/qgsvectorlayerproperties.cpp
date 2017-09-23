@@ -37,6 +37,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmetadatawidget.h"
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
@@ -246,6 +247,14 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
+
+  // Metadata tab
+  QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
+  metadataLayout->setMargin( 0 );
+  mMetadataWidget = new QgsMetadataWidget( this, mLayer );
+  mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  metadataLayout->addWidget( mMetadataWidget );
+  metadataFrame->setLayout( metadataLayout );
 
   // Legend tab
   mLegendConfigEmbeddedWidget->setLayer( mLayer );
@@ -488,6 +497,10 @@ void QgsVectorLayerProperties::apply()
 
   // apply legend settings
   mLegendConfigEmbeddedWidget->applyToLayer();
+
+  // save metadata
+  mMetadataWidget->acceptMetadata();
+  mMetadataFilled = false;
 
   //
   // Set up sql subset query if applicable
