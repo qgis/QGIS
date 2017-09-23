@@ -2355,19 +2355,34 @@ void QgsOptions::setZoomFactorValue()
 void QgsOptions::showHelp()
 {
   QWidget *activeTab = mOptionsStackedWidget->currentWidget();
-  QString link = QStringLiteral( "introduction/qgis_configuration.html" );
+  QString link;
 
-  if ( activeTab == mOptionsPageAuth )
+  // give first priority to created pages which have specified a help key
+  for ( const QgsOptionsPageWidget *widget : qgsAsConst( mAdditionalOptionWidgets ) )
   {
-    link = QStringLiteral( "auth_system/index.html" );
+    if ( widget == activeTab )
+    {
+      link = widget->helpKey();
+      break;
+    }
   }
-  else if ( activeTab == mOptionsPageVariables )
+
+  if ( link.isEmpty() )
   {
-    link = QStringLiteral( "introduction/general_tools.html#variables" );
-  }
-  else if ( activeTab == mOptionsPageCRS )
-  {
-    link = QStringLiteral( "working_with_projections/working_with_projections.html" );
+    link = QStringLiteral( "introduction/qgis_configuration.html" );
+
+    if ( activeTab == mOptionsPageAuth )
+    {
+      link = QStringLiteral( "auth_system/index.html" );
+    }
+    else if ( activeTab == mOptionsPageVariables )
+    {
+      link = QStringLiteral( "introduction/general_tools.html#variables" );
+    }
+    else if ( activeTab == mOptionsPageCRS )
+    {
+      link = QStringLiteral( "working_with_projections/working_with_projections.html" );
+    }
   }
   QgsHelp::openHelp( link );
 }

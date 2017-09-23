@@ -38,6 +38,18 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
       : QWidget( parent )
     {}
 
+    /**
+     * Returns the optional help key for the options page. The default implementation
+     * returns an empty string.
+     *
+     * If a non-empty string is returned by this method, it will be used as the help key
+     * retrieved when the "help" button is clicked while this options page is active.
+     *
+     * If an empty string is returned by this method the default QGIS options
+     * help will be retrieved.
+     */
+    virtual QString helpKey() const { return QString(); }
+
   public slots:
 
     /**
