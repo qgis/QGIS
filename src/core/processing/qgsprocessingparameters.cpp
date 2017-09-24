@@ -524,19 +524,36 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   if ( rectText.isEmpty() )
     return QgsRectangle();
 
-  QStringList parts = rectText.split( ',' );
-  if ( parts.count() == 4 )
+  QRegularExpression rx( "^(.*?)\\s*,\\s*(.*?),\\s*(.*?),\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" );
+  QRegularExpressionMatch match = rx.match( rectText );
+  if ( match.hasMatch() )
   {
     bool xMinOk = false;
-    double xMin = parts.at( 0 ).toDouble( &xMinOk );
+    double xMin = match.captured( 1 ).toDouble( &xMinOk );
     bool xMaxOk = false;
-    double xMax = parts.at( 1 ).toDouble( &xMaxOk );
+    double xMax = match.captured( 2 ).toDouble( &xMaxOk );
     bool yMinOk = false;
-    double yMin = parts.at( 2 ).toDouble( &yMinOk );
+    double yMin = match.captured( 3 ).toDouble( &yMinOk );
     bool yMaxOk = false;
-    double yMax = parts.at( 3 ).toDouble( &yMaxOk );
+    double yMax = match.captured( 4 ).toDouble( &yMaxOk );
     if ( xMinOk && xMaxOk && yMinOk && yMaxOk )
-      return QgsRectangle( xMin, yMin, xMax, yMax );
+    {
+      QgsRectangle rect( xMin, yMin, xMax, yMax );
+      QgsCoordinateReferenceSystem rectCrs( match.captured( 5 ) );
+      if ( crs.isValid() && rectCrs.isValid() && crs != rectCrs )
+      {
+        QgsCoordinateTransform ct( rectCrs, crs );
+        try
+        {
+          return ct.transformBoundingBox( rect );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Error transforming extent geometry" ) );
+        }
+      }
+      return rect;
+    }
   }
 
   // try as layer extent
@@ -573,6 +590,49 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     }
   }
 
+  QString rectText;
+  if ( val.canConvert<QgsProperty>() )
+    rectText = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  else
+    rectText = val.toString();
+
+  if ( !rectText.isEmpty() )
+  {
+    QRegularExpression rx( "^(.*?)\\s*,\\s*(.*?),\\s*(.*?),\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" );
+    QRegularExpressionMatch match = rx.match( rectText );
+    if ( match.hasMatch() )
+    {
+      bool xMinOk = false;
+      double xMin = match.captured( 1 ).toDouble( &xMinOk );
+      bool xMaxOk = false;
+      double xMax = match.captured( 2 ).toDouble( &xMaxOk );
+      bool yMinOk = false;
+      double yMin = match.captured( 3 ).toDouble( &yMinOk );
+      bool yMaxOk = false;
+      double yMax = match.captured( 4 ).toDouble( &yMaxOk );
+      if ( xMinOk && xMaxOk && yMinOk && yMaxOk )
+      {
+        QgsRectangle rect( xMin, yMin, xMax, yMax );
+        QgsCoordinateReferenceSystem rectCrs( match.captured( 5 ) );
+        QgsGeometry g = QgsGeometry::fromRect( rect );
+        if ( crs.isValid() && rectCrs.isValid() && crs != rectCrs )
+        {
+          g = g.densifyByCount( 20 );
+          QgsCoordinateTransform ct( rectCrs, crs );
+          try
+          {
+            g.transform( ct );
+          }
+          catch ( QgsCsException & )
+          {
+            QgsMessageLog::logMessage( QObject::tr( "Error transforming extent geometry" ) );
+          }
+          return g;
+        }
+      }
+    }
+  }
+
   return QgsGeometry::fromRect( parameterAsExtent( definition, parameters, context, crs ) );
 }
 
@@ -587,6 +647,17 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
     {
       return rr.crs();
     }
+  }
+
+  QRegularExpression rx( "^(.*?)\\s*,\\s*(.*?),\\s*(.*?),\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" );
+
+  QString valueAsString = parameterAsString( definition, parameters, context );
+  QRegularExpressionMatch match = rx.match( valueAsString );
+  if ( match.hasMatch() )
+  {
+    QgsCoordinateReferenceSystem crs( match.captured( 5 ) );
+    if ( crs.isValid() )
+      return crs;
   }
 
   if ( context.project() )
@@ -1301,17 +1372,18 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
     return true;
   }
 
-  QStringList parts = input.toString().split( ',' );
-  if ( parts.count() == 4 )
+  QRegularExpression rx( "^(.*?)\\s*,\\s*(.*?)\\s*,\\s*(.*?)\\s*,\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" );
+  QRegularExpressionMatch match = rx.match( input.toString() );
+  if ( match.hasMatch() )
   {
     bool xMinOk = false;
-    ( void )parts.at( 0 ).toDouble( &xMinOk );
+    ( void )match.captured( 1 ).toDouble( &xMinOk );
     bool xMaxOk = false;
-    ( void )parts.at( 1 ).toDouble( &xMaxOk );
+    ( void )match.captured( 2 ).toDouble( &xMaxOk );
     bool yMinOk = false;
-    ( void )parts.at( 2 ).toDouble( &yMinOk );
+    ( void )match.captured( 3 ).toDouble( &yMinOk );
     bool yMaxOk = false;
-    ( void )parts.at( 3 ).toDouble( &yMaxOk );
+    ( void )match.captured( 4 ).toDouble( &yMaxOk );
     if ( xMinOk && xMaxOk && yMinOk && yMaxOk )
       return true;
   }
@@ -1328,7 +1400,7 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
   if ( value.canConvert< QgsRectangle >() )
   {
     QgsRectangle r = value.value<QgsRectangle>();
-    return QStringLiteral( "QgsRectangle( %1, %2, %3, %4 )" ).arg( qgsDoubleToString( r.xMinimum() ),
+    return QStringLiteral( "'%1, %3, %2, %4'" ).arg( qgsDoubleToString( r.xMinimum() ),
            qgsDoubleToString( r.yMinimum() ),
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ) );
@@ -1336,7 +1408,7 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
   if ( value.canConvert< QgsReferencedRectangle >() )
   {
     QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
-    return QStringLiteral( "QgsReferencedRectangle( QgsRectangle( %1, %2, %3, %4 ), QgsCoordinateReferenceSystem( '%5' ) )" ).arg( qgsDoubleToString( r.xMinimum() ),
+    return QStringLiteral( "'%1, %3, %2, %4 [%5]'" ).arg( qgsDoubleToString( r.xMinimum() ),
            qgsDoubleToString( r.yMinimum() ),
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
