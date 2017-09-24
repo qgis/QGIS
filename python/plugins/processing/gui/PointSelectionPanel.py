@@ -82,6 +82,8 @@ class PointSelectionPanel(BASE, WIDGET):
     def updatePoint(self, point, button):
         s = '{},{}'.format(point.x(), point.y())
         self.crs = QgsProject.instance().crs()
+        if self.crs.isValid():
+            s += ' [' + self.crs.authid() + ']'
         self.leText.setText(s)
 
     def pointPicked(self):
@@ -93,15 +95,7 @@ class PointSelectionPanel(BASE, WIDGET):
 
     def getValue(self):
         if str(self.leText.text()).strip() != '':
-            try:
-                parts = self.leText.text().split(',')
-                parts = [float(p) for p in parts]
-                r = QgsReferencedPointXY(QgsPointXY(parts[0], parts[1]),
-                                         self.crs)
-                return r
-
-            except:
-                return str(self.leText.text())
+            return str(self.leText.text())
         else:
             return None
 
