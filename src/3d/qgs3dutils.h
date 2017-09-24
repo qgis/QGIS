@@ -24,6 +24,10 @@ enum AltitudeBinding
 };
 
 
+/** \ingroup 3d
+ * Miscellaneous utility functions used from 3D code.
+ * \since QGIS 3.0
+ */
 class _3D_EXPORT Qgs3DUtils
 {
   public:
@@ -34,16 +38,24 @@ class _3D_EXPORT Qgs3DUtils
      */
     static int maxZoomLevel( double tile0width, double tileResolution, double maxError );
 
+    //! Converts a value from AltitudeClamping enum to a string
     static QString altClampingToString( AltitudeClamping altClamp );
+    //! Converts a string to a value from AltitudeClamping enum
     static AltitudeClamping altClampingFromString( const QString &str );
 
+    //! Converts a value from AltitudeBinding enum to a string
     static QString altBindingToString( AltitudeBinding altBind );
+    //! Converts a string to a value from AltitudeBinding enum
     static AltitudeBinding altBindingFromString( const QString &str );
 
+    //! Clamps altitude of vertices of a linestring according to the settings
     static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
+    //! Clamps altitude of vertices of a polygon according to the settings
     static bool clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
 
+    //! Converts a 4x4 transform matrix to a string
     static QString matrix4x4toString( const QMatrix4x4 &m );
+    //! Convert a string to a 4x4 transform matrix
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     /**

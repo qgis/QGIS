@@ -18,31 +18,40 @@ class QgsVectorLayer;
 class QgsAbstract3DSymbol;
 
 
-//! Metadata for vector layer 3D renderer to allow creation of its instances from XML
+/** \ingroup core
+ * Metadata for vector layer 3D renderer to allow creation of its instances from XML
+ * \since QGIS 3.0
+ */
 class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstractMetadata
 {
   public:
     QgsVectorLayer3DRendererMetadata();
 
+    //! Creates an instance of a 3D renderer based on a DOM element with renderer configuration
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override;
 };
 
 
-/** 3D renderer that renders all features of a vector layer with the same 3D symbol.
+/** \ingroup core
+ * 3D renderer that renders all features of a vector layer with the same 3D symbol.
  * The appearance is completely defined by the symbol.
+ * \since QGIS 3.0
  */
 class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstract3DRenderer
 {
   public:
     //! Takes ownership of the symbol object
-    explicit QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s = nullptr );
+    explicit QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s SIP_TRANSFER = nullptr );
     ~QgsVectorLayer3DRenderer();
 
+    //! Sets vector layer associated with the renderer
     void setLayer( QgsVectorLayer *layer );
+    //! Returns vector layer associated with the renderer
     QgsVectorLayer *layer() const;
 
-    //! takes ownership of the symbol
-    void setSymbol( QgsAbstract3DSymbol *symbol );
+    //! Sets 3D symbol associated with the renderer. Takes ownership of the symbol
+    void setSymbol( QgsAbstract3DSymbol *symbol SIP_TRANSFER );
+    //! Returns 3D symbol associated with the renderer
     const QgsAbstract3DSymbol *symbol() const;
 
     QString type() const override { return "vector"; }

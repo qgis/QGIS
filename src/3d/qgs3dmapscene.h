@@ -27,18 +27,23 @@ class Qgs3DMapSettings;
 class Terrain;
 class ChunkedEntity;
 
-/**
+/** \ingroup 3d
  * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
+ * \since QGIS 3.0
  */
 class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
+    //! Constructs a 3D scene based on map settings and Qt 3D renderer configuration
     Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent = nullptr );
 
+    //! Returns camera controller
     QgsCameraController *cameraController() { return mCameraController; }
+    //! Returns terrain entity
     Terrain *terrain() { return mTerrain; }
 
+    //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
 
   private slots:

@@ -32,6 +32,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     Q_OBJECT
   public:
     Qgs3DMapSettings();
+    //! Copy constructor
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();
 

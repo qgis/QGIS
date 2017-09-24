@@ -81,13 +81,16 @@ class DemTerrainChunkLoader : public TerrainChunkLoader
 #include "qgsrectangle.h"
 class QgsRasterDataProvider;
 
-/**
+/** \ingroup 3d
  * Utility class to asynchronously create heightmaps from DEM raster for given tiles of terrain.
+ * \since QGIS 3.0
  */
 class DemHeightMapGenerator : public QObject
 {
     Q_OBJECT
   public:
+    //! Constructs height map generator based on a raster layer with elevation model,
+    //! terrain's tiling scheme and height map resolution (number of height values on each side of tile)
     DemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution );
     ~DemHeightMapGenerator();
 
@@ -97,6 +100,7 @@ class DemHeightMapGenerator : public QObject
     //! synchronous terrain read for a tile
     QByteArray renderSynchronously( int x, int y, int z );
 
+    //! Returns resolution(number of height values on each side of tile)
     int resolution() const { return res; }
 
     //! returns height at given position (in terrain's CRS)

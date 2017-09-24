@@ -188,12 +188,6 @@ DemTerrainTileGeometry::~DemTerrainTileGeometry()
 {
 }
 
-void DemTerrainTileGeometry::setHeightMap( const QByteArray &heightMap )
-{
-  m_heightMap = heightMap;
-  m_vertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( m_resolution, m_heightMap ) );
-}
-
 QAttribute *DemTerrainTileGeometry::positionAttribute() const
 {
   return m_positionAttribute;
