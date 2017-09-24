@@ -558,8 +558,22 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
 
   // try as layer extent
   if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( rectText, context ) )
-    return layer->extent();
-
+  {
+    QgsRectangle rect = layer->extent();
+    if ( crs.isValid() && layer->crs().isValid() && crs != layer->crs() )
+    {
+      QgsCoordinateTransform ct( layer->crs(), crs );
+      try
+      {
+        return ct.transformBoundingBox( rect );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming extent geometry" ) );
+      }
+    }
+    return rect;
+  }
   return QgsRectangle();
 }
 
@@ -633,6 +647,27 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     }
   }
 
+  // try as layer extent
+  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( rectText, context ) )
+  {
+    QgsRectangle rect = layer->extent();
+    QgsGeometry g = QgsGeometry::fromRect( rect );
+    if ( crs.isValid() && layer->crs().isValid() && crs != layer->crs() )
+    {
+      g = g.densifyByCount( 20 );
+      QgsCoordinateTransform ct( layer->crs(), crs );
+      try
+      {
+        g.transform( ct );
+      }
+      catch ( QgsCsException & )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error transforming extent geometry" ) );
+      }
+    }
+    return g;
+  }
+
   return QgsGeometry::fromRect( parameterAsExtent( definition, parameters, context, crs ) );
 }
 
@@ -658,6 +693,12 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
     QgsCoordinateReferenceSystem crs( match.captured( 5 ) );
     if ( crs.isValid() )
       return crs;
+  }
+
+  // try as layer crs
+  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( valueAsString, context ) )
+  {
+    return layer->crs();
   }
 
   if ( context.project() )
