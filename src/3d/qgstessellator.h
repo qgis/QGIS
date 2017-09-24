@@ -5,25 +5,36 @@ class QgsPolygonV2;
 
 #include <QVector>
 
+
+/** \ingroup 3d
+ * Class that takes care of tessellation of polygons into triangles.
+ *
+ * It is expected that client code will create the tessellator object, then repeatedly call
+ * addPolygon() method that will generate triangles, and finally call data() to get final vertex data.
+ *
+ * Optionally provides extrusion by adding triangles that serve as walls when extrusion height is non-zero.
+ *
+ * \since QGIS 3.0
+ */
 class QgsTessellator
 {
   public:
+    //! Creates tessellator with a specified origin point of the world (in map coordinates)
     QgsTessellator( double originX, double originY, bool addNormals );
 
+    //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight );
 
-    // input:
-    // - origin X/Y
-    // - whether to add walls
-    // - stream of geometries
-    // output:
-    // - vertex buffer data (+ index buffer data ?)
+    //! Returns array of triangle vertex data
+    QVector<float> data() const { return mData; }
+    //! Returns size of one vertex entry in bytes
+    int stride() const { return mStride; }
 
-    double originX, originY;
-    bool addNormals;
-    //QByteArray data;
-    QVector<float> data;
-    int stride;  //!< Size of one vertex entry in bytes
+  private:
+    double mOriginX, mOriginY;
+    bool mAddNormals;
+    QVector<float> mData;
+    int mStride;
 };
 
 #endif // QGSTESSELLATOR_H

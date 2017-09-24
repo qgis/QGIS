@@ -136,7 +136,7 @@ TerrainMapUpdateJob::TerrainMapUpdateJob( MapTextureGenerator *mapTextureGenerat
 {
   TerrainChunkEntity *entity = qobject_cast<TerrainChunkEntity *>( node->entity );
   connect( mapTextureGenerator, &MapTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
-  mJobId = mapTextureGenerator->render( entity->mTextureImage->imageExtent(), entity->mTextureImage->imageDebugText() );
+  mJobId = mapTextureGenerator->render( entity->textureImage()->imageExtent(), entity->textureImage()->imageDebugText() );
 }
 
 void TerrainMapUpdateJob::cancel()
@@ -151,7 +151,7 @@ void TerrainMapUpdateJob::onTileReady( int jobId, const QImage &image )
   if ( mJobId == jobId )
   {
     TerrainChunkEntity *entity = qobject_cast<TerrainChunkEntity *>( node->entity );
-    entity->mTextureImage->setImage( image );
+    entity->textureImage()->setImage( image );
     mJobId = -1;
     emit finished();
   }

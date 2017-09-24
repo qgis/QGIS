@@ -18,15 +18,30 @@ class QgsProject;
 class MapTextureImage;
 
 #include <Qt3DCore/QEntity>
+
+/** \ingroup 3d
+ * Base class for 3D entities representing one tile of terrain.
+ * It contains pointer to tile's texture image.
+ *
+ * \since QGIS 3.0
+ */
 class TerrainChunkEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
+    //! Constructs the entity, optionally with a parent that will own it
     TerrainChunkEntity( Qt3DCore::QNode *parent = nullptr )
       : Qt3DCore::QEntity( parent )
     {
     }
 
+    //! Assigns texture image. Should be called when the class is being initialized.
+    //! Texture image is owned by the texture used by the entity.
+    void setTextureImage( MapTextureImage *textureImage ) { mTextureImage = textureImage; }
+    //! Returns assigned texture image
+    MapTextureImage *textureImage() { return mTextureImage; }
+
+  private:
     MapTextureImage *mTextureImage = nullptr;
 };
 

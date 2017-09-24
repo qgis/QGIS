@@ -53,8 +53,8 @@ void TerrainChunkLoader::loadTexture()
 void TerrainChunkLoader::createTextureComponent( TerrainChunkEntity *entity )
 {
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
-  entity->mTextureImage = new MapTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
-  texture->addTextureImage( entity->mTextureImage );
+  MapTextureImage *textureImage = new MapTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
+  texture->addTextureImage( textureImage );
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   Qt3DExtras::QTextureMaterial *material;
@@ -67,6 +67,7 @@ void TerrainChunkLoader::createTextureComponent( TerrainChunkEntity *entity )
   material->setShininess( 1 );
   material->setAmbient( Qt::white );
 #endif
+  entity->setTextureImage( textureImage );
   entity->addComponent( material ); // takes ownership if the component has no parent
 }
 

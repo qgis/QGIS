@@ -9,7 +9,7 @@
 using namespace Qt3DRender;
 
 
-QByteArray createPlaneVertexData( int res, const QByteArray &heights )
+static QByteArray createPlaneVertexData( int res, const QByteArray &heights )
 {
   Q_ASSERT( res >= 2 );
   Q_ASSERT( heights.count() == res * res * ( int )sizeof( float ) );
@@ -67,7 +67,7 @@ QByteArray createPlaneVertexData( int res, const QByteArray &heights )
 }
 
 
-QByteArray createPlaneIndexData( int res )
+static QByteArray createPlaneIndexData( int res )
 {
   QSize resolution( res, res );
   // Create the index data. 2 triangles per rectangular face
@@ -101,7 +101,10 @@ QByteArray createPlaneIndexData( int res )
   return indexBytes;
 }
 
+///@cond PRIVATE
 
+
+//! Generates vertex buffer for DEM terrain tiles
 class PlaneVertexBufferFunctor : public QBufferDataGenerator
 {
   public:
@@ -133,6 +136,8 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
     QByteArray m_heightMap;
 };
 
+
+//! Generates index buffer for DEM terrain tiles
 class PlaneIndexBufferFunctor : public QBufferDataGenerator
 {
   public:
@@ -161,6 +166,7 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
     int m_resolution;
 };
 
+/// @endcond
 
 
 

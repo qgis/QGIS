@@ -44,13 +44,13 @@ static void make_quad( float x0, float y0, float x1, float y1, float zLow, float
 
 
 QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals )
-  : originX( originX )
-  , originY( originY )
-  , addNormals( addNormals )
+  : mOriginX( originX )
+  , mOriginY( originY )
+  , mAddNormals( addNormals )
 {
-  stride = 3 * sizeof( float );
+  mStride = 3 * sizeof( float );
   if ( addNormals )
-    stride += 3 * sizeof( float );
+    mStride += 3 * sizeof( float );
 }
 
 
@@ -112,7 +112,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     exterior->pointAt( i, pt, vt );
     if ( i == 0 || pt != ptPrev )
     {
-      p2t::Point *pt2 = new p2t::Point( pt.x() - originX, pt.y() - originY );
+      p2t::Point *pt2 = new p2t::Point( pt.x() - mOriginX, pt.y() - mOriginY );
       polyline.push_back( pt2 );
       float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
       z[pt2] = zPt;
@@ -134,7 +134,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
       hole->pointAt( j, pt, vt );
       if ( j == 0 || pt != ptPrev )
       {
-        p2t::Point *pt2 = new p2t::Point( pt.x() - originX, pt.y() - originY );
+        p2t::Point *pt2 = new p2t::Point( pt.x() - mOriginX, pt.y() - mOriginY );
         holePolyline.push_back( pt2 );
         float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
         z[pt2] = zPt;
@@ -158,9 +158,9 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     {
       p2t::Point *p = t->GetPoint( j );
       float zPt = z[p];
-      data << p->x << extrusionHeight + zPt << -p->y;
-      if ( addNormals )
-        data << 0.f << 1.f << 0.f;
+      mData << p->x << extrusionHeight + zPt << -p->y;
+      if ( mAddNormals )
+        mData << 0.f << 1.f << 0.f;
     }
   }
 
@@ -171,9 +171,9 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
   // add walls if extrusion is enabled
   if ( extrusionHeight != 0 )
   {
-    _makeWalls( *exterior, false, extrusionHeight, data, addNormals, originX, originY );
+    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mOriginX, mOriginY );
 
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-      _makeWalls( *polygon.interiorRing( i ), true, extrusionHeight, data, addNormals, originX, originY );
+      _makeWalls( *polygon.interiorRing( i ), true, extrusionHeight, mData, mAddNormals, mOriginX, mOriginY );
   }
 }

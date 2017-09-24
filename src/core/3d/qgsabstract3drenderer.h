@@ -11,10 +11,12 @@ class QgsProject;
 class QgsReadWriteContext;
 class Qgs3DMapSettings;
 
+#ifndef SIP_RUN
 namespace Qt3DCore
 {
   class QEntity;
 }
+#endif
 
 /** \ingroup core
  * Base class for all renderers that may to participate in 3D view.

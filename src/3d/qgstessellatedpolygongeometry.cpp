@@ -20,7 +20,7 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
   m_vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
 
   QgsTessellator tmpTess( 0, 0, m_withNormals );
-  const int stride = tmpTess.stride;
+  const int stride = tmpTess.stride();
 
   m_positionAttribute = new Qt3DRender::QAttribute( this );
   m_positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
@@ -73,8 +73,8 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygonV2 *> &po
     ++i;
   }
 
-  QByteArray data( ( const char * )tesselator.data.constData(), tesselator.data.count() * sizeof( float ) );
-  int nVerts = data.count() / tesselator.stride;
+  QByteArray data( ( const char * )tesselator.data().constData(), tesselator.data().count() * sizeof( float ) );
+  int nVerts = data.count() / tesselator.stride();
 
   m_vertexBuffer->setData( data );
   m_positionAttribute->setCount( nVerts );

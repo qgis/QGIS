@@ -4,6 +4,8 @@
 
 #include "maptexturegenerator.h"
 
+///@cond PRIVATE
+
 class MapTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
@@ -43,20 +45,10 @@ class MapTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerat
     QT3D_FUNCTOR( MapTextureImageDataGenerator )
 };
 
+/// @endcond
 
-MapTextureImage::MapTextureImage( MapTextureGenerator *mapGen, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent )
-  : Qt3DRender::QAbstractTextureImage( parent )
-  , mapGen( mapGen )
-  , extent( extent )
-  , debugText( debugText )
-  , version( 1 )
-  , jobDone( false )
-{
-  connect( mapGen, &MapTextureGenerator::tileReady, this, &MapTextureImage::onTileReady );
 
-  // request image
-  jobId = mapGen->render( extent, debugText );
-}
+////////
 
 
 MapTextureImage::MapTextureImage( const QImage &image, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent )
@@ -65,15 +57,12 @@ MapTextureImage::MapTextureImage( const QImage &image, const QgsRectangle &exten
   , debugText( debugText )
   , img( image )
   , version( 1 )
-  , jobDone( true )
 {
 }
 
 
 MapTextureImage::~MapTextureImage()
 {
-  if ( !jobDone )
-    mapGen->cancelJob( jobId );
 }
 
 Qt3DRender::QTextureImageDataGeneratorPtr MapTextureImage::dataGenerator() const
@@ -93,16 +82,4 @@ void MapTextureImage::setImage( const QImage &img )
   this->img = img;
   version++;
   notifyDataGeneratorChanged();
-}
-
-void MapTextureImage::onTileReady( int jobId, const QImage &img )
-{
-  if ( jobId == this->jobId )
-  {
-    this->img = img;
-    this->jobDone = true;
-    version++;
-    notifyDataGeneratorChanged();
-    emit textureReady();
-  }
 }

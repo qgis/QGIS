@@ -22,7 +22,11 @@ class QgsProject;
 
 class QDomElement;
 
-//! Definition of the world
+/** \ingroup 3d
+ * Definition of the world
+ *
+ * \since QGIS 3.0
+ */
 class _3D_EXPORT Qgs3DMapSettings : public QObject
 {
     Q_OBJECT
@@ -31,42 +35,71 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();
 
+    //! Reads configuration from a DOM element previously written by writeXml()
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
-
+    //! Writes configuration to a DOM element, to be used later with readXml()
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
-
+    //! Resolves references to other objects (map layers) after the call to readXml()
     void resolveReferences( const QgsProject &project );
 
     double originX, originY, originZ;   //!< Coordinates in map CRS at which our 3D world has origin (0,0,0)
     QgsCoordinateReferenceSystem crs;   //!< Destination coordinate system of the world  (TODO: not needed? can be
 
+    //! Sets background color of the 3D map view
     void setBackgroundColor( const QColor &color );
+    //! Returns background color of the 3D map view
     QColor backgroundColor() const;
 
+    //! Sets color used for selected features
     void setSelectionColor( const QColor &color );
+    //! Returns color used for selected features
     QColor selectionColor() const;
 
     //
     // terrain related config
     //
 
+    //! Sets vertical scale (exaggeration) of terrain
+    //! (1 = true scale, > 1 = hills get more pronounced)
     void setTerrainVerticalScale( double zScale );
+    //! Returns vertical scale (exaggeration) of terrain
     double terrainVerticalScale() const;
 
+    //! Sets the list of map layers to be rendered as a texture of the terrain
     void setLayers( const QList<QgsMapLayer *> &layers );
+    //! Returns the list of map layers to be rendered as a texture of the terrain
     QList<QgsMapLayer *> layers() const;
 
+    //! Sets resolution (in pixels) of the texture of a terrain tile
+    //! \sa mapTileResolution()
     void setMapTileResolution( int res );
+    //! Returns resolution (in pixels) of the texture of a terrain tile. This parameter influences
+    //! how many zoom levels for terrain tiles there will be (together with maxTerrainGroundError())
     int mapTileResolution() const;
 
+    //! Sets maximum allowed screen error of terrain tiles in pixels.
+    //! \sa maxTerrainScreenError()
     void setMaxTerrainScreenError( float error );
+    //! Returns maximum allowed screen error of terrain tiles in pixels. This parameter decides
+    //! how aggressively less detailed terrain tiles are swapped to more detailed ones as camera gets closer.
+    //! Each tile has its error defined in world units - this error gets projected to screen pixels
+    //! according to camera view and if the tile's error is greater than the allowed error, it will
+    //! be swapped by more detailed tiles with lower error.
     float maxTerrainScreenError() const;
 
+    //! Returns maximum ground error of terrain tiles in world units.
+    //! \sa maxTerrainGroundError()
     void setMaxTerrainGroundError( float error );
+    //! Returns maximum ground error of terrain tiles in world units. This parameter influences
+    //! how many zoom levels there will be (together with mapTileResolution()).
+    //! This value tells that when the given ground error is reached (e.g. 10 meters), it makes no sense
+    //! to further split terrain tiles into finer ones because they will not add extra details anymore.
     float maxTerrainGroundError() const;
 
+    //! Sets terrain generator. It takes care of producing terrain tiles from the input data.
     //! Takes ownership of the generator
     void setTerrainGenerator( TerrainGenerator *gen );
+    //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
     TerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
 
     //
@@ -79,21 +112,35 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     QString skyboxFileBase;
     QString skyboxFileExtension;
 
+    //! Sets whether to display bounding boxes of terrain tiles (for debugging)
     void setShowTerrainBoundingBoxes( bool enabled );
+    //! Returns whether to display bounding boxes of terrain tiles (for debugging)
     bool showTerrainBoundingBoxes() const { return mShowTerrainBoundingBoxes; }
+    //! Sets whether to display extra tile info on top of terrain tiles (for debugging)
     void setShowTerrainTilesInfo( bool enabled );
+    //! Returns whether to display extra tile info on top of terrain tiles (for debugging)
     bool showTerrainTilesInfo() const { return mShowTerrainTileInfo; }
 
   signals:
+    //! Emitted when the background color has changed
     void backgroundColorChanged();
+    //! Emitted when the selection color has changed
     void selectionColorChanged();
+    //! Emitted when the list of map layers for terrain texture has changed
     void layersChanged();
+    //! Emitted when the terrain generator has changed
     void terrainGeneratorChanged();
+    //! Emitted when the vertical scale of the terrain has changed
     void terrainVerticalScaleChanged();
+    //! Emitted when the map tile resoulution has changed
     void mapTileResolutionChanged();
+    //! Emitted when the maximum terrain screen error has changed
     void maxTerrainScreenErrorChanged();
+    //! Emitted when the maximum terrain ground error has changed
     void maxTerrainGroundErrorChanged();
+    //! Emitted when the flag whether terrain's bounding boxes are shown has changed
     void showTerrainBoundingBoxesChanged();
+    //! Emitted when the flag whether terrain's tile info is shown has changed
     void showTerrainTilesInfoChanged();
 
   private:
