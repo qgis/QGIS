@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/3d/qgs3drendererregistry.h                                  *
+ * src/core/./3d/qgs3drendererregistry.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -90,7 +90,7 @@ class Qgs3DRendererRegistry
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/3d/qgs3drendererregistry.h                                  *
+ * src/core/./3d/qgs3drendererregistry.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

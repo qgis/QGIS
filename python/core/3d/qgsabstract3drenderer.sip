@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/3d/qgsabstract3drenderer.h                                  *
+ * src/core/./3d/qgsabstract3drenderer.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -62,7 +62,7 @@ Resolves references to other objects - second phase of loading - after readXml()
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/3d/qgsabstract3drenderer.h                                  *
+ * src/core/./3d/qgsabstract3drenderer.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
