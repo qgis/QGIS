@@ -630,15 +630,36 @@ QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParamet
   if ( pointText.isEmpty() )
     return QgsPointXY();
 
-  QStringList parts = pointText.split( ',' );
-  if ( parts.count() == 2 )
+  QRegularExpression rx( "^(.*?)\\s*,\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" );
+
+  QString valueAsString = parameterAsString( definition, parameters, context );
+  QRegularExpressionMatch match = rx.match( valueAsString );
+  if ( match.hasMatch() )
   {
     bool xOk = false;
-    double x = parts.at( 0 ).toDouble( &xOk );
+    double x = match.captured( 1 ).toDouble( &xOk );
     bool yOk = false;
-    double y = parts.at( 1 ).toDouble( &yOk );
+    double y = match.captured( 2 ).toDouble( &yOk );
+
     if ( xOk && yOk )
-      return QgsPointXY( x, y );
+    {
+      QgsPointXY pt( x, y );
+
+      QgsCoordinateReferenceSystem pointCrs( match.captured( 3 ) );
+      if ( crs.isValid() && pointCrs.isValid() && crs != pointCrs )
+      {
+        QgsCoordinateTransform ct( pointCrs, crs );
+        try
+        {
+          return ct.transform( pt );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Error transforming point geometry" ) );
+        }
+      }
+      return pt;
+    }
   }
 
   return QgsPointXY();
@@ -655,6 +676,17 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsPointCrs( const
     {
       return rr.crs();
     }
+  }
+
+  QRegularExpression rx( "^(.*?)\\s*,\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" );
+
+  QString valueAsString = parameterAsString( definition, parameters, context );
+  QRegularExpressionMatch match = rx.match( valueAsString );
+  if ( match.hasMatch() )
+  {
+    QgsCoordinateReferenceSystem crs( match.captured( 3 ) );
+    if ( crs.isValid() )
+      return crs;
   }
 
   if ( context.project() )
@@ -1360,13 +1392,15 @@ bool QgsProcessingParameterPoint::checkValueIsAcceptable( const QVariant &input,
       return mFlags & FlagOptional;
   }
 
-  QStringList parts = input.toString().split( ',' );
-  if ( parts.count() == 2 )
+  QRegularExpression rx( "^(.*?)\\s*,\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" );
+
+  QRegularExpressionMatch match = rx.match( input.toString() );
+  if ( match.hasMatch() )
   {
     bool xOk = false;
-    ( void )parts.at( 0 ).toDouble( &xOk );
+    ( void )match.captured( 1 ).toDouble( &xOk );
     bool yOk = false;
-    ( void )parts.at( 1 ).toDouble( &yOk );
+    ( void )match.captured( 2 ).toDouble( &yOk );
     return xOk && yOk;
   }
   else
@@ -1381,13 +1415,13 @@ QString QgsProcessingParameterPoint::valueAsPythonString( const QVariant &value,
   if ( value.canConvert< QgsPointXY >() )
   {
     QgsPointXY r = value.value<QgsPointXY>();
-    return QStringLiteral( "QgsPointXY( %1, %2 )" ).arg( qgsDoubleToString( r.x() ),
-           qgsDoubleToString( r.y() ) );
+    return QStringLiteral( "'%1,%2'" ).arg( qgsDoubleToString( r.x() ),
+                                            qgsDoubleToString( r.y() ) );
   }
   if ( value.canConvert< QgsReferencedPointXY >() )
   {
     QgsReferencedPointXY r = value.value<QgsReferencedPointXY>();
-    return QStringLiteral( "QgsReferencedPointXY( QgsPointXY( %1, %2 ), QgsCoordinateReferenceSystem( '%3' ) )" ).arg( qgsDoubleToString( r.x() ),
+    return QStringLiteral( "'%1,%2 [%3]'" ).arg( qgsDoubleToString( r.x() ),
            qgsDoubleToString( r.y() ),
            r.crs().authid() );
   }
