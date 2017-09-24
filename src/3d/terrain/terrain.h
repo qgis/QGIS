@@ -57,6 +57,7 @@ class Terrain : public ChunkedEntity
     QList<QgsMapLayer *> mLayers;
 };
 
+///@cond PRIVATE
 
 #include "chunkloader.h"
 
@@ -76,5 +77,8 @@ class TerrainMapUpdateJob : public ChunkQueueJob
     MapTextureGenerator *mMapTextureGenerator;
     int mJobId;
 };
+
+/// @endcond
+
 
 #endif // TERRAIN_H

@@ -7,7 +7,11 @@
 
 class QDomElement;
 
-//! Basic shading material used for rendering
+/** \ingroup 3d
+ * Basic shading material used for rendering based on the Phong shading model
+ * with three color components: ambient, diffuse and specular.
+ * \since QGIS 3.0
+ */
 class _3D_EXPORT QgsPhongMaterialSettings
 {
   public:
@@ -19,17 +23,27 @@ class _3D_EXPORT QgsPhongMaterialSettings
     {
     }
 
+    //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
+    //! Returns diffuse color component
     QColor diffuse() const { return mDiffuse; }
+    //! Returns specular color component
     QColor specular() const { return mSpecular; }
+    //! Returns shininess of the surface
     float shininess() const { return mShininess; }
 
+    //! Sets ambient color component
     void setAmbient( const QColor &ambient ) { mAmbient = ambient; }
+    //! Sets diffuse color component
     void setDiffuse( const QColor &diffuse ) { mDiffuse = diffuse; }
+    //! Sets specular color component
     void setSpecular( const QColor &specular ) { mSpecular = specular; }
+    //! Sets shininess of the surface
     void setShininess( float shininess ) { mShininess = shininess; }
 
+    //! Reads settings from a DOM element
     void readXml( const QDomElement &elem );
+    //! Writes settings to a DOM element
     void writeXml( QDomElement &elem ) const;
 
   private:

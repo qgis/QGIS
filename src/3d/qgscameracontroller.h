@@ -8,32 +8,44 @@
 #include <Qt3DRender>
 
 
-//! Object that controls camera movement based on user input
+/** \ingroup 3d
+ * Object that controls camera movement based on user input
+ * \since QGIS 3.0
+ */
 class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY( Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged )
     Q_PROPERTY( QRect viewport READ viewport WRITE setViewport NOTIFY viewportChanged )
   public:
+    //! Constructs the camera controller with optional parent node that will take ownership
     QgsCameraController( Qt3DCore::QNode *parent = nullptr );
 
+    //! Returns camera that is being controlled
     Qt3DRender::QCamera *camera() const { return mCamera; }
+    //! Returns viewport rectangle
     QRect viewport() const { return mViewport; }
 
+    //! Connects to object picker attached to terrain entity. Called internally from 3D scene.
+    //! This allows camera controller understand how far from the camera is the terrain under mouse cursor
     void addTerrainPicker( Qt3DRender::QObjectPicker *picker );
-
+    //! Assigns camera that should be controlled by this class. Called internally from 3D scene.
     void setCamera( Qt3DRender::QCamera *camera );
+    //! Sets viewport rectangle. Called internally from 3D canvas. Allows conversion of mouse coordinates.
     void setViewport( const QRect &viewport );
-
-    void setCameraData( float x, float y, float dist, float pitch = 0, float yaw = 0 );
-
+    //! Called internally from 3D scene when a new frame is generated. Updates camera according to keyboard/mouse input
     void frameTriggered( float dt );
 
     //! Move camera back to the initial position (looking down towards origin of world's coordinates)
     void resetView( float distance );
 
+  private:
+    void setCameraData( float x, float y, float dist, float pitch = 0, float yaw = 0 );
+
   signals:
+    //! Emitted when camera has been updated
     void cameraChanged();
+    //! Emitted when viewport rectangle has been updated
     void viewportChanged();
 
   private slots:

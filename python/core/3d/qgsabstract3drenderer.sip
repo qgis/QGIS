@@ -10,7 +10,7 @@
 
 
 
-class QgsAbstract3DRenderer
+class QgsAbstract3DRenderer /Abstract/
 {
 %Docstring
  Base class for all renderers that may to participate in 3D view.

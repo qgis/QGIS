@@ -12,7 +12,9 @@
 #include <Qt3DRender/QObjectPicker>
 
 
+///@cond PRIVATE
 
+//! Factory for map update jobs
 class TerrainMapUpdateJobFactory : public ChunkQueueJobFactory
 {
   public:
@@ -30,6 +32,7 @@ class TerrainMapUpdateJobFactory : public ChunkQueueJobFactory
     MapTextureGenerator *mMapTextureGenerator;
 };
 
+/// @endcond
 
 
 

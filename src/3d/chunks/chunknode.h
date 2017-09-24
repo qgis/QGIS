@@ -24,6 +24,7 @@ class ChunkNode
 
     ~ChunkNode();
 
+    //! Returns true if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( const QTime &currentTime ) const;
 
     //! make sure that all child nodes are at least skeleton nodes
@@ -32,6 +33,7 @@ class ChunkNode
     //! how deep is the node in the tree (zero means root node, every level adds one)
     int level() const;
 
+    //! Returns list of all descendants (recursive, not just direct children)
     QList<ChunkNode *> descendants();
 
     //
@@ -88,16 +90,16 @@ class ChunkNode
      * Enjoy the ASCII art for the state machine:
      *
      *    |<---------------------------------------------------------------------(unloaded)--------+
-     *    |<---------------------------------------(cancelled)-------------+                       |
-     *    |<--------(cancelled)-----------+                                |                       |
+     *    |<---------------------------------------(canceled)--------------+                       |
+     *    |<--------(canceled)------------+                                |                       |
      *    |                               |                                |                       |
      * Skeleton  --(requested)-->  QueuedForLoad  --(started load)-->  Loading  --(finished)-->  Loaded
      *                                                                                             |  |
      *                                                                                             |  |
      *                        Updating  <--(started update)--  QueuedForUpdate  <--(needs update)--+  |
      *                           |                                    |                               |
-     *                           |                                    +---------(cancelled)---------->|
-     *                           +-------(finished / cancelled)-------------------------------------->|
+     *                           |                                    +---------(canceled)----------->|
+     *                           +-------(finished / canceled)--------------------------------------->|
      *
      */
     enum State
