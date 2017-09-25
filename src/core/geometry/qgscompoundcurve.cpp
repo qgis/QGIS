@@ -606,15 +606,15 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
     if ( mCurves.at( curveIds.at( 0 ).first )->numPoints() == 0 &&
          mCurves.at( curveIds.at( 1 ).first )->numPoints() != 0 )
     {
-      removeCurve( curveIds.at( 0 ).first );
       mCurves.at( curveIds.at( 1 ).first )->moveVertex( QgsVertexId( 0, 0, 0 ), startPoint );
+      removeCurve( curveIds.at( 0 ).first );
     }
     else if ( mCurves.at( curveIds.at( 0 ).first )->numPoints() != 0 &&
               mCurves.at( curveIds.at( 1 ).first )->numPoints() == 0 )
     {
-      removeCurve( curveIds.at( 1 ).first );
       mCurves.at( curveIds.at( 0 ).first )->moveVertex(
         QgsVertexId( 0, 0, mCurves.at( curveIds.at( 0 ).first )->numPoints() - 1 ), endPoint );
+      removeCurve( curveIds.at( 1 ).first );
     }
     else if ( mCurves.at( curveIds.at( 0 ).first )->numPoints() == 0 &&
               mCurves.at( curveIds.at( 1 ).first )->numPoints() == 0 )
