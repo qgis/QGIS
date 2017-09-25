@@ -2522,6 +2522,8 @@ tests:
       OUTPUT:
         name: expected/shortest.gml
         type: vector
+        compare:
+          ignore_crs_check: true
 
   - algorithm: qgis:shortestpathpointtopoint
     name: Shortest path (point to point, fastest route)
@@ -2543,6 +2545,8 @@ tests:
       OUTPUT:
         name: expected/fastest.gml
         type: vector
+        compare:
+          ignore_crs_check: true
 
   - algorithm: qgis:serviceareafrompoint
     name: Service area (from point, shortest)
@@ -2563,6 +2567,8 @@ tests:
       OUTPUT:
         name: expected/service_area.gml
         type: vector
+        compare:
+          ignore_crs_check: true
 
   - algorithm: qgis:createattributeindex
     name: Create attribute index
