@@ -112,7 +112,7 @@ class QgsLayoutUndoObjectInterface
 %End
   public:
 
-    ~QgsLayoutUndoObjectInterface();
+    virtual ~QgsLayoutUndoObjectInterface();
 %Docstring
  Destructor for QgsLayoutUndoObjectInterface.
 %End

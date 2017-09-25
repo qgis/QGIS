@@ -132,7 +132,7 @@ class CORE_EXPORT QgsLayoutUndoObjectInterface
     /**
      * Destructor for QgsLayoutUndoObjectInterface.
      */
-    ~QgsLayoutUndoObjectInterface() = default;
+    virtual ~QgsLayoutUndoObjectInterface() = default;
 
     /**
      * Creates a new layout undo command with the specified \a text and \a parent.
