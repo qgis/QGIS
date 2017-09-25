@@ -1230,6 +1230,13 @@ QgsExpressionContextScope *QgsExpressionContextUtils::processingAlgorithmScope( 
   return scope.release();
 }
 
+QgsExpressionContextScope *QgsExpressionContextUtils::notificationScope( const QString &message )
+{
+  std::unique_ptr< QgsExpressionContextScope > scope( new QgsExpressionContextScope() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "notification_message" ), message, true ) );
+  return scope.release();
+}
+
 void QgsExpressionContextUtils::registerContextFunctions()
 {
   QgsExpression::registerFunction( new GetNamedProjectColor( nullptr ) );

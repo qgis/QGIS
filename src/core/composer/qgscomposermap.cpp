@@ -922,8 +922,6 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext *context )
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   //data defined map extents set?
-  QVariant exprVal;
-
   QgsRectangle newExtent = *currentMapExtent();
   bool useDdXMin = false;
   bool useDdXMax = false;
@@ -1584,10 +1582,10 @@ void QgsComposerMap::updateBoundingRect()
   if ( mGridStack )
     mGridStack->calculateMaxGridExtension( topExtension, rightExtension, bottomExtension, leftExtension );
 
-  topExtension = qMax( topExtension, frameExtension );
-  rightExtension = qMax( rightExtension, frameExtension );
-  bottomExtension = qMax( bottomExtension, frameExtension );
-  leftExtension = qMax( leftExtension, frameExtension );
+  topExtension = std::max( topExtension, frameExtension );
+  rightExtension = std::max( rightExtension, frameExtension );
+  bottomExtension = std::max( bottomExtension, frameExtension );
+  leftExtension = std::max( leftExtension, frameExtension );
 
   rectangle.setLeft( rectangle.left() - leftExtension );
   rectangle.setRight( rectangle.right() + rightExtension );
@@ -1798,7 +1796,7 @@ void QgsComposerMap::transformShift( double &xShift, double &yShift ) const
 QPointF QgsComposerMap::mapToItemCoords( QPointF mapCoords ) const
 {
   QPolygonF mapPoly = transformedMapPolygon();
-  if ( mapPoly.size() < 1 )
+  if ( mapPoly.empty() )
   {
     return QPointF( 0, 0 );
   }

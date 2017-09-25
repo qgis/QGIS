@@ -184,7 +184,7 @@ class CORE_EXPORT QgsRenderContext
      * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
      * \since QGIS 3.0
      */
-    void setDistanceArea( const QgsDistanceArea distanceArea ) {mDistanceArea = distanceArea ;}
+    void setDistanceArea( const QgsDistanceArea &distanceArea ) {mDistanceArea = distanceArea ;}
 
     /**
      * Sets the scaling factor for the render to convert painter units

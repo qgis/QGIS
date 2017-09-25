@@ -28,6 +28,7 @@ class QgsCodeEditorSQL : QgsCodeEditor
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

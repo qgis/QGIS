@@ -46,7 +46,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
 
     Q_OBJECT
-    Q_ENUMS( Behavior )
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( QColor color READ color WRITE setColor )
@@ -67,6 +66,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
       ShowDialog = 0, //!< Show a color picker dialog when clicked
       SignalOnly //!< Emit colorClicked signal only, no dialog
     };
+    Q_ENUM( Behavior );
 
     /** Construct a new color ramp button.
      * Use \a parent to attach a parent QWidget to the dialog.
@@ -74,9 +74,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * Use a color scheme \a registry for color swatch grids to show in the drop-down menu. If not specified,
      * the button will use the global color scheme registry instead
      */
-    QgsColorButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &cdt = "", QgsColorSchemeRegistry *registry = nullptr );
+    QgsColorButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &cdt = QString(), QgsColorSchemeRegistry *registry = nullptr );
 
     virtual QSize minimumSizeHint() const override;
+    virtual QSize sizeHint() const override;
 
     /** Return the currently selected color.
      * \returns currently selected color
@@ -381,6 +382,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     Behavior mBehavior;
     QString mColorDialogTitle;
     QColor mColor;
+    QSize mMinimumSize;
 
     QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
 

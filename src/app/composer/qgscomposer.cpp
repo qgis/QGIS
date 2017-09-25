@@ -57,7 +57,6 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessageviewer.h"
-#include "qgscontexthelp.h"
 #include "qgscursors.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgeometry.h"
@@ -77,6 +76,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QIcon>
+#include <QImageWriter>
 #include <QLabel>
 #include <QMatrix>
 #include <QMenuBar>
@@ -326,16 +326,12 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, mActionZoomIn, &QAction::trigger );
 
-#ifndef Q_OS_MAC
-  //disabled for OSX - see #10761
-  //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
   QMenu *previewMenu = viewMenu->addMenu( QStringLiteral( "&Preview" ) );
   previewMenu->addAction( mActionPreviewModeOff );
   previewMenu->addAction( mActionPreviewModeGrayscale );
   previewMenu->addAction( mActionPreviewModeMono );
   previewMenu->addAction( mActionPreviewProtanope );
   previewMenu->addAction( mActionPreviewDeuteranope );
-#endif
 
   viewMenu->addSeparator();
   viewMenu->addAction( mActionZoomIn );
@@ -596,9 +592,9 @@ QgsComposer::QgsComposer( QgsComposition *composition )
 
   mItemsTreeView->setColumnWidth( 0, 30 );
   mItemsTreeView->setColumnWidth( 1, 30 );
-  mItemsTreeView->header()->setResizeMode( 0, QHeaderView::Fixed );
-  mItemsTreeView->header()->setResizeMode( 1, QHeaderView::Fixed );
-  mItemsTreeView->header()->setMovable( false );
+  mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionsMovable( false );
 
   mItemsTreeView->setDragEnabled( true );
   mItemsTreeView->setAcceptDrops( true );
@@ -1695,7 +1691,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
-    progress.setWindowTitle( tr( "Exporting atlas" ) );
+    progress.setWindowTitle( tr( "Exporting Atlas" ) );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
     for ( int featureI = 0; featureI < atlasMap->numFeatures(); ++featureI )
@@ -1862,7 +1858,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
       return;
     }
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
-    progress.setWindowTitle( tr( "Exporting atlas" ) );
+    progress.setWindowTitle( tr( "Exporting Atlas" ) );
 
     for ( int i = 0; i < atlasMap->numFeatures(); ++i )
     {
@@ -2074,7 +2070,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         outputFilePath = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
       }
 
-      saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+      saveOk = saveImage( image, outputFilePath, fileNExt.second );
 
       if ( !saveOk )
       {
@@ -2130,7 +2126,6 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     QgsSettings myQSettings;
     QString lastUsedDir = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesDir" ), QDir::homePath() ).toString();
-    QString lastUsedFormat = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesFormat" ), "jpg" ).toString();
 
     QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
@@ -2142,7 +2137,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
     }
     QStringList s = dlg.selectedFiles();
-    if ( s.size() < 1 || s.at( 0 ).isEmpty() )
+    if ( s.empty() || s.at( 0 ).isEmpty() )
     {
       return;
     }
@@ -2194,7 +2189,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
-    progress.setWindowTitle( tr( "Exporting atlas" ) );
+    progress.setWindowTitle( tr( "Exporting Atlas" ) );
 
     for ( int feature = 0; feature < atlasMap->numFeatures(); ++feature )
     {
@@ -2275,7 +2270,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
           imageFilename = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         }
 
-        bool saveOk = image.save( imageFilename, format.toLocal8Bit().constData() );
+        bool saveOk =  saveImage( image, imageFilename, format );
         if ( !saveOk )
         {
           QMessageBox::warning( this, tr( "Atlas processing error" ),
@@ -2315,6 +2310,16 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mView->setPaintingEnabled( true );
     QApplication::restoreOverrideCursor();
   }
+}
+
+bool QgsComposer::saveImage( const QImage &img, const QString &imageFilename, const QString &imageFormat )
+{
+  QImageWriter w( imageFilename, imageFormat.toLocal8Bit().constData() );
+  if ( imageFormat.compare( QLatin1String( "tiff" ), Qt::CaseInsensitive ) == 0 || imageFormat.compare( QLatin1String( "tif" ), Qt::CaseInsensitive ) == 0 )
+  {
+    w.setCompression( 1 ); //use LZW compression
+  }
+  return w.write( img );
 }
 
 void QgsComposer::on_mActionExportAtlasAsSVG_triggered()
@@ -2383,7 +2388,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   if ( displaySVGWarning )
   {
     QgsMessageViewer *m = new QgsMessageViewer( this );
-    m->setWindowTitle( tr( "SVG warning" ) );
+    m->setWindowTitle( tr( "SVG Warning" ) );
     m->setCheckBoxText( tr( "Don't show this message again" ) );
     m->setCheckBoxState( Qt::Unchecked );
     m->setCheckBoxVisible( true );
@@ -2541,7 +2546,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
   }
   QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
-  progress.setWindowTitle( tr( "Exporting atlas" ) );
+  progress.setWindowTitle( tr( "Exporting Atlas" ) );
 
   do
   {
@@ -2701,8 +2706,8 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
              && !mComposition->gridVisible() ) items.pop_back();
         QgsItemTempHider itemsHider( items );
         int composerItemLayerIdx = 0;
-        QList<QGraphicsItem *>::const_iterator it = items.begin();
-        for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
+        QList<QGraphicsItem *>::const_iterator it = items.constBegin();
+        for ( unsigned svgLayerId = 1; it != items.constEnd(); ++svgLayerId )
         {
           itemsHider.hideAll();
           QgsComposerItem *composerItem = dynamic_cast<QgsComposerItem *>( *it );
@@ -2716,7 +2721,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           else
           {
             // show all items until the next item that renders on a separate layer
-            for ( ; it != items.end(); ++it )
+            for ( ; it != items.constEnd(); ++it )
             {
               composerItem = dynamic_cast<QgsComposerMap *>( *it );
               if ( composerItem && composerItem->numberExportLayers() )
@@ -3429,7 +3434,7 @@ void QgsComposer::showWmsPrintingWarning()
   if ( displayWMSWarning )
   {
     QgsMessageViewer *m = new QgsMessageViewer( this );
-    m->setWindowTitle( tr( "Project contains WMS layers" ) );
+    m->setWindowTitle( tr( "Project Contains WMS Layers" ) );
     m->setMessage( tr( "Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed" ), QgsMessageOutput::MessageText );
     m->setCheckBoxText( tr( "Don't show this message again" ) );
     m->setCheckBoxState( Qt::Unchecked );
@@ -3444,7 +3449,7 @@ void QgsComposer::showAdvancedEffectsWarning()
   if ( ! mComposition->printAsRaster() )
   {
     QgsMessageViewer *m = new QgsMessageViewer( this, QgsGuiUtils::ModalDialogFlags, false );
-    m->setWindowTitle( tr( "Project contains composition effects" ) );
+    m->setWindowTitle( tr( "Project Contains Composition Effects" ) );
     m->setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
     m->setCheckBoxText( tr( "Print as raster" ) );
     m->setCheckBoxState( Qt::Checked );

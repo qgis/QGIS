@@ -28,7 +28,6 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     Q_OBJECT
   public:
     explicit QgsComposerArrowWidget( QgsComposerArrow *arrow );
-    ~QgsComposerArrowWidget();
 
   private:
     QgsComposerArrow *mArrow = nullptr;

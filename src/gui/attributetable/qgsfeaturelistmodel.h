@@ -15,7 +15,7 @@
 #ifndef QGSATTRIBUTEEDITORMODEL_H
 #define QGSATTRIBUTEEDITORMODEL_H
 
-#include <qgsexpression.h>
+#include "qgsexpression.h"
 #include "qgis.h"
 
 #include <QAbstractProxyModel>
@@ -60,7 +60,6 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
   public:
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = 0 );
-    virtual ~QgsFeatureListModel();
 
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
     QgsVectorLayerCache *layerCache();

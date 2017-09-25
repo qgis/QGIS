@@ -286,6 +286,9 @@ class QgsProjectColorScheme : QgsColorScheme
   public:
 
     QgsProjectColorScheme();
+%Docstring
+ Constructor for QgsProjectColorScheme.
+%End
 
     virtual QString schemeName() const;
 

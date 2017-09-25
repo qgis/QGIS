@@ -37,7 +37,6 @@
 
 #include <QObject>
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 class TestQgsComposition : public QObject
 {
@@ -365,34 +364,34 @@ void TestQgsComposition::bounds()
 
   //check bounds
   QRectF compositionBounds = composition->compositionBounds( false );
-  QVERIFY( qgsDoubleNear( compositionBounds.height(), 372.15, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.width(), 301.00, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.left(), -2, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.top(), -2, 0.01 ) );
+  QGSCOMPARENEAR( compositionBounds.height(), 372.15, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.width(), 301.00, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.left(), -2, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.top(), -2, 0.01 );
 
   QRectF compositionBoundsNoPage = composition->compositionBounds( true );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.height(), 320.36, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.width(), 250.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.left(), 9.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.top(), 49.79, 0.01 ) );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 320.36, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 49.79, 0.01 );
 
   QRectF page1Bounds = composition->pageItemBounds( 0, true );
-  QVERIFY( qgsDoubleNear( page1Bounds.height(), 150.36, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.width(), 155.72, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.left(), 54.43, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.top(), 49.79, 0.01 ) );
+  QGSCOMPARENEAR( page1Bounds.height(), 150.36, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.width(), 155.72, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.left(), 54.43, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.top(), 49.79, 0.01 );
 
   QRectF page2Bounds = composition->pageItemBounds( 1, true );
-  QVERIFY( qgsDoubleNear( page2Bounds.height(), 100.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.width(), 50.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.left(), 209.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.top(), 249.85, 0.01 ) );
+  QGSCOMPARENEAR( page2Bounds.height(), 100.30, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.width(), 50.30, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.left(), 209.85, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.top(), 249.85, 0.01 );
 
   QRectF page2BoundsWithHidden = composition->pageItemBounds( 1, false );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.height(), 120.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.width(), 250.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.left(), 9.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.top(), 249.85, 0.01 ) );
+  QGSCOMPARENEAR( page2BoundsWithHidden.height(), 120.30, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.top(), 249.85, 0.01 );
 
   delete composition;
 }
@@ -539,54 +538,54 @@ void TestQgsComposition::georeference()
   composition->addComposerMap( map );
 
   t = composition->computeGeoTransform( map );
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
   delete[] t;
 
   // don't specify map
   composition->setReferenceMap( map );
   t = composition->computeGeoTransform();
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
   delete[] t;
 
   // specify extent
   t = composition->computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
-  QVERIFY( qgsDoubleNear( t[0], 2100.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211864, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 2950, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211864, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 2100.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211864, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 2950, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211864, 0.0001 );
   delete[] t;
 
   // specify dpi
   t = composition->computeGeoTransform( map, QRectF(), 75 );
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.847603, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200.0, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.846774, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1 );
+  QGSCOMPARENEAR( t[1], 0.847603, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200.0, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.846774, 0.0001 );
   delete[] t;
 
   // rotation
   map->setMapRotation( 45 );
   t = composition->computeGeoTransform( map );
-  QVERIFY( qgsDoubleNear( t[0], 1825.7, 1 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.149708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.149708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[3], 2889.64, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.14969, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.14969, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1825.7, 1 );
+  QGSCOMPARENEAR( t[1], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[3], 2889.64, 1 );
+  QGSCOMPARENEAR( t[4], 0.14969, 0.0001 );
+  QGSCOMPARENEAR( t[5], -0.14969, 0.0001 );
   delete[] t;
 
   delete composition;
@@ -610,7 +609,7 @@ void TestQgsComposition::itemVariablesFunction()
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
-  QgsExpression e( "map_get( item_variables( 'map_id' ), 'map_scale' )" );
+  QgsExpression e( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_scale' )" ) );
   // no map
   QgsExpressionContext c = composition->createExpressionContext();
   QVariant r = e.evaluate( &c );
@@ -621,21 +620,21 @@ void TestQgsComposition::itemVariablesFunction()
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
   map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   composition->addComposerMap( map );
-  map->setId( "map_id" );
+  map->setId( QStringLiteral( "map_id" ) );
 
   c = composition->createExpressionContext();
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 1.38916e+08, 100 );
 
-  QgsExpression e2( "map_get( item_variables( 'map_id' ), 'map_crs' )" );
+  QgsExpression e2( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs' )" ) );
   r = e2.evaluate( &c );
   QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
 
-  QgsExpression e3( "map_get( item_variables( 'map_id' ), 'map_crs_definition' )" );
+  QgsExpression e3( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs_definition' )" ) );
   r = e3.evaluate( &c );
   QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
 
-  QgsExpression e4( "map_get( item_variables( 'map_id' ), 'map_units' )" );
+  QgsExpression e4( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_units' )" ) );
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
 
@@ -676,10 +675,10 @@ void TestQgsComposition::legendRestoredFromTemplate()
 {
   // load a layer
 
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   QgsProject p;
   p.addMapLayer( layer );
 
@@ -698,13 +697,13 @@ void TestQgsComposition::legendRestoredFromTemplate()
   QCOMPARE( layerNode->layer(), layer );
 
   // got it!
-  layerNode->setCustomProperty( "legend/title-label", QString( "new title!" ) );
+  layerNode->setCustomProperty( QStringLiteral( "legend/title-label" ), QStringLiteral( "new title!" ) );
   // make sure new title stuck
   QCOMPARE( model->data( model->node2index( layerNode ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
 
   // save composition to template
   QDomDocument doc;
-  QDomElement composerElem = doc.createElement( "Composer" );
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   doc.appendChild( composerElem );
   c.writeXml( composerElem, doc );
   c.atlasComposition().writeXml( composerElem, doc );
@@ -734,7 +733,7 @@ void TestQgsComposition::legendRestoredFromTemplate()
   // reload it, with a new id
   QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   p.addMapLayer( layer2 );
   QVERIFY( oldId != layer2->id() );
 
@@ -760,10 +759,10 @@ void TestQgsComposition::legendRestoredFromTemplateAutoUpdate()
 {
   // load a layer
 
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   QgsProject p;
   p.addMapLayer( layer );
 
@@ -784,7 +783,7 @@ void TestQgsComposition::legendRestoredFromTemplateAutoUpdate()
 
   // save composition to template
   QDomDocument doc;
-  QDomElement composerElem = doc.createElement( "Composer" );
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   doc.appendChild( composerElem );
   c.writeXml( composerElem, doc );
   c.atlasComposition().writeXml( composerElem, doc );
@@ -792,7 +791,7 @@ void TestQgsComposition::legendRestoredFromTemplateAutoUpdate()
   //new project
   QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   QgsProject p2;
   p2.addMapLayer( layer2 );
 
@@ -816,11 +815,11 @@ void TestQgsComposition::legendRestoredFromTemplateAutoUpdate()
 void TestQgsComposition::attributeTableRestoredFromTemplate()
 {
   // load some layers
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
-  QgsVectorLayer *layer2 = new QgsVectorLayer( "Point", "memory", "memory" );
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "memory" ), QStringLiteral( "memory" ) );
   QgsProject p;
   p.addMapLayer( layer2 );
   p.addMapLayer( layer );
@@ -837,7 +836,7 @@ void TestQgsComposition::attributeTableRestoredFromTemplate()
 
   // save composition to template
   QDomDocument doc;
-  QDomElement composerElem = doc.createElement( "Composer" );
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   doc.appendChild( composerElem );
   c.writeXml( composerElem, doc );
   c.atlasComposition().writeXml( composerElem, doc );
@@ -846,8 +845,8 @@ void TestQgsComposition::attributeTableRestoredFromTemplate()
   QgsProject p2;
   QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
-  QgsVectorLayer *layer4 = new QgsVectorLayer( "Point", "memory", "memory" );
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "memory" ), QStringLiteral( "memory" ) );
   p2.addMapLayer( layer4 );
   p2.addMapLayer( layer3 );
 
@@ -866,15 +865,15 @@ void TestQgsComposition::attributeTableRestoredFromTemplate()
 void TestQgsComposition::mapLayersRestoredFromTemplate()
 {
   // load some layers
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
-  QFileInfo vectorFileInfo2( QString( TEST_DATA_DIR ) + "/polys.shp" );
+      QStringLiteral( "ogr" ) );
+  QFileInfo vectorFileInfo2( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
   QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
       vectorFileInfo2.completeBaseName(),
-      "ogr" );
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/landsat.tif" );
+      QStringLiteral( "ogr" ) );
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   QgsRasterLayer *rl = new QgsRasterLayer( rasterFileInfo.filePath(),
       rasterFileInfo.completeBaseName() );
 
@@ -892,7 +891,7 @@ void TestQgsComposition::mapLayersRestoredFromTemplate()
 
   // save composition to template
   QDomDocument doc;
-  QDomElement composerElem = doc.createElement( "Composer" );
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   doc.appendChild( composerElem );
   c.writeXml( composerElem, doc );
   c.atlasComposition().writeXml( composerElem, doc );
@@ -901,10 +900,10 @@ void TestQgsComposition::mapLayersRestoredFromTemplate()
   QgsProject p2;
   QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
       vectorFileInfo2.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   QgsRasterLayer *rl5 = new QgsRasterLayer( rasterFileInfo.filePath(),
       rasterFileInfo.completeBaseName() );
   p2.addMapLayer( layer4 );
@@ -926,14 +925,14 @@ void TestQgsComposition::mapLayersRestoredFromTemplate()
 void TestQgsComposition::mapLayersStyleOverrideRestoredFromTemplate()
 {
   // load some layers
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
-  QFileInfo vectorFileInfo2( QString( TEST_DATA_DIR ) + "/polys.shp" );
+      QStringLiteral( "ogr" ) );
+  QFileInfo vectorFileInfo2( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
   QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
       vectorFileInfo2.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   QgsProject p;
   p.addMapLayer( layer2 );
   p.addMapLayer( layer );
@@ -952,7 +951,7 @@ void TestQgsComposition::mapLayersStyleOverrideRestoredFromTemplate()
 
   // save composition to template
   QDomDocument doc;
-  QDomElement composerElem = doc.createElement( "Composer" );
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   doc.appendChild( composerElem );
   c.writeXml( composerElem, doc );
   c.atlasComposition().writeXml( composerElem, doc );
@@ -961,10 +960,10 @@ void TestQgsComposition::mapLayersStyleOverrideRestoredFromTemplate()
   QgsProject p2;
   QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
       vectorFileInfo2.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   p2.addMapLayer( layer4 );
   p2.addMapLayer( layer3 );
 
@@ -988,10 +987,10 @@ void TestQgsComposition::mapLayersStyleOverrideRestoredFromTemplate()
 void TestQgsComposition::atlasLayerRestoredFromTemplate()
 {
   // load some layers
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
   QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   QgsProject p;
   p.addMapLayer( layer );
 
@@ -1003,7 +1002,7 @@ void TestQgsComposition::atlasLayerRestoredFromTemplate()
 
   // save composition to template
   QDomDocument doc;
-  QDomElement composerElem = doc.createElement( "Composer" );
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
   doc.appendChild( composerElem );
   c.writeXml( composerElem, doc );
   c.atlasComposition().writeXml( composerElem, doc );
@@ -1012,7 +1011,7 @@ void TestQgsComposition::atlasLayerRestoredFromTemplate()
   QgsProject p2;
   QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
-      "ogr" );
+      QStringLiteral( "ogr" ) );
   p2.addMapLayer( layer2 );
 
   // make a new composition from template

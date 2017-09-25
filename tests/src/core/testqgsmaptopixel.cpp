@@ -20,7 +20,6 @@
 #include <qgsmaptopixel.h>
 #include <qgspoint.h>
 #include "qgslogger.h"
-#include "qgstestutils.h"
 
 class TestQgsMapToPixel: public QObject
 {

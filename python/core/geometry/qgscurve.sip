@@ -31,6 +31,7 @@ class QgsCurve: QgsAbstractGeometry
 
     virtual QgsCurve *clone() const = 0 /Factory/;
 
+
     virtual QgsPoint startPoint() const = 0;
 %Docstring
  Returns the starting point of the curve.
@@ -94,7 +95,9 @@ class QgsCurve: QgsAbstractGeometry
 %End
 
     virtual QgsCoordinateSequence coordinateSequence() const;
+
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
+
 
     virtual bool pointAt( int node, QgsPoint &point /Out/, QgsVertexId::VertexType &type /Out/ ) const = 0;
 %Docstring
@@ -115,6 +118,7 @@ class QgsCurve: QgsAbstractGeometry
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+
     virtual QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
 %Docstring
@@ -125,11 +129,18 @@ class QgsCurve: QgsAbstractGeometry
 %End
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
+
     virtual int ringCount( int part = 0 ) const;
+
     virtual int partCount() const;
+
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
+    virtual QgsCurve *toCurveType() const /Factory/;
+
+
     virtual QgsRectangle boundingBox() const;
+
 
     virtual double xAt( int index ) const = 0;
 %Docstring
@@ -156,9 +167,11 @@ class QgsCurve: QgsAbstractGeometry
 %End
 
 
+
   protected:
 
     virtual void clearCache() const;
+
 
 };
 

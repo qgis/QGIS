@@ -29,8 +29,9 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 {
   public:
     QgsMultiCurve();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiCurve" ); }
+    QString geometryType() const override;
     QgsMultiCurve *clone() const override SIP_FACTORY;
+    QgsMultiCurve *toCurveType() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -42,15 +43,39 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     QString asJSON( int precision = 17 ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
     /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
      * \since QGIS 2.14
      */
     QgsMultiCurve *reversed() const SIP_FACTORY;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsMultiCurve.
+     * Should be used by qgsgeometry_cast<QgsMultiCurve *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsMultiCurve *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == QgsWkbTypes::MultiCurve
+           || flatType == QgsWkbTypes::MultiLineString )
+        return static_cast<const QgsMultiCurve *>( geom );
+      return nullptr;
+    }
+#endif
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSMULTICURVEV2_H

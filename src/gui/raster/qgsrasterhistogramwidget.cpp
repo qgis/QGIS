@@ -55,7 +55,7 @@
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent )
   : QgsMapLayerConfigWidget( lyr, nullptr, parent )
   , mRasterLayer( lyr )
-  , mRendererWidget( nullptr )
+
 {
   setupUi( this );
 
@@ -502,7 +502,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mypCurve->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
     }
 
-    QwtPlotHistogram *mypHisto = 0;
+    QwtPlotHistogram *mypHisto = nullptr;
     if ( ! myDrawLines )
     {
       mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -1005,7 +1005,7 @@ QString findClosestTickVal( double target, const QwtScaleDiv *scale, int div = 1
     current += diff;
     if ( current > target )
     {
-      closest = ( qAbs( target - current + diff ) < qAbs( target - current ) ) ? current - diff : current;
+      closest = ( std::fabs( target - current + diff ) < std::fabs( target - current ) ) ? current - diff : current;
       break;
     }
   }

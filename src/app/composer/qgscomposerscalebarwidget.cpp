@@ -62,23 +62,23 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
   mUnitsComboBox->insertItem( 2, tr( "Feet" ), QgsUnitTypes::DistanceFeet );
   mUnitsComboBox->insertItem( 3, tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
 
-  mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
   mFillColorButton->setAllowOpacity( true );
   mFillColorButton->setContext( QStringLiteral( "composer" ) );
-  mFillColorButton->setNoColorString( tr( "Transparent fill" ) );
+  mFillColorButton->setNoColorString( tr( "Transparent Fill" ) );
   mFillColorButton->setShowNoColor( true );
 
-  mFillColor2Button->setColorDialogTitle( tr( "Select alternate fill color" ) );
+  mFillColor2Button->setColorDialogTitle( tr( "Select Alternate Fill Color" ) );
   mFillColor2Button->setAllowOpacity( true );
   mFillColor2Button->setContext( QStringLiteral( "composer" ) );
   mFillColor2Button->setNoColorString( tr( "Transparent fill" ) );
   mFillColor2Button->setShowNoColor( true );
 
-  mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setAllowOpacity( true );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
 
-  mStrokeColorButton->setColorDialogTitle( tr( "Select line color" ) );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select Line Color" ) );
   mStrokeColorButton->setAllowOpacity( true );
   mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
   mStrokeColorButton->setNoColorString( tr( "Transparent line" ) );
@@ -102,11 +102,6 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
   setGuiElements(); //set the GUI elements to the state of scaleBar
 
   connect( mFontButton, &QgsFontButton::changed, this, &QgsComposerScaleBarWidget::fontChanged );
-}
-
-QgsComposerScaleBarWidget::~QgsComposerScaleBarWidget()
-{
-
 }
 
 void QgsComposerScaleBarWidget::setGuiElements()
@@ -233,7 +228,7 @@ void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged( int i 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
+void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -241,7 +236,7 @@ void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
   }
   mComposerScaleBar->beginCommand( tr( "Scalebar height changed" ), QgsComposerMergeCommand::ScaleBarHeight );
   disconnectUpdateSignal();
-  mComposerScaleBar->setHeight( i );
+  mComposerScaleBar->setHeight( d );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
@@ -562,6 +557,8 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mSegmentSizeRadioGroup.blockSignals( block );
   mMapItemComboBox->blockSignals( block );
   mFontButton->blockSignals( block );
+  mMinWidthSpinBox->blockSignals( block );
+  mMaxWidthSpinBox->blockSignals( block );
 }
 
 void QgsComposerScaleBarWidget::connectUpdateSignal()
@@ -651,7 +648,7 @@ void QgsComposerScaleBarWidget::composerMapChanged( QgsComposerItem *item )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
+void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( double )
 {
   if ( !mComposerScaleBar )
   {
@@ -666,7 +663,7 @@ void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMaxWidthSpinBox_valueChanged( int )
+void QgsComposerScaleBarWidget::on_mMaxWidthSpinBox_valueChanged( double )
 {
   if ( !mComposerScaleBar )
   {

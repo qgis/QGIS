@@ -24,7 +24,7 @@
 #include "qgisapp.h"
 #include "qgshelp.h"
 
-#include <qgscoordinatereferencesystem.h>
+#include "qgscoordinatereferencesystem.h"
 
 #include <QList>
 #include "qgis_app.h"
@@ -180,9 +180,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * for the browser */
     void on_mBtnRemoveHiddenPath_clicked();
 
-
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#options" ) ); }
-
     void on_mBrowseCacheDirectory_clicked();
     void on_mClearCache_clicked();
 
@@ -240,6 +237,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void addCustomEnvVarRow( const QString &varName, const QString &varVal, const QString &varApply = QString() );
 
     void saveDefaultDatumTransformations();
+
+    void showHelp();
 
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
     void addScaleToScaleList( QListWidgetItem *newItem );

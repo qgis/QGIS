@@ -67,8 +67,6 @@ namespace QgsWms
   {
     Q_UNUSED( version );
 
-    //QgsWmsConfigParser  *configParser = getConfigParser( serverIface );
-
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
         QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
@@ -439,9 +437,6 @@ namespace QgsWms
     {
       Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
       {
-        if ( styleName.isEmpty() )
-          styleName = EMPTY_STYLE_NAME;
-
         QDomElement styleListElem = doc.createElement( QStringLiteral( "StyleList" ) );
         //only one default style in project file mode
         QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );

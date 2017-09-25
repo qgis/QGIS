@@ -20,7 +20,6 @@
 
 QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input )
   : mInput( input )
-  , mFeedback( nullptr )
   , mMaximumTileWidth( DEFAULT_MAXIMUM_TILE_WIDTH )
   , mMaximumTileHeight( DEFAULT_MAXIMUM_TILE_HEIGHT )
 {
@@ -92,8 +91,8 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   }
 
   //read data block
-  nCols = qMin( mMaximumTileWidth, pInfo.nCols - pInfo.currentCol );
-  nRows = qMin( mMaximumTileHeight, pInfo.nRows - pInfo.currentRow );
+  nCols = std::min( mMaximumTileWidth, pInfo.nCols - pInfo.currentCol );
+  nRows = std::min( mMaximumTileHeight, pInfo.nRows - pInfo.currentRow );
   QgsDebugMsgLevel( QString( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
 
   //get subrectangle

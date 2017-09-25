@@ -23,8 +23,8 @@
 #include "qgis_sip.h"
 #include <QList>
 #include <QVector>
-#include <pointset.h>
-#include <labelposition.h>
+#include "pointset.h"
+#include "labelposition.h"
 #include "qgspallabeling.h"
 #include "rtree.hpp"
 
@@ -36,7 +36,11 @@ class QgsPointXY;
 class CORE_EXPORT QgsLabelSearchTree
 {
   public:
-    QgsLabelSearchTree();
+
+    /**
+     * Constructor for QgsLabelSearchTree.
+     */
+    QgsLabelSearchTree() = default;
     ~QgsLabelSearchTree();
 
     //! QgsLabelSearchTree cannot be copied.

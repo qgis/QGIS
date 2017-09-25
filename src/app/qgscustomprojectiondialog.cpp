@@ -47,6 +47,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCustomProjectionDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/CustomProjection/geometry" ) ).toByteArray() );
@@ -364,7 +365,6 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
     teParameters->setPlainText( QLatin1String( "" ) );
     return;
   }
-  return;
 }
 
 void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
@@ -531,3 +531,7 @@ QString QgsCustomProjectionDialog::quotedValue( QString value )
   return value.prepend( '\'' ).append( '\'' );
 }
 
+void QgsCustomProjectionDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
+}

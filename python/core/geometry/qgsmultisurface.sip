@@ -21,7 +21,10 @@ class QgsMultiSurface: QgsGeometryCollection
   public:
     QgsMultiSurface();
     virtual QString geometryType() const;
+
     virtual QgsMultiSurface *clone() const /Factory/;
+
+    virtual QgsMultiSurface *toCurveType() const /Factory/;
 
 
     virtual bool fromWkt( const QString &wkt );
@@ -35,14 +38,19 @@ class QgsMultiSurface: QgsGeometryCollection
 
 
 
-    virtual bool addGeometry( QgsAbstractGeometry *g )  /Transfer/;
+    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+
 %Docstring
 Adds a geometry and takes ownership. Returns true in case of success
  :rtype: bool
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

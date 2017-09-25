@@ -183,6 +183,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
       // known item types
       LayoutPage, //!< Page items
+      LayoutMap, //!< Map item
       LayoutRectangle, //!< Rectangular shape item
       LayoutEllipse, //!< Ellipse shape item
       LayoutTriangle, //!< Triangle shape item
@@ -262,23 +263,30 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 #ifndef SIP_RUN
 ///@cond TEMPORARY
 //simple item for testing
+#ifdef ANDROID
+// For some reason, the Android NDK toolchain requires this to link properly.
+// Note to self: Please try to remove this again once Qt ships their libs built with gcc-5
+class CORE_EXPORT TestLayoutItem : public QgsLayoutItem
+#else
 class TestLayoutItem : public QgsLayoutItem
+#endif
 {
+    Q_OBJECT
+
   public:
 
     TestLayoutItem( QgsLayout *layout );
     ~TestLayoutItem() {}
 
     //implement pure virtual methods
-    int type() const { return QgsLayoutItemRegistry::LayoutItem + 102; }
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr );
+    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 102; }
+    virtual QString stringType() const override { return QStringLiteral( "ItemTest" ); }
+    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
   private:
     QColor mColor;
     QgsFillSymbol *mShapeStyleSymbol = nullptr;
 };
-
-
 ///@endcond
 #endif
 

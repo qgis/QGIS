@@ -21,7 +21,7 @@ QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
   , mIsMixedValues( false )
   , mIsChanged( false )
   , mState( Default )
-  , mMenu( nullptr )
+
 {
   setFocusPolicy( Qt::StrongFocus );
 

@@ -43,7 +43,7 @@ class DropMZValues(QgisFeatureBasedAlgorithm):
     DROP_Z_VALUES = 'DROP_Z_VALUES'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -54,7 +54,7 @@ class DropMZValues(QgisFeatureBasedAlgorithm):
         return 'dropmzvalues'
 
     def displayName(self):
-        return self.tr('Drop M/Z Values')
+        return self.tr('Drop M/Z values')
 
     def outputName(self):
         return self.tr('Z/M Dropped')

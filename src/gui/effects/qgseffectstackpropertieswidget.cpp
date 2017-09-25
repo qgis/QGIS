@@ -96,7 +96,7 @@ class EffectItem : public QStandardItem
 QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent )
   : QgsPanelWidget( parent )
   , mStack( stack )
-  , mPreviewPicture( nullptr )
+
 {
 
 // TODO
@@ -297,7 +297,7 @@ void QgsEffectStackPropertiesWidget::removeEffect()
 
   mModel->invisibleRootItem()->removeRow( row );
 
-  int newSelection = qMin( row, root->rowCount() - 1 );
+  int newSelection = std::min( row, root->rowCount() - 1 );
   QModelIndex newIdx = root->child( newSelection )->index();
   mEffectsList->setCurrentIndex( newIdx );
 
@@ -363,7 +363,7 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect *newEffect )
 
 QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, Qt::WindowFlags f )
   : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
-  , mPropertiesWidget( nullptr )
+
 {
   setWindowTitle( tr( "Effect Properties" ) );
   mPropertiesWidget = new QgsEffectStackPropertiesWidget( stack, this );
@@ -386,9 +386,7 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 
 QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent, QgsPaintEffect *effect )
   : QgsPanelWidget( parent )
-  , mEnabledCheckBox( nullptr )
-  , mButton( nullptr )
-  , mPreviewPicture( nullptr )
+
 {
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );

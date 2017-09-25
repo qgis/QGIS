@@ -70,6 +70,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOfflineEditingPluginGui::showHelp );
 
   restoreState();
 
@@ -164,8 +165,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
   reject();
 }
 
-// TODO: help
-void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
+void QgsOfflineEditingPluginGui::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "plugins/plugins_offline_editing.html" ) );
 }

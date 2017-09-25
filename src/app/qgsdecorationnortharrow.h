@@ -36,8 +36,6 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     //! Constructor
     QgsDecorationNorthArrow( QObject *parent = nullptr );
 
-    virtual ~QgsDecorationNorthArrow();
-
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
     void projectRead() override;

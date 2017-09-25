@@ -28,12 +28,7 @@ QgsPaintEffect::QgsPaintEffect()
   : mEnabled( true )
   , mDrawMode( ModifyAndRender )
   , requiresQPainterDpiFix( true )
-  , mPicture( nullptr )
-  , mSourceImage( nullptr )
   , mOwnsImage( false )
-  , mPrevPainter( nullptr )
-  , mEffectPainter( nullptr )
-  , mTempPicture( nullptr )
 {
 
 }
@@ -42,12 +37,7 @@ QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
   : mEnabled( other.enabled() )
   , mDrawMode( other.drawMode() )
   , requiresQPainterDpiFix( true )
-  , mPicture( nullptr )
-  , mSourceImage( nullptr )
   , mOwnsImage( false )
-  , mPrevPainter( nullptr )
-  , mEffectPainter( nullptr )
-  , mTempPicture( nullptr )
 {
 
 }
@@ -335,7 +325,7 @@ void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
 
 QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext )
   : mRenderContext( renderContext )
-  , mEffect( nullptr )
+
 {
   mPainter = renderContext.painter();
   mPainter->save();

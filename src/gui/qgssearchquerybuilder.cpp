@@ -31,6 +31,7 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgshelp.h"
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
     QWidget *parent, Qt::WindowFlags fl )
@@ -39,8 +40,9 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
 {
   setupUi( this );
   setupListViews();
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSearchQueryBuilder::showHelp );
 
-  setWindowTitle( tr( "Search query builder" ) );
+  setWindowTitle( tr( "Search Query Builder" ) );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
@@ -453,7 +455,7 @@ void QgsSearchQueryBuilder::loadQuery()
   for ( ; attIt != attributes.constEnd(); ++attIt )
   {
     //test if attribute is there
-    if ( !mFieldMap.contains( *attIt ) )
+    if ( !mFieldMap.contains( attIt ) )
     {
       bool ok;
       QString replaceAttribute = QInputDialog::getItem( 0, tr( "Select attribute" ), tr( "There is no attribute '%1' in the current vector layer. Please select an existing attribute" ).arg( *attIt ),
@@ -488,3 +490,7 @@ void QgsSearchQueryBuilder::loadQuery()
   txtSQL->insertText( newQueryText );
 }
 
+void QgsSearchQueryBuilder::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
+}

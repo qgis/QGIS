@@ -42,13 +42,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
       Parallel
     };
 
-    enum AdvancedDigitizingMode
-    {
-      SinglePoint,
-      TwoPoints,
-      ManyPoints
-    };
-
     class CadConstraint
 {
 %Docstring
@@ -179,34 +172,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  Disables the CAD tools when hiding the dock
 %End
 
-    bool canvasPressEvent( QgsMapMouseEvent *e );
-%Docstring
- Will react on a canvas press event
-
- \param e A mouse event (may be modified)
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
-    bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
-%Docstring
- Will react on a canvas release event
-
- \param e A mouse event (may be modified)
- \param mode determines if the dock has to record one, two or many points.
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
-    bool canvasMoveEvent( QgsMapMouseEvent *e );
-%Docstring
- Will react on a canvas move event
-
- \param e A mouse event (may be modified)
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 %Docstring
  Filter key events to e.g. toggle construction mode or adapt constraints
@@ -216,22 +181,26 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  :rtype: bool
 %End
 
-    virtual bool applyConstraints( QgsMapMouseEvent *e );
+    bool applyConstraints( QgsMapMouseEvent *e );
 %Docstring
 :return: false if no solution was found (invalid constraints)
  :rtype: bool
 %End
 
+    bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
+%Docstring
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void releaseLocks( bool releaseRepeatingLocks = true );
+%Docstring
+.. versionadded:: 3.0
+%End
+
     void clear();
 %Docstring
  Clear any cached previous clicks and helper lines
-%End
-
-    QgsMapMouseEvent::SnappingMode snappingMode();
-%Docstring
- The snapping mode
- :return: Snapping mode
- :rtype: QgsMapMouseEvent.SnappingMode
 %End
 
     virtual void keyPressEvent( QKeyEvent *e );
@@ -278,6 +247,27 @@ Constraint on the Y coordinate
 %Docstring
 Constraint on a common angle
  :rtype: bool
+%End
+
+    void clearPoints();
+%Docstring
+ Removes all points from the CAD point list
+.. versionadded:: 3.0
+%End
+
+    void addPoint( const QgsPointXY &point );
+%Docstring
+ Adds point to the CAD point list
+.. versionadded:: 3.0
+%End
+
+    void setPoints( const QList<QgsPointXY> &points );
+%Docstring
+ Configures list of current CAD points
+
+ Some map tools may find it useful to override list of CAD points that is otherwise
+ automatically populated when user clicks with left mouse button on map canvas.
+.. versionadded:: 3.0
 %End
 
     QgsPointXY currentPoint( bool *exists  = 0 ) const;
@@ -339,6 +329,11 @@ return the action used to enable/disable the tools
     void disable();
 %Docstring
  Disable the widget. Normally done automatically from QgsMapToolAdvancedDigitizing.deactivate().
+%End
+
+    void updateCadPaintItem();
+%Docstring
+.. versionadded:: 3.0
 %End
 
   signals:

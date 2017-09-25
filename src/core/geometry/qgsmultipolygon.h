@@ -29,7 +29,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 {
   public:
     QgsMultiPolygonV2();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiPolygon" ); }
+    QString geometryType() const override;
     QgsMultiPolygonV2 *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
@@ -42,17 +42,35 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     QString asJSON( int precision = 17 ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiSurface
     \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsMultiPolygonV2.
+     * Should be used by qgsgeometry_cast<QgsMultiPolygonV2 *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsMultiPolygonV2 *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
+        return static_cast<const QgsMultiPolygonV2 *>( geom );
+      return nullptr;
+    }
+#endif
 
   protected:
 
-    virtual bool wktOmitChildType() const override { return true; }
+    bool wktOmitChildType() const override;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSMULTIPOLYGONV2_H

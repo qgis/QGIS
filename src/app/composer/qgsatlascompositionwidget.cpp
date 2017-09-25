@@ -59,10 +59,6 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget *parent, QgsCompos
   updateGuiElements();
 }
 
-QgsAtlasCompositionWidget::~QgsAtlasCompositionWidget()
-{
-}
-
 void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
 {
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
@@ -131,7 +127,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFilenameExpressionButton_clicked()
 
   QgsExpressionContext context = mComposition->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( atlasMap->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, QStringLiteral( "generic" ), context );
-  exprDlg.setWindowTitle( tr( "Expression based filename" ) );
+  exprDlg.setWindowTitle( tr( "Expression Based Filename" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
@@ -304,7 +300,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
 
   QgsExpressionContext context = mComposition->createExpressionContext();
   QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
-  exprDlg.setWindowTitle( tr( "Expression based filter" ) );
+  exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {

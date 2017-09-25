@@ -29,8 +29,9 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
     QgsMultiSurface();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
+    QString geometryType() const override;
     QgsMultiSurface *clone() const override SIP_FACTORY;
+    QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -43,9 +44,35 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 
 
     //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g ) override  SIP_TRANSFER;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsMultiSurface.
+     * Should be used by qgsgeometry_cast<QgsMultiSurface *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsMultiSurface *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
+
+      if ( flatType == QgsWkbTypes::MultiSurface
+           || flatType == QgsWkbTypes::MultiPolygon )
+        return static_cast<const QgsMultiSurface *>( geom );
+      return nullptr;
+    }
+#endif
+
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSMULTISURFACEV2_H

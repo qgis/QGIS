@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 
@@ -27,32 +28,48 @@
 #include "qgsglobefeaturesource.h"
 
 
-QgsGlobeFeatureSource::QgsGlobeFeatureSource( const QgsGlobeFeatureOptions &options ) :
-  mOptions( options ),
-  mLayer( 0 ),
-  mProfile( 0 )
+QgsGlobeFeatureSource::QgsGlobeFeatureSource( const QgsGlobeFeatureOptions &options )
+  : mOptions( options )
+  , mLayer( 0 )
+#if OSGEARTH_VERSION_LESS_THAN(2, 8, 0)
+  , mProfile( 0 )
+#endif
 {
 }
 
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+osgEarth::Status QgsGlobeFeatureSource::initialize( const osgDB::Options *dbOptions )
+{
+#else
 void QgsGlobeFeatureSource::initialize( const osgDB::Options *dbOptions )
 {
+#endif
   Q_UNUSED( dbOptions )
   mLayer = mOptions.layer();
 
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
-  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry ) ) );
 
   // create the profile
   osgEarth::SpatialReference *ref = osgEarth::SpatialReference::create( mLayer->crs().toWkt().toStdString() );
   if ( 0 == ref )
   {
     std::cout << "Cannot find the spatial reference" << std::endl;
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+    return osgEarth::Status( osgEarth::Status::ConfigurationError );
+#else
     return;
+#endif
   }
   QgsRectangle ext = mLayer->extent();
   osgEarth::GeoExtent geoext( ref, ext.xMinimum(), ext.yMinimum(), ext.xMaximum(), ext.yMaximum() );
-  mProfile = new osgEarth::Features::FeatureProfile( geoext );
   mSchema = QgsGlobeFeatureUtils::schemaForFields( mLayer->pendingFields() );
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+  setFeatureProfile( new osgEarth::Features::FeatureProfile( geoext ) );
+  return osgEarth::Status( osgEarth::Status::NoError );
+#else
+  mProfile = new osgEarth::Features::FeatureProfile( geoext );
+#endif
 }
 
 osgEarth::Features::FeatureCursor *QgsGlobeFeatureSource::createFeatureCursor( const osgEarth::Symbology::Query &query )

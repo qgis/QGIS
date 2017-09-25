@@ -23,7 +23,6 @@
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mMinMaxWidget( nullptr )
   , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );
@@ -144,7 +143,7 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double
   QgsDebugMsg( QString( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   mDisableMinMaxWidgetRefresh = true;
-  if ( qIsNaN( min ) )
+  if ( std::isnan( min ) )
   {
     mMinLineEdit->clear();
   }
@@ -153,7 +152,7 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double
     mMinLineEdit->setText( QString::number( min ) );
   }
 
-  if ( qIsNaN( max ) )
+  if ( std::isnan( max ) )
   {
     mMaxLineEdit->clear();
   }

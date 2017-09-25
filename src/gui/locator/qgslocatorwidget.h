@@ -22,12 +22,10 @@
 #include "qgslocatorfilter.h"
 #include "qgsfloatingwidget.h"
 #include <QWidget>
-#include <QAbstractListModel>
 #include <QTreeView>
 #include <QFocusEvent>
 #include <QHeaderView>
 #include <QTimer>
-#include <QSortFilterProxyModel>
 
 class QgsLocator;
 class QgsFilterLineEdit;
@@ -130,6 +128,8 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
 class QgsLocatorFilterFilter : public QgsLocatorFilter
 {
+    Q_OBJECT
+
   public:
 
     QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
@@ -143,88 +143,6 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
   private:
 
     QgsLocatorWidget *mLocator = nullptr;
-};
-
-/**
- * \class QgsLocatorModel
- * \ingroup gui
- * An abstract list model for displaying the results in a QgsLocatorWidget.
- * \since QGIS 3.0
- */
-class QgsLocatorModel : public QAbstractTableModel
-{
-    Q_OBJECT
-
-  public:
-
-    //! Custom model roles
-    enum Role
-    {
-      ResultDataRole = Qt::UserRole + 1, //!< QgsLocatorResult data
-      ResultTypeRole,
-      ResultFilterPriorityRole,
-      ResultScoreRole,
-      ResultFilterNameRole,
-    };
-
-    enum columnCount
-    {
-      Name = 0,
-      Description
-    };
-
-    /**
-     * Constructor for QgsLocatorModel.
-     */
-    QgsLocatorModel( QObject *parent = nullptr );
-
-    /**
-     * Resets the model and clears all existing results.
-     * \see deferredClear()
-     */
-    void clear();
-
-    /**
-     * Resets the model and clears all existing results after a short delay, or whenever the next result is added to the model
-     * (whichever occurs first). Using deferredClear() instead of clear() can avoid the visually distracting frequent clears
-     * which may occur if the model is being updated quickly multiple times as a result of users typing in a search query.
-     * \see deferredClear()
-     */
-    void deferredClear();
-
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-
-  public slots:
-
-    /**
-     * Adds a new \a result to the model.
-     */
-    void addResult( const QgsLocatorResult &result );
-
-  private:
-
-    struct Entry
-    {
-      QgsLocatorResult result;
-      QString filterTitle;
-      QgsLocatorFilter *filter = nullptr;
-    };
-
-    QList<Entry> mResults;
-    QSet<QString> mFoundResultsFromFilterNames;
-    bool mDeferredClear = false;
-    QTimer mDeferredClearTimer;
-};
-
-class QgsLocatorProxyModel : public QSortFilterProxyModel
-{
-  public:
-
-    explicit QgsLocatorProxyModel( QObject *parent = nullptr );
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
 
 /**

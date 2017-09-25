@@ -15,35 +15,35 @@ SET(QGIS_CORE_SRCS
   gps/time.c
   gps/tok.c
 
-  symbology-ng/qgs25drenderer.cpp
-  symbology-ng/qgsarrowsymbollayer.cpp
-  symbology-ng/qgscategorizedsymbolrenderer.cpp
-  symbology-ng/qgscolorbrewerpalette.cpp
-  symbology-ng/qgscptcityarchive.cpp
-  symbology-ng/qgsellipsesymbollayer.cpp
-  symbology-ng/qgsfillsymbollayer.cpp
-  symbology-ng/qgsgeometrygeneratorsymbollayer.cpp
-  symbology-ng/qgsgraduatedsymbolrenderer.cpp
-  symbology-ng/qgsheatmaprenderer.cpp
-  symbology-ng/qgsinvertedpolygonrenderer.cpp
-  symbology-ng/qgslegendsymbolitem.cpp
-  symbology-ng/qgslinesymbollayer.cpp
-  symbology-ng/qgsmarkersymbollayer.cpp
-  symbology-ng/qgsnullsymbolrenderer.cpp
-  symbology-ng/qgspointclusterrenderer.cpp
-  symbology-ng/qgspointdisplacementrenderer.cpp
-  symbology-ng/qgspointdistancerenderer.cpp
-  symbology-ng/qgsrenderer.cpp
-  symbology-ng/qgsrendererregistry.cpp
-  symbology-ng/qgsrulebasedrenderer.cpp
-  symbology-ng/qgssinglesymbolrenderer.cpp
-  symbology-ng/qgsstyle.cpp
-  symbology-ng/qgssvgcache.cpp
-  symbology-ng/qgssymbollayer.cpp
-  symbology-ng/qgssymbollayerregistry.cpp
-  symbology-ng/qgssymbollayerutils.cpp
-  symbology-ng/qgssymbol.cpp
-  symbology-ng/qgsvectorfieldsymbollayer.cpp
+  symbology/qgs25drenderer.cpp
+  symbology/qgsarrowsymbollayer.cpp
+  symbology/qgscategorizedsymbolrenderer.cpp
+  symbology/qgscolorbrewerpalette.cpp
+  symbology/qgscptcityarchive.cpp
+  symbology/qgsellipsesymbollayer.cpp
+  symbology/qgsfillsymbollayer.cpp
+  symbology/qgsgeometrygeneratorsymbollayer.cpp
+  symbology/qgsgraduatedsymbolrenderer.cpp
+  symbology/qgsheatmaprenderer.cpp
+  symbology/qgsinvertedpolygonrenderer.cpp
+  symbology/qgslegendsymbolitem.cpp
+  symbology/qgslinesymbollayer.cpp
+  symbology/qgsmarkersymbollayer.cpp
+  symbology/qgsnullsymbolrenderer.cpp
+  symbology/qgspointclusterrenderer.cpp
+  symbology/qgspointdisplacementrenderer.cpp
+  symbology/qgspointdistancerenderer.cpp
+  symbology/qgsrenderer.cpp
+  symbology/qgsrendererregistry.cpp
+  symbology/qgsrulebasedrenderer.cpp
+  symbology/qgssinglesymbolrenderer.cpp
+  symbology/qgsstyle.cpp
+  symbology/qgssvgcache.cpp
+  symbology/qgssymbollayer.cpp
+  symbology/qgssymbollayerregistry.cpp
+  symbology/qgssymbollayerutils.cpp
+  symbology/qgssymbol.cpp
+  symbology/qgsvectorfieldsymbollayer.cpp
 
   simplify/effectivearea.cpp
 
@@ -73,6 +73,7 @@ SET(QGIS_CORE_SRCS
 
   metadata/qgslayermetadata.cpp
   metadata/qgslayermetadatavalidator.cpp
+  metadata/qgslayermetadataformatter.cpp
 
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
@@ -92,6 +93,10 @@ SET(QGIS_CORE_SRCS
   expression/qgsexpressionnodeimpl.cpp
   expression/qgsexpressionfunction.cpp
   expression/qgsexpressionutils.cpp
+
+  locator/qgslocator.cpp
+  locator/qgslocatorfilter.cpp
+  locator/qgslocatormodel.cpp
 
   processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
@@ -140,7 +145,6 @@ SET(QGIS_CORE_SRCS
   qgscolorschemeregistry.cpp
   qgsconditionalstyle.cpp
   qgscontextaction.cpp
-  qgscontexthelp.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscoordinatetransform_p.cpp
@@ -298,6 +302,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerrenderer.cpp
   qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
+  qgsvectorlayerundopassthroughcommand.cpp
   qgsvectorlayerutils.cpp
   qgsvectorsimplifymethod.cpp
   qgsvirtuallayerdefinition.cpp
@@ -306,6 +311,8 @@ SET(QGIS_CORE_SRCS
   qgsxmlutils.cpp
   qgssettings.cpp
   qgsstacktrace.cpp
+  qgsarchive.cpp
+  qgsziputils.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
@@ -352,16 +359,26 @@ SET(QGIS_CORE_SRCS
 
   layout/qgslayout.cpp
   layout/qgslayoutcontext.cpp
+  layout/qgslayoutgridsettings.cpp
+  layout/qgslayoutguidecollection.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemmap.cpp
+  layout/qgslayoutitempage.cpp
   layout/qgslayoutitemregistry.cpp
   layout/qgslayoutitemshape.cpp
+  layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutobject.cpp
+  layout/qgslayoutpagecollection.cpp
+  layout/qgslayoutserializableobject.cpp
+  layout/qgslayoutsnapper.cpp
+  layout/qgslayoutundocommand.cpp
+  layout/qgslayoutundostack.cpp
   layout/qgslayoututils.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
+  layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsize.cpp
 
   pal/costcalculator.cpp
@@ -442,11 +459,11 @@ SET(QGIS_CORE_SRCS
   geometry/qgspoint.cpp
   geometry/qgspolygon.cpp
   geometry/qgsrectangle.cpp
+  geometry/qgsreferencedgeometry.cpp
   geometry/qgsregularpolygon.cpp
   geometry/qgstriangle.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
-
 
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
@@ -456,7 +473,9 @@ SET(QGIS_CORE_SRCS
   fieldformatter/qgsvaluemapfieldformatter.cpp
   fieldformatter/qgsvaluerelationfieldformatter.cpp
 
-  ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
+  geocms/geonode/qgsgeonodeconnection.cpp
+  geocms/geonode/qgsgeonoderequest.cpp
+
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
   qgsuserprofile.cpp
@@ -474,14 +493,6 @@ ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
   COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
   DEPENDS ${JSON_HELP_FILES}
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-)
-
-FILE(GLOB CONTEXT_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/context_help/*")
-ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp
-  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_contexthelp.py ${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp
-  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgscontexthelp_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
-  DEPENDS ${CONTEXT_HELP_FILES}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
@@ -544,15 +555,19 @@ ELSE(NOT MSVC)
     pal/feature.cpp
     pal/pointset.cpp
     PROPERTIES COMPILE_FLAGS -wd4702)
+  # -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+  SET_SOURCE_FILES_PROPERTIES(
+    qgsstacktrace.cpp
+    PROPERTIES COMPILE_FLAGS -wd4091)
 ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
+  qgsactionmanager.h
   qgsactionscoperegistry.h
   qgsanimatedicon.h
   qgsbrowsermodel.h
   qgscontextaction.h
-  qgscontexthelp.h
   qgscoordinatereferencesystem.h
   qgscredentials.h
   qgsdataitem.h
@@ -661,18 +676,28 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
+  locator/qgslocator.h
+  locator/qgslocatorfilter.h
+  locator/qgslocatormodel.h
+
+  processing/qgsnativealgorithms.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
+  processing/models/qgsprocessingmodelalgorithm.h
 
   providers/memory/qgsmemoryprovider.h
 
   raster/qgsrasterfilewritertask.h
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
+  raster/qgsrasterinterface.h
+  raster/qgsrasterlayerrenderer.h
 
   geometry/qgspoint.h
+
+  geocms/geonode/qgsgeonoderequest.h
 
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
@@ -680,15 +705,18 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
+  layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemmap.h
+  layout/qgslayoutitempage.h
   layout/qgslayoutitemregistry.h
   layout/qgslayoutitemshape.h
+  layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
 
-  symbology-ng/qgscptcityarchive.h
-  symbology-ng/qgssvgcache.h
-  symbology-ng/qgsstyle.h
+  symbology/qgscptcityarchive.h
+  symbology/qgssvgcache.h
+  symbology/qgsstyle.h
 
   layertree/qgslayertree.h
   layertree/qgslayertreegroup.h
@@ -697,6 +725,7 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreemodellegendnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
+
   qgsuserprofilemanager.h
 )
 
@@ -766,7 +795,6 @@ SET(QGIS_CORE_HDRS
   qgscolorscheme.h
   qgscolorschemeregistry.h
   qgsconnectionpool.h
-  qgscontexthelp.h
   qgsconditionalstyle.h
   qgscoordinatetransform.h
   qgscoordinateutils.h
@@ -865,7 +893,6 @@ SET(QGIS_CORE_HDRS
   qgsstatisticalsummary.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
-  qgstestutils.h
   qgstextlabelfeature.h
   qgstextrenderer.h
   qgstextrenderer_p.h
@@ -884,12 +911,15 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerlabeling.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
+  qgsvectorlayerundopassthroughcommand.h
   qgsvectorlayerutils.h
   qgsvectorsimplifymethod.h
   qgsvirtuallayerdefinition.h
   qgsvirtuallayerdefinitionutils.h
   qgsmapthemecollection.h
   qgsxmlutils.h
+  qgsarchive.h
+  qgsziputils.h
   qgsvector.h
   qgslocalec.h
 
@@ -929,24 +959,29 @@ SET(QGIS_CORE_HDRS
   composer/qgspaperitem.h
 
   layout/qgslayoutcontext.h
+  layout/qgslayoutgridsettings.h
+  layout/qgslayoutitemundocommand.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
+  layout/qgslayoutserializableobject.h
   layout/qgslayoutsize.h
+  layout/qgslayoutsnapper.h
+  layout/qgslayoutundocommand.h
+  layout/qgslayoutundostack.h
   layout/qgslayoututils.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
+  metadata/qgslayermetadataformatter.h
 
-  processing/qgsnativealgorithms.h
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
   processing/qgsprocessingcontext.h
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameters.h
   processing/qgsprocessingutils.h
-  processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h
   processing/models/qgsprocessingmodelchildparametersource.h
   processing/models/qgsprocessingmodelcomponent.h
@@ -976,7 +1011,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterfilewriter.h
   raster/qgsrasterhistogram.h
   raster/qgsrasteridentifyresult.h
-  raster/qgsrasterinterface.h
   raster/qgsrasteriterator.h
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
@@ -1003,33 +1037,35 @@ SET(QGIS_CORE_HDRS
   scalebar/qgssingleboxscalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
-  symbology-ng/qgs25drenderer.h
-  symbology-ng/qgscategorizedsymbolrenderer.h
-  symbology-ng/qgscolorbrewerpalette.h
-  symbology-ng/qgsellipsesymbollayer.h
-  symbology-ng/qgsfillsymbollayer.h
-  symbology-ng/qgsgraduatedsymbolrenderer.h
-  symbology-ng/qgslegendsymbolitem.h
-  symbology-ng/qgslinesymbollayer.h
-  symbology-ng/qgsmarkersymbollayer.h
-  symbology-ng/qgspointclusterrenderer.h
-  symbology-ng/qgspointdisplacementrenderer.h
-  symbology-ng/qgspointdistancerenderer.h
-  symbology-ng/qgsrenderer.h
-  symbology-ng/qgsrendererregistry.h
-  symbology-ng/qgsrulebasedrenderer.h
-  symbology-ng/qgssinglesymbolrenderer.h
-  symbology-ng/qgsheatmaprenderer.h
-  symbology-ng/qgsinvertedpolygonrenderer.h
-  symbology-ng/qgsnullsymbolrenderer.h
-  symbology-ng/qgssymbollayer.h
-  symbology-ng/qgssymbollayerregistry.h
-  symbology-ng/qgssymbollayerutils.h
-  symbology-ng/qgssymbol.h
-  symbology-ng/qgsvectorfieldsymbollayer.h
-  symbology-ng/qgsgeometrygeneratorsymbollayer.h
+  symbology/qgs25drenderer.h
+  symbology/qgscategorizedsymbolrenderer.h
+  symbology/qgscolorbrewerpalette.h
+  symbology/qgsellipsesymbollayer.h
+  symbology/qgsfillsymbollayer.h
+  symbology/qgsgraduatedsymbolrenderer.h
+  symbology/qgslegendsymbolitem.h
+  symbology/qgslinesymbollayer.h
+  symbology/qgsmarkersymbollayer.h
+  symbology/qgspointclusterrenderer.h
+  symbology/qgspointdisplacementrenderer.h
+  symbology/qgspointdistancerenderer.h
+  symbology/qgsrenderer.h
+  symbology/qgsrendererregistry.h
+  symbology/qgsrulebasedrenderer.h
+  symbology/qgssinglesymbolrenderer.h
+  symbology/qgsheatmaprenderer.h
+  symbology/qgsinvertedpolygonrenderer.h
+  symbology/qgsnullsymbolrenderer.h
+  symbology/qgssymbollayer.h
+  symbology/qgssymbollayerregistry.h
+  symbology/qgssymbollayerutils.h
+  symbology/qgssymbol.h
+  symbology/qgsvectorfieldsymbollayer.h
+  symbology/qgsgeometrygeneratorsymbollayer.h
 
   layertree/qgslayertreeutils.h
+
+  locator/qgslocatorcontext.h
 
   geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
@@ -1055,6 +1091,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsmultisurface.h
   geometry/qgspolygon.h
   geometry/qgsrectangle.h
+  geometry/qgsreferencedgeometry.h
   geometry/qgsregularpolygon.h
   geometry/qgstriangle.h
   geometry/qgssurface.h
@@ -1068,6 +1105,8 @@ SET(QGIS_CORE_HDRS
   fieldformatter/qgsrelationreferencefieldformatter.h
   fieldformatter/qgsvaluemapfieldformatter.h
   fieldformatter/qgsvaluerelationfieldformatter.h
+
+  geocms/geonode/qgsgeonodeconnection.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
@@ -1083,6 +1122,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${LIBZIP_INCLUDE_DIR}
   annotations
   auth
   composer
@@ -1091,8 +1131,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   fieldformatter
   geometry
+  geocms
+  geocms/geonode
   layertree
   layout
+  locator
   metadata
   pal
   processing
@@ -1102,11 +1145,12 @@ INCLUDE_DIRECTORIES(
   raster
   renderer
   scalebar
-  symbology-ng
+  symbology
   gps/qextserialport
   metadata
 )
 INCLUDE_DIRECTORIES(SYSTEM
+  ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -1121,13 +1165,13 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 #for PAL classes
 IF (WIN32)
-    ADD_DEFINITIONS("-D_HAVE_WINDOWS_H_")
+    ADD_DEFINITIONS(-D_HAVE_WINDOWS_H_)
 ELSE (WIN32)
-    ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
+    ADD_DEFINITIONS(-D_HAVE_PTHREAD_)
 ENDIF (WIN32)
 
 # Test data dir for QgsRenderChecker
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
+ADD_DEFINITIONS(-DTEST_DATA_DIR="${TEST_DATA_DIR}")
 
 #############################################################
 # qgis_core library
@@ -1216,6 +1260,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${EXPAT_LIBRARY}
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
+  ${LIBZIP_LIBRARY}
 )
 
 IF (Qt5Positioning_FOUND)

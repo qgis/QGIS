@@ -98,7 +98,7 @@ void QgsScaleComboBox::showPopup()
   {
     parts = itemText( i ).split( ':' );
     nextScale = parts.at( 1 ).toLong( &ok );
-    delta = qAbs( currScale - nextScale );
+    delta = std::labs( currScale - nextScale );
     if ( delta < min )
     {
       min = delta;
@@ -185,11 +185,11 @@ QString QgsScaleComboBox::toString( double scale )
   }
   else if ( scale <= 1 )
   {
-    return QStringLiteral( "%1:1" ).arg( QLocale::system().toString( qRound( 1.0 / scale ) ) );
+    return QStringLiteral( "%1:1" ).arg( QLocale::system().toString( static_cast< int >( std::round( 1.0 / scale ) ) ) );
   }
   else
   {
-    return QStringLiteral( "1:%1" ).arg( QLocale::system().toString( qRound( scale ) ) );
+    return QStringLiteral( "1:%1" ).arg( QLocale::system().toString( static_cast< int >( std::round( scale ) ) ) );
   }
 }
 

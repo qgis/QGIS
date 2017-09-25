@@ -26,8 +26,6 @@
 #include "qgsrasterblock.h"
 #include "qgslogger.h"
 
-#include "qmath.h"
-
 #include <QFile>
 
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )
@@ -309,7 +307,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         double variance = sumSquared / featureStats.values.count();
         if ( mStatistics & QgsZonalStatistics::StDev )
         {
-          double stdev = qPow( variance, 0.5 );
+          double stdev = std::pow( variance, 0.5 );
           changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
         }
         if ( mStatistics & QgsZonalStatistics::Variance )
@@ -497,11 +495,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
 
 bool QgsZonalStatistics::validPixel( float value ) const
 {
-  if ( value == mInputNodataValue || qIsNaN( value ) )
-  {
-    return false;
-  }
-  return true;
+  return !( value == mInputNodataValue || std::isnan( value ) );
 }
 
 QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )

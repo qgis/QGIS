@@ -112,7 +112,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
 
     helptemplate = string.Template("""<h3>$name function</h3><br>$doc""")
     name = kwargs.get('name', function.__name__)
-    helptext = function.__doc__ or ''
+    helptext = kwargs.get('helpText') or function.__doc__ or ''
     helptext = helptext.strip()
     expandargs = False
 

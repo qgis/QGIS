@@ -647,3 +647,7 @@ class FeatureSourceTestCase(object):
     def testMaximumValue(self):
         self.assertEqual(self.source.maximumValue(1), 400)
         self.assertEqual(self.source.maximumValue(2), 'Pear')
+
+    def testAllFeatureIds(self):
+        ids = set([f.id() for f in self.source.getFeatures()])
+        self.assertEqual(set(self.source.allFeatureIds()), ids)

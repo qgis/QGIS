@@ -26,7 +26,6 @@
 **/
 #include "evisdatabaseconnectiongui.h"
 
-#include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
 #include <QMessageBox>
@@ -50,6 +49,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &eVisDatabaseConnectionGui::showHelp );
 
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "eVis/db-geometry" ) ).toByteArray() );
@@ -115,7 +115,7 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString &layerName, co
     url.addQueryItem( QStringLiteral( "delimiterType" ), QStringLiteral( "regexp" ) );
     url.addQueryItem( QStringLiteral( "xField" ), xCoordinate );
     url.addQueryItem( QStringLiteral( "yField" ), yCoordinate );
-    emit drawVectorLayer( QString::fromAscii( url.toEncoded() ), layerName, QStringLiteral( "delimitedtext" ) );
+    emit drawVectorLayer( QString::fromLatin1( url.toEncoded() ), layerName, QStringLiteral( "delimitedtext" ) );
     mTempOutputFileList->last()->close();
   }
 }
@@ -534,4 +534,9 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
       teditConsole->append( tr( "Error: A database connection is not currently established" ) );
     }
   }
+}
+
+void eVisDatabaseConnectionGui::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#database-connection" ) );
 }

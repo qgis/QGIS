@@ -29,10 +29,10 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingOutputRasterLayer)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
@@ -41,18 +41,19 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class AssignProjection(GdalAlgorithm):
-
     INPUT = 'INPUT'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterCrs(self.CRS,
-                                       self.tr('Desired CRS'), ''))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Layer with projection'), True))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer'), optional=False))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS,
+                                                    self.tr('Desired CRS')))
+
+        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Layer with projection')))
 
     def name(self):
         return 'assignprojection'
@@ -66,10 +67,11 @@ class AssignProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self, parameters):
-        fileName = self.getParameterValue(self.INPUT)
-        crs = self.getParameterValue(self.CRS)
-        output = self.getOutputValue(self.OUTPUT)  # NOQA
+    def getConsoleCommands(self, parameters, context, feedback):
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        fileName = inLayer.source()
+
+        crs = self.parameterAsCrs(parameters, self.CRS, context).authid()
 
         arguments = []
         arguments.append('-a_srs')

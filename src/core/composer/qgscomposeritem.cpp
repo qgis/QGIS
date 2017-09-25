@@ -48,9 +48,6 @@ QgsComposerItem::QgsComposerItem( QgsComposition *composition, bool manageZValue
   : QgsComposerObject( composition )
   , QGraphicsRectItem( nullptr )
   , mRemovedFromComposition( false )
-  , mBoundingResizeRectangle( nullptr )
-  , mHAlignSnapItem( nullptr )
-  , mVAlignSnapItem( nullptr )
   , mFrame( false )
   , mBackground( true )
   , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
@@ -75,9 +72,6 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
   : QgsComposerObject( composition )
   , QGraphicsRectItem( 0, 0, width, height, nullptr )
   , mRemovedFromComposition( false )
-  , mBoundingResizeRectangle( nullptr )
-  , mHAlignSnapItem( nullptr )
-  , mVAlignSnapItem( nullptr )
   , mFrame( false )
   , mFrameColor( QColor( 0, 0, 0 ) )
   , mBackground( true )
@@ -1012,7 +1006,7 @@ void QgsComposerItem::setItemRotation( const double r, const bool adjustPosition
   mItemRotation = r;
   if ( mItemRotation >= 360.0 || mItemRotation <= -360.0 )
   {
-    mItemRotation = fmod( mItemRotation, 360.0 );
+    mItemRotation = std::fmod( mItemRotation, 360.0 );
   }
 
   QgsExpressionContext context = createExpressionContext();

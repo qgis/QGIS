@@ -37,7 +37,7 @@ QgsInterpolator::QgsInterpolator()
 
 int QgsInterpolator::cacheBaseData()
 {
-  if ( mLayerData.size() < 1 )
+  if ( mLayerData.empty() )
   {
     return 0;
   }
@@ -82,7 +82,7 @@ int QgsInterpolator::cacheBaseData()
           continue;
         }
         attributeValue = attributeVariant.toDouble( &attributeConversionOk );
-        if ( !attributeConversionOk || qIsNaN( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
+        if ( !attributeConversionOk || std::isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
         {
           continue;
         }

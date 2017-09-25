@@ -9,15 +9,12 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
-from future import standard_library
+
 import os
 import tempfile
 from qgis.core import (QgsSettings,)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QSettings
-
-standard_library.install_aliases()
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '02/02/2017'
@@ -199,6 +196,33 @@ class TestQgsSettings(unittest.TestCase):
         self.settings.endGroup()
         self.assertEqual('qgisrocks-1', self.settings.value('testqgissettings/names/name1'))
         self.assertEqual('qgisrocks-4', self.settings.value('testqgissettings/names/name4'))
+
+    def test_global_groups(self):
+        self.assertEqual(self.settings.allKeys(), [])
+        self.assertEqual(self.globalsettings.allKeys(), [])
+
+        self.addToDefaults('testqgissettings/foo/first', 'qgis')
+        self.addToDefaults('testqgissettings/foo/last', 'rocks')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(['foo'], self.settings.childGroups())
+        self.assertEqual(['foo'], self.settings.globalChildGroups())
+        self.settings.endGroup()
+
+        self.settings.setValue('testqgissettings/bar/first', 'qgis')
+        self.settings.setValue('testqgissettings/bar/last', 'rocks')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(sorted(['bar', 'foo']), sorted(self.settings.childGroups()))
+        self.assertEqual(['foo'], self.settings.globalChildGroups())
+        self.settings.endGroup()
+
+        self.globalsettings.remove('testqgissettings/foo')
+
+        self.settings.beginGroup('testqgissettings')
+        self.assertEqual(['bar'], self.settings.childGroups())
+        self.assertEqual([], self.settings.globalChildGroups())
+        self.settings.endGroup()
 
     def test_array(self):
         self.assertEqual(self.settings.allKeys(), [])

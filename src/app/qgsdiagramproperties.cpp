@@ -88,12 +88,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mScaleRangeWidget->setMapCanvas( mMapCanvas );
   mSizeFieldExpressionWidget->registerExpressionContextGenerator( this );
 
-  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "symbology" ) );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "Transparent background" ) );
-  mDiagramPenColorButton->setColorDialogTitle( tr( "Select pen color" ) );
+  mDiagramPenColorButton->setColorDialogTitle( tr( "Select Pen Color" ) );
   mDiagramPenColorButton->setAllowOpacity( true );
   mDiagramPenColorButton->setContext( QStringLiteral( "symbology" ) );
   mDiagramPenColorButton->setShowNoColor( true );
@@ -119,31 +119,51 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     mDiagramFrame->setEnabled( false );
   }
 
-  //insert placement options
-  mPlacementComboBox->blockSignals( true );
+  // set placement methods page based on geometry type
+
   switch ( layerType )
   {
     case QgsWkbTypes::PointGeometry:
-      mPlacementComboBox->addItem( tr( "Around Point" ), QgsDiagramLayerSettings::AroundPoint );
-      mPlacementComboBox->addItem( tr( "Over Point" ), QgsDiagramLayerSettings::OverPoint );
+      stackedPlacement->setCurrentWidget( pagePoint );
       mLinePlacementFrame->setVisible( false );
       break;
     case QgsWkbTypes::LineGeometry:
-      mPlacementComboBox->addItem( tr( "Around Line" ), QgsDiagramLayerSettings::Line );
-      mPlacementComboBox->addItem( tr( "Over Line" ), QgsDiagramLayerSettings::Horizontal );
+      stackedPlacement->setCurrentWidget( pageLine );
       mLinePlacementFrame->setVisible( true );
       break;
     case QgsWkbTypes::PolygonGeometry:
-      mPlacementComboBox->addItem( tr( "Around Centroid" ), QgsDiagramLayerSettings::AroundPoint );
-      mPlacementComboBox->addItem( tr( "Over Centroid" ), QgsDiagramLayerSettings::OverPoint );
-      mPlacementComboBox->addItem( tr( "Perimeter" ), QgsDiagramLayerSettings::Line );
-      mPlacementComboBox->addItem( tr( "Inside Polygon" ), QgsDiagramLayerSettings::Horizontal );
+      stackedPlacement->setCurrentWidget( pagePolygon );
       mLinePlacementFrame->setVisible( false );
       break;
-    default:
+    case QgsWkbTypes::NullGeometry:
+    case QgsWkbTypes::UnknownGeometry:
       break;
   }
-  mPlacementComboBox->blockSignals( false );
+
+  //insert placement options
+  // setup point placement button group
+  mPlacePointBtnGrp = new QButtonGroup( this );
+  mPlacePointBtnGrp->addButton( radAroundPoint );
+  mPlacePointBtnGrp->addButton( radOverPoint );
+  mPlacePointBtnGrp->setExclusive( true );
+  connect( mPlacePointBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
+
+  // setup line placement button group
+  mPlaceLineBtnGrp = new QButtonGroup( this );
+  mPlaceLineBtnGrp->addButton( radAroundLine );
+  mPlaceLineBtnGrp->addButton( radOverLine );
+  mPlaceLineBtnGrp->setExclusive( true );
+  connect( mPlaceLineBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
+
+  // setup polygon placement button group
+  mPlacePolygonBtnGrp = new QButtonGroup( this );
+  mPlacePolygonBtnGrp->addButton( radAroundCentroid );
+  mPlacePolygonBtnGrp->addButton( radOverCentroid );
+  mPlacePolygonBtnGrp->addButton( radPolygonPerimeter );
+  mPlacePolygonBtnGrp->addButton( radInsidePolygon );
+  mPlacePolygonBtnGrp->setExclusive( true );
+  connect( mPlacePolygonBtnGrp, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
+
 
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
   mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
@@ -216,18 +236,21 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     switch ( layerType )
     {
       case QgsWkbTypes::PointGeometry:
-        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::AroundPoint ) );
+        radAroundPoint->setChecked( true );
         break;
+
       case QgsWkbTypes::LineGeometry:
-        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::Line ) );
+        radAroundLine->setChecked( true );
         chkLineAbove->setChecked( true );
         chkLineBelow->setChecked( false );
         chkLineOn->setChecked( false );
         chkLineOrientationDependent->setChecked( false );
         break;
+
       case QgsWkbTypes::PolygonGeometry:
-        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::AroundPoint ) );
+        radAroundCentroid->setChecked( true );
         break;
+
       case QgsWkbTypes::UnknownGeometry:
       case QgsWkbTypes::NullGeometry:
         break;
@@ -370,13 +393,39 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramDistanceSpinBox->setValue( dls->distance() );
       mPrioritySlider->setValue( dls->priority() );
       mZIndexSpinBox->setValue( dls->zIndex() );
-      mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement() ) );
+
+      switch ( dls->placement() )
+      {
+        case QgsDiagramLayerSettings::AroundPoint:
+          radAroundPoint->setChecked( true );
+          radAroundCentroid->setChecked( true );
+          break;
+
+        case QgsDiagramLayerSettings::OverPoint:
+          radOverPoint->setChecked( true );
+          radOverCentroid->setChecked( true );
+          break;
+
+        case QgsDiagramLayerSettings::Line:
+          radAroundLine->setChecked( true );
+          radPolygonPerimeter->setChecked( true );
+          break;
+
+        case QgsDiagramLayerSettings::Horizontal:
+          radOverLine->setChecked( true );
+          radInsidePolygon->setChecked( true );
+          break;
+
+        default:
+          break;
+      }
 
       chkLineAbove->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::AboveLine );
       chkLineBelow->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::BelowLine );
       chkLineOn->setChecked( dls->linePlacementFlags() & QgsDiagramLayerSettings::OnLine );
       if ( !( dls->linePlacementFlags() & QgsDiagramLayerSettings::MapOrientation ) )
         chkLineOrientationDependent->setChecked( true );
+      updatePlacementWidgets();
 
       mShowAllCheckBox->setChecked( dls->showAllDiagrams() );
 
@@ -593,7 +642,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
       while ( features.nextFeature( *&feature ) )
       {
         context.setFeature( feature );
-        maxValue = qMax( maxValue, exp.evaluate( &context ).toFloat() );
+        maxValue = std::max( maxValue, exp.evaluate( &context ).toFloat() );
       }
     }
     else
@@ -689,7 +738,7 @@ void QgsDiagramProperties::apply()
             bool ok = false;
             double val = provider->maximumValue( fld ).toDouble( &ok );
             if ( ok )
-              maxVal = qMax( maxVal, val );
+              maxVal = std::max( maxVal, val );
           }
         }
       }
@@ -821,7 +870,32 @@ void QgsDiagramProperties::apply()
   dls.setPriority( mPrioritySlider->value() );
   dls.setZIndex( mZIndexSpinBox->value() );
   dls.setShowAllDiagrams( mShowAllCheckBox->isChecked() );
-  dls.setPlacement( ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->currentData().toInt() );
+
+  QWidget *curWdgt = stackedPlacement->currentWidget();
+  if ( ( curWdgt == pagePoint && radAroundPoint->isChecked() )
+       || ( curWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
+  {
+    dls.setPlacement( QgsDiagramLayerSettings::AroundPoint );
+  }
+  else if ( ( curWdgt == pagePoint && radOverPoint->isChecked() )
+            || ( curWdgt == pagePolygon && radOverCentroid->isChecked() ) )
+  {
+    dls.setPlacement( QgsDiagramLayerSettings::OverPoint );
+  }
+  else if ( ( curWdgt == pageLine && radAroundLine->isChecked() )
+            || ( curWdgt == pagePolygon && radPolygonPerimeter->isChecked() ) )
+  {
+    dls.setPlacement( QgsDiagramLayerSettings::Line );
+  }
+  else if ( ( curWdgt == pageLine && radOverLine->isChecked() )
+            || ( curWdgt == pagePolygon && radInsidePolygon->isChecked() ) )
+  {
+    dls.setPlacement( QgsDiagramLayerSettings::Horizontal );
+  }
+  else
+  {
+    qFatal( "Invalid settings" );
+  }
 
   QgsDiagramLayerSettings::LinePlacementFlags flags = 0;
   if ( chkLineAbove->isChecked() )
@@ -851,7 +925,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
           << QgsExpressionContextUtils::layerScope( mLayer );
 
   QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Expression based attribute" ) );
+  dlg.setWindowTitle( tr( "Expression Based Attribute" ) );
 
   QgsDistanceArea myDa;
   myDa.setSourceCrs( mLayer->crs() );
@@ -907,22 +981,26 @@ void QgsDiagramProperties::on_mDiagramStackedWidget_currentChanged( int index )
   mDiagramOptionsListWidget->blockSignals( false );
 }
 
-void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index )
+void QgsDiagramProperties::updatePlacementWidgets()
 {
-  QgsDiagramLayerSettings::Placement currentPlacement = ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( index ).toInt();
-  if ( currentPlacement == QgsDiagramLayerSettings::AroundPoint ||
-       ( currentPlacement == QgsDiagramLayerSettings::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry ) )
+  QWidget *curWdgt = stackedPlacement->currentWidget();
+
+  if ( ( curWdgt == pagePoint && radAroundPoint->isChecked() )
+       || ( curWdgt == pageLine && radAroundLine->isChecked() )
+       || ( curWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     mDiagramDistanceLabel->setEnabled( true );
     mDiagramDistanceSpinBox->setEnabled( true );
+    mDistanceDDBtn->setEnabled( true );
   }
   else
   {
     mDiagramDistanceLabel->setEnabled( false );
     mDiagramDistanceSpinBox->setEnabled( false );
+    mDistanceDDBtn->setEnabled( false );
   }
 
-  bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && currentPlacement == QgsDiagramLayerSettings::Line;
+  bool linePlacementEnabled = mLayer->geometryType() == QgsWkbTypes::LineGeometry && ( curWdgt == pageLine && radAroundLine->isChecked() );
   chkLineAbove->setEnabled( linePlacementEnabled );
   chkLineBelow->setEnabled( linePlacementEnabled );
   chkLineOn->setEnabled( linePlacementEnabled );
@@ -950,9 +1028,15 @@ void QgsDiagramProperties::showSizeLegendDialog()
   dlg.setLayout( new QVBoxLayout() );
   dlg.setWindowTitle( panel->panelTitle() );
   dlg.layout()->addWidget( panel );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Help | QDialogButtonBox::Ok );
   connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDiagramProperties::showHelp );
   dlg.layout()->addWidget( buttonBox );
   if ( dlg.exec() )
     mSizeLegend.reset( panel->dataDefinedSizeLegend() );
+}
+
+void QgsDiagramProperties::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#legend" ) );
 }

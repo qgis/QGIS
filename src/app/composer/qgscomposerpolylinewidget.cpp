@@ -42,10 +42,6 @@ QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline *compo
     connect( mComposerPolyline, &QgsComposerObject::itemChanged, this, &QgsComposerPolylineWidget::setGuiElementValues );
 }
 
-QgsComposerPolylineWidget::~QgsComposerPolylineWidget()
-{
-}
-
 void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
 {
   if ( !mComposerPolyline )

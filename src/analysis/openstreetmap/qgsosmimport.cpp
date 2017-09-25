@@ -23,12 +23,6 @@
 QgsOSMXmlImport::QgsOSMXmlImport( const QString &xmlFilename, const QString &dbFilename )
   : mXmlFileName( xmlFilename )
   , mDbFileName( dbFilename )
-  , mDatabase( nullptr )
-  , mStmtInsertNode( nullptr )
-  , mStmtInsertNodeTag( nullptr )
-  , mStmtInsertWay( nullptr )
-  , mStmtInsertWayNode( nullptr )
-  , mStmtInsertWayTag( nullptr )
 {
 
 }
@@ -142,7 +136,7 @@ bool QgsOSMXmlImport::createDatabase()
   {
     QString version = QString::fromUtf8( results[1] );
     QStringList parts = version.split( ' ', QString::SkipEmptyParts );
-    if ( parts.size() >= 1 )
+    if ( !parts.empty() )
     {
       QStringList verparts = parts[0].split( '.', QString::SkipEmptyParts );
       above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );

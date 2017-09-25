@@ -129,7 +129,7 @@ double QgsComposerMapGridStack::maxGridExtension() const
   double bottom = 0.0;
   double left = 0.0;
   calculateMaxGridExtension( top, right, bottom, left );
-  return qMax( qMax( qMax( top, right ), bottom ), left );
+  return std::max( std::max( std::max( top, right ), bottom ), left );
 }
 
 void QgsComposerMapGridStack::calculateMaxGridExtension( double &top, double &right, double &bottom, double &left ) const
@@ -149,10 +149,10 @@ void QgsComposerMapGridStack::calculateMaxGridExtension( double &top, double &ri
       double gridBottom = 0.0;
       double gridLeft = 0.0;
       grid->calculateMaxExtension( gridTop, gridRight, gridBottom, gridLeft );
-      top = qMax( top, gridTop );
-      right = qMax( right, gridRight );
-      bottom = qMax( bottom, gridBottom );
-      left = qMax( left, gridLeft );
+      top = std::max( top, gridTop );
+      right = std::max( right, gridRight );
+      bottom = std::max( bottom, gridBottom );
+      left = std::max( left, gridLeft );
     }
   }
 }
@@ -1149,7 +1149,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos += textWidth / 2.0;
         rotation = 270;
         if ( extension )
-          extension->left = qMax( extension->left, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->left = std::max( extension->left, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else if ( mLeftGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
       {
@@ -1157,14 +1157,14 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos -= textWidth / 2.0;
         rotation = 90;
         if ( extension )
-          extension->left = qMax( extension->left, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->left = std::max( extension->left, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else
       {
         xpos -= ( textWidth + mAnnotationFrameDistance + gridFrameDistance );
         ypos += textHeight / 2.0;
         if ( extension )
-          extension->left = qMax( extension->left, mAnnotationFrameDistance + gridFrameDistance + textWidth );
+          extension->left = std::max( extension->left, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
     }
     else
@@ -1221,7 +1221,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos += textWidth / 2.0;
         rotation = 270;
         if ( extension )
-          extension->right = qMax( extension->right, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->right = std::max( extension->right, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else if ( mRightGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending || mRightGridAnnotationDirection == QgsComposerMapGrid::BoundaryDirection )
       {
@@ -1229,14 +1229,14 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos -= textWidth / 2.0;
         rotation = 90;
         if ( extension )
-          extension->right = qMax( extension->right, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->right = std::max( extension->right, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else //Horizontal
       {
         xpos += ( mAnnotationFrameDistance + gridFrameDistance );
         ypos += textHeight / 2.0;
         if ( extension )
-          extension->right = qMax( extension->right, mAnnotationFrameDistance + gridFrameDistance + textWidth );
+          extension->right = std::max( extension->right, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
     }
     else
@@ -1292,7 +1292,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos += ( mAnnotationFrameDistance + textHeight + gridFrameDistance );
         xpos -= textWidth / 2.0;
         if ( extension )
-          extension->bottom = qMax( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->bottom = std::max( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else if ( mBottomGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
       {
@@ -1300,7 +1300,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos += gridFrameDistance + mAnnotationFrameDistance;
         rotation = 90;
         if ( extension )
-          extension->bottom = qMax( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textWidth );
+          extension->bottom = std::max( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
       else //Vertical
       {
@@ -1308,7 +1308,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos += ( textWidth + mAnnotationFrameDistance + gridFrameDistance );
         rotation = 270;
         if ( extension )
-          extension->bottom = qMax( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textWidth );
+          extension->bottom = std::max( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
     }
     else
@@ -1364,7 +1364,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         xpos -= textWidth / 2.0;
         ypos -= ( mAnnotationFrameDistance + gridFrameDistance );
         if ( extension )
-          extension->top = qMax( extension->top, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->top = std::max( extension->top, mAnnotationFrameDistance + gridFrameDistance + textHeight );
       }
       else if ( mTopGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
       {
@@ -1372,7 +1372,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos -= textWidth + mAnnotationFrameDistance + gridFrameDistance;
         rotation = 90;
         if ( extension )
-          extension->top = qMax( extension->top, mAnnotationFrameDistance + gridFrameDistance + textWidth );
+          extension->top = std::max( extension->top, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
       else //Vertical
       {
@@ -1380,7 +1380,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, con
         ypos -= ( mAnnotationFrameDistance + gridFrameDistance );
         rotation = 270;
         if ( extension )
-          extension->top = qMax( extension->top, mAnnotationFrameDistance + gridFrameDistance + textWidth );
+          extension->top = std::max( extension->top, mAnnotationFrameDistance + gridFrameDistance + textWidth );
       }
     }
     else
@@ -1426,7 +1426,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
        ( mGridAnnotationFormat == QgsComposerMapGrid::Decimal || mGridAnnotationFormat == QgsComposerMapGrid::DecimalWithSuffix ) )
   {
     // wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
-    double wrappedX = fmod( value, 360.0 );
+    double wrappedX = std::fmod( value, 360.0 );
     if ( wrappedX > 180.0 )
     {
       value = wrappedX - 360.0;
@@ -1445,7 +1445,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   {
     QString hemisphere;
 
-    double coordRounded = qRound( value * pow( 10.0, mGridAnnotationPrecision ) ) / pow( 10.0, mGridAnnotationPrecision );
+    double coordRounded = std::round( value * std::pow( 10.0, mGridAnnotationPrecision ) ) / std::pow( 10.0, mGridAnnotationPrecision );
     if ( coord == QgsComposerMapGrid::Longitude )
     {
       //don't use E/W suffixes if ambiguous (e.g., 180 degrees)
@@ -1465,11 +1465,11 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
     if ( geographic )
     {
       //insert degree symbol for geographic coordinates
-      return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + QChar( 176 ) + hemisphere;
+      return QString::number( std::fabs( value ), 'f', mGridAnnotationPrecision ) + QChar( 176 ) + hemisphere;
     }
     else
     {
-      return QString::number( qAbs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
+      return QString::number( std::fabs( value ), 'f', mGridAnnotationPrecision ) + hemisphere;
     }
   }
   else if ( mGridAnnotationFormat == CustomFormat )
@@ -1942,7 +1942,7 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( QPointF p
     return QgsComposerMapGrid::Left;
   }
 
-  double tolerance = qMax( mComposerMap->hasFrame() ? mComposerMap->pen().widthF() : 0.0, 1.0 );
+  double tolerance = std::max( mComposerMap->hasFrame() ? mComposerMap->pen().widthF() : 0.0, 1.0 );
 
   //check for corner coordinates
   if ( ( p.y() <= tolerance && p.x() <= tolerance ) // top left
@@ -2049,7 +2049,7 @@ double QgsComposerMapGrid::maxExtension()
   double bottom = 0.0;
   double left = 0.0;
   calculateMaxExtension( top, right, bottom, left );
-  return qMax( qMax( qMax( top, right ), bottom ), left );
+  return std::max( std::max( std::max( top, right ), bottom ), left );
 }
 
 void QgsComposerMapGrid::calculateMaxExtension( double &top, double &right, double &bottom, double &left )

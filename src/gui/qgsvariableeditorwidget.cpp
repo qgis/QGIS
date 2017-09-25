@@ -252,9 +252,7 @@ void QgsVariableEditorWidget::selectionChanged()
 
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   : QTreeWidget( parent )
-  , mEditorDelegate( nullptr )
   , mEditableScopeIndex( -1 )
-  , mContext( nullptr )
 {
   // init icons
   if ( mExpandIcon.isNull() )
@@ -273,8 +271,8 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   setAlternatingRowColors( true );
   setEditTriggers( QAbstractItemView::AllEditTriggers );
   setRootIsDecorated( false );
-  header()->setMovable( false );
-  header()->setResizeMode( QHeaderView::Interactive );
+  header()->setSectionsMovable( false );
+  header()->setSectionResizeMode( QHeaderView::Interactive );
 
   mEditorDelegate = new VariableEditorDelegate( this, this );
   setItemDelegate( mEditorDelegate );

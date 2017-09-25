@@ -32,14 +32,12 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (QgsField,
                        QgsFeatureSink,
-                       QgsPointXY,
                        QgsGeometry,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterMapLayer,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterBoolean,
                        QgsFields)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -49,7 +47,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 class ExtentFromLayer(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     BY_FEATURE = 'BY_FEATURE'
 
     OUTPUT = 'OUTPUT'
@@ -58,30 +56,26 @@ class ExtentFromLayer(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'layer_extent.png'))
 
     def tags(self):
-        return self.tr('extent,envelope,bounds,bounding,boundary,layer').split(',')
+        return self.tr('polygon,from,vector,raster,extent,envelope,bounds,bounding,boundary,layer').split(',')
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Layer tools')
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterBoolean(self.BY_FEATURE,
-                                                        self.tr('Calculate extent for each feature separately'), False))
-
+        self.addParameter(QgsProcessingParameterMapLayer(self.INPUT, self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extent'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'polygonfromlayerextent'
 
     def displayName(self):
-        return self.tr('Polygon from layer extent')
+        return self.tr('Extract layer extent')
 
     def processAlgorithm(self, parameters, context, feedback):
-        source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
-        byFeature = self.parameterAsBool(parameters, self.BY_FEATURE, context)
+        layer = self.parameterAsLayer(parameters, self.INPUT, context)
 
         fields = QgsFields()
         fields.append(QgsField('MINX', QVariant.Double))
@@ -96,17 +90,15 @@ class ExtentFromLayer(QgisAlgorithm):
         fields.append(QgsField('WIDTH', QVariant.Double))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Polygon, source.sourceCrs())
+                                               fields, QgsWkbTypes.Polygon, layer.crs())
 
-        if byFeature:
-            self.featureExtent(source, context, sink, feedback)
-        else:
-            self.layerExtent(source, sink, feedback)
+        try:
+            # may not be possible
+            layer.updateExtents()
+        except:
+            pass
 
-        return {self.OUTPUT: dest_id}
-
-    def layerExtent(self, source, sink, feedback):
-        rect = source.sourceExtent()
+        rect = layer.extent()
         geometry = QgsGeometry.fromRect(rect)
         minx = rect.xMinimum()
         miny = rect.yMinimum()
@@ -136,43 +128,4 @@ class ExtentFromLayer(QgisAlgorithm):
         feat.setAttributes(attrs)
         sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
-    def featureExtent(self, source, context, sink, feedback):
-        features = source.getFeatures()
-        total = 100.0 / source.featureCount() if source.featureCount() else 0
-        feat = QgsFeature()
-        for current, f in enumerate(features):
-            if feedback.isCanceled():
-                break
-
-            rect = f.geometry().boundingBox()
-            minx = rect.xMinimum()
-            miny = rect.yMinimum()
-            maxx = rect.xMaximum()
-            maxy = rect.yMaximum()
-            height = rect.height()
-            width = rect.width()
-            cntx = minx + width / 2.0
-            cnty = miny + height / 2.0
-            area = width * height
-            perim = 2 * width + 2 * height
-            rect = [QgsPointXY(minx, miny), QgsPointXY(minx, maxy), QgsPointXY(maxx,
-                                                                               maxy), QgsPointXY(maxx, miny), QgsPointXY(minx, miny)]
-
-            geometry = QgsGeometry().fromPolygon([rect])
-            feat.setGeometry(geometry)
-            attrs = [
-                minx,
-                miny,
-                maxx,
-                maxy,
-                cntx,
-                cnty,
-                area,
-                perim,
-                height,
-                width,
-            ]
-            feat.setAttributes(attrs)
-
-            sink.addFeature(feat, QgsFeatureSink.FastInsert)
-            feedback.setProgress(int(current * total))
+        return {self.OUTPUT: dest_id}

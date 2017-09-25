@@ -2,10 +2,12 @@ SET(GDAL_SRCS
   qgsgdalproviderbase.cpp
   qgsgdalprovider.cpp
   qgsgdaldataitems.cpp
+  qgsgdalsourceselect.cpp
 )
 SET(GDAL_MOC_HDRS
   qgsgdalprovider.h
   qgsgdaldataitems.h
+  qgsgdalsourceselect.h
 )
 
 INCLUDE_DIRECTORIES (

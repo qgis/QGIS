@@ -48,6 +48,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgslayoutmanager.h"
 #include "qgsmaplayerstore.h"
+#include "qgsziputils.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -332,6 +333,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
+  , mArchive( new QgsProjectArchive() )
   , mAutoTransaction( false )
   , mEvaluateDefaultValues( false )
   , mDirty( false )
@@ -424,6 +426,8 @@ void QgsProject::setFileName( const QString &name )
   if ( newHomePath != oldHomePath )
     emit homePathChanged();
 
+  mArchive->clear();
+
   setDirty( true );
 }
 
@@ -476,6 +480,7 @@ void QgsProject::clear()
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
+  mTrustLayerMetadata = false;
   mCustomVariables.clear();
 
   mEmbeddedLayers.clear();
@@ -488,9 +493,10 @@ void QgsProject::clear()
   mMapThemeCollection.reset( new QgsMapThemeCollection( this ) );
   emit mapThemeCollectionChanged();
 
-  mRootGroup->clear();
-
   mLabelingEngineSettings->clear();
+
+  mArchive->clear();
+
   emit labelingEngineSettingsChanged();
 
   // reset some default project properties
@@ -505,6 +511,8 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
 
   removeAllMapLayers();
+  mRootGroup->clear();
+
   setDirty( false );
 }
 
@@ -710,6 +718,12 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   if ( type == QLatin1String( "vector" ) )
   {
     mapLayer = new QgsVectorLayer;
+
+    // apply specific settings to vector layer
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer ) )
+    {
+      vl->setReadExtentFromXml( mTrustLayerMetadata );
+    }
   }
   else if ( type == QLatin1String( "raster" ) )
   {
@@ -760,15 +774,30 @@ bool QgsProject::read( const QString &filename )
 
 bool QgsProject::read()
 {
+  QString filename = mFile.fileName();
+  bool rc;
+
+  if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+    rc = unzip( mFile.fileName() );
+  else
+    rc = readProjectFile( mFile.fileName() );
+
+  mFile.setFileName( filename );
+  return rc;
+}
+
+bool QgsProject::readProjectFile( const QString &filename )
+{
+  QFile projectFile( filename );
   clearError();
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
 
-  if ( !mFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  if ( !projectFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    mFile.close();
+    projectFile.close();
 
-    setError( tr( "Unable to open %1" ).arg( mFile.fileName() ) );
+    setError( tr( "Unable to open %1" ).arg( projectFile.fileName() ) );
 
     return false;
   }
@@ -777,7 +806,7 @@ bool QgsProject::read()
   int line, column;
   QString errorMsg;
 
-  if ( !doc->setContent( &mFile, &errorMsg, &line, &column ) )
+  if ( !doc->setContent( &projectFile, &errorMsg, &line, &column ) )
   {
     // want to make this class as GUI independent as possible; so commented out
 #if 0
@@ -786,21 +815,21 @@ bool QgsProject::read()
 #endif
 
     QString errorString = tr( "Project file read error in file %1: %2 at line %3 column %4" )
-                          .arg( mFile.fileName() ).arg( errorMsg ).arg( line ).arg( column );
+                          .arg( projectFile.fileName(), errorMsg ).arg( line ).arg( column );
 
     QgsDebugMsg( errorString );
 
-    mFile.close();
+    projectFile.close();
 
-    setError( tr( "%1 for file %2" ).arg( errorString, mFile.fileName() ) );
+    setError( tr( "%1 for file %2" ).arg( errorString, projectFile.fileName() ) );
 
     return false;
   }
 
-  mFile.close();
+  projectFile.close();
 
 
-  QgsDebugMsg( "Opened document " + mFile.fileName() );
+  QgsDebugMsg( "Opened document " + projectFile.fileName() );
   QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
@@ -868,6 +897,14 @@ bool QgsProject::read()
     QDomElement evaluateDefaultValuesElement = nl.at( 0 ).toElement();
     if ( evaluateDefaultValuesElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mEvaluateDefaultValues = true;
+  }
+
+  nl = doc->elementsByTagName( QStringLiteral( "trust" ) );
+  if ( nl.count() )
+  {
+    QDomElement trustElement = nl.at( 0 ).toElement();
+    if ( trustElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+      mTrustLayerMetadata = true;
   }
 
   // read the layer tree from project file
@@ -1223,16 +1260,25 @@ bool QgsProject::write( const QString &filename )
 
 bool QgsProject::write()
 {
+  if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+    return zip( mFile.fileName() );
+  else
+    return writeProjectFile( mFile.fileName() );
+}
+
+bool QgsProject::writeProjectFile( const QString &filename )
+{
+  QFile projectFile( filename );
   clearError();
 
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
   // necessary to create all the Dom objects
-  QFileInfo myFileInfo( mFile );
+  QFileInfo myFileInfo( projectFile );
   if ( myFileInfo.exists() && !myFileInfo.isWritable() )
   {
     setError( tr( "%1 is not writable. Please adjust permissions (if possible) and try again." )
-              .arg( mFile.fileName() ) );
+              .arg( projectFile.fileName() ) );
     return false;
   }
 
@@ -1264,6 +1310,10 @@ bool QgsProject::write()
   QDomElement evaluateDefaultValuesNode = doc->createElement( QStringLiteral( "evaluateDefaultValues" ) );
   evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? "1" : "0" );
   qgisNode.appendChild( evaluateDefaultValuesNode );
+
+  QDomElement trustNode = doc->createElement( QStringLiteral( "trust" ) );
+  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? "1" : "0" );
+  qgisNode.appendChild( trustNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
@@ -1363,19 +1413,19 @@ bool QgsProject::write()
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QFile backupFile( fileName() + '~' );
+    QFile backupFile( QStringLiteral( "%1~" ).arg( filename ) );
     bool ok = true;
     ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
-    ok &= mFile.open( QIODevice::ReadOnly );
+    ok &= projectFile.open( QIODevice::ReadOnly );
 
     QByteArray ba;
-    while ( ok && !mFile.atEnd() )
+    while ( ok && !projectFile.atEnd() )
     {
-      ba = mFile.read( 10240 );
+      ba = projectFile.read( 10240 );
       ok &= backupFile.write( ba ) == ba.size();
     }
 
-    mFile.close();
+    projectFile.close();
     backupFile.close();
 
     if ( !ok )
@@ -1389,12 +1439,12 @@ bool QgsProject::write()
     utime( backupFile.fileName().toUtf8().constData(), &tb );
   }
 
-  if ( !mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  if ( !projectFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    mFile.close();         // even though we got an error, let's make
+    projectFile.close();         // even though we got an error, let's make
     // sure it's closed anyway
 
-    setError( tr( "Unable to save to file %1" ).arg( mFile.fileName() ) );
+    setError( tr( "Unable to save to file %1" ).arg( projectFile.fileName() ) );
     return false;
   }
 
@@ -1412,12 +1462,12 @@ bool QgsProject::write()
     while ( ok && !tempFile.atEnd() )
     {
       ba = tempFile.read( 10240 );
-      ok &= mFile.write( ba ) == ba.size();
+      ok &= projectFile.write( ba ) == ba.size();
     }
 
-    ok &= mFile.error() == QFile::NoError;
+    ok &= projectFile.error() == QFile::NoError;
 
-    mFile.close();
+    projectFile.close();
   }
 
   tempFile.close();
@@ -1427,7 +1477,7 @@ bool QgsProject::write()
     setError( tr( "Unable to save to file %1. Your project "
                   "may be corrupted on disk. Try clearing some space on the volume and "
                   "check file permissions before pressing save again." )
-              .arg( mFile.fileName() ) );
+              .arg( projectFile.fileName() ) );
     return false;
   }
 
@@ -1882,9 +1932,11 @@ bool QgsProject::evaluateDefaultValues() const
 
 void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 {
-  Q_FOREACH ( QgsMapLayer *layer, mapLayers().values() )
+  const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
     if ( vl )
     {
       vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues );
@@ -2064,6 +2116,81 @@ QList<QgsMapLayer *> QgsProject::mapLayersByName( const QString &layerName ) con
   return mLayerStore->mapLayersByName( layerName );
 }
 
+bool QgsProject::unzip( const QString &filename )
+{
+  clearError();
+  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
+
+  // unzip the archive
+  if ( !archive->unzip( filename ) )
+  {
+    setError( tr( "Unable to unzip file '%1'" ).arg( filename ) );
+    return false;
+  }
+
+  // test if zip provides a .qgs file
+  if ( archive->projectFile().isEmpty() )
+  {
+    setError( tr( "Zip archive does not provide a project file" ) );
+    return false;
+  }
+
+  // read the project file
+  if ( ! readProjectFile( archive->projectFile() ) )
+  {
+    setError( tr( "Cannot read unzipped qgs project file" ) );
+    return false;
+  }
+
+  // keep the archive and remove the temporary .qgs file
+  mArchive = std::move( archive );
+  mArchive->clearProjectFile();
+
+  return true;
+}
+
+bool QgsProject::zip( const QString &filename )
+{
+  clearError();
+
+  // save the current project in a temporary .qgs file
+  std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
+  const QString baseName = QFileInfo( filename ).baseName();
+  const QString qgsFileName = QStringLiteral( "%1.qgs" ).arg( baseName );
+  QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );
+
+  bool writeOk = false;
+  if ( qgsFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    writeOk = writeProjectFile( qgsFile.fileName() );
+    qgsFile.close();
+  }
+
+  // stop here with an error message
+  if ( ! writeOk )
+  {
+    setError( tr( "Unable to write temporary qgs file" ) );
+    return false;
+  }
+
+  // create the archive
+  archive->addFile( qgsFile.fileName() );
+
+  // zip
+  if ( !archive->zip( filename ) )
+  {
+    setError( tr( "Unable to perform zip" ) );
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsProject::isZipped() const
+{
+  return QgsZipUtils::isZipFile( mFile.fileName() );
+}
+
 QList<QgsMapLayer *> QgsProject::addMapLayers(
   const QList<QgsMapLayer *> &layers,
   bool addToLegend,
@@ -2134,3 +2261,38 @@ QMap<QString, QgsMapLayer *> QgsProject::mapLayers() const
 }
 
 
+QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
+{
+  QgsSettings settings;
+  QgsCoordinateReferenceSystem defaultCrs;
+  if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "useProject" )
+       || settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "prompt" ) )
+  {
+    // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
+    // (since "prompt" has no meaning here - the prompt will always be shown, it's just deciding on the default choice in the prompt!)
+    defaultCrs = crs();
+  }
+  else
+  {
+    // global crs
+    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+    defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
+  }
+
+  return defaultCrs;
+}
+
+void QgsProject::setTrustLayerMetadata( bool trust )
+{
+  mTrustLayerMetadata = trust;
+
+  auto layers = mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+    if ( vl )
+    {
+      vl->setReadExtentFromXml( trust );
+    }
+  }
+}

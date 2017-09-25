@@ -83,6 +83,12 @@ class ParametersPanel(BASE, WIDGET):
         for wrapper in list(self.wrappers.values()):
             wrapper.refresh()
 
+    def formatParameterTooltip(self, parameter):
+        return '<p><b>{}</b></p><p>{}</p>'.format(
+            parameter.description(),
+            QCoreApplication.translate('ParametersPanel', 'Python identifier: ‘{}’').format('<i>{}</i>'.format(parameter.name()))
+        )
+
     def initWidgets(self):
         # If there are advanced parameters — show corresponding groupbox
         for param in self.alg.parameterDefinitions():
@@ -127,7 +133,7 @@ class ParametersPanel(BASE, WIDGET):
                         widget = QWidget()
                         widget.setLayout(layout)
 
-                    widget.setToolTip(param.description())
+                    widget.setToolTip(self.formatParameterTooltip(param))
 
                     if type(widget) is QCheckBox:
                         # checkbox widget - so description is embedded in widget rather than a separate
@@ -164,6 +170,8 @@ class ParametersPanel(BASE, WIDGET):
                 check.setChecked(True)
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name()] = check
+
+            widget.setToolTip(self.formatParameterTooltip(param))
             self.outputWidgets[output.name()] = widget
 
         for wrapper in list(self.wrappers.values()):

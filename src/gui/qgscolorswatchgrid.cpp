@@ -38,14 +38,14 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
-  mLabelHeight = fontMetrics().height();
-  mLabelMargin = fontMetrics().width( QStringLiteral( "." ) );
+  mLabelHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height();
+  mLabelMargin = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "." ) );
 
-  mSwatchSize = fontMetrics().width( QStringLiteral( "X" ) ) * 1.75;
-  mSwatchOutlineSize = qMax( mLabelMargin * 0.4, 1.0 );
+  mSwatchSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "X" ) ) * 1.75;
+  mSwatchOutlineSize = std::max( fontMetrics().width( QStringLiteral( "." ) ) * 0.4, 1.0 );
 
   mSwatchSpacing = mSwatchSize * 0.3;
-  mSwatchMargin = mLabelMargin * 1.5;
+  mSwatchMargin = mLabelMargin;
 
   //calculate widget width
   mWidth = NUMBER_COLORS_PER_ROW * mSwatchSize + ( NUMBER_COLORS_PER_ROW - 1 ) * mSwatchSpacing + mSwatchMargin + mSwatchMargin;
@@ -170,11 +170,11 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   //handle keyboard navigation
   if ( event->key() == Qt::Key_Right )
   {
-    mCurrentFocusBox = qMin( mCurrentFocusBox + 1, mColors.length() - 1 );
+    mCurrentFocusBox = std::min( mCurrentFocusBox + 1, mColors.length() - 1 );
   }
   else if ( event->key() == Qt::Key_Left )
   {
-    mCurrentFocusBox = qMax( mCurrentFocusBox - 1, 0 );
+    mCurrentFocusBox = std::max( mCurrentFocusBox - 1, 0 );
   }
   else if ( event->key() == Qt::Key_Up )
   {
@@ -240,7 +240,7 @@ void QgsColorSwatchGrid::focusOutEvent( QFocusEvent *event )
 
 int QgsColorSwatchGrid::calculateHeight() const
 {
-  int numberRows = ceil( ( double )mColors.length() / NUMBER_COLORS_PER_ROW );
+  int numberRows = std::ceil( ( double )mColors.length() / NUMBER_COLORS_PER_ROW );
   return numberRows * ( mSwatchSize ) + ( numberRows - 1 ) * mSwatchSpacing + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin + mSwatchMargin;
 }
 

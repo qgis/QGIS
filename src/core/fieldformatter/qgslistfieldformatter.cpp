@@ -35,7 +35,8 @@ QString QgsListFieldFormatter::representValue( QgsVectorLayer *layer, int fieldI
   }
 
   QString result;
-  Q_FOREACH ( const QVariant &val, value.toList() )
+  const QVariantList list = value.toList();
+  for ( const QVariant &val : list )
   {
     if ( !result.isEmpty() )
       result.append( ", " );

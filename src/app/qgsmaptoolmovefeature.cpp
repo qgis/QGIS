@@ -33,19 +33,9 @@
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
-  , mRubberBand( nullptr )
   , mMode( mode )
 {
   mToolName = tr( "Move feature" );
-  switch ( mode )
-  {
-    case Move:
-      mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureSegment;
-      break;
-    case CopyMove:
-      mCaptureMode = QgsMapToolAdvancedDigitizing::CaptureLine; // we copy/move several times
-      break;
-  }
 }
 
 QgsMapToolMoveFeature::~QgsMapToolMoveFeature()
@@ -81,7 +71,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( !mRubberBand )
   {
     // ideally we would snap preferably on the moved feature
-    e->snapPoint( QgsMapMouseEvent::SnapProjectConfig );
+    e->snapPoint();
 
     //find first geometry under mouse cursor and store iterator to it
     QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
@@ -159,7 +149,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mRubberBand = nullptr;
       return;
     }
-    e->snapPoint( QgsMapMouseEvent::SnapProjectConfig );
+    e->snapPoint();
 
     QgsPointXY startPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, mStartPointMapCoords );
     QgsPointXY stopPointLayerCoords = toLayerCoordinates( ( QgsMapLayer * )vlayer, e->mapPoint() );
@@ -178,6 +168,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
         delete mRubberBand;
         mRubberBand = nullptr;
+        cadDockWidget()->clear();
         break;
 
       case CopyMove:

@@ -28,14 +28,13 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils)
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml,
+                       QgsFeatureRequest)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
@@ -54,25 +53,27 @@ class BoxPlot(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterTable(self.INPUT, self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'),
-                                              self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
         msd = [self.tr('Show Mean'),
                self.tr('Show Standard Deviation'),
                self.tr('Don\'t show Mean and Standard Deviation')
                ]
-        self.addParameter(ParameterSelection(
+        self.addParameter(QgsProcessingParameterEnum(
             self.MSD,
             self.tr('Additional Statistic Lines'),
-            msd, default=0))
+            options=msd, defaultValue=0))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Box plot')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Box plot'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Box plot')))
 
     def name(self):
         return 'boxplot'
@@ -81,17 +82,18 @@ class BoxPlot(QgisAlgorithm):
         return self.tr('Box plot')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
+        valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
-        output = self.getOutputValue(self.OUTPUT)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(layer, valuefieldname)
+        values = vector.values(source, valuefieldname)
 
-        x_var = [i[namefieldname] for i in layer.getFeatures()]
+        x_index = source.fields().lookupField(namefieldname)
+        x_var = [i[namefieldname] for i in source.getFeatures(QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([x_index]))]
 
-        msdIndex = self.getParameterValue(self.MSD)
+        msdIndex = self.parameterAsEnum(parameters, self.MSD, context)
         msd = True
 
         if msdIndex == 1:
@@ -105,3 +107,5 @@ class BoxPlot(QgisAlgorithm):
                 boxmean=msd)]
 
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

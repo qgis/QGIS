@@ -41,15 +41,9 @@
 
 QgsClipboard::QgsClipboard()
   : QObject()
-  , mFeatureClipboard()
-  , mFeatureFields()
   , mUseSystemClipboard( false )
 {
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );
-}
-
-QgsClipboard::~QgsClipboard()
-{
 }
 
 void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
@@ -190,8 +184,17 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
 
   Q_FOREACH ( const QString &row, values )
   {
-    // Assume that it's just WKT for now.
-    QgsGeometry geometry = QgsGeometry::fromWkt( row );
+    // Assume that it's just WKT for now. because GeoJSON is managed by
+    // previous QgsOgrUtils::stringToFeatureList call
+    // Get the first value of a \t separated list. WKT clipboard pasted
+    // feature has first element the WKT geom.
+    // This split is to fix te following issue: https://issues.qgis.org/issues/16870
+    // Value separators are set in generateClipboardText
+    QStringList fieldValues = row.split( '\t' );
+    if ( fieldValues.isEmpty() )
+      continue;
+
+    QgsGeometry geometry = QgsGeometry::fromWkt( fieldValues[0] );
     if ( geometry.isNull() )
       continue;
 

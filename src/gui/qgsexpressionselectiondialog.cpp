@@ -26,12 +26,11 @@
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
-  , mMessageBar( nullptr )
-  , mMapCanvas( nullptr )
+
 {
   setupUi( this );
 
-  setWindowTitle( QStringLiteral( "Select by expression - %1" ).arg( layer->name() ) );
+  setWindowTitle( QStringLiteral( "Select by Expression - %1" ).arg( layer->name() ) );
 
   mActionSelect->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
   mActionAddToSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ) );
@@ -57,6 +56,8 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionSelectionDialog::showHelp );
 }
 
 QgsExpressionBuilderWidget *QgsExpressionSelectionDialog::expressionBuilder()
@@ -123,8 +124,6 @@ void QgsExpressionSelectionDialog::on_mButtonZoomToFeatures_clicked()
 {
   if ( mExpressionBuilder->expressionText().isEmpty() || !mMapCanvas )
     return;
-
-  QgsFeatureIds ids;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
@@ -195,4 +194,9 @@ void QgsExpressionSelectionDialog::done( int r )
 void QgsExpressionSelectionDialog::saveRecent()
 {
   mExpressionBuilder->saveToRecent( QStringLiteral( "Selection" ) );
+}
+
+void QgsExpressionSelectionDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#automatic-selection" ) );
 }

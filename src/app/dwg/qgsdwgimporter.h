@@ -20,7 +20,7 @@
 #include <QString>
 #include <ogr_api.h>
 
-#include <qgsabstractgeometry.h>
+#include "qgsabstractgeometry.h"
 
 class QgsCompoundCurve;
 class QgsQgsCoordinateReferenceSystem;
@@ -168,17 +168,17 @@ class QgsDwgImporter : public DRW_Interface
   private:
     void startTransaction();
     void commitTransaction();
-    bool exec( QString sql, bool logError = true );
-    OGRLayerH query( QString sql );
+    bool exec( const QString &sql, bool logError = true );
+    OGRLayerH query( const QString &sql );
 
     void addEntity( OGRFeatureDefnH dfn, OGRFeatureH f, const DRW_Entity &data );
     QString colorString( int color, int color24, int transparency, const std::string &layer ) const;
     double lineWidth( int lWeight, const std::string &layer ) const;
     QString linetypeString( const std::string &linetype, const std::string &layer ) const;
-    void setString( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, const std::string &value ) const;
-    void setDouble( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, double value ) const;
-    void setInteger( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, int value ) const;
-    void setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, QString field, const DRW_Coord &value ) const;
+    void setString( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const std::string &value ) const;
+    void setDouble( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, double value ) const;
+    void setInteger( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, int value ) const;
+    void setPoint( OGRFeatureDefnH dfn, OGRFeatureH f, const QString &field, const DRW_Coord &value ) const;
 
     bool curveFromLWPolyline( const DRW_LWPolyline &data, QgsCompoundCurve &cc );
 

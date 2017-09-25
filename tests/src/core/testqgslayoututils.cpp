@@ -18,7 +18,6 @@
 #include "qgslayout.h"
 #include "qgstest.h"
 #include "qgslayoututils.h"
-#include "qgstestutils.h"
 #include "qgsproject.h"
 #include "qgslayoutitemmap.h"
 
@@ -42,7 +41,7 @@ class TestQgsLayoutUtils: public QObject
 
 void TestQgsLayoutUtils::initTestCase()
 {
-  mReport = "<h1>Layout Utils Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Utils Tests</h1>\n" );
 }
 
 void TestQgsLayoutUtils::cleanupTestCase()
@@ -89,8 +88,8 @@ void TestQgsLayoutUtils::normalizedAngle()
 
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first );
-    qDebug() << QString( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QVERIFY( qgsDoubleNear( result, ( *it ).second ) );
+    qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
   }
 
@@ -110,8 +109,8 @@ void TestQgsLayoutUtils::normalizedAngle()
 
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first, true );
-    qDebug() << QString( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QVERIFY( qgsDoubleNear( result, ( *it ).second ) );
+    qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
   }
 }
@@ -124,17 +123,17 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   testImage.setDotsPerMeterY( 150 / 25.4 * 1000 );
   QPainter p( &testImage );
 
-  // no composition
+  // no layout
   QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( nullptr, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QCOMPARE( rc.painter(), &p );
 
-  // no composition, no painter
+  // no layout, no painter
   rc = QgsLayoutUtils::createRenderContextForLayout( nullptr, nullptr );
   QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
   QVERIFY( !rc.painter() );
 
-  //create composition with no reference map
+  //create layout with no reference map
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsProject project;
   QgsLayout l( &project );
@@ -166,6 +165,25 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QGSCOMPARENEAR( rc.scaleFactor(), 88 / 25.4, 0.001 );
   QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
   QVERIFY( !rc.painter() );
+
+  // check render context flags are correctly set
+  l.context().setFlags( 0 );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
+  QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
+
+  l.context().setFlag( QgsLayoutContext::FlagAntialiasing );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
+  QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
+
+  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
+  QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
   p.end();
 }
@@ -224,6 +242,25 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QGSCOMPARENEAR( rc.rendererScale(), map2->scale(), 1000000 );
   QVERIFY( rc.painter() );
+
+  // check render context flags are correctly set
+  l.context().setFlags( 0 );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
+  QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
+
+  l.context().setFlag( QgsLayoutContext::FlagAntialiasing );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
+  QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
+
+  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
+  QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
+  QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
+  QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 #endif
   p.end();
 }

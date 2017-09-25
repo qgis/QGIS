@@ -1,12 +1,6 @@
 #include "qgsruntimeprofiler.h"
 #include "qgslogger.h"
 
-
-QgsRuntimeProfiler::QgsRuntimeProfiler()
-{
-
-}
-
 void QgsRuntimeProfiler::beginGroup( const QString &name )
 {
   mGroupStack.push( name );
@@ -43,8 +37,7 @@ void QgsRuntimeProfiler::end()
   name.prepend( mGroupPrefix );
   double timing =  mProfileTime.elapsed() / 1000.0;
   mProfileTimes.append( QPair<QString, double>( name, timing ) );
-  QString message =  QStringLiteral( "PROFILE: %1 - %2" ).arg( name ).arg( timing );
-  QgsDebugMsg( message );
+  QgsDebugMsg( QStringLiteral( "PROFILE: %1 - %2" ).arg( name ).arg( timing ) );
 }
 
 void QgsRuntimeProfiler::clear()

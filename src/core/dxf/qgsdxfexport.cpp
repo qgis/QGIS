@@ -374,7 +374,6 @@ QgsDxfExport::QgsDxfExport()
   , mSymbolLayerCounter( 0 )
   , mNextHandleId( DXF_HANDSEED )
   , mBlockCounter( 0 )
-  , mFactor( 1 )
 {
 }
 
@@ -396,6 +395,7 @@ QgsDxfExport &QgsDxfExport::operator=( const QgsDxfExport &dxfExport )
   mBlockCounter = 0;
   mCrs = QgsCoordinateReferenceSystem();
   mFactor = dxfExport.mFactor;
+  mForce2d = dxfExport.mForce2d;
   return *this;
 }
 
@@ -443,7 +443,7 @@ void QgsDxfExport::writeGroup( int code, const QgsPoint &p )
 {
   writeGroup( code + 10, p.x() );
   writeGroup( code + 20, p.y() );
-  if ( p.is3D() && qIsFinite( p.z() ) )
+  if ( !mForce2d && p.is3D() && std::isfinite( p.z() ) )
     writeGroup( code + 30, p.z() );
 }
 
@@ -516,7 +516,8 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
 
   if ( mExtent.isEmpty() )
   {
-    Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+    const QList< QgsMapLayer * > layers = mMapSettings.layers();
+    for ( QgsMapLayer *ml : layers )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
       if ( !vl )
@@ -655,7 +656,8 @@ void QgsDxfExport::writeTables()
   writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, 0 );
 
-  Q_FOREACH ( const QString &block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
+  const QStringList blockStrings = QStringList() << QStringLiteral( "*Model_Space" ) << QStringLiteral( "*Paper_Space" ) << QStringLiteral( "*Paper_Space0" );
+  for ( const QString &block : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "BLOCK_RECORD" ) );
     mBlockHandles.insert( block, writeHandle() );
@@ -735,28 +737,28 @@ void QgsDxfExport::writeTables()
   writeGroup( 5, QgsPoint( 1.0, 1.0 ) );                            // grid spacing
   writeGroup( 6, QgsPoint( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );  // view direction from target point
   writeGroup( 7, QgsPoint( mExtent.center() ) );                    // view target point
-  writeGroup( 40, mExtent.height() );                                 // view height
-  writeGroup( 41, mExtent.width() / mExtent.height() );               // view aspect ratio
-  writeGroup( 42, 50.0 );                                             // lens length
-  writeGroup( 43, 0.0 );                                              // front clipping plane
-  writeGroup( 44, 0.0 );                                              // back clipping plane
-  writeGroup( 50, 0.0 );                                              // snap rotation
-  writeGroup( 51, 0.0 );                                              // view twist angle
-  writeGroup( 71, 0 );                                                // view mode (0 = deactivates)
-  writeGroup( 72, 100 );                                              // circle zoom percent
-  writeGroup( 73, 1 );                                                // fast zoom setting
-  writeGroup( 74, 1 );                                                // UCSICON setting
-  writeGroup( 75, 0 );                                                // snapping off
-  writeGroup( 76, 0 );                                                // grid off
-  writeGroup( 77, 0 );                                                // snap style
-  writeGroup( 78, 0 );                                                // snap isopair
-  writeGroup( 281, 0 );                                               // render mode (0 = 2D optimized)
-  writeGroup( 65, 1 );                                                // value of UCSVP for this viewport
+  writeGroup( 40, mExtent.height() );                               // view height
+  writeGroup( 41, mExtent.width() / mExtent.height() );             // view aspect ratio
+  writeGroup( 42, 50.0 );                                           // lens length
+  writeGroup( 43, 0.0 );                                            // front clipping plane
+  writeGroup( 44, 0.0 );                                            // back clipping plane
+  writeGroup( 50, 0.0 );                                            // snap rotation
+  writeGroup( 51, 0.0 );                                            // view twist angle
+  writeGroup( 71, 0 );                                              // view mode (0 = deactivates)
+  writeGroup( 72, 100 );                                            // circle zoom percent
+  writeGroup( 73, 1 );                                              // fast zoom setting
+  writeGroup( 74, 1 );                                              // UCSICON setting
+  writeGroup( 75, 0 );                                              // snapping off
+  writeGroup( 76, 0 );                                              // grid off
+  writeGroup( 77, 0 );                                              // snap style
+  writeGroup( 78, 0 );                                              // snap isopair
+  writeGroup( 281, 0 );                                             // render mode (0 = 2D optimized)
+  writeGroup( 65, 1 );                                              // value of UCSVP for this viewport
   writeGroup( 100, QgsPoint( QgsWkbTypes::PointZ ) );               // UCS origin
   writeGroup( 101, QgsPoint( QgsWkbTypes::PointZ, 1.0 ) );          // UCS x axis
   writeGroup( 102, QgsPoint( QgsWkbTypes::PointZ, 0.0, 1.0 ) );     // UCS y axis
-  writeGroup( 79, 0 );                                                // Orthographic type of UCS (0 = UCS is not orthographic)
-  writeGroup( 146, 0.0 );                                             // Elevation
+  writeGroup( 79, 0 );                                              // Orthographic type of UCS (0 = UCS is not orthographic)
+  writeGroup( 146, 0.0 );                                           // Elevation
 
   writeGroup( 70, 0 );
   writeGroup( 0, QStringLiteral( "ENDTAB" ) );
@@ -771,7 +773,8 @@ void QgsDxfExport::writeTables()
   writeGroup( 0, QStringLiteral( "ENDTAB" ) );
 
   QSet<QString> layerNames;
-  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+  const QList< QgsMapLayer * > layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
   {
     if ( !layerIsScaleBasedVisible( ml ) )
       continue;
@@ -787,8 +790,8 @@ void QgsDxfExport::writeTables()
     }
     else
     {
-      QSet<QVariant> values = vl->uniqueValues( attrIdx );
-      Q_FOREACH ( const QVariant &v, values )
+      const QSet<QVariant> values = vl->uniqueValues( attrIdx );
+      for ( const QVariant &v : values )
       {
         layerNames << dxfLayerName( v.toString() );
       }
@@ -813,7 +816,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 6, QStringLiteral( "CONTINUOUS" ) );
   writeHandle( 390, DXF_HANDPLOTSTYLE );
 
-  Q_FOREACH ( const QString &layerName, layerNames )
+  for ( const QString &layerName : qgsAsConst( layerNames ) )
   {
     writeGroup( 0, QStringLiteral( "LAYER" ) );
     writeHandle();
@@ -859,7 +862,8 @@ void QgsDxfExport::writeBlocks()
   startSection();
   writeGroup( 2, QStringLiteral( "BLOCKS" ) );
 
-  Q_FOREACH ( const QString &block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
+  const QStringList blockStrings = QStringList() << QStringLiteral( "*Model_Space" ) << QStringLiteral( "*Paper_Space" ) << QStringLiteral( "*Paper_Space0" );
+  for ( const QString &block : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "BLOCK" ) );
     writeHandle();
@@ -968,7 +972,8 @@ void QgsDxfExport::writeEntities()
   engine.setMapSettings( mMapSettings );
 
   // iterate through the maplayers
-  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+  const QList< QgsMapLayer *> layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl || !layerIsScaleBasedVisible( vl ) )
@@ -998,7 +1003,7 @@ void QgsDxfExport::writeEntities()
     renderer->startRender( ctx, vl->fields() );
 
     QSet<QString> attributes = renderer->usedAttributes( ctx );
-    int attrIdx = mLayerNameAttribute.value( vl->id(), 1 );
+    int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
     if ( vl->fields().exists( attrIdx ) )
     {
       QString layerAttr = vl->fields().at( attrIdx ).name();
@@ -1066,7 +1071,7 @@ void QgsDxfExport::writeEntities()
       else
       {
         QgsSymbolList symbolList = renderer->symbolsForFeature( fet, ctx );
-        if ( symbolList.size() < 1 )
+        if ( symbolList.empty() )
         {
           continue;
         }
@@ -3457,7 +3462,7 @@ void QgsDxfExport::writePolyline( const QgsPointSequence &line, const QString &l
     return;
   }
 
-  if ( !line.at( 0 ).is3D() )
+  if ( mForce2d || !line.at( 0 ).is3D() )
   {
     writeGroup( 0, QStringLiteral( "LWPOLYLINE" ) );
     writeHandle();
@@ -3760,7 +3765,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
           QgsGeos geos( tempGeom );
           if ( tempGeom != geom.get() )
             delete tempGeom;
-          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok
           if ( !tempGeom )
             tempGeom = geom.get();
         }
@@ -3781,7 +3786,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
           QgsGeos geos( tempGeom );
           if ( tempGeom != geom.get() )
             delete tempGeom;
-          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+          tempGeom = geos.offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok
           if ( !tempGeom )
             tempGeom = geom.get();
         }
@@ -3807,7 +3812,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
           QgsGeos geos( tempGeom );
           if ( tempGeom != geom.get() )
             delete tempGeom;
-          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok
           if ( !tempGeom )
             tempGeom = geom.get();
         }
@@ -3828,7 +3833,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
           QgsGeos geos( tempGeom );
           if ( tempGeom != geom.get() )
             delete tempGeom;
-          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+          tempGeom = geos.buffer( offset, 0,  GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );  //#spellok
           if ( !tempGeom )
             tempGeom = geom.get();
         }
@@ -3978,7 +3983,8 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 {
   QList< QPair< QgsSymbolLayer *, QgsSymbol * > > symbolLayers;
 
-  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+  const QList< QgsMapLayer * > layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( !vl )
@@ -4016,7 +4022,8 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 void QgsDxfExport::writeDefaultLinetypes()
 {
   // continuous (Qt solid line)
-  Q_FOREACH ( const QString &ltype, QStringList() << "ByLayer" << "ByBlock" << "CONTINUOUS" )
+  const QStringList blockStrings = QStringList() << QStringLiteral( "ByLayer" ) << QStringLiteral( "ByBlock" ) << QStringLiteral( "CONTINUOUS" );
+  for ( const QString &ltype : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "LTYPE" ) );
     writeHandle();
@@ -4232,7 +4239,8 @@ bool QgsDxfExport::layerIsScaleBasedVisible( const QgsMapLayer *layer ) const
 
 QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 {
-  Q_FOREACH ( QgsMapLayer *ml, mMapSettings.layers() )
+  const QList< QgsMapLayer * > layers = mMapSettings.layers();
+  for ( QgsMapLayer *ml : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl && vl->id() == id )
@@ -4247,7 +4255,8 @@ QString QgsDxfExport::layerName( const QString &id, const QgsFeature &f ) const
 
 QString QgsDxfExport::dxfEncoding( const QString &name )
 {
-  Q_FOREACH ( const QByteArray &codec, QTextCodec::availableCodecs() )
+  const QList< QByteArray > codecs = QTextCodec::availableCodecs();
+  for ( const QByteArray &codec : codecs )
   {
     if ( name != codec )
       continue;
@@ -4268,7 +4277,8 @@ QString QgsDxfExport::dxfEncoding( const QString &name )
 QStringList QgsDxfExport::encodings()
 {
   QStringList encodings;
-  Q_FOREACH ( QByteArray codec, QTextCodec::availableCodecs() )
+  const QList< QByteArray > codecs = QTextCodec::availableCodecs();
+  for ( const QByteArray &codec : codecs )
   {
     int i;
     for ( i = 0; i < static_cast< int >( sizeof( DXF_ENCODINGS ) / sizeof( *DXF_ENCODINGS ) ) && strcmp( codec.data(), DXF_ENCODINGS[i][1] ) != 0; ++i )

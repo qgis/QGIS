@@ -24,7 +24,7 @@
 
 class QgsFieldModel;
 
-/** \ingroup gui
+/** \ingroup core
  * \brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
  * \since QGIS 2.3
  */

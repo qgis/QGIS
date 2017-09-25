@@ -31,6 +31,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsMapToolEmitPoint;
+class QgsMetadataWidget;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
@@ -96,7 +97,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Save a style when appriate button is pressed.
     void saveStyleAs_clicked();
     //! Help button
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html" ) ); }
+    void showHelp();
 
     //! Slot to reset all color rendering options to default
     void on_mResetColorRenderingBtn_clicked();
@@ -154,6 +155,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //bool mRasterLayerIsInternal;
 
     QgsRasterRendererWidget *mRendererWidget = nullptr;
+    QgsMetadataWidget *mMetadataWidget = nullptr;
 
     bool rasterIsMultiBandColor();
 

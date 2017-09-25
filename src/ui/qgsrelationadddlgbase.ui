@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add relation</string>
+   <string>Add Relation</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">

@@ -31,16 +31,9 @@
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
-  , mQuadrantBtnGrp( nullptr )
-  , mDirectSymbBtnGrp( nullptr )
-  , mUpsidedownBtnGrp( nullptr )
-  , mPlacePointBtnGrp( nullptr )
-  , mPlaceLineBtnGrp( nullptr )
-  , mPlacePolygonBtnGrp( nullptr )
   , mMinPixelLimit( 0 )
   , mWidgetMode( Text )
   , mMapCanvas( mapCanvas )
-  , mCharDlg( nullptr )
   , mLoadSvgParams( false )
 {
   initWidget();
@@ -50,16 +43,9 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
 
 QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode )
   : QWidget( parent )
-  , mQuadrantBtnGrp( nullptr )
-  , mDirectSymbBtnGrp( nullptr )
-  , mUpsidedownBtnGrp( nullptr )
-  , mPlacePointBtnGrp( nullptr )
-  , mPlaceLineBtnGrp( nullptr )
-  , mPlacePolygonBtnGrp( nullptr )
   , mMinPixelLimit( 0 )
   , mWidgetMode( mode )
   , mMapCanvas( mapCanvas )
-  , mCharDlg( nullptr )
   , mLoadSvgParams( false )
 {
   initWidget();
@@ -137,20 +123,20 @@ void QgsTextFormatWidget::initWidget()
   populateFontCapitalsComboBox();
 
   // color buttons
-  mPreviewBackgroundBtn->setColorDialogTitle( tr( "Select fill color" ) );
+  mPreviewBackgroundBtn->setColorDialogTitle( tr( "Select Fill Color" ) );
   mPreviewBackgroundBtn->setContext( QStringLiteral( "labeling" ) );
   mPreviewBackgroundBtn->setColor( QColor( 255, 255, 255 ) );
-  btnTextColor->setColorDialogTitle( tr( "Select text color" ) );
+  btnTextColor->setColorDialogTitle( tr( "Select Text Color" ) );
   btnTextColor->setContext( QStringLiteral( "labeling" ) );
   btnTextColor->setDefaultColor( Qt::black );
-  btnBufferColor->setColorDialogTitle( tr( "Select buffer color" ) );
+  btnBufferColor->setColorDialogTitle( tr( "Select Buffer Color" ) );
   btnBufferColor->setContext( QStringLiteral( "labeling" ) );
   btnBufferColor->setDefaultColor( Qt::white );
-  mShapeStrokeColorBtn->setColorDialogTitle( tr( "Select stroke color" ) );
+  mShapeStrokeColorBtn->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mShapeStrokeColorBtn->setContext( QStringLiteral( "labeling" ) );
-  mShapeFillColorBtn->setColorDialogTitle( tr( "Select fill color" ) );
+  mShapeFillColorBtn->setColorDialogTitle( tr( "Select Fill Color" ) );
   mShapeFillColorBtn->setContext( QStringLiteral( "labeling" ) );
-  mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
+  mShadowColorBtn->setColorDialogTitle( tr( "Select Shadow Color" ) );
   mShadowColorBtn->setContext( QStringLiteral( "labeling" ) );
   mShadowColorBtn->setDefaultColor( Qt::black );
 
@@ -1431,7 +1417,7 @@ void QgsTextFormatWidget::enableDataDefinedAlignment( bool enable )
 QgsTextFormatDialog::QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
-  setWindowTitle( tr( "Text settings" ) );
+  setWindowTitle( tr( "Text Settings" ) );
 
   mFormatWidget = new QgsTextFormatWidget( format, mapCanvas, this );
   mFormatWidget->layout()->setContentsMargins( 0, 0, 0, 0 );

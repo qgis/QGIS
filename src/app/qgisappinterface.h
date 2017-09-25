@@ -33,6 +33,7 @@ class QgisApp;
  * plugin.
  */
 
+Q_NOWARN_DEPRECATED_PUSH
 class APP_EXPORT QgisAppInterface : public QgisInterface
 {
     Q_OBJECT
@@ -79,6 +80,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     bool addProject( const QString &projectName ) override;
     //! Start a new blank project
     void newProject( bool promptToSaveFlag = false ) override;
+
+    /**
+     * Triggered by plugins when connections have changed.
+     * This is forwarded to the GUI elements that needs to be updated (i.e. the source
+     * select dialogs and the browser widgets)
+     * \since QGIS 3.0
+     */
+    void reloadConnections( ) override;
 
     //! Get pointer to the active layer (layer selected in the legend)
     QgsMapLayer *activeLayer() override;
@@ -182,6 +191,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QList< QgsMapCanvas * > mapCanvases() override;
     QgsMapCanvas *createNewMapCanvas( const QString &name ) override;
     virtual void closeMapCanvas( const QString &name ) override;
+
+    virtual QSize iconSize( bool dockedToolbar = false ) const override;
 
     /**
      * Returns a pointer to the layer tree canvas bridge
@@ -517,5 +528,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
 };
+Q_NOWARN_DEPRECATED_POP
 
 #endif //#define QGISAPPINTERFACE_H

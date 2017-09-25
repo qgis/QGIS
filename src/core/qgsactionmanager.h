@@ -27,6 +27,7 @@
 #include "qgis_core.h"
 #include <QString>
 #include <QIcon>
+#include <QObject>
 
 #include "qgsaction.h"
 #include "qgsfeature.h"
@@ -46,8 +47,10 @@ class QgsExpressionContext;
  * based on attributes of a given feature.
  */
 
-class CORE_EXPORT QgsActionManager
+class CORE_EXPORT QgsActionManager: public QObject
 {
+    Q_OBJECT
+
   public:
     //! Constructor
     QgsActionManager( QgsVectorLayer *layer )
@@ -156,7 +159,12 @@ class CORE_EXPORT QgsActionManager
 
     QMap<QString, QUuid> mDefaultActions;
 
+    bool mOnNotifyConnected = false;
+
     QgsExpressionContext createExpressionContext() const;
+
+  private slots:
+    void onNotifyRunActions( const QString &message );
 };
 
 #endif

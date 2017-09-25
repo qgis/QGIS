@@ -34,10 +34,6 @@
 #include <QMessageBox>
 #include <QUrl>
 
-QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
-{
-}
-
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
   QApplication::setOverrideCursor( Qt::ArrowCursor );
@@ -151,10 +147,6 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   // mLayerList->resizeColumnsToContents();
 }
 
-QgsHandleBadLayers::~QgsHandleBadLayers()
-{
-}
-
 void QgsHandleBadLayers::selectionChanged()
 {
 
@@ -236,7 +228,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
       QUrl uriSource = QUrl::fromEncoded( datasource.toLatin1() );
       QUrl uriDest = QUrl::fromLocalFile( filename );
       uriDest.setQueryItems( uriSource.queryItems() );
-      datasource = QString::fromAscii( uriDest.toEncoded() );
+      datasource = QString::fromLatin1( uriDest.toEncoded() );
     }
   }
   else

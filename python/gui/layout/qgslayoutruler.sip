@@ -58,6 +58,12 @@ class QgsLayoutRuler: QWidget
  :rtype: int
 %End
 
+    void setContextMenu( QMenu *menu );
+%Docstring
+ Sets a context ``menu`` to show when right clicking occurs on the ruler.
+ Ownership of ``menu`` is unchanged.
+%End
+
   public slots:
 
     void setCursorPosition( QPointF position );
@@ -67,17 +73,21 @@ class QgsLayoutRuler: QWidget
  ``position`` is in layout coordinates.
 %End
 
-  protected:
-    virtual void paintEvent( QPaintEvent *event );
-
-    virtual void mouseMoveEvent( QMouseEvent *event );
-
-
   signals:
     void cursorPosChanged( QPointF );
 %Docstring
 Is emitted when mouse cursor coordinates change
 %End
+
+  protected:
+    virtual void paintEvent( QPaintEvent *event );
+
+    virtual void mouseMoveEvent( QMouseEvent *event );
+
+    virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
 
 };
 

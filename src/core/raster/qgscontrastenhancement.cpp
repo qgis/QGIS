@@ -32,7 +32,6 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
   : mContrastEnhancementAlgorithm( NoEnhancement )
   , mEnhancementDirty( false )
-  , mLookupTable( nullptr )
   , mRasterDataType( dataType )
 {
   mMinimumValue = minimumValuePossible( mRasterDataType );
@@ -53,7 +52,6 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
 
 QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement &ce )
   : mEnhancementDirty( true )
-  , mLookupTable( nullptr )
   , mMinimumValue( ce.mMinimumValue )
   , mMaximumValue( ce.mMaximumValue )
   , mRasterDataType( ce.mRasterDataType )

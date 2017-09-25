@@ -59,7 +59,7 @@ class SumLines(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_lines.png'))
 
     def group(self):
-        return self.tr('Vector analysis tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()
@@ -105,7 +105,7 @@ class SumLines(QgisAlgorithm):
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(poly_source.sourceCrs())
-        distArea.setEllipsoid(QgsProject.instance().ellipsoid())
+        distArea.setEllipsoid(context.project().ellipsoid())
 
         features = poly_source.getFeatures()
         total = 100.0 / poly_source.featureCount() if poly_source.featureCount() else 0

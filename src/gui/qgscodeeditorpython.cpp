@@ -43,7 +43,7 @@ void QgsCodeEditorPython::setSciLexerPython()
 
   setEdgeMode( QsciScintilla::EdgeLine );
   setEdgeColumn( 80 );
-  setEdgeColor( QColor( "#FF0000" ) );
+  setEdgeColor( QColor( 255, 0, 0 ) );
 
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
 

@@ -157,7 +157,7 @@ bool QgsEffectStack::saveProperties( QDomDocument &doc, QDomElement &element ) c
   effectElement.setAttribute( QStringLiteral( "enabled" ), mEnabled );
 
   bool ok = true;
-  Q_FOREACH ( QgsPaintEffect *effect, mEffectList )
+  for ( QgsPaintEffect *effect : mEffectList )
   {
     if ( effect )
       ok = ok && effect->saveProperties( doc, effectElement );

@@ -19,6 +19,7 @@ SET(WFS_SRCS
 
 SET (WFS_MOC_HDRS
   qgswfscapabilities.h
+  qgswfsconnection.h
   qgswfsdataitems.h
   qgswfsprovider.h
   qgswfsfeatureiterator.h
@@ -48,7 +49,8 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng  # needed by qgsvectorfilewriter.h
+  ${CMAKE_SOURCE_DIR}/src/core/symbology  # needed by qgsvectorfilewriter.h
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth

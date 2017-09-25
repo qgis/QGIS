@@ -53,4 +53,6 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     QString mDateFormat;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSFIELDVALIDATOR_H

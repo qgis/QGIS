@@ -164,18 +164,18 @@ string      "'"{str_char}*"'"
 
 ","                 { return COMMA; }
 
-{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
+{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
         bool ok;
-        yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok );
+        yylval->numberInt = cLocale.toInt( QString::fromLatin1(yytext), &ok );
         if( ok )
                 return NUMBER_INT;
 
-        yylval->numberInt64 = cLocale.toLongLong( QString::fromAscii(yytext), &ok );
+        yylval->numberInt64 = cLocale.toLongLong( QString::fromLatin1(yytext), &ok );
         if( ok )
                 return NUMBER_INT64;
 
-        yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext), &ok );
+        yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext), &ok );
         if( ok )
                 return NUMBER_FLOAT;
 

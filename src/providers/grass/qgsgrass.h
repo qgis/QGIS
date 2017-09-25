@@ -35,7 +35,7 @@ extern "C"
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
-#include <qgsrectangle.h>
+#include "qgsrectangle.h"
 #include <QFileSystemWatcher>
 #include <QProcess>
 #include <QString>
@@ -685,5 +685,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Mute mode, do not show warning dialogs.
     static bool sMute;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSGRASS_H

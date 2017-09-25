@@ -382,6 +382,13 @@ class QgsLayerMetadata
  :rtype: QgsLayerMetadata.ConstraintList
 %End
 
+    void addConstraint( const QgsLayerMetadata::Constraint &constraint );
+%Docstring
+ Adds an individual constraint to the existing constraints.
+.. seealso:: constraints()
+.. seealso:: setConstraints()
+%End
+
     void setConstraints( const QgsLayerMetadata::ConstraintList &constraints );
 %Docstring
  Sets the list of ``constraints`` associated with using the resource.
@@ -492,7 +499,7 @@ class QgsLayerMetadata
  CRS which is actually used to display and manipulate the layer within QGIS.
  This may be the case when a layer has an incorrect CRS within its metadata
  and a user has manually overridden the layer's CRS within QGIS.
-.. seealso:: setCrs()
+.. seealso:: crs()
 %End
 
     KeywordMap keywords() const;
@@ -535,6 +542,15 @@ class QgsLayerMetadata
 .. seealso:: setKeywords()
 %End
 
+    bool removeKeywords( const QString &vocabulary );
+%Docstring
+ Remove a vocabulary from the list.
+
+.. seealso:: setKeywords()
+.. seealso:: addKeywords()
+ :rtype: bool
+%End
+
     QStringList keywordVocabularies() const;
 %Docstring
  Returns a list of keyword vocabularies contained in the metadata.
@@ -557,6 +573,23 @@ class QgsLayerMetadata
 
 .. seealso:: keywordVocabularies()
  :rtype: list of str
+%End
+
+    QStringList categories() const;
+%Docstring
+ Returns categories of the resource.
+ Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
+
+.. seealso:: keywords()
+ :rtype: list of str
+%End
+
+    void setCategories( const QStringList &categories );
+%Docstring
+ Sets categories of the resource.
+ Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
+
+.. seealso:: keywords()
 %End
 
     QgsLayerMetadata::ContactList contacts() const;
@@ -613,6 +646,25 @@ class QgsLayerMetadata
 %Docstring
  Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.customProperty() ).
 .. seealso:: saveToLayer()
+%End
+
+    bool readMetadataXml( const QDomElement &metadataElement );
+%Docstring
+ Sets state from Dom document
+ \param metadataElement The Dom element corresponding to ``resourceMetadata'' tag
+
+ :return: true if successful
+ :rtype: bool
+%End
+
+    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
+%Docstring
+ Stores state in Dom node
+ \param metadataElement is a Dom element corresponding to ``resourceMetadata'' tag
+ \param document is a the dom document being written
+
+ :return: true if successful
+ :rtype: bool
 %End
 
 };

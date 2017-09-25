@@ -36,6 +36,7 @@ class TestQgsPageSizeRegistry : public QObject
     void instanceHasDefaultSizes(); // check that global instance is populated with default page sizes
     void addSize(); // check adding a size to the registry
     void findSize(); //find a size in the registry
+    void findBySize(); //find a matching size in the registry
     void decodePageSize(); //test decoding a page size string
 
   private:
@@ -64,12 +65,12 @@ void TestQgsPageSizeRegistry::cleanup()
 
 void TestQgsPageSizeRegistry::pageSizeEquality()
 {
-  QgsPageSize size1( QString( "test" ), QgsLayoutSize( 1, 2 ) );
-  QgsPageSize size2( QString( "test" ), QgsLayoutSize( 1, 2 ) );
+  QgsPageSize size1( QStringLiteral( "test" ), QgsLayoutSize( 1, 2 ) );
+  QgsPageSize size2( QStringLiteral( "test" ), QgsLayoutSize( 1, 2 ) );
   QCOMPARE( size1, size2 );
   QVERIFY( !( size1 != size2 ) );
-  QgsPageSize size3( QString( "no match" ), QgsLayoutSize( 1, 2 ) );
-  QgsPageSize size4( QString( "test" ), QgsLayoutSize( 3, 4 ) );
+  QgsPageSize size3( QStringLiteral( "no match" ), QgsLayoutSize( 1, 2 ) );
+  QgsPageSize size4( QStringLiteral( "test" ), QgsLayoutSize( 3, 4 ) );
   QVERIFY( !( size1 == size3 ) );
   QVERIFY( size1 != size3 );
   QVERIFY( !( size1 == size4 ) );
@@ -80,7 +81,7 @@ void TestQgsPageSizeRegistry::pageSizeEquality()
 
 void TestQgsPageSizeRegistry::pageCopyConstructor()
 {
-  QgsPageSize size1( QString( "test" ), QgsLayoutSize( 1, 2 ) );
+  QgsPageSize size1( QStringLiteral( "test" ), QgsLayoutSize( 1, 2 ) );
   QgsPageSize size2( size1 );
   QCOMPARE( size1.name, size2.name );
   QCOMPARE( size1.size, size2.size );
@@ -102,7 +103,7 @@ void TestQgsPageSizeRegistry::addSize()
 {
   QgsPageSizeRegistry *registry = QgsApplication::pageSizeRegistry();
   int oldSize = registry->entries().length();
-  QgsPageSize newSize( QString( "new" ), QgsLayoutSize( 1, 2 ) );
+  QgsPageSize newSize( QStringLiteral( "new" ), QgsLayoutSize( 1, 2 ) );
   registry->add( newSize );
   QCOMPARE( registry->entries().length(), oldSize + 1 );
   QVERIFY( registry->entries().indexOf( newSize ) >= 0 );
@@ -111,15 +112,27 @@ void TestQgsPageSizeRegistry::addSize()
 void TestQgsPageSizeRegistry::findSize()
 {
   QgsPageSizeRegistry *registry = QgsApplication::pageSizeRegistry();
-  QgsPageSize newSize( QString( "test size" ), QgsLayoutSize( 1, 2 ) );
+  QgsPageSize newSize( QStringLiteral( "test size" ), QgsLayoutSize( 1, 2 ) );
   registry->add( newSize );
-  QList< QgsPageSize > results = registry->find( QString( "test size" ) );
+  QList< QgsPageSize > results = registry->find( QStringLiteral( "test size" ) );
   QVERIFY( results.length() > 0 );
   QCOMPARE( results.at( 0 ), newSize );
   //check that match is case insensitive
-  QList< QgsPageSize > results2 = registry->find( QString( "tEsT Size" ) );
+  QList< QgsPageSize > results2 = registry->find( QStringLiteral( "tEsT Size" ) );
   QVERIFY( results2.length() > 0 );
   QCOMPARE( results2.at( 0 ), newSize );
+}
+
+void TestQgsPageSizeRegistry::findBySize()
+{
+  QgsPageSizeRegistry *registry = QgsApplication::pageSizeRegistry();
+  QVERIFY( registry->find( QgsLayoutSize( 1, 1 ) ).isEmpty() );
+  QCOMPARE( registry->find( QgsLayoutSize( 210, 297 ) ), QStringLiteral( "A4" ) );
+  QCOMPARE( registry->find( QgsLayoutSize( 297, 210 ) ), QStringLiteral( "A4" ) );
+  QCOMPARE( registry->find( QgsLayoutSize( 125, 176 ) ), QStringLiteral( "B6" ) );
+  QCOMPARE( registry->find( QgsLayoutSize( 21, 29.7, QgsUnitTypes::LayoutCentimeters ) ), QStringLiteral( "A4" ) );
+  // must have allowance of 0.01 units - because we round to this precision in all page size widgets
+  QCOMPARE( registry->find( QgsLayoutSize( 125.009, 175.991 ) ), QStringLiteral( "B6" ) );
 }
 
 void TestQgsPageSizeRegistry::decodePageSize()
@@ -133,7 +146,7 @@ void TestQgsPageSizeRegistry::decodePageSize()
   QCOMPARE( result.size, QgsLayoutSize( 297.0, 420.0 ) );
 
   //test with bad string
-  QgsPageSize result2( QString( "nomatch" ), QgsLayoutSize( 10.0, 20.0 ) );
+  QgsPageSize result2( QStringLiteral( "nomatch" ), QgsLayoutSize( 10.0, 20.0 ) );
   QgsPageSize expected( result2 ); //for a bad match, expect page size to be unchanged
   QVERIFY( !registry->decodePageSize( QString( "bad" ), result2 ) );
   QCOMPARE( result2, expected );

@@ -438,6 +438,13 @@ class CORE_EXPORT QgsLayerMetadata
     QgsLayerMetadata::ConstraintList constraints() const;
 
     /**
+     * Adds an individual constraint to the existing constraints.
+     * \see constraints()
+     * \see setConstraints()
+     */
+    void addConstraint( const QgsLayerMetadata::Constraint &constraint );
+
+    /**
      * Sets the list of \a constraints associated with using the resource.
      * \see constraints()
      */
@@ -545,7 +552,7 @@ class CORE_EXPORT QgsLayerMetadata
      * CRS which is actually used to display and manipulate the layer within QGIS.
      * This may be the case when a layer has an incorrect CRS within its metadata
      * and a user has manually overridden the layer's CRS within QGIS.
-     * \see setCrs()
+     * \see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -589,6 +596,14 @@ class CORE_EXPORT QgsLayerMetadata
     void addKeywords( const QString &vocabulary, const QStringList &keywords );
 
     /**
+     * Remove a vocabulary from the list.
+     *
+     * \see setKeywords()
+     * \see addKeywords()
+     */
+    bool removeKeywords( const QString &vocabulary );
+
+    /**
      * Returns a list of keyword vocabularies contained in the metadata.
      *
      * The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
@@ -609,6 +624,22 @@ class CORE_EXPORT QgsLayerMetadata
      * \see keywordVocabularies()
      */
     QStringList keywords( const QString &vocabulary ) const;
+
+    /**
+     * Returns categories of the resource.
+     * Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
+     *
+     * \see keywords()
+     */
+    QStringList categories() const;
+
+    /**
+     * Sets categories of the resource.
+     * Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
+     *
+     * \see keywords()
+     */
+    void setCategories( const QStringList &categories );
 
     /**
      * Returns a list of contact persons or entities associated with the resource.
@@ -663,6 +694,23 @@ class CORE_EXPORT QgsLayerMetadata
      * \see saveToLayer()
      */
     void readFromLayer( const QgsMapLayer *layer );
+
+    /**
+     * Sets state from Dom document
+     * \param metadataElement The Dom element corresponding to ``resourceMetadata'' tag
+     *
+     * \returns true if successful
+     */
+    bool readMetadataXml( const QDomElement &metadataElement );
+
+    /**
+     * Stores state in Dom node
+     * \param metadataElement is a Dom element corresponding to ``resourceMetadata'' tag
+     * \param document is a the dom document being written
+     *
+     * \returns true if successful
+     */
+    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
   private:
 

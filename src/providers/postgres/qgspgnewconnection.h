@@ -32,18 +32,17 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     //! Constructor
     QgsPgNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsPgNewConnection();
-
     //! Tests the connection using the parameters supplied
     void testConnection();
   public slots:
     void accept() override;
     void on_btnConnect_clicked();
     void on_cb_geometryColumnsOnly_clicked();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#postgis-layers" ) ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
+    void showHelp();
+
 };
 
 #endif //  QGSPGNEWCONNECTIONBASE_H

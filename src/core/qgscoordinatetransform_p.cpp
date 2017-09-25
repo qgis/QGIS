@@ -236,7 +236,7 @@ QString QgsCoordinateTransformPrivate::datumTransformString( int datumTransform 
   QString transformString;
 
   sqlite3 *db = nullptr;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
     sqlite3_close( db );

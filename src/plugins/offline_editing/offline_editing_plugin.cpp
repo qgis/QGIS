@@ -20,11 +20,11 @@
 #include "offline_editing_plugin_gui.h"
 #include "offline_editing_progress_dialog.h"
 
-#include <qgisinterface.h>
+#include "qgisinterface.h"
 #include "qgsguiutils.h"
-#include <qgsproject.h>
-#include <qgsmessagebar.h>
-#include <qgsmapcanvas.h>
+#include "qgsproject.h"
+#include "qgsmessagebar.h"
+#include "qgsmapcanvas.h"
 
 #include <QAction>
 

@@ -38,7 +38,6 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf
 
 QgsComposerFrame::QgsComposerFrame()
   : QgsComposerItem( 0, 0, 0, 0, nullptr )
-  , mMultiFrame( nullptr )
   , mHidePageIfEmpty( false )
   , mHideBackgroundIfEmpty( false )
 {
@@ -160,8 +159,8 @@ void QgsComposerFrame::setSceneRect( const QRectF &rectangle )
 
     //check minimum size
     QSizeF minSize = mMultiFrame->minFrameSize( frameIndex );
-    fixedRect.setWidth( qMax( minSize.width(), fixedRect.width() ) );
-    fixedRect.setHeight( qMax( minSize.height(), fixedRect.height() ) );
+    fixedRect.setWidth( std::max( minSize.width(), fixedRect.width() ) );
+    fixedRect.setHeight( std::max( minSize.height(), fixedRect.height() ) );
   }
 
   QgsComposerItem::setSceneRect( fixedRect );

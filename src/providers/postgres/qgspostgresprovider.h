@@ -32,6 +32,7 @@ class QgsGeometry;
 class QgsPostgresFeatureIterator;
 class QgsPostgresSharedData;
 class QgsPostgresTransaction;
+class QgsPostgresListener;
 
 #include "qgsdatasourceuri.h"
 
@@ -48,6 +49,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+    enum Relkind
+    {
+      Unknown,
+      OrdinaryTable, // r
+      Index, // i
+      Sequence, // s
+      View, // v
+      MaterializedView, // m
+      CompositeType, // c
+      ToastTable, // t
+      ForeignTable // f
+    };
+    Q_ENUM( Relkind );
 
     /** Import a vector layer into the database
      * \param options options for provider, specified via a map of option name
@@ -72,7 +86,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    explicit QgsPostgresProvider( QString const &uri = "" );
+    explicit QgsPostgresProvider( QString const &uri = QString() );
 
 
     virtual ~QgsPostgresProvider();
@@ -184,14 +198,26 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
-  signals:
+    /** Returns true if the data source has metadata, false otherwise. For
+     * example, if the kind of relation for the layer is a view or a
+     * materialized view, then no metadata are associated with the data
+     * source.
+     *
+     * \returns true if data source has metadata, false otherwise.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool hasMetadata() const override;
 
     /**
-     *   This is emitted whenever the worker thread has fully calculated the
-     *   PostGIS extents for this layer, and its event has been received by this
-     *   provider.
+     * Launch a listening thead to listen to postgres NOTIFY on "qgis" channel
+     * the notification is transformed into a Qt signal.
+     *
+     * \since QGIS 3.0
      */
-    void fullExtentCalculated();
+    void setListening( bool isListening ) override;
+
+  signals:
 
     /**
      *   This is emitted when this provider is satisfied that all objects
@@ -206,6 +232,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void repaintRequested();
 
   private:
+    Relkind relkind() const;
 
     bool declareCursor( const QString &cursorName,
                         const QgsAttributeList &fetchAttributes,
@@ -407,6 +434,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setTransaction( QgsTransaction *transaction ) override;
 
     QHash<int, QString> mDefaultValues;
+
+    bool mCheckPrimaryKeyUnicity = true;
+
+    std::unique_ptr< QgsPostgresListener > mListener;
 };
 
 
@@ -475,5 +506,7 @@ class QgsPostgresSharedData
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

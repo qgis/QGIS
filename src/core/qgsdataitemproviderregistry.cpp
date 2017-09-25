@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 
-typedef QList<QgsDataItemProvider *> dataItemProviders_t();
+typedef QList<QgsDataItemProvider *> *dataItemProviders_t();
 
 
 /**
@@ -36,10 +36,19 @@ typedef QList<QgsDataItemProvider *> dataItemProviders_t();
 class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 {
   public:
-    QgsDataItemProviderFromPlugin( const QString &name, dataCapabilities_t *capabilitiesFunc, dataItem_t *dataItemFunc )
+
+    /**
+     * QgsDataItemProviderFromPlugin constructor
+     * \param name plugin name
+     * \param capabilitiesFunc function pointer to the data capabilities
+     * \param dataItemFunc function pointer to the data items
+     * \param handlesDirectoryPathFunc function pointer to handlesDirectoryPath
+     */
+    QgsDataItemProviderFromPlugin( const QString &name, dataCapabilities_t *capabilitiesFunc, dataItem_t *dataItemFunc, handlesDirectoryPath_t *handlesDirectoryPathFunc )
       : mName( name )
       , mCapabilitiesFunc( capabilitiesFunc )
       , mDataItemFunc( dataItemFunc )
+      , mHandlesDirectoryPathFunc( handlesDirectoryPathFunc )
     {
     }
 
@@ -49,10 +58,19 @@ class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override { return mDataItemFunc( path, parentItem ); }
 
+    bool handlesDirectoryPath( const QString &path ) override
+    {
+      if ( mHandlesDirectoryPathFunc )
+        return mHandlesDirectoryPathFunc( path );
+      else
+        return false;
+    }
+
   protected:
     QString mName;
     dataCapabilities_t *mCapabilitiesFunc = nullptr;
     dataItem_t *mDataItemFunc = nullptr;
+    handlesDirectoryPath_t *mHandlesDirectoryPathFunc = nullptr;
 };
 
 
@@ -71,8 +89,10 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
     dataItemProviders_t *dataItemProvidersFn = reinterpret_cast< dataItemProviders_t * >( cast_to_fptr( library->resolve( "dataItemProviders" ) ) );
     if ( dataItemProvidersFn )
     {
+      QList<QgsDataItemProvider *> *providerList = dataItemProvidersFn();
       // the function is a factory - we keep ownership of the returned providers
-      mProviders << dataItemProvidersFn();
+      mProviders << *providerList;
+      delete providerList;
     }
 
     // legacy support - using dataItem() and dataCapabilities() methods
@@ -91,7 +111,9 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
       continue;
     }
 
-    mProviders.append( new QgsDataItemProviderFromPlugin( library->fileName(), dataCapabilities, dataItem ) );
+    handlesDirectoryPath_t *handlesDirectoryPath = reinterpret_cast< handlesDirectoryPath_t * >( cast_to_fptr( library->resolve( "handlesDirectoryPath" ) ) );
+
+    mProviders.append( new QgsDataItemProviderFromPlugin( library->fileName(), dataCapabilities, dataItem, handlesDirectoryPath ) );
   }
 }
 

@@ -21,7 +21,7 @@
 #include <QModelIndex>
 #include <QItemSelectionModel>
 
-#include <time.h>
+#include <ctime>
 
 #include "ui_qgsattributetabledialog.h"
 #include "qgssearchwidgetwrapper.h"

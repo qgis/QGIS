@@ -32,7 +32,7 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
 {
   public:
     //! Constructor
-    QgsFeatureStore();
+    QgsFeatureStore() = default;
 
     //! Constructor
     QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );

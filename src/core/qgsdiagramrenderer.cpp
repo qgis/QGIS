@@ -113,7 +113,7 @@ void QgsDiagramLayerSettings::setCoordinateTransform( const QgsCoordinateTransfo
 
 void QgsDiagramLayerSettings::readXml( const QDomElement &elem )
 {
-  QDomNodeList propertyElems = elem.elementsByTagName( "properties" );
+  QDomNodeList propertyElems = elem.elementsByTagName( QStringLiteral( "properties" ) );
   if ( !propertyElems.isEmpty() )
   {
     ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), sPropertyDefinitions );
@@ -135,7 +135,7 @@ void QgsDiagramLayerSettings::readXml( const QDomElement &elem )
 void QgsDiagramLayerSettings::writeXml( QDomElement &layerElem, QDomDocument &doc ) const
 {
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
-  QDomElement propertiesElem = doc.createElement( "properties" );
+  QDomElement propertiesElem = doc.createElement( QStringLiteral( "properties" ) );
   ( void )mDataDefinedProperties.writeXml( propertiesElem, sPropertyDefinitions );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
@@ -258,7 +258,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem )
   barWidth = elem.attribute( QStringLiteral( "barWidth" ) ).toDouble();
 
   if ( elem.hasAttribute( QStringLiteral( "angleOffset" ) ) )
-    rotationOffset = fmod( 360.0 - elem.attribute( QStringLiteral( "angleOffset" ) ).toInt() / 16.0, 360.0 );
+    rotationOffset = std::fmod( 360.0 - elem.attribute( QStringLiteral( "angleOffset" ) ).toInt() / 16.0, 360.0 );
   else
     rotationOffset = elem.attribute( QStringLiteral( "rotationOffset" ) ).toDouble();
 
@@ -381,7 +381,7 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
   categoryElem.setAttribute( QStringLiteral( "minimumSize" ), QString::number( minimumSize ) );
   categoryElem.setAttribute( QStringLiteral( "rotationOffset" ), QString::number( rotationOffset ) );
 
-  int nCats = qMin( categoryColors.size(), categoryAttributes.size() );
+  int nCats = std::min( categoryColors.size(), categoryAttributes.size() );
   for ( int i = 0; i < nCats; ++i )
   {
     QDomElement attributeElem = doc.createElement( QStringLiteral( "attribute" ) );
@@ -396,8 +396,7 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
 }
 
 QgsDiagramRenderer::QgsDiagramRenderer()
-  : mDiagram( nullptr )
-  , mShowAttributeLegend( true )
+  : mShowAttributeLegend( true )
 {
 }
 
@@ -690,7 +689,7 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXml( const QDomElement &elem, c
 
   delete mDataDefinedSizeLegend;
 
-  QDomElement ddsLegendSizeElem = elem.firstChildElement( "data-defined-size-legend" );
+  QDomElement ddsLegendSizeElem = elem.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
   if ( !ddsLegendSizeElem.isNull() )
   {
     mDataDefinedSizeLegend = QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context );

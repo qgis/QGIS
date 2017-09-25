@@ -303,7 +303,7 @@ bool eVisGenericEventBrowserGui::initBrowser()
     pbtnNext->setEnabled( true );
   }
 
-  setWindowTitle( tr( "Event Browser - Displaying records 01 of %1" ).arg( mFeatureIds.size(), 2, 10, QChar( '0' ) ) );
+  setWindowTitle( tr( "Event Browser - Displaying Records 01 of %1" ).arg( mFeatureIds.size(), 2, 10, QChar( '0' ) ) );
 
   //Set Options tab gui items
   initOptionsTab();
@@ -997,7 +997,7 @@ void eVisGenericEventBrowserGui::on_pbtnNext_clicked()
     pbtnPrevious->setEnabled( true );
     mCurrentFeatureIndex++;
 
-    setWindowTitle( tr( "Event Browser - Displaying records %1 of %2" )
+    setWindowTitle( tr( "Event Browser - Displaying Records %1 of %2" )
                     .arg( mCurrentFeatureIndex + 1, 2, 10, QChar( '0' ) ).arg( mFeatureIds.size(), 2, 10, QChar( '0' ) ) );
 
     loadRecord();
@@ -1019,7 +1019,7 @@ void eVisGenericEventBrowserGui::on_pbtnPrevious_clicked()
     pbtnNext->setEnabled( true );
     mCurrentFeatureIndex--;
 
-    setWindowTitle( tr( "Event Browser - Displaying records %1 of %2" )
+    setWindowTitle( tr( "Event Browser - Displaying Records %1 of %2" )
                     .arg( mCurrentFeatureIndex + 1, 2, 10, QChar( '0' ) ).arg( mFeatureIds.size(), 2, 10, QChar( '0' ) ) );
 
     loadRecord();

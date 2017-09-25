@@ -32,7 +32,11 @@ class CORE_EXPORT QgsRasterTransparency
 {
 
   public:
-    QgsRasterTransparency();
+
+    /**
+     * Constructor for QgsRasterTransparency.
+     */
+    QgsRasterTransparency() = default;
 
     //
     // Structs to hold transparent pixel vlaues
@@ -82,8 +86,14 @@ class CORE_EXPORT QgsRasterTransparency
     //! True if there are no entries in the pixel lists except the nodata value
     bool isEmpty() const;
 
+    /**
+     * Writes the transparency information to an XML document.
+     */
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
+    /**
+     * Reads the transparency information from an XML document.
+     */
     void readXml( const QDomElement &elem );
 
   private:

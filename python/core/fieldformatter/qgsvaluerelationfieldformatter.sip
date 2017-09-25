@@ -35,6 +35,9 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
     typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
 
     QgsValueRelationFieldFormatter();
+%Docstring
+ Constructor for QgsValueRelationFieldFormatter.
+%End
 
     virtual QString id() const;
 

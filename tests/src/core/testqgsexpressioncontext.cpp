@@ -724,8 +724,8 @@ void TestQgsExpressionContext::valuesAsMap()
 
   //add a scope to the context
   QgsExpressionContextScope *s1 = new QgsExpressionContextScope();
-  s1->setVariable( "v1", "t1" );
-  s1->setVariable( "v2", "t2" );
+  s1->setVariable( QStringLiteral( "v1" ), "t1" );
+  s1->setVariable( QStringLiteral( "v2" ), "t2" );
   context << s1;
 
   QVariantMap m = context.variablesToMap();
@@ -734,8 +734,8 @@ void TestQgsExpressionContext::valuesAsMap()
   QCOMPARE( m.value( "v2" ).toString(), QString( "t2" ) );
 
   QgsExpressionContextScope *s2 = new QgsExpressionContextScope();
-  s2->setVariable( "v2", "t2a" );
-  s2->setVariable( "v3", "t3" );
+  s2->setVariable( QStringLiteral( "v2" ), "t2a" );
+  s2->setVariable( QStringLiteral( "v3" ), "t3" );
   context << s2;
 
   m = context.variablesToMap();

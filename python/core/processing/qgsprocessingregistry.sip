@@ -89,7 +89,8 @@ class QgsProcessingRegistry : QObject
  :rtype: QgsProcessingAlgorithm
 %End
 
-    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const /Factory/;
+
+    QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const /TransferBack/;
 %Docstring
  Creates a new instance of an algorithm by its ID. If no matching algorithm is found, a None
  is returned. Callers take responsibility for deleting the returned object.

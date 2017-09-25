@@ -21,7 +21,6 @@
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mWidget( nullptr )
   , mCanvas( canvas )
   , mMessageBar( messageBar )
   , mIndeterminateState( false )
@@ -50,11 +49,13 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
   bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
   bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
+  bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
   mWidget->setOrderByValue( orderByValue );
+  mWidget->setOpenFormButtonVisible( showOpenFormButton );
   if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );

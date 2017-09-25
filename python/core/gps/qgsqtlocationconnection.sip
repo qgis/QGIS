@@ -28,7 +28,6 @@ class QgsQtLocationConnection: QgsGPSConnection
 %End
   public:
     QgsQtLocationConnection();
-    ~QgsQtLocationConnection();
 
   protected slots:
     void broadcastConnectionAvailable();

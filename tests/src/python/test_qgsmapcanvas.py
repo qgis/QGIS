@@ -47,6 +47,14 @@ class TestQgsMapCanvas(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
+    def testGettersSetters(self):
+        canvas = QgsMapCanvas()
+
+        # should be disabled by default
+        self.assertFalse(canvas.previewJobsEnabled())
+        canvas.setPreviewJobsEnabled(True)
+        self.assertTrue(canvas.previewJobsEnabled())
+
     def testDeferredUpdate(self):
         """ test that map canvas doesn't auto refresh on deferred layer update """
         canvas = QgsMapCanvas()

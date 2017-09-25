@@ -59,7 +59,7 @@ Eliminates the horizontal triangles by swapping or by insertion of new points. I
 Estimates the first derivative a point. Return true in case of succes and false otherwise
  :rtype: bool
 %End
-    bool estimateFirstDerivatives( QProgressDialog *d = 0 );
+    bool estimateFirstDerivatives( QgsFeedback *feedback = 0 );
 %Docstring
 This method adds the functionality of estimating normals at the data points. Return true in the case of success and false otherwise
  :rtype: bool

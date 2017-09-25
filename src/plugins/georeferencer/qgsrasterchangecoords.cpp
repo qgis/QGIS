@@ -15,7 +15,7 @@
 
 #include "qgsrasterchangecoords.h"
 
-#include <qgspoint.h>
+#include "qgspoint.h"
 #include <gdal.h>
 
 #include <QFile>

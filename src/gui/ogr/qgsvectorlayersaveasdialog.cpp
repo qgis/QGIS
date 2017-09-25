@@ -37,7 +37,6 @@ static const int COLUMN_IDX_EXPORT_AS_DISPLAYED_VALUE = 2;
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mCRS( srsid )
-  , mLayer( 0 )
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
@@ -73,6 +72,8 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 void QgsVectorLayerSaveAsDialog::setup()
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveAsDialog::showHelp );
+
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
 
@@ -229,7 +230,7 @@ void QgsVectorLayerSaveAsDialog::accept()
       {
         QMessageBox msgBox;
         msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "The layer already exists" ) );
+        msgBox.setWindowTitle( tr( "The Layer Already Exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file or overwrite the layer?" ) );
         QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
         QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite layer" ), QMessageBox::ActionRole );
@@ -258,7 +259,7 @@ void QgsVectorLayerSaveAsDialog::accept()
       {
         QMessageBox msgBox;
         msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "The layer already exists" ) );
+        msgBox.setWindowTitle( tr( "The Layer Already Exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file, overwrite the layer or append features to the layer?" ) );
         QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
         QPushButton *overwriteLayerButton = msgBox.addButton( tr( "Overwrite layer" ), QMessageBox::ActionRole );
@@ -279,7 +280,7 @@ void QgsVectorLayerSaveAsDialog::accept()
       {
         QMessageBox msgBox;
         msgBox.setIcon( QMessageBox::Question );
-        msgBox.setWindowTitle( tr( "The layer already exists" ) );
+        msgBox.setWindowTitle( tr( "The Layer Already Exists" ) );
         msgBox.setText( tr( "Do you want to overwrite the whole file or append features to the layer?" ) );
         QPushButton *overwriteFileButton = msgBox.addButton( tr( "Overwrite file" ), QMessageBox::ActionRole );
         QPushButton *appendToLayerButton = msgBox.addButton( tr( "Append to layer" ), QMessageBox::ActionRole );
@@ -470,7 +471,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
   if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
   {
-    if ( driverMetaData.driverOptions.size() != 0 )
+    if ( !driverMetaData.driverOptions.empty() )
     {
       mDatasourceOptionsGroupBox->setVisible( true );
       QList<QPair<QLabel *, QWidget *> > controls = createControls( driverMetaData.driverOptions );
@@ -487,7 +488,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
       mDatasourceOptionsGroupBox->setVisible( false );
     }
 
-    if ( driverMetaData.layerOptions.size() != 0 )
+    if ( !driverMetaData.layerOptions.empty() )
     {
       mLayerOptionsGroupBox->setVisible( true );
       QList<QPair<QLabel *, QWidget *> > controls = createControls( driverMetaData.layerOptions );
@@ -967,4 +968,9 @@ void QgsVectorLayerSaveAsDialog::on_mDeselectAllAttributes_clicked()
   }
   mAttributeTableItemChangedSlotEnabled = true;
   mReplaceRawFieldValuesStateChangedSlotEnabled = true;
+}
+
+void QgsVectorLayerSaveAsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#save-layer-from-an-existing-file" ) );
 }

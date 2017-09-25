@@ -30,6 +30,7 @@
 QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/RasterCalc/geometry" ) ).toByteArray() );
@@ -224,6 +225,11 @@ void QgsRasterCalcDialog::on_mButtonBox_accepted()
   s.setValue( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QVariant( QFileInfo( mOutputLayerLineEdit->text() ).absolutePath() ) );
 }
 
+void QgsRasterCalcDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-calculator" ) );
+}
+
 void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()
 {
   QgsSettings s;
@@ -350,12 +356,12 @@ void QgsRasterCalcDialog::on_mDividePushButton_clicked()
 
 void QgsRasterCalcDialog::on_mSqrtButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " sqrt ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::sqrt ( " ) );
 }
 
 void QgsRasterCalcDialog::on_mCosButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " cos ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::cos ( " ) );
 }
 
 void QgsRasterCalcDialog::on_mSinButton_clicked()

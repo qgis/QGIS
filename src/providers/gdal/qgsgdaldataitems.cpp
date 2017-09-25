@@ -24,7 +24,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
-                                    QString name, QString path, QString uri,
+                                    const QString &name, const QString &path, const QString &uri,
                                     QStringList *sublayers )
   : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, QStringLiteral( "gdal" ) )
 {
@@ -34,6 +34,8 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
   if ( sublayers && !sublayers->isEmpty() )
   {
     mSublayers = *sublayers;
+    // We have sublayers: we are able to create children!
+    mCapabilities |= Fertile;
     setState( NotPopulated );
   }
   else
@@ -48,6 +50,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
     GDALClose( hDS );
   }
 }
+
 
 bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
@@ -69,14 +72,14 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
 {
-  QgsDebugMsg( "Entered, path=" + path() );
+  QgsDebugMsgLevel( "Entered, path=" + path(), 3 );
   QVector<QgsDataItem *> children;
 
   // get children from sublayers
   if ( !mSublayers.isEmpty() )
   {
     QgsDataItem *childItem = nullptr;
-    QgsDebugMsg( QString( "got %1 sublayers" ).arg( mSublayers.count() ) );
+    QgsDebugMsgLevel( QString( "got %1 sublayers" ).arg( mSublayers.count() ), 3 );
     for ( int i = 0; i < mSublayers.count(); i++ )
     {
       QString name = mSublayers[i];
@@ -87,8 +90,8 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
         name = name.mid( name.indexOf( mPath ) + mPath.length() + 1 );
       else
       {
-        // remove driver name and file name
-        name.remove( name.split( ':' )[0] );
+        // remove driver name and file name and initial ':'
+        name.remove( name.split( ':' )[0] + ':' );
         name.remove( mPath );
       }
       // remove any : or " left over
@@ -99,7 +102,9 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
 
       childItem = new QgsGdalLayerItem( this, name, mSublayers[i], mSublayers[i] );
       if ( childItem )
-        this->addChildItem( childItem );
+      {
+        children.append( childItem );
+      }
     }
   }
 
@@ -168,7 +173,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   info.setFile( path );
   QString name = info.fileName();
 
-  QgsDebugMsgLevel( "thePath= " + path + " tmpPath= " + tmpPath + " name= " + name
+  QgsDebugMsgLevel( "path= " + path + " tmpPath= " + tmpPath + " name= " + name
                     + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
   // allow only normal files or VSIFILE items to continue
@@ -236,12 +241,32 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 #endif
   }
 
+  // Filters out the OGR/GDAL supported formats that can contain multiple layers
+  // and should be treated like a DB: GeoPackage and SQLite
+  // NOTE: this formats are scanned for rasters too and they are handled
+  //       by the "ogr" provider. For this reason they must
+  //       be skipped by "gdal" provider or the rasters will be listed
+  //       twice. ogrSupportedDbLayersExtensions must be kept in sync
+  //       with the companion variable (same name) in the ogr provider
+  //       class
+  // TODO: add more OGR supported multiple layers formats here!
+  QStringList ogrSupportedDbLayersExtensions;
+  ogrSupportedDbLayersExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
+  QStringList ogrSupportedDbDriverNames;
+  ogrSupportedDbDriverNames << QStringLiteral( "GPKG" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
+
   // return item without testing if:
   // scanExtSetting
   // or zipfile and scan zip == "Basic scan"
   if ( scanExtSetting ||
        ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
   {
+    // Skip this layer if it's handled by ogr:
+    if ( ogrSupportedDbLayersExtensions.contains( suffix ) )
+    {
+      return nullptr;
+    }
+
     // if this is a VRT file make sure it is raster VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )
     {
@@ -275,6 +300,15 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   if ( ! hDS )
   {
     QgsDebugMsg( QString( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+    return nullptr;
+  }
+
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDS );
+  QString ogrDriverName = GDALGetDriverShortName( hDriver );
+
+  // Skip this layer if it's handled by ogr:
+  if ( ogrSupportedDbDriverNames.contains( ogrDriverName ) )
+  {
     return nullptr;
   }
 

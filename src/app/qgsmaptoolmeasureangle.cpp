@@ -29,8 +29,7 @@
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mRubberBand( nullptr )
-  , mResultDisplay( nullptr )
+
 {
   mToolName = tr( "Measure angle" );
 
@@ -45,7 +44,7 @@ QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
 
 void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 )
+  if ( !mRubberBand || mAnglePoints.empty() || mAnglePoints.size() > 2 )
   {
     return;
   }
@@ -64,9 +63,9 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
     double azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
     double azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), point );
     double resultAngle = azimuthTwo - azimuthOne;
-    QgsDebugMsg( QString::number( qAbs( resultAngle ) ) );
+    QgsDebugMsg( QString::number( std::fabs( resultAngle ) ) );
     QgsDebugMsg( QString::number( M_PI ) );
-    if ( qAbs( resultAngle ) > M_PI )
+    if ( std::fabs( resultAngle ) > M_PI )
     {
       if ( resultAngle < 0 )
       {
@@ -90,7 +89,7 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
     mAnglePoints.clear();
   }
 
-  if ( mAnglePoints.size() < 1 )
+  if ( mAnglePoints.empty() )
   {
     if ( !mResultDisplay )
     {
@@ -163,9 +162,9 @@ void QgsMapToolMeasureAngle::updateSettings()
   double azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
   double azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 2 ) );
   double resultAngle = azimuthTwo - azimuthOne;
-  QgsDebugMsg( QString::number( fabs( resultAngle ) ) );
+  QgsDebugMsg( QString::number( std::fabs( resultAngle ) ) );
   QgsDebugMsg( QString::number( M_PI ) );
-  if ( fabs( resultAngle ) > M_PI )
+  if ( std::fabs( resultAngle ) > M_PI )
   {
     if ( resultAngle < 0 )
     {

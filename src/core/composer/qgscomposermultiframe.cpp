@@ -68,7 +68,7 @@ void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
 
 void QgsComposerMultiFrame::recalculateFrameSizes()
 {
-  if ( mFrameItems.size() < 1 )
+  if ( mFrameItems.empty() )
   {
     return;
   }
@@ -124,7 +124,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     while ( ( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
-      int page = qFloor( ( currentItem->pos().y() + currentItem->rect().height() ) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
+      int page = std::floor( ( currentItem->pos().y() + currentItem->rect().height() ) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
 
       if ( mResizeMode == RepeatOnEveryPage )
       {
@@ -182,7 +182,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
 void QgsComposerMultiFrame::recalculateFrameRects()
 {
-  if ( mFrameItems.size() < 1 )
+  if ( mFrameItems.empty() )
   {
     //no frames, nothing to do
     return;

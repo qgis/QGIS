@@ -110,7 +110,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( m.layer(), mVL );
       QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
-      QCOMPARE( m.distance(), sqrt( 2.0 ) );
+      QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
       QCOMPARE( m.vertexIndex(), 2 );
     }
 
@@ -158,7 +158,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( lst[1].point(), QgsPointXY( 1, 1 ) );
       QCOMPARE( lst[1].distance(), 1. );
       QCOMPARE( lst[2].point(), QgsPointXY( 0, 1 ) );
-      QCOMPARE( lst[2].distance(), sqrt( 2 ) );
+      QCOMPARE( lst[2].distance(), std::sqrt( 2 ) );
 
       QgsPointLocator::MatchList lst2 = loc.verticesInRect( QgsPointXY( 1, 0 ), 1 );
       QCOMPARE( lst2.count(), 2 );
@@ -265,7 +265,7 @@ class TestQgsPointLocator : public QObject
 
     void testNullGeometries()
     {
-      QgsVectorLayer *vlNullGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsVectorLayer *vlNullGeom = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       ff.setGeometry( QgsGeometry() );
       QgsFeatureList flist;
@@ -285,7 +285,7 @@ class TestQgsPointLocator : public QObject
 
     void testEmptyGeometries()
     {
-      QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsGeometry g;
       g.setGeometry( new QgsPolygonV2() );

@@ -23,7 +23,7 @@
 QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mLayer( layer )
-  , mMessageBar( nullptr )
+
 {
   QgsAttributeEditorContext dlgContext = context;
   dlgContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
@@ -44,7 +44,7 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/SelectByForm/geometry" ) ).toByteArray() );
 
-  setWindowTitle( tr( "Select features by value" ) );
+  setWindowTitle( tr( "Select Features by Value" ) );
 }
 
 QgsSelectByFormDialog::~QgsSelectByFormDialog()
@@ -67,8 +67,6 @@ void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 {
-  QgsFeatureIds ids;
-
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )

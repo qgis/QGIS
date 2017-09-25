@@ -151,7 +151,7 @@ QgsAuthMethodRegistry::~QgsAuthMethodRegistry()
 
   while ( it != mAuthMethods.end() )
   {
-    QgsDebugMsg( QString( "cleanup: %1" ).arg( it->first ) );
+    QgsDebugMsgLevel( QString( "cleanup: %1" ).arg( it->first ), 5 );
     QString lib = it->second->library();
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
@@ -228,7 +228,7 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
     if ( asHtml )
     {
-      list += "<br></li>";
+      list += QLatin1String( "<br></li>" );
     }
     else
     {
@@ -260,7 +260,7 @@ void QgsAuthMethodRegistry::setLibraryDirectory( const QDir &path )
 // typedef for the QgsDataProvider class factory
 typedef QgsAuthMethod *classFactoryFunction_t();
 
-QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
+std::unique_ptr<QgsAuthMethod> QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
 {
   // load the plugin
   QString lib = library( authMethodKey );
@@ -299,7 +299,7 @@ QgsAuthMethod *QgsAuthMethodRegistry::authMethod( const QString &authMethodKey )
     return nullptr;
   }
 
-  QgsAuthMethod *authMethod = classFactory();
+  std::unique_ptr< QgsAuthMethod > authMethod( classFactory() );
   if ( !authMethod )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to instantiate the auth method plugin %1" ).arg( lib ) );
@@ -316,7 +316,7 @@ typedef QWidget *editFactoryFunction_t( QWidget *parent );
 QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidget *parent )
 {
   editFactoryFunction_t *editFactory =
-    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, "editWidget" ) ) );
+    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, QStringLiteral( "editWidget" ) ) ) );
 
   if ( !editFactory )
     return nullptr;
@@ -342,9 +342,9 @@ QFunctionPointer QgsAuthMethodRegistry::function( QString const &authMethodKey,
   }
 }
 
-QLibrary *QgsAuthMethodRegistry::authMethodLibrary( const QString &authMethodKey ) const
+std::unique_ptr<QLibrary> QgsAuthMethodRegistry::authMethodLibrary( const QString &authMethodKey ) const
 {
-  QLibrary *myLib = new QLibrary( library( authMethodKey ) );
+  std::unique_ptr< QLibrary > myLib( new QLibrary( library( authMethodKey ) ) );
 
   QgsDebugMsg( "Library name is " + myLib->fileName() );
 
@@ -352,9 +352,6 @@ QLibrary *QgsAuthMethodRegistry::authMethodLibrary( const QString &authMethodKey
     return myLib;
 
   QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
-
-  delete myLib;
-
   return nullptr;
 }
 

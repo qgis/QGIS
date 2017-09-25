@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Create a New Oracle connection</string>
+   <string>Create a New Oracle Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>

@@ -19,7 +19,6 @@
 
 #include "geometry/qgsabstractgeometry.h"
 #include "geometry/qgspoint.h"
-#include <qmath.h>
 
 class QgsGeometryEngine;
 

@@ -1,3 +1,6 @@
+# append :* to avoid in word check_spelling
+# append :% to exclude script files
+#...:…:%
 abailable:available
 abandonded:abandoned
 abandonned:abandoned
@@ -388,7 +391,11 @@ alliviate:alleviate
 allmost:almost
 allopone:allophone
 allopones:allophones
+allow one to (\S+):allow %sing
+allow to (\S+):allow %sing
 allowd:allowed:*
+allows one to (\S+):allows %sing
+allows to (\S+):allows %sing
 allpication:application
 allready:already
 allthough:although
@@ -401,6 +408,7 @@ alocated:allocated
 alocates:allocates
 alocating:allocating
 alochol:alcohol
+alog:along
 alogirhtms:algorithms
 alogrithm:algorithm
 alogrithms:algorithms
@@ -622,9 +630,9 @@ archtype:archetype
 archtypes:archetypes
 archvie:archive
 archvies:archives
+are'nt:aren't
 aready:already
 arent:aren't
-are'nt:aren't
 areodynamics:aerodynamics
 argment:argument
 argments:arguments
@@ -1138,10 +1146,10 @@ casues:causes
 casuing:causing
 casulaties:casualties
 casulaty:casualty
-catalogue:catalog
 catagories:categories
 catagorized:categorized
 catagory:category
+catalogue:catalog
 catched:caught
 catepillar:caterpillar
 catepillars:caterpillars
@@ -1235,8 +1243,8 @@ chcek:check
 chceked:checked
 chceking:checking
 chceks:checks
-check-box:checkbox
 check box:checkbox
+check-box:checkbox
 checkk:check
 checksuming:checksumming
 cheif:chief
@@ -1302,6 +1310,7 @@ clipoing:clipping
 closeing:closing
 cmoputer:computer
 cna:can
+co-incided:coincided
 Coca Cola:Coca-Cola
 coctail:cocktail
 codespel:codespell
@@ -1314,7 +1323,6 @@ cofiguring:configuring
 coform:conform
 cognizent:cognizant
 coincedentally:coincidentally
-co-incided:coincided
 colaboration:collaboration
 colaborations:collaborations
 colateral:collateral
@@ -1877,10 +1885,12 @@ dacquiri:daiquiri
 daed:dead
 dael:deal
 dafault:default
+dafaut:default
 dalmation:dalmatian
 damenor:demeanor
 dammage:damage
 Dardenelles:Dardanelles
+databse:database
 daugher:daughter
 deafault:default
 deafult:default
@@ -2170,9 +2180,9 @@ dictionarys:dictionaries:*
 dictionay:dictionary
 dictionnary:dictionary
 dicussed:discussed
-didnt:didn't
-didnt':didn't
 did'nt:didn't
+didnt':didn't
+didnt:didn't
 diea:idea
 dieing:dying
 dieties:deities
@@ -2346,6 +2356,7 @@ divison:division
 divisons:divisions
 divsion:division
 divsions:divisions
+do'nt:don't
 doccument:document
 doccumented:documented
 doccuments:documents
@@ -2363,14 +2374,14 @@ documention:documentation
 documetation:documentation
 documment:document
 documments:documents
-doens:does
 doens't:doesn't
-doesen't:doesn't
-doesnt:doesn't
-doesnt':doesn't
+doens:does
 does'nt:doesn't
-doesnt't:doesn't
 does't:doesn't
+doesen't:doesn't
+doesnt':doesn't
+doesnt't:doesn't
+doesnt:doesn't
 doign:doing
 doman:domain
 domans:domains
@@ -2379,20 +2390,19 @@ dominent:dominant
 dominiant:dominant
 donig:doing
 donnot:do not
-dont:don't
 dont':don't
-do'nt:don't
 dont't:don't
+dont:don't
 donwload:download
 donwloaded:downloaded
 donwloading:downloading
 donwloads:downloads
-dosent':doesn't
 dosen't:doesn't
+dosent':doesn't
 doub:doubt
-doulbe:double
 double click:double-click
 doubleclick:double-click
+doulbe:double
 dowloads:downloads
 downlad:download
 downlads:downloads
@@ -2899,6 +2909,7 @@ facillitate:facilitate
 facinated:fascinated
 facist:fascist
 faild:failed
+faile:failed
 failue:failure
 failuer:failure
 failues:failures
@@ -2948,6 +2959,8 @@ filesytems:filesystems
 fileystem:filesystem
 fileystems:filesystems
 filiament:filament
+fille:file
+filles:files
 fimilies:families
 finacial:financial
 finaly:finally
@@ -3284,12 +3297,12 @@ harrassing:harassing
 harrassment:harassment
 harrassments:harassments
 harware:hardware
-hasnt:hasn't
-hasnt':hasn't
 has'nt:hasn't
+hasnt':hasn't
+hasnt:hasn't
 Hatian:Haitian
-havent:haven't
 have'nt:haven't
+havent:haven't
 haviest:heaviest
 havn't:haven't
 hazzle:hassle
@@ -3548,6 +3561,7 @@ imprisonned:imprisoned
 improvision:improvisation
 improvment:improvement
 improvments:improvements
+imput:input
 imrovement:improvement
 inablility:inability
 inacccessible:inaccessible
@@ -3815,6 +3829,7 @@ inprisonment:imprisonment
 inproper:improper:*
 inproperly:improperly
 inproving:improving
+ins't:isn't
 inscpeting:inspecting
 insde:inside
 insectiverous:insectivorous
@@ -3827,7 +3842,6 @@ insistance:insistence
 insitution:institution
 insitutions:institutions
 inspite:in spite
-ins't:isn't
 instade:instead
 instalation:installation
 instalations:installations
@@ -4008,9 +4022,9 @@ irrelevent:irrelevant
 irreplacable:irreplaceable
 irresistable:irresistible
 irresistably:irresistibly
-isnt:isn't
-isnt':isn't
 is'nt:isn't
+isnt':isn't
+isnt:isn't
 isntance:instance
 isntances:instances
 Israelies:Israelis
@@ -4251,7 +4265,6 @@ manisfestations:manifestations
 mannor:manner
 mannual:manual
 mannually:manually
-manualy:manually
 manoeuverability:maneuverability
 manoeuvering:maneuvering
 manoeuvre:maneuver
@@ -4265,6 +4278,7 @@ mantained:maintained
 mantainer:maintainer
 mantaining:maintaining
 mantains:maintains
+manualy:manually
 manuever:maneuver
 manuevers:maneuvers
 manufacturedd:manufactured
@@ -4358,7 +4372,7 @@ methaphors:metaphors
 metres:meters
 Michagan:Michigan
 micoscopy:microscopy
-microprocesspr:microprocessor
+microprocesspr:microprocessor:*
 midwifes:midwives
 mileau:milieu
 milennia:millennia
@@ -4443,6 +4457,7 @@ missonary:missionary
 misterious:mysterious
 mistery:mystery
 misteryous:mysterious
+mitre:miter:*
 mkae:make
 mkaes:makes
 mkaing:making
@@ -4671,6 +4686,7 @@ nusance:nuisance
 nutritent:nutrient
 nutritents:nutrients
 nuturing:nurturing
+o'caml:OCaml
 obediance:obedience
 obediant:obedient
 obession:obsession
@@ -4680,7 +4696,6 @@ obstacal:obstacle
 obstancles:obstacles
 obstruced:obstructed
 obsure:obscure
-o'caml:OCaml
 ocasion:occasion
 ocasional:occasional
 ocasionally:occasionally
@@ -5164,8 +5179,8 @@ porshon:portion
 portait:portrait
 portayed:portrayed
 portraing:portraying
-portugese:Portuguese
 Portugese:Portuguese
+portugese:Portuguese
 portuguease:portuguese
 portugues:Portuguese
 posess:possess
@@ -5373,7 +5388,7 @@ proceses:processes
 processer:processor:*
 processess:processes
 processessing:processing
-processpr:processor
+processpr:processor:*
 processs:process:*
 processsed:processed
 processses:processes
@@ -5723,6 +5738,7 @@ regarless:regardless
 registe:register
 registed:registered
 registeing:registering
+registing:registering
 registerd:registered:*
 registes:registers
 registraration:registration
@@ -6238,6 +6254,7 @@ sertificates:certificates
 serveral:several
 sesssion:session
 sesssions:sessions
+seting:setting:*
 setted:set
 settelement:settlement
 settlment:settlement
@@ -6269,10 +6286,10 @@ shortwhile:short while
 shoud:should
 shoudl:should
 shoudln: shouldn't
-shouldnt:shouldn't
-shouldnt':shouldn't
 should'nt:shouldn't
 should't:shouldn't
+shouldnt':shouldn't
+shouldnt:shouldn't
 shoule:should
 shreak:shriek
 shrinked:shrunk
@@ -6750,7 +6767,6 @@ syles:styles
 sylog:syslog
 symbo:symbol
 symboll:symbol
-symobl:symbol
 symetric:symmetric
 symetrical:symmetrical
 symetrically:symmetrically
@@ -6758,6 +6774,7 @@ symetry:symmetry
 symettric:symmetric
 symmetral:symmetric
 symmetricaly:symmetrically
+symobl:symbol
 synagouge:synagogue
 synax:syntax
 synchonisation:synchronisation
@@ -7085,6 +7102,7 @@ tyrranies:tyrannies
 tyrrany:tyranny
 ubiquitious:ubiquitous
 ublisher:publisher
+updat:update
 udpate:update
 udpated:updated
 udpates:updates
@@ -7430,8 +7448,8 @@ vulnerablility:vulnerability
 vyer:very
 vyre:very
 waht:what
-wanna:want to
 wan't:want
+wanna:want to
 want's:wants
 warantee:warranty
 waranties:warranties
@@ -7440,9 +7458,9 @@ wardobe:wardrobe
 waring:warning
 warrent:warrant
 warrriors:warriors
-wasnt:wasn't
-wasnt':wasn't
 was'nt:weren't
+wasnt':wasn't
+wasnt:wasn't
 wass:was
 watn:want
 wayword:wayward
@@ -7456,8 +7474,8 @@ weill:will
 weired:weird
 wendsay:Wednesday
 wensday:Wednesday
-wereabouts:whereabouts
 were'nt:wasn't
+wereabouts:whereabouts
 werent:weren't
 wether:whether
 whant:want
@@ -7529,9 +7547,9 @@ worstened:worsened
 woud:would
 woudl:would
 woudn't:wouldn't
-wouldnt:wouldn't
 would'nt:wouldn't
 would't:wouldn't
+wouldnt:wouldn't
 wresters:wrestlers
 wriet:write
 writeable:writable

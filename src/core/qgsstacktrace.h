@@ -89,7 +89,7 @@ class CORE_EXPORT QgsStackTrace
 #endif
 
   private:
-    QgsStackTrace();
+    QgsStackTrace() = default;
     static QString mSymbolPaths;
 
 };

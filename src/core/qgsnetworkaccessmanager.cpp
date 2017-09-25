@@ -19,12 +19,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgsnetworkaccessmanager.h>
+#include "qgsnetworkaccessmanager.h"
 
-#include <qgsapplication.h>
-#include <qgsmessagelog.h>
-#include <qgslogger.h>
-#include <qgis.h>
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
+#include "qgslogger.h"
+#include "qgis.h"
 #include "qgssettings.h"
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
@@ -48,7 +48,7 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
-    QgsNetworkProxyFactory() {}
+    QgsNetworkProxyFactory() = default;
 
     QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery &query = QNetworkProxyQuery() ) override
     {

@@ -20,6 +20,7 @@
 QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
   : QObject( view )
   , mView( view )
+  , mFlags( 0 )
   , mCursor( Qt::ArrowCursor )
   , mToolName( name )
 {
@@ -30,11 +31,7 @@ bool QgsLayoutViewTool::isClickAndDrag( QPoint startViewPoint, QPoint endViewPoi
 {
   int diffX = endViewPoint.x() - startViewPoint.x();
   int diffY = endViewPoint.y() - startViewPoint.y();
-  if ( qAbs( diffX ) >= 2 || qAbs( diffY ) >= 2 )
-  {
-    return true;
-  }
-  return false;
+  return std::abs( diffX ) >= 2 || std::abs( diffY ) >= 2;
 }
 
 QgsLayoutView *QgsLayoutViewTool::view() const
@@ -50,6 +47,16 @@ QgsLayout *QgsLayoutViewTool::layout() const
 QgsLayoutViewTool::~QgsLayoutViewTool()
 {
   mView->unsetTool( this );
+}
+
+QgsLayoutViewTool::Flags QgsLayoutViewTool::flags() const
+{
+  return mFlags;
+}
+
+void QgsLayoutViewTool::setFlags( QgsLayoutViewTool::Flags flags )
+{
+  mFlags = flags;
 }
 
 void QgsLayoutViewTool::layoutMoveEvent( QgsLayoutViewMouseEvent *event )

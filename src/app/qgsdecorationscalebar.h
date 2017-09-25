@@ -36,8 +36,6 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     //! Constructor
     QgsDecorationScaleBar( QObject *parent = nullptr );
 
-    virtual ~ QgsDecorationScaleBar();
-
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
     void projectRead() override;

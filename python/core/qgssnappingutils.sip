@@ -54,7 +54,7 @@ Snap to map according to the current configuration. Optional filter allows disca
  :rtype: QgsPointLocator.Match
 %End
 
-    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = 0 );
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
 Snap to current layer
  :rtype: QgsPointLocator.Match

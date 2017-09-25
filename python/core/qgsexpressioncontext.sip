@@ -940,6 +940,13 @@ class QgsExpressionContextUtils
  :rtype: QgsExpressionContextScope
 %End
 
+    static QgsExpressionContextScope *notificationScope( const QString &message = QString() ) /Factory/;
+%Docstring
+ Creates a new scope which contains variables and functions relating to provider notifications
+ \param message the notification message
+ :rtype: QgsExpressionContextScope
+%End
+
     static void registerContextFunctions();
 %Docstring
  Registers all known core functions provided by QgsExpressionContextScope objects.

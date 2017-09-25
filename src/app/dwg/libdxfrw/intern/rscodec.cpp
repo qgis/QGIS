@@ -412,7 +412,7 @@ bool RScodec::encode( unsigned char *data, unsigned char *parity )
    evaluating, storing the syndromes in s[i], i=1..2tt (leave s[0] zero) .
    Then we use the Berlekamp iteration to find the error location polynomial
    elp[i].   If the degree of the elp is >tt, we cannot correct all the errors
-   and hence just put out the information symbols ian-overridesped. If the degree of
+   and hence just put out the information symbols unmodified. If the degree of
    elp is <=tt, we substitute alpha**i , i=1..n into the elp to get the roots,
    hence the inverse roots, the error location numbers. If the number of errors
    located does not equal the degree of the elp, we have more than tt errors

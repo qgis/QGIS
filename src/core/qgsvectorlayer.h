@@ -389,10 +389,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param  baseName The name used to represent the layer in the legend
      * \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
      * \param  loadDefaultStyleFlag whether to load the default style
+     * \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
      *
      */
     QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true );
+                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
+                    bool readExtentFromXml = false );
 
 
     virtual ~QgsVectorLayer();
@@ -411,13 +413,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     virtual QgsVectorLayer *clone() const override SIP_FACTORY;
 
-    //! Returns the permanent storage type for this layer as a friendly name.
+    /**
+     * Returns the permanent storage type for this layer as a friendly name.
+     * This is obtained from the data provider and does not follow any standard.
+     */
     QString storageType() const;
 
-    //! Capabilities for this layer in a friendly format.
+    /**
+     * Capabilities for this layer, comma separated and translated.
+     */
     QString capabilitiesString() const;
 
-    //! Returns a comment for the data in the layer
+    /**
+     * Returns a description for this layer as defined in the data provider.
+     */
     QString dataComment() const;
 
     /**
@@ -605,9 +614,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Select all the features
     void selectAll();
-
-    //! Get all feature Ids
-    QgsFeatureIds allFeatureIds() const;
 
     /**
      * Invert selection of features found within the search rectangle (in layer's coordinates)
@@ -830,16 +836,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Count features for symbols.
-     * The method will return immediately. You will need to connect to the
-     * symbolFeatureCountMapChanged() signal to be notified when the freshly updated
-     * feature counts are ready.
+     * The method will return the feature counter task. You will need to
+     * connect to the symbolFeatureCountMapChanged() signal to be
+     * notified when the freshly updated feature counts are ready.
      *
-     * \note If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
-     *       task and call waitForFinished().
+     * \note If the count features for symbols has been already done a
+     *       nullptr is returned. If you need to wait for the results,
+     *       you can call waitForFinished() on the feature counter.
      *
      * \since This is asynchronous since QGIS 3.0
      */
-    bool countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures();
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
@@ -875,7 +882,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Query the layer for the feature with the given id.
      * If there is no such feature, the returned feature will be invalid.
      */
-    inline QgsFeature getFeature( QgsFeatureId fid )
+    inline QgsFeature getFeature( QgsFeatureId fid ) const
     {
       QgsFeature feature;
       getFeatures( QgsFeatureRequest( fid ) ).nextFeature( feature );
@@ -1604,6 +1611,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 
+    /**
+     * Flag allowing to indicate if the extent has to be read from the XML
+     * document when data source has no metadata or if the data provider has
+     * to determine it.
+     *
+     * \since QGIS 3.0
+     */
+    void setReadExtentFromXml( bool readExtentFromXml );
+
+    /**
+     * Returns true if the extent is read from the XML document when data
+     * source has no metadata, false if it's the data provider which determines
+     * it.
+     *
+     * \since QGIS 3.0
+     */
+    bool readExtentFromXml() const;
+
   public slots:
 
     /**
@@ -1651,8 +1676,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /** Update the extents for the layer. This is necessary if features are
      *  added/deleted or the layer has been subsetted.
+     *
+     * \param force true to update layer extent even if it's read from xml by default, false otherwise
      */
-    virtual void updateExtents();
+    virtual void updateExtents( bool force = false );
 
     /**
      * Make layer editable.
@@ -1662,9 +1689,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool startEditing();
 
-
-  protected slots:
-    void invalidateSymbolCountedFlag();
+    /**
+     * Test if an edit command is active
+     *
+     * \since QGIS 3.0
+     */
+    bool isEditCommandActive() const { return mEditCommandActive; }
 
   signals:
 
@@ -1901,6 +1931,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void symbolFeatureCountMapChanged();
 
   private slots:
+    void invalidateSymbolCountedFlag();
+    void onFeatureCounterCompleted();
+    void onFeatureCounterTerminated();
     void onJoinedFieldsChanged();
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
@@ -1922,9 +1955,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @todo XXX should this return bool?  Throw exceptions?
      */
     bool setDataProvider( QString const &provider );
-
-    //! Goes through all features and finds a free id (e.g. to give it temporarily to a not-committed feature)
-    QgsFeatureId findFreeId();
 
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );
@@ -2045,6 +2075,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! True while an undo command is active
     bool mEditCommandActive;
 
+    bool mReadExtentFromXml;
+    QgsRectangle mXmlExtent;
+
     QgsFeatureIds mDeletedFids;
 
     QgsAttributeTableConfig mAttributeTableConfig;
@@ -2055,5 +2088,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     friend class QgsVectorLayerFeatureSource;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

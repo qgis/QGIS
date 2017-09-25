@@ -243,5 +243,4 @@ class CORE_EXPORT QgsVectorLayerUndoCommandRenameAttribute : public QgsVectorLay
     QString mNewName;
 };
 
-
 #endif

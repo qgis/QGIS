@@ -33,7 +33,7 @@
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
   : QFrame( parent )
-  , mCurrentItem( nullptr )
+
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -272,7 +272,7 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
 
   // Log all messages that are sent to the message bar into the message log so the
   // user can get them back easier.
-  QString formattedTitle = QString( "%1 : %2" ).arg( item->title() ).arg( item->text() );
+  QString formattedTitle = QStringLiteral( "%1 : %2" ).arg( item->title(), item->text() );
   QgsMessageLog::MessageLevel level;
   switch ( item->level() )
   {

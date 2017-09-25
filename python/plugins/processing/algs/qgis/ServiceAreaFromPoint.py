@@ -53,7 +53,6 @@ from qgis.analysis import (QgsVectorLayerDirector,
                            QgsGraphBuilder,
                            QgsGraphAnalyzer
                            )
-from qgis.utils import iface
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -164,7 +163,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
-        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context)
+        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context, network.sourceCrs())
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
         travelCost = self.parameterAsDouble(parameters, self.TRAVEL_COST, context)
 
@@ -191,7 +190,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
                                           bothValue,
                                           defaultDirection)
 
-        distUnit = iface.mapCanvas().mapSettings().destinationCrs().mapUnits()
+        distUnit = context.project().crs().mapUnits()
         multiplier = QgsUnitTypes.fromUnitToUnitFactor(distUnit, QgsUnitTypes.DistanceMeters)
         if strategy == 0:
             strategy = QgsNetworkDistanceStrategy()
@@ -201,7 +200,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
                                                multiplier * 1000.0 / 3600.0)
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
         feedback.pushInfo(self.tr('Building graph...'))

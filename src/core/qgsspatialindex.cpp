@@ -95,7 +95,6 @@ class QgsFeatureIteratorDataStream : public IDataStream
     //! constructor - needs to load all data to a vector for later access when bulk loading
     explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
       : mFi( fi )
-      , mNextData( nullptr )
       , mFeedback( feedback )
     {
       readNextEntry();
@@ -196,6 +195,8 @@ class QgsSpatialIndexData : public QSharedData
       delete mStorage;
     }
 
+    QgsSpatialIndexData &operator=( const QgsSpatialIndexData &rh ) = delete;
+
     void initTree( IDataStream *inputStream = nullptr )
     {
       // for now only memory manager
@@ -225,9 +226,6 @@ class QgsSpatialIndexData : public QSharedData
     //! R-tree containing spatial index
     SpatialIndex::ISpatialIndex *mRTree = nullptr;
 
-  private:
-
-    QgsSpatialIndexData &operator=( const QgsSpatialIndexData &rh );
 };
 
 // -------------------------------------------------------------------------

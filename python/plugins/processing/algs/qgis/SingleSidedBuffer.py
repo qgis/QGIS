@@ -40,10 +40,10 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
     SIDE = 'SIDE'
     SEGMENTS = 'SEGMENTS'
     JOIN_STYLE = 'JOIN_STYLE'
-    MITRE_LIMIT = 'MITRE_LIMIT'
+    MITER_LIMIT = 'MITER_LIMIT'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -55,7 +55,7 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
         self.sides = [self.tr('Left'),
                       'Right']
         self.join_styles = [self.tr('Round'),
-                            'Mitre',
+                            'Miter',
                             'Bevel']
 
     def initParameters(self, config=None):
@@ -74,8 +74,8 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
             self.JOIN_STYLE,
             self.tr('Join style'),
             options=self.join_styles))
-        self.addParameter(QgsProcessingParameterNumber(self.MITRE_LIMIT,
-                                                       self.tr('Mitre limit'), minValue=1, defaultValue=2))
+        self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
+                                                       self.tr('Miter limit'), minValue=1, defaultValue=2))
 
     def name(self):
         return 'singlesidedbuffer'
@@ -100,7 +100,7 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
             self.side = QgsGeometry.SideLeft
         else:
             self.side = QgsGeometry.SideRight
-        self.miter_limit = self.parameterAsDouble(parameters, self.MITRE_LIMIT, context)
+        self.miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
         return True
 
     def processFeature(self, feature, feedback):

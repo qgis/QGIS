@@ -36,7 +36,7 @@
 void DRW_Entity::calculateAxis( DRW_Coord extPoint )
 {
   //Follow the arbitrary DXF definitions for extrusion axes.
-  if ( fabs( extPoint.x ) < 0.015625 && fabs( extPoint.y ) < 0.015625 )
+  if ( std::fabs( extPoint.x ) < 0.015625 && std::fabs( extPoint.y ) < 0.015625 )
   {
     //If we get here, implement Ax = Wy x N where Wy is [0,1,0] per the DXF spec.
     //The cross product works out to Wy.y*N.z-Wy.z*N.y, Wy.z*N.x-Wy.x*N.z, Wy.x*N.y-Wy.y*N.x
@@ -299,7 +299,7 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strB
         for ( int i = 0; i < strLength + 1; i++ ) //string length + null terminating char
         {
           duint8 dxfChar = tmpExtDataBuf.getRawChar8();
-          l << QString( "0x%1" ).arg( dxfChar, 0, 16 );
+          l << QStringLiteral( "0x%1" ).arg( dxfChar, 0, 16 );
         }
 
         QgsDebugMsg( QString( "strLength:%1; str codepage:%2; %3" ).arg( strLength ).arg( cp ).arg( l.join( " " ) ) );
@@ -797,7 +797,7 @@ void DRW_Arc::applyExtrusion()
     // Note that the following code only handles the special case where there is a 2D
     // drawing with the z axis heading into the paper (or rather screen). An arbitrary
     // extrusion axis (with x and y values greater than 1/64) may still have issues.
-    if ( fabs( extPoint.x ) < 0.015625 && fabs( extPoint.y ) < 0.015625 && extPoint.z < 0.0 )
+    if ( std::fabs( extPoint.x ) < 0.015625 && std::fabs( extPoint.y ) < 0.015625 && extPoint.z < 0.0 )
     {
       staangle = M_PI - staangle;
       endangle = M_PI - endangle;
@@ -902,7 +902,7 @@ void DRW_Ellipse::correctAxis()
   }
   if ( ratio > 1 )
   {
-    if ( fabs( endparam - staparam - M_PIx2 ) < 1.0e-10 )
+    if ( std::fabs( endparam - staparam - M_PIx2 ) < 1.0e-10 )
       complete = true;
     double incX = secPoint.x;
     secPoint.x = -( secPoint.y * ratio );
@@ -954,12 +954,12 @@ bool DRW_Ellipse::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 //parts are the number of vertices to split the polyline, default 128
 void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
 {
-  double radMajor = sqrt( secPoint.x * secPoint.x + secPoint.y * secPoint.y );
+  double radMajor = std::sqrt( secPoint.x * secPoint.x + secPoint.y * secPoint.y );
   double radMinor = radMajor * ratio;
-  //calculate sin & cos of included angle
-  double incAngle = atan2( secPoint.y, secPoint.x );
-  double cosRot = cos( incAngle );
-  double sinRot = sin( incAngle );
+  //calculate sin & std::cos of included angle
+  double incAngle = std::atan2( secPoint.y, secPoint.x );
+  double cosRot = std::cos( incAngle );
+  double sinRot = std::sin( incAngle );
 
   incAngle = M_PIx2 / parts;
   double curAngle = staparam;
@@ -969,15 +969,15 @@ void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
 
   while ( curAngle < endAngle )
   {
-    double cosCurr = cos( curAngle );
-    double sinCurr = sin( curAngle );
+    double cosCurr = std::cos( curAngle );
+    double sinCurr = std::sin( curAngle );
     double x = basePoint.x + cosCurr * cosRot * radMajor - sinCurr * sinRot * radMinor;
     double y = basePoint.y + cosCurr * sinRot * radMajor + sinCurr * cosRot * radMinor;
     pol->addVertex( DRW_Vertex( x, y, 0.0, 0.0 ) );
     curAngle += incAngle;
   }
 
-  if ( fabs( endAngle - staparam - M_PIx2 ) < 1.0e-10 )
+  if ( std::fabs( endAngle - staparam - M_PIx2 ) < 1.0e-10 )
   {
     pol->flags = 1;
   }
@@ -1860,7 +1860,7 @@ void DRW_MText::updateAngle()
 {
   if ( haveXAxis )
   {
-    angle = atan2( secPoint.y, secPoint.x ) * 180 / M_PI;
+    angle = std::atan2( secPoint.y, secPoint.x ) * 180 / M_PI;
   }
 }
 
@@ -2065,7 +2065,7 @@ bool DRW_Vertex::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs, dou
 
     stawidth = buf->getBitDouble();
     if ( stawidth < 0 )
-      endwidth = stawidth = fabs( stawidth );
+      endwidth = stawidth = std::fabs( stawidth );
     else
       endwidth = buf->getBitDouble();
     bulge = buf->getBitDouble();

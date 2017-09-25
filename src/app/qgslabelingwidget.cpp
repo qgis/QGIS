@@ -30,7 +30,7 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
   : QgsMapLayerConfigWidget( layer, canvas, parent )
   , mLayer( layer )
   , mCanvas( canvas )
-  , mWidget( nullptr )
+
 {
   setupUi( this );
 

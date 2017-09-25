@@ -72,7 +72,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     /**
      * Adds \a decorations to be rendered on the map.
      */
-    void addDecorations( QList< QgsMapDecoration * > decorations );
+    void addDecorations( const QList<QgsMapDecoration *> &decorations );
 
     /**
      * Sets whether a world file will be created alongside an image file.
@@ -117,5 +117,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
     int mError = 0;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

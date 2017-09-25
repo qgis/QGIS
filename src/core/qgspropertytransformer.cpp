@@ -21,7 +21,6 @@
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
-#include <qmath.h>
 
 
 //
@@ -73,7 +72,7 @@ bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
   mMaxValue = transformerMap.value( QStringLiteral( "maxValue" ), 1.0 ).toDouble();
   mCurveTransform.reset( nullptr );
 
-  QVariantMap curve = transformerMap.value( "curve" ).toMap();
+  QVariantMap curve = transformerMap.value( QStringLiteral( "curve" ) ).toMap();
 
   if ( !curve.isEmpty() )
   {
@@ -136,24 +135,6 @@ QgsGenericNumericTransformer::QgsGenericNumericTransformer( double minValue, dou
   , mExponent( exponent )
 {}
 
-QgsGenericNumericTransformer::QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other )
-  : QgsPropertyTransformer( other )
-  , mMinOutput( other.mMinOutput )
-  , mMaxOutput( other.mMaxOutput )
-  , mNullOutput( other.mNullOutput )
-  , mExponent( other.mExponent )
-{}
-
-QgsGenericNumericTransformer &QgsGenericNumericTransformer::operator=( const QgsGenericNumericTransformer &other )
-{
-  QgsPropertyTransformer::operator=( other );
-  mMinOutput = other.mMinOutput;
-  mMaxOutput = other.mMaxOutput;
-  mNullOutput = other.mNullOutput;
-  mExponent = other.mExponent;
-  return *this;
-}
-
 QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone() const
 {
   std::unique_ptr< QgsGenericNumericTransformer > t( new QgsGenericNumericTransformer( mMinValue,
@@ -198,7 +179,7 @@ double QgsGenericNumericTransformer::value( double input ) const
   if ( qgsDoubleNear( mExponent, 1.0 ) )
     return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
   else
-    return mMinOutput + qPow( qBound( mMinValue, input, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / qPow( mMaxValue - mMinValue, mExponent );
+    return mMinOutput + std::pow( qBound( mMinValue, input, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / std::pow( mMaxValue - mMinValue, mExponent );
 }
 
 QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext &context, const QVariant &v ) const
@@ -326,26 +307,6 @@ QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValu
   setType( type );
 }
 
-QgsSizeScaleTransformer::QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other )
-  : QgsPropertyTransformer( other )
-  , mType( other.mType )
-  , mMinSize( other.mMinSize )
-  , mMaxSize( other.mMaxSize )
-  , mNullSize( other.mNullSize )
-  , mExponent( other.mExponent )
-{}
-
-QgsSizeScaleTransformer &QgsSizeScaleTransformer::operator=( const QgsSizeScaleTransformer &other )
-{
-  QgsPropertyTransformer::operator=( other );
-  mType = other.mType;
-  mMinSize = other.mMinSize;
-  mMaxSize = other.mMaxSize;
-  mNullSize = other.mNullSize;
-  mExponent = other.mExponent;
-  return *this;
-}
-
 QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone() const
 {
   std::unique_ptr< QgsSizeScaleTransformer > t( new QgsSizeScaleTransformer( mType,
@@ -379,11 +340,11 @@ bool QgsSizeScaleTransformer::loadVariant( const QVariant &transformer )
 
   QVariantMap transformerMap = transformer.toMap();
 
-  mType = static_cast< ScaleType >( transformerMap.value( "scaleType", Linear ).toInt() );
-  mMinSize = transformerMap.value( "minSize", 0.0 ).toDouble();
-  mMaxSize = transformerMap.value( "maxSize", 1.0 ).toDouble();
-  mNullSize = transformerMap.value( "nullSize", 0.0 ).toDouble();
-  mExponent = transformerMap.value( "exponent", 1.0 ).toDouble();
+  mType = static_cast< ScaleType >( transformerMap.value( QStringLiteral( "scaleType" ), Linear ).toInt() );
+  mMinSize = transformerMap.value( QStringLiteral( "minSize" ), 0.0 ).toDouble();
+  mMaxSize = transformerMap.value( QStringLiteral( "maxSize" ), 1.0 ).toDouble();
+  mNullSize = transformerMap.value( QStringLiteral( "nullSize" ), 0.0 ).toDouble();
+  mExponent = transformerMap.value( QStringLiteral( "exponent" ), 1.0 ).toDouble();
 
   return true;
 }
@@ -400,7 +361,7 @@ double QgsSizeScaleTransformer::size( double value ) const
     case Area:
     case Flannery:
     case Exponential:
-      return mMinSize + qPow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / qPow( mMaxValue - mMinValue, mExponent );
+      return mMinSize + std::pow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / std::pow( mMaxValue - mMinValue, mExponent );
 
   }
   return 0;

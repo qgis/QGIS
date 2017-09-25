@@ -38,9 +38,9 @@
 
 #include <QDragEnterEvent>
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QWidget *parent )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
-  , mModel( nullptr )
+  , mModel( browserModel )
   , mProxyModel( nullptr )
   , mPropertiesWidgetEnabled( false )
   , mPropertiesWidgetHeight( 0 )
@@ -97,7 +97,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QWidget *parent
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsBrowserDockWidget::setFilter );
   connect( group, &QActionGroup::triggered, this, &QgsBrowserDockWidget::setFilterSyntax );
   connect( mBrowserView, &QgsDockBrowserTreeView::customContextMenuRequested, this, &QgsBrowserDockWidget::showContextMenu );
-  connect( mBrowserView, &QgsDockBrowserTreeView::doubleClicked, this, &QgsBrowserDockWidget::addLayerAtIndex );
+  connect( mBrowserView, &QgsDockBrowserTreeView::doubleClicked, this, &QgsBrowserDockWidget::itemDoubleClicked );
   connect( mSplitter, &QSplitter::splitterMoved, this, &QgsBrowserDockWidget::splitterMoved );
 }
 
@@ -112,9 +112,12 @@ QgsBrowserDockWidget::~QgsBrowserDockWidget()
 void QgsBrowserDockWidget::showEvent( QShowEvent *e )
 {
   // delayed initialization of the model
-  if ( !mModel )
+  if ( !mModel->initialized( ) )
   {
-    mModel = new QgsBrowserModel( mBrowserView );
+    mModel->initialize();
+  }
+  if ( ! mProxyModel )
+  {
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
@@ -122,7 +125,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     mBrowserView->setModel( mProxyModel );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
-    mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
+    mBrowserView->header()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
     // selectionModel is created when model is set on tree
@@ -150,6 +153,18 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   }
 
   QgsDockWidget::showEvent( e );
+}
+
+void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
+{
+  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
+  if ( !item )
+    return;
+
+  if ( item->handleDoubleClick() )
+    return;
+  else
+    addLayerAtIndex( index ); // default double-click handler
 }
 
 void QgsBrowserDockWidget::showContextMenu( QPoint pt )
@@ -194,7 +209,17 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
   }
 
-  QList<QAction *> actions = item->actions();
+  const QList<QMenu *> menus = item->menus( menu );
+  QList<QAction *> actions = item->actions( menu );
+
+  if ( !menus.isEmpty() )
+  {
+    for ( QMenu *mn : menus )
+    {
+      menu->addMenu( mn );
+    }
+  }
+
   if ( !actions.isEmpty() )
   {
     if ( !menu->actions().isEmpty() )

@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 
 __author__ = 'Martin Dobias'
 __date__ = 'November 2009'
@@ -34,7 +30,7 @@ QGIS utilities module
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes, QgsApplication
+from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
 import sys
@@ -137,7 +133,7 @@ def show_message_log(pop_error=True):
 
 
 def open_stack_dialog(type, value, tb, msg, pop_error=True):
-    if pop_error:
+    if pop_error and iface is not None:
         iface.messageBar().popWidget()
 
     if msg is None:
@@ -193,7 +189,7 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
 
 def qgis_excepthook(type, value, tb):
     # detect if running in the main thread
-    in_main_thread = QThread.currentThread() == QgsApplication.instance().thread()
+    in_main_thread = QCoreApplication.instance() is None or QThread.currentThread() == QCoreApplication.instance().thread()
 
     # only use messagebar if running in main thread - otherwise it will crash!
     showException(type, value, tb, None, messagebar=in_main_thread)
@@ -625,8 +621,31 @@ or using the "mod_spatialite" extension (python3)"""
     return dbapi2.connect(*args, **kwargs)
 
 
+class OverrideCursor():
+    """
+    Executes a code block with a different cursor set and makes sure the cursor
+    is restored even if exceptions are raised or an intermediate ``return``
+    statement is hit.
+
+    Example:
+    ```
+    with OverrideCursor(Qt.WaitCursor):
+        do_a_slow(operation)
+    ```
+    """
+
+    def __init__(self, cursor):
+        self.cursor = cursor
+
+    def __enter__(self):
+        QApplication.setOverrideCursor(self.cursor)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        QApplication.restoreOverrideCursor()
+
 #######################
 # IMPORT wrapper
+
 
 _uses_builtins = True
 try:

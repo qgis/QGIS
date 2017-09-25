@@ -19,9 +19,9 @@
 
 #include <QString>
 #include <QStringList>
+#include <QDomNode>
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
+#include "qgis.h"
 
 class QDomDocument;
 class QDomElement;
@@ -76,6 +76,17 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     //! Try to create instance of an implementation based on the XML data
     static QgsAbstractVectorLayerLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
+    /**
+     * Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+     */
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const
+    {
+      Q_UNUSED( parent )
+      Q_UNUSED( props )
+      QDomDocument doc = parent.ownerDocument();
+      parent.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( type() ) ) );
+    }
+
   private:
     Q_DISABLE_COPY( QgsAbstractVectorLayerLabeling )
 
@@ -105,6 +116,7 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
     bool requiresAdvancedEffects() const override;
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 
     //! Create the instance from a DOM element with saved configuration
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );

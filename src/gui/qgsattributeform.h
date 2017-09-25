@@ -22,6 +22,7 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QWidget>
+#include <QSvgWidget>
 #include <QLabel>
 #include <QDialogButtonBox>
 #include "qgis_gui.h"
@@ -276,6 +277,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     void updateJoinedFields( const QgsEditorWidgetWrapper &eww );
 
+    bool fieldIsEditable( int fieldIndex ) const;
+
+    bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const ;
+
     struct WidgetInfo
     {
       WidgetInfo()
@@ -318,6 +323,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! constraints management
     void updateAllConstraints();
     void updateConstraints( QgsEditorWidgetWrapper *w );
+    void updateConstraint( const QgsFeature &ft, QgsEditorWidgetWrapper *eww );
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
@@ -340,6 +346,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList<QgsAttributeFormInterface *> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
     QgsExpressionContext mExpressionContext;
+    QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
 
     struct ContainerInformation
     {
@@ -366,6 +373,10 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     };
 
     void registerContainerInformation( ContainerInformation *info );
+
+    void updateIcon( QgsEditorWidgetWrapper *eww );
+
+    void reloadIcon( const QString &file, const QString &tooltip, QSvgWidget *sw );
 
     // Contains information about tabs and groupboxes, their visibility state visibility conditions
     QVector<ContainerInformation *> mContainerVisibilityInformation;
@@ -395,6 +406,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     //! Backlinks widgets to buddies.
     QMap<QWidget *, QLabel *> mBuddyMap;
+    QMap<QWidget *, QSvgWidget *> mIconMap;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeForm;

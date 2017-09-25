@@ -40,10 +40,6 @@ QgsComposerConfigObject::QgsComposerConfigObject( QWidget *parent, QgsComposerOb
   connect( atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsComposerConfigObject::updateDataDefinedButtons );
 }
 
-QgsComposerConfigObject::~QgsComposerConfigObject()
-{
-}
-
 void QgsComposerConfigObject::updateDataDefinedProperty()
 {
   //match data defined button to item's data defined property
@@ -181,11 +177,6 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *
 
   if ( mItem->composition() )
     connect( mItem->composition(), &QgsComposition::variablesChanged, this, &QgsComposerItemWidget::updateVariables );
-}
-
-QgsComposerItemWidget::~QgsComposerItemWidget()
-{
-
 }
 
 void QgsComposerItemWidget::showBackgroundGroup( bool showGroup )
@@ -566,10 +557,10 @@ void QgsComposerItemWidget::setValuesForGuiElements()
     return;
   }
 
-  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
   mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
-  mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
+  mFrameColorButton->setColorDialogTitle( tr( "Select Frame Color" ) );
   mFrameColorButton->setAllowOpacity( true );
   mFrameColorButton->setContext( QStringLiteral( "composer" ) );
 

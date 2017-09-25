@@ -29,9 +29,6 @@
 
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent )
   : QWidget( parent )
-  , mUserProjList( nullptr )
-  , mGeoList( nullptr )
-  , mProjList( nullptr )
   , mProjListDone( false )
   , mUserProjListDone( false )
   , mRecentProjListDone( false )
@@ -49,16 +46,16 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
-  lstCoordinateSystems->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
+  lstCoordinateSystems->header()->setSectionResizeMode( AuthidColumn, QHeaderView::Stretch );
   lstCoordinateSystems->header()->resizeSection( QgisCrsIdColumn, 0 );
-  lstCoordinateSystems->header()->setResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
+  lstCoordinateSystems->header()->setSectionResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
 
   // Hide (internal) ID column
   lstCoordinateSystems->setColumnHidden( QgisCrsIdColumn, true );
 
-  lstRecent->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
+  lstRecent->header()->setSectionResizeMode( AuthidColumn, QHeaderView::Stretch );
   lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
-  lstRecent->header()->setResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
+  lstRecent->header()->setSectionResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
 
   // Hide (internal) ID column
   lstRecent->setColumnHidden( QgisCrsIdColumn, true );
@@ -191,12 +188,12 @@ QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<Q
   if ( !authParts.isEmpty() )
   {
     QString prefix = QStringLiteral( " AND (" );
-    Q_FOREACH ( const QString &auth_name, authParts.keys() )
+    for ( auto it = authParts.constBegin(); it != authParts.constEnd(); ++it )
     {
       sqlExpression += QStringLiteral( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
                        .arg( prefix,
-                             auth_name,
-                             authParts[auth_name].join( QStringLiteral( "','" ) ) );
+                             it.key(),
+                             it.value().join( QStringLiteral( "','" ) ) );
       prefix = QStringLiteral( " OR " );
     }
     sqlExpression += ')';
@@ -431,7 +428,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 
   int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
   if ( srid >= USER_CRS_START_ID )
-    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "USER:%1" ).arg( srid ) );
+    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "USER:%1" ).arg( srid ) );
   else
     return QgsCoordinateReferenceSystem::fromOgcWmsCrs( getSelectedExpression( QStringLiteral( "upper(auth_name||':'||auth_id)" ) ) );
 }

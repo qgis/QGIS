@@ -38,7 +38,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
     virtual ~QgsGeometryCollection();
 
-    virtual QgsGeometryCollection *clone() const override SIP_FACTORY;
+    QgsGeometryCollection *clone() const override SIP_FACTORY;
 
     /** Returns the number of geometries within the collection.
      */
@@ -57,10 +57,10 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     //methods inherited from QgsAbstractGeometry
     bool isEmpty() const override;
-    virtual int dimension() const override;
-    virtual QString geometryType() const override;
-    virtual void clear() override;
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    int dimension() const override;
+    QString geometryType() const override;
+    void clear() override;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //! Adds a geometry and takes ownership. Returns true in case of success.
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
@@ -77,40 +77,36 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     virtual bool removeGeometry( int nr );
 
-    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                            bool transformZ = false ) override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+                    bool transformZ = false ) override;
     void transform( const QTransform &t ) override;
-#if 0
-    virtual void clip( const QgsRectangle &rect ) override;
-#endif
-    virtual void draw( QPainter &p ) const override;
+
+    void draw( QPainter &p ) const override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    virtual bool fromWkt( const QString &wkt ) override;
+    bool fromWkt( const QString &wkt ) override;
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
 
-    virtual QgsRectangle boundingBox() const override;
+    QgsRectangle boundingBox() const override;
 
-    virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual int nCoordinates() const override;
+    QgsCoordinateSequence coordinateSequence() const override;
+    int nCoordinates() const override;
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
-                                   double epsilon ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
     //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override;
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    bool deleteVertex( QgsVertexId position ) override;
 
-    virtual double length() const override;
-    virtual double area() const override;
-    virtual double perimeter() const override;
+    double length() const override;
+    double area() const override;
+    double perimeter() const override;
 
     bool hasCurvedSegments() const override;
 
@@ -125,15 +121,33 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual int vertexCount( int part = 0, int ring = 0 ) const override;
-    virtual int ringCount( int part = 0 ) const override;
-    virtual int partCount() const override { return mGeometries.size(); }
-    virtual QgsPoint vertexAt( QgsVertexId id ) const override { return mGeometries[id.part]->vertexAt( id ); }
+    int vertexCount( int part = 0, int ring = 0 ) const override;
+    int ringCount( int part = 0 ) const override;
+    int partCount() const override;
+    QgsPoint vertexAt( QgsVertexId id ) const override;
 
-    virtual bool addZValue( double zValue = 0 ) override;
-    virtual bool addMValue( double mValue = 0 ) override;
-    virtual bool dropZValue() override;
-    virtual bool dropMValue() override;
+    bool addZValue( double zValue = 0 ) override;
+    bool addMValue( double mValue = 0 ) override;
+    bool dropZValue() override;
+    bool dropMValue() override;
+    QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
+
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsGeometryCollection.
+     * Should be used by qgsgeometry_cast<QgsGeometryCollection *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsGeometryCollection *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::isMultiType( geom->wkbType() ) )
+        return static_cast<const QgsGeometryCollection *>( geom );
+      return nullptr;
+    }
+#endif
 
   protected:
     QVector< QgsAbstractGeometry * > mGeometries;
@@ -147,13 +161,15 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 
-    virtual QgsRectangle calculateBoundingBox() const override;
-    virtual void clearCache() const override;
+    QgsRectangle calculateBoundingBox() const override;
+    void clearCache() const override;
 
   private:
 
     mutable QgsRectangle mBoundingBox;
     mutable QgsCoordinateSequence mCoordinateSequence;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSGEOMETRYCOLLECTIONV2_H

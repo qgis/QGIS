@@ -8,7 +8,7 @@
 
 
 
-class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
+class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoObjectInterface
 {
 %Docstring
  Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
@@ -22,12 +22,27 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 
     enum ZValues
     {
+      ZPage,
+      ZItem,
+      ZGrid,
+      ZGuide,
       ZMapTool,
+      ZSnapIndicator,
     };
 
     QgsLayout( QgsProject *project );
 %Docstring
  Construct a new layout linked to the specified ``project``.
+
+ If the layout is a "new" layout (as opposed to a layout which will
+ restore a previous state from XML) then initializeDefaults() should be
+ called on the new layout.
+%End
+
+    void initializeDefaults();
+%Docstring
+ Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
+ a new layout.
 %End
 
     QgsProject *project() const;
@@ -48,6 +63,14 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %Docstring
  Sets the layout's name.
 .. seealso:: name()
+%End
+
+
+    QgsLayoutItem *itemByUuid( const QString &uuid );
+%Docstring
+ Returns the layout item with matching ``uuid`` unique identifier, or a None
+ if a matching item could not be found.
+ :rtype: QgsLayoutItem
 %End
 
     void setUnits( QgsUnitTypes::LayoutUnit units );
@@ -128,6 +151,29 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %End
 
 
+    QgsLayoutSnapper &snapper();
+%Docstring
+ Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
+ and snapping points to the nearest matching point.
+ :rtype: QgsLayoutSnapper
+%End
+
+
+    QgsLayoutGridSettings &gridSettings();
+%Docstring
+ Returns a reference to the layout's grid settings, which stores settings relating
+ to grid appearance, spacing and offsets.
+ :rtype: QgsLayoutGridSettings
+%End
+
+
+    QgsLayoutGuideCollection &guides();
+%Docstring
+ Returns a reference to the layout's guide collection, which manages page snap guides.
+ :rtype: QgsLayoutGuideCollection
+%End
+
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 %Docstring
@@ -182,6 +228,63 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %End
 
     void setReferenceMap( QgsLayoutItemMap *map );
+
+    QgsLayoutPageCollection *pageCollection();
+%Docstring
+ Returns a pointer to the layout's page collection, which stores and manages
+ page items in the layout.
+ :rtype: QgsLayoutPageCollection
+%End
+
+
+    QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
+%Docstring
+ Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
+ and other cosmetic items.
+ \param ignorePages set to true to ignore page items
+ \param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
+ :return: layout bounds, in layout units.
+ :rtype: QRectF
+%End
+
+    void addLayoutItem( QgsLayoutItem *item /Transfer/ );
+%Docstring
+ Adds an ``item`` to the layout. This should be called instead of the base class addItem()
+ method. Ownership of the item is transferred to the layout.
+%End
+
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Returns the layout's state encapsulated in a DOM element.
+.. seealso:: readXml()
+ :rtype: QDomElement
+%End
+
+    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+ Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
+.. seealso:: writeXml()
+ :rtype: bool
+%End
+
+    QgsLayoutUndoStack *undoStack();
+%Docstring
+ Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
+ and it's associated objects.
+ :rtype: QgsLayoutUndoStack
+%End
+
+
+    virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = 0 ) /Factory/;
+
+
+
+  public slots:
+
+    void updateBounds();
+%Docstring
+ Updates the scene bounds of the layout.
+%End
 
   signals:
 

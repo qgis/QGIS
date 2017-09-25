@@ -105,6 +105,11 @@ bool QgsServerProjectUtils::wmsUseLayerIds( const QgsProject &project )
   return project.readBoolEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ), false );
 }
 
+int QgsServerProjectUtils::wmsImageQuality( const QgsProject &project )
+{
+  return project.readNumEntry( QStringLiteral( "WMSImageQuality" ), QStringLiteral( "/" ), -1 );
+}
+
 bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
 {
   QString sia2045 = project.readEntry( QStringLiteral( "WMSInfoFormatSIA2045" ), QStringLiteral( "/" ), "" );
@@ -179,7 +184,7 @@ QHash<QString, QString> QgsServerProjectUtils::wmsFeatureInfoLayerAliasMap( cons
     return aliasMap;
   }
 
-  int nMapEntries = qMin( aliasLayerStringList.size(), layerAliasStringList.size() );
+  int nMapEntries = std::min( aliasLayerStringList.size(), layerAliasStringList.size() );
   for ( int i = 0; i < nMapEntries; ++i )
   {
     aliasMap.insert( aliasLayerStringList.at( i ), layerAliasStringList.at( i ) );

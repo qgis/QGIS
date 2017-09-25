@@ -61,15 +61,8 @@ Problem::Problem()
   , all_nblp( 0 )
   , nbft( 0 )
   , displayAll( false )
-  , labelPositionCost( nullptr )
-  , nbOlap( nullptr )
-  , featStartId( nullptr )
-  , featNbLp( nullptr )
-  , inactiveCost( nullptr )
-  , sol( nullptr )
   , nbActive( 0 )
   , nbOverlap( 0.0 )
-  , pal( nullptr )
 {
   bbox[0] = 0;
   bbox[1] = 0;
@@ -312,7 +305,7 @@ void Problem::init_sol_falp()
 
   while ( list->getSize() > 0 ) // O (log size)
   {
-    if ( pal->isCancelled() )
+    if ( pal->isCanceled() )
     {
       delete context;
       delete list;

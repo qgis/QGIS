@@ -40,7 +40,7 @@ class CORE_EXPORT QgsMapLayerStyle
 {
   public:
     //! construct invalid style
-    QgsMapLayerStyle();
+    QgsMapLayerStyle() = default;
 
     //! construct style from QML definition (XML)
     explicit QgsMapLayerStyle( const QString &xmlData );
@@ -161,6 +161,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     QMap<QString, QgsMapLayerStyle> mStyles;
     QString mCurrentStyle;
     QgsMapLayerStyle *mOverriddenOriginalStyle = nullptr;
+    QString defaultStyleName() const;
 };
 
 #endif // QGSMAPLAYERSTYLEMANAGER_H

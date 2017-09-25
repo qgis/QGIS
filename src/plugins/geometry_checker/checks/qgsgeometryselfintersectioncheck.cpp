@@ -211,9 +211,9 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
         QgsGeometryEngine *geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, QgsGeometryCheckPrecision::tolerance() );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
-          if ( !geomEnginePoly1->contains( *poly->interiorRing( i ) ) )
+          if ( !geomEnginePoly1->contains( poly->interiorRing( i ) ) )
           {
-            if ( geomEnginePoly2->contains( *poly->interiorRing( i ) ) )
+            if ( geomEnginePoly2->contains( poly->interiorRing( i ) ) )
             {
               poly2->addInteriorRing( static_cast<QgsCurve *>( poly->interiorRing( i )->clone() ) );
               // No point in adding ChangeAdded changes, since the entire poly2 is added anyways later on

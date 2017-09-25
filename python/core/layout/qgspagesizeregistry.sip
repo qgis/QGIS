@@ -23,7 +23,7 @@ class QgsPageSize
 
     QgsPageSize();
 
-    QgsPageSize( const QString &name, const QgsLayoutSize &size );
+    QgsPageSize( const QString &name, const QgsLayoutSize &size, const QString &displayName = QString() );
 %Docstring
  Constructor for QgsPageSize, accepting the ``name`` of the page size and
  page ``size``.
@@ -42,6 +42,11 @@ Name of page size
     QgsLayoutSize size;
 %Docstring
 Page size
+%End
+
+    QString displayName;
+%Docstring
+Translated page name
 %End
 
     bool operator==( const QgsPageSize &other ) const;
@@ -88,6 +93,16 @@ class QgsPageSizeRegistry
  Finds matching page sizes from the registry, using a case insensitive match
  on the page size ``name``.
  :rtype: list of QgsPageSize
+%End
+
+    QString find( const QgsLayoutSize &size ) const;
+%Docstring
+ Finds a matching page ``size`` from the registry. Returns the page size name,
+ or an empty string if no matching size could be found.
+
+ Orientation is ignored when matching page sizes, so a landscape A4 page will
+ match to the portrait A4 size in the registry.
+ :rtype: str
 %End
 
     bool decodePageSize( const QString &string, QgsPageSize &size );

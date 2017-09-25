@@ -43,10 +43,6 @@ QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
 {
 }
 
-QgsMapToolFeatureAction::~QgsMapToolFeatureAction()
-{
-}
-
 void QgsMapToolFeatureAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );

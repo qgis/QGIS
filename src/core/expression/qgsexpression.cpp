@@ -144,16 +144,17 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
       return value.toString();
 
     case QVariant::Bool:
-      return value.toBool() ? "TRUE" : "FALSE";
+      return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
 
     case QVariant::List:
     {
       QStringList quotedValues;
-      Q_FOREACH ( const QVariant &v, value.toList() )
+      const QVariantList values = value.toList();
+      for ( const QVariant &v : values )
       {
         quotedValues += quotedValue( v );
       }
-      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( ", " ) );
+      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QStringLiteral( ", " ) ) );
     }
 
     default:
@@ -175,7 +176,8 @@ int QgsExpression::functionIndex( const QString &name )
   {
     if ( QString::compare( name, QgsExpression::Functions()[i]->name(), Qt::CaseInsensitive ) == 0 )
       return i;
-    Q_FOREACH ( const QString &alias, QgsExpression::Functions()[i]->aliases() )
+    const QStringList aliases = QgsExpression::Functions()[i]->aliases();
+    for ( const QString &alias : aliases )
     {
       if ( QString::compare( name, alias, Qt::CaseInsensitive ) == 0 )
         return i;
@@ -288,7 +290,7 @@ bool QgsExpression::needsGeometry() const
 
 void QgsExpression::initGeomCalculator()
 {
-  if ( d->mCalc.get() )
+  if ( d->mCalc )
     return;
 
   // Use planimetric as default
@@ -506,7 +508,7 @@ QString QgsExpression::helpText( QString name )
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),
                               f.mDescription ) );
 
-  Q_FOREACH ( const HelpVariant &v, f.mVariants )
+  for ( const HelpVariant &v : qgsAsConst( f.mVariants ) )
   {
     if ( f.mVariants.size() > 1 )
     {
@@ -538,20 +540,20 @@ QString QgsExpression::helpText( QString name )
         helpContents += '(';
 
         QString delim;
-        Q_FOREACH ( const HelpArg &a, v.mArguments )
+        for ( const HelpArg &a : qgsAsConst( v.mArguments ) )
         {
           helpContents += delim;
           delim = QStringLiteral( ", " );
           if ( !a.mDescOnly )
           {
-            helpContents += QStringLiteral( "<span class=\"argument %1\">%2%3</span>" ).arg( a.mOptional ? "optional" : "", a.mArg,
+            helpContents += QStringLiteral( "<span class=\"argument %1\">%2%3</span>" ).arg( a.mOptional ? QStringLiteral( "optional" ) : QStringLiteral( "" ), a.mArg,
                             a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal );
           }
         }
 
         if ( v.mVariableLenArguments )
         {
-          helpContents += QLatin1String( "…" );
+          helpContents += QStringLiteral( "…" );
         }
 
         helpContents += ')';
@@ -564,7 +566,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
 
-      Q_FOREACH ( const HelpArg &a, v.mArguments )
+      for ( const HelpArg &a : qgsAsConst( v.mArguments ) )
       {
         if ( a.mSyntaxOnly )
           continue;
@@ -579,7 +581,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
 
-      Q_FOREACH ( const HelpExample &e, v.mExamples )
+      for ( const HelpExample &e : qgsAsConst( v.mExamples ) )
       {
         helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
 
@@ -701,6 +703,9 @@ void QgsExpression::initVariableHelp()
 
   //processing variables
   sVariableHelpTexts.insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
+
+  //provider notification
+  sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Contend of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )

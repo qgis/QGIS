@@ -42,8 +42,7 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
   , mResizeMoveY( 0 )
   , mIsDragging( false )
   , mIsResizing( false )
-  , mHAlignSnapItem( nullptr )
-  , mVAlignSnapItem( nullptr )
+
 {
   //listen for selection changes, and update handles accordingly
   connect( mComposition, &QGraphicsScene::selectionChanged, this, &QgsComposerMouseHandles::selectionChanged );
@@ -593,7 +592,7 @@ void QgsComposerMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event
   double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
 
   //it was only a click
-  if ( qAbs( diffX ) < std::numeric_limits<double>::min() && qAbs( diffY ) < std::numeric_limits<double>::min() )
+  if ( std::fabs( diffX ) < std::numeric_limits<double>::min() && std::fabs( diffY ) < std::numeric_limits<double>::min() )
   {
     mIsDragging = false;
     mIsResizing = false;
@@ -824,7 +823,7 @@ void QgsComposerMouseHandles::dragMouseMove( QPointF currentPosition, bool lockM
   {
     //constrained (shift) moving should lock to horizontal/vertical movement
     //reset the smaller of the x/y movements
-    if ( qAbs( moveRectX ) <= qAbs( moveRectY ) )
+    if ( std::fabs( moveRectX ) <= std::fabs( moveRectY ) )
     {
       moveRectX = 0;
     }
@@ -1091,7 +1090,7 @@ void QgsComposerMouseHandles::resizeMouseMove( QPointF currentPosition, bool loc
     mResizeRect = QRectF( QPointF( -( mBeginHandleWidth + rx ), -( mBeginHandleHeight + ry ) ), QPointF( 0, 0 ) );
   }
 
-  setRect( 0, 0, fabs( mBeginHandleWidth + rx ), fabs( mBeginHandleHeight + ry ) );
+  setRect( 0, 0, std::fabs( mBeginHandleWidth + rx ), std::fabs( mBeginHandleHeight + ry ) );
 
   //show current size of selection in status bar
   mComposition->setStatusMessage( QString( tr( "width: %1 mm height: %2 mm" ) ).arg( rect().width() ).arg( rect().height() ) );
@@ -1270,7 +1269,7 @@ QPointF QgsComposerMouseHandles::alignPos( QPointF pos, double &alignX, double &
   double alignThreshold = mComposition->snapTolerance() / viewScaleFactor;
 
   QPointF result( pos.x(), pos.y() );
-  if ( fabs( nearestX - pos.x() ) < alignThreshold )
+  if ( std::fabs( nearestX - pos.x() ) < alignThreshold )
   {
     result.setX( nearestX );
     alignX = nearestX;
@@ -1280,7 +1279,7 @@ QPointF QgsComposerMouseHandles::alignPos( QPointF pos, double &alignX, double &
     alignX = -1;
   }
 
-  if ( fabs( nearestY - pos.y() ) < alignThreshold )
+  if ( std::fabs( nearestY - pos.y() ) < alignThreshold )
   {
     result.setY( nearestY );
     alignY = nearestY;
@@ -1359,7 +1358,7 @@ void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< d
     return;
   }
 
-  double currentDiff = fabs( checkCoord - currentCoord );
+  double currentDiff = std::fabs( checkCoord - currentCoord );
   //convert snap tolerance from pixels to mm
   double viewScaleFactor = graphicsView()->transform().m11();
   double alignThreshold = mComposition->snapTolerance() / viewScaleFactor;
@@ -1374,7 +1373,7 @@ void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< d
 
 bool QgsComposerMouseHandles::nearestItem( const QMap< double, const QgsComposerItem * > &coords, double value, double &nearestValue ) const
 {
-  if ( coords.size() < 1 )
+  if ( coords.empty() )
   {
     return false;
   }

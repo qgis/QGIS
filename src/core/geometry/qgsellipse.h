@@ -41,6 +41,8 @@ class CORE_EXPORT QgsEllipse
   public:
     QgsEllipse();
 
+    virtual ~QgsEllipse() = default;
+
     /** Constructs an ellipse by defining all the members.
      * \param center The center of the ellipse.
      * \param semiMajorAxis Semi-major axis of the ellipse.

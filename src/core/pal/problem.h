@@ -228,16 +228,16 @@ namespace pal
 
       QList< LabelPosition * > mLabelPositions;
 
-      RTree<LabelPosition *, double, 2, double> *candidates; // index all candidates
-      RTree<LabelPosition *, double, 2, double> *candidates_sol; // index active candidates
-      RTree<LabelPosition *, double, 2, double> *candidates_subsol; // idem for subparts
+      RTree<LabelPosition *, double, 2, double> *candidates = nullptr; // index all candidates
+      RTree<LabelPosition *, double, 2, double> *candidates_sol = nullptr; // index active candidates
+      RTree<LabelPosition *, double, 2, double> *candidates_subsol = nullptr; // idem for subparts
 
       //int *feat;        // [nblp]
-      int *featStartId; // [nbft]
-      int *featNbLp;    // [nbft]
-      double *inactiveCost; //
+      int *featStartId = nullptr; // [nbft]
+      int *featNbLp = nullptr;    // [nbft]
+      double *inactiveCost = nullptr; //
 
-      Sol *sol;         // [nbft]
+      Sol *sol = nullptr;         // [nbft]
       int nbActive;
 
       double nbOverlap;

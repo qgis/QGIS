@@ -40,22 +40,11 @@
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
-  , mRubberBand( nullptr )
-  , mTempRubberBand( nullptr )
-  , mValidator( nullptr )
-  , mSnappingMarker( nullptr )
+  , mCaptureMode( mode )
 #ifdef Q_OS_WIN
   , mSkipNextContextMenuEvent( 0 )
 #endif
 {
-  mCaptureMode = mode;
-
-  // enable the snapping on mouse move / release
-  mSnapOnMove = true;
-  mSnapOnRelease = true;
-  mSnapOnDoubleClick = false;
-  mSnapOnPress = false;
-
   mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
@@ -655,9 +644,8 @@ void QgsMapToolCapture::validateGeometry()
     case CaptureNone:
     case CapturePoint:
       return;
-    case CaptureSegment:
     case CaptureLine:
-      if ( size() < 2  || ( mCaptureMode == CaptureSegment && size() > 2 ) )
+      if ( size() < 2 )
         return;
       geom = QgsGeometry( mCaptureCurve.curveToLine() );
       break;
@@ -682,7 +670,7 @@ void QgsMapToolCapture::validateGeometry()
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   connect( mValidator, &QThread::finished, this, &QgsMapToolCapture::validationFinished );
   mValidator->start();
-  messageEmitted( tr( "Validation started" ) );
+  emit messageEmitted( tr( "Validation started" ) );
 }
 
 void QgsMapToolCapture::addError( QgsGeometry::Error e )

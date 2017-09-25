@@ -24,7 +24,6 @@
 #define QGSWMSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswmsconfigparser.h"
 #include "qgswmsserviceexception.h"
 
 class QgsRectangle;
@@ -37,10 +36,6 @@ class QgsRectangle;
 //! WMS implementation
 namespace QgsWms
 {
-  // style name to use for the unnamed style of layers (must not be empty name in WMS)
-  // this implies that a layer style called "default" will not be usable in WMS server
-  const QString EMPTY_STYLE_NAME = QStringLiteral( "default" );
-
   //! Supported image output format
   enum ImageOutputFormat
   {
@@ -59,14 +54,6 @@ namespace QgsWms
   /** Return WMS service URL
    */
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project );
-
-  /**
-   * Return the wms config parser (Transitional)
-   *
-   * XXX This is needed in the current implementation.
-   * This should disappear as soon we get rid of singleton.
-   */
-  QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface );
 
   /** Parse image format parameter
    *  \returns OutputFormat

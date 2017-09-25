@@ -22,7 +22,7 @@ QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget *parent )
   , mAvailableFilterFlags( QgsSearchWidgetWrapper::EqualTo | QgsSearchWidgetWrapper::NotEqualTo | QgsSearchWidgetWrapper::CaseInsensitive )
   , mDefaultFilterFlags( QgsSearchWidgetWrapper::EqualTo )
   , mFilterFlags( QgsSearchWidgetWrapper::EqualTo )
-  , mMenu( nullptr )
+
 {
   setFocusPolicy( Qt::StrongFocus );
   setPopupMode( QToolButton::InstantPopup );

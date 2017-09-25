@@ -17,7 +17,7 @@
 #ifndef QGSMESSAGELOGVIEWER_H
 #define QGSMESSAGELOGVIEWER_H
 
-#include <ui_qgsmessagelogviewer.h>
+#include "ui_qgsmessagelogviewer.h"
 #include "qgsguiutils.h"
 #include "qgsmessagelog.h"
 

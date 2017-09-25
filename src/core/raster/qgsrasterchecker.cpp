@@ -18,7 +18,6 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 
-#include <qmath.h>
 #include <QColor>
 #include <QPainter>
 #include <QImage>
@@ -203,7 +202,7 @@ double QgsRasterChecker::tolerance( double val, int places )
 {
   // float precision is about 7 decimal digits, double about 16
   // default places = 6
-  return 1. * qPow( 10, qRound( log10( qAbs( val ) ) - places ) );
+  return 1. * std::pow( 10, std::round( std::log10( std::fabs( val ) ) - places ) );
 }
 
 QString QgsRasterChecker::compareHead()
@@ -224,7 +223,7 @@ void QgsRasterChecker::compare( const QString &paramName, int verifiedVal, int e
 bool QgsRasterChecker::compare( double verifiedVal, double expectedVal, double tolerance )
 {
   // values may be nan
-  return ( qIsNaN( verifiedVal ) && qIsNaN( expectedVal ) ) || ( qAbs( verifiedVal - expectedVal ) <= tolerance );
+  return ( std::isnan( verifiedVal ) && std::isnan( expectedVal ) ) || ( std::fabs( verifiedVal - expectedVal ) <= tolerance );
 }
 
 void QgsRasterChecker::compare( const QString &paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance )

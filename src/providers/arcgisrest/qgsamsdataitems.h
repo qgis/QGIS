@@ -29,13 +29,13 @@ class QgsAmsRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    virtual QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
-    void connectionsChanged();
+    void onConnectionsChanged();
     void newConnection();
 #endif
 };
@@ -49,7 +49,7 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
@@ -64,6 +64,8 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
 
 class QgsAmsLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
+
   public:
     QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format );
 };

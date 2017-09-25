@@ -45,9 +45,7 @@
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
-  , mDesignerTree( nullptr )
-  , mFieldsList( nullptr )
-  , mRelationsList( nullptr )
+
 {
   if ( !layer )
     return;
@@ -399,9 +397,9 @@ void QgsFieldsProperties::loadRelations()
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         nmCombo->addItem( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
-      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relation.id() );
+      const QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
-      const QVariant nmrelcfg = setup.config().value( QStringLiteral( "nm-rel" ) );
+      const QVariant nmrelcfg =  editFormConfig.widgetConfig( relation.id() ).value( QStringLiteral( "nm-rel" ) );
 
       int idx =  nmCombo->findData( nmrelcfg.toString() );
 
@@ -987,7 +985,6 @@ void QgsFieldsProperties::apply()
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
   {
     int idx = mFieldsList->item( i, AttrIdCol )->text().toInt();
-    QString name = mLayer->fields().at( idx ).name();
     FieldConfig cfg = configForRow( i );
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
@@ -1085,12 +1082,12 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
   , mLabelOnTop( false )
   , mConstraints( 0 )
   , mConstraintDescription( QString() )
-  , mButton( nullptr )
+
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
-  : mButton( nullptr )
+
 {
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
@@ -1336,7 +1333,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   if ( itemData.type() == QgsFieldsProperties::DesignerTreeItemData::Container )
   {
     QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure container" ) );
+    dlg.setWindowTitle( tr( "Configure Container" ) );
     QFormLayout *layout = new QFormLayout() ;
     dlg.setLayout( layout );
     layout->addRow( baseWidget );
@@ -1350,7 +1347,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     visibilityExpressionGroupBox->setLayout( new QGridLayout );
     QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
     visibilityExpressionWidget->setLayer( mLayer );
-    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility expression" ) );
+    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility Expression" ) );
     visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
     visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
 
@@ -1395,7 +1392,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   else if ( itemData.type() == QgsFieldsProperties::DesignerTreeItemData::Relation )
   {
     QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure relation editor" ) );
+    dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
     QFormLayout *layout = new QFormLayout() ;
     dlg.setLayout( layout );
     layout->addWidget( baseWidget );
@@ -1428,7 +1425,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   else
   {
     QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure field" ) );
+    dlg.setWindowTitle( tr( "Configure Field" ) );
     dlg.setLayout( new QGridLayout() );
     dlg.layout()->addWidget( baseWidget );
 

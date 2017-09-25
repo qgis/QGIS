@@ -19,6 +19,7 @@
 #include "ui_qgsattributeactionpropertiesdialogbase.h"
 
 #include "qgsaction.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 
@@ -27,7 +28,7 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
     Q_OBJECT
 
   public:
-    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer *layer, QWidget *parent = nullptr );
+    QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, QgsVectorLayer *layer, QWidget *parent = nullptr );
 
     QgsAttributeActionPropertiesDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
 
@@ -43,6 +44,8 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
 
     QSet<QString> actionScopes() const;
 
+    QString notificationMessage() const;
+
     bool capture() const;
 
     virtual QgsExpressionContext createExpressionContext() const override;
@@ -52,6 +55,7 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
     void insertExpressionOrField();
     void chooseIcon();
     void updateButtons();
+    void showHelp();
 
   private:
     void init( const QSet<QString> &actionScopes );

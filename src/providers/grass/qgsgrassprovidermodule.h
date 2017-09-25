@@ -37,7 +37,7 @@ class QgsGrassItemActions : public QObject
   public:
     QgsGrassItemActions( const QgsGrassObject &grassObject, bool valid, QObject *parent );
 
-    QList<QAction *> actions();
+    QList<QAction *> actions( QWidget *parent );
 
   public slots:
     void newMapset();
@@ -77,6 +77,8 @@ class QgsGrassObjectItemBase
 
 class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemBase
 {
+    Q_OBJECT
+
   public:
     QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path );
 
@@ -84,7 +86,7 @@ class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemB
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override { return mActions->actions(); }
+    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
 #endif
 
   private:
@@ -103,7 +105,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override { return mActions->actions(); }
+    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
 #endif
     virtual bool acceptDrop() override;
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
@@ -132,7 +134,7 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
                         LayerType layerType, QString providerKey );
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override { return mActions->actions(); }
+    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
 #endif
     virtual bool equal( const QgsDataItem *other ) override;
 
@@ -151,7 +153,7 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     ~QgsGrassVectorItem();
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override { return mActions->actions(); }
+    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
 #endif
     virtual bool equal( const QgsDataItem *other ) override;
 
@@ -235,7 +237,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     //  QgsDataItem::setState(state);
     //} // do nothing to keep Populating
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
 #endif
     virtual QIcon icon() override;

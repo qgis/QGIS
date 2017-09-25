@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
+from qgis.core import QgsProject, QgsLayout, QgsUnitTypes
 from qgis.gui import QgsLayoutView
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QTransform
@@ -57,6 +58,18 @@ class TestQgsLayoutView(unittest.TestCase):
         scale = view.transform().m11()
         view.scaleSafe(0.5)
         self.assertAlmostEqual(view.transform().m11(), scale)
+
+    def testLayoutScalePixels(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.setUnits(QgsUnitTypes.LayoutPixels)
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+        view.setZoomLevel(1)
+        # should be no transform, since 100% with pixel units should be pixel-pixel
+        self.assertEqual(view.transform().m11(), 1)
+        view.setZoomLevel(0.5)
+        self.assertEqual(view.transform().m11(), 0.5)
 
 
 if __name__ == '__main__':

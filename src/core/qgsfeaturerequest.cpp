@@ -114,7 +114,7 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( QgsFeatureRequest
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( std::function<void ( const QgsFeature & )> callback )
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void ( const QgsFeature & )> &callback )
 {
   mInvalidGeometryCallback = callback;
   return *this;
@@ -248,7 +248,7 @@ QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateRefe
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( std::function<void ( const QgsFeature & )> callback )
+QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void ( const QgsFeature & )> &callback )
 {
   mTransformErrorCallback = callback;
   return *this;

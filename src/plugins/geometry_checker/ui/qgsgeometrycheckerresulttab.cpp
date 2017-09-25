@@ -107,7 +107,7 @@ void QgsGeometryCheckerResultTab::finalize()
     dialog.layout()->addWidget( bbox );
     connect( bbox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept );
     connect( bbox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject );
-    dialog.setWindowTitle( tr( "Check errors occurred" ) );
+    dialog.setWindowTitle( tr( "Check Errors Occurred" ) );
     dialog.exec();
   }
 }
@@ -119,7 +119,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
     ui.tableWidgetErrors->setSortingEnabled( false );
 
   int row = ui.tableWidgetErrors->rowCount();
-  int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
+  int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
   double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mFeaturePool->getLayer() );
   QVariant value;
@@ -167,7 +167,7 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
   ui.tableWidgetErrors->setSortingEnabled( false );
 
   int row = mErrorMap.value( error ).row();
-  int prec = 7 - std::floor( qMax( 0., std::log10( qMax( error->location().x(), error->location().y() ) ) ) );
+  int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
   double layerToMap = mIface->mapCanvas()->mapSettings().layerToMapUnits( mFeaturePool->getLayer() );
   QVariant value;

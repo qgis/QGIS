@@ -62,7 +62,7 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'neighbour.png'))
 
     def group(self):
-        return self.tr('Vector analysis tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()
@@ -98,7 +98,7 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(source.sourceCrs())
-        distance.setEllipsoid(QgsProject.instance().ellipsoid())
+        distance.setEllipsoid(context.project().ellipsoid())
 
         sumDist = 0.00
         A = source.sourceExtent()

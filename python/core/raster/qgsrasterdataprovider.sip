@@ -467,6 +467,8 @@ Copy member variables from other raster data provider. Useful for implementation
 
 
 };
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

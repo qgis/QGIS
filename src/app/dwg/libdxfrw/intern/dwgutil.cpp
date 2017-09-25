@@ -16,6 +16,16 @@
 #include "rscodec.h"
 #include "../libdwgr.h"
 
+#if __cplusplus >= 201500
+#define FALLTHROUGH [[fallthrough]];
+#elif defined(__clang__)
+#define FALLTHROUGH //[[clang::fallthrough]]
+#elif defined(__GNUC__) && __GNUC__ >= 7
+#define FALLTHROUGH [[gnu::fallthrough]];
+#else
+#define FALLTHROUGH
+#endif
+
 #include "qgslogger.h"
 
 /** Utility function
@@ -179,7 +189,7 @@ void dwgCompressor::decompress18( duint8 *cbuf, duint8 *dbuf, duint32 csize, dui
   pos = 0; //current position in compressed buffer
   rpos = 0; //current position in resulting decompressed buffer
   litCount = litLength18();
-  //copy first lileral length
+  //copy first literal length
   for ( duint32 i = 0; i < litCount; ++i )
   {
     bufD[rpos++] = bufC[pos++];
@@ -486,6 +496,9 @@ void dwgCompressor::copyCompBytes21( duint8 *cbuf, duint8 *dbuf, duint32 l, duin
       for ( int i = 1; i < 5; i++ )
         dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
+
+      FALLTHROUGH
+
     case 8: //OK
       for ( int i = 0; i < 8; i++ ) //RLZ 4[0],4[4] or 4[4],4[0]
         dbuf[dix++] = cbuf[six++];

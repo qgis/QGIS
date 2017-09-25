@@ -32,7 +32,7 @@
 
 QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
   initGui();
@@ -111,7 +111,7 @@ void QgsDrawSourceWidget::on_mBlendCmbBx_currentIndexChanged( int index )
 
 QgsBlurWidget::QgsBlurWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 
@@ -228,12 +228,12 @@ void QgsBlurWidget::on_mBlendCmbBx_currentIndexChanged( int index )
 
 QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 
   mShadowColorBtn->setAllowOpacity( false );
-  mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
+  mShadowColorBtn->setColorDialogTitle( tr( "Select Shadow Color" ) );
   mShadowColorBtn->setContext( QStringLiteral( "symbology" ) );
   mShadowOffsetAngleSpnBx->setClearValue( 0 );
 
@@ -386,12 +386,12 @@ void QgsShadowEffectWidget::on_mShadowBlendCmbBx_currentIndexChanged( int index 
 
 QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 
   mColorBtn->setAllowOpacity( false );
-  mColorBtn->setColorDialogTitle( tr( "Select glow color" ) );
+  mColorBtn->setColorDialogTitle( tr( "Select Glow Color" ) );
   mColorBtn->setContext( QStringLiteral( "symbology" ) );
 
   mSpreadUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPixels << QgsUnitTypes::RenderMapUnits
@@ -570,7 +570,7 @@ void QgsGlowWidget::applyColorRamp()
 
 QgsTransformWidget::QgsTransformWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 
@@ -749,7 +749,7 @@ void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
 
 QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 

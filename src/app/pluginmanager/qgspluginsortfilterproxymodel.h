@@ -49,7 +49,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     void setAcceptedStatuses( const QStringList &statuses );
 
     //! (Re)configire the spacer filter
-    void setAcceptedSpacers( const QString &spacers = "" );
+    void setAcceptedSpacers( const QString &spacers = QString() );
 
     //! Return number of item with status filter matching (no other filters are considered)
     int countWithCurrentStatus();
@@ -74,5 +74,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     QStringList mAcceptedStatuses;
     QString mAcceptedSpacers;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

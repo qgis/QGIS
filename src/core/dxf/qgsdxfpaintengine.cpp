@@ -160,10 +160,10 @@ void QgsDxfPaintEngine::endPolygon()
 
 void QgsDxfPaintEngine::endCurve()
 {
-  if ( mCurrentCurve.size() < 1 )
+  if ( mCurrentCurve.empty() )
     return;
 
-  if ( mCurrentPolygon.size() < 1 )
+  if ( mCurrentPolygon.empty() )
   {
     mCurrentCurve.clear();
     return;
@@ -262,7 +262,7 @@ double QgsDxfPaintEngine::power( double a, int b )
     return 1;
 
   double tmp = a;
-  for ( int i = 2; i <= qAbs( static_cast< double >( b ) ); i++ )
+  for ( int i = 2; i <= std::abs( b ); i++ )
     a *= tmp;
 
   if ( b > 0 )

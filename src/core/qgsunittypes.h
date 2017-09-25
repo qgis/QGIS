@@ -52,6 +52,7 @@ class CORE_EXPORT QgsUnitTypes
       DistanceMillimeters, //!< Millimeters
       DistanceUnknownUnit, //!< Unknown distance unit
     };
+    Q_ENUM( DistanceUnit );
 
     /** Types of distance units
      */
@@ -78,6 +79,7 @@ class CORE_EXPORT QgsUnitTypes
       AreaSquareMillimeters, //! Square millimeters
       AreaUnknownUnit, //!< Unknown areal unit
     };
+    Q_ENUM( AreaUnit );
 
     //! Units of angles
     enum AngleUnit
@@ -90,6 +92,7 @@ class CORE_EXPORT QgsUnitTypes
       AngleTurn, //!< Turn/revolutions
       AngleUnknownUnit, //!< Unknown angle unit
     };
+    Q_ENUM( AngleUnit );
 
     //! Rendering size units
     enum RenderUnit
@@ -103,6 +106,7 @@ class CORE_EXPORT QgsUnitTypes
       RenderUnknownUnit, //!< Mixed or unknown units
       RenderMetersInMapUnits, //!< Meters value as Map units
     };
+    Q_ENUM( RenderUnit );
 
     //! Layout measurement units
     enum LayoutUnit
@@ -116,6 +120,7 @@ class CORE_EXPORT QgsUnitTypes
       LayoutPicas, //!< Typographic picas
       LayoutPixels //!< Pixels
     };
+    Q_ENUM( LayoutUnit );
 
     //! Types of layout units
     enum LayoutUnitType
@@ -384,6 +389,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param unit unit to encode
      * \returns encoded string
      * \see decodeLayoutUnit()
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString encodeUnit( LayoutUnit unit );
 
@@ -392,13 +398,30 @@ class CORE_EXPORT QgsUnitTypes
      * \param ok optional boolean, will be set to true if string was converted successfully
      * \returns decoded units
      * \see encodeUnit()
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = 0 );
 
     /**
      * Returns the type for a unit of measurement.
+     *
+     * \since QGIS 3.0
     */
     Q_INVOKABLE static LayoutUnitType unitType( const LayoutUnit units );
+
+    /**
+     * Returns a translated abbreviation representing a layout \a unit (e.g. "mm").
+     *
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString toAbbreviatedString( LayoutUnit unit );
+
+    /**
+     * Returns a translated string representing a layout \a unit.
+     *
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE static QString toString( LayoutUnit unit );
 
 };
 

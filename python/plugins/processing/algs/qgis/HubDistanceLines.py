@@ -34,37 +34,37 @@ from qgis.core import (QgsField,
                        QgsFeatureSink,
                        QgsFeatureRequest,
                        QgsWkbTypes,
-                       QgsApplication,
-                       QgsProject,
-                       QgsProcessingUtils)
+                       QgsUnitTypes,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingException,
+                       QgsSpatialIndex)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects
 
 from math import sqrt
 
 
 class HubDistanceLines(QgisAlgorithm):
-    POINTS = 'POINTS'
+    INPUT = 'INPUT'
     HUBS = 'HUBS'
     FIELD = 'FIELD'
     UNIT = 'UNIT'
     OUTPUT = 'OUTPUT'
 
-    UNITS = ['Meters',
-             'Feet',
-             'Miles',
-             'Kilometers',
-             'Layer units'
+    LAYER_UNITS = 'LAYER_UNITS'
+
+    UNITS = [QgsUnitTypes.DistanceMeters,
+             QgsUnitTypes.DistanceFeet,
+             QgsUnitTypes.DistanceMiles,
+             QgsUnitTypes.DistanceKilometers,
+             LAYER_UNITS
              ]
 
     def group(self):
-        return self.tr('Vector analysis tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()
@@ -76,16 +76,16 @@ class HubDistanceLines(QgisAlgorithm):
                       self.tr('Kilometers'),
                       self.tr('Layer units')]
 
-        self.addParameter(ParameterVector(self.POINTS,
-                                          self.tr('Source points layer')))
-        self.addParameter(ParameterVector(self.HUBS,
-                                          self.tr('Destination hubs layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Hub layer name attribute'), self.HUBS))
-        self.addParameter(ParameterSelection(self.UNIT,
-                                             self.tr('Measurement unit'), self.units))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Source points layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.HUBS,
+                                                              self.tr('Destination hubs layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Hub layer name attribute'), parentLayerParameterName=self.HUBS))
+        self.addParameter(QgsProcessingParameterEnum(self.UNIT,
+                                                     self.tr('Measurement unit'), self.units))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Hub distance'), QgsProcessing.TypeVectorLine))
 
     def name(self):
         return 'distancetonearesthublinetohub'
@@ -94,61 +94,61 @@ class HubDistanceLines(QgisAlgorithm):
         return self.tr('Distance to nearest hub (line to hub)')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layerPoints = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.POINTS), context)
-        layerHubs = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.HUBS), context)
-        fieldName = self.getParameterValue(self.FIELD)
-
-        units = self.UNITS[self.getParameterValue(self.UNIT)]
-
-        if layerPoints.source() == layerHubs.source():
-            raise GeoAlgorithmExecutionException(
+        if parameters[self.INPUT] == parameters[self.HUBS]:
+            raise QgsProcessingException(
                 self.tr('Same layer given for both hubs and spokes'))
 
-        fields = layerPoints.fields()
+        point_source = self.parameterAsSource(parameters, self.INPUT, context)
+        hub_source = self.parameterAsSource(parameters, self.HUBS, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD, context)
+
+        units = self.UNITS[self.parameterAsEnum(parameters, self.UNIT, context)]
+
+        fields = point_source.fields()
         fields.append(QgsField('HubName', QVariant.String))
         fields.append(QgsField('HubDist', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QgsWkbTypes.LineString, layerPoints.crs(),
-                                                                     context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.LineString, point_source.sourceCrs())
 
-        index = QgsProcessingUtils.createSpatialIndex(layerHubs, context)
+        index = QgsSpatialIndex(hub_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(point_source.sourceCrs())))
 
         distance = QgsDistanceArea()
-        distance.setSourceCrs(layerPoints.crs())
-        distance.setEllipsoid(QgsProject.instance().ellipsoid())
+        distance.setSourceCrs(point_source.sourceCrs())
+        distance.setEllipsoid(context.project().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
-        features = QgsProcessingUtils.getFeatures(layerPoints, context)
-        total = 100.0 / layerPoints.featureCount() if layerPoints.featureCount() else 0
+        features = point_source.getFeatures()
+        total = 100.0 / point_source.featureCount() if point_source.featureCount() else 0
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
+            if not f.hasGeometry():
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
+                continue
             src = f.geometry().boundingBox().center()
 
             neighbors = index.nearestNeighbor(src, 1)
-            ft = next(layerHubs.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], layerHubs.fields())))
+            ft = next(hub_source.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], hub_source.fields()).setDestinationCrs(point_source.sourceCrs())))
             closest = ft.geometry().boundingBox().center()
             hubDist = distance.measureLine(src, closest)
 
+            if units != self.LAYER_UNITS:
+                hub_dist_in_desired_units = distance.convertLengthMeasurement(hubDist, units)
+            else:
+                hub_dist_in_desired_units = hubDist
+
             attributes = f.attributes()
             attributes.append(ft[fieldName])
-            if units == 'Feet':
-                attributes.append(hubDist * 3.2808399)
-            elif units == 'Miles':
-                attributes.append(hubDist * 0.000621371192)
-            elif units == 'Kilometers':
-                attributes.append(hubDist / 1000.0)
-            elif units != 'Meters':
-                attributes.append(sqrt(
-                    pow(src.x() - closest.x(), 2.0) +
-                    pow(src.y() - closest.y(), 2.0)))
-            else:
-                attributes.append(hubDist)
+            attributes.append(hub_dist_in_desired_units)
 
             feat = QgsFeature()
             feat.setAttributes(attributes)
 
             feat.setGeometry(QgsGeometry.fromPolyline([src, closest]))
 
-            writer.addFeature(feat, QgsFeatureSink.FastInsert)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

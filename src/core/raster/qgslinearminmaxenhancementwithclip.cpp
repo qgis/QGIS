@@ -44,10 +44,5 @@ int QgsLinearMinMaxEnhancementWithClip::enhance( double value )
 
 bool QgsLinearMinMaxEnhancementWithClip::isValueInDisplayableRange( double value )
 {
-  if ( value < mMinimumValue || value > mMaximumValue )
-  {
-    return false;
-  }
-
-  return true;
+  return !( value < mMinimumValue || value > mMaximumValue );
 }

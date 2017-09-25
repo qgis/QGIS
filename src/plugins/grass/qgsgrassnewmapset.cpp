@@ -117,7 +117,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   mMapsetsListView->clear();
   mMapsetLineEdit->setValidator( new QRegExpValidator( rx, mMapsetLineEdit ) );
 
-  mMapsetsListView->header()->setResizeMode( QHeaderView::ResizeToContents );
+  mMapsetsListView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
   // FINISH
   mOpenNewMapsetCheckBox->setChecked( settings.value( QStringLiteral( "GRASS/newMapsetWizard/openMapset" ), true ).toBool() );
@@ -1087,7 +1087,7 @@ void QgsGrassNewMapset::drawRegion()
       double x1 = points[i].x();
       double x2 = points[i + 1].x();
 
-      if ( qAbs( x2 - x1 ) > 150 )
+      if ( std::fabs( x2 - x1 ) > 150 )
       {
         if ( x2 < x1 )
         {

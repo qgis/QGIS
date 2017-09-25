@@ -76,4 +76,6 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     QMap< int, QCheckBox * > mOverviewCheckBoxes;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSRASTERLAYERSAVEASDIALOG_H

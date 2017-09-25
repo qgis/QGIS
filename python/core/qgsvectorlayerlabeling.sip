@@ -76,6 +76,11 @@ Try to create instance of an implementation based on the XML data
  :rtype: QgsAbstractVectorLayerLabeling
 %End
 
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
+%Docstring
+ Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+%End
+
   private:
     QgsAbstractVectorLayerLabeling( const QgsAbstractVectorLayerLabeling &rhs );
 };
@@ -105,6 +110,7 @@ Constructs simple labeling configuration with given initial settings
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
     virtual bool requiresAdvancedEffects() const;
 
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
 
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring

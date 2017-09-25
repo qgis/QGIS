@@ -24,7 +24,6 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 
@@ -86,9 +85,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
      * Once connected, available layers are displayed.
      */
     void on_mConnectButton_clicked();
-
-    //! Determines the layers the user selected
-    virtual void addClicked();
 
     void searchFinished();
 
@@ -186,8 +182,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
-
-    QPushButton *mAddButton = nullptr;
 
     QMap<QString, QString> mCrsNames;
 

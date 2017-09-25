@@ -38,7 +38,7 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
     void apply();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void showHelp();
     void on_mGridTypeComboBox_currentIndexChanged( int index );
     void on_mPbtnUpdateFromExtents_clicked();
     void on_mPbtnUpdateFromLayer_clicked();

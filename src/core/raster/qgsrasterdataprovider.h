@@ -519,4 +519,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     mutable QgsRectangle mExtent;
 
 };
+
+// clazy:excludeall=qstring-allocations
+
 #endif

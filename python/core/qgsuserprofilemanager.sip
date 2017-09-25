@@ -34,7 +34,7 @@ class QgsUserProfileManager : QObject
  User profile manager used to manage user profiles for the instance of QGIS.
 %End
 
-    static QString resolveProfilesFolder( const QString  &basePath = QString() );
+    static QString resolveProfilesFolder( const QString &basePath = QString() );
 %Docstring
  Resolves the profiles folder for the given path. Path will have \\profiles appended to the path
  \param basePath The base path to resolve the path from to append the \\profiles folder to.
@@ -58,7 +58,7 @@ class QgsUserProfileManager : QObject
  :rtype: QgsUserProfile
 %End
 
-    void setRootLocation( QString rootProfileLocation );
+    void setRootLocation( const QString &rootProfileLocation );
 %Docstring
  Set the root profile location for the profile manager. All profiles are loaded from this
  location. Will also contain a profiles.ini for holding profile settings.
@@ -70,6 +70,28 @@ class QgsUserProfileManager : QObject
  Returns the path to the root profiles location.
  :return: The root path to the profiles folder.
  :rtype: str
+%End
+
+    void setNewProfileNotificationEnabled( bool enabled );
+%Docstring
+ Sets whether the manager should watch for the creation of new user profiles and emit
+ the profilesChanged() signal when this occurs. By default new profile notification
+ is disabled.
+
+ Before calling this, ensure that the correct root location has been set via
+ calling setRootLocation().
+
+.. seealso:: isNewProfileNotificationEnabled()
+%End
+
+    bool isNewProfileNotificationEnabled() const;
+%Docstring
+ Returns whether the manager is watching for the creation of new user profiles and emitting
+ the profilesChanged() signal when this occurs. By default new profile notification
+ is disabled.
+
+.. seealso:: setNewProfileNotificationEnabled()
+ :rtype: bool
 %End
 
     bool rootLocationIsSet() const;
@@ -118,7 +140,7 @@ class QgsUserProfileManager : QObject
  Set the default profile name from the current active profile.
 %End
 
-    QgsUserProfile *profileForName( const QString name ) const;
+    QgsUserProfile *profileForName( const QString &name ) const /Factory/;
 %Docstring
  Return the profile found for a given name.
  \param name The name of the profile to return.
@@ -134,7 +156,7 @@ class QgsUserProfileManager : QObject
  :rtype: QgsError
 %End
 
-    QgsError deleteProfile( const QString name );
+    QgsError deleteProfile( const QString &name );
 %Docstring
  Deletes a profile from the root profiles folder.
 .. note::
@@ -169,12 +191,19 @@ class QgsUserProfileManager : QObject
 
   signals:
 
-    void profilesChanged( );
+    void profilesChanged();
 %Docstring
  Emitted when the list of profiles is changed.
+
+ This signal will only be emitted when isNewProfileNotificationEnabled() is true.
+ By default new profile notification is disabled.
+
+.. seealso:: isNewProfileNotificationEnabled()
+.. seealso:: setNewProfileNotificationEnabled()
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

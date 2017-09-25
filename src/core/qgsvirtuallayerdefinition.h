@@ -172,4 +172,6 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     long mGeometrySrid;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif

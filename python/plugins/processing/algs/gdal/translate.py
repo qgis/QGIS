@@ -30,15 +30,16 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import (ParameterRaster,
-                                        ParameterString,
-                                        ParameterNumber,
-                                        ParameterBoolean,
-                                        ParameterSelection,
-                                        ParameterExtent,
-                                        ParameterCrs)
-from processing.core.outputs import OutputRaster
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -65,34 +66,37 @@ class translate(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterNumber(self.OUTSIZE,
-                                          self.tr('Set the size of the output file (In pixels or %)'),
-                                          1, None, 100))
-        self.addParameter(ParameterBoolean(self.OUTSIZE_PERC,
-                                           self.tr('Output size is a percentage of input size'), True))
-        self.addParameter(ParameterString(self.NO_DATA,
-                                          self.tr("Nodata value, leave blank to take the nodata value from input"),
-                                          '', optional=True))
-        self.addParameter(ParameterSelection(self.EXPAND,
-                                             self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba'], default=0))
-        self.addParameter(ParameterCrs(self.SRS,
-                                       self.tr('Output projection for output file [leave blank to use input projection]'), None, optional=True))
-        self.addParameter(ParameterExtent(self.PROJWIN,
-                                          self.tr('Subset based on georeferenced coordinates'), optional=True))
-        self.addParameter(ParameterBoolean(self.SDS,
-                                           self.tr('Copy all subdatasets of this file to individual output files'),
-                                           False))
 
-        self.addParameter(ParameterString(self.OPTIONS,
-                                          self.tr('Additional creation options'),
-                                          optional=True,
-                                          metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
-        self.addParameter(ParameterSelection(self.RTYPE,
-                                             self.tr('Output raster type'),
-                                             self.TYPE, 5))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterNumber(self.OUTSIZE,
+                                                       self.tr('Set the size of the output file (In pixels or %)'),
+                                                       minValue=1, defaultValue=100))
+        self.addParameter(QgsProcessingParameterBoolean(self.OUTSIZE_PERC,
+                                                        self.tr('Output size is a percentage of input size'), defaultValue=True))
+        self.addParameter(QgsProcessingParameterString(self.NO_DATA,
+                                                       self.tr("Nodata value, leave blank to take the nodata value from input"),
+                                                       defaultValue='', optional=True))
+        self.addParameter(QgsProcessingParameterEnum(self.EXPAND,
+                                                     self.tr('Expand'), options=['none', 'gray', 'rgb', 'rgba'], defaultValue=0))
+        self.addParameter(QgsProcessingParameterCrs(self.SRS,
+                                                    self.tr('Output projection for output file [leave blank to use input projection]'), defaultValue=None, optional=True))
+        self.addParameter(QgsProcessingParameterExtent(self.PROJWIN,
+                                                       self.tr('Subset based on georeferenced coordinates'), optional=True))
+        self.addParameter(QgsProcessingParameterBoolean(self.SDS,
+                                                        self.tr('Copy all subdatasets of this file to individual output files'),
+                                                        defaultValue=False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
+        create_options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                            self.tr('Additional creation options'),
+                                                            optional=True)
+        create_options_param.setMetadata({'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'})
+        self.addParameter(create_options_param)
+        self.addParameter(QgsProcessingParameterEnum(self.RTYPE,
+                                                     self.tr('Output raster type'),
+                                                     options=self.TYPE, defaultValue=5))
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Converted')))
 
     def name(self):
         return 'translate'
@@ -103,19 +107,20 @@ class translate(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self, parameters):
-        inLayer = self.getParameterValue(self.INPUT)
-        out = self.getOutputValue(translate.OUTPUT)
-        outsize = str(self.getParameterValue(self.OUTSIZE))
-        outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
-        noData = self.getParameterValue(self.NO_DATA)
-        expand = parameters[self.EXPAND].options[self.getParameterValue(self.EXPAND)][1]
-        projwin = str(self.getParameterValue(self.PROJWIN))
-        if not projwin:
-            projwin = QgsProcessingUtils.combineLayerExtents([inLayer])
-        crsId = self.getParameterValue(self.SRS)
-        sds = self.getParameterValue(self.SDS)
-        opts = self.getParameterValue(self.OPTIONS)
+    def getConsoleCommands(self, parameters, context, feedback):
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        outsize = str(self.parameterAsInt(parameters, self.OUTSIZE, context))
+        outsizePerc = self.parameterAsBool(parameters, self.OUTSIZE_PERC, context)
+        noData = self.parameterAsString(parameters, self.NO_DATA, context)
+        expand = self.parameterDefinition(self.EXPAND).options()[self.parameterAsEnum(parameters, self.EXPAND, context)]
+
+        proj_extent = self.parameterAsExtent(parameters, self.PROJWIN, context)
+        if proj_extent.isNull():
+            proj_extent = QgsProcessingUtils.combineLayerExtents([inLayer])
+        crsId = self.parameterAsCrs(parameters, self.SRS, context).authid()
+        sds = self.parameterAsBool(parameters, self.SDS, context)
+        opts = self.parameterAsString(parameters, self.OPTIONS, context)
 
         if noData is not None:
             noData = str(noData)
@@ -124,8 +129,8 @@ class translate(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         arguments.append('-ot')
-        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if outsizePerc == 'True':
+        arguments.append(self.TYPE[self.parameterAsEnum(parameters, self.RTYPE, context)])
+        if outsizePerc:
             arguments.append('-outsize')
             arguments.append(outsize + '%')
             arguments.append(outsize + '%')
@@ -139,14 +144,13 @@ class translate(GdalAlgorithm):
         if expand != 'none':
             arguments.append('-expand')
             arguments.append(expand)
-        regionCoords = projwin.split(',')
         try:
             projwin = []
             projwin.append('-projwin')
-            projwin.append(regionCoords[0])
-            projwin.append(regionCoords[3])
-            projwin.append(regionCoords[1])
-            projwin.append(regionCoords[2])
+            projwin.append(proj_extent.xMinimum())
+            projwin.append(proj_extent.yMaximum())
+            projwin.append(proj_extent.xMaximum())
+            projwin.append(proj_extent.yMinimum())
         except IndexError:
             projwin = []
         if projwin:
@@ -161,7 +165,7 @@ class translate(GdalAlgorithm):
             arguments.append('-co')
             arguments.append(opts)
 
-        arguments.append(self.getParameterValue(self.INPUT))
+        arguments.append(inLayer.source())
         arguments.append(out)
 
         return ['gdal_translate', GdalUtils.escapeAndJoin(arguments)]

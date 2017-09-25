@@ -65,7 +65,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
      *  This fields are used by layers which are not editied to reflect current state of editing. */
     QgsFields &tableFields() { return mTableFields; }
 
-    static QStringList fieldNames( QgsFields &fields );
+    static QStringList fieldNames( const QgsFields &fields );
 
     QMap<int, QList<QVariant> > &attributes() { return mAttributes; }
 

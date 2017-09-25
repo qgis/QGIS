@@ -29,10 +29,11 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputHTML
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -51,14 +52,17 @@ class information(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(information.INPUT,
-                                          self.tr('Input layer'), False))
-        self.addParameter(ParameterBoolean(information.NOGCP,
-                                           self.tr('Suppress GCP info'), False))
-        self.addParameter(ParameterBoolean(information.NOMETADATA,
-                                           self.tr('Suppress metadata info'), False))
-        self.addOutput(OutputHTML(information.OUTPUT,
-                                  self.tr('Layer information')))
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(information.INPUT,
+                                                            self.tr('Input layer'), optional=False))
+        self.addParameter(QgsProcessingParameterBoolean(information.NOGCP,
+                                                        self.tr('Suppress GCP info'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(information.NOMETADATA,
+                                                        self.tr('Suppress metadata info'), defaultValue=False))
+
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Layer information'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Layer information')))
 
     def name(self):
         return 'gdalinfo'
@@ -69,20 +73,22 @@ class information(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
-        if self.getParameterValue(information.NOGCP):
+        if self.parameterAsBool(parameters, information.NOGCP, context):
             arguments.append('-nogcp')
-        if self.getParameterValue(information.NOMETADATA):
+        if self.parameterAsBool(parameters, information.NOMETADATA, context):
             arguments.append('-nomd')
-        arguments.append(self.getParameterValue(information.INPUT))
+        arguments.append(self.parameterAsRasterLayer(parameters, information.INPUT, context).source())
         return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):
-        GdalUtils.runGdal(self.getConsoleCommands(parameters), feedback)
-        output = self.getOutputValue(information.OUTPUT)
+        GdalUtils.runGdal(self.getConsoleCommands(parameters, context, feedback), feedback)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
         with open(output, 'w') as f:
             f.write('<pre>')
             for s in GdalUtils.getConsoleOutput()[1:]:
                 f.write(str(s))
             f.write('</pre>')
+
+        return {self.OUTPUT: output}

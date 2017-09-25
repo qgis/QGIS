@@ -29,9 +29,19 @@ QgsMultiSurface::QgsMultiSurface()
   mWkbType = QgsWkbTypes::MultiSurface;
 }
 
+QString QgsMultiSurface::geometryType() const
+{
+  return QStringLiteral( "MultiSurface" );
+}
+
 QgsMultiSurface *QgsMultiSurface::clone() const
 {
   return new QgsMultiSurface( *this );
+}
+
+QgsMultiSurface *QgsMultiSurface::toCurveType() const
+{
+  return clone();
 }
 
 bool QgsMultiSurface::fromWkt( const QString &wkt )
@@ -45,9 +55,9 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsSurface *>( geom ) )
+    if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {
       QgsPolygonV2 *polygon = static_cast<const QgsSurface *>( geom )->surfaceToPolygon();
 
@@ -65,9 +75,9 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsMultiSurface::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsSurface *>( geom ) )
+    if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {
       QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "surfaceMember" ) );
       elemSurfaceMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -82,9 +92,9 @@ QString QgsMultiSurface::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [" );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsSurface *>( geom ) )
+    if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {
       json += '[';
 
@@ -124,7 +134,7 @@ QString QgsMultiSurface::asJSON( int precision ) const
 
 bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !dynamic_cast<QgsSurface *>( g ) )
+  if ( !qgsgeometry_cast<QgsSurface *>( g ) )
   {
     delete g;
     return false;
@@ -139,7 +149,7 @@ QgsAbstractGeometry *QgsMultiSurface::boundary() const
   QgsMultiCurve *multiCurve = new QgsMultiCurve();
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
-    if ( QgsSurface *surface = dynamic_cast<QgsSurface *>( mGeometries.at( i ) ) )
+    if ( QgsSurface *surface = qgsgeometry_cast<QgsSurface *>( mGeometries.at( i ) ) )
     {
       multiCurve->addGeometry( surface->boundary() );
     }

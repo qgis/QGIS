@@ -40,10 +40,10 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   setPanelTitle( tr( "Picture properties" ) );
 
   mFillColorButton->setAllowOpacity( true );
-  mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
   mFillColorButton->setContext( QStringLiteral( "composer" ) );
   mStrokeColorButton->setAllowOpacity( true );
-  mStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
 
   mNorthTypeComboBox->blockSignals( true );
@@ -83,11 +83,6 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   registerDataDefinedButton( mFillColorDDBtn, QgsComposerObject::PictureSvgBackgroundColor );
   registerDataDefinedButton( mStrokeColorDDBtn, QgsComposerObject::PictureSvgStrokeColor );
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsComposerObject::PictureSvgStrokeWidth );
-}
-
-QgsComposerPictureWidget::~QgsComposerPictureWidget()
-{
-
 }
 
 void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()

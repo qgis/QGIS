@@ -32,7 +32,6 @@ class QgsFloatingWidgetEventFilter;
 class GUI_EXPORT QgsFloatingWidget: public QWidget
 {
     Q_OBJECT
-    Q_ENUMS( AnchorPoint )
     Q_PROPERTY( QWidget *anchorWidget READ anchorWidget WRITE setAnchorWidget NOTIFY anchorWidgetChanged )
     Q_PROPERTY( AnchorPoint anchorPoint READ anchorPoint WRITE setAnchorPoint NOTIFY anchorPointChanged )
     Q_PROPERTY( AnchorPoint anchorWidgetPoint READ anchorWidgetPoint WRITE setAnchorWidgetPoint NOTIFY anchorWidgetPointChanged )
@@ -52,6 +51,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
       BottomMiddle, //!< Bottom center of widget
       BottomRight, //!< Bottom-right of widget
     };
+    Q_ENUM( AnchorPoint );
 
     /** Constructor for QgsFloatingWidget.
      * \param parent parent widget

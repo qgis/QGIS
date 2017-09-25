@@ -31,10 +31,6 @@ QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   setActiveValues();
 }
 
-QgisAppStyleSheet::~QgisAppStyleSheet()
-{
-}
-
 QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 {
   QMap<QString, QVariant> opts;
@@ -83,7 +79,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
 
-  bool gbxCustom = ( mMacStyle ? true : false );
+  bool gbxCustom = ( mMacStyle );
   opts.insert( QStringLiteral( "groupBoxCustom" ), settings.value( QStringLiteral( "groupBoxCustom" ), QVariant( gbxCustom ) ) );
 
   settings.endGroup(); // "qgis/stylesheet"
@@ -198,16 +194,16 @@ void QgisAppStyleSheet::setActiveValues()
   mStyle = qApp->style()->objectName(); // active style name (lowercase)
   QgsDebugMsg( QString( "Style name: %1" ).arg( mStyle ) );
 
-  mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ) ? true : false; // motif
-  mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ) ? true : false; // cde
-  mPlastqStyle = mStyle.contains( QLatin1String( "plastique" ) ) ? true : false; // plastique
-  mCleanLkStyle = mStyle.contains( QLatin1String( "cleanlooks" ) ) ? true : false; // cleanlooks
-  mGtkStyle = mStyle.contains( QLatin1String( "gtk" ) ) ? true : false; // gtk+
-  mWinStyle = mStyle.contains( QLatin1String( "windows" ) ) ? true : false; // windows
-  mWinXpStyle = mStyle.contains( QLatin1String( "windowsxp" ) ) ? true : false; // windowsxp
-  mWinVistaStyle = mStyle.contains( QLatin1String( "windowsvista" ) ) ? true : false; // windowsvista
-  mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ) ? true : false; // macintosh (aqua)
-  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ) ? true : false; // oxygen
+  mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ); // motif
+  mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ); // cde
+  mPlastqStyle = mStyle.contains( QLatin1String( "plastique" ) ); // plastique
+  mCleanLkStyle = mStyle.contains( QLatin1String( "cleanlooks" ) ); // cleanlooks
+  mGtkStyle = mStyle.contains( QLatin1String( "gtk" ) ); // gtk+
+  mWinStyle = mStyle.contains( QLatin1String( "windows" ) ); // windows
+  mWinXpStyle = mStyle.contains( QLatin1String( "windowsxp" ) ); // windowsxp
+  mWinVistaStyle = mStyle.contains( QLatin1String( "windowsvista" ) ); // windowsvista
+  mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
+  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen
 
   mDefaultFont = qApp->font(); // save before it is changed in any way
 

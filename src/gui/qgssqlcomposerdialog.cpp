@@ -20,6 +20,7 @@ email                : even.rouault at spatialys.com
 
 #include "qgssqlcomposerdialog.h"
 #include "qgssqlstatement.h"
+#include "qgshelp.h"
 
 #include <QMessageBox>
 #include <QKeyEvent>
@@ -28,9 +29,6 @@ email                : even.rouault at spatialys.com
 
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mTableSelectedCallback( nullptr )
-  , mSQLValidatorCallback( nullptr )
-  , mFocusedObject( nullptr )
   , mAlreadyModifyingFields( false )
   , mDistinct( false )
 {
@@ -61,6 +59,8 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl 
            this, &QgsSQLComposerDialog::buildSQLFromFields );
   connect( mTableJoins, &QTableWidget::cellChanged,
            this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested,
+           this, &QgsSQLComposerDialog::showHelp );
 
   QStringList baseList;
   baseList << QStringLiteral( "SELECT" );
@@ -268,7 +268,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   if ( sql.hasParserError() )
     return;
   const QgsSQLStatement::NodeSelect *nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
-  if ( nodeSelect == nullptr )
+  if ( !nodeSelect )
     return;
   mDistinct = nodeSelect->distinct();
   QList<QgsSQLStatement::NodeSelectedColumn *> columns = nodeSelect->columns();
@@ -292,7 +292,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
 
   QString whereText;
   QgsSQLStatement::Node *where = nodeSelect->where();
-  if ( where != nullptr )
+  if ( where )
     whereText = where->dump();
 
   QString orderText;
@@ -772,4 +772,9 @@ void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString &mai
   mQueryEdit->setToolTip( tr( "This is the SQL query editor. The SQL statement can select data from several tables, \n"
                               "but it must compulsory include the main typename%1 in the selected tables, \n"
                               "and only the geometry column of the main typename can be used as the geometry column of the resulting layer." ).arg( mainTypenameFormatted ) );
+}
+
+void QgsSQLComposerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html#ogc-wfs" ) );
 }

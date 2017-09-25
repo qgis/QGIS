@@ -169,6 +169,7 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
 %End
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

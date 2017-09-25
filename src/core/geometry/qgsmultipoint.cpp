@@ -25,9 +25,19 @@ QgsMultiPointV2::QgsMultiPointV2()
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
+QString QgsMultiPointV2::geometryType() const
+{
+  return QStringLiteral( "MultiPoint" );
+}
+
 QgsMultiPointV2 *QgsMultiPointV2::clone() const
 {
   return new QgsMultiPointV2( *this );
+}
+
+QgsMultiPointV2 *QgsMultiPointV2::toCurveType() const
+{
+  return clone();
 }
 
 bool QgsMultiPointV2::fromWkt( const QString &wkt )
@@ -48,9 +58,9 @@ bool QgsMultiPointV2::fromWkt( const QString &wkt )
 QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
       elemPointMember.appendChild( geom->asGML2( doc, precision, ns ) );
@@ -64,9 +74,9 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsMultiPointV2::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
       elemPointMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -82,9 +92,9 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": " );
 
   QgsPointSequence pts;
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       const QgsPoint *point = static_cast<const QgsPoint *>( geom );
       pts << *point;
@@ -95,9 +105,14 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   return json;
 }
 
+int QgsMultiPointV2::nCoordinates() const
+{
+  return mGeometries.size();
+}
+
 bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !dynamic_cast<QgsPoint *>( g ) )
+  if ( !qgsgeometry_cast<QgsPoint *>( g ) )
   {
     delete g;
     return false;
@@ -109,4 +124,9 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
 QgsAbstractGeometry *QgsMultiPointV2::boundary() const
 {
   return nullptr;
+}
+
+bool QgsMultiPointV2::wktOmitChildType() const
+{
+  return true;
 }

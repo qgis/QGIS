@@ -31,7 +31,6 @@
 QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
   , mOffsetting( false )
-  , mOffsetItem( nullptr )
   , mSymbolRotation( 0.0 )
 {}
 
@@ -270,7 +269,7 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoi
 QPointF QgsMapToolOffsetPointSymbol::rotatedOffset( QPointF offset, double angle ) const
 {
   angle = DEG2RAD( 360 - angle );
-  double c = cos( angle ), s = sin( angle );
+  double c = std::cos( angle ), s = std::sin( angle );
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
 }
 

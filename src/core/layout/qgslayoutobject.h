@@ -28,6 +28,7 @@
 
 class QgsLayout;
 class QPainter;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -48,8 +49,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       TestProperty, //!< Dummy property with no effect on item
       //composer page properties
       PresetPaperSize, //!< Preset paper size for composition
-      PaperWidth, //!< Paper width
-      PaperHeight, //!< Paper height
+      PaperWidth, //!< Paper width (deprecated)
+      PaperHeight, //!< Paper height (deprecated)
       NumPages, //!< Number of pages in composition
       PaperOrientation, //!< Paper orientation
       //general composer item properties
@@ -187,6 +188,26 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     virtual void refresh() {}
 
   protected:
+
+    /**
+     * Stores object properties within an XML DOM element.
+     * \param parentElement is the parent DOM element to store the object's properties in
+     * \param document DOM document
+     * \param context read write context
+     * \returns true if write was successful
+     * \see readObjectPropertiesFromElement()
+     */
+    bool writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets object properties from a DOM element
+     * \param parentElement is the parent DOM element for the object
+     * \param document DOM document
+     * \param context read write context
+     * \returns true if read was successful
+     * \see writeObjectPropertiesToElement()
+     */
+    bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
     QgsLayout *mLayout = nullptr;
 

@@ -342,7 +342,7 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
 {
   // create a simple linestring layer
 
-  QgsVectorLayer *layerLine = new QgsVectorLayer( "LineString?crs=EPSG:27700", "layer line", "memory" );
+  QgsVectorLayer *layerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( layerLine->isValid() );
 
   QgsPolyline line1;

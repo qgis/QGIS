@@ -226,7 +226,7 @@ Constructor
         const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
         const QString &driverName = "ESRI Shapefile",
         bool onlySelected = false,
-        QString *errorMessage = 0,
+        QString *errorMessage /Out/ = 0,
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
@@ -271,7 +271,7 @@ Constructor
         const QgsCoordinateTransform &ct,
         const QString &driverName = "ESRI Shapefile",
         bool onlySelected = false,
-        QString *errorMessage = 0,
+        QString *errorMessage /Out/ = 0,
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
@@ -431,7 +431,7 @@ Optional feedback object allowing cancelation of layer save
         const QString &fileName,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
-        QString *errorMessage = 0 );
+        QString *errorMessage /Out/ = 0 );
 %Docstring
  Writes a layer out to a vector file.
  \param layer source layer to write

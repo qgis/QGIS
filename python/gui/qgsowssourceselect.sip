@@ -75,11 +75,6 @@ Loads connections from the file
  Once connected, available layers are displayed.
 %End
 
-    virtual void addClicked();
-%Docstring
-Determines the layers the user selected
-%End
-
     void searchFinished();
 
     void on_mChangeCRSButton_clicked();
@@ -211,7 +206,6 @@ Add a few example servers to the list.
 Returns a textual description for the authority id
  :rtype: str
 %End
-
 
 
 

@@ -20,6 +20,7 @@
 #include "qgis.h"
 
 #include "ui_qgsgradientcolorrampdialogbase.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsGradientColorRamp;
@@ -91,6 +92,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
     void plotMousePress( QPointF point );
     void plotMouseRelease( QPointF point );
     void plotMouseMove( QPointF point );
+    void showHelp();
 
   private:
 

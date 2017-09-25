@@ -75,7 +75,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void on_btnConnect_clicked();
 
     //! Determines the layers the user selected
-    void addClicked();
+    void addButtonClicked() override;
 
     void searchFinished();
 
@@ -96,8 +96,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     //! Add some default wms servers to the list
     void on_btnAddDefault_clicked();
-
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html#wms-wmts-client" ) ); }
 
   private:
     //! Populate the connection list combo box
@@ -169,8 +167,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! The widget that controls the image format radio buttons
     QButtonGroup *mImageFormatGroup = nullptr;
 
-    QPushButton *mAddButton = nullptr;
-
     QMap<QString, QString> mCrsNames;
 
     void addWMSListRow( const QDomElement &item, int row );
@@ -196,6 +192,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void on_mLayerUpButton_clicked();
     void on_mLayerDownButton_clicked();
     void updateButtons();
+    void showHelp();
 };
 
 

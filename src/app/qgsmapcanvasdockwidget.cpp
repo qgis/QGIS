@@ -44,6 +44,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   static_cast< QVBoxLayout * >( mContents->layout() )->setSpacing( 0 );
 
   setWindowTitle( name );
+  mToolbar->setIconSize( QgisApp::instance()->iconSize( true ) );
+
   mMapCanvas = new QgsMapCanvas( this );
   mXyMarker = new QgsVertexMarker( mMapCanvas );
   mXyMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
@@ -64,11 +66,6 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mMainWidget->layout()->setMargin( 0 );
 
   mMainWidget->layout()->addWidget( mMapCanvas );
-
-  connect( mActionSyncView, &QAction::toggled, this, [ = ]
-  {
-    syncViewCenter( mMainCanvas );
-  } );
 
   mMenu = new QMenu();
   connect( mMenu, &QMenu::aboutToShow, this, &QgsMapCanvasDockWidget::menuAboutToShow );
@@ -122,11 +119,17 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mActionShowLabels->setChecked( true );
   connect( mActionShowLabels, &QAction::toggled, this, &QgsMapCanvasDockWidget::showLabels );
 
+  mSyncExtentCheckBox = settingsAction->syncExtentCheckBox();
   mScaleCombo = settingsAction->scaleCombo();
   mRotationEdit = settingsAction->rotationSpinBox();
   mMagnificationEdit = settingsAction->magnifierSpinBox();
   mSyncScaleCheckBox = settingsAction->syncScaleCheckBox();
   mScaleFactorWidget = settingsAction->scaleFactorSpinBox();
+
+  connect( mSyncExtentCheckBox, &QCheckBox::toggled, this, [ = ]
+  {
+    syncViewCenter( mMainCanvas );
+  } );
 
   connect( mScaleCombo, &QgsScaleComboBox::scaleChanged, this, [ = ]( double scale )
   {
@@ -201,7 +204,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( &mResizeTimer, &QTimer::timeout, this, [ = ]
   {
     mBlockExtentSync = false;
-    if ( mActionSyncView->isChecked() )
+    if ( mSyncExtentCheckBox->isChecked() )
       syncViewCenter( mMainCanvas );
   } );
 }
@@ -234,12 +237,12 @@ QgsMapCanvas *QgsMapCanvasDockWidget::mapCanvas()
 
 void QgsMapCanvasDockWidget::setViewCenterSynchronized( bool enabled )
 {
-  mActionSyncView->setChecked( enabled );
+  mSyncExtentCheckBox->setChecked( enabled );
 }
 
 bool QgsMapCanvasDockWidget::isViewCenterSynchronized() const
 {
-  return mActionSyncView->isChecked();
+  return mSyncExtentCheckBox->isChecked();
 }
 
 void QgsMapCanvasDockWidget::setCursorMarkerVisible( bool visible )
@@ -348,7 +351,7 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
     mScaleFactorWidget->setValue( newScaleFactor );
   }
 
-  if ( mActionSyncView->isChecked() )
+  if ( mSyncExtentCheckBox->isChecked() )
     syncViewCenter( sourceCanvas );
 }
 
@@ -475,11 +478,15 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
 {
   QGridLayout *gLayout = new QGridLayout();
   gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  mSyncExtentCheckBox = new QCheckBox( tr( "Synchronize View Center with Main Map" ) );
+  gLayout->addWidget( mSyncExtentCheckBox, 0, 0, 1, 2 );
+
   QLabel *label = new QLabel( tr( "Scale" ) );
-  gLayout->addWidget( label, 0, 0 );
+  gLayout->addWidget( label, 1, 0 );
 
   mScaleCombo = new QgsScaleComboBox();
-  gLayout->addWidget( mScaleCombo, 0, 1 );
+  gLayout->addWidget( mScaleCombo, 1, 1 );
 
   mRotationWidget = new QgsDoubleSpinBox();
   mRotationWidget->setClearValue( 0.0 );
@@ -493,8 +500,8 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   mRotationWidget->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
 
   label = new QLabel( tr( "Rotation" ) );
-  gLayout->addWidget( label, 1, 0 );
-  gLayout->addWidget( mRotationWidget, 1, 1 );
+  gLayout->addWidget( label, 2, 0 );
+  gLayout->addWidget( mRotationWidget, 2, 1 );
 
   QgsSettings settings;
   int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
@@ -514,11 +521,11 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   mMagnifierWidget->setValue( defaultFactor );
 
   label = new QLabel( tr( "Magnification" ) );
-  gLayout->addWidget( label, 2, 0 );
-  gLayout->addWidget( mMagnifierWidget, 2, 1 );
+  gLayout->addWidget( label, 3, 0 );
+  gLayout->addWidget( mMagnifierWidget, 3, 1 );
 
-  mSyncScaleCheckBox = new QCheckBox( tr( "Synchronize scale" ) );
-  gLayout->addWidget( mSyncScaleCheckBox, 3, 0, 1, 2 );
+  mSyncScaleCheckBox = new QCheckBox( tr( "Synchronize Scale" ) );
+  gLayout->addWidget( mSyncScaleCheckBox, 4, 0, 1, 2 );
 
   mScaleFactorWidget = new QgsDoubleSpinBox();
   mScaleFactorWidget->setSuffix( trUtf8( "×" ) );
@@ -534,9 +541,9 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
 
   connect( mSyncScaleCheckBox, &QCheckBox::toggled, mScaleFactorWidget, &QgsDoubleSpinBox::setEnabled );
 
-  label = new QLabel( tr( "Scale factor" ) );
-  gLayout->addWidget( label, 4, 0 );
-  gLayout->addWidget( mScaleFactorWidget, 4, 1 );
+  label = new QLabel( tr( "Scale Factor" ) );
+  gLayout->addWidget( label, 5, 0 );
+  gLayout->addWidget( mScaleFactorWidget, 5, 1 );
 
   QWidget *w = new QWidget();
   w->setLayout( gLayout );

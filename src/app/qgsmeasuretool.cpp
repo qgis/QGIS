@@ -222,7 +222,7 @@ void QgsMeasureTool::undo()
 {
   if ( mRubberBand )
   {
-    if ( mPoints.size() < 1 )
+    if ( mPoints.empty() )
     {
       return;
     }

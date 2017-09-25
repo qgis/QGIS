@@ -28,7 +28,7 @@
 #include <QDate>
 #include <QTime>
 #include <QHash>
-#include <stdlib.h>
+#include <cstdlib>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
@@ -119,6 +119,13 @@ class CORE_EXPORT Qgis
      *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
      *  \since QGIS 3.0 */
     static const double DEFAULT_Z_COORDINATE;
+
+    /**
+     * UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
+     * to account for differences in the default font sizes across different platforms.
+     *  \since QGIS 3.0
+    */
+    static const double UI_SCALE_FACTOR;
 
 };
 
@@ -225,17 +232,11 @@ inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
   // has to be considered (maybe TODO)
   // Is there a better way?
   int aexp, bexp;
-  double ar = frexp( a, &aexp );
-  double br = frexp( b, &bexp );
+  double ar = std::frexp( a, &aexp );
+  double br = std::frexp( b, &bexp );
 
   return aexp == bexp &&
-         qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) );
-}
-
-//! A round function which returns a double to guard against overflows
-inline double qgsRound( double x )
-{
-  return x < 0.0 ? std::ceil( x - 0.5 ) : std::floor( x + 0.5 );
+         std::round( ar * std::pow( 10.0, significantDigits ) ) == std::round( br * std::pow( 10.0, significantDigits ) );
 }
 
 /**
@@ -245,9 +246,34 @@ inline double qgsRound( double x )
  */
 inline double qgsRound( double number, double places )
 {
-  int scaleFactor = pow( 10, places );
+  int scaleFactor = std::pow( 10, places );
   return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
 }
+
+
+#ifndef SIP_RUN
+
+///@cond PRIVATE
+
+/**
+ * Adds const to non-const objects.
+ *
+ * To be used as a proxy for std::as_const until we target c++17 minimum.
+ *
+ * \since QGIS 3.0
+ * \note not available in Python bindings
+ */
+// TODO - remove when we target c++17 minimum and can use std::as_const
+template <typename T> struct QgsAddConst { typedef const T Type; };
+
+template <typename T>
+constexpr typename QgsAddConst<T>::Type &qgsAsConst( T &t ) noexcept { return t; }
+
+template <typename T>
+void qgsAsConst( const T && ) = delete;
+
+///@endcond
+#endif
 
 /** Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
@@ -349,20 +375,35 @@ typedef unsigned long long qgssize;
 
 #ifndef SIP_RUN
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+
 #define Q_NOWARN_DEPRECATED_PUSH \
   _Pragma("GCC diagnostic push") \
   _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"");
 #define Q_NOWARN_DEPRECATED_POP \
   _Pragma("GCC diagnostic pop");
+#define Q_NOWARN_UNREACHABLE_PUSH
+#define Q_NOWARN_UNREACHABLE_POP
+
 #elif defined(_MSC_VER)
+
 #define Q_NOWARN_DEPRECATED_PUSH \
   __pragma(warning(push)) \
   __pragma(warning(disable:4996))
 #define Q_NOWARN_DEPRECATED_POP \
   __pragma(warning(pop))
+#define Q_NOWARN_UNREACHABLE_PUSH \
+  __pragma(warning(push)) \
+  __pragma(warning(disable:4702))
+#define Q_NOWARN_UNREACHABLE_POP \
+  __pragma(warning(pop))
+
 #else
+
 #define Q_NOWARN_DEPRECATED_PUSH
 #define Q_NOWARN_DEPRECATED_POP
+#define Q_NOWARN_UNREACHABLE_PUSH
+#define Q_NOWARN_UNREACHABLE_POP
+
 #endif
 #endif
 
@@ -383,9 +424,11 @@ typedef unsigned long long qgssize;
 #endif
 #endif
 
-#if defined(__clang__)
+#if __cplusplus >= 201500
+#define FALLTHROUGH [[fallthrough]];
+#elif defined(__clang__)
 #define FALLTHROUGH //[[clang::fallthrough]]
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) && __GNUC__ >= 7
 #define FALLTHROUGH [[gnu::fallthrough]];
 #else
 #define FALLTHROUGH

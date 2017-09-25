@@ -110,6 +110,13 @@ Default threshold between map coordinates and device coordinates for map2pixel s
 .. versionadded:: 3.0
 %End
 
+    static const double UI_SCALE_FACTOR;
+%Docstring
+ UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
+ to account for differences in the default font sizes across different platforms.
+.. versionadded:: 3.0
+%End
+
 };
 
 
@@ -146,12 +153,6 @@ Compare two doubles using specified number of significant digits
  :rtype: bool
 %End
 
-double qgsRound( double x );
-%Docstring
-A round function which returns a double to guard against overflows
- :rtype: float
-%End
-
 double qgsRound( double number, double places );
 %Docstring
  Returns a double ``number``, rounded (as close as possible) to the specified number of ``places``.
@@ -159,6 +160,8 @@ double qgsRound( double number, double places );
 .. versionadded:: 3.0
  :rtype: float
 %End
+
+
 
 double qgsPermissiveToDouble( QString string, bool &ok );
 %Docstring

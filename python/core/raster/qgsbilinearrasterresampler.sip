@@ -20,7 +20,11 @@ Bilinear Raster Resampler
 #include "qgsbilinearrasterresampler.h"
 %End
   public:
+
     QgsBilinearRasterResampler();
+%Docstring
+ Constructor for QgsBilinearRasterResampler.
+%End
 
     virtual void resample( const QImage &srcImage, QImage &dstImage );
 

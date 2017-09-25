@@ -16,7 +16,7 @@
 #ifndef QGSMAPCANVASMAP_H
 #define QGSMAPCANVASMAP_H
 
-#include <qgsmapcanvasitem.h>
+#include "qgsmapcanvasitem.h"
 
 class QgsMapSettings;
 class QgsMapCanvas;

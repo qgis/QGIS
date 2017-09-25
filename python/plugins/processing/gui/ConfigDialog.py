@@ -51,6 +51,7 @@ from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox,
                       QgsOptionsPageWidget)
 from qgis.core import NULL, QgsApplication, QgsSettings
+from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
@@ -79,6 +80,9 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
 
     def apply(self):
         self.config_widget.accept()
+
+    def helpKey(self):
+        return 'processing/index.html'
 
 
 class ConfigDialog(BASE, WIDGET):
@@ -293,10 +297,9 @@ class ConfigDialog(BASE, WIDGET):
                         return
                 setting.save(qsettings)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        for p in QgsApplication.processingRegistry().providers():
-            p.refreshAlgorithms()
-        QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            for p in QgsApplication.processingRegistry().providers():
+                p.refreshAlgorithms()
 
         settingsWatcher.settingsChanged.emit()
 
@@ -405,7 +408,7 @@ class FileDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
@@ -452,7 +455,7 @@ class MultipleDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
