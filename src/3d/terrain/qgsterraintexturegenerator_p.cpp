@@ -1,4 +1,4 @@
-#include "maptexturegenerator.h"
+#include "qgsterraintexturegenerator_p.h"
 
 #include <qgsmaprenderercustompainterjob.h>
 #include <qgsmaprenderersequentialjob.h>
@@ -7,19 +7,21 @@
 
 #include "qgs3dmapsettings.h"
 
-MapTextureGenerator::MapTextureGenerator( const Qgs3DMapSettings &map )
+///@cond PRIVATE
+
+QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
   : map( map )
   , lastJobId( 0 )
 {
 }
 
-int MapTextureGenerator::render( const QgsRectangle &extent, const QString &debugText )
+int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, const QString &debugText )
 {
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
-  connect( job, &QgsMapRendererJob::finished, this, &MapTextureGenerator::onRenderingFinished );
+  connect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
   job->start();
 
   JobData jobData;
@@ -33,7 +35,7 @@ int MapTextureGenerator::render( const QgsRectangle &extent, const QString &debu
   return jobData.jobId;
 }
 
-void MapTextureGenerator::cancelJob( int jobId )
+void QgsTerrainTextureGenerator::cancelJob( int jobId )
 {
   Q_FOREACH ( const JobData &jd, jobs )
   {
@@ -41,7 +43,7 @@ void MapTextureGenerator::cancelJob( int jobId )
     {
       //qDebug() << "canceling job " << jobId;
       jd.job->cancelWithoutBlocking();
-      disconnect( jd.job, &QgsMapRendererJob::finished, this, &MapTextureGenerator::onRenderingFinished );
+      disconnect( jd.job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
       jd.job->deleteLater();
       jobs.remove( jd.job );
       return;
@@ -50,7 +52,7 @@ void MapTextureGenerator::cancelJob( int jobId )
   Q_ASSERT( false && "requested job ID does not exist!" );
 }
 
-QImage MapTextureGenerator::renderSynchronously( const QgsRectangle &extent, const QString &debugText )
+QImage QgsTerrainTextureGenerator::renderSynchronously( const QgsRectangle &extent, const QString &debugText )
 {
   QgsMapSettings mapSettings( baseMapSettings() );
   mapSettings.setExtent( extent );
@@ -79,7 +81,7 @@ QImage MapTextureGenerator::renderSynchronously( const QgsRectangle &extent, con
 }
 
 
-void MapTextureGenerator::onRenderingFinished()
+void QgsTerrainTextureGenerator::onRenderingFinished()
 {
   QgsMapRendererSequentialJob *mapJob = static_cast<QgsMapRendererSequentialJob *>( sender() );
 
@@ -107,7 +109,7 @@ void MapTextureGenerator::onRenderingFinished()
   emit tileReady( jobData.jobId, img );
 }
 
-QgsMapSettings MapTextureGenerator::baseMapSettings()
+QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
 {
   QgsMapSettings mapSettings;
   mapSettings.setLayers( map.layers() );
@@ -116,3 +118,5 @@ QgsMapSettings MapTextureGenerator::baseMapSettings()
   mapSettings.setBackgroundColor( map.backgroundColor() );
   return mapSettings;
 }
+
+/// @endcond

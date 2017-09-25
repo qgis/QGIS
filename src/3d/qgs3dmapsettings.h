@@ -14,7 +14,7 @@ class QgsMapLayer;
 class QgsRasterLayer;
 
 class QgsAbstract3DRenderer;
-class TerrainGenerator;
+class QgsTerrainGenerator;
 
 
 class QgsReadWriteContext;
@@ -99,9 +99,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     //! Sets terrain generator. It takes care of producing terrain tiles from the input data.
     //! Takes ownership of the generator
-    void setTerrainGenerator( TerrainGenerator *gen );
+    void setTerrainGenerator( QgsTerrainGenerator *gen );
     //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
-    TerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
+    QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
 
     //
     // 3D renderers
@@ -148,7 +148,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     QColor mBackgroundColor;   //!< Background color of the scene
     QColor mSelectionColor;
     double mTerrainVerticalScale;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
-    std::unique_ptr<TerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
+    std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
     int mMapTileResolution;   //!< Size of map textures of tiles in pixels (width/height)
     float mMaxTerrainScreenError;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
     float mMaxTerrainGroundError;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)

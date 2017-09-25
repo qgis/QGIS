@@ -8,7 +8,7 @@
 #include "qgsabstractgeometry.h"
 #include "qgsvectorlayer.h"
 
-#include "terraingenerator.h"
+#include "qgsterraingenerator.h"
 
 
 

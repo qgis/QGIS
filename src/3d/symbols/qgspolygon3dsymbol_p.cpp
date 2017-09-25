@@ -3,7 +3,6 @@
 #include "qgspolygon3dsymbol.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgs3dmapsettings.h"
-#include "terraingenerator.h"
 #include "qgs3dutils.h"
 
 #include <Qt3DCore/QTransform>

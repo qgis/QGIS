@@ -1,8 +1,8 @@
 #include "qgs3dmapconfigwidget.h"
 
 #include "qgs3dmapsettings.h"
-#include "demterraingenerator.h"
-#include "flatterraingenerator.h"
+#include "qgsdemterraingenerator.h"
+#include "qgsflatterraingenerator.h"
 #include "qgs3dutils.h"
 
 #include "qgsmapcanvas.h"
@@ -22,10 +22,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
-  TerrainGenerator *terrainGen = mMap->terrainGenerator();
-  if ( terrainGen && terrainGen->type() == TerrainGenerator::Dem )
+  QgsTerrainGenerator *terrainGen = mMap->terrainGenerator();
+  if ( terrainGen && terrainGen->type() == QgsTerrainGenerator::Dem )
   {
-    DemTerrainGenerator *demTerrainGen = static_cast<DemTerrainGenerator *>( terrainGen );
+    QgsDemTerrainGenerator *demTerrainGen = static_cast<QgsDemTerrainGenerator *>( terrainGen );
     spinTerrainResolution->setValue( demTerrainGen->resolution() );
     cboTerrainLayer->setLayer( demTerrainGen->layer() );
   }
@@ -59,16 +59,16 @@ void Qgs3DMapConfigWidget::apply()
   QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
 
   // TODO: what if just changing generator's properties
-  if ( demLayer && mMap->terrainGenerator()->type() != TerrainGenerator::Dem )
+  if ( demLayer && mMap->terrainGenerator()->type() != QgsTerrainGenerator::Dem )
   {
-    DemTerrainGenerator *demTerrainGen = new DemTerrainGenerator;
+    QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
     demTerrainGen->setLayer( demLayer );
     demTerrainGen->setResolution( spinTerrainResolution->value() );
     mMap->setTerrainGenerator( demTerrainGen );
   }
-  else if ( !demLayer && mMap->terrainGenerator()->type() != TerrainGenerator::Flat )
+  else if ( !demLayer && mMap->terrainGenerator()->type() != QgsTerrainGenerator::Flat )
   {
-    FlatTerrainGenerator *flatTerrainGen = new FlatTerrainGenerator;
+    QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
     flatTerrainGen->setCrs( mMap->crs );
     flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
     mMap->setTerrainGenerator( flatTerrainGen );
@@ -90,18 +90,18 @@ void Qgs3DMapConfigWidget::onTerrainLayerChanged()
 void Qgs3DMapConfigWidget::updateMaxZoomLevel()
 {
   // TODO: tidy up, less duplication with apply()
-  std::unique_ptr<TerrainGenerator> tGen;
+  std::unique_ptr<QgsTerrainGenerator> tGen;
   QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
   if ( demLayer )
   {
-    DemTerrainGenerator *demTerrainGen = new DemTerrainGenerator;
+    QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
     demTerrainGen->setLayer( demLayer );
     demTerrainGen->setResolution( spinTerrainResolution->value() );
     tGen.reset( demTerrainGen );
   }
   else
   {
-    FlatTerrainGenerator *flatTerrainGen = new FlatTerrainGenerator;
+    QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
     flatTerrainGen->setCrs( mMap->crs );
     flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
     tGen.reset( flatTerrainGen );

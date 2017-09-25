@@ -1,5 +1,16 @@
-#ifndef TERRAIN_H
-#define TERRAIN_H
+#ifndef QGSTERRAINENTITY_P_H
+#define QGSTERRAINENTITY_P_H
+
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 #include "chunkedentity.h"
 
@@ -11,11 +22,10 @@ namespace Qt3DRender
 }
 
 class Qgs3DMapSettings;
-class MapTextureGenerator;
+class QgsTerrainTextureGenerator;
 class QgsCoordinateTransform;
 class QgsMapLayer;
-class TerrainChunkEntity;
-class TerrainGenerator;
+class QgsTerrainGenerator;
 class TerrainMapUpdateJobFactory;
 
 /** \ingroup 3d
@@ -23,19 +33,19 @@ class TerrainMapUpdateJobFactory;
  * and creates them using map's terrain tile generator.
  * \since QGIS 3.0
  */
-class Terrain : public ChunkedEntity
+class QgsTerrainEntity : public ChunkedEntity
 {
     Q_OBJECT
   public:
     //! Constructs terrain entity. The argument maxLevel determines how deep the tree of tiles will be
-    explicit Terrain( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent = nullptr );
+    explicit QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent = nullptr );
 
-    ~Terrain();
+    ~QgsTerrainEntity();
 
     //! Returns associated 3D map settings
     const Qgs3DMapSettings &map3D() const { return map; }
     //! Returns pointer to the generator of textures for terrain tiles
-    MapTextureGenerator *mapTextureGenerator() { return mMapTextureGenerator; }
+    QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator; }
     //! Returns transform from terrain's CRS to map CRS
     const QgsCoordinateTransform &terrainToMapTransform() const { return *mTerrainToMapTransform; }
 
@@ -54,7 +64,7 @@ class Terrain : public ChunkedEntity
     const Qgs3DMapSettings &map;
     //! picker of terrain to know height of terrain when dragging
     Qt3DRender::QObjectPicker *mTerrainPicker;
-    MapTextureGenerator *mMapTextureGenerator;
+    QgsTerrainTextureGenerator *mTextureGenerator;
     QgsCoordinateTransform *mTerrainToMapTransform;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
@@ -63,7 +73,6 @@ class Terrain : public ChunkedEntity
     QList<QgsMapLayer *> mLayers;
 };
 
-///@cond PRIVATE
 
 #include "chunkloader.h"
 
@@ -72,7 +81,7 @@ class TerrainMapUpdateJob : public ChunkQueueJob
 {
     Q_OBJECT
   public:
-    TerrainMapUpdateJob( MapTextureGenerator *mapTextureGenerator, ChunkNode *node );
+    TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, ChunkNode *node );
 
     virtual void cancel() override;
 
@@ -80,11 +89,10 @@ class TerrainMapUpdateJob : public ChunkQueueJob
     void onTileReady( int jobId, const QImage &image );
 
   private:
-    MapTextureGenerator *mMapTextureGenerator;
+    QgsTerrainTextureGenerator *mTextureGenerator;
     int mJobId;
 };
 
 /// @endcond
 
-
-#endif // TERRAIN_H
+#endif // QGSTERRAINENTITY_P_H

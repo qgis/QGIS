@@ -1,13 +1,13 @@
-#ifndef FLATTERRAINGENERATOR_H
-#define FLATTERRAINGENERATOR_H
+#ifndef QGSFLATTERRAINGENERATOR_H
+#define QGSFLATTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
 
-#include "terraingenerator.h"
+#include "qgsterraingenerator.h"
 
 #include "qgsrectangle.h"
 
-#include "chunkloader.h"
+//#include "chunkloader.h"
 
 
 /** \ingroup 3d
@@ -15,14 +15,14 @@
  *
  * \since QGIS 3.0
  */
-class _3D_EXPORT FlatTerrainGenerator : public TerrainGenerator
+class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
   public:
-    FlatTerrainGenerator();
+    QgsFlatTerrainGenerator();
 
     virtual ChunkLoader *createChunkLoader( ChunkNode *node ) const override;
 
-    virtual TerrainGenerator *clone() const override;
+    virtual QgsTerrainGenerator *clone() const override;
     Type type() const override;
     QgsRectangle extent() const override;
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const override;
@@ -48,4 +48,4 @@ class _3D_EXPORT FlatTerrainGenerator : public TerrainGenerator
 
 
 
-#endif // FLATTERRAINGENERATOR_H
+#endif // QGSFLATTERRAINGENERATOR_H

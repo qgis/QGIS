@@ -1,6 +1,17 @@
 
-#ifndef TERRAINTILEGEOMETRY_H
-#define TERRAINTILEGEOMETRY_H
+#ifndef QGSDEMTERRAINTILEGEOMETRY_P_H
+#define QGSDEMTERRAINTILEGEOMETRY_P_H
+
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 #include <Qt3DExtras/qt3dextras_global.h>
 #include <Qt3DRender/qgeometry.h>
@@ -57,5 +68,6 @@ class DemTerrainTileGeometry : public Qt3DRender::QGeometry
     Qt3DRender::QBuffer *m_indexBuffer;
 };
 
+/// @endcond
 
-#endif
+#endif  // QGSDEMTERRAINTILEGEOMETRY_P_H

@@ -1,7 +1,7 @@
 #include "qgs3dmapsettings.h"
 
-#include "flatterraingenerator.h"
-#include "demterraingenerator.h"
+#include "qgsflatterraingenerator.h"
+#include "qgsdemterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
 
@@ -85,7 +85,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QString terrainGenType = elemTerrainGenerator.attribute( "type" );
   if ( terrainGenType == "dem" )
   {
-    mTerrainGenerator.reset( new DemTerrainGenerator );
+    mTerrainGenerator.reset( new QgsDemTerrainGenerator );
   }
   else if ( terrainGenType == "quantized-mesh" )
   {
@@ -96,7 +96,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   }
   else // "flat"
   {
-    FlatTerrainGenerator *flatGen = new FlatTerrainGenerator;
+    QgsFlatTerrainGenerator *flatGen = new QgsFlatTerrainGenerator;
     flatGen->setCrs( crs );
     mTerrainGenerator.reset( flatGen );
   }
@@ -162,7 +162,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   }
   elemTerrain.appendChild( elemMapLayers );
   QDomElement elemTerrainGenerator = doc.createElement( "generator" );
-  elemTerrainGenerator.setAttribute( "type", TerrainGenerator::typeToString( mTerrainGenerator->type() ) );
+  elemTerrainGenerator.setAttribute( "type", QgsTerrainGenerator::typeToString( mTerrainGenerator->type() ) );
   mTerrainGenerator->writeXml( elemTerrainGenerator );
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
@@ -321,7 +321,7 @@ float Qgs3DMapSettings::maxTerrainGroundError() const
   return mMaxTerrainGroundError;
 }
 
-void Qgs3DMapSettings::setTerrainGenerator( TerrainGenerator *gen )
+void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
 {
   mTerrainGenerator.reset( gen );
   emit terrainGeneratorChanged();

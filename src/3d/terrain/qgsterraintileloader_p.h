@@ -1,13 +1,24 @@
-#ifndef TERRAINCHUNKLOADER_H
-#define TERRAINCHUNKLOADER_H
+#ifndef QGSTERRAINTILELOADER_P_H
+#define QGSTERRAINTILELOADER_P_H
+
+/// @cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 #include "chunkloader.h"
 
 #include <QImage>
 #include "qgsrectangle.h"
 
-class Terrain;
-class TerrainChunkEntity;
+class QgsTerrainEntity;
+class QgsTerrainTileEntity;
 
 
 /** \ingroup 3d
@@ -15,30 +26,31 @@ class TerrainChunkEntity;
  * Adds functionality for asynchronous rendering of terrain tile map texture and access to the terrain entity.
  * \since QGIS 3.0
  */
-class TerrainChunkLoader : public ChunkLoader
+class QgsTerrainTileLoader : public ChunkLoader
 {
   public:
     //! Constructs loader for a chunk node
-    TerrainChunkLoader( Terrain *terrain, ChunkNode *node );
+    QgsTerrainTileLoader( QgsTerrainEntity *terrain, ChunkNode *node );
 
   protected:
     //! Starts asynchronous rendering of map texture
     void loadTexture();
     //! Creates material component for the entity with the rendered map as a texture
-    void createTextureComponent( TerrainChunkEntity *entity );
+    void createTextureComponent( QgsTerrainTileEntity *entity );
     //! Gives access to the terain entity
-    Terrain *terrain() { return mTerrain; }
+    QgsTerrainEntity *terrain() { return mTerrain; }
 
   private slots:
     void onImageReady( int jobId, const QImage &image );
 
   private:
-    Terrain *mTerrain;
+    QgsTerrainEntity *mTerrain;
     QgsRectangle mExtentMapCrs;
     QString mTileDebugText;
     int mTextureJobId;
     QImage mTextureImage;
 };
 
+/// @endcond
 
-#endif // TERRAINCHUNKLOADER_H
+#endif // QGSTERRAINTILELOADER_P_H

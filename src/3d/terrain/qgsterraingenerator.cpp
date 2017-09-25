@@ -1,10 +1,10 @@
-#include "terraingenerator.h"
+#include "qgsterraingenerator.h"
 
 #include "aabb.h"
 #include "qgs3dmapsettings.h"
 
 
-AABB TerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
+AABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = extent();
   QgsCoordinateTransform terrainToMapTransform( crs(), map.crs );
@@ -16,7 +16,7 @@ AABB TerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
                te.xMaximum() - map.originX, hMax * map.terrainVerticalScale(), -te.yMinimum() + map.originY );
 }
 
-float TerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
+float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = extent();
   QgsCoordinateTransform terrainToMapTransform( crs(), map.crs );
@@ -26,14 +26,14 @@ float TerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
   return te.width() / map.mapTileResolution();
 }
 
-void TerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
+void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 {
   // TODO: makes sense to have kind of default implementation?
   hMin = 0;
   hMax = 400;
 }
 
-float TerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
+float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
 {
   Q_UNUSED( x );
   Q_UNUSED( y );
@@ -41,15 +41,15 @@ float TerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &ma
   return 0.f;
 }
 
-QString TerrainGenerator::typeToString( TerrainGenerator::Type type )
+QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
 {
   switch ( type )
   {
-    case TerrainGenerator::Flat:
+    case QgsTerrainGenerator::Flat:
       return "flat";
-    case TerrainGenerator::Dem:
+    case QgsTerrainGenerator::Dem:
       return "dem";
-    case TerrainGenerator::QuantizedMesh:
+    case QgsTerrainGenerator::QuantizedMesh:
       return "quantized-mesh";
   }
   return QString();

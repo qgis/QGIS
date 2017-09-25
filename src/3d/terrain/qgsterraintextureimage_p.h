@@ -1,11 +1,22 @@
-#ifndef MAPTEXTUREIMAGE_H
-#define MAPTEXTUREIMAGE_H
+#ifndef QGSTERRAINTEXTUREIMAGE_P_H
+#define QGSTERRAINTEXTUREIMAGE_P_H
+
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 #include <Qt3DRender/QAbstractTextureImage>
 
 #include "qgsrectangle.h"
 
-class MapTextureGenerator;
+class QgsTerrainTextureGenerator;
 
 /** \ingroup 3d
  * Class that stores an image with a rendered map. The image is used as a texture for one map tile.
@@ -14,13 +25,13 @@ class MapTextureGenerator;
  *
  * \since QGIS 3.0
  */
-class MapTextureImage : public Qt3DRender::QAbstractTextureImage
+class QgsTerrainTextureImage : public Qt3DRender::QAbstractTextureImage
 {
     Q_OBJECT
   public:
     //! Constructs the object with given image and map extent
-    MapTextureImage( const QImage &image, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent = nullptr );
-    ~MapTextureImage();
+    QgsTerrainTextureImage( const QImage &image, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent = nullptr );
+    ~QgsTerrainTextureImage();
 
     virtual Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
 
@@ -42,4 +53,6 @@ class MapTextureImage : public Qt3DRender::QAbstractTextureImage
     int jobId;
 };
 
-#endif // MAPTEXTUREIMAGE_H
+/// @endcond
+
+#endif // QGSTERRAINTEXTUREIMAGE_P_H

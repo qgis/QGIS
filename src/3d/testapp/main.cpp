@@ -8,13 +8,13 @@
 #include "qgsline3dsymbol.h"
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
-#include "maptexturegenerator.h"
+#include "qgsterraintexturegenerator_p.h"
 #include "sidepanel.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "window3d.h"
 #include "qgs3dmapsettings.h"
-#include "flatterraingenerator.h"
-#include "demterraingenerator.h"
+#include "qgsflatterraingenerator.h"
+#include "qgsdemterraingenerator.h"
 //#include "quantizedmeshterraingenerator.h"
 
 #include <qgsapplication.h>
@@ -74,24 +74,24 @@ int main( int argc, char *argv[] )
   map.setShowTerrainTilesInfo( true );
   map.setMaxTerrainGroundError( 0.2 );
 
-  TerrainGenerator::Type tt;
+  QgsTerrainGenerator::Type tt;
   //tt = TerrainGenerator::Flat;
-  tt = TerrainGenerator::Dem;
+  tt = QgsTerrainGenerator::Dem;
   //tt = TerrainGenerator::QuantizedMesh;
 
-  if ( tt == TerrainGenerator::Flat )
+  if ( tt == QgsTerrainGenerator::Flat )
   {
     // TODO: tiling scheme - from this project's CRS + full extent
-    FlatTerrainGenerator *flatTerrain = new FlatTerrainGenerator;
+    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
     map.setTerrainGenerator( flatTerrain );
   }
-  else if ( tt == TerrainGenerator::Dem )
+  else if ( tt == QgsTerrainGenerator::Dem )
   {
-    DemTerrainGenerator *demTerrain = new DemTerrainGenerator;
+    QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
     demTerrain->setLayer( rlDtm );
     map.setTerrainGenerator( demTerrain );
   }
-  else if ( tt == TerrainGenerator::QuantizedMesh )
+  else if ( tt == QgsTerrainGenerator::QuantizedMesh )
   {
 #if 0
     QuantizedMeshTerrainGenerator *qmTerrain = new QuantizedMeshTerrainGenerator;
@@ -102,10 +102,10 @@ int main( int argc, char *argv[] )
 
   Q_ASSERT( map.terrainGenerator() ); // we need a terrain generator
 
-  if ( map.terrainGenerator()->type() == TerrainGenerator::Flat )
+  if ( map.terrainGenerator()->type() == QgsTerrainGenerator::Flat )
   {
     // we are free to define terrain extent to whatever works best
-    FlatTerrainGenerator *flatGen = static_cast<FlatTerrainGenerator *>( map.terrainGenerator() );
+    QgsFlatTerrainGenerator *flatGen = static_cast<QgsFlatTerrainGenerator *>( map.terrainGenerator() );
     flatGen->setCrs( map.crs );
     flatGen->setExtent( _fullExtent( map.layers(), map.crs ) );
   }

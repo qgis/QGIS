@@ -1,11 +1,12 @@
-#include "terrainchunkloader.h"
+#include "qgsterraintileloader_p.h"
 
 #include "chunknode.h"
-#include "maptextureimage.h"
-#include "maptexturegenerator.h"
 #include "qgs3dmapsettings.h"
-#include "terrain.h"
-#include "terraingenerator.h"
+#include "qgsterrainentity_p.h"
+#include "qgsterraingenerator.h"
+#include "qgsterraintextureimage_p.h"
+#include "qgsterraintexturegenerator_p.h"
+#include "qgsterraintileentity_p.h"
 
 #include <Qt3DRender/QTexture>
 
@@ -17,8 +18,9 @@
 
 #include "quantizedmeshterraingenerator.h"
 
+/// @cond PRIVATE
 
-TerrainChunkLoader::TerrainChunkLoader( Terrain *terrain, ChunkNode *node )
+QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, ChunkNode *node )
   : ChunkLoader( node )
   , mTerrain( terrain )
 {
@@ -44,16 +46,16 @@ TerrainChunkLoader::TerrainChunkLoader( Terrain *terrain, ChunkNode *node )
   mTileDebugText = QString( "%1 | %2 | %3" ).arg( tx ).arg( ty ).arg( tz );
 }
 
-void TerrainChunkLoader::loadTexture()
+void QgsTerrainTileLoader::loadTexture()
 {
-  connect( mTerrain->mapTextureGenerator(), &MapTextureGenerator::tileReady, this, &TerrainChunkLoader::onImageReady );
-  mTextureJobId = mTerrain->mapTextureGenerator()->render( mExtentMapCrs, mTileDebugText );
+  connect( mTerrain->textureGenerator(), &QgsTerrainTextureGenerator::tileReady, this, &QgsTerrainTileLoader::onImageReady );
+  mTextureJobId = mTerrain->textureGenerator()->render( mExtentMapCrs, mTileDebugText );
 }
 
-void TerrainChunkLoader::createTextureComponent( TerrainChunkEntity *entity )
+void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity )
 {
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
-  MapTextureImage *textureImage = new MapTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
+  QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
   texture->addTextureImage( textureImage );
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -71,7 +73,7 @@ void TerrainChunkLoader::createTextureComponent( TerrainChunkEntity *entity )
   entity->addComponent( material ); // takes ownership if the component has no parent
 }
 
-void TerrainChunkLoader::onImageReady( int jobId, const QImage &image )
+void QgsTerrainTileLoader::onImageReady( int jobId, const QImage &image )
 {
   if ( mTextureJobId == jobId )
   {
@@ -80,3 +82,5 @@ void TerrainChunkLoader::onImageReady( int jobId, const QImage &image )
     emit finished();  // TODO: this should be left for derived class!
   }
 }
+
+/// @endcond

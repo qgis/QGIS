@@ -1,12 +1,12 @@
-#include "maptextureimage.h"
+#include "qgsterraintextureimage_p.h"
 
 #include <Qt3DRender/QTextureImageDataGenerator>
 
-#include "maptexturegenerator.h"
+#include "qgsterraintexturegenerator_p.h"
 
 ///@cond PRIVATE
 
-class MapTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerator
+class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
     QgsRectangle extent;
@@ -25,7 +25,7 @@ class MapTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerat
       return i;
     }
 
-    MapTextureImageDataGenerator( const QgsRectangle &extent, const QString &debugText, const QImage &img, int version )
+    TerrainTextureImageDataGenerator( const QgsRectangle &extent, const QString &debugText, const QImage &img, int version )
       : extent( extent ), debugText( debugText ), img( img ), version( version ) {}
 
     virtual Qt3DRender::QTextureImageDataPtr operator()() override
@@ -37,21 +37,20 @@ class MapTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerat
 
     virtual bool operator ==( const QTextureImageDataGenerator &other ) const override
     {
-      const MapTextureImageDataGenerator *otherFunctor = functor_cast<MapTextureImageDataGenerator>( &other );
+      const TerrainTextureImageDataGenerator *otherFunctor = functor_cast<TerrainTextureImageDataGenerator>( &other );
       return otherFunctor != nullptr && otherFunctor->version == version &&
              extent == otherFunctor->extent;
     }
 
-    QT3D_FUNCTOR( MapTextureImageDataGenerator )
+    QT3D_FUNCTOR( TerrainTextureImageDataGenerator )
 };
 
-/// @endcond
 
 
 ////////
 
 
-MapTextureImage::MapTextureImage( const QImage &image, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent )
+QgsTerrainTextureImage::QgsTerrainTextureImage( const QImage &image, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent )
   : Qt3DRender::QAbstractTextureImage( parent )
   , extent( extent )
   , debugText( debugText )
@@ -61,25 +60,27 @@ MapTextureImage::MapTextureImage( const QImage &image, const QgsRectangle &exten
 }
 
 
-MapTextureImage::~MapTextureImage()
+QgsTerrainTextureImage::~QgsTerrainTextureImage()
 {
 }
 
-Qt3DRender::QTextureImageDataGeneratorPtr MapTextureImage::dataGenerator() const
+Qt3DRender::QTextureImageDataGeneratorPtr QgsTerrainTextureImage::dataGenerator() const
 {
-  return Qt3DRender::QTextureImageDataGeneratorPtr( new MapTextureImageDataGenerator( extent, debugText, img, version ) );
+  return Qt3DRender::QTextureImageDataGeneratorPtr( new TerrainTextureImageDataGenerator( extent, debugText, img, version ) );
 }
 
-void MapTextureImage::invalidate()
+void QgsTerrainTextureImage::invalidate()
 {
   img = QImage();
   version++;
   notifyDataGeneratorChanged();
 }
 
-void MapTextureImage::setImage( const QImage &img )
+void QgsTerrainTextureImage::setImage( const QImage &img )
 {
   this->img = img;
   version++;
   notifyDataGeneratorChanged();
 }
+
+/// @endcond

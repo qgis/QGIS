@@ -4,7 +4,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
 #include "sidepanel.h"
-#include "terrain.h"
+#include "qgsterrainentity_p.h"
 
 #include <Qt3DLogic/QFrameAction>
 

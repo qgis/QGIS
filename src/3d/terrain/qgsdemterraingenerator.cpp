@@ -1,9 +1,10 @@
-#include "demterraingenerator.h"
+#include "qgsdemterraingenerator.h"
 
 #include "qgs3dmapsettings.h"
-#include "demterraintilegeometry.h"
-#include "maptexturegenerator.h"
-#include "terrain.h"
+#include "qgsdemterraintilegeometry_p.h"
+#include "qgsterrainentity_p.h"
+#include "qgsterraintexturegenerator_p.h"
+#include "qgsterraintileentity_p.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 
@@ -43,77 +44,77 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
 // ---------------
 
 
-DemTerrainGenerator::DemTerrainGenerator()
+QgsDemTerrainGenerator::QgsDemTerrainGenerator()
   : mResolution( 16 )
 {
 }
 
-void DemTerrainGenerator::setLayer( QgsRasterLayer *layer )
+void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
 {
   mLayer = QgsMapLayerRef( layer );
   updateGenerator();
 }
 
-QgsRasterLayer *DemTerrainGenerator::layer() const
+QgsRasterLayer *QgsDemTerrainGenerator::layer() const
 {
   return qobject_cast<QgsRasterLayer *>( mLayer.layer.data() );
 }
 
-TerrainGenerator *DemTerrainGenerator::clone() const
+QgsTerrainGenerator *QgsDemTerrainGenerator::clone() const
 {
-  DemTerrainGenerator *cloned = new DemTerrainGenerator;
+  QgsDemTerrainGenerator *cloned = new QgsDemTerrainGenerator;
   cloned->mLayer = mLayer;
   cloned->mResolution = mResolution;
   cloned->updateGenerator();
   return cloned;
 }
 
-TerrainGenerator::Type DemTerrainGenerator::type() const
+QgsTerrainGenerator::Type QgsDemTerrainGenerator::type() const
 {
-  return TerrainGenerator::Dem;
+  return QgsTerrainGenerator::Dem;
 }
 
-QgsRectangle DemTerrainGenerator::extent() const
+QgsRectangle QgsDemTerrainGenerator::extent() const
 {
   return terrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
-float DemTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
+float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
 {
   Q_UNUSED( map );
   return mHeightMapGenerator->heightAt( x, y );
 }
 
-void DemTerrainGenerator::writeXml( QDomElement &elem ) const
+void QgsDemTerrainGenerator::writeXml( QDomElement &elem ) const
 {
   elem.setAttribute( "layer", mLayer.layerId );
   elem.setAttribute( "resolution", mResolution );
 }
 
-void DemTerrainGenerator::readXml( const QDomElement &elem )
+void QgsDemTerrainGenerator::readXml( const QDomElement &elem )
 {
   mLayer = QgsMapLayerRef( elem.attribute( "layer" ) );
   mResolution = elem.attribute( "resolution" ).toInt();
 }
 
-void DemTerrainGenerator::resolveReferences( const QgsProject &project )
+void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
 {
   mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
   updateGenerator();
 }
 
-ChunkLoader *DemTerrainGenerator::createChunkLoader( ChunkNode *node ) const
+ChunkLoader *QgsDemTerrainGenerator::createChunkLoader( ChunkNode *node ) const
 {
   return new DemTerrainChunkLoader( mTerrain, node );
 }
 
-void DemTerrainGenerator::updateGenerator()
+void QgsDemTerrainGenerator::updateGenerator()
 {
   QgsRasterLayer *dem = layer();
   if ( dem )
   {
     terrainTilingScheme = QgsTilingScheme( dem->extent(), dem->crs() );
-    mHeightMapGenerator.reset( new DemHeightMapGenerator( dem, terrainTilingScheme, mResolution ) );
+    mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( dem, terrainTilingScheme, mResolution ) );
   }
   else
   {
@@ -126,16 +127,16 @@ void DemTerrainGenerator::updateGenerator()
 // ------------
 
 
-DemTerrainChunkLoader::DemTerrainChunkLoader( Terrain *terrain, ChunkNode *node )
-  : TerrainChunkLoader( terrain, node )
+DemTerrainChunkLoader::DemTerrainChunkLoader( QgsTerrainEntity *terrain, ChunkNode *node )
+  : QgsTerrainTileLoader( terrain, node )
   , resolution( 0 )
 {
 
   const Qgs3DMapSettings &map = terrain->map3D();
-  DemTerrainGenerator *generator = static_cast<DemTerrainGenerator *>( map.terrainGenerator() );
+  QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( map.terrainGenerator() );
 
   // get heightmap asynchronously
-  connect( generator->heightMapGenerator(), &DemHeightMapGenerator::heightMapReady, this, &DemTerrainChunkLoader::onHeightMapReady );
+  connect( generator->heightMapGenerator(), &QgsDemHeightMapGenerator::heightMapReady, this, &DemTerrainChunkLoader::onHeightMapReady );
   heightMapJobId = generator->heightMapGenerator()->render( node->x, node->y, node->z );
   resolution = generator->heightMapGenerator()->resolution();
 }
@@ -147,7 +148,7 @@ DemTerrainChunkLoader::~DemTerrainChunkLoader()
 
 Qt3DCore::QEntity *DemTerrainChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  TerrainChunkEntity *entity = new TerrainChunkEntity;
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity;
 
   // create geometry renderer
 
@@ -204,7 +205,7 @@ void DemTerrainChunkLoader::onHeightMapReady( int jobId, const QByteArray &heigh
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
 
-DemHeightMapGenerator::DemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution )
+QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution )
   : dtm( dtm )
   , clonedProvider( ( QgsRasterDataProvider * )dtm->dataProvider()->clone() )
   , tilingScheme( tilingScheme )
@@ -213,7 +214,7 @@ DemHeightMapGenerator::DemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTili
 {
 }
 
-DemHeightMapGenerator::~DemHeightMapGenerator()
+QgsDemHeightMapGenerator::~QgsDemHeightMapGenerator()
 {
   delete clonedProvider;
 }
@@ -240,7 +241,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   return data;
 }
 
-int DemHeightMapGenerator::render( int x, int y, int z )
+int QgsDemHeightMapGenerator::render( int x, int y, int z )
 {
   Q_ASSERT( jobs.isEmpty() );  // should be always just one active job...
 
@@ -261,7 +262,7 @@ int DemHeightMapGenerator::render( int x, int y, int z )
 
   QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>;
   fw->setFuture( jd.future );
-  connect( fw, &QFutureWatcher<QByteArray>::finished, this, &DemHeightMapGenerator::onFutureFinished );
+  connect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
 
   jobs.insert( fw, jd );
   qDebug() << "[TT] added job: " << jd.jobId << " " << x << "|" << y << "|" << z << "  .... in queue: " << jobs.count();
@@ -269,7 +270,7 @@ int DemHeightMapGenerator::render( int x, int y, int z )
   return jd.jobId;
 }
 
-QByteArray DemHeightMapGenerator::renderSynchronously( int x, int y, int z )
+QByteArray QgsDemHeightMapGenerator::renderSynchronously( int x, int y, int z )
 {
   // extend the rect by half-pixel on each side? to get the values in "corners"
   QgsRectangle extent = tilingScheme.tileToExtent( x, y, z );
@@ -293,7 +294,7 @@ QByteArray DemHeightMapGenerator::renderSynchronously( int x, int y, int z )
   return data;
 }
 
-float DemHeightMapGenerator::heightAt( double x, double y )
+float QgsDemHeightMapGenerator::heightAt( double x, double y )
 {
   // TODO: this is quite a primitive implementation: better to use heightmaps currently in use
   int res = 1024;
@@ -316,7 +317,7 @@ float DemHeightMapGenerator::heightAt( double x, double y )
   return data[cellX + cellY * res];
 }
 
-void DemHeightMapGenerator::onFutureFinished()
+void QgsDemHeightMapGenerator::onFutureFinished()
 {
   QFutureWatcher<QByteArray> *fw = static_cast<QFutureWatcher<QByteArray>*>( sender() );
   Q_ASSERT( fw );

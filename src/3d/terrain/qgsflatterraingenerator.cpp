@@ -1,22 +1,23 @@
-#include "flatterraingenerator.h"
+#include "qgsflatterraingenerator.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/QPlaneGeometry>
 
 #include "qgs3dmapsettings.h"
-#include "terrain.h"
+#include "qgsterrainentity_p.h"
 
 #include "chunknode.h"
-#include "terrainchunkloader.h"
+#include "qgsterraintileloader_p.h"
+#include "qgsterraintileentity_p.h"
 
 /// @cond PRIVATE
 
 //! Chunk loader for flat terrain implementation
-class FlatTerrainChunkLoader : public TerrainChunkLoader
+class FlatTerrainChunkLoader : public QgsTerrainTileLoader
 {
   public:
     //! Construct the loader for a node
-    FlatTerrainChunkLoader( Terrain *terrain, ChunkNode *node );
+    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, ChunkNode *node );
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
@@ -28,8 +29,8 @@ class FlatTerrainChunkLoader : public TerrainChunkLoader
 //---------------
 
 
-FlatTerrainChunkLoader::FlatTerrainChunkLoader( Terrain *terrain, ChunkNode *node )
-  : TerrainChunkLoader( terrain, node )
+FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, ChunkNode *node )
+  : QgsTerrainTileLoader( terrain, node )
 {
   loadTexture();
 }
@@ -37,7 +38,7 @@ FlatTerrainChunkLoader::FlatTerrainChunkLoader( Terrain *terrain, ChunkNode *nod
 
 Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *parent )
 {
-  TerrainChunkEntity *entity = new TerrainChunkEntity;
+  QgsTerrainTileEntity *entity = new QgsTerrainTileEntity;
 
   // make geometry renderer
 
@@ -78,41 +79,41 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 // ---------------
 
 
-FlatTerrainGenerator::FlatTerrainGenerator()
+QgsFlatTerrainGenerator::QgsFlatTerrainGenerator()
 {
 }
 
-ChunkLoader *FlatTerrainGenerator::createChunkLoader( ChunkNode *node ) const
+ChunkLoader *QgsFlatTerrainGenerator::createChunkLoader( ChunkNode *node ) const
 {
   return new FlatTerrainChunkLoader( mTerrain, node );
 }
 
-TerrainGenerator *FlatTerrainGenerator::clone() const
+QgsTerrainGenerator *QgsFlatTerrainGenerator::clone() const
 {
-  FlatTerrainGenerator *cloned = new FlatTerrainGenerator;
+  QgsFlatTerrainGenerator *cloned = new QgsFlatTerrainGenerator;
   cloned->mCrs = mCrs;
   cloned->mExtent = mExtent;
   cloned->updateTilingScheme();
   return cloned;
 }
 
-TerrainGenerator::Type FlatTerrainGenerator::type() const
+QgsTerrainGenerator::Type QgsFlatTerrainGenerator::type() const
 {
-  return TerrainGenerator::Flat;
+  return QgsTerrainGenerator::Flat;
 }
 
-QgsRectangle FlatTerrainGenerator::extent() const
+QgsRectangle QgsFlatTerrainGenerator::extent() const
 {
   return terrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
-void FlatTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
+void QgsFlatTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 {
   hMin = 0;
   hMax = 0;
 }
 
-void FlatTerrainGenerator::writeXml( QDomElement &elem ) const
+void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
 {
   QgsRectangle r = mExtent;
   QDomElement elemExtent = elem.ownerDocument().createElement( "extent" );
@@ -124,7 +125,7 @@ void FlatTerrainGenerator::writeXml( QDomElement &elem ) const
   // crs is not read/written - it should be the same as destination crs of the map
 }
 
-void FlatTerrainGenerator::readXml( const QDomElement &elem )
+void QgsFlatTerrainGenerator::readXml( const QDomElement &elem )
 {
   QDomElement elemExtent = elem.firstChildElement( "extent" );
   double xmin = elemExtent.attribute( "xmin" ).toDouble();
@@ -137,19 +138,19 @@ void FlatTerrainGenerator::readXml( const QDomElement &elem )
   // crs is not read/written - it should be the same as destination crs of the map
 }
 
-void FlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsFlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
   updateTilingScheme();
 }
 
-void FlatTerrainGenerator::setExtent( const QgsRectangle &extent )
+void QgsFlatTerrainGenerator::setExtent( const QgsRectangle &extent )
 {
   mExtent = extent;
   updateTilingScheme();
 }
 
-void FlatTerrainGenerator::updateTilingScheme()
+void QgsFlatTerrainGenerator::updateTilingScheme()
 {
   if ( mExtent.isNull() )
   {

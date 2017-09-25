@@ -1,5 +1,16 @@
-#ifndef MAPTEXTUREGENERATOR_H
-#define MAPTEXTUREGENERATOR_H
+#ifndef QGSTERRAINTEXTUREGENERATOR_P_H
+#define QGSTERRAINTEXTUREGENERATOR_P_H
+
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 class QgsMapRendererSequentialJob;
 class QgsMapSettings;
@@ -22,12 +33,12 @@ class Qgs3DMapSettings;
  *
  * \since QGIS 3.0
  */
-class MapTextureGenerator : public QObject
+class QgsTerrainTextureGenerator : public QObject
 {
     Q_OBJECT
   public:
     //! Initializes the object
-    MapTextureGenerator( const Qgs3DMapSettings &map );
+    QgsTerrainTextureGenerator( const Qgs3DMapSettings &map );
 
     //! Starts async rendering of a map for the given extent (must be a square!).
     //! Returns job ID. The class will emit tileReady() signal with the job ID when rendering is done.
@@ -63,5 +74,6 @@ class MapTextureGenerator : public QObject
     int lastJobId;
 };
 
+/// @endcond
 
-#endif // MAPTEXTUREGENERATOR_H
+#endif // QGSTERRAINTEXTUREGENERATOR_P_H

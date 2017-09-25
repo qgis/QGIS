@@ -15,8 +15,8 @@
 #include "chunknode.h"
 #include "qgsvectorlayer.h"
 #include "qgs3dmapsettings.h"
-#include "terrain.h"
-#include "terraingenerator.h"
+#include "qgsterrainentity_p.h"
+#include "qgsterraingenerator.h"
 //#include "testchunkloader.h"
 #include "chunkedentity.h"
 #include "qgs3dutils.h"
@@ -279,7 +279,7 @@ void Qgs3DMapScene::createTerrainDeferred()
   double tile0width = mMap.terrainGenerator()->extent().width();
   int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
 
-  mTerrain = new Terrain( maxZoomLevel, mMap );
+  mTerrain = new QgsTerrainEntity( maxZoomLevel, mMap );
   //mTerrain->setEnabled(false);
   mTerrain->setParent( this );
 

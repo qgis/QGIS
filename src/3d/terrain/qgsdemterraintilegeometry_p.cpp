@@ -1,10 +1,11 @@
 
-#include "demterraintilegeometry.h"
+#include "qgsdemterraintilegeometry_p.h"
 #include <Qt3DRender/qattribute.h>
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <limits>
 
+///@cond PRIVATE
 
 using namespace Qt3DRender;
 
@@ -282,3 +283,5 @@ void DemTerrainTileGeometry::init()
   addAttribute( m_normalAttribute );
   addAttribute( m_indexAttribute );
 }
+
+/// @endcond

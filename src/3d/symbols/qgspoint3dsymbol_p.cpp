@@ -27,7 +27,6 @@
 
 #include "qgspoint3dsymbol.h"
 #include "qgs3dmapsettings.h"
-#include "terraingenerator.h"
 
 #include "qgsvectorlayer.h"
 #include "qgspoint.h"

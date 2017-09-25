@@ -27,16 +27,16 @@ SET(QGIS_3D_SRCS
   symbols/qgspolygon3dsymbol.cpp
   symbols/qgspolygon3dsymbol_p.cpp
 
-  terrain/demterraingenerator.cpp
-  terrain/demterraintilegeometry.cpp
-  terrain/flatterraingenerator.cpp
-  terrain/maptexturegenerator.cpp
-  terrain/maptextureimage.cpp
+  terrain/qgsdemterraingenerator.cpp
+  terrain/qgsdemterraintilegeometry_p.cpp
+  terrain/qgsflatterraingenerator.cpp
+  terrain/qgsterrainentity_p.cpp
+  terrain/qgsterraingenerator.cpp
+  terrain/qgsterraintexturegenerator_p.cpp
+  terrain/qgsterraintextureimage_p.cpp
+  terrain/qgsterraintileloader_p.cpp
   #terrain/quantizedmeshgeometry.cpp
   #terrain/quantizedmeshterraingenerator.cpp
-  terrain/terrain.cpp
-  terrain/terrainchunkloader.cpp
-  terrain/terraingenerator.cpp
 
   poly2tri/common/shapes.cc
   poly2tri/sweep/advancing_front.cc
@@ -54,12 +54,13 @@ SET(QGIS_3D_MOC_HDRS
   chunks/chunkedentity.h
   chunks/chunkloader.h
 
-  terrain/demterraingenerator.h
-  terrain/demterraintilegeometry.h
-  terrain/maptexturegenerator.h
-  terrain/maptextureimage.h
-  terrain/terrain.h
-  terrain/terraingenerator.h
+  terrain/qgsdemterraingenerator.h
+  terrain/qgsdemterraintilegeometry_p.h
+  terrain/qgsterrainentity_p.h
+  terrain/qgsterraingenerator.h
+  terrain/qgsterraintexturegenerator_p.h
+  terrain/qgsterraintextureimage_p.h
+  terrain/qgsterraintileentity_p.h
 )
 
 QT5_WRAP_CPP(QGIS_3D_MOC_SRCS ${QGIS_3D_MOC_HDRS})
@@ -95,16 +96,17 @@ SET(QGIS_3D_HDRS
   symbols/qgspolygon3dsymbol.h
   symbols/qgspolygon3dsymbol_p.h
 
-  terrain/demterraingenerator.h
-  terrain/demterraintilegeometry.h
-  terrain/flatterraingenerator.h
-  terrain/maptexturegenerator.h
-  terrain/maptextureimage.h
+  terrain/qgsdemterraingenerator.h
+  terrain/qgsdemterraintilegeometry_p.h
+  terrain/qgsflatterraingenerator.h
+  terrain/qgsterrainentity_p.h
+  terrain/qgsterraingenerator.h
+  terrain/qgsterraintexturegenerator_p.h
+  terrain/qgsterraintextureimage_p.h
+  terrain/qgsterraintileentity_p.h
+  terrain/qgsterraintileloader_p.h
   #terrain/quantizedmeshgeometry.h
   #terrain/quantizedmeshterraingenerator.h
-  terrain/terrain.h
-  terrain/terrainchunkloader.h
-  terrain/terraingenerator.h
 )
 
 INCLUDE_DIRECTORIES(

@@ -1,11 +1,12 @@
-#include "terrain.h"
+#include "qgsterrainentity_p.h"
 
 #include "aabb.h"
 #include "chunknode.h"
 #include "qgs3dmapsettings.h"
-#include "maptexturegenerator.h"
-#include "maptextureimage.h"
-#include "terraingenerator.h"
+#include "qgsterraingenerator.h"
+#include "qgsterraintexturegenerator_p.h"
+#include "qgsterraintextureimage_p.h"
+#include "qgsterraintileentity_p.h"
 
 #include "qgscoordinatetransform.h"
 
@@ -18,26 +19,25 @@
 class TerrainMapUpdateJobFactory : public ChunkQueueJobFactory
 {
   public:
-    TerrainMapUpdateJobFactory( MapTextureGenerator *mapTextureGenerator )
-      : mMapTextureGenerator( mapTextureGenerator )
+    TerrainMapUpdateJobFactory( QgsTerrainTextureGenerator *textureGenerator )
+      : mTextureGenerator( textureGenerator )
     {
     }
 
     virtual ChunkQueueJob *createJob( ChunkNode *chunk )
     {
-      return new TerrainMapUpdateJob( mMapTextureGenerator, chunk );
+      return new TerrainMapUpdateJob( mTextureGenerator, chunk );
     }
 
   private:
-    MapTextureGenerator *mMapTextureGenerator;
+    QgsTerrainTextureGenerator *mTextureGenerator;
 };
 
-/// @endcond
+
+// -----------
 
 
-
-
-Terrain::Terrain( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent )
+QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent )
   : ChunkedEntity( map.terrainGenerator()->rootChunkBbox( map ),
                    map.terrainGenerator()->rootChunkError( map ),
                    map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
@@ -46,18 +46,18 @@ Terrain::Terrain( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *pa
 {
   map.terrainGenerator()->setTerrain( this );
 
-  connect( &map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &Terrain::onShowBoundingBoxesChanged );
-  connect( &map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &Terrain::invalidateMapImages );
-  connect( &map, &Qgs3DMapSettings::layersChanged, this, &Terrain::onLayersChanged );
-  connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &Terrain::invalidateMapImages );
+  connect( &map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
+  connect( &map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsTerrainEntity::invalidateMapImages );
+  connect( &map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
+  connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
 
   connectToLayersRepaintRequest();
 
   mTerrainToMapTransform = new QgsCoordinateTransform( map.terrainGenerator()->crs(), map.crs );
 
-  mMapTextureGenerator = new MapTextureGenerator( map );
+  mTextureGenerator = new QgsTerrainTextureGenerator( map );
 
-  mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mMapTextureGenerator ) );
+  mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mTextureGenerator ) );
 
   mTerrainPicker = new Qt3DRender::QObjectPicker;
   // add camera control's terrain picker as a component to be able to capture height where mouse was
@@ -65,23 +65,23 @@ Terrain::Terrain( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *pa
   addComponent( mTerrainPicker );
 }
 
-Terrain::~Terrain()
+QgsTerrainEntity::~QgsTerrainEntity()
 {
   // cancel / wait for jobs
   if ( activeJob )
     cancelActiveJob();
 
-  delete mMapTextureGenerator;
+  delete mTextureGenerator;
   delete mTerrainToMapTransform;
 }
 
-void Terrain::onShowBoundingBoxesChanged()
+void QgsTerrainEntity::onShowBoundingBoxesChanged()
 {
   setShowBoundingBoxes( map.showTerrainBoundingBoxes() );
 }
 
 
-void Terrain::invalidateMapImages()
+void QgsTerrainEntity::invalidateMapImages()
 {
   qDebug() << "TERRAIN - INVALIDATE MAP IMAGES";
 
@@ -108,45 +108,44 @@ void Terrain::invalidateMapImages()
   needsUpdate = true;
 }
 
-void Terrain::onLayersChanged()
+void QgsTerrainEntity::onLayersChanged()
 {
   connectToLayersRepaintRequest();
   invalidateMapImages();
 }
 
-void Terrain::connectToLayersRepaintRequest()
+void QgsTerrainEntity::connectToLayersRepaintRequest()
 {
   Q_FOREACH ( QgsMapLayer *layer, mLayers )
   {
-    disconnect( layer, &QgsMapLayer::repaintRequested, this, &Terrain::invalidateMapImages );
+    disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
   }
 
   mLayers = map.layers();
 
   Q_FOREACH ( QgsMapLayer *layer, mLayers )
   {
-    connect( layer, &QgsMapLayer::repaintRequested, this, &Terrain::invalidateMapImages );
+    connect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
   }
 }
 
 
 // -----------
 
-///@cond PRIVATE
 
-TerrainMapUpdateJob::TerrainMapUpdateJob( MapTextureGenerator *mapTextureGenerator, ChunkNode *node )
+TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, ChunkNode *node )
   : ChunkQueueJob( node )
-  , mMapTextureGenerator( mapTextureGenerator )
+  , mTextureGenerator( textureGenerator )
 {
-  TerrainChunkEntity *entity = qobject_cast<TerrainChunkEntity *>( node->entity );
-  connect( mapTextureGenerator, &MapTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
-  mJobId = mapTextureGenerator->render( entity->textureImage()->imageExtent(), entity->textureImage()->imageDebugText() );
+  QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity );
+  connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
+  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), entity->textureImage()->imageDebugText() );
 }
 
 void TerrainMapUpdateJob::cancel()
 {
   if ( mJobId != -1 )
-    mMapTextureGenerator->cancelJob( mJobId );
+    mTextureGenerator->cancelJob( mJobId );
 }
 
 
@@ -154,7 +153,7 @@ void TerrainMapUpdateJob::onTileReady( int jobId, const QImage &image )
 {
   if ( mJobId == jobId )
   {
-    TerrainChunkEntity *entity = qobject_cast<TerrainChunkEntity *>( node->entity );
+    QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity );
     entity->textureImage()->setImage( image );
     mJobId = -1;
     emit finished();

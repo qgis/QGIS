@@ -3,7 +3,7 @@
 #include "qgsline3dsymbol.h"
 #include "qgstessellatedpolygongeometry.h"
 #include "qgs3dmapsettings.h"
-#include "terraingenerator.h"
+//#include "qgsterraingenerator.h"
 #include "qgs3dutils.h"
 
 #include "qgsvectorlayer.h"

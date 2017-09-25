@@ -1,5 +1,5 @@
-#ifndef FLATTERRAINTILE_H
-#define FLATTERRAINTILE_H
+#ifndef QGSTERRAINGENERATOR_H
+#define QGSTERRAINGENERATOR_H
 
 #include "qgstilingscheme.h"
 #include "chunkloader.h"
@@ -7,44 +7,11 @@
 class AABB;
 class Qgs3DMapSettings;
 class QgsRectangle;
-class Terrain;
-
+class QgsTerrainEntity;
 
 class QDomElement;
 class QDomDocument;
 class QgsProject;
-
-
-class MapTextureImage;
-
-#include <Qt3DCore/QEntity>
-
-/** \ingroup 3d
- * Base class for 3D entities representing one tile of terrain.
- * It contains pointer to tile's texture image.
- *
- * \since QGIS 3.0
- */
-class TerrainChunkEntity : public Qt3DCore::QEntity
-{
-    Q_OBJECT
-  public:
-    //! Constructs the entity, optionally with a parent that will own it
-    TerrainChunkEntity( Qt3DCore::QNode *parent = nullptr )
-      : Qt3DCore::QEntity( parent )
-    {
-    }
-
-    //! Assigns texture image. Should be called when the class is being initialized.
-    //! Texture image is owned by the texture used by the entity.
-    void setTextureImage( MapTextureImage *textureImage ) { mTextureImage = textureImage; }
-    //! Returns assigned texture image
-    MapTextureImage *textureImage() { return mTextureImage; }
-
-  private:
-    MapTextureImage *mTextureImage = nullptr;
-};
-
 
 
 /** \ingroup 3d
@@ -54,7 +21,7 @@ class TerrainChunkEntity : public Qt3DCore::QEntity
  * whenever that is deemed necessary by the terrain controller (that caches generated tiles).
  * \since QGIS 3.0
  */
-class TerrainGenerator : public ChunkLoaderFactory
+class QgsTerrainGenerator : public ChunkLoaderFactory
 {
   public:
 
@@ -66,13 +33,13 @@ class TerrainGenerator : public ChunkLoaderFactory
       QuantizedMesh,  //!< Terrain is built from downloaded tiles in quantized mesh format
     };
 
-    virtual ~TerrainGenerator() {}
+    virtual ~QgsTerrainGenerator() {}
 
     //! Sets terrain entity for the generator
-    void setTerrain( Terrain *t ) { mTerrain = t; }
+    void setTerrain( QgsTerrainEntity *t ) { mTerrain = t; }
 
     //! Makes a copy of the current instance
-    virtual TerrainGenerator *clone() const = 0;
+    virtual QgsTerrainGenerator *clone() const = 0;
 
     //! What texture generator implementation is this
     virtual Type type() const = 0;
@@ -109,8 +76,8 @@ class TerrainGenerator : public ChunkLoaderFactory
 
     QgsTilingScheme terrainTilingScheme;   //!< Tiling scheme of the terrain
 
-    Terrain *mTerrain = nullptr;
+    QgsTerrainEntity *mTerrain = nullptr;
 };
 
 
-#endif // FLATTERRAINTILE_H
+#endif // QGSTERRAINGENERATOR_H

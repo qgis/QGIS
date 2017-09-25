@@ -85,7 +85,7 @@
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3drendererregistry.h"
 #include "qgs3dmapsettings.h"
-#include "flatterraingenerator.h"
+#include "qgsflatterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
 #endif
 
@@ -9923,7 +9923,7 @@ void QgisApp::new3DMapCanvas()
   map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setLayers( mMapCanvas->layers() );
 
-  FlatTerrainGenerator *flatTerrain = new FlatTerrainGenerator;
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( map->crs );
   flatTerrain->setExtent( fullExtent );
   map->setTerrainGenerator( flatTerrain );
