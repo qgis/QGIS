@@ -449,7 +449,7 @@ bool QgsGeometryCollection::insertVertex( QgsVertexId position, const QgsPoint &
 
 bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
-  if ( position.part >= mGeometries.size() )
+  if ( position.part < 0 || position.part >= mGeometries.size() )
   {
     return false;
   }
@@ -464,7 +464,7 @@ bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &ne
 
 bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
 {
-  if ( position.part >= mGeometries.size() )
+  if ( position.part < 0 || position.part >= mGeometries.size() )
   {
     return false;
   }
@@ -613,7 +613,7 @@ QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, Segmen
 
 double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
 {
-  if ( vertex.part >= mGeometries.size() )
+  if ( vertex.part < 0 || vertex.part >= mGeometries.size() )
   {
     return 0.0;
   }
