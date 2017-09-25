@@ -35,6 +35,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
                        QgsFeatureSink,
+                       QgsFeatureRequest,
                        QgsGeometry,
                        QgsFields,
                        QgsField,
@@ -208,7 +209,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
                                                multiplier * 1000.0 / 3600.0)
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(context.project().crs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
 

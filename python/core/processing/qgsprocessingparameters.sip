@@ -570,10 +570,23 @@ class QgsProcessingParameters
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
+                                        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
  Evaluates the parameter with matching ``definition`` to a point.
+
+ If ``crs`` is set then the point will be automatically reprojected so that it is in the specified ``crs``.
+
+.. seealso:: parameterAsPointCrs()
  :rtype: QgsPointXY
+%End
+
+    static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+%Docstring
+ Returns the coordinate reference system associated with an point parameter value.
+
+.. seealso:: parameterAsPoint()
+ :rtype: QgsCoordinateReferenceSystem
 %End
 
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -816,6 +829,8 @@ class QgsProcessingParameterPoint : QgsProcessingParameterDefinition
 
     virtual QString type() const;
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
 
     static QgsProcessingParameterPoint *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
