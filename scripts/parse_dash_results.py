@@ -173,6 +173,7 @@ class ResultHandler(QDialog):
         if not self.images:
             # all done
             self.accept()
+            exit(0)
 
         test_name, rendered_image = self.images.popitem()
         self.test_name_label.setText(test_name)
