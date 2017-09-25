@@ -61,11 +61,11 @@ namespace QgsWms
 
   struct QgsWmsParametersComposerMap
   {
-    int mId; // composer map id
-    bool mHasExtent; // does the request contains extent for this composer map
+    int mId = 0; // composer map id
+    bool mHasExtent = false; // does the request contains extent for this composer map
     QgsRectangle mExtent; // the request extent for this composer map
     float mScale = -1;
-    float mRotation;
+    float mRotation = 0;
     float mGridX = 0;
     float mGridY = 0;
     QList<QgsWmsParametersLayer> mLayers; // list of layers for this composer map
