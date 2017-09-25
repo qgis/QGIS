@@ -50,9 +50,9 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       GeoNode
     };
 
-    // constructor
-    // mode argument must be 0 for export and 1 for import
-    // type argument must be 0 for WMS and 1 for PostGIS
+    /**
+     * Constructor for QgsManageConnectionsDialog.
+     */
     QgsManageConnectionsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Mode mode = Export, Type type = WMS, const QString &fileName = QString() );
 
   public slots:
