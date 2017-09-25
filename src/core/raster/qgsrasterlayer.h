@@ -426,4 +426,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif

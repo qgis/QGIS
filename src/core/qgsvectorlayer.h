@@ -2089,4 +2089,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     friend class QgsVectorLayerFeatureSource;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif

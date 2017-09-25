@@ -1127,7 +1127,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          QStringLiteral( "geom" )  // Default value
                        ) );
 
-  layerOptions.insert( "SPATIAL_INDEX", new BoolOption(
+  layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new BoolOption(
                          QObject::tr( "If a spatial index must be created." ),
                          true  // Default value
                        ) );
@@ -1308,7 +1308,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            QStringList()
                            << QStringLiteral( "QUICK" )
                            << QStringLiteral( "OPTIMIZED" ),
-                           QLatin1String( "QUICK" ), // Default value
+                           QStringLiteral( "QUICK" ), // Default value
                            true // Allow None
                          ) );
 
@@ -1663,12 +1663,12 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.clear();
   layerOptions.clear();
 
-  datasetOptions.insert( "HEADER", new StringOption(
+  datasetOptions.insert( QStringLiteral( "HEADER" ), new StringOption(
                            QObject::tr( "Override the header file used - in place of header.dxf." ),
                            QLatin1String( "" )  // Default value
                          ) );
 
-  datasetOptions.insert( "TRAILER", new StringOption(
+  datasetOptions.insert( QStringLiteral( "TRAILER" ), new StringOption(
                            QObject::tr( "Override the trailer file used - in place of trailer.dxf." ),
                            QLatin1String( "" )  // Default value
                          ) );
@@ -1697,14 +1697,14 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                            QStringLiteral( "GXT" ) // Default value
                          ) );
 
-  datasetOptions.insert( "CONFIG", new StringOption(
+  datasetOptions.insert( QStringLiteral( "CONFIG" ), new StringOption(
                            QObject::tr( "path to the GCT : the GCT file describe the GeoConcept types definitions: "
                                         "In this file, every line must start with //# followed by a keyword. "
                                         "Lines starting with // are comments." ),
                            QLatin1String( "" )  // Default value
                          ) );
 
-  datasetOptions.insert( "FEATURETYPE", new StringOption(
+  datasetOptions.insert( QStringLiteral( "FEATURETYPE" ), new StringOption(
                            QObject::tr( "defines the feature to be created. The TYPE corresponds to one of the Name "
                                         "found in the GCT file for a type section. The SUBTYPE corresponds to one of "
                                         "the Name found in the GCT file for a sub-type section within the previous "
@@ -2744,7 +2744,7 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions()
   QgsStringMap formats = supportedFiltersAndFormats();
   QStringList extensions;
 
-  QRegularExpression rx( "\\*\\.([a-zA-Z0-9]*)" );
+  QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
 
   QgsStringMap::const_iterator formatIt = formats.constBegin();
   for ( ; formatIt != formats.constEnd(); ++formatIt )
@@ -2803,11 +2803,11 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           poDriver = OGRGetDriverByName( drvName.toLocal8Bit().constData() );
           if ( poDriver )
           {
-            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, QString( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData(), options );
+            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, QStringLiteral( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData(), options );
             if ( ds )
             {
               writableDrivers << QStringLiteral( "SpatiaLite" );
-              OGR_Dr_DeleteDataSource( poDriver, QString( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData() );
+              OGR_Dr_DeleteDataSource( poDriver, QStringLiteral( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData() );
               OGR_DS_Destroy( ds );
             }
           }

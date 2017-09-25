@@ -606,12 +606,9 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
 QByteArray QgsDataSourceUri::encodedUri() const
 {
   QUrl url;
-  Q_FOREACH ( const QString &key, mParams.uniqueKeys() )
+  for ( auto it = mParams.constBegin(); it != mParams.constEnd(); ++it )
   {
-    Q_FOREACH ( const QString &value, mParams.values( key ) )
-    {
-      url.addQueryItem( key, value );
-    }
+    url.addQueryItem( it.key(), it.value() );
   }
   return url.encodedQuery();
 }

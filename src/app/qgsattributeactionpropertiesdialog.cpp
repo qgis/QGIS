@@ -195,11 +195,11 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
     QString tooltip = scope.description();
     if ( !variables.empty() )
     {
-      tooltip += "<br><br>";
+      tooltip += QLatin1String( "<br><br>" );
       tooltip += tr( "Additional variables" );
-      tooltip += "<ul><li>";
-      tooltip += variables.join( "</li><li>" );
-      tooltip += "</ul></li>";
+      tooltip += QLatin1String( "<ul><li>" );
+      tooltip += variables.join( QStringLiteral( "</li><li>" ) );
+      tooltip += QLatin1String( "</ul></li>" );
     }
     actionScopeCheckBox->setToolTip( tooltip );
     actionScopeCheckBox->setProperty( "ActionScopeName", scope.id() );

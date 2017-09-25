@@ -200,7 +200,7 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
 
   mWkbType = parts.first;
 
-  QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? "Z" : QString(), isMeasure() ? "M" : QString() );
+  QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -357,7 +357,7 @@ QDomElement QgsCurvePolygon::asGML3( QDomDocument &doc, int precision, const QSt
   QDomElement elemCurvePolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
   QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
   QDomElement curveElem = exteriorRing()->asGML3( doc, precision, ns );
-  if ( curveElem.tagName() == "LineString" )
+  if ( curveElem.tagName() == QLatin1String( "LineString" ) )
   {
     curveElem.setTagName( QStringLiteral( "LinearRing" ) );
   }
@@ -368,7 +368,7 @@ QDomElement QgsCurvePolygon::asGML3( QDomDocument &doc, int precision, const QSt
   {
     QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
     QDomElement innerRing = interiorRing( i )->asGML3( doc, precision, ns );
-    if ( innerRing.tagName() == "LineString" )
+    if ( innerRing.tagName() == QLatin1String( "LineString" ) )
     {
       innerRing.setTagName( QStringLiteral( "LinearRing" ) );
     }

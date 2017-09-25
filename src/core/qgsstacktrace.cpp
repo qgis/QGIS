@@ -163,14 +163,14 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 
 bool QgsStackTrace::StackLine::isQgisModule() const
 {
-  return moduleName.contains( "qgis", Qt::CaseInsensitive );
+  return moduleName.contains( QLatin1String( "qgis" ), Qt::CaseInsensitive );
 }
 
 bool QgsStackTrace::StackLine::isValid() const
 {
-  return !( fileName.contains( "exe_common", Qt::CaseInsensitive ) ||
-            fileName.contains( "unknown", Qt::CaseInsensitive ) ||
-            lineNumber.contains( "unknown", Qt::CaseInsensitive ) );
+  return !( fileName.contains( QLatin1String( "exe_common" ), Qt::CaseInsensitive ) ||
+            fileName.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) ||
+            lineNumber.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) );
 
 }
 ///@endcond

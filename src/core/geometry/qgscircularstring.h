@@ -154,4 +154,6 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSCIRCULARSTRING_H

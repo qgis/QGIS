@@ -59,11 +59,11 @@ QList<QAction *> QgsAmsRootItem::actions( QWidget *parent )
 QWidget *QgsAmsRootItem::paramWidget()
 {
   QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAmsRootItem::connectionsChanged );
+  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAmsRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsAmsRootItem::connectionsChanged()
+void QgsAmsRootItem::onConnectionsChanged()
 {
   refresh();
 }

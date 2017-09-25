@@ -84,4 +84,6 @@ class CORE_EXPORT QgsColorBrewerPalette
     static const char *BREWER_STRING;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSCOLORBREWERPALETTE_H

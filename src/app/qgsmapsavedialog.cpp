@@ -73,7 +73,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     if ( activeDecorations.isEmpty() )
       activeDecorations = decoration->name().toLower();
     else
-      activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->name().toLower() );
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
@@ -100,7 +100,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
         layers << QChar( 0x2026 );
       }
       mInfo->setText( tr( "The following layer(s) use advanced effects:\n%1\nRasterizing map is recommended for proper rendering." ).arg(
-                        QChar( 0x2022 ) + QString( " " ) + layers.join( QString( "\n" ) + QChar( 0x2022 ) + QString( " " ) ) ) );
+                        QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) ) );
       mSaveAsRaster->setChecked( true );
     }
     else
@@ -118,7 +118,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     connect( button, &QPushButton::clicked, this, &QgsMapSaveDialog::copyToClipboard );
   }
 
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::accepted );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::onAccepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMapSaveDialog::showHelp );
 }
 
@@ -349,7 +349,7 @@ void QgsMapSaveDialog::copyToClipboard()
     mapRendererTask->addDecorations( mDecorations );
   }
 
-  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
   {
     QApplication::clipboard()->setImage( *img, QClipboard::Clipboard );
     QApplication::restoreOverrideCursor();
@@ -359,7 +359,7 @@ void QgsMapSaveDialog::copyToClipboard()
     delete img;
     setEnabled( true );
   } );
-  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
+  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int )
   {
     QApplication::restoreOverrideCursor();
     QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not copy the map to clipboard" ) );
@@ -375,7 +375,7 @@ void QgsMapSaveDialog::copyToClipboard()
   QgsApplication::taskManager()->addTask( mapRendererTask );
 }
 
-void QgsMapSaveDialog::accepted()
+void QgsMapSaveDialog::onAccepted()
 {
   if ( mDialogType == Image )
   {

@@ -72,7 +72,7 @@ class QgsWFSProgressDialog: public QProgressDialog
     void resizeEvent( QResizeEvent *ev ) override;
 
   signals:
-    void hide();
+    void hideRequest();
 
   private:
     QPushButton *mCancel = nullptr;
@@ -141,7 +141,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     //! Whether the download should stop
     bool mStop;
     //! Progress dialog
-    QProgressDialog *mProgressDialog = nullptr;
+    QgsWFSProgressDialog *mProgressDialog = nullptr;
 
     /** If the progress dialog should be shown immediately, or if it should be
         let to QProgressDialog logic to decide when to show it */

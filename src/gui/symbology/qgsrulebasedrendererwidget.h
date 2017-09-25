@@ -33,7 +33,7 @@ struct QgsRuleBasedRendererCount SIP_SKIP
   int count; // number of features
   int duplicateCount; // number of features present also in other rule(s)
   // map of feature counts in other rules
-  QMap<QgsRuleBasedRenderer::Rule *, int> duplicateCountMap;
+  QHash<QgsRuleBasedRenderer::Rule *, int> duplicateCountMap;
 };
 
 /** \ingroup gui

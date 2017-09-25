@@ -19,8 +19,8 @@
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
 
-const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnection = "qgis/connections-geonode";
-const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnectionDetails = "qgis/GeoNode";
+const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnection = QStringLiteral( "qgis/connections-geonode" );
+const QString QgsGeoNodeConnectionUtils::sPathGeoNodeConnectionDetails = QStringLiteral( "qgis/GeoNode" );
 
 QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &name )
   : mConnName( name )

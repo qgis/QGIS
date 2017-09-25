@@ -180,9 +180,9 @@ QStringList QgsLayerMetadata::keywords( const QString &vocabulary ) const
 
 QStringList QgsLayerMetadata::categories() const
 {
-  if ( mKeywords.contains( "gmd:topicCategory" ) )
+  if ( mKeywords.contains( QStringLiteral( "gmd:topicCategory" ) ) )
   {
-    return mKeywords.value( "gmd:topicCategory" );
+    return mKeywords.value( QStringLiteral( "gmd:topicCategory" ) );
   }
   else
   {
@@ -192,7 +192,7 @@ QStringList QgsLayerMetadata::categories() const
 
 void QgsLayerMetadata::setCategories( const QStringList &category )
 {
-  mKeywords.insert( "gmd:topicCategory", category );
+  mKeywords.insert( QStringLiteral( "gmd:topicCategory" ), category );
 }
 
 QList<QgsLayerMetadata::Contact> QgsLayerMetadata::contacts() const
@@ -410,8 +410,8 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
     QDomNodeList periodList = mnl.toElement().elementsByTagName( QStringLiteral( "period" ) );
     for ( int i = 0; i < periodList.size(); i++ )
     {
-      QDomNode begin = periodList.at( i ).namedItem( "start" );
-      QDomNode end = periodList.at( i ).namedItem( "end" );
+      QDomNode begin = periodList.at( i ).namedItem( QStringLiteral( "start" ) );
+      QDomNode end = periodList.at( i ).namedItem( QStringLiteral( "end" ) );
       QDateTime beginDate = QDateTime().fromString( begin.toElement().text(), Qt::ISODate );
       QDateTime endDate = QDateTime().fromString( end.toElement().text(), Qt::ISODate );
       QgsDateTimeRange date = QgsDateTimeRange( beginDate, endDate );

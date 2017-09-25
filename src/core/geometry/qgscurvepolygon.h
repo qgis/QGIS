@@ -174,4 +174,6 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsRectangle calculateBoundingBox() const override;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSCURVEPOLYGONV2_H

@@ -242,8 +242,8 @@ double QgsLayoutItem::itemRotation() const
 
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement element = doc.createElement( "LayoutItem" );
-  element.setAttribute( "type", stringType() );
+  QDomElement element = doc.createElement( QStringLiteral( "LayoutItem" ) );
+  element.setAttribute( QStringLiteral( "type" ), stringType() );
 
   writePropertiesToElement( element, doc, context );
   parentElement.appendChild( element );
@@ -253,7 +253,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
 
 bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( itemElem.nodeName() != QString( "LayoutItem" ) || itemElem.attribute( "type" ) != stringType() )
+  if ( itemElem.nodeName() != QStringLiteral( "LayoutItem" ) || itemElem.attribute( QStringLiteral( "type" ) ) != stringType() )
   {
     return false;
   }

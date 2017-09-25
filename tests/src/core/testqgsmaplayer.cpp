@@ -254,8 +254,8 @@ void TestQgsMapLayer::layerRef()
 void TestQgsMapLayer::layerRefListUtils()
 {
   // conversion utils
-  QgsVectorLayer *vlA = new QgsVectorLayer( "Point", "a", "memory" );
-  QgsVectorLayer *vlB = new QgsVectorLayer( "Point", "b", "memory" );
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
 
   QList<QgsMapLayer *> listRawSource;
   listRawSource << vlA << vlB;
@@ -268,8 +268,8 @@ void TestQgsMapLayer::layerRefListUtils()
   QCOMPARE( raw, QList< QgsMapLayer *>() << vlA << vlB );
 
   //remove layers
-  QgsVectorLayer *vlC = new QgsVectorLayer( "Point", "c", "memory" );
-  QgsVectorLayer *vlD = new QgsVectorLayer( "Point", "d", "memory" );
+  QgsVectorLayer *vlC = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "c" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlD = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "d" ), QStringLiteral( "memory" ) );
   refs << QgsMapLayerRef( vlC ) << QgsMapLayerRef( vlD );
 
   _qgis_removeLayers( refs, QList< QgsMapLayer *>() << vlB << vlD );

@@ -49,7 +49,7 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
   mIconName = QStringLiteral( "mIconConnect.png" );
-  mBaseUri = uri.param( QString( "url" ) );
+  mBaseUri = uri.param( QStringLiteral( "url" ) );
 }
 
 QgsWfsLayerItem::~QgsWfsLayerItem()
@@ -81,7 +81,7 @@ void QgsWfsLayerItem::copyStyle()
   for ( const QString &connName : connections )
   {
     connection.reset( new QgsGeoNodeConnection( connName ) );
-    if ( mBaseUri.contains( connection->uri().param( QString( "url" ) ) ) )
+    if ( mBaseUri.contains( connection->uri().param( QStringLiteral( "url" ) ) ) )
       break;
     else
       connection.reset( nullptr );
@@ -89,8 +89,10 @@ void QgsWfsLayerItem::copyStyle()
 
   if ( !connection )
   {
+#ifdef QGISDEBUG
     QString errorMsg( QStringLiteral( "Cannot get style for layer %1" ).arg( this->name() ) );
     QgsDebugMsg( " Cannot get style: " + errorMsg );
+#endif
 #if 0
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
@@ -101,12 +103,14 @@ void QgsWfsLayerItem::copyStyle()
   }
 
   QString url( connection->uri().encodedUri() );
-  QgsGeoNodeRequest geoNodeRequest( url.replace( QString( "url=" ), QString() ), true );
+  QgsGeoNodeRequest geoNodeRequest( url.replace( QStringLiteral( "url=" ), QString() ), true );
   QgsGeoNodeStyle style = geoNodeRequest.fetchDefaultStyleBlocking( this->name() );
   if ( style.name.isEmpty() )
   {
+#ifdef QGISDEBUG
     QString errorMsg( QStringLiteral( "Cannot get style for layer %1" ).arg( this->name() ) );
     QgsDebugMsg( " Cannot get style: " + errorMsg );
+#endif
 #if 0
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
@@ -259,11 +263,11 @@ QList<QAction *> QgsWfsRootItem::actions( QWidget *parent )
 QWidget *QgsWfsRootItem::paramWidget()
 {
   QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsWFSSourceSelect::connectionsChanged, this, &QgsWfsRootItem::connectionsChanged );
+  connect( select, &QgsWFSSourceSelect::connectionsChanged, this, &QgsWfsRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsWfsRootItem::connectionsChanged()
+void QgsWfsRootItem::onConnectionsChanged()
 {
   refresh();
 }
@@ -310,7 +314,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
     {
       QgsGeoNodeConnection connection( connectionName );
 
-      QString url = connection.uri().param( "url" );
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
       QgsWFSDataSourceURI sourceUri( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) )[0] );
@@ -334,7 +338,7 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
     {
       QgsGeoNodeConnection connection( connectionName );
 
-      QString url = connection.uri().param( "url" );
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
       const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) ) );

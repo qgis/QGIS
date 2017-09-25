@@ -118,7 +118,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
 
   if ( mUri.hasParam( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
   {
-    if ( mUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).compare( "0" )  == 0 )
+    if ( mUri.param( QStringLiteral( "checkPrimaryKeyUnicity" ) ).compare( QLatin1String( "0" ) )  == 0 )
     {
       mCheckPrimaryKeyUnicity = false;
     }
@@ -213,7 +213,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   // Set the PostgreSQL message level so that we don't get the
   // 'there is no transaction in progress' warning.
 #ifndef QGISDEBUG
-  mConnectionRO->PQexecNR( "set client_min_messages to error" );
+  mConnectionRO->PQexecNR( QStringLiteral( "set client_min_messages to error" ) );
 #endif
 
   //fill type names into sets
@@ -1638,26 +1638,26 @@ QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString
   {
     // get the field name
     QgsField fld = field( index );
-    QString sql = QString( "SELECT DISTINCT %1 FROM %2 WHERE" )
+    QString sql = QStringLiteral( "SELECT DISTINCT %1 FROM %2 WHERE" )
                   .arg( quotedIdentifier( fld.name() ),
                         mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
-      sql += QString( " ( %1 ) AND " ).arg( mSqlWhereClause );
+      sql += QStringLiteral( " ( %1 ) AND " ).arg( mSqlWhereClause );
     }
 
-    sql += QString( " %1 ILIKE '%%2%'" ).arg( quotedIdentifier( fld.name() ), substring );
+    sql += QStringLiteral( " %1 ILIKE '%%2%'" ).arg( quotedIdentifier( fld.name() ), substring );
 
 
-    sql +=  QString( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
+    sql +=  QStringLiteral( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
 
     if ( limit >= 0 )
     {
-      sql += QString( " LIMIT %1" ).arg( limit );
+      sql += QStringLiteral( " LIMIT %1" ).arg( limit );
     }
 
-    sql = QString( "SELECT %1 FROM (%2) foo" ).arg( connectionRO()->fieldExpression( fld ), sql );
+    sql = QStringLiteral( "SELECT %1 FROM (%2) foo" ).arg( connectionRO()->fieldExpression( fld ), sql );
 
     QgsPostgresResult res( connectionRO()->PQexec( sql ) );
     if ( res.PQresultStatus() == PGRES_TUPLES_OK )
@@ -2472,7 +2472,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds &ids )
     QList<int> idsList = ids.values();
     std::sort( idsList.begin(), idsList.end(), std::greater<int>() );
 
-    for ( QList<int>::const_iterator iter = idsList.begin(); iter != idsList.end(); ++iter )
+    for ( auto iter = idsList.constBegin(); iter != idsList.constEnd(); ++iter )
     {
       int index = *iter;
       if ( index < 0 || index >= mAttributeFields.count() )
@@ -3752,7 +3752,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
     }
 
     pkList = QStringList( primaryKey );
-    pkType = QStringList( "serial" );
+    pkType = QStringList( QStringLiteral( "serial" ) );
   }
   else
   {

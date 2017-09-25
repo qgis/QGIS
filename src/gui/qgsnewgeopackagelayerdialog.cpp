@@ -412,7 +412,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
       ogrType = OFTString;
     else if ( fieldType == QLatin1String( "integer" ) )
       ogrType = OFTInteger;
-    else if ( fieldType == "integer64" )
+    else if ( fieldType == QLatin1String( "integer64" ) )
       ogrType = OFTInteger64;
     else if ( fieldType == QLatin1String( "real" ) )
       ogrType = OFTReal;

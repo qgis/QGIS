@@ -422,7 +422,7 @@ void QgsMssqlProvider::loadFields()
         if ( sqlType == QVariant::String )
         {
           int length = query.value( 7 ).toInt();
-          if ( sqlTypeName.startsWith( "n" ) )
+          if ( sqlTypeName.startsWith( QLatin1String( "n" ) ) )
           {
             length = length / 2;
           }
@@ -1007,7 +1007,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           // Z and M on the end of a WKT string isn't valid for
           // SQL Server so we have to remove it first.
           wkt = geom.exportToWkt();
-          wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), "(" );
+          wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
         }
         query.addBindValue( wkt );
       }
@@ -1343,7 +1343,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QString wkt = it->exportToWkt();
       // Z and M on the end of a WKT string isn't valid for
       // SQL Server so we have to remove it first.
-      wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), "(" );
+      wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
       query.addBindValue( wkt );
     }
 
@@ -1459,7 +1459,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 
   if ( field < 0 || field >= mAttributeFields.size() )
   {
-    pushError( "createAttributeIndex invalid index" );
+    pushError( QStringLiteral( "createAttributeIndex invalid index" ) );
     return false;
   }
 

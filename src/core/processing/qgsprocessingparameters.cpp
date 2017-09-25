@@ -1141,7 +1141,7 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
 
 bool QgsProcessingParameters::parseScriptCodeParameterOptions( const QString &code, bool &isOptional, QString &name, QString &type, QString &definition )
 {
-  QRegularExpression re( "(?:#*)(.*?)=\\s*(.*)" );
+  QRegularExpression re( QStringLiteral( "(?:#*)(.*?)=\\s*(.*)" ) );
   QRegularExpressionMatch m = re.match( code );
   if ( !m.hasMatch() )
     return false;
@@ -1160,7 +1160,7 @@ bool QgsProcessingParameters::parseScriptCodeParameterOptions( const QString &co
 
   tokens = tokens.trimmed();
 
-  QRegularExpression re2( "(.*?)\\s+(.*)" );
+  QRegularExpression re2( QStringLiteral( "(.*?)\\s+(.*)" ) );
   m = re2.match( tokens );
   if ( !m.hasMatch() )
   {
@@ -1922,7 +1922,7 @@ QgsProcessingParameterMultipleLayers *QgsProcessingParameterMultipleLayers::from
 {
   QString type = definition;
   QString defaultVal;
-  QRegularExpression re( "(.*?)\\s+(.*)" );
+  QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*)" ) );
   QRegularExpressionMatch m = re.match( definition );
   if ( m.hasMatch() )
   {
@@ -2349,7 +2349,7 @@ QgsProcessingParameterEnum *QgsProcessingParameterEnum::fromScriptCode( const QS
     def = def.mid( 9 );
   }
 
-  QRegularExpression re( "(.*)\\s+(.*?)$" );
+  QRegularExpression re( QStringLiteral( "(.*)\\s+(.*?)$" ) );
   QRegularExpressionMatch m = re.match( def );
   QString values = def;
   if ( m.hasMatch() )
@@ -2788,7 +2788,7 @@ QgsProcessingParameterField *QgsProcessingParameterField::fromScriptCode( const 
     def = def.mid( 8 ).trimmed();
   }
 
-  QRegularExpression re( "(.*?)\\s+(.*)$" );
+  QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*)$" ) );
   QRegularExpressionMatch m = re.match( def );
   if ( m.hasMatch() )
   {
@@ -3320,7 +3320,7 @@ QString QgsProcessingParameterFileDestination::defaultFileExtension() const
     return QStringLiteral( "file" );
 
   // get first extension from filter
-  QRegularExpression rx( ".*?\\(\\*\\.([a-zA-Z0-9._]+).*" );
+  QRegularExpression rx( QStringLiteral( ".*?\\(\\*\\.([a-zA-Z0-9._]+).*" ) );
   QRegularExpressionMatch match = rx.match( mFileFilter );
   if ( !match.hasMatch() )
     return QStringLiteral( "file" );
@@ -3700,7 +3700,7 @@ QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QS
   QString parent;
   QString def = definition;
 
-  QRegularExpression re( "(.*?)\\s+(.*)$" );
+  QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*)$" ) );
   QRegularExpressionMatch m = re.match( def );
   if ( m.hasMatch() )
   {

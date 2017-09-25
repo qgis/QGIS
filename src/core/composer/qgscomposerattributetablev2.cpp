@@ -641,7 +641,7 @@ bool QgsComposerAttributeTableV2::writeXml( QDomElement &elem, QDomDocument &doc
   composerTableElem.setAttribute( QStringLiteral( "showOnlyVisibleFeatures" ), mShowOnlyVisibleFeatures );
   composerTableElem.setAttribute( QStringLiteral( "filterToAtlasIntersection" ), mFilterToAtlasIntersection );
   composerTableElem.setAttribute( QStringLiteral( "maxFeatures" ), mMaximumNumberOfFeatures );
-  composerTableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? "true" : "false" );
+  composerTableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   composerTableElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
   composerTableElem.setAttribute( QStringLiteral( "wrapString" ), mWrapString );
 

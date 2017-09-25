@@ -118,4 +118,6 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     int mError = 0;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif

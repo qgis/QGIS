@@ -630,5 +630,6 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
 
 };
 
+// clazy:excludeall=qstring-allocations
 
 #endif

@@ -2053,7 +2053,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
-    QList<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
+    QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
 
     QDateTime mProjectLastModified;
 
@@ -2089,5 +2089,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #else
 #define QGIS_ICON_SIZE 24
 #endif
+
+// clazy:excludeall=qstring-allocations
 
 #endif

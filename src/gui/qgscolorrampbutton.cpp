@@ -561,7 +561,7 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
 
     painter.begin( &pm );
     painter.setPen( pen );
-    painter.drawText( QRect( 0, 0, currentIconSize.width(), currentIconSize.height() ), Qt::AlignCenter, "Random colors" );
+    painter.drawText( QRect( 0, 0, currentIconSize.width(), currentIconSize.height() ), Qt::AlignCenter, QStringLiteral( "Random colors" ) );
     painter.end();
   }
   else

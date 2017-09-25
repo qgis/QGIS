@@ -241,4 +241,6 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     void updateActionToolTip( QAction *action, const QString &sequence );
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSSHORTCUTSMANAGER_H

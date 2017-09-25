@@ -147,4 +147,6 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNewHttpConnection::ConnectionTypes )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNewHttpConnection::Flags )
 
+// clazy:excludeall=qstring-allocations
+
 #endif //  QGSNEWHTTPCONNECTION_H

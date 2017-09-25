@@ -99,7 +99,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   mOptSplitter = findChild<QSplitter *>( QStringLiteral( "mOptionsSplitter" ) );
   mOptButtonBox = findChild<QDialogButtonBox *>( QStringLiteral( "buttonBox" ) );
   QFrame *buttonBoxFrame = findChild<QFrame *>( QStringLiteral( "mButtonBoxFrame" ) );
-  mSearchLineEdit = findChild<QgsFilterLineEdit *>( "mSearchLineEdit" );
+  mSearchLineEdit = findChild<QgsFilterLineEdit *>( QStringLiteral( "mSearchLineEdit" ) );
 
   if ( !mOptListWidget || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
@@ -402,22 +402,22 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
 {
   if ( qobject_cast<QLabel *>( widget ) )
   {
-    mStyleSheet = "QLabel { background-color: yellow; color: blue;}";
+    mStyleSheet = QStringLiteral( "QLabel { background-color: yellow; color: blue;}" );
     mText = [ = ]() {return qobject_cast<QLabel *>( mWidget )->text();};
   }
   else if ( qobject_cast<QCheckBox *>( widget ) )
   {
-    mStyleSheet = "QCheckBox { background-color: yellow; color: blue;}";
+    mStyleSheet = QStringLiteral( "QCheckBox { background-color: yellow; color: blue;}" );
     mText = [ = ]() {return qobject_cast<QCheckBox *>( mWidget )->text();};
   }
   else if ( qobject_cast<QAbstractButton *>( widget ) )
   {
-    mStyleSheet = "QAbstractButton { background-color: yellow; color: blue;}";
+    mStyleSheet = QStringLiteral( "QAbstractButton { background-color: yellow; color: blue;}" );
     mText = [ = ]() {return qobject_cast<QAbstractButton *>( mWidget )->text();};
   }
   else if ( qobject_cast<QGroupBox *>( widget ) )
   {
-    mStyleSheet = "QGroupBox::title { background-color: yellow; color: blue;}";
+    mStyleSheet = QStringLiteral( "QGroupBox::title { background-color: yellow; color: blue;}" );
     mText = [ = ]() {return qobject_cast<QGroupBox *>( mWidget )->title();};
   }
   else if ( qobject_cast<QTreeView *>( widget ) )

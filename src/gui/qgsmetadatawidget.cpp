@@ -379,7 +379,7 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
     addVocabulary();
     int currentRow = tabKeywords->rowCount() - 1;
     tabKeywords->item( currentRow, 0 )->setText( i.key() );
-    tabKeywords->item( currentRow, 1 )->setText( i.value().join( "," ) );
+    tabKeywords->item( currentRow, 1 )->setText( i.value().join( QStringLiteral( "," ) ) );
   }
 
   // Fees
@@ -515,7 +515,7 @@ bool QgsMetadataWidget::checkMetadata() const
   if ( results == false )
   {
     errors = QStringLiteral();
-    for ( const QgsMetadataValidator::ValidationResult &result : validationResults )
+    for ( const QgsMetadataValidator::ValidationResult &result : qgsAsConst( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
       if ( ! result.identifier.isNull() )
@@ -635,7 +635,7 @@ QStringList QgsMetadataWidget::parseMimeTypes()
   QStringList wordList;
   wordList.append( QString() ); // We add an empty line, because it's not compulsory.
 
-  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QString( "mime.csv" ) );
+  QString path = QDir( QgsApplication::metadataPath() ).absoluteFilePath( QStringLiteral( "mime.csv" ) );
   QFile file( path );
   if ( !file.open( QIODevice::ReadOnly ) )
   {
@@ -700,7 +700,7 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab() const
       row = tabKeywords->rowCount() - 1;
       tabKeywords->item( row, 0 )->setText( QStringLiteral( "gmd:topicCategory" ) );
     }
-    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( "," ) );
+    tabKeywords->item( row, 1 )->setText( mCategoriesModel->stringList().join( QStringLiteral( "," ) ) );
   }
 }
 
@@ -716,7 +716,7 @@ void QgsMetadataWidget::updatePanel() const
     if ( !categories.isEmpty() )
     {
       int row = categories.at( 0 )->row();
-      mCategoriesModel->setStringList( tabKeywords->item( row, 1 )->text().split( "," ) );
+      mCategoriesModel->setStringList( tabKeywords->item( row, 1 )->text().split( QStringLiteral( "," ) ) );
     }
     else
     {
@@ -829,7 +829,7 @@ QWidget *ConstraintItemDelegate::createEditor( QWidget *parent, const QStyleOpti
     QComboBox *typeEditor = new QComboBox( parent );
     typeEditor->setEditable( true );
     QStringList types;
-    types << QString( "access" ) << QString( "use" ) << QString( "other" );
+    types << QStringLiteral( "access" ) << QStringLiteral( "use" ) << QStringLiteral( "other" );
     QStringListModel *model = new QStringListModel( parent );
     model->setStringList( types );
     typeEditor->setModel( model );

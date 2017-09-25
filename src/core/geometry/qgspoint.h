@@ -438,4 +438,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     double mM;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSPOINTV2_H

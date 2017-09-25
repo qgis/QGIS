@@ -21,7 +21,7 @@ class QgsGeometrySelfContactCheck : public QgsGeometryCheck
     void fixError( QgsGeometryCheckError *error, int method, int, Changes & ) const;
     QStringList getResolutionMethods() const;
     QString errorDescription() const { return tr( "Self contact" ); }
-    QString errorName() const { return "QgsGeometrySelfContactCheck"; }
+    QString errorName() const { return QStringLiteral( "QgsGeometrySelfContactCheck" ); }
   private:
     enum ResolutionMethod { NoChange };
 };

@@ -492,8 +492,8 @@ int main( int argc, char *argv[] )
 
   // This behavior is used to load the app, snapshot the map,
   // save the image to disk and then exit
-  QString mySnapshotFileName = "";
-  QString configLocalStorageLocation =  "";
+  QString mySnapshotFileName = QLatin1String( "" );
+  QString configLocalStorageLocation =  QLatin1String( "" );
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
@@ -792,9 +792,9 @@ int main( int argc, char *argv[] )
     {
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
     }
-    else if ( settings.contains( "profilesPath", QgsSettings::Core ) )
+    else if ( settings.contains( QStringLiteral( "profilesPath" ), QgsSettings::Core ) )
     {
-      configLocalStorageLocation = settings.value( "profilesPath", "", QgsSettings::Core ).toString();
+      configLocalStorageLocation = settings.value( QStringLiteral( "profilesPath" ), "", QgsSettings::Core ).toString();
       QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
     }
 
@@ -839,11 +839,11 @@ int main( int argc, char *argv[] )
   {
     if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      QgsMessageLog::logMessage( QString( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
     else
     {
-      QgsMessageLog::logMessage( QString( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      QgsMessageLog::logMessage( QStringLiteral( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
   }
 

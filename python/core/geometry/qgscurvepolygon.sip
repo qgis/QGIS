@@ -199,6 +199,7 @@ Adds an interior ring to the geometry (takes ownership)
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

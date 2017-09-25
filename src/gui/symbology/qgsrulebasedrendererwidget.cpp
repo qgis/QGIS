@@ -863,10 +863,11 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
             if ( mFeatureCountMap[rule].duplicateCount > 0 )
             {
               QString tip = QStringLiteral( "<p style='margin:0px;'><ul>" );
-              Q_FOREACH ( QgsRuleBasedRenderer::Rule *duplicateRule, mFeatureCountMap[rule].duplicateCountMap.keys() )
+              const auto duplicateMap = mFeatureCountMap[rule].duplicateCountMap;
+              for ( auto it = duplicateMap.constBegin(); it != duplicateMap.constEnd(); ++it )
               {
-                QString label = duplicateRule->label().replace( '&', QLatin1String( "&amp;" ) ).replace( '>', QLatin1String( "&gt;" ) ).replace( '<', QLatin1String( "&lt;" ) );
-                tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( mFeatureCountMap[rule].duplicateCountMap[duplicateRule] ).arg( label );
+                QString label = it.key()->label().replace( '&', QLatin1String( "&amp;" ) ).replace( '>', QLatin1String( "&gt;" ) ).replace( '<', QLatin1String( "&lt;" ) );
+                tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( it.value() ).arg( label );
               }
               tip += QLatin1String( "</ul>" );
               return tip;

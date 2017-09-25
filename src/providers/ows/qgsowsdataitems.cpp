@@ -87,10 +87,11 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
     }
   }
 
-  Q_FOREACH ( QgsDataItem *item, serviceItems.keys() )
+  for ( auto it = serviceItems.constBegin(); it != serviceItems.constEnd(); ++it )
   {
+    QgsDataItem *item = it.key();
     QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
-    QString providerKey = serviceItems.value( item );
+    QString providerKey = it.value();
     if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
     {
       // Add layers directly to OWS connection
@@ -236,7 +237,7 @@ QWidget *QgsOWSRootItem::paramWidget()
 #endif
   return nullptr;
 }
-void QgsOWSRootItem::connectionsChanged()
+void QgsOWSRootItem::onConnectionsChanged()
 {
   refresh();
 }

@@ -1976,6 +1976,8 @@ class CORE_EXPORT QgsProcessingParameterBand : public QgsProcessingParameterDefi
     QString mParentLayerParameterName;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSPROCESSINGPARAMETERS_H
 
 

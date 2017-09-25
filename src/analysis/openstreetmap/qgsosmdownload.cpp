@@ -26,7 +26,7 @@
 QString QgsOSMDownload::defaultServiceUrl()
 {
   QgsSettings settings;
-  return settings.value( "overpass_url", "http://overpass-api.de/api/interpreter" ).toString();
+  return settings.value( QStringLiteral( "overpass_url" ), "http://overpass-api.de/api/interpreter" ).toString();
 }
 
 

@@ -149,7 +149,7 @@ void TestQgsGeoNodeConnection::testStyleAPI()
   QVERIFY( defaultStyle.body.toString().startsWith( QStringLiteral( "<qgis" ) ) );
   QVERIFY( defaultStyle.body.toString().contains( QStringLiteral( "</qgis>" ) ) );
 
-  QgsGeoNodeStyle geoNodeStyle = geonodeRequest.fetchStyleBlocking( "76" );
+  QgsGeoNodeStyle geoNodeStyle = geonodeRequest.fetchStyleBlocking( QStringLiteral( "76" ) );
   QVERIFY( !geoNodeStyle.name.isEmpty() );
   QVERIFY( geoNodeStyle.body.toString().startsWith( QStringLiteral( "<qgis" ) ) );
   QVERIFY( geoNodeStyle.body.toString().contains( QStringLiteral( "</qgis>" ) ) );

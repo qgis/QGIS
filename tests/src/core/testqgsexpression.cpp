@@ -1403,7 +1403,7 @@ class TestQgsExpression: public QObject
       scope->setVariable( QStringLiteral( "test_var" ), 10 );
       context << scope;
       QgsFeature f;
-      mAggregatesLayer->getFeatures( "col1 = 4 " ).nextFeature( f );
+      mAggregatesLayer->getFeatures( QStringLiteral( "col1 = 4 " ) ).nextFeature( f );
       context.setFeature( f );
 
       QFETCH( QString, string );
@@ -1506,7 +1506,7 @@ class TestQgsExpression: public QObject
       mMemoryLayer->selectByIds( selectedFeatures );
 
       QgsExpression exp( expression );
-      QCOMPARE( exp.parserErrorString(), QString( "" ) );
+      QCOMPARE( exp.parserErrorString(), QLatin1String( "" ) );
       exp.prepare( &context );
       QVariant res = exp.evaluate( &context );
       QCOMPARE( res, result );
@@ -2813,7 +2813,7 @@ class TestQgsExpression: public QObject
       setenv( "TESTENV_STRING", "Hello World", 1 );
 #endif
 
-      QgsExpression e( "env('TESTENV_STRING')" );
+      QgsExpression e( QStringLiteral( "env('TESTENV_STRING')" ) );
 
       QVariant result = e.evaluate( &context );
 
@@ -2826,7 +2826,7 @@ class TestQgsExpression: public QObject
       setenv( "TESTENV_INT", "5", 1 );
 #endif
 
-      QgsExpression e2( "env('TESTENV_INT')" );
+      QgsExpression e2( QStringLiteral( "env('TESTENV_INT')" ) );
 
       QVariant result2 = e2.evaluate( &context );
 
@@ -2837,7 +2837,7 @@ class TestQgsExpression: public QObject
       unsetenv( "TESTENV_INT" );
 #endif
 
-      QgsExpression e3( "env('TESTENV_I_DO_NOT_EXIST')" );
+      QgsExpression e3( QStringLiteral( "env('TESTENV_I_DO_NOT_EXIST')" ) );
       QVariant result3 = e3.evaluate( &context );
 
       Q_ASSERT( result3.isNull() );

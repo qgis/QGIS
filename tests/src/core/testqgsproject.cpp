@@ -99,7 +99,7 @@ void TestQgsProject::testReadPath()
 
 void TestQgsProject::testPathResolver()
 {
-  QgsPathResolver resolverRel( "/home/qgis/test.qgs" );
+  QgsPathResolver resolverRel( QStringLiteral( "/home/qgis/test.qgs" ) );
   QCOMPARE( resolverRel.writePath( "/home/qgis/file1.txt" ), QString( "./file1.txt" ) );
   QCOMPARE( resolverRel.writePath( "/home/qgis/subdir/file1.txt" ), QString( "./subdir/file1.txt" ) );
   QCOMPARE( resolverRel.writePath( "/home/file1.txt" ), QString( "../file1.txt" ) );
@@ -154,22 +154,22 @@ static QHash<QString, QString> _parseSvgPathsForLayers( const QString &projectFi
   projectFile.close();
 
   QDomElement docElem = doc.documentElement();
-  QDomElement layersElem = docElem.firstChildElement( "projectlayers" );
+  QDomElement layersElem = docElem.firstChildElement( QStringLiteral( "projectlayers" ) );
   QDomElement layerElem = layersElem.firstChildElement();
   while ( !layerElem.isNull() )
   {
-    QString layerName = layerElem.firstChildElement( "layername" ).text();
+    QString layerName = layerElem.firstChildElement( QStringLiteral( "layername" ) ).text();
     QString svgPath;
-    QDomElement symbolElem = layerElem.firstChildElement( "renderer-v2" ).firstChildElement( "symbols" ).firstChildElement( "symbol" ).firstChildElement( "layer" );
-    QDomElement propElem = symbolElem.firstChildElement( "prop" );
+    QDomElement symbolElem = layerElem.firstChildElement( QStringLiteral( "renderer-v2" ) ).firstChildElement( QStringLiteral( "symbols" ) ).firstChildElement( QStringLiteral( "symbol" ) ).firstChildElement( QStringLiteral( "layer" ) );
+    QDomElement propElem = symbolElem.firstChildElement( QStringLiteral( "prop" ) );
     while ( !propElem.isNull() )
     {
-      if ( propElem.attribute( "k" ) == "name" )
+      if ( propElem.attribute( QStringLiteral( "k" ) ) == QLatin1String( "name" ) )
       {
-        svgPath = propElem.attribute( "v" );
+        svgPath = propElem.attribute( QStringLiteral( "v" ) );
         break;
       }
-      propElem = propElem.nextSiblingElement( "prop" );
+      propElem = propElem.nextSiblingElement( QStringLiteral( "prop" ) );
     }
     projectFileSvgPaths[layerName] = svgPath;
     layerElem = layerElem.nextSiblingElement();
@@ -203,15 +203,15 @@ void TestQgsProject::testPathResolverSvg()
 
   QVERIFY( QFileInfo::exists( ourSvgPath ) );  // should exist now
 
-  QString librarySvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( "transport/transport_airport.svg", QgsPathResolver() );
+  QString librarySvgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( QStringLiteral( "transport/transport_airport.svg" ), QgsPathResolver() );
 
-  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, "points 1", "ogr" );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points 1" ), QStringLiteral( "ogr" ) );
   _useRendererWithSvgSymbol( layer1, ourSvgPath );
 
-  QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, "points 2", "ogr" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, QStringLiteral( "points 2" ), QStringLiteral( "ogr" ) );
   _useRendererWithSvgSymbol( layer2, invalidSvgPath );
 
-  QgsVectorLayer *layer3 = new QgsVectorLayer( layerPath, "points 3", "ogr" );
+  QgsVectorLayer *layer3 = new QgsVectorLayer( layerPath, QStringLiteral( "points 3" ), QStringLiteral( "ogr" ) );
   _useRendererWithSvgSymbol( layer3, librarySvgPath );
 
   QVERIFY( layer1->isValid() );
@@ -237,9 +237,9 @@ void TestQgsProject::testPathResolverSvg()
   // load project again, check that the paths are absolute
   QgsProject projectLoaded;
   projectLoaded.read( projectFilename );
-  QString svg1 = _getLayerSvgMarkerPath( projectLoaded, "points 1" );
-  QString svg2 = _getLayerSvgMarkerPath( projectLoaded, "points 2" );
-  QString svg3 = _getLayerSvgMarkerPath( projectLoaded, "points 3" );
+  QString svg1 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 1" ) );
+  QString svg2 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 2" ) );
+  QString svg3 = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 3" ) );
   QCOMPARE( svg1, ourSvgPath );
   QCOMPARE( svg2, invalidSvgPath );
   QCOMPARE( svg3, librarySvgPath );
@@ -254,9 +254,9 @@ void TestQgsProject::testPathResolverSvg()
   QVERIFY( projectMaster.createEmbeddedLayer( layer2->id(), projectFilename, brokenNodes ) );
   QVERIFY( projectMaster.createEmbeddedLayer( layer3->id(), projectFilename, brokenNodes ) );
 
-  QString svg1x = _getLayerSvgMarkerPath( projectMaster, "points 1" );
-  QString svg2x = _getLayerSvgMarkerPath( projectLoaded, "points 2" );
-  QString svg3x = _getLayerSvgMarkerPath( projectLoaded, "points 3" );
+  QString svg1x = _getLayerSvgMarkerPath( projectMaster, QStringLiteral( "points 1" ) );
+  QString svg2x = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 2" ) );
+  QString svg3x = _getLayerSvgMarkerPath( projectLoaded, QStringLiteral( "points 3" ) );
   QCOMPARE( svg1x, ourSvgPath );
   QCOMPARE( svg2x, invalidSvgPath );
   QCOMPARE( svg3x, librarySvgPath );

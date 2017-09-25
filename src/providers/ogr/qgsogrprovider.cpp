@@ -451,7 +451,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   QList<NativeType> nativeTypes;
   nativeTypes
       << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 11 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), "integer64", QVariant::LongLong, 0, 21 )
+      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, 21 )
       << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, 20, 0, 15 )
       << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 )
       << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, 8, 8 );
@@ -585,9 +585,9 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
   {
     geom = ogrWkbGeometryTypeName( wkbFlatten( type ) );
     if ( wkbHasZ( type ) )
-      geom += "Z";
+      geom += QLatin1String( "Z" );
     if ( wkbHasM( type ) )
-      geom += "M";
+      geom += QLatin1String( "M" );
     return geom;
   }
 
@@ -1067,7 +1067,7 @@ QgsRectangle QgsOgrProvider::extent() const
     QgsDebugMsg( "Starting get extent" );
 
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,1,2)
-    if ( mForceRecomputeExtent && mValid && mGDALDriverName == "GPKG" && mGDALDataset && ogrOrigLayer )
+    if ( mForceRecomputeExtent && mValid && mGDALDriverName == QLatin1String( "GPKG" ) && mGDALDataset && ogrOrigLayer )
     {
       QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
       // works with unquoted layerName
@@ -1138,7 +1138,7 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
   {
     defaultVal = defaultVal.remove( 0, 1 );
     defaultVal.chop( 1 );
-    defaultVal.replace( "''", "'" );
+    defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
     resultVar = defaultVal;
   }
 
@@ -3696,7 +3696,7 @@ void QgsOgrProvider::open( OpenMode mode )
 
       // Ensure subset is set (setSubsetString does nothing if the passed sql subset string is equal to mSubsetString, which is the case when reloading the dataset)
       QString origSubsetString = mSubsetString;
-      mSubsetString = "";
+      mSubsetString = QLatin1String( "" );
       // Block signals to avoid endless recusion reloadData -> emit dataChanged -> reloadData
       blockSignals( true );
       mValid = setSubsetString( origSubsetString );
@@ -4172,7 +4172,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   OGRLayerH hUserLayer = nullptr;
   GDALDatasetH hDS = LoadDataSourceAndLayer( uri, hUserLayer, errCause );
   if ( !hDS )
-    return "";
+    return QLatin1String( "" );
 
   // check if layer_styles table already exist
   OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
@@ -4180,7 +4180,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   {
     errCause = QObject::tr( "Cannot find layer_styles layer" );
     QgsOgrProviderUtils::GDALCloseWrapper( hDS );
-    return "";
+    return QLatin1String( "" );
   }
 
   QString selectQmlQuery = QStringLiteral( "f_table_schema=''"
@@ -4277,7 +4277,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
          geometryColumn == QString::fromUtf8( OGR_L_GetGeometryColumn( hUserLayer ) ) )
     {
       // Append first all related styles
-      QString id( QString( "%1" ).arg( fid ) );
+      QString id( QStringLiteral( "%1" ).arg( fid ) );
       ids.append( id );
       names.append( styleName );
       descriptions.append( description );
@@ -4308,7 +4308,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     for ( int j = 0; j < listId.size(); j++ )
     {
       int fid = listId[j];
-      QString id( QString( "%1" ).arg( fid ) );
+      QString id( QStringLiteral( "%1" ).arg( fid ) );
       ids.append( id );
       names.append( mapIdToStyleName[fid] );
       descriptions.append( mapIdToDescription[fid] );
@@ -4325,7 +4325,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   OGRLayerH hUserLayer = nullptr;
   GDALDatasetH hDS = LoadDataSourceAndLayer( uri, hUserLayer, errCause );
   if ( !hDS )
-    return "";
+    return QLatin1String( "" );
 
   // check if layer_styles table already exist
   OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
@@ -4333,7 +4333,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   {
     errCause = QObject::tr( "Cannot find layer_styles layer" );
     QgsOgrProviderUtils::GDALCloseWrapper( hDS );
-    return "";
+    return QLatin1String( "" );
   }
 
   bool ok;
@@ -4342,7 +4342,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   {
     errCause = QObject::tr( "Invalid style identifier" );
     QgsOgrProviderUtils::GDALCloseWrapper( hDS );
-    return "";
+    return QLatin1String( "" );
   }
 
   OGRFeatureH hFeature = OGR_L_GetFeature( hLayer, id );
@@ -4350,7 +4350,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   {
     errCause = QObject::tr( "No style corresponding to style identifier" );
     QgsOgrProviderUtils::GDALCloseWrapper( hDS );
-    return "";
+    return QLatin1String( "" );
   }
 
   OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );

@@ -262,4 +262,6 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSLINESTRINGV2_H

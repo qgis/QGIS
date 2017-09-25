@@ -113,12 +113,12 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
   }
   else
   {
-    const QString DOWNLOADER_LAST_DIR_KEY( "Qgis/fileDownloaderLastDir" );
+    const QString DOWNLOADER_LAST_DIR_KEY( QStringLiteral( "Qgis/fileDownloaderLastDir" ) );
     QgsSettings settings;
     // Try to get some information from the URL
     QFileInfo info( url.toString() );
     QString savePath = settings.value( DOWNLOADER_LAST_DIR_KEY ).toString();
-    QString fileName = info.fileName().replace( QRegExp( "[^A-z0-9\\-_\\.]" ), "_" );
+    QString fileName = info.fileName().replace( QRegExp( "[^A-z0-9\\-_\\.]" ), QStringLiteral( "_" ) );
     if ( ! savePath.isEmpty() && ! fileName.isEmpty() )
     {
       savePath = QDir::cleanPath( savePath + QDir::separator() + fileName );

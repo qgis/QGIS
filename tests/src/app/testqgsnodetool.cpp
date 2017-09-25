@@ -138,16 +138,16 @@ void TestQgsNodeTool::initTestCase()
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( "EPSG:27700" ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
 
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mCanvas );
 
   // make testing layers
-  mLayerLine = new QgsVectorLayer( "LineString?crs=EPSG:27700", "layer line", "memory" );
+  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLine->isValid() );
-  mLayerPolygon = new QgsVectorLayer( "Polygon?crs=EPSG:27700", "layer polygon", "memory" );
+  mLayerPolygon = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:27700" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPolygon->isValid() );
-  mLayerPoint = new QgsVectorLayer( "Point?crs=EPSG:27700", "layer point", "memory" );
+  mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPoint->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
 
@@ -538,7 +538,7 @@ void TestQgsNodeTool::testActiveLayerPriority()
   // check that features from current layer get priority when picking points
 
   // create a temporary line layer that has a common vertex with existing line layer at (1, 1)
-  QgsVectorLayer *layerLine2 = new QgsVectorLayer( "LineString?crs=EPSG:27700", "layer line 2", "memory" );
+  QgsVectorLayer *layerLine2 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line 2" ), QStringLiteral( "memory" ) );
   QVERIFY( layerLine2->isValid() );
   QgsPolyline line1;
   line1 << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 0 );

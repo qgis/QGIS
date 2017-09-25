@@ -303,7 +303,7 @@ void TestQgsField::displayString()
   QCOMPARE( stringField.displayString( test ), test );
 
   //test NULL
-  QgsApplication::setNullRepresentation( "TEST NULL" );
+  QgsApplication::setNullRepresentation( QStringLiteral( "TEST NULL" ) );
   QVariant nullString = QVariant( QVariant::String );
   QCOMPARE( stringField.displayString( nullString ), QString( "TEST NULL" ) );
 

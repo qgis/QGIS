@@ -121,6 +121,7 @@ QFlags<QgsNewHttpConnection::ConnectionType> operator|(QgsNewHttpConnection::Con
 QFlags<QgsNewHttpConnection::Flag> operator|(QgsNewHttpConnection::Flag f1, QFlags<QgsNewHttpConnection::Flag> f2);
 
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

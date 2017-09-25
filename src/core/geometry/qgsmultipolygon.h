@@ -71,4 +71,6 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     bool wktOmitChildType() const override;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSMULTIPOLYGONV2_H

@@ -134,7 +134,7 @@ class TestQgsGeometry : public QObject
 
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
-    bool renderCheck( const QString &testName, const QString &comment = QLatin1String( QLatin1String( "" ) ), int mismatchCount = 0 );
+    bool renderCheck( const QString &testName, const QString &comment = QString(), int mismatchCount = 0 );
     //! A helper method to dump to qdebug the geometry of a multipolygon
     void dumpMultiPolygon( QgsMultiPolygon &multiPolygon );
     //! A helper method to dump to qdebug the geometry of a polygon
@@ -4599,7 +4599,7 @@ void TestQgsGeometry::polygon()
   exportPolygon.setExteriorRing( ext );
 
   // GML document for compare
-  QDomDocument doc( "gml" );
+  QDomDocument doc( QStringLiteral( "gml" ) );
 
   // as GML2
   QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
@@ -4610,7 +4610,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedSimpleGML3 );
 
   // as JSON
-  QString expectedSimpleJson( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] }" );
+  QString expectedSimpleJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] }" ) );
   QCOMPARE( exportPolygon.asJSON(), expectedSimpleJson );
 
   ring = new QgsLineString();
@@ -7286,7 +7286,7 @@ void TestQgsGeometry::curvePolygon()
 
 
   // GML document for compare
-  QDomDocument doc( "gml" );
+  QDomDocument doc( QStringLiteral( "gml" ) );
 
   // as GML2
   QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 1,0 2,0 2,0 2,0 2,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.7,0.3 1.7,0.3 1.7,0.3 1.7,0.3 1.7,0.3 1.6,0.3 1.6,0.3 1.6,0.3 1.6,0.4 1.6,0.4 1.6,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.3,0.5 1.3,0.5 1.3,0.5 1.3,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1,0.5 1,0.5 1,0.5 1,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.7,0.5 0.7,0.5 0.7,0.5 0.7,0.5 0.6,0.4 0.6,0.4 0.6,0.4 0.6,0.4 0.6,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.4,0.4 0.4,0.4 0.4,0.4 0.4,0.3 0.4,0.3 0.4,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.1,0.2 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0,0.1 0,0 0,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
@@ -7299,7 +7299,7 @@ void TestQgsGeometry::curvePolygon()
   QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedSimpleGML3 );
 
   // as JSON
-  QString expectedSimpleJson( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [1, 0], [2, 0], [2, 0], [2, 0], [2, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.4], [1.6, 0.4], [1.6, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.3], [0.4, 0.3], [0.4, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.1, 0.2], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0, 0.1], [0, 0], [0, 0], [0, 0]]] }" );
+  QString expectedSimpleJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [1, 0], [2, 0], [2, 0], [2, 0], [2, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.4], [1.6, 0.4], [1.6, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.3], [0.4, 0.3], [0.4, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.1, 0.2], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0, 0.1], [0, 0], [0, 0], [0, 0]]] }" ) );
   res = exportPolygon.asJSON( 1 );
   QCOMPARE( res, expectedSimpleJson );
 
@@ -10715,12 +10715,12 @@ void TestQgsGeometry::poleOfInaccessibility()
   QGSCOMPARENEAR( point.y(), 3263.50, 0.01 );
 
   //test degenerate polygons
-  QgsGeometry degen1 = QgsGeometry::fromWkt( "Polygon(( 0 0, 1 0, 2 0, 0 0 ))" );
+  QgsGeometry degen1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0, 2 0, 0 0 ))" ) );
   point = degen1.poleOfInaccessibility( 1 ).asPoint();
   QGSCOMPARENEAR( point.x(), 0, 0.01 );
   QGSCOMPARENEAR( point.y(), 0, 0.01 );
 
-  QgsGeometry degen2 = QgsGeometry::fromWkt( "Polygon(( 0 0, 1 0, 1 1 , 1 0, 0 0 ))" );
+  QgsGeometry degen2 = QgsGeometry::fromWkt( QStringLiteral( "Polygon(( 0 0, 1 0, 1 1 , 1 0, 0 0 ))" ) );
   point = degen2.poleOfInaccessibility( 1 ).asPoint();
   QGSCOMPARENEAR( point.x(), 0, 0.01 );
   QGSCOMPARENEAR( point.y(), 0, 0.01 );
@@ -10729,7 +10729,7 @@ void TestQgsGeometry::poleOfInaccessibility()
   QVERIFY( QgsGeometry().poleOfInaccessibility( 1 ).isNull() );
 
   // not a polygon
-  QgsGeometry lineString = QgsGeometry::fromWkt( "LineString(1 0, 2 2 )" );
+  QgsGeometry lineString = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 0, 2 2 )" ) );
   QVERIFY( lineString.poleOfInaccessibility( 1 ).isNull() );
 
   // invalid threshold
@@ -10756,20 +10756,20 @@ void TestQgsGeometry::makeValid()
   typedef QPair<QString, QString> InputAndExpectedWktPair;
   QList<InputAndExpectedWktPair> geoms;
   // dimension collapse
-  geoms << qMakePair( QString( "LINESTRING(0 0)" ),
-                      QString( "POINT(0 0)" ) );
+  geoms << qMakePair( QStringLiteral( "LINESTRING(0 0)" ),
+                      QStringLiteral( "POINT(0 0)" ) );
   // unclosed ring
-  geoms << qMakePair( QString( "POLYGON((10 22,10 32,20 32,20 22))" ),
-                      QString( "POLYGON((10 22,10 32,20 32,20 22,10 22))" ) );
+  geoms << qMakePair( QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22))" ),
+                      QStringLiteral( "POLYGON((10 22,10 32,20 32,20 22,10 22))" ) );
   // butterfly polygon (self-intersecting ring)
-  geoms << qMakePair( QString( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ),
-                      QString( "MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5)))" ) );
+  geoms << qMakePair( QStringLiteral( "POLYGON((0 0, 10 10, 10 0, 0 10, 0 0))" ),
+                      QStringLiteral( "MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5)))" ) );
   // polygon with extra tail (a part of the ring does not form any area)
-  geoms << qMakePair( QString( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ),
-                      QString( "GEOMETRYCOLLECTION(POLYGON((0 0, 0 1, 1 1, 1 0, 0 0)), LINESTRING(0 0, -1 0))" ) );
+  geoms << qMakePair( QStringLiteral( "POLYGON((0 0, 1 0, 1 1, 0 1, 0 0, -1 0, 0 0))" ),
+                      QStringLiteral( "GEOMETRYCOLLECTION(POLYGON((0 0, 0 1, 1 1, 1 0, 0 0)), LINESTRING(0 0, -1 0))" ) );
   // collection with invalid geometries
-  geoms << qMakePair( QString( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ),
-                      QString( "GEOMETRYCOLLECTION(POINT(0 0), MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5))), LINESTRING(10 0, 10 10)))" ) );
+  geoms << qMakePair( QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ),
+                      QStringLiteral( "GEOMETRYCOLLECTION(POINT(0 0), MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5))), LINESTRING(10 0, 10 10)))" ) );
 
   Q_FOREACH ( const InputAndExpectedWktPair &pair, geoms )
   {
@@ -10788,18 +10788,18 @@ void TestQgsGeometry::isSimple()
 {
   typedef QPair<QString, bool> InputWktAndExpectedResult;
   QList<InputWktAndExpectedResult> geoms;
-  geoms << qMakePair( QString( "LINESTRING(0 0, 1 0, 1 1)" ), true );
-  geoms << qMakePair( QString( "LINESTRING(0 0, 1 0, 1 1, 0 0)" ), true );  // may be closed (linear ring)
-  geoms << qMakePair( QString( "LINESTRING(0 0, 1 0, 1 1, 0 -1)" ), false ); // self-intersection
-  geoms << qMakePair( QString( "LINESTRING(0 0, 1 0, 1 1, 0.5 0, 0 1)" ), false ); // self-tangency
-  geoms << qMakePair( QString( "POINT(1 1)" ), true ); // points are simple
-  geoms << qMakePair( QString( "POLYGON((0 0, 1 1, 1 1, 0 0))" ), true ); // polygons are always simple, even if they are invalid
-  geoms << qMakePair( QString( "MULTIPOINT((1 1), (2 2))" ), true );
-  geoms << qMakePair( QString( "MULTIPOINT((1 1), (1 1))" ), false );  // must not contain the same point twice
-  geoms << qMakePair( QString( "MULTILINESTRING((0 0, 1 0), (0 1, 1 1))" ), true );
-  geoms << qMakePair( QString( "MULTILINESTRING((0 0, 1 0), (0 0, 1 0))" ), true );  // may be touching at endpoints
-  geoms << qMakePair( QString( "MULTILINESTRING((0 0, 1 1), (0 1, 1 0))" ), false );  // must not intersect each other
-  geoms << qMakePair( QString( "MULTIPOLYGON(((0 0, 1 1, 1 1, 0 0)),((0 0, 1 1, 1 1, 0 0)))" ), true ); // multi-polygons are always simple
+  geoms << qMakePair( QStringLiteral( "LINESTRING(0 0, 1 0, 1 1)" ), true );
+  geoms << qMakePair( QStringLiteral( "LINESTRING(0 0, 1 0, 1 1, 0 0)" ), true );  // may be closed (linear ring)
+  geoms << qMakePair( QStringLiteral( "LINESTRING(0 0, 1 0, 1 1, 0 -1)" ), false ); // self-intersection
+  geoms << qMakePair( QStringLiteral( "LINESTRING(0 0, 1 0, 1 1, 0.5 0, 0 1)" ), false ); // self-tangency
+  geoms << qMakePair( QStringLiteral( "POINT(1 1)" ), true ); // points are simple
+  geoms << qMakePair( QStringLiteral( "POLYGON((0 0, 1 1, 1 1, 0 0))" ), true ); // polygons are always simple, even if they are invalid
+  geoms << qMakePair( QStringLiteral( "MULTIPOINT((1 1), (2 2))" ), true );
+  geoms << qMakePair( QStringLiteral( "MULTIPOINT((1 1), (1 1))" ), false );  // must not contain the same point twice
+  geoms << qMakePair( QStringLiteral( "MULTILINESTRING((0 0, 1 0), (0 1, 1 1))" ), true );
+  geoms << qMakePair( QStringLiteral( "MULTILINESTRING((0 0, 1 0), (0 0, 1 0))" ), true );  // may be touching at endpoints
+  geoms << qMakePair( QStringLiteral( "MULTILINESTRING((0 0, 1 1), (0 1, 1 0))" ), false );  // must not intersect each other
+  geoms << qMakePair( QStringLiteral( "MULTIPOLYGON(((0 0, 1 1, 1 1, 0 0)),((0 0, 1 1, 1 1, 0 0)))" ), true ); // multi-polygons are always simple
 
   Q_FOREACH ( const InputWktAndExpectedResult &pair, geoms )
   {
@@ -10814,8 +10814,8 @@ void TestQgsGeometry::isSimple()
 void TestQgsGeometry::reshapeGeometryLineMerge()
 {
   int res;
-  QgsGeometry g2D = QgsGeometry::fromWkt( "LINESTRING(10 10, 20 20)" );
-  QgsGeometry g3D = QgsGeometry::fromWkt( "LINESTRINGZ(10 10 1, 20 20 2)" );
+  QgsGeometry g2D = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(10 10, 20 20)" ) );
+  QgsGeometry g3D = QgsGeometry::fromWkt( QStringLiteral( "LINESTRINGZ(10 10 1, 20 20 2)" ) );
 
   // prepare 2D reshaping line
   QVector<QgsPoint> v2D_1, v2D_2;
@@ -10909,35 +10909,35 @@ void TestQgsGeometry::minimalEnclosingCircle()
   QCOMPARE( result, resultTest );
 
   // case 2
-  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 3 8, 7 4 )" ) );
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 3 8, 7 4 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 5, 6 ), 0.0001 );
   QGSCOMPARENEAR( radius, sqrt( 2 ) * 2, 0.0001 );
   resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
-  geomTest = QgsGeometry::fromWkt( QString( "LINESTRING( 0 5, 2 2, 0 -5, -1 -1 )" ) );
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING( 0 5, 2 2, 0 -5, -1 -1 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
-  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 0 5, 2 2, 0 -5, -1 -1 )" ) );
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 2 2, 0 -5, -1 -1 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
-  geomTest = QgsGeometry::fromWkt( QString( "POLYGON(( 0 5, 2 2, 0 -5, -1 -1 ))" ) );
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 5, 2 2, 0 -5, -1 -1 ))" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
   resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
-  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
@@ -10945,7 +10945,7 @@ void TestQgsGeometry::minimalEnclosingCircle()
   QCOMPARE( result, resultTest );
 
   // case 3
-  geomTest = QgsGeometry::fromWkt( QString( "MULTIPOINT((0 0), (5 5), (0 -5), (0 5), (-5 0))" ) );
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT((0 0), (5 5), (0 -5), (0 5), (-5 0))" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0.8333, 0.8333 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5.8926, 0.0001 );

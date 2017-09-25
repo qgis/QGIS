@@ -256,12 +256,12 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
       addAction( action );
     }
 
-    QDomNodeList defaultActionNodes = aaNode.toElement().elementsByTagName( "defaultAction" );
+    QDomNodeList defaultActionNodes = aaNode.toElement().elementsByTagName( QStringLiteral( "defaultAction" ) );
 
     for ( int i = 0; i < defaultActionNodes.size(); ++i )
     {
       QDomElement defaultValueElem = defaultActionNodes.at( i ).toElement();
-      mDefaultActions.insert( defaultValueElem.attribute( "key" ), defaultValueElem.attribute( "value" ) );
+      mDefaultActions.insert( defaultValueElem.attribute( QStringLiteral( "key" ) ), defaultValueElem.attribute( QStringLiteral( "value" ) ) );
     }
   }
   return true;

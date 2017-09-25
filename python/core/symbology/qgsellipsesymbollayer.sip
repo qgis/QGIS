@@ -181,6 +181,7 @@ class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 
 
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

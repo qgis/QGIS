@@ -31,6 +31,7 @@ class QgsPieDiagram: QgsDiagram
 
     virtual QString diagramName() const;
 
+
 };
 
 /************************************************************************

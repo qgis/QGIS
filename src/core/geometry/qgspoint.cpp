@@ -156,7 +156,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
-  QRegularExpression rx( "\\s" );
+  QRegularExpression rx( QStringLiteral( "\\s" ) );
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
   if ( coordinates.size() < 2 )
   {
@@ -234,12 +234,12 @@ QDomElement QgsPoint::asGML2( QDomDocument &doc, int precision, const QString &n
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   // coordinate separator
-  QString cs = ",";
+  QString cs = QStringLiteral( "," );
   // tupel separator
-  QString ts = " ";
+  QString ts = QStringLiteral( " " );
 
-  elemCoordinates.setAttribute( "cs", cs );
-  elemCoordinates.setAttribute( "ts", ts );
+  elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
+  elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
 
   QString strCoordinates = qgsDoubleToString( mX, precision ) + cs + qgsDoubleToString( mY, precision );
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );

@@ -45,7 +45,8 @@ bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature &f )
   if ( !modify( cmd ) ) // modify takes owneship -> no need for cmd to be a smart ptr
     return false;
 
-  f = cmd->features().last();
+  const QgsFeatureList features = cmd->features();
+  f = features.at( features.count() - 1 );
   return true;
 }
 

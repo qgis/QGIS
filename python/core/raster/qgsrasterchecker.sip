@@ -40,6 +40,7 @@ class QgsRasterChecker
 %End
 }; // class QgsRasterChecker
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

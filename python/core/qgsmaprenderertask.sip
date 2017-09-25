@@ -80,6 +80,7 @@ class QgsMapRendererTask : QgsTask
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

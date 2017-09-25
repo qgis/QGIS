@@ -1106,10 +1106,10 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
       query.bindValue( bindIdx,  bytea, QSql::In | QSql::Binary );
     }
 
-    QList<QVariant> list = query.boundValues().values();
-
 // Show bound values
 #if 0
+    QList<QVariant> list = query.boundValues().values();
+
     for ( int i = 0; i < list.size(); ++i )
     {
       QgsDebugMsg( QString( "i: %1; value: %2; type: %3" )

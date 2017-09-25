@@ -157,7 +157,7 @@ class TestQgsLayoutItem: public QObject
 
 void TestQgsLayoutItem::initTestCase()
 {
-  mReport = "<h1>Layout Item Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Item Tests</h1>\n" );
 }
 
 void TestQgsLayoutItem::cleanupTestCase()
@@ -327,7 +327,7 @@ void TestQgsLayoutItem::debugRect()
   l.render( &painter );
   painter.end();
 
-  bool result = renderCheck( "layoutitem_debugrect", image, 0 );
+  bool result = renderCheck( QStringLiteral( "layoutitem_debugrect" ), image, 0 );
   QVERIFY( result );
 }
 
@@ -346,7 +346,7 @@ void TestQgsLayoutItem::draw()
   QPainter painter( &image );
   l.render( &painter );
   painter.end();
-  bool result = renderCheck( "layoutitem_draw", image, 0 );
+  bool result = renderCheck( QStringLiteral( "layoutitem_draw" ), image, 0 );
   QVERIFY( result );
 }
 
@@ -357,7 +357,7 @@ bool TestQgsLayoutItem::renderCheck( QString testName, QImage &image, int mismat
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( "layouts" );
+  myChecker.setControlPathPrefix( QStringLiteral( "layouts" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
   bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
@@ -1211,7 +1211,7 @@ void TestQgsLayoutItem::rotation()
   l.render( &painter );
   painter.end();
 
-  bool result = renderCheck( "layoutitem_rotation", image, 0 );
+  bool result = renderCheck( QStringLiteral( "layoutitem_rotation" ), image, 0 );
   delete item;
   QVERIFY( result );
 }
@@ -1226,7 +1226,7 @@ void TestQgsLayoutItem::writeXml()
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
 
@@ -1242,7 +1242,7 @@ void TestQgsLayoutItem::writeXml()
   QCOMPARE( element.attribute( "type", "" ), item->stringType() );
 
   //check that element has an object node
-  QDomNodeList objectNodeList = element.elementsByTagName( "LayoutObject" );
+  QDomNodeList objectNodeList = element.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   QCOMPARE( objectNodeList.count(), 1 );
 
   delete item;
@@ -1253,7 +1253,7 @@ void TestQgsLayoutItem::readXml()
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   QgsProject proj;
@@ -1261,19 +1261,19 @@ void TestQgsLayoutItem::readXml()
   TestItem *item = new TestItem( &l );
 
   //try reading bad elements
-  QDomElement badElement = doc.createElement( "bad" );
+  QDomElement badElement = doc.createElement( QStringLiteral( "bad" ) );
   QDomElement noNode;
   QVERIFY( !item->readXml( badElement, doc, QgsReadWriteContext() ) );
   QVERIFY( !item->readXml( noNode, doc, QgsReadWriteContext() ) );
 
   //element with wrong type
-  QDomElement wrongType = doc.createElement( "LayoutItem" );
-  wrongType.setAttribute( QString( "type" ), "bad" );
+  QDomElement wrongType = doc.createElement( QStringLiteral( "LayoutItem" ) );
+  wrongType.setAttribute( QStringLiteral( "type" ), QStringLiteral( "bad" ) );
   QVERIFY( !item->readXml( wrongType, doc, QgsReadWriteContext() ) );
 
   //try good element
-  QDomElement goodElement = doc.createElement( "LayoutItem" );
-  goodElement.setAttribute( QString( "type" ), "TestItemType" );
+  QDomElement goodElement = doc.createElement( QStringLiteral( "LayoutItem" ) );
+  goodElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "TestItemType" ) );
   QVERIFY( item->readXml( goodElement, doc, QgsReadWriteContext() ) );
   delete item;
 }
@@ -1315,7 +1315,7 @@ QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayout
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
   QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
 

@@ -45,7 +45,7 @@ class TestQgsLayoutContext: public QObject
 
 void TestQgsLayoutContext::initTestCase()
 {
-  mReport = "<h1>Layout Context Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Context Tests</h1>\n" );
 }
 
 void TestQgsLayoutContext::cleanupTestCase()
@@ -117,7 +117,7 @@ void TestQgsLayoutContext::layer()
   QVERIFY( !context.layer() );
 
   //test setting/getting layer
-  QgsVectorLayer *layer = new QgsVectorLayer( "Point?field=id_a:integer", "A", "memory" );
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   context.setLayer( layer );
   QCOMPARE( context.layer(), layer );
 

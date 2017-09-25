@@ -161,6 +161,8 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledWidth, double scaledHeight, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSELLIPSESYMBOLLAYERV2_H
 
 

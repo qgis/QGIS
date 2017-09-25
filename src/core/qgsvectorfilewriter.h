@@ -675,5 +675,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::EditionCapabilities )
 
+// clazy:excludeall=qstring-allocations
 
 #endif

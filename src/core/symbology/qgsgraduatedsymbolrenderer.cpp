@@ -169,7 +169,7 @@ void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QgsString
   // create the ogc:Filter for the range
   QString filterFunc = QStringLiteral( "\"%1\" %2 %3 AND \"%1\" <= %4" )
                        .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
-                             firstRange ? ">=" : ">",
+                             firstRange ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
                              qgsDoubleToString( mLowerValue ),
                              qgsDoubleToString( mUpperValue ) );
   QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
@@ -282,7 +282,7 @@ void QgsRendererRangeLabelFormat::saveToDomElement( QDomElement &element )
 {
   element.setAttribute( QStringLiteral( "format" ), mFormat );
   element.setAttribute( QStringLiteral( "decimalplaces" ), mPrecision );
-  element.setAttribute( QStringLiteral( "trimtrailingzeroes" ), mTrimTrailingZeroes ? "true" : "false" );
+  element.setAttribute( QStringLiteral( "trimtrailingzeroes" ), mTrimTrailingZeroes ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 }
 
 ///////////
@@ -1040,7 +1040,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     r->setLabelFormat( labelFormat );
   }
 
-  QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
+  QDomElement ddsLegendSizeElem = element.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
   if ( !ddsLegendSizeElem.isNull() )
   {
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
@@ -1054,8 +1054,8 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "graduatedSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? "1" : "0" ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "attr" ), mAttrName );
   rendererElem.setAttribute( QStringLiteral( "graduatedMethod" ), graduatedMethodStr( mGraduatedMethod ) );
 
@@ -1075,7 +1075,7 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     rangeElem.setAttribute( QStringLiteral( "upper" ), QString::number( range.upperValue(), 'f', 15 ) );
     rangeElem.setAttribute( QStringLiteral( "symbol" ), symbolName );
     rangeElem.setAttribute( QStringLiteral( "label" ), range.label() );
-    rangeElem.setAttribute( QStringLiteral( "render" ), range.renderState() ? "true" : "false" );
+    rangeElem.setAttribute( QStringLiteral( "render" ), range.renderState() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
     rangesElem.appendChild( rangeElem );
     i++;
   }
@@ -1140,7 +1140,7 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mDataDefinedSizeLegend )
   {

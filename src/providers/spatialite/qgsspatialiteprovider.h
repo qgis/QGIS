@@ -71,7 +71,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * \param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsSpatiaLiteProvider( QString const &uri = "" );
+    explicit QgsSpatiaLiteProvider( QString const &uri = QString() );
 
     virtual ~ QgsSpatiaLiteProvider();
 
@@ -174,13 +174,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsSqliteHandle *mHandle = nullptr;
 
   signals:
-
-    /**
-     *   This is emitted whenever the worker thread has fully calculated the
-     *   extents for this layer, and its event has been received by this
-     *   provider.
-     */
-    void fullExtentCalculated();
 
     /**
      *   This is emitted when this provider is satisfied that all objects
@@ -393,5 +386,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     friend class QgsSpatiaLiteFeatureSource;
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

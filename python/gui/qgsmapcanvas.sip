@@ -889,7 +889,6 @@ called on resize or changed extent to notify canvas items to change their rectan
 }; // class QgsMapCanvas
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

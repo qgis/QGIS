@@ -528,6 +528,7 @@ struct QgsVertexId
 };
 
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

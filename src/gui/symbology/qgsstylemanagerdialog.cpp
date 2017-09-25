@@ -69,15 +69,15 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
 
   connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
 
-  connect( btnAddItem, &QPushButton::clicked, [ = ]( bool ) { addItem(); }
+  connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
          );
-  connect( btnEditItem, &QPushButton::clicked, [ = ]( bool ) { editItem(); }
+  connect( btnEditItem, &QPushButton::clicked, this, [ = ]( bool ) { editItem(); }
          );
-  connect( actnEditItem, &QAction::triggered, [ = ]( bool ) { editItem(); }
+  connect( actnEditItem, &QAction::triggered, this, [ = ]( bool ) { editItem(); }
          );
-  connect( btnRemoveItem, &QPushButton::clicked, [ = ]( bool ) { removeItem(); }
+  connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
          );
-  connect( actnRemoveItem, &QAction::triggered, [ = ]( bool ) { removeItem(); }
+  connect( actnRemoveItem, &QAction::triggered, this, [ = ]( bool ) { removeItem(); }
          );
 
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
@@ -178,10 +178,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mGroupTreeContextMenu = new QMenu( this );
   connect( actnEditSmartGroup, &QAction::triggered, this, &QgsStyleManagerDialog::editSmartgroupAction );
   mGroupTreeContextMenu->addAction( actnEditSmartGroup );
-  connect( actnAddTag, &QAction::triggered, [ = ]( bool ) { addTag(); }
+  connect( actnAddTag, &QAction::triggered, this, [ = ]( bool ) { addTag(); }
          );
   mGroupTreeContextMenu->addAction( actnAddTag );
-  connect( actnAddSmartgroup, &QAction::triggered, [ = ]( bool ) { addSmartgroup(); }
+  connect( actnAddSmartgroup, &QAction::triggered, this, [ = ]( bool ) { addSmartgroup(); }
          );
   mGroupTreeContextMenu->addAction( actnAddSmartgroup );
   connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
@@ -286,7 +286,7 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
-      item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+      item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
       // add to model
       model->appendRow( item );
     }
@@ -1389,7 +1389,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   {
     mGroupListMenu->addSeparator();
   }
-  a = new QAction( "Create new tag... ", mGroupListMenu );
+  a = new QAction( QStringLiteral( "Create new tag... " ), mGroupListMenu );
   connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols( true ); }
          );
   mGroupListMenu->addAction( a );

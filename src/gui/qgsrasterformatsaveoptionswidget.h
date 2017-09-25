@@ -158,4 +158,6 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSRASTERLAYERSAVEASDIALOG_H

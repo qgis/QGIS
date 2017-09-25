@@ -88,7 +88,7 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer *layer, in
         if ( !base.isEmpty() )
         {
           // strip any existing _1, _2 from the seed
-          QRegularExpression rx( "(.*)_\\d+" );
+          QRegularExpression rx( QStringLiteral( "(.*)_\\d+" ) );
           QRegularExpressionMatch match = rx.match( base );
           if ( match.hasMatch() )
           {

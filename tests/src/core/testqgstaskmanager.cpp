@@ -235,7 +235,7 @@ void TestQgsTaskManager::cleanup()
 
 void TestQgsTaskManager::task()
 {
-  std::unique_ptr< TestTask > task( new TestTask( "desc" ) );
+  std::unique_ptr< TestTask > task( new TestTask( QStringLiteral( "desc" ) ) );
   QCOMPARE( task->status(), QgsTask::Queued );
   QCOMPARE( task->description(), QString( "desc" ) );
   QVERIFY( !task->isActive() );
@@ -284,10 +284,10 @@ void TestQgsTaskManager::task()
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   // test flags
-  task.reset( new TestTask( "desc", 0 ) );
+  task.reset( new TestTask( QStringLiteral( "desc" ), 0 ) );
   QVERIFY( !task->canCancel() );
   QVERIFY( !( task->flags() & QgsTask::CanCancel ) );
-  task.reset( new TestTask( "desc", QgsTask::CanCancel ) );
+  task.reset( new TestTask( QStringLiteral( "desc" ), QgsTask::CanCancel ) );
   QVERIFY( task->canCancel() );
   QVERIFY( task->flags() & QgsTask::CanCancel );
 }
@@ -1058,11 +1058,11 @@ void TestQgsTaskManager::dependencies()
 void TestQgsTaskManager::layerDependencies()
 {
   //make some layers
-  QgsVectorLayer *layer1 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer1", "memory" );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "layer1" ), QStringLiteral( "memory" ) );
   QVERIFY( layer1->isValid() );
-  QgsVectorLayer *layer2 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer2", "memory" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "layer2" ), QStringLiteral( "memory" ) );
   QVERIFY( layer2->isValid() );
-  QgsVectorLayer *layer3 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer3", "memory" );
+  QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "layer3" ), QStringLiteral( "memory" ) );
   QVERIFY( layer3->isValid() );
   QgsProject::instance()->addMapLayers( QList< QgsMapLayer * >() << layer1 << layer2 << layer3 );
 
@@ -1101,9 +1101,9 @@ void TestQgsTaskManager::managerWithSubTasks()
     QSKIP( "This test is disabled on Travis CI environment" );
 
   // parent with subtasks
-  ProgressReportingTask *parent = new ProgressReportingTask( "parent" );
-  ProgressReportingTask *subTask = new ProgressReportingTask( "subtask" );
-  ProgressReportingTask *subsubTask = new ProgressReportingTask( "subsubtask" );
+  ProgressReportingTask *parent = new ProgressReportingTask( QStringLiteral( "parent" ) );
+  ProgressReportingTask *subTask = new ProgressReportingTask( QStringLiteral( "subtask" ) );
+  ProgressReportingTask *subsubTask = new ProgressReportingTask( QStringLiteral( "subsubtask" ) );
   subTask->addSubTask( subsubTask );
   parent->addSubTask( subTask );
 
@@ -1217,11 +1217,11 @@ void TestQgsTaskManager::managerWithSubTasks3()
 {
   //test 2
   QgsTaskManager manager3;
-  TestTask *parent = new TestTask( "parent" );
+  TestTask *parent = new TestTask( QStringLiteral( "parent" ) );
   parent->hold();
-  TestTask *subTask = new TestTask( "subtask" );
+  TestTask *subTask = new TestTask( QStringLiteral( "subtask" ) );
   subTask->hold();
-  TestTask *subTask2 = new TestTask( "subtask2" );
+  TestTask *subTask2 = new TestTask( QStringLiteral( "subtask2" ) );
   subTask2->hold();
 
   parent->addSubTask( subTask, QgsTaskList() << subTask2 );

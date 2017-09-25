@@ -95,7 +95,7 @@ void QgsAction::setActionScopes( const QSet<QString> &actionScopes )
 void QgsAction::readXml( const QDomNode &actionNode )
 {
   QDomElement actionElement = actionNode.toElement();
-  QDomNodeList actionScopeNodes = actionElement.elementsByTagName( "actionScope" );
+  QDomNodeList actionScopeNodes = actionElement.elementsByTagName( QStringLiteral( "actionScope" ) );
 
   if ( actionScopeNodes.isEmpty() )
   {
@@ -109,7 +109,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
     for ( int j = 0; j < actionScopeNodes.length(); ++j )
     {
       QDomElement actionScopeElem = actionScopeNodes.item( j ).toElement();
-      mActionScopes << actionScopeElem.attribute( "id" );
+      mActionScopes << actionScopeElem.attribute( QStringLiteral( "id" ) );
     }
   }
 
@@ -139,8 +139,8 @@ void QgsAction::writeXml( QDomNode &actionsNode ) const
 
   Q_FOREACH ( const QString &scope, mActionScopes )
   {
-    QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( "actionScope" );
-    actionScopeElem.setAttribute( "id", scope );
+    QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( QStringLiteral( "actionScope" ) );
+    actionScopeElem.setAttribute( QStringLiteral( "id" ), scope );
     actionSetting.appendChild( actionScopeElem );
   }
 

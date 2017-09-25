@@ -73,4 +73,6 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSMULTISURFACEV2_H

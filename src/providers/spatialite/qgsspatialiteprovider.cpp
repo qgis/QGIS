@@ -870,9 +870,9 @@ void QgsSpatiaLiteProvider::fetchConstraints()
         if ( fieldIdx >= 0 )
         {
           QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
-          if ( definition.contains( "unique", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
+          if ( definition.contains( QLatin1String( "unique" ), Qt::CaseInsensitive ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
             constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-          if ( definition.contains( "not null", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
+          if ( definition.contains( QLatin1String( "not null" ), Qt::CaseInsensitive ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
             constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
           mAttributeFields[ fieldIdx ].setConstraints( constraints );
         }
@@ -913,7 +913,7 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
           defaultVal = defaultVal.remove( 0, 1 );
         if ( defaultVal.endsWith( '\'' ) )
           defaultVal.chop( 1 );
-        defaultVal.replace( "''", "'" );
+        defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
 
         defaultVariant = defaultVal;
         break;

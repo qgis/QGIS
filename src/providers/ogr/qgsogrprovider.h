@@ -58,7 +58,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * Constructor of the vector provider
      * \param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsOgrProvider( QString const &uri = "" );
+    explicit QgsOgrProvider( QString const &uri = QString() );
 
     virtual ~QgsOgrProvider();
 
@@ -274,5 +274,7 @@ class QgsOgrProviderUtils
     static GDALDatasetH GDALOpenWrapper( const char *pszPath, bool bUpdate, GDALDriverH *phDriver );
     static void GDALCloseWrapper( GDALDatasetH mhDS );
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSOGRPROVIDER_H

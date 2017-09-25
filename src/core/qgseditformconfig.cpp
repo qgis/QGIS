@@ -343,7 +343,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext
   for ( int i = 0; i < widgetsNodeList.size(); ++i )
   {
     QDomElement widgetElement = widgetsNodeList.at( i ).toElement();
-    QVariant config = QgsXmlUtils::readVariant( widgetElement.firstChildElement( "config" ) );
+    QVariant config = QgsXmlUtils::readVariant( widgetElement.firstChildElement( QStringLiteral( "config" ) ) );
 
     d->mWidgetConfigs[widgetElement.attribute( QStringLiteral( "name" ) )] = config.toMap();
   }

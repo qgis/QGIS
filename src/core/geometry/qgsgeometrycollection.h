@@ -170,4 +170,6 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     mutable QgsCoordinateSequence mCoordinateSequence;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSGEOMETRYCOLLECTIONV2_H

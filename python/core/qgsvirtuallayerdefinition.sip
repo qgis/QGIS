@@ -212,6 +212,7 @@ Convenient method to test if the geometry is defined (not NoGeometry and not Unk
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

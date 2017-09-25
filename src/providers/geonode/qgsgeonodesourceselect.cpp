@@ -420,7 +420,7 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       // restrictToRequestBBOX='1' srsname='EPSG:26719' typename='geonode:cab_mun' url='http://demo.geonode.org/geoserver/geonode/wms' table=\"\" sql="
       QgsDataSourceUri uri;
 
-      uri.setParam( QStringLiteral( "restrictToRequestBBOX" ), "1" );
+      uri.setParam( QStringLiteral( "restrictToRequestBBOX" ), QStringLiteral( "1" ) );
       uri.setParam( QStringLiteral( "srsname" ), crs );
       if ( serviceURL.contains( QStringLiteral( "qgis-server" ) ) )
       {
@@ -448,8 +448,8 @@ void QgsGeoNodeSourceSelect::addButtonClicked()
       QgsDataSourceUri uri;
       uri.setParam( QStringLiteral( "url" ), serviceURL );
       uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-      uri.setParam( QStringLiteral( "zmin" ), "0" );
-      uri.setParam( QStringLiteral( "zmax" ), "18" );
+      uri.setParam( QStringLiteral( "zmin" ), QStringLiteral( "0" ) );
+      uri.setParam( QStringLiteral( "zmax" ), QStringLiteral( "18" ) );
       emit addRasterLayer( uri.encodedUri(), layerName, QStringLiteral( "wms" ) );
     }
   }

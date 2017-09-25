@@ -304,7 +304,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( !layer->abstract().isEmpty() )
           parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
         parts << "<i>" + layer->publicSource() + "</i>";
-        return parts.join( "<br/>" );
+        return parts.join( QStringLiteral( "<br/>" ) );
       }
     }
   }

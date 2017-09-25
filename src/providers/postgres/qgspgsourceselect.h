@@ -79,7 +79,6 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
 
   signals:
     void addGeometryColumn( const QgsPostgresLayerProperty & );
-    void progress( int, int );
     void progressMessage( const QString & );
 
   public slots:

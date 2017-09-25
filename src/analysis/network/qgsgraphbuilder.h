@@ -60,4 +60,6 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
     QgsGraph *mGraph = nullptr;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSGRAPHBUILDER_H

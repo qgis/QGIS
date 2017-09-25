@@ -229,7 +229,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
     QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
     if ( !srcLayer )
     {
-      importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+      importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
       hasError = true;
       continue;
     }
@@ -739,11 +739,11 @@ QList<QAction *> QgsPGRootItem::actions( QWidget *parent )
 QWidget *QgsPGRootItem::paramWidget()
 {
   QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::connectionsChanged );
+  connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsPGRootItem::connectionsChanged()
+void QgsPGRootItem::onConnectionsChanged()
 {
   refresh();
 }
