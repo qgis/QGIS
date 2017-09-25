@@ -47,6 +47,7 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
 
     //! Adds a geometry and takes ownership. Returns true in case of success
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 

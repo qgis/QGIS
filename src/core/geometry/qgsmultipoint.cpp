@@ -127,6 +127,14 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
+bool QgsMultiPointV2::insertGeometry( QgsAbstractGeometry *g, int index )
+{
+  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::Point )
+    return false;
+
+  return QgsGeometryCollection::insertGeometry( g, index );
+}
+
 QgsAbstractGeometry *QgsMultiPointV2::boundary() const
 {
   return nullptr;

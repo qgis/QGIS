@@ -48,6 +48,8 @@ class QgsMultiPointV2: QgsGeometryCollection
 Adds a geometry and takes ownership. Returns true in case of success
  :rtype: bool
 %End
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
+
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
