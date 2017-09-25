@@ -436,7 +436,7 @@ void QgsCompoundCurve::removeCurve( int i )
 
 void QgsCompoundCurve::addVertex( const QgsPoint &pt )
 {
-  if ( mWkbType == QgsWkbTypes::Unknown )
+  if ( mCurves.isEmpty() || mWkbType == QgsWkbTypes::Unknown )
   {
     setZMTypeFromSubGeometry( &pt, QgsWkbTypes::CompoundCurve );
   }
