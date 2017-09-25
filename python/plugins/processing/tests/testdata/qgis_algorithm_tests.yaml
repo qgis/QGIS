@@ -2503,63 +2503,67 @@ tests:
         name: expected/join_attribute_table.gml
         type: vector
 
-#  # These tests dissabled because algs require access to iface which
-#  # is not available in the test suite.
-#  #- algorithm: qgis:shortestpathpointtopoint
-#  #  name: Shortest path (point to point, shortest route)
-#  #  params:
-#  #    DEFAULT_DIRECTION: '2'
-#  #    DEFAULT_SPEED: 5.0
-#  #    END_POINT: 1003534.816864,6222363.591221
-#  #    INPUT_VECTOR:
-#  #      name: roads.gml
-#  #      type: vector
-#  #    START_POINT: 1000943.661493,6220332.253368
-#  #    STRATEGY: '0'
-#  #    TOLERANCE: 0.0
-#  #  results:
-#  #    OUTPUT_LAYER:
-#  #      name: expected/shortest.gml
-#  #      type: vector
-#  #
-#  #- algorithm: qgis:shortestpathpointtopoint
-#  #  name: Shortest path (point to point, fastest route)
-#  #  params:
-#  #    DEFAULT_DIRECTION: '2'
-#  #    DEFAULT_SPEED: 60.0
-#  #    END_POINT: 1003534.816864,6222363.591221
-#  #    INPUT_VECTOR:
-#  #      name: roads.gml
-#  #      type: vector
-#  #    SPEED_FIELD: SPEED
-#  #    START_POINT: 1000943.661493,6220332.253368
-#  #    STRATEGY: '1'
-#  #    TOLERANCE: 0.0
-#  #  results:
-#  #    OUTPUT_LAYER:
-#  #      name: expected/fastest.gml
-#  #      type: vector
-#  #
-#  #- algorithm: qgis:serviceareafrompoint
-#  #  name: Service area (from point, shortest)
-#  #  params:
-#  #    DEFAULT_DIRECTION: '2'
-#  #    DEFAULT_SPEED: 5.0
-#  #    INPUT_VECTOR:
-#  #      name: roads.gml
-#  #      type: vector
-#  #    START_POINT: 1002660.341692,6222015.780774
-#  #    STRATEGY: '0'
-#  #    TOLERANCE: 0.0
-#  #    TRAVEL_COST: 700.0
-#  #  results:
-#  #    OUTPUT_POINTS:
-#  #      name: expected/servicearea_nodes.gml
-#  #      type: vector
-#  #    OUTPUT_POLYGON:
-#  #      name: expected/servicearea_bounds.gml
-#  #      type: vector
-#
+  - algorithm: qgis:shortestpathpointtopoint
+    name: Shortest path (point to point, shortest route)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1003712.4162500285,6222484.5571899945 [EPSG:32733]
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1000997.5971978485,6220343.83965781 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/shortest.gml
+        type: vector
+
+  - algorithm: qgis:shortestpathpointtopoint
+    name: Shortest path (point to point, fastest route)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1003731.877318503,6222474.826655758 [EPSG:32733]
+      INPUT:
+        name: roads.gml
+        type: vector
+      SPEED_FIELD: SPEED
+      START_POINT: 1000997.5971978485,6220324.378589335 [EPSG:32733]
+      STRATEGY: 1
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/fastest.gml
+        type: vector
+
+  - algorithm: qgis:serviceareafrompoint
+    name: Service area (from point, shortest)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1002465.0089601517,6221875.432489508 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area.gml
+        type: vector
+
   - algorithm: qgis:createattributeindex
     name: Create attribute index
     params:
