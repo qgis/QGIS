@@ -346,7 +346,12 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
 {
   if ( mOrigFidAdded )
   {
-    feature.setId( OGR_F_GetFieldAsInteger64( fet, 0 ) );
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
+    int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
+    if ( lastField >= 0 )
+      feature.setId( OGR_F_GetFieldAsInteger64( fet, lastField ) );
+    else
+      feature.setId( OGR_F_GetFID( fet ) );
   }
   else
   {
