@@ -201,6 +201,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), true ) ? 0 : 1 );
 
+  mDefaultZValueEdit->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "Defaults" ), QStringLiteral( "/ZValue" ), Qgis::DEFAULT_Z_COORDINATE ) );
+
   // populate combo box with ellipsoids
   // selection of the ellipsoid from settings is defferred to a later point, because it would
   // be overridden in the meanwhile by the projection selector
@@ -825,6 +827,8 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setAreaUnits( areaUnits );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), cbxAbsolutePath->currentIndex() == 0 );
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "Defaults" ), QStringLiteral( "/ZValue" ), mDefaultZValueEdit->value() );
 
   if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER" ) ) )
   {

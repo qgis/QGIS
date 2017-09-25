@@ -24,7 +24,7 @@
 #include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgsvectorlayerutils.h"
-#include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <limits>
 
@@ -724,5 +724,5 @@ bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPointXY> 
 
 double QgsVectorLayerEditUtils::defaultZValue() const
 {
-  return QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
+  return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Defaults" ), QStringLiteral( "/ZValue" ), Qgis::DEFAULT_Z_COORDINATE );
 }
