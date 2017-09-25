@@ -254,7 +254,7 @@ QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
 
 bool QgsRectangle::isEmpty() const
 {
-  return mXmax <= mXmin || mYmax <= mYmin;
+  return mXmax < mXmin || mYmax < mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
 }
 
 bool QgsRectangle::isNull() const
