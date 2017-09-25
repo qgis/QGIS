@@ -8,6 +8,7 @@ Content-Type: text/xml; charset=utf-8
    <Attribute value="2" name="id"/>
    <Attribute value="two" name="name"/>
    <Attribute value="two àò" name="utf8nameè"/>
+   <Attribute value="1" name="orig_ogc_fid"/>
    <BoundingBox CRS="EPSG:3857" maxx="913214.6741" minx="913214.6741" maxy="5606017.8743" miny="5606017.8743"/>
    <Attribute value="Point (913214.6741 5606017.8743)" type="derived" name="geometry"/>
   </Feature>
