@@ -176,6 +176,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     OGR_L_SetAttributeFilter( ogrLayer, nullptr );
   }
 
+
   //start with first feature
   rewind();
 }
