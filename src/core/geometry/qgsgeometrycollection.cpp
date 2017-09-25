@@ -414,6 +414,9 @@ bool QgsGeometryCollection::nextVertex( QgsVertexId &id, QgsPoint &vertex ) cons
     return false;
   }
 
+  if ( id.part >= mGeometries.count() )
+    return false;
+
   QgsAbstractGeometry *geom = mGeometries.at( id.part );
   if ( geom->nextVertex( id, vertex ) )
   {
