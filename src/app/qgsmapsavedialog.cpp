@@ -118,7 +118,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     connect( button, &QPushButton::clicked, this, &QgsMapSaveDialog::copyToClipboard );
   }
 
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::accepted );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::onAccepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMapSaveDialog::showHelp );
 }
 
@@ -349,7 +349,7 @@ void QgsMapSaveDialog::copyToClipboard()
     mapRendererTask->addDecorations( mDecorations );
   }
 
-  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
   {
     QApplication::clipboard()->setImage( *img, QClipboard::Clipboard );
     QApplication::restoreOverrideCursor();
@@ -359,7 +359,7 @@ void QgsMapSaveDialog::copyToClipboard()
     delete img;
     setEnabled( true );
   } );
-  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
+  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int )
   {
     QApplication::restoreOverrideCursor();
     QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not copy the map to clipboard" ) );

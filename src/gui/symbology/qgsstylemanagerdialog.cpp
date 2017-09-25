@@ -69,15 +69,15 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
 
   connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
 
-  connect( btnAddItem, &QPushButton::clicked, [ = ]( bool ) { addItem(); }
+  connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
          );
-  connect( btnEditItem, &QPushButton::clicked, [ = ]( bool ) { editItem(); }
+  connect( btnEditItem, &QPushButton::clicked, this, [ = ]( bool ) { editItem(); }
          );
-  connect( actnEditItem, &QAction::triggered, [ = ]( bool ) { editItem(); }
+  connect( actnEditItem, &QAction::triggered, this, [ = ]( bool ) { editItem(); }
          );
-  connect( btnRemoveItem, &QPushButton::clicked, [ = ]( bool ) { removeItem(); }
+  connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
          );
-  connect( actnRemoveItem, &QAction::triggered, [ = ]( bool ) { removeItem(); }
+  connect( actnRemoveItem, &QAction::triggered, this, [ = ]( bool ) { removeItem(); }
          );
 
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
@@ -178,10 +178,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mGroupTreeContextMenu = new QMenu( this );
   connect( actnEditSmartGroup, &QAction::triggered, this, &QgsStyleManagerDialog::editSmartgroupAction );
   mGroupTreeContextMenu->addAction( actnEditSmartGroup );
-  connect( actnAddTag, &QAction::triggered, [ = ]( bool ) { addTag(); }
+  connect( actnAddTag, &QAction::triggered, this, [ = ]( bool ) { addTag(); }
          );
   mGroupTreeContextMenu->addAction( actnAddTag );
-  connect( actnAddSmartgroup, &QAction::triggered, [ = ]( bool ) { addSmartgroup(); }
+  connect( actnAddSmartgroup, &QAction::triggered, this, [ = ]( bool ) { addSmartgroup(); }
          );
   mGroupTreeContextMenu->addAction( actnAddSmartgroup );
   connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
