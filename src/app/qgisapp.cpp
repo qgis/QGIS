@@ -4401,7 +4401,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     QStringList theURIParts = uri.split( '|' );
     uri = theURIParts.at( 0 );
   }
-  QgsDebugMsg( "Layer type " + layertype );
 
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
