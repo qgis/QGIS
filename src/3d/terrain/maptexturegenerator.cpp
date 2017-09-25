@@ -39,7 +39,7 @@ void MapTextureGenerator::cancelJob( int jobId )
   {
     if ( jd.jobId == jobId )
     {
-      //qDebug() << "cancelling job " << jobId;
+      //qDebug() << "canceling job " << jobId;
       jd.job->cancelWithoutBlocking();
       disconnect( jd.job, &QgsMapRendererJob::finished, this, &MapTextureGenerator::onRenderingFinished );
       jd.job->deleteLater();

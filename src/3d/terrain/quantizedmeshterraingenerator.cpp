@@ -11,7 +11,9 @@
 #include "chunknode.h"
 #include "terrainchunkloader.h"
 
+/// @cond PRIVATE
 
+//! Chunk loader for quantized mesh terrain
 class QuantizedMeshTerrainChunkLoader : public TerrainChunkLoader
 {
   public:
@@ -86,6 +88,8 @@ class QuantizedMeshTerrainChunkLoader : public TerrainChunkLoader
     int tx, ty, tz;
     QgsRectangle tileRect;
 };
+
+/// @endcond
 
 
 // ---------------

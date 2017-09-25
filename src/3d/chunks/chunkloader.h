@@ -26,6 +26,7 @@ class ChunkQueueJob : public QObject
 {
     Q_OBJECT
   public:
+    //! Constructs a job for given chunk node
     ChunkQueueJob( ChunkNode *node )
       : node( node )
     {
@@ -33,6 +34,7 @@ class ChunkQueueJob : public QObject
 
     virtual ~ChunkQueueJob();
 
+    //! Returns chunk node of this job
     ChunkNode *chunk() { return node; }
 
     //! Request that the loading gets canceled.
@@ -41,6 +43,7 @@ class ChunkQueueJob : public QObject
     virtual void cancel();
 
   signals:
+    //! Emitted when the asynchronous job has finished. Not emitted if the job got canceled.
     void finished();
 
   protected:

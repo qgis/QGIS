@@ -15,7 +15,7 @@
  * @brief Decompresses the given buffer using the standard GZIP algorithm
  * @param input The buffer to be decompressed
  * @param output The result of the decompression
- * @return @c true if the decompression was successfull, @c false otherwise
+ * @return @c true if the decompression was successful, @c false otherwise
  */
 bool gzipDecompress( QByteArray input, QByteArray &output )
 {

@@ -4,13 +4,19 @@
 #include "terraingenerator.h"
 
 
+/** \ingroup 3d
+ * Terrain generator using downloaded terrain tiles using quantized mesh specification
+ * \since QGIS 3.0
+ */
 class QuantizedMeshTerrainGenerator : public TerrainGenerator
 {
   public:
     QuantizedMeshTerrainGenerator();
 
+    //! Determines base tile from map extent
     void setBaseTileFromExtent( const QgsRectangle &extentInTerrainCrs );
 
+    //! Converts tile coordinates (x,y,z) in our quadtree to tile coordinates of quantized mesh tree
     void quadTreeTileToBaseTile( int x, int y, int z, int &tx, int &ty, int &tz ) const;
 
     TerrainGenerator::Type type() const override;

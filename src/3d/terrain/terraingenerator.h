@@ -47,25 +47,28 @@ class TerrainChunkEntity : public Qt3DCore::QEntity
 
 
 
-/**
+/** \ingroup 3d
  * Base class for generators of terrain. All terrain generators are tile based
  * to support hierarchical level of detail. Tiling scheme of a generator is defined
  * by the generator itself. Terrain generators are asked to produce new terrain tiles
  * whenever that is deemed necessary by the terrain controller (that caches generated tiles).
+ * \since QGIS 3.0
  */
 class TerrainGenerator : public ChunkLoaderFactory
 {
   public:
 
+    //! Enumeration of the available terrain generators
     enum Type
     {
-      Flat,
-      Dem,
-      QuantizedMesh
+      Flat,           //!< The whole terrain is flat area
+      Dem,            //!< Terrain is built from raster layer with digital elevation model
+      QuantizedMesh,  //!< Terrain is built from downloaded tiles in quantized mesh format
     };
 
     virtual ~TerrainGenerator() {}
 
+    //! Sets terrain entity for the generator
     void setTerrain( Terrain *t ) { mTerrain = t; }
 
     //! Makes a copy of the current instance
@@ -98,8 +101,10 @@ class TerrainGenerator : public ChunkLoaderFactory
     //! After read of XML, resolve references to any layers that have been read as layer IDs
     virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ); }
 
+    //! Converts terrain generator type enumeration into a string
     static QString typeToString( Type type );
 
+    //! Returns CRS of the terrain
     QgsCoordinateReferenceSystem crs() const { return terrainTilingScheme.crs; }
 
     QgsTilingScheme terrainTilingScheme;   //!< Tiling scheme of the terrain

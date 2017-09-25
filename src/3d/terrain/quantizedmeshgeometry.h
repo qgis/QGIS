@@ -54,12 +54,19 @@ class QgsMapToPixel;
 
 class Map3D;
 
+/** \ingroup 3d
+ * Stores vertex and index buffer for one tile of quantized mesh terrain.
+ * \since QGIS 3.0
+ */
 class QuantizedMeshGeometry : public Qt3DRender::QGeometry
 {
   public:
+    //! Constructs geometry based on the loaded tile data
     QuantizedMeshGeometry( QuantizedMeshTile *t, const Map3D &map, const QgsMapToPixel &mapToPixel, const QgsCoordinateTransform &terrainToMap, QNode *parent = nullptr );
 
+    //! Reads a tile from a file in the local disk cache
     static QuantizedMeshTile *readTile( int tx, int ty, int tz, const QgsRectangle &extent );
+    //! Downloads a tile to to a file in the local disk cache
     static void downloadTileIfMissing( int tx, int ty, int tz );
 
   private:

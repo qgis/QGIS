@@ -14,20 +14,26 @@ class QgsRasterLayer;
 
 #include "qgsmaplayerref.h"
 
-/**
+/** \ingroup 3d
  * Implementation of terrain generator that uses a raster layer with DEM to build terrain.
+ * \since QGIS 3.0
  */
 class _3D_EXPORT DemTerrainGenerator : public TerrainGenerator
 {
   public:
     DemTerrainGenerator();
 
+    //! Sets raster layer with elevation model to be used for terrain generation
     void setLayer( QgsRasterLayer *layer );
+    //! Returns raster layer with elevation model to be used for terrain generation
     QgsRasterLayer *layer() const;
 
+    //! Sets resolution of the generator (how many elevation samples on one side of a terrain tile)
     void setResolution( int resolution ) { mResolution = resolution; updateGenerator(); }
+    //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
     int resolution() const { return mResolution; }
 
+    //! Returns height map generator object - takes care of extraction of elevations from the layer)
     DemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator.get(); }
 
     virtual TerrainGenerator *clone() const override;
@@ -53,10 +59,15 @@ class _3D_EXPORT DemTerrainGenerator : public TerrainGenerator
 
 
 
+/** \ingroup 3d
+ * Chunk loader for DEM terrain tiles.
+ * \since QGIS 3.0
+ */
 class DemTerrainChunkLoader : public TerrainChunkLoader
 {
     Q_OBJECT
   public:
+    //! Constructs loader for the given chunk node
     DemTerrainChunkLoader( Terrain *terrain, ChunkNode *node );
     ~DemTerrainChunkLoader();
 

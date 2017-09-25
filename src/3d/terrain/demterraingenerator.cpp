@@ -131,7 +131,7 @@ DemTerrainChunkLoader::DemTerrainChunkLoader( Terrain *terrain, ChunkNode *node 
   , resolution( 0 )
 {
 
-  const Qgs3DMapSettings &map = mTerrain->map3D();
+  const Qgs3DMapSettings &map = terrain->map3D();
   DemTerrainGenerator *generator = static_cast<DemTerrainGenerator *>( map.terrainGenerator() );
 
   // get heightmap asynchronously
@@ -168,7 +168,7 @@ Qt3DCore::QEntity *DemTerrainChunkLoader::createEntity( Qt3DCore::QEntity *paren
   float zMin, zMax;
   _heightMapMinMax( heightMap, zMin, zMax );
 
-  const Qgs3DMapSettings &map = mTerrain->map3D();
+  const Qgs3DMapSettings &map = terrain()->map3D();
   QgsRectangle extent = map.terrainGenerator()->terrainTilingScheme.tileToExtent( node->x, node->y, node->z ); //node->extent;
   double x0 = extent.xMinimum() - map.originX;
   double y0 = extent.yMinimum() - map.originY;
@@ -225,7 +225,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
   QElapsedTimer t;
   t.start();
 
-  // TODO: use feedback object? (but GDAL currently does not support cancellation anyway)
+  // TODO: use feedback object? (but GDAL currently does not support cancelation anyway)
   QgsRasterBlock *block = provider->block( 1, extent, res, res );
 
   QByteArray data;

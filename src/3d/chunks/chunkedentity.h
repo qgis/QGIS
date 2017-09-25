@@ -26,12 +26,16 @@ class SceneState
 
 #include <QTime>
 
-//! Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
-//! based on data error and unloading of data when data are not necessary anymore
+/** \ingroup 3d
+ * Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
+ * based on data error and unloading of data when data are not necessary anymore
+ * \since QGIS 3.0
+ */
 class ChunkedEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
+    //! Constructs a chunked entity
     ChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, ChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
     ~ChunkedEntity();
 
@@ -40,15 +44,19 @@ class ChunkedEntity : public Qt3DCore::QEntity
 
     bool needsUpdate; //!< A chunk has been loaded recently - let's display it!
 
+    //! Determines whether bounding boxes of tiles should be shown (for debugging)
     void setShowBoundingBoxes( bool enabled );
 
     //! update already loaded nodes (add to the queue)
     void updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobFactory *updateJobFactory );
 
+    //! Returns list of active nodes - i.e. nodes that are get rendered
     QList<ChunkNode *> getActiveNodes() const { return activeNodes; }
+    //! Returns the root node of the whole quadtree hierarchy of nodes
     ChunkNode *getRootNode() const { return rootNode; }
 
   protected:
+    //! Cancels the background job that is currently in progress
     void cancelActiveJob();
 
   private:

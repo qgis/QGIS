@@ -9,10 +9,13 @@
 #include "chunknode.h"
 #include "terrainchunkloader.h"
 
+/// @cond PRIVATE
 
+//! Chunk loader for flat terrain implementation
 class FlatTerrainChunkLoader : public TerrainChunkLoader
 {
   public:
+    //! Construct the loader for a node
     FlatTerrainChunkLoader( Terrain *terrain, ChunkNode *node );
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
@@ -20,6 +23,8 @@ class FlatTerrainChunkLoader : public TerrainChunkLoader
   private:
     Qt3DExtras::QPlaneGeometry *mTileGeometry = nullptr;
 };
+
+/// @endcond
 
 
 //---------------
@@ -39,7 +44,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   // make geometry renderer
 
   // simple quad geometry shared by all tiles
-  // QPlaneGeometry by default is 1x1 with mesh resultion QSize(2,2), centered at 0
+  // QPlaneGeometry by default is 1x1 with mesh resolution QSize(2,2), centered at 0
   // TODO: the geometry could be shared inside Terrain instance (within terrain-generator specific data?)
   mTileGeometry = new Qt3DExtras::QPlaneGeometry;
 

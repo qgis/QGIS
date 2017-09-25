@@ -59,7 +59,7 @@ ChunkedEntity::ChunkedEntity( const AABB &rootBbox, float rootError, float tau, 
 
 ChunkedEntity::~ChunkedEntity()
 {
-  // derived classes have to make sure that any pending active job has finished / been cancelled
+  // derived classes have to make sure that any pending active job has finished / been canceled
   // before getting to this destructor - here it would be too late to cancel them
   // (e.g. objects required for loading/updating have been deleted already)
   Q_ASSERT( !activeJob );
