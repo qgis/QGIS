@@ -1886,9 +1886,9 @@ int QgsWmsCapabilities::identifyCapabilities() const
 {
   int capability = QgsRasterInterface::NoCapabilities;
 
-  Q_FOREACH ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
+  for ( auto it = mIdentifyFormats.constBegin(); it != mIdentifyFormats.constEnd(); ++it )
   {
-    capability |= QgsRasterDataProvider::identifyFormatToCapability( f );
+    capability |= QgsRasterDataProvider::identifyFormatToCapability( it.key() );
   }
 
   return capability;

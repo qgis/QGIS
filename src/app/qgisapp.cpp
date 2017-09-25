@@ -11795,9 +11795,10 @@ void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
 
 void QgisApp::onTransactionGroupsChanged()
 {
-  Q_FOREACH ( QgsTransactionGroup *tg, QgsProject::instance()->transactionGroups().values() )
+  const auto groups = QgsProject::instance()->transactionGroups();
+  for ( auto it = groups.constBegin(); it != groups.constEnd(); ++it )
   {
-    connect( tg, &QgsTransactionGroup::commitError, this, &QgisApp::transactionGroupCommitError, Qt::UniqueConnection );
+    connect( it.value(), &QgsTransactionGroup::commitError, this, &QgisApp::transactionGroupCommitError, Qt::UniqueConnection );
   }
 }
 

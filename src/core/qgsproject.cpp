@@ -1932,9 +1932,11 @@ bool QgsProject::evaluateDefaultValues() const
 
 void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 {
-  Q_FOREACH ( QgsMapLayer *layer, mapLayers().values() )
+  const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
     if ( vl )
     {
       vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues );
@@ -2284,9 +2286,10 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 {
   mTrustLayerMetadata = trust;
 
-  Q_FOREACH ( QgsMapLayer *layer, mapLayers().values() )
+  auto layers = mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( vl )
     {
       vl->setReadExtentFromXml( trust );

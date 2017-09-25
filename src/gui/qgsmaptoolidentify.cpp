@@ -559,16 +559,16 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     QgsGeometry geometry;
     if ( format == QgsRaster::IdentifyFormatValue )
     {
-      Q_FOREACH ( int bandNo, values.keys() )
+      for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         QString valueString;
-        if ( values.value( bandNo ).isNull() )
+        if ( it.value().isNull() )
         {
           valueString = tr( "no data" );
         }
         else
         {
-          QVariant value( values.value( bandNo ) );
+          QVariant value( it.value() );
           // The cast is legit. Quoting QT doc :
           // "Although this function is declared as returning QVariant::Type,
           // the return value should be interpreted as QMetaType::Type"
@@ -581,16 +581,16 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             valueString = QgsRasterBlock::printValue( value.toDouble() );
           }
         }
-        attributes.insert( dprovider->generateBandName( bandNo ), valueString );
+        attributes.insert( dprovider->generateBandName( it.key() ), valueString );
       }
       QString label = layer->name();
       results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
     }
     else if ( format == QgsRaster::IdentifyFormatFeature )
     {
-      Q_FOREACH ( int i, values.keys() )
+      for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
-        QVariant value = values.value( i );
+        QVariant value = it.value();
         if ( value.type() == QVariant::Bool && !value.toBool() )
         {
           // sublayer not visible or not queryable
@@ -601,7 +601,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         {
           // error
           // TODO: better error reporting
-          QString label = layer->subLayers().value( i );
+          QString label = layer->subLayers().value( it.key() );
           attributes.clear();
           attributes.insert( tr( "Error" ), value.toString() );
 
@@ -610,7 +610,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         }
 
         // list of feature stores for a single sublayer
-        const QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
+        const QgsFeatureStoreList featureStoreList = it.value().value<QgsFeatureStoreList>();
 
         for ( const QgsFeatureStore &featureStore : featureStoreList )
         {
@@ -649,13 +649,13 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     else // text or html
     {
       QgsDebugMsg( QString( "%1 HTML or text values" ).arg( values.size() ) );
-      Q_FOREACH ( int bandNo, values.keys() )
+      for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
-        QString value = values.value( bandNo ).toString();
+        QString value = it.value().toString();
         attributes.clear();
         attributes.insert( QLatin1String( "" ), value );
 
-        QString label = layer->subLayers().value( bandNo );
+        QString label = layer->subLayers().value( it.key() );
         results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
       }
     }

@@ -156,11 +156,8 @@ void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map
   constraints << QStringLiteral( "tag" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!name" );
 
   // clear any defaults
-  Q_FOREACH ( int id, mConditionMap.keys() )
-  {
-    QgsSmartGroupCondition *cond = mConditionMap.take( id );
-    delete cond;
-  }
+  qDeleteAll( mConditionMap );
+  mConditionMap.clear();
 
   //set the constraints
   Q_FOREACH ( const QString &constr, constraints )

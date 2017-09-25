@@ -232,9 +232,9 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
   const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
 
-  Q_FOREACH ( QgsVectorLayer *vl, oldSettings.keys() )
+  for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
-    if ( !mProject->snappingConfig().individualLayerSettings().contains( vl ) )
+    if ( !mProject->snappingConfig().individualLayerSettings().contains( it.key() ) )
     {
       beginResetModel();
       mIndividualLayerSettings = mProject->snappingConfig().individualLayerSettings();

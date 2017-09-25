@@ -444,14 +444,14 @@ int main( int argc, char **argv )
 
     int centroidsCount = centroids.size();
     count = 0;
-    Q_FOREACH ( const QgsFeature &centroid, centroids.values() )
+    for ( auto it = centroids.constBegin(); it != centroids.constEnd(); ++it )
     {
-      QgsPointXY point = centroid.geometry().asPoint();
+      QgsPointXY point = it.value().geometry().asPoint();
 
-      if ( centroid.attributes().size() > 0 )
+      if ( it.value().attributes().size() > 0 )
       {
         Vect_reset_cats( cats );
-        Q_FOREACH ( const QVariant &attribute, centroid.attributes() )
+        Q_FOREACH ( const QVariant &attribute, it.value().attributes() )
         {
           Vect_cat_set( cats, 1, attribute.toInt() );
         }
