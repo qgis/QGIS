@@ -77,6 +77,7 @@ class TestQgsGeometry : public QObject
     void polygon(); //test QgsPolygonV2
     void curvePolygon();
     void triangle();
+    void triangle2();
     void circle();
     void ellipse();
     void regularPolygon();
@@ -9006,6 +9007,40 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( c26.numPoints(), 0 );
   QVERIFY( c26.isEmpty() );
 
+  // two lines
+  QgsLineString ls26;
+  c26.clear();
+  ls26.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 ) );
+  c26.addCurve( ls26.clone() );
+  ls26.setPoints( QgsPointSequence()
+                  << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 21, 32, 4, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
+  c26.addCurve( ls26.clone() );
+  QVERIFY( c26.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
+  QCOMPARE( c26.nCurves(), 1 );
+  const QgsLineString *ls26r = dynamic_cast< const QgsLineString * >( c26.curveAt( 0 ) );
+  QCOMPARE( ls26r->numPoints(), 2 );
+  QCOMPARE( ls26r->startPoint(), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 ) );
+  QCOMPARE( ls26r->endPoint(), QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
+
+  c26.clear();
+  ls26.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 21, 32, 4, 5 ) );
+  c26.addCurve( ls26.clone() );
+  ls26.setPoints( QgsPointSequence()
+                  << QgsPoint( QgsWkbTypes::PointZM, 21, 32, 4, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
+  c26.addCurve( ls26.clone() );
+  QVERIFY( c26.deleteVertex( QgsVertexId( 0, 0, 2 ) ) );
+  QCOMPARE( c26.nCurves(), 1 );
+  ls26r = dynamic_cast< const QgsLineString * >( c26.curveAt( 0 ) );
+  QCOMPARE( ls26r->numPoints(), 2 );
+  QCOMPARE( ls26r->startPoint(), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 ) );
+  QCOMPARE( ls26r->endPoint(), QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
+
   //reversed
   QgsCompoundCurve c27;
   QgsCircularString l27;
@@ -9654,6 +9689,13 @@ void TestQgsGeometry::compoundCurve()
   QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 3.141592, 0.0001 );
   QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 4.712389, 0.0001 );
 
+  // with second curve
+  QgsLineString ls38;
+  ls38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, -1 ) );
+  c38.addCurve( ls38.clone() );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 3.926991, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 3.141593, 0.0001 );
+
   //closed circular string
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
   c38.clear();
@@ -9784,6 +9826,96 @@ void TestQgsGeometry::compoundCurve()
   double lsArea = 0.0;
   ls.sumUpArea( lsArea );
   QGSCOMPARENEAR( ccArea, lsArea, 4 * DBL_EPSILON );
+
+
+  //addVertex
+  QgsCompoundCurve ac1;
+  ac1.addVertex( QgsPoint( 1.0, 2.0 ) );
+  QVERIFY( !ac1.isEmpty() );
+  QCOMPARE( ac1.numPoints(), 1 );
+  QCOMPARE( ac1.vertexCount(), 1 );
+  QCOMPARE( ac1.nCoordinates(), 1 );
+  QCOMPARE( ac1.ringCount(), 1 );
+  QCOMPARE( ac1.partCount(), 1 );
+  QVERIFY( !ac1.is3D() );
+  QVERIFY( !ac1.isMeasure() );
+  QCOMPARE( ac1.wkbType(), QgsWkbTypes::CompoundCurve );
+  QVERIFY( !ac1.hasCurvedSegments() );
+  QCOMPARE( ac1.area(), 0.0 );
+  QCOMPARE( ac1.perimeter(), 0.0 );
+
+  //adding first vertex should set linestring z/m type
+  QgsCompoundCurve ac2;
+  ac2.addVertex( QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3.0 ) );
+  QVERIFY( !ac2.isEmpty() );
+  QVERIFY( ac2.is3D() );
+  QVERIFY( !ac2.isMeasure() );
+  QCOMPARE( ac2.wkbType(), QgsWkbTypes::CompoundCurveZ );
+  QCOMPARE( ac2.wktTypeStr(), QString( "CompoundCurveZ" ) );
+
+  QgsCompoundCurve ac3;
+  ac3.addVertex( QgsPoint( QgsWkbTypes::PointM, 1.0, 2.0, 0.0, 3.0 ) );
+  QVERIFY( !ac3.isEmpty() );
+  QVERIFY( !ac3.is3D() );
+  QVERIFY( ac3.isMeasure() );
+  QCOMPARE( ac3.wkbType(), QgsWkbTypes::CompoundCurveM );
+  QCOMPARE( ac3.wktTypeStr(), QString( "CompoundCurveM" ) );
+
+  QgsCompoundCurve ac4;
+  ac4.addVertex( QgsPoint( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
+  QVERIFY( !ac4.isEmpty() );
+  QVERIFY( ac4.is3D() );
+  QVERIFY( ac4.isMeasure() );
+  QCOMPARE( ac4.wkbType(), QgsWkbTypes::CompoundCurveZM );
+  QCOMPARE( ac4.wktTypeStr(), QString( "CompoundCurveZM" ) );
+
+  //adding subsequent vertices should not alter z/m type, regardless of points type
+  QgsCompoundCurve ac5;
+  ac5.addVertex( QgsPoint( QgsWkbTypes::Point, 1.0, 2.0 ) ); //2d type
+  QCOMPARE( ac5.wkbType(), QgsWkbTypes::CompoundCurve );
+  ac5.addVertex( QgsPoint( QgsWkbTypes::PointZ, 11.0, 12.0, 13.0 ) ); // add 3d point
+  QCOMPARE( ac5.numPoints(), 2 );
+  QCOMPARE( ac5.vertexCount(), 2 );
+  QCOMPARE( ac5.nCoordinates(), 2 );
+  QCOMPARE( ac5.ringCount(), 1 );
+  QCOMPARE( ac5.partCount(), 1 );
+  QCOMPARE( ac5.wkbType(), QgsWkbTypes::CompoundCurve ); //should still be 2d
+  QVERIFY( !ac5.is3D() );
+  QCOMPARE( ac5.area(), 0.0 );
+  QCOMPARE( ac5.perimeter(), 0.0 );
+
+  QgsCompoundCurve ac6;
+  ac6.addVertex( QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3.0 ) ); //3d type
+  QCOMPARE( ac6.wkbType(), QgsWkbTypes::CompoundCurveZ );
+  ac6.addVertex( QgsPoint( QgsWkbTypes::Point, 11.0, 12.0 ) ); //add 2d point
+  QCOMPARE( ac6.wkbType(), QgsWkbTypes::CompoundCurveZ ); //should still be 3d
+  ac6.pointAt( 1, pt, v );
+  QCOMPARE( pt, QgsPoint( QgsWkbTypes::PointZ, 11.0, 12.0 ) );
+  QVERIFY( ac6.is3D() );
+  QCOMPARE( ac6.numPoints(), 2 );
+  QCOMPARE( ac6.vertexCount(), 2 );
+  QCOMPARE( ac6.nCoordinates(), 2 );
+  QCOMPARE( ac6.ringCount(), 1 );
+  QCOMPARE( ac6.partCount(), 1 );
+
+  //close
+  QgsLineString closeC1;
+  QgsCompoundCurve closeCc1;
+  closeCc1.close();
+  QVERIFY( closeCc1.isEmpty() );
+  closeC1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  closeCc1.addCurve( closeC1.clone() );
+  QCOMPARE( closeCc1.numPoints(), 3 );
+  QVERIFY( !closeCc1.isClosed() );
+  closeCc1.close();
+  QCOMPARE( closeCc1.numPoints(), 4 );
+  QVERIFY( closeCc1.isClosed() );
+  closeCc1.pointAt( 3, pt, v );
+  QCOMPARE( pt, QgsPoint( QgsWkbTypes::Point, 1, 2 ) );
+  closeCc1.close();
+  QCOMPARE( closeCc1.numPoints(), 4 );
+  QVERIFY( closeCc1.isClosed() );
+
 }
 
 void TestQgsGeometry::multiPoint()
@@ -9972,6 +10104,1124 @@ void TestQgsGeometry::multiPolygon()
 
 void TestQgsGeometry::geometryCollection()
 {
+  //test constructor
+  QgsGeometryCollection c1;
+  QVERIFY( c1.isEmpty() );
+  QCOMPARE( c1.nCoordinates(), 0 );
+  QCOMPARE( c1.ringCount(), 0 );
+  QCOMPARE( c1.partCount(), 0 );
+  QVERIFY( !c1.is3D() );
+  QVERIFY( !c1.isMeasure() );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( c1.wktTypeStr(), QString( "GeometryCollection" ) );
+  QCOMPARE( c1.geometryType(), QString( "GeometryCollection" ) );
+  QCOMPARE( c1.dimension(), 0 );
+  QVERIFY( !c1.hasCurvedSegments() );
+  QCOMPARE( c1.area(), 0.0 );
+  QCOMPARE( c1.perimeter(), 0.0 );
+  QCOMPARE( c1.numGeometries(), 0 );
+  QVERIFY( !c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+  QCOMPARE( c1.vertexCount( 0, 0 ), 0 );
+  QCOMPARE( c1.vertexCount( 0, 1 ), 0 );
+  QCOMPARE( c1.vertexCount( 1, 0 ), 0 );
+
+  //addGeometry
+
+  //try with nullptr
+  c1.addGeometry( nullptr );
+  QVERIFY( c1.isEmpty() );
+  QCOMPARE( c1.nCoordinates(), 0 );
+  QCOMPARE( c1.ringCount(), 0 );
+  QCOMPARE( c1.partCount(), 0 );
+  QCOMPARE( c1.numGeometries(), 0 );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::GeometryCollection );
+  QVERIFY( !c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+
+  //valid geometry
+  QgsLineString part;
+  part.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
+                  << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
+  c1.addGeometry( part.clone() );
+  QVERIFY( !c1.isEmpty() );
+  QCOMPARE( c1.numGeometries(), 1 );
+  QCOMPARE( c1.nCoordinates(), 5 );
+  QCOMPARE( c1.ringCount(), 1 );
+  QCOMPARE( c1.partCount(), 1 );
+  QVERIFY( !c1.is3D() );
+  QVERIFY( !c1.isMeasure() );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( c1.wktTypeStr(), QString( "GeometryCollection" ) );
+  QCOMPARE( c1.geometryType(), QString( "GeometryCollection" ) );
+  QCOMPARE( c1.dimension(), 1 );
+  QVERIFY( !c1.hasCurvedSegments() );
+  QCOMPARE( c1.area(), 0.0 );
+  QCOMPARE( c1.perimeter(), 0.0 );
+  QVERIFY( c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( 100 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+  QCOMPARE( c1.vertexCount( 0, 0 ), 5 );
+  QCOMPARE( c1.vertexCount( 1, 0 ), 0 );
+
+  //retrieve geometry and check
+  QCOMPARE( *( static_cast< const QgsLineString * >( c1.geometryN( 0 ) ) ), part );
+
+  //initial adding of geometry should set z/m type
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  QgsGeometryCollection c2;
+  c2.addGeometry( part.clone() );
+  //QVERIFY( c2.is3D() ); //no meaning for collections?
+  //QVERIFY( !c2.isMeasure() ); //no meaning for collections?
+  QCOMPARE( c2.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( c2.wktTypeStr(), QString( "GeometryCollection" ) );
+  QCOMPARE( c2.geometryType(), QString( "GeometryCollection" ) );
+  QCOMPARE( *( static_cast< const QgsLineString * >( c2.geometryN( 0 ) ) ), part );
+  QgsGeometryCollection c3;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 )
+                  << QgsPoint( QgsWkbTypes::PointM, 0, 10, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 )
+                  << QgsPoint( QgsWkbTypes::PointM, 10, 0, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) );
+  c3.addGeometry( part.clone() );
+  //QVERIFY( !c3.is3D() ); //no meaning for collections?
+  //QVERIFY( c3.isMeasure() ); //no meaning for collections?
+  QCOMPARE( c3.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( c3.wktTypeStr(), QString( "GeometryCollection" ) );
+  QCOMPARE( *( static_cast< const QgsLineString * >( c3.geometryN( 0 ) ) ), part );
+  QgsGeometryCollection c4;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 2, 1 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 3, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 5, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 2, 1 ) );
+  c4.addGeometry( part.clone() );
+  //QVERIFY( c4.is3D() ); //no meaning for collections?
+  //QVERIFY( c4.isMeasure() ); //no meaning for collections?
+  QCOMPARE( c4.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( c4.wktTypeStr(), QString( "GeometryCollection" ) );
+  QCOMPARE( *( static_cast< const QgsLineString * >( c4.geometryN( 0 ) ) ), part );
+
+  //add another part
+  QgsGeometryCollection c6;
+  part.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
+                  << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.vertexCount( 0, 0 ), 5 );
+  part.setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 )
+                  << QgsPoint( 9, 1 ) << QgsPoint( 1, 1 ) );
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.vertexCount( 1, 0 ), 5 );
+  QCOMPARE( c6.numGeometries(), 2 );
+  QVERIFY( c6.geometryN( 0 ) );
+  QCOMPARE( *static_cast< const QgsLineString * >( c6.geometryN( 1 ) ), part );
+
+  QgsCoordinateSequence seq = c6.coordinateSequence();
+  QCOMPARE( seq, QgsCoordinateSequence() << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
+            << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) ) )
+            << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 )
+                                        << QgsPoint( 9, 1 ) << QgsPoint( 1, 1 ) ) ) );
+  QCOMPARE( c6.nCoordinates(), 10 );
+
+  //clear
+  QgsGeometryCollection c7;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  c7.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 1, 9, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 9, 9, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 ) );
+  c7.addGeometry( part.clone() );
+  QCOMPARE( c7.numGeometries(), 2 );
+  c7.clear();
+  QVERIFY( c7.isEmpty() );
+  QCOMPARE( c7.numGeometries(), 0 );
+  QCOMPARE( c7.nCoordinates(), 0 );
+  QCOMPARE( c7.ringCount(), 0 );
+  QCOMPARE( c7.partCount(), 0 );
+  QVERIFY( !c7.is3D() );
+  QVERIFY( !c7.isMeasure() );
+  QCOMPARE( c7.wkbType(), QgsWkbTypes::GeometryCollection );
+
+  //clone
+  QgsGeometryCollection c11;
+  std::unique_ptr< QgsGeometryCollection >cloned( c11.clone() );
+  QVERIFY( cloned->isEmpty() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  c11.addGeometry( part.clone() );
+  QgsLineString part2;
+  part2.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  c11.addGeometry( part2.clone() );
+  cloned.reset( c11.clone() );
+  QCOMPARE( cloned->numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( cloned->geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( cloned->geometryN( 1 ) ), part2 );
+
+  //copy constructor
+  QgsGeometryCollection c12;
+  QgsGeometryCollection c13( c12 );
+  QVERIFY( c13.isEmpty() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  c12.addGeometry( part.clone() );
+  part2.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  c12.addGeometry( part2.clone() );
+  QgsGeometryCollection c14( c12 );
+  QCOMPARE( c14.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c14.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( c14.geometryN( 1 ) ), part2 );
+
+  //assignment operator
+  QgsGeometryCollection c15;
+  c15 = c13;
+  QCOMPARE( c15.numGeometries(), 0 );
+  c15 = c14;
+  QCOMPARE( c15.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c15.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( c15.geometryN( 1 ) ), part2 );
+
+  //toCurveType
+  std::unique_ptr< QgsGeometryCollection > curveType( c12.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( curveType->numGeometries(), 2 );
+  const QgsCompoundCurve *curve = static_cast< const QgsCompoundCurve * >( curveType->geometryN( 0 ) );
+  QCOMPARE( curve->numPoints(), 5 );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  curve = static_cast< const QgsCompoundCurve * >( curveType->geometryN( 1 ) );
+  QCOMPARE( curve->numPoints(), 5 );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 ) );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 ) );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  QCOMPARE( curve->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+
+  //to/fromWKB
+  QgsGeometryCollection c16;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
+                  << QgsPoint( QgsWkbTypes::Point, 0, 10 ) << QgsPoint( QgsWkbTypes::Point, 10, 10 )
+                  << QgsPoint( QgsWkbTypes::Point, 10, 0 ) << QgsPoint( QgsWkbTypes::Point, 0, 0 ) );
+  c16.addGeometry( part.clone() );
+  part2.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 1, 1 )
+                   << QgsPoint( QgsWkbTypes::Point, 1, 9 ) << QgsPoint( QgsWkbTypes::Point, 9, 9 )
+                   << QgsPoint( QgsWkbTypes::Point, 9, 1 ) << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
+  c16.addGeometry( part2.clone() );
+  QByteArray wkb16 = c16.asWkb();
+  QgsGeometryCollection c17;
+  QgsConstWkbPtr wkb16ptr( wkb16 );
+  c17.fromWkb( wkb16ptr );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 1 ) ), part2 );
+
+  //parts with Z
+  c16.clear();
+  c17.clear();
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  c16.addGeometry( part.clone() );
+  part2.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 )
+                   << QgsPoint( QgsWkbTypes::PointZ, 1, 9, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 9, 9, 3 )
+                   << QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 ) );
+  c16.addGeometry( part2.clone() );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr2( wkb16 );
+  c17.fromWkb( wkb16ptr2 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 1 ) ), part2 );
+
+
+  //parts with m
+  c16.clear();
+  c17.clear();
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 )
+                  << QgsPoint( QgsWkbTypes::PointM, 0, 10,  0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 )
+                  << QgsPoint( QgsWkbTypes::PointM, 10, 0,  0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 ) );
+  c16.addGeometry( part.clone() );
+  part2.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 1, 1, 0, 1 )
+                   << QgsPoint( QgsWkbTypes::PointM, 1, 9, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 9, 9, 0, 3 )
+                   << QgsPoint( QgsWkbTypes::PointM, 9, 1, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 1, 1, 0, 1 ) );
+  c16.addGeometry( part2.clone() );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr3( wkb16 );
+  c17.fromWkb( wkb16ptr3 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 1 ) ), part2 );
+
+  // parts with ZM
+  c16.clear();
+  c17.clear();
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  c16.addGeometry( part.clone() );
+  part2.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  c16.addGeometry( part2.clone() );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr4( wkb16 );
+  c17.fromWkb( wkb16ptr4 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 1 ) ), part2 );
+
+
+  //bad WKB - check for no crash
+  c17.clear();
+  QgsConstWkbPtr nullPtr( nullptr, 0 );
+  QVERIFY( !c17.fromWkb( nullPtr ) );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::GeometryCollection );
+  QgsPoint point( 1, 2 );
+  QByteArray wkbPoint = point.asWkb();
+  QgsConstWkbPtr wkbPointPtr( wkbPoint );
+  QVERIFY( !c17.fromWkb( wkbPointPtr ) );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::GeometryCollection );
+
+  //to/from WKT
+  QgsGeometryCollection c18;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  c18.addGeometry( part.clone() );
+  part2.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  c18.addGeometry( part2.clone() );
+
+  QString wkt = c18.asWkt();
+  QVERIFY( !wkt.isEmpty() );
+  QgsGeometryCollection c19;
+  QVERIFY( c19.fromWkt( wkt ) );
+  QCOMPARE( c19.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c19.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( c19.geometryN( 1 ) ), part2 );
+
+  //bad WKT
+  QgsGeometryCollection c20;
+  QVERIFY( !c20.fromWkt( "Point()" ) );
+  QVERIFY( c20.isEmpty() );
+  QCOMPARE( c20.numGeometries(), 0 );
+  QCOMPARE( c20.wkbType(), QgsWkbTypes::GeometryCollection );
+
+  //as JSON
+  QgsGeometryCollection exportC;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
+                  << QgsPoint( QgsWkbTypes::Point, 0, 10 ) << QgsPoint( QgsWkbTypes::Point, 10, 10 )
+                  << QgsPoint( QgsWkbTypes::Point, 10, 0 ) << QgsPoint( QgsWkbTypes::Point, 0, 0 ) );
+  exportC.addGeometry( part.clone() );
+
+  // GML document for compare
+  QDomDocument doc( "gml" );
+
+
+  // as GML2
+  QString expectedSimpleGML2( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember></MultiGeometry>" ) );
+  QString res = elemToString( exportC.asGML2( doc ) );
+  QGSCOMPAREGML( res, expectedSimpleGML2 );
+
+  //as GML3
+  QString expectedSimpleGML3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember></MultiGeometry>" ) );
+  res = elemToString( exportC.asGML3( doc ) );
+  QCOMPARE( res, expectedSimpleGML3 );
+
+  // as JSON
+  QString expectedSimpleJson( "{\"type\": \"GeometryCollection\", \"geometries\": [{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]}] }" );
+  res = exportC.asJSON();
+  QCOMPARE( res, expectedSimpleJson );
+
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 1, 1 )
+                  << QgsPoint( QgsWkbTypes::Point, 1, 9 ) << QgsPoint( QgsWkbTypes::Point, 9, 9 )
+                  << QgsPoint( QgsWkbTypes::Point, 9, 1 ) << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
+  exportC.addGeometry( part.clone() );
+
+  QString expectedJson( QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]}, {\"type\": \"LineString\", \"coordinates\": [ [1, 1], [1, 9], [9, 9], [9, 1], [1, 1]]}] }" ) );
+  res = exportC.asJSON();
+  QCOMPARE( res, expectedJson );
+
+  QgsGeometryCollection exportFloat;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 10 / 9.0 )
+                  << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 ) << QgsPoint( QgsWkbTypes::Point, 100 / 9.0, 100 / 9.0 )
+                  << QgsPoint( QgsWkbTypes::Point, 100 / 9.0, 10 / 9.0 ) << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 10 / 9.0 ) );
+  exportFloat.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 2 / 3.0 )
+                  << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 4 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 4 / 3.0 )
+                  << QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 2 / 3.0 ) );
+  exportFloat.addGeometry( part.clone() );
+
+  QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [{\"type\": \"LineString\", \"coordinates\": [ [1.111, 1.111], [1.111, 11.111], [11.111, 11.111], [11.111, 1.111], [1.111, 1.111]]}, {\"type\": \"LineString\", \"coordinates\": [ [0.667, 0.667], [0.667, 1.333], [1.333, 1.333], [1.333, 0.667], [0.667, 0.667]]}] }" ) );
+  res = exportFloat.asJSON( 3 );
+  QCOMPARE( res, expectedJsonPrec3 );
+
+  // as GML2
+  QString expectedGML2( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,1 1,9 9,9 9,1 1,1</coordinates></LineString></geometryMember></MultiGeometry>" ) );
+  res = elemToString( exportC.asGML2( doc ) );
+  QGSCOMPAREGML( res, expectedGML2 );
+  QString expectedGML2prec3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,1.111 1.111,11.111 11.111,11.111 11.111,1.111 1.111,1.111</coordinates></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.667,0.667 0.667,1.333 1.333,1.333 1.333,0.667 0.667,0.667</coordinates></LineString></geometryMember></MultiGeometry>" ) );
+  res = elemToString( exportFloat.asGML2( doc, 3 ) );
+  QGSCOMPAREGML( res, expectedGML2prec3 );
+
+  //as GML3
+  QString expectedGML3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 1 1 9 9 9 9 1 1 1</posList></LineString></geometryMember></MultiGeometry>" ) );
+  res = elemToString( exportC.asGML3( doc ) );
+  QCOMPARE( res, expectedGML3 );
+  QString expectedGML3prec3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.111 1.111 1.111 11.111 11.111 11.111 11.111 1.111 1.111 1.111</posList></LineString></geometryMember><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.667 0.667 0.667 1.333 1.333 1.333 1.333 0.667 0.667 0.667</posList></LineString></geometryMember></MultiGeometry>" ) );
+  res = elemToString( exportFloat.asGML3( doc, 3 ) );
+  QCOMPARE( res, expectedGML3prec3 );
+
+  // remove geometry
+  QgsGeometryCollection rc;
+  // no crash!
+  rc.removeGeometry( -1 );
+  rc.removeGeometry( 0 );
+  rc.removeGeometry( 100 );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 9 ) );
+  rc.addGeometry( part.clone() );
+  part2.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 2 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
+                   << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
+  rc.addGeometry( part2.clone() );
+  // no crash
+  rc.removeGeometry( -1 );
+  rc.removeGeometry( 100 );
+
+  rc.removeGeometry( 0 );
+  QCOMPARE( rc.numGeometries(), 1 );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 0 ) ), part2 );
+
+  rc.addGeometry( part.clone() );
+  rc.removeGeometry( 1 );
+  QCOMPARE( rc.numGeometries(), 1 );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 0 ) ), part2 );
+  rc.removeGeometry( 0 );
+  QCOMPARE( rc.numGeometries(), 0 );
+
+
+  // insert geometry
+  rc.clear();
+  rc.insertGeometry( nullptr, 0 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+  rc.insertGeometry( nullptr, -1 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+  rc.insertGeometry( nullptr, 100 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+
+  rc.insertGeometry( part.clone(), 0 );
+  QCOMPARE( rc.numGeometries(), 1 );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 0 ) ), part );
+  rc.insertGeometry( part2.clone(), 0 );
+  QCOMPARE( rc.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 0 ) ), part2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 1 ) ), part );
+  rc.removeGeometry( 0 );
+  rc.insertGeometry( part2.clone(), 1 );
+  QCOMPARE( rc.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 1 ) ), part2 );
+  rc.removeGeometry( 1 );
+  rc.insertGeometry( part2.clone(), 2 );
+  QCOMPARE( rc.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsLineString * >( rc.geometryN( 1 ) ), part2 );
+
+  // cast
+  QVERIFY( !QgsGeometryCollection().cast( nullptr ) );
+  QgsGeometryCollection pCast;
+  QVERIFY( QgsGeometryCollection().cast( &pCast ) );
+  QgsGeometryCollection pCast2;
+  pCast2.fromWkt( QStringLiteral( "GeometryCollectionZ(PolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0)))" ) );
+  QVERIFY( QgsGeometryCollection().cast( &pCast2 ) );
+  pCast2.fromWkt( QStringLiteral( "GeometryCollectionM(PolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1)))" ) );
+  QVERIFY( QgsGeometryCollection().cast( &pCast2 ) );
+  pCast2.fromWkt( QStringLiteral( "GeometryCollectionZM(PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1)))" ) );
+  QVERIFY( QgsGeometryCollection().cast( &pCast2 ) );
+
+  //transform
+  //CRS transform
+  QgsCoordinateReferenceSystem sourceSrs;
+  sourceSrs.createFromSrid( 3994 );
+  QgsCoordinateReferenceSystem destSrs;
+  destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
+  QgsCoordinateTransform tr( sourceSrs, destSrs );
+
+  // 2d CRS transform
+  QgsGeometryCollection pTransform;
+  QgsLineString l21;
+  l21.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 )
+                 << QgsPoint( 6274985, -3526584 )
+                 << QgsPoint( 6474985, -3526584 )
+                 << QgsPoint( 6374985, -3626584 ) );
+  pTransform.addGeometry( l21.clone() );
+  pTransform.addGeometry( l21.clone() );
+  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  const QgsLineString *extR = static_cast< const QgsLineString * >( pTransform.geometryN( 0 ) );
+  QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).x(),  174.581448, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).x(),  176.958633, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).x(),  175.771, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().yMaximum(), -38.7999, 0.001 );
+  const QgsLineString *intR = static_cast< const QgsLineString * >( pTransform.geometryN( 1 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).x(),  174.581448, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).x(),  176.958633, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).x(),  175.771, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().yMaximum(), -38.7999, 0.001 );
+
+  //3d CRS transform
+  QgsLineString l22;
+  l22.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 6274985, -3526584, 3, 4 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 6474985, -3526584, 5, 6 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 ) );
+  pTransform.clear();
+  pTransform.addGeometry( l22.clone() );
+  pTransform.addGeometry( l22.clone() );
+  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform );
+  extR = static_cast< const QgsLineString * >( pTransform.geometryN( 0 ) );
+  QGSCOMPARENEAR( extR->pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).x(),  174.581448, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).x(),  176.958633, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 5.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 6.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).x(),  175.771, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().yMaximum(), -38.7999, 0.001 );
+  intR = static_cast< const QgsLineString * >( pTransform.geometryN( 1 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).x(), 175.771, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).x(),  174.581448, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).x(),  176.958633, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).y(), -38.7999, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 5.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 6.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).x(),  175.771, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).y(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMinimum(), 174.581448, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().yMinimum(), -39.724, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 176.959, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().yMaximum(), -38.7999, 0.001 );
+
+  //reverse transform
+  pTransform.transform( tr, QgsCoordinateTransform::ReverseTransform );
+  extR = static_cast< const QgsLineString * >( pTransform.geometryN( 0 ) );
+  QGSCOMPARENEAR( extR->pointN( 0 ).x(), 6374984, 100 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).y(), -3626584, 100 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).x(), 6274984, 100 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).y(), -3526584, 100 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).x(),  6474984, 100 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).y(), -3526584, 100 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 5.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 6.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).x(),  6374984, 100 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).y(), -3626584, 100 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().xMinimum(), 6274984, 100 );
+  QGSCOMPARENEAR( extR->boundingBox().yMinimum(), -3626584, 100 );
+  QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 6474984, 100 );
+  QGSCOMPARENEAR( extR->boundingBox().yMaximum(), -3526584, 100 );
+  intR = static_cast< const QgsLineString * >( pTransform.geometryN( 1 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).x(), 6374984, 100 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).y(), -3626584, 100 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).x(), 6274984, 100 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).y(), -3526584, 100 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).x(),  6474984, 100 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).y(), -3526584, 100 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 5.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 6.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).x(),  6374984, 100 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).y(), -3626584, 100 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 1.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 2.0, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMinimum(), 6274984, 100 );
+  QGSCOMPARENEAR( intR->boundingBox().yMinimum(), -3626584, 100 );
+  QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 6474984, 100 );
+  QGSCOMPARENEAR( intR->boundingBox().yMaximum(), -3526584, 100 );
+
+  //z value transform
+  pTransform.transform( tr, QgsCoordinateTransform::ForwardTransform, true );
+  extR = static_cast< const QgsLineString * >( pTransform.geometryN( 0 ) );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), -19.249066, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), -19.148357, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), -19.092128, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), -19.249066, 0.001 );
+  intR = static_cast< const QgsLineString * >( pTransform.geometryN( 1 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), -19.249066, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), -19.148357, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), -19.092128, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), -19.249066, 0.001 );
+  pTransform.transform( tr, QgsCoordinateTransform::ReverseTransform, true );
+  extR = static_cast< const QgsLineString * >( pTransform.geometryN( 0 ) );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 1, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 3, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 5, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 1, 0.001 );
+  intR = static_cast< const QgsLineString * >( pTransform.geometryN( 1 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 1, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 3, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 5, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 1, 0.001 );
+
+  //QTransform transform
+  QTransform qtr = QTransform::fromScale( 2, 3 );
+  QgsLineString l23;
+  l23.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 1, 12, 23, 24 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
+  QgsGeometryCollection pTransform2;
+  pTransform2.addGeometry( l23.clone() );
+  pTransform2.addGeometry( l23.clone() );
+  pTransform2.transform( qtr );
+
+  extR = static_cast< const QgsLineString * >( pTransform2.geometryN( 0 ) );
+  QGSCOMPARENEAR( extR->pointN( 0 ).x(), 2, 100 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).y(), 6, 100 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).x(), 22, 100 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).y(), 36, 100 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 13.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 14.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).x(),  2, 100 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).y(), 36, 100 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 23.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 24.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).x(), 2, 100 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).y(), 6, 100 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().xMinimum(), 2, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().yMinimum(), 6, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 22, 0.001 );
+  QGSCOMPARENEAR( extR->boundingBox().yMaximum(), 36, 0.001 );
+  intR = static_cast< const QgsLineString * >( pTransform2.geometryN( 1 ) );
+  QGSCOMPARENEAR( intR->pointN( 0 ).x(), 2, 100 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).y(), 6, 100 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).x(), 22, 100 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).y(), 36, 100 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 13.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 14.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).x(),  2, 100 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).y(), 36, 100 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 23.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 24.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).x(), 2, 100 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).y(), 6, 100 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 3.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMinimum(), 2, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().yMinimum(), 6, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 22, 0.001 );
+  QGSCOMPARENEAR( intR->boundingBox().yMaximum(), 36, 0.001 );
+
+
+  // closestSegment
+  QgsPoint pt;
+  QgsVertexId v;
+  bool leftOf = false;
+  QgsGeometryCollection empty;
+  ( void )empty.closestSegment( QgsPoint( 1, 2 ), pt, v ); // empty collection, just want no crash
+
+  QgsGeometryCollection p21;
+  QgsLineString p21ls;
+  p21ls.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) << QgsPoint( 5, 10 ) );
+  p21.addGeometry( p21ls.clone() );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 4, 11 ), pt, v, &leftOf ), 1.0, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 5, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 11, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 3 ) );
+  QCOMPARE( leftOf, false );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 8, 11 ), pt, v, &leftOf ),  2.0, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 7, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 12, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( leftOf, false );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 6, 11.5 ), pt, v, &leftOf ), 0.125000, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 6.25, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 11.25, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( leftOf, true );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 7, 16 ), pt, v, &leftOf ), 4.923077, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 5.153846, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 14.769231, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( leftOf, false );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 5.5, 13.5 ), pt, v, &leftOf ), 0.173077, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 5.846154, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 13.730769, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( leftOf, true );
+  // point directly on segment
+  QCOMPARE( p21.closestSegment( QgsPoint( 5, 15 ), pt, v, &leftOf ), 0.0 );
+  QCOMPARE( pt, QgsPoint( 5, 15 ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  // with interior ring
+  p21ls.setPoints( QgsPointSequence() << QgsPoint( 6, 11.5 ) << QgsPoint( 6.5, 12 ) << QgsPoint( 6, 13 ) << QgsPoint( 6, 11.5 ) );
+  p21.addGeometry( p21ls.clone() );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 4, 11 ), pt, v, &leftOf ), 1.0, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 5, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 11, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 3 ) );
+  QCOMPARE( leftOf, false );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 8, 11 ), pt, v, &leftOf ),  2.0, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 7, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 12, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( leftOf, false );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 6, 11.4 ), pt, v, &leftOf ), 0.01, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 6.0, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 11.5, 0.01 );
+  QCOMPARE( v, QgsVertexId( 1, 0, 1 ) );
+  QCOMPARE( leftOf, false );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 7, 16 ), pt, v, &leftOf ), 4.923077, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 5.153846, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 14.769231, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( leftOf, false );
+  QGSCOMPARENEAR( p21.closestSegment( QgsPoint( 5.5, 13.5 ), pt, v, &leftOf ), 0.173077, 0.0001 );
+  QGSCOMPARENEAR( pt.x(), 5.846154, 0.01 );
+  QGSCOMPARENEAR( pt.y(), 13.730769, 0.01 );
+  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( leftOf, true );
+  // point directly on segment
+  QCOMPARE( p21.closestSegment( QgsPoint( 6, 13 ), pt, v, &leftOf ), 0.0 );
+  QCOMPARE( pt, QgsPoint( 6, 13 ) );
+  QCOMPARE( v, QgsVertexId( 1, 0, 2 ) );
+
+  //nextVertex
+  QgsGeometryCollection p22;
+  QVERIFY( !p22.nextVertex( v, pt ) );
+  v = QgsVertexId( 0, 0, -2 );
+  QVERIFY( !p22.nextVertex( v, pt ) );
+  v = QgsVertexId( 0, 0, 10 );
+  QVERIFY( !p22.nextVertex( v, pt ) );
+  QgsLineString lp22;
+  lp22.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 12 ) << QgsPoint( 1, 2 ) );
+  p22.addGeometry( lp22.clone() );
+  v = QgsVertexId( 0, 0, 4 ); //out of range
+  QVERIFY( !p22.nextVertex( v, pt ) );
+  v = QgsVertexId( 0, 0, -5 );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  v = QgsVertexId( 0, 0, -1 );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 0 ) );
+  QCOMPARE( pt, QgsPoint( 1, 2 ) );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( pt, QgsPoint( 11, 12 ) );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( pt, QgsPoint( 1, 12 ) );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 3 ) );
+  QCOMPARE( pt, QgsPoint( 1, 2 ) );
+  v = QgsVertexId( 1, 0, 0 );
+  QVERIFY( !p22.nextVertex( v, pt ) );
+  v = QgsVertexId( 1, 0, 0 );
+  // add another part
+  lp22.setPoints( QgsPointSequence() << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) << QgsPoint( 11, 22 ) << QgsPoint( 11, 12 ) );
+  p22.addGeometry( lp22.clone() );
+  v = QgsVertexId( 1, 0, 4 ); //out of range
+  QVERIFY( !p22.nextVertex( v, pt ) );
+  v = QgsVertexId( 1, 0, -5 );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  v = QgsVertexId( 1, 0, -1 );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 1, 0, 0 ) );
+  QCOMPARE( pt, QgsPoint( 11, 12 ) );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 1, 0, 1 ) );
+  QCOMPARE( pt, QgsPoint( 21, 22 ) );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 1, 0, 2 ) );
+  QCOMPARE( pt, QgsPoint( 11, 22 ) );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 1, 0, 3 ) );
+  QCOMPARE( pt, QgsPoint( 11, 12 ) );
+  v = QgsVertexId( 2, 0, 0 );
+  QVERIFY( !p22.nextVertex( v, pt ) );
+  v = QgsVertexId( 1, 1, 0 );
+  QVERIFY( p22.nextVertex( v, pt ) );
+  QCOMPARE( v, QgsVertexId( 1, 1, 1 ) ); //test that part number is maintained
+  QCOMPARE( pt, QgsPoint( 21, 22 ) );
+
+
+  // dropZValue
+  QgsGeometryCollection p23;
+  p23.dropZValue();
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  QgsLineString lp23;
+  lp23.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 12 ) << QgsPoint( 1, 2 ) );
+  p23.addGeometry( lp23.clone() );
+  p23.addGeometry( lp23.clone() );
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  p23.dropZValue(); // not z
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( p23.geometryN( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  QCOMPARE( p23.geometryN( 1 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  // with z
+  lp23.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3 ) << QgsPoint( 11, 12, 13 ) << QgsPoint( 1, 12, 23 ) << QgsPoint( 1, 2, 3 ) );
+  p23.clear();
+  p23.addGeometry( lp23.clone() );
+  p23.addGeometry( lp23.clone() );
+  p23.dropZValue();
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( p23.geometryN( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  QCOMPARE( p23.geometryN( 1 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  // with zm
+  lp23.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4 ) << QgsPoint( 11, 12, 13, 14 ) << QgsPoint( 1, 12, 23, 24 ) << QgsPoint( 1, 2, 3, 4 ) );
+  p23.clear();
+  p23.addGeometry( lp23.clone() );
+  p23.addGeometry( lp23.clone() );
+  p23.dropZValue();
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( p23.geometryN( 0 )->wkbType(), QgsWkbTypes::LineStringM );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 0 ) )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
+  QCOMPARE( p23.geometryN( 1 )->wkbType(), QgsWkbTypes::LineStringM );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 1 ) )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 4 ) );
+
+
+  // dropMValue
+  p23.clear();
+  p23.dropMValue();
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  lp23.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 12 ) << QgsPoint( 1, 2 ) );
+  p23.addGeometry( lp23.clone() );
+  p23.addGeometry( lp23.clone() );
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  p23.dropMValue(); // not zm
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( p23.geometryN( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  QCOMPARE( p23.geometryN( 1 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  // with m
+  lp23.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM,  1, 2, 0, 3 ) << QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 13 ) << QgsPoint( QgsWkbTypes::PointM, 1, 12, 0, 23 ) << QgsPoint( QgsWkbTypes::PointM,  1, 2, 0, 3 ) );
+  p23.clear();
+  p23.addGeometry( lp23.clone() );
+  p23.addGeometry( lp23.clone() );
+  p23.dropMValue();
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( p23.geometryN( 0 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  QCOMPARE( p23.geometryN( 1 )->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  // with zm
+  lp23.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4 ) << QgsPoint( 11, 12, 13, 14 ) << QgsPoint( 1, 12, 23, 24 ) << QgsPoint( 1, 2, 3, 4 ) );
+  p23.clear();
+  p23.addGeometry( lp23.clone() );
+  p23.addGeometry( lp23.clone() );
+  p23.dropMValue();
+  QCOMPARE( p23.wkbType(), QgsWkbTypes::GeometryCollection );
+  QCOMPARE( p23.geometryN( 0 )->wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 0 ) )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
+  QCOMPARE( p23.geometryN( 1 )->wkbType(), QgsWkbTypes::LineStringZ );
+  QCOMPARE( static_cast< const QgsLineString *>( p23.geometryN( 1 ) )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
+
+  //vertexAngle
+  QgsGeometryCollection p24;
+  ( void )p24.vertexAngle( QgsVertexId() ); //just want no crash
+  ( void )p24.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
+  ( void )p24.vertexAngle( QgsVertexId( 0, 1, 0 ) ); //just want no crash
+  ( void )p24.vertexAngle( QgsVertexId( 1, 0, 0 ) ); //just want no crash
+  ( void )p24.vertexAngle( QgsVertexId( -1, 0, 0 ) ); //just want no crash
+  QgsLineString l38;
+  l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0.5, 0 ) << QgsPoint( 1, 0 )
+                 << QgsPoint( 2, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 0, 2 ) << QgsPoint( 0, 0 ) );
+  p24.addGeometry( l38.clone() );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 2.35619, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 1.17809, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 0.0, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 5.10509, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 3.92699, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 0, 0, 6 ) ), 2.35619, 0.00001 );
+  p24.addGeometry( l38.clone() );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 1, 0, 0 ) ), 2.35619, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 1, 0, 1 ) ), 1.5708, 0.0001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 1, 0, 2 ) ), 1.17809, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 1, 0, 3 ) ), 0.0, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 1, 0, 4 ) ), 5.10509, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 1, 0, 5 ) ), 3.92699, 0.00001 );
+  QGSCOMPARENEAR( p24.vertexAngle( QgsVertexId( 1, 0, 6 ) ), 2.35619, 0.00001 );
+
+  //insert vertex
+
+  //insert vertex in empty collection
+  QgsGeometryCollection p25;
+  QVERIFY( !p25.insertVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 0, 1, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 1, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( p25.isEmpty() );
+  l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0.5, 0 ) << QgsPoint( 1, 0 )
+                 << QgsPoint( 2, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 0, 2 ) << QgsPoint( 0, 0 ) );
+  p25.addGeometry( l38.clone() );
+  QVERIFY( p25.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 0.3, 0 ) ) );
+  QCOMPARE( p25.nCoordinates(), 8 );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 1 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 2 ), QgsPoint( 0.5, 0 ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 0, 0, -1 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 0, 0, 100 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 1, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  // first vertex
+  QVERIFY( p25.insertVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 0, 0.1 ) ) );
+  QCOMPARE( p25.nCoordinates(), 9 );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 2 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 7 ), QgsPoint( 0, 2 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 8 ), QgsPoint( 0, 0 ) );
+  // last vertex
+  QVERIFY( p25.insertVertex( QgsVertexId( 0, 0, 9 ), QgsPoint( 0.1, 0.1 ) ) );
+  QCOMPARE( p25.nCoordinates(), 10 );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 2 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 8 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 0 ) )->pointN( 9 ), QgsPoint( 0.1, 0.1 ) );
+  // with second part
+  p25.addGeometry( l38.clone() );
+  QCOMPARE( p25.nCoordinates(), 17 );
+  QVERIFY( p25.insertVertex( QgsVertexId( 1, 0, 1 ), QgsPoint( 0.3, 0 ) ) );
+  QCOMPARE( p25.nCoordinates(), 18 );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 1 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 2 ), QgsPoint( 0.5, 0 ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 1, 0, -1 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 1, 0, 100 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p25.insertVertex( QgsVertexId( 2, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  // first vertex in second part
+  QVERIFY( p25.insertVertex( QgsVertexId( 1, 0, 0 ), QgsPoint( 0, 0.1 ) ) );
+  QCOMPARE( p25.nCoordinates(), 19 );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 2 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 7 ), QgsPoint( 0, 2 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 8 ), QgsPoint( 0, 0 ) );
+  // last vertex in second part
+  QVERIFY( p25.insertVertex( QgsVertexId( 1, 0, 9 ), QgsPoint( 0.1, 0.1 ) ) );
+  QCOMPARE( p25.nCoordinates(), 20 );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 0, 0.1 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 2 ), QgsPoint( 0.3, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 3 ), QgsPoint( 0.5, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 8 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p25.geometryN( 1 ) )->pointN( 9 ), QgsPoint( 0.1, 0.1 ) );
+
+  //move vertex
+
+  //empty collection
+  QgsGeometryCollection p26;
+  QVERIFY( !p26.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p26.moveVertex( QgsVertexId( -1, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( !p26.moveVertex( QgsVertexId( 1, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( p26.isEmpty() );
+
+  //valid collection
+  l38.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                 << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
+  p26.addGeometry( l38.clone() );
+  QVERIFY( p26.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( p26.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 16.0, 17.0 ) ) );
+  QVERIFY( p26.moveVertex( QgsVertexId( 0, 0, 2 ), QgsPoint( 26.0, 27.0 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 0 ) )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 0 ) )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 0 ) )->pointN( 3 ), QgsPoint( 1, 2 ) );
+
+  //out of range
+  QVERIFY( !p26.moveVertex( QgsVertexId( 0, 0, -1 ), QgsPoint( 3.0, 4.0 ) ) );
+  QVERIFY( !p26.moveVertex( QgsVertexId( 0, 0, 10 ), QgsPoint( 3.0, 4.0 ) ) );
+  QVERIFY( !p26.moveVertex( QgsVertexId( 1, 0, 0 ), QgsPoint( 3.0, 4.0 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 0 ) )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 0 ) )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 0 ) )->pointN( 3 ), QgsPoint( 1.0, 2.0 ) );
+
+  // with second part
+  p26.addGeometry( l38.clone() );
+  QVERIFY( p26.moveVertex( QgsVertexId( 1, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
+  QVERIFY( p26.moveVertex( QgsVertexId( 1, 0, 1 ), QgsPoint( 16.0, 17.0 ) ) );
+  QVERIFY( p26.moveVertex( QgsVertexId( 1, 0, 2 ), QgsPoint( 26.0, 27.0 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 1 ) )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 1 ) )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p26.geometryN( 1 ) )->pointN( 3 ), QgsPoint( 1.0, 2.0 ) );
+  QVERIFY( !p26.moveVertex( QgsVertexId( 1, 0, -1 ), QgsPoint( 3.0, 4.0 ) ) );
+  QVERIFY( !p26.moveVertex( QgsVertexId( 1, 0, 10 ), QgsPoint( 3.0, 4.0 ) ) );
+  QVERIFY( !p26.moveVertex( QgsVertexId( 2, 0, 0 ), QgsPoint( 3.0, 4.0 ) ) );
+
+  //delete vertex
+
+  //empty collection
+  QgsGeometryCollection p27;
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 0, 1, 0 ) ) );
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 1, 1, 0 ) ) );
+  QVERIFY( !p27.deleteVertex( QgsVertexId( -1, 1, 0 ) ) );
+  QVERIFY( p27.isEmpty() );
+
+  //valid collection
+  l38.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 5, 2 ) << QgsPoint( 6, 2 ) << QgsPoint( 7, 2 )
+                 << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
+
+  p27.addGeometry( l38.clone() );
+  //out of range vertices
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 0, 0, -1 ) ) );
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 0, 0, 100 ) ) );
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 1, 0, 1 ) ) );
+
+  //valid vertices
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 1.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 1 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 2 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 3 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 5 ), QgsPoint( 1.0, 2.0 ) );
+
+  // delete first vertex
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 4 ), QgsPoint( 1.0, 2.0 ) );
+
+  // delete last vertex
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 4 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 0 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 0 ) )->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
+
+  // delete some more vertices - should remove part
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( !p27.geometryN( 0 ) );
+
+  // with two parts
+  p27.addGeometry( l38.clone() );
+  p27.addGeometry( l38.clone() );
+
+  //out of range vertices
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 1, 0, -1 ) ) );
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 1, 0, 100 ) ) );
+  QVERIFY( !p27.deleteVertex( QgsVertexId( 2, 0, 1 ) ) );
+
+  //valid vertices
+  QVERIFY( p27.deleteVertex( QgsVertexId( 1, 0, 1 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 1.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 1 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 2 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 3 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 5 ), QgsPoint( 1.0, 2.0 ) );
+
+  // delete first vertex
+  QVERIFY( p27.deleteVertex( QgsVertexId( 1, 0, 0 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 4 ), QgsPoint( 1.0, 2.0 ) );
+
+  // delete last vertex
+  QVERIFY( p27.deleteVertex( QgsVertexId( 1, 0, 4 ) ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 0 ), QgsPoint( 6.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 1 ), QgsPoint( 7.0, 2.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 2 ), QgsPoint( 11.0, 12.0 ) );
+  QCOMPARE( static_cast< const QgsLineString * >( p27.geometryN( 1 ) )->pointN( 3 ), QgsPoint( 21.0, 22.0 ) );
+
+  // delete some more vertices - should remove part
+  QVERIFY( p27.deleteVertex( QgsVertexId( 1, 0, 1 ) ) );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 1, 0, 1 ) ) );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 1, 0, 1 ) ) );
+  QCOMPARE( p27.numGeometries(), 1 );
+  QVERIFY( p27.geometryN( 0 ) );
+
+  // test that second geometry is "promoted" when first is removed
+  p27.addGeometry( l38.clone() );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QCOMPARE( p27.numGeometries(), 2 );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QCOMPARE( p27.numGeometries(), 2 );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QCOMPARE( p27.numGeometries(), 2 );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QVERIFY( p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
+  QCOMPARE( p27.numGeometries(), 1 );
+  QVERIFY( p27.geometryN( 0 ) );
 
   //boundary
 
@@ -9983,6 +11233,514 @@ void TestQgsGeometry::geometryCollection()
   lineBoundary->setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) );
   boundaryCollection.addGeometry( lineBoundary );
   QVERIFY( !boundaryCollection.boundary() );
+
+  // segmentize
+  QgsGeometryCollection segmentC;
+  QgsCircularString toSegment;
+  toSegment.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                       << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
+  segmentC.addGeometry( toSegment.clone() );
+  std::unique_ptr<QgsGeometryCollection> segmentized( static_cast< QgsGeometryCollection * >( segmentC.segmentize() ) );
+  const QgsLineString *segmentizedLine = static_cast< const QgsLineString * >( segmentized->geometryN( 0 ) );
+  QCOMPARE( segmentizedLine->numPoints(), 156 );
+  QCOMPARE( segmentizedLine->vertexCount(), 156 );
+  QCOMPARE( segmentizedLine->ringCount(), 1 );
+  QCOMPARE( segmentizedLine->partCount(), 1 );
+  QCOMPARE( segmentizedLine->wkbType(), QgsWkbTypes::LineString );
+  QVERIFY( !segmentizedLine->is3D() );
+  QVERIFY( !segmentizedLine->isMeasure() );
+  QCOMPARE( segmentizedLine->pointN( 0 ), toSegment.pointN( 0 ) );
+  QCOMPARE( segmentizedLine->pointN( segmentizedLine->numPoints() - 1 ), toSegment.pointN( toSegment.numPoints() - 1 ) );
+
+  // hasCurvedSegments
+  QgsGeometryCollection c30;
+  QVERIFY( !c30.hasCurvedSegments() );
+  c30.addGeometry( part.clone() );
+  QVERIFY( !c30.hasCurvedSegments() );
+  c30.addGeometry( toSegment.clone() );
+  QVERIFY( c30.hasCurvedSegments() );
+}
+
+void TestQgsGeometry::triangle2()
+{
+  //test constructor
+  QgsTriangle t1;
+  QVERIFY( t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 0 );
+  QCOMPARE( t1.ringCount(), 0 );
+  QCOMPARE( t1.partCount(), 0 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 0.0 );
+  QCOMPARE( t1.perimeter(), 0.0 );
+  QVERIFY( !t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+
+  // invalid triangles
+  QgsTriangle invalid( QgsPointXY( 0, 0 ), QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
+  QVERIFY( invalid.isEmpty() );
+  invalid = QgsTriangle( QPointF( 0, 0 ), QPointF( 0, 0 ), QPointF( 10, 10 ) );
+  QVERIFY( invalid.isEmpty() );
+  //set exterior ring
+
+  //try with no ring
+  std::unique_ptr< QgsLineString > ext;
+  t1.setExteriorRing( nullptr );
+  QVERIFY( t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 0 );
+  QCOMPARE( t1.ringCount(), 0 );
+  QCOMPARE( t1.partCount(), 0 );
+  QVERIFY( !t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+
+  //valid exterior ring
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
+                  << QgsPoint( 0, 0 ) );
+  QVERIFY( ext->isClosed() );
+  t1.setExteriorRing( ext->clone() );
+  QVERIFY( !t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 4 );
+  QCOMPARE( t1.ringCount(), 1 );
+  QCOMPARE( t1.partCount(), 1 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 50.0 );
+  QGSCOMPARENEAR( t1.perimeter(), 34.1421, 0.001 );
+  QVERIFY( t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+
+  //retrieve exterior ring and check
+  QCOMPARE( *( static_cast< const QgsLineString * >( t1.exteriorRing() ) ), *ext );
+
+  //set new ExteriorRing
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 10 ) << QgsPoint( 5, 5 ) << QgsPoint( 10, 10 )
+                  << QgsPoint( 0, 10 ) );
+  QVERIFY( ext->isClosed() );
+  t1.setExteriorRing( ext->clone() );
+  QVERIFY( !t1.isEmpty() );
+  QCOMPARE( t1.numInteriorRings(), 0 );
+  QCOMPARE( t1.nCoordinates(), 4 );
+  QCOMPARE( t1.ringCount(), 1 );
+  QCOMPARE( t1.partCount(), 1 );
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( !t1.hasCurvedSegments() );
+  QCOMPARE( t1.area(), 25.0 );
+  QGSCOMPARENEAR( t1.perimeter(), 24.1421, 0.001 );
+  QVERIFY( t1.exteriorRing() );
+  QVERIFY( !t1.interiorRing( 0 ) );
+  QCOMPARE( *( static_cast< const QgsLineString * >( t1.exteriorRing() ) ), *ext );
+
+  //test that a non closed exterior ring will be automatically closed
+  QgsTriangle t2;
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) );
+  QVERIFY( !ext->isClosed() );
+  t2.setExteriorRing( ext.release() );
+  QVERIFY( !t2.isEmpty() );
+  QVERIFY( t2.exteriorRing()->isClosed() );
+  QCOMPARE( t2.nCoordinates(), 4 );
+
+  // invalid number of points
+  ext.reset( new QgsLineString() );
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) );
+  t2.setExteriorRing( ext.release() );
+  QVERIFY( t2.isEmpty() );
+
+  ext.reset( new QgsLineString() );
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 5, 10 ) << QgsPoint( 8, 10 ) );
+  t2.setExteriorRing( ext.release() );
+  QVERIFY( t2.isEmpty() );
+
+  // invalid exterior ring
+  ext.reset( new QgsLineString() );
+  t2.clear();
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 5, 10 ) );
+  t2.setExteriorRing( ext.release() );
+  QVERIFY( t2.isEmpty() );
+
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
+  t2.setExteriorRing( ext.release() );
+  QVERIFY( t2.isEmpty() );
+
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
+  t2.setExteriorRing( ext.release() );
+  QVERIFY( t2.isEmpty() );
+
+  // circular ring
+  QgsCircularString *circularRing = new QgsCircularString();
+  t2.clear();
+  circularRing->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) );
+  QVERIFY( circularRing->hasCurvedSegments() );
+  t2.setExteriorRing( circularRing );
+  QVERIFY( t2.isEmpty() );
+
+  //constructor with 3 points
+  // double points
+  QgsTriangle t3( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) );
+  QVERIFY( t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 0 );
+  QCOMPARE( t3.ringCount(), 0 );
+  QCOMPARE( t3.partCount(), 0 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 0.0 );
+  QCOMPARE( t3.perimeter(), 0.0 );
+  QVERIFY( !t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
+
+  // colinear
+  t3 = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 10 ) );
+  QVERIFY( t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 0 );
+  QCOMPARE( t3.ringCount(), 0 );
+  QCOMPARE( t3.partCount(), 0 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 0.0 );
+  QCOMPARE( t3.perimeter(), 0.0 );
+  QVERIFY( !t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
+
+  t3 = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), QgsPoint( 10, 10 ) );
+  QVERIFY( !t3.isEmpty() );
+  QCOMPARE( t3.numInteriorRings(), 0 );
+  QCOMPARE( t3.nCoordinates(), 4 );
+  QCOMPARE( t3.ringCount(), 1 );
+  QCOMPARE( t3.partCount(), 1 );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t3.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t3.dimension(), 2 );
+  QVERIFY( !t3.hasCurvedSegments() );
+  QCOMPARE( t3.area(), 50.0 );
+  QGSCOMPARENEAR( t3.perimeter(), 34.1421, 0.001 );
+  QVERIFY( t3.exteriorRing() );
+  QVERIFY( !t3.interiorRing( 0 ) );
+
+  // equality
+  QVERIFY( QgsTriangle() == QgsTriangle() ); // empty
+  QVERIFY( QgsTriangle() == QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 10 ) ) ); // empty
+  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 10 ) ) == QgsTriangle() ); // empty
+  QVERIFY( QgsTriangle() != QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) );
+  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) != QgsTriangle() );
+  QVERIFY( QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 0, 10 ) ) != QgsTriangle( QgsPoint( 0, 10 ), QgsPoint( 5, 5 ), QgsPoint( 0, 0 ) ) );
+
+  // clone
+  QgsTriangle *t4 = t3.clone();
+  QCOMPARE( t3, *t4 );
+  delete t4;
+
+  // constructor from QgsPointXY and QPointF
+  QgsTriangle t_qgspoint = QgsTriangle( QgsPointXY( 0, 0 ), QgsPointXY( 0, 10 ), QgsPointXY( 10, 10 ) );
+  QVERIFY( t3 == t_qgspoint );
+  QgsTriangle t_pointf = QgsTriangle( QPointF( 0, 0 ), QPointF( 0, 10 ), QPointF( 10, 10 ) );
+  QVERIFY( t3 == t_pointf );
+
+  // fromWkt
+  QgsTriangle t5;
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
+  t5.setExteriorRing( ext.release() );
+  QString wkt = t5.asWkt();
+  QVERIFY( !wkt.isEmpty() );
+  QgsTriangle t6;
+  QVERIFY( t6.fromWkt( wkt ) );
+  QCOMPARE( t5, t6 );
+
+  // conversion
+  QgsPolygonV2 p1;
+  ext.reset( new QgsLineString() );
+  ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
+  p1.setExteriorRing( ext.release() );
+  //toPolygon
+  std::unique_ptr< QgsPolygonV2 > poly( t5.toPolygon() );
+  QCOMPARE( *poly, p1 );
+  //surfaceToPolygon
+  std::unique_ptr< QgsPolygonV2 > surface( t5.surfaceToPolygon() );
+  QCOMPARE( *surface, p1 );
+
+  //bad WKT
+  QVERIFY( !t6.fromWkt( "Point()" ) );
+  QVERIFY( t6.isEmpty() );
+  QVERIFY( !t6.exteriorRing() );
+  QCOMPARE( t6.numInteriorRings(), 0 );
+  QVERIFY( !t6.is3D() );
+  QVERIFY( !t6.isMeasure() );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+
+  // WKB
+  QByteArray wkb = t5.asWkb();
+  t6.clear();
+  QgsConstWkbPtr wkb16ptr5( wkb );
+  t6.fromWkb( wkb16ptr5 );
+  QCOMPARE( t5.wkbType(), QgsWkbTypes::TriangleZM );
+  QCOMPARE( t5, t6 );
+
+  //bad WKB - check for no crash
+  t6.clear();
+  QgsConstWkbPtr nullPtr( nullptr, 0 );
+  QVERIFY( !t6.fromWkb( nullPtr ) );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+  QgsPoint point( 1, 2 );
+  QByteArray wkbPoint = point.asWkb();
+  QgsConstWkbPtr wkbPointPtr( wkbPoint );
+  QVERIFY( !t6.fromWkb( wkbPointPtr ) );
+  QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+
+  // lengths and angles
+  QgsTriangle t7( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
+
+  QVector<double> a_tested, a_t7 = t7.angles();
+  a_tested.append( M_PI / 4.0 );
+  a_tested.append( M_PI / 2.0 );
+  a_tested.append( M_PI / 4.0 );
+  QGSCOMPARENEAR( a_tested.at( 0 ), a_t7.at( 0 ), 0.0001 );
+  QGSCOMPARENEAR( a_tested.at( 1 ), a_t7.at( 1 ), 0.0001 );
+  QGSCOMPARENEAR( a_tested.at( 2 ), a_t7.at( 2 ), 0.0001 );
+
+  QVector<double> l_tested, l_t7 = t7.lengths();
+  l_tested.append( 5 );
+  l_tested.append( 5 );
+  l_tested.append( std::sqrt( 5 * 5 + 5 * 5 ) );
+  QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
+  QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
+  QGSCOMPARENEAR( l_tested.at( 2 ), l_t7.at( 2 ), 0.0001 );
+
+  // type of triangle
+  QVERIFY( t7.isRight() );
+  QVERIFY( t7.isIsocele() );
+  QVERIFY( !t7.isScalene() );
+  QVERIFY( !t7.isEquilateral() );
+
+  QgsTriangle t8( QgsPoint( 7.2825, 4.2368 ), QgsPoint( 13.0058, 3.3218 ), QgsPoint( 9.2145, 6.5242 ) );
+  // angles in radians 58.8978;31.1036;89.9985
+  // length 5.79598;4.96279;2.99413
+  QVERIFY( t8.isRight() );
+  QVERIFY( !t8.isIsocele() );
+  QVERIFY( t8.isScalene() );
+  QVERIFY( !t8.isEquilateral() );
+
+  QgsTriangle t9( QgsPoint( 10, 10 ), QgsPoint( 16, 10 ), QgsPoint( 13, 15.1962 ) );
+  QVERIFY( !t9.isRight() );
+  QVERIFY( t9.isIsocele() );
+  QVERIFY( !t9.isScalene() );
+  QVERIFY( t9.isEquilateral() );
+
+  // vertex
+  QCOMPARE( t9.vertexAt( -1 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( t9.vertexAt( 0 ), QgsPoint( 10, 10 ) );
+  QCOMPARE( t9.vertexAt( 1 ), QgsPoint( 16, 10 ) );
+  QCOMPARE( t9.vertexAt( 2 ), QgsPoint( 13, 15.1962 ) );
+  QCOMPARE( t9.vertexAt( 3 ), QgsPoint( 10, 10 ) );
+  QCOMPARE( t9.vertexAt( 4 ), QgsPoint( 0, 0 ) );
+
+  // altitudes
+  QgsTriangle t10( QgsPoint( 20, 2 ), QgsPoint( 16, 6 ), QgsPoint( 26, 2 ) );
+  QVector<QgsLineString> alt = t10.altitudes();
+  QGSCOMPARENEARPOINT( alt.at( 0 ).pointN( 1 ), QgsPoint( 20.8276, 4.0690 ), 0.0001 );
+  QGSCOMPARENEARPOINT( alt.at( 1 ).pointN( 1 ), QgsPoint( 16, 2 ), 0.0001 );
+  QGSCOMPARENEARPOINT( alt.at( 2 ).pointN( 1 ), QgsPoint( 23, -1 ), 0.0001 );
+
+  // orthocenter
+  QCOMPARE( QgsPoint( 16, -8 ), t10.orthocenter() );
+  QCOMPARE( QgsPoint( 0, 5 ), t7.orthocenter() );
+  QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), t9.orthocenter(), 0.0001 );
+
+  // circumscribed circle
+  QCOMPARE( QgsPoint( 2.5, 2.5 ), t7.circumscribedCenter() );
+  QGSCOMPARENEAR( 3.5355, t7.circumscribedRadius(), 0.0001 );
+  QCOMPARE( QgsPoint( 23, 9 ), t10.circumscribedCenter() );
+  QGSCOMPARENEAR( 7.6158, t10.circumscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), t9.circumscribedCenter(), 0.0001 );
+  QGSCOMPARENEAR( 3.4641, t9.circumscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), t9.circumscribedCircle().center(), 0.0001 );
+  QGSCOMPARENEAR( 3.4641, t9.circumscribedCircle().radius(), 0.0001 );
+
+  // inscribed circle
+  QGSCOMPARENEARPOINT( QgsPoint( 1.4645, 3.5355 ), t7.inscribedCenter(), 0.001 );
+  QGSCOMPARENEAR( 1.4645, t7.inscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPoint( 20.4433, 3.0701 ), t10.inscribedCenter(), 0.001 );
+  QGSCOMPARENEAR( 1.0701, t10.inscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), t9.inscribedCenter(), 0.0001 );
+  QGSCOMPARENEAR( 1.7321, t9.inscribedRadius(), 0.0001 );
+  QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), t9.inscribedCircle().center(), 0.0001 );
+  QGSCOMPARENEAR( 1.7321, t9.inscribedCircle().radius(), 0.0001 );
+
+  // medians
+  QVector<QgsLineString> med = t7.medians();
+  QCOMPARE( med.at( 0 ).pointN( 0 ), t7.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 1 ), QgsPoint( 2.5, 5 ), 0.0001 );
+  QCOMPARE( med.at( 1 ).pointN( 0 ), t7.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( med.at( 1 ).pointN( 1 ), QgsPoint( 2.5, 2.5 ), 0.0001 );
+  QCOMPARE( med.at( 2 ).pointN( 0 ), t7.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 1 ), QgsPoint( 0, 2.5 ), 0.0001 );
+  med.clear();
+
+  med = t10.medians();
+  QCOMPARE( med.at( 0 ).pointN( 0 ), t10.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 1 ), QgsPoint( 21, 4 ), 0.0001 );
+  QCOMPARE( med.at( 1 ).pointN( 0 ), t10.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( med.at( 1 ).pointN( 1 ), QgsPoint( 23, 2 ), 0.0001 );
+  QCOMPARE( med.at( 2 ).pointN( 0 ), t10.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 1 ), QgsPoint( 18, 4 ), 0.0001 );
+  med.clear();
+  alt.clear();
+
+  med = t9.medians();
+  alt = t9.altitudes();
+  QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 0 ), alt.at( 0 ).pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 1 ), alt.at( 0 ).pointN( 1 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 1 ).pointN( 0 ), alt.at( 1 ).pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 1 ).pointN( 1 ), alt.at( 1 ).pointN( 1 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 0 ), alt.at( 2 ).pointN( 0 ), 0.0001 );
+  QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 1 ), alt.at( 2 ).pointN( 1 ), 0.0001 );
+
+  // medial
+  QCOMPARE( t7.medial(), QgsTriangle( QgsPoint( 0, 2.5 ), QgsPoint( 2.5, 5 ), QgsPoint( 2.5, 2.5 ) ) );
+  QCOMPARE( t9.medial(), QgsTriangle( QgsGeometryUtils::midpoint( t9.vertexAt( 0 ), t9.vertexAt( 1 ) ),
+                                      QgsGeometryUtils::midpoint( t9.vertexAt( 1 ), t9.vertexAt( 2 ) ),
+                                      QgsGeometryUtils::midpoint( t9.vertexAt( 2 ), t9.vertexAt( 0 ) ) ) );
+
+  // bisectors
+  QVector<QgsLineString> bis = t7.bisectors();
+  QCOMPARE( bis.at( 0 ).pointN( 0 ), t7.vertexAt( 0 ) );
+  QGSCOMPARENEARPOINT( bis.at( 0 ).pointN( 1 ), QgsPoint( 2.0711, 5 ), 0.0001 );
+  QCOMPARE( bis.at( 1 ).pointN( 0 ), t7.vertexAt( 1 ) );
+  QGSCOMPARENEARPOINT( bis.at( 1 ).pointN( 1 ), QgsPoint( 2.5, 2.5 ), 0.0001 );
+  QCOMPARE( bis.at( 2 ).pointN( 0 ), t7.vertexAt( 2 ) );
+  QGSCOMPARENEARPOINT( bis.at( 2 ).pointN( 1 ), QgsPoint( 0, 2.9289 ), 0.0001 );
+
+  // "deleted" method
+  ext.reset( new QgsLineString() );
+  QgsTriangle t11( QgsPoint( 0, 0 ), QgsPoint( 100, 100 ), QgsPoint( 0, 200 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 5, 5 )
+                  << QgsPoint( 50, 50 ) << QgsPoint( 0, 25 )
+                  << QgsPoint( 5, 5 ) );
+  t11.addInteriorRing( ext.release() );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+
+  /* QList<QgsCurve *> lc;
+   lc.append(ext);
+   t11.setInteriorRings( lc );
+   QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );*/
+
+  QgsVertexId id( 0, 0, 1 );
+  QVERIFY( !t11.deleteVertex( id ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  QVERIFY( !t11.insertVertex( id, QgsPoint( 5, 5 ) ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+
+  //move vertex
+  QgsPoint pt1( 5, 5 );
+  // invalid part
+  id.part = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.part = 1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  // invalid ring
+  id.part = 0;
+  id.ring = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.ring = 1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.ring = 0;
+  id.vertex = -1;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  id.vertex = 5;
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+
+  // valid vertex
+  id.vertex = 0;
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((5 5, 100 100, 0 200, 5 5))" ) );
+  pt1 = QgsPoint();
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  id.vertex = 4;
+  pt1 = QgsPoint( 5, 5 );
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((5 5, 100 100, 0 200, 5 5))" ) );
+  pt1 = QgsPoint();
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 100 100, 0 200, 0 0))" ) );
+  id.vertex = 1;
+  pt1 = QgsPoint( 5, 5 );
+  QVERIFY( t11.moveVertex( id, pt1 ) );
+  QCOMPARE( t11.asWkt(), QString( "Triangle ((0 0, 5 5, 0 200, 0 0))" ) );
+  // colinear
+  pt1 = QgsPoint( 0, 100 );
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+  // duplicate point
+  pt1 = QgsPoint( 0, 0 );
+  QVERIFY( !t11.moveVertex( id, pt1 ) );
+
+  //toCurveType
+  QgsTriangle t12( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) );
+  std::unique_ptr< QgsCurvePolygon > curveType( t12.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::CurvePolygon );
+  QCOMPARE( curveType->exteriorRing()->numPoints(), 4 );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 7, 4 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 13, 3 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 9, 6 ) );
+  QCOMPARE( curveType->exteriorRing()->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( 7, 4 ) );
+  QCOMPARE( curveType->numInteriorRings(), 0 );
+
+  // boundary
+  QVERIFY( !QgsTriangle().boundary() );
+  std::unique_ptr< QgsCurve > boundary( QgsTriangle( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) ).boundary() );
+  QCOMPARE( boundary->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( boundary->numPoints(), 4 );
+  QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 7, 4 ) );
+  QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 13, 3 ) );
+  QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 9, 6 ) );
+  QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( 7, 4 ) );
+
+  // cast
+  QgsTriangle pCast;
+  QVERIFY( QgsPolygonV2().cast( &pCast ) );
+  QgsTriangle pCast2( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) );;
+  QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
 }
 
 void TestQgsGeometry::fromQgsPointXY()

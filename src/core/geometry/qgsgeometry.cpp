@@ -2669,7 +2669,7 @@ bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
 
 QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
 {
-  if ( d->geometry->isEmpty() )
+  if ( !d->geometry || d->geometry->isEmpty() )
     return QgsGeometry();
 
   QgsGeometry geom = *this;

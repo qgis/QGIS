@@ -128,6 +128,8 @@ bool QgsGeometryCollection::insertGeometry( QgsAbstractGeometry *g, int index )
     return false;
   }
 
+  index = std::min( mGeometries.count(), index );
+
   mGeometries.insert( index, g );
   clearCache(); //set bounding box invalid
   return true;
@@ -183,17 +185,6 @@ void QgsGeometryCollection::transform( const QTransform &t )
   clearCache(); //set bounding box invalid
 }
 
-#if 0
-void QgsGeometryCollection::clip( const QgsRectangle &rect )
-{
-  QVector< QgsAbstractGeometry * >::iterator it = mGeometries.begin();
-  for ( ; it != mGeometries.end(); ++it )
-  {
-    ( *it )->clip( rect );
-  }
-}
-#endif
-
 void QgsGeometryCollection::draw( QPainter &p ) const
 {
   QVector< QgsAbstractGeometry * >::const_iterator it = mGeometries.constBegin();
@@ -210,7 +201,11 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
     return false;
   }
 
-  mWkbType = wkbPtr.readHeader();
+  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( wkbType ) != QgsWkbTypes::flatType( mWkbType ) )
+    return false;
+
+  mWkbType = wkbType;
 
   int nGeometries = 0;
   wkbPtr >> nGeometries;
@@ -419,6 +414,9 @@ bool QgsGeometryCollection::nextVertex( QgsVertexId &id, QgsPoint &vertex ) cons
     return false;
   }
 
+  if ( id.part >= mGeometries.count() )
+    return false;
+
   QgsAbstractGeometry *geom = mGeometries.at( id.part );
   if ( geom->nextVertex( id, vertex ) )
   {
@@ -451,7 +449,7 @@ bool QgsGeometryCollection::insertVertex( QgsVertexId position, const QgsPoint &
 
 bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
-  if ( position.part >= mGeometries.size() )
+  if ( position.part < 0 || position.part >= mGeometries.size() )
   {
     return false;
   }
@@ -466,7 +464,7 @@ bool QgsGeometryCollection::moveVertex( QgsVertexId position, const QgsPoint &ne
 
 bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
 {
-  if ( position.part >= mGeometries.size() )
+  if ( position.part < 0 || position.part >= mGeometries.size() )
   {
     return false;
   }
@@ -615,7 +613,7 @@ QgsAbstractGeometry *QgsGeometryCollection::segmentize( double tolerance, Segmen
 
 double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
 {
-  if ( vertex.part >= mGeometries.size() )
+  if ( vertex.part < 0 || vertex.part >= mGeometries.size() )
   {
     return 0.0;
   }
@@ -631,11 +629,21 @@ double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
 
 int QgsGeometryCollection::vertexCount( int part, int ring ) const
 {
+  if ( part < 0 || part >= mGeometries.size() )
+  {
+    return 0;
+  }
+
   return mGeometries[part]->vertexCount( 0, ring );
 }
 
 int QgsGeometryCollection::ringCount( int part ) const
 {
+  if ( part < 0 || part >= mGeometries.size() )
+  {
+    return 0;
+  }
+
   return mGeometries[part]->ringCount();
 }
 
@@ -682,7 +690,7 @@ bool QgsGeometryCollection::addMValue( double mValue )
 
 bool QgsGeometryCollection::dropZValue()
 {
-  if ( !is3D() )
+  if ( mWkbType != QgsWkbTypes::GeometryCollection && !is3D() )
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
@@ -696,7 +704,7 @@ bool QgsGeometryCollection::dropZValue()
 
 bool QgsGeometryCollection::dropMValue()
 {
-  if ( !isMeasure() )
+  if ( mWkbType != QgsWkbTypes::GeometryCollection && !isMeasure() )
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );

@@ -4317,7 +4317,11 @@ class TestQgsGeometry(unittest.TestCase):
                   'wkt': 'CompoundCurve(CircularString (20 30, 50 30, 50 90),LineString(50 90, 10 90))',
                   'reference_image': 'compoundcurve',
                   'use_pen': True,
-                  'as_polygon_reference_image': 'compoundcurve_aspolygon', }
+                  'as_polygon_reference_image': 'compoundcurve_aspolygon'},
+                 {'name': 'GeometryCollection',
+                  'wkt': 'GeometryCollection(LineString (20 30, 50 30, 50 70),LineString(10 90, 90 90))',
+                  'reference_image': 'geometrycollection',
+                  'use_pen': True}
                  ]
 
         for test in tests:

@@ -157,5 +157,5 @@ QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
   qreal scale = mMapCanvas->mapUnitsPerPixel();
   qreal s = ( mIconSize - 1 ) / 2.0 * scale;
   qreal p = mPen.width() * scale;
-  return mGeometry->boundingBox().buffer( s + p );
+  return mGeometry->boundingBox().buffered( s + p );
 }
