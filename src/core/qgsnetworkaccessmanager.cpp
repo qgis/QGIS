@@ -323,6 +323,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), "" ).toString();
     int proxyPort = settings.value( QStringLiteral( "proxy/proxyPort" ), "" ).toString().toInt();
+
     QString proxyUser = settings.value( QStringLiteral( "proxy/proxyUser" ), "" ).toString();
     QString proxyPassword = settings.value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString();
 
@@ -365,6 +366,13 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
                  );
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
+  }
+
+  // Setup network proxy authentication configuration
+  QString authcfg = settings.value( QStringLiteral( "proxy/authcfg" ), "" ).toString();
+  if ( !authcfg.isEmpty( ) )
+  {
+    QgsAuthManager::instance()->updateNetworkProxy( proxy, authcfg );
   }
 
   setFallbackProxyAndExcludes( proxy, excludes );
