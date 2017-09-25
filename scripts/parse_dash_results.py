@@ -46,7 +46,9 @@ from PyQt5.QtWidgets import (QDialog,
                              QGridLayout,
                              QPushButton,
                              QDoubleSpinBox,
-                             QMessageBox)
+                             QMessageBox,
+                             QWidget,
+                             QScrollArea)
 import struct
 import glob
 
@@ -92,8 +94,11 @@ class ResultHandler(QDialog):
         self.mask_label = QLabel()
         self.new_mask_label = QLabel()
 
-        grid = QGridLayout()
+        self.scrollArea = QScrollArea()
+        self.widget = QWidget()
+
         self.test_name_label = QLabel()
+        grid = QGridLayout()
         grid.addWidget(self.test_name_label, 0, 0)
         grid.addWidget(QLabel('Control'), 1, 0)
         grid.addWidget(QLabel('Rendered'), 1, 1)
@@ -106,8 +111,10 @@ class ResultHandler(QDialog):
         grid.addWidget(self.mask_label, 4, 0)
         grid.addWidget(self.new_mask_label, 4, 1)
 
+        self.widget.setLayout(grid)
+        self.scrollArea.setWidget(self.widget)
         v_layout = QVBoxLayout()
-        v_layout.addLayout(grid, 1)
+        v_layout.addWidget(self.scrollArea, 1)
 
         next_image_button = QPushButton()
         next_image_button.setText('Skip')
