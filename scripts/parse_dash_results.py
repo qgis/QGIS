@@ -162,7 +162,10 @@ class ResultHandler(QDialog):
             rendered_image = img.get('src')
             images[test_name] = '{}/{}'.format(dash_url, rendered_image)
 
-        print('found images:\n{}'.format(images))
+        if images:
+            print('found images:\n{}'.format(images))
+        else:
+            print('no images found\n')
         self.images = images
         self.load_next()
 
