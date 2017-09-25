@@ -95,6 +95,8 @@ class QgsCPLErrorHandler
     }
 };
 
+static const QByteArray ORIG_OGC_FID = "orig_ogc_fid";
+
 
 bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 {
@@ -1031,7 +1033,7 @@ void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount,
       {
         // add to ignored fields
         const char *fieldName = OGR_Fld_GetNameRef( OGR_FD_GetFieldDefn( featDefn, firstAttrIsFid ? i - 1 : i ) );
-        if ( qstrcmp( fieldName, "orig_ogc_fid" ) != 0 )
+        if ( qstrcmp( fieldName, ORIG_OGC_FID ) != 0 )
         {
           ignoredFields.append( fieldName );
         }
@@ -3470,7 +3472,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
       fidColumn = "FID";
     }
 
-    QByteArray sql = sqlPart1 + ", " + fidColumn + " as orig_ogc_fid" + sqlPart3;
+    QByteArray sql = sqlPart1 + ", " + fidColumn + " as " + ORIG_OGC_FID + sqlPart3;
     QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
 
@@ -3478,7 +3480,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
     if ( !subsetLayer )
     {
-      QByteArray sql = sqlPart1 + ", " + "FID as orig_ogc_fid" + sqlPart3;
+      QByteArray sql = sqlPart1 + ", " + "FID as " + ORIG_OGC_FID + sqlPart3;
       QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
       subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
     }
@@ -3500,7 +3502,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, OGRDataSourceH 
     if ( fieldCount > 0 )
     {
       OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, fieldCount - 1 );
-      origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), "orig_ogc_fid" ) == 0;
+      origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), ORIG_OGC_FID ) == 0;
     }
   }
 
