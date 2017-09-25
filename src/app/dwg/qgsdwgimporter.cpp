@@ -832,9 +832,9 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
   if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
   {
     LOG( QObject::tr( "Could not add %3 %1 [%2]" )
-         .arg( data.name.c_str() )
-         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) )
-         .arg( QObject::tr( "line type" ) )
+         .arg( data.name.c_str(),
+               QString::fromUtf8( CPLGetLastErrorMsg() ),
+               QObject::tr( "line type" ) )
        );
   }
 
