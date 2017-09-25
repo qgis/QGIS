@@ -10,7 +10,7 @@ class QgsReadWriteContext;
 
 
 /**
- * \inmodule qgis3d
+ * \inmodule 3d
  * Abstract base class for 3D symbols that are used by VectorLayer3DRenderer objects.
  *
  * 3D symbol objects define appearance of GIS data.

@@ -13,7 +13,11 @@ class ChunkQueueJobFactory;
 
 #include <QVector3D>
 #include <QMatrix4x4>
-//! Records some bits about the scene
+
+/** \ingroup 3d
+ * Records some bits about the scene
+ * \since QGIS 3.0
+ */
 class SceneState
 {
   public:
