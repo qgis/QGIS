@@ -34,7 +34,7 @@ class QgsManageConnectionsDialog : QDialog
       GeoNode
     };
 
-    QgsManageConnectionsDialog( QWidget *parent /TransferThis/ = 0, Mode mode = Export, Type type = WMS, const QString &fileName = "" );
+    QgsManageConnectionsDialog( QWidget *parent /TransferThis/ = 0, Mode mode = Export, Type type = WMS, const QString &fileName = QString() );
 
   public slots:
     void doExportImport();
@@ -43,6 +43,7 @@ class QgsManageConnectionsDialog : QDialog
     void selectionChanged();
 
 };
+
 
 
 /************************************************************************

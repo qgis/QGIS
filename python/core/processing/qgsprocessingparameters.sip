@@ -2143,6 +2143,7 @@ class QgsProcessingParameterBand : QgsProcessingParameterDefinition
 
 
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -152,6 +152,7 @@ Appends first point if not already closed.
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

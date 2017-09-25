@@ -274,6 +274,7 @@ Closes the line string by appending the first point to the end of the line, if i
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
