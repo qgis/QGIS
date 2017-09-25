@@ -75,7 +75,7 @@ class QgsRendererRange
     void swap( QgsRendererRange &other );
 };
 
-typedef QList<QgsRendererRange> QgsRangeList;
+typedef QVector<QgsRendererRange> QgsRangeList;
 
 
 class QgsRendererRangeLabelFormat

@@ -189,7 +189,7 @@ Sets coordinate transformation.
 
     void setRenderingStopped( bool stopped );
 
-    void setDistanceArea( const QgsDistanceArea distanceArea );
+    void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
  A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
  Will be used to convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits

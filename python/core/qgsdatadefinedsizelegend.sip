@@ -86,11 +86,11 @@ Returns transformer for scaling of symbol sizes. Returns null if no transformer 
  :rtype: QgsSizeScaleTransformer
 %End
 
-    void setClasses( const QList<QgsDataDefinedSizeLegend::SizeClass> &classes );
+    void setClasses( const QList< QgsDataDefinedSizeLegend::SizeClass > &classes );
 %Docstring
 Sets list of classes: each class is a pair of symbol size (in units used by the symbol) and label
 %End
-    QList<QgsDataDefinedSizeLegend::SizeClass> classes() const;
+    QList< QgsDataDefinedSizeLegend::SizeClass > classes() const;
 %Docstring
 Returns list of classes: each class is a pair of symbol size (in units used by the symbol) and label
  :rtype: list of QgsDataDefinedSizeLegend.SizeClass
