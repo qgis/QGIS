@@ -183,17 +183,6 @@ void QgsGeometryCollection::transform( const QTransform &t )
   clearCache(); //set bounding box invalid
 }
 
-#if 0
-void QgsGeometryCollection::clip( const QgsRectangle &rect )
-{
-  QVector< QgsAbstractGeometry * >::iterator it = mGeometries.begin();
-  for ( ; it != mGeometries.end(); ++it )
-  {
-    ( *it )->clip( rect );
-  }
-}
-#endif
-
 void QgsGeometryCollection::draw( QPainter &p ) const
 {
   QVector< QgsAbstractGeometry * >::const_iterator it = mGeometries.constBegin();
@@ -210,7 +199,11 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
     return false;
   }
 
-  mWkbType = wkbPtr.readHeader();
+  QgsWkbTypes::Type wkbType = wkbPtr.readHeader();
+  if ( QgsWkbTypes::flatType( wkbType ) != QgsWkbTypes::flatType( mWkbType ) )
+    return false;
+
+  mWkbType = wkbType;
 
   int nGeometries = 0;
   wkbPtr >> nGeometries;
