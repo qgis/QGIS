@@ -6,6 +6,8 @@
 class AABB;
 class AABBMesh;
 
+///@cond PRIVATE
+
 /** \ingroup 3d
  * Draws bounds of axis aligned bounding boxes
  * \since QGIS 3.0
@@ -22,5 +24,7 @@ class ChunkBoundsEntity : public Qt3DCore::QEntity
   private:
     AABBMesh *aabbMesh;
 };
+
+/// @endcond
 
 #endif // CHUNKBOUNDSENTITY_H

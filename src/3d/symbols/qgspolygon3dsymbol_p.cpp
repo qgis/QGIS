@@ -12,6 +12,7 @@
 #include "qgsmultipolygon.h"
 
 
+/// @cond PRIVATE
 
 QgsPolygon3DSymbolEntity::QgsPolygon3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
@@ -142,3 +143,5 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
 
   return renderer;
 }
+
+/// @endcond

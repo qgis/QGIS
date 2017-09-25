@@ -132,6 +132,7 @@ void Terrain::connectToLayersRepaintRequest()
 
 // -----------
 
+///@cond PRIVATE
 
 TerrainMapUpdateJob::TerrainMapUpdateJob( MapTextureGenerator *mapTextureGenerator, ChunkNode *node )
   : ChunkQueueJob( node )
@@ -159,3 +160,5 @@ void TerrainMapUpdateJob::onTileReady( int jobId, const QImage &image )
     emit finished();
   }
 }
+
+/// @endcond

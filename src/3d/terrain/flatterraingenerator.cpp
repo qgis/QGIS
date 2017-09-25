@@ -24,8 +24,6 @@ class FlatTerrainChunkLoader : public TerrainChunkLoader
     Qt3DExtras::QPlaneGeometry *mTileGeometry = nullptr;
 };
 
-/// @endcond
-
 
 //---------------
 
@@ -75,6 +73,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   return entity;
 }
 
+/// @endcond
 
 // ---------------
 

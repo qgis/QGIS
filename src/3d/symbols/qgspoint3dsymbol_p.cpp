@@ -33,6 +33,7 @@
 #include "qgspoint.h"
 #include "qgs3dutils.h"
 
+/// @cond PRIVATE
 
 QgsPoint3DSymbolEntity::QgsPoint3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
@@ -377,3 +378,5 @@ Qt3DCore::QTransform *QgsPoint3DSymbolModelEntityFactory::transform( const QVect
   tr->setTranslation( position + tr->translation() );
   return tr;
 }
+
+/// @endcond
