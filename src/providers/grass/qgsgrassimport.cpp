@@ -715,7 +715,9 @@ bool QgsGrassVectorImport::import()
   QgsDebugMsg( "waitForFinished" );
   mProcess->waitForFinished( 30000 );
 
+#ifdef QGISDEBUG
   QString stdoutString = mProcess->readAllStandardOutput().constData();
+#endif
   QString stderrString = mProcess->readAllStandardError().constData();
 
 #ifdef QGISDEBUG

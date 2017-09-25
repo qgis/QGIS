@@ -54,7 +54,6 @@ QStringList QgsXyzConnectionUtils::connectionList()
   {
     settings.beginGroup( "qgis/connections-xyz/" + s );
     bool isHidden = settings.value( QStringLiteral( "hidden" ), false ).toBool();
-    QString url = settings.value( QStringLiteral( "url" ), "" ).toString();
     settings.endGroup();
     if ( isHidden )
     {

@@ -89,8 +89,10 @@ void QgsWfsLayerItem::copyStyle()
 
   if ( !connection )
   {
+#ifdef QGISDEBUG
     QString errorMsg( QStringLiteral( "Cannot get style for layer %1" ).arg( this->name() ) );
     QgsDebugMsg( " Cannot get style: " + errorMsg );
+#endif
 #if 0
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),
@@ -105,8 +107,10 @@ void QgsWfsLayerItem::copyStyle()
   QgsGeoNodeStyle style = geoNodeRequest.fetchDefaultStyleBlocking( this->name() );
   if ( style.name.isEmpty() )
   {
+#ifdef QGISDEBUG
     QString errorMsg( QStringLiteral( "Cannot get style for layer %1" ).arg( this->name() ) );
     QgsDebugMsg( " Cannot get style: " + errorMsg );
+#endif
 #if 0
     // TODO: how to emit message from provider (which does not know about QgisApp)
     QgisApp::instance()->messageBar()->pushMessage( tr( "Cannot copy style" ),

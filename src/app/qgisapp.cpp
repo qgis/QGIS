@@ -4349,7 +4349,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   }
 
   QStringList sublayers = layer->dataProvider()->subLayers();
-  QString layertype = layer->dataProvider()->storageType();
 
   QgsSublayersDialog::LayerDefinitionList list;
   Q_FOREACH ( const QString &sublayer, sublayers )
