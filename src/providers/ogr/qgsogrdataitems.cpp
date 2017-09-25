@@ -163,7 +163,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
       subLayersMap.insert( pieces[0].toInt(), pieces );
     }
     int prevIdx = -1;
-    for ( const int &idx : subLayersMap.keys( ) )
+    const auto subLayerKeys = subLayersMap.keys( );
+    for ( const int &idx : subLayerKeys )
     {
       if ( idx == prevIdx )
       {

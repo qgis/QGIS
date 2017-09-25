@@ -2165,7 +2165,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
               points.append( intersectGeom.asPoint() );
             }
 
-            for ( QgsPointXY j : qgsAsConst( points ) )
+            for ( const QgsPointXY &j : qgsAsConst( points ) )
             {
               outFeature.setGeometry( QgsGeometry::fromPoint( j ) );
               outFeature.setAttributes( outAttributes );

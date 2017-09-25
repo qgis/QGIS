@@ -1079,7 +1079,8 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
       if ( !vlayer || !vlayer->isEditable() )
         continue;
 
-      for ( const QgsPointLocator::Match &otherMatch : layerVerticesSnappedToPoint( vlayer, m.point() ) )
+      const auto snappedVertices = layerVerticesSnappedToPoint( vlayer, m.point() );
+      for ( const QgsPointLocator::Match &otherMatch : snappedVertices )
       {
         if ( otherMatch.layer() == m.layer() &&
              otherMatch.featureId() == m.featureId() &&
@@ -1436,7 +1437,8 @@ void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator:
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
     // this requires that the snapping match is to a segment and the segment layer's CRS
     // is the same (otherwise we would need to reproject the point and it will not be coincident)
-    for ( QgsVectorLayer *layer : edits.keys() )
+    const auto editKeys = edits.keys();
+    for ( QgsVectorLayer *layer : editKeys )
     {
       if ( layer->crs() == mapPointMatch->layer()->crs() )
       {
@@ -1531,11 +1533,12 @@ void QgsNodeTool::deleteVertex()
   {
     // if topo editing is enabled, delete all the vertices that are on the same location
     QSet<Vertex> topoVerticesToDelete;
-    for ( const Vertex &vertexToDelete : toDelete )
+    for ( const Vertex &vertexToDelete : qgsAsConst( toDelete ) )
     {
       QgsPointXY layerPt = cachedGeometryForVertex( vertexToDelete ).vertexAt( vertexToDelete.vertexId );
       QgsPointXY mapPt = toMapCoordinates( vertexToDelete.layer, layerPt );
-      for ( const QgsPointLocator::Match &otherMatch : layerVerticesSnappedToPoint( vertexToDelete.layer, mapPt ) )
+      const auto snappedVertices = layerVerticesSnappedToPoint( vertexToDelete.layer, mapPt );
+      for ( const QgsPointLocator::Match &otherMatch : snappedVertices )
       {
         Vertex otherVertex( otherMatch.layer(), otherMatch.featureId(), otherMatch.vertexIndex() );
         if ( toDelete.contains( otherVertex ) || topoVerticesToDelete.contains( otherVertex ) )
@@ -1550,7 +1553,7 @@ void QgsNodeTool::deleteVertex()
 
   // switch from a plain list to dictionary { layer: { fid: [vertexNr1, vertexNr2, ...] } }
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > > toDeleteGrouped;
-  for ( const Vertex &vertex : toDelete )
+  for ( const Vertex &vertex : qgsAsConst( toDelete ) )
   {
     toDeleteGrouped[vertex.layer][vertex.fid].append( vertex.vertexId );
   }
@@ -1586,7 +1589,7 @@ void QgsNodeTool::deleteVertex()
           }
         }
         // now delete the duplicities
-        for ( int duplicateVertexIndex : duplicateVertexIndices )
+        for ( int duplicateVertexIndex : qgsAsConst( duplicateVertexIndices ) )
           vertexIds.removeOne( duplicateVertexIndex );
       }
     }
@@ -1779,7 +1782,7 @@ void QgsNodeTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
   QgsGeometryUtils::segmentizeArc( QgsPoint( v0 ), QgsPoint( v1 ), QgsPoint( v2 ), points );
   // it would be useful to have QgsRubberBand::setPoints() call
   band->reset();
-  for ( const QgsPoint &p : points )
+  for ( const QgsPoint &p : qgsAsConst( points ) )
     band->addPoint( p );
 }
 
