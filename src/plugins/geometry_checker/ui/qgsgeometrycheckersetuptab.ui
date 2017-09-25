@@ -41,7 +41,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-222</y>
+        <y>0</y>
         <width>626</width>
         <height>991</height>
        </rect>
@@ -110,70 +110,6 @@
            </widget>
           </item>
           <item>
-           <widget class="QGroupBox" name="groupBox_2">
-            <property name="title">
-             <string>Geometry validity</string>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_8">
-             <property name="leftMargin">
-              <number>2</number>
-             </property>
-             <property name="topMargin">
-              <number>2</number>
-             </property>
-             <property name="rightMargin">
-              <number>2</number>
-             </property>
-             <property name="bottomMargin">
-              <number>2</number>
-             </property>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="checkBoxSelfIntersections">
-               <property name="text">
-                <string>Self intersections</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="checkBoxDuplicateNodes">
-               <property name="text">
-                <string>Duplicate nodes</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QCheckBox" name="checkBoxDegeneratePolygon">
-               <property name="text">
-                <string>Polygon with less than 3 nodes</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QCheckBox" name="checkBoxSelfContacts">
-               <property name="text">
-                <string>Self contacts</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
            <widget class="QGroupBox" name="groupBoxGeometryTypes">
             <property name="title">
              <string>Allowed geometry types</string>
@@ -236,6 +172,70 @@
               <widget class="QCheckBox" name="checkBoxMultipolygon">
                <property name="text">
                 <string>Multipolygon</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="title">
+             <string>Geometry validity</string>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_8">
+             <property name="leftMargin">
+              <number>2</number>
+             </property>
+             <property name="topMargin">
+              <number>2</number>
+             </property>
+             <property name="rightMargin">
+              <number>2</number>
+             </property>
+             <property name="bottomMargin">
+              <number>2</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkBoxSelfIntersections">
+               <property name="text">
+                <string>Self intersections</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="checkBoxDuplicateNodes">
+               <property name="text">
+                <string>Duplicate nodes</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="checkBoxDegeneratePolygon">
+               <property name="text">
+                <string>Polygon with less than 3 nodes</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QCheckBox" name="checkBoxSelfContacts">
+               <property name="text">
+                <string>Self contacts</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -768,7 +768,6 @@
          </layout>
          <zorder>groupBoxInputLayers</zorder>
          <zorder>groupBox_2</zorder>
-         <zorder>groupBoxGeometryTypes</zorder>
          <zorder>groupBoxGeometryConditions</zorder>
          <zorder>line</zorder>
          <zorder>groupBoxGeometryProperties</zorder>
@@ -776,6 +775,7 @@
          <zorder>groupBoxOutputLayers</zorder>
          <zorder>line_2</zorder>
          <zorder>line_3</zorder>
+         <zorder>groupBoxGeometryTypes</zorder>
         </widget>
        </item>
        <item row="1" column="0">
