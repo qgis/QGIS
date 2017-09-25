@@ -327,11 +327,16 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature ) 
 {
   if ( mOrigFidAdded )
   {
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
+    int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
+    if ( lastField >= 0 )
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2000000
-    feature.setFeatureId( OGR_F_GetFieldAsInteger64( fet, 0 ) );
+      feature.setFeatureId( OGR_F_GetFieldAsInteger64( fet, lastField ) );
 #else
-    feature.setFeatureId( OGR_F_GetFieldAsInteger( fet, 0 ) );
+      feature.setFeatureId( OGR_F_GetFieldAsInteger( fet, lastField ) );
 #endif
+    else
+      feature.setFeatureId( OGR_F_GetFID( fet ) );
   }
   else
   {
