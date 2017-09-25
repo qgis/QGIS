@@ -65,7 +65,10 @@ class ChunkQueueJobFactory
 };
 
 
-//! Base class for jobs that load chunks
+/** \ingroup 3d
+ * Base class for jobs that load chunks
+ * \since QGIS 3.0
+ */
 class ChunkLoader : public ChunkQueueJob
 {
     Q_OBJECT
@@ -85,7 +88,10 @@ class ChunkLoader : public ChunkQueueJob
 };
 
 
-//! Factory for chunk loaders for a particular type of entity
+/** \ingroup 3d
+ * Factory for chunk loaders for a particular type of entity
+ * \since QGIS 3.0
+ */
 class ChunkLoaderFactory
 {
   public:

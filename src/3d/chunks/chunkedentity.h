@@ -39,7 +39,7 @@ class ChunkedEntity : public Qt3DCore::QEntity
     ChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, ChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
     ~ChunkedEntity();
 
-    //!< Called when e.g. camera changes and entity may need updated
+    //! Called when e.g. camera changes and entity may need updated
     void update( const SceneState &state );
 
     bool needsUpdate; //!< A chunk has been loaded recently - let's display it!

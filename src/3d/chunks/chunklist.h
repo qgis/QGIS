@@ -3,7 +3,10 @@
 
 class ChunkNode;
 
-//! Element of a double-linked list
+/** \ingroup 3d
+ * Element of a double-linked list
+ * \since QGIS 3.0
+ */
 class ChunkListEntry
 {
   public:
