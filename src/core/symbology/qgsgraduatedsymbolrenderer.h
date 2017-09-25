@@ -78,7 +78,7 @@ class CORE_EXPORT QgsRendererRange
     void swap( QgsRendererRange &other );
 };
 
-typedef QList<QgsRendererRange> QgsRangeList;
+typedef QVector<QgsRendererRange> QgsRangeList;
 
 
 /** \ingroup core

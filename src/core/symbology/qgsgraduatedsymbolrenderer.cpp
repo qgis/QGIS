@@ -1390,7 +1390,7 @@ void QgsGraduatedSymbolRenderer::addClass( double lower, double upper )
 
 void QgsGraduatedSymbolRenderer::addBreak( double breakValue, bool updateSymbols )
 {
-  QMutableListIterator< QgsRendererRange > it( mRanges );
+  QMutableVectorIterator< QgsRendererRange > it( mRanges );
   while ( it.hasNext() )
   {
     QgsRendererRange range = it.next();
