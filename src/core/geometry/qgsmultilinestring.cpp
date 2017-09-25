@@ -136,7 +136,7 @@ QgsMultiCurve *QgsMultiLineString::toCurveType() const
   QgsMultiCurve *multiCurve = new QgsMultiCurve();
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
-    multiCurve->addGeometry( mGeometries.at( i )->clone() );
+    multiCurve->addGeometry( mGeometries.at( i )->toCurveType() );
   }
   return multiCurve;
 }
