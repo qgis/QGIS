@@ -20,6 +20,8 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
+#include <QNetworkProxy>
+
 static const QString AUTH_METHOD_KEY = QStringLiteral( "Basic" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Basic authentication" );
 
@@ -124,6 +126,28 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     connectionItems.append( passparam );
   }
 
+  return true;
+}
+
+bool QgsAuthBasicMethod::updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg, const QString &dataprovider )
+{
+  Q_UNUSED( dataprovider )
+
+  QgsAuthMethodConfig mconfig = getMethodConfig( authcfg );
+  if ( !mconfig.isValid() )
+  {
+    QgsDebugMsg( QString( "Update proxy config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    return false;
+  }
+
+  QString username = mconfig.config( QStringLiteral( "username" ) );
+  QString password = mconfig.config( QStringLiteral( "password" ) );
+
+  if ( !username.isEmpty() )
+  {
+    proxy.setUser( username );
+    proxy.setPassword( password );
+  }
   return true;
 }
 

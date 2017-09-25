@@ -1457,6 +1457,31 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
   return false;
 }
 
+bool QgsAuthManager::updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg, const QString &dataprovider )
+{
+  if ( isDisabled() )
+    return false;
+
+  QgsAuthMethod *authmethod = configAuthMethod( authcfg );
+  if ( authmethod )
+  {
+    if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkProxy ) )
+    {
+      QgsDebugMsg( QString( "Network request updating not supported by authcfg: %1" ).arg( authcfg ) );
+      return true;
+    }
+
+    if ( !authmethod->updateNetworkProxy( proxy, authcfg, dataprovider.toLower() ) )
+    {
+      authmethod->clearCachedConfig( authcfg );
+      return false;
+    }
+    return true;
+  }
+
+  return false;
+}
+
 bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant &value, bool encrypt )
 {
   if ( key.isEmpty() )
