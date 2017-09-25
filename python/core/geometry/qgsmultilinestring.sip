@@ -20,15 +20,14 @@ class QgsMultiLineString: QgsMultiCurve
 %End
   public:
     QgsMultiLineString();
+
     virtual QString geometryType() const;
 
     virtual QgsMultiLineString *clone() const /Factory/;
 
-
     virtual void clear();
 
     virtual bool fromWkt( const QString &wkt );
-
 
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
@@ -36,13 +35,10 @@ class QgsMultiLineString: QgsMultiCurve
 
     virtual QString asJSON( int precision = 17 ) const;
 
-
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
-%Docstring
-Adds a geometry and takes ownership. Returns true in case of success
- :rtype: bool
-%End
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
+
 
     virtual QgsMultiCurve *toCurveType() const /Factory/;
 
