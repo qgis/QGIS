@@ -37,7 +37,8 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
                     << QStringLiteral( "ows" )
                     << QStringLiteral( "wfs" )  // convert to lowercase
                     << QStringLiteral( "wcs" )
-                    << QStringLiteral( "wms" ) );
+                    << QStringLiteral( "wms" )
+                    << QStringLiteral( "proxy" ) );
 }
 
 QgsAuthBasicMethod::~QgsAuthBasicMethod()
