@@ -141,7 +141,7 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 
   public slots:
     void newConnection();
-    void connectionsChanged();
+    void onConnectionsChanged();
     void createDatabase();
 #endif
 };

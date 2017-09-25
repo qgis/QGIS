@@ -375,7 +375,7 @@ void QgsMapSaveDialog::copyToClipboard()
   QgsApplication::taskManager()->addTask( mapRendererTask );
 }
 
-void QgsMapSaveDialog::accepted()
+void QgsMapSaveDialog::onAccepted()
 {
   if ( mDialogType == Image )
   {

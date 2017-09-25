@@ -45,7 +45,7 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
 
   public slots:
 #ifdef HAVE_GUI
-    void connectionsChanged();
+    void onConnectionsChanged();
     void newConnection();
 #endif
 };

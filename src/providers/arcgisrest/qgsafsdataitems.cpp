@@ -64,7 +64,7 @@ QWidget *QgsAfsRootItem::paramWidget()
   return select;
 }
 
-void QgsAfsRootItem::connectionsChanged()
+void QgsAfsRootItem::onConnectionsChanged()
 {
   refresh();
 }

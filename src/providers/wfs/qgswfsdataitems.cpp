@@ -259,11 +259,11 @@ QList<QAction *> QgsWfsRootItem::actions( QWidget *parent )
 QWidget *QgsWfsRootItem::paramWidget()
 {
   QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsWFSSourceSelect::connectionsChanged, this, &QgsWfsRootItem::connectionsChanged );
+  connect( select, &QgsWFSSourceSelect::connectionsChanged, this, &QgsWfsRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsWfsRootItem::connectionsChanged()
+void QgsWfsRootItem::onConnectionsChanged()
 {
   refresh();
 }

@@ -237,7 +237,7 @@ QWidget *QgsOWSRootItem::paramWidget()
 #endif
   return nullptr;
 }
-void QgsOWSRootItem::connectionsChanged()
+void QgsOWSRootItem::onConnectionsChanged()
 {
   refresh();
 }

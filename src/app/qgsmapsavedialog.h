@@ -76,10 +76,12 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );
 
+  private slots:
+    void onAccepted();
+
   private:
 
     void lockChanged( const bool locked );
-    void accepted();
     void copyToClipboard();
 
     void updateDpi( int dpi );

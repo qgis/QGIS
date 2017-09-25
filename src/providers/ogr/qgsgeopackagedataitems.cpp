@@ -91,7 +91,7 @@ QWidget *QgsGeoPackageRootItem::paramWidget()
 }
 #endif
 
-void QgsGeoPackageRootItem::connectionsChanged()
+void QgsGeoPackageRootItem::onConnectionsChanged()
 {
   refresh();
 }
