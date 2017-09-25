@@ -246,7 +246,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         continue;
 
       executedAlg = true;
-      feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
+      if ( feedback )
+        feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
       const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
 
@@ -255,7 +256,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                  << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
 
       QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
-      feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
+      if ( feedback )
+        feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
 
       QStringList params;
       for ( auto childParamIt = childParams.constBegin(); childParamIt != childParams.constEnd(); ++childParamIt )
@@ -264,8 +266,11 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                child.algorithm()->parameterDefinition( childParamIt.key() )->valueAsPythonString( childParamIt.value(), context ) );
       }
 
-      feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
-      feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
+      if ( feedback )
+      {
+        feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
+        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
+      }
 
       QTime childTime;
       childTime.start();
@@ -277,7 +282,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( !ok )
       {
         QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
-        feedback->reportError( error );
+        if ( feedback )
+          feedback->reportError( error );
         throw QgsProcessingException( error );
       }
       childResults.insert( childId, results );
@@ -293,13 +299,15 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       executed.insert( childId );
       modelFeedback.setCurrentStep( executed.count() );
-      feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
+      if ( feedback )
+        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
     }
 
     if ( feedback && feedback->isCanceled() )
       break;
   }
-  feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
+  if ( feedback )
+    feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
   mResults = finalResults;
   return mResults;
