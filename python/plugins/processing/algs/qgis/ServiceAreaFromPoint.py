@@ -73,8 +73,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
     SPEED_FIELD = 'SPEED_FIELD'
     DEFAULT_SPEED = 'DEFAULT_SPEED'
     TOLERANCE = 'TOLERANCE'
-    OUTPUT_POINTS = 'OUTPUT_POINTS'
-    OUTPUT_POLYGON = 'OUTPUT_POLYGON'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
@@ -146,14 +145,9 @@ class ServiceAreaFromPoint(QgisAlgorithm):
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_POINTS,
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Service area (boundary nodes)'),
-                                                            QgsProcessing.TypeVectorPoint,
-                                                            optional=True))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_POLYGON,
-                                                            self.tr('Service area (convex hull)'),
-                                                            QgsProcessing.TypeVectorPolygon,
-                                                            optional=True))
+                                                            QgsProcessing.TypeVectorPoint))
 
     def name(self):
         return 'serviceareafrompoint'
@@ -236,43 +230,22 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
         geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
-        (sinkPoints, pointsId) = self.parameterAsSink(parameters, self.OUTPUT_POINTS, context,
-                                                      fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
 
-        (sinkPolygon, polygonId) = self.parameterAsSink(parameters, self.OUTPUT_POLYGON, context,
-                                                        fields, QgsWkbTypes.Polygon, network.sourceCrs())
-        results = {}
-        if sinkPoints:
-            feat.setGeometry(geomUpper)
-            feat['type'] = 'upper'
-            feat['start'] = startPoint.toString()
-            sinkPoints.addFeature(feat, QgsFeatureSink.FastInsert)
+        feat.setGeometry(geomUpper)
+        feat['type'] = 'upper'
+        feat['start'] = startPoint.toString()
+        sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
-            feat.setGeometry(geomLower)
-            feat['type'] = 'lower'
-            feat['start'] = startPoint.toString()
-            sinkPoints.addFeature(feat, QgsFeatureSink.FastInsert)
+        feat.setGeometry(geomLower)
+        feat['type'] = 'lower'
+        feat['start'] = startPoint.toString()
+        sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
-            upperBoundary.append(startPoint)
-            lowerBoundary.append(startPoint)
-            geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-            geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+        upperBoundary.append(startPoint)
+        lowerBoundary.append(startPoint)
+        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
+        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
 
-            results[self.OUTPUT_POINTS] = pointsId
-
-        if sinkPolygon:
-            geom = geomUpper.convexHull()
-            feat.setGeometry(geom)
-            feat['type'] = 'upper'
-            feat['start'] = startPoint.toString()
-            sinkPolygon.addFeature(feat, QgsFeatureSink.FastInsert)
-
-            geom = geomLower.convexHull()
-            feat.setGeometry(geom)
-            feat['type'] = 'lower'
-            feat['start'] = startPoint.toString()
-            sinkPolygon.addFeature(feat, QgsFeatureSink.FastInsert)
-
-            results[self.OUTPUT_POLYGON] = polygonId
-
-        return results
+        return {self.OUTPUT: dest_id}
