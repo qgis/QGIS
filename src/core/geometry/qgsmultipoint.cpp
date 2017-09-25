@@ -142,7 +142,10 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
 bool QgsMultiPointV2::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::Point )
+  {
+    delete g;
     return false;
+  }
 
   return QgsGeometryCollection::insertGeometry( g, index );
 }

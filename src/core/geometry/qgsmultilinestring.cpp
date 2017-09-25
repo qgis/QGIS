@@ -128,7 +128,10 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
 bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::LineString )
+  {
+    delete g;
     return false;
+  }
 
   return QgsGeometryCollection::insertGeometry( g, index );
 }
