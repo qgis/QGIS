@@ -1,4 +1,9 @@
 SET(QGIS_GUI_SRCS
+  nodetool/qgsselectedfeature.cpp
+  nodetool/qgsvertexentry.cpp
+  nodetool/qgsnodeeditor.cpp
+  nodetool/qgsnodetool.cpp
+
   raster/qgsmultibandcolorrendererwidget.cpp
   raster/qgspalettedrendererwidget.cpp
   raster/qgsrasterbandcombobox.cpp
@@ -507,6 +512,10 @@ SET(QGIS_GUI_MOC_HDRS
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
 
+  nodetool/qgsselectedfeature.h
+  nodetool/qgsnodeeditor.h
+  nodetool/qgsnodetool.h
+
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
 
@@ -713,6 +722,8 @@ SET(QGIS_GUI_HDRS
   qgsabstractdatasourcewidget.h
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
+
+  nodetool/qgsvertexentry.h
 
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h

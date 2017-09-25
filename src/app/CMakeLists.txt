@@ -100,11 +100,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
 
-  nodetool/qgsselectedfeature.cpp
-  nodetool/qgsvertexentry.cpp
-  nodetool/qgsnodeeditor.cpp
-  nodetool/qgsnodetool.cpp
-
   qgslayerstylingwidget.cpp
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
@@ -288,10 +283,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooltextannotation.h
   qgsmaptooladdcircularstring.h
   qgsmaptoolcircularstringcurvepoint.h
-
-  nodetool/qgsselectedfeature.h
-  nodetool/qgsnodeeditor.h
-  nodetool/qgsnodetool.h
 
   qgslayerstylingwidget.h
   qgsmeasuredialog.h
@@ -520,6 +511,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/nodetool
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
