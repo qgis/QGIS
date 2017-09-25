@@ -190,7 +190,7 @@ void QgsGPSDetector::advance()
   connect( mConn, &QObject::destroyed, this, &QgsGPSDetector::connDestroyed );
 
   // leave 2s to pickup a valid string
-  QTimer::singleShot( 2000, this, SLOT( advance() ) );
+  QTimer::singleShot( 2000, this, &QgsGPSDetector::advance );
 }
 
 void QgsGPSDetector::detected( const QgsGPSInformation &info )

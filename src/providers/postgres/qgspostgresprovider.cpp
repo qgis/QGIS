@@ -2472,7 +2472,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds &ids )
     QList<int> idsList = ids.values();
     std::sort( idsList.begin(), idsList.end(), std::greater<int>() );
 
-    for ( QList<int>::const_iterator iter = idsList.begin(); iter != idsList.end(); ++iter )
+    for ( auto iter = idsList.constBegin(); iter != idsList.constEnd(); ++iter )
     {
       int index = *iter;
       if ( index < 0 || index >= mAttributeFields.count() )

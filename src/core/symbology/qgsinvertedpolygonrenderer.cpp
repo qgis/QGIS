@@ -89,7 +89,7 @@ void QgsInvertedPolygonRenderer::checkLegendSymbolItem( const QString &key, bool
   if ( !mSubRenderer )
     return;
 
-  return mSubRenderer->checkLegendSymbolItem( key, state );
+  mSubRenderer->checkLegendSymbolItem( key, state );
 }
 
 void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
