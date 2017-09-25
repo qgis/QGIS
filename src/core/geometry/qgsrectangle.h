@@ -161,7 +161,8 @@ class CORE_EXPORT QgsRectangle
     void scale( double scaleFactor, double centerX, double centerY );
 
     /**
-     * Grows the rectangle by the specified amount.
+     * Grows the rectangle in place by the specified amount.
+     * \see buffered()
      */
     void grow( double delta );
 
@@ -173,8 +174,9 @@ class CORE_EXPORT QgsRectangle
     /**
      * Get rectangle enlarged by buffer.
      * \since QGIS 2.1
+     * \see grow()
     */
-    QgsRectangle buffer( double width );
+    QgsRectangle buffered( double width ) const;
 
     /**
      * Return the intersection with the given rectangle.

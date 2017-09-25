@@ -163,7 +163,8 @@ Copy constructor
 
     void grow( double delta );
 %Docstring
- Grows the rectangle by the specified amount.
+ Grows the rectangle in place by the specified amount.
+.. seealso:: buffered()
 %End
 
     void include( const QgsPointXY &p );
@@ -171,10 +172,11 @@ Copy constructor
  Updates the rectangle to include the specified point.
 %End
 
-    QgsRectangle buffer( double width );
+    QgsRectangle buffered( double width ) const;
 %Docstring
  Get rectangle enlarged by buffer.
 .. versionadded:: 2.1
+.. seealso:: grow()
  :rtype: QgsRectangle
 %End
 

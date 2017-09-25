@@ -382,7 +382,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         extent = geom.geometry().boundingBox()
         # buffer extent by 10%
-        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())
@@ -447,7 +447,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         extent = geom.geometry().boundingBox()
         # buffer extent by 10%
-        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())

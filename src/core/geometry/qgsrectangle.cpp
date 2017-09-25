@@ -147,7 +147,7 @@ void QgsRectangle::include( const QgsPointXY &p )
     setYMaximum( p.y() );
 }
 
-QgsRectangle QgsRectangle::buffer( double width )
+QgsRectangle QgsRectangle::buffered( double width ) const
 {
   return QgsRectangle( mXmin - width, mYmin - width, mXmax + width, mYmax + width );
 }
