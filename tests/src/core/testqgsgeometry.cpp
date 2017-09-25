@@ -9920,6 +9920,405 @@ void TestQgsGeometry::compoundCurve()
 
 void TestQgsGeometry::multiPoint()
 {
+  //test constructor
+  QgsMultiPointV2 c1;
+  QVERIFY( c1.isEmpty() );
+  QCOMPARE( c1.nCoordinates(), 0 );
+  QCOMPARE( c1.ringCount(), 0 );
+  QCOMPARE( c1.partCount(), 0 );
+  QVERIFY( !c1.is3D() );
+  QVERIFY( !c1.isMeasure() );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( c1.wktTypeStr(), QString( "MultiPoint" ) );
+  QCOMPARE( c1.geometryType(), QString( "MultiPoint" ) );
+  QCOMPARE( c1.dimension(), 0 );
+  QVERIFY( !c1.hasCurvedSegments() );
+  QCOMPARE( c1.area(), 0.0 );
+  QCOMPARE( c1.perimeter(), 0.0 );
+  QCOMPARE( c1.numGeometries(), 0 );
+  QVERIFY( !c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+  QCOMPARE( c1.vertexCount( 0, 0 ), 0 );
+  QCOMPARE( c1.vertexCount( 0, 1 ), 0 );
+  QCOMPARE( c1.vertexCount( 1, 0 ), 0 );
+
+  //addGeometry
+
+  //try with nullptr
+  c1.addGeometry( nullptr );
+  QVERIFY( c1.isEmpty() );
+  QCOMPARE( c1.nCoordinates(), 0 );
+  QCOMPARE( c1.ringCount(), 0 );
+  QCOMPARE( c1.partCount(), 0 );
+  QCOMPARE( c1.numGeometries(), 0 );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::MultiPoint );
+  QVERIFY( !c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+
+  // not a point
+  QVERIFY( !c1.addGeometry( new QgsLineString() ) );
+  QVERIFY( c1.isEmpty() );
+  QCOMPARE( c1.nCoordinates(), 0 );
+  QCOMPARE( c1.ringCount(), 0 );
+  QCOMPARE( c1.partCount(), 0 );
+  QCOMPARE( c1.numGeometries(), 0 );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::MultiPoint );
+  QVERIFY( !c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+
+  //valid geometry
+  QgsPoint part( 1, 10 );
+  c1.addGeometry( part.clone() );
+  QVERIFY( !c1.isEmpty() );
+  QCOMPARE( c1.numGeometries(), 1 );
+  QCOMPARE( c1.nCoordinates(), 1 );
+  QCOMPARE( c1.ringCount(), 1 );
+  QCOMPARE( c1.partCount(), 1 );
+  QVERIFY( !c1.is3D() );
+  QVERIFY( !c1.isMeasure() );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( c1.wktTypeStr(), QString( "MultiPoint" ) );
+  QCOMPARE( c1.geometryType(), QString( "MultiPoint" ) );
+  QCOMPARE( c1.dimension(), 0 );
+  QVERIFY( !c1.hasCurvedSegments() );
+  QCOMPARE( c1.area(), 0.0 );
+  QCOMPARE( c1.perimeter(), 0.0 );
+  QVERIFY( c1.geometryN( 0 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c1.geometryN( 0 ) ), part );
+  QVERIFY( !c1.geometryN( 100 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+  QCOMPARE( c1.vertexCount( 0, 0 ), 1 );
+  QCOMPARE( c1.vertexCount( 1, 0 ), 0 );
+
+  //initial adding of geometry should set z/m type
+  part = QgsPoint( QgsWkbTypes::PointZ, 10, 11, 1 );
+  QgsMultiPointV2 c2;
+  c2.addGeometry( part.clone() );
+  QVERIFY( c2.is3D() );
+  QVERIFY( !c2.isMeasure() );
+  QCOMPARE( c2.wkbType(), QgsWkbTypes::MultiPointZ );
+  QCOMPARE( c2.wktTypeStr(), QString( "MultiPointZ" ) );
+  QCOMPARE( c2.geometryType(), QString( "MultiPoint" ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c2.geometryN( 0 ) ) ), part );
+  QgsMultiPointV2 c3;
+  part = QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 );
+  c3.addGeometry( part.clone() );
+  QVERIFY( !c3.is3D() );
+  QVERIFY( c3.isMeasure() );
+  QCOMPARE( c3.wkbType(), QgsWkbTypes::MultiPointM );
+  QCOMPARE( c3.wktTypeStr(), QString( "MultiPointM" ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c3.geometryN( 0 ) ) ), part );
+  QgsMultiPointV2 c4;
+  part = QgsPoint( QgsWkbTypes::PointZM, 10, 10, 5, 3 );
+  c4.addGeometry( part.clone() );
+  QVERIFY( c4.is3D() );
+  QVERIFY( c4.isMeasure() );
+  QCOMPARE( c4.wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( c4.wktTypeStr(), QString( "MultiPointZM" ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c4.geometryN( 0 ) ) ), part );
+
+  //add another part
+  QgsMultiPointV2 c6;
+  part = QgsPoint( 10, 11 );
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.vertexCount( 0, 0 ), 1 );
+  part = QgsPoint( 9, 1 );
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.vertexCount( 1, 0 ), 1 );
+  QCOMPARE( c6.numGeometries(), 2 );
+  QVERIFY( c6.geometryN( 0 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c6.geometryN( 1 ) ), part );
+
+  QgsCoordinateSequence seq = c6.coordinateSequence();
+  QCOMPARE( seq, QgsCoordinateSequence() << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 10, 11 ) ) )
+            << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 9, 1 ) ) ) );
+  QCOMPARE( c6.nCoordinates(), 2 );
+
+  //adding subsequent points should not alter z/m type, regardless of points type
+  c6.clear();
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPoint );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( c6.vertexCount( 0, 0 ), 1 );
+  QCOMPARE( c6.vertexCount( 1, 0 ), 1 );
+  QCOMPARE( c6.vertexCount( 2, 0 ), 0 );
+  QCOMPARE( c6.vertexCount( -1, 0 ), 0 );
+  QCOMPARE( c6.nCoordinates(), 2 );
+  QCOMPARE( c6.ringCount(), 1 );
+  QCOMPARE( c6.partCount(), 2 );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPoint ); //should still be 2d
+  QVERIFY( !c6.is3D() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 1 ) ) ), QgsPoint( 1, 2 ) );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 11.0, 12.0, 0, 3 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPoint );
+  QCOMPARE( c6.vertexCount( 0, 0 ), 1 );
+  QCOMPARE( c6.vertexCount( 1, 0 ), 1 );
+  QCOMPARE( c6.vertexCount( 2, 0 ), 1 );
+  QCOMPARE( c6.nCoordinates(), 3 );
+  QCOMPARE( c6.ringCount(), 1 );
+  QCOMPARE( c6.partCount(), 3 );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPoint ); //should still be 2d
+  QVERIFY( !c6.is3D() );
+  QVERIFY( !c6.isMeasure() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 2 ) ) ), QgsPoint( 11, 12 ) );
+
+  c6.clear();
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointZ );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::Point, 11.0, 12.0 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointZ );
+  QVERIFY( c6.is3D() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 0 ) ) ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 1 ) ) ), QgsPoint( QgsWkbTypes::PointZ, 11, 12, 0 ) );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 21.0, 22.0, 0, 3 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointZ );
+  QVERIFY( c6.is3D() );
+  QVERIFY( !c6.isMeasure() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 2 ) ) ), QgsPoint( QgsWkbTypes::PointZ, 21, 22, 0 ) );
+
+  c6.clear();
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 1.0, 2.0, 0, 3 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointM );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::Point, 11.0, 12.0 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointM );
+  QVERIFY( c6.isMeasure() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 0 ) ) ), QgsPoint( QgsWkbTypes::PointM, 1, 2, 0, 3 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 1 ) ) ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 21.0, 22.0, 3 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointM );
+  QVERIFY( !c6.is3D() );
+  QVERIFY( c6.isMeasure() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 2 ) ) ), QgsPoint( QgsWkbTypes::PointM, 21, 22, 0, 0 ) );
+
+  c6.clear();
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 1.0, 2.0, 4, 3 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointZM );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::Point, 11.0, 12.0 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointZM );
+  QVERIFY( c6.isMeasure() );
+  QVERIFY( c6.is3D() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 0 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 4, 3 ) );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 1 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 0, 0 ) );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 21.0, 22.0, 3 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointZM );
+  QVERIFY( c6.is3D() );
+  QVERIFY( c6.isMeasure() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 2 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 21, 22, 3, 0 ) );
+  c6.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 31.0, 32.0, 0, 4 ) );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPointZM );
+  QVERIFY( c6.is3D() );
+  QVERIFY( c6.isMeasure() );
+  QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 3 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 31, 32, 0, 4 ) );
+
+  //clear
+  QgsMultiPointV2 c7;
+  c7.addGeometry( new  QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) );
+  c7.addGeometry( new  QgsPoint( QgsWkbTypes::PointZ, 11, 12, 3 ) );
+  QCOMPARE( c7.numGeometries(), 2 );
+  c7.clear();
+  QVERIFY( c7.isEmpty() );
+  QCOMPARE( c7.numGeometries(), 0 );
+  QCOMPARE( c7.nCoordinates(), 0 );
+  QCOMPARE( c7.ringCount(), 0 );
+  QCOMPARE( c7.partCount(), 0 );
+  QVERIFY( !c7.is3D() );
+  QVERIFY( !c7.isMeasure() );
+  QCOMPARE( c7.wkbType(), QgsWkbTypes::MultiPoint );
+
+  //clone
+  QgsMultiPointV2 c11;
+  std::unique_ptr< QgsMultiPointV2 >cloned( c11.clone() );
+  QVERIFY( cloned->isEmpty() );
+  c11.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
+  c11.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
+  cloned.reset( c11.clone() );
+  QCOMPARE( cloned->numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsPoint * >( cloned->geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( cloned->geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
+
+  //copy constructor
+  QgsMultiPointV2 c12;
+  QgsMultiPointV2 c13( c12 );
+  QVERIFY( c13.isEmpty() );
+  c12.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  c12.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+  QgsMultiPointV2 c14( c12 );
+  QCOMPARE( c14.numGeometries(), 2 );
+  QCOMPARE( c14.wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( *static_cast< const QgsPoint * >( c14.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c14.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+
+  //assignment operator
+  QgsMultiPointV2 c15;
+  c15 = c13;
+  QCOMPARE( c15.numGeometries(), 0 );
+  c15 = c14;
+  QCOMPARE( c15.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsPoint * >( c15.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c15.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+
+  //toCurveType
+  std::unique_ptr< QgsMultiPointV2 > curveType( c12.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( curveType->numGeometries(), 2 );
+  const QgsPoint *curve = static_cast< const QgsPoint * >( curveType->geometryN( 0 ) );
+  QCOMPARE( *curve, QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  curve = static_cast< const QgsPoint * >( curveType->geometryN( 1 ) );
+  QCOMPARE( *curve, QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
+
+  //to/fromWKB
+  QgsMultiPointV2 c16;
+  c16.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10, 11 ) );
+  c16.addGeometry( new QgsPoint( QgsWkbTypes::Point, 20, 21 ) );
+  QByteArray wkb16 = c16.asWkb();
+  QgsMultiPointV2 c17;
+  QgsConstWkbPtr wkb16ptr( wkb16 );
+  c17.fromWkb( wkb16ptr );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsPoint * >( c17.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::Point, 10, 11 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c17.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::Point, 20, 21 ) );
+
+  //parts with Z
+  c16.clear();
+  c17.clear();
+  c16.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) );
+  c16.addGeometry( new QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 ) );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr2( wkb16 );
+  c17.fromWkb( wkb16ptr2 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPointZ );
+  QCOMPARE( *static_cast< const QgsPoint * >( c17.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c17.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZ, 9, 1, 4 ) );
+
+  //parts with m
+  c16.clear();
+  c17.clear();
+  c16.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 10, 0, 0, 4 ) );
+  c16.addGeometry( new QgsPoint( QgsWkbTypes::PointM, 9, 1, 0, 4 ) );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr3( wkb16 );
+  c17.fromWkb( wkb16ptr3 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPointM );
+  QCOMPARE( *static_cast< const QgsPoint * >( c17.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointM, 10, 0, 0, 4 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c17.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointM, 9, 1, 0, 4 ) );
+
+  // parts with ZM
+  c16.clear();
+  c17.clear();
+  c16.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 70, 4 ) );
+  c16.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 3, 4 ) );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr4( wkb16 );
+  c17.fromWkb( wkb16ptr4 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPointZM );
+  QCOMPARE( *static_cast< const QgsPoint * >( c17.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 70, 4 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c17.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 3, 4 ) );
+
+  //bad WKB - check for no crash
+  c17.clear();
+  QgsConstWkbPtr nullPtr( nullptr, 0 );
+  QVERIFY( !c17.fromWkb( nullPtr ) );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPoint );
+  QgsPoint point( 1, 2 );
+  QByteArray wkbPoint = point.asWkb();
+  QgsConstWkbPtr wkbPointPtr( wkbPoint );
+  QVERIFY( !c17.fromWkb( wkbPointPtr ) );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPoint );
+
+  //to/from WKT
+  QgsMultiPointV2 c18;
+  c18.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  c18.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+
+  QString wkt = c18.asWkt();
+  QVERIFY( !wkt.isEmpty() );
+  QgsMultiPointV2 c19;
+  QVERIFY( c19.fromWkt( wkt ) );
+  QCOMPARE( c19.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsPoint * >( c19.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  QCOMPARE( *static_cast< const QgsPoint * >( c19.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+
+  //bad WKT
+  QgsMultiPointV2 c20;
+  QVERIFY( !c20.fromWkt( "Point()" ) );
+  QVERIFY( c20.isEmpty() );
+  QCOMPARE( c20.numGeometries(), 0 );
+  QCOMPARE( c20.wkbType(), QgsWkbTypes::MultiPoint );
+
+  //as JSON
+  QgsMultiPointV2 exportC;
+  exportC.addGeometry( new QgsPoint( QgsWkbTypes::Point, 0, 10 ) );
+  exportC.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10, 0 ) );
+
+  // GML document for compare
+  QDomDocument doc( "gml" );
+
+  // as GML2
+  QString expectedSimpleGML2( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,10</coordinates></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">10,0</coordinates></Point></pointMember></MultiPoint>" ) );
+  QString res = elemToString( exportC.asGML2( doc ) );
+  QGSCOMPAREGML( res, expectedSimpleGML2 );
+
+  //as GML3
+  QString expectedSimpleGML3( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0 10</pos></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">10 0</pos></Point></pointMember></MultiPoint>" ) );
+  res = elemToString( exportC.asGML3( doc ) );
+  QCOMPARE( res, expectedSimpleGML3 );
+
+  // as JSON
+  QString expectedSimpleJson( "{\"type\": \"MultiPoint\", \"coordinates\": [ [0, 10], [10, 0]] }" );
+  res = exportC.asJSON();
+  QCOMPARE( res, expectedSimpleJson );
+
+  QgsMultiPointV2 exportFloat;
+  exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 ) );
+  exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 ) );
+
+  QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": [ [1.111, 11.111], [1.333, 0.667]] }" ) );
+  res = exportFloat.asJSON( 3 );
+  QCOMPARE( res, expectedJsonPrec3 );
+
+  // as GML2
+  QString expectedGML2prec3( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.111,11.111</coordinates></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,0.667</coordinates></Point></pointMember></MultiPoint>" ) );
+  res = elemToString( exportFloat.asGML2( doc, 3 ) );
+  QGSCOMPAREGML( res, expectedGML2prec3 );
+
+  //as GML3
+  QString expectedGML3prec3( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1.111 11.111</pos></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">1.333 0.667</pos></Point></pointMember></MultiPoint>" ) );
+  res = elemToString( exportFloat.asGML3( doc, 3 ) );
+  QCOMPARE( res, expectedGML3prec3 );
+
+  // insert geometry
+  QgsMultiPointV2 rc;
+  rc.clear();
+  rc.insertGeometry( nullptr, 0 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+  rc.insertGeometry( nullptr, -1 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+  rc.insertGeometry( nullptr, 100 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+
+  rc.insertGeometry( new QgsLineString(), 0 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+
+  // cast
+  QVERIFY( !QgsMultiPointV2().cast( nullptr ) );
+  QgsMultiPointV2 pCast;
+  QVERIFY( QgsMultiPointV2().cast( &pCast ) );
+  QgsMultiPointV2 pCast2;
+  pCast2.fromWkt( QStringLiteral( "MultiPointZ(PointZ(0 1 1))" ) );
+  QVERIFY( QgsMultiPointV2().cast( &pCast2 ) );
+  pCast2.fromWkt( QStringLiteral( "MultiPointM(PointM(0 1 1))" ) );
+  QVERIFY( QgsMultiPointV2().cast( &pCast2 ) );
+  pCast2.fromWkt( QStringLiteral( "MultiPointZM(PointZM(0 1 1 2))" ) );
+  QVERIFY( QgsMultiPointV2().cast( &pCast2 ) );
+
   //boundary
 
   //multipoints have no boundary defined
@@ -9939,6 +10338,460 @@ void TestQgsGeometry::multiPoint()
 
 void TestQgsGeometry::multiLineString()
 {
+  //test constructor
+  QgsMultiLineString c1;
+  QVERIFY( c1.isEmpty() );
+  QCOMPARE( c1.nCoordinates(), 0 );
+  QCOMPARE( c1.ringCount(), 0 );
+  QCOMPARE( c1.partCount(), 0 );
+  QVERIFY( !c1.is3D() );
+  QVERIFY( !c1.isMeasure() );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( c1.wktTypeStr(), QString( "MultiLineString" ) );
+  QCOMPARE( c1.geometryType(), QString( "MultiLineString" ) );
+  QCOMPARE( c1.dimension(), 0 );
+  QVERIFY( !c1.hasCurvedSegments() );
+  QCOMPARE( c1.area(), 0.0 );
+  QCOMPARE( c1.perimeter(), 0.0 );
+  QCOMPARE( c1.numGeometries(), 0 );
+  QVERIFY( !c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+  QCOMPARE( c1.vertexCount( 0, 0 ), 0 );
+  QCOMPARE( c1.vertexCount( 0, 1 ), 0 );
+  QCOMPARE( c1.vertexCount( 1, 0 ), 0 );
+
+  //addGeometry
+
+  //try with nullptr
+  c1.addGeometry( nullptr );
+  QVERIFY( c1.isEmpty() );
+  QCOMPARE( c1.nCoordinates(), 0 );
+  QCOMPARE( c1.ringCount(), 0 );
+  QCOMPARE( c1.partCount(), 0 );
+  QCOMPARE( c1.numGeometries(), 0 );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::MultiLineString );
+  QVERIFY( !c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+
+  // not a linestring
+  QVERIFY( !c1.addGeometry( new QgsPoint() ) );
+  QVERIFY( c1.isEmpty() );
+  QCOMPARE( c1.nCoordinates(), 0 );
+  QCOMPARE( c1.ringCount(), 0 );
+  QCOMPARE( c1.partCount(), 0 );
+  QCOMPARE( c1.numGeometries(), 0 );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::MultiLineString );
+  QVERIFY( !c1.geometryN( 0 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+
+  //valid geometry
+  QgsLineString part;
+  part.setPoints( QgsPointSequence() << QgsPoint( 1, 10 ) << QgsPoint( 2, 11 ) );
+  c1.addGeometry( part.clone() );
+  QVERIFY( !c1.isEmpty() );
+  QCOMPARE( c1.numGeometries(), 1 );
+  QCOMPARE( c1.nCoordinates(), 2 );
+  QCOMPARE( c1.ringCount(), 1 );
+  QCOMPARE( c1.partCount(), 1 );
+  QVERIFY( !c1.is3D() );
+  QVERIFY( !c1.isMeasure() );
+  QCOMPARE( c1.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( c1.wktTypeStr(), QString( "MultiLineString" ) );
+  QCOMPARE( c1.geometryType(), QString( "MultiLineString" ) );
+  QCOMPARE( c1.dimension(), 1 );
+  QVERIFY( !c1.hasCurvedSegments() );
+  QCOMPARE( c1.area(), 0.0 );
+  QCOMPARE( c1.perimeter(), 0.0 );
+  QVERIFY( c1.geometryN( 0 ) );
+  QCOMPARE( *static_cast< const QgsLineString * >( c1.geometryN( 0 ) ), part );
+  QVERIFY( !c1.geometryN( 100 ) );
+  QVERIFY( !c1.geometryN( -1 ) );
+  QCOMPARE( c1.vertexCount( 0, 0 ), 2 );
+  QCOMPARE( c1.vertexCount( 1, 0 ), 0 );
+
+  //initial adding of geometry should set z/m type
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 10, 11, 1 ) << QgsPoint( QgsWkbTypes::PointZ, 20, 21, 2 ) );
+  QgsMultiLineString c2;
+  c2.addGeometry( part.clone() );
+  QVERIFY( c2.is3D() );
+  QVERIFY( !c2.isMeasure() );
+  QCOMPARE( c2.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QCOMPARE( c2.wktTypeStr(), QString( "MultiLineStringZ" ) );
+  QCOMPARE( c2.geometryType(), QString( "MultiLineString" ) );
+  QCOMPARE( *( static_cast< const QgsLineString * >( c2.geometryN( 0 ) ) ), part );
+  QgsMultiLineString c3;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 10, 11, 0, 1 ) << QgsPoint( QgsWkbTypes::PointM, 20, 21, 0, 2 ) );
+  c3.addGeometry( part.clone() );
+  QVERIFY( !c3.is3D() );
+  QVERIFY( c3.isMeasure() );
+  QCOMPARE( c3.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QCOMPARE( c3.wktTypeStr(), QString( "MultiLineStringM" ) );
+  QCOMPARE( *( static_cast< const QgsLineString * >( c3.geometryN( 0 ) ) ), part );
+  QgsMultiLineString c4;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 11, 2, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 20, 21, 3, 2 ) );
+  c4.addGeometry( part.clone() );
+  QVERIFY( c4.is3D() );
+  QVERIFY( c4.isMeasure() );
+  QCOMPARE( c4.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( c4.wktTypeStr(), QString( "MultiLineStringZM" ) );
+  QCOMPARE( *( static_cast< const QgsLineString * >( c4.geometryN( 0 ) ) ), part );
+
+  //add another part
+  QgsMultiLineString c6;
+  part.setPoints( QgsPointSequence() << QgsPoint( 1, 10 ) << QgsPoint( 2, 11 ) );
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.vertexCount( 0, 0 ), 2 );
+  part.setPoints( QgsPointSequence() << QgsPoint( 9, 12 ) << QgsPoint( 3, 13 ) );
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.vertexCount( 1, 0 ), 2 );
+  QCOMPARE( c6.numGeometries(), 2 );
+  QVERIFY( c6.geometryN( 0 ) );
+  QCOMPARE( *static_cast< const QgsLineString * >( c6.geometryN( 1 ) ), part );
+
+  //adding subsequent points should not alter z/m type, regardless of points type
+  c6.clear();
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineString );
+  part.setPoints( QgsPointSequence() << QgsPoint( 1, 10, 2 ) << QgsPoint( 2, 11, 3 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( c6.vertexCount( 0, 0 ), 2 );
+  QCOMPARE( c6.vertexCount( 1, 0 ), 2 );
+  QCOMPARE( c6.vertexCount( 2, 0 ), 0 );
+  QCOMPARE( c6.vertexCount( -1, 0 ), 0 );
+  QCOMPARE( c6.nCoordinates(), 4 );
+  QCOMPARE( c6.ringCount(), 1 );
+  QCOMPARE( c6.partCount(), 2 );
+  QVERIFY( !c6.is3D() );
+  const QgsLineString *ls = static_cast< const QgsLineString * >( c6.geometryN( 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( 9, 12 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( 3, 13 ) );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 1 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( 1, 10 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( 2, 11 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 21, 30, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 32, 41, 0, 3 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineString );
+  QCOMPARE( c6.vertexCount( 0, 0 ), 2 );
+  QCOMPARE( c6.vertexCount( 1, 0 ), 2 );
+  QCOMPARE( c6.vertexCount( 2, 0 ), 2 );
+  QCOMPARE( c6.nCoordinates(), 6 );
+  QCOMPARE( c6.ringCount(), 1 );
+  QCOMPARE( c6.partCount(), 3 );
+  QVERIFY( !c6.is3D() );
+  QVERIFY( !c6.isMeasure() );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 2 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( 21, 30 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( 32, 41 ) );
+
+  c6.clear();
+  part.setPoints( QgsPointSequence() << QgsPoint( 1, 10, 2 ) << QgsPoint( 2, 11, 3 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  part.setPoints( QgsPointSequence() << QgsPoint( 2, 20 ) << QgsPoint( 3, 31 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QVERIFY( c6.is3D() );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( 1, 10, 2 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( 2, 11, 3 ) );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 1 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( 2, 20, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( 3, 31, 0 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QVERIFY( c6.is3D() );
+  QVERIFY( !c6.isMeasure() );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 2 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( 5, 50, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( 6, 61, 0 ) );
+
+  c6.clear();
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineString );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) << QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringM );
+  part.setPoints( QgsPointSequence() << QgsPoint( 2, 20 ) << QgsPoint( 3, 31 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QVERIFY( c6.isMeasure() );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 1 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 20, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 3, 31, 0, 0 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( 11, 12, 13 ) << QgsPoint( 14, 15, 16 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QVERIFY( !c6.is3D() );
+  QVERIFY( c6.isMeasure() );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 2 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 14, 15, 0, 0 ) );
+
+  c6.clear();
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 ) << QgsPoint( QgsWkbTypes::Point, 3, 13 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QVERIFY( c6.isMeasure() );
+  QVERIFY( c6.is3D() );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 0 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 1 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 0, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 3, 13, 0, 0 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 77, 87, 7 ) << QgsPoint( QgsWkbTypes::PointZ, 83, 83, 8 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QVERIFY( c6.is3D() );
+  QVERIFY( c6.isMeasure() );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 2 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 77, 87, 7, 0 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 83, 83, 8, 0 ) );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 177, 187, 0, 9 ) << QgsPoint( QgsWkbTypes::PointM, 183, 183, 0, 11 ) ) ;
+  c6.addGeometry( part.clone() );
+  QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QVERIFY( c6.is3D() );
+  QVERIFY( c6.isMeasure() );
+  ls = static_cast< const QgsLineString * >( c6.geometryN( 3 ) );
+  QCOMPARE( ls->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
+  QCOMPARE( ls->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 183, 183, 0, 11 ) );
+
+  //clear
+  QgsMultiLineString c7;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) ) ;
+  c7.addGeometry( part.clone() );
+  c7.addGeometry( part.clone() );
+  QCOMPARE( c7.numGeometries(), 2 );
+  c7.clear();
+  QVERIFY( c7.isEmpty() );
+  QCOMPARE( c7.numGeometries(), 0 );
+  QCOMPARE( c7.nCoordinates(), 0 );
+  QCOMPARE( c7.ringCount(), 0 );
+  QCOMPARE( c7.partCount(), 0 );
+  QVERIFY( !c7.is3D() );
+  QVERIFY( !c7.isMeasure() );
+  QCOMPARE( c7.wkbType(), QgsWkbTypes::MultiLineString );
+
+  //clone
+  QgsMultiLineString c11;
+  std::unique_ptr< QgsMultiLineString >cloned( c11.clone() );
+  QVERIFY( cloned->isEmpty() );
+  c11.addGeometry( part.clone() );
+  c11.addGeometry( part.clone() );
+  cloned.reset( c11.clone() );
+  QCOMPARE( cloned->numGeometries(), 2 );
+  ls = static_cast< const QgsLineString * >( cloned->geometryN( 0 ) );
+  QCOMPARE( *ls, part );
+  ls = static_cast< const QgsLineString * >( cloned->geometryN( 1 ) );
+  QCOMPARE( *ls, part );
+
+  //copy constructor
+  QgsMultiLineString c12;
+  QgsMultiLineString c13( c12 );
+  QVERIFY( c13.isEmpty() );
+  c12.addGeometry( part.clone() );
+  c12.addGeometry( part.clone() );
+  QgsMultiLineString c14( c12 );
+  QCOMPARE( c14.numGeometries(), 2 );
+  QCOMPARE( c14.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  ls = static_cast< const QgsLineString * >( c14.geometryN( 0 ) );
+  QCOMPARE( *ls, part );
+  ls = static_cast< const QgsLineString * >( c14.geometryN( 1 ) );
+  QCOMPARE( *ls, part );
+
+  //assignment operator
+  QgsMultiLineString c15;
+  c15 = c13;
+  QCOMPARE( c15.numGeometries(), 0 );
+  c15 = c14;
+  QCOMPARE( c15.numGeometries(), 2 );
+  ls = static_cast< const QgsLineString * >( c15.geometryN( 0 ) );
+  QCOMPARE( *ls, part );
+  ls = static_cast< const QgsLineString * >( c15.geometryN( 1 ) );
+  QCOMPARE( *ls, part );
+
+  //toCurveType
+  std::unique_ptr< QgsMultiCurve > curveType( c12.toCurveType() );
+  QCOMPARE( curveType->wkbType(), QgsWkbTypes::MultiCurveZM );
+  QCOMPARE( curveType->numGeometries(), 2 );
+  const QgsCompoundCurve *curve = static_cast< const QgsCompoundCurve * >( curveType->geometryN( 0 ) );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurveZM ((5 50 1 4, 6 61 3 5))" ) );
+  curve = static_cast< const QgsCompoundCurve * >( curveType->geometryN( 1 ) );
+  QCOMPARE( curve->asWkt(), QStringLiteral( "CompoundCurveZM ((5 50 1 4, 6 61 3 5))" ) );
+
+  //to/fromWKB
+  QgsMultiLineString c16;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 ) << QgsPoint( QgsWkbTypes::Point, 3, 13 ) ) ;
+  c16.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27, 37 ) << QgsPoint( QgsWkbTypes::Point, 43, 43 ) ) ;
+  c16.addGeometry( part.clone() );
+  QByteArray wkb16 = c16.asWkb();
+  QgsMultiLineString c17;
+  QgsConstWkbPtr wkb16ptr( wkb16 );
+  c17.fromWkb( wkb16ptr );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 0 ) ), *static_cast< const QgsLineString * >( c16.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 1 ) ), *static_cast< const QgsLineString * >( c16.geometryN( 1 ) ) );
+
+  //parts with Z
+  c16.clear();
+  c17.clear();
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 7, 17, 1 ) << QgsPoint( QgsWkbTypes::PointZ, 3, 13, 4 ) ) ;
+  c16.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 27, 37, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 43, 43, 5 ) ) ;
+  c16.addGeometry( part.clone() );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr2( wkb16 );
+  c17.fromWkb( wkb16ptr2 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiLineStringZ );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 0 ) ), *static_cast< const QgsLineString * >( c16.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 1 ) ), *static_cast< const QgsLineString * >( c16.geometryN( 1 ) ) );
+
+  //parts with m
+  c16.clear();
+  c17.clear();
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 7, 17, 0, 1 ) << QgsPoint( QgsWkbTypes::PointM, 3, 13, 0, 4 ) ) ;
+  c16.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 27, 37, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 43, 43, 0, 5 ) ) ;
+  c16.addGeometry( part.clone() );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr3( wkb16 );
+  c17.fromWkb( wkb16ptr3 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiLineStringM );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 0 ) ), *static_cast< const QgsLineString * >( c16.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 1 ) ), *static_cast< const QgsLineString * >( c16.geometryN( 1 ) ) );
+
+  // parts with ZM
+  c16.clear();
+  c17.clear();
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 ) ) ;
+  c16.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 ) ) ;
+  c16.addGeometry( part.clone() );
+  wkb16 = c16.asWkb();
+  QgsConstWkbPtr wkb16ptr4( wkb16 );
+  c17.fromWkb( wkb16ptr4 );
+  QCOMPARE( c17.numGeometries(), 2 );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiLineStringZM );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 0 ) ), *static_cast< const QgsLineString * >( c16.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsLineString * >( c17.geometryN( 1 ) ), *static_cast< const QgsLineString * >( c16.geometryN( 1 ) ) );
+
+  //bad WKB - check for no crash
+  c17.clear();
+  QgsConstWkbPtr nullPtr( nullptr, 0 );
+  QVERIFY( !c17.fromWkb( nullPtr ) );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiLineString );
+  QgsPoint point( 1, 2 );
+  QByteArray wkbPoint = point.asWkb();
+  QgsConstWkbPtr wkbPointPtr( wkbPoint );
+  QVERIFY( !c17.fromWkb( wkbPointPtr ) );
+  QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiLineString );
+
+  //to/from WKT
+  QgsMultiLineString c18;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 ) ) ;
+  c18.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 27, 37, 6, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 43, 43, 11, 5 ) ) ;
+  c18.addGeometry( part.clone() );
+
+  QString wkt = c18.asWkt();
+  QVERIFY( !wkt.isEmpty() );
+  QgsMultiLineString c19;
+  QVERIFY( c19.fromWkt( wkt ) );
+  QCOMPARE( c19.numGeometries(), 2 );
+  QCOMPARE( *static_cast< const QgsLineString * >( c19.geometryN( 0 ) ), *static_cast< const QgsLineString * >( c18.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsLineString * >( c19.geometryN( 1 ) ), *static_cast< const QgsLineString * >( c18.geometryN( 1 ) ) );
+
+  //bad WKT
+  QgsMultiLineString c20;
+  QVERIFY( !c20.fromWkt( "Point()" ) );
+  QVERIFY( c20.isEmpty() );
+  QCOMPARE( c20.numGeometries(), 0 );
+  QCOMPARE( c20.wkbType(), QgsWkbTypes::MultiLineString );
+
+  //as JSON
+  QgsMultiLineString exportC;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 ) << QgsPoint( QgsWkbTypes::Point, 3, 13 ) ) ;
+  exportC.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27, 37 ) << QgsPoint( QgsWkbTypes::Point, 43, 43 ) ) ;
+  exportC.addGeometry( part.clone() );
+
+  // GML document for compare
+  QDomDocument doc( "gml" );
+
+  // as GML2
+  QString expectedSimpleGML2( QStringLiteral( "<MultiLineString xmlns=\"gml\"><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13</coordinates></LineString></lineStringMember><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43</coordinates></LineString></lineStringMember></MultiLineString>" ) );
+  QString res = elemToString( exportC.asGML2( doc ) );
+  QGSCOMPAREGML( res, expectedSimpleGML2 );
+
+  //as GML3
+  QString expectedSimpleGML3( QStringLiteral( "<MultiCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13</posList></LineString></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43</posList></LineString></curveMember></MultiCurve>" ) );
+  res = elemToString( exportC.asGML3( doc ) );
+  QCOMPARE( res, expectedSimpleGML3 );
+
+  // as JSON
+  QString expectedSimpleJson( "{\"type\": \"MultiLineString\", \"coordinates\": [[ [7, 17], [3, 13]], [ [27, 37], [43, 43]]] }" );
+  res = exportC.asJSON();
+  QCOMPARE( res, expectedSimpleJson );
+
+  QgsMultiLineString exportFloat;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7 / 3.0, 17 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 3 / 5.0, 13 / 3.0 ) ) ;
+  exportFloat.addGeometry( part.clone() );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 27 / 3.0, 37 / 9.0 ) << QgsPoint( QgsWkbTypes::Point, 43 / 41.0, 43 / 42.0 ) ) ;
+  exportFloat.addGeometry( part.clone() );
+
+  QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [[ [2.333, 5.667], [0.6, 4.333]], [ [9, 4.111], [1.049, 1.024]]] }" ) );
+  res = exportFloat.asJSON( 3 );
+  QCOMPARE( res, expectedJsonPrec3 );
+
+  // as GML2
+  QString expectedGML2prec3( QStringLiteral( "<MultiLineString xmlns=\"gml\"><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2.333,5.667 0.6,4.333</coordinates></LineString></lineStringMember><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">9,4.111 1.049,1.024</coordinates></LineString></lineStringMember></MultiLineString>" ) );
+  res = elemToString( exportFloat.asGML2( doc, 3 ) );
+  QGSCOMPAREGML( res, expectedGML2prec3 );
+
+  //as GML3
+  QString expectedGML3prec3( QStringLiteral( "<MultiCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 5.667 0.6 4.333</posList></LineString></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">9 4.111 1.049 1.024</posList></LineString></curveMember></MultiCurve>" ) );
+  res = elemToString( exportFloat.asGML3( doc, 3 ) );
+  QCOMPARE( res, expectedGML3prec3 );
+
+  // insert geometry
+  QgsMultiLineString rc;
+  rc.clear();
+  rc.insertGeometry( nullptr, 0 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+  rc.insertGeometry( nullptr, -1 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+  rc.insertGeometry( nullptr, 100 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+
+  rc.insertGeometry( new QgsPoint(), 0 );
+  QVERIFY( rc.isEmpty() );
+  QCOMPARE( rc.numGeometries(), 0 );
+
+  // cast
+  QVERIFY( !QgsMultiLineString().cast( nullptr ) );
+  QgsMultiLineString pCast;
+  QVERIFY( QgsMultiLineString().cast( &pCast ) );
+  QgsMultiLineString pCast2;
+  pCast2.fromWkt( QStringLiteral( "MultiLineStringZ()" ) );
+  QVERIFY( QgsMultiLineString().cast( &pCast2 ) );
+  pCast2.fromWkt( QStringLiteral( "MultiLineStringM()" ) );
+  QVERIFY( QgsMultiLineString().cast( &pCast2 ) );
+  pCast2.fromWkt( QStringLiteral( "MultiLineStringZM()" ) );
+  QVERIFY( QgsMultiLineString().cast( &pCast2 ) );
+
   //boundary
   QgsMultiLineString multiLine1;
   QVERIFY( !multiLine1.boundary() );
