@@ -16,6 +16,7 @@ SET (geometrychecker_SRCS
     checks/qgsgeometrygapcheck.cpp
     checks/qgsgeometryholecheck.cpp
     checks/qgsgeometrylineintersectioncheck.cpp
+    checks/qgsgeometrylinelayerintersectioncheck.cpp
     checks/qgsgeometrymultipartcheck.cpp
     checks/qgsgeometrycontainedcheck.cpp
     checks/qgsgeometryoverlapcheck.cpp
@@ -55,6 +56,7 @@ SET (geometrychecker_MOC_HDRS
     checks/qgsgeometrygapcheck.h
     checks/qgsgeometryholecheck.h
     checks/qgsgeometrylineintersectioncheck.h
+    checks/qgsgeometrylinelayerintersectioncheck.h
     checks/qgsgeometrymultipartcheck.h
     checks/qgsgeometrycontainedcheck.h
     checks/qgsgeometryoverlapcheck.h

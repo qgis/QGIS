@@ -41,9 +41,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-215</y>
+        <y>-222</y>
         <width>626</width>
-        <height>966</height>
+        <height>991</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -514,7 +514,7 @@
              <item row="6" column="0">
               <widget class="QCheckBox" name="checkLineIntersection">
                <property name="text">
-                <string>Lines must not intersect</string>
+                <string>Lines must not intersect any other lines</string>
                </property>
               </widget>
              </item>
@@ -570,6 +570,20 @@
               <widget class="QCheckBox" name="checkPointInPolygon">
                <property name="text">
                 <string>Points must properly lie inside a polygon</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QCheckBox" name="checkLineLayerIntersection">
+               <property name="text">
+                <string>Lines must not intersect with features of layer</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QComboBox" name="comboLineLayerIntersection">
+               <property name="enabled">
+                <bool>false</bool>
                </property>
               </widget>
              </item>

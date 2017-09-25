@@ -78,6 +78,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   connect( ui.lineEditOutputDirectory, &QLineEdit::textChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( ui.checkBoxSliverPolygons, &QAbstractButton::toggled, ui.widgetSliverThreshold, &QWidget::setEnabled );
   connect( ui.checkBoxSliverArea, &QAbstractButton::toggled, ui.doubleSpinBoxSliverArea, &QWidget::setEnabled );
+  connect( ui.checkLineLayerIntersection, &QAbstractButton::toggled, ui.comboLineLayerIntersection, &QComboBox::setEnabled );
 
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
@@ -103,6 +104,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     }
   }
   ui.listWidgetInputLayers->clear();
+  ui.comboLineLayerIntersection->clear();
 
   // Collect layers
   for ( QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>() )
@@ -116,10 +118,12 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     else if ( layer->geometryType() == QgsWkbTypes::LineGeometry )
     {
       item->setIcon( QgsApplication::getThemeIcon( "/mIconLineLayer.svg" ) );
+      ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
     }
     else if ( layer->geometryType() == QgsWkbTypes::PolygonGeometry )
     {
       item->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ) );
+      ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
     }
     else
     {
@@ -416,6 +420,15 @@ void QgsGeometryCheckerSetupTab::runChecks()
   QMap<QString, QgsFeaturePool *> featurePools;
   for ( QgsVectorLayer *layer : processLayers )
   {
+    double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
+    QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mIface->mapCanvas()->mapSettings().destinationCrs().authid() );
+    featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );
+  }
+  // LineLayerIntersection check is enabled, make sure there is also a feature pool for that layer
+  if ( ui.checkLineLayerIntersection->isChecked() && !featurePools.keys().contains( ui.comboLineLayerIntersection->currentData().toString() ) )
+  {
+    QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) );
+    Q_ASSERT( layer );
     double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
     QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mIface->mapCanvas()->mapSettings().destinationCrs().authid() );
     featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );

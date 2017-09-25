@@ -26,6 +26,7 @@
 #include "checks/qgsgeometrygapcheck.h"
 #include "checks/qgsgeometryholecheck.h"
 #include "checks/qgsgeometrylineintersectioncheck.h"
+#include "checks/qgsgeometrylinelayerintersectioncheck.h"
 #include "checks/qgsgeometrymultipartcheck.h"
 #include "checks/qgsgeometryoverlapcheck.h"
 #include "checks/qgsgeometrypointcoveredbylinecheck.h"
@@ -331,6 +332,34 @@ REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryLineInt
 
 ///////////////////////////////////////////////////////////////////////////////
 
+template<> void QgsGeometryCheckFactoryT<QgsGeometryLineLayerIntersectionCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  ui.checkLineLayerIntersection->setChecked( QgsSettings().value( sSettingsGroup + "checkLineLayerIntersection" ).toBool() );
+}
+
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryLineLayerIntersectionCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int nLineString, int /*nPolygon*/ ) const
+{
+  ui.checkLineLayerIntersection->setEnabled( nLineString > 0 );
+  ui.comboLineLayerIntersection->setEnabled( nLineString > 0 );
+  return ui.checkLineLayerIntersection->isEnabled();
+}
+
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryLineLayerIntersectionCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  QgsSettings().setValue( sSettingsGroup + "checkLineLayerIntersection", ui.checkLineLayerIntersection->isChecked() );
+  if ( ui.checkLineLayerIntersection->isEnabled() && ui.checkLineLayerIntersection->isChecked() )
+  {
+    return new QgsGeometryLineLayerIntersectionCheck( context, ui.comboLineLayerIntersection->currentData().toString() );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryLineLayerIntersectionCheck> )
+
+///////////////////////////////////////////////////////////////////////////////
 
 template<> void QgsGeometryCheckFactoryT<QgsGeometryMultipartCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
 {
