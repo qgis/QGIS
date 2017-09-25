@@ -54,15 +54,11 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const 
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( qgsgeometry_cast<const QgsLineString *>( geom ) )
+    if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
-      const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
-
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
       elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
       elemMultiLineString.appendChild( elemLineStringMember );
-
-      delete lineString;
     }
   }
 
@@ -74,10 +70,8 @@ QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const 
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( qgsgeometry_cast<const QgsLineString *>( geom ) )
+    if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
-      const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
-
       QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
       elemCurveMember.appendChild( lineString->asGML3( doc, precision, ns ) );
       elemMultiCurve.appendChild( elemCurveMember );
