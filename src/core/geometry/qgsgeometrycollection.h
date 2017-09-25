@@ -69,7 +69,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * \param g geometry to insert. Ownership is transferred to the collection.
      * \param index position to insert geometry before
      */
-    virtual bool insertGeometry( QgsAbstractGeometry *g, int index SIP_TRANSFER );
+    virtual bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index );
 
     /** Removes a geometry from the collection.
      * \param nr index of geometry to remove
