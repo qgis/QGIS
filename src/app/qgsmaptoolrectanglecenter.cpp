@@ -69,12 +69,18 @@ void QgsMapToolRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       case 1:
       {
-        double xOffset = fabs( mapPoint.x() - mPoints.at( 0 ).x() );
-        double yOffset = fabs( mapPoint.y() - mPoints.at( 0 ).y() );
 
-        mRectangle = QgsRectangle( QgsPoint( mPoints.at( 0 ).x() - xOffset, mPoints.at( 0 ).y() - yOffset ), QgsPoint( mPoints.at( 0 ).x() + xOffset, mPoints.at( 0 ).y() + yOffset ) );
+        if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
+        {
+          double xOffset = fabs( mapPoint.x() - mPoints.at( 0 ).x() );
+          double yOffset = fabs( mapPoint.y() - mPoints.at( 0 ).y() );
 
-        mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
+          mRectangle = QgsRectangle( QgsPoint( mPoints.at( 0 ).x() - xOffset, mPoints.at( 0 ).y() - yOffset ), QgsPoint( mPoints.at( 0 ).x() + xOffset, mPoints.at( 0 ).y() + yOffset ) );
+
+          mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
+        }
+        else
+          emit messageEmitted( tr( "Cannot use this tool when the map canvas is rotated" ), QgsMessageBar::WARNING );
       }
       break;
       default:

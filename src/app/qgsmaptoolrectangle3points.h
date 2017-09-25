@@ -29,10 +29,6 @@ class QgsMapToolRectangle3Points: public QgsMapToolAddRectangle
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-  private:
-    double mAzimuth;
-    double mDistance1;
-    double mDistance2;
 };
 
 #endif // QGSMAPTOOLRECTANGLE3POINTS_H

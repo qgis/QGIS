@@ -62,7 +62,13 @@ void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   QgsPoint mapPoint( e->mapPoint() );
   if ( mTempRubberBand )
   {
-    mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mapPoint );
-    mTempRubberBand->setGeometry( mEllipse.toPolygon() );
+
+    if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
+    {
+      mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mapPoint );
+      mTempRubberBand->setGeometry( mEllipse.toPolygon() );
+    }
+    else
+      emit messageEmitted( tr( "Cannot use this tool when the map canvas is rotated" ), QgsMessageBar::WARNING );
   }
 }

@@ -76,13 +76,13 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     int side( ) const { return mSide; }
 
   private:
-    //! Convenient member for the azimuth of the rotated rectangle. \see QgsMapToolRectangle3Points
+    //! Convenient member for the azimuth of the rotated rectangle or when map is rotated.
     double mAzimuth = 0.0;
-    //! Convenient member for the first distance of the rotated rectangle. \see QgsMapToolRectangle3Points
+    //! Convenient member for the first distance of the rotated rectangle or when map is rotated.
     double mDistance1 = 0.0;
-    //! Convenient member for the second distance of the rotated rectangle. \see QgsMapToolRectangle3Points
+    //! Convenient member for the second distance of the rotated rectangle or when map is rotated.
     double mDistance2 = 0.0;
-    //! Convenient member for the side where the second distance is drawn. \see QgsMapToolRectangle3Points
+    //! Convenient member for the side where the second distance is drawn or when map is rotated.
     int mSide = 1;
 };
 
