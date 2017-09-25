@@ -51,9 +51,6 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
 
     void resetSettings();
 
-  signals:
-    void widgetChanged();
-
   protected slots:
     void labelModeChanged( int index );
     void showEngineConfigDialog();

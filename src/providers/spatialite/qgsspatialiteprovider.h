@@ -176,13 +176,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
   signals:
 
     /**
-     *   This is emitted whenever the worker thread has fully calculated the
-     *   extents for this layer, and its event has been received by this
-     *   provider.
-     */
-    void fullExtentCalculated();
-
-    /**
      *   This is emitted when this provider is satisfied that all objects
      *   have had a chance to adjust themselves after they'd been notified that
      *   the full extent is available.
