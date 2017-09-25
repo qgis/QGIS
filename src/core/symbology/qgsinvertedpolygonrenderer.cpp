@@ -387,10 +387,12 @@ QgsFeatureRenderer *QgsInvertedPolygonRenderer::create( QDomElement &element, co
 
 QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
+  // clazy:skip
+
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "invertedPolygonRenderer" ) );
-  rendererElem.setAttribute( QStringLiteral( "preprocessing" ), preprocessingEnabled() ? "1" : "0" );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "preprocessing" ), preprocessingEnabled() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mSubRenderer )
   {
@@ -407,7 +409,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument &doc, const QgsReadWr
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   return rendererElem;
 }
