@@ -17,6 +17,10 @@
 *                                                                         *
 ***************************************************************************
 """
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
 
 __author__ = 'Nyall Dawson'
 __date__ = 'October 2016'
@@ -27,7 +31,9 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 import argparse
-import urllib
+import urllib.request
+import urllib.parse
+import urllib.error
 import re
 from bs4 import BeautifulSoup
 from PyQt5.QtGui import (
