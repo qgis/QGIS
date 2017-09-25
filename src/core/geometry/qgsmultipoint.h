@@ -34,6 +34,7 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
     QgsMultiPointV2 *toCurveType() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
+    void clear() override;
 
     // inherited: int wkbSize() const;
     // inherited: unsigned char* asWkb( int& binarySize ) const;

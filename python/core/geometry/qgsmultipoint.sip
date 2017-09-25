@@ -29,6 +29,8 @@ class QgsMultiPointV2: QgsGeometryCollection
 
     virtual bool fromWkt( const QString &wkt );
 
+    virtual void clear();
+
 
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
