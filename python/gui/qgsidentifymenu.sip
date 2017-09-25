@@ -135,6 +135,11 @@ remove all custom actions from the menu to be built
  :rtype: list of QgsMapToolIdentify.IdentifyResult
 %End
 
+    void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
+%Docstring
+ Set expression context scope.
+%End
+
   protected:
     virtual void closeEvent( QCloseEvent *e );
 

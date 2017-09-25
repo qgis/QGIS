@@ -19,6 +19,7 @@
 #include "qgsactionmanager.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
+#include "qgscontextaction.h"
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget  *parent )
   : QMenu( parent )
@@ -91,12 +92,16 @@ void QgsActionMenu::triggerAction()
     QgsExpressionContext context = mLayer->createExpressionContext();
 
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
-
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
-    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), action->property( "click_x" ), true ) );
-    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), action->property( "click_y" ), true ) );
-
     context << actionScope;
+
+    QgsContextAction *contextAction = dynamic_cast<QgsContextAction *>( action );
+    if ( contextAction )
+    {
+      QgsExpressionContextScope *expressionContextScope = new QgsExpressionContextScope( contextAction->expressionContextScope() );
+      context << expressionContextScope;
+    }
+
     QgsAction act = data.actionData.value<QgsAction>();
     act.run( context );
   }

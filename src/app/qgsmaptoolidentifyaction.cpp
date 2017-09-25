@@ -120,11 +120,13 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     QgsPointXY point = toMapCoordinates( e->pos() );
 
-    mIdentifyMenu->setProperty( "click_x", point.x() );
-    mIdentifyMenu->setProperty( "click_y", point.y() );
+    QgsExpressionContextScope contextScope;
 
-    resultsDialog()->setProperty( "click_x", point.x() );
-    resultsDialog()->setProperty( "click_y", point.y() );
+    contextScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), point.x(), true ) );
+    contextScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), point.y(), true ) );
+
+    mIdentifyMenu->setExpressionContextScope( contextScope );
+    resultsDialog()->setExpressionContextScope( contextScope );
   }
 
   resultsDialog()->clear();

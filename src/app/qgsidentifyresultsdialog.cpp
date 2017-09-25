@@ -1205,6 +1205,11 @@ void QgsIdentifyResultsDialog::activate()
   }
 }
 
+void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope )
+{
+  mExpressionContextScope = expressionContextScope;
+}
+
 void QgsIdentifyResultsDialog::deactivate()
 {
   Q_FOREACH ( QgsHighlight *h, mHighlights )
@@ -1240,9 +1245,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QString &a
   }
 
   // Add action context scope.
-  QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
-  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), property( "click_x" ), true ) );
-  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), property( "click_y" ), true ) );
+  QgsExpressionContextScope *actionScope = new QgsExpressionContextScope( mExpressionContextScope );
 
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
   layer->actions()->doActionWithContext( action, mFeatures[ featIdx ], actionScope, idx );
