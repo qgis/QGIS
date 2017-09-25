@@ -624,11 +624,21 @@ double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
 
 int QgsGeometryCollection::vertexCount( int part, int ring ) const
 {
+  if ( part < 0 || part >= mGeometries.size() )
+  {
+    return 0;
+  }
+
   return mGeometries[part]->vertexCount( 0, ring );
 }
 
 int QgsGeometryCollection::ringCount( int part ) const
 {
+  if ( part < 0 || part >= mGeometries.size() )
+  {
+    return 0;
+  }
+
   return mGeometries[part]->ringCount();
 }
 
