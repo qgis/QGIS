@@ -123,7 +123,19 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
     delete g;
     return false;
   }
-  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
+  if ( mGeometries.empty() )
+  {
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
+  }
+  if ( is3D() && !g->is3D() )
+    g->addZValue();
+  else if ( !is3D() && g->is3D() )
+    g->dropZValue();
+  if ( isMeasure() && !g->isMeasure() )
+    g->addMValue();
+  else if ( !isMeasure() && g->isMeasure() )
+    g->dropMValue();
+
   return QgsGeometryCollection::addGeometry( g );
 }
 
