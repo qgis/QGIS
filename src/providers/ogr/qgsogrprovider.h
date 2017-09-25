@@ -252,6 +252,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     int mUpdateModeStackDepth;
 
+    bool mDeferRepack;
+
     void computeCapabilities();
 
     QgsVectorDataProvider::Capabilities mCapabilities;
