@@ -309,7 +309,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultTileMaxRetrySpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/defaultTileMaxRetry" ), "3" ).toInt() );
 
   // Proxy stored authentication configurations
-  mProxyAuthConfigSelect = new QgsAuthConfigSelect( this );
+  mProxyAuthConfigSelect = new QgsAuthConfigSelect( this, QStringLiteral( "proxy" ) );
   tabAuth->insertTab( 1, mProxyAuthConfigSelect, tr( "Configurations" ) );
   QString authcfg = mSettings->value( QStringLiteral( "proxy/authcfg" ) ).toString();
   mProxyAuthConfigSelect->setConfigId( authcfg );
