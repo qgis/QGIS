@@ -38,6 +38,12 @@ QgsMultiCurve *QgsMultiCurve::clone() const
   return new QgsMultiCurve( *this );
 }
 
+void QgsMultiCurve::clear()
+{
+  QgsGeometryCollection::clear();
+  mWkbType = QgsWkbTypes::MultiCurve;
+}
+
 QgsMultiCurve *QgsMultiCurve::toCurveType() const
 {
   return clone();
