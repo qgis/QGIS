@@ -25,6 +25,8 @@ class QgsMultiLineString: QgsMultiCurve
     virtual QgsMultiLineString *clone() const /Factory/;
 
 
+    virtual void clear();
+
     virtual bool fromWkt( const QString &wkt );
 
 

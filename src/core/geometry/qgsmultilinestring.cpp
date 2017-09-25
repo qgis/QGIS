@@ -38,6 +38,12 @@ QgsMultiLineString *QgsMultiLineString::clone() const
   return new QgsMultiLineString( *this );
 }
 
+void QgsMultiLineString::clear()
+{
+  QgsGeometryCollection::clear();
+  mWkbType = QgsWkbTypes::MultiLineString;
+}
+
 bool QgsMultiLineString::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsLineString, QStringLiteral( "LineString" ) );

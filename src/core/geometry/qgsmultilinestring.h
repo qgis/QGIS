@@ -32,11 +32,9 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QString geometryType() const override;
     QgsMultiLineString *clone() const override SIP_FACTORY;
 
+    void clear() override;
     bool fromWkt( const QString &wkt ) override;
 
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
