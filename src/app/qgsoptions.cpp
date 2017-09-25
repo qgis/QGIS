@@ -28,6 +28,7 @@
 #include "qgstolerance.h"
 #include "qgsscaleutils.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsauthconfigselect.h"
 #include "qgsproject.h"
 #include "qgsdualview.h"
 #include "qgsrasterlayer.h"
@@ -306,6 +307,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // WMS/WMS-C default max retry in case of tile request errors
   mDefaultTileMaxRetrySpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/defaultTileMaxRetry" ), "3" ).toInt() );
+
+  // Proxy stored authentication configurations
+  mProxyAuthConfigSelect = new QgsAuthConfigSelect( this );
+  tabAuth->insertTab( 1, mProxyAuthConfigSelect, tr( "Configurations" ) );
+  QString authcfg = mSettings->value( QStringLiteral( "proxy/authcfg" ) ).toString();
+  mProxyAuthConfigSelect->setConfigId( authcfg );
+  if ( !authcfg.isEmpty() )
+  {
+    tabAuth->setCurrentIndex( tabAuth->indexOf( mProxyAuthConfigSelect ) );
+  }
 
   //Web proxy settings
   grpProxy->setChecked( mSettings->value( QStringLiteral( "proxy/proxyEnabled" ), "0" ).toBool() );
@@ -1161,6 +1172,9 @@ void QgsOptions::saveOptions()
 
   // WMS/WMS-C default max retry in case of tile request errors
   mSettings->setValue( QStringLiteral( "/qgis/defaultTileMaxRetry" ), mDefaultTileMaxRetrySpinBox->value() );
+
+  // Proxy stored authentication configurations
+  mSettings->setValue( QStringLiteral( "proxy/authcfg" ), mProxyAuthConfigSelect->configId( ) );
 
   //Web proxy settings
   mSettings->setValue( QStringLiteral( "proxy/proxyEnabled" ), grpProxy->isChecked() );
