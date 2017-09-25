@@ -9006,6 +9006,40 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( c26.numPoints(), 0 );
   QVERIFY( c26.isEmpty() );
 
+  // two lines
+  QgsLineString ls26;
+  c26.clear();
+  ls26.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 ) );
+  c26.addCurve( ls26.clone() );
+  ls26.setPoints( QgsPointSequence()
+                  << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 21, 32, 4, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
+  c26.addCurve( ls26.clone() );
+  QVERIFY( c26.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
+  QCOMPARE( c26.nCurves(), 1 );
+  const QgsLineString *ls26r = dynamic_cast< const QgsLineString * >( c26.curveAt( 0 ) );
+  QCOMPARE( ls26r->numPoints(), 2 );
+  QCOMPARE( ls26r->startPoint(), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 ) );
+  QCOMPARE( ls26r->endPoint(), QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
+
+  c26.clear();
+  ls26.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 21, 32, 4, 5 ) );
+  c26.addCurve( ls26.clone() );
+  ls26.setPoints( QgsPointSequence()
+                  << QgsPoint( QgsWkbTypes::PointZM, 21, 32, 4, 5 )
+                  << QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
+  c26.addCurve( ls26.clone() );
+  QVERIFY( c26.deleteVertex( QgsVertexId( 0, 0, 2 ) ) );
+  QCOMPARE( c26.nCurves(), 1 );
+  ls26r = dynamic_cast< const QgsLineString * >( c26.curveAt( 0 ) );
+  QCOMPARE( ls26r->numPoints(), 2 );
+  QCOMPARE( ls26r->startPoint(), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 ) );
+  QCOMPARE( ls26r->endPoint(), QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
+
   //reversed
   QgsCompoundCurve c27;
   QgsCircularString l27;
@@ -9654,6 +9688,13 @@ void TestQgsGeometry::compoundCurve()
   QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 3 ) ), 3.141592, 0.0001 );
   QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 4.712389, 0.0001 );
 
+  // with second curve
+  QgsLineString ls38;
+  ls38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, -1 ) );
+  c38.addCurve( ls38.clone() );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 3.926991, 0.0001 );
+  QGSCOMPARENEAR( c38.vertexAngle( QgsVertexId( 0, 0, 5 ) ), 3.141593, 0.0001 );
+
   //closed circular string
   l38.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
   c38.clear();
@@ -9784,6 +9825,96 @@ void TestQgsGeometry::compoundCurve()
   double lsArea = 0.0;
   ls.sumUpArea( lsArea );
   QGSCOMPARENEAR( ccArea, lsArea, 4 * DBL_EPSILON );
+
+
+  //addVertex
+  QgsCompoundCurve ac1;
+  ac1.addVertex( QgsPoint( 1.0, 2.0 ) );
+  QVERIFY( !ac1.isEmpty() );
+  QCOMPARE( ac1.numPoints(), 1 );
+  QCOMPARE( ac1.vertexCount(), 1 );
+  QCOMPARE( ac1.nCoordinates(), 1 );
+  QCOMPARE( ac1.ringCount(), 1 );
+  QCOMPARE( ac1.partCount(), 1 );
+  QVERIFY( !ac1.is3D() );
+  QVERIFY( !ac1.isMeasure() );
+  QCOMPARE( ac1.wkbType(), QgsWkbTypes::CompoundCurve );
+  QVERIFY( !ac1.hasCurvedSegments() );
+  QCOMPARE( ac1.area(), 0.0 );
+  QCOMPARE( ac1.perimeter(), 0.0 );
+
+  //adding first vertex should set linestring z/m type
+  QgsCompoundCurve ac2;
+  ac2.addVertex( QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3.0 ) );
+  QVERIFY( !ac2.isEmpty() );
+  QVERIFY( ac2.is3D() );
+  QVERIFY( !ac2.isMeasure() );
+  QCOMPARE( ac2.wkbType(), QgsWkbTypes::CompoundCurveZ );
+  QCOMPARE( ac2.wktTypeStr(), QString( "CompoundCurveZ" ) );
+
+  QgsCompoundCurve ac3;
+  ac3.addVertex( QgsPoint( QgsWkbTypes::PointM, 1.0, 2.0, 0.0, 3.0 ) );
+  QVERIFY( !ac3.isEmpty() );
+  QVERIFY( !ac3.is3D() );
+  QVERIFY( ac3.isMeasure() );
+  QCOMPARE( ac3.wkbType(), QgsWkbTypes::CompoundCurveM );
+  QCOMPARE( ac3.wktTypeStr(), QString( "CompoundCurveM" ) );
+
+  QgsCompoundCurve ac4;
+  ac4.addVertex( QgsPoint( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
+  QVERIFY( !ac4.isEmpty() );
+  QVERIFY( ac4.is3D() );
+  QVERIFY( ac4.isMeasure() );
+  QCOMPARE( ac4.wkbType(), QgsWkbTypes::CompoundCurveZM );
+  QCOMPARE( ac4.wktTypeStr(), QString( "CompoundCurveZM" ) );
+
+  //adding subsequent vertices should not alter z/m type, regardless of points type
+  QgsCompoundCurve ac5;
+  ac5.addVertex( QgsPoint( QgsWkbTypes::Point, 1.0, 2.0 ) ); //2d type
+  QCOMPARE( ac5.wkbType(), QgsWkbTypes::CompoundCurve );
+  ac5.addVertex( QgsPoint( QgsWkbTypes::PointZ, 11.0, 12.0, 13.0 ) ); // add 3d point
+  QCOMPARE( ac5.numPoints(), 2 );
+  QCOMPARE( ac5.vertexCount(), 2 );
+  QCOMPARE( ac5.nCoordinates(), 2 );
+  QCOMPARE( ac5.ringCount(), 1 );
+  QCOMPARE( ac5.partCount(), 1 );
+  QCOMPARE( ac5.wkbType(), QgsWkbTypes::CompoundCurve ); //should still be 2d
+  QVERIFY( !ac5.is3D() );
+  QCOMPARE( ac5.area(), 0.0 );
+  QCOMPARE( ac5.perimeter(), 0.0 );
+
+  QgsCompoundCurve ac6;
+  ac6.addVertex( QgsPoint( QgsWkbTypes::PointZ, 1.0, 2.0, 3.0 ) ); //3d type
+  QCOMPARE( ac6.wkbType(), QgsWkbTypes::CompoundCurveZ );
+  ac6.addVertex( QgsPoint( QgsWkbTypes::Point, 11.0, 12.0 ) ); //add 2d point
+  QCOMPARE( ac6.wkbType(), QgsWkbTypes::CompoundCurveZ ); //should still be 3d
+  ac6.pointAt( 1, pt, v );
+  QCOMPARE( pt, QgsPoint( QgsWkbTypes::PointZ, 11.0, 12.0 ) );
+  QVERIFY( ac6.is3D() );
+  QCOMPARE( ac6.numPoints(), 2 );
+  QCOMPARE( ac6.vertexCount(), 2 );
+  QCOMPARE( ac6.nCoordinates(), 2 );
+  QCOMPARE( ac6.ringCount(), 1 );
+  QCOMPARE( ac6.partCount(), 1 );
+
+  //close
+  QgsLineString closeC1;
+  QgsCompoundCurve closeCc1;
+  closeCc1.close();
+  QVERIFY( closeCc1.isEmpty() );
+  closeC1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  closeCc1.addCurve( closeC1.clone() );
+  QCOMPARE( closeCc1.numPoints(), 3 );
+  QVERIFY( !closeCc1.isClosed() );
+  closeCc1.close();
+  QCOMPARE( closeCc1.numPoints(), 4 );
+  QVERIFY( closeCc1.isClosed() );
+  closeCc1.pointAt( 3, pt, v );
+  QCOMPARE( pt, QgsPoint( QgsWkbTypes::Point, 1, 2 ) );
+  closeCc1.close();
+  QCOMPARE( closeCc1.numPoints(), 4 );
+  QVERIFY( closeCc1.isClosed() );
+
 }
 
 void TestQgsGeometry::multiPoint()
