@@ -631,8 +631,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
-  namSetup();
-
   // load GUI: actions, menus, toolbars
   profiler->beginGroup( QStringLiteral( "qgisapp" ) );
   profiler->beginGroup( QStringLiteral( "startup" ) );
@@ -657,6 +655,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
   endProfile();
 
+  mTray = new QSystemTrayIcon();
+  mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
+  mTray->hide();
+
   startProfile( QStringLiteral( "Initializing authentication" ) );
   mSplash->showMessage( tr( "Initializing authentication" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -666,6 +668,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     masterPasswordSetup();
   }
   endProfile();
+
+  // Setup QgsNetworkAccessManager (this needs to happen after authentication, for proxy settings)
+  namSetup();
 
   // Create the themes folder for the user
   startProfile( QStringLiteral( "Creating theme folder" ) );
@@ -1156,11 +1161,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     //add reacting to long click in touch
     grabGesture( Qt::TapAndHoldGesture );
   }
-
-
-  mTray = new QSystemTrayIcon();
-  mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
-  mTray->hide();
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
