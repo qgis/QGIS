@@ -1566,17 +1566,17 @@ void QgsPostgresConn::postgisWkbType( QgsWkbTypes::Type wkbType, QString &geomet
 
   if ( QgsWkbTypes::hasZ( wkbType ) && QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += "ZM";
+    geometryType += QLatin1String( "ZM" );
     dim = 4;
   }
   else if ( QgsWkbTypes::hasZ( wkbType ) )
   {
-    geometryType += "Z";
+    geometryType += QLatin1String( "Z" );
     dim = 3;
   }
   else if ( QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += "M";
+    geometryType += QLatin1String( "M" );
     dim = 3;
   }
   else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )

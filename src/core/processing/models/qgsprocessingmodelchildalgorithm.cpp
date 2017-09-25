@@ -97,7 +97,7 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
     }
     paramMap.insert( paramIt.key(), sources );
   }
-  map.insert( "params", paramMap );
+  map.insert( QStringLiteral( "params" ), paramMap );
 
   QVariantMap outputMap;
   QMap< QString, QgsProcessingModelOutput >::const_iterator outputIt = mModelOutputs.constBegin();
@@ -105,7 +105,7 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   {
     outputMap.insert( outputIt.key(), outputIt.value().toVariant() );
   }
-  map.insert( "outputs", outputMap );
+  map.insert( QStringLiteral( "outputs" ), outputMap );
 
   return map;
 }

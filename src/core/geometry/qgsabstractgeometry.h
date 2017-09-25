@@ -500,4 +500,6 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 }
 #endif
 
+// clazy:excludeall=qstring-allocations
+
 #endif //QGSABSTRACTGEOMETRYV2

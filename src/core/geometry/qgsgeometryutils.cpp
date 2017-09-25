@@ -798,7 +798,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  QRegularExpression rx( "\\s" );
+  QRegularExpression rx( QStringLiteral( "\\s" ) );
   for ( const QString &pointCoordinates : coordList )
   {
     QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
@@ -898,12 +898,12 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   // coordinate separator
-  QString cs = ",";
+  QString cs = QStringLiteral( "," );
   // tupel separator
-  QString ts = " ";
+  QString ts = QStringLiteral( " " );
 
-  elemCoordinates.setAttribute( "cs", cs );
-  elemCoordinates.setAttribute( "ts", ts );
+  elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
+  elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
 
   QString strCoordinates;
 
@@ -969,7 +969,7 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wkt );
 
-  QRegularExpression cooRegEx( "^[^\\(]*\\((.*)\\)[^\\)]*$" );
+  QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
   cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
   QRegularExpressionMatch match = cooRegEx.match( wkt );
   QString contents = match.hasMatch() ? match.captured( 1 ) : QString();

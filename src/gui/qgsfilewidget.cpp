@@ -316,7 +316,7 @@ void QgsFileWidget::openFileDialog()
     }
     if ( fileNames.length() > 1 )
     {
-      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( "\" \"" ) ) );
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( QStringLiteral( "\" \"" ) ) ) );
     }
     else
     {
@@ -403,7 +403,7 @@ void QgsFileDropEdit::setFilters( const QString &filters )
   if ( filters.contains( QStringLiteral( "*.*" ) ) )
     return; // everything is allowed!
 
-  QRegularExpression rx( "\\*\\.(\\w+)" );
+  QRegularExpression rx( QStringLiteral( "\\*\\.(\\w+)" ) );
   QRegularExpressionMatchIterator i = rx.globalMatch( filters );
   while ( i.hasNext() )
   {
@@ -431,7 +431,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   }
   if ( paths.size() > 1 )
   {
-    return QStringLiteral( "\"%1\"" ).arg( paths.join( "\" \"" ) );
+    return QStringLiteral( "\"%1\"" ).arg( paths.join( QStringLiteral( "\" \"" ) ) );
   }
   else if ( paths.size() == 1 )
   {

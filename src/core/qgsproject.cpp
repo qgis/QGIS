@@ -1413,7 +1413,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QFile backupFile( QString( "%1~" ).arg( filename ) );
+    QFile backupFile( QStringLiteral( "%1~" ).arg( filename ) );
     bool ok = true;
     ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
     ok &= projectFile.open( QIODevice::ReadOnly );
@@ -2156,7 +2156,7 @@ bool QgsProject::zip( const QString &filename )
   // save the current project in a temporary .qgs file
   std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
   const QString baseName = QFileInfo( filename ).baseName();
-  const QString qgsFileName = QString( "%1.qgs" ).arg( baseName );
+  const QString qgsFileName = QStringLiteral( "%1.qgs" ).arg( baseName );
   QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );
 
   bool writeOk = false;

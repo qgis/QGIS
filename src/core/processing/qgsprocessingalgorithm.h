@@ -876,6 +876,8 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSPROCESSINGALGORITHM_H
 
 

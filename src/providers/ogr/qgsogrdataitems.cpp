@@ -452,7 +452,7 @@ bool QgsOgrDataCollectionItem::storeConnection( const QString &path, const QStri
 
 bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName )
 {
-  QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open %1" ).arg( name ), "", extensions );
+  QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open %1" ).arg( name ), QLatin1String( "" ), extensions );
   return storeConnection( path, ogrDriverName );
 }
 
@@ -581,9 +581,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   //       class
   // TODO: add more OGR supported multiple layers formats here!
   QStringList ogrSupportedDbLayersExtensions;
-  ogrSupportedDbLayersExtensions << QLatin1String( "gpkg" ) << QLatin1String( "sqlite" ) << QLatin1String( "db" ) << QStringLiteral( "gdb" );
+  ogrSupportedDbLayersExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
   QStringList ogrSupportedDbDriverNames;
-  ogrSupportedDbDriverNames << QLatin1String( "GPKG" ) << QLatin1String( "db" ) << QStringLiteral( "gdb" );
+  ogrSupportedDbDriverNames << QStringLiteral( "GPKG" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
 
   // Fast track: return item without testing if:
   // scanExtSetting or zipfile and scan zip == "Basic scan"

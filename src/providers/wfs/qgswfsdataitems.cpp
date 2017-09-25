@@ -49,7 +49,7 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
   mIconName = QStringLiteral( "mIconConnect.png" );
-  mBaseUri = uri.param( QString( "url" ) );
+  mBaseUri = uri.param( QStringLiteral( "url" ) );
 }
 
 QgsWfsLayerItem::~QgsWfsLayerItem()
@@ -81,7 +81,7 @@ void QgsWfsLayerItem::copyStyle()
   for ( const QString &connName : connections )
   {
     connection.reset( new QgsGeoNodeConnection( connName ) );
-    if ( mBaseUri.contains( connection->uri().param( QString( "url" ) ) ) )
+    if ( mBaseUri.contains( connection->uri().param( QStringLiteral( "url" ) ) ) )
       break;
     else
       connection.reset( nullptr );
@@ -103,7 +103,7 @@ void QgsWfsLayerItem::copyStyle()
   }
 
   QString url( connection->uri().encodedUri() );
-  QgsGeoNodeRequest geoNodeRequest( url.replace( QString( "url=" ), QString() ), true );
+  QgsGeoNodeRequest geoNodeRequest( url.replace( QStringLiteral( "url=" ), QString() ), true );
   QgsGeoNodeStyle style = geoNodeRequest.fetchDefaultStyleBlocking( this->name() );
   if ( style.name.isEmpty() )
   {
@@ -314,7 +314,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
     {
       QgsGeoNodeConnection connection( connectionName );
 
-      QString url = connection.uri().param( "url" );
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
       QgsWFSDataSourceURI sourceUri( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) )[0] );
@@ -338,7 +338,7 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
     {
       QgsGeoNodeConnection connection( connectionName );
 
-      QString url = connection.uri().param( "url" );
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
       const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) ) );

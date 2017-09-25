@@ -37,7 +37,7 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
   QFont font;
   QFontMetrics fm( font );
-  mMaximumShadowWidth = fm.width( "X" );
+  mMaximumShadowWidth = fm.width( QStringLiteral( "X" ) );
 
   mGrid.reset( new QgsLayoutItemPageGrid( pos().x(), pos().y(), rect().width(), rect().height(), mLayout ) );
   mGrid->setParentItem( this );

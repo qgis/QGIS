@@ -110,7 +110,7 @@ void QgsFileDownloader::onSslErrors( QNetworkReply *reply, const QList<QSslError
 {
   Q_UNUSED( reply );
   QStringList errorMessages;
-  errorMessages <<  "SSL Errors: ";
+  errorMessages <<  QStringLiteral( "SSL Errors: " );
   for ( auto end = errors.size(), i = 0; i != end; ++i )
   {
     errorMessages << errors[i].errorString();
@@ -129,7 +129,7 @@ void QgsFileDownloader::error( const QStringList &errorMessages )
   // Show error
   if ( mGuiNotificationsEnabled )
   {
-    QMessageBox::warning( nullptr, tr( "Download failed" ), mErrors.join( "<br>" ) );
+    QMessageBox::warning( nullptr, tr( "Download failed" ), mErrors.join( QStringLiteral( "<br>" ) ) );
   }
   emit downloadError( mErrors );
 }

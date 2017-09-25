@@ -911,6 +911,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
 }; // class QgsMapCanvas
 
-
+// clazy:excludeall=qstring-allocations
 
 #endif

@@ -745,7 +745,7 @@ bool QgsComposerPicture::writeXml( QDomElement &elem, QDomDocument &doc ) const
   {
     // convert from absolute path to relative. For SVG we also need to consider system SVG paths
     QgsPathResolver pathResolver = mComposition->project()->pathResolver();
-    if ( imagePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+    if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
       imagePath = QgsSymbolLayerUtils::svgSymbolPathToName( imagePath, pathResolver );
     else
       imagePath = pathResolver.writePath( imagePath );
@@ -826,7 +826,7 @@ bool QgsComposerPicture::readXml( const QDomElement &itemElem, const QDomDocumen
   {
     // convert from relative path to absolute. For SVG we also need to consider system SVG paths
     QgsPathResolver pathResolver = mComposition->project()->pathResolver();
-    if ( imagePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+    if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
       imagePath = QgsSymbolLayerUtils::svgSymbolNameToPath( imagePath, pathResolver );
     else
       imagePath = pathResolver.readPath( imagePath );

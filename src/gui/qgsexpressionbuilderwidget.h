@@ -188,7 +188,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param sortOrder sort ranking for item
       */
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
-                       const QString &helpText = "",
+                       const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1 );
 
@@ -325,7 +325,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param sortOrder sort ranking for item
       */
     void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText,
-                                   const QString &helpText = "",
+                                   const QString &helpText = QString(),
                                    QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                                    bool highlightedItem = false, int sortOrder = 1 );
 
@@ -355,5 +355,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsExpressionContext mExpressionContext;
     QPointer< QgsProject > mProject;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSEXPRESSIONBUILDER_H

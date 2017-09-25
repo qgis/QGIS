@@ -86,7 +86,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    explicit QgsPostgresProvider( QString const &uri = "" );
+    explicit QgsPostgresProvider( QString const &uri = QString() );
 
 
     virtual ~QgsPostgresProvider();
@@ -506,5 +506,7 @@ class QgsPostgresSharedData
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

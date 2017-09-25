@@ -293,7 +293,7 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
 
 bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
 {
-  if ( layoutElement.nodeName() != QString( "Layout" ) )
+  if ( layoutElement.nodeName() != QStringLiteral( "Layout" ) )
   {
     return false;
   }

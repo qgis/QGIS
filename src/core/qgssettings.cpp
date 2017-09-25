@@ -202,28 +202,28 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
   switch ( section )
   {
     case Section::Core :
-      prefix = "core";
+      prefix = QStringLiteral( "core" );
       break;
     case Section::Server :
-      prefix = "server";
+      prefix = QStringLiteral( "server" );
       break;
     case Section::Gui :
-      prefix = "gui";
+      prefix = QStringLiteral( "gui" );
       break;
     case Section::Plugins :
-      prefix = "plugins";
+      prefix = QStringLiteral( "plugins" );
       break;
     case Section::Misc :
-      prefix = "misc";
+      prefix = QStringLiteral( "misc" );
       break;
     case Section::Auth :
-      prefix = "auth";
+      prefix = QStringLiteral( "auth" );
       break;
     case Section::App :
-      prefix = "app";
+      prefix = QStringLiteral( "app" );
       break;
     case Section::Providers :
-      prefix = "providers";
+      prefix = QStringLiteral( "providers" );
       break;
     case Section::NoSection:
     default:

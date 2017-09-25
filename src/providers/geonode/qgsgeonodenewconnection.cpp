@@ -55,7 +55,7 @@ void QgsGeoNodeNewConnection::testConnection()
 
 bool QgsGeoNodeNewConnection::validate()
 {
-  if ( !url().contains( "://" ) )
+  if ( !url().contains( QLatin1String( "://" ) ) )
   {
     QMessageBox::warning(
       this,

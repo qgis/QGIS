@@ -2090,4 +2090,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #define QGIS_ICON_SIZE 24
 #endif
 
+// clazy:excludeall=qstring-allocations
+
 #endif

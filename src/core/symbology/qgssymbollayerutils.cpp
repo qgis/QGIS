@@ -885,7 +885,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   {
     symbol->setOutputUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "outputUnit" ) ) ) );
   }
-  if ( element.hasAttribute( ( "mapUnitScale" ) ) )
+  if ( element.hasAttribute( ( QStringLiteral( "mapUnitScale" ) ) ) )
   {
     QgsMapUnitScale mapUnitScale;
     double oldMin = element.attribute( QStringLiteral( "mapUnitMinScale" ), QStringLiteral( "0.0" ) ).toDouble();
@@ -966,7 +966,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
   symEl.setAttribute( QStringLiteral( "type" ), _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( QStringLiteral( "name" ), name );
   symEl.setAttribute( QStringLiteral( "alpha" ), QString::number( symbol->opacity() ) );
-  symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? "1" : "0" );
+  symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
@@ -2050,8 +2050,8 @@ QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, cons
   }
   else
   {
-    url.addQueryItem( "fill", QStringLiteral( "#000000" ) );
-    url.addQueryItem( "fill-opacity", QStringLiteral( "1" ) );
+    url.addQueryItem( QStringLiteral( "fill" ), QStringLiteral( "#000000" ) );
+    url.addQueryItem( QStringLiteral( "fill-opacity" ), QStringLiteral( "1" ) );
   }
   if ( strokeColor.isValid() )
   {

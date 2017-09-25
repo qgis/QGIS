@@ -71,7 +71,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * \param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsSpatiaLiteProvider( QString const &uri = "" );
+    explicit QgsSpatiaLiteProvider( QString const &uri = QString() );
 
     virtual ~ QgsSpatiaLiteProvider();
 
@@ -386,5 +386,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     friend class QgsSpatiaLiteFeatureSource;
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

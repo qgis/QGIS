@@ -105,8 +105,8 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element )
   QString layerID = element.attribute( QStringLiteral( "id" ) );
   QString layerName = element.attribute( QStringLiteral( "name" ) );
 
-  QString providerKey = element.attribute( "providerKey" );
-  QString source = element.attribute( "source" );
+  QString providerKey = element.attribute( QStringLiteral( "providerKey" ) );
+  QString source = element.attribute( QStringLiteral( "source" ) );
 
   Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
@@ -138,8 +138,8 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement )
 
   if ( mRef )
   {
-    elem.setAttribute( "source", mRef->publicSource() );
-    elem.setAttribute( "providerKey", mRef->dataProvider() ? mRef->dataProvider()->name() : QString() );
+    elem.setAttribute( QStringLiteral( "source" ), mRef->publicSource() );
+    elem.setAttribute( QStringLiteral( "providerKey" ), mRef->dataProvider() ? mRef->dataProvider()->name() : QString() );
   }
 
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );

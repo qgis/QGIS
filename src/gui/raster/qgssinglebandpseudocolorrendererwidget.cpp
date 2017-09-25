@@ -663,7 +663,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         else
         {
           QgsSettings settings;
-          QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
+          QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
           btnColorRamp->setColorRampFromName( defaultPalette );
         }
 

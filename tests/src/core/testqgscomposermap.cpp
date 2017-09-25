@@ -262,7 +262,7 @@ void TestQgsComposerMap::dataDefinedLayers()
   mComposition->addComposerMap( mComposerMap );
 
   //test malformed layer set string
-  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression( "'x'" ) );
+  mComposerMap->dataDefinedProperties().setProperty( QgsComposerObject::MapLayers, QgsProperty::fromExpression( QStringLiteral( "'x'" ) ) );
   QList<QgsMapLayer *> result = mComposerMap->layersToRender();
   QVERIFY( result.isEmpty() );
 

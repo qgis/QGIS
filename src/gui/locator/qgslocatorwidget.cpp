@@ -100,7 +100,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mLocator->registerFilter( new QgsLocatorFilterFilter( this, this ) );
 
   mMenu = new QMenu( this );
-  QAction *menuAction = mLineEdit->addAction( QgsApplication::getThemeIcon( "/search.svg" ), QLineEdit::LeadingPosition );
+  QAction *menuAction = mLineEdit->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) ), QLineEdit::LeadingPosition );
   connect( menuAction, &QAction::triggered, this, [ = ]
   {
     mFocusTimer.stop();
@@ -421,7 +421,7 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
     result.displayString = fIt.key();
     result.description = fIt.value()->displayName();
     result.userData = fIt.key() + ' ';
-    result.icon = QgsApplication::getThemeIcon( "/search.svg" );
+    result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) );
     emit resultFetched( result );
   }
 }

@@ -75,7 +75,7 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 
   // add an item virtually
   QListWidgetItem item;
-  item.setText( "MyText" );
+  item.setText( QStringLiteral( "MyText" ) );
   w.mListWidget->addItem( &item );
   QCOMPARE( w.mListWidget->item( 0 )->text(), QString( "MyText" ) );
 

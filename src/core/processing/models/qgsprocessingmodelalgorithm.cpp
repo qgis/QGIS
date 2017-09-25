@@ -341,7 +341,7 @@ QString QgsProcessingModelAlgorithm::asPythonCode() const
   auto safeName = []( const QString & name )->QString
   {
     QString n = name.toLower().trimmed();
-    QRegularExpression rx( "[^a-z_]" );
+    QRegularExpression rx( QStringLiteral( "[^a-z_]" ) );
     n.replace( rx, QString() );
     return n;
   };
@@ -416,7 +416,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
   auto safeName = []( const QString & name )->QString
   {
     QString s = name;
-    return s.replace( QRegularExpression( "[\\s'\"\\(\\):]" ), QStringLiteral( "_" ) );
+    return s.replace( QRegularExpression( QStringLiteral( "[\\s'\"\\(\\):]" ) ), QStringLiteral( "_" ) );
   };
 
   // "static"/single value sources
@@ -789,7 +789,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   {
     childMap.insert( childIt.key(), childIt.value().toVariant() );
   }
-  map.insert( "children", childMap );
+  map.insert( QStringLiteral( "children" ), childMap );
 
   QVariantMap paramMap;
   QMap< QString, QgsProcessingModelParameter >::const_iterator paramIt = mParameterComponents.constBegin();
@@ -797,14 +797,14 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   {
     paramMap.insert( paramIt.key(), paramIt.value().toVariant() );
   }
-  map.insert( "parameters", paramMap );
+  map.insert( QStringLiteral( "parameters" ), paramMap );
 
   QVariantMap paramDefMap;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
   {
     paramDefMap.insert( def->name(), def->toVariantMap() );
   }
-  map.insert( "parameterDefinitions", paramDefMap );
+  map.insert( QStringLiteral( "parameterDefinitions" ), paramDefMap );
 
   return map;
 }
@@ -865,7 +865,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
 bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
 {
-  QDomDocument doc = QDomDocument( "model" );
+  QDomDocument doc = QDomDocument( QStringLiteral( "model" ) );
   QDomElement elem = QgsXmlUtils::writeVariant( toVariant(), doc );
   doc.appendChild( elem );
 

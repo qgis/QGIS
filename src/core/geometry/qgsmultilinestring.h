@@ -69,4 +69,6 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     bool wktOmitChildType() const override;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSMULTILINESTRINGV2_H

@@ -364,8 +364,8 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   myGdalVersionOK << 1900;
 
   //proj definition for EPSG:4618 was updated in GDAL 2.0 - see https://github.com/OSGeo/proj.4/issues/241
-  myProj4Strings << "+proj=longlat +ellps=aust_SA +towgs84=-66.87,4.37,-38.52,0,0,0,0 +no_defs";
-  myTOWGS84Strings << "+towgs84=-66.87,4.37,-38.52,0,0,0,0";
+  myProj4Strings << QStringLiteral( "+proj=longlat +ellps=aust_SA +towgs84=-66.87,4.37,-38.52,0,0,0,0 +no_defs" );
+  myTOWGS84Strings << QStringLiteral( "+towgs84=-66.87,4.37,-38.52,0,0,0,0" );
   myAuthIdStrings << QStringLiteral( "EPSG:4618" );
 
   // do test with WKT definitions

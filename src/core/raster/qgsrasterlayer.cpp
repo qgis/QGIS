@@ -308,29 +308,29 @@ QString QgsRasterLayer::htmlMetadata() const
   QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
   // Identification section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Identification" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.identificationSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Begin Provider section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Information from provider" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
 
   // original name
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Original" ) + QLatin1String( "</td><td>" ) + originalName() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Original" ) + QStringLiteral( "</td><td>" ) + originalName() + QStringLiteral( "</td></tr>\n" );
 
   // name
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QLatin1String( "</td><td>" ) + name() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
 
   // data source
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QLatin1String( "</td><td>" ) + publicSource() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>" ) + publicSource() + QStringLiteral( "</td></tr>\n" );
 
   // storage type
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QLatin1String( "</td><td>" ) + providerType() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>" ) + providerType() + QStringLiteral( "</td></tr>\n" );
 
   // EPSG
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QLatin1String( "</td><td>" ) + crs().authid() + QLatin1String( " - " );
-  myMetadata += crs().description() + QLatin1String( " - " );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" ) + crs().authid() + QStringLiteral( " - " );
+  myMetadata += crs().description() + QStringLiteral( " - " );
   if ( crs().isGeographic() )
     myMetadata += tr( "Geographic" );
   else
@@ -338,13 +338,13 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += QLatin1String( "</td></tr>\n" );
 
   // Extent
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QLatin1String( "</td><td>" ) + extent().toString() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
 
   // unit
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QLatin1String( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
 
   // Raster Width
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Width" ) + QLatin1String( "</td><td>" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Width" ) + QStringLiteral( "</td><td>" );
   if ( dataProvider()->capabilities() & QgsRasterDataProvider::Size )
     myMetadata += QString::number( width() );
   else
@@ -352,7 +352,7 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += QLatin1String( "</td></tr>\n" );
 
   // Raster height
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Height" ) + QLatin1String( "</td><td>" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Height" ) + QStringLiteral( "</td><td>" );
   if ( dataProvider()->capabilities() & QgsRasterDataProvider::Size )
     myMetadata += QString::number( height() );
   else
@@ -360,7 +360,7 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += QLatin1String( "</td></tr>\n" );
 
   // Data type
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Data type" ) + QLatin1String( "</td><td>" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Data type" ) + QStringLiteral( "</td><td>" );
   // Just use the first band
   switch ( mDataProvider->sourceDataType( 1 ) )
   {
@@ -406,38 +406,38 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += QLatin1String( "</table>\n<br><br>" );
 
   // extent section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Extent" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.extentSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the Access section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Access" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.accessSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Bands section
-  myMetadata += QLatin1String( "</table>\n<br><br><h1>" ) + tr( "Bands" ) + QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+  myMetadata += QStringLiteral( "</table>\n<br><br><h1>" ) + tr( "Bands" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
   // Band count
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Band count" ) + QLatin1String( "</td><td>" ) + QString::number( bandCount() ) + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Band count" ) + QStringLiteral( "</td><td>" ) + QString::number( bandCount() ) + QStringLiteral( "</td></tr>\n" );
 
   // Band table
-  myMetadata += "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n";
+  myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
   myMetadata += "<tr><th>" + tr( "Number" ) + "</th><th>" + tr( "Band" ) + "</th><th>" + tr( "No-Data" ) + "</th><th>" + tr( "Min" ) + "</th><th>" + tr( "Max" ) + "</th></tr>\n";
 
   QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
   for ( int i = 1; i <= bandCount(); i++ )
   {
-    QString rowClass = QString( "" );
+    QString rowClass = QLatin1String( "" );
     if ( i % 2 )
-      rowClass = QString( "class=\"odd-row\"" );
+      rowClass = QStringLiteral( "class=\"odd-row\"" );
     myMetadata += "<tr " + rowClass + "><td>" + QString::number( i ) + "</td><td>" + bandName( i ) + "</td><td>";
 
     if ( dataProvider()->sourceHasNoDataValue( i ) )
       myMetadata += QString::number( dataProvider()->sourceNoDataValue( i ) );
     else
       myMetadata += tr( "n/a" );
-    myMetadata += "</td>";
+    myMetadata += QLatin1String( "</td>" );
 
     if ( provider->hasStatistics( i ) )
     {
@@ -450,24 +450,24 @@ QString QgsRasterLayer::htmlMetadata() const
       myMetadata += "<td>" + tr( "n/a" ) + "</td><td>" + tr( "n/a" ) + "</td>";
     }
 
-    myMetadata += "</tr>\n";
+    myMetadata += QLatin1String( "</tr>\n" );
   }
 
   //close previous bands table
   myMetadata += QLatin1String( "</table>\n<br><br>" );
 
   // Start the contacts section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Contacts" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.contactsSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the links section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "References" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "References" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.linksSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the history section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "History" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.historySectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 

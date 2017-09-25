@@ -71,4 +71,6 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSMULTIPOINTV2_H

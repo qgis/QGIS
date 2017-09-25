@@ -44,7 +44,7 @@ QgsProcessingAlgorithm *QgsProcessingAlgorithm::create( const QVariantMap &confi
 QString QgsProcessingAlgorithm::id() const
 {
   if ( mProvider )
-    return QString( "%1:%2" ).arg( mProvider->id(), name() );
+    return QStringLiteral( "%1:%2" ).arg( mProvider->id(), name() );
   else
     return name();
 }
@@ -71,7 +71,7 @@ QIcon QgsProcessingAlgorithm::icon() const
 
 QString QgsProcessingAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( "processingAlgorithm.svg" );
+  return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
 }
 
 QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const

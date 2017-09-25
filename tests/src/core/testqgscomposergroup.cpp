@@ -53,7 +53,7 @@ class TestQgsComposerGroup : public QObject
 
   private:
 
-    void dumpUndoStack( const QUndoStack &, QString prefix = QLatin1String( QLatin1String( "" ) ) ) const;
+    void dumpUndoStack( const QUndoStack &, QString prefix = QString() ) const;
 
     QgsComposition *mComposition = nullptr;
     QgsMapSettings *mMapSettings = nullptr;

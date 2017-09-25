@@ -97,14 +97,14 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   QString uriUpdated( uri );
   // HACK sorry...
-  if ( providerKey == "ogr" )
+  if ( providerKey == QLatin1String( "ogr" ) )
   {
     QString layerName;
     if ( options.contains( QStringLiteral( "layerName" ) ) )
       layerName = options.value( QStringLiteral( "layerName" ) ).toString();
     if ( !layerName.isEmpty() )
     {
-      uriUpdated += "|layername=";
+      uriUpdated += QLatin1String( "|layername=" );
       uriUpdated += layerName;
     }
   }

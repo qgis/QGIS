@@ -350,9 +350,9 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QgsStringMap &string
     if ( type() == QgsSymbol::Line )
     {
       //these keys had different meaning for line symbol layers
-      if ( propertyName == "width" )
+      if ( propertyName == QLatin1String( "width" ) )
         key = QgsSymbolLayer::PropertyStrokeWidth;
-      else if ( propertyName == "color" )
+      else if ( propertyName == QLatin1String( "color" ) )
         key = QgsSymbolLayer::PropertyStrokeColor;
     }
 

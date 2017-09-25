@@ -63,10 +63,10 @@ void QgsCrashDialog::createBugReport()
 QString QgsCrashDialog::htmlToMarkdown( const QString &html )
 {
   QString markdown = html;
-  markdown.replace( "<br>", "\n" );
-  markdown.replace( "<b>", "*" );
-  markdown.replace( "</b>", "*" );
-  markdown.replace( "QGIS code revision: ", "QGIS code revision: commit:" );
+  markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
+  markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
+  markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
+  markdown.replace( QLatin1String( "QGIS code revision: " ), QLatin1String( "QGIS code revision: commit:" ) );
   return markdown;
 }
 

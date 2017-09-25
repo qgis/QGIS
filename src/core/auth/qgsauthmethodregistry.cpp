@@ -78,7 +78,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
   }
 
   // auth method file regex pattern, only files matching the pattern are loaded if the variable is defined
-  QString filePattern = getenv( "QGIS_AUTHMETHOD_FILE" );
+  QString filePattern = getenv( QStringLiteral( "QGIS_AUTHMETHOD_FILE" ) );
   QRegExp fileRegexp;
   if ( !filePattern.isEmpty() )
   {
@@ -228,7 +228,7 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
     if ( asHtml )
     {
-      list += "<br></li>";
+      list += QLatin1String( "<br></li>" );
     }
     else
     {
@@ -316,7 +316,7 @@ typedef QWidget *editFactoryFunction_t( QWidget *parent );
 QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidget *parent )
 {
   editFactoryFunction_t *editFactory =
-    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, "editWidget" ) ) );
+    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, QStringLiteral( "editWidget" ) ) ) );
 
   if ( !editFactory )
     return nullptr;

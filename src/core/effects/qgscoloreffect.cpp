@@ -68,7 +68,7 @@ void QgsColorEffect::draw( QgsRenderContext &context )
 QgsStringMap QgsColorEffect::properties() const
 {
   QgsStringMap props;
-  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
   props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
@@ -76,7 +76,7 @@ QgsStringMap QgsColorEffect::properties() const
   props.insert( QStringLiteral( "contrast" ), QString::number( mContrast ) );
   props.insert( QStringLiteral( "saturation" ), QString::number( mSaturation ) );
   props.insert( QStringLiteral( "grayscale_mode" ), QString::number( int( mGrayscaleMode ) ) );
-  props.insert( QStringLiteral( "colorize" ), mColorizeOn ? "1" : "0" );
+  props.insert( QStringLiteral( "colorize" ), mColorizeOn ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   props.insert( QStringLiteral( "colorize_color" ), QgsSymbolLayerUtils::encodeColor( mColorizeColor ) );
   props.insert( QStringLiteral( "colorize_strength" ), QString::number( mColorizeStrength ) );
 

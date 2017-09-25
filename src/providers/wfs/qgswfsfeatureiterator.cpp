@@ -340,13 +340,13 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
   else if ( !forHits && mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
   {
     QStringList list;
-    list << QLatin1String( "text/xml; subtype=gml/3.2.1" );
-    list << QLatin1String( "application/gml+xml; version=3.2" );
-    list << QLatin1String( "text/xml; subtype=gml/3.1.1" );
-    list << QLatin1String( "application/gml+xml; version=3.1" );
-    list << QLatin1String( "text/xml; subtype=gml/3.0.1" );
-    list << QLatin1String( "application/gml+xml; version=3.0" );
-    list << QLatin1String( "GML3" );
+    list << QStringLiteral( "text/xml; subtype=gml/3.2.1" );
+    list << QStringLiteral( "application/gml+xml; version=3.2" );
+    list << QStringLiteral( "text/xml; subtype=gml/3.1.1" );
+    list << QStringLiteral( "application/gml+xml; version=3.1" );
+    list << QStringLiteral( "text/xml; subtype=gml/3.0.1" );
+    list << QStringLiteral( "application/gml+xml; version=3.0" );
+    list << QStringLiteral( "GML3" );
     Q_FOREACH ( const QString &format, list )
     {
       if ( mShared->mCaps.outputFormats.contains( format ) )

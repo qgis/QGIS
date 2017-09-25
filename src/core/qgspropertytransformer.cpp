@@ -72,7 +72,7 @@ bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
   mMaxValue = transformerMap.value( QStringLiteral( "maxValue" ), 1.0 ).toDouble();
   mCurveTransform.reset( nullptr );
 
-  QVariantMap curve = transformerMap.value( "curve" ).toMap();
+  QVariantMap curve = transformerMap.value( QStringLiteral( "curve" ) ).toMap();
 
   if ( !curve.isEmpty() )
   {
@@ -340,11 +340,11 @@ bool QgsSizeScaleTransformer::loadVariant( const QVariant &transformer )
 
   QVariantMap transformerMap = transformer.toMap();
 
-  mType = static_cast< ScaleType >( transformerMap.value( "scaleType", Linear ).toInt() );
-  mMinSize = transformerMap.value( "minSize", 0.0 ).toDouble();
-  mMaxSize = transformerMap.value( "maxSize", 1.0 ).toDouble();
-  mNullSize = transformerMap.value( "nullSize", 0.0 ).toDouble();
-  mExponent = transformerMap.value( "exponent", 1.0 ).toDouble();
+  mType = static_cast< ScaleType >( transformerMap.value( QStringLiteral( "scaleType" ), Linear ).toInt() );
+  mMinSize = transformerMap.value( QStringLiteral( "minSize" ), 0.0 ).toDouble();
+  mMaxSize = transformerMap.value( QStringLiteral( "maxSize" ), 1.0 ).toDouble();
+  mNullSize = transformerMap.value( QStringLiteral( "nullSize" ), 0.0 ).toDouble();
+  mExponent = transformerMap.value( QStringLiteral( "exponent" ), 1.0 ).toDouble();
 
   return true;
 }

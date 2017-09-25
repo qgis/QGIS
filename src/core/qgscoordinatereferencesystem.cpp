@@ -120,7 +120,7 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
       continue;
     }
 
-    QString sql = "select srs_id from tbl_srs";
+    QString sql = QStringLiteral( "select srs_id from tbl_srs" );
     ( void )sqlite3_prepare( database, sql.toUtf8(),
                              sql.toUtf8().length(),
                              &statement, &tail );

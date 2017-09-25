@@ -156,4 +156,6 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSCOMPOUNDCURVEV2_H

@@ -66,6 +66,11 @@ double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, co
   return std::max( size.width(), size.height() );
 }
 
+QString QgsTextDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_TEXT;
+}
+
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   Q_UNUSED( c );

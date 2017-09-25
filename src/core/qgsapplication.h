@@ -735,4 +735,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     static ApplicationMembers *members();
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif

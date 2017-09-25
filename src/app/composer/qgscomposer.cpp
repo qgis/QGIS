@@ -2315,7 +2315,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 bool QgsComposer::saveImage( const QImage &img, const QString &imageFilename, const QString &imageFormat )
 {
   QImageWriter w( imageFilename, imageFormat.toLocal8Bit().constData() );
-  if ( imageFormat.compare( "tiff", Qt::CaseInsensitive ) == 0 || imageFormat.compare( "tif", Qt::CaseInsensitive ) == 0 )
+  if ( imageFormat.compare( QLatin1String( "tiff" ), Qt::CaseInsensitive ) == 0 || imageFormat.compare( QLatin1String( "tif" ), Qt::CaseInsensitive ) == 0 )
   {
     w.setCompression( 1 ); //use LZW compression
   }

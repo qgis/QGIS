@@ -42,7 +42,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     static const QRgb NODATA_COLOR;
 
-    QgsRasterRenderer( QgsRasterInterface *input = nullptr, const QString &type = "" );
+    QgsRasterRenderer( QgsRasterInterface *input = nullptr, const QString &type = QString() );
     virtual ~QgsRasterRenderer();
 
     //! QgsRasterRenderer cannot be copied. Use clone() instead.

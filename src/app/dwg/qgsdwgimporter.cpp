@@ -300,186 +300,186 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
 
 
   QList<table> tables = QList<table>()
-                        << table( "drawing", QObject::tr( "Imported drawings" ), wkbNone, QList<field>()
-                                  << field( "path", OFTString )
-                                  << field( "comments", OFTString )
-                                  << field( "importdat", OFTDateTime )
-                                  << field( "lastmodified", OFTDateTime )
-                                  << field( "crs", OFTInteger )
+                        << table( QStringLiteral( "drawing" ), QObject::tr( "Imported drawings" ), wkbNone, QList<field>()
+                                  << field( QStringLiteral( "path" ), OFTString )
+                                  << field( QStringLiteral( "comments" ), OFTString )
+                                  << field( QStringLiteral( "importdat" ), OFTDateTime )
+                                  << field( QStringLiteral( "lastmodified" ), OFTDateTime )
+                                  << field( QStringLiteral( "crs" ), OFTInteger )
                                 )
-                        << table( "headers", QObject::tr( "Headers" ), wkbNone, QList<field>()
-                                  << field( "k", OFTString )
-                                  << field( "v", OFTString )
+                        << table( QStringLiteral( "headers" ), QObject::tr( "Headers" ), wkbNone, QList<field>()
+                                  << field( QStringLiteral( "k" ), OFTString )
+                                  << field( QStringLiteral( "v" ), OFTString )
                                 )
-                        << table( "linetypes", QObject::tr( "Line types" ), wkbNone, QList<field>()
-                                  << field( "name", OFTString )
-                                  << field( "desc", OFTString )
-                                  << field( "path", OFTRealList )
+                        << table( QStringLiteral( "linetypes" ), QObject::tr( "Line types" ), wkbNone, QList<field>()
+                                  << field( QStringLiteral( "name" ), OFTString )
+                                  << field( QStringLiteral( "desc" ), OFTString )
+                                  << field( QStringLiteral( "path" ), OFTRealList )
                                 )
-                        << table( "layers", QObject::tr( "Layer list" ), wkbNone, QList<field>()
-                                  << field( "name", OFTString )
-                                  << field( "linetype", OFTString )
-                                  << field( "color", OFTString )
-                                  << field( "ocolor", OFTInteger )
-                                  << field( "color24", OFTInteger )
-                                  << field( "transparency", OFTInteger )
-                                  << field( "lweight", OFTInteger )
-                                  << field( "linewidth", OFTReal )
-                                  << field( "flags", OFTInteger )
+                        << table( QStringLiteral( "layers" ), QObject::tr( "Layer list" ), wkbNone, QList<field>()
+                                  << field( QStringLiteral( "name" ), OFTString )
+                                  << field( QStringLiteral( "linetype" ), OFTString )
+                                  << field( QStringLiteral( "color" ), OFTString )
+                                  << field( QStringLiteral( "ocolor" ), OFTInteger )
+                                  << field( QStringLiteral( "color24" ), OFTInteger )
+                                  << field( QStringLiteral( "transparency" ), OFTInteger )
+                                  << field( QStringLiteral( "lweight" ), OFTInteger )
+                                  << field( QStringLiteral( "linewidth" ), OFTReal )
+                                  << field( QStringLiteral( "flags" ), OFTInteger )
                                 )
-                        << table( "dimstyles", QObject::tr( "Dimension styles" ), wkbNone, QList<field>()
-                                  << field( "name", OFTString )
-                                  << field( "dimpost", OFTString )
-                                  << field( "dimapost", OFTString )
-                                  << field( "dimblk", OFTString )
-                                  << field( "dimblk1", OFTString )
-                                  << field( "dimblk2", OFTString )
-                                  << field( "dimscale", OFTReal )
-                                  << field( "dimasz", OFTReal )
-                                  << field( "dimexo", OFTReal )
-                                  << field( "dimdli", OFTReal )
-                                  << field( "dimexe", OFTReal )
-                                  << field( "dimrnd", OFTReal )
-                                  << field( "dimdle", OFTReal )
-                                  << field( "dimtp", OFTReal )
-                                  << field( "dimtm", OFTReal )
-                                  << field( "dimfxl", OFTReal )
-                                  << field( "dimtxt", OFTReal )
-                                  << field( "dimcen", OFTReal )
-                                  << field( "dimtsz", OFTReal )
-                                  << field( "dimaltf", OFTReal )
-                                  << field( "dimlfac", OFTReal )
-                                  << field( "dimtvp", OFTReal )
-                                  << field( "dimtfac", OFTReal )
-                                  << field( "dimgap", OFTReal )
-                                  << field( "dimaltrnd", OFTReal )
-                                  << field( "dimtol", OFTInteger )
-                                  << field( "dimlim", OFTInteger )
-                                  << field( "dimtih", OFTInteger )
-                                  << field( "dimtoh", OFTInteger )
-                                  << field( "dimse1", OFTInteger )
-                                  << field( "dimse2", OFTInteger )
-                                  << field( "dimtad", OFTInteger )
-                                  << field( "dimzin", OFTInteger )
-                                  << field( "dimazin", OFTInteger )
-                                  << field( "dimalt", OFTInteger )
-                                  << field( "dimaltd", OFTInteger )
-                                  << field( "dimtofl", OFTInteger )
-                                  << field( "dimsah", OFTInteger )
-                                  << field( "dimtix", OFTInteger )
-                                  << field( "dimsoxd", OFTInteger )
-                                  << field( "dimclrd", OFTInteger )
-                                  << field( "dimclre", OFTInteger )
-                                  << field( "dimclrt", OFTInteger )
-                                  << field( "dimadec", OFTInteger )
-                                  << field( "dimunit", OFTInteger )
-                                  << field( "dimdec", OFTInteger )
-                                  << field( "dimtdec", OFTInteger )
-                                  << field( "dimaltu", OFTInteger )
-                                  << field( "dimalttd", OFTInteger )
-                                  << field( "dimaunit", OFTInteger )
-                                  << field( "dimfrac", OFTInteger )
-                                  << field( "dimlunit", OFTInteger )
-                                  << field( "dimdsep", OFTInteger )
-                                  << field( "dimtmove", OFTInteger )
-                                  << field( "dimjust", OFTInteger )
-                                  << field( "dimsd1", OFTInteger )
-                                  << field( "dimsd2", OFTInteger )
-                                  << field( "dimtolj", OFTInteger )
-                                  << field( "dimtzin", OFTInteger )
-                                  << field( "dimaltz", OFTInteger )
-                                  << field( "dimaltttz", OFTInteger )
-                                  << field( "dimfit", OFTInteger )
-                                  << field( "dimupt", OFTInteger )
-                                  << field( "dimatfit", OFTInteger )
-                                  << field( "dimfxlon", OFTInteger )
-                                  << field( "dimtxsty", OFTString )
-                                  << field( "dimldrblk", OFTString )
-                                  << field( "dimlwd", OFTInteger )
-                                  << field( "dimlwe", OFTInteger )
+                        << table( QStringLiteral( "dimstyles" ), QObject::tr( "Dimension styles" ), wkbNone, QList<field>()
+                                  << field( QStringLiteral( "name" ), OFTString )
+                                  << field( QStringLiteral( "dimpost" ), OFTString )
+                                  << field( QStringLiteral( "dimapost" ), OFTString )
+                                  << field( QStringLiteral( "dimblk" ), OFTString )
+                                  << field( QStringLiteral( "dimblk1" ), OFTString )
+                                  << field( QStringLiteral( "dimblk2" ), OFTString )
+                                  << field( QStringLiteral( "dimscale" ), OFTReal )
+                                  << field( QStringLiteral( "dimasz" ), OFTReal )
+                                  << field( QStringLiteral( "dimexo" ), OFTReal )
+                                  << field( QStringLiteral( "dimdli" ), OFTReal )
+                                  << field( QStringLiteral( "dimexe" ), OFTReal )
+                                  << field( QStringLiteral( "dimrnd" ), OFTReal )
+                                  << field( QStringLiteral( "dimdle" ), OFTReal )
+                                  << field( QStringLiteral( "dimtp" ), OFTReal )
+                                  << field( QStringLiteral( "dimtm" ), OFTReal )
+                                  << field( QStringLiteral( "dimfxl" ), OFTReal )
+                                  << field( QStringLiteral( "dimtxt" ), OFTReal )
+                                  << field( QStringLiteral( "dimcen" ), OFTReal )
+                                  << field( QStringLiteral( "dimtsz" ), OFTReal )
+                                  << field( QStringLiteral( "dimaltf" ), OFTReal )
+                                  << field( QStringLiteral( "dimlfac" ), OFTReal )
+                                  << field( QStringLiteral( "dimtvp" ), OFTReal )
+                                  << field( QStringLiteral( "dimtfac" ), OFTReal )
+                                  << field( QStringLiteral( "dimgap" ), OFTReal )
+                                  << field( QStringLiteral( "dimaltrnd" ), OFTReal )
+                                  << field( QStringLiteral( "dimtol" ), OFTInteger )
+                                  << field( QStringLiteral( "dimlim" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtih" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtoh" ), OFTInteger )
+                                  << field( QStringLiteral( "dimse1" ), OFTInteger )
+                                  << field( QStringLiteral( "dimse2" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtad" ), OFTInteger )
+                                  << field( QStringLiteral( "dimzin" ), OFTInteger )
+                                  << field( QStringLiteral( "dimazin" ), OFTInteger )
+                                  << field( QStringLiteral( "dimalt" ), OFTInteger )
+                                  << field( QStringLiteral( "dimaltd" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtofl" ), OFTInteger )
+                                  << field( QStringLiteral( "dimsah" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtix" ), OFTInteger )
+                                  << field( QStringLiteral( "dimsoxd" ), OFTInteger )
+                                  << field( QStringLiteral( "dimclrd" ), OFTInteger )
+                                  << field( QStringLiteral( "dimclre" ), OFTInteger )
+                                  << field( QStringLiteral( "dimclrt" ), OFTInteger )
+                                  << field( QStringLiteral( "dimadec" ), OFTInteger )
+                                  << field( QStringLiteral( "dimunit" ), OFTInteger )
+                                  << field( QStringLiteral( "dimdec" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtdec" ), OFTInteger )
+                                  << field( QStringLiteral( "dimaltu" ), OFTInteger )
+                                  << field( QStringLiteral( "dimalttd" ), OFTInteger )
+                                  << field( QStringLiteral( "dimaunit" ), OFTInteger )
+                                  << field( QStringLiteral( "dimfrac" ), OFTInteger )
+                                  << field( QStringLiteral( "dimlunit" ), OFTInteger )
+                                  << field( QStringLiteral( "dimdsep" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtmove" ), OFTInteger )
+                                  << field( QStringLiteral( "dimjust" ), OFTInteger )
+                                  << field( QStringLiteral( "dimsd1" ), OFTInteger )
+                                  << field( QStringLiteral( "dimsd2" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtolj" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtzin" ), OFTInteger )
+                                  << field( QStringLiteral( "dimaltz" ), OFTInteger )
+                                  << field( QStringLiteral( "dimaltttz" ), OFTInteger )
+                                  << field( QStringLiteral( "dimfit" ), OFTInteger )
+                                  << field( QStringLiteral( "dimupt" ), OFTInteger )
+                                  << field( QStringLiteral( "dimatfit" ), OFTInteger )
+                                  << field( QStringLiteral( "dimfxlon" ), OFTInteger )
+                                  << field( QStringLiteral( "dimtxsty" ), OFTString )
+                                  << field( QStringLiteral( "dimldrblk" ), OFTString )
+                                  << field( QStringLiteral( "dimlwd" ), OFTInteger )
+                                  << field( QStringLiteral( "dimlwe" ), OFTInteger )
                                 )
-                        << table( "textstyles", QObject::tr( "Text styles" ), wkbNone, QList<field>()
-                                  << field( "name", OFTString )
-                                  << field( "height", OFTReal )
-                                  << field( "width", OFTReal )
-                                  << field( "oblique", OFTReal )
-                                  << field( "genFlag", OFTInteger )
-                                  << field( "lastHeight", OFTReal )
-                                  << field( "font", OFTString )
-                                  << field( "bigFont", OFTString )
-                                  << field( "fontFamily", OFTInteger )
+                        << table( QStringLiteral( "textstyles" ), QObject::tr( "Text styles" ), wkbNone, QList<field>()
+                                  << field( QStringLiteral( "name" ), OFTString )
+                                  << field( QStringLiteral( "height" ), OFTReal )
+                                  << field( QStringLiteral( "width" ), OFTReal )
+                                  << field( QStringLiteral( "oblique" ), OFTReal )
+                                  << field( QStringLiteral( "genFlag" ), OFTInteger )
+                                  << field( QStringLiteral( "lastHeight" ), OFTReal )
+                                  << field( QStringLiteral( "font" ), OFTString )
+                                  << field( QStringLiteral( "bigFont" ), OFTString )
+                                  << field( QStringLiteral( "fontFamily" ), OFTInteger )
                                 )
-                        << table( "appdata", QObject::tr( "Application data" ), wkbNone, QList<field>()
-                                  << field( "handle", OFTInteger )
-                                  << field( "i", OFTInteger )
-                                  << field( "value", OFTString )
+                        << table( QStringLiteral( "appdata" ), QObject::tr( "Application data" ), wkbNone, QList<field>()
+                                  << field( QStringLiteral( "handle" ), OFTInteger )
+                                  << field( QStringLiteral( "i" ), OFTInteger )
+                                  << field( QStringLiteral( "value" ), OFTString )
                                 )
-                        << table( "blocks", QObject::tr( "BLOCK entities" ), wkbPoint25D, QList<field>()
+                        << table( QStringLiteral( "blocks" ), QObject::tr( "BLOCK entities" ), wkbPoint25D, QList<field>()
                                   ENTITY_ATTRIBUTES
-                                  << field( "thickness", OFTReal )
-                                  << field( "ext", OFTRealList )
-                                  << field( "name", OFTString )
-                                  << field( "flags", OFTInteger )
+                                  << field( QStringLiteral( "thickness" ), OFTReal )
+                                  << field( QStringLiteral( "ext" ), OFTRealList )
+                                  << field( QStringLiteral( "name" ), OFTString )
+                                  << field( QStringLiteral( "flags" ), OFTInteger )
                                 )
-                        << table( "points", QObject::tr( "POINT entities" ), wkbPoint25D, QList<field>()
+                        << table( QStringLiteral( "points" ), QObject::tr( "POINT entities" ), wkbPoint25D, QList<field>()
                                   ENTITY_ATTRIBUTES
-                                  << field( "thickness", OFTReal )
-                                  << field( "ext", OFTRealList )
+                                  << field( QStringLiteral( "thickness" ), OFTReal )
+                                  << field( QStringLiteral( "ext" ), OFTRealList )
                                 )
-                        << table( "lines", QObject::tr( "LINE entities" ), lineGeomType, QList<field>()
+                        << table( QStringLiteral( "lines" ), QObject::tr( "LINE entities" ), lineGeomType, QList<field>()
                                   ENTITY_ATTRIBUTES
-                                  << field( "thickness", OFTReal )
-                                  << field( "ext", OFTRealList )
-                                  << field( "width", OFTReal )
+                                  << field( QStringLiteral( "thickness" ), OFTReal )
+                                  << field( QStringLiteral( "ext" ), OFTRealList )
+                                  << field( QStringLiteral( "width" ), OFTReal )
                                 )
-                        << table( "polylines", QObject::tr( "POLYLINE entities" ), lineGeomType, QList<field>()
+                        << table( QStringLiteral( "polylines" ), QObject::tr( "POLYLINE entities" ), lineGeomType, QList<field>()
                                   ENTITY_ATTRIBUTES
-                                  << field( "width", OFTReal )
-                                  << field( "thickness", OFTReal )
-                                  << field( "ext", OFTRealList )
+                                  << field( QStringLiteral( "width" ), OFTReal )
+                                  << field( QStringLiteral( "thickness" ), OFTReal )
+                                  << field( QStringLiteral( "ext" ), OFTRealList )
                                 )
-                        << table( "texts", QObject::tr( "TEXT entities" ), wkbPoint25D, QList<field>()
+                        << table( QStringLiteral( "texts" ), QObject::tr( "TEXT entities" ), wkbPoint25D, QList<field>()
                                   ENTITY_ATTRIBUTES
-                                  << field( "thickness", OFTReal )
-                                  << field( "ext", OFTRealList )
-                                  << field( "height", OFTReal )
-                                  << field( "text", OFTString )
-                                  << field( "angle", OFTReal )
-                                  << field( "widthscale", OFTReal )
-                                  << field( "oblique", OFTReal )
-                                  << field( "style", OFTString )
-                                  << field( "textgen", OFTInteger )
-                                  << field( "alignh", OFTInteger )
-                                  << field( "alignv", OFTInteger )
-                                  << field( "interlin", OFTReal )
+                                  << field( QStringLiteral( "thickness" ), OFTReal )
+                                  << field( QStringLiteral( "ext" ), OFTRealList )
+                                  << field( QStringLiteral( "height" ), OFTReal )
+                                  << field( QStringLiteral( "text" ), OFTString )
+                                  << field( QStringLiteral( "angle" ), OFTReal )
+                                  << field( QStringLiteral( "widthscale" ), OFTReal )
+                                  << field( QStringLiteral( "oblique" ), OFTReal )
+                                  << field( QStringLiteral( "style" ), OFTString )
+                                  << field( QStringLiteral( "textgen" ), OFTInteger )
+                                  << field( QStringLiteral( "alignh" ), OFTInteger )
+                                  << field( QStringLiteral( "alignv" ), OFTInteger )
+                                  << field( QStringLiteral( "interlin" ), OFTReal )
                                 )
-                        << table( "hatches", QObject::tr( "HATCH entities" ), hatchGeomType, QList<field>()
+                        << table( QStringLiteral( "hatches" ), QObject::tr( "HATCH entities" ), hatchGeomType, QList<field>()
                                   ENTITY_ATTRIBUTES
-                                  << field( "thickness", OFTReal )
-                                  << field( "ext", OFTRealList )
-                                  << field( "name", OFTString )
-                                  << field( "solid", OFTInteger )
-                                  << field( "associative", OFTInteger )
-                                  << field( "hstyle", OFTInteger )
-                                  << field( "hpattern", OFTInteger )
-                                  << field( "doubleflag", OFTInteger )
-                                  << field( "angle", OFTReal )
-                                  << field( "scale", OFTReal )
-                                  << field( "deflines", OFTInteger )
+                                  << field( QStringLiteral( "thickness" ), OFTReal )
+                                  << field( QStringLiteral( "ext" ), OFTRealList )
+                                  << field( QStringLiteral( "name" ), OFTString )
+                                  << field( QStringLiteral( "solid" ), OFTInteger )
+                                  << field( QStringLiteral( "associative" ), OFTInteger )
+                                  << field( QStringLiteral( "hstyle" ), OFTInteger )
+                                  << field( QStringLiteral( "hpattern" ), OFTInteger )
+                                  << field( QStringLiteral( "doubleflag" ), OFTInteger )
+                                  << field( QStringLiteral( "angle" ), OFTReal )
+                                  << field( QStringLiteral( "scale" ), OFTReal )
+                                  << field( QStringLiteral( "deflines" ), OFTInteger )
                                 )
-                        << table( "inserts", QObject::tr( "INSERT entities" ), wkbPoint25D, QList<field>()
+                        << table( QStringLiteral( "inserts" ), QObject::tr( "INSERT entities" ), wkbPoint25D, QList<field>()
                                   ENTITY_ATTRIBUTES
-                                  << field( "thickness", OFTReal )
-                                  << field( "ext", OFTRealList )
-                                  << field( "name", OFTString )
-                                  << field( "xscale", OFTReal )
-                                  << field( "yscale", OFTReal )
-                                  << field( "zscale", OFTReal )
-                                  << field( "angle", OFTReal )
-                                  << field( "colcount", OFTReal )
-                                  << field( "rowcount", OFTReal )
-                                  << field( "colspace", OFTReal )
-                                  << field( "rowspace", OFTReal )
+                                  << field( QStringLiteral( "thickness" ), OFTReal )
+                                  << field( QStringLiteral( "ext" ), OFTRealList )
+                                  << field( QStringLiteral( "name" ), OFTString )
+                                  << field( QStringLiteral( "xscale" ), OFTReal )
+                                  << field( QStringLiteral( "yscale" ), OFTReal )
+                                  << field( QStringLiteral( "zscale" ), OFTReal )
+                                  << field( QStringLiteral( "angle" ), OFTReal )
+                                  << field( QStringLiteral( "colcount" ), OFTReal )
+                                  << field( QStringLiteral( "rowcount" ), OFTReal )
+                                  << field( QStringLiteral( "colspace" ), OFTReal )
+                                  << field( QStringLiteral( "rowspace" ), OFTReal )
                                 )
                         ;
 
@@ -605,7 +605,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
 
   DRW::error result( DRW::BAD_NONE );
 
-  if ( fi.suffix().toLower() == "dxf" )
+  if ( fi.suffix().toLower() == QLatin1String( "dxf" ) )
   {
     //loads dxf
     std::unique_ptr<dxfRW> dxf( new dxfRW( drawing.toUtf8() ) );
@@ -614,7 +614,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
       result = DRW::BAD_UNKNOWN;
     }
   }
-  else if ( fi.suffix().toLower() == "dwg" )
+  else if ( fi.suffix().toLower() == QLatin1String( "dwg" ) )
   {
     //loads dwg
     std::unique_ptr<dwgR> dwg( new dwgR( drawing.toUtf8() ) );
@@ -734,7 +734,7 @@ void QgsDwgImporter::addHeader( const DRW_Header *data )
       case DRW_Variant::INTEGER:
         v = QString::number( it->second->content.i );
 
-        if ( k == "SPLINESEGS" )
+        if ( k == QLatin1String( "SPLINESEGS" ) )
           mSplineSegs = it->second->content.i;
 
         break;
@@ -744,7 +744,7 @@ void QgsDwgImporter::addHeader( const DRW_Header *data )
         break;
 
       case DRW_Variant::COORD:
-        v = QString( "%1,%2,%3" )
+        v = QStringLiteral( "%1,%2,%3" )
             .arg( qgsDoubleToString( it->second->content.v->x ),
                   qgsDoubleToString( it->second->content.v->y ),
                   qgsDoubleToString( it->second->content.v->z ) );
@@ -810,12 +810,12 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
     }
   }
 
-  QString typeName( data.name.c_str() ), dash( "" );
+  QString typeName( data.name.c_str() ), dash( QLatin1String( "" ) );
   if ( !upath.empty() )
   {
     QStringList l;
     if ( upath[0] < 0 )
-      l << "0";
+      l << QStringLiteral( "0" );
 
     Q_FOREACH ( double p, upath )
     {
@@ -823,9 +823,9 @@ void QgsDwgImporter::addLType( const DRW_LType &data )
     }
 
     if ( upath.size() % 2 == 1 )
-      l << "0";
+      l << QStringLiteral( "0" );
 
-    dash = l.join( ";" ).toUtf8().constData();
+    dash = l.join( QStringLiteral( ";" ) ).toUtf8().constData();
   }
   mLinetype.insert( typeName.toLower(), dash );
 
@@ -852,18 +852,18 @@ QString QgsDwgImporter::colorString( int color, int color24, int transparency, c
   {
     if ( color == 0 )
     {
-      return "byblock";
+      return QStringLiteral( "byblock" );
     }
     else if ( color == 256 )
     {
-      return mLayerColor.value( layer.c_str(), "0,0,0,255" );
+      return mLayerColor.value( layer.c_str(), QStringLiteral( "0,0,0,255" ) );
     }
     else
     {
       if ( color < 0 )
         color = -color;
 
-      return QString( "%1,%2,%3,%4" )
+      return QStringLiteral( "%1,%2,%3,%4" )
              .arg( DRW::dxfColors[ color ][0] )
              .arg( DRW::dxfColors[ color ][1] )
              .arg( DRW::dxfColors[ color ][2] )
@@ -872,7 +872,7 @@ QString QgsDwgImporter::colorString( int color, int color24, int transparency, c
   }
   else
   {
-    return QString( "%1,%2,%3,%4" )
+    return QStringLiteral( "%1,%2,%3,%4" )
            .arg( ( color24 & 0xff0000 ) >> 16 )
            .arg( ( color24 & 0x00ff00 ) >> 8 )
            .arg( ( color24 & 0x0000ff ) )
@@ -884,10 +884,10 @@ QString QgsDwgImporter::linetypeString( const std::string &olinetype, const std:
 {
   QString linetype( olinetype.c_str() );
 
-  if ( linetype == "bylayer" )
-    return mLayerLinetype.value( layer.c_str(), "" );
+  if ( linetype == QLatin1String( "bylayer" ) )
+    return mLayerLinetype.value( layer.c_str(), QLatin1String( "" ) );
   else
-    return mLinetype.value( linetype, "" );
+    return mLinetype.value( linetype, QLatin1String( "" ) );
 }
 
 void QgsDwgImporter::addLayer( const DRW_Layer &data )
@@ -912,12 +912,12 @@ void QgsDwgImporter::addLayer( const DRW_Layer &data )
   mLayerLinewidth.insert( data.name.c_str(), linewidth );
   mLayerLinetype.insert( data.name.c_str(), linetypeString( data.lineType, "" ) );
 
-  setInteger( dfn, f, "ocolor", data.color );
+  setInteger( dfn, f, QStringLiteral( "ocolor" ), data.color );
   SETINTEGER( color24 );
   SETINTEGER( transparency );
-  setString( dfn, f, "color", color.toUtf8().constData() );
-  setInteger( dfn, f, "lweight", DRW_LW_Conv::lineWidth2dxfInt( data.lWeight ) );
-  setInteger( dfn, f, "linewidth", linewidth );
+  setString( dfn, f, QStringLiteral( "color" ), color.toUtf8().constData() );
+  setInteger( dfn, f, QStringLiteral( "lweight" ), DRW_LW_Conv::lineWidth2dxfInt( data.lWeight ) );
+  setInteger( dfn, f, QStringLiteral( "linewidth" ), linewidth );
 
   if ( OGR_L_CreateFeature( layer, f ) != OGRERR_NONE )
   {
@@ -1248,24 +1248,24 @@ void QgsDwgImporter::addEntity( OGRFeatureDefnH dfn, OGRFeatureH f, const DRW_En
 {
   QgsDebugMsgLevel( QString( "handle:0x%1 block:0x%2" ).arg( data.handle, 0, 16 ).arg( mBlockHandle, 0, 16 ), 5 );
   SETINTEGER( handle );
-  setInteger( dfn, f, "block", mBlockHandle );
+  setInteger( dfn, f, QStringLiteral( "block" ), mBlockHandle );
   SETINTEGER( eType );
   SETINTEGER( space );
   SETSTRING( layer );
-  setString( dfn, f, "olinetype", data.lineType );
+  setString( dfn, f, QStringLiteral( "olinetype" ), data.lineType );
   QString linetype = linetypeString( data.lineType, data.layer );
-  if ( linetype == "1" )
+  if ( linetype == QLatin1String( "1" ) )
   {
     QgsDebugMsg( "Linetype == 1" );
   }
-  setString( dfn, f, "linetype", linetype.toUtf8().constData() );
-  setInteger( dfn, f, "ocolor", data.color );
+  setString( dfn, f, QStringLiteral( "linetype" ), linetype.toUtf8().constData() );
+  setInteger( dfn, f, QStringLiteral( "ocolor" ), data.color );
   SETINTEGER( color24 );
   SETINTEGER( transparency );
-  setString( dfn, f, "color", colorString( data.color, data.color24, data.transparency, data.layer ).toUtf8().constData() );
-  setInteger( dfn, f, "lweight", DRW_LW_Conv::lineWidth2dxfInt( data.lWeight ) );
-  setDouble( dfn, f, "linewidth", lineWidth( data.lWeight, data.layer ) );
-  setInteger( dfn, f, "ltscale", data.ltypeScale );
+  setString( dfn, f, QStringLiteral( "color" ), colorString( data.color, data.color24, data.transparency, data.layer ).toUtf8().constData() );
+  setInteger( dfn, f, QStringLiteral( "lweight" ), DRW_LW_Conv::lineWidth2dxfInt( data.lWeight ) );
+  setDouble( dfn, f, QStringLiteral( "linewidth" ), lineWidth( data.lWeight, data.layer ) );
+  setInteger( dfn, f, QStringLiteral( "ltscale" ), data.ltypeScale );
   SETINTEGER( visible );
 }
 
@@ -1282,7 +1282,7 @@ void QgsDwgImporter::addPoint( const DRW_Point &data )
 
   SETDOUBLE( thickness );
 
-  setPoint( dfn, f, "ext", data.extPoint );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   QgsPoint p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
   if ( !createFeature( layer, f, p ) )
@@ -1319,7 +1319,7 @@ void QgsDwgImporter::addArc( const DRW_Arc &data )
 
   SETDOUBLE( thickness );
 
-  setPoint( dfn, f, "ext", data.extPoint );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   double half = ( data.staangle + data.endangle ) / 2.0;
   if ( data.staangle > data.endangle )
@@ -1361,7 +1361,7 @@ void QgsDwgImporter::addCircle( const DRW_Circle &data )
 
   SETDOUBLE( thickness );
 
-  setPoint( dfn, f, "ext", data.extPoint );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   QgsCircularString c;
   c.setPoints( QgsPointSequence()
@@ -1520,7 +1520,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
         SETDOUBLE( thickness );
         SETDOUBLE( width );
 
-        setPoint( dfn, f, "ext", data.extPoint );
+        setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
         if ( !createFeature( layer, f, cc ) )
         {
@@ -1573,7 +1573,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
 
       SETDOUBLE( thickness );
 
-      setPoint( dfn, f, "ext", data.extPoint );
+      setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
       QgsPointXY ps( p0.x(), p0.y() );
       QgsPointXY pe( p1.x(), p1.y() );
@@ -1637,7 +1637,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
     SETDOUBLE( thickness );
     SETDOUBLE( width );
 
-    setPoint( dfn, f, "ext", data.extPoint );
+    setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
     // QgsDebugMsg( QString( "write curve:%1" ).arg( cc.asWkt() ) );
 
@@ -1717,9 +1717,9 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
         addEntity( dfn, f, data );
 
         SETDOUBLE( thickness );
-        setDouble( dfn, f, "width", width );
+        setDouble( dfn, f, QStringLiteral( "width" ), width );
 
-        setPoint( dfn, f, "ext", data.extPoint );
+        setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
         // QgsDebugMsg( QString( "write curve:%1" ).arg( cc.asWkt() ) );
 
@@ -1775,7 +1775,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
 
       SETDOUBLE( thickness );
 
-      setPoint( dfn, f, "ext", data.extPoint );
+      setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
       QgsPointXY ps( p0.x(), p0.y() );
       QgsPointXY pe( p1.x(), p1.y() );
@@ -1841,9 +1841,9 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
     addEntity( dfn, f, data );
 
     SETDOUBLE( thickness );
-    setDouble( dfn, f, "width", width );
+    setDouble( dfn, f, QStringLiteral( "width" ), width );
 
-    setPoint( dfn, f, "ext", data.extPoint );
+    setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
     // QgsDebugMsg( QString( "write curve:%1" ).arg( cc.asWkt() ) );
 
@@ -2117,7 +2117,7 @@ void QgsDwgImporter::addInsert( const DRW_Insert &data )
 
   SETDOUBLE( thickness );
 
-  setPoint( dfn, f, "ext", data.extPoint );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   SETSTRING( name );
   SETDOUBLE( xscale );
@@ -2165,8 +2165,8 @@ void QgsDwgImporter::addSolid( const DRW_Solid &data )
 
   SETDOUBLE( thickness );
 
-  setPoint( dfn, f, "ext", data.extPoint );
-  setString( dfn, f, "hpattern", "SOLID" );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
+  setString( dfn, f, QStringLiteral( "hpattern" ), "SOLID" );
 
   QgsPolygonV2 poly;
 
@@ -2215,7 +2215,7 @@ void QgsDwgImporter::addMText( const DRW_MText &data )
   SETDOUBLE( thickness );
   SETDOUBLE( interlin );
 
-  setPoint( dfn, f, "ext", data.extPoint );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   QgsPoint p( QgsWkbTypes::PointZ, data.basePoint.x, data.basePoint.y, data.basePoint.z );
 
@@ -2249,9 +2249,9 @@ void QgsDwgImporter::addText( const DRW_Text &data )
   SETINTEGER( alignH );
   SETINTEGER( alignV );
   SETDOUBLE( thickness );
-  setDouble( dfn, f, "interlin", -1.0 );
+  setDouble( dfn, f, QStringLiteral( "interlin" ), -1.0 );
 
-  setPoint( dfn, f, "ext", data.extPoint );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   QgsPoint p( QgsWkbTypes::PointZ,
               ( data.alignH > 0 || data.alignV > 0 ) ? data.secPoint.x : data.basePoint.x,
@@ -2331,7 +2331,7 @@ void QgsDwgImporter::addHatch( const DRW_Hatch *pdata )
 
   SETDOUBLE( thickness );
 
-  setPoint( dfn, f, "ext", data.extPoint );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   SETSTRING( name );
   SETINTEGER( solid );
@@ -2413,7 +2413,7 @@ void QgsDwgImporter::addLine( const DRW_Line &data )
 
   SETDOUBLE( thickness );
 
-  setPoint( dfn, f, "ext", data.extPoint );
+  setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
 
   QgsLineString l;
 
@@ -2584,7 +2584,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
     QString blockLayer = QString::fromUtf8( OGR_F_GetFieldAsString( insert, layerIdx ) );
     QString blockColor = QString::fromUtf8( OGR_F_GetFieldAsString( insert, colorIdx ) );
     QString blockLinetype = QString::fromUtf8( OGR_F_GetFieldAsString( insert, linetypeIdx ) );
-    if ( blockLinetype == "1" )
+    if ( blockLinetype == QLatin1String( "1" ) )
     {
       QgsDebugMsg( "blockLinetype == 1" );
     }
@@ -2607,7 +2607,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
 
     Q_FOREACH ( const QString &name, QStringList() << "hatches" << "lines" << "polylines" << "texts" << "points" )
     {
-      OGRLayerH src = OGR_DS_ExecuteSQL( mDs, QString( "SELECT * FROM %1 WHERE block=%2" ).arg( name ).arg( handle ).toUtf8().constData(), nullptr, nullptr );
+      OGRLayerH src = OGR_DS_ExecuteSQL( mDs, QStringLiteral( "SELECT * FROM %1 WHERE block=%2" ).arg( name ).arg( handle ).toUtf8().constData(), nullptr, nullptr );
       if ( !src )
       {
         QgsDebugMsg( QString( "%1: could not execute query for block %2" ).arg( name ).arg( handle ) );

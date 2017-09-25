@@ -172,11 +172,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
     //for saving
     QString providerName = mLayer->providerType();
-    if ( providerName == "ogr" )
+    if ( providerName == QLatin1String( "ogr" ) )
     {
       providerName = mLayer->dataProvider()->storageType();
-      if ( providerName == "GPKG" )
-        providerName = "GeoPackage";
+      if ( providerName == QLatin1String( "GPKG" ) )
+        providerName = QStringLiteral( "GeoPackage" );
     }
     mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( providerName ) );
   }
@@ -1236,7 +1236,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
     return;
   }
 
-  joinItem->setText( 0, "Join layer" );
+  joinItem->setText( 0, QStringLiteral( "Join layer" ) );
   joinItem->setText( 1, joinLayer->name() );
 
   QFont f = joinItem->font( 0 );
@@ -1247,53 +1247,53 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   joinItem->setData( 0, Qt::UserRole, join.joinLayerId() );
 
   QTreeWidgetItem *childJoinField = new QTreeWidgetItem();
-  childJoinField->setText( 0, "Join field" );
+  childJoinField->setText( 0, QStringLiteral( "Join field" ) );
   childJoinField->setText( 1, join.joinFieldName() );
   childJoinField->setFlags( Qt::ItemIsEnabled );
   joinItem->addChild( childJoinField );
 
   QTreeWidgetItem *childTargetField = new QTreeWidgetItem();
-  childTargetField->setText( 0, "Target field" );
+  childTargetField->setText( 0, QStringLiteral( "Target field" ) );
   childTargetField->setText( 1, join.targetFieldName() );
   joinItem->addChild( childTargetField );
 
   QTreeWidgetItem *childMemCache = new QTreeWidgetItem();
-  childMemCache->setText( 0, "Cache join layer in virtual memory" );
+  childMemCache->setText( 0, QStringLiteral( "Cache join layer in virtual memory" ) );
   if ( join.isUsingMemoryCache() )
     childMemCache->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childMemCache );
 
   QTreeWidgetItem *childDynForm = new QTreeWidgetItem();
-  childDynForm->setText( 0, "Dynamic form" );
+  childDynForm->setText( 0, QStringLiteral( "Dynamic form" ) );
   if ( join.isDynamicFormEnabled() )
     childDynForm->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childDynForm );
 
   QTreeWidgetItem *childEditable = new QTreeWidgetItem();
-  childEditable->setText( 0, "Editable join layer" );
+  childEditable->setText( 0, QStringLiteral( "Editable join layer" ) );
   if ( join.isEditable() )
     childEditable->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childEditable );
 
   QTreeWidgetItem *childUpsert = new QTreeWidgetItem();
-  childUpsert->setText( 0, "Upsert on edit" );
+  childUpsert->setText( 0, QStringLiteral( "Upsert on edit" ) );
   if ( join.hasUpsertOnEdit() )
     childUpsert->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childUpsert );
 
   QTreeWidgetItem *childCascade = new QTreeWidgetItem();
-  childCascade->setText( 0, "Delete cascade" );
+  childCascade->setText( 0, QStringLiteral( "Delete cascade" ) );
   if ( join.hasCascadedDelete() )
     childCascade->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childCascade );
 
   QTreeWidgetItem *childPrefix = new QTreeWidgetItem();
-  childPrefix->setText( 0, "Custom field name prefix" );
+  childPrefix->setText( 0, QStringLiteral( "Custom field name prefix" ) );
   childPrefix->setText( 1, join.prefix() );
   joinItem->addChild( childPrefix );
 
   QTreeWidgetItem *childFields = new QTreeWidgetItem();
-  childFields->setText( 0, "Joined fields" );
+  childFields->setText( 0, QStringLiteral( "Joined fields" ) );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
     childFields->setText( 1, QStringLiteral( "%1" ).arg( list->count() ) );

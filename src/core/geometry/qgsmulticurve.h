@@ -76,4 +76,6 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSMULTICURVEV2_H

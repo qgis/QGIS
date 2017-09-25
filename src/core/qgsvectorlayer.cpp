@@ -1744,24 +1744,24 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
   // constraints
   mFieldConstraints.clear();
   mFieldConstraintStrength.clear();
-  QDomNode constraintsNode = layerNode.namedItem( "constraints" );
+  QDomNode constraintsNode = layerNode.namedItem( QStringLiteral( "constraints" ) );
   if ( !constraintsNode.isNull() )
   {
-    QDomNodeList constraintNodeList = constraintsNode.toElement().elementsByTagName( "constraint" );
+    QDomNodeList constraintNodeList = constraintsNode.toElement().elementsByTagName( QStringLiteral( "constraint" ) );
     for ( int i = 0; i < constraintNodeList.size(); ++i )
     {
       QDomElement constraintElem = constraintNodeList.at( i ).toElement();
 
-      QString field = constraintElem.attribute( "field", QString() );
-      int constraints = constraintElem.attribute( "constraints", QString( "0" ) ).toInt();
+      QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
+      int constraints = constraintElem.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
       if ( field.isEmpty() || constraints == 0 )
         continue;
 
       mFieldConstraints.insert( field, static_cast< QgsFieldConstraints::Constraints >( constraints ) );
 
-      int uniqueStrength = constraintElem.attribute( "unique_strength", QString( "1" ) ).toInt();
-      int notNullStrength = constraintElem.attribute( "notnull_strength", QString( "1" ) ).toInt();
-      int expStrength = constraintElem.attribute( "exp_strength", QString( "1" ) ).toInt();
+      int uniqueStrength = constraintElem.attribute( QStringLiteral( "unique_strength" ), QStringLiteral( "1" ) ).toInt();
+      int notNullStrength = constraintElem.attribute( QStringLiteral( "notnull_strength" ), QStringLiteral( "1" ) ).toInt();
+      int expStrength = constraintElem.attribute( QStringLiteral( "exp_strength" ), QStringLiteral( "1" ) ).toInt();
 
       mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintUnique ), static_cast< QgsFieldConstraints::ConstraintStrength >( uniqueStrength ) );
       mFieldConstraintStrength.insert( qMakePair( field, QgsFieldConstraints::ConstraintNotNull ), static_cast< QgsFieldConstraints::ConstraintStrength >( notNullStrength ) );
@@ -1769,17 +1769,17 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     }
   }
   mFieldConstraintExpressions.clear();
-  QDomNode constraintExpressionsNode = layerNode.namedItem( "constraintExpressions" );
+  QDomNode constraintExpressionsNode = layerNode.namedItem( QStringLiteral( "constraintExpressions" ) );
   if ( !constraintExpressionsNode.isNull() )
   {
-    QDomNodeList constraintNodeList = constraintExpressionsNode.toElement().elementsByTagName( "constraint" );
+    QDomNodeList constraintNodeList = constraintExpressionsNode.toElement().elementsByTagName( QStringLiteral( "constraint" ) );
     for ( int i = 0; i < constraintNodeList.size(); ++i )
     {
       QDomElement constraintElem = constraintNodeList.at( i ).toElement();
 
-      QString field = constraintElem.attribute( "field", QString() );
-      QString exp = constraintElem.attribute( "exp", QString() );
-      QString desc = constraintElem.attribute( "desc", QString() );
+      QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
+      QString exp = constraintElem.attribute( QStringLiteral( "exp" ), QString() );
+      QString desc = constraintElem.attribute( QStringLiteral( "desc" ), QString() );
       if ( field.isEmpty() || exp.isEmpty() )
         continue;
 
@@ -1881,7 +1881,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     QDomElement labelingElement = node.firstChildElement( QStringLiteral( "labeling" ) );
     QgsAbstractVectorLayerLabeling *labeling = nullptr;
     if ( labelingElement.isNull() ||
-         ( labelingElement.attribute( "type" ) == "simple" && labelingElement.firstChildElement( QStringLiteral( "settings" ) ).isNull() ) )
+         ( labelingElement.attribute( QStringLiteral( "type" ) ) == QLatin1String( "simple" ) && labelingElement.firstChildElement( QStringLiteral( "settings" ) ).isNull() ) )
     {
       // make sure we have custom properties for labeling for 2.x projects
       // (custom properties should be already loaded when reading the whole layer from XML,
@@ -1953,7 +1953,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
         // fix project from before QGIS 3.0
         int idx = linearDiagramElem.attribute( QStringLiteral( "classificationAttribute" ) ).toInt();
         if ( idx >= 0 && idx < mFields.count() )
-          linearDiagramElem.setAttribute( "classificationField", mFields.at( idx ).name() );
+          linearDiagramElem.setAttribute( QStringLiteral( "classificationField" ), mFields.at( idx ).name() );
       }
 
       mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
@@ -1990,7 +1990,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
             if ( showColumn >= 0 && showColumn < mFields.count() )
               ddp.setProperty( QgsDiagramLayerSettings::Show, QgsProperty::fromField( mFields.at( showColumn ).name(), true ) );
           }
-          QDomElement propertiesElem = diagramSettingsElem.ownerDocument().createElement( "properties" );
+          QDomElement propertiesElem = diagramSettingsElem.ownerDocument().createElement( QStringLiteral( "properties" ) );
           QgsPropertiesDefinition defs = QgsPropertiesDefinition
           {
             { QgsDiagramLayerSettings::PositionX, QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
@@ -2031,7 +2031,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
     // TODO : wrap this part in an if to only save if it was user-modified
     QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
     fieldElement.appendChild( editWidgetElement );
-    editWidgetElement.setAttribute( "type", field.editorWidgetSetup().type() );
+    editWidgetElement.setAttribute( QStringLiteral( "type" ), field.editorWidgetSetup().type() );
     QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
 
     editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config(), doc ) );
@@ -2089,27 +2089,27 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   node.appendChild( defaultsElem );
 
   // constraints
-  QDomElement constraintsElem = doc.createElement( "constraints" );
+  QDomElement constraintsElem = doc.createElement( QStringLiteral( "constraints" ) );
   Q_FOREACH ( const QgsField &field, mFields )
   {
-    QDomElement constraintElem = doc.createElement( "constraint" );
-    constraintElem.setAttribute( "field", field.name() );
-    constraintElem.setAttribute( "constraints", field.constraints().constraints() );
-    constraintElem.setAttribute( "unique_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
-    constraintElem.setAttribute( "notnull_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
-    constraintElem.setAttribute( "exp_strength", field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+    QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
+    constraintElem.setAttribute( QStringLiteral( "field" ), field.name() );
+    constraintElem.setAttribute( QStringLiteral( "constraints" ), field.constraints().constraints() );
+    constraintElem.setAttribute( QStringLiteral( "unique_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+    constraintElem.setAttribute( QStringLiteral( "notnull_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+    constraintElem.setAttribute( QStringLiteral( "exp_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
     constraintsElem.appendChild( constraintElem );
   }
   node.appendChild( constraintsElem );
 
   // constraint expressions
-  QDomElement constraintExpressionsElem = doc.createElement( "constraintExpressions" );
+  QDomElement constraintExpressionsElem = doc.createElement( QStringLiteral( "constraintExpressions" ) );
   Q_FOREACH ( const QgsField &field, mFields )
   {
-    QDomElement constraintExpressionElem = doc.createElement( "constraint" );
-    constraintExpressionElem.setAttribute( "field", field.name() );
-    constraintExpressionElem.setAttribute( "exp", field.constraints().constraintExpression() );
-    constraintExpressionElem.setAttribute( "desc", field.constraints().constraintDescription() );
+    QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraint" ) );
+    constraintExpressionElem.setAttribute( QStringLiteral( "field" ), field.name() );
+    constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), field.constraints().constraintExpression() );
+    constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), field.constraints().constraintDescription() );
     constraintExpressionsElem.appendChild( constraintExpressionElem );
   }
   node.appendChild( constraintExpressionsElem );
@@ -2242,19 +2242,19 @@ bool QgsVectorLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &error
   if ( isSpatial() )
   {
     // store the Name element
-    QDomElement nameNode = doc.createElement( "se:Name" );
+    QDomElement nameNode = doc.createElement( QStringLiteral( "se:Name" ) );
     nameNode.appendChild( doc.createTextNode( name() ) );
     node.appendChild( nameNode );
 
-    QDomElement userStyleElem = doc.createElement( "UserStyle" );
+    QDomElement userStyleElem = doc.createElement( QStringLiteral( "UserStyle" ) );
     node.appendChild( userStyleElem );
 
-    QDomElement nameElem = doc.createElement( "se:Name" );
+    QDomElement nameElem = doc.createElement( QStringLiteral( "se:Name" ) );
     nameElem.appendChild( doc.createTextNode( name() ) );
 
     userStyleElem.appendChild( nameElem );
 
-    QDomElement featureTypeStyleElem = doc.createElement( "se:FeatureTypeStyle" );
+    QDomElement featureTypeStyleElem = doc.createElement( QStringLiteral( "se:FeatureTypeStyle" ) );
     userStyleElem.appendChild( featureTypeStyleElem );
 
     mRenderer->toSld( doc, featureTypeStyleElem, localProps );
@@ -3703,7 +3703,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
     return;
   }
 
-  QString fontFamily = "Sans-Serif";
+  QString fontFamily = QStringLiteral( "Sans-Serif" );
   int fontPointSize = 10;
   int fontWeight = -1;
   bool fontItalic = false;
@@ -3913,31 +3913,31 @@ QString QgsVectorLayer::htmlMetadata() const
   QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
   // identification section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Identification" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.identificationSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Begin Provider section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Information from provider" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
 
   // original name
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Original" ) + QLatin1String( "</td><td>" ) + originalName() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Original" ) + QStringLiteral( "</td><td>" ) + originalName() + QStringLiteral( "</td></tr>\n" );
 
   // name
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QLatin1String( "</td><td>" ) + name() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
 
   // data source
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QLatin1String( "</td><td>" ) + publicSource() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>" ) + publicSource() + QStringLiteral( "</td></tr>\n" );
 
   // storage type
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QLatin1String( "</td><td>" ) + storageType() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QStringLiteral( "</td><td>" ) + storageType() + QStringLiteral( "</td></tr>\n" );
 
   // comment
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QLatin1String( "</td><td>" ) + dataComment() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QStringLiteral( "</td><td>" ) + dataComment() + QStringLiteral( "</td></tr>\n" );
 
   // encoding
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Encoding" ) + QLatin1String( "</td><td>" ) + dataProvider()->encoding() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Encoding" ) + QStringLiteral( "</td><td>" ) + dataProvider()->encoding() + QStringLiteral( "</td></tr>\n" );
 
   // geom type
   QgsWkbTypes::GeometryType type =  geometryType();
@@ -3949,12 +3949,12 @@ QString QgsVectorLayer::htmlMetadata() const
   {
     QString typeString( QStringLiteral( "%1 (%2)" ).arg( QgsWkbTypes::geometryDisplayString( geometryType() ),
                         QgsWkbTypes::displayString( wkbType() ) ) );
-    myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Geometry" ) + QLatin1String( "</td><td>" ) + typeString + QLatin1String( "</td></tr>\n" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Geometry" ) + QStringLiteral( "</td><td>" ) + typeString + QStringLiteral( "</td></tr>\n" );
   }
 
   // EPSG
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QLatin1String( "</td><td>" ) + crs().authid() + QLatin1String( " - " );
-  myMetadata += crs().description() + QLatin1String( " - " );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" ) + crs().authid() + QStringLiteral( " - " );
+  myMetadata += crs().description() + QStringLiteral( " - " );
   if ( crs().isGeographic() )
     myMetadata += tr( "Geographic" );
   else
@@ -3962,35 +3962,35 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QLatin1String( "</td></tr>\n" );
 
   // Extent
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QLatin1String( "</td><td>" ) + extent().toString() + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Extent" ) + QStringLiteral( "</td><td>" ) + extent().toString() + QStringLiteral( "</td></tr>\n" );
 
   // unit
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QLatin1String( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Unit" ) + QStringLiteral( "</td><td>" ) + QgsUnitTypes::toString( crs().mapUnits() ) + QStringLiteral( "</td></tr>\n" );
 
   // feature count
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Feature count" ) + QLatin1String( "</td><td>" ) + QString::number( featureCount() ) + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Feature count" ) + QStringLiteral( "</td><td>" ) + QString::number( featureCount() ) + QStringLiteral( "</td></tr>\n" );
 
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
 
   // extent section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Extent" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.extentSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the Access section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Access" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.accessSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Fields section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Fields" ) + QLatin1String( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Fields" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
   // primary key
   QgsAttributeList pkAttrList = pkAttributeList();
   if ( !pkAttrList.isEmpty() )
   {
-    myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Primary key attributes" ) + QLatin1String( "</td><td>" );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Primary key attributes" ) + QStringLiteral( "</td><td>" );
     Q_FOREACH ( int idx, pkAttrList )
     {
       myMetadata += fields().at( idx ).name() + ' ';
@@ -4001,17 +4001,17 @@ QString QgsVectorLayer::htmlMetadata() const
   const QgsFields &myFields = pendingFields();
 
   // count fields
-  myMetadata += QLatin1String( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QLatin1String( "</td><td>" ) + QString::number( myFields.size() ) + QLatin1String( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( myFields.size() ) + QStringLiteral( "</td></tr>\n" );
 
-  myMetadata += "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n";
+  myMetadata += QLatin1String( "</table>\n<br><table width=\"100%\" class=\"tabular-view\">\n" );
   myMetadata += "<tr><th>" + tr( "Field" ) + "</th><th>" + tr( "Type" ) + "</th><th>" + tr( "Length" ) + "</th><th>" + tr( "Precision" ) + "</th><th>" + tr( "Comment" ) + "</th></tr>\n";
 
   for ( int i = 0; i < myFields.size(); ++i )
   {
     QgsField myField = myFields.at( i );
-    QString rowClass = QString( "" );
+    QString rowClass = QLatin1String( "" );
     if ( i % 2 )
-      rowClass = QString( "class=\"odd-row\"" );
+      rowClass = QStringLiteral( "class=\"odd-row\"" );
     myMetadata += "<tr " + rowClass + "><td>" + myField.name() + "</td><td>" + myField.typeName() + "</td><td>" + QString::number( myField.length() ) + "</td><td>" + QString::number( myField.precision() ) + "</td><td>" + myField.comment() + "</td></tr>\n";
   }
 
@@ -4019,17 +4019,17 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QLatin1String( "</table>\n<br><br>" );
 
   // Start the contacts section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Contacts" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.contactsSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the links section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "Links" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Links" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.linksSectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the history section
-  myMetadata += QLatin1String( "<h1>" ) + tr( "History" ) + QLatin1String( "</h1>\n<hr>\n" );
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += htmlFormatter.historySectionHtml( );
   myMetadata += QLatin1String( "<br><br>\n" );
 
@@ -4418,7 +4418,7 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
     removeCustomProperty( QStringLiteral( "labeling" ) );
     Q_FOREACH ( const QString &key, customPropertyKeys() )
     {
-      if ( key.startsWith( "labeling/" ) )
+      if ( key.startsWith( QLatin1String( "labeling/" ) ) )
         removeCustomProperty( key );
     }
   }

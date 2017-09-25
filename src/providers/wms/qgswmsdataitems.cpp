@@ -563,7 +563,7 @@ QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &p
     {
       QgsGeoNodeConnection connection( connectionName );
 
-      QString url = connection.uri().param( "url" );
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
       const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WMS" ) ) );
@@ -609,7 +609,7 @@ QVector<QgsDataItem *> QgsXyzTileDataItemProvider::createDataItems( const QStrin
     {
       QgsGeoNodeConnection connection( connectionName );
 
-      QString url = connection.uri().param( "url" );
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
       QgsGeoNodeRequest geonodeRequest( url, true );
 
       const QgsStringMap urlData( geonodeRequest.fetchServiceUrlDataBlocking( QStringLiteral( "XYZ" ) ) );

@@ -94,6 +94,11 @@ double QgsHistogramDiagram::legendSize( double value, const QgsDiagramSettings &
   return value * scaleFactor;
 }
 
+QString QgsHistogramDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_HISTOGRAM;
+}
+
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   Q_UNUSED( c );

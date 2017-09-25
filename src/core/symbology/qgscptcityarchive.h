@@ -403,4 +403,6 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     QSize mIconSize;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif

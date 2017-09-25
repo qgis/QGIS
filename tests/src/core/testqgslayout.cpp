@@ -49,7 +49,7 @@ class TestQgsLayout: public QObject
 
 void TestQgsLayout::initTestCase()
 {
-  mReport = "<h1>Layout Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Tests</h1>\n" );
 }
 
 void TestQgsLayout::cleanupTestCase()
@@ -136,7 +136,7 @@ void TestQgsLayout::name()
 {
   QgsProject p;
   QgsLayout layout( &p );
-  QString layoutName = "test name";
+  QString layoutName = QStringLiteral( "test name" );
   layout.setName( layoutName );
   QCOMPARE( layout.name(), layoutName );
 }
@@ -191,19 +191,19 @@ void TestQgsLayout::scope()
 
   // no crash
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutScope( nullptr ) );
-  l.setName( "test" );
+  l.setName( QStringLiteral( "test" ) );
   scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
   QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
 
-  QgsExpressionContextUtils::setLayoutVariable( &l, "new_var", 5 );
-  QgsExpressionContextUtils::setLayoutVariable( &l, "new_var2", 15 );
+  QgsExpressionContextUtils::setLayoutVariable( &l, QStringLiteral( "new_var" ), 5 );
+  QgsExpressionContextUtils::setLayoutVariable( &l, QStringLiteral( "new_var2" ), 15 );
   scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
   QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
   QCOMPARE( scope->variable( "new_var" ).toInt(), 5 );
   QCOMPARE( scope->variable( "new_var2" ).toInt(), 15 );
 
   QVariantMap newVars;
-  newVars.insert( "new_var3", 17 );
+  newVars.insert( QStringLiteral( "new_var3" ), 17 );
   QgsExpressionContextUtils::setLayoutVariables( &l, newVars );
   scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
   QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
@@ -211,7 +211,7 @@ void TestQgsLayout::scope()
   QVERIFY( !scope->hasVariable( "new_var2" ) );
   QCOMPARE( scope->variable( "new_var3" ).toInt(), 17 );
 
-  p.setTitle( "my title" );
+  p.setTitle( QStringLiteral( "my title" ) );
   QgsExpressionContext c = l.createExpressionContext();
   // should contain project variables
   QCOMPARE( c.variable( "project_title" ).toString(), QStringLiteral( "my title" ) );
