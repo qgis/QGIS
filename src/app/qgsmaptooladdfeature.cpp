@@ -175,12 +175,12 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
 
       // Use default Z-value if coordinates is enabled.
-      if (QgsWkbTypes::hasZ(layerWKBType))
-          g.geometry()->addZValue(defaultZValue());
+      if ( QgsWkbTypes::hasZ( layerWKBType ) )
+        g.geometry()->addZValue( defaultZValue() );
 
       // Use default M-value if coordinates is enabled.
-      if (QgsWkbTypes::hasM(layerWKBType))
-          g.geometry()->addMValue(0.0 /* No default M-value yet. */);
+      if ( QgsWkbTypes::hasM( layerWKBType ) )
+        g.geometry()->addMValue( std::numeric_limits<double>::quiet_NaN() /* No default M-value yet. */ );
 
       f.setGeometry( g );
       f.setValid( true );

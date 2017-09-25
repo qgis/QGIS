@@ -190,6 +190,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     bool boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
 
     QgsVectorLayer *mLayer = nullptr;
+
+    /**
+     * Return default Z value
+     * Use for set Z coordinate to edited vertex for 2.5d geometries
+     */
+    double defaultZValue() const;
 };
 
 #endif // QGSVECTORLAYEREDITUTILS_H

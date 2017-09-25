@@ -200,8 +200,7 @@ bool QgsNodeEditorModel::setData( const QModelIndex &index, const QVariant &valu
   }
 
   // Get double value wrt current locale.
-  QLocale locale;
-  double doubleValue = locale.toDouble( value.toString() );
+  const double doubleValue = QLocale().toDouble( value.toString() );
 
   double x = ( index.column() == 0 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
   double y = ( index.column() == 1 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
