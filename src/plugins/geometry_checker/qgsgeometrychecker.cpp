@@ -33,6 +33,15 @@ QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks,
   {
     connect( mContext->featurePools[layerId], SIGNAL( featureIdsChanged( QString, QMap<QgsFeatureId, QgsFeatureId> ) ), this, SLOT( updateFeatureIds( QString, QMap<QgsFeatureId, QgsFeatureId> ) ) );
   }
+  for ( const QgsFeaturePool *featurePool : mContext->featurePools.values() )
+  {
+    if ( featurePool->getLayer() )
+    {
+      featurePool->getLayer()->setReadOnly( true );
+      // Enter update mode to defer ogr dataset repacking until the checker has finished
+      featurePool->getLayer()->dataProvider()->enterUpdateMode();
+    }
+  }
 }
 
 QgsGeometryChecker::~QgsGeometryChecker()
@@ -42,7 +51,10 @@ QgsGeometryChecker::~QgsGeometryChecker()
   for ( const QgsFeaturePool *featurePool : mContext->featurePools.values() )
   {
     if ( featurePool->getLayer() )
+    {
+      featurePool->getLayer()->dataProvider()->leaveUpdateMode();
       featurePool->getLayer()->setReadOnly( false );
+    }
     delete featurePool;
   }
   delete mContext;

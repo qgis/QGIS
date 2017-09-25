@@ -449,11 +449,6 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
   emit checkerStarted( checker );
 
-  // Add result layer (do this after checkerStarted, otherwise warning about removing of result layer may appear)
-  for ( QgsVectorLayer *layer : processLayers )
-  {
-    layer->setReadOnly( true );
-  }
   if ( ui.radioButtonOutputNew->isChecked() )
   {
     QList<QgsMapLayer *> addLayers;
