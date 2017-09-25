@@ -1030,7 +1030,11 @@ void QgsOgrProviderUtils::setRelevantFields( OGRLayerH ogrLayer, int fieldCount,
       if ( !fetchAttributes.contains( i ) )
       {
         // add to ignored fields
-        ignoredFields.append( OGR_Fld_GetNameRef( OGR_FD_GetFieldDefn( featDefn, firstAttrIsFid ? i - 1 : i ) ) );
+        const char *fieldName = OGR_Fld_GetNameRef( OGR_FD_GetFieldDefn( featDefn, firstAttrIsFid ? i - 1 : i ) );
+        if ( qstrcmp( fieldName, "orig_ogc_fid" ) != 0 )
+        {
+          ignoredFields.append( fieldName );
+        }
       }
     }
 

@@ -184,6 +184,18 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertTrue(it.nextFeature(f))
         self.assertTrue(f.id() == 5)
 
+        # Ensure that orig_ogc_fid is still retrieved even if attribute subset is passed
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes([])
+        it = vl.getFeatures(req)
+        ids = []
+        while it.nextFeature(f):
+            ids.append(f.id())
+        self.assertTrue(len(ids) == 3)
+        self.assertTrue(3 in ids)
+        self.assertTrue(4 in ids)
+        self.assertTrue(5 in ids)
+
         # Check that subset string is correctly set on reload
         vl.reload()
         self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
