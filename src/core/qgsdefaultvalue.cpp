@@ -50,5 +50,10 @@ void QgsDefaultValue::setApplyOnUpdate( bool applyOnUpdate )
 
 bool QgsDefaultValue::isValid() const
 {
-  return mExpression.isEmpty();
+  return !mExpression.isEmpty();
+}
+
+QgsDefaultValue::operator bool() const
+{
+  return !mExpression.isEmpty();
 }
