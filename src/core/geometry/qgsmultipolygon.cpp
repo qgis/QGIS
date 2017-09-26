@@ -94,19 +94,18 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
 
       const QgsPolygonV2 *polygon = static_cast<const QgsPolygonV2 *>( geom );
 
-      QgsLineString *exteriorLineString = polygon->exteriorRing()->curveToLine();
+      std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
       json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
-      delete exteriorLineString;
 
+      std::unique_ptr< QgsLineString > interiorLineString;
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
       {
-        QgsLineString *interiorLineString = polygon->interiorRing( i )->curveToLine();
+        interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
         QgsPointSequence interiorPts;
         interiorLineString->points( interiorPts );
         json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
-        delete interiorLineString;
       }
       if ( json.endsWith( QLatin1String( ", " ) ) )
       {
@@ -171,7 +170,7 @@ QgsMultiSurface *QgsMultiPolygonV2::toCurveType() const
 
 QgsAbstractGeometry *QgsMultiPolygonV2::boundary() const
 {
-  QgsMultiLineString *multiLine = new QgsMultiLineString();
+  std::unique_ptr< QgsMultiLineString > multiLine( new QgsMultiLineString() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsPolygonV2 *polygon = qgsgeometry_cast<QgsPolygonV2 *>( mGeometries.at( i ) ) )
@@ -198,10 +197,9 @@ QgsAbstractGeometry *QgsMultiPolygonV2::boundary() const
   }
   if ( multiLine->numGeometries() == 0 )
   {
-    delete multiLine;
     return nullptr;
   }
-  return multiLine;
+  return multiLine.release();
 }
 
 bool QgsMultiPolygonV2::wktOmitChildType() const

@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
+#include <memory>
 
 QgsMultiCurve::QgsMultiCurve()
   : QgsGeometryCollection()
@@ -64,13 +65,11 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
-      QgsLineString *lineString = static_cast<const QgsCurve *>( geom )->curveToLine();
+      std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
 
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
       elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
       elemMultiLineString.appendChild( elemLineStringMember );
-
-      delete lineString;
     }
   }
 
@@ -103,11 +102,10 @@ QString QgsMultiCurve::asJSON( int precision ) const
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
-      QgsLineString *lineString = static_cast<const QgsCurve *>( geom )->curveToLine();
+      std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
       QgsPointSequence pts;
       lineString->points( pts );
       json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
-      delete lineString;
     }
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
@@ -168,7 +166,7 @@ QgsMultiCurve *QgsMultiCurve::reversed() const
 
 QgsAbstractGeometry *QgsMultiCurve::boundary() const
 {
-  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  std::unique_ptr< QgsMultiPointV2 > multiPoint( new QgsMultiPointV2() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( mGeometries.at( i ) ) )
@@ -182,8 +180,7 @@ QgsAbstractGeometry *QgsMultiCurve::boundary() const
   }
   if ( multiPoint->numGeometries() == 0 )
   {
-    delete multiPoint;
     return nullptr;
   }
-  return multiPoint;
+  return multiPoint.release();
 }

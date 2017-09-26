@@ -65,13 +65,11 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {
-      QgsPolygonV2 *polygon = static_cast<const QgsSurface *>( geom )->surfaceToPolygon();
+      std::unique_ptr< QgsPolygonV2 > polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
 
       QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemPolygonMember.appendChild( polygon->asGML2( doc, precision, ns ) );
       elemMultiPolygon.appendChild( elemPolygonMember );
-
-      delete polygon;
     }
   }
 
@@ -106,26 +104,23 @@ QString QgsMultiSurface::asJSON( int precision ) const
 
       QgsPolygonV2 *polygon = static_cast<const QgsSurface *>( geom )->surfaceToPolygon();
 
-      QgsLineString *exteriorLineString = polygon->exteriorRing()->curveToLine();
+      std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
       json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
-      delete exteriorLineString;
 
+      std::unique_ptr< QgsLineString > interiorLineString;
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
       {
-        QgsLineString *interiorLineString = polygon->interiorRing( i )->curveToLine();
+        interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
         QgsPointSequence interiorPts;
         interiorLineString->points( interiorPts );
         json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
-        delete interiorLineString;
       }
       if ( json.endsWith( QLatin1String( ", " ) ) )
       {
         json.chop( 2 ); // Remove last ", "
       }
-
-      delete polygon;
 
       json += QLatin1String( "], " );
     }
@@ -175,7 +170,7 @@ bool QgsMultiSurface::insertGeometry( QgsAbstractGeometry *g, int index )
 
 QgsAbstractGeometry *QgsMultiSurface::boundary() const
 {
-  QgsMultiCurve *multiCurve = new QgsMultiCurve();
+  std::unique_ptr< QgsMultiCurve > multiCurve( new QgsMultiCurve() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsSurface *surface = qgsgeometry_cast<QgsSurface *>( mGeometries.at( i ) ) )
@@ -185,8 +180,7 @@ QgsAbstractGeometry *QgsMultiSurface::boundary() const
   }
   if ( multiCurve->numGeometries() == 0 )
   {
-    delete multiCurve;
     return nullptr;
   }
-  return multiCurve;
+  return multiCurve.release();
 }
