@@ -378,6 +378,47 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.dump(), dump );
     }
 
+    void represent_value()
+    {
+      QVariantMap config;
+      QVariantMap map;
+      map.insert( QStringLiteral( "one" ), QStringLiteral( "1" ) );
+      map.insert( QStringLiteral( "two" ), QStringLiteral( "2" ) );
+      map.insert( QStringLiteral( "three" ), QStringLiteral( "3" ) );
+
+      config.insert( QStringLiteral( "map" ), map );
+      mPointsLayer->setEditorWidgetSetup( 3, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+
+      // Usage on a value map
+      QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mPointsLayer ) );
+      QgsExpression expression( "represent_value('Pilots', \"Pilots\")" );
+      if ( expression.hasParserError() )
+        qDebug() << expression.parserErrorString();
+      Q_ASSERT( !expression.hasParserError() );
+      if ( expression.hasEvalError() )
+        qDebug() << expression.evalErrorString();
+      Q_ASSERT( !expression.hasEvalError() );
+      expression.prepare( &context );
+
+      QgsFeature feature;
+      mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Pilots = 1" ) ).nextFeature( feature );
+      context.setFeature( feature );
+      QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
+
+      // Usage on a simple string
+      QgsExpression expression2( "represent_value('Class', \"Class\")" );
+      if ( expression2.hasParserError() )
+        qDebug() << expression2.parserErrorString();
+      Q_ASSERT( !expression2.hasParserError() );
+      if ( expression2.hasEvalError() )
+        qDebug() << expression2.evalErrorString();
+      Q_ASSERT( !expression2.hasEvalError() );
+      expression2.prepare( &context );
+      mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Class = 'Jet'" ) ).nextFeature( feature );
+      context.setFeature( feature );
+      QCOMPARE( expression2.evaluate( &context ).toString(), QStringLiteral( "Jet" ) );
+    }
+
     void evaluation_data()
     {
       QTest::addColumn<QString>( "string" );
