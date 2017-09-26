@@ -34,6 +34,12 @@ QString QgsMultiSurface::geometryType() const
   return QStringLiteral( "MultiSurface" );
 }
 
+void QgsMultiSurface::clear()
+{
+  QgsGeometryCollection::clear();
+  mWkbType = QgsWkbTypes::MultiSurface;
+}
+
 QgsMultiSurface *QgsMultiSurface::clone() const
 {
   return new QgsMultiSurface( *this );

@@ -33,6 +33,12 @@ QString QgsMultiPolygonV2::geometryType() const
   return QStringLiteral( "MultiPolygon" );
 }
 
+void QgsMultiPolygonV2::clear()
+{
+  QgsMultiSurface::clear();
+  mWkbType = QgsWkbTypes::MultiPolygon;
+}
+
 QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
 {
   return new QgsMultiPolygonV2( *this );

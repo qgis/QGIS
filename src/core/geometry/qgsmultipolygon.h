@@ -30,6 +30,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
   public:
     QgsMultiPolygonV2();
     QString geometryType() const override;
+    void clear() override;
     QgsMultiPolygonV2 *clone() const override SIP_FACTORY;
 
     bool fromWkt( const QString &wkt ) override;
