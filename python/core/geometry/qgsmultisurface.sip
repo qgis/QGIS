@@ -26,9 +26,7 @@ class QgsMultiSurface: QgsGeometryCollection
 
     virtual QgsMultiSurface *toCurveType() const /Factory/;
 
-
     virtual bool fromWkt( const QString &wkt );
-
 
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
@@ -36,14 +34,7 @@ class QgsMultiSurface: QgsGeometryCollection
 
     virtual QString asJSON( int precision = 17 ) const;
 
-
-
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
-
-%Docstring
-Adds a geometry and takes ownership. Returns true in case of success
- :rtype: bool
-%End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
