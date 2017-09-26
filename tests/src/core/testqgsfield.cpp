@@ -136,7 +136,7 @@ void TestQgsField::gettersSetters()
   field.setAlias( QStringLiteral( "alias" ) );
   QCOMPARE( field.alias(), QString( "alias" ) );
   field.setDefaultValue( QStringLiteral( "1+2" ) );
-  QCOMPARE( field.defaultValue(), QString( "1+2" ) );
+  QCOMPARE( field.defaultValue().expression(), QString( "1+2" ) );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   field.setConstraints( constraints );
