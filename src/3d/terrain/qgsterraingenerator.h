@@ -4,7 +4,7 @@
 #include "qgstilingscheme.h"
 #include "qgschunkloader_p.h"
 
-class AABB;
+class QgsAABB;
 class Qgs3DMapSettings;
 class QgsRectangle;
 class QgsTerrainEntity;
@@ -48,7 +48,7 @@ class QgsTerrainGenerator : public QgsChunkLoaderFactory
     virtual QgsRectangle extent() const = 0;
 
     //! Returns bounding box of the root chunk
-    virtual AABB rootChunkBbox( const Qgs3DMapSettings &map ) const;
+    virtual QgsAABB rootChunkBbox( const Qgs3DMapSettings &map ) const;
 
     //! Returns error of the root chunk in world coordinates
     virtual float rootChunkError( const Qgs3DMapSettings &map ) const;

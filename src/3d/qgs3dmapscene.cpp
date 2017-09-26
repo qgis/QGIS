@@ -12,7 +12,7 @@
 
 #include <QTimer>
 
-#include "aabb.h"
+#include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
@@ -203,7 +203,7 @@ void Qgs3DMapScene::onCameraChanged()
     {
       // project each corner of bbox to camera coordinates
       // and determine closest and farthest point.
-      AABB bbox = node->bbox;
+      QgsAABB bbox = node->bbox;
       for ( int i = 0; i < 8; ++i )
       {
         QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,

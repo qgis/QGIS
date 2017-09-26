@@ -203,7 +203,7 @@ static inline uint outcode( const QVector4D &v )
 //! should be equivalent to https://searchcode.com/codesearch/view/35195518/
 //! qt3d /src/threed/painting/qglpainter.cpp
 //! bool QGLPainter::isCullable(const QBox3D& box) const
-bool Qgs3DUtils::isCullable( const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix )
+bool Qgs3DUtils::isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix )
 {
   uint out = 0xff;
 

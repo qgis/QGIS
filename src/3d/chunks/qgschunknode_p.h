@@ -12,7 +12,7 @@
 // version without notice, or even be removed.
 //
 
-#include "aabb.h"
+#include "qgsaabb.h"
 
 #include <QTime>
 
@@ -44,7 +44,7 @@ class QgsChunkNode
 {
   public:
     //! constructs a skeleton chunk
-    QgsChunkNode( int x, int y, int z, const AABB &bbox, float error, QgsChunkNode *parent = nullptr );
+    QgsChunkNode( int x, int y, int z, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
 
     ~QgsChunkNode();
 
@@ -98,9 +98,9 @@ class QgsChunkNode
     void setUpdated();
 
     //! called when bounding box
-    void setExactBbox( const AABB &box );
+    void setExactBbox( const QgsAABB &box );
 
-    AABB bbox;      //!< Bounding box in world coordinates
+    QgsAABB bbox;      //!< Bounding box in world coordinates
     float error;    //!< Error of the node in world coordinates
 
     int x, y, z;  //!< Chunk coordinates (for use with a tiling scheme)

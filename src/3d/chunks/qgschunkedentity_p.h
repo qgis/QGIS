@@ -14,7 +14,7 @@
 
 #include <Qt3DCore/QEntity>
 
-class AABB;
+class QgsAABB;
 class QgsChunkNode;
 class QgsChunkList;
 class QgsChunkQueueJob;
@@ -51,7 +51,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity();
 
     //! Called when e.g. camera changes and entity may need updated

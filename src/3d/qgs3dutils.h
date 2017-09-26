@@ -5,7 +5,7 @@ class QgsLineString;
 class QgsPolygonV2;
 
 #include "qgs3dmapsettings.h"
-#include "aabb.h"
+#include "qgsaabb.h"
 
 //! how to handle altitude of vector features
 enum AltitudeClamping
@@ -67,7 +67,7 @@ class _3D_EXPORT Qgs3DUtils
         Returns true if bbox is completely outside the current viewing volume.
         This is used to perform object culling checks.
     */
-    static bool isCullable( const AABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
+    static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 };
 
 #endif // QGS3DUTILS_H

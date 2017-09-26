@@ -6,7 +6,7 @@
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/QPhongMaterial>
 
-#include "aabb.h"
+#include "qgsaabb.h"
 
 
 ///@cond PRIVATE
@@ -77,7 +77,7 @@ class AABBMesh : public Qt3DRender::QGeometryRenderer
   public:
     AABBMesh( Qt3DCore::QNode *parent = nullptr );
 
-    void setBoxes( const QList<AABB> &bboxes );
+    void setBoxes( const QList<QgsAABB> &bboxes );
 
   private:
     LineMeshGeometry *_lineMeshGeo;
@@ -97,10 +97,10 @@ AABBMesh::AABBMesh( Qt3DCore::QNode *parent )
   setGeometry( _lineMeshGeo );
 }
 
-void AABBMesh::setBoxes( const QList<AABB> &bboxes )
+void AABBMesh::setBoxes( const QList<QgsAABB> &bboxes )
 {
   QList<QVector3D> vertices;
-  Q_FOREACH ( const AABB &bbox, bboxes )
+  Q_FOREACH ( const QgsAABB &bbox, bboxes )
     vertices << bbox.verticesForLines();
   _lineMeshGeo->setVertices( vertices );
   setVertexCount( _lineMeshGeo->vertexCount() );
@@ -121,7 +121,7 @@ QgsChunkBoundsEntity::QgsChunkBoundsEntity( Qt3DCore::QNode *parent )
   addComponent( bboxesMaterial );
 }
 
-void QgsChunkBoundsEntity::setBoxes( const QList<AABB> &bboxes )
+void QgsChunkBoundsEntity::setBoxes( const QList<QgsAABB> &bboxes )
 {
   aabbMesh->setBoxes( bboxes );
 }

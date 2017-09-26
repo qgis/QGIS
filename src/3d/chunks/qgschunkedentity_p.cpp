@@ -44,7 +44,7 @@ static float screenSpaceError( QgsChunkNode *node, const SceneState &state )
   return sse;
 }
 
-QgsChunkedEntity::QgsChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , needsUpdate( false )
   , tau( tau )
@@ -142,7 +142,7 @@ void QgsChunkedEntity::update( const SceneState &state )
 
   if ( bboxesEntity )
   {
-    QList<AABB> bboxes;
+    QList<QgsAABB> bboxes;
     Q_FOREACH ( QgsChunkNode *n, activeNodes )
       bboxes << n->bbox;
     bboxesEntity->setBoxes( bboxes );

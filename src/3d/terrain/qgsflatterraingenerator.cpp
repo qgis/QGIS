@@ -61,7 +61,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   entity->addComponent( transform );
 
   // set up transform according to the extent covered by the quad geometry
-  AABB bbox = node->bbox;
+  QgsAABB bbox = node->bbox;
   double side = bbox.xMax - bbox.xMin;
   double half = side / 2;
 

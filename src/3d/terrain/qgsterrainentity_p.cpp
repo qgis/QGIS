@@ -1,6 +1,6 @@
 #include "qgsterrainentity_p.h"
 
-#include "aabb.h"
+#include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
 #include "qgschunknode_p.h"
 #include "qgsterraingenerator.h"

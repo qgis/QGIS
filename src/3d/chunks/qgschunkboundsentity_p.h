@@ -14,7 +14,7 @@
 
 #include <Qt3DCore/QEntity>
 
-class AABB;
+class QgsAABB;
 class AABBMesh;
 
 
@@ -29,7 +29,7 @@ class QgsChunkBoundsEntity : public Qt3DCore::QEntity
     QgsChunkBoundsEntity( Qt3DCore::QNode *parent = nullptr );
 
     //! Sets a list of bounding boxes to be rendered by the entity
-    void setBoxes( const QList<AABB> &bboxes );
+    void setBoxes( const QList<QgsAABB> &bboxes );
 
   private:
     AABBMesh *aabbMesh;

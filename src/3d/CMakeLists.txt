@@ -2,7 +2,7 @@
 # sources
 
 SET(QGIS_3D_SRCS
-
+  qgsaabb.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
   qgs3dutils.cpp
@@ -73,8 +73,7 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 # install headers
 
 SET(QGIS_3D_HDRS
-  aabb.h
-
+  qgsaabb.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
   qgs3dutils.h
@@ -213,14 +212,3 @@ IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_3d\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
 ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-
-
-#############################################################
-# qgis 3d test executable (temporary)
-
-add_executable(qgis3d
-  testapp/main.cpp
-  testapp/sidepanel.cpp
-  testapp/window3d.cpp
-)
-target_link_libraries(qgis3d qgis_3d)

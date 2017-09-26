@@ -7,7 +7,7 @@
 
 ///@cond PRIVATE
 
-QgsChunkNode::QgsChunkNode( int x, int y, int z, const AABB &bbox, float error, QgsChunkNode *parent )
+QgsChunkNode::QgsChunkNode( int x, int y, int z, const QgsAABB &bbox, float error, QgsChunkNode *parent )
   : bbox( bbox )
   , error( error )
   , x( x )
@@ -62,16 +62,16 @@ void QgsChunkNode::ensureAllChildrenExist()
   float ymax = bbox.yMax;
 
   if ( !children[0] )
-    children[0] = new QgsChunkNode( x * 2 + 0, y * 2 + 1, z + 1, AABB( bbox.xMin, ymin, bbox.zMin, xc, ymax, zc ), childError, this );
+    children[0] = new QgsChunkNode( x * 2 + 0, y * 2 + 1, z + 1, QgsAABB( bbox.xMin, ymin, bbox.zMin, xc, ymax, zc ), childError, this );
 
   if ( !children[1] )
-    children[1] = new QgsChunkNode( x * 2 + 0, y * 2 + 0, z + 1, AABB( bbox.xMin, ymin, zc, xc, ymax, bbox.zMax ), childError, this );
+    children[1] = new QgsChunkNode( x * 2 + 0, y * 2 + 0, z + 1, QgsAABB( bbox.xMin, ymin, zc, xc, ymax, bbox.zMax ), childError, this );
 
   if ( !children[2] )
-    children[2] = new QgsChunkNode( x * 2 + 1, y * 2 + 1, z + 1, AABB( xc, ymin, bbox.zMin, bbox.xMax, ymax, zc ), childError, this );
+    children[2] = new QgsChunkNode( x * 2 + 1, y * 2 + 1, z + 1, QgsAABB( xc, ymin, bbox.zMin, bbox.xMax, ymax, zc ), childError, this );
 
   if ( !children[3] )
-    children[3] = new QgsChunkNode( x * 2 + 1, y * 2 + 0, z + 1, AABB( xc, ymin, zc, bbox.xMax, ymax, bbox.zMax ), childError, this );
+    children[3] = new QgsChunkNode( x * 2 + 1, y * 2 + 0, z + 1, QgsAABB( xc, ymin, zc, bbox.xMax, ymax, bbox.zMax ), childError, this );
 }
 
 int QgsChunkNode::level() const
@@ -241,7 +241,7 @@ void QgsChunkNode::setUpdated()
   state = QgsChunkNode::Loaded;
 }
 
-void QgsChunkNode::setExactBbox( const AABB &box )
+void QgsChunkNode::setExactBbox( const QgsAABB &box )
 {
   bbox = box;
 

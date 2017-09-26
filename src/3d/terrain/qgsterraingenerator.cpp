@@ -1,10 +1,10 @@
 #include "qgsterraingenerator.h"
 
-#include "aabb.h"
+#include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
 
 
-AABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
+QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = extent();
   QgsCoordinateTransform terrainToMapTransform( crs(), map.crs );
@@ -12,8 +12,8 @@ AABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  return AABB( te.xMinimum() - map.originX, hMin * map.terrainVerticalScale(), -te.yMaximum() + map.originY,
-               te.xMaximum() - map.originX, hMax * map.terrainVerticalScale(), -te.yMinimum() + map.originY );
+  return QgsAABB( te.xMinimum() - map.originX, hMin * map.terrainVerticalScale(), -te.yMaximum() + map.originY,
+                  te.xMaximum() - map.originX, hMax * map.terrainVerticalScale(), -te.yMinimum() + map.originY );
 }
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
