@@ -2524,6 +2524,11 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
+          fields:
+            cost:
+              precision: 2
 
   - algorithm: qgis:shortestpathpointtopoint
     name: Shortest path (point to point, fastest route)
@@ -2547,6 +2552,8 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
 
   - algorithm: qgis:serviceareafrompoint
     name: Service area (from point, shortest)
@@ -2569,6 +2576,8 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
 
   - algorithm: qgis:createattributeindex
     name: Create attribute index
@@ -2762,22 +2771,30 @@ tests:
           fields:
             fid: skip
 
-#  - algorithm: qgis:zonalstatistics
-#    name: simple zonal statistics
-#    params:
-#      COLUMN_PREFIX: _
-#      GLOBAL_EXTENT: false
-#      INPUT_RASTER:
-#        name: dem.tif
-#        type: raster
-#      INPUT_VECTOR:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      RASTER_BAND: 1
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/zonal_statistics.gml
-#        type: vector
+  - algorithm: qgis:zonalstatistics
+    name: simple zonal statistics
+    params:
+      COLUMN_PREFIX: _
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/zonal_stats.shp
+        type: vector
+        in_place: true
+      RASTER_BAND: 1
+      STATS:
+      - 0
+      - 1
+      - 2
+    results:
+      INPUT_VECTOR:
+        name: expected/zonal_stats.shp
+        type: vector
+        in_place_result: true
+        compare:
+          geometry:
+            precision: 5
 
   - algorithm: native:fixgeometries
     name: Fix geometries
@@ -3120,14 +3137,18 @@ tests:
         name: expected/add_field.gml
         type: vector
 
-#  - algorithm: qgis:randompointsinextent
-#    name: Random point in extent, don't check result
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
-#      MIN_DISTANCE: 0.0
-#      POINT_NUMBER: 5
-#    results: {}
+  - algorithm: qgis:randompointsinextent
+    name: Random point in extent, don't check result
+    params:
+      TARGET_CRS: EPSG:4326
+      EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
+      MIN_DISTANCE: 0.0
+      POINTS_NUMBER: 5
+    results:
+      OUTPUT:
+        compare: false
+        type: vector
+        name: randompointsinextent.gml
 
   - algorithm: script:selectbyattribute
     name: Select by attribute
