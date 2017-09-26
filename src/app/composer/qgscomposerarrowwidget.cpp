@@ -236,7 +236,7 @@ void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString 
     }
     else
     {
-      mArrow->setStartMarker( QLatin1String( "" ) );
+      mArrow->setStartMarker( QString() );
     }
     mArrow->update();
     mArrow->endCommand();
@@ -255,7 +255,7 @@ void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString &t
     }
     else
     {
-      mArrow->setEndMarker( QLatin1String( "" ) );
+      mArrow->setEndMarker( QString() );
     }
     mArrow->update();
     mArrow->endCommand();

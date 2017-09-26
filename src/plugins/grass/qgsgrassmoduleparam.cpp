@@ -797,8 +797,6 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
   , mType( type )
-  , mOgrLayerOption( QLatin1String( "" ) )
-  , mOgrWhereOption( QLatin1String( "" ) )
 {
   if ( mTitle.isEmpty() )
   {

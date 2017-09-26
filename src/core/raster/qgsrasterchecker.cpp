@@ -28,7 +28,6 @@
 #include <QBuffer>
 
 QgsRasterChecker::QgsRasterChecker()
-  : mReport( QLatin1String( "" ) )
 {
   mTabStyle = QStringLiteral( "border-spacing: 0px; border-width: 1px 1px 0 0; border-style: solid;" );
   mCellStyle = QStringLiteral( "border-width: 0 0 1px 1px; border-style: solid; font-size: smaller; text-align: center;" );
