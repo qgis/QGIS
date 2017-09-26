@@ -57,9 +57,6 @@ class ExecuteSql(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterString(self.SQL,
                                                        self.tr('SQL expression'),
                                                        defaultValue=''))
-        self.addParameter(QgsProcessingParameterEnum(self.SQL,
-                                                     self.tr('SQL expression'),
-                                                     defaultValue=''))
         self.addParameter(QgsProcessingParameterEnum(self.DIALECT,
                                                      self.tr('SQL dialect'),
                                                      options=[i[0] for i in self.dialects],
