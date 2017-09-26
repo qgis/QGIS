@@ -1467,7 +1467,7 @@ bool QgsAuthManager::updateNetworkProxy( QNetworkProxy &proxy, const QString &au
   {
     if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkProxy ) )
     {
-      QgsDebugMsg( QString( "Network request updating not supported by authcfg: %1" ).arg( authcfg ) );
+      QgsDebugMsg( QString( "Proxy updating not supported by authcfg: %1" ).arg( authcfg ) );
       return true;
     }
 
