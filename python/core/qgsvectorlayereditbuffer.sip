@@ -150,8 +150,9 @@ class QgsVectorLayerEditBuffer : QObject
     void updateLayerFields();
 
     /** Apply geometry modification basing on provider geometry type.
-     * Geometry is modified or  only if successful conversion is possible.
-     * In case of conversion a message is sent to the log.
+     * Geometry is modified only if successful conversion is possible.
+     * adaptGeometry calls QgsVectorDataProvider::convertToProviderType()
+     * if necessary and that apply the modifications.
      * @param geometry pointer to the geometry that should be adapted to provider
      * @return bool true if success.
      *  True: Input geometry is changed because conversion is applied or
