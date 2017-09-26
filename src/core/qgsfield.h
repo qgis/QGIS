@@ -54,7 +54,7 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( QString comment READ comment WRITE setComment )
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( QString alias READ alias WRITE setAlias )
-    Q_PROPERTY( QgsDefaultValue defaultValue READ defaultValue WRITE setDefaultValue )
+    Q_PROPERTY( QgsDefaultValue defaultValueDefinition READ defaultValueDefinition WRITE setDefaultValueDefinition )
     Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
 
   public:
@@ -198,17 +198,17 @@ class CORE_EXPORT QgsField
      * \returns expression evaluated when calculating default values for field, or an
      * empty string if no default is set
      * \since QGIS 3.0
-     * \see setDefaultValueExpression()
+     * \see setDefaultValueDefinition()
      */
-    QgsDefaultValue defaultValue() const;
+    QgsDefaultValue defaultValueDefinition() const;
 
     /** Sets an expression to use when calculating the default value for the field.
      * \param expression expression to evaluate when calculating default values for field. Pass
      * an empty expression to clear the default.
      * \since QGIS 3.0
-     * \see defaultValueExpression()
+     * \see defaultValueDefinition()
      */
-    void setDefaultValue( const QgsDefaultValue &defaultValue );
+    void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
 
     /**
      * Returns constraints which are present for the field.
