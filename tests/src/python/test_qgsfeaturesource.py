@@ -170,5 +170,6 @@ class TestQgsFeatureSource(unittest.TestCase):
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes()[0], f.attributes()[0])
 
+
 if __name__ == '__main__':
     unittest.main()
