@@ -2089,6 +2089,32 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         layer.setDefaultValueDefinition(1, QgsDefaultValue('not a valid expression'))
         self.assertFalse(layer.defaultValue(1))
 
+    def testApplyOnUpdateDefaultExpressions(self):
+        """tests apply on update of default values"""
+        layer = createLayerWithOnePoint()
+
+        layer.setDefaultValueDefinition(0, QgsDefaultValue("CONCAT('l: ', @number, ',f: ', \"fldint\" )", True))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("1 * @number", False))
+
+        QgsExpressionContextUtils.setLayerVariable(layer, 'number', 4)
+
+        layer.startEditing()
+        feature = QgsFeature()
+        feature.setFields(layer.fields())
+        feature.setValid(True)
+
+        feature.setAttribute(1, layer.defaultValue(1, feature))
+        feature.setAttribute(0, layer.defaultValue(0, feature))
+
+        self.assertTrue(layer.addFeature(feature))
+        fid = feature.id()
+        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 4,f: 4')
+        self.assertEqual(layer.getFeature(fid)['fldint'], 4)
+
+        layer.changeAttributeValue(fid, 1, 20)
+        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 4,f: 20')
+        self.assertEqual(layer.getFeature(fid)['fldint'], 20)
+
     def testGetSetConstraints(self):
         """ test getting and setting field constraints """
         layer = createLayerWithOnePoint()
