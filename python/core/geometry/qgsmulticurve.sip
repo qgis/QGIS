@@ -38,6 +38,8 @@ class QgsMultiCurve: QgsGeometryCollection
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
+
 
     QgsMultiCurve *reversed() const /Factory/;
 %Docstring

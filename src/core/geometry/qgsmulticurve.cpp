@@ -142,6 +142,17 @@ bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
+bool QgsMultiCurve::insertGeometry( QgsAbstractGeometry *g, int index )
+{
+  if ( !g || !qgsgeometry_cast<QgsCurve *>( g ) )
+  {
+    delete g;
+    return false;
+  }
+
+  return QgsGeometryCollection::insertGeometry( g, index );
+}
+
 QgsMultiCurve *QgsMultiCurve::reversed() const
 {
   QgsMultiCurve *reversedMultiCurve = new QgsMultiCurve();
