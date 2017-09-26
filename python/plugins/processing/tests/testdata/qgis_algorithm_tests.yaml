@@ -2524,6 +2524,11 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
+          fields:
+            cost:
+              precision: 2
 
   - algorithm: qgis:shortestpathpointtopoint
     name: Shortest path (point to point, fastest route)
@@ -2547,6 +2552,8 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
 
   - algorithm: qgis:serviceareafrompoint
     name: Service area (from point, shortest)
@@ -2569,6 +2576,8 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
 
   - algorithm: qgis:createattributeindex
     name: Create attribute index
