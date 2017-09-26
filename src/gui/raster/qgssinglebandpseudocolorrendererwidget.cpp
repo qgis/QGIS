@@ -363,6 +363,11 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   double min = lineEditValue( mMinLineEdit );
   double max = lineEditValue( mMaxLineEdit );
 
+  if ( qIsNaN( min ) || qIsNaN( max ) )
+  {
+    return;
+  }
+
   QScopedPointer< QgsVectorColorRampV2 > colorRamp( mColorRampComboBox->currentColorRamp() );
 
   if ( mClassificationModeComboBox->itemData( mClassificationModeComboBox->currentIndex() ).toInt() == Continuous )
