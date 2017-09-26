@@ -41,6 +41,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterbandstats.h"
 #include "qgscolorramp.h"
+#include "qgsfieldformatterregistry.h"
+#include "qgsfieldformatter.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -3428,6 +3430,46 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   return QVariant();
 }
 
+static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent )
+{
+  QVariant result;
+  QString fieldName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
+  QVariant value = values.at( 1 );
+
+  QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
+
+  if ( layer )
+  {
+    const QgsFields fields = layer->fields();
+    int index = fields.lookupField( fieldName );
+
+    if ( index == -1 )
+    {
+      parent->setEvalErrorString( QStringLiteral( "%1: Field not found %2" ).arg( QStringLiteral( "represent_value" ), fieldName ) );
+    }
+    else
+    {
+      QgsEditorWidgetSetup setup = layer->editorWidgetSetup( index );
+      QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+
+      QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer->id(), fieldName );
+
+      QVariant cache;
+      if ( !context->hasCachedValue( cacheKey ) )
+      {
+        cache = formatter->createCache( layer, index, setup.config() );
+        context->setCachedValue( cacheKey, cache );
+      }
+      else
+        cache = context->cachedValue( cacheKey );
+
+      result = formatter->representValue( layer, index, setup.config(), cache, value );
+    }
+  }
+
+  return result;
+}
+
 static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent )
 {
   QgsMapLayer *layer = QgsExpressionUtils::getMapLayer( values.at( 0 ), parent );
@@ -4280,10 +4322,14 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
           QString(),
           false,
           QSet<QString>()
-        )
+        );
 
-        // **General** functions
+    // **Fields and Values** functions
+    sFunctions
+        << new QgsStaticExpressionFunction( QStringLiteral( "represent_value" ), 2, fcnRepresentValue, QStringLiteral( "Fields and Values" ) );
 
+    // **General** functions
+    sFunctions
         << new QgsStaticExpressionFunction( QStringLiteral( "layer_property" ), 2, fcnGetLayerProperty, QStringLiteral( "General" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_statistic" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) )
