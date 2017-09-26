@@ -32,6 +32,22 @@ tests:
         hash: f4dd2d3693afe0b95a6b6d0c98a57331b8f7c6a61a372f52da912c07
         type: rasterhash
 
+  - algorithm: gdal:cliprasterbyextent
+    name: Test (gdal:cliprasterbyextent)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: 0.0
+      OPTIONS: ''
+      PROJWIN: 18.674136950224096,18.70011285383855,45.78239420868433,45.80342583519035
+        [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: c71cf9c654ee0f27ea8778576787301a868556e52773cb061a8fff00
+        type: rasterhash
+
   - algorithm: gdal:cliprasterbymasklayer
     name: Clip raster by mask layer (gdalwarp)
     params:
@@ -505,6 +521,20 @@ tests:
         name: expected/gdal/buffer_polys_dissolve.gml
         type: vector
 
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip points by extent
+    params:
+      EXTENT: 0.4662650602409637,5.695180722891566,0.36626506024096406,2.221686746987952
+        [EPSG:4326]
+      INPUT:
+        name: points.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_points.gml
+        type: vector
+
   - algorithm: gdal:clipvectorbypolygon
     name: Clip lines by polygons
     params:
@@ -533,6 +563,34 @@ tests:
     results:
       OUTPUT:
         name: expected/gdal/clip_lines_by_multipolygon.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip lines by extent
+    params:
+      EXTENT: 4.294331983805669,8.715384615384616,-2.0267206477732795,2.9894736842105267
+        [EPSG:4326]
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip polygons by extent
+    params:
+      EXTENT: 0.9040662650602393,4.680271084337348,0.6460843373493974,5.465963855421688
+        [EPSG:4326]
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_polygons.gml
         type: vector
 
   - algorithm: gdal:clipvectorbypolygon

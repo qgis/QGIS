@@ -25,7 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessing,
+from qgis.core import (QgsVectorLayer,
+                       QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterExtent,
@@ -75,8 +76,8 @@ class ClipVectorByExtent(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
-        inLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
-        extent = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context, source.sourceCrs())
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
