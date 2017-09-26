@@ -1,10 +1,12 @@
 #include <QVector4D>
-#include "chunkedentity.h"
-#include "chunkboundsentity.h"
-#include "chunklist.h"
-#include "chunkloader.h"
-#include "chunknode.h"
 #include "qgs3dutils.h"
+#include "qgschunkedentity_p.h"
+#include "qgschunkboundsentity_p.h"
+#include "qgschunklist_p.h"
+#include "qgschunkloader_p.h"
+#include "qgschunknode_p.h"
+
+///@cond PRIVATE
 
 static float screenSpaceError( float epsilon, float distance, float screenSize, float fov )
 {
@@ -32,7 +34,7 @@ static float screenSpaceError( float epsilon, float distance, float screenSize, 
   return phi;
 }
 
-static float screenSpaceError( ChunkNode *node, const SceneState &state )
+static float screenSpaceError( QgsChunkNode *node, const SceneState &state )
 {
   float dist = node->bbox.distanceFromPoint( state.cameraPos );
 
@@ -42,7 +44,7 @@ static float screenSpaceError( ChunkNode *node, const SceneState &state )
   return sse;
 }
 
-ChunkedEntity::ChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, ChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent )
+QgsChunkedEntity::QgsChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , needsUpdate( false )
   , tau( tau )
@@ -51,13 +53,13 @@ ChunkedEntity::ChunkedEntity( const AABB &rootBbox, float rootError, float tau, 
   , maxLoadedChunks( 512 )
   , bboxesEntity( nullptr )
 {
-  rootNode = new ChunkNode( 0, 0, 0, rootBbox, rootError );
-  chunkLoaderQueue = new ChunkList;
-  replacementQueue = new ChunkList;
+  rootNode = new QgsChunkNode( 0, 0, 0, rootBbox, rootError );
+  chunkLoaderQueue = new QgsChunkList;
+  replacementQueue = new QgsChunkList;
 }
 
 
-ChunkedEntity::~ChunkedEntity()
+QgsChunkedEntity::~QgsChunkedEntity()
 {
   // derived classes have to make sure that any pending active job has finished / been canceled
   // before getting to this destructor - here it would be too late to cancel them
@@ -67,12 +69,12 @@ ChunkedEntity::~ChunkedEntity()
   // clean up any pending load requests
   while ( !chunkLoaderQueue->isEmpty() )
   {
-    ChunkListEntry *entry = chunkLoaderQueue->takeFirst();
-    ChunkNode *node = entry->chunk;
+    QgsChunkListEntry *entry = chunkLoaderQueue->takeFirst();
+    QgsChunkNode *node = entry->chunk;
 
-    if ( node->state == ChunkNode::QueuedForLoad )
+    if ( node->state == QgsChunkNode::QueuedForLoad )
       node->cancelQueuedForLoad();
-    else if ( node->state == ChunkNode::QueuedForUpdate )
+    else if ( node->state == QgsChunkNode::QueuedForUpdate )
       node->cancelQueuedForUpdate();
     else
       Q_ASSERT( false );  // impossible!
@@ -82,7 +84,7 @@ ChunkedEntity::~ChunkedEntity()
 
   while ( !replacementQueue->isEmpty() )
   {
-    ChunkListEntry *entry = replacementQueue->takeFirst();
+    QgsChunkListEntry *entry = replacementQueue->takeFirst();
 
     // remove loaded data from node
     entry->chunk->unloadChunk(); // also deletes the entry
@@ -97,12 +99,12 @@ ChunkedEntity::~ChunkedEntity()
 
 #include <QElapsedTimer>
 
-void ChunkedEntity::update( const SceneState &state )
+void QgsChunkedEntity::update( const SceneState &state )
 {
   QElapsedTimer t;
   t.start();
 
-  QSet<ChunkNode *> activeBefore = QSet<ChunkNode *>::fromList( activeNodes );
+  QSet<QgsChunkNode *> activeBefore = QSet<QgsChunkNode *>::fromList( activeNodes );
   activeNodes.clear();
   frustumCulled = 0;
   currentTime = QTime::currentTime();
@@ -111,7 +113,7 @@ void ChunkedEntity::update( const SceneState &state )
 
   int enabled = 0, disabled = 0, unloaded = 0;
 
-  Q_FOREACH ( ChunkNode *node, activeNodes )
+  Q_FOREACH ( QgsChunkNode *node, activeNodes )
   {
     if ( activeBefore.contains( node ) )
       activeBefore.remove( node );
@@ -123,7 +125,7 @@ void ChunkedEntity::update( const SceneState &state )
   }
 
   // disable those that were active but will not be anymore
-  Q_FOREACH ( ChunkNode *node, activeBefore )
+  Q_FOREACH ( QgsChunkNode *node, activeBefore )
   {
     node->entity->setEnabled( false );
     ++disabled;
@@ -133,7 +135,7 @@ void ChunkedEntity::update( const SceneState &state )
   // TODO: what to do when our cache is too small and nodes are being constantly evicted + loaded again
   while ( replacementQueue->count() > maxLoadedChunks )
   {
-    ChunkListEntry *entry = replacementQueue->takeLast();
+    QgsChunkListEntry *entry = replacementQueue->takeLast();
     entry->chunk->unloadChunk();  // also deletes the entry
     ++unloaded;
   }
@@ -141,7 +143,7 @@ void ChunkedEntity::update( const SceneState &state )
   if ( bboxesEntity )
   {
     QList<AABB> bboxes;
-    Q_FOREACH ( ChunkNode *n, activeNodes )
+    Q_FOREACH ( QgsChunkNode *n, activeNodes )
       bboxes << n->bbox;
     bboxesEntity->setBoxes( bboxes );
   }
@@ -155,14 +157,14 @@ void ChunkedEntity::update( const SceneState &state )
   qDebug() << "update: active " << activeNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << frustumCulled << " | loading " << chunkLoaderQueue->count() << " loaded " << replacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
 }
 
-void ChunkedEntity::setShowBoundingBoxes( bool enabled )
+void QgsChunkedEntity::setShowBoundingBoxes( bool enabled )
 {
   if ( ( enabled && bboxesEntity ) || ( !enabled && !bboxesEntity ) )
     return;
 
   if ( enabled )
   {
-    bboxesEntity = new ChunkBoundsEntity( this );
+    bboxesEntity = new QgsChunkBoundsEntity( this );
   }
   else
   {
@@ -171,23 +173,23 @@ void ChunkedEntity::setShowBoundingBoxes( bool enabled )
   }
 }
 
-void ChunkedEntity::updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobFactory *updateJobFactory )
+void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunkQueueJobFactory *updateJobFactory )
 {
-  Q_FOREACH ( ChunkNode *node, nodes )
+  Q_FOREACH ( QgsChunkNode *node, nodes )
   {
-    if ( node->state == ChunkNode::QueuedForUpdate )
+    if ( node->state == QgsChunkNode::QueuedForUpdate )
     {
       chunkLoaderQueue->takeEntry( node->loaderQueueEntry );
       node->cancelQueuedForUpdate();
     }
-    else if ( node->state == ChunkNode::Updating )
+    else if ( node->state == QgsChunkNode::Updating )
     {
       cancelActiveJob();  // we have currently just one active job so that must be it
     }
 
-    Q_ASSERT( node->state == ChunkNode::Loaded );
+    Q_ASSERT( node->state == QgsChunkNode::Loaded );
 
-    ChunkListEntry *entry = new ChunkListEntry( node );
+    QgsChunkListEntry *entry = new QgsChunkListEntry( node );
     node->setQueuedForUpdate( entry, updateJobFactory );
     chunkLoaderQueue->insertLast( entry );
   }
@@ -198,7 +200,7 @@ void ChunkedEntity::updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobF
 }
 
 
-void ChunkedEntity::update( ChunkNode *node, const SceneState &state )
+void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
 {
   if ( Qgs3DUtils::isCullable( node->bbox, state.viewProjectionMatrix ) )
   {
@@ -249,16 +251,16 @@ void ChunkedEntity::update( ChunkNode *node, const SceneState &state )
 }
 
 
-void ChunkedEntity::requestResidency( ChunkNode *node )
+void QgsChunkedEntity::requestResidency( QgsChunkNode *node )
 {
-  if ( node->state == ChunkNode::Loaded || node->state == ChunkNode::QueuedForUpdate || node->state == ChunkNode::Updating )
+  if ( node->state == QgsChunkNode::Loaded || node->state == QgsChunkNode::QueuedForUpdate || node->state == QgsChunkNode::Updating )
   {
     Q_ASSERT( node->replacementQueueEntry );
     Q_ASSERT( node->entity );
     replacementQueue->takeEntry( node->replacementQueueEntry );
     replacementQueue->insertFirst( node->replacementQueueEntry );
   }
-  else if ( node->state == ChunkNode::QueuedForLoad )
+  else if ( node->state == QgsChunkNode::QueuedForLoad )
   {
     // move to the front of loading queue
     Q_ASSERT( node->loaderQueueEntry );
@@ -269,14 +271,14 @@ void ChunkedEntity::requestResidency( ChunkNode *node )
       chunkLoaderQueue->insertFirst( node->loaderQueueEntry );
     }
   }
-  else if ( node->state == ChunkNode::Loading )
+  else if ( node->state == QgsChunkNode::Loading )
   {
     // the entry is being currently processed - nothing to do really
   }
-  else if ( node->state == ChunkNode::Skeleton )
+  else if ( node->state == QgsChunkNode::Skeleton )
   {
     // add to the loading queue
-    ChunkListEntry *entry = new ChunkListEntry( node );
+    QgsChunkListEntry *entry = new QgsChunkListEntry( node );
     node->setQueuedForLoad( entry );
     chunkLoaderQueue->insertFirst( entry );
   }
@@ -285,17 +287,17 @@ void ChunkedEntity::requestResidency( ChunkNode *node )
 }
 
 
-void ChunkedEntity::onActiveJobFinished()
+void QgsChunkedEntity::onActiveJobFinished()
 {
-  ChunkQueueJob *job = qobject_cast<ChunkQueueJob *>( sender() );
+  QgsChunkQueueJob *job = qobject_cast<QgsChunkQueueJob *>( sender() );
   Q_ASSERT( job );
   Q_ASSERT( job == activeJob );
 
-  ChunkNode *node = job->chunk();
+  QgsChunkNode *node = job->chunk();
 
-  if ( ChunkLoader *loader = qobject_cast<ChunkLoader *>( job ) )
+  if ( QgsChunkLoader *loader = qobject_cast<QgsChunkLoader *>( job ) )
   {
-    Q_ASSERT( node->state == ChunkNode::Loading );
+    Q_ASSERT( node->state == QgsChunkNode::Loading );
     Q_ASSERT( node->loader == loader );
 
     // mark as loaded + create entity
@@ -311,7 +313,7 @@ void ChunkedEntity::onActiveJobFinished()
   }
   else
   {
-    Q_ASSERT( node->state == ChunkNode::Updating );
+    Q_ASSERT( node->state == QgsChunkNode::Updating );
     node->setUpdated();
   }
 
@@ -323,41 +325,41 @@ void ChunkedEntity::onActiveJobFinished()
   startJob();
 }
 
-void ChunkedEntity::startJob()
+void QgsChunkedEntity::startJob()
 {
   Q_ASSERT( !activeJob );
   if ( chunkLoaderQueue->isEmpty() )
     return;
 
-  ChunkListEntry *entry = chunkLoaderQueue->takeFirst();
+  QgsChunkListEntry *entry = chunkLoaderQueue->takeFirst();
   Q_ASSERT( entry );
-  ChunkNode *node = entry->chunk;
+  QgsChunkNode *node = entry->chunk;
   delete entry;
 
-  if ( node->state == ChunkNode::QueuedForLoad )
+  if ( node->state == QgsChunkNode::QueuedForLoad )
   {
-    ChunkLoader *loader = chunkLoaderFactory->createChunkLoader( node );
-    connect( loader, &ChunkQueueJob::finished, this, &ChunkedEntity::onActiveJobFinished );
+    QgsChunkLoader *loader = chunkLoaderFactory->createChunkLoader( node );
+    connect( loader, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
     node->setLoading( loader );
     activeJob = loader;
   }
-  else if ( node->state == ChunkNode::QueuedForUpdate )
+  else if ( node->state == QgsChunkNode::QueuedForUpdate )
   {
     node->setUpdating();
-    connect( node->updater, &ChunkQueueJob::finished, this, &ChunkedEntity::onActiveJobFinished );
+    connect( node->updater, &QgsChunkQueueJob::finished, this, &QgsChunkedEntity::onActiveJobFinished );
     activeJob = node->updater;
   }
   else
     Q_ASSERT( false );  // not possible
 }
 
-void ChunkedEntity::cancelActiveJob()
+void QgsChunkedEntity::cancelActiveJob()
 {
   Q_ASSERT( activeJob );
 
-  ChunkNode *node = activeJob->chunk();
+  QgsChunkNode *node = activeJob->chunk();
 
-  if ( qobject_cast<ChunkLoader *>( activeJob ) )
+  if ( qobject_cast<QgsChunkLoader *>( activeJob ) )
   {
     // return node back to skeleton
     node->cancelLoading();
@@ -372,3 +374,5 @@ void ChunkedEntity::cancelActiveJob()
   activeJob->deleteLater();
   activeJob = nullptr;
 }
+
+/// @endcond

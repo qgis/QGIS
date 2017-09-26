@@ -1,7 +1,18 @@
-#ifndef CHUNKLOADER_H
-#define CHUNKLOADER_H
+#ifndef QGSCHUNKQUEUEJOB_P_H
+#define QGSCHUNKQUEUEJOB_P_H
 
-class ChunkNode;
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+
+class QgsChunkNode;
 
 namespace Qt3DCore
 {
@@ -22,22 +33,22 @@ namespace Qt3DCore
  *
  * \since QGIS 3.0
  */
-class ChunkQueueJob : public QObject
+class QgsChunkQueueJob : public QObject
 {
     Q_OBJECT
   public:
     //! Constructs a job for given chunk node
-    ChunkQueueJob( ChunkNode *node )
+    QgsChunkQueueJob( QgsChunkNode *node )
       : node( node )
     {
     }
 
-    virtual ~ChunkQueueJob();
+    virtual ~QgsChunkQueueJob();
 
     //! Returns chunk node of this job
-    ChunkNode *chunk() { return node; }
+    QgsChunkNode *chunk() { return node; }
 
-    //! Request that the loading gets canceled.
+    //! Request that the job gets canceled.
     //! Returns only after the async job has been stopped.
     //! The signal finished() will not be emitted afterwards.
     virtual void cancel();
@@ -47,7 +58,7 @@ class ChunkQueueJob : public QObject
     void finished();
 
   protected:
-    ChunkNode *node;
+    QgsChunkNode *node;
 };
 
 /** \ingroup 3d
@@ -55,51 +66,15 @@ class ChunkQueueJob : public QObject
  * method that will create a specific job for given chunk node.
  * \since QGIS 3.0
  */
-class ChunkQueueJobFactory
+class QgsChunkQueueJobFactory
 {
   public:
-    virtual ~ChunkQueueJobFactory() = default;
+    virtual ~QgsChunkQueueJobFactory() = default;
 
     //! Creates a specific chunk queue job for the chunk node. Ownership of the returned is passed to the caller.
-    virtual ChunkQueueJob *createJob( ChunkNode *chunk ) = 0;
+    virtual QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) = 0;
 };
 
+/// @endcond
 
-/** \ingroup 3d
- * Base class for jobs that load chunks
- * \since QGIS 3.0
- */
-class ChunkLoader : public ChunkQueueJob
-{
-    Q_OBJECT
-  public:
-    //! Construct chunk loader for a node
-    ChunkLoader( ChunkNode *node )
-      : ChunkQueueJob( node )
-    {
-    }
-
-    virtual ~ChunkLoader();
-
-    //! Run in main thread to use loaded data.
-    //! Returns entity attached to the given parent entity in disabled state
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) = 0;
-
-};
-
-
-/** \ingroup 3d
- * Factory for chunk loaders for a particular type of entity
- * \since QGIS 3.0
- */
-class ChunkLoaderFactory
-{
-  public:
-    virtual ~ChunkLoaderFactory();
-
-    //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    virtual ChunkLoader *createChunkLoader( ChunkNode *node ) const = 0;
-};
-
-
-#endif // CHUNKLOADER_H
+#endif // QGSCHUNKQUEUEJOB_P_H

@@ -20,7 +20,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
   public:
     QgsFlatTerrainGenerator();
 
-    virtual ChunkLoader *createChunkLoader( ChunkNode *node ) const override;
+    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
     virtual QgsTerrainGenerator *clone() const override;
     Type type() const override;

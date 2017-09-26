@@ -1,27 +1,38 @@
-#ifndef CHUNKLIST_H
-#define CHUNKLIST_H
+#ifndef QGSCHUNKLIST_P_H
+#define QGSCHUNKLIST_P_H
 
-class ChunkNode;
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+
+class QgsChunkNode;
 
 /** \ingroup 3d
  * Element of a double-linked list
  * \since QGIS 3.0
  */
-class ChunkListEntry
+class QgsChunkListEntry
 {
   public:
     //! Constructs entry for a particular node
-    ChunkListEntry( ChunkNode *node )
+    QgsChunkListEntry( QgsChunkNode *node )
       : prev( nullptr )
       , next( nullptr )
       , chunk( node )
     {
     }
 
-    ChunkListEntry *prev;
-    ChunkListEntry *next;
+    QgsChunkListEntry *prev;
+    QgsChunkListEntry *next;
 
-    ChunkNode *chunk;   //!< TODO: shared pointer
+    QgsChunkNode *chunk;   //!< TODO: shared pointer
 };
 
 
@@ -37,10 +48,10 @@ class ChunkListEntry
  * and inserted at the front again.
  * \since QGIS 3.0
  */
-class ChunkList
+class QgsChunkList
 {
   public:
-    ChunkList();
+    QgsChunkList();
 
     //! Counts the real number of entries by walking the list (for debugging purposes only)
     int trueCount() const;
@@ -48,32 +59,34 @@ class ChunkList
     int count() const { return mCount; }
 
     //! Returns the first entry. Null will be returned if the list is empty.
-    ChunkListEntry *first() const { return mHead; }
+    QgsChunkListEntry *first() const { return mHead; }
     //! Returns the last entry. Null will be returned if the list is empty.
-    ChunkListEntry *last() const { return mTail; }
+    QgsChunkListEntry *last() const { return mTail; }
     //! Returns whether the list is empty or it contains some entries
     bool isEmpty() const;
 
     //! Inserts a new entry before the entry "next".
     //! If "next" is null, entry will be inserted at the end of the list
-    void insertEntry( ChunkListEntry *entry, ChunkListEntry *next );
+    void insertEntry( QgsChunkListEntry *entry, QgsChunkListEntry *next );
 
     //! Takes the entry out of the list (does not delete it)
-    void takeEntry( ChunkListEntry *entry );
+    void takeEntry( QgsChunkListEntry *entry );
     //! Takes the first entry from the list and returns it
-    ChunkListEntry *takeFirst();
+    QgsChunkListEntry *takeFirst();
     //! Takes the last entry from the list and returns it
-    ChunkListEntry *takeLast();
+    QgsChunkListEntry *takeLast();
 
     //! Inserts an entry at the start of the list
-    void insertFirst( ChunkListEntry *entry );
+    void insertFirst( QgsChunkListEntry *entry );
     //! Inserts an entry at the end of the list
-    void insertLast( ChunkListEntry *entry );
+    void insertLast( QgsChunkListEntry *entry );
 
   private:
-    ChunkListEntry *mHead;
-    ChunkListEntry *mTail;
+    QgsChunkListEntry *mHead;
+    QgsChunkListEntry *mTail;
     int mCount;
 };
 
-#endif // CHUNKLIST_H
+/// @endcond
+
+#endif // QGSCHUNKLIST_P_H

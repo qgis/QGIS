@@ -43,7 +43,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     virtual void readXml( const QDomElement &elem ) override;
     virtual void resolveReferences( const QgsProject &project ) override;
 
-    virtual ChunkLoader *createChunkLoader( ChunkNode *node ) const override;
+    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
   private:
     void updateGenerator();

@@ -1,18 +1,20 @@
-#include "chunklist.h"
+#include "qgschunklist_p.h"
 
-#include "chunknode.h"
+#include "qgschunknode_p.h"
 
-ChunkList::ChunkList()
+///@cond PRIVATE
+
+QgsChunkList::QgsChunkList()
   : mHead( nullptr )
   , mTail( nullptr )
   , mCount( 0 )
 {
 }
 
-int ChunkList::trueCount() const
+int QgsChunkList::trueCount() const
 {
   int len = 0;
-  ChunkListEntry *entry = mHead;
+  QgsChunkListEntry *entry = mHead;
   while ( entry )
   {
     ++len;
@@ -21,7 +23,7 @@ int ChunkList::trueCount() const
   return len;
 }
 
-void ChunkList::insertEntry( ChunkListEntry *entry, ChunkListEntry *next )
+void QgsChunkList::insertEntry( QgsChunkListEntry *entry, QgsChunkListEntry *next )
 {
   if ( !mHead )
   {
@@ -48,7 +50,7 @@ void ChunkList::insertEntry( ChunkListEntry *entry, ChunkListEntry *next )
   ++mCount;
 }
 
-void ChunkList::takeEntry( ChunkListEntry *entry )
+void QgsChunkList::takeEntry( QgsChunkListEntry *entry )
 {
   Q_ASSERT( entry );
 
@@ -87,31 +89,33 @@ void ChunkList::takeEntry( ChunkListEntry *entry )
   Q_ASSERT( !entry->next );
 }
 
-ChunkListEntry *ChunkList::takeFirst()
+QgsChunkListEntry *QgsChunkList::takeFirst()
 {
-  ChunkListEntry *entry = mHead;
+  QgsChunkListEntry *entry = mHead;
   takeEntry( entry );
   return entry;
 }
 
-ChunkListEntry *ChunkList::takeLast()
+QgsChunkListEntry *QgsChunkList::takeLast()
 {
-  ChunkListEntry *entry = mTail;
+  QgsChunkListEntry *entry = mTail;
   takeEntry( entry );
   return entry;
 }
 
-void ChunkList::insertFirst( ChunkListEntry *entry )
+void QgsChunkList::insertFirst( QgsChunkListEntry *entry )
 {
   insertEntry( entry, mHead );
 }
 
-void ChunkList::insertLast( ChunkListEntry *entry )
+void QgsChunkList::insertLast( QgsChunkListEntry *entry )
 {
   insertEntry( entry, nullptr );
 }
 
-bool ChunkList::isEmpty() const
+bool QgsChunkList::isEmpty() const
 {
   return mHead == nullptr;
 }
+
+/// @endcond

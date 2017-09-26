@@ -25,7 +25,7 @@ class QgsMapLayer;
 class QgsCameraController;
 class Qgs3DMapSettings;
 class QgsTerrainEntity;
-class ChunkedEntity;
+class QgsChunkedEntity;
 
 /** \ingroup 3d
  * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
@@ -67,7 +67,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QgsTerrainEntity *mTerrain;
     //! Forward renderer provided by 3D window
     Qt3DExtras::QForwardRenderer *mForwardRenderer;
-    QList<ChunkedEntity *> chunkEntities;
+    QList<QgsChunkedEntity *> chunkEntities;
     //! Keeps track of entities that belong to a particular layer
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
     bool mTerrainUpdateScheduled = false;

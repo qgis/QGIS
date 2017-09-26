@@ -12,7 +12,7 @@
 // version without notice, or even be removed.
 //
 
-#include "chunkloader.h"
+#include "qgschunkloader_p.h"
 
 #include <QImage>
 #include "qgsrectangle.h"
@@ -26,11 +26,11 @@ class QgsTerrainTileEntity;
  * Adds functionality for asynchronous rendering of terrain tile map texture and access to the terrain entity.
  * \since QGIS 3.0
  */
-class QgsTerrainTileLoader : public ChunkLoader
+class QgsTerrainTileLoader : public QgsChunkLoader
 {
   public:
     //! Constructs loader for a chunk node
-    QgsTerrainTileLoader( QgsTerrainEntity *terrain, ChunkNode *node );
+    QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
   protected:
     //! Starts asynchronous rendering of map texture

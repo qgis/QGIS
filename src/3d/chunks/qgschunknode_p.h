@@ -1,6 +1,16 @@
-#ifndef CHUNKNODE_H
-#define CHUNKNODE_H
+#ifndef QGSCHUNKNODE_P_H
+#define QGSCHUNKNODE_P_H
 
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 #include "aabb.h"
 
@@ -11,10 +21,10 @@ namespace Qt3DCore
   class QEntity;
 }
 
-class ChunkListEntry;
-class ChunkLoader;
-class ChunkQueueJob;
-class ChunkQueueJobFactory;
+class QgsChunkListEntry;
+class QgsChunkLoader;
+class QgsChunkQueueJob;
+class QgsChunkQueueJobFactory;
 
 
 /** \ingroup 3d
@@ -30,13 +40,13 @@ class ChunkQueueJobFactory;
  *
  * \since QGIS 3.0
  */
-class ChunkNode
+class QgsChunkNode
 {
   public:
     //! constructs a skeleton chunk
-    ChunkNode( int x, int y, int z, const AABB &bbox, float error, ChunkNode *parent = nullptr );
+    QgsChunkNode( int x, int y, int z, const AABB &bbox, float error, QgsChunkNode *parent = nullptr );
 
-    ~ChunkNode();
+    ~QgsChunkNode();
 
     //! Returns true if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( const QTime &currentTime ) const;
@@ -48,20 +58,20 @@ class ChunkNode
     int level() const;
 
     //! Returns list of all descendants (recursive, not just direct children)
-    QList<ChunkNode *> descendants();
+    QList<QgsChunkNode *> descendants();
 
     //
     // changes of states in the state machine (see State enum)
     //
 
     //! mark a chunk as being queued for loading
-    void setQueuedForLoad( ChunkListEntry *entry );
+    void setQueuedForLoad( QgsChunkListEntry *entry );
 
     //! unload node that is in "queued for load" state
     void cancelQueuedForLoad();
 
     //! mark a chunk as being loaded, using the passed loader
-    void setLoading( ChunkLoader *chunkLoader );
+    void setLoading( QgsChunkLoader *chunkLoader );
 
     //! turn a chunk that is being loaded back to skeleton node
     void cancelLoading();
@@ -73,7 +83,7 @@ class ChunkNode
     void unloadChunk();
 
     //! turn a loaded node into one that is queued for update - with custom update job factory
-    void setQueuedForUpdate( ChunkListEntry *entry, ChunkQueueJobFactory *updateJobFactory );
+    void setQueuedForUpdate( QgsChunkListEntry *entry, QgsChunkQueueJobFactory *updateJobFactory );
 
     //! cancel update of the node - back to loaded node
     void cancelQueuedForUpdate();
@@ -95,8 +105,8 @@ class ChunkNode
 
     int x, y, z;  //!< Chunk coordinates (for use with a tiling scheme)
 
-    ChunkNode *parent;        //!< TODO: should be shared pointer
-    ChunkNode *children[4];   //!< TODO: should be weak pointers. May be null if not created yet or removed already
+    QgsChunkNode *parent;        //!< TODO: should be shared pointer
+    QgsChunkNode *children[4];   //!< TODO: should be weak pointers. May be null if not created yet or removed already
 
     /**
      * Enumeration that identifies state of the chunk node.
@@ -128,16 +138,18 @@ class ChunkNode
 
     State state;  //!< State of the node
 
-    ChunkListEntry *loaderQueueEntry;       //!< Not null <=> QueuedForLoad or QueuedForUpdate state
-    ChunkListEntry *replacementQueueEntry;  //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
+    QgsChunkListEntry *loaderQueueEntry;       //!< Not null <=> QueuedForLoad or QueuedForUpdate state
+    QgsChunkListEntry *replacementQueueEntry;  //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
 
-    ChunkLoader *loader;         //!< Contains extra data necessary for entity creation (not null <=> Loading state)
+    QgsChunkLoader *loader;         //!< Contains extra data necessary for entity creation (not null <=> Loading state)
     Qt3DCore::QEntity *entity;   //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
 
-    ChunkQueueJobFactory *updaterFactory;  //!< Object that creates updater (not null <=> QueuedForUpdate state)
-    ChunkQueueJob *updater;                //!< Object that does update of the chunk (not null <=> Updating state)
+    QgsChunkQueueJobFactory *updaterFactory;  //!< Object that creates updater (not null <=> QueuedForUpdate state)
+    QgsChunkQueueJob *updater;                //!< Object that does update of the chunk (not null <=> Updating state)
 
     QTime entityCreatedTime;
 };
+
+/// @endcond
 
 #endif // CHUNKNODE_H

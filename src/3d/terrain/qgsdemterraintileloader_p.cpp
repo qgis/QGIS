@@ -1,7 +1,7 @@
 #include "qgsdemterraintileloader_p.h"
 
-#include "chunknode.h"
 #include "qgs3dmapsettings.h"
+#include "qgschunknode_p.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgsterrainentity_p.h"
@@ -27,7 +27,7 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
 }
 
 
-QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, ChunkNode *node )
+QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
   : QgsTerrainTileLoader( terrain, node )
   , resolution( 0 )
 {

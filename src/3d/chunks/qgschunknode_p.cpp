@@ -1,12 +1,13 @@
-#include "chunknode.h"
+#include "qgschunknode_p.h"
 
-#include "chunkedentity.h"  // for ChunkLoader destructor
-#include "chunklist.h"
-#include "chunkloader.h"
+#include "qgschunkedentity_p.h"  // for ChunkLoader destructor
+#include "qgschunklist_p.h"
+#include "qgschunkloader_p.h"
 #include <Qt3DCore/QEntity>
 
+///@cond PRIVATE
 
-ChunkNode::ChunkNode( int x, int y, int z, const AABB &bbox, float error, ChunkNode *parent )
+QgsChunkNode::QgsChunkNode( int x, int y, int z, const AABB &bbox, float error, QgsChunkNode *parent )
   : bbox( bbox )
   , error( error )
   , x( x )
@@ -25,7 +26,7 @@ ChunkNode::ChunkNode( int x, int y, int z, const AABB &bbox, float error, ChunkN
     children[i] = nullptr;
 }
 
-ChunkNode::~ChunkNode()
+QgsChunkNode::~QgsChunkNode()
 {
   Q_ASSERT( state == Skeleton );
   Q_ASSERT( !loaderQueueEntry );
@@ -38,7 +39,7 @@ ChunkNode::~ChunkNode()
     delete children[i];
 }
 
-bool ChunkNode::allChildChunksResident( const QTime &currentTime ) const
+bool QgsChunkNode::allChildChunksResident( const QTime &currentTime ) const
 {
   for ( int i = 0; i < 4; ++i )
   {
@@ -53,7 +54,7 @@ bool ChunkNode::allChildChunksResident( const QTime &currentTime ) const
   return true;
 }
 
-void ChunkNode::ensureAllChildrenExist()
+void QgsChunkNode::ensureAllChildrenExist()
 {
   float childError = error / 2;
   float xc = bbox.xCenter(), zc = bbox.zCenter();
@@ -61,22 +62,22 @@ void ChunkNode::ensureAllChildrenExist()
   float ymax = bbox.yMax;
 
   if ( !children[0] )
-    children[0] = new ChunkNode( x * 2 + 0, y * 2 + 1, z + 1, AABB( bbox.xMin, ymin, bbox.zMin, xc, ymax, zc ), childError, this );
+    children[0] = new QgsChunkNode( x * 2 + 0, y * 2 + 1, z + 1, AABB( bbox.xMin, ymin, bbox.zMin, xc, ymax, zc ), childError, this );
 
   if ( !children[1] )
-    children[1] = new ChunkNode( x * 2 + 0, y * 2 + 0, z + 1, AABB( bbox.xMin, ymin, zc, xc, ymax, bbox.zMax ), childError, this );
+    children[1] = new QgsChunkNode( x * 2 + 0, y * 2 + 0, z + 1, AABB( bbox.xMin, ymin, zc, xc, ymax, bbox.zMax ), childError, this );
 
   if ( !children[2] )
-    children[2] = new ChunkNode( x * 2 + 1, y * 2 + 1, z + 1, AABB( xc, ymin, bbox.zMin, bbox.xMax, ymax, zc ), childError, this );
+    children[2] = new QgsChunkNode( x * 2 + 1, y * 2 + 1, z + 1, AABB( xc, ymin, bbox.zMin, bbox.xMax, ymax, zc ), childError, this );
 
   if ( !children[3] )
-    children[3] = new ChunkNode( x * 2 + 1, y * 2 + 0, z + 1, AABB( xc, ymin, zc, bbox.xMax, ymax, bbox.zMax ), childError, this );
+    children[3] = new QgsChunkNode( x * 2 + 1, y * 2 + 0, z + 1, AABB( xc, ymin, zc, bbox.xMax, ymax, bbox.zMax ), childError, this );
 }
 
-int ChunkNode::level() const
+int QgsChunkNode::level() const
 {
   int lvl = 0;
-  ChunkNode *p = parent;
+  QgsChunkNode *p = parent;
   while ( p )
   {
     ++lvl;
@@ -85,9 +86,9 @@ int ChunkNode::level() const
   return lvl;
 }
 
-QList<ChunkNode *> ChunkNode::descendants()
+QList<QgsChunkNode *> QgsChunkNode::descendants()
 {
-  QList<ChunkNode *> lst;
+  QList<QgsChunkNode *> lst;
   lst << this;
 
   for ( int i = 0; i < 4; ++i )
@@ -99,17 +100,17 @@ QList<ChunkNode *> ChunkNode::descendants()
   return lst;
 }
 
-void ChunkNode::setQueuedForLoad( ChunkListEntry *entry )
+void QgsChunkNode::setQueuedForLoad( QgsChunkListEntry *entry )
 {
   Q_ASSERT( state == Skeleton );
   Q_ASSERT( !loaderQueueEntry );
   Q_ASSERT( !loader );
 
-  state = ChunkNode::QueuedForLoad;
+  state = QgsChunkNode::QueuedForLoad;
   loaderQueueEntry = entry;
 }
 
-void ChunkNode::cancelQueuedForLoad()
+void QgsChunkNode::cancelQueuedForLoad()
 {
   Q_ASSERT( state == QueuedForLoad );
   Q_ASSERT( loaderQueueEntry );
@@ -117,10 +118,10 @@ void ChunkNode::cancelQueuedForLoad()
   delete loaderQueueEntry;
   loaderQueueEntry = nullptr;
 
-  state = ChunkNode::Skeleton;
+  state = QgsChunkNode::Skeleton;
 }
 
-void ChunkNode::setLoading( ChunkLoader *chunkLoader )
+void QgsChunkNode::setLoading( QgsChunkLoader *chunkLoader )
 {
   Q_ASSERT( state == QueuedForLoad );
   Q_ASSERT( !loader );
@@ -131,9 +132,9 @@ void ChunkNode::setLoading( ChunkLoader *chunkLoader )
   loaderQueueEntry = nullptr;
 }
 
-void ChunkNode::cancelLoading()
+void QgsChunkNode::cancelLoading()
 {
-  Q_ASSERT( state == ChunkNode::Loading );
+  Q_ASSERT( state == QgsChunkNode::Loading );
   Q_ASSERT( loader );
   Q_ASSERT( !loaderQueueEntry );
   Q_ASSERT( !entity );
@@ -141,12 +142,12 @@ void ChunkNode::cancelLoading()
 
   loader = nullptr;  // not owned by chunk node
 
-  state = ChunkNode::Skeleton;
+  state = QgsChunkNode::Skeleton;
 }
 
-void ChunkNode::setLoaded( Qt3DCore::QEntity *newEntity )
+void QgsChunkNode::setLoaded( Qt3DCore::QEntity *newEntity )
 {
-  Q_ASSERT( state == ChunkNode::Loading );
+  Q_ASSERT( state == QgsChunkNode::Loading );
   Q_ASSERT( loader );
   Q_ASSERT( !loaderQueueEntry );
   Q_ASSERT( !replacementQueueEntry );
@@ -156,13 +157,13 @@ void ChunkNode::setLoaded( Qt3DCore::QEntity *newEntity )
 
   loader = nullptr;  // not owned by chunk node
 
-  state = ChunkNode::Loaded;
-  replacementQueueEntry = new ChunkListEntry( this );
+  state = QgsChunkNode::Loaded;
+  replacementQueueEntry = new QgsChunkListEntry( this );
 }
 
-void ChunkNode::unloadChunk()
+void QgsChunkNode::unloadChunk()
 {
-  Q_ASSERT( state == ChunkNode::Loaded );
+  Q_ASSERT( state == QgsChunkNode::Loaded );
   Q_ASSERT( entity );
   Q_ASSERT( replacementQueueEntry );
 
@@ -170,12 +171,12 @@ void ChunkNode::unloadChunk()
   entity = nullptr;
   delete replacementQueueEntry;
   replacementQueueEntry = nullptr;
-  state = ChunkNode::Skeleton;
+  state = QgsChunkNode::Skeleton;
 }
 
-void ChunkNode::setQueuedForUpdate( ChunkListEntry *entry, ChunkQueueJobFactory *updateJobFactory )
+void QgsChunkNode::setQueuedForUpdate( QgsChunkListEntry *entry, QgsChunkQueueJobFactory *updateJobFactory )
 {
-  Q_ASSERT( state == ChunkNode::Loaded );
+  Q_ASSERT( state == QgsChunkNode::Loaded );
   Q_ASSERT( entity );
   Q_ASSERT( replacementQueueEntry );
   Q_ASSERT( !loaderQueueEntry );
@@ -187,7 +188,7 @@ void ChunkNode::setQueuedForUpdate( ChunkListEntry *entry, ChunkQueueJobFactory 
   updaterFactory = updateJobFactory;
 }
 
-void ChunkNode::cancelQueuedForUpdate()
+void QgsChunkNode::cancelQueuedForUpdate()
 {
   Q_ASSERT( state == QueuedForUpdate );
   Q_ASSERT( entity );
@@ -202,9 +203,9 @@ void ChunkNode::cancelQueuedForUpdate()
   loaderQueueEntry = nullptr;
 }
 
-void ChunkNode::setUpdating()
+void QgsChunkNode::setUpdating()
 {
-  Q_ASSERT( state == ChunkNode::QueuedForUpdate );
+  Q_ASSERT( state == QgsChunkNode::QueuedForUpdate );
   Q_ASSERT( entity );
   Q_ASSERT( replacementQueueEntry );
   Q_ASSERT( loaderQueueEntry );
@@ -217,9 +218,9 @@ void ChunkNode::setUpdating()
   loaderQueueEntry = nullptr;
 }
 
-void ChunkNode::cancelUpdating()
+void QgsChunkNode::cancelUpdating()
 {
-  Q_ASSERT( state == ChunkNode::Updating );
+  Q_ASSERT( state == QgsChunkNode::Updating );
   Q_ASSERT( updater );
   Q_ASSERT( !loaderQueueEntry );
 
@@ -228,21 +229,23 @@ void ChunkNode::cancelUpdating()
   state = Loaded;
 }
 
-void ChunkNode::setUpdated()
+void QgsChunkNode::setUpdated()
 {
-  Q_ASSERT( state == ChunkNode::Updating );
+  Q_ASSERT( state == QgsChunkNode::Updating );
   Q_ASSERT( updater );
   Q_ASSERT( !loaderQueueEntry );
   Q_ASSERT( replacementQueueEntry );
 
   updater = nullptr;   // not owned by chunk node
 
-  state = ChunkNode::Loaded;
+  state = QgsChunkNode::Loaded;
 }
 
-void ChunkNode::setExactBbox( const AABB &box )
+void QgsChunkNode::setExactBbox( const AABB &box )
 {
   bbox = box;
 
   // TODO: propagate better estimate to children?
 }
+
+/// @endcond

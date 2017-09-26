@@ -2,7 +2,7 @@
 #define QGSTERRAINGENERATOR_H
 
 #include "qgstilingscheme.h"
-#include "chunkloader.h"
+#include "qgschunkloader_p.h"
 
 class AABB;
 class Qgs3DMapSettings;
@@ -21,7 +21,7 @@ class QgsProject;
  * whenever that is deemed necessary by the terrain controller (that caches generated tiles).
  * \since QGIS 3.0
  */
-class QgsTerrainGenerator : public ChunkLoaderFactory
+class QgsTerrainGenerator : public QgsChunkLoaderFactory
 {
   public:
 

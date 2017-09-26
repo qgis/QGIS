@@ -1,7 +1,7 @@
 #include "qgsterraintileloader_p.h"
 
-#include "chunknode.h"
 #include "qgs3dmapsettings.h"
+#include "qgschunknode_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintextureimage_p.h"
@@ -20,8 +20,8 @@
 
 /// @cond PRIVATE
 
-QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, ChunkNode *node )
-  : ChunkLoader( node )
+QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
+  : QgsChunkLoader( node )
   , mTerrain( terrain )
 {
   const Qgs3DMapSettings &map = mTerrain->map3D();

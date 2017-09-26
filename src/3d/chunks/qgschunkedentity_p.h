@@ -1,15 +1,26 @@
-#ifndef CHUNKEDENTITY_H
-#define CHUNKEDENTITY_H
+#ifndef QGSCHUNKEDENTITY_P_H
+#define QGSCHUNKEDENTITY_P_H
+
+///@cond PRIVATE
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the QGIS API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
 
 #include <Qt3DCore/QEntity>
 
 class AABB;
-class ChunkNode;
-class ChunkList;
-class ChunkQueueJob;
-class ChunkLoaderFactory;
-class ChunkBoundsEntity;
-class ChunkQueueJobFactory;
+class QgsChunkNode;
+class QgsChunkList;
+class QgsChunkQueueJob;
+class QgsChunkLoaderFactory;
+class QgsChunkBoundsEntity;
+class QgsChunkQueueJobFactory;
 
 #include <QVector3D>
 #include <QMatrix4x4>
@@ -35,13 +46,13 @@ class SceneState
  * based on data error and unloading of data when data are not necessary anymore
  * \since QGIS 3.0
  */
-class ChunkedEntity : public Qt3DCore::QEntity
+class QgsChunkedEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    ChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, ChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
-    ~ChunkedEntity();
+    QgsChunkedEntity( const AABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
+    ~QgsChunkedEntity();
 
     //! Called when e.g. camera changes and entity may need updated
     void update( const SceneState &state );
@@ -52,22 +63,22 @@ class ChunkedEntity : public Qt3DCore::QEntity
     void setShowBoundingBoxes( bool enabled );
 
     //! update already loaded nodes (add to the queue)
-    void updateNodes( const QList<ChunkNode *> &nodes, ChunkQueueJobFactory *updateJobFactory );
+    void updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunkQueueJobFactory *updateJobFactory );
 
     //! Returns list of active nodes - i.e. nodes that are get rendered
-    QList<ChunkNode *> getActiveNodes() const { return activeNodes; }
+    QList<QgsChunkNode *> getActiveNodes() const { return activeNodes; }
     //! Returns the root node of the whole quadtree hierarchy of nodes
-    ChunkNode *getRootNode() const { return rootNode; }
+    QgsChunkNode *getRootNode() const { return rootNode; }
 
   protected:
     //! Cancels the background job that is currently in progress
     void cancelActiveJob();
 
   private:
-    void update( ChunkNode *node, const SceneState &state );
+    void update( QgsChunkNode *node, const SceneState &state );
 
     //! make sure that the chunk will be loaded soon (if not loaded yet) and not unloaded anytime soon (if loaded already)
-    void requestResidency( ChunkNode *node );
+    void requestResidency( QgsChunkNode *node );
 
     void startJob();
 
@@ -76,19 +87,19 @@ class ChunkedEntity : public Qt3DCore::QEntity
 
   protected:
     //! root node of the quadtree hierarchy
-    ChunkNode *rootNode;
+    QgsChunkNode *rootNode;
     //! max. allowed screen space error
     float tau;
     //! maximum allowed depth of quad tree
     int maxLevel;
     //! factory that creates loaders for individual chunk nodes
-    ChunkLoaderFactory *chunkLoaderFactory;
+    QgsChunkLoaderFactory *chunkLoaderFactory;
     //! queue of chunks to be loaded
-    ChunkList *chunkLoaderQueue;
+    QgsChunkList *chunkLoaderQueue;
     //! queue of chunk to be eventually replaced
-    ChunkList *replacementQueue;
+    QgsChunkList *replacementQueue;
 
-    QList<ChunkNode *> activeNodes;
+    QList<QgsChunkNode *> activeNodes;
     int frustumCulled;
 
     // TODO: max. length for loading queue
@@ -98,11 +109,12 @@ class ChunkedEntity : public Qt3DCore::QEntity
     //! max. length for replacement queue
     int maxLoadedChunks;
 
-    ChunkBoundsEntity *bboxesEntity;
+    QgsChunkBoundsEntity *bboxesEntity;
 
     //! job that is currently being processed (asynchronously in a worker thread)
-    ChunkQueueJob *activeJob = nullptr;
+    QgsChunkQueueJob *activeJob = nullptr;
 };
 
+/// @endcond
 
-#endif // CHUNKEDENTITY_H
+#endif // QGSCHUNKEDENTITY_P_H

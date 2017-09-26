@@ -13,11 +13,12 @@ SET(QGIS_3D_SRCS
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
 
-  chunks/chunkboundsentity.cpp
-  chunks/chunkedentity.cpp
-  chunks/chunklist.cpp
-  chunks/chunkloader.cpp
-  chunks/chunknode.cpp
+  chunks/qgschunkboundsentity_p.cpp
+  chunks/qgschunkedentity_p.cpp
+  chunks/qgschunklist_p.cpp
+  chunks/qgschunkloader_p.cpp
+  chunks/qgschunknode_p.cpp
+  chunks/qgschunkqueuejob_p.cpp
 
   symbols/qgsabstract3dsymbol.cpp
   symbols/qgsline3dsymbol.cpp
@@ -52,8 +53,9 @@ SET(QGIS_3D_MOC_HDRS
   qgs3dmapsettings.h
   qgscameracontroller.h
 
-  chunks/chunkedentity.h
-  chunks/chunkloader.h
+  chunks/qgschunkedentity_p.h
+  chunks/qgschunkloader_p.h
+  chunks/qgschunkqueuejob_p.h
 
   terrain/qgsdemterraintileloader_p.h
   terrain/qgsdemterraintilegeometry_p.h
@@ -83,11 +85,12 @@ SET(QGIS_3D_HDRS
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
 
-  chunks/chunkboundsentity.h
-  chunks/chunkedentity.h
-  chunks/chunklist.h
-  chunks/chunkloader.h
-  chunks/chunknode.h
+  chunks/qgschunkboundsentity_p.h
+  chunks/qgschunkedentity_p.h
+  chunks/qgschunklist_p.h
+  chunks/qgschunkloader_p.h
+  chunks/qgschunknode_p.h
+  chunks/qgschunkqueuejob_p.h
 
   symbols/qgsabstract3dsymbol.h
   symbols/qgsline3dsymbol.h

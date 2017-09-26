@@ -4,9 +4,8 @@
 #include <Qt3DExtras/QPlaneGeometry>
 
 #include "qgs3dmapsettings.h"
+#include "qgschunknode_p.h"
 #include "qgsterrainentity_p.h"
-
-#include "chunknode.h"
 #include "qgsterraintileloader_p.h"
 #include "qgsterraintileentity_p.h"
 
@@ -17,7 +16,7 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
 {
   public:
     //! Construct the loader for a node
-    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, ChunkNode *node );
+    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
@@ -29,7 +28,7 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
 //---------------
 
 
-FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, ChunkNode *node )
+FlatTerrainChunkLoader::FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *node )
   : QgsTerrainTileLoader( terrain, node )
 {
   loadTexture();
@@ -83,7 +82,7 @@ QgsFlatTerrainGenerator::QgsFlatTerrainGenerator()
 {
 }
 
-ChunkLoader *QgsFlatTerrainGenerator::createChunkLoader( ChunkNode *node ) const
+QgsChunkLoader *QgsFlatTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
   return new FlatTerrainChunkLoader( mTerrain, node );
 }

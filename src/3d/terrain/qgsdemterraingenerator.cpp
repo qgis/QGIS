@@ -65,7 +65,7 @@ void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
   updateGenerator();
 }
 
-ChunkLoader *QgsDemTerrainGenerator::createChunkLoader( ChunkNode *node ) const
+QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
   return new QgsDemTerrainTileLoader( mTerrain, node );
 }

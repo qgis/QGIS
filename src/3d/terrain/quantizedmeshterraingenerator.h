@@ -24,7 +24,7 @@ class QuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     virtual void writeXml( QDomElement &elem ) const override;
     virtual void readXml( const QDomElement &elem ) override;
 
-    virtual ChunkLoader *createChunkLoader( ChunkNode *node ) const override;
+    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
 
     int terrainBaseX, terrainBaseY, terrainBaseZ;   //!< Coordinates of the base tile
 };

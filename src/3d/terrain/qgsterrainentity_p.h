@@ -12,7 +12,8 @@
 // version without notice, or even be removed.
 //
 
-#include "chunkedentity.h"
+#include "qgschunkedentity_p.h"
+#include "qgschunkqueuejob_p.h"
 
 #include <memory>
 
@@ -33,7 +34,7 @@ class TerrainMapUpdateJobFactory;
  * and creates them using map's terrain tile generator.
  * \since QGIS 3.0
  */
-class QgsTerrainEntity : public ChunkedEntity
+class QgsTerrainEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
@@ -74,14 +75,13 @@ class QgsTerrainEntity : public ChunkedEntity
 };
 
 
-#include "chunkloader.h"
 
 //! Handles asynchronous updates of terrain's map images when layers change
-class TerrainMapUpdateJob : public ChunkQueueJob
+class TerrainMapUpdateJob : public QgsChunkQueueJob
 {
     Q_OBJECT
   public:
-    TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, ChunkNode *node );
+    TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node );
 
     virtual void cancel() override;
 

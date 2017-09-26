@@ -1,29 +1,27 @@
 #include "qgs3dmapscene.h"
 
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QMesh>
 #include <Qt3DRender/QPickingSettings>
 #include <Qt3DRender/QRenderSettings>
+#include <Qt3DRender/QSceneLoader>
 #include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSkyboxEntity>
 #include <Qt3DLogic/QFrameAction>
 
 #include <QTimer>
 
 #include "aabb.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
 #include "qgscameracontroller.h"
-#include "chunknode.h"
-#include "qgsvectorlayer.h"
-#include "qgs3dmapsettings.h"
+#include "qgschunkedentity_p.h"
+#include "qgschunknode_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
-//#include "testchunkloader.h"
-#include "chunkedentity.h"
-#include "qgs3dutils.h"
-
-#include <Qt3DRender/QMesh>
-#include <Qt3DRender/QSceneLoader>
-#include <Qt3DExtras/QPhongMaterial>
+#include "qgsvectorlayer.h"
 
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
@@ -168,7 +166,7 @@ SceneState _sceneState( QgsCameraController *cameraController )
 
 void Qgs3DMapScene::onCameraChanged()
 {
-  Q_FOREACH ( ChunkedEntity *entity, chunkEntities )
+  Q_FOREACH ( QgsChunkedEntity *entity, chunkEntities )
   {
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
@@ -193,7 +191,7 @@ void Qgs3DMapScene::onCameraChanged()
     float near = 1e9;
     float far = 0;
 
-    QList<ChunkNode *> activeNodes = mTerrain->getActiveNodes();
+    QList<QgsChunkNode *> activeNodes = mTerrain->getActiveNodes();
 
     // it could be that there are no active nodes - they could be all culled or because root node
     // is not yet loaded - we still need at least something to understand bounds of our scene
@@ -201,7 +199,7 @@ void Qgs3DMapScene::onCameraChanged()
     if ( activeNodes.isEmpty() )
       activeNodes << mTerrain->getRootNode();
 
-    Q_FOREACH ( ChunkNode *node, activeNodes )
+    Q_FOREACH ( QgsChunkNode *node, activeNodes )
     {
       // project each corner of bbox to camera coordinates
       // and determine closest and farthest point.
@@ -246,7 +244,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
-  Q_FOREACH ( ChunkedEntity *entity, chunkEntities )
+  Q_FOREACH ( QgsChunkedEntity *entity, chunkEntities )
   {
     if ( entity->isEnabled() && entity->needsUpdate )
     {

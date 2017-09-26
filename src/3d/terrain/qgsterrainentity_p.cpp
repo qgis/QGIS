@@ -1,8 +1,8 @@
 #include "qgsterrainentity_p.h"
 
 #include "aabb.h"
-#include "chunknode.h"
 #include "qgs3dmapsettings.h"
+#include "qgschunknode_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
@@ -16,7 +16,7 @@
 ///@cond PRIVATE
 
 //! Factory for map update jobs
-class TerrainMapUpdateJobFactory : public ChunkQueueJobFactory
+class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
 {
   public:
     TerrainMapUpdateJobFactory( QgsTerrainTextureGenerator *textureGenerator )
@@ -24,7 +24,7 @@ class TerrainMapUpdateJobFactory : public ChunkQueueJobFactory
     {
     }
 
-    virtual ChunkQueueJob *createJob( ChunkNode *chunk )
+    virtual QgsChunkQueueJob *createJob( QgsChunkNode *chunk )
     {
       return new TerrainMapUpdateJob( mTextureGenerator, chunk );
     }
@@ -38,9 +38,9 @@ class TerrainMapUpdateJobFactory : public ChunkQueueJobFactory
 
 
 QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent )
-  : ChunkedEntity( map.terrainGenerator()->rootChunkBbox( map ),
-                   map.terrainGenerator()->rootChunkError( map ),
-                   map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
+  : QgsChunkedEntity( map.terrainGenerator()->rootChunkBbox( map ),
+                      map.terrainGenerator()->rootChunkError( map ),
+                      map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
   , map( map )
   , mTerrainPicker( nullptr )
 {
@@ -92,8 +92,8 @@ void QgsTerrainEntity::invalidateMapImages()
 
   // handle inactive nodes afterwards
 
-  QList<ChunkNode *> inactiveNodes;
-  Q_FOREACH ( ChunkNode *node, rootNode->descendants() )
+  QList<QgsChunkNode *> inactiveNodes;
+  Q_FOREACH ( QgsChunkNode *node, rootNode->descendants() )
   {
     if ( !node->entity )
       continue;
@@ -133,8 +133,8 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
 // -----------
 
 
-TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, ChunkNode *node )
-  : ChunkQueueJob( node )
+TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node )
+  : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
 {
   QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity );
