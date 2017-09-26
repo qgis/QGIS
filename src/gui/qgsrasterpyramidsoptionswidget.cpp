@@ -89,8 +89,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   }
   else
   {
-    Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-      mOverviewCheckBoxes[ i ]->setChecked( false );
+    for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+      it.value()->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
   Q_FOREACH ( const QString &lev, tmpStr.split( ' ', QString::SkipEmptyParts ) )
@@ -134,10 +134,10 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
   // overview list
   tmpStr = QLatin1String( "" );
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
   {
-    if ( mOverviewCheckBoxes[ i ]->isChecked() )
-      tmpStr += QString::number( i ) + ' ';
+    if ( it.value()->isChecked() )
+      tmpStr += QString::number( it.key() ) + ' ';
   }
   mySettings.setValue( prefix + "overviewList", tmpStr.trimmed() );
 
@@ -146,16 +146,16 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
 void QgsRasterPyramidsOptionsWidget::checkAllLevels( bool checked )
 {
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-    mOverviewCheckBoxes[ i ]->setChecked( checked );
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+    it.value()->setChecked( checked );
 }
 
 void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsLevelsCustom_toggled( bool toggled )
 {
   // if toggled, disable checkboxes and enable line edit
   lePyramidsLevels->setEnabled( toggled );
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-    mOverviewCheckBoxes[ i ]->setEnabled( ! toggled );
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+    it.value()->setEnabled( ! toggled );
   setOverviewList();
 }
 
@@ -205,10 +205,10 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   }
   else
   {
-    Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
+    for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
     {
-      if ( mOverviewCheckBoxes[ i ]->isChecked() )
-        mOverviewList << i;
+      if ( it.value()->isChecked() )
+        mOverviewList << it.key();
     }
   }
 

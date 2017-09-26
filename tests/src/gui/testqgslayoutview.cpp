@@ -126,7 +126,7 @@ class LoggingTool : public QgsLayoutViewTool
   public:
 
     LoggingTool( QgsLayoutView *view )
-      : QgsLayoutViewTool( view, "logging" )
+      : QgsLayoutViewTool( view, QStringLiteral( "logging" ) )
     {}
 
     bool receivedMoveEvent = false;

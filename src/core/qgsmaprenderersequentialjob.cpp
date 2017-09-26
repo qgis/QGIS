@@ -21,8 +21,7 @@
 
 QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
-  , mInternalJob( nullptr )
-  , mPainter( nullptr )
+
 {
   QgsDebugMsg( "SEQUENTIAL construct" );
 

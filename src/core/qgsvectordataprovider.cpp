@@ -209,92 +209,77 @@ QString QgsVectorDataProvider::capabilitiesString() const
   if ( abilities & QgsVectorDataProvider::AddFeatures )
   {
     abilitiesList += tr( "Add Features" );
-    QgsDebugMsg( "Capability: Add Features" );
   }
 
   if ( abilities & QgsVectorDataProvider::DeleteFeatures )
   {
     abilitiesList += tr( "Delete Features" );
-    QgsDebugMsg( "Capability: Delete Features" );
   }
 
   if ( abilities & QgsVectorDataProvider::ChangeAttributeValues )
   {
     abilitiesList += tr( "Change Attribute Values" );
-    QgsDebugMsg( "Capability: Change Attribute Values" );
   }
 
   if ( abilities & QgsVectorDataProvider::AddAttributes )
   {
     abilitiesList += tr( "Add Attributes" );
-    QgsDebugMsg( "Capability: Add Attributes" );
   }
 
   if ( abilities & QgsVectorDataProvider::DeleteAttributes )
   {
     abilitiesList += tr( "Delete Attributes" );
-    QgsDebugMsg( "Capability: Delete Attributes" );
   }
 
   if ( abilities & QgsVectorDataProvider::RenameAttributes )
   {
     abilitiesList += tr( "Rename Attributes" );
-    QgsDebugMsg( "Capability: Rename Attributes" );
   }
 
   if ( abilities & QgsVectorDataProvider::CreateSpatialIndex )
   {
     // TODO: Tighten up this test.  See QgsOgrProvider for details.
     abilitiesList += tr( "Create Spatial Index" );
-    QgsDebugMsg( "Capability: Create Spatial Index" );
   }
 
   if ( abilities & QgsVectorDataProvider::CreateAttributeIndex )
   {
     abilitiesList += tr( "Create Attribute Indexes" );
-    QgsDebugMsg( "Capability: Create Attribute Index" );
   }
 
   if ( abilities & QgsVectorDataProvider::SelectAtId )
   {
     abilitiesList += tr( "Fast Access to Features at ID" );
-    QgsDebugMsg( "Capability: Select at ID" );
   }
 
   if ( abilities & QgsVectorDataProvider::ChangeGeometries )
   {
     abilitiesList += tr( "Change Geometries" );
-    QgsDebugMsg( "Capability: Change Geometries" );
   }
 
   if ( abilities & QgsVectorDataProvider::SimplifyGeometries )
   {
     abilitiesList += tr( "Presimplify Geometries" );
-    QgsDebugMsg( "Capability: Simplify Geometries before fetching the feature" );
   }
 
   if ( abilities & QgsVectorDataProvider::SimplifyGeometriesWithTopologicalValidation )
   {
     abilitiesList += tr( "Presimplify Geometries with Validity Check" );
-    QgsDebugMsg( "Capability: Simplify Geometries before fetch the feature ensuring that the result is a valid geometry" );
   }
 
   if ( abilities & QgsVectorDataProvider::ChangeFeatures )
   {
     abilitiesList += tr( "Simultaneous Geometry and Attribute Updates" );
-    QgsDebugMsg( "Capability: change both feature attributes and geometry at once" );
   }
 
   if ( abilities & QgsVectorDataProvider::TransactionSupport )
   {
     abilitiesList += tr( "Transactions" );
-    QgsDebugMsg( "Capability: transactions" );
   }
 
   if ( abilities & QgsVectorDataProvider::CircularGeometries )
   {
     abilitiesList += tr( "Curved Geometries" );
-    QgsDebugMsg( "Supports circular geometry types (circularstring, compoundcurve, curvepolygon)" );
   }
 
   return abilitiesList.join( QStringLiteral( ", " ) );

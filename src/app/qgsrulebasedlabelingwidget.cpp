@@ -54,8 +54,7 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
   : QgsPanelWidget( parent )
   , mLayer( layer )
   , mCanvas( canvas )
-  , mRootRule( nullptr )
-  , mModel( nullptr )
+
 {
   setupUi( this );
 
@@ -572,7 +571,6 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
   : QgsPanelWidget( parent )
   , mRule( rule )
   , mLayer( layer )
-  , mLabelingGui( nullptr )
   , mSettings( nullptr )
   , mMapCanvas( mapCanvas )
 {

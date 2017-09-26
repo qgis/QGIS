@@ -18,7 +18,7 @@ class CORE_EXPORT QgsRuntimeProfiler
     /**
      * Constructor to create a new runtime profiler.
      */
-    QgsRuntimeProfiler();
+    QgsRuntimeProfiler() = default;
 
     /**
      * \brief Begin the group for the profiler. Groups will append {GroupName}/ to the

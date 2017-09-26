@@ -480,6 +480,7 @@ void QgsProject::clear()
   mAutoTransaction = false;
   mEvaluateDefaultValues = false;
   mDirty = false;
+  mTrustLayerMetadata = false;
   mCustomVariables.clear();
 
   mEmbeddedLayers.clear();
@@ -717,6 +718,12 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   if ( type == QLatin1String( "vector" ) )
   {
     mapLayer = new QgsVectorLayer;
+
+    // apply specific settings to vector layer
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mapLayer ) )
+    {
+      vl->setReadExtentFromXml( mTrustLayerMetadata );
+    }
   }
   else if ( type == QLatin1String( "raster" ) )
   {
@@ -890,6 +897,14 @@ bool QgsProject::readProjectFile( const QString &filename )
     QDomElement evaluateDefaultValuesElement = nl.at( 0 ).toElement();
     if ( evaluateDefaultValuesElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
       mEvaluateDefaultValues = true;
+  }
+
+  nl = doc->elementsByTagName( QStringLiteral( "trust" ) );
+  if ( nl.count() )
+  {
+    QDomElement trustElement = nl.at( 0 ).toElement();
+    if ( trustElement.attribute( QStringLiteral( "active" ), QStringLiteral( "0" ) ).toInt() == 1 )
+      mTrustLayerMetadata = true;
   }
 
   // read the layer tree from project file
@@ -1296,6 +1311,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
   evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? "1" : "0" );
   qgisNode.appendChild( evaluateDefaultValuesNode );
 
+  QDomElement trustNode = doc->createElement( QStringLiteral( "trust" ) );
+  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? "1" : "0" );
+  qgisNode.appendChild( trustNode );
+
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
 
@@ -1394,7 +1413,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   // Create backup file
   if ( QFile::exists( fileName() ) )
   {
-    QFile backupFile( QString( "%1~" ).arg( filename ) );
+    QFile backupFile( QStringLiteral( "%1~" ).arg( filename ) );
     bool ok = true;
     ok &= backupFile.open( QIODevice::WriteOnly | QIODevice::Truncate );
     ok &= projectFile.open( QIODevice::ReadOnly );
@@ -1913,9 +1932,11 @@ bool QgsProject::evaluateDefaultValues() const
 
 void QgsProject::setEvaluateDefaultValues( bool evaluateDefaultValues )
 {
-  Q_FOREACH ( QgsMapLayer *layer, mapLayers().values() )
+  const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
+  for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
     if ( vl )
     {
       vl->dataProvider()->setProviderProperty( QgsVectorDataProvider::EvaluateDefaultValues, evaluateDefaultValues );
@@ -2122,7 +2143,7 @@ bool QgsProject::unzip( const QString &filename )
   }
 
   // keep the archive and remove the temporary .qgs file
-  mArchive.reset( archive.release() );
+  mArchive = std::move( archive );
   mArchive->clearProjectFile();
 
   return true;
@@ -2135,7 +2156,7 @@ bool QgsProject::zip( const QString &filename )
   // save the current project in a temporary .qgs file
   std::unique_ptr<QgsProjectArchive> archive( new QgsProjectArchive() );
   const QString baseName = QFileInfo( filename ).baseName();
-  const QString qgsFileName = QString( "%1.qgs" ).arg( baseName );
+  const QString qgsFileName = QStringLiteral( "%1.qgs" ).arg( baseName );
   QFile qgsFile( QDir( archive->dir() ).filePath( qgsFileName ) );
 
   bool writeOk = false;
@@ -2259,4 +2280,19 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
   }
 
   return defaultCrs;
+}
+
+void QgsProject::setTrustLayerMetadata( bool trust )
+{
+  mTrustLayerMetadata = trust;
+
+  auto layers = mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
+    if ( vl )
+    {
+      vl->setReadExtentFromXml( trust );
+    }
+  }
 }

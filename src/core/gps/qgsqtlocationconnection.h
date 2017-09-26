@@ -52,7 +52,6 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     Q_OBJECT
   public:
     QgsQtLocationConnection();
-    ~QgsQtLocationConnection();
 
   protected slots:
     //! Needed to make QtLocation detected

@@ -20,8 +20,7 @@
 #include "NormVecDecorator.h"
 
 CloughTocherInterpolator::CloughTocherInterpolator()
-  : mTIN( nullptr )
-  , mEdgeTolerance( 0.00001 )
+  : mEdgeTolerance( 0.00001 )
   , der1X( 0.0 )
   , der1Y( 0.0 )
   , der2X( 0.0 )
@@ -43,11 +42,6 @@ CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
   , der3Y( 0.0 )
 {
 
-}
-
-CloughTocherInterpolator::~CloughTocherInterpolator()
-{
-  //nothing to do
 }
 
 void CloughTocherInterpolator::setTriangulation( NormVecDecorator *tin )

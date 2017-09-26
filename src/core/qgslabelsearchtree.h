@@ -36,7 +36,11 @@ class QgsPointXY;
 class CORE_EXPORT QgsLabelSearchTree
 {
   public:
-    QgsLabelSearchTree();
+
+    /**
+     * Constructor for QgsLabelSearchTree.
+     */
+    QgsLabelSearchTree() = default;
     ~QgsLabelSearchTree();
 
     //! QgsLabelSearchTree cannot be copied.

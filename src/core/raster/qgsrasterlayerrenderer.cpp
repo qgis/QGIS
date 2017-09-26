@@ -65,8 +65,6 @@ void QgsRasterLayerRendererFeedback::onNewData()
 ///
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id() )
-  , mRasterViewPort( nullptr )
-  , mPipe( nullptr )
   , mContext( rendererContext )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
 {

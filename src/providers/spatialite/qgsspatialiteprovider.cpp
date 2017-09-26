@@ -443,7 +443,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   , mVShapeBased( false )
   , mReadOnly( false )
   , mGeomType( QgsWkbTypes::Unknown )
-  , mSqliteHandle( nullptr )
   , mSrid( -1 )
   , mNumberFeatures( 0 )
   , mSpatialIndexRTree( false )
@@ -871,9 +870,9 @@ void QgsSpatiaLiteProvider::fetchConstraints()
         if ( fieldIdx >= 0 )
         {
           QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
-          if ( definition.contains( "unique", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
+          if ( definition.contains( QLatin1String( "unique" ), Qt::CaseInsensitive ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
             constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
-          if ( definition.contains( "not null", Qt::CaseInsensitive ) || definition.contains( "primary key", Qt::CaseInsensitive ) )
+          if ( definition.contains( QLatin1String( "not null" ), Qt::CaseInsensitive ) || definition.contains( QLatin1String( "primary key" ), Qt::CaseInsensitive ) )
             constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
           mAttributeFields[ fieldIdx ].setConstraints( constraints );
         }
@@ -914,7 +913,7 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
           defaultVal = defaultVal.remove( 0, 1 );
         if ( defaultVal.endsWith( '\'' ) )
           defaultVal.chop( 1 );
-        defaultVal.replace( "''", "'" );
+        defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
 
         defaultVariant = defaultVal;
         break;
@@ -3688,7 +3687,7 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
     return uniqueValues;
   }
 
-  while ( 1 )
+  while ( true )
   {
     // this one is an infinitive loop, intended to fetch any row
     int ret = sqlite3_step( stmt );
@@ -5331,10 +5330,10 @@ static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString &errCause
   {
     QString version = QString::fromUtf8( results[1] );
     QStringList parts = version.split( ' ', QString::SkipEmptyParts );
-    if ( parts.size() >= 1 )
+    if ( !parts.empty() )
     {
-      QStringList verparts = parts[0].split( '.', QString::SkipEmptyParts );
-      above41 = verparts.size() >= 2 && ( verparts[0].toInt() > 4 || ( verparts[0].toInt() == 4 && verparts[1].toInt() >= 1 ) );
+      QStringList verparts = parts.at( 0 ).split( '.', QString::SkipEmptyParts );
+      above41 = verparts.size() >= 2 && ( verparts.at( 0 ).toInt() > 4 || ( verparts.at( 0 ).toInt() == 4 && verparts.at( 1 ).toInt() >= 1 ) );
     }
   }
 
@@ -5929,11 +5928,11 @@ class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "spatialite" ); }
-    virtual QString text() const override { return QObject::tr( "SpatiaLite" ); }
-    virtual int ordering() const override { return 50; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "spatialite" ); }
+    QString text() const override { return QObject::tr( "SpatiaLite" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
     }

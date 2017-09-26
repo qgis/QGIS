@@ -171,7 +171,7 @@ class QgsAtlasComposition : QObject
  :rtype: str
 %End
 
-    void setFileFormat( QString format );
+    void setFileFormat( const QString &format );
 %Docstring
  Sets the  atlas file format used for image exports.
  \param format set the file format extension

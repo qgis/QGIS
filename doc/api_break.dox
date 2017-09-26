@@ -474,7 +474,7 @@ QgsAction             {#qgis_api_break_3_0_QgsAction}
 QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizingDockWidget}
 -------------------------------
 
-- canvasReleaseEvent takes now QgsAdvancedDigitizingDockWidget::CaptureMode as second argument.
+- canvasPressEvent(), canvasReleaseEvent(), canvasMoveEvent() were removed. Handling of events is done in QgsMapToolAdvancedDigitizing.
 - snappingMode() was removed. Advanced digitizing now always uses project's snapping configuration.
 
 
@@ -557,6 +557,15 @@ QgsBrowserModel        {#qgis_api_break_3_0_QgsBrowserModel}
 
 - addFavouriteDirectory has been renamed to addFavoriteDirectory
 - removeFavourite has been renamed to removeFavorite
+- initialize  has been added
+- initialized has been added
+
+
+QgsBrowserDockWidget    {#qgis_api_break_3_0_QgsBrowserDockWidget}
+--------------------
+
+- The constructor for QgsBrowserDockWidget has changed: a QgsBrowserModel instance is now an argument.
+
 
 QgsCachedFeatureIterator        {#qgis_api_break_3_0_QgsQgsCachedFeatureIterator}
 ------------------------
@@ -952,6 +961,8 @@ QgsDataItem        {#qgis_api_break_3_0_QgsDataItem}
 - capabilities() has been removed. Use capabilities2() instead (TODO: rename back to capabilities()).
 - emitBeginInsertItems(), emitEndInsertItems(), emitBeginRemoveItems(), emitEndRemoveItems(), emitDataChanged(), emitStateChanged() have been removed.
 - Favourites was renamed to Favorites
+- actions() now requires a new QWidget parent argument. Subclasses should ensure that returned items have been
+correctly parented to this widget.
 
 QgsDataItemProviderRegistry        {#qgis_api_break_3_0_QgsDataItemProviderRegistry}
 ---------------------------
@@ -1577,7 +1588,8 @@ QgsMapMouseEvent        {#qgis_api_break_3_0_QgsMapMouseEvent}
 ----------------
 
 - SnappingMode enum was removed.
-- snapPoint() and snapSegment() do not take SnappingMode argument anymore. Snapping is done according to project's snapping configuration.
+- snapPoint() does not take SnappingMode argument anymore. Snapping is done according to project's snapping configuration.
+- snapSegment() was removed.
 
 
 QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
@@ -1622,6 +1634,13 @@ QgsMapTool        {#qgis_api_break_3_0_QgsMapTool}
 
 - renderComplete() was removed. Map tools must not directly depend on rendering progress.
 - isTransient() and isEditTool() were removed. Use flags() instead.
+
+
+QgsMapToolAdvancedDigitizing         {#qgis_api_break_3_0_QgsMapToolAdvancedDigitizing}
+----------------------------
+
+- setMode() was replaced by setAdvancedDigitizingAllowed() and setAutoSnapEnabled()
+- mode() and CaptureMode enum have been moved to QgsMapToolCapture subclass
 
 
 QgsMapToolCapture        {#qgis_api_break_3_0_QgsMapToolCapture}
@@ -1986,6 +2005,7 @@ QgsRectangle        {#qgis_api_break_3_0_QgsRectangle}
 
 - The protected members were removed - QgsRectangle is not intended to be subclassed.
 - unionRect was removed. Use combineExtentWith instead.
+- buffer was renamed to buffered.
 
 QgsRelation        {#qgis_api_break_3_0_QgsRelation}
 -----------
@@ -2533,6 +2553,8 @@ in code which previously passed a null pointer to QgsVectorFileWriter.
 - setSymbologyScaleDenominator() and symbologyScaleDenominator() were renamed to setSymbologyScale() and symbologyScale()
 for consistency with other parts of the QGIS API.
 - The addFeature which takes a renderer argument was renamed to addFeatureWithStyle.
+- static `writeAsVectorFormat` calls no longer take a errorMessage argument in
+  python and instead return a `(errorCode, errorMessage)` tuple.
 
 
 QgsWMSLegendNode        {#qgis_api_break_3_0_QgsWMSLegendNode}

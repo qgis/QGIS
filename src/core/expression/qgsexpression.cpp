@@ -144,7 +144,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
       return value.toString();
 
     case QVariant::Bool:
-      return value.toBool() ? "TRUE" : "FALSE";
+      return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
 
     case QVariant::List:
     {
@@ -154,7 +154,7 @@ QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
       {
         quotedValues += quotedValue( v );
       }
-      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( ", " ) );
+      return QStringLiteral( "array( %1 )" ).arg( quotedValues.join( QStringLiteral( ", " ) ) );
     }
 
     default:
@@ -290,7 +290,7 @@ bool QgsExpression::needsGeometry() const
 
 void QgsExpression::initGeomCalculator()
 {
-  if ( d->mCalc.get() )
+  if ( d->mCalc )
     return;
 
   // Use planimetric as default
@@ -546,7 +546,7 @@ QString QgsExpression::helpText( QString name )
           delim = QStringLiteral( ", " );
           if ( !a.mDescOnly )
           {
-            helpContents += QStringLiteral( "<span class=\"argument %1\">%2%3</span>" ).arg( a.mOptional ? "optional" : "", a.mArg,
+            helpContents += QStringLiteral( "<span class=\"argument %1\">%2%3</span>" ).arg( a.mOptional ? QStringLiteral( "optional" ) : QStringLiteral( "" ), a.mArg,
                             a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal );
           }
         }
@@ -703,6 +703,9 @@ void QgsExpression::initVariableHelp()
 
   //processing variables
   sVariableHelpTexts.insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
+
+  //provider notification
+  sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Contend of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )

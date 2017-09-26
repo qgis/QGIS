@@ -223,7 +223,7 @@ void QgsGml::handleProgressEvent( qint64 progress, qint64 totalSteps )
 
 void QgsGml::calculateExtentFromFeatures()
 {
-  if ( mFeatures.size() < 1 )
+  if ( mFeatures.empty() )
   {
     return;
   }
@@ -288,14 +288,12 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString &typeName,
   , mTruncatedResponse( false )
   , mParseDepth( 0 )
   , mFeatureTupleDepth( 0 )
-  , mCurrentFeature( nullptr )
   , mFeatureCount( 0 )
   , mCurrentWKB( nullptr, 0 )
   , mBoundedByNullFound( false )
   , mDimension( 0 )
   , mCoorMode( Coordinate )
   , mEpsg( 0 )
-  , mGMLNameSpaceURIPtr( nullptr )
   , mAxisOrientationLogic( axisOrientationLogic )
   , mInvertAxisOrientationRequest( invertAxisOrientation )
   , mInvertAxisOrientation( invertAxisOrientation )
@@ -342,24 +340,20 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
     AxisOrientationLogic axisOrientationLogic,
     bool invertAxisOrientation )
   : mLayerProperties( layerProperties )
-  , mTypeNamePtr( nullptr )
   , mTypeNameUTF8Len( 0 )
   , mWkbType( QgsWkbTypes::Unknown )
-  , mGeometryAttributePtr( nullptr )
   , mGeometryAttributeUTF8Len( 0 )
   , mFields( fields )
   , mIsException( false )
   , mTruncatedResponse( false )
   , mParseDepth( 0 )
   , mFeatureTupleDepth( 0 )
-  , mCurrentFeature( nullptr )
   , mFeatureCount( 0 )
   , mCurrentWKB( nullptr, 0 )
   , mBoundedByNullFound( false )
   , mDimension( 0 )
   , mCoorMode( Coordinate )
   , mEpsg( 0 )
-  , mGMLNameSpaceURIPtr( nullptr )
   , mAxisOrientationLogic( axisOrientationLogic )
   , mInvertAxisOrientationRequest( invertAxisOrientation )
   , mInvertAxisOrientation( invertAxisOrientation )
@@ -910,7 +904,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       QgsDebugMsg( "creation of bounding box failed" );
     }
     if ( !mCurrentExtent.isNull() && mLayerExtent.isNull() &&
-         mCurrentFeature == nullptr && mFeatureCount == 0 )
+         !mCurrentFeature && mFeatureCount == 0 )
     {
       mLayerExtent = mCurrentExtent;
       mCurrentExtent = QgsRectangle();

@@ -696,15 +696,15 @@ QString QgsExpressionNodeBinaryOperator::dump() const
   QString fmt;
   if ( leftAssociative() )
   {
-    fmt += lOp && ( lOp->precedence() < precedence() ) ? "(%1)" : "%1";
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
     fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() <= precedence() ) ? "(%3)" : "%3";
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
   }
   else
   {
-    fmt += lOp && ( lOp->precedence() <= precedence() ) ? "(%1)" : "%1";
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? QStringLiteral( "(%1)" ) : QStringLiteral( "%1" );
     fmt += QLatin1String( " %2 " );
-    fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? QStringLiteral( "(%3)" ) : QStringLiteral( "%3" );
   }
 
   return fmt.arg( mOpLeft->dump(), BINARY_OPERATOR_TEXT[mOp], rdump );
@@ -951,7 +951,7 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
 QSet<QString> QgsExpressionNodeFunction::referencedVariables() const
 {
   QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[mFnIndex];
-  if ( fd->name() == "var" )
+  if ( fd->name() == QLatin1String( "var" ) )
   {
     if ( !mArgs->list().isEmpty() )
     {
@@ -1347,10 +1347,7 @@ bool QgsExpressionNodeCondition::needsGeometry() const
       return true;
   }
 
-  if ( mElseExp && mElseExp->needsGeometry() )
-    return true;
-
-  return false;
+  return mElseExp && mElseExp->needsGeometry();
 }
 
 QgsExpressionNode *QgsExpressionNodeCondition::clone() const

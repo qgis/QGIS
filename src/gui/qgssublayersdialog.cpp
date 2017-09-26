@@ -28,7 +28,7 @@ class SubLayerItem : public QTreeWidgetItem
       :  QTreeWidgetItem( strings, type )
     {}
 
-    bool operator <( const QTreeWidgetItem &other ) const
+    bool operator <( const QTreeWidgetItem &other ) const override
     {
       QgsSublayersDialog *d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
       int col = treeWidget()->sortColumn();

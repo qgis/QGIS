@@ -37,6 +37,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmetadatawidget.h"
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
@@ -81,13 +82,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mLayer( lyr )
   , mMetadataFilled( false )
   , mOriginalSubsetSQL( lyr->subsetString() )
-  , mSaveAsMenu( nullptr )
-  , mLoadStyleMenu( nullptr )
-  , mRendererDialog( nullptr )
-  , labelingDialog( nullptr )
-  , mActionDialog( nullptr )
-  , diagramPropertiesDialog( nullptr )
-  , mFieldsPropertiesDialog( nullptr )
+
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
@@ -177,11 +172,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
     //for saving
     QString providerName = mLayer->providerType();
-    if ( providerName == "ogr" )
+    if ( providerName == QLatin1String( "ogr" ) )
     {
       providerName = mLayer->dataProvider()->storageType();
-      if ( providerName == "GPKG" )
-        providerName = "GeoPackage";
+      if ( providerName == QLatin1String( "GPKG" ) )
+        providerName = QStringLiteral( "GeoPackage" );
     }
     mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( providerName ) );
   }
@@ -252,6 +247,14 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
+
+  // Metadata tab
+  QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
+  metadataLayout->setMargin( 0 );
+  mMetadataWidget = new QgsMetadataWidget( this, mLayer );
+  mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  metadataLayout->addWidget( mMetadataWidget );
+  metadataFrame->setLayout( metadataLayout );
 
   // Legend tab
   mLegendConfigEmbeddedWidget->setLayer( mLayer );
@@ -338,11 +341,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
 
-} // QgsVectorLayerProperties ctor
-
-
-QgsVectorLayerProperties::~QgsVectorLayerProperties()
-{
 }
 
 void QgsVectorLayerProperties::toggleEditing()
@@ -465,6 +463,11 @@ void QgsVectorLayerProperties::syncToLayer()
   mRefreshLayerIntervalSpinBox->setEnabled( mLayer->hasAutoRefreshEnabled() );
   mRefreshLayerIntervalSpinBox->setValue( mLayer->autoRefreshInterval() / 1000.0 );
 
+  mRefreshLayerNotificationCheckBox->setChecked( mLayer->isRefreshOnNotifyEnabled() );
+  mNotificationMessageCheckBox->setChecked( !mLayer->refreshOnNotifyMessage().isEmpty() );
+  mNotifyMessagValueLineEdit->setText( mLayer->refreshOnNotifyMessage() );
+
+
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
@@ -494,6 +497,10 @@ void QgsVectorLayerProperties::apply()
 
   // apply legend settings
   mLegendConfigEmbeddedWidget->applyToLayer();
+
+  // save metadata
+  mMetadataWidget->acceptMetadata();
+  mMetadataFilled = false;
 
   //
   // Set up sql subset query if applicable
@@ -642,6 +649,9 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->setAutoRefreshInterval( mRefreshLayerIntervalSpinBox->value() * 1000.0 );
   mLayer->setAutoRefreshEnabled( mRefreshLayerCheckBox->isChecked() );
+
+  mLayer->setRefreshOnNotifyEnabled( mRefreshLayerNotificationCheckBox->isChecked() );
+  mLayer->setRefreshOnNofifyMessage( mNotificationMessageCheckBox->isChecked() ? mNotifyMessagValueLineEdit->text() : QString() );
 
   mOldJoins = mLayer->vectorJoins();
 
@@ -1226,7 +1236,7 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
     return;
   }
 
-  joinItem->setText( 0, "Join layer" );
+  joinItem->setText( 0, QStringLiteral( "Join layer" ) );
   joinItem->setText( 1, joinLayer->name() );
 
   QFont f = joinItem->font( 0 );
@@ -1237,53 +1247,53 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorLayerJoinInfo
   joinItem->setData( 0, Qt::UserRole, join.joinLayerId() );
 
   QTreeWidgetItem *childJoinField = new QTreeWidgetItem();
-  childJoinField->setText( 0, "Join field" );
+  childJoinField->setText( 0, QStringLiteral( "Join field" ) );
   childJoinField->setText( 1, join.joinFieldName() );
   childJoinField->setFlags( Qt::ItemIsEnabled );
   joinItem->addChild( childJoinField );
 
   QTreeWidgetItem *childTargetField = new QTreeWidgetItem();
-  childTargetField->setText( 0, "Target field" );
+  childTargetField->setText( 0, QStringLiteral( "Target field" ) );
   childTargetField->setText( 1, join.targetFieldName() );
   joinItem->addChild( childTargetField );
 
   QTreeWidgetItem *childMemCache = new QTreeWidgetItem();
-  childMemCache->setText( 0, "Cache join layer in virtual memory" );
+  childMemCache->setText( 0, QStringLiteral( "Cache join layer in virtual memory" ) );
   if ( join.isUsingMemoryCache() )
     childMemCache->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childMemCache );
 
   QTreeWidgetItem *childDynForm = new QTreeWidgetItem();
-  childDynForm->setText( 0, "Dynamic form" );
+  childDynForm->setText( 0, QStringLiteral( "Dynamic form" ) );
   if ( join.isDynamicFormEnabled() )
     childDynForm->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childDynForm );
 
   QTreeWidgetItem *childEditable = new QTreeWidgetItem();
-  childEditable->setText( 0, "Editable join layer" );
+  childEditable->setText( 0, QStringLiteral( "Editable join layer" ) );
   if ( join.isEditable() )
     childEditable->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childEditable );
 
   QTreeWidgetItem *childUpsert = new QTreeWidgetItem();
-  childUpsert->setText( 0, "Upsert on edit" );
+  childUpsert->setText( 0, QStringLiteral( "Upsert on edit" ) );
   if ( join.hasUpsertOnEdit() )
     childUpsert->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childUpsert );
 
   QTreeWidgetItem *childCascade = new QTreeWidgetItem();
-  childCascade->setText( 0, "Delete cascade" );
+  childCascade->setText( 0, QStringLiteral( "Delete cascade" ) );
   if ( join.hasCascadedDelete() )
     childCascade->setText( 1, QChar( 0x2714 ) );
   joinItem->addChild( childCascade );
 
   QTreeWidgetItem *childPrefix = new QTreeWidgetItem();
-  childPrefix->setText( 0, "Custom field name prefix" );
+  childPrefix->setText( 0, QStringLiteral( "Custom field name prefix" ) );
   childPrefix->setText( 1, join.prefix() );
   joinItem->addChild( childPrefix );
 
   QTreeWidgetItem *childFields = new QTreeWidgetItem();
-  childFields->setText( 0, "Joined fields" );
+  childFields->setText( 0, QStringLiteral( "Joined fields" ) );
   const QStringList *list = join.joinFieldNamesSubset();
   if ( list )
     childFields->setText( 1, QStringLiteral( "%1" ).arg( list->count() ) );
@@ -1387,7 +1397,7 @@ void QgsVectorLayerProperties::setPbnQueryBuilderEnabled()
 
 void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
 {
-  mLayer->updateExtents();
+  mLayer->updateExtents( true ); // force update whatever options activated
   mMetadataFilled = false;
 }
 

@@ -83,8 +83,13 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Emitted when a raster layer has been selected for addition
     void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey );
 
-    //! Emitted when a vector layer has been selected for addition
-    void addVectorLayer( const QString &uri, const QString &layerName );
+    /**
+     * Emitted when a vector layer has been selected for addition.
+     *
+     * If \a providerKey is not specified, the default provider key associated with the source
+     * will be used.
+     */
+    void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
 
     /** Emitted when one or more OGR supported layers are selected for addition
      * \param layerList list of layers protocol URIs

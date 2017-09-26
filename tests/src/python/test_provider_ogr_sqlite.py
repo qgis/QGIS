@@ -200,7 +200,10 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         self.assertTrue(vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()) < 1)
 
     def testSubsetStringFids(self):
-        """ tests that feature ids are stable even if a subset string is set """
+        """
+          - tests that feature ids are stable even if a subset string is set
+          - tests that the subset string is correctly set on the ogr layer event when reloading the data source (issue #17122)
+        """
 
         tmpfile = os.path.join(self.basetestpath, 'subsetStringFids.sqlite')
         ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
@@ -242,6 +245,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
         vl = QgsVectorLayer(tmpfile + "|subset=type=2", 'test', 'ogr')
         self.assertTrue(vl.isValid())
+        self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
 
         req = QgsFeatureRequest()
         req.setFilterExpression("value=16")
@@ -249,6 +253,22 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         f = QgsFeature()
         self.assertTrue(it.nextFeature(f))
         self.assertTrue(f.id() == 5)
+
+        # Ensure that orig_ogc_fid is still retrieved even if attribute subset is passed
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes([])
+        it = vl.getFeatures(req)
+        ids = []
+        while it.nextFeature(f):
+            ids.append(f.id())
+        self.assertTrue(len(ids) == 3)
+        self.assertTrue(3 in ids)
+        self.assertTrue(4 in ids)
+        self.assertTrue(5 in ids)
+
+        # Check that subset string is correctly set on reload
+        vl.reload()
+        self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
 
 
 if __name__ == '__main__':

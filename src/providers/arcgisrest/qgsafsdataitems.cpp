@@ -50,9 +50,9 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsAfsRootItem::actions()
+QList<QAction *> QgsAfsRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsAfsRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
@@ -60,19 +60,19 @@ QList<QAction *> QgsAfsRootItem::actions()
 QWidget *QgsAfsRootItem::paramWidget()
 {
   QgsAfsSourceSelect *select = new QgsAfsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAfsRootItem::connectionsChanged );
+  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAfsRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsAfsRootItem::connectionsChanged()
+void QgsAfsRootItem::onConnectionsChanged()
 {
   refresh();
 }
 
 void QgsAfsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) );
-  nc.setWindowTitle( tr( "Create a New ArcGisFeatureServer Connection" ) );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGIS Feature Server Connection" ) );
 
   if ( nc.exec() )
   {
@@ -120,15 +120,15 @@ bool QgsAfsConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsAfsConnectionItem::actions()
+QList<QAction *> QgsAfsConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsAfsConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsAfsConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -137,8 +137,8 @@ QList<QAction *> QgsAfsConnectionItem::actions()
 
 void QgsAfsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), mName );
-  nc.setWindowTitle( tr( "Modify ArcGisFeatureServer Connection" ) );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), mName );
+  nc.setWindowTitle( tr( "Modify ArcGIS Feature Server Connection" ) );
 
   if ( nc.exec() )
   {

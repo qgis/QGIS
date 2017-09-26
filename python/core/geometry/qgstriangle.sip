@@ -56,11 +56,14 @@ class QgsTriangle : QgsPolygonV2
 %End
 
     virtual QString geometryType() const;
+
     virtual QgsTriangle *clone() const /Factory/;
+
     virtual void clear();
 
 
     virtual bool fromWkb( QgsConstWkbPtr &wkbPtr );
+
 
     virtual bool fromWkt( const QString &wkt );
 
@@ -69,7 +72,7 @@ class QgsTriangle : QgsPolygonV2
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );
@@ -95,7 +98,9 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
 
-    virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+    virtual QgsCurve *boundary() const /Factory/;
+
 
 
     QgsPoint vertexAt( int atVertex ) const;

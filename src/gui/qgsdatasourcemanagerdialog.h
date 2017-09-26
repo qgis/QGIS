@@ -32,6 +32,7 @@ class QgsBrowserDockWidget;
 class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsAbstractDataSourceWidget;
+class QgsBrowserModel;
 
 /** \ingroup gui
  * The QgsDataSourceManagerDialog class embeds the browser panel and all
@@ -48,11 +49,12 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
   public:
 
     /** QgsDataSourceManagerDialog constructor
+      * \param browserModel instance of the (shared) browser model
       * \param parent the object
       * \param canvas a pointer to the map canvas
       * \param fl window flags
       */
-    explicit QgsDataSourceManagerDialog( QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    explicit QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsDataSourceManagerDialog();
 
     /**
@@ -60,7 +62,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
-    void openPage( QString pageName );
+    void openPage( const QString &pageName );
 
   public slots:
 
@@ -114,7 +116,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void providerDialogsRefreshRequested();
 
   private:
-    void addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, QString toolTip = QString() );
+    void addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, const QString &toolTip = QString() );
     void makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey );
     Ui::QgsDataSourceManagerDialog *ui;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;

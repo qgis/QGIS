@@ -178,30 +178,30 @@ void print_debug::printUI( long long unsigned int i )
 
 void print_debug::printD( double d )
 {
-  mTS << QString( "%1 " ).arg( d, 0, 'g' );
+  mTS << QStringLiteral( "%1 " ).arg( d, 0, 'g' );
   flush();
 }
 
 void print_debug::printH( long long  i )
 {
-  mTS << QString( "0x%1" ).arg( i, 0, 16 );
+  mTS << QStringLiteral( "0x%1" ).arg( i, 0, 16 );
   flush();
 }
 
 void print_debug::printB( int i )
 {
-  mTS << QString( "0%1" ).arg( i, 0, 8 );
+  mTS << QStringLiteral( "0%1" ).arg( i, 0, 8 );
   flush();
 }
 
 void print_debug::printHL( int c, int s, int h )
 {
-  mTS << QString( "%1.%2 0x%3" ).arg( c ).arg( s ).arg( h, 0, 16 );
+  mTS << QStringLiteral( "%1.%2 0x%3" ).arg( c ).arg( s ).arg( h, 0, 16 );
   flush();
 }
 
 void print_debug::printPT( double x, double y, double z )
 {
-  mTS << QString( "x:%1 y:%2 z:%3" ).arg( x, 0, 'g' ).arg( y, 0, 'g' ).arg( z, 0, 'g' );
+  mTS << QStringLiteral( "x:%1 y:%2 z:%3" ).arg( x, 0, 'g' ).arg( y, 0, 'g' ).arg( z, 0, 'g' );
   flush();
 }

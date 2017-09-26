@@ -299,7 +299,7 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strB
         for ( int i = 0; i < strLength + 1; i++ ) //string length + null terminating char
         {
           duint8 dxfChar = tmpExtDataBuf.getRawChar8();
-          l << QString( "0x%1" ).arg( dxfChar, 0, 16 );
+          l << QStringLiteral( "0x%1" ).arg( dxfChar, 0, 16 );
         }
 
         QgsDebugMsg( QString( "strLength:%1; str codepage:%2; %3" ).arg( strLength ).arg( cp ).arg( l.join( " " ) ) );

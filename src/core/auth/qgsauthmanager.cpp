@@ -75,7 +75,7 @@ static const QString sDescription = QObject::tr( "Master Password <-> KeyChain s
 const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manager" );
 static const QString sDescription = QObject::tr( "Master Password <-> Password Manager storage plugin. Store and retrieve your master password in your Password Manager" );
 #elif defined(Q_OS_LINUX)
-const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Wallet/KeyRing" );
+const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( QStringLiteral( "Wallet/KeyRing" ) );
 static const QString sDescription = QObject::tr( "Master Password <-> Wallet/KeyRing storage plugin. Store and retrieve your master password in your Wallet/KeyRing" );
 #else
 const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manager" );
@@ -2235,7 +2235,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
 
 bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
 {
-  if ( certs.size() < 1 )
+  if ( certs.isEmpty() )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
     return false;
@@ -2542,7 +2542,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSsl
 
 bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &certs )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
     return false;
@@ -2845,23 +2845,19 @@ QgsAuthManager::QgsAuthManager()
   : QObject()
   , mAuthInit( false )
   , mAuthDbPath( QString() )
-  , mQcaInitializer( nullptr )
   , mMasterPass( QString() )
   , mPassTries( 0 )
   , mAuthDisabled( false )
-  , mScheduledDbEraseTimer( nullptr )
   , mScheduledDbErase( false )
   , mScheduledDbEraseRequestWait( 3 )
   , mScheduledDbEraseRequestEmitted( false )
   , mScheduledDbEraseRequestCount( 0 )
-  , mMutex( nullptr )
   , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
   , mPasswordHelperVerificationError( false )
-  , mPasswordHelperErrorMessage( "" )
+  , mPasswordHelperErrorMessage( QLatin1String( "" ) )
   , mPasswordHelperErrorCode( QKeychain::NoError )
   , mPasswordHelperLoggingEnabled( false )
   , mPasswordHelperFailedInit( false )
-
 {
   mMutex = new QMutex( QMutex::Recursive );
   connect( this, &QgsAuthManager::messageOut,
@@ -2937,7 +2933,7 @@ bool QgsAuthManager::passwordHelperDelete()
 QString QgsAuthManager::passwordHelperRead()
 {
   // Retrieve it!
-  QString password( "" );
+  QString password( QLatin1String( "" ) );
   passwordHelperLog( tr( "Opening %1 for READ ..." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
   QKeychain::ReadPasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
   QgsSettings settings;
@@ -3043,7 +3039,7 @@ void QgsAuthManager::setPasswordHelperLoggingEnabled( const bool enabled )
 void QgsAuthManager::passwordHelperClearErrors()
 {
   mPasswordHelperErrorCode = QKeychain::NoError;
-  mPasswordHelperErrorMessage = "";
+  mPasswordHelperErrorMessage = QLatin1String( "" );
 }
 
 void QgsAuthManager::passwordHelperProcessError()

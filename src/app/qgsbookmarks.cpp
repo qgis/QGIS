@@ -34,8 +34,7 @@
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
   : QgsDockWidget( parent )
-  , mQgisModel( nullptr )
-  , mProjectModel( nullptr )
+
 {
   setupUi( this );
   restorePosition();
@@ -661,7 +660,7 @@ QAbstractTableModel *QgsMergedBookmarksTableModel::qgisModel()
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
   QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
-  if ( qgisModel == NULL )
+  if ( !qgisModel )
   {
     modelTo.insertRow( -1 );
     for ( int column = 1 ; column < modelFrom.columnCount() ; column++ )

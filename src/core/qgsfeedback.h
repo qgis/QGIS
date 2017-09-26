@@ -50,15 +50,6 @@ class CORE_EXPORT QgsFeedback : public QObject
       , mCanceled( false )
     {}
 
-    //! Tells the internal routines that the current operation should be canceled. This should be run by the main thread
-    void cancel()
-    {
-      if ( mCanceled )
-        return;  // only emit the signal once
-      mCanceled = true;
-      emit canceled();
-    }
-
     //! Tells whether the operation has been canceled already
     bool isCanceled() const { return mCanceled; }
 
@@ -87,6 +78,17 @@ class CORE_EXPORT QgsFeedback : public QObject
      * \since QGIS 3.0
      */
     double progress() const { return mProgress; }
+
+  public slots:
+
+    //! Tells the internal routines that the current operation should be canceled. This should be run by the main thread
+    void cancel()
+    {
+      if ( mCanceled )
+        return;  // only emit the signal once
+      mCanceled = true;
+      emit canceled();
+    }
 
   signals:
     //! Internal routines can connect to this signal if they use event loop

@@ -374,6 +374,8 @@ Translated description of variable
 };
 
 
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

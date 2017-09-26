@@ -957,7 +957,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
   if ( drawVertexMarker )
   {
-    if ( markers.size() > 0 )
+    if ( !markers.isEmpty() )
     {
       Q_FOREACH ( QPointF marker, markers )
       {

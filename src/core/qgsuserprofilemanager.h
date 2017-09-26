@@ -212,4 +212,6 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     std::unique_ptr< QSettings > mSettings;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSUSERPROFILEMANAGER_H

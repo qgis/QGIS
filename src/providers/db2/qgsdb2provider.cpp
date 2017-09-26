@@ -1106,10 +1106,10 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
       query.bindValue( bindIdx,  bytea, QSql::In | QSql::Binary );
     }
 
-    QList<QVariant> list = query.boundValues().values();
-
 // Show bound values
 #if 0
+    QList<QVariant> list = query.boundValues().values();
+
     for ( int i = 0; i < list.size(); ++i )
     {
       QgsDebugMsg( QString( "i: %1; value: %2; type: %3" )
@@ -1760,7 +1760,7 @@ class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
 
     virtual QString providerKey() const override { return QStringLiteral( "DB2" ); }
     virtual QString text() const override { return QObject::tr( "DB2" ); }
-    virtual int ordering() const override { return 70; }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 40; }
     virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

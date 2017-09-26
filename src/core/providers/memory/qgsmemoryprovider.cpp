@@ -33,7 +33,7 @@ static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Memory provide
 
 QgsMemoryProvider::QgsMemoryProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mSpatialIndex( nullptr )
+
 {
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')

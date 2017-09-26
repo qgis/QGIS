@@ -68,7 +68,6 @@ QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, Qg
 
 QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, QgsVectorLayer *layer )
   : QgsMapCanvasItem( mapCanvas )
-  , mGeometry( nullptr )
   , mLayer( static_cast<QgsMapLayer *>( layer ) )
   , mFeature( feature )
   , mBuffer( 0 )

@@ -339,11 +339,6 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
  \param exponent optional exponential for non-linear scaling
 %End
 
-    QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other );
-%Docstring
- Copy constructor.
-%End
-
     virtual Type transformerType() const;
     virtual QgsGenericNumericTransformer *clone() const /Factory/;
     virtual QVariant toVariant() const;
@@ -473,11 +468,6 @@ class QgsSizeScaleTransformer : QgsPropertyTransformer
  \param maxSize maximum size to return
  \param nullSize size to return for null values
  \param exponent exponent for Exponential scaling method
-%End
-
-    QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other );
-%Docstring
- Copy constructor.
 %End
 
     virtual Type transformerType() const;

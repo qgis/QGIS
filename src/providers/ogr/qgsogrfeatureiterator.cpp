@@ -40,8 +40,6 @@
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
-  , mConn( nullptr )
-  , ogrLayer( nullptr )
   , mSubsetStringSet( false )
   , mOrigFidAdded( false )
   , mFetchGeometry( false )
@@ -57,11 +55,11 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
 
   if ( mSource->mLayerName.isNull() )
   {
-    ogrLayer = OGR_DS_GetLayer( mConn->ds, mSource->mLayerIndex );
+    ogrLayer = GDALDatasetGetLayer( mConn->ds, mSource->mLayerIndex );
   }
   else
   {
-    ogrLayer = OGR_DS_GetLayerByName( mConn->ds, mSource->mLayerName.toUtf8().constData() );
+    ogrLayer = GDALDatasetGetLayerByName( mConn->ds, mSource->mLayerName.toUtf8().constData() );
   }
   if ( !ogrLayer )
   {
@@ -178,6 +176,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     OGR_L_SetAttributeFilter( ogrLayer, nullptr );
   }
 
+
   //start with first feature
   rewind();
 }
@@ -198,17 +197,22 @@ bool QgsOgrFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const
 {
   feature.setValid( false );
-  OGRFeatureH fet;
+  OGRFeatureH fet = 0;
   if ( mOrigFidAdded )
   {
     OGR_L_ResetReading( ogrLayer );
-    while ( ( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
+    int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
+    if ( lastField >= 0 )
     {
-      if ( OGR_F_GetFieldAsInteger64( fet, 0 ) == id )
+      while ( ( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
       {
-        break;
+        if ( OGR_F_GetFieldAsInteger64( fet, lastField ) == id )
+        {
+          break;
+        }
+        OGR_F_Destroy( fet );
       }
-      OGR_F_Destroy( fet );
     }
   }
   else
@@ -308,7 +312,7 @@ bool QgsOgrFeatureIterator::close()
 
   if ( mSubsetStringSet )
   {
-    OGR_DS_ReleaseResultSet( mConn->ds, ogrLayer );
+    GDALDatasetReleaseResultSet( mConn->ds, ogrLayer );
   }
 
   if ( mConn )
@@ -343,7 +347,12 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
 {
   if ( mOrigFidAdded )
   {
-    feature.setId( OGR_F_GetFieldAsInteger64( fet, 0 ) );
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
+    int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
+    if ( lastField >= 0 )
+      feature.setId( OGR_F_GetFieldAsInteger64( fet, lastField ) );
+    else
+      feature.setId( OGR_F_GetFID( fet ) );
   }
   else
   {
@@ -422,7 +431,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   , mFields( p->mAttributeFields )
   , mFirstFieldIsFid( p->mFirstFieldIsFid )
   , mOgrGeometryTypeFilter( QgsOgrProvider::ogrWkbSingleFlatten( p->mOgrGeometryTypeFilter ) )
-  , mDriverName( p->ogrDriverName )
+  , mDriverName( p->mGDALDriverName )
   , mCrs( p->crs() )
   , mWkbType( p->wkbType() )
 {

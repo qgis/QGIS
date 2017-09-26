@@ -37,7 +37,8 @@ from qgis.core import (QgsFeature,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingException,
-                       QgsExpression)
+                       QgsExpression,
+                       QgsProcessingUtils)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -89,7 +90,7 @@ class HubLines(QgisAlgorithm):
         field_spoke = self.parameterAsString(parameters, self.SPOKE_FIELD, context)
         field_spoke_index = hub_source.fields().lookupField(field_spoke)
 
-        fields = vector.combineFields(hub_source.fields(), spoke_source.fields())
+        fields = QgsProcessingUtils.combineFields(hub_source.fields(), spoke_source.fields())
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.LineString, hub_source.sourceCrs())

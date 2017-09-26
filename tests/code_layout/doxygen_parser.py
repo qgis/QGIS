@@ -261,9 +261,12 @@ class DoxygenParser():
         a = elem.find('argsstring')
         try:
             if a is not None:
-                return elem.find('name').text + a.text
+                signature = elem.find('name').text + a.text
             else:
-                return elem.find('name').text
+                signature = elem.find('name').text
+            if signature.endswith('= default'):
+                signature = signature[:-len('= default')]
+            return signature
         except:
             return None
 

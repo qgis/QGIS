@@ -103,7 +103,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, co
   QStandardItem *dbItem = nullptr;
   QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
-  if ( dbItems.size() < 1 )
+  if ( dbItems.empty() )
   {
     return;
   }

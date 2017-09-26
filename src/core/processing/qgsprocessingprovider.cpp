@@ -36,7 +36,7 @@ QIcon QgsProcessingProvider::icon() const
 
 QString QgsProcessingProvider::svgIconPath() const
 {
-  return QgsApplication::iconPath( "processingAlgorithm.svg" );
+  return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
 }
 
 void QgsProcessingProvider::refreshAlgorithms()

@@ -30,8 +30,7 @@
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   : QDialog( parent )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -100,13 +99,7 @@ void QgsAuthMethodPlugins::populateTable()
 
 QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
   : QWidget( parent )
-  , mAuthUtilitiesMenu( nullptr )
-  , mActionSetMasterPassword( nullptr )
-  , mActionClearCachedMasterPassword( nullptr )
-  , mActionResetMasterPassword( nullptr )
-  , mActionClearCachedAuthConfigs( nullptr )
-  , mActionRemoveAuthConfigs( nullptr )
-  , mActionEraseAuthDatabase( nullptr )
+
 {
   setupUi( this );
   if ( !QgsAuthManager::instance()->isDisabled() )

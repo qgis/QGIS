@@ -121,7 +121,7 @@ bool QgsCustomizationDialog::itemChecked( const QString &path )
   QTreeWidgetItem *myItem = item( path );
   if ( !myItem )
     return true;
-  return myItem->checkState( 0 ) == Qt::Checked ? true : false;
+  return myItem->checkState( 0 ) == Qt::Checked;
 }
 
 void QgsCustomizationDialog::setItemChecked( const QString &path, bool on )
@@ -159,7 +159,7 @@ void QgsCustomizationDialog::itemToSettings( const QString &path, QTreeWidgetIte
     return; // object is not identifiable
 
   QString myPath = path + '/' + objectName;
-  bool on = item->checkState( 0 ) == Qt::Checked ? true : false;
+  bool on = item->checkState( 0 ) == Qt::Checked;
   settings->setValue( myPath, on );
 
   for ( int i = 0; i < item->childCount(); ++i )
@@ -636,18 +636,12 @@ QgsCustomization *QgsCustomization::instance()
 }
 
 QgsCustomization::QgsCustomization()
-  : pDialog( nullptr )
-  , mEnabled( false )
-  , mSettings( nullptr )
+  : mEnabled( false )
   , mStatusPath( QStringLiteral( "/Customization/status" ) )
 {
 
   QSettings settings;
   mEnabled = settings.value( QStringLiteral( "UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
-}
-
-QgsCustomization::~QgsCustomization()
-{
 }
 
 void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )

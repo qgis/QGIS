@@ -191,11 +191,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     static bool parseServiceExceptionReportDom( QByteArray const &xml, const QString &wcsVersion, QString &errorTitle, QString &errorText );
 
-
-  signals:
-
-    void dataChanged();
-
   private:
     // case insensitive attribute value lookup
     static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );

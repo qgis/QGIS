@@ -149,7 +149,7 @@ void QgsRectangle::include( const QgsPointXY &p )
     setYMaximum( p.y() );
 }
 
-QgsRectangle QgsRectangle::buffer( double width )
+QgsRectangle QgsRectangle::buffered( double width ) const
 {
   return QgsRectangle( mXmin - width, mYmin - width, mXmax + width, mYmax + width );
 }
@@ -175,9 +175,7 @@ bool QgsRectangle::intersects( const QgsRectangle &rect ) const
     return false;
   double y1 = ( mYmin > rect.mYmin ? mYmin : rect.mYmin );
   double y2 = ( mYmax < rect.mYmax ? mYmax : rect.mYmax );
-  if ( y1 > y2 )
-    return false;
-  return true;
+  return y1 <= y2;
 }
 
 bool QgsRectangle::contains( const QgsRectangle &rect ) const
@@ -258,7 +256,7 @@ QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
 
 bool QgsRectangle::isEmpty() const
 {
-  return mXmax <= mXmin || mYmax <= mYmin;
+  return mXmax < mXmin || mYmax < mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
 }
 
 bool QgsRectangle::isNull() const
@@ -391,13 +389,8 @@ bool QgsRectangle::isFinite() const
 
 void QgsRectangle::invert()
 {
-  double tmp;
-  tmp = mXmin;
-  mXmin = mYmin;
-  mYmin = tmp;
-  tmp = mXmax;
-  mXmax = mYmax;
-  mYmax = tmp;
+  std::swap( mXmin, mYmin );
+  std::swap( mXmax, mYmax );
 }
 
 QgsBox3d QgsRectangle::toBox3d( double zMin, double zMax ) const

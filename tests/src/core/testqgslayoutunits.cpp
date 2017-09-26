@@ -236,7 +236,7 @@ void TestQgsLayoutUnits::measurementEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutMeasurement::decodeMeasurement( QString( "1" ) );
+  result = QgsLayoutMeasurement::decodeMeasurement( QStringLiteral( "1" ) );
   QCOMPARE( result, QgsLayoutMeasurement( 0 ) );
 }
 
@@ -376,7 +376,7 @@ void TestQgsLayoutUnits::sizeEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutSize::decodeSize( QString( "1,2" ) );
+  result = QgsLayoutSize::decodeSize( QStringLiteral( "1,2" ) );
   QCOMPARE( result, QgsLayoutSize() );
 }
 
@@ -516,7 +516,7 @@ void TestQgsLayoutUnits::pointEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutPoint::decodePoint( QString( "1,2" ) );
+  result = QgsLayoutPoint::decodePoint( QStringLiteral( "1,2" ) );
   QCOMPARE( result, QgsLayoutPoint() );
 }
 

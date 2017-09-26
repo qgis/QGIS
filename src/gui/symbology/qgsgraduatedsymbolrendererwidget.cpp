@@ -47,7 +47,6 @@
 ///@cond PRIVATE
 
 QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent ) : QAbstractItemModel( parent )
-  , mRenderer( nullptr )
   , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
 {
 }
@@ -423,8 +422,7 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
 
 QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
-  , mModel( nullptr )
+
 {
 
 
@@ -1181,7 +1179,7 @@ void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    connect( panel, &QgsPanelWidget::widgetChanged, this, [ = ]
     {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();

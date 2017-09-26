@@ -21,7 +21,7 @@
 QgsWfsConnection::QgsWfsConnection( const QString &connName )
   : QgsOwsConnection( QStringLiteral( "WFS" ), connName )
 {
-  const QString &key = QgsWFSConstants::CONNECTIONS_WFS + mConnName;
+  const QString &key = QgsWFSConstants::CONNECTIONS_WFS + connectionName();
 
   QgsSettings settings;
 

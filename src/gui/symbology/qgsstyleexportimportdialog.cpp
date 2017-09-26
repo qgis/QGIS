@@ -74,7 +74,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     importTypeCombo->addItem( tr( "URL specified below" ), QVariant( "url" ) );
     connect( importTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleExportImportDialog::importTypeChanged );
 
-    mSymbolTags->setText( "imported" );
+    mSymbolTags->setText( QStringLiteral( "imported" ) );
 
     btnBrowse->setText( QStringLiteral( "Browse" ) );
     connect( btnBrowse, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::browse );
@@ -202,7 +202,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
     QStandardItem *item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 15 );
     item->setIcon( icon );
-    item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+    item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
     // Set font to 10points to show reasonable text
     QFont itemFont = item->font();
     itemFont.setPointSize( 10 );

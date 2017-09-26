@@ -15,6 +15,7 @@
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
+
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolFavoriteId };

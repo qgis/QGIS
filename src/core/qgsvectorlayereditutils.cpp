@@ -678,7 +678,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
 
 bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const
 {
-  if ( list.size() < 1 )
+  if ( list.empty() )
   {
     return false;
   }

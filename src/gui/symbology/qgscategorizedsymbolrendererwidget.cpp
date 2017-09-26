@@ -50,7 +50,6 @@
 ///@cond PRIVATE
 
 QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent ) : QAbstractItemModel( parent )
-  , mRenderer( nullptr )
   , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
 {
 }
@@ -391,8 +390,7 @@ QgsRendererWidget *QgsCategorizedSymbolRendererWidget::create( QgsVectorLayer *l
 
 QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
-  , mModel( nullptr )
+
 {
 
   // try to recognize the previous renderer
@@ -1049,7 +1047,7 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    connect( panel, &QgsPanelWidget::widgetChanged, this, [ = ]
     {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();

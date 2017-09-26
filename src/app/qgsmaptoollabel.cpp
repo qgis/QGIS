@@ -30,9 +30,7 @@
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mLabelRubberBand( nullptr )
-  , mFeatureRubberBand( nullptr )
-  , mFixPointRubberBand( nullptr )
+
 {
 }
 

@@ -230,13 +230,10 @@ void QgsPalLayerSettings::initPropertyDefinitions()
 
 QgsPalLayerSettings::QgsPalLayerSettings()
   : upsidedownLabels( Upright )
-  , mCurFeat( nullptr )
-  , xform( nullptr )
   , extentGeom( nullptr )
   , mFeaturesToLabel( 0 )
   , mFeatsSendingToPal( 0 )
   , mFeatsRegPal( 0 )
-  , expression( nullptr )
 {
   initPropertyDefinitions();
 
@@ -303,15 +300,11 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
-  : mCurFeat( nullptr )
-  , fieldIndex( 0 )
-  , xform( nullptr )
-  , extentGeom( nullptr )
+  : fieldIndex( 0 )
   , mFeaturesToLabel( 0 )
   , mFeatsSendingToPal( 0 )
   , mFeatsRegPal( 0 )
   , mDataDefinedProperties( s.mDataDefinedProperties )
-  , expression( nullptr )
 {
   *this = s;
 }

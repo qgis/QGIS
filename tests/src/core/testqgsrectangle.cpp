@@ -25,12 +25,36 @@ class TestQgsRectangle: public QObject
 {
     Q_OBJECT
   private slots:
+    void isEmpty();
     void manipulate();
     void regression6194();
     void operators();
     void asVariant();
     void referenced();
+    void minimal();
+    void grow();
+    void include();
+    void buffered();
+    void isFinite();
+    void dataStream();
 };
+
+void TestQgsRectangle::isEmpty()
+{
+  QVERIFY( QgsRectangle().isEmpty() );
+  QVERIFY( QgsRectangle( 1, 2, 1, 4 ).isEmpty() );
+  QVERIFY( QgsRectangle( 2, 1, 4, 1 ).isEmpty() );
+  //constructor should normalize
+  QVERIFY( !QgsRectangle( 2, 2, 1, 4 ).isEmpty() );
+  QVERIFY( !QgsRectangle( 1, 2, 2, 1 ).isEmpty() );
+
+  QgsRectangle r( 2, 2, 3, 4 );
+  r.setXMaximum( 1 );
+  QVERIFY( r.isEmpty() );
+  r = QgsRectangle( 2, 2, 3, 4 );
+  r.setYMaximum( 1 );
+  QVERIFY( r.isEmpty() );
+}
 
 void TestQgsRectangle::manipulate()
 {
@@ -153,6 +177,112 @@ void TestQgsRectangle::referenced()
   QCOMPARE( rect2.height(), rect1.height() );
   QCOMPARE( rect2.width(), rect1.width() );
   QCOMPARE( rect2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+}
+
+void TestQgsRectangle::minimal()
+{
+  QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+  rect1.setMinimal();
+  QVERIFY( rect1.isEmpty() );
+  QVERIFY( rect1.isNull() );
+}
+
+void TestQgsRectangle::grow()
+{
+  QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+  rect1.grow( 11 );
+  QCOMPARE( rect1.xMinimum(), -1.0 );
+  QCOMPARE( rect1.yMinimum(), 9.0 );
+  QCOMPARE( rect1.xMaximum(), 121.0 );
+  QCOMPARE( rect1.yMaximum(), 231.0 );
+
+  QgsRectangle rect2 = QgsRectangle( -110.0, -220.0, -10.0, -20.0 );
+  rect2.grow( 11 );
+  QCOMPARE( rect2.xMinimum(), -121.0 );
+  QCOMPARE( rect2.yMinimum(), -231.0 );
+  QCOMPARE( rect2.xMaximum(), 1.0 );
+  QCOMPARE( rect2.yMaximum(), -9.0 );
+}
+
+void TestQgsRectangle::include()
+{
+  QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+  // inside
+  rect1.include( QgsPointXY( 15, 50 ) );
+  QCOMPARE( rect1.xMinimum(), 10.0 );
+  QCOMPARE( rect1.yMinimum(), 20.0 );
+  QCOMPARE( rect1.xMaximum(), 110.0 );
+  QCOMPARE( rect1.yMaximum(), 220.0 );
+
+  rect1.include( QgsPointXY( 5, 50 ) );
+  QCOMPARE( rect1.xMinimum(), 5.0 );
+  QCOMPARE( rect1.yMinimum(), 20.0 );
+  QCOMPARE( rect1.xMaximum(), 110.0 );
+  QCOMPARE( rect1.yMaximum(), 220.0 );
+
+  rect1.include( QgsPointXY( 15, 12 ) );
+  QCOMPARE( rect1.xMinimum(), 5.0 );
+  QCOMPARE( rect1.yMinimum(), 12.0 );
+  QCOMPARE( rect1.xMaximum(), 110.0 );
+  QCOMPARE( rect1.yMaximum(), 220.0 );
+
+  rect1.include( QgsPointXY( 115, 12 ) );
+  QCOMPARE( rect1.xMinimum(), 5.0 );
+  QCOMPARE( rect1.yMinimum(), 12.0 );
+  QCOMPARE( rect1.xMaximum(), 115.0 );
+  QCOMPARE( rect1.yMaximum(), 220.0 );
+
+  rect1.include( QgsPointXY( 115, 242 ) );
+  QCOMPARE( rect1.xMinimum(), 5.0 );
+  QCOMPARE( rect1.yMinimum(), 12.0 );
+  QCOMPARE( rect1.xMaximum(), 115.0 );
+  QCOMPARE( rect1.yMaximum(), 242.0 );
+
+}
+
+void TestQgsRectangle::buffered()
+{
+  QgsRectangle rect = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+  QgsRectangle rect1 = rect.buffered( 11 );
+  QCOMPARE( rect1.xMinimum(), -1.0 );
+  QCOMPARE( rect1.yMinimum(), 9.0 );
+  QCOMPARE( rect1.xMaximum(), 121.0 );
+  QCOMPARE( rect1.yMaximum(), 231.0 );
+
+  rect = QgsRectangle( -110.0, -220.0, -10.0, -20.0 );
+  QgsRectangle rect2 = rect.buffered( 11 );
+  QCOMPARE( rect2.xMinimum(), -121.0 );
+  QCOMPARE( rect2.yMinimum(), -231.0 );
+  QCOMPARE( rect2.xMaximum(), 1.0 );
+  QCOMPARE( rect2.yMaximum(), -9.0 );
+}
+
+void TestQgsRectangle::isFinite()
+{
+  QVERIFY( QgsRectangle( 1, 2, 3, 4 ).isFinite() );
+  QVERIFY( !QgsRectangle( std::numeric_limits<double>::infinity(), 2, 3, 4 ).isFinite() );
+  QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::infinity(), 3, 4 ).isFinite() );
+  QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::infinity(), 4 ).isFinite() );
+  QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::infinity() ).isFinite() );
+  QVERIFY( !QgsRectangle( std::numeric_limits<double>::quiet_NaN(), 2, 3, 4 ).isFinite() );
+  QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::quiet_NaN(), 3, 4 ).isFinite() );
+  QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::quiet_NaN(), 4 ).isFinite() );
+  QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::quiet_NaN() ).isFinite() );
+}
+
+void TestQgsRectangle::dataStream()
+{
+  QgsRectangle original( 10.1, 20.2, 110.3, 220.4 );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
+  ds << original;
+
+  QgsRectangle result;
+  ds.device()->seek( 0 );
+  ds >> result;
+
+  QCOMPARE( result, original );
 }
 
 QGSTEST_MAIN( TestQgsRectangle )

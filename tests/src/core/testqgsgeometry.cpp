@@ -5801,6 +5801,7 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEARPOINT( alt.at( 2 ).pointN( 1 ), QgsPoint( 23, -1 ), 0.0001 );
 
   // orthocenter
+
   QCOMPARE( QgsPoint(), QgsTriangle().orthocenter() );
   QCOMPARE( QgsPoint( 16, -8 ), t10.orthocenter() );
   QCOMPARE( QgsPoint( 0, 5 ), t7.orthocenter() );
@@ -10304,6 +10305,7 @@ void TestQgsGeometry::multiPoint()
   exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 ) );
   exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 ) );
 
+
   QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": [ [1.111, 11.111], [1.333, 0.667]] }" ) );
   res = exportFloat.asJSON( 3 );
   QCOMPARE( res, expectedJsonPrec3 );
@@ -12872,6 +12874,7 @@ void TestQgsGeometry::geometryCollection()
             << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 )
                                         << QgsPoint( 9, 1 ) << QgsPoint( 1, 1 ) ) ) );
   QCOMPARE( c6.nCoordinates(), 10 );
+
 
   //clear
   QgsGeometryCollection c7;

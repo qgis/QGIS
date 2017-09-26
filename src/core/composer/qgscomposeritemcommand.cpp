@@ -26,7 +26,6 @@
 QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent )
   : QUndoCommand( text, parent )
   , mItem( item )
-  , mMultiFrame( nullptr )
   , mFrameNumber( 0 )
   , mFirstRun( true )
 {

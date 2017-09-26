@@ -40,7 +40,7 @@ class CORE_EXPORT QgsMapLayerStyle
 {
   public:
     //! construct invalid style
-    QgsMapLayerStyle();
+    QgsMapLayerStyle() = default;
 
     //! construct style from QML definition (XML)
     explicit QgsMapLayerStyle( const QString &xmlData );

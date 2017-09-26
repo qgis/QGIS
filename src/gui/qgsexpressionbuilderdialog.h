@@ -82,4 +82,6 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif

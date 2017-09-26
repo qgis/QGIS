@@ -134,4 +134,6 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSGRAPHBUILDERINTERFACE_H

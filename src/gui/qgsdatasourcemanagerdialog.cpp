@@ -28,7 +28,7 @@
 #include "qgsmessagelog.h"
 #include "qgsgui.h"
 
-QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
+QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl ) :
   QgsOptionsDialogBase( QStringLiteral( "Data Source Manager" ), parent, fl ),
   ui( new Ui::QgsDataSourceManagerDialog ),
   mPreviousRow( -1 ),
@@ -48,7 +48,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QWidget *parent, QgsMapC
   connect( ui->mOptionsListWidget, &QListWidget::currentRowChanged, this, &QgsDataSourceManagerDialog::setCurrentPage );
 
   // BROWSER Add the browser widget to the first stacked widget page
-  mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), this );
+  mBrowserWidget = new QgsBrowserDockWidget( QStringLiteral( "Browser" ), browserModel, this );
   mBrowserWidget->setFeatures( QDockWidget::NoDockWidgetFeatures );
   ui->mOptionsStackedWidget->addWidget( mBrowserWidget );
   mPageNames.append( QStringLiteral( "browser" ) );
@@ -78,7 +78,7 @@ QgsDataSourceManagerDialog::~QgsDataSourceManagerDialog()
   delete ui;
 }
 
-void QgsDataSourceManagerDialog::openPage( QString pageName )
+void QgsDataSourceManagerDialog::openPage( const QString &pageName )
 {
   int pageIdx = mPageNames.indexOf( pageName );
   if ( pageIdx != -1 )
@@ -122,7 +122,7 @@ void QgsDataSourceManagerDialog::vectorLayersAdded( const QStringList &layerQStr
 }
 
 
-void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, QString toolTip )
+void QgsDataSourceManagerDialog::addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, const QString &toolTip )
 {
   mPageNames.append( providerKey );
   ui->mOptionsStackedWidget->addWidget( dlg );
@@ -149,9 +149,10 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   connect( dlg, SIGNAL( progressMessage( QString ) ),
            this, SIGNAL( showStatusMessage( QString ) ) );
   // Vector
-  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName )
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName, const QString & specifiedProvider )
   {
-    this->vectorLayerAdded( vectorLayerPath, baseName, providerKey );
+    QString key = specifiedProvider.isEmpty() ? providerKey : specifiedProvider;
+    this->vectorLayerAdded( vectorLayerPath, baseName, key );
   }
          );
   connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayers,

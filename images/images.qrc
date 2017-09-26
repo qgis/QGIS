@@ -135,6 +135,7 @@
         <file>themes/default/mActionAddWcsLayer.svg</file>
         <file>themes/default/mActionAddWfsLayer.svg</file>
         <file>themes/default/mActionAddWmsLayer.svg</file>
+        <file>themes/default/mActionAddGeonodeLayer.svg</file>
         <file>themes/default/mActionAddDelimitedTextLayer.svg</file>
         <file>themes/default/mActionAddVirtualLayer.svg</file>
         <file>themes/default/mActionAlignBottom.svg</file>
@@ -359,6 +360,7 @@
         <file>themes/default/mIconFieldInteger.svg</file>
         <file>themes/default/mIconFieldText.svg</file>
         <file>themes/default/mIconFieldTime.svg</file>
+        <file>themes/default/mIconGeonode.svg</file>
         <file>themes/default/mIconInfo.svg</file>
         <file>themes/default/mIconImport.gif</file>
         <file>themes/default/mIconLabelQuadrantCenter.svg</file>
@@ -565,7 +567,6 @@
         <file>themes/default/mActionNewMap.svg</file>
         <file>themes/default/mActionMapSettings.svg</file>
         <file>themes/default/mActionLockExtent.svg</file>
-        <file>icons/qgis_icon.svg</file>
         <file>themes/default/mGeoPackage.svg</file>
         <file>themes/default/mActionCircle2Points.svg</file>
         <file>themes/default/mActionCircle3Points.svg</file>
@@ -581,6 +582,8 @@
         <file>themes/default/mActionRegularPolygon2Points.svg</file>
         <file>themes/default/mActionSquareCenter.svg</file>
         <file>themes/default/mActionCircle3Tangents.svg</file>
+        <file>themes/default/mActionAddGeoPackageLayer.svg</file>
+        <file>icons/qgis_icon.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

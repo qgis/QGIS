@@ -63,7 +63,7 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
       if ( !geom )
         return nullptr;
 
-      QgsWkbTypes::Type flatType = geom->wkbType();
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
       if ( flatType == QgsWkbTypes::CurvePolygon
            || flatType == QgsWkbTypes::Polygon
            || flatType == QgsWkbTypes::Triangle )

@@ -33,6 +33,7 @@ class QgsHistogramDiagram: QgsDiagram
 
     virtual QString diagramName() const;
 
+
 };
 
 

@@ -378,6 +378,47 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.dump(), dump );
     }
 
+    void represent_value()
+    {
+      QVariantMap config;
+      QVariantMap map;
+      map.insert( QStringLiteral( "one" ), QStringLiteral( "1" ) );
+      map.insert( QStringLiteral( "two" ), QStringLiteral( "2" ) );
+      map.insert( QStringLiteral( "three" ), QStringLiteral( "3" ) );
+
+      config.insert( QStringLiteral( "map" ), map );
+      mPointsLayer->setEditorWidgetSetup( 3, QgsEditorWidgetSetup( QStringLiteral( "ValueMap" ), config ) );
+
+      // Usage on a value map
+      QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mPointsLayer ) );
+      QgsExpression expression( "represent_value('Pilots', \"Pilots\")" );
+      if ( expression.hasParserError() )
+        qDebug() << expression.parserErrorString();
+      Q_ASSERT( !expression.hasParserError() );
+      if ( expression.hasEvalError() )
+        qDebug() << expression.evalErrorString();
+      Q_ASSERT( !expression.hasEvalError() );
+      expression.prepare( &context );
+
+      QgsFeature feature;
+      mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Pilots = 1" ) ).nextFeature( feature );
+      context.setFeature( feature );
+      QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
+
+      // Usage on a simple string
+      QgsExpression expression2( "represent_value('Class', \"Class\")" );
+      if ( expression2.hasParserError() )
+        qDebug() << expression2.parserErrorString();
+      Q_ASSERT( !expression2.hasParserError() );
+      if ( expression2.hasEvalError() )
+        qDebug() << expression2.evalErrorString();
+      Q_ASSERT( !expression2.hasEvalError() );
+      expression2.prepare( &context );
+      mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Class = 'Jet'" ) ).nextFeature( feature );
+      context.setFeature( feature );
+      QCOMPARE( expression2.evaluate( &context ).toString(), QStringLiteral( "Jet" ) );
+    }
+
     void evaluation_data()
     {
       QTest::addColumn<QString>( "string" );
@@ -1403,7 +1444,7 @@ class TestQgsExpression: public QObject
       scope->setVariable( QStringLiteral( "test_var" ), 10 );
       context << scope;
       QgsFeature f;
-      mAggregatesLayer->getFeatures( "col1 = 4 " ).nextFeature( f );
+      mAggregatesLayer->getFeatures( QStringLiteral( "col1 = 4 " ) ).nextFeature( f );
       context.setFeature( f );
 
       QFETCH( QString, string );
@@ -1506,7 +1547,7 @@ class TestQgsExpression: public QObject
       mMemoryLayer->selectByIds( selectedFeatures );
 
       QgsExpression exp( expression );
-      QCOMPARE( exp.parserErrorString(), QString( "" ) );
+      QCOMPARE( exp.parserErrorString(), QLatin1String( "" ) );
       exp.prepare( &context );
       QVariant res = exp.evaluate( &context );
       QCOMPARE( res, result );
@@ -2303,6 +2344,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "bounds" ) << "bounds( $geometry )" << geom << false << true << QgsGeometry::fromRect( geom.boundingBox() );
 
       geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "oriented_bbox" ) << "oriented_bbox( $geometry )" << geom << false << true << geom.orientedMinimumBoundingBox( );
+      geom = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "minimal_circle" ) << "minimal_circle( $geometry )" << geom << false << true << geom.minimalEnclosingCircle( );
+
+      geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "translate" ) << "translate( $geometry, 1, 2)" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "POLYGON ((1 2,11 12,11 2,1 2))" ) );
       geom = QgsGeometry::fromPolyline( line );
       QTest::newRow( "translate" ) << "translate( $geometry, -1, 2)" << geom << false << true << QgsGeometry::fromWkt( QStringLiteral( "LINESTRING (-1 2, 9 12)" ) );
@@ -2808,7 +2854,7 @@ class TestQgsExpression: public QObject
       setenv( "TESTENV_STRING", "Hello World", 1 );
 #endif
 
-      QgsExpression e( "env('TESTENV_STRING')" );
+      QgsExpression e( QStringLiteral( "env('TESTENV_STRING')" ) );
 
       QVariant result = e.evaluate( &context );
 
@@ -2821,7 +2867,7 @@ class TestQgsExpression: public QObject
       setenv( "TESTENV_INT", "5", 1 );
 #endif
 
-      QgsExpression e2( "env('TESTENV_INT')" );
+      QgsExpression e2( QStringLiteral( "env('TESTENV_INT')" ) );
 
       QVariant result2 = e2.evaluate( &context );
 
@@ -2832,7 +2878,7 @@ class TestQgsExpression: public QObject
       unsetenv( "TESTENV_INT" );
 #endif
 
-      QgsExpression e3( "env('TESTENV_I_DO_NOT_EXIST')" );
+      QgsExpression e3( QStringLiteral( "env('TESTENV_I_DO_NOT_EXIST')" ) );
       QVariant result3 = e3.evaluate( &context );
 
       Q_ASSERT( result3.isNull() );

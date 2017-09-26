@@ -76,7 +76,7 @@ QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &cl
           //add edge points to connect old and new line
           connectSeparatedLines( lastClipX, lastClipY, p0x, p0y, clipExtent, line );
         }
-        if ( line.size() < 1 || newLine )
+        if ( line.empty() || newLine )
         {
           //add first point
           line << QPointF( p0x, p0y );

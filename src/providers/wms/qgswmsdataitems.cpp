@@ -28,6 +28,9 @@
 #include "qgstilescalewidget.h"
 #include "qgsxyzconnectiondialog.h"
 #endif
+#include "qgsgeonodeconnection.h"
+#include "qgsgeonoderequest.h"
+#include "qgssettings.h"
 
 #include <QInputDialog>
 
@@ -197,15 +200,15 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWMSConnectionItem::actions()
+QList<QAction *> QgsWMSConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsWMSConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsWMSConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -214,7 +217,7 @@ QList<QAction *> QgsWMSConnectionItem::actions()
 
 void QgsWMSConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( nullptr, QStringLiteral( "qgis/connections-wms/" ), mName );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "qgis/connections-wms/" ), mName );
 
   if ( nc.exec() )
   {
@@ -381,11 +384,11 @@ QVector<QgsDataItem *> QgsWMSRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsWMSRootItem::actions()
+QList<QAction *> QgsWMSRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsWMSRootItem::newConnection );
   lst.append( actionNew );
 
@@ -482,9 +485,9 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsXyzTileRootItem::actions()
+QList<QAction *> QgsXyzTileRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsXyzTileRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
@@ -511,15 +514,15 @@ QgsXyzLayerItem::QgsXyzLayerItem( QgsDataItem *parent, QString name, QString pat
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsXyzLayerItem::actions()
+QList<QAction *> QgsXyzLayerItem::actions( QWidget *parent )
 {
-  QList<QAction *> lst = QgsLayerItem::actions();
+  QList<QAction *> lst = QgsLayerItem::actions( parent );
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsXyzLayerItem::editConnection );
   lst << actionEdit;
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsXyzLayerItem::deleteConnection );
   lst << actionDelete;
 
@@ -546,3 +549,91 @@ void QgsXyzLayerItem::deleteConnection()
   mParent->refreshConnections();
 }
 #endif
+
+// ---------------------------------------------------------------------------
+
+
+QVector<QgsDataItem *> QgsWmsDataItemProvider::createDataItems( const QString &path, QgsDataItem *parentItem )
+{
+  QVector<QgsDataItem *> items;
+  if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
+    {
+      QgsGeoNodeConnection connection( connectionName );
+
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
+      QgsGeoNodeRequest geonodeRequest( url, true );
+
+      const QStringList encodedUris( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WMS" ) ) );
+
+      if ( !encodedUris.isEmpty() )
+      {
+        for ( const QString &encodedUri : encodedUris )
+        {
+          QgsDebugMsg( encodedUri );
+          QgsDataSourceUri uri;
+          QgsSettings settings;
+          QString key( QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + "/" + connectionName );
+
+          QString dpiMode = settings.value( key + "/wms/dpiMode", "all" ).toString();
+          uri.setParam( QStringLiteral( "url" ), encodedUri );
+          if ( !dpiMode.isEmpty() )
+          {
+            uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
+          }
+
+          QgsDebugMsg( QString( "WMS full uri: '%1'." ).arg( QString( uri.encodedUri() ) ) );
+
+          QgsDataItem *item = new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, uri.encodedUri() );
+          if ( item )
+          {
+            items.append( item );
+          }
+        }
+      }
+    }
+  }
+
+  return items;
+}
+
+QVector<QgsDataItem *> QgsXyzTileDataItemProvider::createDataItems( const QString &path, QgsDataItem *parentItem )
+{
+  QVector<QgsDataItem *> items;
+  if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
+  {
+    QString connectionName = path.split( '/' ).last();
+    if ( QgsGeoNodeConnectionUtils::connectionList().contains( connectionName ) )
+    {
+      QgsGeoNodeConnection connection( connectionName );
+
+      QString url = connection.uri().param( QStringLiteral( "url" ) );
+      QgsGeoNodeRequest geonodeRequest( url, true );
+
+      const QgsStringMap urlData( geonodeRequest.fetchServiceUrlDataBlocking( QStringLiteral( "XYZ" ) ) );
+
+      if ( !urlData.isEmpty() )
+      {
+        auto urlDataIt = urlData.constBegin();
+        for ( ; urlDataIt != urlData.constEnd(); ++urlDataIt )
+        {
+          const QString layerName = urlDataIt.key();
+          QgsDebugMsg( urlDataIt.value() );
+          QgsDataSourceUri uri;
+          uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
+          uri.setParam( QStringLiteral( "url" ), urlDataIt.value() );
+
+          QgsDataItem *item = new QgsXyzLayerItem( parentItem, layerName, path, uri.encodedUri() );
+          if ( item )
+          {
+            items.append( item );
+          }
+        }
+      }
+    }
+  }
+
+  return items;
+}

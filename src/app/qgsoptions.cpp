@@ -79,7 +79,7 @@
  */
 QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOptionsWidgetFactory *> &optionsFactories )
   : QgsOptionsDialogBase( QStringLiteral( "Options" ), parent, fl )
-  , mSettings( nullptr )
+
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
@@ -628,7 +628,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLegendLayersBoldChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/legendLayersBold" ), true ).toBool() );
   mLegendGroupsBoldChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/legendGroupsBold" ), false ).toBool() );
   cbxHideSplash->setChecked( mSettings->value( QStringLiteral( "/qgis/hideSplash" ), false ).toBool() );
-  mDataSourceManagerNonModal->setChecked( mSettings->value( "/qgis/dataSourceManagerNonModal", false ).toBool() );
+  mDataSourceManagerNonModal->setChecked( mSettings->value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), false ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() );
   cbxAttributeTableDocked->setChecked( mSettings->value( QStringLiteral( "/qgis/dockAttributeTable" ), false ).toBool() );
   cbxAddPostgisDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() );
@@ -1964,7 +1964,7 @@ void QgsOptions::loadGdalDriverList()
 
     // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
     // TODO add same UI for vector drivers
-    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != "YES" )
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != QLatin1String( "YES" ) )
       continue;
 
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
@@ -2354,5 +2354,35 @@ void QgsOptions::setZoomFactorValue()
 
 void QgsOptions::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#options" ) );
+  QWidget *activeTab = mOptionsStackedWidget->currentWidget();
+  QString link;
+
+  // give first priority to created pages which have specified a help key
+  for ( const QgsOptionsPageWidget *widget : qgsAsConst( mAdditionalOptionWidgets ) )
+  {
+    if ( widget == activeTab )
+    {
+      link = widget->helpKey();
+      break;
+    }
+  }
+
+  if ( link.isEmpty() )
+  {
+    link = QStringLiteral( "introduction/qgis_configuration.html" );
+
+    if ( activeTab == mOptionsPageAuth )
+    {
+      link = QStringLiteral( "auth_system/index.html" );
+    }
+    else if ( activeTab == mOptionsPageVariables )
+    {
+      link = QStringLiteral( "introduction/general_tools.html#variables" );
+    }
+    else if ( activeTab == mOptionsPageCRS )
+    {
+      link = QStringLiteral( "working_with_projections/working_with_projections.html" );
+    }
+  }
+  QgsHelp::openHelp( link );
 }

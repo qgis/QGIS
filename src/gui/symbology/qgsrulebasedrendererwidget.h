@@ -33,7 +33,7 @@ struct QgsRuleBasedRendererCount SIP_SKIP
   int count; // number of features
   int duplicateCount; // number of features present also in other rule(s)
   // map of feature counts in other rules
-  QMap<QgsRuleBasedRenderer::Rule *, int> duplicateCountMap;
+  QHash<QgsRuleBasedRenderer::Rule *, int> duplicateCountMap;
 };
 
 /** \ingroup gui
@@ -232,7 +232,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsVectorLayer *mLayer = nullptr;
 
     QgsSymbolSelectorWidget *mSymbolSelector = nullptr;
-    QgsSymbol *mSymbol; // a clone of original symbol
+    QgsSymbol *mSymbol = nullptr; // a clone of original symbol
 
     QgsSymbolWidgetContext mContext;
 };

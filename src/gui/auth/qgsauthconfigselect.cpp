@@ -34,8 +34,7 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   , mDataProvider( dataprovider )
   , mConfigs( QgsAuthMethodConfigsMap() )
   , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -253,8 +252,7 @@ QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &data
   , mDataUri( QString() )
   , mDataUriOrig( QString() )
   , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

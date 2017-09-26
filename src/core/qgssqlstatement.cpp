@@ -198,7 +198,10 @@ class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
   public:
     typedef QPair<QString, QString> TableColumnPair;
 
-    QgsSQLStatementCollectTableNames() {}
+    /**
+     * Constructor for QgsSQLStatementCollectTableNames.
+     */
+    QgsSQLStatementCollectTableNames() = default;
 
     void visit( const QgsSQLStatement::NodeColumnRef &n ) override;
     void visit( const QgsSQLStatement::NodeTableDef &n ) override;
@@ -223,7 +226,7 @@ void QgsSQLStatementCollectTableNames::visit( const QgsSQLStatement::NodeTableDe
 bool QgsSQLStatement::doBasicValidationChecks( QString &errorMsgOut ) const
 {
   errorMsgOut.clear();
-  if ( mRootNode == nullptr )
+  if ( !mRootNode )
   {
     errorMsgOut = tr( "No root node" );
     return false;
@@ -582,7 +585,7 @@ QString QgsSQLStatement::NodeSelect::dump() const
     ret += ' ';
     ret += join->dump();
   }
-  if ( mWhere != nullptr )
+  if ( mWhere )
   {
     ret += QLatin1String( " WHERE " );
     ret += mWhere->dump();
@@ -619,7 +622,7 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeSelect::clone() const
   {
     newSelect->appendJoin( join->cloneThis() );
   }
-  if ( mWhere != nullptr )
+  if ( mWhere )
   {
     newSelect->setWhere( mWhere->clone() );
   }
@@ -644,7 +647,7 @@ QString QgsSQLStatement::NodeJoin::dump() const
   }
   ret += QLatin1String( "JOIN " );
   ret += mTableDef->dump();
-  if ( mOnExpr != nullptr )
+  if ( mOnExpr )
   {
     ret += QLatin1String( " ON " );
     ret += mOnExpr->dump();
@@ -672,7 +675,7 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeJoin::clone() const
 
 QgsSQLStatement::NodeJoin *QgsSQLStatement::NodeJoin::cloneThis() const
 {
-  if ( mOnExpr != nullptr )
+  if ( mOnExpr )
     return new NodeJoin( mTableDef->cloneThis(), mOnExpr->clone(), mType );
   else
     return new NodeJoin( mTableDef->cloneThis(), mUsingColumns, mType );

@@ -1796,7 +1796,7 @@ void QgsComposerMap::transformShift( double &xShift, double &yShift ) const
 QPointF QgsComposerMap::mapToItemCoords( QPointF mapCoords ) const
 {
   QPolygonF mapPoly = transformedMapPolygon();
-  if ( mapPoly.size() < 1 )
+  if ( mapPoly.empty() )
   {
     return QPointF( 0, 0 );
   }

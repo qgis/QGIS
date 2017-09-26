@@ -1194,7 +1194,7 @@ QgsSymbolLayer *QgsSimpleMarkerSymbolLayer::createFromSld( QDomElement &element 
 
   Shape shape = decodeShape( name );
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
   offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
   offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
@@ -1560,7 +1560,7 @@ QString QgsFilledMarkerSymbolLayer::layerType() const
 
 void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 {
-  if ( mFill.get() )
+  if ( mFill )
   {
     mFill->startRender( context.renderContext(), context.fields() );
   }
@@ -1570,7 +1570,7 @@ void QgsFilledMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
 
 void QgsFilledMarkerSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 {
-  if ( mFill.get() )
+  if ( mFill )
   {
     mFill->stopRender( context.renderContext() );
   }
@@ -2223,7 +2223,7 @@ QgsSymbolLayer *QgsSvgMarkerSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
     return nullptr;
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
 
   if ( mimeType != QLatin1String( "image/svg+xml" ) )
@@ -2456,8 +2456,7 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
 //////////
 
 QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, QChar chr, double pointSize, const QColor &color, double angle )
-  : mFontMetrics( nullptr )
-  , mChrWidth( 0 )
+  : mChrWidth( 0 )
 {
   mFontFamily = fontFamily;
   mChr = chr;
@@ -2884,7 +2883,7 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::createFromSld( QDomElement &element )
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( graphicElem, offset );
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
   offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );

@@ -18,7 +18,7 @@
 #include "qgsattributeform.h"
 
 QgsListWidgetWrapper::QgsListWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ):
-  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
+  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 

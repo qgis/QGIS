@@ -34,10 +34,8 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 QgsMapSettings::QgsMapSettings()
   : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
-  , mExtent()
   , mRotation( 0.0 )
   , mMagnificationFactor( 1.0 )
-  , mDestCRS()
   , mDatumTransformStore( mDestCRS )
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
@@ -46,7 +44,6 @@ QgsMapSettings::QgsMapSettings()
   , mSegmentationTolerance( M_PI_2 / 90 )
   , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
   , mValid( false )
-  , mVisibleExtent()
   , mMapUnitsPerPixel( 1 )
   , mScale( 1 )
 {

@@ -31,6 +31,7 @@
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmaptopixel.h"
+#include "qgsmetadatawidget.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
@@ -76,11 +77,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   , mDefaultGreenBand( 0 )
   , mDefaultBlueBand( 0 )
   , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
-  , mRendererWidget( nullptr )
   , mGradientHeight( 0.0 )
   , mGradientWidth( 0.0 )
   , mMapCanvas( canvas )
-  , mHistogramWidget( nullptr )
   , mMetadataFilled( false )
 {
   mGrayMinimumMaximumEstimated = true;
@@ -232,6 +231,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     // disable Histogram tab completely
     mOptsPage_Histogram->setEnabled( false );
   }
+
+  QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
+  layout->setMargin( 0 );
+  mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
+  mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  layout->addWidget( mMetadataWidget );
+  metadataFrame->setLayout( layout );
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt() );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
@@ -544,12 +550,12 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       if ( oldWidget && ( !oldRenderer || rendererName != oldRenderer->type() ) )
       {
-        if ( rendererName == "singlebandgray" )
+        if ( rendererName == QLatin1String( "singlebandgray" ) )
         {
           whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( QgsRaster::SingleBandGray, mRasterLayer->dataProvider() ) );
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
         }
-        else if ( rendererName == "multibandcolor" )
+        else if ( rendererName == QLatin1String( "multibandcolor" ) )
         {
           whileBlocking( mRasterLayer )->setRenderer( QgsApplication::rasterRendererRegistry()->defaultRendererForDrawingStyle( QgsRaster::MultiBandColor, mRasterLayer->dataProvider() ) );
           whileBlocking( mRasterLayer )->setDefaultContrastEnhancement();
@@ -604,7 +610,7 @@ void QgsRasterLayerProperties::sync()
   {
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
-    mOptionsStackedWidget->setCurrentWidget( mOptsPage_Metadata );
+    mOptionsStackedWidget->setCurrentWidget( mOptsPage_Server );
   }
 
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
@@ -830,6 +836,9 @@ void QgsRasterLayerProperties::apply()
 
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
+
+  mMetadataWidget->acceptMetadata();
+  mMetadataFilled = false;
 
   //transparency settings
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();

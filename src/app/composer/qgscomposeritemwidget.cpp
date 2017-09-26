@@ -40,10 +40,6 @@ QgsComposerConfigObject::QgsComposerConfigObject( QWidget *parent, QgsComposerOb
   connect( atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsComposerConfigObject::updateDataDefinedButtons );
 }
 
-QgsComposerConfigObject::~QgsComposerConfigObject()
-{
-}
-
 void QgsComposerConfigObject::updateDataDefinedProperty()
 {
   //match data defined button to item's data defined property
@@ -181,11 +177,6 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget *parent, QgsComposerItem *
 
   if ( mItem->composition() )
     connect( mItem->composition(), &QgsComposition::variablesChanged, this, &QgsComposerItemWidget::updateVariables );
-}
-
-QgsComposerItemWidget::~QgsComposerItemWidget()
-{
-
 }
 
 void QgsComposerItemWidget::showBackgroundGroup( bool showGroup )

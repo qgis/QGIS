@@ -73,7 +73,7 @@ QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() 
 
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
-  , mLayer( nullptr )
+
 {
   setupUi( this );
 
@@ -99,11 +99,6 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mFieldType = DataType::Numeric;
   mPreviousFieldType = DataType::Numeric;
   refreshStatisticsMenu();
-}
-
-QgsStatisticalSummaryDockWidget::~QgsStatisticalSummaryDockWidget()
-{
-
 }
 
 void QgsStatisticalSummaryDockWidget::refreshStatistics()

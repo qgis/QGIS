@@ -246,7 +246,7 @@ class CORE_EXPORT QgsJsonUtils
      * to speed up exporting the attributes for multiple features from the same layer.
      */
     static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
-                                     QVector<QVariant> attributeWidgetCaches = QVector<QVariant>() );
+                                     const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 
     /** Parse a simple array (depth=1).
      * \param json the JSON to parse

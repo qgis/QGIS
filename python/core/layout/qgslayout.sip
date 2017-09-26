@@ -8,7 +8,7 @@
 
 
 
-class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
+class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoObjectInterface
 {
 %Docstring
  Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
@@ -39,8 +39,6 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
  called on the new layout.
 %End
 
-    ~QgsLayout();
-
     void initializeDefaults();
 %Docstring
  Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
@@ -65,6 +63,14 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
 %Docstring
  Sets the layout's name.
 .. seealso:: name()
+%End
+
+
+    QgsLayoutItem *itemByUuid( const QString &uuid );
+%Docstring
+ Returns the layout item with matching ``uuid`` unique identifier, or a None
+ if a matching item could not be found.
+ :rtype: QgsLayoutItem
 %End
 
     void setUnits( QgsUnitTypes::LayoutUnit units );
@@ -246,6 +252,32 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator
  Adds an ``item`` to the layout. This should be called instead of the base class addItem()
  method. Ownership of the item is transferred to the layout.
 %End
+
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Returns the layout's state encapsulated in a DOM element.
+.. seealso:: readXml()
+ :rtype: QDomElement
+%End
+
+    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+ Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
+.. seealso:: writeXml()
+ :rtype: bool
+%End
+
+    QgsLayoutUndoStack *undoStack();
+%Docstring
+ Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
+ and it's associated objects.
+ :rtype: QgsLayoutUndoStack
+%End
+
+
+    virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = 0 ) /Factory/;
+
+
 
   public slots:
 

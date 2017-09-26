@@ -204,6 +204,7 @@ class QgsUserProfileManager : QObject
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

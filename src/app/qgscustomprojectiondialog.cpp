@@ -365,7 +365,6 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
     teParameters->setPlainText( QLatin1String( "" ) );
     return;
   }
-  return;
 }
 
 void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()

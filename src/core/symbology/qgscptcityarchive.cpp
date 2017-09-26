@@ -67,7 +67,8 @@ QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString 
   QgsCptCitySelectionItem *selItem = nullptr;
   QDir seldir( mBaseDir + '/' + "selections" );
   QgsDebugMsg( "populating selection from " + seldir.path() );
-  Q_FOREACH ( const QString &selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
+  const QStringList fileList = seldir.entryList( QStringList() << QStringLiteral( "*.xml" ), QDir::Files );
+  for ( const QString &selfile : fileList )
   {
     QgsDebugMsg( "file= " + seldir.path() + '/' + selfile );
     selItem = new QgsCptCitySelectionItem( nullptr, QFileInfo( selfile ).baseName(),
@@ -460,7 +461,8 @@ void QgsCptCityArchive::initArchives( bool loadAll )
   if ( loadAll )
   {
     QDir dir( baseDir );
-    Q_FOREACH ( const QString &entry, dir.entryList( QStringList( "cpt-city*" ), QDir::Dirs ) )
+    const QStringList fileList = dir.entryList( QStringList() << QStringLiteral( "cpt-city*" ), QDir::Dirs );
+    for ( const QString &entry : fileList )
     {
       if ( QFile::exists( baseDir + '/' + entry + "/VERSION.xml" ) )
         archivesMap[ entry ] = baseDir + '/' + entry;

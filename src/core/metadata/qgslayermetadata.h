@@ -438,6 +438,13 @@ class CORE_EXPORT QgsLayerMetadata
     QgsLayerMetadata::ConstraintList constraints() const;
 
     /**
+     * Adds an individual constraint to the existing constraints.
+     * \see constraints()
+     * \see setConstraints()
+     */
+    void addConstraint( const QgsLayerMetadata::Constraint &constraint );
+
+    /**
      * Sets the list of \a constraints associated with using the resource.
      * \see constraints()
      */
@@ -687,6 +694,23 @@ class CORE_EXPORT QgsLayerMetadata
      * \see saveToLayer()
      */
     void readFromLayer( const QgsMapLayer *layer );
+
+    /**
+     * Sets state from Dom document
+     * \param metadataElement The Dom element corresponding to ``resourceMetadata'' tag
+     *
+     * \returns true if successful
+     */
+    bool readMetadataXml( const QDomElement &metadataElement );
+
+    /**
+     * Stores state in Dom node
+     * \param metadataElement is a Dom element corresponding to ``resourceMetadata'' tag
+     * \param document is a the dom document being written
+     *
+     * \returns true if successful
+     */
+    bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
   private:
 

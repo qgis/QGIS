@@ -39,21 +39,13 @@ from qgis.core import (QgsFeatureRequest,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsSpatialIndex,
-                       QgsProcessingParameterField)
+                       QgsProcessingParameterField,
+                       QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
-
-wkbTypeGroups = {
-    'Point': (QgsWkbTypes.Point, QgsWkbTypes.MultiPoint, QgsWkbTypes.Point25D, QgsWkbTypes.MultiPoint25D,),
-    'LineString': (QgsWkbTypes.LineString, QgsWkbTypes.MultiLineString, QgsWkbTypes.LineString25D, QgsWkbTypes.MultiLineString25D,),
-    'Polygon': (QgsWkbTypes.Polygon, QgsWkbTypes.MultiPolygon, QgsWkbTypes.Polygon25D, QgsWkbTypes.MultiPolygon25D,),
-}
-for key, value in list(wkbTypeGroups.items()):
-    for const in value:
-        wkbTypeGroups[const] = key
 
 
 class Intersection(QgisAlgorithm):
@@ -131,12 +123,10 @@ class Intersection(QgisAlgorithm):
             fieldListB = sourceB.fields()
             field_indices_b = [i for i in range(0, fieldListB.count())]
 
-        fieldListB = vector.testForUniqueness(fieldListA, fieldListB)
-        for b in fieldListB:
-            fieldListA.append(b)
+        output_fields = QgsProcessingUtils.combineFields(fieldListA, fieldListB)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fieldListA, geomType, sourceA.sourceCrs())
+                                               output_fields, geomType, sourceA.sourceCrs())
 
         outFeat = QgsFeature()
         indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
@@ -186,7 +176,8 @@ class Intersection(QgisAlgorithm):
                                     'more input features have invalid '
                                     'geometry.'))
                     try:
-                        if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
+                        if QgsWkbTypes.geometryType(int_geom.wkbType()) == QgsWkbTypes.geometryType(geomType):
+                            int_geom.convertToMultiType()
                             outFeat.setGeometry(int_geom)
                             outFeat.setAttributes(out_attributes)
                             sink.addFeature(outFeat, QgsFeatureSink.FastInsert)

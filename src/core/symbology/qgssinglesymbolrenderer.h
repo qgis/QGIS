@@ -20,8 +20,7 @@
 #include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgsexpression.h"
-
-class QgsDataDefinedSizeLegend;
+#include "qgsdatadefinedsizelegend.h"
 
 /** \ingroup core
  * \class QgsSingleSymbolRenderer
@@ -31,7 +30,6 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsSingleSymbolRenderer( QgsSymbol *symbol SIP_TRANSFER );
-    ~QgsSingleSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;

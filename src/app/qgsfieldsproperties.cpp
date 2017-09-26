@@ -45,9 +45,7 @@
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
-  , mDesignerTree( nullptr )
-  , mFieldsList( nullptr )
-  , mRelationsList( nullptr )
+
 {
   if ( !layer )
     return;
@@ -399,9 +397,9 @@ void QgsFieldsProperties::loadRelations()
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         nmCombo->addItem( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
 
-      const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relation.id() );
+      const QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
-      const QVariant nmrelcfg = setup.config().value( QStringLiteral( "nm-rel" ) );
+      const QVariant nmrelcfg =  editFormConfig.widgetConfig( relation.id() ).value( QStringLiteral( "nm-rel" ) );
 
       int idx =  nmCombo->findData( nmrelcfg.toString() );
 
@@ -1084,12 +1082,12 @@ QgsFieldsProperties::FieldConfig::FieldConfig()
   , mLabelOnTop( false )
   , mConstraints( 0 )
   , mConstraintDescription( QString() )
-  , mButton( nullptr )
+
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
-  : mButton( nullptr )
+
 {
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin

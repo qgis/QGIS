@@ -73,6 +73,7 @@ SET(QGIS_CORE_SRCS
 
   metadata/qgslayermetadata.cpp
   metadata/qgslayermetadatavalidator.cpp
+  metadata/qgslayermetadataformatter.cpp
 
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
@@ -92,6 +93,10 @@ SET(QGIS_CORE_SRCS
   expression/qgsexpressionnodeimpl.cpp
   expression/qgsexpressionfunction.cpp
   expression/qgsexpressionutils.cpp
+
+  locator/qgslocator.cpp
+  locator/qgslocatorfilter.cpp
+  locator/qgslocatormodel.cpp
 
   processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
@@ -296,6 +301,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerrenderer.cpp
   qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
+  qgsvectorlayerundopassthroughcommand.cpp
   qgsvectorlayerutils.cpp
   qgsvectorsimplifymethod.cpp
   qgsvirtuallayerdefinition.cpp
@@ -359,14 +365,19 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitempage.cpp
   layout/qgslayoutitemregistry.cpp
   layout/qgslayoutitemshape.cpp
+  layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
+  layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsnapper.cpp
+  layout/qgslayoutundocommand.cpp
+  layout/qgslayoutundostack.cpp
   layout/qgslayoututils.cpp
   layout/qgspagesizeregistry.cpp
   layout/qgslayoutpoint.cpp
+  layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsize.cpp
 
   pal/costcalculator.cpp
@@ -453,7 +464,6 @@ SET(QGIS_CORE_SRCS
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
 
-
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
@@ -461,6 +471,9 @@ SET(QGIS_CORE_SRCS
   fieldformatter/qgsrelationreferencefieldformatter.cpp
   fieldformatter/qgsvaluemapfieldformatter.cpp
   fieldformatter/qgsvaluerelationfieldformatter.cpp
+
+  geocms/geonode/qgsgeonodeconnection.cpp
+  geocms/geonode/qgsgeonoderequest.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -549,6 +562,7 @@ ENDIF(NOT MSVC)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
+  qgsactionmanager.h
   qgsactionscoperegistry.h
   qgsanimatedicon.h
   qgsbrowsermodel.h
@@ -660,11 +674,16 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
+  locator/qgslocator.h
+  locator/qgslocatorfilter.h
+  locator/qgslocatormodel.h
+
   processing/qgsnativealgorithms.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h
   processing/qgsprocessingregistry.h
+  processing/models/qgsprocessingmodelalgorithm.h
 
   providers/memory/qgsmemoryprovider.h
 
@@ -675,6 +694,8 @@ SET(QGIS_CORE_MOC_HDRS
   raster/qgsrasterlayerrenderer.h
 
   geometry/qgspoint.h
+
+  geocms/geonode/qgsgeonoderequest.h
 
   gps/qgsgpsconnection.h
   gps/qgsgpsdetector.h
@@ -702,6 +723,7 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreemodellegendnode.h
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
+
   qgsuserprofilemanager.h
 )
 
@@ -887,6 +909,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerlabeling.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
+  qgsvectorlayerundopassthroughcommand.h
   qgsvectorlayerutils.h
   qgsvectorsimplifymethod.h
   qgsvirtuallayerdefinition.h
@@ -935,16 +958,21 @@ SET(QGIS_CORE_HDRS
 
   layout/qgslayoutcontext.h
   layout/qgslayoutgridsettings.h
+  layout/qgslayoutitemundocommand.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
+  layout/qgslayoutserializableobject.h
   layout/qgslayoutsize.h
   layout/qgslayoutsnapper.h
+  layout/qgslayoutundocommand.h
+  layout/qgslayoutundostack.h
   layout/qgslayoututils.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
+  metadata/qgslayermetadataformatter.h
 
   processing/qgsprocessing.h
   processing/qgsprocessingalgorithm.h
@@ -952,7 +980,6 @@ SET(QGIS_CORE_HDRS
   processing/qgsprocessingoutputs.h
   processing/qgsprocessingparameters.h
   processing/qgsprocessingutils.h
-  processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h
   processing/models/qgsprocessingmodelchildparametersource.h
   processing/models/qgsprocessingmodelcomponent.h
@@ -1036,6 +1063,8 @@ SET(QGIS_CORE_HDRS
 
   layertree/qgslayertreeutils.h
 
+  locator/qgslocatorcontext.h
+
   geometry/qgsabstractgeometry.h
   geometry/qgsbox3d.h
   geometry/qgscircularstring.h
@@ -1075,6 +1104,8 @@ SET(QGIS_CORE_HDRS
   fieldformatter/qgsvaluemapfieldformatter.h
   fieldformatter/qgsvaluerelationfieldformatter.h
 
+  geocms/geonode/qgsgeonodeconnection.h
+
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
 )
@@ -1089,6 +1120,7 @@ ENDIF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${LIBZIP_INCLUDE_DIR}
   annotations
   auth
   composer
@@ -1097,8 +1129,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   fieldformatter
   geometry
+  geocms
+  geocms/geonode
   layertree
   layout
+  locator
   metadata
   pal
   processing

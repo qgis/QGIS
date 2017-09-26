@@ -67,6 +67,11 @@ double QgsPieDiagram::legendSize( double value, const QgsDiagramSettings &s, con
   return std::max( size.width(), size.height() );
 }
 
+QString QgsPieDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_PIE;
+}
+
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   Q_UNUSED( c );

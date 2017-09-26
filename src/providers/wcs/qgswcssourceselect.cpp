@@ -196,13 +196,13 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
   QList<SupportedFormat> formats;
 
-  QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
-  Q_FOREACH ( const QString &mime, mimes.keys() )
+  const QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
+  for ( auto it = mimes.constBegin(); it != mimes.constEnd(); ++it )
   {
-    SupportedFormat format = { mime, mimes.value( mime ) };
+    SupportedFormat format = { it.key(), it.value() };
 
     // prefer tiff
-    if ( mime == QLatin1String( "image/tiff" ) )
+    if ( it.key() == QLatin1String( "image/tiff" ) )
     {
       formats.prepend( format );
     }

@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutSnapper
+class QgsLayoutSnapper: QgsLayoutSerializableObject
 {
 %Docstring
  Manages snapping grids and preset snap lines in a layout, and handles
@@ -25,6 +25,10 @@ class QgsLayoutSnapper
 %Docstring
  Constructor for QgsLayoutSnapper, attached to the specified ``layout``.
 %End
+
+    virtual QString stringType() const;
+    virtual QgsLayout *layout();
+
 
     void setSnapTolerance( const int snapTolerance );
 %Docstring
@@ -104,6 +108,22 @@ class QgsLayoutSnapper
  If snapToGrid() is disabled, this method will return the point
  unchanged.
  :rtype: float
+%End
+
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+%Docstring
+ Stores the snapper's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+.. seealso:: readXml()
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+%Docstring
+ Sets the snapper's state from a DOM element. snapperElement is the DOM node corresponding to the snapper.
+.. seealso:: writeXml()
+ :rtype: bool
 %End
 
 };

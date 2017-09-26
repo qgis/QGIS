@@ -16,18 +16,19 @@
 #include "sqlite3.h"
 
 #include "qgsgeopackagedataitems.h"
-#include "qgsgeopackageconnection.h"
+#include "qgsogrdbconnection.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsogrprovider.h"
+#include "qgsogrdataitems.h"
 #include "qgsnewgeopackagelayerdialog.h"
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsgeopackagerasterwritertask.h"
-#include "gdal.h"
+#include "qgstaskmanager.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -46,7 +47,7 @@ QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path,
   return nullptr;
 }
 
-QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, QString name, QString path )
+QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
@@ -54,18 +55,13 @@ QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, QString name,
   populate();
 }
 
-QgsGeoPackageRootItem::~QgsGeoPackageRootItem()
-{
-
-}
-
 QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-
-  Q_FOREACH ( const QString &connName, QgsGeoPackageConnection::connectionList() )
+  const QStringList connList( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ) );
+  for ( const QString &connName : connList )
   {
-    QgsGeoPackageConnection connection( connName );
+    QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
     QgsDataItem *conn = new QgsGeoPackageConnectionItem( this, connection.name(), connection.uri().encodedUri() );
 
     connections.append( conn );
@@ -74,15 +70,15 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageRootItem::actions()
+QList<QAction *> QgsGeoPackageRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsGeoPackageRootItem::newConnection );
   lst.append( actionNew );
 
-  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), this );
+  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), parent );
   connect( actionCreateDatabase, &QAction::triggered, this, &QgsGeoPackageRootItem::createDatabase );
   lst.append( actionCreateDatabase );
 
@@ -95,16 +91,17 @@ QWidget *QgsGeoPackageRootItem::paramWidget()
 }
 #endif
 
-void QgsGeoPackageRootItem::connectionsChanged()
+void QgsGeoPackageRootItem::onConnectionsChanged()
 {
   refresh();
 }
 
 void QgsGeoPackageRootItem::newConnection()
 {
-  // TODO use QgsFileWidget
-  QString path = QFileDialog::getOpenFileName( nullptr, tr( "Open GeoPackage" ), "", tr( "GeoPackage Database (*.gpkg)" ) );
-  storeConnection( path );
+  if ( QgsOgrDataCollectionItem::createConnection( QStringLiteral( "GeoPackage" ),  QStringLiteral( "GeoPackage Database (*.gpkg)" ),  QStringLiteral( "GPKG" ) ) )
+  {
+    refreshConnections();
+  }
 }
 
 
@@ -115,200 +112,79 @@ void QgsGeoPackageRootItem::createDatabase()
   dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
   if ( dialog.exec() == QDialog::Accepted )
   {
-    storeConnection( dialog.databasePath() );
+    if ( QgsOgrDataCollectionItem::storeConnection( dialog.databasePath(), QStringLiteral( "GPKG" ) ) )
+    {
+      refreshConnections();
+    }
   }
 }
 #endif
 
-bool QgsGeoPackageRootItem::storeConnection( const QString &path )
-{
-  QFileInfo fileInfo( path );
-  QString connName = fileInfo.fileName();
-  if ( ! path.isEmpty() )
-  {
-    bool ok = true;
-    while ( ok && ! QgsGeoPackageConnection( connName ).path( ).isEmpty( ) )
-    {
 
-      connName = QInputDialog::getText( nullptr, tr( "Cannot add connection '%1'" ).arg( connName ),
-                                        tr( "A connection with the same name already exists,\nplease provide a new name:" ), QLineEdit::Normal,
-                                        QLatin1String( "" ), &ok );
-    }
-    if ( ok && ! connName.isEmpty() )
-    {
-      QgsGeoPackageConnection connection( connName );
-      connection.setPath( path );
-      connection.save();
-      refreshConnections();
-      return true;
-    }
-  }
-  return false;
-}
-
-
-QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, QString name, QString path )
+QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
   , mPath( path )
 {
+  mToolTip = path;
   mCapabilities |= Collapse;
 }
 
-QVector<QgsDataItem *> QgsGeoPackageConnectionItem::createChildren()
+
+
+QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-
-  // Vector layers
-  QgsVectorLayer layer( mPath, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ) );
-  if ( ! layer.isValid( ) )
+  const auto layers = QgsOgrLayerItem::subLayers( mPath, QStringLiteral( "GPKG" ) );
+  for ( const QgsOgrDbLayerInfo *info : layers )
   {
-    QgsDebugMsgLevel( tr( "Layer is not a valid GeoPackage Vector layer %1" ).arg( mPath ), 3 );
-  }
-  else
-  {
-    // Collect mixed-geom layers
-    QMultiMap<int, QStringList> subLayers;
-    Q_FOREACH ( const QString &descriptor, layer.dataProvider()->subLayers( ) )
+    if ( info->layerType() == QgsLayerItem::LayerType::Raster )
     {
-      QStringList pieces = descriptor.split( ':' );
-      subLayers.insert( pieces[0].toInt(), pieces );
-    }
-    int prevIdx = -1;
-    Q_FOREACH ( const int &idx, subLayers.keys( ) )
-    {
-      if ( idx == prevIdx )
-      {
-        continue;
-      }
-      prevIdx = idx;
-      QList<QStringList> values = subLayers.values( idx );
-      for ( int i = 0; i < values.size(); ++i )
-      {
-        QStringList pieces = values.at( i );
-        QString layerId = pieces[0];
-        QString name = pieces[1];
-        // QString featuresCount = pieces[2]; // Not used
-        QString geometryType = pieces[3];
-        QgsLayerItem::LayerType layerType;
-        layerType = layerTypeFromDb( geometryType );
-        // example URI for mixed-geoms geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=7|geometrytype=Point'
-        // example URI for mixed-geoms attr table:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layername=MyLayer|layerid=7'
-        // example URI for single geoms:    '/path/gdal_sample_v1.2_no_extensions.gpkg|layerid=6'
-        QString uri;
-        // Check if it's a mixed geometry type
-        if ( i == 0 && values.size() > 1 )
-        {
-          uri = QStringLiteral( "%1|layerid=%2|layername=%3" ).arg( mPath, layerId, name );
-          QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, QgsLayerItem::LayerType::TableLayer );
-          children.append( item );
-        }
-        if ( layerType != QgsLayerItem::LayerType::NoType )
-        {
-          if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
-          {
-            QgsDebugMsgLevel( QStringLiteral( "Layer %1 is a geometry collection: skipping %2" ).arg( name, mPath ), 3 );
-          }
-          else
-          {
-            if ( values.size() > 1 )
-            {
-              uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( mPath, layerId, geometryType );
-            }
-            else
-            {
-              uri = QStringLiteral( "%1|layerid=%2" ).arg( mPath, layerId );
-            }
-            QgsGeoPackageVectorLayerItem *item = new QgsGeoPackageVectorLayerItem( this, name, mPath, uri, layerType );
-            QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
-            children.append( item );
-          }
-        }
-        else
-        {
-          QgsDebugMsgLevel( QStringLiteral( "Layer type is not a supported GeoPackage Vector layer %1" ).arg( mPath ), 3 );
-        }
-        QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Vector item %1 %2 %3" ).arg( name, uri, geometryType ), 3 );
-      }
-    }
-  }
-  // Raster layers
-  QgsRasterLayer rlayer( mPath, QStringLiteral( "gdal_tmp" ), QStringLiteral( "gdal" ), false );
-  if ( rlayer.dataProvider()->subLayers( ).size() > 0 )
-  {
-    Q_FOREACH ( const QString &uri, rlayer.dataProvider()->subLayers( ) )
-    {
-      QStringList pieces = uri.split( ':' );
-      QString name = pieces.value( pieces.length() - 1 );
-      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
-      QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
-      children.append( item );
-    }
-  }
-  else if ( rlayer.isValid( ) )
-  {
-    // Get the identifier
-    GDALAllRegister();
-    // do not print errors, but write to debug
-    CPLPushErrorHandler( CPLQuietErrorHandler );
-    CPLErrorReset();
-    GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_ReadOnly );
-    CPLPopErrorHandler();
-
-    if ( ! hDS )
-    {
-      QgsDebugMsg( QString( "GDALOpen error # %1 : %2 " ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
-
+      children.append( new QgsGeoPackageRasterLayerItem( this, info->name(), info->path(), info->uri() ) );
     }
     else
     {
-      QString uri( QStringLiteral( "GPKG:%1" ).arg( mPath ) );
-      QString name = GDALGetMetadataItem( hDS, "IDENTIFIER", NULL );
-      GDALClose( hDS );
-      // Fallback: will not be able to delete the table
-      if ( name.isEmpty() )
-      {
-        name = QFileInfo( mPath ).fileName();
-      }
-      else
-      {
-        uri += QStringLiteral( ":%1" ).arg( name );
-      }
-
-      QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, mPath ), 3 );
-      QgsGeoPackageRasterLayerItem *item = new QgsGeoPackageRasterLayerItem( this, name, mPath, uri );
-      children.append( item );
+      children.append( new QgsGeoPackageVectorLayerItem( this, info->name(), info->path(), info->uri(), info->layerType( ) ) );
     }
   }
+  qDeleteAll( layers );
   return children;
-
 }
 
-bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
+bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
 {
   if ( type() != other->type() )
   {
     return false;
   }
-  const QgsGeoPackageConnectionItem *o = dynamic_cast<const QgsGeoPackageConnectionItem *>( other );
+  const QgsGeoPackageCollectionItem *o = dynamic_cast<const QgsGeoPackageCollectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
 
 }
 
 #ifdef HAVE_GUI
 
-QList<QAction *> QgsGeoPackageConnectionItem::actions()
+QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionDeleteConnection = new QAction( tr( "Remove connection" ), this );
-  connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
-  lst.append( actionDeleteConnection );
+  if ( QgsOgrDbConnection::connectionList( QStringLiteral( "GPKG" ) ).contains( mName ) )
+  {
+    QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), parent );
+    connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
+    lst.append( actionDeleteConnection );
+  }
+  else
+  {
+    // Add to stored connections
+    QAction *actionAddConnection = new QAction( tr( "Add Connection" ), parent );
+    connect( actionAddConnection, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addConnection );
+    lst.append( actionAddConnection );
+  }
 
   // Add table to existing DB
-  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), this );
-  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
+  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), parent );
+  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addTable );
   lst.append( actionAddTable );
-
 
   return lst;
 }
@@ -316,7 +192,7 @@ QList<QAction *> QgsGeoPackageConnectionItem::actions()
 
 
 
-bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
+bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
 
   if ( !QgsMimeDataUtils::isUriList( data ) )
@@ -327,8 +203,12 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   QStringList importResults;
   bool hasError = false;
 
-  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  Q_FOREACH ( const QgsMimeDataUtils::Uri &dropUri, lst )
+  // Main task
+  std::unique_ptr< QgsConcurrentFileWriterImportTask > mainTask( new QgsConcurrentFileWriterImportTask( tr( "GeoPackage import" ) ) );
+  QgsTaskList importTasks;
+
+  const auto lst = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &dropUri : lst )
   {
     // Check that we are not copying over self
     if ( dropUri.uri.startsWith( mPath ) )
@@ -369,9 +249,8 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
 
         // check if the destination layer already exists
         bool exists = false;
-        // Q_FOREACH won't detach ...
-        const QVector< QgsDataItem *> c = children();
-        for ( const auto child : c )
+        const auto c( children() );
+        for ( const QgsDataItem *child : c )
         {
           if ( child->name() == dropUri.name )
           {
@@ -389,10 +268,11 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
             options.insert( QStringLiteral( "layerName" ), dropUri.name );
-
-            std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner ) );
+            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner ) ;
+            mainTask->addSubTask( exportTask, importTasks );
+            importTasks << exportTask;
             // when export is successful:
-            connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
+            connect( exportTask, &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
             {
               // this is gross - TODO - find a way to get access to messageBar from data items
               QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
@@ -400,7 +280,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             } );
 
             // when an error occurs:
-            connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+            connect( exportTask, &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
             {
               if ( error != QgsVectorLayerExporter::ErrUserCanceled )
               {
@@ -411,14 +291,14 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
               }
             } );
 
-            QgsApplication::taskManager()->addTask( exportTask.release() );
           }
           else  // Import raster
           {
-
-            std::unique_ptr< QgsGeoPackageRasterWriterTask > exportTask( new QgsGeoPackageRasterWriterTask( dropUri, mPath ) );
+            QgsGeoPackageRasterWriterTask  *exportTask = new QgsGeoPackageRasterWriterTask( dropUri, mPath ) ;
+            mainTask->addSubTask( exportTask, importTasks );
+            importTasks << exportTask;
             // when export is successful:
-            connect( exportTask.get(), &QgsGeoPackageRasterWriterTask::writeComplete, this, [ = ]()
+            connect( exportTask, &QgsGeoPackageRasterWriterTask::writeComplete, this, [ = ]()
             {
               // this is gross - TODO - find a way to get access to messageBar from data items
               QMessageBox::information( nullptr, tr( "Import to GeoPackage database" ), tr( "Import was successful." ) );
@@ -426,7 +306,7 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             } );
 
             // when an error occurs:
-            connect( exportTask.get(), &QgsGeoPackageRasterWriterTask::errorOccurred, this, [ = ]( QgsGeoPackageRasterWriter::WriterError error, const QString & errorMessage )
+            connect( exportTask, &QgsGeoPackageRasterWriterTask::errorOccurred, this, [ = ]( QgsGeoPackageRasterWriter::WriterError error, const QString & errorMessage )
             {
               if ( error != QgsGeoPackageRasterWriter::WriterError::ErrUserCanceled )
               {
@@ -441,7 +321,6 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
               deleteGeoPackageRasterLayer( QStringLiteral( "GPKG:%1:%2" ).arg( mPath, dropUri.name ), deleteErr );
             } );
 
-            QgsApplication::taskManager()->addTask( exportTask.release() );
           }
         } // do not overwrite
       }
@@ -460,37 +339,15 @@ bool QgsGeoPackageConnectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QStringLiteral( "\n" ) ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
+  if ( ! importTasks.isEmpty() )
+  {
+    QgsApplication::taskManager()->addTask( mainTask.release() );
+  }
   return true;
 }
 
 
-QgsLayerItem::LayerType QgsGeoPackageConnectionItem::layerTypeFromDb( const QString &geometryType )
-{
-  if ( geometryType.contains( QStringLiteral( "Point" ), Qt::CaseInsensitive ) )
-  {
-    return QgsLayerItem::LayerType::Point;
-  }
-  else if ( geometryType.contains( QStringLiteral( "Polygon" ), Qt::CaseInsensitive ) )
-  {
-    return QgsLayerItem::LayerType::Polygon;
-  }
-  else if ( geometryType.contains( QStringLiteral( "LineString" ), Qt::CaseInsensitive ) )
-  {
-    return QgsLayerItem::LayerType::Line;
-  }
-  else if ( geometryType.contains( QStringLiteral( "Collection" ), Qt::CaseInsensitive ) )
-  {
-    return QgsLayerItem::LayerType::Vector;
-  }
-  // To be moved in a parent class that would also work for gdal and rasters
-  else if ( geometryType.contains( QStringLiteral( "Raster" ), Qt::CaseInsensitive ) )
-  {
-    return QgsLayerItem::LayerType::Raster;
-  }
-  return QgsLayerItem::LayerType::TableLayer;
-}
-
-bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri, QString &errCause )
+bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &uri, QString &errCause )
 {
   bool result = false;
   // Better safe than sorry
@@ -506,7 +363,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
       QString baseUri = pieces.at( 1 );
       QString layerName = pieces.at( 2 );
       sqlite3 *handle;
-      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
+      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
       if ( status != SQLITE_OK )
       {
         errCause = sqlite3_errmsg( handle );
@@ -527,8 +384,8 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
         status = sqlite3_exec(
                    handle,                              /* An open database */
                    sql,                                 /* SQL to be evaluated */
-                   NULL,                                /* Callback function */
-                   NULL,                                /* 1st argument to callback */
+                   nullptr,                                /* Callback function */
+                   nullptr,                                /* 1st argument to callback */
                    &errmsg                              /* Error msg written here */
                  );
         sqlite3_free( sql );
@@ -536,7 +393,7 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
         QStringList optionalTables;
         optionalTables << QStringLiteral( "gpkg_extensions" )
                        << QStringLiteral( "gpkg_metadata_reference" );
-        Q_FOREACH ( const QString &tableName, optionalTables )
+        for ( const QString &tableName : qgsAsConst( optionalTables ) )
         {
           char *sql = sqlite3_mprintf( "DELETE FROM %w WHERE table_name = '%q'",
                                        tableName.toUtf8().constData(),
@@ -544,9 +401,9 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
+            nullptr,                                /* Callback function */
+            nullptr,                                /* 1st argument to callback */
+            nullptr                                 /* Error msg written here */
           );
           sqlite3_free( sql );
         }
@@ -557,9 +414,9 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
+            nullptr,                                /* Callback function */
+            nullptr,                                /* 1st argument to callback */
+            nullptr                                 /* Error msg written here */
           );
           sqlite3_free( sql );
         }
@@ -569,9 +426,9 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           ( void )sqlite3_exec(
             handle,                              /* An open database */
             sql,                                 /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
+            nullptr,                                /* Callback function */
+            nullptr,                                /* 1st argument to callback */
+            nullptr                                 /* Error msg written here */
           );
           sqlite3_free( sql );
         }
@@ -580,9 +437,9 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
           ( void )sqlite3_exec(
             handle,                              /* An open database */
             "VACUUM",                            /* SQL to be evaluated */
-            NULL,                                /* Callback function */
-            NULL,                                /* 1st argument to callback */
-            NULL                                 /* Error msg written here */
+            nullptr,                                /* Callback function */
+            nullptr,                                /* 1st argument to callback */
+            nullptr                                 /* Error msg written here */
           );
         }
 
@@ -607,27 +464,61 @@ bool QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( const QString uri
   return result;
 }
 
-
-void QgsGeoPackageConnectionItem::deleteConnection()
+QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
+  : QgsGeoPackageCollectionItem( parent, name, path )
 {
-  QgsGeoPackageConnection::deleteConnection( name() );
-  mParent->refreshConnections();
+
+}
+
+bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
+{
+  if ( type() != other->type() )
+  {
+    return false;
+  }
+  const QgsGeoPackageConnectionItem *o = dynamic_cast<const QgsGeoPackageConnectionItem *>( other );
+  return o && mPath == o->mPath && mName == o->mName;
+
 }
 
 #ifdef HAVE_GUI
-void QgsGeoPackageConnectionItem::addTable()
+QList<QAction *> QgsGeoPackageConnectionItem::actions( QWidget *parent )
+{
+  QList<QAction *> lst;
+
+  QAction *actionDeleteConnection = new QAction( tr( "Remove Connection" ), parent );
+  connect( actionDeleteConnection, &QAction::triggered, this, &QgsGeoPackageConnectionItem::deleteConnection );
+  lst.append( actionDeleteConnection );
+
+  // Add table to existing DB
+  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table..." ), parent );
+  connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageConnectionItem::addTable );
+  lst.append( actionAddTable );
+
+
+  return lst;
+}
+
+void QgsGeoPackageCollectionItem::deleteConnection()
+{
+  QgsOgrDbConnection::deleteConnection( name(), QStringLiteral( "GPKG" ) );
+  mParent->refreshConnections();
+}
+
+
+void QgsGeoPackageCollectionItem::addTable()
 {
   QgsNewGeoPackageLayerDialog dialog( nullptr );
   QFileInfo fileInfo( mPath );
   QString connName = fileInfo.fileName();
-  QgsGeoPackageConnection connection( connName );
+  QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
   if ( ! connection.path().isEmpty() )
   {
     dialog.setDatabasePath( connection.path() );
     dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-    if ( dialog.exec() == QMessageBox::Ok )
+    if ( dialog.exec() == QDialog::Accepted )
     {
-      mParent->refreshConnections();
+      refreshConnections();
     }
   }
   else
@@ -635,13 +526,22 @@ void QgsGeoPackageConnectionItem::addTable()
     QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exists or the path is empy!" ).arg( connName ) );
   }
 }
+
+void QgsGeoPackageCollectionItem::addConnection()
+{
+  QgsOgrDbConnection connection( mName, QStringLiteral( "GPKG" ) );
+  connection.setPath( mPath );
+  connection.save();
+  mParent->refreshConnections();
+}
+
 #endif
 
 #ifdef HAVE_GUI
 QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
 {
   QList<QAction *> lst;
-  QAction *actionDeleteLayer = new QAction( tr( "Delete layer '%1'..." ).arg( mName ), this );
+  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'..." ).arg( mName ), this );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsGeoPackageAbstractLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
   return lst;
@@ -652,7 +552,8 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
   // Check if the layer is in the registry
   const QgsMapLayer *projectLayer = nullptr;
-  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  const auto mapLayers( QgsProject::instance()->mapLayers() );
+  for ( const QgsMapLayer *layer :  mapLayers )
   {
     if ( layer->publicSource() == mUri )
     {
@@ -687,9 +588,10 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 
 }
 
-QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, QgsLayerItem::LayerType layerType, QString providerKey )
+QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
 {
+  mToolTip = uri;
   setState( Populated ); // no children are expected
 }
 
@@ -700,14 +602,14 @@ bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
 }
 
 
-QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType )
+QgsGeoPackageVectorLayerItem::QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, layerType, QStringLiteral( "ogr" ) )
 {
 
 }
 
 
-QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, QString name, QString path, QString uri )
+QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri )
   : QgsGeoPackageAbstractLayerItem( parent, name, path, uri, QgsLayerItem::LayerType::Raster, QStringLiteral( "gdal" ) )
 {
 
@@ -715,7 +617,7 @@ QgsGeoPackageRasterLayerItem::QgsGeoPackageRasterLayerItem( QgsDataItem *parent,
 
 bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
 {
-  return QgsGeoPackageConnectionItem::deleteGeoPackageRasterLayer( mUri, errCause );
+  return QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( mUri, errCause );
 }
 
 

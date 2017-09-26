@@ -60,7 +60,6 @@ QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   , mUsingSymbolLevels( false )
   , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
   , mCurrentVertexMarkerSize( 3 )
-  , mPaintEffect( nullptr )
   , mForceRaster( false )
   , mOrderByEnabled( false )
 {
@@ -155,7 +154,7 @@ QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   Q_UNUSED( context );
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -166,7 +165,7 @@ QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   return rendererElem;
 }
 

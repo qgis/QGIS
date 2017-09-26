@@ -75,7 +75,6 @@ from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .FixedDistanceBuffer import FixedDistanceBuffer
-from .FixGeometry import FixGeometry
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
 from .Gridify import Gridify
@@ -92,11 +91,8 @@ from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
 from .JoinAttributes import JoinAttributes
-from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
-from .MeanCoords import MeanCoords
 from .Merge import Merge
-from .MergeLines import MergeLines
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
@@ -131,7 +127,6 @@ from .RegularPoints import RegularPoints
 from .Relief import Relief
 from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
-from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
@@ -143,14 +138,13 @@ from .SetZValue import SetZValue
 from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
-from .SimplifyGeometries import SimplifyGeometries
 from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
-from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
-from .SplitWithLines import SplitWithLines
+from .SpatialJoin import SpatialJoin
+from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
@@ -166,9 +160,6 @@ from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
-# from .ExtractByLocation import ExtractByLocation
-# from .SelectByLocation import SelectByLocation
-# from .SpatialJoin import SpatialJoin
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -182,11 +173,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        # algs = [
-        #         SelectByLocation(),
-        #         ExtractByLocation(),
-        #         SpatialJoin(),
-        #         ]
         algs = [AddTableField(),
                 Aggregate(),
                 Aspect(),
@@ -222,7 +208,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FieldsPyculator(),
                 FindProjection(),
                 FixedDistanceBuffer(),
-                FixGeometry(),
                 GeometryByExpression(),
                 GeometryConvert(),
                 Gridify(),
@@ -239,11 +224,8 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoSpatialite(),
                 Intersection(),
                 JoinAttributes(),
-                LinesIntersection(),
                 LinesToPolygons(),
-                MeanCoords(),
                 Merge(),
-                MergeLines(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
@@ -278,7 +260,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Relief(),
                 ReverseLineDirection(),
                 Ruggedness(),
-                SaveSelectedFeatures(),
                 SelectByAttribute(),
                 SelectByExpression(),
                 ServiceAreaFromLayer(),
@@ -290,14 +271,13 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ShortestPathLayerToPoint(),
                 ShortestPathPointToLayer(),
                 ShortestPathPointToPoint(),
-                SimplifyGeometries(),
                 SingleSidedBuffer(),
                 Slope(),
-                Smooth(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),
-                SplitWithLines(),
+                SpatialJoin(),
+                SpatialJoinSummary(),
                 StatisticsByCategories(),
                 SumLines(),
                 SymmetricalDifference(),

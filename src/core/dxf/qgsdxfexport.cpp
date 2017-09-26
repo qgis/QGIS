@@ -656,7 +656,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 100, QStringLiteral( "AcDbSymbolTable" ) );
   writeGroup( 70, 0 );
 
-  const QStringList blockStrings = QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0";
+  const QStringList blockStrings = QStringList() << QStringLiteral( "*Model_Space" ) << QStringLiteral( "*Paper_Space" ) << QStringLiteral( "*Paper_Space0" );
   for ( const QString &block : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "BLOCK_RECORD" ) );
@@ -862,7 +862,7 @@ void QgsDxfExport::writeBlocks()
   startSection();
   writeGroup( 2, QStringLiteral( "BLOCKS" ) );
 
-  const QStringList blockStrings = QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0";
+  const QStringList blockStrings = QStringList() << QStringLiteral( "*Model_Space" ) << QStringLiteral( "*Paper_Space" ) << QStringLiteral( "*Paper_Space0" );
   for ( const QString &block : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "BLOCK" ) );
@@ -1003,7 +1003,7 @@ void QgsDxfExport::writeEntities()
     renderer->startRender( ctx, vl->fields() );
 
     QSet<QString> attributes = renderer->usedAttributes( ctx );
-    int attrIdx = mLayerNameAttribute.value( vl->id(), 1 );
+    int attrIdx = mLayerNameAttribute.value( vl->id(), -1 );
     if ( vl->fields().exists( attrIdx ) )
     {
       QString layerAttr = vl->fields().at( attrIdx ).name();
@@ -1071,7 +1071,7 @@ void QgsDxfExport::writeEntities()
       else
       {
         QgsSymbolList symbolList = renderer->symbolsForFeature( fet, ctx );
-        if ( symbolList.size() < 1 )
+        if ( symbolList.empty() )
         {
           continue;
         }
@@ -4022,7 +4022,7 @@ QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsR
 void QgsDxfExport::writeDefaultLinetypes()
 {
   // continuous (Qt solid line)
-  const QStringList blockStrings = QStringList() << "ByLayer" << "ByBlock" << "CONTINUOUS";
+  const QStringList blockStrings = QStringList() << QStringLiteral( "ByLayer" ) << QStringLiteral( "ByBlock" ) << QStringLiteral( "CONTINUOUS" );
   for ( const QString &ltype : blockStrings )
   {
     writeGroup( 0, QStringLiteral( "LTYPE" ) );

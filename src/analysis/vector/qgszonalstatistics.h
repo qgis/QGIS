@@ -64,7 +64,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      */
     QgsZonalStatistics( QgsVectorLayer *polygonLayer,
                         QgsRasterLayer *rasterLayer,
-                        const QString &attributePrefix = "",
+                        const QString &attributePrefix = QString(),
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 
@@ -146,5 +146,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSZONALSTATISTICS_H

@@ -48,7 +48,7 @@ email                : morb at ozemail dot com dot au
 
 struct QgsGeometryPrivate
 {
-  QgsGeometryPrivate(): ref( 1 ), geometry( nullptr ) {}
+  QgsGeometryPrivate(): ref( 1 ) {}
   ~QgsGeometryPrivate() { delete geometry; }
   QAtomicInt ref;
   QgsAbstractGeometry *geometry = nullptr;
@@ -731,9 +731,9 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    QList<QgsGeometry> parts = asGeometryCollection();
+    const QList<QgsGeometry> parts = asGeometryCollection();
     QList<QgsGeometry> results;
-    Q_FOREACH ( const QgsGeometry &part, parts )
+    for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.removeInteriorRings( minimumRingArea );
       if ( result )
@@ -743,7 +743,7 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    Q_FOREACH ( const QgsGeometry &result, results )
+    for ( const QgsGeometry &result : qgsAsConst( results ) )
     {
       first.addPart( result );
     }
@@ -1009,6 +1009,12 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
   return minBounds;
 }
 
+QgsGeometry QgsGeometry::orientedMinimumBoundingBox() const
+{
+  double area, angle, width, height;
+  return orientedMinimumBoundingBox( area, angle, width, height );
+}
+
 static QgsCircle __recMinimalEnclosingCircle( QgsMultiPoint points, QgsMultiPoint boundary )
 {
   auto l_boundary = boundary.length();
@@ -1081,6 +1087,14 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   QgsGeometry geom;
   geom.setGeometry( circ.toPolygon( segments ) );
   return geom;
+
+}
+
+QgsGeometry QgsGeometry::minimalEnclosingCircle( unsigned int segments ) const
+{
+  QgsPointXY center;
+  double radius;
+  return minimalEnclosingCircle( center, radius, segments );
 
 }
 
@@ -1620,9 +1634,9 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    QList<QgsGeometry> parts = asGeometryCollection();
+    const QList<QgsGeometry> parts = asGeometryCollection();
     QList<QgsGeometry> results;
-    Q_FOREACH ( const QgsGeometry &part, parts )
+    for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, miterLimit );
       if ( result )
@@ -1632,7 +1646,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    Q_FOREACH ( const QgsGeometry &result, results )
+    for ( const QgsGeometry &result : qgsAsConst( results ) )
     {
       first.addPart( result );
     }
@@ -1662,9 +1676,9 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    QList<QgsGeometry> parts = asGeometryCollection();
+    const QList<QgsGeometry> parts = asGeometryCollection();
     QList<QgsGeometry> results;
-    Q_FOREACH ( const QgsGeometry &part, parts )
+    for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, miterLimit );
       if ( result )
@@ -1674,7 +1688,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    Q_FOREACH ( const QgsGeometry &result, results )
+    for ( const QgsGeometry &result : qgsAsConst( results ) )
     {
       first.addPart( result );
     }
@@ -1705,9 +1719,9 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    QList<QgsGeometry> parts = asGeometryCollection();
+    const QList<QgsGeometry> parts = asGeometryCollection();
     QList<QgsGeometry> results;
-    Q_FOREACH ( const QgsGeometry &part, parts )
+    for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.extendLine( startDistance, endDistance );
       if ( result )
@@ -1717,7 +1731,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    Q_FOREACH ( const QgsGeometry &result, results )
+    for ( const QgsGeometry &result : qgsAsConst( results ) )
     {
       first.addPart( result );
     }
@@ -2131,7 +2145,7 @@ QPolygonF QgsGeometry::asQPolygonF() const
   else if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::Polygon25D )
   {
     QgsPolygon polygon = asPolygon();
-    if ( polygon.size() < 1 )
+    if ( polygon.empty() )
       return result;
     polyline = polygon.at( 0 );
   }
@@ -2561,7 +2575,7 @@ void QgsGeometry::convertPolygon( const QgsPolygonV2 &input, QgsPolygon &output 
 {
   output.clear();
   QgsCoordinateSequence coords = input.coordinateSequence();
-  if ( coords.size() < 1 )
+  if ( coords.empty() )
   {
     return;
   }
@@ -2655,7 +2669,7 @@ bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
 
 QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
 {
-  if ( d->geometry->isEmpty() )
+  if ( !d->geometry || d->geometry->isEmpty() )
     return QgsGeometry();
 
   QgsGeometry geom = *this;

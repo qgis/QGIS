@@ -72,7 +72,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
     QgsOgrConn *mConn = nullptr;
-    OGRLayerH ogrLayer;
+    OGRLayerH ogrLayer = nullptr;
 
     bool mSubsetStringSet;
     bool mOrigFidAdded;

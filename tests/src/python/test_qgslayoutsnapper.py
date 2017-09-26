@@ -22,8 +22,10 @@ from qgis.core import (QgsProject,
                        QgsUnitTypes,
                        QgsLayoutPoint,
                        QgsLayoutItemPage,
-                       QgsLayoutGuide)
+                       QgsLayoutGuide,
+                       QgsReadWriteContext)
 from qgis.PyQt.QtCore import QPointF
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
 
@@ -192,6 +194,41 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         point, snapped = s.snapPoint(QPointF(1, 1), 1)
         self.assertTrue(snapped)
         self.assertEqual(point, QPointF(0, 0.5))
+
+    def testReadWriteXml(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults()
+        snapper = l.snapper()
+
+        snapper.setSnapToGrid(True)
+        snapper.setSnapTolerance(1)
+        snapper.setSnapToGuides(True)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        self.assertTrue(snapper.writeXml(elem, doc, QgsReadWriteContext()))
+
+        l2 = QgsLayout(p)
+        l2.initializeDefaults()
+        snapper2 = l2.snapper()
+
+        self.assertTrue(snapper2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        self.assertTrue(snapper2.snapToGrid())
+        self.assertEqual(snapper2.snapTolerance(), 1)
+        self.assertTrue(snapper2.snapToGuides())
+
+        snapper.setSnapToGrid(False)
+        snapper.setSnapTolerance(1)
+        snapper.setSnapToGuides(False)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        self.assertTrue(snapper.writeXml(elem, doc, QgsReadWriteContext()))
+
+        self.assertTrue(snapper2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        self.assertFalse(snapper2.snapToGrid())
+        self.assertFalse(snapper2.snapToGuides())
 
 
 if __name__ == '__main__':

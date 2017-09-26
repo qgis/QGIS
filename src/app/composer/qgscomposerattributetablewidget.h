@@ -29,7 +29,6 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     Q_OBJECT
   public:
     QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2 *table, QgsComposerFrame *frame );
-    ~QgsComposerAttributeTableWidget();
 
   private:
     QgsComposerAttributeTableV2 *mComposerTable = nullptr;

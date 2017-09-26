@@ -24,7 +24,6 @@
 #define QGSWMSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswmsconfigparser.h"
 #include "qgswmsserviceexception.h"
 
 class QgsRectangle;
@@ -55,14 +54,6 @@ namespace QgsWms
   /** Return WMS service URL
    */
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project );
-
-  /**
-   * Return the wms config parser (Transitional)
-   *
-   * XXX This is needed in the current implementation.
-   * This should disappear as soon we get rid of singleton.
-   */
-  QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface );
 
   /** Parse image format parameter
    *  \returns OutputFormat

@@ -227,6 +227,18 @@ double QgsCircle::perimeter() const
   return 2.0 * M_PI * mSemiMajorAxis;
 }
 
+void QgsCircle::setSemiMajorAxis( const double semiMajorAxis )
+{
+  mSemiMajorAxis = std::fabs( semiMajorAxis );
+  mSemiMinorAxis = mSemiMajorAxis;
+}
+
+void QgsCircle::setSemiMinorAxis( const double semiMinorAxis )
+{
+  mSemiMajorAxis = std::fabs( semiMinorAxis );
+  mSemiMinorAxis = mSemiMajorAxis;
+}
+
 QVector<QgsPoint> QgsCircle::northQuadrant() const
 {
   QVector<QgsPoint> quad;

@@ -43,10 +43,7 @@ QgsSvgCacheEntry::QgsSvgCacheEntry()
   , widthScaleFactor( 1.0 )
   , fill( Qt::black )
   , stroke( Qt::black )
-  , image( nullptr )
-  , picture( nullptr )
-  , nextEntry( nullptr )
-  , previousEntry( nullptr )
+
 {
 }
 
@@ -57,10 +54,7 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, doubl
   , widthScaleFactor( wsf )
   , fill( fi )
   , stroke( ou )
-  , image( nullptr )
-  , picture( nullptr )
-  , nextEntry( nullptr )
-  , previousEntry( nullptr )
+
 {
 }
 
@@ -94,8 +88,7 @@ int QgsSvgCacheEntry::dataSize() const
 QgsSvgCache::QgsSvgCache( QObject *parent )
   : QObject( parent )
   , mTotalSize( 0 )
-  , mLeastRecentEntry( nullptr )
-  , mMostRecentEntry( nullptr )
+
 {
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 }

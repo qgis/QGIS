@@ -44,7 +44,6 @@
 
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mOkButton( nullptr )
   , mTableNameEdited( false )
   , mLayerIdentifierEdited( false )
 {
@@ -325,7 +324,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QString tableName( mTableNameEdit->text() );
 
   bool overwriteTable = false;
-  if ( OGR_DS_GetLayerByName( hDS, tableName.toUtf8().constData() ) != nullptr )
+  if ( OGR_DS_GetLayerByName( hDS, tableName.toUtf8().constData() ) )
   {
     if ( property( "hideDialogs" ).toBool() )
     {
@@ -390,9 +389,9 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   OGRLayerH hLayer = OGR_DS_CreateLayer( hDS, tableName.toUtf8().constData(), hSRS, wkbType, options );
   CSLDestroy( options );
-  if ( hSRS != nullptr )
+  if ( hSRS )
     OSRRelease( hSRS );
-  if ( hLayer == nullptr )
+  if ( !hLayer )
   {
     QString msg( tr( "Creation of layer failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
@@ -413,7 +412,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
       ogrType = OFTString;
     else if ( fieldType == QLatin1String( "integer" ) )
       ogrType = OFTInteger;
-    else if ( fieldType == "integer64" )
+    else if ( fieldType == QLatin1String( "integer64" ) )
       ogrType = OFTInteger64;
     else if ( fieldType == QLatin1String( "real" ) )
       ogrType = OFTReal;

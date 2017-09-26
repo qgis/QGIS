@@ -654,6 +654,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     double calculateSize( QgsSymbolRenderContext &context );
 };
 
+// clazy:excludeall=qstring-allocations
 
 #endif
 

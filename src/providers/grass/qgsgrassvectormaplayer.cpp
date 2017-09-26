@@ -699,12 +699,12 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
         QgsDebugMsg( "insert old values" );
         printCachedAttributes();
         QStringList errors;
-        Q_FOREACH ( int cat, mAttributes.keys() )
+        for ( auto it = mAttributes.constBegin(); it != mAttributes.constEnd(); ++it )
         {
-          QVariant value = mAttributes.value( cat ).value( index );
+          QVariant value = it.value().value( index );
           QString valueString = quotedValue( value );
           QString query = QStringLiteral( "UPDATE %1 SET %2 = %3 WHERE %4 = %5" )
-                          .arg( mFieldInfo->table, field.name(), valueString, keyColumnName() ).arg( cat );
+                          .arg( mFieldInfo->table, field.name(), valueString, keyColumnName() ).arg( it.key() );
           QString err;
           executeSql( query, err );
           if ( !err.isEmpty() )
@@ -993,9 +993,9 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
   executeSql( query, error );
   if ( error.isEmpty() )
   {
-    Q_FOREACH ( int index, cacheUpdates.keys() )
+    for ( auto it = cacheUpdates.constBegin(); it != cacheUpdates.constEnd(); ++it )
     {
-      mAttributes[cat][index] = cacheUpdates[index];
+      mAttributes[cat][it.key()] = it.value();
     }
   }
   printCachedAttributes();

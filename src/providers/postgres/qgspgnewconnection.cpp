@@ -28,7 +28,7 @@
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
-  , mAuthConfigSelect( nullptr )
+
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgNewConnection::showHelp );
@@ -104,11 +104,6 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     txtName->setText( connName );
   }
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]*" ), txtName ) );
-}
-
-QgsPgNewConnection::~QgsPgNewConnection()
-{
-
 }
 
 //! Autoconnected SLOTS *

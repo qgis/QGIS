@@ -61,11 +61,11 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool operator==( const QgsTriangle &other ) const;
     bool operator!=( const QgsTriangle &other ) const;
 
-    virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
-    virtual QgsTriangle *clone() const override SIP_FACTORY;
+    QString geometryType() const override;
+    QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
+    bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
     //! Inherited method not used. You cannot add an interior ring into a triangle.
     void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
@@ -91,9 +91,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId vId, const QgsPoint &newPos ) override;
 
-    virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
+    void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsCurve *boundary() const override SIP_FACTORY;
 
     // inherited: double pointDistanceToBoundary( double x, double y ) const;
 

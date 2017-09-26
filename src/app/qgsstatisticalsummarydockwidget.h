@@ -40,7 +40,6 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
   public:
     QgsStatisticalSummaryDockWidget( QWidget *parent = nullptr );
-    ~QgsStatisticalSummaryDockWidget();
 
     /** Returns the currently active layer for the widget
      * \since QGIS 2.12

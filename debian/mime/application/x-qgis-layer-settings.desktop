@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=MimeType
-MimeType=application/x-qgis-layer-settings
-Hidden=false
-Comment=QGIS layer settings
-Comment[de]=QGIS Layer Einstellungen
-Icon=qgis-qml-mime
-Patterns=*.qml;

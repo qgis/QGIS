@@ -77,4 +77,6 @@ class CORE_EXPORT QgsProjectVersion
     QString mName;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSPROJECTVERSION_H

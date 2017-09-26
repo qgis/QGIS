@@ -157,6 +157,15 @@ Add a project
 Start a blank project
 %End
 
+    virtual void reloadConnections( ) = 0;
+%Docstring
+ Triggered when connections have changed.
+ This calls reloadConnections in the main application and triggers a signal that is
+ forwarded to the GUI elements that needs to be updated (i.e. the source
+ select dialogs and the browser widgets)
+.. versionadded:: 3.0
+%End
+
     virtual QgsMapLayer *activeLayer() = 0;
 %Docstring
 Get pointer to the active layer (layer selected in the legend)
@@ -1256,6 +1265,7 @@ Get timeout for timed messages: default of 5 seconds
  \note
  added in version 2.7
 %End
+
 };
 
 /************************************************************************

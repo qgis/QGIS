@@ -160,8 +160,8 @@ class ShortestPathPointToPoint(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
-        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context)
-        endPoint = self.parameterAsPoint(parameters, self.END_POINT, context)
+        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context, network.sourceCrs())
+        endPoint = self.parameterAsPoint(parameters, self.END_POINT, context, network.sourceCrs())
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 
         directionFieldName = self.parameterAsString(parameters, self.DIRECTION_FIELD, context)
@@ -206,7 +206,7 @@ class ShortestPathPointToPoint(QgisAlgorithm):
             multiplier = 3600
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(context.project().crs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
         feedback.pushInfo(self.tr('Building graph...'))

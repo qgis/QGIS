@@ -27,6 +27,8 @@ class QgsEllipse
   public:
     QgsEllipse();
 
+    virtual ~QgsEllipse();
+
     QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
 %Docstring
  Constructs an ellipse by defining all the members.

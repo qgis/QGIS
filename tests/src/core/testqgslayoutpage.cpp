@@ -44,7 +44,7 @@ class TestQgsLayoutPage : public QObject
 
 void TestQgsLayoutPage::initTestCase()
 {
-  mReport = "<h1>Layout Page Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Page Tests</h1>\n" );
 }
 
 void TestQgsLayoutPage::cleanupTestCase()

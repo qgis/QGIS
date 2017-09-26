@@ -24,11 +24,6 @@ email                : ersts@amnh.org
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsRasterTransparency::QgsRasterTransparency()
-{
-
-}
-
 /**
   Accessor for transparentSingleValuePixelList
 */

@@ -56,14 +56,8 @@ int QgsAttributeForm::sFormCounter = 0;
 QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget *parent )
   : QWidget( parent )
   , mLayer( vl )
-  , mMessageBar( nullptr )
   , mOwnsMessageBar( true )
-  , mMultiEditUnsavedMessageBarItem( nullptr )
-  , mMultiEditMessageBarItem( nullptr )
-  , mInvalidConstraintMessage( nullptr )
   , mContext( context )
-  , mButtonBox( nullptr )
-  , mSearchButtonBox( nullptr )
   , mFormNr( sFormCounter++ )
   , mIsSaving( false )
   , mPreventFeatureRefresh( false )
@@ -1600,8 +1594,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
-      const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relDef->relation().id() );
-      rww->setConfig( widgetSetup.config() );
+      rww->setConfig( mLayer->editFormConfig().widgetConfig( relDef->relation().id() ) );
       rww->setContext( context );
       newWidgetInfo.widget = rww->widget();
       rww->setShowLabel( relDef->showLabel() );
@@ -1763,8 +1756,7 @@ void QgsAttributeForm::createWrappers()
       if ( relation.isValid() )
       {
         QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relation, myWidget, this );
-        const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relation.id() );
-        rww->setConfig( widgetSetup.config() );
+        rww->setConfig( mLayer->editFormConfig().widgetConfig( relation.id() ) );
         rww->setContext( mContext );
         rww->widget(); // Will initialize the widget
         mWidgets.append( rww );

@@ -253,10 +253,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
-  signals:
-
-    void dataChanged();
-
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage & );

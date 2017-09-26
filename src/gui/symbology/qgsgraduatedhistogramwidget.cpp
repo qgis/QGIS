@@ -42,8 +42,6 @@
 
 QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
   : QgsHistogramWidget( parent )
-  , mRenderer( nullptr )
-  , mHistoPicker( nullptr )
   , mPressedValue( 0 )
 {
   //clear x axis title to make more room for graph

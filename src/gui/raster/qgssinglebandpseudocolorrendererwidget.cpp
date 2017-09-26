@@ -41,7 +41,6 @@
 
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mMinMaxWidget( nullptr )
   , mDisableMinMaxWidgetRefresh( false )
   , mMinMaxOrigin( 0 )
 {
@@ -56,7 +55,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mColormapTreeWidget->setColumnWidth( ColorColumn, 50 );
   mColormapTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
   mColormapTreeWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested,  [ = ]( const QPoint & ) { contextMenu->exec( QCursor::pos() ); }
+  connect( mColormapTreeWidget, &QTreeView::customContextMenuRequested, this, [ = ]( const QPoint & ) { contextMenu->exec( QCursor::pos() ); }
          );
 
   QString defaultPalette = settings.value( QStringLiteral( "Raster/defaultPalette" ), "" ).toString();
@@ -664,7 +663,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
         else
         {
           QgsSettings settings;
-          QString defaultPalette = settings.value( "/Raster/defaultPalette", "Spectral" ).toString();
+          QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
           btnColorRamp->setColorRampFromName( defaultPalette );
         }
 

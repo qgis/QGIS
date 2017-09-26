@@ -44,7 +44,7 @@ class QgsAction
  \param capture       If this is set to true, the output will be captured when an action is run
 %End
 
-    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>() );
+    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() );
 %Docstring
  Create a new QgsAction
 
@@ -55,6 +55,7 @@ class QgsAction
  \param capture              If this is set to true, the output will be captured when an action is run
  \param shortTitle           A short string used to label user interface elements like buttons
  \param actionScopes         A set of scopes in which this action will be available
+ \param notificationMessage  A particular message which reception will trigger the action
 %End
 
     QString name() const;
@@ -102,6 +103,14 @@ The icon
  Returns the command that is executed by this action.
  How the content is interpreted depends on the type() and
  the actionScope().
+
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    QString notificationMessage() const;
+%Docstring
+ Returns the notification message that triggers the action
 
 .. versionadded:: 3.0
  :rtype: str

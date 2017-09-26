@@ -180,7 +180,7 @@ Sets the expression string for the widget
 %End
 
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
-                       const QString &helpText = "",
+                       const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1 );
 %Docstring
@@ -298,6 +298,7 @@ Sets the expression string for the widget
     void showEvent( QShowEvent *e );
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

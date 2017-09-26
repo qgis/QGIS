@@ -289,7 +289,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
 void QgsWFSSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
   nc->setAttribute( Qt::WA_DeleteOnClose );
   nc->setWindowTitle( tr( "Create a New WFS Connection" ) );
 
@@ -302,7 +302,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 
 void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
   nc->setAttribute( Qt::WA_DeleteOnClose );
   nc->setWindowTitle( tr( "Modify WFS Connection" ) );
 

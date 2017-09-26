@@ -42,8 +42,7 @@ QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
   , mResizeMoveY( 0 )
   , mIsDragging( false )
   , mIsResizing( false )
-  , mHAlignSnapItem( nullptr )
-  , mVAlignSnapItem( nullptr )
+
 {
   //listen for selection changes, and update handles accordingly
   connect( mComposition, &QGraphicsScene::selectionChanged, this, &QgsComposerMouseHandles::selectionChanged );
@@ -1374,7 +1373,7 @@ void QgsComposerMouseHandles::checkNearestItem( double checkCoord, const QMap< d
 
 bool QgsComposerMouseHandles::nearestItem( const QMap< double, const QgsComposerItem * > &coords, double value, double &nearestValue ) const
 {
-  if ( coords.size() < 1 )
+  if ( coords.empty() )
   {
     return false;
   }

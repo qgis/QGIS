@@ -39,10 +39,6 @@ QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
   mCursor = QCursor( Qt::ArrowCursor );
 }
 
-QgsMapToolAnnotation::~QgsMapToolAnnotation()
-{
-}
-
 QDialog *QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *item )
 {
   if ( !item || !item->annotation() )

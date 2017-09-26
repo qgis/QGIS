@@ -43,12 +43,8 @@ static bool cmpByDataItemName_( QgsDataItem *a, QgsDataItem *b )
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mFavorites( nullptr )
-  , mProjectHome( nullptr )
+
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
-  connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsBrowserModel::updateProjectHome );
-  addRootItems();
 }
 
 QgsBrowserModel::~QgsBrowserModel()
@@ -171,6 +167,17 @@ void QgsBrowserModel::removeRootItems()
   }
 
   mRootItems.clear();
+}
+
+void QgsBrowserModel::initialize()
+{
+  if ( ! mInitialized )
+  {
+    connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsBrowserModel::updateProjectHome );
+    addRootItems();
+    mInitialized = true;
+  }
 }
 
 

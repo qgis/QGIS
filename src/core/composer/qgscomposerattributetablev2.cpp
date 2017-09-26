@@ -51,8 +51,6 @@ bool QgsComposerAttributeTableCompareV2::operator()( const QgsComposerTableRow &
 QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition *composition, bool createUndoCommands )
   : QgsComposerTableV2( composition, createUndoCommands )
   , mSource( LayerAttributes )
-  , mCurrentAtlasLayer( nullptr )
-  , mComposerMap( nullptr )
   , mMaximumNumberOfFeatures( 30 )
   , mShowUniqueRowsOnly( false )
   , mShowOnlyVisibleFeatures( false )
@@ -643,7 +641,7 @@ bool QgsComposerAttributeTableV2::writeXml( QDomElement &elem, QDomDocument &doc
   composerTableElem.setAttribute( QStringLiteral( "showOnlyVisibleFeatures" ), mShowOnlyVisibleFeatures );
   composerTableElem.setAttribute( QStringLiteral( "filterToAtlasIntersection" ), mFilterToAtlasIntersection );
   composerTableElem.setAttribute( QStringLiteral( "maxFeatures" ), mMaximumNumberOfFeatures );
-  composerTableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? "true" : "false" );
+  composerTableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   composerTableElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
   composerTableElem.setAttribute( QStringLiteral( "wrapString" ), mWrapString );
 

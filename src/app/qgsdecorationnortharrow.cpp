@@ -69,10 +69,6 @@ QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject *parent )
   projectRead();
 }
 
-QgsDecorationNorthArrow::~QgsDecorationNorthArrow()
-{
-}
-
 void QgsDecorationNorthArrow::projectRead()
 {
   QgsDecorationItem::projectRead();

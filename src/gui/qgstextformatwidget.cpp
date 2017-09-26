@@ -34,7 +34,6 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
   , mMinPixelLimit( 0 )
   , mWidgetMode( Text )
   , mMapCanvas( mapCanvas )
-  , mCharDlg( nullptr )
   , mLoadSvgParams( false )
 {
   initWidget();
@@ -47,7 +46,6 @@ QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *pare
   , mMinPixelLimit( 0 )
   , mWidgetMode( mode )
   , mMapCanvas( mapCanvas )
-  , mCharDlg( nullptr )
   , mLoadSvgParams( false )
 {
   initWidget();

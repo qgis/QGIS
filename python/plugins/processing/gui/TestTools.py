@@ -44,6 +44,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFile,
+                       QgsProcessingParameterBand,
                        QgsProcessingParameterString,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterFeatureSource,
@@ -230,6 +231,11 @@ def createTest(text):
             else:
                 params[param.name()] = float(token)
         elif isinstance(param, QgsProcessingParameterEnum):
+            if isinstance(token, list):
+                params[param.name()] = [int(t) for t in token]
+            else:
+                params[param.name()] = int(token)
+        elif isinstance(param, QgsProcessingParameterBand):
             params[param.name()] = int(token)
         elif token:
             if token[0] == '"':

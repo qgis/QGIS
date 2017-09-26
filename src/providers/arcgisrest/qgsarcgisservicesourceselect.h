@@ -48,10 +48,6 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     //! Destructor
     ~QgsArcGisServiceSourceSelect() override;
 
-  signals:
-    //! Emitted when a layer is added from the dialog
-    void addLayer( QString uri, QString typeName );
-
   protected:
     QString mServiceName;
     ServiceType mServiceType;
@@ -83,6 +79,9 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
 
   private:
     void populateConnectionList();
+
+    //! A layer is added from the dialog
+    virtual void addServiceLayer( QString uri, QString typeName ) = 0;
 
     /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set

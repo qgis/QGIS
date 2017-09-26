@@ -251,6 +251,7 @@ Returns the root settings path used to store shortcut customisation.
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

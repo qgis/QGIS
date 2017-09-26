@@ -1121,23 +1121,23 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 QVariantMap QgsWFSProvider::metadata() const
 {
   QVariantMap result;
-  result["MaxFeatures"] = mShared->mCaps.maxFeatures;
-  result["SupportsPaging"] = mShared->mCaps.supportsPaging;
-  result["SupportsJoins"] = mShared->mCaps.supportsJoins;
+  result[QStringLiteral( "MaxFeatures" )] = mShared->mCaps.maxFeatures;
+  result[QStringLiteral( "SupportsPaging" )] = mShared->mCaps.supportsPaging;
+  result[QStringLiteral( "SupportsJoins" )] = mShared->mCaps.supportsJoins;
   return result;
 }
 
 QString QgsWFSProvider::translateMetadataKey( const QString &mdKey ) const
 {
-  if ( mdKey == "MaxFeatures" )
+  if ( mdKey == QLatin1String( "MaxFeatures" ) )
   {
     return tr( "Max Features" );
   }
-  else if ( mdKey == "SupportsPaging" )
+  else if ( mdKey == QLatin1String( "SupportsPaging" ) )
   {
     return tr( "Supports Paging" );
   }
-  else if ( mdKey == "SupportsJoins" )
+  else if ( mdKey == QLatin1String( "SupportsJoins" ) )
   {
     return tr( "Supports Joins" );
   }
@@ -1149,11 +1149,11 @@ QString QgsWFSProvider::translateMetadataKey( const QString &mdKey ) const
 
 QString QgsWFSProvider::translateMetadataValue( const QString &mdKey, const QVariant &value ) const
 {
-  if ( mdKey == "MaxFeatures" )
+  if ( mdKey == QLatin1String( "MaxFeatures" ) )
   {
     return value.toInt() == 0 ? tr( "not provided" ) : value.toString();
   }
-  else if ( mdKey == "SupportsPaging" || mdKey == "SupportsJoins" )
+  else if ( mdKey == QLatin1String( "SupportsPaging" ) || mdKey == QLatin1String( "SupportsJoins" ) )
   {
     return value.toBool() ? tr( "supported" ) : tr( "unsupported" );
   }
@@ -1713,7 +1713,7 @@ class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
 
     virtual QString providerKey() const override { return QStringLiteral( "WFS" ); }
     virtual QString text() const override { return QObject::tr( "WFS" ); }
-    virtual int ordering() const override { return 120; }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
     virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

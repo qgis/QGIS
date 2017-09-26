@@ -61,11 +61,6 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow *arrow ): QgsCo
   }
 }
 
-QgsComposerArrowWidget::~QgsComposerArrowWidget()
-{
-
-}
-
 void QgsComposerArrowWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mArrow )

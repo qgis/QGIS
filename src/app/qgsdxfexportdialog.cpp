@@ -99,10 +99,6 @@ QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *
 {
 }
 
-QgsVectorLayerAndAttributeModel::~QgsVectorLayerAndAttributeModel()
-{
-}
-
 int QgsVectorLayerAndAttributeModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );

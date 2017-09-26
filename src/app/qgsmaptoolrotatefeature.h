@@ -34,8 +34,6 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 
     explicit QgsAngleMagnetWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
-    ~QgsAngleMagnetWidget();
-
     void setAngle( double angle );
 
     double angle();

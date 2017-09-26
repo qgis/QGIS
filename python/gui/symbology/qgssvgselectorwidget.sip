@@ -75,7 +75,6 @@ class QgsSvgSelectorWidget : QWidget
 %End
   public:
     QgsSvgSelectorWidget( QWidget *parent /TransferThis/ = 0 );
-    ~QgsSvgSelectorWidget();
 
     QString currentSvgPath() const;
 %Docstring

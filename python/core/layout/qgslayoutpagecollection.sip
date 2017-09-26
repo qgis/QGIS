@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutPageCollection : QObject
+class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 {
 %Docstring
  A manager for a collection of pages in a layout.
@@ -28,11 +28,9 @@ class QgsLayoutPageCollection : QObject
 
     ~QgsLayoutPageCollection();
 
-    QgsLayout *layout() const;
-%Docstring
- Returns the layout this collection belongs to.
- :rtype: QgsLayout
-%End
+    virtual QString stringType() const;
+    virtual QgsLayout *layout();
+
 
     QList< QgsLayoutItemPage * > pages();
 %Docstring
@@ -130,6 +128,12 @@ class QgsLayoutPageCollection : QObject
  Calling deletePage() automatically triggers a reflow() of pages.
 %End
 
+    QgsLayoutItemPage *takePage( QgsLayoutItemPage *page ) /TransferBack/;
+%Docstring
+ Takes a ``page`` from the collection, returning ownership of the page to the caller.
+ :rtype: QgsLayoutItemPage
+%End
+
     void setPageStyleSymbol( QgsFillSymbol *symbol );
 %Docstring
  Sets the ``symbol`` to use for drawing pages in the collection.
@@ -210,6 +214,29 @@ class QgsLayoutPageCollection : QObject
  Returns the size of the page shadow, in layout units.
  :rtype: float
 %End
+
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+%Docstring
+ Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+.. seealso:: readXml()
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+%Docstring
+ Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+.. seealso:: writeXml()
+ :rtype: bool
+%End
+
+    QgsLayoutGuideCollection &guides();
+%Docstring
+ Returns a reference to the collection's guide collection, which manages page snap guides.
+ :rtype: QgsLayoutGuideCollection
+%End
+
 
   public slots:
 

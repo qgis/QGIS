@@ -32,12 +32,9 @@
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mRubberBand( nullptr )
   , mOriginalGeometry( nullptr )
   , mModifiedFeature( -1 )
   , mGeometryModified( false )
-  , mDistanceWidget( nullptr )
-  , mSnapVertexMarker( nullptr )
   , mForceCopy( false )
   , mMultiPartGeometry( false )
 {
@@ -287,7 +284,7 @@ QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer *vl, con
 
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
     const QgsFeatureIds &selection = vl->selectedFeatureIds();
-    if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
+    if ( selection.empty() || !selection.contains( match.featureId() ) )
     {
       return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );
     }

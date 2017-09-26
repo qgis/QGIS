@@ -294,11 +294,11 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   }
   else // WFS 2.0.0 tested on GeoServer
   {
-    QDomNodeList operationNodes = doc.elementsByTagName( "Operation" );
+    QDomNodeList operationNodes = doc.elementsByTagName( QStringLiteral( "Operation" ) );
     for ( int i = 0; i < operationNodes.count(); i++ )
     {
       QDomElement operationElement = operationNodes.at( i ).toElement();
-      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( "name" ) )
+      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( QStringLiteral( "name" ) ) )
       {
         insertCap = true;
         updateCap = true;

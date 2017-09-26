@@ -129,6 +129,14 @@ namespace QgsServerProjectUtils
  :rtype: int
 %End
 
+  int wmsImageQuality( const QgsProject &project );
+%Docstring
+ Returns the quality for WMS images defined in a QGIS project.
+ \param project the QGIS project
+ :return: quality if defined in project, -1 otherwise.
+ :rtype: int
+%End
+
   bool wmsUseLayerIds( const QgsProject &project );
 %Docstring
  Returns if layer ids are used as name in WMS.

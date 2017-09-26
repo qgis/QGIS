@@ -26,6 +26,9 @@ class QgsSymbolWidgetContext
   public:
 
     QgsSymbolWidgetContext();
+%Docstring
+ Constructor for QgsSymbolWidgetContext.
+%End
 
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
 %Docstring

@@ -11,6 +11,7 @@ SET(PG_SRCS
   qgspgtablemodel.cpp
   qgscolumntypethread.cpp
   qgspostgresexpressioncompiler.cpp
+  qgspostgreslistener.cpp
 )
 
 SET(PG_MOC_HDRS
@@ -21,7 +22,7 @@ SET(PG_MOC_HDRS
   qgspostgresdataitems.h
   qgspostgresprovider.h
   qgspostgrestransaction.h
-
+  qgspostgreslistener.h
 )
 
 IF (WITH_GUI)

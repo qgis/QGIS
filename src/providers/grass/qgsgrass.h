@@ -686,4 +686,6 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static bool sMute;
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSGRASS_H

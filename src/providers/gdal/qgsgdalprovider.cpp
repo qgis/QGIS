@@ -103,7 +103,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
   return true;
 }
 
-QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
+QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   : QgsRasterDataProvider( uri )
   , mUpdate( false )
   , mValid( false )
@@ -299,6 +299,15 @@ QString QgsGdalProvider::metadata()
   else
   {
     QgsDebugMsg( "dataset has no metadata" );
+  }
+
+  // compression
+  QString compression = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
+  if ( !compression.isEmpty() )
+  {
+    myMetadata += QLatin1String( "<p>" );
+    myMetadata += tr( "COMPRESSION=%1" ).arg( compression );
+    myMetadata += QLatin1String( "</p>\n" );
   }
 
   for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); ++i )
@@ -1271,7 +1280,7 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
   double myMinVal, myMaxVal;
   int myBinCount;
 
-  GUIntBig *myHistogramArray = 0;
+  GUIntBig *myHistogramArray = nullptr;
   CPLErr myError = GDALGetDefaultHistogramEx( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
                    nullptr, nullptr );
@@ -1968,7 +1977,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
     // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
     // TODO also make sure drivers are not loaded unnecessarily (as GDALAllRegister() and OGRRegisterAll load all drivers)
-    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != "YES" )
+    if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != QLatin1String( "YES" ) )
       continue;
 
     // now we need to see if the driver is for something currently
@@ -3032,8 +3041,8 @@ QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
     methods.append( QPair<QString, QString>( QStringLiteral( "AVERAGE" ), QObject::tr( "Average" ) ) );
     methods.append( QPair<QString, QString>( QStringLiteral( "GAUSS" ), QObject::tr( "Gauss" ) ) );
     methods.append( QPair<QString, QString>( QStringLiteral( "CUBIC" ), QObject::tr( "Cubic" ) ) );
-    methods.append( QPair<QString, QString>( "CUBICSPLINE", QObject::tr( "Cubic Spline" ) ) );
-    methods.append( QPair<QString, QString>( "LANCZOS", QObject::tr( "Lanczos" ) ) );
+    methods.append( QPair<QString, QString>( QStringLiteral( "CUBICSPLINE" ), QObject::tr( "Cubic Spline" ) ) );
+    methods.append( QPair<QString, QString>( QStringLiteral( "LANCZOS" ), QObject::tr( "Lanczos" ) ) );
     methods.append( QPair<QString, QString>( QStringLiteral( "MODE" ), QObject::tr( "Mode" ) ) );
     methods.append( QPair<QString, QString>( QStringLiteral( "NONE" ), QObject::tr( "None" ) ) );
   }
@@ -3055,11 +3064,11 @@ class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "gdal" ); }
-    virtual QString text() const override { return QObject::tr( "Raster" ); }
-    virtual int ordering() const override { return 20; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "gdal" ); }
+    QString text() const override { return QObject::tr( "Raster" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 20; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddRasterLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsGdalSourceSelect( parent, fl, widgetMode );
     }

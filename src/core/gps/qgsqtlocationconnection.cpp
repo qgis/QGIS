@@ -34,11 +34,6 @@ QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocal
   QTimer::singleShot( 500, this, SLOT( broadcastConnectionAvailable() ) );
 }
 
-QgsQtLocationConnection::~QgsQtLocationConnection()
-{
-  //connection will be closed by base class
-}
-
 //Needed to make connection detectable (half HACK)
 //this signals that the device has started the GPS successfully,
 //not that it has a fix yet.

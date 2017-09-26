@@ -392,26 +392,26 @@ void QgsTaskStatusWidget::paintEvent( QPaintEvent *e )
   QIcon icon;
   if ( mInside && ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) ) )
   {
-    icon = QgsApplication::getThemeIcon( "/mTaskCancel.svg" );
+    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) );
   }
   else
   {
     switch ( mStatus )
     {
       case QgsTask::Queued:
-        icon = QgsApplication::getThemeIcon( "/mTaskQueued.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskQueued.svg" ) );
         break;
       case QgsTask::OnHold:
-        icon = QgsApplication::getThemeIcon( "/mTaskOnHold.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskOnHold.svg" ) );
         break;
       case QgsTask::Running:
-        icon = QgsApplication::getThemeIcon( "/mTaskRunning.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskRunning.svg" ) );
         break;
       case QgsTask::Complete:
-        icon = QgsApplication::getThemeIcon( "/mTaskComplete.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskComplete.svg" ) );
         break;
       case QgsTask::Terminated:
-        icon = QgsApplication::getThemeIcon( "/mTaskTerminated.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskTerminated.svg" ) );
         break;
     }
   }
@@ -479,7 +479,6 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
 
 QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent )
   : QToolButton( parent )
-  , mProgressBar( nullptr )
   , mManager( manager )
 {
   setAutoRaise( true );

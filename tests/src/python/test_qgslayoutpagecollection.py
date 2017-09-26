@@ -24,9 +24,11 @@ from qgis.core import (QgsUnitTypes,
                        QgsProperty,
                        QgsLayoutPageCollection,
                        QgsSimpleFillSymbolLayer,
-                       QgsFillSymbol)
+                       QgsFillSymbol,
+                       QgsReadWriteContext)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
 
@@ -425,6 +427,130 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.visiblePageNumbers(QRectF(100, 200, 115, 115)), [0, 1])
         self.assertEqual(collection.visiblePages(QRectF(100, 310, 115, 615)), [page2])
         self.assertEqual(collection.visiblePageNumbers(QRectF(100, 310, 115, 115)), [1])
+
+    def testTakePage(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add some pages
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        self.assertEqual(collection.pageCount(), 2)
+
+        self.assertFalse(collection.takePage(None))
+
+        self.assertEqual(collection.takePage(page), page)
+        self.assertFalse(sip.isdeleted(page))
+
+        self.assertEqual(collection.pageCount(), 1)
+        self.assertEqual(collection.pages(), [page2])
+        self.assertEqual(collection.page(0), page2)
+
+        self.assertEqual(collection.takePage(page2), page2)
+        self.assertFalse(sip.isdeleted(page2))
+
+        self.assertEqual(collection.pageCount(), 0)
+        self.assertEqual(collection.pages(), [])
+        self.assertFalse(collection.page(0))
+
+    def testReadWriteXml(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.green)
+        fill.setStrokeColor(Qt.red)
+        fill.setStrokeWidth(6)
+        collection.setPageStyleSymbol(fill_symbol)
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        self.assertEqual(collection.pageNumber(page), -1)
+
+        collection.addPage(page)
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        self.assertTrue(collection.writeXml(elem, doc, QgsReadWriteContext()))
+
+        l2 = QgsLayout(p)
+        collection2 = l2.pageCollection()
+
+        self.assertTrue(collection2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+
+        self.assertEqual(collection2.pageCount(), 2)
+        self.assertEqual(collection2.page(0).pageSize().width(), 210)
+        self.assertEqual(collection2.page(0).pageSize().height(), 297)
+        self.assertEqual(collection2.page(1).pageSize().width(), 148)
+        self.assertEqual(collection2.page(1).pageSize().height(), 210)
+
+        self.assertEqual(collection2.pageStyleSymbol().symbolLayer(0).color().name(), '#00ff00')
+        self.assertEqual(collection2.pageStyleSymbol().symbolLayer(0).strokeColor().name(), '#ff0000')
+
+    def testUndoRedo(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        self.assertEqual(collection.pageCount(), 1)
+
+        l.undoStack().stack().undo()
+        self.assertEqual(collection.pageCount(), 0)
+
+        l.undoStack().stack().redo()
+        self.assertEqual(collection.pageCount(), 1)
+        # make sure page is accessible
+        self.assertEqual(collection.page(0).pageSize().width(), 210)
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        # delete page
+        collection.deletePage(collection.page(0))
+        self.assertEqual(collection.pageCount(), 1)
+
+        l.undoStack().stack().undo()
+        self.assertEqual(collection.pageCount(), 2)
+        # make sure pages are accessible
+        self.assertEqual(collection.page(0).pageSize().width(), 210)
+        self.assertEqual(collection.page(1).pageSize().width(), 148)
+
+        l.undoStack().stack().undo()
+        self.assertEqual(collection.pageCount(), 1)
+        l.undoStack().stack().undo()
+        self.assertEqual(collection.pageCount(), 0)
+
+        l.undoStack().stack().redo()
+        self.assertEqual(collection.pageCount(), 1)
+        self.assertEqual(collection.page(0).pageSize().width(), 210)
+        l.undoStack().stack().redo()
+        self.assertEqual(collection.pageCount(), 2)
+        self.assertEqual(collection.page(0).pageSize().width(), 210)
+        self.assertEqual(collection.page(1).pageSize().width(), 148)
+        l.undoStack().stack().redo()
+        self.assertEqual(collection.pageCount(), 1)
+        self.assertEqual(collection.page(0).pageSize().width(), 148)
 
 
 if __name__ == '__main__':

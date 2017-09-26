@@ -389,10 +389,6 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
            this, &QgsSvgSelectorWidget::populateIcons );
 }
 
-QgsSvgSelectorWidget::~QgsSvgSelectorWidget()
-{
-}
-
 void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
 {
   mCurrentSvgPath = svgPath;

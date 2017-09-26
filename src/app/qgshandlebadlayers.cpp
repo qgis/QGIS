@@ -34,10 +34,6 @@
 #include <QMessageBox>
 #include <QUrl>
 
-QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
-{
-}
-
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
   QApplication::setOverrideCursor( Qt::ArrowCursor );
@@ -149,10 +145,6 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   }
 
   // mLayerList->resizeColumnsToContents();
-}
-
-QgsHandleBadLayers::~QgsHandleBadLayers()
-{
 }
 
 void QgsHandleBadLayers::selectionChanged()

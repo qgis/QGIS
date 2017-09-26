@@ -49,7 +49,8 @@ class QgsDataItem : QObject
       Layer,
       Error,
       Favorites,
-      Project
+      Project,
+      Custom,
     };
 
 
@@ -130,11 +131,25 @@ Create new data item.
  :rtype: QWidget
 %End
 
-    virtual QList<QAction *> actions();
+    virtual QList<QAction *> actions( QWidget *parent );
 %Docstring
  Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
  the item. Subclasses should override this to provide actions.
+
+ Subclasses should ensure that ownership of created actions is correctly handled by parenting them
+ to the specified parent widget.
  :rtype: list of QAction
+%End
+
+    virtual QList<QMenu *> menus( QWidget *parent );
+%Docstring
+ Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
+ the item. Subclasses should override this to provide actions. Subclasses should ensure that ownership of
+ created menus is correctly handled by parenting them to the specified parent widget.
+ \param parent a parent widget of the menu
+ :return: list of menus
+.. versionadded:: 3.0
+ :rtype: list of QMenu
 %End
 
     virtual bool acceptDrop();
@@ -150,6 +165,15 @@ Create new data item.
  Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
  accept dropped layers.
 .. seealso:: acceptDrop()
+ :rtype: bool
+%End
+
+    virtual bool handleDoubleClick();
+%Docstring
+ Called when a user double clicks on the item. Subclasses should return true
+ if they have implemented a double-click handler and do not want the default
+ double-click behavior for items.
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -414,7 +438,14 @@ Returns provider key
 
     static QString layerTypeAsString( const LayerType &layerType );
 %Docstring
- Returns the string representatio of the given ``layerType``
+ Returns the string representation of the given ``layerType``
+.. versionadded:: 3
+ :rtype: str
+%End
+
+    static QString iconName( const LayerType &layerType );
+%Docstring
+ Returns the icon name of the given ``layerType``
 .. versionadded:: 3
  :rtype: str
 %End
@@ -525,6 +556,9 @@ class QgsDirectoryItem : QgsDataCollectionItem
 Check if the given path is hidden from the browser model
  :rtype: bool
 %End
+
+    virtual QList<QAction *> actions( QWidget *parent );
+
 
 
   public slots:

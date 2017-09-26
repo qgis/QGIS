@@ -29,26 +29,21 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 {
   public:
     QgsMultiPolygonV2();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiPolygon" ); }
+    QString geometryType() const override;
+    void clear() override;
     QgsMultiPolygonV2 *clone() const override SIP_FACTORY;
-
     bool fromWkt( const QString &wkt ) override;
-
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
-
-    //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
     /** Returns the geometry converted to the more generic curve type QgsMultiSurface
     \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 #ifndef SIP_RUN
 
     /**
@@ -68,7 +63,9 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 
   protected:
 
-    virtual bool wktOmitChildType() const override { return true; }
+    bool wktOmitChildType() const override;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSMULTIPOLYGONV2_H

@@ -803,7 +803,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
   }
 
   // first find symbols with matching name
-  QString item = ( type == SymbolEntity ) ? "symbol" : "colorramp";
+  QString item = ( type == SymbolEntity ) ? QStringLiteral( "symbol" ) : QStringLiteral( "colorramp" );
   char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE name LIKE '%%%q%%'",
                                  item.toUtf8().constData(), qword.toUtf8().constData() );
 
@@ -887,7 +887,7 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
   Q_FOREACH ( const QString &t, tags )
   {
     tag = t.trimmed();
-    if ( tag != "" )
+    if ( !tag.isEmpty() )
     {
       // sql: gets the id of the tag if present or insert the tag and get the id of the tag
       char *query = sqlite3_mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", tag.toUtf8().toLower().constData() );
@@ -1463,11 +1463,11 @@ bool QgsStyle::exportXml( const QString &filename )
     QStringList tags = tagsOfSymbol( SymbolEntity, name );
     if ( tags.count() > 0 )
     {
-      symbol.setAttribute( QStringLiteral( "tags" ), tags.join( "," ) );
+      symbol.setAttribute( QStringLiteral( "tags" ), tags.join( ',' ) );
     }
     if ( favoriteSymbols.contains( name ) )
     {
-      symbol.setAttribute( QStringLiteral( "favorite" ), "1" );
+      symbol.setAttribute( QStringLiteral( "favorite" ), QStringLiteral( "1" ) );
     }
   }
 
@@ -1479,11 +1479,11 @@ bool QgsStyle::exportXml( const QString &filename )
     QStringList tags = tagsOfSymbol( ColorrampEntity, itr.key() );
     if ( tags.count() > 0 )
     {
-      rampEl.setAttribute( QStringLiteral( "tags" ), tags.join( "," ) );
+      rampEl.setAttribute( QStringLiteral( "tags" ), tags.join( ',' ) );
     }
     if ( favoriteColorramps.contains( itr.key() ) )
     {
-      rampEl.setAttribute( QStringLiteral( "favorite" ), "1" );
+      rampEl.setAttribute( QStringLiteral( "favorite" ), QStringLiteral( "1" ) );
     }
     rampsElem.appendChild( rampEl );
   }
@@ -1564,10 +1564,10 @@ bool QgsStyle::importXml( const QString &filename )
         QStringList tags;
         if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
         {
-          tags = e.attribute( QStringLiteral( "tags" ) ).split( "," );
+          tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
         }
         bool favorite = false;
-        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == "1" )
+        if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QStringLiteral( "1" ) )
         {
           favorite = true;
         }
@@ -1612,10 +1612,10 @@ bool QgsStyle::importXml( const QString &filename )
       QStringList tags;
       if ( e.hasAttribute( QStringLiteral( "tags" ) ) )
       {
-        tags = e.attribute( QStringLiteral( "tags" ) ).split( "," );
+        tags = e.attribute( QStringLiteral( "tags" ) ).split( ',' );
       }
       bool favorite = false;
-      if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == "1" )
+      if ( e.hasAttribute( QStringLiteral( "favorite" ) ) && e.attribute( QStringLiteral( "favorite" ) ) == QStringLiteral( "1" ) )
       {
         favorite = true;
       }

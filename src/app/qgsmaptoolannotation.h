@@ -30,7 +30,6 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
 
   public:
     QgsMapToolAnnotation( QgsMapCanvas *canvas );
-    ~QgsMapToolAnnotation();
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;

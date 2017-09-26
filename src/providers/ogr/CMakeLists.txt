@@ -7,9 +7,11 @@ SET (OGR_SRCS
     qgsogrexpressioncompiler.cpp
     qgsogrsourceselect.cpp
     qgsgeopackagedataitems.cpp
-    qgsgeopackageconnection.cpp
     qgsgeopackagerasterwriter.cpp
     qgsgeopackagerasterwritertask.cpp
+    qgsogrdbconnection.cpp
+    qgsogrdbsourceselect.cpp
+    qgsogrdbtablemodel.cpp
 )
 
 SET(OGR_MOC_HDRS
@@ -18,8 +20,10 @@ SET(OGR_MOC_HDRS
     qgsogrconnpool.h
     qgsogrsourceselect.h
     qgsgeopackagedataitems.h
-    qgsgeopackageconnection.h
     qgsgeopackagerasterwritertask.h
+    qgsogrdbconnection.h
+    qgsogrdbsourceselect.h
+    qgsogrdbtablemodel.h
 )
 
 ########################################################
@@ -43,6 +47,7 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 

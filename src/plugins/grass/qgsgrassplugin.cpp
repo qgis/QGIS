@@ -240,15 +240,15 @@ void QgsGrassPlugin::initGui()
 
   resetEditActions();
 
-  mAddPoint = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePoint );
+  mAddPoint = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CapturePoint );
   mAddPoint->setAction( mAddPointAction );
-  mAddLine = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CaptureLine );
+  mAddLine = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CaptureLine );
   mAddLine->setAction( mAddLineAction );
-  mAddBoundary = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CaptureLine );
+  mAddBoundary = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CaptureLine );
   mAddBoundary->setAction( mAddBoundaryAction );
-  mAddCentroid = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePoint );
+  mAddCentroid = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CapturePoint );
   mAddCentroid->setAction( mAddCentroidAction );
-  mAddArea = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePolygon );
+  mAddArea = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CapturePolygon );
   mAddArea->setAction( mAddAreaAction );
 
   connect( qGisInterface->actionSplitFeatures(), &QAction::triggered, this, &QgsGrassPlugin::onSplitFeaturesTriggered );

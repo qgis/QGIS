@@ -885,7 +885,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   {
     symbol->setOutputUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "outputUnit" ) ) ) );
   }
-  if ( element.hasAttribute( ( "mapUnitScale" ) ) )
+  if ( element.hasAttribute( ( QStringLiteral( "mapUnitScale" ) ) ) )
   {
     QgsMapUnitScale mapUnitScale;
     double oldMin = element.attribute( QStringLiteral( "mapUnitMinScale" ), QStringLiteral( "0.0" ) ).toDouble();
@@ -966,7 +966,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
   symEl.setAttribute( QStringLiteral( "type" ), _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( QStringLiteral( "name" ), name );
   symEl.setAttribute( QStringLiteral( "alpha" ), QString::number( symbol->opacity() ) );
-  symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? "1" : "0" );
+  symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
@@ -1281,10 +1281,7 @@ bool QgsSymbolLayerUtils::hasWellKnownMark( QDomElement &element )
     return false;
 
   QDomElement wellKnownNameElem = markElem.firstChildElement( QStringLiteral( "WellKnownName" ) );
-  if ( wellKnownNameElem.isNull() )
-    return false;
-
-  return true;
+  return !wellKnownNameElem.isNull();
 }
 
 
@@ -1396,10 +1393,7 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
 
   bool ok;
   double angle = angleFunc.toDouble( &ok );
-  if ( !ok || qgsDoubleNear( angle, 0.0 ) )
-    return false;
-
-  return true;
+  return !( !ok || qgsDoubleNear( angle, 0.0 ) );
 }
 
 bool QgsSymbolLayerUtils::needPointPatternFill( QDomElement &element )
@@ -2056,8 +2050,8 @@ QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, cons
   }
   else
   {
-    url.addQueryItem( "fill", QStringLiteral( "#000000" ) );
-    url.addQueryItem( "fill-opacity", QStringLiteral( "1" ) );
+    url.addQueryItem( QStringLiteral( "fill" ), QStringLiteral( "#000000" ) );
+    url.addQueryItem( QStringLiteral( "fill-opacity" ), QStringLiteral( "1" ) );
   }
   if ( strokeColor.isValid() )
   {

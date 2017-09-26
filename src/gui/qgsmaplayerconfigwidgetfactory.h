@@ -70,6 +70,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Flag if widget is supported for use in style dock.
+     * The default implementation returns false.
      * \returns True if supported
      */
     virtual bool supportsStyleDock() const { return false; }
@@ -82,6 +83,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Flag if widget is supported for use in layer properties dialog.
+     * The default implementation returns false.
      * \returns True if supported
      */
     virtual bool supportLayerPropertiesDialog() const { return false; }

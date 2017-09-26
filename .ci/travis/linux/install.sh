@@ -54,6 +54,7 @@ CMAKE_FLAGS="
       -DWITH_ASTYLE=OFF
       -DDISABLE_DEPRECATED=ON
       -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS}
+      -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"
       "
 
 # The following options trigger a minimalized build to

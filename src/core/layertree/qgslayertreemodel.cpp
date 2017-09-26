@@ -304,7 +304,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( !layer->abstract().isEmpty() )
           parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
         parts << "<i>" + layer->publicSource() + "</i>";
-        return parts.join( "<br/>" );
+        return parts.join( QStringLiteral( "<br/>" ) );
       }
     }
   }
@@ -767,6 +767,9 @@ void QgsLayerTreeModel::nodeLayerWillBeUnloaded()
 
 void QgsLayerTreeModel::layerLegendChanged()
 {
+  if ( !mRootNode )
+    return;
+
   if ( !testFlag( ShowLegend ) )
     return;
 
@@ -1423,7 +1426,7 @@ Qt::ItemFlags QgsLayerTreeModel::legendNodeFlags( QgsLayerTreeModelLegendNode *n
 
 bool QgsLayerTreeModel::legendEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const
 {
-  return mLegend[nodeLayer].embeddedNodeInParent != nullptr;
+  return static_cast< bool >( mLegend[nodeLayer].embeddedNodeInParent );
 }
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeModel::legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const

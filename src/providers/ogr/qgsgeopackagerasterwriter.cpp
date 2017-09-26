@@ -24,7 +24,7 @@
 
 #include <QMessageBox>
 
-QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri sourceUri, const QString outputUrl ):
+QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &outputUrl ):
   mSourceUri( sourceUri ),
   mOutputUrl( outputUrl )
 {
@@ -55,7 +55,7 @@ QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( Q
   else
   {
     CPLErrorReset();
-    GDALDatasetH hOutDS = GDALTranslate( mOutputUrl.toUtf8().constData(), hSrcDS, psOptions, NULL );
+    GDALDatasetH hOutDS = GDALTranslate( mOutputUrl.toUtf8().constData(), hSrcDS, psOptions, nullptr );
     if ( ! hOutDS )
     {
       *errorMessage = QObject::tr( "Failed to import layer %1! See the OGR panel in the message logs for details.\n\n" ).arg( mSourceUri.name );

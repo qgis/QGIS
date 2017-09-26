@@ -42,8 +42,6 @@
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
   , mAutoSave( true )
-  , mLayer( nullptr )
-  , highlighter( nullptr )
   , mExpressionValid( false )
   , mProject( QgsProject::instance() )
 {
@@ -318,9 +316,9 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields &fields )
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
 {
   QgsFields fields;
-  Q_FOREACH ( const QString &fieldName, fieldValues.keys() )
+  for ( auto it = fieldValues.constBegin(); it != fieldValues.constEnd(); ++it )
   {
-    fields.append( QgsField( fieldName ) );
+    fields.append( QgsField( it.key() ) );
   }
   loadFieldNames( fields );
   mFieldValues = fieldValues;

@@ -55,8 +55,7 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
   , mIdentityType( CertIdentity )
   , mPkiBundle( QgsPkiBundle() )
   , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -329,10 +328,6 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
       writeValidation( tr( "Private key password may not match" ), Invalid, true );
     }
     return false;
-  }
-  else
-  {
-    isvalid = isvalid && true;
   }
 
   if ( isvalid )

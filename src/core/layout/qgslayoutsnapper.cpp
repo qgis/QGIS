@@ -16,10 +16,32 @@
 
 #include "qgslayoutsnapper.h"
 #include "qgslayout.h"
+#include "qgsreadwritecontext.h"
+#include "qgsproject.h"
 
 QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )
   : mLayout( layout )
 {
+}
+
+QgsLayout *QgsLayoutSnapper::layout()
+{
+  return mLayout;
+}
+
+void QgsLayoutSnapper::setSnapTolerance( const int snapTolerance )
+{
+  mTolerance = snapTolerance;
+}
+
+void QgsLayoutSnapper::setSnapToGrid( bool enabled )
+{
+  mSnapToGrid = enabled;
+}
+
+void QgsLayoutSnapper::setSnapToGuides( bool enabled )
+{
+  mSnapToGuides = enabled;
 }
 
 QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped ) const
@@ -146,3 +168,36 @@ double QgsLayoutSnapper::snapPointToGuides( double original, QgsLayoutGuide::Ori
     return original;
   }
 }
+
+bool QgsLayoutSnapper::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
+{
+  QDomElement element = document.createElement( QStringLiteral( "Snapper" ) );
+
+  element.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
+  element.setAttribute( QStringLiteral( "snapToGrid" ), mSnapToGrid );
+  element.setAttribute( QStringLiteral( "snapToGuides" ), mSnapToGuides );
+
+  parentElement.appendChild( element );
+  return true;
+}
+
+bool QgsLayoutSnapper::readXml( const QDomElement &e, const QDomDocument &, const QgsReadWriteContext & )
+{
+  QDomElement element = e;
+  if ( element.nodeName() != QStringLiteral( "Snapper" ) )
+  {
+    element = element.firstChildElement( QStringLiteral( "Snapper" ) );
+  }
+
+  if ( element.nodeName() != QStringLiteral( "Snapper" ) )
+  {
+    return false;
+  }
+
+  mTolerance = element.attribute( QStringLiteral( "tolerance" ), QStringLiteral( "5" ) ).toInt();
+  mSnapToGrid = element.attribute( QStringLiteral( "snapToGrid" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
+  mSnapToGuides = element.attribute( QStringLiteral( "snapToGuides" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
+  return true;
+}
+
+

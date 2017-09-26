@@ -26,13 +26,13 @@ class QgsAfsRootItem : public QgsDataCollectionItem
     QgsAfsRootItem( QgsDataItem *parent, const QString &name, const QString &path );
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
-    void connectionsChanged();
+    void onConnectionsChanged();
     void newConnection();
 #endif
 };
@@ -46,7 +46,7 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:

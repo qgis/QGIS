@@ -112,7 +112,7 @@ QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
 void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
 {
   QLayoutItem *item = nullptr;
-  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) != nullptr )
+  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) )
   {
     delete item->widget();
     delete item;
@@ -208,8 +208,7 @@ void QgsArcGisServiceSourceSelect::refresh()
 
 void QgsArcGisServiceSourceSelect::addEntryToServerList()
 {
-
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
   nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -221,7 +220,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
 
 void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -354,7 +353,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString uri = getLayerURI( connection, layerTitle, layerName, pCrsString, filter, layerExtent );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
-    emit addLayer( uri, layerName );
+    addServiceLayer( uri, layerName );
   }
   accept();
 }

@@ -381,7 +381,7 @@ QgsSymbolLayer *QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( element, offset );
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ), QString() );
   offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
   offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
   strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
@@ -458,7 +458,6 @@ QgsGradientFillSymbolLayer::QgsGradientFillSymbolLayer( const QColor &color, con
     GradientColorType colorType, GradientType gradientType,
     GradientCoordinateMode coordinateMode, GradientSpread spread )
   : mGradientColorType( colorType )
-  , mGradientRamp( nullptr )
   , mGradientType( gradientType )
   , mCoordinateMode( coordinateMode )
   , mGradientSpread( spread )
@@ -950,8 +949,6 @@ QgsShapeburstFillSymbolLayer::QgsShapeburstFillSymbolLayer( const QColor &color,
   , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
   , mColorType( colorType )
   , mColor2( color2 )
-  , mGradientRamp( nullptr )
-  , mTwoColorGradientRamp( nullptr )
   , mIgnoreRings( false )
   , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
@@ -1016,7 +1013,7 @@ QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QgsStringMap &props 
 
   //attempt to create color ramp from props
   QgsColorRamp *gradientRamp = nullptr;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props["rampType"] == QStringLiteral( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
   {
     gradientRamp = QgsCptCityColorRamp::create( props );
   }
@@ -2142,7 +2139,7 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
   QgsSymbolLayerUtils::lineFromSld( graphicElem, penStyle, strokeColor, strokeWidth );
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
   strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
 
@@ -2297,7 +2294,7 @@ QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   , mLineAngle( 45.0 )
   , mOffset( 0.0 )
   , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-  , mFillLineSymbol( nullptr )
+
 {
   setSubSymbol( new QgsLineSymbol() );
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
@@ -2967,7 +2964,7 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
     offset = std::sqrt( std::pow( vectOffset.x(), 2 ) + std::pow( vectOffset.y(), 2 ) );
   }
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
   lineWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, lineWidth );
 
@@ -3000,7 +2997,6 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
-  , mMarkerSymbol( nullptr )
   , mDistanceX( 15 )
   , mDistanceXUnit( QgsUnitTypes::RenderMillimeters )
   , mDistanceY( 15 )

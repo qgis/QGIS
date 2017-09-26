@@ -56,7 +56,7 @@
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mService( service )
-  , mCurrentTileset( nullptr )
+
 {
   setupUi( this );
   setupButtons( buttonBox );
@@ -229,9 +229,23 @@ void QgsOWSSourceSelect::populateConnectionList()
 
   setConnectionListPosition();
 }
+
+QgsNewHttpConnection::ConnectionType connectionTypeFromServiceString( const QString &string )
+{
+  if ( string.compare( QStringLiteral( "wms" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWms;
+  else if ( string.compare( QStringLiteral( "wfs" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWfs;
+  else if ( string.compare( QStringLiteral( "wcs" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWcs;
+  else
+    return QgsNewHttpConnection::ConnectionWms;
+}
+
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/qgis/connections-" + mService.toLower() + '/' );
+  QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
   {
@@ -244,7 +258,8 @@ void QgsOWSSourceSelect::on_mNewButton_clicked()
 
 void QgsOWSSourceSelect::on_mEditButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {
@@ -701,7 +716,7 @@ void QgsOWSSourceSelect::on_mSearchTableWidget_itemSelectionChanged()
 void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.empty() )
   {
     return;
   }
@@ -720,7 +735,7 @@ void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
 void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.empty() )
   {
     return;
   }

@@ -32,7 +32,7 @@
 
 QgsDrawSourceWidget::QgsDrawSourceWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
   initGui();
@@ -111,7 +111,7 @@ void QgsDrawSourceWidget::on_mBlendCmbBx_currentIndexChanged( int index )
 
 QgsBlurWidget::QgsBlurWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 
@@ -228,7 +228,7 @@ void QgsBlurWidget::on_mBlendCmbBx_currentIndexChanged( int index )
 
 QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 
@@ -386,7 +386,7 @@ void QgsShadowEffectWidget::on_mShadowBlendCmbBx_currentIndexChanged( int index 
 
 QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 
@@ -570,7 +570,7 @@ void QgsGlowWidget::applyColorRamp()
 
 QgsTransformWidget::QgsTransformWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 
@@ -749,7 +749,7 @@ void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
 
 QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
   : QgsPaintEffectWidget( parent )
-  , mEffect( nullptr )
+
 {
   setupUi( this );
 

@@ -55,7 +55,7 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   , mFeatureList( features )
   , mVectorLayer( vl )
   , mMapCanvas( canvas )
-  , mSelectionRubberBand( nullptr )
+
 {
   setupUi( this );
   createTableWidgetContents();
@@ -80,9 +80,7 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
   : QDialog()
-  , mVectorLayer( nullptr )
-  , mMapCanvas( nullptr )
-  , mSelectionRubberBand( nullptr )
+
 {
   setupUi( this );
 
@@ -526,7 +524,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( QgsFeatureId featureI
 
 QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
 {
-  if ( mFeatureList.size() < 1 )
+  if ( mFeatureList.empty() )
   {
     return QgsAttributes();
   }

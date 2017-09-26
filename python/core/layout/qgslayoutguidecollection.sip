@@ -132,7 +132,7 @@ class QgsLayoutGuide : QObject
 
 };
 
-class QgsLayoutGuideCollection : QAbstractTableModel
+class QgsLayoutGuideCollection : QAbstractTableModel, QgsLayoutSerializableObject
 {
 %Docstring
  Stores and manages the snap guides used by a layout.
@@ -160,6 +160,10 @@ class QgsLayoutGuideCollection : QAbstractTableModel
 %End
     ~QgsLayoutGuideCollection();
 
+    virtual QString stringType() const;
+    virtual QgsLayout *layout();
+
+
     virtual int rowCount( const QModelIndex & ) const;
 
     virtual int columnCount( const QModelIndex & ) const;
@@ -186,6 +190,11 @@ class QgsLayoutGuideCollection : QAbstractTableModel
 %Docstring
  Removes the specified ``guide``, and deletes it.
 .. seealso:: clear()
+%End
+
+    void setGuideLayoutPosition( QgsLayoutGuide *guide, double position );
+%Docstring
+ Sets the absolute ``position`` (in layout coordinates) for ``guide`` within the layout.
 %End
 
     void clear();
@@ -231,6 +240,22 @@ class QgsLayoutGuideCollection : QAbstractTableModel
 %Docstring
  Sets whether the guide lines should be ``visible``.
 .. seealso:: visible()
+%End
+
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+%Docstring
+ Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+.. seealso:: readXml()
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+%Docstring
+ Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+.. seealso:: writeXml()
+ :rtype: bool
 %End
 
 };

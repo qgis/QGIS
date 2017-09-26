@@ -114,6 +114,12 @@ class QgsFeatureSource
  :rtype: QgsRectangle
 %End
 
+    virtual QgsFeatureIds allFeatureIds() const;
+%Docstring
+ Returns a list of all feature IDs for features present in the source.
+ :rtype: QgsFeatureIds
+%End
+
 };
 
 

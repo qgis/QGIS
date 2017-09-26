@@ -278,7 +278,7 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT,
-                                   bool *leftOf SIP_OUT, double epsilon ) const = 0;
+                                   bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const = 0;
 
     //low-level editing
 
@@ -344,11 +344,13 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
 
-    /** Returns the geometry converted to the more generic curve type.
-        E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
-        QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
-        \returns the converted geometry. Caller takes ownership*/
-    virtual QgsAbstractGeometry *toCurveType() const SIP_FACTORY;
+    /**
+     * Returns the geometry converted to the more generic curve type.
+     * E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
+     * QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
+     * \returns the converted geometry. Caller takes ownership
+    */
+    virtual QgsAbstractGeometry *toCurveType() const = 0 SIP_FACTORY;
 
     /** Returns approximate angle at a vertex. This is usually the average angle between adjacent
      * segments, and can be pictured as the orientation of a line following the curvature of the
@@ -497,5 +499,7 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
   return const_cast<T>( reinterpret_cast<T>( 0 )->cast( geom ) );
 }
 #endif
+
+// clazy:excludeall=qstring-allocations
 
 #endif //QGSABSTRACTGEOMETRYV2

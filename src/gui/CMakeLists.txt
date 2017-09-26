@@ -175,8 +175,6 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutviewtooltemporarymousepan.cpp
   layout/qgslayoutviewtoolzoom.cpp
 
-  locator/qgslocator.cpp
-  locator/qgslocatorfilter.cpp
   locator/qgslocatorwidget.cpp
 
   ogr/qgsogrhelperfunctions.cpp
@@ -295,6 +293,7 @@ SET(QGIS_GUI_SRCS
   qgsmessagebaritem.cpp
   qgsmessagelogviewer.cpp
   qgsmessageviewer.cpp
+  qgsmetadatawidget.cpp
   qgsnewhttpconnection.cpp
   qgsnewmemorylayerdialog.cpp
   qgsnewnamedialog.cpp
@@ -387,6 +386,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
   qgscurveeditorwidget.h
+  qgscustomdrophandler.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -453,6 +453,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmessagebaritem.h
   qgsmessagelogviewer.h
   qgsmessageviewer.h
+  qgsmetadatawidget.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
@@ -667,8 +668,6 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutviewtooltemporarymousepan.h
   layout/qgslayoutviewtoolzoom.h
 
-  locator/qgslocator.h
-  locator/qgslocatorfilter.h
   locator/qgslocatorwidget.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
@@ -688,7 +687,6 @@ SET(QGIS_GUI_HDRS
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
   qgscursors.h
-  qgscustomdrophandler.h
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsgeometryrubberband.h
@@ -768,8 +766,6 @@ SET(QGIS_GUI_HDRS
 
   layout/qgslayoutviewmouseevent.h
   layout/qgslayoutviewrubberband.h
-
-  locator/qgslocatorcontext.h
 
   raster/qgsrasterrendererwidget.h
 

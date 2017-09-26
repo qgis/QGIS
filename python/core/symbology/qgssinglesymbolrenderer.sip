@@ -7,7 +7,6 @@
  ************************************************************************/
 
 
-
 class QgsSingleSymbolRenderer : QgsFeatureRenderer
 {
 
@@ -17,7 +16,6 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
   public:
 
     QgsSingleSymbolRenderer( QgsSymbol *symbol /Transfer/ );
-    ~QgsSingleSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );

@@ -52,11 +52,6 @@ QgsDecorationItem::QgsDecorationItem( QObject *parent )
 {
 }
 
-QgsDecorationItem::~QgsDecorationItem()
-{
-
-}
-
 void QgsDecorationItem::update()
 {
   saveToProject();

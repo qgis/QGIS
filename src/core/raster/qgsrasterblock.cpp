@@ -35,9 +35,6 @@ QgsRasterBlock::QgsRasterBlock()
   , mHeight( 0 )
   , mHasNoDataValue( false )
   , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
-  , mData( nullptr )
-  , mImage( nullptr )
-  , mNoDataBitmap( nullptr )
   , mNoDataBitmapWidth( 0 )
   , mNoDataBitmapSize( 0 )
 {
@@ -51,9 +48,6 @@ QgsRasterBlock::QgsRasterBlock( Qgis::DataType dataType, int width, int height )
   , mHeight( height )
   , mHasNoDataValue( false )
   , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
-  , mData( nullptr )
-  , mImage( nullptr )
-  , mNoDataBitmap( nullptr )
   , mNoDataBitmapWidth( 0 )
   , mNoDataBitmapSize( 0 )
 {
@@ -150,13 +144,9 @@ bool QgsRasterBlock::isEmpty() const
 {
   QgsDebugMsgLevel( QString( "mWidth= %1 mHeight = %2 mDataType = %3 mData = %4 mImage = %5" ).arg( mWidth ).arg( mHeight ).arg( mDataType )
                     .arg( reinterpret_cast< quint64 >( mData ) ).arg( reinterpret_cast< quint64 >( mImage ) ), 4 );
-  if ( mWidth == 0 || mHeight == 0 ||
-       ( typeIsNumeric( mDataType ) && !mData ) ||
-       ( typeIsColor( mDataType ) && !mImage ) )
-  {
-    return true;
-  }
-  return false;
+  return mWidth == 0 || mHeight == 0 ||
+         ( typeIsNumeric( mDataType ) && !mData ) ||
+         ( typeIsColor( mDataType ) && !mImage );
 }
 
 bool QgsRasterBlock::typeIsNumeric( Qgis::DataType dataType )
@@ -264,12 +254,8 @@ bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
   // TODO: optimize no data value test by memcmp()
   // More precise would be std::isnan(value) && std::isnan(noDataValue(bandNo)), but probably
   // not important and slower
-  if ( std::isnan( value ) ||
-       qgsDoubleNear( value, noDataValue ) )
-  {
-    return true;
-  }
-  return false;
+  return std::isnan( value ) ||
+         qgsDoubleNear( value, noDataValue );
 }
 
 double QgsRasterBlock::value( int row, int column ) const

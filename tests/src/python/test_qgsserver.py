@@ -168,7 +168,7 @@ class QgsServerTestBase(unittest.TestCase):
     def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
         self.assertEqual(
             headers.get("Content-Type"), "image/png",
-            "Content type is wrong: %s" % headers.get("Content-Type"))
+            "Content type is wrong: %s\n%s" % (headers.get("Content-Type"), response))
 
         test, report = self._img_diff(response, image, max_diff, max_size_diff)
 

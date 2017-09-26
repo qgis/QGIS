@@ -30,12 +30,16 @@
 #include "qgslinestring.h"
 #include "qgsfocuswatcher.h"
 #include "qgssettings.h"
+#include "qgssnappingutils.h"
 #include "qgsproject.h"
 
+/// @cond PRIVATE
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
   bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
+/// @endcond
+
 
 bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection )
 {
@@ -222,8 +226,7 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
   mCadButtons->setEnabled( enabled );
   mInputWidgets->setEnabled( enabled );
 
-  clearPoints();
-  releaseLocks();
+  clear();
   setConstructionMode( false );
 }
 
@@ -572,7 +575,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 
   QgsPointXY point = e->snapPoint();
 
-  mSnappedSegment = e->snapSegment();
+  mSnappedSegment = snapSegment( e->originalMapPoint() );
 
   bool previousPointExist, penulPointExist;
   QgsPointXY previousPt = previousPoint( &previousPointExist );
@@ -590,7 +593,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     {
       point.setX( previousPt.x() + mXConstraint->value() );
     }
-    if ( !mSnappedSegment.isEmpty() && !mXConstraint->isLocked() )
+    if ( !mSnappedSegment.isEmpty() && !mYConstraint->isLocked() )
     {
       // intersect with snapped segment line at X ccordinate
       const double dx = mSnappedSegment.at( 1 ).x() - mSnappedSegment.at( 0 ).x();
@@ -617,7 +620,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     {
       point.setY( previousPt.y() + mYConstraint->value() );
     }
-    if ( !mSnappedSegment.isEmpty() && !mYConstraint->isLocked() )
+    if ( !mSnappedSegment.isEmpty() && !mXConstraint->isLocked() )
     {
       // intersect with snapped segment line at Y ccordinate
       const double dy = mSnappedSegment.at( 1 ).y() - mSnappedSegment.at( 0 ).y();
@@ -861,9 +864,61 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     }
   }
 
+  if ( res )
+  {
+    emit popWarning();
+  }
+  else
+  {
+    emit pushWarning( tr( "Some constraints are incompatible. Resulting point might be incorrect." ) );
+  }
+
   return res;
 }
 
+
+
+QList<QgsPointXY> QgsAdvancedDigitizingDockWidget::snapSegment( const QgsPointXY &originalMapPoint, bool *snapped, bool allLayers ) const
+{
+  QList<QgsPointXY> segment;
+  QgsPointXY pt1, pt2;
+  QgsPointLocator::Match match;
+
+  if ( !allLayers )
+  {
+    // run snapToMap with only segments
+    EdgesOnlyFilter filter;
+    match = mMapCanvas->snappingUtils()->snapToMap( originalMapPoint, &filter );
+  }
+  else
+  {
+    // run snapToMap with only edges on all layers
+    QgsSnappingUtils *snappingUtils = mMapCanvas->snappingUtils();
+
+    QgsSnappingConfig canvasConfig = snappingUtils->config();
+    QgsSnappingConfig localConfig = snappingUtils->config();
+
+    localConfig.setMode( QgsSnappingConfig::AllLayers );
+    localConfig.setType( QgsSnappingConfig::Segment );
+    snappingUtils->setConfig( localConfig );
+
+    match = snappingUtils->snapToMap( originalMapPoint );
+
+    snappingUtils->setConfig( canvasConfig );
+  }
+  if ( match.isValid() && match.hasEdge() )
+  {
+    match.edgePoints( pt1, pt2 );
+    segment << pt1 << pt2;
+  }
+
+  if ( snapped )
+  {
+    *snapped = segment.count() == 2;
+  }
+
+  return segment;
+}
 
 bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode )
 {
@@ -872,12 +927,12 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
     return false;
   }
 
-  bool previousPointExist, penulPointExist, mSnappedSegmentExist;
+  bool previousPointExist, penulPointExist, snappedSegmentExist;
   QgsPointXY previousPt = previousPoint( &previousPointExist );
   QgsPointXY penultimatePt = penultimatePoint( &penulPointExist );
-  QList<QgsPointXY> mSnappedSegment = e->snapSegment( &mSnappedSegmentExist, true );
+  mSnappedSegment = snapSegment( e->originalMapPoint(), &snappedSegmentExist, true );
 
-  if ( !previousPointExist || !mSnappedSegmentExist )
+  if ( !previousPointExist || !snappedSegmentExist )
   {
     return false;
   }
@@ -904,75 +959,6 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent *e, CadCo
   }
 
   return true;
-}
-
-bool QgsAdvancedDigitizingDockWidget::canvasPressEvent( QgsMapMouseEvent *e )
-{
-  applyConstraints( e );
-  return mCadEnabled && mConstructionMode;
-}
-
-bool QgsAdvancedDigitizingDockWidget::canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode )
-{
-  if ( !mCadEnabled )
-    return false;
-
-  emit popWarning();
-
-  if ( e->button() == Qt::RightButton )
-  {
-    clearPoints();
-    releaseLocks();
-    return false;
-  }
-
-  applyConstraints( e );
-
-  if ( alignToSegment( e ) )
-  {
-    // launch a fake move event so rubber bands of map tools will be adapted with new constraints
-    // emit pointChanged( e );
-
-    // Parallel or perpendicular mode and snapped to segment
-    // this has emitted the lockAngle signal
-    return true;
-  }
-
-  addPoint( e->mapPoint() );
-
-  releaseLocks( false );
-
-  if ( e->button() == Qt::LeftButton )
-  {
-    // stop digitizing if not intermediate point and enough points are recorded with respect to the mode
-    if ( !mConstructionMode && ( mode == SinglePoint || ( mode == TwoPoints && mCadPointList.count() > 2 ) ) )
-    {
-      clearPoints();
-    }
-  }
-  return mConstructionMode;
-}
-
-bool QgsAdvancedDigitizingDockWidget::canvasMoveEvent( QgsMapMouseEvent *e )
-{
-  if ( !mCadEnabled )
-    return false;
-
-  if ( !applyConstraints( e ) )
-  {
-    emit pushWarning( tr( "Some constraints are incompatible. Resulting point might be incorrect." ) );
-  }
-  else
-  {
-    emit popWarning();
-  }
-
-  // perpendicular/parallel constraint
-  // do a soft lock when snapping to a segment
-  alignToSegment( e, CadConstraint::SoftLock );
-  mCadPaintItem->update();
-
-  return false;
 }
 
 bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent *e )
@@ -1038,6 +1024,15 @@ void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
       filterKeyPress( e );
       break;
     }
+  }
+}
+
+void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points )
+{
+  clearPoints();
+  Q_FOREACH ( const QgsPointXY &pt, points )
+  {
+    addPoint( pt );
   }
 }
 
@@ -1221,6 +1216,11 @@ void QgsAdvancedDigitizingDockWidget::disable()
   setCadEnabled( false );
 }
 
+void QgsAdvancedDigitizingDockWidget::updateCadPaintItem()
+{
+  mCadPaintItem->update();
+}
+
 void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
 {
   if ( !pointsCount() )
@@ -1321,7 +1321,7 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleLocked()
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::toggleRelative()
 {
-  setRelative( mRelative ? false : true );
+  setRelative( !mRelative );
 }
 
 QgsPointXY QgsAdvancedDigitizingDockWidget::currentPoint( bool *exist ) const

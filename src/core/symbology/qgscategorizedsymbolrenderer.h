@@ -21,10 +21,10 @@
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgscolorramp.h"
+#include "qgsdatadefinedsizelegend.h"
 
 #include <QHash>
 
-class QgsDataDefinedSizeLegend;
 class QgsVectorLayer;
 
 /** \ingroup core
@@ -79,7 +79,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
-    ~QgsCategorizedSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;

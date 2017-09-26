@@ -315,7 +315,8 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
     };
 
     QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true );
+                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
+                    bool readExtentFromXml = false );
 %Docstring
  Constructor - creates a vector layer
 
@@ -328,6 +329,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
  \param  baseName The name used to represent the layer in the legend
  \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
  \param  loadDefaultStyleFlag whether to load the default style
+ \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
 %End
 
 
@@ -347,19 +349,20 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
 
     QString storageType() const;
 %Docstring
-Returns the permanent storage type for this layer as a friendly name.
+ Returns the permanent storage type for this layer as a friendly name.
+ This is obtained from the data provider and does not follow any standard.
  :rtype: str
 %End
 
     QString capabilitiesString() const;
 %Docstring
-Capabilities for this layer in a friendly format.
+ Capabilities for this layer, comma separated and translated.
  :rtype: str
 %End
 
     QString dataComment() const;
 %Docstring
-Returns a comment for the data in the layer
+ Returns a description for this layer as defined in the data provider.
  :rtype: str
 %End
 
@@ -572,12 +575,6 @@ Select not selected features and deselect selected ones
     void selectAll();
 %Docstring
 Select all the features
-%End
-
-    QgsFeatureIds allFeatureIds() const;
-%Docstring
-Get all feature Ids
- :rtype: QgsFeatureIds
 %End
 
     void invertSelectionInRectangle( QgsRectangle &rect );
@@ -857,20 +854,21 @@ Return the provider type for this layer
 .. versionadded:: 2.10
 %End
 
-    bool countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures();
 %Docstring
  Count features for symbols.
- The method will return immediately. You will need to connect to the
- symbolFeatureCountMapChanged() signal to be notified when the freshly updated
- feature counts are ready.
+ The method will return the feature counter task. You will need to
+ connect to the symbolFeatureCountMapChanged() signal to be
+ notified when the freshly updated feature counts are ready.
 
 .. note::
 
-   If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
-       task and call waitForFinished().
+   If the count features for symbols has been already done a
+       None is returned. If you need to wait for the results,
+       you can call waitForFinished() on the feature counter.
 
 .. versionadded:: 3.0
- :rtype: bool
+ :rtype: QgsVectorLayerFeatureCounter
 %End
 
     virtual bool setSubsetString( const QString &subset );
@@ -1727,6 +1725,25 @@ Returns the current blending mode for features
 .. versionadded:: 3.0
 %End
 
+    void setReadExtentFromXml( bool readExtentFromXml );
+%Docstring
+ Flag allowing to indicate if the extent has to be read from the XML
+ document when data source has no metadata or if the data provider has
+ to determine it.
+
+.. versionadded:: 3.0
+%End
+
+    bool readExtentFromXml() const;
+%Docstring
+ Returns true if the extent is read from the XML document when data
+ source has no metadata, false if it's the data provider which determines
+ it.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -1772,10 +1789,12 @@ Returns the current blending mode for features
 .. seealso:: selectByIds()
 %End
 
-    virtual void updateExtents();
+    virtual void updateExtents( bool force = false );
 %Docstring
  Update the extents for the layer. This is necessary if features are
   added/deleted or the layer has been subsetted.
+
+ \param force true to update layer extent even if it's read from xml by default, false otherwise
 %End
 
     bool startEditing();
@@ -1784,6 +1803,14 @@ Returns the current blending mode for features
  This starts an edit session on this layer. Changes made in this edit session will not
  be made persistent until commitChanges() is called and can be reverted by calling
  rollBack().
+ :rtype: bool
+%End
+
+    bool isEditCommandActive() const;
+%Docstring
+ Test if an edit command is active
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -2065,6 +2092,7 @@ Set the extent
   private:                       // Private methods
     QgsVectorLayer( const QgsVectorLayer &rhs );
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

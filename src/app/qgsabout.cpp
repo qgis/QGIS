@@ -40,10 +40,6 @@ QgsAbout::QgsAbout( QWidget * parent )
   init();
 }
 
-QgsAbout::~QgsAbout()
-{
-}
-
 void QgsAbout::init()
 {
   setPluginInfo();

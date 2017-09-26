@@ -76,6 +76,68 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
+  addAlgorithm( new QgsSelectByLocationAlgorithm() );
+  addAlgorithm( new QgsExtractByLocationAlgorithm() );
+  addAlgorithm( new QgsFixGeometriesAlgorithm() );
+  addAlgorithm( new QgsMergeLinesAlgorithm() );
+  addAlgorithm( new QgsSaveSelectedFeatures() );
+  addAlgorithm( new QgsSmoothAlgorithm() );
+  addAlgorithm( new QgsSimplifyAlgorithm() );
+  addAlgorithm( new QgsExtractByExtentAlgorithm() );
+  addAlgorithm( new QgsExtentToLayerAlgorithm() );
+  addAlgorithm( new QgsLineIntersectionAlgorithm() );
+  addAlgorithm( new QgsSplitWithLinesAlgorithm() );
+  addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
+}
+
+void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Selected features" ), QgsProcessing::TypeVectorPoint ) );
+}
+
+QString QgsSaveSelectedFeatures::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a new layer with all the selected features in a given vector layer.\n\n"
+                      "If the selected layer has no selected features, the newly created layer will be empty." );
+}
+
+QgsSaveSelectedFeatures *QgsSaveSelectedFeatures::createInstance() const
+{
+  return new QgsSaveSelectedFeatures();
+}
+
+QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, selectLayer->fields(), selectLayer->wkbType(), selectLayer->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+
+  int count = selectLayer->selectedFeatureCount();
+  int current = 0;
+  double step = count > 0 ? 100.0 / count : 1;
+
+  QgsFeatureIterator it = selectLayer->getSelectedFeatures();;
+  QgsFeature feat;
+  while ( it.nextFeature( feat ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+
+    feedback->setProgress( current++ * step );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
 }
 
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
@@ -247,7 +309,7 @@ QgsDissolveAlgorithm *QgsDissolveAlgorithm::createInstance() const
 }
 
 QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
-    std::function<QgsGeometry( const QList< QgsGeometry >& )> collector, int maxQueueLength )
+    const std::function<QgsGeometry( const QList< QgsGeometry >& )> &collector, int maxQueueLength )
 {
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
@@ -1115,7 +1177,9 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 
 QString QgsBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." ) +
+         QStringLiteral( "\n\n" )  +
+         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const
@@ -1153,7 +1217,9 @@ QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, Q
 
 QString QgsOrientedMinimumBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the minimum area rotated rectangle which covers each feature in an input layer." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a oriented bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsOrientedMinimumBoundingBoxAlgorithm *QgsOrientedMinimumBoundingBoxAlgorithm::createInstance() const
@@ -1203,7 +1269,9 @@ void QgsMinimumEnclosingCircleAlgorithm::initParameters( const QVariantMap & )
 
 QString QgsMinimumEnclosingCircleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the minimum enclosing circle which covers each feature in an input layer." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a minimal enclosing circle calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsMinimumEnclosingCircleAlgorithm *QgsMinimumEnclosingCircleAlgorithm::createInstance() const
@@ -1244,7 +1312,9 @@ QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature 
 
 QString QgsConvexHullAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer.\n\nSee the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
@@ -1284,10 +1354,12 @@ QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, Qg
 QString QgsPromoteToMultipartAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a vector layer with singlepart geometries and generates a new one in which all geometries are "
-                      "multipart. Input features which are already multipart features will remain unchanged.\n\n"
-                      "This algorithm can be used to force geometries to multipart types in order to be compatibility with data providers "
-                      "with strict singlepart/multipart compatibility checks.\n\n"
-                      "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
+                      "multipart. Input features which are already multipart features will remain unchanged." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "This algorithm can be used to force geometries to multipart types in order to be compatibility with data providers "
+                      "with strict singlepart/multipart compatibility checks." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Collect geometries' or 'Aggregate' algorithms for alternative options." );
 }
 
 QgsPromoteToMultipartAlgorithm *QgsPromoteToMultipartAlgorithm::createInstance() const
@@ -1326,10 +1398,12 @@ QString QgsCollectAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a vector layer and collects its geometries into new multipart geometries. One or more attributes can "
                       "be specified to collect only geometries belonging to the same class (having the same value for the specified attributes), alternatively "
-                      "all geometries can be collected.\n\n"
-                      "All output geometries will be converted to multi geometries, even those with just a single part. "
-                      "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part.\n\n"
-                      "See the 'Promote to multipart' or 'Aggregate' algorithms for alternative options." );
+                      "all geometries can be collected." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "All output geometries will be converted to multi geometries, even those with just a single part. "
+                      "This algorithm does not dissolve overlapping geometries - they will be collected together without modifying the shape of each geometry part." ) +
+         QStringLiteral( "\n\n" ) +
+         QObject::tr( "See the 'Promote to multipart' or 'Aggregate' algorithms for alternative options." );
 }
 
 QgsCollectAlgorithm *QgsCollectAlgorithm::createInstance() const
@@ -1337,8 +1411,1181 @@ QgsCollectAlgorithm *QgsCollectAlgorithm::createInstance() const
   return new QgsCollectAlgorithm();
 }
 
+
+
+void QgsSelectByLocationAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  QStringList methods = QStringList() << QObject::tr( "creating new selection" )
+                        << QObject::tr( "adding to current selection" )
+                        << QObject::tr( "select within current selection" )
+                        << QObject::tr( "removing from current selection" );
+
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Select features from" ),
+                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+  addPredicateParameter();
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
+                QObject::tr( "By comparing to the features from" ),
+                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
+                QObject::tr( "Modify current selection by" ),
+                methods, false, 0 ) );
+}
+
+QString QgsSelectByLocationAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a selection in a vector layer. The criteria for selecting "
+                      "features is based on the spatial relationship between each feature and the features in an additional layer." );
+}
+
+QgsSelectByLocationAlgorithm *QgsSelectByLocationAlgorithm::createInstance() const
+{
+  return new QgsSelectByLocationAlgorithm();
+}
+
+QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer::SelectBehavior method = static_cast< QgsVectorLayer::SelectBehavior >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  std::unique_ptr< QgsFeatureSource > intersectSource( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
+  const QList< int > selectedPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
+
+  QgsFeatureIds selectedIds;
+  auto addToSelection = [&]( const QgsFeature & feature )
+  {
+    selectedIds.insert( feature.id() );
+  };
+  process( selectLayer, intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
+
+  selectLayer->selectByIds( selectedIds, method );
+  QVariantMap results;
+  results.insert( QStringLiteral( "OUTPUT" ), parameters.value( QStringLiteral( "INPUT" ) ) );
+  return results;
+}
+
+void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
+    QgsFeatureSource *intersectSource,
+    const QList< int > &selectedPredicates,
+    const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
+    bool onlyRequireTargetIds,
+    QgsFeedback *feedback )
+{
+  // build a list of 'reversed' predicates, because in this function
+  // we actually test the reverse of what the user wants (allowing us
+  // to prepare geometries and optimise the algorithm)
+  QList< Predicate > predicates;
+  for ( int i : selectedPredicates )
+  {
+    predicates << reversePredicate( static_cast< Predicate >( i ) );
+  }
+
+  QgsFeatureIds disjointSet;
+  if ( predicates.contains( Disjoint ) )
+    disjointSet = targetSource->allFeatureIds();
+
+  QgsFeatureIds foundSet;
+  QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( targetSource->sourceCrs() );
+  QgsFeatureIterator fIt = intersectSource->getFeatures( request );
+  double step = intersectSource->featureCount() > 0 ? 100.0 / intersectSource->featureCount() : 1;
+  int current = 0;
+  QgsFeature f;
+  std::unique_ptr< QgsGeometryEngine > engine;
+  while ( fIt.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+      break;
+
+    if ( !f.hasGeometry() )
+      continue;
+
+    engine.reset();
+
+    QgsRectangle bbox = f.geometry().boundingBox();
+    request = QgsFeatureRequest().setFilterRect( bbox );
+    if ( onlyRequireTargetIds )
+      request.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() );
+
+    QgsFeatureIterator testFeatureIt = targetSource->getFeatures( request );
+    QgsFeature testFeature;
+    while ( testFeatureIt.nextFeature( testFeature ) )
+    {
+      if ( feedback->isCanceled() )
+        break;
+
+      if ( foundSet.contains( testFeature.id() ) )
+      {
+        // already added this one, no need for further tests
+        continue;
+      }
+      if ( predicates.count() == 1 && predicates.at( 0 ) == Disjoint && !disjointSet.contains( testFeature.id() ) )
+      {
+        // calculating only the disjoint set, and we've already eliminated this feature so no need for further tests
+        continue;
+      }
+
+      if ( !engine )
+      {
+        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().geometry() ) );
+        engine->prepareGeometry();
+      }
+
+      for ( Predicate predicate : qgsAsConst( predicates ) )
+      {
+        bool isMatch = false;
+        switch ( predicate )
+        {
+          case Intersects:
+            isMatch = engine->intersects( testFeature.geometry().geometry() );
+            break;
+          case Contains:
+            isMatch = engine->contains( testFeature.geometry().geometry() );
+            break;
+          case Disjoint:
+            if ( engine->intersects( testFeature.geometry().geometry() ) )
+            {
+              disjointSet.remove( testFeature.id() );
+            }
+            break;
+          case IsEqual:
+            isMatch = engine->isEqual( testFeature.geometry().geometry() );
+            break;
+          case Touches:
+            isMatch = engine->touches( testFeature.geometry().geometry() );
+            break;
+          case Overlaps:
+            isMatch = engine->overlaps( testFeature.geometry().geometry() );
+            break;
+          case Within:
+            isMatch = engine->within( testFeature.geometry().geometry() );
+            break;
+          case Crosses:
+            isMatch = engine->crosses( testFeature.geometry().geometry() );
+            break;
+        }
+        if ( isMatch )
+        {
+          foundSet.insert( testFeature.id() );
+          handleFeatureFunction( testFeature );
+        }
+      }
+
+    }
+
+    current += 1;
+    feedback->setProgress( current * step );
+  }
+
+  if ( predicates.contains( Disjoint ) )
+  {
+    disjointSet = disjointSet.subtract( foundSet );
+    QgsFeatureRequest disjointReq = QgsFeatureRequest().setFilterFids( disjointSet );
+    if ( onlyRequireTargetIds )
+      disjointReq.setSubsetOfAttributes( QgsAttributeList() ).setFlags( QgsFeatureRequest::NoGeometry );
+    QgsFeatureIterator disjointIt = targetSource->getFeatures( disjointReq );
+    QgsFeature f;
+    while ( disjointIt.nextFeature( f ) )
+    {
+      handleFeatureFunction( f );
+    }
+  }
+}
+
+void QgsLocationBasedAlgorithm::addPredicateParameter()
+{
+  std::unique_ptr< QgsProcessingParameterEnum > predicateParam( new QgsProcessingParameterEnum( QStringLiteral( "PREDICATE" ),
+      QObject::tr( "Where the features (geometric predicate)" ),
+      predicateOptionsList(), true, QVariant::fromValue( QList< int >() << 0 ) ) );
+
+  QVariantMap predicateMetadata;
+  QVariantMap widgetMetadata;
+  widgetMetadata.insert( QStringLiteral( "class" ), QStringLiteral( "processing.gui.wrappers.EnumWidgetWrapper" ) );
+  widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
+  widgetMetadata.insert( QStringLiteral( "columns" ), 2 );
+  predicateMetadata.insert( QStringLiteral( "widget_wrapper" ), widgetMetadata );
+  predicateParam->setMetadata( predicateMetadata );
+
+  addParameter( predicateParam.release() );
+}
+
+QgsLocationBasedAlgorithm::Predicate QgsLocationBasedAlgorithm::reversePredicate( QgsLocationBasedAlgorithm::Predicate predicate ) const
+{
+  switch ( predicate )
+  {
+    case Intersects:
+      return Intersects;
+    case Contains:
+      return Within;
+    case Disjoint:
+      return Disjoint;
+    case IsEqual:
+      return IsEqual;
+    case Touches:
+      return Touches;
+    case Overlaps:
+      return Overlaps;
+    case Within:
+      return Contains;
+    case Crosses:
+      return Crosses;
+  }
+  // no warnings
+  return Intersects;
+}
+
+QStringList QgsLocationBasedAlgorithm::predicateOptionsList() const
+{
+  return QStringList() << QObject::tr( "intersect" )
+         << QObject::tr( "contain" )
+         << QObject::tr( "disjoint" )
+         << QObject::tr( "equal" )
+         << QObject::tr( "touch" )
+         << QObject::tr( "overlap" )
+         << QObject::tr( "are within" )
+         << QObject::tr( "cross" );
+}
+
+
+
+void QgsExtractByLocationAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Extract features from" ),
+                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+  addPredicateParameter();
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
+                QObject::tr( "By comparing to the features from" ),
+                QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (location)" ) ) );
+}
+
+QString QgsExtractByLocationAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an "
+                      "input layer. The criteria for adding features to the resulting layer is defined "
+                      "based on the spatial relationship between each feature and the features in an additional layer." );
+}
+
+QgsExtractByLocationAlgorithm *QgsExtractByLocationAlgorithm::createInstance() const
+{
+  return new QgsExtractByLocationAlgorithm();
+}
+
+QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsFeatureSource > intersectSource( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
+  const QList< int > selectedPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, input->fields(), input->wkbType(), input->sourceCrs() ) );
+
+  if ( !sink )
+    return QVariantMap();
+
+  auto addToSink = [&]( const QgsFeature & feature )
+  {
+    QgsFeature f = feature;
+    sink->addFeature( f, QgsFeatureSink::FastInsert );
+  };
+  process( input.get(), intersectSource.get(), selectedPredicates, addToSink, false, feedback );
+
+  QVariantMap results;
+  results.insert( QStringLiteral( "OUTPUT" ), dest );
+  return results;
+}
+
+
+QString QgsFixGeometriesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm attempts to create a valid representation of a given invalid geometry without "
+                      "losing any of the input vertices. Already-valid geometries are returned without further intervention. "
+                      "Always outputs multi-geometry layer.\n\n"
+                      "NOTE: M values will be dropped from the output." );
+}
+
+QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
+{
+  return new QgsFixGeometriesAlgorithm();
+}
+
+QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  if ( !feature.hasGeometry() )
+    return feature;
+
+  QgsFeature outputFeature = feature;
+
+  QgsGeometry outputGeometry = outputFeature.geometry().makeValid();
+  if ( !outputGeometry )
+  {
+    feedback->pushInfo( QObject::tr( "makeValid failed for feature %1 " ).arg( feature.id() ) );
+    outputFeature.clearGeometry();
+    return outputFeature;
+  }
+
+  if ( outputGeometry.wkbType() == QgsWkbTypes::Unknown ||
+       QgsWkbTypes::flatType( outputGeometry.geometry()->wkbType() ) == QgsWkbTypes::GeometryCollection )
+  {
+    // keep only the parts of the geometry collection with correct type
+    const QList< QgsGeometry > tmpGeometries = outputGeometry.asGeometryCollection();
+    QList< QgsGeometry > matchingParts;
+    for ( const QgsGeometry &g : tmpGeometries )
+    {
+      if ( g.type() == feature.geometry().type() )
+        matchingParts << g;
+    }
+    if ( !matchingParts.empty() )
+      outputGeometry = QgsGeometry::collectGeometry( matchingParts );
+    else
+      outputGeometry = QgsGeometry();
+  }
+
+  outputGeometry.convertToMultiType();
+  outputFeature.setGeometry( outputGeometry );
+  return outputFeature;
+}
+
+
+QString QgsMergeLinesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm joins all connected parts of MultiLineString geometries into single LineString geometries.\n\n"
+                      "If any parts of the input MultiLineString geometries are not connected, the resultant "
+                      "geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts." );
+}
+
+QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
+{
+  return new QgsMergeLinesAlgorithm();
+}
+
+QgsFeature QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  if ( !feature.hasGeometry() )
+    return feature;
+
+  QgsFeature out = feature;
+  QgsGeometry outputGeometry = feature.geometry().mergeLines();
+  if ( !outputGeometry )
+    feedback->reportError( QObject::tr( "Error merging lines for feature %1" ).arg( feature.id() ) );
+
+  out.setGeometry( outputGeometry );
+  return out;
+}
+
+QString QgsSmoothAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm smooths the geometries in a line or polygon layer. It creates a new layer with the "
+                      "same features as the ones in the input layer, but with geometries containing a higher number of vertices "
+                      "and corners in the geometries smoothed out.\n\n"
+                      "The iterations parameter dictates how many smoothing iterations will be applied to each "
+                      "geometry. A higher number of iterations results in smoother geometries with the cost of "
+                      "greater number of nodes in the geometries.\n\n"
+                      "The offset parameter controls how \"tightly\" the smoothed geometries follow the original geometries. "
+                      "Smaller values results in a tighter fit, and larger values will create a looser fit.\n\n"
+                      "The maximum angle parameter can be used to prevent smoothing of "
+                      "nodes with large angles. Any node where the angle of the segments to either "
+                      "side is larger than this will not be smoothed. For example, setting the maximum "
+                      "angle to 90 degrees or lower would preserve right angles in the geometry." );
+}
+
+QgsSmoothAlgorithm *QgsSmoothAlgorithm::createInstance() const
+{
+  return new QgsSmoothAlgorithm();
+}
+
+void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ITERATIONS" ),
+                QObject::tr( "Iterations" ), QgsProcessingParameterNumber::Integer,
+                1, false, 1, 10 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "OFFSET" ),
+                QObject::tr( "Offset" ), QgsProcessingParameterNumber::Double,
+                0.25, false, 0.0, 0.5 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_ANGLE" ),
+                QObject::tr( "Maximum node angle to smooth" ), QgsProcessingParameterNumber::Double,
+                180.0, false, 0.0, 180.0 ) );
+}
+
+bool QgsSmoothAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mIterations = parameterAsInt( parameters, QStringLiteral( "ITERATIONS" ), context );
+  mOffset = parameterAsDouble( parameters, QStringLiteral( "OFFSET" ), context );
+  mMaxAngle = parameterAsDouble( parameters, QStringLiteral( "MAX_ANGLE" ), context );
+  return true;
+}
+
+QgsFeature QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    QgsGeometry outputGeometry = f.geometry().smooth( mIterations, mOffset, -1, mMaxAngle );
+    if ( !outputGeometry )
+    {
+      feedback->reportError( QObject::tr( "Error smoothing geometry %1" ).arg( feature.id() ) );
+    }
+    f.setGeometry( outputGeometry );
+  }
+  return f;
+}
+
+QString QgsSimplifyAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm simplifies the geometries in a line or polygon layer. It creates a new layer "
+                      "with the same features as the ones in the input layer, but with geometries containing a lower number of vertices.\n\n"
+                      "The algorithm gives a choice of simplification methods, including distance based "
+                      "(the \"Douglas-Peucker\" algorithm), area based (\"Visvalingam\" algorithm) and snapping geometries to a grid." );
+}
+
+QgsSimplifyAlgorithm *QgsSimplifyAlgorithm::createInstance() const
+{
+  return new QgsSimplifyAlgorithm();
+}
+
+void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
+{
+  QStringList methods;
+  methods << QObject::tr( "Distance (Douglas-Peucker)" )
+          << QObject::tr( "Snap to grid" )
+          << QObject::tr( "Area (Visvalingam)" );
+
+  addParameter( new QgsProcessingParameterEnum(
+                  QStringLiteral( "METHOD" ),
+                  QObject::tr( "Simplification method" ),
+                  methods, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TOLERANCE" ),
+                QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double,
+                1.0, false, 0, 10000000.0 ) );
+}
+
+bool QgsSimplifyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mTolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mMethod = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  if ( mMethod != QgsMapToPixelSimplifier::Distance )
+    mSimplifier.reset( new QgsMapToPixelSimplifier( QgsMapToPixelSimplifier::SimplifyGeometry, mTolerance, mMethod ) );
+
+  return true;
+}
+
+QgsFeature QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    QgsGeometry inputGeometry = f.geometry();
+    QgsGeometry outputGeometry;
+    if ( mMethod == QgsMapToPixelSimplifier::Distance )
+    {
+      outputGeometry = inputGeometry.simplify( mTolerance );
+    }
+    else
+    {
+      outputGeometry = mSimplifier->simplify( inputGeometry );
+    }
+    f.setGeometry( outputGeometry );
+  }
+  return f;
+}
+
+
+
+
+void QgsExtractByExtentAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CLIP" ), QObject::tr( "Clip features to extent" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted" ) ) );
+}
+
+QString QgsExtractByExtentAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a new vector layer that only contains features which fall within a specified extent. "
+                      "Any features which intersect the extent will be included.\n\n"
+                      "Optionally, feature geometries can also be clipped to the extent. If this option is selected, then the output "
+                      "geometries will automatically be converted to multi geometries to ensure uniform output geometry types." );
+}
+
+QgsExtractByExtentAlgorithm *QgsExtractByExtentAlgorithm::createInstance() const
+{
+  return new QgsExtractByExtentAlgorithm();
+}
+
+QVariantMap QgsExtractByExtentAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !featureSource )
+    return QVariantMap();
+
+  QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, featureSource->sourceCrs() );
+  bool clip = parameterAsBool( parameters, QStringLiteral( "CLIP" ), context );
+
+  // if clipping, we force multi output
+  QgsWkbTypes::Type outType = clip ? QgsWkbTypes::multiType( featureSource->wkbType() ) : featureSource->wkbType();
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), outType, featureSource->sourceCrs() ) );
+
+  if ( !sink )
+    return QVariantMap();
+
+  QgsGeometry clipGeom = parameterAsExtentGeometry( parameters, QStringLiteral( "EXTENT" ), context, featureSource->sourceCrs() );
+
+  double step = featureSource->featureCount() > 0 ? 100.0 / featureSource->featureCount() : 1;
+  QgsFeatureIterator inputIt = featureSource->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+  QgsFeature f;
+  int i = -1;
+  while ( inputIt.nextFeature( f ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    if ( clip )
+    {
+      QgsGeometry g = f.geometry().intersection( clipGeom );
+      g.convertToMultiType();
+      f.setGeometry( g );
+    }
+
+    sink->addFeature( f, QgsFeatureSink::FastInsert );
+    feedback->setProgress( i * step );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
+void QgsExtentToLayerAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "INPUT" ), QObject::tr( "Extent" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extent" ), QgsProcessing::TypeVectorPolygon ) );
+}
+
+QString QgsExtentToLayerAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates a new vector layer that contains a single feature with geometry matching an extent parameter.\n\n"
+                      "It can be used in models to convert an extent into a layer which can be used for other algorithms which require "
+                      "a layer based input." );
+}
+
+QgsExtentToLayerAlgorithm *QgsExtentToLayerAlgorithm::createInstance() const
+{
+  return new QgsExtentToLayerAlgorithm();
+}
+
+QVariantMap QgsExtentToLayerAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsCoordinateReferenceSystem crs = parameterAsExtentCrs( parameters, QStringLiteral( "INPUT" ), context );
+  QgsGeometry geom = parameterAsExtentGeometry( parameters, QStringLiteral( "INPUT" ), context );
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "id" ), QVariant::Int ) );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, QgsWkbTypes::Polygon, crs ) );
+  if ( !sink )
+    return QVariantMap();
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( geom );
+  sink->addFeature( f, QgsFeatureSink::FastInsert );
+
+  feedback->setProgress( 100 );
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+void QgsLineIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
+                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
+                QObject::tr( "Intersect layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+
+  addParameter( new QgsProcessingParameterField(
+                  QStringLiteral( "INPUT_FIELDS" ),
+                  QObject::tr( "Input fields to keep (leave empty to keep all fields)" ), QVariant(),
+                  QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any,
+                  true, true ) );
+  addParameter( new QgsProcessingParameterField(
+                  QStringLiteral( "INTERSECT_FIELDS" ),
+                  QObject::tr( "Intersect fields to keep (leave empty to keep all fields)" ), QVariant(),
+                  QStringLiteral( "INTERSECT" ), QgsProcessingParameterField::Any,
+                  true, true ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Intersections" ), QgsProcessing::TypeVectorPoint ) );
+}
+
+QString QgsLineIntersectionAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates point features where the lines in the Intersect layer intersect the lines in the Input layer." );
+}
+
+QgsLineIntersectionAlgorithm *QgsLineIntersectionAlgorithm::createInstance() const
+{
+  return new QgsLineIntersectionAlgorithm();
+}
+
+QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > sourceA( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !sourceA )
+    return QVariantMap();
+
+  std::unique_ptr< QgsFeatureSource > sourceB( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
+  if ( !sourceB )
+    return QVariantMap();
+
+  const QStringList fieldsA = parameterAsFields( parameters, QStringLiteral( "INPUT_FIELDS" ), context );
+  const QStringList fieldsB = parameterAsFields( parameters, QStringLiteral( "INTERSECT_FIELDS" ), context );
+
+  QgsFields outFieldsA;
+  QgsAttributeList fieldsAIndices;
+
+  if ( fieldsA.empty() )
+  {
+    outFieldsA = sourceA->fields();
+    for ( int i = 0; i < outFieldsA.count(); ++i )
+    {
+      fieldsAIndices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : fieldsA )
+    {
+      int index = sourceA->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        fieldsAIndices << index;
+        outFieldsA.append( sourceA->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsFields outFieldsB;
+  QgsAttributeList fieldsBIndices;
+
+  if ( fieldsB.empty() )
+  {
+    outFieldsB = sourceB->fields();
+    for ( int i = 0; i < outFieldsB.count(); ++i )
+    {
+      fieldsBIndices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : fieldsB )
+    {
+      int index = sourceB->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        fieldsBIndices << index;
+        outFieldsB.append( sourceB->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsFields outFields = QgsProcessingUtils::combineFields( outFieldsA, outFieldsB );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, QgsWkbTypes::Point,  sourceA->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+  QgsSpatialIndex spatialIndex( sourceB->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( sourceA->sourceCrs() ) ), feedback );
+  QgsFeature outFeature;
+  QgsFeatureIterator features = sourceA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( fieldsAIndices ) );
+  double step = sourceA->featureCount() > 0 ? 100.0 / sourceA->featureCount() : 1;
+  int i = 0;
+  QgsFeature inFeatureA;
+  while ( features.nextFeature( inFeatureA ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    if ( !inFeatureA.hasGeometry() )
+      continue;
+
+    QgsGeometry inGeom = inFeatureA.geometry();
+    QgsFeatureIds lines = spatialIndex.intersects( inGeom.boundingBox() ).toSet();
+    if ( !lines.empty() )
+    {
+      // use prepared geometries for faster intersection tests
+      std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( inGeom.geometry() ) );
+      engine->prepareGeometry();
+
+      QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( lines );
+      request.setDestinationCrs( sourceA->sourceCrs() );
+      request.setSubsetOfAttributes( fieldsBIndices );
+
+      QgsFeature inFeatureB;
+      QgsFeatureIterator featuresB = sourceB->getFeatures( request );
+      while ( featuresB.nextFeature( inFeatureB ) )
+      {
+        if ( feedback->isCanceled() )
+        {
+          break;
+        }
+
+        QgsGeometry tmpGeom = inFeatureB.geometry();
+        if ( engine->intersects( tmpGeom.geometry() ) )
+        {
+          QgsMultiPoint points;
+          QgsGeometry intersectGeom = inGeom.intersection( tmpGeom );
+          QgsAttributes outAttributes;
+          for ( int a : qgsAsConst( fieldsAIndices ) )
+          {
+            outAttributes.append( inFeatureA.attribute( a ) );
+          }
+          for ( int b : qgsAsConst( fieldsBIndices ) )
+          {
+            outAttributes.append( inFeatureB.attribute( b ) );
+          }
+          if ( intersectGeom.type() == QgsWkbTypes::PointGeometry )
+          {
+            if ( intersectGeom.isMultipart() )
+            {
+              points = intersectGeom.asMultiPoint();
+            }
+            else
+            {
+              points.append( intersectGeom.asPoint() );
+            }
+
+            for ( const QgsPointXY &j : qgsAsConst( points ) )
+            {
+              outFeature.setGeometry( QgsGeometry::fromPoint( j ) );
+              outFeature.setAttributes( outAttributes );
+              sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+            }
+          }
+        }
+      }
+    }
+
+    feedback->setProgress( i * step );
+
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
+void QgsSplitWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
+                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ),
+                QObject::tr( "Split layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Split" ) ) );
+}
+
+QString QgsSplitWithLinesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. "
+                      "Intersection between geometries in both layers are considered as split points.\n\n"
+                      "Output will contain multi geometries for split features." );
+}
+
+QgsSplitWithLinesAlgorithm *QgsSplitWithLinesAlgorithm::createInstance() const
+{
+  return new QgsSplitWithLinesAlgorithm();
+}
+
+QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    return QVariantMap();
+
+  std::unique_ptr< QgsFeatureSource > linesSource( parameterAsSource( parameters, QStringLiteral( "LINES" ), context ) );
+  if ( !linesSource )
+    return QVariantMap();
+
+  bool sameLayer = parameters.value( QStringLiteral( "INPUT" ) ) == parameters.value( QStringLiteral( "LINES" ) );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(),
+                                          QgsWkbTypes::multiType( source->wkbType() ),  source->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+  QgsSpatialIndex spatialIndex;
+  QMap< QgsFeatureId, QgsGeometry > splitGeoms;
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setDestinationCrs( source->sourceCrs() );
+
+  QgsFeatureIterator splitLines = linesSource->getFeatures( request );
+  QgsFeature aSplitFeature;
+  while ( splitLines.nextFeature( aSplitFeature ) )
+  {
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    splitGeoms.insert( aSplitFeature.id(), aSplitFeature.geometry() );
+    spatialIndex.insertFeature( aSplitFeature );
+  }
+
+  QgsFeature outFeat;
+  QgsFeatureIterator features = source->getFeatures();
+
+  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
+  int i = 0;
+  QgsFeature inFeatureA;
+  while ( features.nextFeature( inFeatureA ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    if ( !inFeatureA.hasGeometry() )
+    {
+      sink->addFeature( inFeatureA, QgsFeatureSink::FastInsert );
+      continue;
+    }
+
+    QgsGeometry inGeom = inFeatureA.geometry();
+    outFeat.setAttributes( inFeatureA.attributes() );
+
+    QList< QgsGeometry > inGeoms = inGeom.asGeometryCollection();
+
+    const QgsFeatureIds lines = spatialIndex.intersects( inGeom.boundingBox() ).toSet();
+    if ( !lines.empty() ) // has intersection of bounding boxes
+    {
+      QList< QgsGeometry > splittingLines;
+
+      // use prepared geometries for faster intersection tests
+      std::unique_ptr< QgsGeometryEngine > engine;
+
+      for ( QgsFeatureId line : lines )
+      {
+        // check if trying to self-intersect
+        if ( sameLayer && inFeatureA.id() == line )
+          continue;
+
+        QgsGeometry splitGeom = splitGeoms.value( line );
+        if ( !engine )
+        {
+          engine.reset( QgsGeometry::createGeometryEngine( inGeom.geometry() ) );
+          engine->prepareGeometry();
+        }
+
+        if ( engine->intersects( splitGeom.geometry() ) )
+        {
+          QList< QgsGeometry > splitGeomParts = splitGeom.asGeometryCollection();
+          splittingLines.append( splitGeomParts );
+        }
+      }
+
+      if ( !splittingLines.empty() )
+      {
+        for ( const QgsGeometry &splitGeom : qgsAsConst( splittingLines ) )
+        {
+          QList<QgsPointXY> splitterPList;
+          QList< QgsGeometry > outGeoms;
+
+          // use prepared geometries for faster intersection tests
+          std::unique_ptr< QgsGeometryEngine > splitGeomEngine( QgsGeometry::createGeometryEngine( splitGeom.geometry() ) );
+          splitGeomEngine->prepareGeometry();
+          while ( !inGeoms.empty() )
+          {
+            if ( feedback->isCanceled() )
+            {
+              break;
+            }
+
+            QgsGeometry inGeom = inGeoms.takeFirst();
+            if ( !inGeom )
+              continue;
+
+            if ( splitGeomEngine->intersects( inGeom.geometry() ) )
+            {
+              QgsGeometry before = inGeom;
+              if ( splitterPList.empty() )
+              {
+                const QgsCoordinateSequence sequence = splitGeom.geometry()->coordinateSequence();
+                for ( const QgsRingSequence &part : sequence )
+                {
+                  for ( const QgsPointSequence &ring : part )
+                  {
+                    for ( const QgsPoint &pt : ring )
+                    {
+                      splitterPList << QgsPointXY( pt );
+                    }
+                  }
+                }
+              }
+
+              QList< QgsGeometry > newGeometries;
+              QList<QgsPointXY> topologyTestPoints;
+              QgsGeometry::OperationResult result = inGeom.splitGeometry( splitterPList, newGeometries, false, topologyTestPoints );
+
+              // splitGeometry: If there are several intersections
+              // between geometry and splitLine, only the first one is considered.
+              if ( result == QgsGeometry::Success ) // split occurred
+              {
+                if ( inGeom.equals( before ) )
+                {
+                  // bug in splitGeometry: sometimes it returns 0 but
+                  // the geometry is unchanged
+                  outGeoms.append( inGeom );
+                }
+                else
+                {
+                  inGeoms.append( inGeom );
+                  inGeoms.append( newGeometries );
+                }
+              }
+              else
+              {
+                outGeoms.append( inGeom );
+              }
+            }
+            else
+            {
+              outGeoms.append( inGeom );
+            }
+
+          }
+          inGeoms = outGeoms;
+        }
+      }
+    }
+
+    QList< QgsGeometry > parts;
+    for ( const QgsGeometry &aGeom : qgsAsConst( inGeoms ) )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      bool passed = true;
+      if ( QgsWkbTypes::geometryType( aGeom.wkbType() ) == QgsWkbTypes::LineGeometry )
+      {
+        int numPoints = aGeom.geometry()->nCoordinates();
+
+        if ( numPoints <= 2 )
+        {
+          if ( numPoints == 2 )
+            passed = !static_cast< QgsCurve * >( aGeom.geometry() )->isClosed(); // tests if vertex 0 = vertex 1
+          else
+            passed = false; // sometimes splitting results in lines of zero length
+        }
+      }
+
+      if ( passed )
+        parts.append( aGeom );
+    }
+
+    if ( !parts.empty() )
+    {
+      outFeat.setGeometry( QgsGeometry::collectGeometry( parts ) );
+      sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+    }
+
+    feedback->setProgress( i * step );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
+void QgsMeanCoordinatesAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
+                QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field" ),
+                QVariant(), QStringLiteral( "INPUT" ),
+                QgsProcessingParameterField::Numeric, false, true ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "UID" ),
+                QObject::tr( "Unique ID field" ), QVariant(),
+                QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Mean coordinates" ), QgsProcessing::TypeVectorPoint ) );
+}
+
+QString QgsMeanCoordinatesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm computes a point layer with the center of mass of geometries in an input layer.\n\n"
+                      "An attribute can be specified as containing weights to be applied to each feature when computing the center of mass.\n\n"
+                      "If an attribute is selected in the <Unique ID field> parameter, features will be grouped according "
+                      "to values in this field. Instead of a single point with the center of mass of the whole layer, "
+                      "the output layer will contain a center of mass for the features in each category." );
+}
+
+QgsMeanCoordinatesAlgorithm *QgsMeanCoordinatesAlgorithm::createInstance() const
+{
+  return new QgsMeanCoordinatesAlgorithm();
+}
+
+QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !source )
+    return QVariantMap();
+
+  QString weightFieldName = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
+  QString uniqueFieldName = parameterAsString( parameters, QStringLiteral( "UID" ), context );
+
+  QgsAttributeList attributes;
+  int weightIndex = -1;
+  if ( !weightFieldName.isEmpty() )
+  {
+    weightIndex = source->fields().lookupField( weightFieldName );
+    if ( weightIndex >= 0 )
+      attributes.append( weightIndex );
+  }
+
+  int uniqueFieldIndex = -1;
+  if ( !uniqueFieldName.isEmpty() )
+  {
+    uniqueFieldIndex = source->fields().lookupField( uniqueFieldName );
+    if ( uniqueFieldIndex >= 0 )
+      attributes.append( uniqueFieldIndex );
+  }
+
+  QgsFields fields;
+  fields.append( QgsField( QStringLiteral( "MEAN_X" ), QVariant::Double, QString(), 24, 15 ) );
+  fields.append( QgsField( QStringLiteral( "MEAN_Y" ), QVariant::Double, QString(), 24, 15 ) );
+  if ( uniqueFieldIndex >= 0 )
+  {
+    QgsField uniqueField = source->fields().at( uniqueFieldIndex );
+    fields.append( uniqueField );
+  }
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
+                                          QgsWkbTypes::Point, source->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attributes ) );
+
+  double step = source->featureCount() > 0 ? 50.0 / source->featureCount() : 1;
+  int i = 0;
+  QgsFeature feat;
+
+  QHash< QVariant, QList< double > > means;
+  while ( features.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( i * step );
+    if ( !feat.hasGeometry() )
+      continue;
+
+
+    QVariant featureClass;
+    if ( uniqueFieldIndex >= 0 )
+    {
+      featureClass = feat.attribute( uniqueFieldIndex );
+    }
+    else
+    {
+      featureClass = QStringLiteral( "#####singleclass#####" );
+    }
+
+    double weight = 1;
+    if ( weightIndex >= 0 )
+    {
+      bool ok = false;
+      weight = feat.attribute( weightIndex ).toDouble( &ok );
+      if ( !ok )
+        weight = 1.0;
+    }
+
+    if ( weight < 0 )
+    {
+      throw QgsProcessingException( QObject::tr( "Negative weight value found. Please fix your data and try again." ) );
+    }
+
+    QList< double > values = means.value( featureClass );
+    double cx = 0;
+    double cy = 0;
+    double totalWeight = 0;
+    if ( !values.empty() )
+    {
+      cx = values.at( 0 );
+      cy = values.at( 1 );
+      totalWeight = values.at( 2 );
+    }
+
+    QgsVertexId vid;
+    QgsPoint pt;
+    const QgsAbstractGeometry *g = feat.geometry().geometry();
+    // NOTE - should this be including the duplicate nodes for closed rings? currently it is,
+    // but I suspect that the expected behavior would be to NOT include these
+    while ( g->nextVertex( vid, pt ) )
+    {
+      cx += pt.x() * weight;
+      cy += pt.y() * weight;
+      totalWeight += weight;
+    }
+
+    means[featureClass] = QList< double >() << cx << cy << totalWeight;
+  }
+
+  i = 0;
+  step = !means.empty() ? 50.0 / means.count() : 1;
+  for ( auto it = means.constBegin(); it != means.constEnd(); ++it )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( 50 + i * step );
+    if ( qgsDoubleNear( it.value().at( 2 ), 0 ) )
+      continue;
+
+    QgsFeature outFeat;
+    double cx = it.value().at( 0 ) / it.value().at( 2 );
+    double cy = it.value().at( 1 ) / it.value().at( 2 );
+
+    QgsPointXY meanPoint( cx, cy );
+    outFeat.setGeometry( QgsGeometry::fromPoint( meanPoint ) );
+
+    QgsAttributes attributes;
+    attributes << cx << cy;
+    if ( uniqueFieldIndex >= 0 )
+      attributes.append( it.key() );
+
+    outFeat.setAttributes( attributes );
+    sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
 ///@endcond
-
-
 
 

@@ -1237,7 +1237,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mQSettingsGrpBx">
                  <property name="title">
-                  <string>QgsSettings</string>
+                  <string>Settings</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
                   <item row="0" column="1">

@@ -30,7 +30,11 @@ class QgsSourceSelectProviderRegistry
 #include "qgssourceselectproviderregistry.h"
 %End
   public:
+
     QgsSourceSelectProviderRegistry();
+%Docstring
+ Constructor for QgsSourceSelectProviderRegistry.
+%End
 
     ~QgsSourceSelectProviderRegistry();
 

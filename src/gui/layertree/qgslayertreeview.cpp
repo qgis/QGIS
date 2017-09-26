@@ -29,8 +29,7 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QTreeView( parent )
-  , mDefaultActions( nullptr )
-  , mMenuProvider( nullptr )
+
 {
   setHeaderHidden( true );
 
@@ -356,7 +355,7 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
         lst << parentKey;
     }
   }
-  nodeLayer->setCustomProperty( "expandedLegendNodes", lst );
+  nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
 }
 
 

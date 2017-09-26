@@ -18,6 +18,7 @@
 #include "qgslayout.h"
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"
+#include "qgslayoutitemundocommand.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -26,7 +27,7 @@
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   : QgsLayoutObject( layout )
-  , QGraphicsRectItem( 0 )
+  , QGraphicsRectItem( nullptr )
   , mUuid( QUuid::createUuid().toString() )
 {
   setZValue( QgsLayout::ZItem );
@@ -241,8 +242,8 @@ double QgsLayoutItem::itemRotation() const
 
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement element = doc.createElement( "LayoutItem" );
-  element.setAttribute( "type", stringType() );
+  QDomElement element = doc.createElement( QStringLiteral( "LayoutItem" ) );
+  element.setAttribute( QStringLiteral( "type" ), stringType() );
 
   writePropertiesToElement( element, doc, context );
   parentElement.appendChild( element );
@@ -252,12 +253,17 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
 
 bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( itemElem.nodeName() != QString( "LayoutItem" ) || itemElem.attribute( "type" ) != stringType() )
+  if ( itemElem.nodeName() != QStringLiteral( "LayoutItem" ) || itemElem.attribute( QStringLiteral( "type" ) ) != stringType() )
   {
     return false;
   }
 
   return readPropertiesFromElement( itemElem, doc, context );
+}
+
+QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutItemUndoCommand( this, text, id, parent );
 }
 
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )

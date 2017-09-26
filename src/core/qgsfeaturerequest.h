@@ -352,7 +352,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \see invalidGeometryCallback()
      */
 #ifndef SIP_RUN
-    QgsFeatureRequest &setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback );
+    QgsFeatureRequest &setInvalidGeometryCallback( const std::function< void( const QgsFeature & )> &callback );
 #else
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -545,7 +545,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \see setDestinationCrs()
      */
 #ifndef SIP_RUN
-    QgsFeatureRequest &setTransformErrorCallback( std::function< void( const QgsFeature & ) > callback );
+    QgsFeatureRequest &setTransformErrorCallback( const std::function< void( const QgsFeature & )> &callback );
 #else
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode

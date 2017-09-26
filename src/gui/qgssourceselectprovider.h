@@ -34,6 +34,17 @@ class QWidget;
 class GUI_EXPORT QgsSourceSelectProvider
 {
   public:
+
+    //! Provider ordering groups
+    enum Ordering
+    {
+      OrderLocalProvider = 0, //!< Starting point for local file providers (e.g. OGR)
+      OrderDatabaseProvider = 1000, //!< Starting point for database providers (e.g. Postgres)
+      OrderRemoteProvider = 2000, //!< Starting point for remote (online) providers (e.g. WMS)
+      OrderGeoCmsProvider = 3000, //!< Starting point for GeoCMS type providers (e.g. GeoNode)
+      OrderOtherProvider = 4000, //!< Starting point for other providers (e.g. plugin based providers)
+    };
+
     virtual ~QgsSourceSelectProvider() = default;
 
     //! Data Provider key
@@ -62,7 +73,7 @@ class GUI_EXPORT QgsSourceSelectProvider
     /** Ordering: the source select provider registry will be able to sort
      * the source selects (ascending) using this integer value
      */
-    virtual int ordering( ) const { return 0; }
+    virtual int ordering( ) const { return OrderOtherProvider; }
 
     /** Create a new instance of QgsAbstractDataSourceWidget (or null).
      * Caller takes responsibility of deleting created.

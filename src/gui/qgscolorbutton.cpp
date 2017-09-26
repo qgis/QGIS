@@ -51,7 +51,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   , mNoColorString( tr( "No color" ) )
   , mShowNull( false )
   , mPickingColor( false )
-  , mMenu( nullptr )
+
 
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance

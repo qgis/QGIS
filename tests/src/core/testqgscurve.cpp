@@ -80,7 +80,7 @@ void TestQgsCurve::curveToLine()
 
   /* input: 2 quadrants arc (180 degrees, PI radians) */
   circularString.reset( dynamic_cast< QgsCircularString *>(
-                          QgsGeometryFactory::geomFromWkt( QString(
+                          QgsGeometryFactory::geomFromWkt( QStringLiteral(
                                 "CIRCULARSTRING(0 0,100 100,200 0)"
                               )
                                                          ).release()
@@ -103,7 +103,7 @@ void TestQgsCurve::curveToLine()
 
   /* input: 2 arcs of 2 quadrants each (180 degrees + 180 degrees other direction) */
   circularString.reset( dynamic_cast<QgsCircularString *>(
-                          QgsGeometryFactory::geomFromWkt( QString(
+                          QgsGeometryFactory::geomFromWkt( QStringLiteral(
                                 "CIRCULARSTRING(0 0,100 100,200 0,300 -100,400 0)"
                               ) ).release()
                         ) );

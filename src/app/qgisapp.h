@@ -123,6 +123,9 @@ class QgsLayerStylingWidget;
 class QgsDiagramProperties;
 class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
+class QgsBrowserModel;
+class QgsGeoCmsProviderRegistry;
+
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -165,8 +168,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   public:
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true,
-             bool skipVersionCheck = false, const QString rootProfileLocation = QString(),
-             const QString activeProfile = QString(),
+             bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),
+             const QString &activeProfile = QString(),
              QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
@@ -211,6 +214,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open a composer template file and create a new composition
     void openTemplate( const QString &fileName );
+
+    /** Attempts to run a Python script
+     * \param filePath full path to Python script
+     * \since QGIS 2.7
+     */
+    void runScript( const QString &filePath );
 
     /** Opens a qgis project file
       \returns false if unable to open the project
@@ -377,7 +386,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param title
      * \param message
      */
-    void showSystemNotification( const QString title, const QString message );
+    void showSystemNotification( const QString &title, const QString &message );
 
 
     //! Actions to be inserted in menus and toolbars
@@ -789,11 +798,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
 
     /**
-     * \brief dataSourceManager Open the DataSourceManager dialog/dock
+     * \brief dataSourceManager Open the DataSourceManager dialog
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
-    void dataSourceManager( QString pageName = QString() );
+    void dataSourceManager( const QString &pageName = QString() );
 
     /** Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
@@ -854,6 +863,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! set the active layer
     bool setActiveLayer( QgsMapLayer * );
+
+    /** Reload connections emitting the connectionsChanged signal
+     * \since QGIS 3.0
+     */
+    void reloadConnections();
 
   protected:
 
@@ -1115,12 +1129,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open the project file corresponding to the
     //! text)= of the given action.
     void openProject( QAction *action );
-
-    /** Attempts to run a Python script
-     * \param filePath full path to Python script
-     * \since QGIS 2.7
-     */
-    void runScript( const QString &filePath );
     //! Save the map view as an image - user is prompted for image name using a dialog
     void saveMapAsImage();
     //! Save the map view as a pdf - user is prompted for image name using a dialog
@@ -1531,9 +1539,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Set the layer for the map style dock. Doesn't show the style dock
     void setMapStyleDockLayer( QgsMapLayer *layer );
 
-    //! Handles processing of dropped mimedata
-    void dropEventTimeout();
-
     void annotationCreated( QgsAnnotation *annotation );
 
     void updateCrsStatusBar();
@@ -1627,7 +1632,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   private:
     void startProfile( const QString &name );
     void endProfile();
-    void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, QString name );
+    void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
 
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * \returns true if any items were loaded
@@ -2104,7 +2109,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
-    QList<QgsCustomDropHandler *> mCustomDropHandlers;
+    QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
 
     QDateTime mProjectLastModified;
 
@@ -2130,6 +2135,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QTimer mRenderProgressBarTimer;
     QMetaObject::Connection mRenderProgressBarTimerConnection;
 
+    QgsBrowserModel *mBrowserModel = nullptr;
+
     friend class TestQgisAppPython;
 };
 
@@ -2138,5 +2145,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #else
 #define QGIS_ICON_SIZE 24
 #endif
+
+// clazy:excludeall=qstring-allocations
 
 #endif

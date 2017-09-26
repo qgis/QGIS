@@ -30,7 +30,7 @@ QgsRegularPolygon::QgsRegularPolygon()
 }
 
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const int numSides, const ConstructionOption circle )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )
   , mFirstVertex( QgsPoint() )
   , mNumberSides( 0 )
@@ -56,15 +56,13 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radiu
         mFirstVertex = mCenter.project( mRadius, azimuth - centralAngle( numSides ) / 2 );
         break;
       }
-      default:
-        break;
     }
 
   }
 
 }
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const int numSides, const ConstructionOption circle )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )
   , mFirstVertex( QgsPoint() )
   , mNumberSides( 0 )
@@ -90,15 +88,13 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt
         mFirstVertex = mCenter.project( mRadius, azimuth - centralAngle( numSides ) / 2 );
         break;
       }
-      default:
-        break;
     }
 
   }
 
 }
 
-QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const int numSides )
+QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const unsigned int numSides )
   : mCenter( QgsPoint() )
   , mFirstVertex( QgsPoint() )
   , mNumberSides( 0 )
@@ -166,7 +162,7 @@ void QgsRegularPolygon::setFirstVertex( const QgsPoint &firstVertex )
   mCenter = mFirstVertex.project( mRadius, azimuth );
 }
 
-void QgsRegularPolygon::setNumberSides( const int numSides )
+void QgsRegularPolygon::setNumberSides( const unsigned int numSides )
 {
   if ( numSides >= 3 )
   {

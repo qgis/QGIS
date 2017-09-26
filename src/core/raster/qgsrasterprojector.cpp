@@ -87,8 +87,6 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
   , mSrcYRes( 0.0 )
   , mDestRowsPerMatrixRow( 0.0 )
   , mDestColsPerMatrixCol( 0.0 )
-  , pHelperTop( nullptr )
-  , pHelperBottom( nullptr )
   , mHelperTopRow( 0 )
   , mCPCols( 0 )
   , mCPRows( 0 )

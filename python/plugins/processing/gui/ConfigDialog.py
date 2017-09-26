@@ -81,6 +81,9 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
     def apply(self):
         self.config_widget.accept()
 
+    def helpKey(self):
+        return 'processing/index.html'
+
 
 class ConfigDialog(BASE, WIDGET):
 

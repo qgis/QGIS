@@ -235,8 +235,8 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
     if ( mSettings->scaleVisibility )
     {
       QgsStringMap scaleProps = QgsStringMap();
-      scaleProps.insert( "scaleMinDenom", qgsDoubleToString( mSettings->minimumScale ) );
-      scaleProps.insert( "scaleMaxDenom", qgsDoubleToString( mSettings->maximumScale ) );
+      scaleProps.insert( QStringLiteral( "scaleMinDenom" ), qgsDoubleToString( mSettings->minimumScale ) );
+      scaleProps.insert( QStringLiteral( "scaleMaxDenom" ), qgsDoubleToString( mSettings->maximumScale ) );
       QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElement, scaleProps );
     }
 
@@ -252,7 +252,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
     if ( mSettings->isExpression )
     {
       labelElement.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( mSettings->getLabelExpression()->dump() ) ) );
-      labelElement.appendChild( doc.createTextNode( "Placeholder" ) );
+      labelElement.appendChild( doc.createTextNode( QStringLiteral( "Placeholder" ) ) );
     }
     else
     {
@@ -300,7 +300,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
     {
       case QgsPalLayerSettings::OverPoint:
       {
-        QDomElement pointPlacement = doc.createElement( "se:PointPlacement" );
+        QDomElement pointPlacement = doc.createElement( QStringLiteral( "se:PointPlacement" ) );
         labelPlacement.appendChild( pointPlacement );
         // anchor point
         QPointF anchor = quadOffsetToSldAnchor( mSettings->quadOffset );
@@ -316,7 +316,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
         // rotation
         if ( mSettings->angleOffset != 0 )
         {
-          QDomElement rotation = doc.createElement( "se:Rotation" );
+          QDomElement rotation = doc.createElement( QStringLiteral( "se:Rotation" ) );
           pointPlacement.appendChild( rotation );
           rotation.appendChild( doc.createTextNode( QString::number( mSettings->angleOffset ) ) );
         }
@@ -325,7 +325,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
       case QgsPalLayerSettings::AroundPoint:
       case QgsPalLayerSettings::OrderedPositionsAroundPoint:
       {
-        QDomElement pointPlacement = doc.createElement( "se:PointPlacement" );
+        QDomElement pointPlacement = doc.createElement( QStringLiteral( "se:PointPlacement" ) );
         labelPlacement.appendChild( pointPlacement );
 
         // SLD cannot do either, but let's do a best effort setting the distance using
@@ -342,7 +342,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
       case QgsPalLayerSettings::Free:
       {
         // still a point placement (for "free" it's a fallback, there is no SLD equivalent)
-        QDomElement pointPlacement = doc.createElement( "se:PointPlacement" );
+        QDomElement pointPlacement = doc.createElement( QStringLiteral( "se:PointPlacement" ) );
         labelPlacement.appendChild( pointPlacement );
         QgsSymbolLayerUtils::createAnchorPointElement( doc, pointPlacement, QPointF( 0.5, 0.5 ) );
         QgsUnitTypes::RenderUnit distUnit = mSettings->distUnits;
@@ -354,7 +354,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
       case QgsPalLayerSettings::Curved:
       case QgsPalLayerSettings::PerimeterCurved:
       {
-        QDomElement linePlacement = doc.createElement( "se:LinePlacement" );
+        QDomElement linePlacement = doc.createElement( QStringLiteral( "se:LinePlacement" ) );
         labelPlacement.appendChild( linePlacement );
 
         // perpendicular distance if required
@@ -362,7 +362,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
         {
           QgsUnitTypes::RenderUnit distUnit = mSettings->distUnits;
           double dist = QgsSymbolLayerUtils::rescaleUom( mSettings->dist, distUnit, props );
-          QDomElement perpendicular = doc.createElement( "se:PerpendicularOffset" );
+          QDomElement perpendicular = doc.createElement( QStringLiteral( "se:PerpendicularOffset" ) );
           linePlacement.appendChild( perpendicular );
           perpendicular.appendChild( doc.createTextNode( qgsDoubleToString( dist, 2 ) ) );
         }
@@ -370,17 +370,17 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
         // repeat distance if required
         if ( mSettings->repeatDistance > 0 )
         {
-          QDomElement repeat = doc.createElement( "se:Repeat" );
+          QDomElement repeat = doc.createElement( QStringLiteral( "se:Repeat" ) );
           linePlacement.appendChild( repeat );
           repeat.appendChild( doc.createTextNode( QStringLiteral( "true" ) ) );
-          QDomElement gap = doc.createElement( "se:Gap" );
+          QDomElement gap = doc.createElement( QStringLiteral( "se:Gap" ) );
           linePlacement.appendChild( gap );
           repeatDistance = QgsSymbolLayerUtils::rescaleUom( mSettings->repeatDistance, mSettings->repeatDistanceUnit, props );
           gap.appendChild( doc.createTextNode( qgsDoubleToString( repeatDistance, 2 ) ) );
         }
 
         // always generalized
-        QDomElement generalize = doc.createElement( "se:GeneralizeLine" );
+        QDomElement generalize = doc.createElement( QStringLiteral( "se:GeneralizeLine" ) );
         linePlacement.appendChild( generalize );
         generalize.appendChild( doc.createTextNode( QStringLiteral( "true" ) ) );
       }
@@ -529,7 +529,7 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
               x += fontSize / 2;
               y += fontSize;
             }
-            QString resizeSpec = QString( "%1 %2" ).arg( qgsDoubleToString( x, 2 ), qgsDoubleToString( y, 2 ) );
+            QString resizeSpec = QStringLiteral( "%1 %2" ).arg( qgsDoubleToString( x, 2 ), qgsDoubleToString( y, 2 ) );
             QDomElement voMargin =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-margin" ), resizeSpec );
             textSymbolizerElement.appendChild( voMargin );
           }
