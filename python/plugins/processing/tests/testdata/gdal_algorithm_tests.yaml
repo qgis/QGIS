@@ -636,7 +636,7 @@ tests:
         name: expected/gdal/offset_lines.gml
         type: vector
 
- - algorithm: gdal:ogrinfo
+  - algorithm: gdal:ogrinfo
     name: ogrinfo
     params:
       INPUT:
