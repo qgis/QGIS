@@ -397,7 +397,8 @@ class QgsVectorDataProvider : QgsDataProvider
      * - convert to multitype if necessary
      * - convert to curved type if necessary
      * - convert to linear type from curved type
-     * - Add or Remove z/m types
+     * - Add z/m 0 default values
+     * - Remove z/m
     @return the converted geometry or nullptr if no conversion was necessary or possible*/
     QgsGeometry* convertToProviderType( const QgsGeometry* geom ) const /Factory/;
 };
