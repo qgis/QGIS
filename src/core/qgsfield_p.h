@@ -73,7 +73,7 @@ class QgsFieldPrivate : public QSharedData
       , precision( other.precision )
       , comment( other.comment )
       , alias( other.alias )
-      , defaultValue( other.defaultValue )
+      , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
     {
     }
@@ -84,7 +84,7 @@ class QgsFieldPrivate : public QSharedData
     {
       return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
                && ( length == other.length ) && ( precision == other.precision )
-               && ( alias == other.alias ) && ( defaultValue == other.defaultValue )
+               && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
                && ( constraints == other.constraints ) );
     }
 
@@ -113,7 +113,7 @@ class QgsFieldPrivate : public QSharedData
     QString alias;
 
     //! Default value
-    QgsDefaultValue defaultValue;
+    QgsDefaultValue defaultValueDefinition;
 
     //! Field constraints
     QgsFieldConstraints constraints;

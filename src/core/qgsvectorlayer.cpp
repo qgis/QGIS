@@ -2099,8 +2099,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString 
   {
     QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
     defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
-    defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValue().expression() );
-    defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValue().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueDefinition().expression() );
+    defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValueDefinition().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
     defaultsElem.appendChild( defaultElem );
   }
   node.appendChild( defaultsElem );
@@ -2961,7 +2961,7 @@ void QgsVectorLayer::updateFields()
     if ( index < 0 )
       continue;
 
-    mFields[ index ].setDefaultValue( defaultIt.value() );
+    mFields[ index ].setDefaultValueDefinition( defaultIt.value() );
     if ( defaultIt.value().applyOnUpdate() )
       mDefaultValueOnUpdateFields.insert( index );
   }
@@ -3042,7 +3042,8 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature &feature, Qgs
   if ( index < 0 || index >= mFields.count() )
     return QVariant();
 
-  QString expression = mFields.at( index ).defaultValue().expression();
+  QString expression = mFields.at( index ).defaultValueDefinition().expression();
+  qWarning() << "DEFAUL TVALUE" << expression;
   if ( expression.isEmpty() )
     return mDataProvider->defaultValue( index );
 
@@ -3090,11 +3091,11 @@ void QgsVectorLayer::setDefaultValueDefinition( int index, const QgsDefaultValue
 
   if ( definition.isValid() )
   {
-    mDefaultExpressionMap.remove( mFields.at( index ).name() );
+    mDefaultExpressionMap.insert( mFields.at( index ).name(), definition );
   }
   else
   {
-    mDefaultExpressionMap.insert( mFields.at( index ).name(), definition );
+    mDefaultExpressionMap.remove( mFields.at( index ).name() );
   }
   updateFields();
 }
@@ -3104,7 +3105,7 @@ QgsDefaultValue QgsVectorLayer::defaultValueDefinition( int index ) const
   if ( index < 0 || index >= mFields.count() )
     return QString();
   else
-    return mFields.at( index ).defaultValue().expression();
+    return mFields.at( index ).defaultValueDefinition().expression();
 }
 
 QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
