@@ -33,7 +33,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessing,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
@@ -65,9 +65,9 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Point layer'),
-                                                            [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Point layer'),
+                                                              [QgsProcessing.TypeVectorPoint]))
 
         z_field_param = QgsProcessingParameterField(self.Z_FIELD,
                                                     self.tr('Z value from field'),
@@ -143,11 +143,10 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
     def getConsoleCommands(self, parameters, context, feedback):
-        inLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
-        connectionString = GdalUtils.ogrConnectionString(inLayer.source(), context)
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
 
         arguments = ['-l']
-        arguments.append(GdalUtils.ogrLayerName(connectionString))
+        arguments.append(layerName)
 
         fieldName = self.parameterAsString(parameters, self.Z_FIELD, context)
         if fieldName:
@@ -176,7 +175,7 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
             arguments.append('-co')
             arguments.append(options)
 
-        arguments.append(connectionString)
+        arguments.append(ogrLayer)
         arguments.append(out)
 
         return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]
