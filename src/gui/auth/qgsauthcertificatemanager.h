@@ -40,6 +40,11 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
      */
     explicit QgsAuthCertEditors( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
+    /**
+     * Destructor: store last selected tab
+     */
+    ~QgsAuthCertEditors( );
+
 };
 
 
