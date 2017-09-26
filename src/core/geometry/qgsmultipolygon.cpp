@@ -148,6 +148,17 @@ bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
+bool QgsMultiPolygonV2::insertGeometry( QgsAbstractGeometry *g, int index )
+{
+  if ( !g || !qgsgeometry_cast< QgsPolygonV2 * >( g ) )
+  {
+    delete g;
+    return false;
+  }
+
+  return QgsMultiSurface::insertGeometry( g, index );
+}
+
 QgsMultiSurface *QgsMultiPolygonV2::toCurveType() const
 {
   QgsMultiSurface *multiSurface = new QgsMultiSurface();
