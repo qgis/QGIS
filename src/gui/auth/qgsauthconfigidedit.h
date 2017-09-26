@@ -77,7 +77,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     bool isAlphaNumeric( const QString &authcfg );
 
     QString mAuthCfgOrig;
-    bool mValid;
+    bool mValid = false;
     bool mAllowEmpty;
 };
 

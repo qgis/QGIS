@@ -424,7 +424,7 @@ void QgsComposerScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit u )
     setUnits( u );
     double upperMagnitudeMultiplier = 1.0;
     double widthInSelectedUnits = mapWidth();
-    double initialUnitsPerSegment =  widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
+    double initialUnitsPerSegment = widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
     setNumUnitsPerSegment( initialUnitsPerSegment );
 
     switch ( u )

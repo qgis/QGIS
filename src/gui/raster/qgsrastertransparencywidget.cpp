@@ -116,9 +116,9 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
     if ( !lineEdit ) return;
     int row = -1;
     int column = -1;
-    for ( int r = 0 ; r < tableTransparency->rowCount(); r++ )
+    for ( int r = 0; r < tableTransparency->rowCount(); r++ )
     {
-      for ( int c = 0 ; c < tableTransparency->columnCount(); c++ )
+      for ( int c = 0; c < tableTransparency->columnCount(); c++ )
       {
         if ( tableTransparency->cellWidget( r, c ) == sender() )
         {

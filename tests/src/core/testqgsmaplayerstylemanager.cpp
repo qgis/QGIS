@@ -28,7 +28,6 @@ class TestQgsMapLayerStyleManager : public QObject
     Q_OBJECT
   public:
     TestQgsMapLayerStyleManager()
-      : mVL( 0 )
     {}
 
   private slots:

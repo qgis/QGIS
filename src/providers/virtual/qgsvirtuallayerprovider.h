@@ -67,14 +67,13 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     // underlying vector layers
     struct SourceLayer
     {
-      SourceLayer(): layer( nullptr ) {}
+      SourceLayer() {}
       SourceLayer( QgsVectorLayer *l, const QString &n = QLatin1String( "" ) )
         : layer( l )
         , name( n )
       {}
       SourceLayer( const QString &p, const QString &s, const QString &n, const QString &e = QStringLiteral( "UTF-8" ) )
-        : layer( nullptr )
-        , name( n )
+        : name( n )
         , source( s )
         , provider( p )
         , encoding( e )
@@ -91,7 +90,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     SourceLayers mLayers;
 
 
-    bool mValid;
+    bool mValid = true;
 
     QString mTableName;
 
@@ -103,8 +102,8 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
 
     void resetSqlite();
 
-    mutable bool mCachedStatistics;
-    mutable qint64 mFeatureCount;
+    mutable bool mCachedStatistics = false;
+    mutable qint64 mFeatureCount = 0;
     mutable QgsRectangle mExtent;
 
     void updateStatistics() const;

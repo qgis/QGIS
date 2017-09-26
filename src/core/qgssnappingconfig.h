@@ -113,11 +113,11 @@ class CORE_EXPORT QgsSnappingConfig
         bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
       private:
-        bool mValid;
-        bool mEnabled;
-        SnappingType mType;
-        double mTolerance;
-        QgsTolerance::UnitType mUnits;
+        bool mValid = false;
+        bool mEnabled = false;
+        SnappingType mType = Vertex;
+        double mTolerance = 0;
+        QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
     };
 
     /**

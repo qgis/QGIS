@@ -209,7 +209,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
   protected:
 
-    virtual void keyPressEvent( QKeyEvent *event ) override ;
+    virtual void keyPressEvent( QKeyEvent *event ) override;
 
   private slots:
 
@@ -227,7 +227,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     QList< QwtPlotMarker * > mMarkers;
     QgsCurveEditorPlotEventFilter *mPlotFilter = nullptr;
-    int mCurrentPlotMarkerIndex;
+    int mCurrentPlotMarkerIndex = -1;
     //! Background histogram gatherer thread
     std::unique_ptr< QgsHistogramValuesGatherer > mGatherer;
     std::unique_ptr< QgsHistogram > mHistogram;

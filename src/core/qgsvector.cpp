@@ -19,8 +19,6 @@
 #include "qgsexception.h"
 
 QgsVector::QgsVector()
-  : mX( 0.0 )
-  , mY( 0.0 )
 {
 }
 

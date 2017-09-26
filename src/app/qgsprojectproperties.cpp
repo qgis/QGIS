@@ -1811,7 +1811,7 @@ void QgsProjectProperties::populateEllipsoidList()
   EllipsoidDefs myItem;
 
   myItem.acronym = GEO_NONE;
-  myItem.description =  tr( GEO_NONE_DESC );
+  myItem.description = tr( GEO_NONE_DESC );
   myItem.semiMajor = 0.0;
   myItem.semiMinor = 0.0;
   mEllipsoidList.append( myItem );
@@ -1852,8 +1852,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   // Pre-select current ellipsoid
 
   // Check if CRS transformation is on, or else turn everything off
-  double myMajor =  mEllipsoidList.at( newIndex ).semiMajor;
-  double myMinor =  mEllipsoidList.at( newIndex ).semiMinor;
+  double myMajor = mEllipsoidList.at( newIndex ).semiMajor;
+  double myMinor = mEllipsoidList.at( newIndex ).semiMinor;
 
   // If user has modified the radii (only possible if parametric!), before
   // changing ellipsoid, save the modified coordinates
@@ -1912,8 +1912,8 @@ void QgsProjectProperties::projectionSelectorInitialized()
   // Update parameters if present.
   if ( mySplitEllipsoid.length() >= 3 )
   {
-    mEllipsoidList[ myIndex ].semiMajor =  mySplitEllipsoid[ 1 ].toDouble();
-    mEllipsoidList[ myIndex ].semiMinor =  mySplitEllipsoid[ 2 ].toDouble();
+    mEllipsoidList[ myIndex ].semiMajor = mySplitEllipsoid[ 1 ].toDouble();
+    mEllipsoidList[ myIndex ].semiMinor = mySplitEllipsoid[ 2 ].toDouble();
   }
 
   updateEllipsoidUI( myIndex );

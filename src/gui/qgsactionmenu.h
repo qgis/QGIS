@@ -51,9 +51,9 @@ class GUI_EXPORT QgsActionMenu : public QMenu
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      QgsActionMenu::ActionType actionType;
+      QgsActionMenu::ActionType actionType = Invalid;
       QVariant actionData;
-      QgsFeatureId featureId;
+      QgsFeatureId featureId = 0;
       QgsMapLayer *mapLayer = nullptr;
     };
 

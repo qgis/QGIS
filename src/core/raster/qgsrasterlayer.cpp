@@ -1604,7 +1604,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
 
     Q_FOREACH ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
     {
-      QDomElement noDataRange =  document.createElement( QStringLiteral( "noDataRange" ) );
+      QDomElement noDataRange = document.createElement( QStringLiteral( "noDataRange" ) );
 
       noDataRange.setAttribute( QStringLiteral( "min" ), QgsRasterBlock::printValue( range.min() ) );
       noDataRange.setAttribute( QStringLiteral( "max" ), QgsRasterBlock::printValue( range.max() ) );

@@ -76,8 +76,6 @@ int QgsGraph::findVertex( const QgsPointXY &pt ) const
 }
 
 QgsGraphEdge::QgsGraphEdge()
-  : mOut( 0 )
-  , mIn( 0 )
 {
 
 }

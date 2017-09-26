@@ -44,8 +44,6 @@
 
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mTableNameEdited( false )
-  , mLayerIdentifierEdited( false )
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewGeoPackageLayerDialog::showHelp );

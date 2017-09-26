@@ -332,7 +332,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
   QgsSingleSymbolRenderer *selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) ) ;
+    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) );
     selRenderer->symbol()->setColor( mContext.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( mContext, mFields );

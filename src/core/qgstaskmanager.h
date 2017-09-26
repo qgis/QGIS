@@ -286,20 +286,20 @@ class CORE_EXPORT QgsTask : public QObject
     Flags mFlags;
     QString mDescription;
     //! Status of this (parent) task alone
-    TaskStatus mStatus;
+    TaskStatus mStatus = Queued;
     //! Status of this task and all subtasks
-    TaskStatus mOverallStatus;
+    TaskStatus mOverallStatus = Queued;
 
     //! This mutex remains locked from initialization until the task finishes,
     //! it's used as a trigger for waitForFinished.
     QMutex mNotFinishedMutex;
 
     //! Progress of this (parent) task alone
-    double mProgress;
+    double mProgress = 0.0;
     //! Overall progress of this task and all subtasks
-    double mTotalProgress;
-    bool mShouldTerminate;
-    int mStartCount;
+    double mTotalProgress = 0.0;
+    bool mShouldTerminate = false;
+    int mStartCount = 0;
 
     QWaitCondition mTaskFinished;
 
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     QMap< long, QgsWeakMapLayerPointerList > mLayerDependencies;
 
     //! Tracks the next unique task ID
-    long mNextTaskId;
+    long mNextTaskId = 0;
 
     //! List of active (queued or running) tasks. Includes subtasks.
     QSet< QgsTask * > mActiveTasks;

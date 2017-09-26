@@ -29,7 +29,6 @@
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )
   , mRelayMessages( relayMessages )
-  , mDisabled( false )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

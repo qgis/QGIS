@@ -217,9 +217,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
   private:
     //! Current composer tool
-    QgsComposerView::Tool mCurrentTool;
+    QgsComposerView::Tool mCurrentTool = Select;
     //! Previous composer tool
-    QgsComposerView::Tool mPreviousTool;
+    QgsComposerView::Tool mPreviousTool = Select;
 
     //! Rubber band item
     QGraphicsRectItem *mRubberBandItem = nullptr;
@@ -233,13 +233,13 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPointF mRubberBandStartPos;
 
     //! True if user is currently selecting by marquee
-    bool mMarqueeSelect;
+    bool mMarqueeSelect = false;
     //! True if user is currently zooming by marquee
-    bool mMarqueeZoom;
+    bool mMarqueeZoom = false;
     //! True if user is currently temporarily activating the zoom tool by holding control+space
-    QgsComposerView::ToolStatus mTemporaryZoomStatus;
+    QgsComposerView::ToolStatus mTemporaryZoomStatus = QgsComposerView::Inactive;
 
-    bool mPaintingEnabled;
+    bool mPaintingEnabled = true;
 
     QgsComposerRuler *mHorizontalRuler = nullptr;
     QgsComposerRuler *mVerticalRuler = nullptr;
@@ -256,21 +256,21 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setSelectedNode( QgsComposerNodesItem *shape, const int index );
     void deselectNode();
 
-    float mMoveContentSearchRadius;
+    float mMoveContentSearchRadius = 25;
     QgsComposerNodesItem *mNodesItem = nullptr;
-    int mNodesItemIndex;
+    int mNodesItemIndex = -1;
     std::unique_ptr<QGraphicsPolygonItem> mPolygonItem;
     std::unique_ptr<QGraphicsPathItem> mPolylineItem;
 
     //! True if user is currently panning by clicking and dragging with the pan tool
-    bool mToolPanning;
+    bool mToolPanning = false;
     //! True if user is currently panning by holding the middle mouse button
-    bool mMousePanning;
+    bool mMousePanning = false;
     //! True if user is currently panning by holding the space key
-    bool mKeyPanning;
+    bool mKeyPanning = false;
 
     //! True if user is currently dragging with the move item content tool
-    bool mMovingItemContent;
+    bool mMovingItemContent = false;
 
     QPoint mMouseLastXY;
     QPoint mMouseCurrentXY;

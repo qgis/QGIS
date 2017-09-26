@@ -334,9 +334,6 @@ QgsProject::QgsProject( QObject *parent )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsProjectArchive() )
-  , mAutoTransaction( false )
-  , mEvaluateDefaultValues( false )
-  , mDirty( false )
 {
   mProperties.setName( QStringLiteral( "properties" ) );
   clear();
@@ -833,7 +830,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
-  QgsProjectVersion fileVersion =  getVersion( *doc );
+  QgsProjectVersion fileVersion = getVersion( *doc );
   QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )

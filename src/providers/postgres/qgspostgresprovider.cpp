@@ -89,19 +89,8 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 
 QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
-  , mValid( false )
-  , mPrimaryKeyType( PktUnknown )
-  , mSpatialColType( SctNone )
-  , mDetectedGeomType( QgsWkbTypes::Unknown )
-  , mForce2d( false )
-  , mRequestedGeomType( QgsWkbTypes::Unknown )
   , mShared( new QgsPostgresSharedData )
-  , mUseEstimatedMetadata( false )
-  , mSelectAtIdDisabled( false )
   , mEnabledCapabilities( 0 )
-  , mConnectionRO( nullptr )
-  , mConnectionRW( nullptr )
-
 {
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
@@ -1608,7 +1597,7 @@ QSet<QVariant> QgsPostgresProvider::uniqueValues( int index, int limit ) const
       sql += QStringLiteral( " WHERE %1" ).arg( mSqlWhereClause );
     }
 
-    sql +=  QStringLiteral( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
+    sql += QStringLiteral( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
 
     if ( limit >= 0 )
     {
@@ -1650,7 +1639,7 @@ QStringList QgsPostgresProvider::uniqueStringsMatching( int index, const QString
     sql += QStringLiteral( " %1 ILIKE '%%2%'" ).arg( quotedIdentifier( fld.name() ), substring );
 
 
-    sql +=  QStringLiteral( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
+    sql += QStringLiteral( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
 
     if ( limit >= 0 )
     {
@@ -3948,7 +3937,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
         {
           //convert field name to lowercase (TODO: avoid doing this
           //over and over)
-          col =  col.toLower();
+          col = col.toLower();
         }
         if ( fld.name() == col )
         {
@@ -4895,8 +4884,6 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
 // ----------
 
 QgsPostgresSharedData::QgsPostgresSharedData()
-  : mFeaturesCounted( -1 )
-  , mFidCounter( 0 )
 {
 }
 

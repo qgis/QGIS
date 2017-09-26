@@ -40,7 +40,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     explicit QgsAuthCertTrustPolicyComboBox(
       QWidget *parent SIP_TRANSFERTHIS = 0,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 
     //! Get currently set trust policy
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
 
   private:
     const QString defaultTrustText(
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 };
 
 #endif // QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H

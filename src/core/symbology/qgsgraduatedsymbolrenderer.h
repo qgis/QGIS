@@ -69,10 +69,10 @@ class CORE_EXPORT QgsRendererRange
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props, bool firstRange = false ) const;
 
   protected:
-    double mLowerValue, mUpperValue;
+    double mLowerValue = 0, mUpperValue = 0;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
-    bool mRender;
+    bool mRender = true;
 
     // for cpy+swap idiom
     void swap( QgsRendererRange &other );
@@ -116,10 +116,10 @@ class CORE_EXPORT QgsRendererRangeLabelFormat
 
   protected:
     QString mFormat;
-    int mPrecision;
-    bool mTrimTrailingZeroes;
+    int mPrecision = 4;
+    bool mTrimTrailingZeroes = false;
     // values used to manage number formatting - precision and trailing zeroes
-    double mNumberScale;
+    double mNumberScale = 1.0;
     QString mNumberSuffix;
     QRegExp mReTrailingZeroes;
     QRegExp mReNegativeZero;
@@ -355,16 +355,16 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
   protected:
     QString mAttrName;
     QgsRangeList mRanges;
-    Mode mMode;
+    Mode mMode = Custom;
     std::unique_ptr<QgsSymbol> mSourceSymbol;
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
     QgsRendererRangeLabelFormat mLabelFormat;
 
     std::unique_ptr<QgsExpression> mExpression;
-    GraduatedMethod mGraduatedMethod;
+    GraduatedMethod mGraduatedMethod = GraduatedColor;
     //! attribute index (derived from attribute name in startRender)
-    int mAttrNum;
-    bool mCounting;
+    int mAttrNum = -1;
+    bool mCounting = false;
 
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 

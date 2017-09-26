@@ -60,9 +60,9 @@ class CORE_EXPORT QgsSvgCacheEntry
 
     //! Absolute path to SVG file
     QString path;
-    double size; //size in pixels (cast to int for QImage)
-    double strokeWidth;
-    double widthScaleFactor;
+    double size = 0.0; //size in pixels (cast to int for QImage)
+    double strokeWidth = 0;
+    double widthScaleFactor = 1.0;
 
     /** SVG viewbox size.
      * \since QGIS 2.14
@@ -226,7 +226,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //! Entry pointers accessible by file name
     QMultiHash< QString, QgsSvgCacheEntry * > mEntryLookup;
     //! Estimated total size of all images, pictures and svgContent
-    long mTotalSize;
+    long mTotalSize = 0;
 
     //The svg cache keeps the entries on a double connected list, moving the current entry to the front.
     //That way, removing entries for more space can start with the least used objects.

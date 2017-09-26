@@ -196,14 +196,14 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
   private:
 
     double mOpacity = 1.0;
-    QPainter::CompositionMode mBlendMode;
-    int mBrightness;
-    int mContrast;
-    double mSaturation;
-    QgsImageOperation::GrayscaleMode mGrayscaleMode;
-    bool mColorizeOn;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
+    int mBrightness = 0;
+    int mContrast = 0;
+    double mSaturation = 1.0;
+    QgsImageOperation::GrayscaleMode mGrayscaleMode = QgsImageOperation::GrayscaleOff;
+    bool mColorizeOn = false;
     QColor mColorizeColor;
-    int mColorizeStrength;
+    int mColorizeStrength = 100;
 };
 
 #endif // QGSBLUREFFECT_H

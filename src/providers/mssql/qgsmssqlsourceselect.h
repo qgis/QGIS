@@ -141,7 +141,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     QgsMssqlGeomColumnTypeThread *mColumnTypeThread = nullptr;
     QString mConnInfo;
     QStringList mSelectedTables;
-    bool mUseEstimatedMetadata;
+    bool mUseEstimatedMetadata = false;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 

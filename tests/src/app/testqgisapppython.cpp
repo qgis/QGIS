@@ -48,7 +48,6 @@ class TestQgisAppPython : public QObject
 };
 
 TestQgisAppPython::TestQgisAppPython()
-  : mQgisApp( nullptr )
 {
 
 }

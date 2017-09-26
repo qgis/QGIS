@@ -276,7 +276,7 @@ namespace QgsWms
           // OWSContext Layer opacity is set to 1
           layerElem.setAttribute( QStringLiteral( "opacity" ), 1 );
 
-          QString wmsName =  l->name();
+          QString wmsName = l->name();
           if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
           {
             wmsName = l->id();

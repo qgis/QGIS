@@ -1107,7 +1107,7 @@ class CORE_EXPORT QgsTextFormat
     QgsTextShadowSettings mShadowSettings;
 
     QString mTextFontFamily;
-    bool mTextFontFound;
+    bool mTextFontFound = true;
 
     QSharedDataPointer<QgsTextSettingsPrivate> d;
 
@@ -1228,12 +1228,6 @@ class CORE_EXPORT QgsTextRenderer
     struct Component
     {
       Component()
-        : useOrigin( false )
-        , rotation( 0.0 )
-        , rotationOffset( 0.0 )
-        , pictureBuffer( 0.0 )
-        , dpiRatio( 1.0 )
-        , hAlign( AlignLeft )
       {}
 
       //! Component text
@@ -1241,11 +1235,11 @@ class CORE_EXPORT QgsTextRenderer
       //! Current origin point for painting (generally current painter rotation point)
       QPointF origin;
       //! Whether to translate the painter to supplied origin
-      bool useOrigin;
+      bool useOrigin = false;
       //! Any rotation to be applied to painter (in radians)
-      double rotation;
+      double rotation = 0.0;
       //! Any rotation to be applied to painter (in radians) after initial rotation
-      double rotationOffset;
+      double rotationOffset = 0.0;
       //! Current center point of label component, after rotation
       QPointF center;
       //! Width and height of label component, transformed and ready for painting
@@ -1256,11 +1250,11 @@ class CORE_EXPORT QgsTextRenderer
       QPicture picture;
       //! Buffer for component to accommodate graphic items ignored by QPicture,
       //! e.g. half-width of an applied QPen, which would extend beyond boundingRect() of QPicture
-      double pictureBuffer;
+      double pictureBuffer = 0.0;
       //! A ratio of native painter dpi and that of rendering context's painter
-      double dpiRatio;
+      double dpiRatio = 1.0;
       //! Horizontal alignment
-      HAlignment hAlign;
+      HAlignment hAlign = AlignLeft;
     };
 
     static void drawBuffer( QgsRenderContext &context,

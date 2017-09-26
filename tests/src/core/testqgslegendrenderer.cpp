@@ -96,11 +96,6 @@ class TestQgsLegendRenderer : public QObject
 
   public:
     TestQgsLegendRenderer()
-      : mRoot( 0 )
-      , mVL1( 0 )
-      , mVL2( 0 )
-      , mVL3( 0 )
-      , mRL( 0 )
     {}
 
   private slots:
@@ -131,9 +126,9 @@ class TestQgsLegendRenderer : public QObject
 
   private:
     QgsLayerTree *mRoot = nullptr;
-    QgsVectorLayer *mVL1; // line
-    QgsVectorLayer *mVL2; // polygon
-    QgsVectorLayer *mVL3; // point
+    QgsVectorLayer *mVL1 =  0 ; // line
+    QgsVectorLayer *mVL2 =  0 ; // polygon
+    QgsVectorLayer *mVL3 =  0 ; // point
     QgsRasterLayer *mRL = nullptr;
     QString mReport;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );

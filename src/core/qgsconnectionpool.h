@@ -68,7 +68,6 @@ class QgsConnectionPoolGroup
     QgsConnectionPoolGroup( const QString &ci )
       : connInfo( ci )
       , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
-      , expirationTimer( nullptr )
     {
     }
 

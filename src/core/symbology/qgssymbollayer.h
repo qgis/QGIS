@@ -679,27 +679,27 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     static QPointF _rotatedOffset( QPointF offset, double angle );
 
     //! Marker rotation angle, in degrees clockwise from north
-    double mAngle;
+    double mAngle = 0;
     //! Line rotation angle (see setLineAngle() for details)
-    double mLineAngle;
+    double mLineAngle = 0;
     //! Marker size
-    double mSize;
+    double mSize = 2.0;
     //! Marker size unit
-    QgsUnitTypes::RenderUnit mSizeUnit;
+    QgsUnitTypes::RenderUnit mSizeUnit = QgsUnitTypes::RenderMillimeters;
     //! Marker size map unit scale
     QgsMapUnitScale mSizeMapUnitScale;
     //! Marker offset
     QPointF mOffset;
     //! Offset units
-    QgsUnitTypes::RenderUnit mOffsetUnit;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     //! Offset map unit scale
     QgsMapUnitScale mOffsetMapUnitScale;
     //! Marker size scaling method
-    QgsSymbol::ScaleMethod mScaleMethod;
+    QgsSymbol::ScaleMethod mScaleMethod = QgsSymbol::ScaleDiameter;
     //! Horizontal anchor point
-    HorizontalAnchorPoint mHorizontalAnchorPoint;
+    HorizontalAnchorPoint mHorizontalAnchorPoint = HCenter;
     //! Vertical anchor point
-    VerticalAnchorPoint mVerticalAnchorPoint;
+    VerticalAnchorPoint mVerticalAnchorPoint = VCenter;
 
   private:
     static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
@@ -763,11 +763,11 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
   protected:
     QgsLineSymbolLayer( bool locked = false );
 
-    double mWidth;
-    QgsUnitTypes::RenderUnit mWidthUnit;
+    double mWidth = 0;
+    QgsUnitTypes::RenderUnit mWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mWidthMapUnitScale;
-    double mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit;
+    double mOffset = 0;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 };
 
@@ -789,7 +789,7 @@ class CORE_EXPORT QgsFillSymbolLayer : public QgsSymbolLayer
     //! Default method to render polygon
     void _renderPolygon( QPainter *p, const QPolygonF &points, const QList<QPolygonF> *rings, QgsSymbolRenderContext &context );
 
-    double mAngle;
+    double mAngle = 0.0;
 };
 
 class QgsSymbolLayerWidget;  // why does SIP fail, when this isn't here

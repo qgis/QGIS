@@ -118,8 +118,6 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   : QNetworkAccessManager( parent )
-  , mUseSystemProxy( false )
-  , mInitialized( false )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
 }

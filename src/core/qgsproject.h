@@ -1103,10 +1103,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     QString mTitle;              // project title
-    bool mAutoTransaction;       // transaction grouped editing
-    bool mEvaluateDefaultValues; // evaluate default values immediately
+    bool mAutoTransaction = false;       // transaction grouped editing
+    bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
-    bool mDirty;                 // project has been modified since it has been read or saved
+    bool mDirty = false;                 // project has been modified since it has been read or saved
     bool mTrustLayerMetadata = false;
 };
 

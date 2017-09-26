@@ -21,7 +21,6 @@
 
 QgsGrassDataFile::QgsGrassDataFile( QObject *parent )
   : QFile( parent )
-  , mFh( 0 )
 {
 }
 

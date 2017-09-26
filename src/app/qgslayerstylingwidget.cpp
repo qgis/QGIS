@@ -135,7 +135,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   bool sameLayerType = false;
   if ( mCurrentLayer )
   {
-    sameLayerType =  mCurrentLayer->type() == layer->type();
+    sameLayerType = mCurrentLayer->type() == layer->type();
   }
 
   mCurrentLayer = layer;
@@ -183,7 +183,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
-      QListWidgetItem *item =  new QListWidgetItem( factory->icon(), QString() );
+      QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
       item->setToolTip( factory->title() );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );

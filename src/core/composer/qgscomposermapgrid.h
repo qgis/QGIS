@@ -835,15 +835,11 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     struct GridExtension
     {
       GridExtension()
-        : top( 0.0 )
-        , right( 0.0 )
-        , bottom( 0.0 )
-        , left( 0.0 )
       {}
-      double top;
-      double right;
-      double bottom;
-      double left;
+      double top = 0.0;
+      double right = 0.0;
+      double bottom = 0.0;
+      double left = 0.0;
     };
 
     /*True if a re-transformation of grid lines is required*/

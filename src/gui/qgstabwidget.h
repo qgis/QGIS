@@ -92,30 +92,25 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     struct TabInformation
     {
       TabInformation( QWidget *wdg, const QString &lbl )
-        : sourceIndex( -1 )
-        , widget( wdg )
+        : widget( wdg )
         , label( lbl )
-        , visible( true )
       {}
 
       TabInformation()
-        : sourceIndex( -1 )
-        , widget( nullptr )
-        , visible( true )
       {}
 
       bool operator ==( const TabInformation &other );
 
-      int sourceIndex;
+      int sourceIndex = -1;
       QWidget *widget = nullptr;
       QString label;
-      bool visible;
+      bool visible = true;
     };
 
     TabInformation tabInfo( QWidget *widget );
 
     QList<TabInformation> mTabs;
-    bool mSetTabVisibleFlag;
+    bool mSetTabVisibleFlag = false;
 };
 
 #endif // QGSTABWIDGET_H

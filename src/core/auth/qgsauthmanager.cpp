@@ -1713,8 +1713,8 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
     QSslKey key;
     if ( query.first() )
     {
-      key =  QSslKey( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 0 ).toString() ).toLatin1(),
-                      QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
+      key = QSslKey( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 0 ).toString() ).toLatin1(),
+                     QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
       if ( key.isNull() )
       {
         const char *err = QT_TR_NOOP( "Retrieve certificate identity bundle: FAILED to create private key" );
@@ -2843,21 +2843,7 @@ void QgsAuthManager::tryToStartDbErase()
 
 QgsAuthManager::QgsAuthManager()
   : QObject()
-  , mAuthInit( false )
-  , mAuthDbPath( QString() )
-  , mMasterPass( QString() )
-  , mPassTries( 0 )
-  , mAuthDisabled( false )
-  , mScheduledDbErase( false )
-  , mScheduledDbEraseRequestWait( 3 )
-  , mScheduledDbEraseRequestEmitted( false )
-  , mScheduledDbEraseRequestCount( 0 )
   , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
-  , mPasswordHelperVerificationError( false )
-  , mPasswordHelperErrorMessage( QLatin1String( "" ) )
-  , mPasswordHelperErrorCode( QKeychain::NoError )
-  , mPasswordHelperLoggingEnabled( false )
-  , mPasswordHelperFailedInit( false )
 {
   mMutex = new QMutex( QMutex::Recursive );
   connect( this, &QgsAuthManager::messageOut,

@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     {
       public:
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
-        MapThemeLayerRecord( QgsMapLayer *l = nullptr ): usingCurrentStyle( false ), usingLegendItems( false ), mLayer( l ) {}
+        MapThemeLayerRecord( QgsMapLayer *l = nullptr ): mLayer( l ) {}
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
@@ -79,11 +79,11 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         void setLayer( QgsMapLayer *layer );
 
         //! Whether current style is valid and should be applied
-        bool usingCurrentStyle;
+        bool usingCurrentStyle = false;
         //! Name of the current style of the layer
         QString currentStyle;
         //! Whether checkedLegendItems should be applied
-        bool usingLegendItems;
+        bool usingLegendItems = false;
         //! Rule keys of check legend items in layer tree model
         QSet<QString> checkedLegendItems;
       private:

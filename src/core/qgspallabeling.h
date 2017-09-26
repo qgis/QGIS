@@ -95,30 +95,20 @@ class CORE_EXPORT QgsLabelPosition
       , providerID( providerId )
     {}
     QgsLabelPosition()
-      : featureId( -1 )
-      , rotation( 0 )
-      , labelRect( QgsRectangle() )
-      , width( 0 )
-      , height( 0 )
-      , layerID( QLatin1String( "" ) )
-      , labelText( QLatin1String( "" ) )
-      , labelFont( QFont() )
-      , upsideDown( false )
-      , isDiagram( false )
-      , isPinned( false )
     {}
-    int featureId;
-    double rotation;
+
+    int featureId = -1;
+    double rotation = 0;
     QVector< QgsPointXY > cornerPoints;
     QgsRectangle labelRect;
-    double width;
-    double height;
+    double width = 0;
+    double height = 0;
     QString layerID;
     QString labelText;
     QFont labelFont;
-    bool upsideDown;
-    bool isDiagram;
-    bool isPinned;
+    bool upsideDown = false;
+    bool isDiagram = false;
+    bool isPinned = false;
     //! \since QGIS 2.14
     QString providerID;
 };
@@ -673,7 +663,7 @@ class CORE_EXPORT QgsPalLayerSettings
     bool displayAll;
 
     //! Controls whether upside down labels are displayed and how they are handled.
-    UpsideDownLabels upsidedownLabels;
+    UpsideDownLabels upsidedownLabels = Upright;
 
     /**
      * True if every part of a multi-part feature should be labeled. If false,
@@ -802,9 +792,9 @@ class CORE_EXPORT QgsPalLayerSettings
     QgsPointXY ptZero;
     QgsPointXY ptOne;
     QgsGeometry extentGeom;
-    int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
-    int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
-    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
+    int mFeaturesToLabel = 0; // total features that will probably be labeled, may be less (figured before PAL)
+    int mFeatsSendingToPal = 0; // total features tested for sending into PAL (relative to maxNumLabels)
+    int mFeatsRegPal = 0; // number of features registered in PAL, when using limitNumLabels
 
   private:
 

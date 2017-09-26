@@ -353,7 +353,7 @@ void QgsSnapIndex::addGeometry( const QgsAbstractGeometry *geom )
 QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &p, const QgsPoint &q )
 {
   // Look for intersections on segment from the target point to the point opposite to the point reference point
-  // p2 =  p1 + 2 * (q - p1)
+  // p2 = p1 + 2 * (q - p1)
   QgsPoint p2( 2 * q.x() - p.x(), 2 * q.y() - p.y() );
 
   // Raytrace along the grid, get touched cells

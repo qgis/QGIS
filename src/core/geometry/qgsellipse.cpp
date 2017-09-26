@@ -36,10 +36,6 @@ void QgsEllipse::normalizeAxis()
 }
 
 QgsEllipse::QgsEllipse()
-  : mCenter( QgsPoint() )
-  , mSemiMajorAxis( 0.0 )
-  , mSemiMinorAxis( 0.0 )
-  , mAzimuth( 90.0 )
 {
 
 }
@@ -199,7 +195,7 @@ QgsPointSequence QgsEllipse::points( unsigned int segments ) const
   double m = mCenter.m();
 
   QVector<double> t;
-  double azimuth =  std::atan2( quadrant().at( 0 ).y() - mCenter.y(), quadrant().at( 0 ).x() - mCenter.x() );
+  double azimuth = std::atan2( quadrant().at( 0 ).y() - mCenter.y(), quadrant().at( 0 ).x() - mCenter.x() );
   for ( unsigned int i = 0; i < segments; ++i )
   {
     t.append( 2 * M_PI - ( ( 2 * M_PI ) / segments * i ) ); // Since the algorithm used rotates in the trigonometric direction (counterclockwise)

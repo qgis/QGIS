@@ -48,7 +48,6 @@ class CORE_EXPORT QgsAction
      * Default constructor
      */
     QgsAction()
-      : mType( Generic )
     {}
 
     /**
@@ -192,7 +191,7 @@ class CORE_EXPORT QgsAction
     void writeXml( QDomNode &actionsNode ) const;
 
   private:
-    ActionType mType;
+    ActionType mType = Generic;
     QString mDescription;
     QString mShortTitle;
     QString mIcon;

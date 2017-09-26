@@ -47,7 +47,6 @@ class TestQgsFieldCalculator : public QObject
 };
 
 TestQgsFieldCalculator::TestQgsFieldCalculator()
-  : mQgisApp( nullptr )
 {
 
 }

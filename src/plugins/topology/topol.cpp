@@ -51,7 +51,6 @@ static const QString sPluginIcon = QStringLiteral( ":/topology/mActionTopologyCh
 Topol::Topol( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mQActionPointer( nullptr )
 {
   mDock = nullptr;
 }

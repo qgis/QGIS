@@ -54,7 +54,6 @@ class TestQgsAttributeTable : public QObject
 };
 
 TestQgsAttributeTable::TestQgsAttributeTable()
-  : mQgisApp( nullptr )
 {
 
 }

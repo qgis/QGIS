@@ -50,8 +50,6 @@ void QgsMessageOutput::showMessage( const QString &title, const QString &message
 // QgsMessageOutputConsole
 
 QgsMessageOutputConsole::QgsMessageOutputConsole()
-  : mMessage( QLatin1String( "" ) )
-  , mMsgType( MessageText )
 {
 }
 

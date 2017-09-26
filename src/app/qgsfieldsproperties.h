@@ -46,11 +46,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     struct RelationEditorConfiguration
     {
       RelationEditorConfiguration()
-        : showLinkButton( true )
-        , showUnlinkButton( true )
       {}
-      bool showLinkButton;
-      bool showUnlinkButton;
+      bool showLinkButton = true;
+      bool showUnlinkButton = true;
     };
 
     class DesignerTreeItemData
@@ -64,18 +62,11 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         };
 
         DesignerTreeItemData()
-          : mType( Field )
-          , mColumnCount( 1 )
-          , mShowAsGroupBox( false )
-          , mShowLabel( true )
         {}
 
         DesignerTreeItemData( Type type, const QString &name )
           : mType( type )
           , mName( name )
-          , mColumnCount( 1 )
-          , mShowAsGroupBox( false )
-          , mShowLabel( true )
         {}
 
         QString name() const { return mName; }
@@ -102,11 +93,11 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
 
       private:
-        Type mType;
+        Type mType = Field;
         QString mName;
-        int mColumnCount;
-        bool mShowAsGroupBox;
-        bool mShowLabel;
+        int mColumnCount = 1;
+        bool mShowAsGroupBox = false;
+        bool mShowLabel = true;
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
     };
@@ -120,9 +111,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         FieldConfig();
         FieldConfig( QgsVectorLayer *layer, int idx );
 
-        bool mEditable;
-        bool mEditableEnabled;
-        bool mLabelOnTop;
+        bool mEditable = true;
+        bool mEditableEnabled = true;
+        bool mLabelOnTop = false;
         QgsFieldConstraints::Constraints mConstraints;
         QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
         QString mConstraint;

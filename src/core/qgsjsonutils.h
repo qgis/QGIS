@@ -185,13 +185,13 @@ class CORE_EXPORT QgsJsonExporter
     QgsAttributeList mExcludedAttributeIndexes;
 
     //! Whether to include geometry in JSON export
-    bool mIncludeGeometry;
+    bool mIncludeGeometry = true;
 
     //! Whether to include attributes in JSON export
-    bool mIncludeAttributes;
+    bool mIncludeAttributes = true;
 
     //! Whether to include attributes from related features in JSON export
-    bool mIncludeRelatedAttributes;
+    bool mIncludeRelatedAttributes = false;
 
     //! Associated vector layer. Required for related attribute export.
     QPointer< QgsVectorLayer > mLayer;

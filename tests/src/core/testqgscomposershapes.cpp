@@ -35,8 +35,6 @@ class TestQgsComposerShapes : public QObject
 
   public:
     TestQgsComposerShapes()
-      : mComposition( 0 )
-      , mComposerShape( 0 )
     {}
 
   private slots:

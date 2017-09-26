@@ -235,7 +235,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 
     bool mCanCancel;
     QgsTask::TaskStatus mStatus;
-    bool mInside;
+    bool mInside = false;
 };
 
 ///@endcond

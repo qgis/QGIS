@@ -23,7 +23,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <limits>
 #include <QTransform>
 
-QgsAbstractGeometry::QgsAbstractGeometry(): mWkbType( QgsWkbTypes::Unknown )
+QgsAbstractGeometry::QgsAbstractGeometry()
 {
 }
 
@@ -87,7 +87,7 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
   else if ( hasM )
   {
-    mWkbType =  QgsWkbTypes::addM( baseGeomType );
+    mWkbType = QgsWkbTypes::addM( baseGeomType );
   }
   else
   {

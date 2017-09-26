@@ -50,9 +50,6 @@
 
 QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
   : mUri( uri )
-  , mCapabilitiesReply( nullptr )
-  , mCoverageCount( 0 )
-  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
 
@@ -62,10 +59,6 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
 }
 
 QgsWcsCapabilities::QgsWcsCapabilities()
-  : mCapabilities()
-  , mCapabilitiesReply( nullptr )
-  , mCoverageCount( 0 )
-  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
 }
 

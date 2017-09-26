@@ -347,8 +347,8 @@ void QgsLegendRenderer::setColumns( QList<Atom> &atomList )
         QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
         double space = mSettings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right ) +
                        mSettings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
-        atom.nucleons[j].labelXOffset =  maxSymbolWidth[key] + space;
-        atom.nucleons[j].size.rwidth() =  maxSymbolWidth[key] + space + atom.nucleons.at( j ).labelSize.width();
+        atom.nucleons[j].labelXOffset = maxSymbolWidth[key] + space;
+        atom.nucleons[j].size.rwidth() = maxSymbolWidth[key] + space + atom.nucleons.at( j ).labelSize.width();
       }
     }
   }

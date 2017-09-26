@@ -454,8 +454,6 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolyline &mpl )
 
 
 QgsTracer::QgsTracer()
-  : mMaxFeatureCount( 0 )
-  , mHasTopologyProblem( false )
 {
 }
 

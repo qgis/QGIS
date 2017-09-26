@@ -833,7 +833,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
       return;
 
     QgsAttributes myAttrs = myFeature->attributes();
-    for ( int i = 0 ; i < myAttrs.count(); ++i )
+    for ( int i = 0; i < myAttrs.count(); ++i )
     {
       if ( myFields.at( i ).name() == cboxEventImagePathField->currentText() )
       {

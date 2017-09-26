@@ -30,8 +30,6 @@ class TestQgsRasterCalculator : public QObject
 
   public:
     TestQgsRasterCalculator()
-      : mpLandsatRasterLayer( 0 )
-      , mpLandsatRasterLayer4326( 0 )
     {}
 
   private slots:

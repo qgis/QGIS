@@ -30,16 +30,6 @@ QgsPaintEffect *QgsTransformEffect::create( const QgsStringMap &map )
 
 QgsTransformEffect::QgsTransformEffect()
   : QgsPaintEffect()
-  , mTranslateX( 0.0 )
-  , mTranslateY( 0.0 )
-  , mTranslateUnit( QgsUnitTypes::RenderMillimeters )
-  , mScaleX( 1.0 )
-  , mScaleY( 1.0 )
-  , mRotation( 0.0 )
-  , mShearX( 0.0 )
-  , mShearY( 0.0 )
-  , mReflectX( false )
-  , mReflectY( false )
 {
 
 }

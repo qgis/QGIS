@@ -48,11 +48,11 @@ class ANALYSIS_EXPORT QgsGridFileWriter
     QgsInterpolator *mInterpolator = nullptr;
     QString mOutputFilePath;
     QgsRectangle mInterpolationExtent;
-    int mNumColumns;
-    int mNumRows;
+    int mNumColumns = 0;
+    int mNumRows = 0;
 
-    double mCellSizeX;
-    double mCellSizeY;
+    double mCellSizeX = 0;
+    double mCellSizeY = 0;
 };
 
 #endif

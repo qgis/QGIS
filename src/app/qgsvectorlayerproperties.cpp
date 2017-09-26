@@ -80,9 +80,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 )
   : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
   , mLayer( lyr )
-  , mMetadataFilled( false )
   , mOriginalSubsetSQL( lyr->subsetString() )
-
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
@@ -1318,7 +1316,7 @@ QgsExpressionContext QgsVectorLayerProperties::createExpressionContext() const
 void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
 {
   QDialog *dlg = new QDialog();
-  QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+  QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
   QgsSettings settings;
   dlg->restoreGeometry( settings.value( key ).toByteArray() );
   dlg->setWindowTitle( panel->panelTitle() );

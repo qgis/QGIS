@@ -40,9 +40,7 @@ QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::Bru
   , mStrokeColor( strokeColor )
   , mStrokeStyle( strokeStyle )
   , mStrokeWidth( strokeWidth )
-  , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
   , mPenJoinStyle( penJoinStyle )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
 }
@@ -462,10 +460,7 @@ QgsGradientFillSymbolLayer::QgsGradientFillSymbolLayer( const QColor &color, con
   , mCoordinateMode( coordinateMode )
   , mGradientSpread( spread )
   , mReferencePoint1( QPointF( 0.5, 0 ) )
-  , mReferencePoint1IsCentroid( false )
   , mReferencePoint2( QPointF( 0.5, 1 ) )
-  , mReferencePoint2IsCentroid( false )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
   mColor2 = color2;
@@ -633,7 +628,7 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
   GradientCoordinateMode coordinateMode = mCoordinateMode;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCoordinateMode ) )
   {
-    QString currentCoordMode =  mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCoordinateMode, context.renderContext().expressionContext(), QString(), &ok );
+    QString currentCoordMode = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCoordinateMode, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       if ( currentCoordMode == QObject::tr( "feature" ) )
@@ -946,11 +941,8 @@ QgsShapeburstFillSymbolLayer::QgsShapeburstFillSymbolLayer( const QColor &color,
   : mBlurRadius( blurRadius )
   , mUseWholeShape( useWholeShape )
   , mMaxDistance( maxDistance )
-  , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
   , mColorType( colorType )
   , mColor2( color2 )
-  , mIgnoreRings( false )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
 }
@@ -1082,7 +1074,7 @@ void QgsShapeburstFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderCon
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySecondaryColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor2 ) );
-    color =  mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
+    color = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
   }
 
   //blur radius
@@ -1547,10 +1539,6 @@ QgsMapUnitScale QgsShapeburstFillSymbolLayer::mapUnitScale() const
 //QgsImageFillSymbolLayer
 
 QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
-  : mNextAngle( 0.0 )
-  , mStrokeWidth( 0.0 )
-  , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mStroke( nullptr )
 {
   setSubSymbol( new QgsLineSymbol() );
 }
@@ -2287,14 +2275,6 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
 
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
-  , mDistance( 5.0 )
-  , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
-  , mLineWidth( 0 )
-  , mLineWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mLineAngle( 45.0 )
-  , mOffset( 0.0 )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-
 {
   setSubSymbol( new QgsLineSymbol() );
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
@@ -2997,14 +2977,6 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
-  , mDistanceX( 15 )
-  , mDistanceXUnit( QgsUnitTypes::RenderMillimeters )
-  , mDistanceY( 15 )
-  , mDistanceYUnit( QgsUnitTypes::RenderMillimeters )
-  , mDisplacementX( 0 )
-  , mDisplacementXUnit( QgsUnitTypes::RenderMillimeters )
-  , mDisplacementY( 0 )
-  , mDisplacementYUnit( QgsUnitTypes::RenderMillimeters )
 {
   mDistanceX = 15;
   mDistanceY = 15;
@@ -3379,11 +3351,6 @@ QColor QgsPointPatternFillSymbolLayer::color() const
 
 
 QgsCentroidFillSymbolLayer::QgsCentroidFillSymbolLayer()
-  : mMarker( nullptr )
-  , mPointOnSurface( false )
-  , mPointOnAllParts( true )
-  , mCurrentFeatureId( -1 )
-  , mBiggestPartIndex( -1 )
 {
   setSubSymbol( new QgsMarkerSymbol() );
 }
@@ -3591,10 +3558,6 @@ QgsMapUnitScale QgsCentroidFillSymbolLayer::mapUnitScale() const
 QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath )
   : QgsImageFillSymbolLayer()
   , mImageFilePath( imageFilePath )
-  , mCoordinateMode( QgsRasterFillSymbolLayer::Feature )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-  , mWidth( 0.0 )
-  , mWidthUnit( QgsUnitTypes::RenderPixels )
 {
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
 }

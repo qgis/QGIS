@@ -49,8 +49,6 @@
 
 QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char *name, Qt::WindowFlags f )
   : QgsDockWidget( parent, f )
-  , mModulesListModel( 0 )
-  , mModelProxy( 0 )
 {
   Q_UNUSED( name );
   QgsDebugMsg( "QgsGrassTools()" );
@@ -692,7 +690,6 @@ void QgsGrassTools::on_mViewModeButton_clicked()
 
 QgsGrassToolsTreeFilterProxyModel::QgsGrassToolsTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-  , mModel( 0 )
 {
   setDynamicSortFilter( true );
   mRegExp.setPatternSyntax( QRegExp::Wildcard );

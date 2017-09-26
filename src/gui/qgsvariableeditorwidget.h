@@ -124,12 +124,12 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
   private:
 
     std::unique_ptr<QgsExpressionContext> mContext;
-    int mEditableScopeIndex;
+    int mEditableScopeIndex = -1;
     QgsVariableEditorTree *mTreeWidget = nullptr;
     QPushButton *mAddButton = nullptr;
     QPushButton *mRemoveButton = nullptr;
     QString mSettingGroup;
-    bool mShown;
+    bool mShown = false;
 
     QString saveKey() const;
 
@@ -198,7 +198,7 @@ class QgsVariableEditorTree : public QTreeWidget
   private:
 
     VariableEditorDelegate *mEditorDelegate = nullptr;
-    int mEditableScopeIndex;
+    int mEditableScopeIndex = -1;
     QgsExpressionContext *mContext = nullptr;
     QMap< QPair<int, QString>, QTreeWidgetItem * > mVariableToItem;
     QMap< int, QTreeWidgetItem * > mScopeToItem;

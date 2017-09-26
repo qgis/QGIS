@@ -172,8 +172,8 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsAttributeTableDelegate *mTableDelegate = nullptr;
     QMenu *mActionPopup = nullptr;
-    int mRowSectionAnchor;
-    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
+    int mRowSectionAnchor = 0;
+    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
     QMap< QModelIndex, QWidget * > mActionWidgets;
 };
 

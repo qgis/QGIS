@@ -56,7 +56,6 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 #ifndef SIP_RUN
 
 inline LinTriangleInterpolator::LinTriangleInterpolator()
-  : mTIN( nullptr )
 {
 
 }

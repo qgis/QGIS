@@ -140,7 +140,6 @@ void QgsWfsLayerItem::copyStyle()
 QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
-  , mWfsCapabilities( nullptr )
 {
   mIconName = QStringLiteral( "mIconWfs.svg" );
   mCapabilities |= Collapse;

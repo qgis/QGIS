@@ -46,7 +46,6 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     QgsFieldValuesLineEditValuesGatherer( QgsVectorLayer *layer, int attributeIndex )
       : mLayer( layer )
       , mAttributeIndex( attributeIndex )
-      , mFeedback( nullptr )
       , mWasCanceled( false )
     {}
 
@@ -201,10 +200,10 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
   private:
 
     QgsVectorLayer *mLayer = nullptr;
-    int mAttributeIndex;
+    int mAttributeIndex = -1;
 
     //! Will be true when a background update of the completer values is occurring
-    bool mUpdateRequested;
+    bool mUpdateRequested = false;
 
     //! Timer to prevent multiple updates of autocomplete list
     QTimer mShowPopupTimer;

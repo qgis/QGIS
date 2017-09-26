@@ -636,8 +636,7 @@ QgsCustomization *QgsCustomization::instance()
 }
 
 QgsCustomization::QgsCustomization()
-  : mEnabled( false )
-  , mStatusPath( QStringLiteral( "/Customization/status" ) )
+  : mStatusPath( QStringLiteral( "/Customization/status" ) )
 {
 
   QSettings settings;
@@ -948,7 +947,7 @@ void QgsCustomization::loadDefault()
     return;
 
   // Look for default
-  QString path =  QgsApplication::pkgDataPath() +  "/resources/customization.ini";
+  QString path = QgsApplication::pkgDataPath() +  "/resources/customization.ini";
   if ( ! QFile::exists( path ) )
   {
     QgsDebugMsg( "Default customization not found in " + path );

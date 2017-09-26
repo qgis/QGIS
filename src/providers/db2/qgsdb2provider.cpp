@@ -37,10 +37,7 @@ int QgsDb2Provider::sConnectionId = 0;
 
 QgsDb2Provider::QgsDb2Provider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mNumberFeatures( 0 )
-  , mFidColIdx( -1 )
   , mEnvironment( ENV_LUW )
-  , mWkbType( QgsWkbTypes::Unknown )
 {
   QgsDebugMsg( "uri: " + uri );
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -432,27 +429,27 @@ QString QgsDb2Provider::db2TypeName( int typeId )
       break;
 
     case 3:     //NUMERIC and DECIMAL
-      typeName =  QStringLiteral( "DECIMAL" );
+      typeName = QStringLiteral( "DECIMAL" );
       break;
 
     case 7:     //REAL
-      typeName =  QStringLiteral( "REAL" );
+      typeName = QStringLiteral( "REAL" );
       break;
 
     case 8:     //DOUBLE
-      typeName =  QStringLiteral( "DOUBLE" );
+      typeName = QStringLiteral( "DOUBLE" );
       break;
 
     case 9:    //DATE
-      typeName =  QStringLiteral( "DATE" );
+      typeName = QStringLiteral( "DATE" );
       break;
 
     case 10:    //TIME
-      typeName =  QStringLiteral( "TIME" );
+      typeName = QStringLiteral( "TIME" );
       break;
 
     case 11:    //TIMESTAMP
-      typeName =  QStringLiteral( "TIMESTAMP" );
+      typeName = QStringLiteral( "TIMESTAMP" );
       break;
 
     default:

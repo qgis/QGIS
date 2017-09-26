@@ -386,20 +386,20 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     QgsGrassObject mGrassObject;
     // field part of layer or -1 if no field specified
-    int mLayerField;
+    int mLayerField = -1;
     // layer type POINT, LINE, ...
-    int mLayerType;
+    int mLayerType = Point;
     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA, ( GV_BOUNDARY, GV_CENTROID )
-    int mGrassType;
+    int mGrassType = 0;
     // WKBPoint, WKBLineString, ...
-    QgsWkbTypes::Type mQgisType;
+    QgsWkbTypes::Type mQgisType = QgsWkbTypes::Unknown;
     QString mLayerName;
     QgsGrassVectorMapLayer *mLayer = nullptr;
     // The version of the map for which the instance was last time updated
-    int mMapVersion;
+    int mMapVersion = 0;
 
     bool mValid;
-    long mNumberFeatures;
+    long mNumberFeatures = 0;
 
     // create QgsFeatureId from GRASS geometry object id and cat
     static QgsFeatureId makeFeatureId( int grassId, int cat );
@@ -436,7 +436,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QgsVectorLayer *mEditLayer = nullptr;
 
     //  next digitized feature GRASS type
-    int mNewFeatureType;
+    int mNewFeatureType = 0;
 
     // Last version of layer fields during editing, updated after addAttribute and deleteAttribute
     QgsFields mEditLayerFields;
@@ -445,11 +445,11 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QList<QgsGrassVectorMapLayer *> mOtherEditLayers;
 
     // points and cats used only for editing
-    struct line_pnts *mPoints;
-    struct line_cats *mCats;
+    struct line_pnts *mPoints = 0;
+    struct line_cats *mCats = 0;
 
     // last geometry GV_* type, used e.g. for splitting features
-    int mLastType;
+    int mLastType = 0;
 
     // number of currently being edited providers
     static int sEditedCount;

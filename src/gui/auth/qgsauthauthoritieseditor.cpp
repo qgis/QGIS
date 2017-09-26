@@ -41,8 +41,6 @@
 
 QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   : QWidget( parent )
-  , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-  , mDisabled( false )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

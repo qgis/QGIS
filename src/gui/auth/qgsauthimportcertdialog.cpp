@@ -35,8 +35,6 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
   : QDialog( parent )
   , mFilter( filter )
   , mInput( input )
-  , mDisabled( false )
-
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

@@ -35,10 +35,6 @@ QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputP
 }
 
 QgsGridFileWriter::QgsGridFileWriter()
-  : mNumColumns( 0 )
-  , mNumRows( 0 )
-  , mCellSizeX( 0 )
-  , mCellSizeY( 0 )
 {
 
 }

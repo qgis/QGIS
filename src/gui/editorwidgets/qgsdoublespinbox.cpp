@@ -28,10 +28,6 @@
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   : QDoubleSpinBox( parent )
-  , mShowClearButton( true )
-  , mClearValueMode( MinimumValue )
-  , mCustomClearValue( 0.0 )
-  , mExpressionsEnabled( true )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
@@ -131,7 +127,7 @@ void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode,
 double QgsDoubleSpinBox::clearValue() const
 {
   if ( mClearValueMode == MinimumValue )
-    return minimum() ;
+    return minimum();
   else if ( mClearValueMode == MaximumValue )
     return maximum();
   else

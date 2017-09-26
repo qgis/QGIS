@@ -44,8 +44,6 @@ email                : tim@linfiniti.com
 
 QgsDecorationCopyright::QgsDecorationCopyright( QObject *parent )
   : QgsDecorationItem( parent )
-  , mMarginHorizontal( 0 )
-  , mMarginVertical( 0 )
 {
   mPlacement = BottomRight;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;

@@ -26,21 +26,11 @@
 #include <QUrl>
 
 QgsDataSourceUri::QgsDataSourceUri()
-  : mSSLmode( SslPrefer )
-  , mKeyColumn( QLatin1String( "" ) )
-  , mUseEstimatedMetadata( false )
-  , mSelectAtIdDisabled( false )
-  , mWkbType( QgsWkbTypes::Unknown )
 {
   // do nothing
 }
 
 QgsDataSourceUri::QgsDataSourceUri( QString uri )
-  : mSSLmode( SslPrefer )
-  , mKeyColumn( QLatin1String( "" ) )
-  , mUseEstimatedMetadata( false )
-  , mSelectAtIdDisabled( false )
-  , mWkbType( QgsWkbTypes::Unknown )
 {
   int i = 0;
   while ( i < uri.length() )

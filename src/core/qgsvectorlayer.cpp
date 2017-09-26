@@ -139,15 +139,6 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
                                 bool readExtentFromXml )
   : QgsMapLayer( VectorLayer, baseName, vectorLayerPath )
   , mProviderKey( providerKey )
-  , mReadOnly( false )
-  , mWkbType( QgsWkbTypes::Unknown )
-  , mLabelFontNotFoundNotified( false )
-  , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
-  , mVertexMarkerOnlyForSelection( false )
-  , mValidExtent( false )
-  , mLazyExtent( true )
-  , mSymbolFeatureCounted( false )
-  , mEditCommandActive( false )
   , mReadExtentFromXml( readExtentFromXml )
 {
   mActions = new QgsActionManager( this );
@@ -3940,7 +3931,7 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Encoding" ) + QStringLiteral( "</td><td>" ) + dataProvider()->encoding() + QStringLiteral( "</td></tr>\n" );
 
   // geom type
-  QgsWkbTypes::GeometryType type =  geometryType();
+  QgsWkbTypes::GeometryType type = geometryType();
   if ( type < 0 || type > QgsWkbTypes::NullGeometry )
   {
     QgsDebugMsg( "Invalid vector type" );

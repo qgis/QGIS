@@ -609,7 +609,6 @@ QgisApp *QgisApp::sInstance = nullptr;
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
-  , mShowProjectionTab( false )
 {
   if ( sInstance )
   {
@@ -641,7 +640,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
 #if QT_VERSION >= 0x050600
-  setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
+  setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 #endif
 
   //////////
@@ -1225,13 +1224,6 @@ QgisApp::QgisApp()
 #ifdef Q_OS_MAC
   , mWindowMenu( nullptr )
 #endif
-  , mShowProjectionTab( false )
-  , mMapTipsVisible( false )
-  , mFullScreenMode( false )
-  , mPrevScreenModeMaximized( false )
-  , mSaveRollbackInProgress( false )
-  , mTrustedMacros( false )
-  , mProjOpen( 0 )
 {
   sInstance = this;
   setupUi( this );
@@ -2404,7 +2396,7 @@ void QgisApp::createToolBars()
       defAnnotationAction = mActionSvgAnnotation;
       break;
     case 4:
-      defAnnotationAction =  mActionAnnotation;
+      defAnnotationAction = mActionAnnotation;
       break;
 
   }
@@ -9070,7 +9062,7 @@ void QgisApp::legendLayerZoomNative()
   if ( !currentLayer )
     return;
 
-  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer );
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
   if ( layer )
   {
     QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
@@ -9102,7 +9094,7 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
   if ( !currentLayer )
     return;
 
-  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer );
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
   if ( layer )
   {
     QgsRectangle myRectangle;
@@ -11866,7 +11858,7 @@ void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
                             " When saving this project file, QGIS will update it to the latest version, "
                             "possibly rendering it useless for older versions of QGIS." );
 
-    QString title =  tr( "Project file is older" );
+    QString title = tr( "Project file is older" );
 
     messageBar()->pushMessage( title, smalltext );
   }

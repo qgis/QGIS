@@ -32,9 +32,6 @@
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
   : QDialog( parent )
   , mManager( manager )
-  , mGettingShortcut( false )
-  , mModifiers( 0 )
-  , mKey( 0 )
 {
   setupUi( this );
 

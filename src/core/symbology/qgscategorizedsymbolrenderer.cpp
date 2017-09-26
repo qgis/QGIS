@@ -35,7 +35,6 @@
 #include <QSettings> // for legend
 
 QgsRendererCategory::QgsRendererCategory()
-  : mRender( true )
 {
 }
 
@@ -152,8 +151,6 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStr
 QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrName, const QgsCategoryList &categories )
   : QgsFeatureRenderer( QStringLiteral( "categorizedSymbol" ) )
   , mAttrName( attrName )
-  , mAttrNum( -1 )
-  , mCounting( false )
 {
   //important - we need a deep copy of the categories list, not a shared copy. This is required because
   //QgsRendererCategory::symbol() is marked const, and so retrieving the symbol via this method does not

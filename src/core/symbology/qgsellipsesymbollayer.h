@@ -131,17 +131,17 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 
   private:
     QString mSymbolName;
-    double mSymbolWidth;
-    QgsUnitTypes::RenderUnit mSymbolWidthUnit;
+    double mSymbolWidth = 4;
+    QgsUnitTypes::RenderUnit mSymbolWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSymbolWidthMapUnitScale;
-    double mSymbolHeight;
-    QgsUnitTypes::RenderUnit mSymbolHeightUnit;
+    double mSymbolHeight = 3;
+    QgsUnitTypes::RenderUnit mSymbolHeightUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSymbolHeightMapUnitScale;
     QColor mStrokeColor;
-    Qt::PenStyle mStrokeStyle;
-    Qt::PenJoinStyle mPenJoinStyle;
-    double mStrokeWidth;
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    Qt::PenStyle mStrokeStyle = Qt::SolidLine;
+    Qt::PenJoinStyle mPenJoinStyle = DEFAULT_ELLIPSE_JOINSTYLE;
+    double mStrokeWidth = 0;
+    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
 
     QPainterPath mPainterPath;

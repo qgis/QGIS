@@ -38,14 +38,6 @@ class TestQgsAtlasComposition : public QObject
 
   public:
     TestQgsAtlasComposition()
-      : mComposition( 0 )
-      , mLabel1( 0 )
-      , mLabel2( 0 )
-      , mAtlasMap( 0 )
-      , mOverview( 0 )
-      , mVectorLayer( 0 )
-      , mVectorLayer2( 0 )
-      , mAtlas( 0 )
     {}
 
     ~TestQgsAtlasComposition();

@@ -56,9 +56,6 @@ static QString quotedColumn( QString name )
 
 QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
-  , mValid( true )
-  , mCachedStatistics( false )
-  , mFeatureCount( 0 )
 {
   mError.clear();
 

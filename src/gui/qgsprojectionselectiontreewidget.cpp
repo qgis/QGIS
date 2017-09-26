@@ -29,11 +29,6 @@
 
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent )
   : QWidget( parent )
-  , mProjListDone( false )
-  , mUserProjListDone( false )
-  , mRecentProjListDone( false )
-  , mSearchColumn( QgsProjectionSelectionTreeWidget::None )
-  , mPushProjectionToFront( false )
 {
   setupUi( this );
 

@@ -52,7 +52,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     void removeEmbeddedNodes( QgsLayerTreeGroup *node );
     void deselectChildren( const QModelIndex &index );
     QString mProjectPath;
-    bool mShowEmbeddedContent;
+    bool mShowEmbeddedContent = false;
 
     QgsLayerTree *mRootGroup = nullptr;
 };

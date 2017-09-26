@@ -61,8 +61,8 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     QString diagramName() const override;
 
   private:
-    Orientation mOrientation;
-    Shape mShape;
+    Orientation mOrientation = Vertical;
+    Shape mShape = Circle;
     QBrush mBrush; //transparent brush
     QPen mPen;
 

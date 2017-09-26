@@ -45,7 +45,6 @@ class TestQgsMapCanvas : public QObject
     Q_OBJECT
   public:
     TestQgsMapCanvas()
-      : mCanvas( nullptr )
     {}
 
   private slots:

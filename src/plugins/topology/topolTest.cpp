@@ -680,7 +680,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
 
   //qDebug() << "wktmerged - " << test.exportToWkt();
 
-  QString extentWkt =  test.boundingBox().asWktPolygon();
+  QString extentWkt = test.boundingBox().asWktPolygon();
   QgsGeometry extentGeom = QgsGeometry::fromWkt( extentWkt );
   QgsGeometry bufferExtent = extentGeom.buffer( 2, 3 );
 
@@ -1040,7 +1040,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
         {
           for ( int j = 1; j < pol[i].size(); ++j )
           {
-            distance =  std::sqrt( pol[i][j - 1].sqrDist( pol[i][j] ) );
+            distance = std::sqrt( pol[i][j - 1].sqrDist( pol[i][j] ) );
             if ( distance < tolerance )
             {
               fls.clear();

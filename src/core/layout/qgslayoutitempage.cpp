@@ -179,7 +179,7 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   painter->save();
 
 #if 0 //TODO
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
 #endif
   {
     //if in preview mode, draw page border and shadow so that it's

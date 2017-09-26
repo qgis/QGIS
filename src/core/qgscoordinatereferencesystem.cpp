@@ -516,7 +516,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     d->mProjectionAcronym = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 2 ) ) );
     d->mEllipsoidAcronym = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 3 ) ) );
     d->mProj4 = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 4 ) ) );
-    d->mSRID = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 5 ) ) ).toLong() ;
+    d->mSRID = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 5 ) ) ).toLong();
     d->mAuthId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 6 ) ) );
     d->mIsGeographic = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 7 ) ) ).toInt() != 0;
     d->mAxisInvertedDirty = true;

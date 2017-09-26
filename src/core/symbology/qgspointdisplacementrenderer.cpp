@@ -27,10 +27,7 @@
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &labelAttributeName )
   : QgsPointDistanceRenderer( QStringLiteral( "pointDisplacement" ), labelAttributeName )
-  , mPlacement( Ring )
-  , mCircleWidth( 0.4 )
   , mCircleColor( QColor( 125, 125, 125 ) )
-  , mCircleRadiusAddition( 0 )
 {
   mCenterSymbol.reset( new QgsMarkerSymbol() );
 }

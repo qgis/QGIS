@@ -20,8 +20,6 @@
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
   : QObject( parent )
-  , mLatestVersion( 0 )
-  , mError( QNetworkReply::NoError )
 {
 
 }

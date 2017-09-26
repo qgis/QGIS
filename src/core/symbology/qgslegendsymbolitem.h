@@ -98,7 +98,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! unique identifier of the symbol item (within renderer)
     QString mKey;
     //! whether it can be enabled/disabled
-    bool mCheckable;
+    bool mCheckable = false;
 
     QgsSymbol *mOriginalSymbolPointer = nullptr;
 
@@ -108,11 +108,11 @@ class CORE_EXPORT QgsLegendSymbolItem
 
     // additional data that may be used for filtering
 
-    int mScaleMinDenom;
-    int mScaleMaxDenom;
+    int mScaleMinDenom = -1;
+    int mScaleMaxDenom = -1;
 
     //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
-    int mLevel;
+    int mLevel = 0;
     //! Key of the parent legend node. For legends with tree hierarchy
     QString mParentKey;
 };

@@ -379,7 +379,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
   private:
 
-    Behavior mBehavior;
+    Behavior mBehavior = QgsColorButton::ShowDialog;
     QString mColorDialogTitle;
     QColor mColor;
     QSize mMinimumSize;
@@ -388,16 +388,16 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     QColor mDefaultColor;
     QString mContext;
-    bool mAllowOpacity;
-    bool mAcceptLiveUpdates;
-    bool mColorSet;
+    bool mAllowOpacity = false;
+    bool mAcceptLiveUpdates = true;
+    bool mColorSet = false;
 
-    bool mShowNoColorOption;
+    bool mShowNoColorOption = false;
     QString mNoColorString;
-    bool mShowNull;
+    bool mShowNull = false;
 
     QPoint mDragStartPosition;
-    bool mPickingColor;
+    bool mPickingColor = false;
 
     QMenu *mMenu = nullptr;
 

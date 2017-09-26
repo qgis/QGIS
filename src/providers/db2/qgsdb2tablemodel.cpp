@@ -24,7 +24,6 @@
 
 QgsDb2TableModel::QgsDb2TableModel()
   : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );

@@ -113,11 +113,12 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     Qt::CaseSensitivity mCaseSensitivity;
     QLabel *mHintLabel = nullptr;
     QLineEdit *mLineEdit = nullptr;
-    QLabel *mNamesLabel; // list of names with extensions
+    //! List of names with extensions
+    QLabel *mNamesLabel = nullptr;
     QLabel *mErrorLabel = nullptr;
     QString mOkString;
     QRegExp mRegexp;
-    bool mOverwriteEnabled;
+    bool mOverwriteEnabled = true;
     QString mConflictingNameWarning;
 
     QString highlightText( const QString &text );

@@ -168,7 +168,7 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     QgsDb2GeomColumnTypeThread *mColumnTypeThread = nullptr;
     QString mConnInfo;
     QStringList mSelectedTables;
-    bool mUseEstimatedMetadata;
+    bool mUseEstimatedMetadata = false;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 

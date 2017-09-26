@@ -74,8 +74,6 @@ struct EFFECTIVE_AREAS
 {
   EFFECTIVE_AREAS( const QgsCurve &curve )
     : is3d( curve.is3D() )
-    , initial_arealist( nullptr )
-    , res_arealist( nullptr )
   {
     curve.points( inpts );
     initial_arealist = new areanode[ inpts.size()];

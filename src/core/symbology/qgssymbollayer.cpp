@@ -378,30 +378,17 @@ void QgsSymbolLayer::copyPaintEffect( QgsSymbolLayer *destLayer ) const
 
 QgsMarkerSymbolLayer::QgsMarkerSymbolLayer( bool locked )
   : QgsSymbolLayer( QgsSymbol::Marker, locked )
-  , mAngle( 0 )
-  , mLineAngle( 0 )
-  , mSize( 2.0 )
-  , mSizeUnit( QgsUnitTypes::RenderMillimeters )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-  , mScaleMethod( QgsSymbol::ScaleDiameter )
-  , mHorizontalAnchorPoint( HCenter )
-  , mVerticalAnchorPoint( VCenter )
 {
 
 }
 
 QgsLineSymbolLayer::QgsLineSymbolLayer( bool locked )
   : QgsSymbolLayer( QgsSymbol::Line, locked )
-  , mWidth( 0 )
-  , mWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mOffset( 0 )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
 }
 
 QgsFillSymbolLayer::QgsFillSymbolLayer( bool locked )
   : QgsSymbolLayer( QgsSymbol::Fill, locked )
-  , mAngle( 0.0 )
 {
 }
 

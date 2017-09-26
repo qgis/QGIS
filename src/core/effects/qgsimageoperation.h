@@ -107,27 +107,23 @@ class CORE_EXPORT QgsImageOperation
     struct DistanceTransformProperties
     {
       DistanceTransformProperties()
-        : shadeExterior( true )
-        , useMaxDistance( true )
-        , spread( 10.0 )
-        , ramp( nullptr )
       { }
 
       /** Set to true to perform the distance transform on transparent pixels
        * in the source image, set to false to perform the distance transform
        * on opaque pixels
        */
-      bool shadeExterior;
+      bool shadeExterior = true;
 
       /** Set to true to automatically calculate the maximum distance in the
        * transform to use as the spread value
        */
-      bool useMaxDistance;
+      bool useMaxDistance = true;
 
       /** Maximum distance (in pixels) for the distance transform shading to
        * spread
        */
-      double spread;
+      double spread = 10.0;
 
       /** Color ramp to use for shading the distance transform
        */

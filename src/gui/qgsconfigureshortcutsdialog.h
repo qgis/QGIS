@@ -90,8 +90,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
 
     QgsShortcutsManager *mManager = nullptr;
 
-    bool mGettingShortcut;
-    int mModifiers, mKey;
+    bool mGettingShortcut = false;
+    int mModifiers = 0, mKey = 0;
 
 };
 

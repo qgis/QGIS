@@ -26,9 +26,6 @@
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )
   , mName( name )
-  , mChangingChildVisibility( false )
-  , mMutuallyExclusive( false )
-  , mMutuallyExclusiveChildIndex( -1 )
 {
   connect( this, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeGroup::nodeVisibilityChanged );
 }

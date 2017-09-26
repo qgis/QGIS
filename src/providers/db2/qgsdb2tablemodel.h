@@ -86,6 +86,6 @@ class QgsDb2TableModel : public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
 };
 #endif

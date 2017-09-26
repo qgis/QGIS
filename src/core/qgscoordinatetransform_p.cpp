@@ -42,21 +42,13 @@ QgsProjContextStore::~QgsProjContextStore()
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
-  : mIsValid( false )
-  , mShortCircuit( false )
-  , mSourceDatumTransform( -1 )
-  , mDestinationDatumTransform( -1 )
 {
   setFinder();
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
-  : mIsValid( false )
-  , mShortCircuit( false )
-  , mSourceCRS( source )
+  : mSourceCRS( source )
   , mDestCRS( destination )
-  , mSourceDatumTransform( -1 )
-  , mDestinationDatumTransform( -1 )
 {
   setFinder();
   initialize();

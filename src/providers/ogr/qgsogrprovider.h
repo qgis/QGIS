@@ -178,16 +178,16 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Map of field index to default value
     QMap<int, QString> mDefaultValues;
 
-    bool mFirstFieldIsFid;
-    GDALDatasetH mGDALDataset;
-    mutable OGREnvelope *mExtent;
-    bool mForceRecomputeExtent;
+    bool mFirstFieldIsFid = false;
+    GDALDatasetH mGDALDataset = nullptr;
+    mutable OGREnvelope *mExtent = nullptr;
+    bool mForceRecomputeExtent = false;
 
     /** This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
     mutable QgsRectangle mExtentRect;
-    OGRLayerH ogrLayer;
-    OGRLayerH ogrOrigLayer;
+    OGRLayerH ogrLayer = nullptr;
+    OGRLayerH ogrOrigLayer = nullptr;
 
     //! path to filename
     QString mFilePath;
@@ -196,15 +196,15 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString mLayerName;
 
     //! layer index
-    int mLayerIndex;
+    int mLayerIndex = 0;
 
     //! was a sub layer requested?
-    bool mIsSubLayer;
+    bool mIsSubLayer = false;
 
     /** Optional geometry type for layers with multiple geometries,
      *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
      *  that 2D, 25D, single and multi types are mixed in one sublayer */
-    OGRwkbGeometryType mOgrGeometryTypeFilter;
+    OGRwkbGeometryType mOgrGeometryTypeFilter = wkbUnknown;
 
     //! current spatial filter
     QgsRectangle mFetchRect;
@@ -213,15 +213,15 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString mSubsetString;
 
     // GDAL Driver that was actually used to open the layer
-    GDALDriverH mGDALDriver;
+    GDALDriverH mGDALDriver = nullptr;
 
     // Friendly name of the GDAL Driver that was actually used to open the layer
     QString mGDALDriverName;
 
-    bool mValid;
+    bool mValid = false;
 
-    OGRwkbGeometryType mOGRGeomType;
-    long mFeaturesCounted;
+    OGRwkbGeometryType mOGRGeomType = wkbUnknown;
+    long mFeaturesCounted = QgsVectorDataProvider::Uncounted;
 
     mutable QStringList mSubLayerList;
 
@@ -237,22 +237,22 @@ class QgsOgrProvider : public QgsVectorDataProvider
     friend class QgsOgrFeatureSource;
 
     //! Whether the file is opened in write mode
-    bool mWriteAccess;
+    bool mWriteAccess = false;
 
     //! Whether the file can potentially be opened in write mode (but not necessarily currently)
-    bool mWriteAccessPossible;
+    bool mWriteAccessPossible = false;
 
     //! Whether the open mode of the datasource changes w.r.t calls to enterUpdateMode() / leaveUpdateMode()
-    bool mDynamicWriteAccess;
+    bool mDynamicWriteAccess = false;
 
-    bool mShapefileMayBeCorrupted;
+    bool mShapefileMayBeCorrupted = false;
 
     //! Converts the geometry to the layer type if necessary. Takes ownership of the passed geometry
     OGRGeometryH ConvertGeometryIfNecessary( OGRGeometryH );
 
-    int mUpdateModeStackDepth;
+    int mUpdateModeStackDepth = 0;
 
-    bool mDeferRepack;
+    bool mDeferRepack = false;
 
     void computeCapabilities();
 

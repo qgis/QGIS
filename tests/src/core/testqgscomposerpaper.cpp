@@ -36,7 +36,6 @@ class TestQgsComposerPaper : public QObject
 
   public:
     TestQgsComposerPaper()
-      : mComposition( 0 )
     {}
 
   private slots:

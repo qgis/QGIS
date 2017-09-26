@@ -190,7 +190,7 @@ namespace pal
       /**
        * How many layers are labelled ?
        */
-      int nbLabelledLayers;
+      int nbLabelledLayers = 0;
 
       /**
        * Names of the labelled layers
@@ -200,23 +200,23 @@ namespace pal
       /**
        * # active candidates (remaining after reduce())
        */
-      int nblp;
+      int nblp = 0;
 
       /**
        * # candidates (all, including)
        */
-      int all_nblp;
+      int all_nblp = 0;
 
       /**
        * # feature to label
        */
-      int nbft;
+      int nbft = 0;
 
 
       /**
        * if true, special value -1 is prohibited
        */
-      bool displayAll;
+      bool displayAll = false;
 
       /**
        * Map extent (xmin, ymin, xmax, ymax)
@@ -238,9 +238,9 @@ namespace pal
       double *inactiveCost = nullptr; //
 
       Sol *sol = nullptr;         // [nbft]
-      int nbActive;
+      int nbActive = 0;
 
-      double nbOverlap;
+      double nbOverlap = 0.0;
 
       int *featWrap = nullptr;
 

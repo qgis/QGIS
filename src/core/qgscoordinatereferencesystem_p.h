@@ -43,14 +43,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
   public:
 
     explicit QgsCoordinateReferenceSystemPrivate()
-      : mSrsId( 0 )
-      , mIsGeographic( false )
-      , mMapUnits( QgsUnitTypes::DistanceUnknownUnit )
-      , mSRID( 0 )
-      , mIsValid( 0 )
-      , mCRS( OSRNewSpatialReference( nullptr ) )
-      , mAxisInvertedDirty( false )
-      , mAxisInverted( false )
+      : mCRS( OSRNewSpatialReference( nullptr ) )
     {
     }
 
@@ -88,7 +81,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 
     //! The internal sqlite3 srs.db primary key for this CRS
-    long mSrsId;
+    long mSrsId = 0;
 
     //! A textual description of the CRS
     QString mDescription;
@@ -100,19 +93,19 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     QString mEllipsoidAcronym;
 
     //! Whether this is a geographic or projected coordinate system
-    bool mIsGeographic;
+    bool mIsGeographic = false;
 
     //! The map units for the CRS
-    QgsUnitTypes::DistanceUnit mMapUnits;
+    QgsUnitTypes::DistanceUnit mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
 
     //! If available, the PostGIS spatial_ref_sys identifier for this CRS (defaults to 0)
-    long mSRID;
+    long mSRID = 0;
 
     //! If available the authority identifier for this CRS
     QString mAuthId;
 
     //! Whether this CRS is properly defined and valid
-    bool mIsValid;
+    bool mIsValid = 0;
 
     OGRSpatialReferenceH mCRS;
 
@@ -121,10 +114,10 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     mutable QString mProj4;
 
     //! True if presence of an inverted axis needs to be recalculated
-    mutable bool mAxisInvertedDirty;
+    mutable bool mAxisInvertedDirty = false;
 
     //! Whether this is a coordinate system has inverted axis
-    mutable bool mAxisInverted;
+    mutable bool mAxisInverted = false;
 
 };
 

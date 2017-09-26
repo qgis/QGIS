@@ -45,7 +45,6 @@ class QgsPalettedRendererClassGatherer: public QThread
       , mBandNumber( bandNumber )
       , mRamp( ramp )
       , mClasses( existingClasses )
-      , mFeedback( nullptr )
       , mWasCanceled( false )
     {}
 

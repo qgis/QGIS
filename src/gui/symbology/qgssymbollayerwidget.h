@@ -38,7 +38,6 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
     QgsSymbolLayerWidget( QWidget *parent SIP_TRANSFERTHIS, const QgsVectorLayer *vl = nullptr )
       : QWidget( parent )
       , mVectorLayer( vl )
-      , mMapCanvas( nullptr )
     {}
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) = 0;

@@ -1075,7 +1075,7 @@ void QgsComposerMapGridWidget::on_mAnnotationFormatButton_clicked()
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     mComposerMap->beginCommand( tr( "Annotation format changed" ) );
     mComposerMapGrid->setAnnotationExpression( expression );
     mComposerMap->updateBoundingRect();

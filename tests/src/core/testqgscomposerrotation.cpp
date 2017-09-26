@@ -37,11 +37,6 @@ class TestQgsComposerRotation : public QObject
 
   public:
     TestQgsComposerRotation()
-      : mComposition( 0 )
-      , mComposerRect( 0 )
-      , mComposerLabel( 0 )
-      , mComposerMap( 0 )
-      , mRasterLayer( 0 )
     {}
 
   private slots:

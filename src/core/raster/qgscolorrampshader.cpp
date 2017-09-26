@@ -34,10 +34,6 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
-  , mLUTOffset( 0.0 )
-  , mLUTFactor( 1.0 )
-  , mLUTInitialized( false )
-  , mClip( false )
 {
   QgsDebugMsgLevel( "called.", 4 );
 

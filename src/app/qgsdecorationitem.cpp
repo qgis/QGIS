@@ -46,9 +46,6 @@
 
 QgsDecorationItem::QgsDecorationItem( QObject *parent )
   : QObject( parent )
-  , mEnabled( false )
-  , mPlacement( TopLeft )
-  , mMarginUnit( QgsUnitTypes::RenderMillimeters )
 {
 }
 

@@ -29,8 +29,6 @@ email                : even.rouault at spatialys.com
 
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mAlreadyModifyingFields( false )
-  , mDistinct( false )
 {
   setupUi( this );
 
@@ -473,7 +471,7 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
       }
       if ( entryText.size() > 60 )
       {
-        entryText = f.name ;
+        entryText = f.name;
         entryText += QLatin1String( "(" );
         entryText += getFunctionAbbridgedParameters( f );
       }

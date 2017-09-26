@@ -304,35 +304,35 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QSvgRenderer mSVG;
     //! Absolute path to the image (may be also HTTP URL)
     QString mSourcePath;
-    Mode mMode;
+    Mode mMode = Unknown;
 
     QSize mDefaultSvgSize;
 
     //! Image rotation
-    double mPictureRotation;
+    double mPictureRotation = 0;
     //! Map that sets the rotation (or 0 if this picture uses map independent rotation)
     const QgsComposerMap *mRotationMap = nullptr;
 
     //! Mode used to align to North
-    NorthMode mNorthMode;
+    NorthMode mNorthMode = GridNorth;
     //! Offset for north arrow
-    double mNorthOffset;
+    double mNorthOffset = 0.0;
 
     //! Width of the picture (in mm)
     double mPictureWidth;
     //! Height of the picture (in mm)
     double mPictureHeight;
 
-    ResizeMode mResizeMode;
-    QgsComposerItem::ItemPositionMode mPictureAnchor;
+    ResizeMode mResizeMode = QgsComposerPicture::Zoom;
+    QgsComposerItem::ItemPositionMode mPictureAnchor = UpperLeft;
 
     QColor mSvgFillColor = QColor( 255, 255, 255 );
     QColor mSvgStrokeColor = QColor( 0, 0, 0 );
     double mSvgStrokeWidth = 0.2;
 
-    bool mHasExpressionError;
+    bool mHasExpressionError = false;
     bool mLoaded;
-    bool mLoadingSvg;
+    bool mLoadingSvg = false;
 
     //! Loads an image file into the picture item and redraws the item
     void loadPicture( const QString &path );

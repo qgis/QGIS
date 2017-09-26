@@ -34,9 +34,6 @@ class TestQgsComposerMapOverview : public QObject
 
   public:
     TestQgsComposerMapOverview()
-      : mComposition( 0 )
-      , mComposerMap( 0 )
-      , mRasterLayer( 0 )
     {}
 
   private slots:

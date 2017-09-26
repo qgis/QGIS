@@ -339,7 +339,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     QString formatLayerHelp( const QgsMapLayer *layer ) const;
 
-    bool mAutoSave;
+    bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
     QStandardItemModel *mModel = nullptr;
@@ -348,7 +348,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsExpressionItemSearchProxy *mProxyModel = nullptr;
     QMap<QString, QgsExpressionItem *> mExpressionGroups;
     QgsExpressionHighlighter *highlighter = nullptr;
-    bool mExpressionValid;
+    bool mExpressionValid = false;
     QgsDistanceArea mDa;
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;

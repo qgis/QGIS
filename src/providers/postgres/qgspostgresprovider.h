@@ -312,7 +312,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Flag indicating if the layer data source is a valid PostgreSQL layer
      */
-    bool mValid;
+    bool mValid = false;
 
     /**
      * provider references query (instead of a table)
@@ -342,12 +342,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Data type for the primary key
      */
-    QgsPostgresPrimaryKeyType mPrimaryKeyType;
+    QgsPostgresPrimaryKeyType mPrimaryKeyType = PktUnknown;
 
     /**
      * Data type for the spatial column
      */
-    QgsPostgresGeometryColumnType mSpatialColType;
+    QgsPostgresGeometryColumnType mSpatialColType = SctNone;
 
     /**
      * List of primary key attributes for fetching features.
@@ -358,9 +358,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString mGeometryColumn;          //! name of the geometry column
     mutable QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
 
-    QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
-    bool mForce2d;                    //! geometry type needs to be forced to 2d (e.g., ZM)
-    QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //! geometry type detected in the database
+    bool mForce2d = false;                    //! geometry type needs to be forced to 2d (e.g., ZM)
+    QgsWkbTypes::Type mRequestedGeomType = QgsWkbTypes::Unknown ; //! geometry type requested in the uri
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri
 
@@ -385,9 +385,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //! @}
 
     /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
-    bool mUseEstimatedMetadata;
+    bool mUseEstimatedMetadata = false;
 
-    bool mSelectAtIdDisabled; //! Disable support for SelectAtId
+    bool mSelectAtIdDisabled = false; //! Disable support for SelectAtId
 
     struct PGFieldNotFound {}; //! Exception to throw
 
@@ -416,8 +416,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString paramValue( const QString &fieldvalue, const QString &defaultValue ) const;
 
-    QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
-    QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
+    QgsPostgresConn *mConnectionRO = nullptr ; //! read-only database connection (initially)
+    QgsPostgresConn *mConnectionRW = nullptr ; //! read-write database connection (on update)
 
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
@@ -500,9 +500,9 @@ class QgsPostgresSharedData
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-    long mFeaturesCounted;    //! Number of features in the layer
+    long mFeaturesCounted = -1 ;    //! Number of features in the layer
 
-    QgsFeatureId mFidCounter;                    // next feature id if map is used
+    QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
 };

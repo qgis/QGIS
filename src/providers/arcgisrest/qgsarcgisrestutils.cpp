@@ -481,8 +481,6 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
 
 QgsArcGisAsyncQuery::QgsArcGisAsyncQuery( QObject *parent )
   : QObject( parent )
-  , mReply( nullptr )
-  , mResult( nullptr )
 {
 }
 
@@ -537,8 +535,6 @@ void QgsArcGisAsyncQuery::handleReply()
 
 QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject *parent )
   : QObject( parent )
-  , mResults( nullptr )
-  , mPendingRequests( 0 )
 {
 }
 

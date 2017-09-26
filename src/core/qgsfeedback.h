@@ -47,7 +47,6 @@ class CORE_EXPORT QgsFeedback : public QObject
     //! Construct a feedback object
     QgsFeedback( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QObject( parent )
-      , mCanceled( false )
     {}
 
     //! Tells whether the operation has been canceled already
@@ -106,7 +105,7 @@ class CORE_EXPORT QgsFeedback : public QObject
 
   private:
     //! Whether the operation has been canceled already. False by default.
-    bool mCanceled;
+    bool mCanceled = false;
 
     double mProgress = 0.0;
 };

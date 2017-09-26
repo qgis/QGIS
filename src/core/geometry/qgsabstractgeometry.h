@@ -417,7 +417,7 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool convertTo( QgsWkbTypes::Type type );
 
   protected:
-    QgsWkbTypes::Type mWkbType;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     /** Updates the geometry type based on whether sub geometries contain z or m values.
      */

@@ -45,11 +45,6 @@ class TestQgsFilledMarkerSymbol : public QObject
 
   public:
     TestQgsFilledMarkerSymbol()
-      : mTestHasError( false )
-      , mpPointsLayer( nullptr )
-      , mFilledMarkerLayer( nullptr )
-      , mMarkerSymbol( nullptr )
-      , mSymbolRenderer( nullptr )
     {}
 
   private slots:
@@ -63,7 +58,7 @@ class TestQgsFilledMarkerSymbol : public QObject
     void bounds();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

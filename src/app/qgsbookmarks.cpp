@@ -483,7 +483,7 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
 
   for ( int newRow = row ; newRow < rowCount() - count ; newRow++ )
   {
-    for ( int column = 0 ; column < columnCount() ; column++ )
+    for ( int column = 0; column < columnCount() ; column++ )
     {
       setData( index( newRow, column ), data( index( newRow + count, column ) ) );
     }

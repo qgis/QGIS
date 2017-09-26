@@ -58,10 +58,6 @@ int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mNumberFeatures( 0 )
-  , mFidColIdx( -1 )
-  , mCrs()
-  , mWkbType( QgsWkbTypes::Unknown )
 {
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
 
@@ -673,7 +669,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   // Get the extents from the spatial index table to speed up load times.
   // We have to use max() and min() because you can have more then one index but the biggest area is what we want to use.
   QString sql = "SELECT min(bounding_box_xmin), min(bounding_box_ymin), max(bounding_box_xmax), max(bounding_box_ymax)"
-                " FROM sys.spatial_index_tessellations WHERE object_id =  OBJECT_ID('[%1].[%2]')";
+                " FROM sys.spatial_index_tessellations WHERE object_id = OBJECT_ID('[%1].[%2]')";
 
   statement = QString( sql ).arg( mSchemaName, mTableName );
 
@@ -2333,7 +2329,7 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
   QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
 
   *providers
-      << new QgsMssqlSourceSelectProvider ;
+      << new QgsMssqlSourceSelectProvider;
 
   return providers;
 }

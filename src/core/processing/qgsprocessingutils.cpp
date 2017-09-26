@@ -498,7 +498,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
 
   QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n " );
   s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
-  s +=  QObject::tr( "<h2>Input parameters</h2>\n" );
+  s += QObject::tr( "<h2>Input parameters</h2>\n" );
 
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, algorithm->parameterDefinitions() )
   {

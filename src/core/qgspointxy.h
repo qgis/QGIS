@@ -49,8 +49,6 @@ class CORE_EXPORT QgsPointXY
   public:
     /// Default constructor
     QgsPointXY()
-      : mX( 0.0 )
-      , mY( 0.0 )
     {}
 
     //! Create a point from another point
@@ -308,10 +306,10 @@ class CORE_EXPORT QgsPointXY
   private:
 
     //! x coordinate
-    double mX;
+    double mX = 0.0;
 
     //! y coordinate
-    double mY;
+    double mY = 0.0;
 
     friend uint qHash( const QgsPointXY &pnt );
 

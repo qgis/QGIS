@@ -31,9 +31,6 @@ class TestQgsComposerEffects : public QObject
 
   public:
     TestQgsComposerEffects()
-      : mComposition( 0 )
-      , mComposerRect1( 0 )
-      , mComposerRect2( 0 )
     {}
 
   private slots:

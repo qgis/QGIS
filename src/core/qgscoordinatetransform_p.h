@@ -74,13 +74,13 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     //! Flag to indicate whether the transform is valid (ie has a valid
     //! source and destination crs)
-    bool mIsValid;
+    bool mIsValid = false;
 
     /**
      * Flag to indicate that the source and destination coordinate systems are
      * equal and not transformation needs to be done
      */
-    bool mShortCircuit;
+    bool mShortCircuit = false;
 
     //! QgsCoordinateReferenceSystem of the source (layer) coordinate system
     QgsCoordinateReferenceSystem mSourceCRS;
@@ -91,8 +91,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
     QString mSourceProjString;
     QString mDestProjString;
 
-    int mSourceDatumTransform;
-    int mDestinationDatumTransform;
+    int mSourceDatumTransform = -1;
+    int mDestinationDatumTransform = -1;
 
     /**
      * Thread local proj context storage. A new proj context will be created

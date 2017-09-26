@@ -21,7 +21,6 @@
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
   : QgsPanelWidget( parent )
-  , mBlockSignals( true )
 {
   setupUi( this );
   mComboBoxMinScale->setScale( 10000000.0 );

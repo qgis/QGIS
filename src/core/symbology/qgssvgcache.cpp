@@ -38,12 +38,8 @@
 
 QgsSvgCacheEntry::QgsSvgCacheEntry()
   : path( QString() )
-  , size( 0.0 )
-  , strokeWidth( 0 )
-  , widthScaleFactor( 1.0 )
   , fill( Qt::black )
   , stroke( Qt::black )
-
 {
 }
 
@@ -54,7 +50,6 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, doubl
   , widthScaleFactor( wsf )
   , fill( fi )
   , stroke( ou )
-
 {
 }
 
@@ -87,8 +82,6 @@ int QgsSvgCacheEntry::dataSize() const
 
 QgsSvgCache::QgsSvgCache( QObject *parent )
   : QObject( parent )
-  , mTotalSize( 0 )
-
 {
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 }
@@ -319,7 +312,7 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
   }
   else
   {
-    QDomElement svgElem = docElem.firstChildElement( QStringLiteral( "svg" ) ) ;
+    QDomElement svgElem = docElem.firstChildElement( QStringLiteral( "svg" ) );
     if ( !svgElem.isNull() )
     {
       if ( svgElem.hasAttribute( QStringLiteral( "viewBox" ) ) )

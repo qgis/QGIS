@@ -36,10 +36,7 @@ const int MAX_SAMPLE_LENGTH = 200;
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mFile( new QgsDelimitedTextFile() )
-  , mExampleRowCount( 20 )
-  , mBadRowCount( 0 )
   , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
-  , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );

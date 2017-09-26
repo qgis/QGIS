@@ -22,7 +22,6 @@
 #include "qgsvectorlayer.h"
 
 QgsRelation::QgsRelation()
-  : mValid( false )
 {
 }
 

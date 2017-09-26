@@ -33,11 +33,11 @@ class QgsRasterChangeCoords
     QgsPointXY toXY( const QgsPointXY &pntPixel );
 
   private:
-    bool mHasCrs;
-    double mUL_X;
-    double mUL_Y;
-    double mResX;
-    double mResY;
+    bool mHasCrs = false;
+    double mUL_X = 0.;
+    double mUL_Y = 0.;
+    double mResX = 1.;
+    double mResY = 1.;
 };
 
 #endif // QGSRASTERCHANGECOORDS_H

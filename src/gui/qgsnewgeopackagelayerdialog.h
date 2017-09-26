@@ -75,8 +75,8 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
 
     QPushButton *mOkButton = nullptr;
     QString mCrsId;
-    bool mTableNameEdited;
-    bool mLayerIdentifierEdited;
+    bool mTableNameEdited = false;
+    bool mLayerIdentifierEdited = false;
 };
 
 #endif // QGSNEWVECTORLAYERDIALOG_H
