@@ -72,9 +72,15 @@ class QgsDefaultValue
 
     bool isValid() const;
 %Docstring
- Returns if this default value is should be applied.
+ Returns if this default value should be applied.
  :return: false if the expression is a null string.
  :rtype: bool
+%End
+
+    operator bool() const;
+%Docstring
+ Checks if a default value is set. Alias for isValid().
+ :return: false if the expression is a null string.
 %End
 
 };

@@ -925,7 +925,7 @@ Return the provider type for this layer
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
-    bool updateFeature( QgsFeature &f );
+    bool updateFeature( const QgsFeature &f );
 %Docstring
  Updates an existing feature. This method needs to query the datasource
 on every call. Consider using changeAttributeValue() or
@@ -1172,13 +1172,13 @@ Returns list of attributes making up the primary key
  :rtype: bool
 %End
 
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue = false );
 %Docstring
 Change feature's geometry
  :rtype: bool
 %End
 
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
 %Docstring
  Changes an attribute value (but does not commit it)
 

@@ -913,7 +913,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
         \param f  Feature to update
         \returns   True in case of success and False in case of error
      */
-    bool updateFeature( QgsFeature &f );
+    bool updateFeature( const QgsFeature &f );
 
     /** Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature
@@ -1142,7 +1142,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool setReadOnly( bool readonly = true );
 
     //! Change feature's geometry
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue = false );
 
     /**
      * Changes an attribute value (but does not commit it)
@@ -1154,7 +1154,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns true in case of success
      */
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
 
     /** Add an attribute field (but does not commit it)
      * returns true if the field was added
@@ -1958,6 +1958,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
   private:                       // Private methods
 
+    void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
+
     /**
      * Returns true if the provider is in read-only mode
      */
@@ -2013,6 +2015,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Map which stores default value expressions for fields
     QMap<QString, QgsDefaultValue> mDefaultExpressionMap;
+
+    //! An internal structure to keep track of fields that have a defaultValueOnUpdate
+    QSet<int> mDefaultValueOnUpdateFields;
 
     //! Map which stores constraints for fields
     QMap< QString, QgsFieldConstraints::Constraints > mFieldConstraints;
