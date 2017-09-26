@@ -68,7 +68,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                         return False
                     if not field_def.get('name', False):
                         return False
-                    if not field_def.get('type', False):
+                    if field_def.get('type', None) is None:
                         return False
                     if not field_def.get('expression', False):
                         return False
