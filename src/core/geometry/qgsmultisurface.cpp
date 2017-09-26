@@ -162,6 +162,17 @@ bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
+bool QgsMultiSurface::insertGeometry( QgsAbstractGeometry *g, int index )
+{
+  if ( !g || !qgsgeometry_cast< QgsSurface * >( g ) )
+  {
+    delete g;
+    return false;
+  }
+
+  return QgsGeometryCollection::insertGeometry( g, index );
+}
+
 QgsAbstractGeometry *QgsMultiSurface::boundary() const
 {
   QgsMultiCurve *multiCurve = new QgsMultiCurve();

@@ -38,6 +38,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
 #ifndef SIP_RUN
