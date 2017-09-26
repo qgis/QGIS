@@ -107,7 +107,7 @@ class ClipRasterByExtent(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
-        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
         nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
