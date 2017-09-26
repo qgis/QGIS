@@ -469,7 +469,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     QgsAttrPalIndexNameHash mAttrPalIndexName;
 
     /** \brief Converts the geometry to the provider type if possible / necessary
-     * this is the list of possibile modifications:
+     * this is the list of possible modifications:
      * - convert compoundcurve to circularstring
      *   (possible if compoundcurve consists of one circular string)
      * - convert to multitype if necessary
