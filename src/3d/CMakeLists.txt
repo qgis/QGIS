@@ -29,6 +29,7 @@ SET(QGIS_3D_SRCS
 
   terrain/qgsdemterraingenerator.cpp
   terrain/qgsdemterraintilegeometry_p.cpp
+  terrain/qgsdemterraintileloader_p.cpp
   terrain/qgsflatterraingenerator.cpp
   terrain/qgsterrainentity_p.cpp
   terrain/qgsterraingenerator.cpp
@@ -54,7 +55,7 @@ SET(QGIS_3D_MOC_HDRS
   chunks/chunkedentity.h
   chunks/chunkloader.h
 
-  terrain/qgsdemterraingenerator.h
+  terrain/qgsdemterraintileloader_p.h
   terrain/qgsdemterraintilegeometry_p.h
   terrain/qgsterrainentity_p.h
   terrain/qgsterraingenerator.h
@@ -98,6 +99,7 @@ SET(QGIS_3D_HDRS
 
   terrain/qgsdemterraingenerator.h
   terrain/qgsdemterraintilegeometry_p.h
+  terrain/qgsdemterraintileloader_p.h
   terrain/qgsflatterraingenerator.h
   terrain/qgsterrainentity_p.h
   terrain/qgsterraingenerator.h
