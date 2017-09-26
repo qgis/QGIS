@@ -72,7 +72,6 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
 
   private slots:
     void emitProgressValue();
-    void updateFeatureIds( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFid );
 };
 
 #endif // QGS_GEOMETRY_CHECKER_H

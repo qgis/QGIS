@@ -18,18 +18,6 @@
 #include "qgsfeaturepool.h"
 
 
-bool QgsGeometryContainedCheckError::handleFidChanges( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFidMap )
-{
-  bool changed = QgsGeometryCheckError::handleFidChanges( layerId, oldNewFidMap );
-  if ( mContainingFeature.first == layerId )
-  {
-    QgsFeatureId oldId = mContainingFeature.second;
-    mContainingFeature.second = oldNewFidMap.value( mContainingFeature.second, mContainingFeature.second );
-    changed |= ( oldId != mContainingFeature.second );
-  }
-  return changed;
-}
-
 void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;

@@ -38,7 +38,6 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
              // static_cast: since other->checker() == checker is only true if the types are actually the same
              static_cast<QgsGeometryDuplicateCheckError *>( other )->duplicates() == duplicates();
     }
-    bool handleFidChanges( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFidMap ) override;
 
   private:
     QMap<QString, QList<QgsFeatureId>> mDuplicates;

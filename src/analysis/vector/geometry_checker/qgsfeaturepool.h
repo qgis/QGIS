@@ -45,8 +45,6 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QObject
     bool getSelectedOnly() const { return mSelectedOnly; }
     void clearLayer() { mLayer = nullptr; }
 
-  signals:
-    void featureIdsChanged( const QString &layerId, const QMap<QgsFeatureId, QgsFeatureId> &oldNewFid );
   private:
     struct MapEntry
     {
@@ -71,9 +69,6 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QObject
     bool mSelectedOnly;
 
     bool getTouchingWithSharedEdge( QgsFeature &feature, QgsFeatureId &touchingId, const double & ( *comparator )( const double &, const double & ), double init );
-
-  private slots:
-    void updateFeatureIds( const QMap<QgsFeatureId, QgsFeatureId> &oldNewFid );
 };
 
 #endif // QGS_FEATUREPOOL_H

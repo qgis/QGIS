@@ -39,7 +39,6 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
     }
 
     virtual QString description() const override { return QApplication::translate( "QgsGeometryContainedCheckError", "Within feature" ); }
-    bool handleFidChanges( const QString& layerId, const QMap<QgsFeatureId, QgsFeatureId>& oldNewFidMap) override;
 
   private:
     QPair<QString, QgsFeatureId> mContainingFeature;

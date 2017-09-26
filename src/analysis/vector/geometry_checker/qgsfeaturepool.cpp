@@ -57,7 +57,6 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, c
       mFeatureIds.remove( feature.id() );
     }
   }
-  connect( mLayer->dataProvider(), SIGNAL( featureIdsChanged( QMap<QgsFeatureId, QgsFeatureId> ) ), this, SLOT( updateFeatureIds( QMap<QgsFeatureId, QgsFeatureId> ) ) );
 }
 
 bool QgsFeaturePool::get( QgsFeatureId id, QgsFeature &feature )
@@ -141,32 +140,4 @@ QgsFeatureIds QgsFeaturePool::getIntersects( const QgsRectangle &rect ) const
 {
   QMutexLocker lock( &mIndexMutex );
   return QgsFeatureIds::fromList( mIndex.intersects( rect ) );
-}
-
-void QgsFeaturePool::updateFeatureIds( const QMap<QgsFeatureId, QgsFeatureId> &oldNewFid )
-{
-  QList<QgsFeature *> changedFeatures;
-  QgsFeatureIds newIds;
-  for ( const QgsFeatureId &oldId : oldNewFid.keys() )
-  {
-    auto it = mFeatureIds.find( oldId );
-    if ( it != mFeatureIds.end() )
-    {
-      mFeatureIds.erase( it );
-    }
-    newIds.insert( oldNewFid[oldId] );
-    QgsFeature *feature = mFeatureCache.take( oldId );
-    if ( feature )
-    {
-      feature->setId( oldNewFid[oldId] );
-      changedFeatures.append( feature );
-    }
-  }
-  for ( QgsFeature *feature : changedFeatures )
-  {
-    Q_ASSERT( !mFeatureCache.contains( feature->id() ) );
-    mFeatureCache.insert( feature->id(), feature );
-  }
-  mFeatureIds.unite( newIds );
-  emit featureIdsChanged( mLayer->id(), oldNewFid );
 }
