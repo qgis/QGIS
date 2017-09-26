@@ -10,8 +10,8 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="polygonize" type="ogr:polygonize_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="polygonize_Type">
+<xs:element name="None" type="ogr:None_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="None_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
