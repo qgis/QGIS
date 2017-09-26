@@ -239,7 +239,7 @@ class CORE_EXPORT QgsFields
 
     /**
      * Get the field index from the field name.
-     * This method takes is case sensitive and only matches the data source
+     * This method is case sensitive and only matches the data source
      * name of the field.
      * Alias for indexOf
      *
@@ -252,7 +252,7 @@ class CORE_EXPORT QgsFields
 
     /**
      * Get the field index from the field name.
-     * This method takes is case sensitive and only matches the data source
+     * This method is case sensitive and only matches the data source
      * name of the field.
      *
      * \param fieldName The name of the field.
