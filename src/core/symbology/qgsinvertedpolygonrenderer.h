@@ -184,7 +184,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     QList<FeatureDecoration> mFeatureDecorations;
 
     //! Whether to preprocess (merge) geometries before rendering
-    bool mPreprocessingEnabled;
+    bool mPreprocessingEnabled = false;
 };
 
 

@@ -396,7 +396,6 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
 }
 
 QgsDiagramRenderer::QgsDiagramRenderer()
-  : mShowAttributeLegend( true )
 {
 }
 
@@ -749,7 +748,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsDiagramSettings::legendItems( QgsLayer
 {
   QList< QgsLayerTreeModelLegendNode * > list;
   list.reserve( categoryLabels.size() );
-  for ( int i = 0 ; i < categoryLabels.size(); ++i )
+  for ( int i = 0; i < categoryLabels.size(); ++i )
   {
     QPixmap pix( 16, 16 );
     pix.fill( categoryColors[i] );

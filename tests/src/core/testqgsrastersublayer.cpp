@@ -63,12 +63,10 @@ class TestQgsRasterSubLayer : public QObject
     QString mFileName;
     QgsRasterLayer *mpRasterLayer = nullptr;
     QString mReport;
-    bool mHasNetCDF;
+    bool mHasNetCDF =  false ;
 };
 
 TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-  : mpRasterLayer( nullptr )
-  , mHasNetCDF( false )
 {
 
 }

@@ -39,11 +39,6 @@ class TestQgsRenderers : public QObject
 
   public:
     TestQgsRenderers()
-      : mTestHasError( false )
-      , mMapSettings( 0 )
-      , mpPointsLayer( 0 )
-      , mpLinesLayer( 0 )
-      , mpPolysLayer( 0 )
     {}
     ~TestQgsRenderers()
     {
@@ -61,7 +56,7 @@ class TestQgsRenderers : public QObject
 //    void graduatedSymbol();
 //    void continuousSymbol();
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type ); //uniquevalue / continuous / single /
     bool imageCheck( const QString &type ); //as above
     QgsMapSettings *mMapSettings = nullptr;

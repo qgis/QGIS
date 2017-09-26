@@ -19,7 +19,6 @@
 
 QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mRubberBand( nullptr )
 {
 }
 

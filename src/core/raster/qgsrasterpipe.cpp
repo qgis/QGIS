@@ -196,15 +196,15 @@ bool QgsRasterPipe::set( QgsRasterInterface *interface )
   }
   else if ( role == RendererRole )
   {
-    idx =  providerIdx + 1;
+    idx = providerIdx + 1;
   }
   else if ( role == BrightnessRole )
   {
-    idx =  std::max( providerIdx, rendererIdx ) + 1;
+    idx = std::max( providerIdx, rendererIdx ) + 1;
   }
   else if ( role == HueSaturationRole )
   {
-    idx =  std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ) + 1;
+    idx = std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ) + 1;
   }
   else if ( role == ResamplerRole )
   {
@@ -303,7 +303,7 @@ bool QgsRasterPipe::canSetOn( int idx, bool on )
 
   // Because setting interface on/off may change its output we must check if
   // connection is OK after such switch
-  bool onOrig =  mInterfaces.at( idx )->on();
+  bool onOrig = mInterfaces.at( idx )->on();
 
   if ( onOrig == on ) return true;
 
@@ -321,7 +321,7 @@ bool QgsRasterPipe::setOn( int idx, bool on )
   QgsDebugMsgLevel( QString( "idx = %1 on = %2" ).arg( idx ).arg( on ), 4 );
   if ( !checkBounds( idx ) ) return false;
 
-  bool onOrig =  mInterfaces.at( idx )->on();
+  bool onOrig = mInterfaces.at( idx )->on();
 
   if ( onOrig == on ) return true;
 

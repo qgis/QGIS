@@ -50,7 +50,6 @@ class TestQgsComposerMultiFrame : public QObject
 };
 
 TestQgsComposerMultiFrame::TestQgsComposerMultiFrame()
-  : mComposition( 0 )
 {
 }
 

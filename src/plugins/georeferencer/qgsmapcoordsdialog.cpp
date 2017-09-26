@@ -22,7 +22,6 @@
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
-  , mPrevMapTool( nullptr )
   , mQgisCanvas( qgisCanvas )
   , mPixelCoords( pixelCoords )
 {

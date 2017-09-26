@@ -31,7 +31,6 @@
 
 QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
-  , mValid( 0 )
 {
   setupUi( this );
 }

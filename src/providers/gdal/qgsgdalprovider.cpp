@@ -106,20 +106,12 @@ int CPL_STDCALL progressCallback( double dfComplete,
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   : QgsRasterDataProvider( uri )
   , mUpdate( false )
-  , mValid( false )
-  , mHasPyramids( false )
-  , mWidth( 0 )
-  , mHeight( 0 )
-  , mXBlockSize( 0 )
-  , mYBlockSize( 0 )
-  , mGdalBaseDataset( nullptr )
-  , mGdalDataset( nullptr )
 {
-  mGeoTransform[0] =  0;
-  mGeoTransform[1] =  1;
-  mGeoTransform[2] =  0;
-  mGeoTransform[3] =  0;
-  mGeoTransform[4] =  0;
+  mGeoTransform[0] = 0;
+  mGeoTransform[1] = 1;
+  mGeoTransform[2] = 0;
+  mGeoTransform[3] = 0;
+  mGeoTransform[4] = 0;
   mGeoTransform[5] = -1;
   setError( error );
 }
@@ -128,20 +120,12 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   : QgsRasterDataProvider( uri )
   , QgsGdalProviderBase()
   , mUpdate( update )
-  , mValid( false )
-  , mHasPyramids( false )
-  , mWidth( 0 )
-  , mHeight( 0 )
-  , mXBlockSize( 0 )
-  , mYBlockSize( 0 )
-  , mGdalBaseDataset( nullptr )
-  , mGdalDataset( nullptr )
 {
-  mGeoTransform[0] =  0;
-  mGeoTransform[1] =  1;
-  mGeoTransform[2] =  0;
-  mGeoTransform[3] =  0;
-  mGeoTransform[4] =  0;
+  mGeoTransform[0] = 0;
+  mGeoTransform[1] = 1;
+  mGeoTransform[2] = 0;
+  mGeoTransform[3] = 0;
+  mGeoTransform[4] = 0;
   mGeoTransform[5] = -1;
 
   QgsDebugMsg( "constructing with uri '" + uri + "'." );
@@ -454,7 +438,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   QgsDebugMsgLevel( "thePixelHeight = "  + QString::number( pixelHeight ), 5 );
   QgsDebugMsgLevel( "theExtent: " + extent.toString(), 5 );
 
-  for ( int i = 0 ; i < 6; i++ )
+  for ( int i = 0; i < 6; i++ )
   {
     QgsDebugMsgLevel( QString( "transform : %1" ).arg( mGeoTransform[i] ), 5 );
   }
@@ -729,7 +713,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   GDALSetGeoTransform( myGdalMemDataset, myMemGeoTransform );
 
-  for ( int i = 0 ; i < 6; i++ )
+  for ( int i = 0; i < 6; i++ )
   {
     QgsDebugMsg( QString( "transform : %1 %2" ).arg( myGeoTransform[i] ).arg( myMemGeoTransform[i] ) );
   }
@@ -983,7 +967,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
 
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
-  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
+  QgsDebugMsg( QString( "thePoint = %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
 
   QMap<int, QVariant> results;
 
@@ -2384,7 +2368,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   if ( CE_None == myerval )
   {
     myRasterBandStats.bandNumber = bandNo;
-    myRasterBandStats.range =  pdfMax - pdfMin;
+    myRasterBandStats.range = pdfMax - pdfMin;
     myRasterBandStats.minimumValue = pdfMin;
     myRasterBandStats.maximumValue = pdfMax;
     //calculate the mean
@@ -2489,11 +2473,11 @@ void QgsGdalProvider::initBaseDataset()
   if ( !hasGeoTransform )
   {
     // Initialize the affine transform matrix
-    mGeoTransform[0] =  0;
-    mGeoTransform[1] =  1;
-    mGeoTransform[2] =  0;
-    mGeoTransform[3] =  0;
-    mGeoTransform[4] =  0;
+    mGeoTransform[0] = 0;
+    mGeoTransform[1] = 1;
+    mGeoTransform[2] = 0;
+    mGeoTransform[3] = 0;
+    mGeoTransform[4] = 0;
     mGeoTransform[5] = -1;
   }
 

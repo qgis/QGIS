@@ -357,7 +357,7 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
 
     QgsRectangle srcExtent( srsCenter.x() - xRes / 2, srsCenter.y() - yRes / 2, srsCenter.x() + xRes / 2, srsCenter.y() + yRes / 2 );
 
-    QgsRectangle extent =  ct.transform( srcExtent );
+    QgsRectangle extent = ct.transform( srcExtent );
     xRes = extent.width();
     yRes = extent.height();
   }
@@ -368,8 +368,8 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
 void QgsRasterLayerSaveAsDialog::recalcSize()
 {
   QgsRectangle extent = outputRectangle();
-  int xSize =  xResolution() != 0 ? static_cast<int>( std::round( extent.width() / xResolution() ) ) : 0;
-  int ySize =  yResolution() != 0 ? static_cast<int>( std::round( extent.height() / yResolution() ) ) : 0;
+  int xSize = xResolution() != 0 ? static_cast<int>( std::round( extent.width() / xResolution() ) ) : 0;
+  int ySize = yResolution() != 0 ? static_cast<int>( std::round( extent.height() / yResolution() ) ) : 0;
   mColumnsLineEdit->setText( QString::number( xSize ) );
   mRowsLineEdit->setText( QString::number( ySize ) );
   updateResolutionStateMsg();
@@ -561,9 +561,9 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
   if ( !lineEdit ) return;
   int row = -1;
   int column = -1;
-  for ( int r = 0 ; r < mNoDataTableWidget->rowCount(); r++ )
+  for ( int r = 0; r < mNoDataTableWidget->rowCount(); r++ )
   {
-    for ( int c = 0 ; c < mNoDataTableWidget->columnCount(); c++ )
+    for ( int c = 0; c < mNoDataTableWidget->columnCount(); c++ )
     {
       if ( mNoDataTableWidget->cellWidget( r, c ) == sender() )
       {
@@ -698,7 +698,7 @@ QgsRasterRangeList QgsRasterLayerSaveAsDialog::noData() const
 
   int rows = mNoDataTableWidget->rowCount();
   noDataList.reserve( rows );
-  for ( int r = 0 ; r < rows; r++ )
+  for ( int r = 0; r < rows; r++ )
   {
     QgsRasterRange noData( noDataCellValue( r, 0 ), noDataCellValue( r, 1 ) );
     noDataList.append( noData );

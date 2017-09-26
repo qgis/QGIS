@@ -167,24 +167,24 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 
     QVector<double> mValues;
 
-    double mCalculatedMaxValue;
+    double mCalculatedMaxValue = 0;
 
-    double mRadius;
-    int mRadiusPixels;
-    double mRadiusSquared;
-    QgsUnitTypes::RenderUnit mRadiusUnit;
+    double mRadius = 10;
+    int mRadiusPixels = 0;
+    double mRadiusSquared = 0;
+    QgsUnitTypes::RenderUnit mRadiusUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mRadiusMapUnitScale;
 
     QString mWeightExpressionString;
-    int mWeightAttrNum;
+    int mWeightAttrNum = -1;
     std::unique_ptr<QgsExpression> mWeightExpression;
 
     QgsColorRamp *mGradientRamp = nullptr;
 
-    double mExplicitMax;
-    int mRenderQuality;
+    double mExplicitMax = 0.0;
+    int mRenderQuality = 3;
 
-    int mFeaturesRendered;
+    int mFeaturesRendered = 0;
 
     double uniformKernel( const double distance, const int bandwidth ) const;
     double quarticKernel( const double distance, const int bandwidth ) const;

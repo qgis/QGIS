@@ -131,5 +131,5 @@ const QIcon QgsUserProfile::icon() const
 
 QString QgsUserProfile::qgisDB() const
 {
-  return mProfileFolder + QDir::separator() + "qgis.db" ;
+  return mProfileFolder + QDir::separator() + "qgis.db";
 }

@@ -27,7 +27,6 @@ class TestQgsMapToolEdit : public QObject
     Q_OBJECT
   public:
     TestQgsMapToolEdit()
-      : mCanvas( 0 )
     {}
 
   private slots:

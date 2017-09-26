@@ -76,7 +76,7 @@ void QgsGrassImportProgress::onReadyReadStandardError()
       QgsDebugMsg( "line = '" + line + "'" );
       QString text, html;
       int value;
-      QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, value );
+      QgsGrass::ModuleOutput type = QgsGrass::parseModuleOutput( line, text, html, value );
       if ( type == QgsGrass::OutputPercent )
       {
         mProgressMin = 0;
@@ -127,8 +127,6 @@ QgsGrassImport::QgsGrassImport( const QgsGrassObject &grassObject )
   : QObject()
   , mGrassObject( grassObject )
   , mCanceled( false )
-  , mProcess( 0 )
-  , mProgress( 0 )
   , mFutureWatcher( 0 )
 {
   // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread

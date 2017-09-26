@@ -358,7 +358,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     QgsComposition *composition = mHtml->composition();
     if ( !expression.isEmpty() && composition )
     {

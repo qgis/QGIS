@@ -68,7 +68,7 @@ QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( Q
     GDALClose( hSrcDS );
   }
   GDALTranslateOptionsFree( psOptions );
-  return ( feedback && feedback->isCanceled() ) ? ErrUserCanceled : ( mHasError ? WriteError : NoError ) ;
+  return ( feedback && feedback->isCanceled() ) ? ErrUserCanceled : ( mHasError ? WriteError : NoError );
 }
 
 ///@endcond

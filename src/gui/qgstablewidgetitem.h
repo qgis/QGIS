@@ -49,7 +49,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
     bool operator <( const QTableWidgetItem &other ) const override;
 
   private:
-    int mSortRole;
+    int mSortRole = Qt::DisplayRole;
 };
 
 #endif // QGSTABLEWIDGETITEM_H

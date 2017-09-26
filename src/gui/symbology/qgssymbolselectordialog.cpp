@@ -335,7 +335,7 @@ void QgsSymbolSelectorWidget::loadSymbol()
 
 void QgsSymbolSelectorWidget::updateUi()
 {
-  QModelIndex currentIdx =  layersTree->currentIndex();
+  QModelIndex currentIdx = layersTree->currentIndex();
   if ( !currentIdx.isValid() )
     return;
 

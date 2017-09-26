@@ -202,7 +202,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QString partFileName( int fileIndex );
     QString vrtFileName();
 
-    Mode mMode;
+    Mode mMode = Raw;
     QString mOutputUrl;
     QString mOutputProviderKey;
     QString mOutputFormat;
@@ -210,14 +210,14 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsCoordinateReferenceSystem mOutputCRS;
 
     //! False: Write one file, true: create a directory and add the files numbered
-    bool mTiledMode;
-    double mMaxTileWidth;
-    double mMaxTileHeight;
+    bool mTiledMode = false;
+    double mMaxTileWidth = 500;
+    double mMaxTileHeight = 500;
 
     QList< int > mPyramidsList;
     QString mPyramidsResampling;
-    QgsRaster::RasterBuildPyramids mBuildPyramidsFlag;
-    QgsRaster::RasterPyramidsFormat mPyramidsFormat;
+    QgsRaster::RasterBuildPyramids mBuildPyramidsFlag = QgsRaster::PyramidsFlagNo;
+    QgsRaster::RasterPyramidsFormat mPyramidsFormat = QgsRaster::PyramidsGTiff;
     QStringList mPyramidsConfigOptions;
 
     QDomDocument mVRTDocument;

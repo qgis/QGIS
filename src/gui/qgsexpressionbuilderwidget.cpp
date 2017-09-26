@@ -41,8 +41,6 @@
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
-  , mAutoSave( true )
-  , mExpressionValid( false )
   , mProject( QgsProject::instance() )
 {
   setupUi( this );

@@ -38,7 +38,6 @@
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
-  , mCapabilitiesDownload( nullptr )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
   mCapabilities |= Collapse;

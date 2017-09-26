@@ -314,7 +314,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   int offsetLeft = 0;   // offset for oxygen theme
   int offsetStyle = QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) ? ( usingQgsStyle ? 1 : 8 ) : 0;
   int topBuffer = ( usingQgsStyle ? 3 : 1 ) + offsetStyle; // space between top of title or triangle and widget above
-  int offsetTop =  topBuffer;
+  int offsetTop = topBuffer;
   int offsetTopTri = topBuffer; // offset for triangle
 
   if ( mCollapseButton->height() < rectTitle.height() ) // triangle's height > title text's, offset triangle

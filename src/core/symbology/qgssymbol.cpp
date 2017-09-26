@@ -856,7 +856,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         context.setGeometry( geomCollection.geometryN( i ) );
         const QgsCurve &curve = dynamic_cast<const QgsCurve &>( *geomCollection.geometryN( i ) );
-        const QPolygonF pts =  _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
+        const QPolygonF pts = _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
         static_cast<QgsLineSymbol *>( this )->renderPolyline( pts, &feature, context, layer, selected );
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )

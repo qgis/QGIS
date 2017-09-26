@@ -129,7 +129,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
 void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QgsEditorWidgetWrapper *eww =  QgsEditorWidgetWrapper::fromWidget( editor );
+  QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
     return;
 

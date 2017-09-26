@@ -339,7 +339,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
 
   // add details groups
   mGrpSubj = addGroupItem( mSecDetails, tr( "Subject Info" ) );
-  mGrpIssu = addGroupItem( mSecDetails, tr( "Issuer Info" ) ) ;
+  mGrpIssu = addGroupItem( mSecDetails, tr( "Issuer Info" ) );
   mGrpCert = addGroupItem( mSecDetails, tr( "Certificate Info" ) );
   mGrpPkey = addGroupItem( mSecDetails, tr( "Public Key Info" ) );
   mGrpExts = addGroupItem( mSecDetails, tr( "Extensions" ) );

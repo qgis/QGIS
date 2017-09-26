@@ -816,7 +816,7 @@ void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f,
   for ( int i = 0; i < size; i++ )
     descriptions += QStringLiteral( "<li>%1: <i>%2</i></li>" ).arg( f[i], d[i] );
 
-  QString msg = QStringLiteral( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ), descriptions ) ;
+  QString msg = QStringLiteral( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ), descriptions );
 
   mInvalidConstraintMessage->setText( msg );
   mTopMessageWidget->show();
@@ -953,7 +953,7 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString &constraint,
 QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper *w )
 {
   QList<QgsEditorWidgetWrapper *> wDeps;
-  QString name =  w->field().name();
+  QString name = w->field().name();
 
   // for each widget in the current form
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )

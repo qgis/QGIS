@@ -903,7 +903,7 @@ namespace QgsWms
             continue;
           }
 
-          QString wmsName =  l->name();
+          QString wmsName = l->name();
           if ( useLayerIds )
           {
             wmsName = l->id();
@@ -1160,7 +1160,7 @@ namespace QgsWms
         // no parameters on custom hrefUrl, because should link directly to graphic
         if ( customHrefString.isEmpty() )
         {
-          QString layerName =  currentLayer->name();
+          QString layerName = currentLayer->name();
           if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
             layerName = currentLayer->id();
           else if ( !currentLayer->shortName().isEmpty() )
@@ -1598,7 +1598,7 @@ namespace QgsWms
           continue;
         }
 
-        QString wmsName =  l->name();
+        QString wmsName = l->name();
         if ( useLayerIds )
         {
           wmsName = l->id();

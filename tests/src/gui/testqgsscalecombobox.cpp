@@ -29,7 +29,6 @@ class TestQgsScaleComboBox : public QObject
     Q_OBJECT
   public:
     TestQgsScaleComboBox()
-      : s( nullptr )
     {}
 
   private slots:

@@ -362,36 +362,36 @@ class QgsDelimitedTextFile : public QObject
     QString mEncoding;
     QFile *mFile = nullptr;
     QTextStream *mStream = nullptr;
-    bool mUseWatcher;
+    bool mUseWatcher = false;
     QFileSystemWatcher *mWatcher = nullptr;
 
     // Parameters common to parsers
-    bool mDefinitionValid;
+    bool mDefinitionValid = false;
     DelimiterType mType;
-    bool mUseHeader;
-    bool mDiscardEmptyFields;
-    bool mTrimFields;
-    int mSkipLines;
-    int mMaxFields;
-    int mMaxNameLength;
+    bool mUseHeader = true;
+    bool mDiscardEmptyFields = false;
+    bool mTrimFields = false;
+    int mSkipLines = 0;
+    int mMaxFields = 0;
+    int mMaxNameLength = 200;
 
     // Parameters used by parsers
     QRegExp mDelimRegexp;
-    bool mAnchoredRegexp;
+    bool mAnchoredRegexp = false;
     QString mDelimChars;
     QString mQuoteChar;
     QString mEscapeChar;
 
     // Information extracted from file
     QStringList mFieldNames;
-    long mLineNumber;
-    long mRecordLineNumber;
-    long mRecordNumber;
+    long mLineNumber = -1;
+    long mRecordLineNumber = -1;
+    long mRecordNumber = -1;
     QStringList mCurrentRecord;
-    bool mHoldCurrentRecord;
+    bool mHoldCurrentRecord = false;
     // Maximum number of record (ie maximum record number visited)
-    long mMaxRecordNumber;
-    int mMaxFieldCount;
+    long mMaxRecordNumber = -1;
+    int mMaxFieldCount = 0;
 
     QString mDefaultFieldName;
     QRegExp mDefaultFieldRegexp;

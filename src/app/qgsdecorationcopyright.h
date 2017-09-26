@@ -59,8 +59,8 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
     QColor mColor;
 
     //! enable or disable use of position percentage for placement
-    int mMarginHorizontal;
-    int mMarginVertical;
+    int mMarginHorizontal = 0;
+    int mMarginVertical = 0;
 
     friend class QgsDecorationCopyrightDialog;
 };

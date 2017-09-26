@@ -164,7 +164,7 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       mComposerLabel->beginCommand( tr( "Insert expression" ) );

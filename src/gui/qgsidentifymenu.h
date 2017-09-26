@@ -58,13 +58,6 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     struct ActionData
     {
       ActionData()
-        : mIsValid( false )
-        , mAllResults( false )
-        , mIsExternalAction( false )
-        , mLayer( nullptr )
-        , mFeatureId( 0 )
-        , mLevel( LayerLevel )
-        , mMapLayerAction( nullptr )
       {}
 
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = nullptr )
@@ -72,14 +65,11 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
         , mAllResults( !layer )
         , mIsExternalAction( nullptr != mapLayerAction )
         , mLayer( layer )
-        , mFeatureId( 0 )
-        , mLevel( LayerLevel )
         , mMapLayerAction( mapLayerAction )
       {}
 
       ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = nullptr )
         : mIsValid( true )
-        , mAllResults( false )
         , mIsExternalAction( nullptr != mapLayerAction )
         , mLayer( layer )
         , mFeatureId( fid )
@@ -87,12 +77,12 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
         , mMapLayerAction( mapLayerAction )
       {}
 
-      bool mIsValid;
-      bool mAllResults;
-      bool mIsExternalAction;
+      bool mIsValid = false;
+      bool mAllResults = false;
+      bool mIsExternalAction = false;
       QgsMapLayer *mLayer = nullptr;
-      QgsFeatureId mFeatureId;
-      QgsIdentifyMenu::MenuLevel mLevel;
+      QgsFeatureId mFeatureId = 0;
+      QgsIdentifyMenu::MenuLevel mLevel = LayerLevel;
       QgsMapLayerAction *mMapLayerAction = nullptr;
     };
 

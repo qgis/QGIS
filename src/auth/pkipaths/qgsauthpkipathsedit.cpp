@@ -31,7 +31,6 @@
 
 QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
-  , mValid( 0 )
 {
   setupUi( this );
 }

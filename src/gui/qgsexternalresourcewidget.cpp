@@ -29,12 +29,6 @@
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   : QWidget( parent )
-  , mFileWidgetVisible( true )
-  , mDocumentViewerContent( NoContent )
-  , mDocumentViewerHeight( 0 )
-  , mDocumentViewerWidth( 0 )
-  , mRelativeStorage( QgsFileWidget::Absolute )
-
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );

@@ -41,7 +41,6 @@ QgsGrassVectorMapLayer::QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int fiel
   , mValid( false )
   , mMap( map )
   , mFieldInfo( 0 )
-  , mDriver( 0 )
   , mHasTable( false )
   , mKeyColumn( -1 )
   , mUsers( 0 )

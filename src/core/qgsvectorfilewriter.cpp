@@ -2310,22 +2310,6 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 
 QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
   : driverName( QStringLiteral( "ESRI Shapefile" ) )
-  , layerName( QString() )
-  , actionOnExistingFile( CreateOrOverwriteFile )
-  , fileEncoding( QString() )
-  , ct( QgsCoordinateTransform() )
-  , onlySelectedFeatures( false )
-  , datasourceOptions( QStringList() )
-  , layerOptions( QStringList() )
-  , skipAttributeCreation( false )
-  , attributes( QgsAttributeList() )
-  , symbologyExport( NoSymbology )
-  , symbologyScale( 1.0 )
-  , filterExtent( QgsRectangle() )
-  , overrideGeometryType( QgsWkbTypes::Unknown )
-  , forceMulti( false )
-  , includeZ( false )
-
 {
 }
 

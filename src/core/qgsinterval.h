@@ -168,10 +168,10 @@ class CORE_EXPORT QgsInterval
   private:
 
     //! Duration of interval in seconds
-    double mSeconds;
+    double mSeconds = 0.0;
 
     //! True if interval is valid
-    bool mValid;
+    bool mValid = false;
 };
 
 Q_DECLARE_METATYPE( QgsInterval )

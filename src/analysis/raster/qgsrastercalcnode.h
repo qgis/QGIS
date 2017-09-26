@@ -107,13 +107,13 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode( const QgsRasterCalcNode &rh );
 #endif
 
-    Type mType;
+    Type mType = tNumber;
     QgsRasterCalcNode *mLeft = nullptr;
     QgsRasterCalcNode *mRight = nullptr;
-    double mNumber;
+    double mNumber = 0;
     QString mRasterName;
     QgsRasterMatrix *mMatrix = nullptr;
-    Operator mOperator;
+    Operator mOperator = opNONE;
 
 };
 

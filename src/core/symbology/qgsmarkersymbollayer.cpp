@@ -685,11 +685,7 @@ void QgsSimpleMarkerSymbolLayerBase::calculateOffsetAndRotation( QgsSymbolRender
 QgsSimpleMarkerSymbolLayer::QgsSimpleMarkerSymbolLayer( QgsSimpleMarkerSymbolLayerBase::Shape shape, double size, double angle, QgsSymbol::ScaleMethod scaleMethod, const QColor &color, const QColor &strokeColor, Qt::PenJoinStyle penJoinStyle )
   : QgsSimpleMarkerSymbolLayerBase( shape, size, angle, scaleMethod )
   , mStrokeColor( strokeColor )
-  , mStrokeStyle( Qt::SolidLine )
-  , mStrokeWidth( 0 )
-  , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
   , mPenJoinStyle( penJoinStyle )
-  , mUsingCache( false )
 {
   mColor = color;
 }
@@ -2456,7 +2452,6 @@ QRectF QgsSvgMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &c
 //////////
 
 QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, QChar chr, double pointSize, const QColor &color, double angle )
-  : mChrWidth( 0 )
 {
   mFontFamily = fontFamily;
   mChr = chr;
@@ -2551,7 +2546,7 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mFont.setPixelSize( context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale ) );
   delete mFontMetrics;
   mFontMetrics = new QFontMetrics( mFont );
-  mChrWidth =  mFontMetrics->width( mChr );
+  mChrWidth = mFontMetrics->width( mChr );
   mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
   mOrigSize = mSize; // save in case the size would be data defined
 }

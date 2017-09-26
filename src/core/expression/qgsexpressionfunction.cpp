@@ -1456,7 +1456,7 @@ static QVariant fcnYear( const QVariantList &values, const QgsExpressionContext 
   }
   else
   {
-    QDateTime d1 =  QgsExpressionUtils::getDateTimeValue( value, parent );
+    QDateTime d1 = QgsExpressionUtils::getDateTimeValue( value, parent );
     return QVariant( d1.date().year() );
   }
 }
@@ -1471,7 +1471,7 @@ static QVariant fcnMonth( const QVariantList &values, const QgsExpressionContext
   }
   else
   {
-    QDateTime d1 =  QgsExpressionUtils::getDateTimeValue( value, parent );
+    QDateTime d1 = QgsExpressionUtils::getDateTimeValue( value, parent );
     return QVariant( d1.date().month() );
   }
 }
@@ -1486,7 +1486,7 @@ static QVariant fcnWeek( const QVariantList &values, const QgsExpressionContext 
   }
   else
   {
-    QDateTime d1 =  QgsExpressionUtils::getDateTimeValue( value, parent );
+    QDateTime d1 = QgsExpressionUtils::getDateTimeValue( value, parent );
     return QVariant( d1.date().weekNumber() );
   }
 }
@@ -1516,7 +1516,7 @@ static QVariant fcnMinute( const QVariantList &values, const QgsExpressionContex
   }
   else
   {
-    QTime t1 =  QgsExpressionUtils::getTimeValue( value, parent );
+    QTime t1 = QgsExpressionUtils::getTimeValue( value, parent );
     return QVariant( t1.minute() );
   }
 }
@@ -1531,7 +1531,7 @@ static QVariant fcnSeconds( const QVariantList &values, const QgsExpressionConte
   }
   else
   {
-    QTime t1 =  QgsExpressionUtils::getTimeValue( value, parent );
+    QTime t1 = QgsExpressionUtils::getTimeValue( value, parent );
     return QVariant( t1.second() );
   }
 }
@@ -4042,11 +4042,11 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
 
     sFunctions << new QgsStaticExpressionFunction( QStringLiteral( "area" ), 1, fcnArea, QStringLiteral( "GeometryGroup" ) );
 
-    QgsStaticExpressionFunction *lengthFunc =  new QgsStaticExpressionFunction( QStringLiteral( "$length" ), 0, fcnGeomLength, QStringLiteral( "GeometryGroup" ), QString(), true );
+    QgsStaticExpressionFunction *lengthFunc = new QgsStaticExpressionFunction( QStringLiteral( "$length" ), 0, fcnGeomLength, QStringLiteral( "GeometryGroup" ), QString(), true );
     lengthFunc->setIsStatic( false );
     sFunctions << lengthFunc;
 
-    QgsStaticExpressionFunction *perimeterFunc =  new QgsStaticExpressionFunction( QStringLiteral( "$perimeter" ), 0, fcnGeomPerimeter, QStringLiteral( "GeometryGroup" ), QString(), true );
+    QgsStaticExpressionFunction *perimeterFunc = new QgsStaticExpressionFunction( QStringLiteral( "$perimeter" ), 0, fcnGeomPerimeter, QStringLiteral( "GeometryGroup" ), QString(), true );
     perimeterFunc->setIsStatic( false );
     sFunctions << perimeterFunc;
 
@@ -4290,7 +4290,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "General" ) );
 
     // **var** function
-    QgsStaticExpressionFunction *varFunction =  new QgsStaticExpressionFunction( QStringLiteral( "var" ), 1, fcnGetVariable, QStringLiteral( "General" ) );
+    QgsStaticExpressionFunction *varFunction = new QgsStaticExpressionFunction( QStringLiteral( "var" ), 1, fcnGetVariable, QStringLiteral( "General" ) );
     varFunction->setIsStaticFunction(
       []( const QgsExpressionNodeFunction * node, QgsExpression * parent, const QgsExpressionContext * context )
     {

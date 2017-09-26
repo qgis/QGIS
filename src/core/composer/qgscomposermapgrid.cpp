@@ -436,7 +436,7 @@ bool QgsComposerMapGrid::readXml( const QDomElement &itemElem, const QDomDocumen
   }
   mGridAnnotationFontColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "annotationFontColor" ), QStringLiteral( "0,0,0,255" ) ) );
   mGridAnnotationPrecision = itemElem.attribute( QStringLiteral( "annotationPrecision" ), QStringLiteral( "3" ) ).toInt();
-  int gridUnitInt =  itemElem.attribute( QStringLiteral( "unit" ), QString::number( MapUnit ) ).toInt();
+  int gridUnitInt = itemElem.attribute( QStringLiteral( "unit" ), QString::number( MapUnit ) ).toInt();
   mGridUnit = ( gridUnitInt <= static_cast< int >( CM ) ) ? static_cast< GridUnit >( gridUnitInt ) : MapUnit;
   return ok;
 }
@@ -1069,7 +1069,7 @@ void QgsComposerMapGrid::drawCoordinateAnnotations( QPainter *p, const QList< QP
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
-    currentAnnotationString =  gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, expressionContext );
+    currentAnnotationString = gridAnnotationString( it->first, QgsComposerMapGrid::Longitude, expressionContext );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString, QgsComposerMapGrid::Longitude, extension );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString, QgsComposerMapGrid::Longitude, extension );
   }

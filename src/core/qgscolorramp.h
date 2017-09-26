@@ -408,7 +408,7 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 
   protected:
 
-    int mTotalColorCount;
+    int mTotalColorCount = 0;
     QList<QColor> mPrecalculatedColors;
 
 };
@@ -624,8 +624,8 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     QString mSchemeName;
     QString mVariantName;
     QStringList mVariantList;
-    bool mFileLoaded;
-    bool mMultiStops;
+    bool mFileLoaded = false;
+    bool mMultiStops = false;
     bool mInverted;
 
 };

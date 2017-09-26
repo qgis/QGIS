@@ -44,12 +44,10 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     {
       public:
         FeatureInfo()
-          : isNew( false )
-          , isEdited( false )
         {}
 
-        bool isNew;
-        bool isEdited;
+        bool isNew = false;
+        bool isEdited = false;
     };
 
     enum Role

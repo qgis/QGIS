@@ -243,7 +243,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, con
   QString mySql;
   int return_id;
   QString myProjectionAcronym  = myCRS.projectionAcronym();
-  QString myEllipsoidAcronym   =  myCRS.ellipsoidAcronym();
+  QString myEllipsoidAcronym   = myCRS.ellipsoidAcronym();
   QgsDebugMsg( QString( "Saving a CRS:%1, %2, %3" ).arg( myName, myCRS.toProj4() ).arg( newEntry ) );
   if ( newEntry )
   {

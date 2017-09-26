@@ -150,8 +150,8 @@ namespace pal
       double length() const;
 
     protected:
-      mutable GEOSGeometry *mGeos;
-      mutable bool mOwnsGeom;
+      mutable GEOSGeometry *mGeos = nullptr;
+      mutable bool mOwnsGeom = false;
 
       int nbPoints;
       double *x = nullptr;
@@ -174,14 +174,14 @@ namespace pal
       const GEOSPreparedGeometry *preparedGeom() const;
       void invalidateGeos();
 
-      double xmin;
-      double xmax;
-      double ymin;
-      double ymax;
+      double xmin = DBL_MAX;
+      double xmax = -DBL_MAX;
+      double ymin = DBL_MAX;
+      double ymax = -DBL_MAX;
 
     private:
 
-      mutable const GEOSPreparedGeometry *mPreparedGeom;
+      mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
 
   };
 

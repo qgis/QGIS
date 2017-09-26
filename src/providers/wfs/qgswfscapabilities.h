@@ -36,17 +36,17 @@ class QgsWfsCapabilities : public QgsWfsRequest
     struct FeatureType
     {
       //! Default constructor
-      FeatureType() : bboxSRSIsWGS84( false ), insertCap( false ), updateCap( false ), deleteCap( false ) {}
+      FeatureType() {}
 
       QString name;
       QString title;
       QString abstract;
       QList<QString> crslist; // first is default
       QgsRectangle bbox;
-      bool bboxSRSIsWGS84; // if false, the bbox is expressed in crslist[0] CRS
-      bool insertCap;
-      bool updateCap;
-      bool deleteCap;
+      bool bboxSRSIsWGS84 = false; // if false, the bbox is expressed in crslist[0] CRS
+      bool insertCap = false;
+      bool updateCap = false;
+      bool deleteCap = false;
     };
 
     //! argument of a function
@@ -69,9 +69,9 @@ class QgsWfsCapabilities : public QgsWfsRequest
       //! return type, or empty if unknown
       QString returnType;
       //! minimum number of argument (or -1 if unknown)
-      int minArgs;
+      int minArgs = -1;
       //! maximum number of argument (or -1 if unknown)
-      int maxArgs;
+      int maxArgs = -1;
       //! list of arguments. May be empty despite minArgs > 0
       QList<Argument> argumentList;
 
@@ -80,7 +80,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
       //! constructor with name and min,max number of arguments
       Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
       //! default constructor
-      Function() : minArgs( -1 ), maxArgs( -1 ) {}
+      Function() {}
     };
 
     //! parsed get capabilities document

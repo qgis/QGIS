@@ -74,8 +74,6 @@ class TestQgsComposerPicture : public QObject
 };
 
 TestQgsComposerPicture::TestQgsComposerPicture()
-  : mComposition( 0 )
-  , mComposerPicture( 0 )
 {
 
 }

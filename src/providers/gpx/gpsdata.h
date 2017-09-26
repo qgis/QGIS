@@ -57,7 +57,7 @@ class QgsGPSPoint : public QgsGPSObject
   public:
     QgsGPSPoint();
     virtual void writeXml( QTextStream &stream ) override;
-    double lat, lon, ele;
+    double lat = 0., lon = 0., ele;
     QString sym;
 };
 
@@ -258,10 +258,6 @@ class QgsGPXHandler
   public:
     explicit QgsGPXHandler( QgsGPSData &data )
       : mData( data )
-      , mObj( nullptr )
-      , mString( nullptr )
-      , mDouble( nullptr )
-      , mInt( nullptr )
     { }
 
     /** This function is called when expat encounters a new start element in

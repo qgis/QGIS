@@ -160,9 +160,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
 
 QgsWmsCapabilities::QgsWmsCapabilities()
-  : mValid( false )
-  , mLayerCount( -1 )
-  , mCapabilities()
 {
 }
 
@@ -750,9 +747,9 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
   // enforce WMS non-inheritance rules
-  layerProperty.name =        QString();
-  layerProperty.title =       QString();
-  layerProperty.abstract =    QString();
+  layerProperty.name = QString();
+  layerProperty.title = QString();
+  layerProperty.abstract = QString();
   layerProperty.keywordList.clear();
 #endif
 
@@ -834,7 +831,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( e1.attribute( QStringLiteral( "SRS" ) ) );
 
-            QgsCoordinateReferenceSystem dst =  QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
+            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
 
             QgsCoordinateTransform ct( src, dst );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
@@ -1900,7 +1897,6 @@ int QgsWmsCapabilities::identifyCapabilities() const
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
   : QObject( parent )
-  , mCapabilitiesReply( nullptr )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {
@@ -1910,7 +1906,6 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, 
   : QObject( parent )
   , mBaseUrl( baseUrl )
   , mAuth( auth )
-  , mCapabilitiesReply( nullptr )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {

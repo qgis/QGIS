@@ -319,27 +319,27 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     const QgsComposerMap *mComposerMap = nullptr;
 
-    bool mLegendFilterByMap;
-    bool mLegendFilterByExpression;
+    bool mLegendFilterByMap = false;
+    bool mLegendFilterByExpression = false;
 
     //! whether to filter out legend elements outside of the atlas feature
-    bool mFilterOutAtlas;
+    bool mFilterOutAtlas = false;
 
     //! tag for update request
-    bool mFilterAskedForUpdate;
+    bool mFilterAskedForUpdate = false;
     //! actual filter update
     void doUpdateFilterByMap();
 
-    bool mInAtlas;
+    bool mInAtlas = false;
 
     //! Will be false until the associated map scale and DPI have been calculated
-    bool mInitialMapScaleCalculated;
+    bool mInitialMapScaleCalculated = false;
 
     //! Will be true if the legend size should be totally reset at next paint
-    bool mForceResize;
+    bool mForceResize = false;
 
     //! Will be true if the legend should be resized automatically to fit contents
-    bool mSizeToContents;
+    bool mSizeToContents = true;
 };
 
 #endif

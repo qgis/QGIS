@@ -118,7 +118,6 @@ class TestQgsNodeTool : public QObject
 };
 
 TestQgsNodeTool::TestQgsNodeTool()
-  : mCanvas( nullptr )
 {
 }
 

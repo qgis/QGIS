@@ -24,7 +24,6 @@
 #include <QTextCodec>
 
 QgsNetworkContentFetcher::QgsNetworkContentFetcher()
-  : mContentLoaded( false )
 {
 
 }

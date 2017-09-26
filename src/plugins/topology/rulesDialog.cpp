@@ -267,7 +267,7 @@ void rulesDialog::addRule()
   else
     layer2ID = tr( "No layer" );
 
-  layer1ID =  mLayer1Box->currentData().toString();
+  layer1ID = mLayer1Box->currentData().toString();
 
   //TODO: use setItemData (or something like that) instead of hidden columns
   newItem = new QTableWidgetItem( layer1ID );

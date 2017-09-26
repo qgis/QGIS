@@ -197,8 +197,8 @@ class CORE_EXPORT QgsRegularPolygon
   private:
     QgsPoint mCenter;
     QgsPoint mFirstVertex;
-    unsigned int mNumberSides;
-    double mRadius;
+    unsigned int mNumberSides = 0;
+    double mRadius = 0.0;
 
     /** Convenient method to convert an apothem to a radius.
      */

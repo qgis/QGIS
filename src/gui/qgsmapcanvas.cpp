@@ -100,17 +100,7 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   : QGraphicsView( parent )
   , mCanvasProperties( new CanvasProperties )
-  , mFrozen( false )
-  , mRefreshScheduled( false )
-  , mRenderFlag( true ) // by default, the canvas is rendered
-  , mLastExtentIndex( -1 )
-  , mWheelZoomFactor( 2.0 )
-  , mJobCanceled( false )
-  , mUseParallelRendering( false )
-  , mDrawRenderingStats( false )
-  , mScaleLocked( false )
   , mExpressionContextScope( tr( "Map Canvas" ) )
-  , mZoomDragging( false )
 {
   mScene = new QGraphicsScene();
   setScene( mScene );

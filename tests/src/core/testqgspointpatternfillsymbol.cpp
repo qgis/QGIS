@@ -45,11 +45,6 @@ class TestQgsPointPatternFillSymbol : public QObject
 
   public:
     TestQgsPointPatternFillSymbol()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mPointPatternFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -62,7 +57,7 @@ class TestQgsPointPatternFillSymbol : public QObject
     void dataDefinedSubSymbol();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

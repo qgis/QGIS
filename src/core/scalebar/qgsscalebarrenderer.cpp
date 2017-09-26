@@ -101,7 +101,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &setting
 
   double totalBarLength = scaleContext.segmentWidth * ( settings.numberOfSegments() + ( settings.numberOfSegmentsLeft() > 0 ? 1 : 0 ) );
 
-  double width =  firstLabelLeft + totalBarLength + 2 * settings.pen().widthF() + largestLabelWidth + 2 * settings.boxContentSpace();
+  double width = firstLabelLeft + totalBarLength + 2 * settings.pen().widthF() + largestLabelWidth + 2 * settings.boxContentSpace();
   double height = settings.height() + settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsComposerUtils::fontAscentMM( settings.font() );
 
   return QSizeF( width, height );

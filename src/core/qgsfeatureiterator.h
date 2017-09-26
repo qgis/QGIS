@@ -301,7 +301,6 @@ class CORE_EXPORT QgsFeatureIterator
 #ifndef SIP_RUN
 
 inline QgsFeatureIterator::QgsFeatureIterator()
-  : mIter( nullptr )
 {
 }
 

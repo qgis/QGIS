@@ -43,11 +43,6 @@ class TestQgsGradients : public QObject
 
   public:
     TestQgsGradients()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mGradientFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -69,7 +64,7 @@ class TestQgsGradients : public QObject
     void gradientSymbolRotate();
     void gradientSymbolFromQml();
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

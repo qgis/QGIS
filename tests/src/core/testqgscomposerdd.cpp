@@ -37,10 +37,6 @@ class TestQgsComposerDD : public QObject
 
   public:
     TestQgsComposerDD()
-      : mComposition( 0 )
-      , mVectorLayer( 0 )
-      , mAtlasMap( 0 )
-      , mAtlas( 0 )
     {}
 
   private slots:

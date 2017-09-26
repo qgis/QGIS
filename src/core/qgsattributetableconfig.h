@@ -52,17 +52,14 @@ class CORE_EXPORT QgsAttributeTableConfig
     {
       //! Constructor for ColumnConfig
       ColumnConfig()
-        : type( Field )
-        , hidden( false )
-        , width( -1 )
       {}
 
       bool operator== ( const QgsAttributeTableConfig::ColumnConfig &other ) const SIP_SKIP;
 
-      QgsAttributeTableConfig::Type type;    //!< The type of this column.
+      QgsAttributeTableConfig::Type type = Field;    //!< The type of this column.
       QString name; //!< The name of the attribute if this column represents a field
-      bool hidden;  //!< Flag that controls if the column is hidden
-      int width; //!< Width of column, or -1 for default width
+      bool hidden = false;  //!< Flag that controls if the column is hidden
+      int width = -1; //!< Width of column, or -1 for default width
     };
 
     /**
@@ -191,9 +188,9 @@ class CORE_EXPORT QgsAttributeTableConfig
 
   private:
     QVector<ColumnConfig> mColumns;
-    ActionWidgetStyle mActionWidgetStyle;
+    ActionWidgetStyle mActionWidgetStyle = DropDown;
     QString mSortExpression;
-    Qt::SortOrder mSortOrder;
+    Qt::SortOrder mSortOrder = Qt::AscendingOrder;
 };
 
 Q_DECLARE_METATYPE( QgsAttributeTableConfig::ColumnConfig )

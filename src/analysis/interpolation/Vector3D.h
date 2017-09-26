@@ -33,11 +33,11 @@ class ANALYSIS_EXPORT Vector3D
 {
   protected:
     //! X-component of the vector
-    double mX;
+    double mX = 0;
     //! Y-component of the vector
-    double mY;
+    double mY = 0;
     //! Z-component of the vector
-    double mZ;
+    double mZ = 0;
 
   public:
     //! Constructor taking the three components as arguments
@@ -83,9 +83,6 @@ inline Vector3D::Vector3D( double x, double y, double z )
 }
 
 inline Vector3D::Vector3D()
-  : mX( 0 )
-  , mY( 0 )
-  , mZ( 0 )//using a list
 {
 
 }

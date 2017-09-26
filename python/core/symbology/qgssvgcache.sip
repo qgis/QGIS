@@ -37,7 +37,7 @@ class QgsSvgCacheEntry
 %Docstring
 Absolute path to SVG file
 %End
-    double size; //size in pixels (cast to int for QImage)
+    double size;
     double strokeWidth;
     double widthScaleFactor;
 

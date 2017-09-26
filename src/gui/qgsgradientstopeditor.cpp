@@ -31,7 +31,6 @@
 
 QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
   : QWidget( parent )
-  , mSelectedStop( 0 )
 {
   if ( ramp )
     mGradient = *ramp;

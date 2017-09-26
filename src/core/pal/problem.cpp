@@ -56,13 +56,6 @@ inline void delete_chain( Chain *chain )
 }
 
 Problem::Problem()
-  : nbLabelledLayers( 0 )
-  , nblp( 0 )
-  , all_nblp( 0 )
-  , nbft( 0 )
-  , displayAll( false )
-  , nbActive( 0 )
-  , nbOverlap( 0.0 )
 {
   bbox[0] = 0;
   bbox[1] = 0;
@@ -1288,7 +1281,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
               {
                 delta_min = delta_tmp;
                 retainedLabel = lid;
-                next_seed =  conflicts->takeFirst();
+                next_seed = conflicts->takeFirst();
               }
               else
               {
@@ -1420,7 +1413,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
 
   while ( !currentChain->isEmpty() )
   {
-    ElemTrans *et =  currentChain->takeFirst();
+    ElemTrans *et = currentChain->takeFirst();
 
     if ( et->new_label != -1 )
     {
@@ -1565,7 +1558,7 @@ inline Chain *Problem::chain( int seed )
               {
                 delta_min = delta_tmp;
                 retainedLabel = lid;
-                next_seed =  conflicts->takeFirst();
+                next_seed = conflicts->takeFirst();
               }
               else
               {
@@ -1703,7 +1696,7 @@ inline Chain *Problem::chain( int seed )
 
   while ( !currentChain->isEmpty() )
   {
-    ElemTrans *et =  currentChain->takeFirst();
+    ElemTrans *et = currentChain->takeFirst();
 
     if ( et->new_label != -1 )
     {
@@ -1847,7 +1840,7 @@ double Problem::popmusic_chain( SubPart *part )
 
   /*
   for (i=borderSize;i<subSize;i++){
-     chain =  chain (part, i);
+     chain = chain (part, i);
      if (chain){
         if (chain->delta < 0.0){
            best_cost += chain->delta;

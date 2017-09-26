@@ -23,9 +23,6 @@
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent )
   : QObject( parent )
   , mSnappingConfig( QgsProject::instance() )
-  , mStrategy( IndexHybrid )
-  , mHybridPerLayerFeatureLimit( 50000 )
-  , mIsIndexing( false )
 {
 }
 

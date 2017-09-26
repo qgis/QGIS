@@ -42,7 +42,6 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
       : mRasterLayer( layer )
       , mExtent( extent )
-      , mCanvas( nullptr )
     {}
 
     virtual QgsRasterRenderer *renderer() = 0 SIP_FACTORY;

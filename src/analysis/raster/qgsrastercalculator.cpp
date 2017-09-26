@@ -176,8 +176,6 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
 }
 
 QgsRasterCalculator::QgsRasterCalculator()
-  : mNumOutputColumns( 0 )
-  , mNumOutputRows( 0 )
 {
 }
 

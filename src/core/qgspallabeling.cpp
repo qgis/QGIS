@@ -229,11 +229,6 @@ void QgsPalLayerSettings::initPropertyDefinitions()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-  : upsidedownLabels( Upright )
-  , extentGeom( nullptr )
-  , mFeaturesToLabel( 0 )
-  , mFeatsSendingToPal( 0 )
-  , mFeatsRegPal( 0 )
 {
   initPropertyDefinitions();
 
@@ -301,9 +296,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
   : fieldIndex( 0 )
-  , mFeaturesToLabel( 0 )
-  , mFeatsSendingToPal( 0 )
-  , mFeatsRegPal( 0 )
   , mDataDefinedProperties( s.mDataDefinedProperties )
 {
   *this = s;
@@ -795,7 +787,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   yOffset = placementElem.attribute( QStringLiteral( "yOffset" ), QStringLiteral( "0" ) ).toDouble();
   if ( !placementElem.hasAttribute( QStringLiteral( "offsetUnits" ) ) )
   {
-    offsetUnits =  placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
+    offsetUnits = placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
   }
   else
   {

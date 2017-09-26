@@ -141,14 +141,14 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     QColor mStrokeColor;
     Qt::PenStyle mStrokeStyle;
     double mStrokeWidth;
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
     Qt::PenJoinStyle mPenJoinStyle;
     QPen mPen;
     QPen mSelPen;
 
     QPointF mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
   private:
@@ -301,12 +301,12 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     GradientSpread mGradientSpread;
 
     QPointF mReferencePoint1;
-    bool mReferencePoint1IsCentroid;
+    bool mReferencePoint1IsCentroid = false;
     QPointF mReferencePoint2;
-    bool mReferencePoint2IsCentroid;
+    bool mReferencePoint2IsCentroid = false;
 
     QPointF mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
   private:
@@ -549,7 +549,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 
     bool mUseWholeShape;
     double mMaxDistance;
-    QgsUnitTypes::RenderUnit mDistanceUnit;
+    QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDistanceMapUnitScale;
 
     ShapeburstColorType mColorType;
@@ -557,10 +557,10 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     QgsColorRamp *mGradientRamp = nullptr;
     QgsColorRamp *mTwoColorGradientRamp = nullptr;
 
-    bool mIgnoreRings;
+    bool mIgnoreRings = false;
 
     QPointF mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
   private:
@@ -623,11 +623,11 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
 
   protected:
     QBrush mBrush;
-    double mNextAngle; // mAngle / data defined angle
+    double mNextAngle = 0.0; // mAngle / data defined angle
 
     //! Stroke width
-    double mStrokeWidth;
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    double mStrokeWidth = 0.0;
+    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mStrokeWidthMapUnitScale;
 
     //! Custom stroke
@@ -815,15 +815,15 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     //! Path to the image file
     QString mImageFilePath;
-    FillCoordinateMode mCoordinateMode;
+    FillCoordinateMode mCoordinateMode = QgsRasterFillSymbolLayer::Feature;
     double mOpacity = 1.0;
 
     QPointF mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
-    double mWidth;
-    QgsUnitTypes::RenderUnit mWidthUnit;
+    double mWidth = 0.0;
+    QgsUnitTypes::RenderUnit mWidthUnit = QgsUnitTypes::RenderPixels;
     QgsMapUnitScale mWidthMapUnitScale;
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
@@ -1060,19 +1060,19 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
   protected:
     //! Distance (in mm or map units) between lines
-    double mDistance;
-    QgsUnitTypes::RenderUnit mDistanceUnit;
+    double mDistance = 5.0;
+    QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDistanceMapUnitScale;
     //! Line width (in mm or map units)
-    double mLineWidth;
-    QgsUnitTypes::RenderUnit mLineWidthUnit;
+    double mLineWidth = 0;
+    QgsUnitTypes::RenderUnit mLineWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mLineWidthMapUnitScale;
     QColor mColor;
     //! Vector line angle in degrees (0 = horizontal, counterclockwise)
-    double mLineAngle;
+    double mLineAngle = 45.0;
     //! Offset perpendicular to line direction
-    double mOffset;
-    QgsUnitTypes::RenderUnit mOffsetUnit;
+    double mOffset = 0.0;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
@@ -1207,17 +1207,17 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 
   protected:
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
-    double mDistanceX;
-    QgsUnitTypes::RenderUnit mDistanceXUnit;
+    double mDistanceX = 15;
+    QgsUnitTypes::RenderUnit mDistanceXUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDistanceXMapUnitScale;
-    double mDistanceY;
-    QgsUnitTypes::RenderUnit mDistanceYUnit;
+    double mDistanceY = 15;
+    QgsUnitTypes::RenderUnit mDistanceYUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDistanceYMapUnitScale;
-    double mDisplacementX;
-    QgsUnitTypes::RenderUnit mDisplacementXUnit;
+    double mDisplacementX = 0;
+    QgsUnitTypes::RenderUnit mDisplacementXUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDisplacementXMapUnitScale;
-    double mDisplacementY;
-    QgsUnitTypes::RenderUnit mDisplacementYUnit;
+    double mDisplacementY = 0;
+    QgsUnitTypes::RenderUnit mDisplacementYUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDisplacementYMapUnitScale;
 
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
@@ -1287,11 +1287,11 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
   protected:
     std::unique_ptr< QgsMarkerSymbol > mMarker;
-    bool mPointOnSurface;
-    bool mPointOnAllParts;
+    bool mPointOnSurface = false;
+    bool mPointOnAllParts = true;
 
-    QgsFeatureId mCurrentFeatureId;
-    int mBiggestPartIndex;
+    QgsFeatureId mCurrentFeatureId = -1;
+    int mBiggestPartIndex = -1;
 
   private:
 #ifdef SIP_RUN

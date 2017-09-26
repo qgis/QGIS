@@ -22,12 +22,7 @@
 
 QgsShadowEffect::QgsShadowEffect()
   : QgsPaintEffect()
-  , mBlurLevel( 10 )
-  , mOffsetAngle( 135 )
-  , mOffsetDist( 2.0 )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
   , mColor( Qt::black )
-  , mBlendMode( QPainter::CompositionMode_Multiply )
 {
 
 }

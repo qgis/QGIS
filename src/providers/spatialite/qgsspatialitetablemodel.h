@@ -48,7 +48,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
     QString mSqliteDb;
 
     QIcon iconForType( QgsWkbTypes::Type type ) const;

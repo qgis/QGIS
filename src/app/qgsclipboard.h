@@ -177,7 +177,7 @@ class APP_EXPORT QgsClipboard : public QObject
     QPointer<QgsVectorLayer> mSrcLayer;
 
     //! True when the data from the system clipboard should be read
-    bool mUseSystemClipboard;
+    bool mUseSystemClipboard = false;
 
     friend class TestQgisAppClipboard;
 

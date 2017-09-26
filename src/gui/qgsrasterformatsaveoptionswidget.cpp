@@ -40,8 +40,6 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   : QWidget( parent )
   , mFormat( format )
   , mProvider( provider )
-  , mPyramids( false )
-  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
 {
   setupUi( this );
 
@@ -403,7 +401,7 @@ void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
 {
   QTableWidgetItem *key, *value;
   QString options;
-  for ( int i = 0 ; i < mOptionsTable->rowCount(); i++ )
+  for ( int i = 0; i < mOptionsTable->rowCount(); i++ )
   {
     key = mOptionsTable->item( i, 0 );
     if ( ! key  || key->text().isEmpty() )

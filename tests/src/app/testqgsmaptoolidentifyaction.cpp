@@ -34,7 +34,6 @@ class TestQgsMapToolIdentifyAction : public QObject
     Q_OBJECT
   public:
     TestQgsMapToolIdentifyAction()
-      : canvas( 0 )
     {}
 
   private slots:

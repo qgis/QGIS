@@ -352,9 +352,6 @@ QgsAuthConfigSslServer::QgsAuthConfigSslServer()
   : mSslHostPort( QString() )
   , mSslCert( QSslCertificate() )
   , mSslIgnoredErrors( QList<QSslError::SslError>() )
-  , mSslPeerVerifyMode( QSslSocket::VerifyPeer )
-  , mSslPeerVerifyDepth( 0 )
-  , mVersion( 1 )
 {
   // TODO: figure out if Qt 5 has changed yet again, e.g. TLS-only
   mQtVersion = 480;

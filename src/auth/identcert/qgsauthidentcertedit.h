@@ -50,7 +50,7 @@ class QgsAuthIdentCertEdit : public QgsAuthMethodEdit, private Ui::QgsAuthIdentC
 
   private:
     QgsStringMap mConfigMap;
-    bool mValid;
+    bool mValid = 0;
 };
 
 #endif // QGSAUTHIDENTCERTEDIT_H

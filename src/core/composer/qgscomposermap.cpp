@@ -513,7 +513,7 @@ QList<QgsMapLayer *> QgsComposerMap::layersToRender( const QgsExpressionContext 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mComposition->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
-      renderLayers =  mComposition->project()->mapThemeCollection()->masterVisibleLayers();
+      renderLayers = mComposition->project()->mapThemeCollection()->masterVisibleLayers();
   }
   else if ( !layers().isEmpty() )
   {
@@ -521,7 +521,7 @@ QList<QgsMapLayer *> QgsComposerMap::layersToRender( const QgsExpressionContext 
   }
   else
   {
-    renderLayers =  mComposition->project()->mapThemeCollection()->masterVisibleLayers();
+    renderLayers = mComposition->project()->mapThemeCollection()->masterVisibleLayers();
   }
 
   bool ok = false;

@@ -372,7 +372,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
             !leFilename->text().isEmpty() )
   {
     QString layerName = QFileInfo( leFilename->text() ).baseName();
-    leLayername->setText( layerName ) ;
+    leLayername->setText( layerName );
   }
 
   if ( mLayer )

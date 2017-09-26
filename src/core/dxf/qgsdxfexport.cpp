@@ -53,10 +53,6 @@
 
 #include <QIODevice>
 
-#define DXF_HANDSEED 100
-#define DXF_HANDMAX 9999999
-#define DXF_HANDPLOTSTYLE 0xf
-
 // dxf color palette
 int QgsDxfExport::sDxfColors[][3] =
 {
@@ -367,13 +363,6 @@ const char *QgsDxfExport::DXF_ENCODINGS[][2] =
 };
 
 QgsDxfExport::QgsDxfExport()
-  : mSymbologyScale( 1.0 )
-  , mSymbologyExport( NoSymbology )
-  , mMapUnits( QgsUnitTypes::DistanceMeters )
-  , mLayerTitleAsName( false )
-  , mSymbolLayerCounter( 0 )
-  , mNextHandleId( DXF_HANDSEED )
-  , mBlockCounter( 0 )
 {
 }
 

@@ -68,7 +68,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
                 Strds, Stvds, Str3ds, Stds
               };
 
-    QgsGrassObject() : mType( None ) {}
+    QgsGrassObject() {}
     QgsGrassObject( const QString &gisdbase, const QString &location = QString(),
                     const QString &mapset = QString(), const QString &name = QString(),
                     Type type = None );
@@ -117,7 +117,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString mLocation;
     QString mMapset;
     QString mName;  // map name
-    Type mType;
+    Type mType = None;
 };
 
 /** QString gisdbase()

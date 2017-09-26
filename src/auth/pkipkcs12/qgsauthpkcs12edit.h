@@ -66,7 +66,7 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
     bool validityChange( bool curvalid );
 
     QgsStringMap mConfigMap;
-    bool mValid;
+    bool mValid = 0;
 };
 
 #endif // QGSAUTHPKCS12EDIT_H

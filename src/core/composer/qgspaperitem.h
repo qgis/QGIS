@@ -78,7 +78,7 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     void calculatePageMargin();
 
     QgsPaperGrid *mPageGrid = nullptr;
-    double mPageMargin;
+    double mPageMargin = 0;
 };
 
 #endif

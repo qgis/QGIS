@@ -1020,7 +1020,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     mutable QgsRectangle mExtent;
 
     //! Indicates if the layer is valid and can be drawn
-    bool mValid;
+    bool mValid = false;
 
     //! Data source description string, varies by layer type
     QString mDataSource;
@@ -1087,7 +1087,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayer::LayerType mLayerType;
 
     //! Blend mode for the layer
-    QPainter::CompositionMode mBlendMode;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
     //! Tag for embedding additional information
     QString mTag;

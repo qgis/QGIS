@@ -38,7 +38,6 @@ extern "C"
 
 QgsGrassVectorLayer::QgsGrassVectorLayer( QObject *parent )
   : QObject( parent )
-  , mNumber( 0 )
 {
 }
 

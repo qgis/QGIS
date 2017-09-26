@@ -61,7 +61,7 @@ QString QgsDb2GeometryColumns::open( const QString &schemaName, const QString &t
   if ( !mQuery.exec( queryExtents ) )
   {
     QgsDebugMsg( "ST_Geometry_Columns query failed: " + mDatabase.lastError().text() );
-    nativeError =  mQuery.lastError().nativeErrorCode();
+    nativeError = mQuery.lastError().nativeErrorCode();
     QgsDebugMsg( QString( "SQLCODE: %1" ).arg( nativeError ) );
     /* The MIN_X, MIN_Y, MAX_X, and MAX_Y columns are not available on z/OS (and LUW 9.5)
        so SQLCODE -206 is returned when specifying non-existent columns. */

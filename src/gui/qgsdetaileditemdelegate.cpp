@@ -188,7 +188,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   }
   else
   {
-    myTextStartY +=  myDetailMetrics.height() + verticalSpacing();
+    myTextStartY += myDetailMetrics.height() + verticalSpacing();
   }
   QStringList myList =
     wordWrap( data.detail(), myDetailMetrics, option.rect.width() - myTextStartX );
@@ -221,7 +221,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   }
   else
   {
-    myTextStartY +=  myCategoryMetrics.height() + verticalSpacing();
+    myTextStartY += myCategoryMetrics.height() + verticalSpacing();
   }
   myList =
     wordWrap( data.category(), myCategoryMetrics, option.rect.width() - myTextStartX );

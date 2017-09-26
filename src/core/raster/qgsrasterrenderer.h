@@ -125,7 +125,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /** Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
-    int mAlphaBand;
+    int mAlphaBand = -1;
 
     //! Origin of min/max values
     QgsRasterMinMaxOrigin mMinMaxOrigin;

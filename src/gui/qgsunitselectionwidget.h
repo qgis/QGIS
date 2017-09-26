@@ -85,7 +85,7 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
 
   private:
 
-    bool mBlockSignals;
+    bool mBlockSignals = true;
 
 };
 

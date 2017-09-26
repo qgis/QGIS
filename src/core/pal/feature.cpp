@@ -97,7 +97,7 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
 
       for ( int i = 0; i < numHoles; ++i )
       {
-        const GEOSGeometry *interior =  GEOSGetInteriorRingN_r( geosctxt, geom, i );
+        const GEOSGeometry *interior = GEOSGetInteriorRingN_r( geosctxt, geom, i );
         FeaturePart *hole = new FeaturePart( mLF, interior );
         hole->holeOf = nullptr;
         // possibly not needed. it's not done for the exterior ring, so I'm not sure

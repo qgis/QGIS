@@ -184,7 +184,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     {
       if ( ct.destinationCrs().isGeographic() &&
            ( extent.xMinimum() <= -180 || extent.xMaximum() >= 180 ||
-             extent.yMinimum() <=  -90 || extent.yMaximum() >=  90 ) )
+             extent.yMinimum() <= -90 || extent.yMaximum() >= 90 ) )
         // Use unlimited rectangle because otherwise we may end up transforming wrong coordinates.
         // E.g. longitude -200 to +160 would be understood as +40 to +160 due to periodicity.
         // We could try to clamp coords to (-180,180) for lon resp. (-90,90) for lat,

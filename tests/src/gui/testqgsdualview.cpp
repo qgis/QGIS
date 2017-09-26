@@ -35,9 +35,6 @@ class TestQgsDualView : public QObject
     Q_OBJECT
   public:
     TestQgsDualView()
-      : mCanvas( 0 )
-      , mPointsLayer( 0 )
-      , mDualView( 0 )
     {}
 
   private slots:

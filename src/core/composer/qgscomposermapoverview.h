@@ -252,19 +252,19 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     QgsComposerMapOverview(); //forbidden
 
     //! Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present
-    int mFrameMapId;
+    int mFrameMapId = -1;
 
     //! Drawing style for overview farme
     QgsFillSymbol *mFrameSymbol = nullptr;
 
     //! Blend mode for overview
-    QPainter::CompositionMode mBlendMode;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
     //! True if overview is inverted
-    bool mInverted;
+    bool mInverted = false;
 
     //! True if map is centered on overview
-    bool mCentered;
+    bool mCentered = false;
 
     //! Creates default overview symbol
     void createDefaultFrameSymbol();

@@ -31,9 +31,6 @@
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )
-  , mIncludeGeometry( true )
-  , mIncludeAttributes( true )
-  , mIncludeRelatedAttributes( false )
   , mLayer( vectorLayer )
 {
   if ( vectorLayer )
@@ -130,7 +127,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
 
         if ( attributeCounter > 0 )
           properties += QLatin1String( ",\n" );
-        QVariant val =  feature.attributes().at( i );
+        QVariant val = feature.attributes().at( i );
 
         if ( mLayer )
         {

@@ -1779,50 +1779,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       public:
 
         Tools()
-          : mZoomIn( nullptr )
-          , mZoomOut( nullptr )
-          , mPan( nullptr )
-          , mIdentify( nullptr )
-          , mFeatureAction( nullptr )
-          , mMeasureDist( nullptr )
-          , mMeasureArea( nullptr )
-          , mMeasureAngle( nullptr )
-          , mAddFeature( nullptr )
-          , mCircularStringCurvePoint( nullptr )
-          , mCircularStringRadius( nullptr )
-          , mMoveFeature( nullptr )
-          , mOffsetCurve( nullptr )
-          , mReshapeFeatures( nullptr )
-          , mSplitFeatures( nullptr )
-          , mSplitParts( nullptr )
-          , mSelect( nullptr )
-          , mSelectFeatures( nullptr )
-          , mSelectPolygon( nullptr )
-          , mSelectFreehand( nullptr )
-          , mSelectRadius( nullptr )
-          , mVertexAdd( nullptr )
-          , mVertexMove( nullptr )
-          , mVertexDelete( nullptr )
-          , mAddRing( nullptr )
-          , mFillRing( nullptr )
-          , mAddPart( nullptr )
-          , mSimplifyFeature( nullptr )
-          , mDeleteRing( nullptr )
-          , mDeletePart( nullptr )
-          , mNodeTool( nullptr )
-          , mRotatePointSymbolsTool( nullptr )
-          , mOffsetPointSymbolTool( nullptr )
-          , mAnnotation( nullptr )
-          , mFormAnnotation( nullptr )
-          , mHtmlAnnotation( nullptr )
-          , mSvgAnnotation( nullptr )
-          , mTextAnnotation( nullptr )
-          , mPinLabels( nullptr )
-          , mShowHideLabels( nullptr )
-          , mMoveLabel( nullptr )
-          , mRotateFeature( nullptr )
-          , mRotateLabel( nullptr )
-          , mChangeLabelProperties( nullptr )
         {}
 
         QgsMapTool *mZoomIn = nullptr;
@@ -1949,7 +1905,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! QGIS-internal vector feature clipboard
     QgsClipboard *mInternalClipboard = nullptr;
     //! Flag to indicate how the project properties dialog was summoned
-    bool mShowProjectionTab;
+    bool mShowProjectionTab = false;
 
     /** String containing supporting vector file formats
       Suitable for a QFileDialog file filter.  Build in ctor.
@@ -1971,16 +1927,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapTip *mpMaptip = nullptr;
 
     //! Flag to indicate if maptips are on or off
-    bool mMapTipsVisible;
+    bool mMapTipsVisible = false;
 
     //! Flag to indicate whether we are in fullscreen mode or not
-    bool mFullScreenMode;
+    bool mFullScreenMode = false;
 
     //! Flag to indicate that the previous screen mode was 'maximised'
-    bool mPrevScreenModeMaximized;
+    bool mPrevScreenModeMaximized = false;
 
     //! Flag to indicate an edits save/rollback for active layer is in progress
-    bool mSaveRollbackInProgress;
+    bool mSaveRollbackInProgress = false;
 
     QgsPythonUtils *mPythonUtils = nullptr;
 
@@ -2029,7 +1985,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool cmpByText( QAction *a, QAction *b );
 
     //! the user has trusted the project macros
-    bool mTrustedMacros;
+    bool mTrustedMacros = false;
 
     //! a bar to display warnings in a non-blocker manner
     QgsMessageBar *mInfoBar = nullptr;
@@ -2063,7 +2019,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QHash< QgsComposition *, QgsMapLayerAction * > mAtlasFeatureActions;
 
-    int mProjOpen;
+    int mProjOpen = 0;
 
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );

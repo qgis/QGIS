@@ -48,8 +48,6 @@ enum
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mCapabilities( nullptr )
-  , mSQLComposerDialog( nullptr )
 {
   setupUi( this );
   setupButtons( buttonBox );

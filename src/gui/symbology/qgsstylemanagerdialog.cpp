@@ -859,7 +859,7 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString &dir, const
   if ( dir.isEmpty() )
     return;
 
-  QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+  QModelIndexList indexes = listItems->selectionModel()->selection().indexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     QString name = index.data().toString();
@@ -1406,7 +1406,7 @@ void QgsStyleManagerDialog::addFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     mStyle->addFavorite( type, index.data().toString() );
@@ -1423,7 +1423,7 @@ void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     mStyle->removeFavorite( type, index.data().toString() );
@@ -1459,7 +1459,7 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
       tag = selectedItem->data().toString();
     }
 
-    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       mStyle->tagSymbol( type, index.data().toString(), QStringList( tag ) );
@@ -1482,7 +1482,7 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
       QgsDebugMsg( "unknown entity type" );
       return;
     }
-    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       mStyle->detagSymbol( type, index.data().toString() );

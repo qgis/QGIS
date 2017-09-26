@@ -125,7 +125,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     QString getOpenFileName( const QString &title, const QString &extfilter );
 
     QSslSocket *mSocket = nullptr;
-    bool mExecErrorsDialog;
+    bool mExecErrorsDialog = false;
     QTimer *mTimer = nullptr;
     QList<QSslError> mSslErrors;
     QList<QSslCertificate> mTrustedCAs;

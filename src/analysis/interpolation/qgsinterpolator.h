@@ -80,7 +80,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     QVector<vertexData> mCachedBaseData;
 
     //! Flag that tells if the cache already has been filled
-    bool mDataIsCached;
+    bool mDataIsCached = false;
 
     //Information about the input vector layers and the attributes (or z-values) that are used for interpolation
     QList<LayerData> mLayerData;

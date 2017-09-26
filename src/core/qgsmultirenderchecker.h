@@ -127,7 +127,7 @@ class CORE_EXPORT QgsMultiRenderChecker
     QString mRenderedImage;
     QString mControlName;
     QString mControlPathPrefix;
-    unsigned int mColorTolerance;
+    unsigned int mColorTolerance = 0;
     QgsMapSettings mMapSettings;
 };
 

@@ -791,13 +791,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapCanvasMap *mMap = nullptr;
 
     //! Flag indicating if the map canvas is frozen.
-    bool mFrozen;
+    bool mFrozen = false;
 
     //! Flag that allows squashing multiple refresh() calls into just one delayed rendering job
-    bool mRefreshScheduled;
+    bool mRefreshScheduled = false;
 
     //! determines whether user has requested to suppress rendering
-    bool mRenderFlag;
+    bool mRenderFlag = true;
 
     //! current layer in legend
     QgsMapLayer *mCurrentLayer = nullptr;
@@ -813,10 +813,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! recently used extent
     QList <QgsRectangle> mLastExtent;
-    int mLastExtentIndex;
+    int mLastExtentIndex = -1;
 
     //! Scale factor multiple for default zoom in/out
-    double mWheelZoomFactor;
+    double mWheelZoomFactor = 2.0;
 
     //! Timer that periodically fires while map rendering is in progress to update the visible map
     QTimer mMapUpdateTimer;
@@ -825,16 +825,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapRendererQImageJob *mJob = nullptr;
 
     //! Flag determining whether the active job has been canceled
-    bool mJobCanceled;
+    bool mJobCanceled = false;
 
     //! Labeling results from the recently rendered map
     QgsLabelingResults *mLabelingResults = nullptr;
 
     //! Whether layers are rendered sequentially or in parallel
-    bool mUseParallelRendering;
+    bool mUseParallelRendering = false;
 
     //! Whether to add rendering stats to the rendered image
-    bool mDrawRenderingStats;
+    bool mDrawRenderingStats = false;
 
     //! Optionally use cache with rendered map layers for the current map settings
     QgsMapRendererCache *mCache = nullptr;
@@ -851,7 +851,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QList< QgsMapRendererQImageJob * > mPreviewJobs;
 
     //! lock the scale, so zooming can be performed using magnication
-    bool mScaleLocked;
+    bool mScaleLocked = false;
 
     QgsExpressionContextScope mExpressionContextScope;
 
@@ -859,7 +859,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QRect mZoomRect;
 
     //! Flag to indicate a zoom by rectangle operation is taking place
-    bool mZoomDragging;
+    bool mZoomDragging = false;
 
     //! Zoom by rectangle rubber band
     std::unique_ptr< QgsRubberBand > mZoomRubberBand;

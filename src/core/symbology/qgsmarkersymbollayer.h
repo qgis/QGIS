@@ -353,11 +353,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     //! Stroke color
     QColor mStrokeColor;
     //! Stroke style
-    Qt::PenStyle mStrokeStyle;
+    Qt::PenStyle mStrokeStyle = Qt::SolidLine;
     //! Stroke width
-    double mStrokeWidth;
+    double mStrokeWidth = 0;
     //! Stroke width units
-    QgsUnitTypes::RenderUnit mStrokeWidthUnit;
+    QgsUnitTypes::RenderUnit mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
     //! Stroke width map unit scale
     QgsMapUnitScale mStrokeWidthMapUnitScale;
     //! Stroke pen join style
@@ -377,7 +377,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QImage mSelCache;
     //! True if using cached images of markers for drawing. This is faster, but cannot
     //! be used when data defined properties are present
-    bool mUsingCache;
+    bool mUsingCache = false;
     //! Maximum width/height of cache image
     static const int MAXIMUM_CACHE_WIDTH = 3000;
 
@@ -633,7 +633,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QFontMetrics *mFontMetrics = nullptr;
     QChar mChr;
 
-    double mChrWidth;
+    double mChrWidth = 0;
     QPointF mChrOffset;
     QFont mFont;
     double mOrigSize;

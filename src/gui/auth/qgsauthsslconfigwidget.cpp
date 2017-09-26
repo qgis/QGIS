@@ -45,8 +45,6 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   : QWidget( parent )
   , mCert( nullptr )
   , mConnectionCAs( connectionCAs )
-  , mCanSave( false )
-  , mDisabled( false )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

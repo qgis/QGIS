@@ -493,7 +493,7 @@ int main( int argc, char *argv[] )
   // This behavior is used to load the app, snapshot the map,
   // save the image to disk and then exit
   QString mySnapshotFileName = QLatin1String( "" );
-  QString configLocalStorageLocation =  QLatin1String( "" );
+  QString configLocalStorageLocation = QLatin1String( "" );
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
@@ -998,7 +998,7 @@ int main( int argc, char *argv[] )
   if ( activeStyleName.isEmpty() ) // not set, using default style
   {
     //not set, check default
-    activeStyleName = QApplication::style()->metaObject()->className() ;
+    activeStyleName = QApplication::style()->metaObject()->className();
   }
   if ( activeStyleName.contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
   {

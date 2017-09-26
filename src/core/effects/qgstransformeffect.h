@@ -224,17 +224,17 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
   private:
 
-    double mTranslateX;
-    double mTranslateY;
-    QgsUnitTypes::RenderUnit mTranslateUnit;
+    double mTranslateX = 0.0;
+    double mTranslateY = 0.0;
+    QgsUnitTypes::RenderUnit mTranslateUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mTranslateMapUnitScale;
-    double mScaleX;
-    double mScaleY;
-    double mRotation;
-    double mShearX;
-    double mShearY;
-    bool mReflectX;
-    bool mReflectY;
+    double mScaleX = 1.0;
+    double mScaleY = 1.0;
+    double mRotation = 0.0;
+    double mShearX = 0.0;
+    double mShearY = 0.0;
+    bool mReflectX = false;
+    bool mReflectY = false;
 
     QTransform createTransform( const QgsRenderContext &context ) const;
 

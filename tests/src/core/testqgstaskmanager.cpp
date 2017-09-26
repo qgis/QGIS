@@ -28,14 +28,14 @@ class TestTask : public QgsTask
 
   public:
 
-    TestTask( const QString &desc = QString() ) : QgsTask( desc ), runCalled( false ) {}
-    TestTask( const QString &desc, const QgsTask::Flags &flags ) : QgsTask( desc, flags ), runCalled( false ) {}
+    TestTask( const QString &desc = QString() ) : QgsTask( desc ) {}
+    TestTask( const QString &desc, const QgsTask::Flags &flags ) : QgsTask( desc, flags ) {}
 
     void emitProgressChanged( double progress ) { setProgress( progress ); }
     void emitTaskStopped() {  }
     void emitTaskCompleted() { }
 
-    bool runCalled;
+    bool runCalled =  false ;
 
   protected:
 
@@ -53,12 +53,12 @@ class ProgressReportingTask : public QgsTask
 
   public:
 
-    ProgressReportingTask( const QString &desc = QString() ) : QgsTask( desc ), finished( false ), terminated( false ) {}
+    ProgressReportingTask( const QString &desc = QString() ) : QgsTask( desc ) {}
 
     void emitProgressChanged( double progress ) { setProgress( progress ); }
 
-    bool finished;
-    bool terminated;
+    bool finished =  false ;
+    bool terminated =  false ;
 
   public slots:
     void finish() { finished = true; }

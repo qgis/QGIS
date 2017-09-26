@@ -158,12 +158,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
   protected:
     QList<QgsMapLayer *> mLayers;
     QMap<QString, Qt::CheckState> mLayersChecked;
-    bool mItemCheckable;
+    bool mItemCheckable = false;
 
   private:
 
-    bool mAllowEmpty;
-    bool mShowCrs;
+    bool mAllowEmpty = false;
+    bool mShowCrs = false;
     QStringList mAdditionalItems;
 };
 

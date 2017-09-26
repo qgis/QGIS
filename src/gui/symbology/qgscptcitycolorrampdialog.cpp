@@ -677,7 +677,7 @@ void QgsCptCityColorRampDialog::refreshModel( const QModelIndex &index )
 
   mModel->refresh( index );
 
-  for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
+  for ( int i = 0; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
     if ( mTreeView->isExpanded( idx ) || !mModel->hasChildren( idx ) )

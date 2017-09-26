@@ -158,7 +158,7 @@ void QgsMapLayerStyleManagerWidget::addStyle()
 
 void QgsMapLayerStyleManagerWidget::removeStyle()
 {
-  QString current =  mLayer->styleManager()->currentStyle();
+  QString current = mLayer->styleManager()->currentStyle();
   QList<QStandardItem *> items = mModel->findItems( current );
   if ( items.isEmpty() )
     return;

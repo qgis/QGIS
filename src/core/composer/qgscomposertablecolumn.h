@@ -196,13 +196,13 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
   private:
 
     QColor mBackgroundColor; //currently unused
-    Qt::AlignmentFlag mHAlignment;
-    Qt::AlignmentFlag mVAlignment;
+    Qt::AlignmentFlag mHAlignment = Qt::AlignLeft;
+    Qt::AlignmentFlag mVAlignment = Qt::AlignVCenter;
     QString mHeading;
     QString mAttribute;
-    int mSortByRank;
-    Qt::SortOrder mSortOrder;
-    double mWidth;
+    int mSortByRank = 0;
+    Qt::SortOrder mSortOrder = Qt::AscendingOrder;
+    double mWidth = 0.0;
 
 };
 

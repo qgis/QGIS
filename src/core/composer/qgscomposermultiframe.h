@@ -300,10 +300,10 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
 
     QList<QgsComposerFrame *> mFrameItems;
 
-    ResizeMode mResizeMode;
+    ResizeMode mResizeMode = UseExistingFrames;
 
     //! True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )
-    bool mCreateUndoCommands;
+    bool mCreateUndoCommands = false;
 
   protected slots:
 
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
   private:
     QgsComposerMultiFrame(); //forbidden
 
-    bool mIsRecalculatingSize;
+    bool mIsRecalculatingSize = false;
 };
 
 #endif // QGSCOMPOSERMULTIFRAME_H

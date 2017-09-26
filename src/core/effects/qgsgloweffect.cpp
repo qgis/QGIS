@@ -23,12 +23,7 @@
 
 QgsGlowEffect::QgsGlowEffect()
   : QgsPaintEffect()
-  , mSpread( 2.0 )
-  , mSpreadUnit( QgsUnitTypes::RenderMillimeters )
-  , mBlurLevel( 3 )
   , mColor( Qt::white )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-  , mColorType( SingleColor )
 {
 
 }

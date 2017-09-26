@@ -43,11 +43,6 @@ class TestQgsCentroidFillSymbol : public QObject
 
   public:
     TestQgsCentroidFillSymbol()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mCentroidFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -60,7 +55,7 @@ class TestQgsCentroidFillSymbol : public QObject
     void centroidFillSymbolPartBiggest();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

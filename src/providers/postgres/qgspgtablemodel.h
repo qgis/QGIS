@@ -64,7 +64,7 @@ class QgsPgTableModel : public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
 };
 
 #endif // QGSPGTABLEMODEL_H

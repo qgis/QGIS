@@ -748,7 +748,7 @@ while ($LINE_IDX < $LINE_COUNT){
     };
 
     # remove struct member assignment
-    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(\([^()]+\))?\s*;/ ){
         dbg_info("remove struct member assignment");
         $LINE = "$1;";
     }

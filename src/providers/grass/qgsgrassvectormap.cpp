@@ -387,7 +387,7 @@ QgsGrassVectorMapLayer *QgsGrassVectorMap::openLayer( int field )
 
   if ( !layer )
   {
-    layer = new QgsGrassVectorMapLayer( this, field ) ;
+    layer = new QgsGrassVectorMapLayer( this, field );
     layer->load();
     mLayers << layer;
   }

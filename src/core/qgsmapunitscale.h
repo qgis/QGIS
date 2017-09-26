@@ -46,10 +46,6 @@ class CORE_EXPORT QgsMapUnitScale
     explicit QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 )
       : minScale( minScale )
       , maxScale( maxScale )
-      , minSizeMMEnabled( false )
-      , minSizeMM( 0.0 )
-      , maxSizeMMEnabled( false )
-      , maxSizeMM( 0.0 )
     {}
 
     /**
@@ -65,13 +61,13 @@ class CORE_EXPORT QgsMapUnitScale
     double maxScale;
 
     //! Whether the minimum size in mm should be respected
-    bool minSizeMMEnabled;
+    bool minSizeMMEnabled = false;
     //! The minimum size in millimeters, or 0.0 if unset
-    double minSizeMM;
+    double minSizeMM = 0.0;
     //! Whether the maximum size in mm should be respected
-    bool maxSizeMMEnabled;
+    bool maxSizeMMEnabled = false;
     //! The maximum size in millimeters, or 0.0 if unset
-    double maxSizeMM;
+    double maxSizeMM = 0.0;
 
     /** Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
      * set for the object.

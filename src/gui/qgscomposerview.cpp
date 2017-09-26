@@ -54,18 +54,6 @@
 
 QgsComposerView::QgsComposerView( QWidget *parent, const char *name, Qt::WindowFlags f )
   : QGraphicsView( parent )
-  , mCurrentTool( Select )
-  , mPreviousTool( Select )
-  , mMarqueeSelect( false )
-  , mMarqueeZoom( false )
-  , mTemporaryZoomStatus( QgsComposerView::Inactive )
-  , mPaintingEnabled( true )
-  , mMoveContentSearchRadius( 25 )
-  , mNodesItemIndex( -1 )
-  , mToolPanning( false )
-  , mMousePanning( false )
-  , mKeyPanning( false )
-  , mMovingItemContent( false )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );

@@ -36,15 +36,6 @@
 QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
   : QgsComposerItem( composition )
   , mLegendModel( new QgsLegendModel( mComposition->project()->layerTreeRoot() ) )
-  , mCustomLayerTree( nullptr )
-  , mLegendFilterByMap( false )
-  , mLegendFilterByExpression( false )
-  , mFilterOutAtlas( false )
-  , mFilterAskedForUpdate( false )
-  , mInAtlas( false )
-  , mInitialMapScaleCalculated( false )
-  , mForceResize( false )
-  , mSizeToContents( true )
 {
   connect( &composition->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsComposerLegend::onAtlasEnded );
   connect( &composition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerLegend::onAtlasFeature );
@@ -56,16 +47,6 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
 
 QgsComposerLegend::QgsComposerLegend()
   : QgsComposerItem( nullptr )
-  , mLegendModel( nullptr )
-  , mCustomLayerTree( nullptr )
-  , mLegendFilterByMap( false )
-  , mLegendFilterByExpression( false )
-  , mFilterOutAtlas( false )
-  , mFilterAskedForUpdate( false )
-  , mInAtlas( false )
-  , mInitialMapScaleCalculated( false )
-  , mForceResize( false )
-  , mSizeToContents( true )
 {
 
 }

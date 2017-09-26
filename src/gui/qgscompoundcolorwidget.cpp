@@ -33,10 +33,6 @@
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
   : QgsPanelWidget( parent )
-  , mAllowAlpha( true )
-  , mLastCustomColorIndex( 0 )
-  , mPickingColor( false )
-  , mDiscarded( false )
 {
   setupUi( this );
 

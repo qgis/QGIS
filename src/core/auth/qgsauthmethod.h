@@ -147,7 +147,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     explicit QgsAuthMethod()
       : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
       , mDataProviders( QStringList() )
-      , mVersion( 0 )
     {}
 
     //! Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
@@ -163,7 +162,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
     QgsAuthMethod::Expansions mExpansions;
     QStringList mDataProviders;
-    int mVersion;
+    int mVersion = 0;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAuthMethod::Expansions )
 

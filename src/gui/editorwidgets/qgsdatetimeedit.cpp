@@ -26,9 +26,6 @@
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   : QDateTimeEdit( parent )
-  , mAllowNull( true )
-  , mIsNull( true )
-  , mIsEmpty( false )
 {
   mClearButton = new QToolButton( this );
   mClearButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearText.svg" ) ) );

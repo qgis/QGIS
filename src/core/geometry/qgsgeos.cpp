@@ -346,7 +346,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QList<QgsAbstractGeometry *> &geomL
   GEOSGeometry *geomUnion = nullptr;
   try
   {
-    GEOSGeometry *geomCollection =  createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
+    GEOSGeometry *geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
     geomUnion = GEOSUnaryUnion_r( geosinit.ctxt, geomCollection );
     GEOSGeom_destroy_r( geosinit.ctxt, geomCollection );
   }

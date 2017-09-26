@@ -173,8 +173,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
 
     layout->addWidget( mModeButton );
     layout->addWidget( mTypeButton );
-    layout->addWidget( mToleranceSpinBox ) ;
-    layout->addWidget( mUnitsComboBox ) ;
+    layout->addWidget( mToleranceSpinBox );
+    layout->addWidget( mUnitsComboBox );
 
     QToolButton *topoButton = new QToolButton();
     topoButton->addAction( mTopologicalEditingAction );

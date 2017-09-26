@@ -26,9 +26,6 @@
 
 QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   : QDialog( parent )
-  , mPassCurOk( false )
-  , mPassNewOk( false )
-
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

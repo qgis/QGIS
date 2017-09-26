@@ -196,14 +196,14 @@ class CORE_EXPORT QgsMapToPixel
     double yCenter() const { return mYCenter; }
 
   private:
-    double mMapUnitsPerPixel;
-    int mWidth;
-    int mHeight;
-    double mRotation;
-    double mXCenter;
-    double mYCenter;
-    double xMin;
-    double yMin;
+    double mMapUnitsPerPixel = 1;
+    int mWidth = 1;
+    int mHeight = 1;
+    double mRotation = 0.0;
+    double mXCenter = 0.5;
+    double mYCenter = 0.5;
+    double xMin = 0;
+    double yMin = 0;
     QTransform mMatrix;
 
     bool updateMatrix();

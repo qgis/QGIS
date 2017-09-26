@@ -23,11 +23,7 @@
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
   : QgsMapCanvasItem( mapCanvas )
-  , mIconSize( 5 )
-  , mIconType( ICON_CIRCLE )
   , mGeometryType( geometryType )
-  , mTranslationOffsetX( 0.0 )
-  , mTranslationOffsetY( 0.0 )
 {
   reset( geometryType );
   QColor color( Qt::lightGray );
@@ -41,11 +37,6 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType
 
 QgsRubberBand::QgsRubberBand()
   : QgsMapCanvasItem( nullptr )
-  , mIconSize( 5 )
-  , mIconType( ICON_CIRCLE )
-  , mGeometryType( QgsWkbTypes::PolygonGeometry )
-  , mTranslationOffsetX( 0.0 )
-  , mTranslationOffsetY( 0.0 )
 {
 }
 

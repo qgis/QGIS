@@ -479,7 +479,7 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
 
   //transform back to layer CRS in case map CRS and layer CRS are different
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  QgsCoordinateTransform ct =  mCanvas->mapSettings().layerTransform( vlayer );
+  QgsCoordinateTransform ct = mCanvas->mapSettings().layerTransform( vlayer );
   if ( ct.isValid() )
   {
     c->transform( ct, QgsCoordinateTransform::ReverseTransform );
@@ -684,7 +684,7 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
 
   if ( e.hasWhere() )
   {
-    QgsVertexMarker *vm =  new QgsVertexMarker( mCanvas );
+    QgsVertexMarker *vm = new QgsVertexMarker( mCanvas );
     vm->setCenter( mCanvas->mapSettings().layerToMapCoordinates( vlayer, e.where() ) );
     vm->setIconType( QgsVertexMarker::ICON_X );
     vm->setPenWidth( 2 );

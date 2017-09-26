@@ -103,8 +103,8 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
     }
 
     bool statsOk = true;
-    QgsRasterBandStats verifiedStats =  verifiedProvider->bandStatistics( band );
-    QgsRasterBandStats expectedStats =  expectedProvider->bandStatistics( band );
+    QgsRasterBandStats verifiedStats = verifiedProvider->bandStatistics( band );
+    QgsRasterBandStats expectedStats = expectedProvider->bandStatistics( band );
 
     // Min/max may 'slightly' differ, for big numbers however, the difference may
     // be quite big, for example for Float32 with max -3.332e+38, the difference is 1.47338e+24

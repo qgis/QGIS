@@ -23,7 +23,6 @@
 
 QgsMssqlTableModel::QgsMssqlTableModel()
   : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );

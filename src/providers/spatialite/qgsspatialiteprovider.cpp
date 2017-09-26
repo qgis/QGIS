@@ -436,21 +436,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
 
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
-  , mValid( false )
-  , mIsQuery( false )
-  , mTableBased( false )
-  , mViewBased( false )
-  , mVShapeBased( false )
-  , mReadOnly( false )
-  , mGeomType( QgsWkbTypes::Unknown )
-  , mSrid( -1 )
-  , mNumberFeatures( 0 )
-  , mSpatialIndexRTree( false )
-  , mSpatialIndexMbrCache( false )
   , mEnabledCapabilities( 0 )
-  , mGotSpatialiteVersion( false )
-  , mSpatialiteVersionMajor( 0 )
-  , mSpatialiteVersionMinor( 0 )
 {
   nDims = GAIA_XY;
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );

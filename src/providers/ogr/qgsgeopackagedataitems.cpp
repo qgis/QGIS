@@ -268,7 +268,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
             options.insert( QStringLiteral( "layerName" ), dropUri.name );
-            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner ) ;
+            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
             mainTask->addSubTask( exportTask, importTasks );
             importTasks << exportTask;
             // when export is successful:
@@ -294,7 +294,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
           }
           else  // Import raster
           {
-            QgsGeoPackageRasterWriterTask  *exportTask = new QgsGeoPackageRasterWriterTask( dropUri, mPath ) ;
+            QgsGeoPackageRasterWriterTask  *exportTask = new QgsGeoPackageRasterWriterTask( dropUri, mPath );
             mainTask->addSubTask( exportTask, importTasks );
             importTasks << exportTask;
             // when export is successful:

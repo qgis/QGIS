@@ -42,12 +42,6 @@ class TestQgsBlendModes : public QObject
 
   public:
     TestQgsBlendModes()
-      : mMapSettings( 0 )
-      , mpPointsLayer( 0 )
-      , mpPolysLayer( 0 )
-      , mpLinesLayer( 0 )
-      , mRasterLayer1( 0 )
-      , mRasterLayer2( 0 )
     {}
     ~TestQgsBlendModes()
     {

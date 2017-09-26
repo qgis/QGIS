@@ -270,20 +270,20 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     mutable QgsRectangle mCoverageExtent;
 
     //! Coverage width, may be 0 if it could not be found in DescribeCoverage
-    int mWidth;
+    int mWidth = 0;
 
     //! Coverage width, may be 0 if it could not be found in DescribeCoverage
-    int mHeight;
+    int mHeight = 0;
 
     //! Block size
-    int mXBlockSize;
-    int mYBlockSize;
+    int mXBlockSize = 0;
+    int mYBlockSize = 0;
 
     //! Flag if size was parsed successfully
-    bool mHasSize;
+    bool mHasSize = false;
 
     //! Number of bands
-    int mBandCount;
+    int mBandCount = 0;
 
     /** \brief Gdal data types used to represent data in in QGIS,
                may be longer than source data type to keep nulls
@@ -325,18 +325,18 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Name of memory file for cached data
     QString mCachedMemFilename;
 
-    mutable VSILFILE *mCachedMemFile;
+    mutable VSILFILE *mCachedMemFile = nullptr;
 
     //! Pointer to cached GDAL dataset
-    mutable GDALDatasetH mCachedGdalDataset;
+    mutable GDALDatasetH mCachedGdalDataset = nullptr;
 
     //! Current cache error last getCache() error.
     mutable QgsError mCachedError;
 
     //! The previous parameters to draw().
     mutable QgsRectangle mCachedViewExtent;
-    mutable int mCachedViewWidth;
-    mutable int mCachedViewHeight;
+    mutable int mCachedViewWidth = 0;
+    mutable int mCachedViewHeight = 0;
 
     //! Maximum width and height of getmap requests
     int mMaxWidth;
@@ -356,7 +356,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     mutable QgsCoordinateTransform mCoordinateTransform;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
-    mutable bool mExtentDirty;
+    mutable bool mExtentDirty = true;
 
     //! Base URL for WCS GetFeatureInfo requests
     QString mGetFeatureInfoUrlBase;
@@ -368,7 +368,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //QMap<int, QStringList> mLayerParentNames;
 
     //! Errors counter
-    int mErrors;
+    int mErrors = 0;
 
     //! http authorization details
     mutable QgsWcsAuthorization mAuth;
@@ -382,12 +382,12 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsCoordinateReferenceSystem mCrs;
 
     // Fix for servers using bbox 1 px bigger
-    bool mFixBox;
+    bool mFixBox = false;
 
     // Fix for rasters rotated by GeoServer
-    bool mFixRotate;
+    bool mFixRotate = false;
 
-    QNetworkRequest::CacheLoadControl mCacheLoadControl;
+    QNetworkRequest::CacheLoadControl mCacheLoadControl = QNetworkRequest::PreferNetwork;
 
 };
 
