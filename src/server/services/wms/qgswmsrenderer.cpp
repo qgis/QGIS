@@ -2926,8 +2926,6 @@ namespace QgsWms
 
     for ( QgsVectorLayerFeatureCounter *c : counters )
     {
-      if ( !c )
-        continue;
       c->waitForFinished();
     }
 
