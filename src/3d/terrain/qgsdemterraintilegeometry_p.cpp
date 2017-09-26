@@ -102,7 +102,6 @@ static QByteArray createPlaneIndexData( int res )
   return indexBytes;
 }
 
-///@cond PRIVATE
 
 
 //! Generates vertex buffer for DEM terrain tiles
@@ -167,8 +166,8 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
     int m_resolution;
 };
 
-/// @endcond
 
+// ------------
 
 
 DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, const QByteArray &heightMap, DemTerrainTileGeometry::QNode *parent )
