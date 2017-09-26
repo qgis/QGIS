@@ -60,7 +60,7 @@ Adds a geometry and takes ownership. Returns true in case of success.
  :rtype: bool
 %End
 
-    virtual bool insertGeometry( QgsAbstractGeometry *g, int index /Transfer/ );
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 %Docstring
  Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
  \param g geometry to insert. Ownership is transferred to the collection.

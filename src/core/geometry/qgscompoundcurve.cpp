@@ -23,7 +23,7 @@
 #include "qgswkbptr.h"
 #include <QPainter>
 #include <QPainterPath>
-
+#include <memory>
 
 QgsCompoundCurve::QgsCompoundCurve(): QgsCurve()
 {
@@ -263,9 +263,8 @@ QString QgsCompoundCurve::asWkt( int precision ) const
 QDomElement QgsCompoundCurve::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   // GML2 does not support curves
-  QgsLineString *line = curveToLine();
+  std::unique_ptr< QgsLineString > line( curveToLine() );
   QDomElement gml = line->asGML2( doc, precision, ns );
-  delete line;
   return gml;
 }
 
@@ -286,9 +285,8 @@ QDomElement QgsCompoundCurve::asGML3( QDomDocument &doc, int precision, const QS
 QString QgsCompoundCurve::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
-  QgsLineString *line = curveToLine();
+  std::unique_ptr< QgsLineString > line( curveToLine() );
   QString json = line->asJSON( precision );
-  delete line;
   return json;
 }
 
@@ -373,12 +371,11 @@ QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationTole
 {
   QList< QgsCurve * >::const_iterator curveIt = mCurves.constBegin();
   QgsLineString *line = new QgsLineString();
-  QgsLineString *currentLine = nullptr;
+  std::unique_ptr< QgsLineString > currentLine;
   for ( ; curveIt != mCurves.constEnd(); ++curveIt )
   {
-    currentLine = ( *curveIt )->curveToLine( tolerance, toleranceType );
-    line->append( currentLine );
-    delete currentLine;
+    currentLine.reset( ( *curveIt )->curveToLine( tolerance, toleranceType ) );
+    line->append( currentLine.get() );
   }
   return line;
 }

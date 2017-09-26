@@ -55,6 +55,12 @@ bool QgsMultiPointV2::fromWkt( const QString &wkt )
   return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometry *>() << new QgsPoint, QStringLiteral( "Point" ) );
 }
 
+void QgsMultiPointV2::clear()
+{
+  QgsGeometryCollection::clear();
+  mWkbType = QgsWkbTypes::MultiPoint;
+}
+
 QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
@@ -117,8 +123,31 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
     delete g;
     return false;
   }
-  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
+  if ( mGeometries.empty() )
+  {
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
+  }
+  if ( is3D() && !g->is3D() )
+    g->addZValue();
+  else if ( !is3D() && g->is3D() )
+    g->dropZValue();
+  if ( isMeasure() && !g->isMeasure() )
+    g->addMValue();
+  else if ( !isMeasure() && g->isMeasure() )
+    g->dropMValue();
+
   return QgsGeometryCollection::addGeometry( g );
+}
+
+bool QgsMultiPointV2::insertGeometry( QgsAbstractGeometry *g, int index )
+{
+  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::Point )
+  {
+    delete g;
+    return false;
+  }
+
+  return QgsGeometryCollection::insertGeometry( g, index );
 }
 
 QgsAbstractGeometry *QgsMultiPointV2::boundary() const

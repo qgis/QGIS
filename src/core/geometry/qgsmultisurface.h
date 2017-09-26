@@ -30,22 +30,15 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
   public:
     QgsMultiSurface();
     QString geometryType() const override;
+    void clear() override;
     QgsMultiSurface *clone() const override SIP_FACTORY;
     QgsMultiSurface *toCurveType() const override SIP_FACTORY;
-
     bool fromWkt( const QString &wkt ) override;
-
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
-
-
-    //! Adds a geometry and takes ownership. Returns true in case of success
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
-
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
 #ifndef SIP_RUN

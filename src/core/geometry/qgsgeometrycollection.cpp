@@ -530,7 +530,10 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<Q
   QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
   if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::flatType( wkbType() ) )
+  {
+    qDeleteAll( subtypes );
     return false;
+  }
   mWkbType = parts.first;
 
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? "Z" : "", isMeasure() ? "M" : "" );

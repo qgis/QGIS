@@ -274,15 +274,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   }
 
 
-  QgsAbstractGeometry *combinedGeometries = geomEngine->combine( nearGeometries );
+  std::unique_ptr< QgsAbstractGeometry > combinedGeometries( geomEngine->combine( nearGeometries ) );
   qDeleteAll( nearGeometries );
   if ( !combinedGeometries )
   {
     return nullptr;
   }
 
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries.get() ) );
 
-  delete combinedGeometries;
   return diffGeom;
 }

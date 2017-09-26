@@ -21,6 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
+#include <memory>
 
 QgsMultiCurve::QgsMultiCurve()
   : QgsGeometryCollection()
@@ -36,6 +37,12 @@ QString QgsMultiCurve::geometryType() const
 QgsMultiCurve *QgsMultiCurve::clone() const
 {
   return new QgsMultiCurve( *this );
+}
+
+void QgsMultiCurve::clear()
+{
+  QgsGeometryCollection::clear();
+  mWkbType = QgsWkbTypes::MultiCurve;
 }
 
 QgsMultiCurve *QgsMultiCurve::toCurveType() const
@@ -58,13 +65,11 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
-      QgsLineString *lineString = static_cast<const QgsCurve *>( geom )->curveToLine();
+      std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
 
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
       elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
       elemMultiLineString.appendChild( elemLineStringMember );
-
-      delete lineString;
     }
   }
 
@@ -97,11 +102,10 @@ QString QgsMultiCurve::asJSON( int precision ) const
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
-      QgsLineString *lineString = static_cast<const QgsCurve *>( geom )->curveToLine();
+      std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
       QgsPointSequence pts;
       lineString->points( pts );
       json += QgsGeometryUtils::pointsToJSON( pts, precision ) + ", ";
-      delete lineString;
     }
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
@@ -120,8 +124,31 @@ bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )
     return false;
   }
 
-  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiCurve );
+  if ( mGeometries.empty() )
+  {
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiCurve );
+  }
+  if ( is3D() && !g->is3D() )
+    g->addZValue();
+  else if ( !is3D() && g->is3D() )
+    g->dropZValue();
+  if ( isMeasure() && !g->isMeasure() )
+    g->addMValue();
+  else if ( !isMeasure() && g->isMeasure() )
+    g->dropMValue();
+
   return QgsGeometryCollection::addGeometry( g );
+}
+
+bool QgsMultiCurve::insertGeometry( QgsAbstractGeometry *g, int index )
+{
+  if ( !g || !qgsgeometry_cast<QgsCurve *>( g ) )
+  {
+    delete g;
+    return false;
+  }
+
+  return QgsGeometryCollection::insertGeometry( g, index );
 }
 
 QgsMultiCurve *QgsMultiCurve::reversed() const
@@ -139,7 +166,7 @@ QgsMultiCurve *QgsMultiCurve::reversed() const
 
 QgsAbstractGeometry *QgsMultiCurve::boundary() const
 {
-  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  std::unique_ptr< QgsMultiPointV2 > multiPoint( new QgsMultiPointV2() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( mGeometries.at( i ) ) )
@@ -153,8 +180,7 @@ QgsAbstractGeometry *QgsMultiCurve::boundary() const
   }
   if ( multiPoint->numGeometries() == 0 )
   {
-    delete multiPoint;
     return nullptr;
   }
-  return multiPoint;
+  return multiPoint.release();
 }

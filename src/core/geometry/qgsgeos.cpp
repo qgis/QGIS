@@ -708,14 +708,14 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
 {
   int type = GEOSGeomTypeId_r( geosinit.ctxt, mGeos );
 
-  QgsMultiCurve *multiCurve = nullptr;
+  std::unique_ptr< QgsMultiCurve > multiCurve;
   if ( type == GEOS_MULTILINESTRING )
   {
-    multiCurve = qgsgeometry_cast<QgsMultiCurve *>( mGeometry->clone() );
+    multiCurve.reset( qgsgeometry_cast<QgsMultiCurve *>( mGeometry->clone() ) );
   }
   else if ( type == GEOS_LINESTRING )
   {
-    multiCurve = new QgsMultiCurve();
+    multiCurve.reset( new QgsMultiCurve() );
     multiCurve->addGeometry( mGeometry->clone() );
   }
   else
@@ -729,11 +729,10 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
   }
 
 
-  QgsAbstractGeometry *splitGeom = fromGeos( GEOSsplitPoint );
-  QgsPoint *splitPoint = qgsgeometry_cast<QgsPoint *>( splitGeom );
+  std::unique_ptr< QgsAbstractGeometry > splitGeom( fromGeos( GEOSsplitPoint ) );
+  QgsPoint *splitPoint = qgsgeometry_cast<QgsPoint *>( splitGeom.get() );
   if ( !splitPoint )
   {
-    delete splitGeom;
     return nullptr;
   }
 
@@ -765,8 +764,6 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
     }
   }
 
-  delete splitGeom;
-  delete multiCurve;
   return asGeos( &lines, mPrecision );
 }
 
@@ -1698,13 +1695,13 @@ bool QgsGeos::isSimple( QString *errorMsg ) const
 
 GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose )
 {
-  bool segmentize = false;
+  std::unique_ptr< QgsLineString > segmentized;
   const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( curve );
 
   if ( !line )
   {
-    line = curve->curveToLine();
-    segmentize = true;
+    segmentized.reset( curve->curveToLine() );
+    line = segmentized.get();
   }
 
   if ( !line )
@@ -1776,10 +1773,6 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
   }
   CATCH_GEOS( nullptr )
 
-  if ( segmentize )
-  {
-    delete line;
-  }
   return coordSeq;
 }
 
