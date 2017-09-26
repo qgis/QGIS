@@ -1071,7 +1071,7 @@ QString QgsMapLayer::loadDefaultStyle( bool &resultFlag )
 
 bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml )
 {
-  QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db, uri ) );
+  QgsDebugMsgLevel( QString( "db = %1 uri = %2" ).arg( db, uri ), 4 );
 
   bool resultFlag = false;
 
@@ -1081,7 +1081,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
   const char *myTail = nullptr;
   int myResult;
 
-  QgsDebugMsg( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ) );
+  QgsDebugMsgLevel( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
 
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
@@ -1116,7 +1116,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
 QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
 {
-  QgsDebugMsg( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ) );
+  QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
   resultFlag = false;
 
@@ -1138,7 +1138,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
   else
   {
     QFileInfo project( QgsProject::instance()->fileName() );
-    QgsDebugMsg( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ) );
+    QgsDebugMsgLevel( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString qml;
     if ( loadNamedStyleFromDatabase( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||

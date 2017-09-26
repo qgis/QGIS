@@ -215,7 +215,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       }
       else
       {
-        QgsDebugMsg( "parameter \"" + pname + "\":\"" + pval + "\" added" );
+        QgsDebugMsgLevel( "parameter \"" + pname + "\":\"" + pval + "\" added", 4 );
         setParam( pname, pval );
       }
     }
