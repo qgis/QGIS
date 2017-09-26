@@ -3,82 +3,33 @@
 # Files
 
 SET (geometrychecker_SRCS
-    qgsgeometrychecker.cpp
     qgsgeometrycheckerplugin.cpp
     qgsgeometrycheckfactory.cpp
-    checks/qgsgeometryanglecheck.cpp
-    checks/qgsgeometryareacheck.cpp
-    checks/qgsgeometrydanglecheck.cpp
-    checks/qgsgeometrydegeneratepolygoncheck.cpp
-    checks/qgsgeometryduplicatecheck.cpp
-    checks/qgsgeometryduplicatenodescheck.cpp
-    checks/qgsgeometrycheck.cpp
-    checks/qgsgeometrygapcheck.cpp
-    checks/qgsgeometryholecheck.cpp
-    checks/qgsgeometrylineintersectioncheck.cpp
-    checks/qgsgeometrylinelayerintersectioncheck.cpp
-    checks/qgsgeometrymultipartcheck.cpp
-    checks/qgsgeometrycontainedcheck.cpp
-    checks/qgsgeometryoverlapcheck.cpp
-    checks/qgsgeometrypointcoveredbylinecheck.cpp
-    checks/qgsgeometrypointinpolygoncheck.cpp
-    checks/qgsgeometrysegmentlengthcheck.cpp
-    checks/qgsgeometryselfcontactcheck.cpp
-    checks/qgsgeometryselfintersectioncheck.cpp
-    checks/qgsgeometrysliverpolygoncheck.cpp
-    checks/qgsgeometrytypecheck.cpp
-    ui/qgsgeometrycheckerdialog.cpp
-    ui/qgsgeometrycheckersetuptab.cpp
-    ui/qgsgeometrycheckerresulttab.cpp
-    ui/qgsgeometrycheckfixdialog.cpp
-    ui/qgsgeometrycheckerfixsummarydialog.cpp
-    utils/qgsfeaturepool.cpp
-    utils/qgsgeometrycheckerutils.cpp
+    qgsgeometrycheckerdialog.cpp
+    qgsgeometrycheckersetuptab.cpp
+    qgsgeometrycheckerresulttab.cpp
+    qgsgeometrycheckfixdialog.cpp
+    qgsgeometrycheckerfixsummarydialog.cpp
 )
 
 SET (geometrychecker_HDRS
-    checks/qgsgeometrycheck.h
     qgsgeometrycheckerplugin.h
     qgsgeometrycheckfactory.h
-    utils/qgsgeometrycheckerutils.h
 )
 
 SET (geometrychecker_MOC_HDRS
-    qgsgeometrychecker.h
     qgsgeometrycheckerplugin.h
-    checks/qgsgeometryanglecheck.h
-    checks/qgsgeometryareacheck.h
-    checks/qgsgeometrycheck.h
-    checks/qgsgeometrydanglecheck.h
-    checks/qgsgeometrydegeneratepolygoncheck.h
-    checks/qgsgeometryduplicatecheck.h
-    checks/qgsgeometryduplicatenodescheck.h
-    checks/qgsgeometrygapcheck.h
-    checks/qgsgeometryholecheck.h
-    checks/qgsgeometrylineintersectioncheck.h
-    checks/qgsgeometrylinelayerintersectioncheck.h
-    checks/qgsgeometrymultipartcheck.h
-    checks/qgsgeometrycontainedcheck.h
-    checks/qgsgeometryoverlapcheck.h
-    checks/qgsgeometrypointcoveredbylinecheck.h
-    checks/qgsgeometrypointinpolygoncheck.h
-    checks/qgsgeometrysegmentlengthcheck.h
-    checks/qgsgeometryselfcontactcheck.h
-    checks/qgsgeometryselfintersectioncheck.h
-    checks/qgsgeometrysliverpolygoncheck.h
-    checks/qgsgeometrytypecheck.h
-    ui/qgsgeometrycheckerdialog.h
-    ui/qgsgeometrycheckersetuptab.h
-    ui/qgsgeometrycheckerresulttab.h
-    ui/qgsgeometrycheckfixdialog.h
-    ui/qgsgeometrycheckerfixsummarydialog.h
-    utils/qgsfeaturepool.h
+    qgsgeometrycheckerdialog.h
+    qgsgeometrycheckersetuptab.h
+    qgsgeometrycheckerresulttab.h
+    qgsgeometrycheckfixdialog.h
+    qgsgeometrycheckerfixsummarydialog.h
 )
 
 SET (geometrychecker_UIS
-    ui/qgsgeometrycheckersetuptab.ui
-    ui/qgsgeometrycheckerresulttab.ui
-    ui/qgsgeometrycheckerfixsummarydialog.ui
+    qgsgeometrycheckersetuptab.ui
+    qgsgeometrycheckerresulttab.ui
+    qgsgeometrycheckerfixsummarydialog.ui
 )
 
 SET (geometrychecker_RCCS
@@ -103,10 +54,12 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
   ${CMAKE_SOURCE_DIR}/src/plugins
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/analysis
 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -119,6 +72,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 TARGET_LINK_LIBRARIES(geometrycheckerplugin
   qgis_core
   qgis_gui
+  qgis_analysis
 )
 
 ########################################################

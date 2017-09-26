@@ -350,6 +350,7 @@ SET(QGIS_GUI_SRCS
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
+  qgsvscrollarea.cpp
   qgsdatasourcemanagerdialog.cpp
   qgsabstractdatasourcewidget.cpp
   qgssourceselectprovider.cpp
@@ -720,6 +721,7 @@ SET(QGIS_GUI_HDRS
   qgsabstractdatasourcewidget.h
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
+  qgsvscrollarea.h
 
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
