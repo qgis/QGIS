@@ -132,7 +132,19 @@ bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometry *g )
     return false;
   }
 
-  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPolygon );
+  if ( mGeometries.empty() )
+  {
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPolygon );
+  }
+  if ( is3D() && !g->is3D() )
+    g->addZValue();
+  else if ( !is3D() && g->is3D() )
+    g->dropZValue();
+  if ( isMeasure() && !g->isMeasure() )
+    g->addMValue();
+  else if ( !isMeasure() && g->isMeasure() )
+    g->dropMValue();
+
   return QgsGeometryCollection::addGeometry( g );
 }
 
