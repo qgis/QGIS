@@ -740,7 +740,7 @@ void TestQgsCoordinateReferenceSystem::validSrsIds()
   Q_FOREACH ( long id, ids )
   {
     QgsCoordinateReferenceSystem c = QgsCoordinateReferenceSystem::fromSrsId( id );
-    QVERIFY2( c.isValid(), QStringLiteral( "QgsCoordinateReferenceSystem::fromSrsId( %1 ) is not valid (%2 of %3 IDs returned by QgsCoordinateReferenceSystem::validSrsIds())." ).arg( id ).arg( ids.indexOf( id ) ).arg( ids.length() ) );
+    QVERIFY2( c.isValid(), qPrintable( QStringLiteral( "QgsCoordinateReferenceSystem::fromSrsId( %1 ) is not valid (%2 of %3 IDs returned by QgsCoordinateReferenceSystem::validSrsIds())." ).arg( id ).arg( ids.indexOf( id ) ).arg( ids.length() ) ) );
   }
 }
 
