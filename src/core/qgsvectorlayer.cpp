@@ -773,14 +773,15 @@ void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
     if ( !feature.isValid() )
       feature = getFeature( fid );
 
-    const QgsFields fields = mFields;
-    int size = fields.size();
+    int size = mFields.size();
     for ( int idx : qgsAsConst( mDefaultValueOnUpdateFields ) )
     {
       if ( idx < 0 || idx >= size )
         continue;
 
-      defaultValue( idx, feature );
+      feature.setAttribute( idx, defaultValue( idx, feature ) );
+      // TODO catch recursion!!
+      updateFeature( feature );
     }
   }
 }
