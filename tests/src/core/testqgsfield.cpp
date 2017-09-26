@@ -135,8 +135,8 @@ void TestQgsField::gettersSetters()
   QCOMPARE( field.comment(), QString( "comment" ) );
   field.setAlias( QStringLiteral( "alias" ) );
   QCOMPARE( field.alias(), QString( "alias" ) );
-  field.setDefaultValue( QStringLiteral( "1+2" ) );
-  QCOMPARE( field.defaultValue().expression(), QString( "1+2" ) );
+  field.setDefaultValueDefinition( QStringLiteral( "1+2" ) );
+  QCOMPARE( field.defaultValueDefinition().expression(), QString( "1+2" ) );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   field.setConstraints( constraints );
@@ -244,10 +244,10 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setAlias( QString() );
-  field2.setDefaultValue( QStringLiteral( "1+2" ) );
+  field2.setDefaultValueDefinition( QStringLiteral( "1+2" ) );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
-  field2.setDefaultValue( QString() );
+  field2.setDefaultValueDefinition( QString() );
   constraints = field2.constraints();
   constraints.removeConstraint( QgsFieldConstraints::ConstraintNotNull );
   field2.setConstraints( constraints );
@@ -461,7 +461,7 @@ void TestQgsField::dataStream()
   original.setTypeName( QStringLiteral( "typename1" ) );
   original.setComment( QStringLiteral( "comment1" ) );
   original.setAlias( QStringLiteral( "alias" ) );
-  original.setDefaultValue( QStringLiteral( "default" ) );
+  original.setDefaultValueDefinition( QStringLiteral( "default" ) );
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );
