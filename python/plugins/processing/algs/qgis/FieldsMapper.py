@@ -66,11 +66,11 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                 for field_def in value:
                     if not isinstance(field_def, dict):
                         return False
-                    if not field_def.get('name', False):
+                    if 'name' not in field_def.keys():
                         return False
-                    if field_def.get('type', None) is None:
+                    if 'type' not in field_def.keys():
                         return False
-                    if not field_def.get('expression', False):
+                    if 'expression' not in field_def.keys():
                         return False
                 return True
 
