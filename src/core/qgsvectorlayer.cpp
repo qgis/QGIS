@@ -1524,7 +1524,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
 
   connect( mDataProvider, &QgsVectorDataProvider::raiseError, this, &QgsVectorLayer::raiseError );
 
-  QgsDebugMsg( "Instantiated the data provider plugin" );
+  QgsDebugMsgLevel( "Instantiated the data provider plugin", 4 );
 
   mValid = mDataProvider->isValid();
   if ( !mValid )
@@ -2691,7 +2691,7 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
 
 void QgsVectorLayer::setCoordinateSystem()
 {
-  QgsDebugMsg( "----- Computing Coordinate System" );
+  QgsDebugMsgLevel( "----- Computing Coordinate System", 4 );
 
   //
   // Get the layers project info and set up the QgsCoordinateTransform
@@ -3043,7 +3043,6 @@ QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature &feature, Qgs
     return QVariant();
 
   QString expression = mFields.at( index ).defaultValueDefinition().expression();
-  qWarning() << "DEFAUL TVALUE" << expression;
   if ( expression.isEmpty() )
     return mDataProvider->defaultValue( index );
 
