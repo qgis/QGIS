@@ -62,7 +62,7 @@ class SelectByAttributeSum(GeoAlgorithm):
 
         selected = layer.selectedFeaturesIds()
         if len(selected) == 0:
-            GeoAlgorithmExecutionException(
+            raise GeoAlgorithmExecutionException(
                 self.tr('There is no selection in the input layer. '
                         'Select one feature and try again.'))
 
