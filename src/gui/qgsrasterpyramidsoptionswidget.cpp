@@ -133,7 +133,7 @@ void QgsRasterPyramidsOptionsWidget::apply()
   mySettings.setValue( prefix + "overviewStr", lePyramidsLevels->text().trimmed() );
 
   // overview list
-  tmpStr = QLatin1String( "" );
+  tmpStr.clear();
   for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
   {
     if ( it.value()->isChecked() )

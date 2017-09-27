@@ -5792,7 +5792,7 @@ void QgisApp::saveMapAsPdf()
 //overloaded version of the above function
 void QgisApp::saveMapAsImage( const QString &imageFileNameQString, QPixmap *theQPixmap )
 {
-  if ( imageFileNameQString == QLatin1String( "" ) )
+  if ( imageFileNameQString.isEmpty() )
   {
     //no fileName chosen
     return;
@@ -9913,7 +9913,7 @@ void QgisApp::setExtent( const QgsRectangle &rect )
  */
 bool QgisApp::saveDirty()
 {
-  QString whyDirty = QLatin1String( "" );
+  QString whyDirty;
   bool hasUnsavedEdits = false;
   // extra check to see if there are any vector layers with unsaved provider edits
   // to ensure user has opportunity to save any editing

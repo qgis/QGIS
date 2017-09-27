@@ -83,7 +83,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
         }
         else
         {
-          mSchema = QLatin1String( "" );
+          mSchema.clear();
           mTable = pval;
         }
 
@@ -376,7 +376,7 @@ void QgsDataSourceUri::setSql( const QString &sql )
 
 void QgsDataSourceUri::clearSchema()
 {
-  mSchema = QLatin1String( "" );
+  mSchema.clear();
 }
 
 void QgsDataSourceUri::setSchema( const QString &schema )
@@ -472,36 +472,36 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
 {
   QStringList connectionItems;
 
-  if ( mDatabase != QLatin1String( "" ) )
+  if ( !mDatabase.isEmpty() )
   {
     connectionItems << "dbname='" + escape( mDatabase ) + '\'';
   }
 
-  if ( mService != QLatin1String( "" ) )
+  if ( !mService.isEmpty() )
   {
     connectionItems << "service='" + escape( mService ) + '\'';
   }
-  else if ( mHost != QLatin1String( "" ) )
+  else if ( !mHost.isEmpty() )
   {
     connectionItems << "host=" + mHost;
   }
 
   if ( mService.isEmpty() )
   {
-    if ( mPort != QLatin1String( "" ) )
+    if ( !mPort.isEmpty() )
       connectionItems << "port=" + mPort;
   }
 
-  if ( mDriver != QLatin1String( "" ) )
+  if ( !mDriver.isEmpty() )
   {
     connectionItems << "driver='" + escape( mDriver ) + '\'';
   }
 
-  if ( mUsername != QLatin1String( "" ) )
+  if ( !mUsername.isEmpty() )
   {
     connectionItems << "user='" + escape( mUsername ) + '\'';
 
-    if ( mPassword != QLatin1String( "" ) )
+    if ( !mPassword.isEmpty() )
     {
       connectionItems << "password='" + escape( mPassword ) + '\'';
     }

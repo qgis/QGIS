@@ -65,7 +65,7 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
     setUpSslConfigTree();
 
     lblLoadedConfig->setVisible( false );
-    lblLoadedConfig->setText( QLatin1String( "" ) );
+    lblLoadedConfig->clear();
 
     connect( leHost, &QLineEdit::textChanged,
              this, &QgsAuthSslConfigWidget::validateHostPortText );
@@ -324,7 +324,7 @@ void QgsAuthSslConfigWidget::resetSslCertConfig()
   leHost->clear();
 
   lblLoadedConfig->setVisible( false );
-  lblLoadedConfig->setText( QLatin1String( "" ) );
+  lblLoadedConfig->clear();
   resetSslProtocol();
   resetSslIgnoreErrors();
   resetSslPeerVerify();

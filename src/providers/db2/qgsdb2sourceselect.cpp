@@ -625,7 +625,7 @@ void QgsDb2SourceSelect::addSearchGeometryColumn( const QString &connectionName,
 
 QString QgsDb2SourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
-  QString full_desc = QLatin1String( "" );
+  QString full_desc;
   if ( !schema.isEmpty() )
     full_desc = schema + ".";
   full_desc += table + " (" + column + ") " + type;
@@ -751,8 +751,8 @@ void QgsDb2GeomColumnTypeThread::run()
     }
     else
     {
-      layerProperty.type = QLatin1String( "" );
-      layerProperty.srid = QLatin1String( "" );
+      layerProperty.type.clear();
+      layerProperty.srid.clear();
     }
 
     // Now tell the layer list dialog box...

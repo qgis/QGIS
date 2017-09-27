@@ -213,7 +213,7 @@ void QgsRendererRangeLabelFormat::setPrecision( int precision )
   precision = qBound( MIN_PRECISION, precision, MAX_PRECISION );
   mPrecision = precision;
   mNumberScale = 1.0;
-  mNumberSuffix = QLatin1String( "" );
+  mNumberSuffix.clear();
   while ( precision < 0 )
   {
     precision++;

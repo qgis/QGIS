@@ -110,8 +110,8 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   layer.type = mQuery.value( 3 ).toString();
   if ( mQuery.value( 4 ).isNull() )
   {
-    layer.srid = QLatin1String( "" );
-    layer.srsName = QLatin1String( "" );
+    layer.srid.clear();
+    layer.srsName.clear();
   }
   else
   {

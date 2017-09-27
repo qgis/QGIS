@@ -85,7 +85,7 @@ void QgsFileWidget::setFilePath( QString path )
 {
   if ( path == QgsApplication::nullRepresentation() )
   {
-    path = QLatin1String( "" );
+    path.clear();
   }
 
   //will trigger textEdited slot

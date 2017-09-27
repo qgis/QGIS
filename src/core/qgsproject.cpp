@@ -583,7 +583,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "title" ) );
 
-  title = QLatin1String( "" );               // by default the title will be empty
+  title.clear();               // by default the title will be empty
 
   if ( !nl.count() )
   {

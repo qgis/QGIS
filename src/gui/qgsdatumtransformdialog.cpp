@@ -38,8 +38,8 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString &layerName, cons
   mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), false ).toBool() );
   mRememberSelectionCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/rememberSelection" ), false ).toBool() );
 
-  mLabelSrcDescription->setText( QLatin1String( "" ) );
-  mLabelDstDescription->setText( QLatin1String( "" ) );
+  mLabelSrcDescription->clear();
+  mLabelDstDescription->clear();
 
   for ( int i = 0; i < 2; i++ )
   {

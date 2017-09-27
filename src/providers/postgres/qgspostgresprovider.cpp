@@ -121,7 +121,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   {
     mIsQuery = true;
     mQuery = mTableName;
-    mTableName = QLatin1String( "" );
+    mTableName.clear();
   }
   else
   {
@@ -407,7 +407,7 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
 
     case PktFidMap:
     {
-      QString delim = QLatin1String( "" );
+      QString delim;
       for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
       {
         int idx = mPrimaryKeyAttrs[i];
@@ -524,7 +524,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
       {
         Q_ASSERT( pkVals.size() == pkAttrs.size() );
 
-        QString delim = QLatin1String( "" );
+        QString delim;
         for ( int i = 0; i < pkAttrs.size(); i++ )
         {
           int idx = pkAttrs[i];
@@ -868,7 +868,7 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::Double;
 
-        if ( formattedFieldType == QLatin1String( "numeric" ) || formattedFieldType == QLatin1String( "" ) )
+        if ( formattedFieldType == QLatin1String( "numeric" ) || formattedFieldType.isEmpty() )
         {
           fieldSize = -1;
           fieldPrec = -1;
@@ -1362,7 +1362,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
       bool mightBeNull = false;
       QString primaryKey;
-      QString delim = QLatin1String( "" );
+      QString delim;
 
       mPrimaryKeyType = PktFidMap; // map by default, will downgrade if needed
       for ( int i = 0; i < res.PQntuples(); i++ )
@@ -1441,7 +1441,7 @@ QStringList QgsPostgresProvider::parseUriKey( const QString &key )
         else
         {
           cols << col;
-          col = QLatin1String( "" );
+          col.clear();
 
           if ( ++i == key.size() )
             break;
@@ -1450,7 +1450,7 @@ QStringList QgsPostgresProvider::parseUriKey( const QString &key )
           i++;
           Q_ASSERT( key[i] == '"' );
           i++;
-          col = QLatin1String( "" );
+          col.clear();
           continue;
         }
       }
@@ -1479,8 +1479,8 @@ void QgsPostgresProvider::determinePrimaryKeyFromUriKeyColumn()
   {
     QStringList cols = parseUriKey( primaryKey );
 
-    primaryKey = QLatin1String( "" );
-    QString del = QLatin1String( "" );
+    primaryKey.clear();
+    QString del;
     Q_FOREACH ( const QString &col, cols )
     {
       primaryKey += del + quotedIdentifier( col );
@@ -1986,7 +1986,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // Prepare the INSERT statement
     QString insert = QStringLiteral( "INSERT INTO %1(" ).arg( mQuery );
     QString values = QStringLiteral( ") VALUES (" );
-    QString delim = QLatin1String( "" );
+    QString delim;
     int offset = 1;
 
     QStringList defaultValues;
@@ -2386,7 +2386,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
   {
     conn->begin();
 
-    QString delim = QLatin1String( "" );
+    QString delim;
     QString sql = QStringLiteral( "ALTER TABLE %1 " ).arg( mQuery );
     for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
     {
@@ -3305,7 +3305,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       }
       else
       {
-        schemaName = QLatin1String( "" );
+        schemaName.clear();
         tableName = mQuery;
       }
     }
@@ -3503,7 +3503,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
   if ( mDetectedGeomType == QgsWkbTypes::Unknown )
   {
-    mDetectedSrid = QLatin1String( "" );
+    mDetectedSrid.clear();
 
     QgsPostgresLayerProperty layerProperty;
     if ( !mIsQuery )
@@ -3513,14 +3513,14 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
     else
     {
-      layerProperty.schemaName = QLatin1String( "" );
+      layerProperty.schemaName.clear();
       layerProperty.tableName  = mQuery;
     }
     layerProperty.geometryColName = mGeometryColumn;
     layerProperty.geometryColType = mSpatialColType;
     layerProperty.force2d         = false;
 
-    QString delim = QLatin1String( "" );
+    QString delim;
 
     if ( !mSqlWhereClause.isEmpty() )
     {
@@ -3702,7 +3702,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
   QStringList pkList;
   QStringList pkType;
 
-  QString schemaTableName = QLatin1String( "" );
+  QString schemaTableName;
   if ( !schemaName.isEmpty() )
   {
     schemaTableName += quotedIdentifier( schemaName ) + '.';

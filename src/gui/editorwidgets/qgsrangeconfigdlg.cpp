@@ -101,7 +101,7 @@ QVariantMap QgsRangeConfigDlg::config()
   cfg.insert( QStringLiteral( "Style" ), rangeWidget->currentData().toString() );
   cfg.insert( QStringLiteral( "AllowNull" ), allowNullCheckBox->isChecked() );
 
-  if ( suffixLineEdit->text() != QLatin1String( "" ) )
+  if ( !suffixLineEdit->text().isEmpty() )
   {
     cfg.insert( QStringLiteral( "Suffix" ), suffixLineEdit->text() );
   }

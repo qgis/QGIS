@@ -245,7 +245,7 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
     if ( db.open() )
     {
       connected = true;
-      errMsg = QLatin1String( "" );
+      errMsg.clear();
     }
     else
     {
@@ -405,7 +405,7 @@ QVariant::Type QgsDb2Provider::decodeSqlType( int typeId )
 // Return the DB2 type name for the type numeric value
 QString QgsDb2Provider::db2TypeName( int typeId )
 {
-  QString typeName = QLatin1String( "" );
+  QString typeName;
   switch ( typeId )
   {
     case -3:     //VARBINARY
@@ -1408,7 +1408,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
   // add fields to the layer
   if ( oldToNewAttrIdxMap )
     oldToNewAttrIdxMap->clear();
-  QString attr2Create = QLatin1String( "" );
+  QString attr2Create;
   if ( fields.size() > 0 )
   {
     int offset = 0;
@@ -1563,7 +1563,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
 
 QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField &field )
 {
-  QString result = QLatin1String( "" );
+  QString result;
   switch ( field.type() )
   {
     case QVariant::LongLong:

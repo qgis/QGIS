@@ -450,8 +450,8 @@ void QgsOWSSourceSelect::populateCrs()
 void QgsOWSSourceSelect::clearCrs()
 {
   mCRSLabel->setText( tr( "Coordinate Reference System" ) + ':' );
-  mSelectedCRS = QLatin1String( "" );
-  mSelectedCRSLabel->setText( QLatin1String( "" ) );
+  mSelectedCRS.clear();
+  mSelectedCRSLabel->clear();
   mChangeCRSButton->setEnabled( false );
 }
 

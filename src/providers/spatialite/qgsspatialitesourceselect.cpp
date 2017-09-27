@@ -531,7 +531,7 @@ void QgsSpatiaLiteSourceSelect::setSql( const QModelIndex &index )
 
 QString QgsSpatiaLiteSourceSelect::fullDescription( const QString &table, const QString &column, const QString &type )
 {
-  QString full_desc = QLatin1String( "" );
+  QString full_desc;
   full_desc += table + "\" (" + column + ") " + type;
   return full_desc;
 }

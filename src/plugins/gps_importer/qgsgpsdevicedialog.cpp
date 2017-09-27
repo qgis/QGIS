@@ -93,10 +93,10 @@ void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked()
 void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString &selection )
 {
   QString selected;
-  if ( selection == QLatin1String( "" ) )
+  if ( selection.isEmpty() )
   {
     QListWidgetItem *item = lbDeviceList->currentItem();
-    selected = ( item ? item->text() : QLatin1String( "" ) );
+    selected = ( item ? item->text() : QString() );
   }
   else
   {

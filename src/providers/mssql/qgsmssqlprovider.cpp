@@ -242,7 +242,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString &service, const QStrin
     db = QSqlDatabase::database( connectionName );
 
   db.setHostName( host );
-  QString connectionString = QLatin1String( "" );
+  QString connectionString;
   if ( !service.isEmpty() )
   {
     // driver was specified explicitly
@@ -2289,7 +2289,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
 
-  QString style = QLatin1String( "" );
+  QString style;
   QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsMssqlProvider::quotedValue( styleId ) );
   bool queryOk = query.exec( selectQmlQuery );
   if ( !queryOk )

@@ -302,7 +302,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
   QVariant nullValue = QgsApplication::nullRepresentation();
   if ( mReadOnlySelector )
   {
-    QString nullText = QLatin1String( "" );
+    QString nullText;
     if ( mAllowNull )
     {
       nullText = tr( "%1 (no selection)" ).arg( nullValue.toString() );

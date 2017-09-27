@@ -103,7 +103,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
 
-  lblAutoSave->setText( QLatin1String( "" ) );
+  lblAutoSave->clear();
   txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
 }
 
@@ -133,7 +133,7 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
 {
-  txtSearchEditValues->setText( QLatin1String( "" ) );
+  txtSearchEditValues->clear();
 
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
@@ -561,7 +561,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   // we don't show the user an error as it will be confusing.
   if ( text.isEmpty() )
   {
-    lblPreview->setText( QLatin1String( "" ) );
+    lblPreview->clear();
     lblPreview->setStyleSheet( QLatin1String( "" ) );
     txtExpressionString->setToolTip( QLatin1String( "" ) );
     lblPreview->setToolTip( QLatin1String( "" ) );

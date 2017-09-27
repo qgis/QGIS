@@ -167,10 +167,7 @@ void QgsAuthPkcs12Edit::writePkiMessage( QLineEdit *lineedit, const QString &msg
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
-      ss = QLatin1String( "" );
       break;
-    default:
-      ss = QLatin1String( "" );
   }
   lineedit->setStyleSheet( ss );
   lineedit->setText( txt );
