@@ -314,6 +314,7 @@ Depends:
  qgis-provider-grass (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends},
+ grass{GRASSABI},
 #!precise# grass-core
 #precise# grass
 Replaces: qgis-provider-grass (<< 1:2.11.0+git20151002)
