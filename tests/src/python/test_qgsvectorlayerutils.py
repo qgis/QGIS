@@ -20,6 +20,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
                        QgsPointXY,
+                       QgsDefaultValue,
                        NULL
                        )
 from qgis.testing import start_app, unittest
