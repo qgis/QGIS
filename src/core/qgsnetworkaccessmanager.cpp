@@ -359,7 +359,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
       {
         proxyType = QNetworkProxy::FtpCachingProxy;
       }
-      QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+      QgsDebugMsg( QStringLiteral( "setting proxy %1 %2:%3 %4/%5" )
                    .arg( proxyType )
                    .arg( proxyHost ).arg( proxyPort )
                    .arg( proxyUser, proxyPassword )
@@ -372,6 +372,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   QString authcfg = settings.value( QStringLiteral( "proxy/authcfg" ), "" ).toString();
   if ( !authcfg.isEmpty( ) )
   {
+    QgsDebugMsg( QStringLiteral( "setting proxy from stored authentication configuration %1" ).arg( authcfg ) );
     QgsAuthManager::instance()->updateNetworkProxy( proxy, authcfg );
   }
 
