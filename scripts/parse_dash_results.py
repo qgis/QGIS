@@ -124,10 +124,12 @@ class ResultHandler(QDialog):
         self.overload_spin.setMinimum(1)
         self.overload_spin.setMaximum(255)
         self.overload_spin.setValue(1)
+        self.overload_spin.valueChanged.connect(lambda: save_mask_button.setEnabled(False))
 
         preview_mask_button = QPushButton()
         preview_mask_button.setText('Preview New Mask')
         preview_mask_button.pressed.connect(self.preview_mask)
+        preview_mask_button.pressed.connect(lambda: save_mask_button.setEnabled(True))
 
         save_mask_button = QPushButton()
         save_mask_button.setText('Save New Mask')
