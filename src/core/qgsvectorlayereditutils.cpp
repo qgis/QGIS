@@ -50,8 +50,7 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
 
   geometry.insertVertex( x, y, beforeVertex );
 
-  L->editBuffer()->changeGeometry( atFeatureId, &geometry );
-  return true;
+  return L->editBuffer()->changeGeometry( atFeatureId, &geometry );
 }
 
 
@@ -79,8 +78,7 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2& p, QgsFeatureId atFe
 
   geometry.moveVertex( p, atVertex );
 
-  L->editBuffer()->changeGeometry( atFeatureId, &geometry );
-  return true;
+  return L->editBuffer()->changeGeometry( atFeatureId, &geometry );
 }
 
 
@@ -115,7 +113,9 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertexV2( QgsFeatureId
     geometry.setGeometry( nullptr );
   }
 
-  L->editBuffer()->changeGeometry( featureId, &geometry );
+  if ( !L->editBuffer()->changeGeometry( featureId, &geometry ) )
+    return QgsVectorLayer::EditFailed;
+
   return !geometry.isEmpty() ? QgsVectorLayer::Success : QgsVectorLayer::EmptyGeometry;
 }
 
@@ -166,7 +166,11 @@ int QgsVectorLayerEditUtils::addRing( QgsCurveV2* ring, const QgsFeatureIds& tar
     addRingReturnCode = f.geometry()->addRing( static_cast< QgsCurveV2* >( ring->clone() ) );
     if ( addRingReturnCode == 0 )
     {
-      L->editBuffer()->changeGeometry( f.id(), f.geometry() );
+      if ( !L->editBuffer()->changeGeometry( f.id(), f.geometry() ) )
+      {
+        addRingReturnCode = 5;
+        break;
+      }
       if ( modifiedFeatureId )
         *modifiedFeatureId = f.id();
 
@@ -223,7 +227,8 @@ int QgsVectorLayerEditUtils::addPart( const QgsPointSequenceV2 &points, QgsFeatu
       //convert back to single part if required by layer
       geometry.convertToSingleType();
     }
-    L->editBuffer()->changeGeometry( featureId, &geometry );
+    if ( !L->editBuffer()->changeGeometry( featureId, &geometry ) )
+      errorCode = 7; // update geometry error
   }
   return errorCode;
 }
@@ -262,7 +267,8 @@ int QgsVectorLayerEditUtils::addPart( QgsCurveV2* ring, QgsFeatureId featureId )
       //convert back to single part if required by layer
       geometry.convertToSingleType();
     }
-    L->editBuffer()->changeGeometry( featureId, &geometry );
+    if ( !L->editBuffer()->changeGeometry( featureId, &geometry ) )
+      errorCode = 7; // update geometry error
   }
   return errorCode;
 }
@@ -287,7 +293,8 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
   int errorCode = geometry.translate( dx, dy );
   if ( errorCode == 0 )
   {
-    L->editBuffer()->changeGeometry( featureId, &geometry );
+    if ( !L->editBuffer()->changeGeometry( featureId, &geometry ) )
+      errorCode = 1;
   }
   return errorCode;
 }
@@ -369,7 +376,8 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
     if ( splitFunctionReturn == 0 )
     {
       //change this geometry
-      L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
+      if ( !L->editBuffer()->changeGeometry( feat.id(), feat.geometry() ) )
+        continue;
 
       //insert new features
       for ( int i = 0; i < newGeometries.size(); ++i )
@@ -424,7 +432,8 @@ int QgsVectorLayerEditUtils::splitFeatures( const QList<QgsPoint>& splitLine, bo
 
 
   //now add the new features to this vectorlayer
-  L->editBuffer()->addFeatures( newFeatures );
+  if ( !L->editBuffer()->addFeatures( newFeatures ) )
+    returnCode = 7; // "No feature split done" + "The geometry is invalid. Please repair before trying to split it."
 
   return returnCode;
 }
@@ -513,11 +522,7 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
       // For test only: Exception already thrown here...
       // feat.geometry()->asWkb();
 
-      if ( !addPartRet )
-      {
-        L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
-      }
-      else
+      if ( addPartRet )
       {
         // Test addPartRet
         switch ( addPartRet )
@@ -535,7 +540,11 @@ int QgsVectorLayerEditUtils::splitParts( const QList<QgsPoint>& splitLine, bool 
             break;
         }
       }
-      L->editBuffer()->changeGeometry( feat.id(), feat.geometry() );
+      if ( !L->editBuffer()->changeGeometry( feat.id(), feat.geometry() ) )
+      {
+        splitFunctionReturn = 2; // value > 1 means no split and error
+        break;
+      }
 
       if ( topologicalEditing )
       {

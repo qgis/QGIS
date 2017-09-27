@@ -153,6 +153,11 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     };
     typedef QList<GeometryChange> GeometryChanges;
     GeometryChanges sqlQueryGeometryChanges( sqlite3* db, const QString& sql );
+    /**
+     * in case of sync error the flag is set to true
+     */
+    bool syncError;
+
 
   private slots:
     void layerAdded( QgsMapLayer* layer );

@@ -54,7 +54,8 @@ extern "C"
 #define PROJECT_ENTRY_SCOPE_OFFLINE "OfflineEditingPlugin"
 #define PROJECT_ENTRY_KEY_OFFLINE_DB_PATH "/OfflineDbPath"
 
-QgsOfflineEditing::QgsOfflineEditing()
+QgsOfflineEditing::QgsOfflineEditing():
+    syncError( false )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerAdded( QgsMapLayer* ) ) );
 }
@@ -261,6 +262,7 @@ void QgsOfflineEditing::synchronize()
       updateVisibilityPresets( offlineLayer, remoteLayer );
 
       // apply layer edit log
+      syncError = false;
       QString qgisLayerId = layer->id();
       QString sql = QString( "SELECT \"id\" FROM 'log_layer_ids' WHERE \"qgis_id\" = '%1'" ).arg( qgisLayerId );
       int layerId = sqlQueryInt( db, sql, -1 );
@@ -276,37 +278,49 @@ void QgsOfflineEditing::synchronize()
           QgsDebugMsgLevel( "Apply commits chronologically", 4 );
           // apply commits chronologically
           applyAttributesAdded( remoteLayer, db, layerId, i );
-          applyAttributeValueChanges( offlineLayer, remoteLayer, db, layerId, i );
-          applyGeometryChanges( remoteLayer, db, layerId, i );
+          if ( !syncError )
+            applyAttributeValueChanges( offlineLayer, remoteLayer, db, layerId, i );
+          if ( !syncError )
+            applyGeometryChanges( remoteLayer, db, layerId, i );
         }
 
-        applyFeaturesAdded( offlineLayer, remoteLayer, db, layerId );
-        applyFeaturesRemoved( remoteLayer, db, layerId );
+        if ( !syncError )
+          applyFeaturesAdded( offlineLayer, remoteLayer, db, layerId );
+        if ( !syncError )
+          applyFeaturesRemoved( remoteLayer, db, layerId );
 
-        if ( remoteLayer->commitChanges() )
+        if ( !syncError )
         {
-          // update fid lookup
-          updateFidLookup( remoteLayer, db, layerId );
+          if ( remoteLayer->commitChanges() )
+          {
+            // update fid lookup
+            updateFidLookup( remoteLayer, db, layerId );
 
-          // clear edit log for this layer
-          sql = QString( "DELETE FROM 'log_added_attrs' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
-          sql = QString( "DELETE FROM 'log_added_features' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
-          sql = QString( "DELETE FROM 'log_removed_features' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
-          sql = QString( "DELETE FROM 'log_feature_updates' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
-          sql = QString( "DELETE FROM 'log_geometry_updates' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
+            // clear edit log for this layer
+            sql = QString( "DELETE FROM 'log_added_attrs' WHERE \"layer_id\" = %1" ).arg( layerId );
+            sqlExec( db, sql );
+            sql = QString( "DELETE FROM 'log_added_features' WHERE \"layer_id\" = %1" ).arg( layerId );
+            sqlExec( db, sql );
+            sql = QString( "DELETE FROM 'log_removed_features' WHERE \"layer_id\" = %1" ).arg( layerId );
+            sqlExec( db, sql );
+            sql = QString( "DELETE FROM 'log_feature_updates' WHERE \"layer_id\" = %1" ).arg( layerId );
+            sqlExec( db, sql );
+            sql = QString( "DELETE FROM 'log_geometry_updates' WHERE \"layer_id\" = %1" ).arg( layerId );
+            sqlExec( db, sql );
 
-          // reset commitNo
-          QString sql = QString( "UPDATE 'log_indices' SET 'last_index' = 0 WHERE \"name\" = 'commit_no'" );
-          sqlExec( db, sql );
+            // reset commitNo
+            QString sql = QString( "UPDATE 'log_indices' SET 'last_index' = 0 WHERE \"name\" = 'commit_no'" );
+            sqlExec( db, sql );
+          }
+          else
+          {
+            showWarning( remoteLayer->commitErrors().join( "\n" ) );
+          }
         }
         else
         {
-          showWarning( remoteLayer->commitErrors().join( "\n" ) );
+          remoteLayer->rollBack();
+          showWarning( tr( "Syncronization failed" ) );
         }
       }
       else
@@ -688,7 +702,8 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
           f.geometry()->setGeometry( geom );
         }
 
-        newLayer->addFeature( f, false );
+        if ( !newLayer->addFeature( f, false ) )
+          return nullptr;
 
         emit progressUpdated( featureCount++ );
       }
@@ -762,7 +777,11 @@ void QgsOfflineEditing::applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlit
     {
       QString typeName = typeNameLookup[ field.type()];
       field.setTypeName( typeName );
-      remoteLayer->addAttribute( field );
+      if ( !remoteLayer->addAttribute( field ) )
+      {
+        syncError = true;
+        return;
+      }
     }
     else
     {
@@ -830,7 +849,11 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
 
     f.setAttributes( newAttrs );
 
-    remoteLayer->addFeature( f, false );
+    if ( !remoteLayer->addFeature( f, false ) )
+    {
+      syncError = true;
+      return;
+    }
 
     emit progressUpdated( i++ );
   }
@@ -847,7 +870,11 @@ void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer* remoteLayer, sqlit
   for ( QgsFeatureIds::const_iterator it = values.begin(); it != values.end(); ++it )
   {
     QgsFeatureId fid = remoteFid( db, layerId, *it );
-    remoteLayer->deleteFeature( fid );
+    if ( !remoteLayer->deleteFeature( fid ) )
+    {
+      syncError = true;
+      return;
+    }
 
     emit progressUpdated( i++ );
   }
@@ -866,7 +893,11 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer* offlineLayer
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
     QgsDebugMsgLevel( QString( "Offline changeAttributeValue %1 = %2" ).arg( QString( attrLookup[ values.at( i ).attr ] ), values.at( i ).value ), 4 );
-    remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value );
+    if ( !remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value ) )
+    {
+      syncError = true;
+      return;
+    }
 
     emit progressUpdated( i + 1 );
   }
@@ -882,7 +913,11 @@ void QgsOfflineEditing::applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlit
   for ( int i = 0; i < values.size(); i++ )
   {
     QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
-    remoteLayer->changeGeometry( fid, QgsGeometry::fromWkt( values.at( i ).geom_wkt ) );
+    if ( !remoteLayer->changeGeometry( fid, QgsGeometry::fromWkt( values.at( i ).geom_wkt ) ) )
+    {
+      syncError = true;
+      return;
+    }
 
     emit progressUpdated( i + 1 );
   }

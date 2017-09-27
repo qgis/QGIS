@@ -379,6 +379,7 @@ void QgsRelationEditorWidget::linkFeature()
         newFeatures << linkFeature;
       }
 
+      // TODO: what to do in case of addFeature fail?
       mRelation.referencingLayer()->addFeatures( newFeatures );
 
       updateUi();

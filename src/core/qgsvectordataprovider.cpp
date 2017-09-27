@@ -714,10 +714,37 @@ QgsGeometry* QgsVectorDataProvider::convertToProviderType( const QgsGeometry* ge
     outputGeom->addMValue();
   }
 
+  // remove Z if provider does not have
+  // control added to fix https://issues.qgis.org/issues/16927
+  if ( !QgsWKBTypes::hasZ( providerGeomType ) && QgsWKBTypes::hasZ( geometry->wkbType() ) )
+  {
+    if ( !outputGeom )
+    {
+      outputGeom = geometry->clone();
+    }
+    outputGeom->dropZValue();
+  }
+
+  // remove M if provider does not have
+  // control added as follow-up of https://issues.qgis.org/issues/16927
+  if ( !QgsWKBTypes::hasM( providerGeomType ) && QgsWKBTypes::hasM( geometry->wkbType() ) )
+  {
+    if ( !outputGeom )
+    {
+      outputGeom = geometry->clone();
+    }
+    outputGeom->dropMValue();
+  }
+
   if ( outputGeom )
   {
     return new QgsGeometry( outputGeom );
   }
+
+  QString msg = tr( "Geometry type %1 not compatible with provider type %2.", "not compatible geometry" )
+                .arg( QgsWKBTypes::displayString( geometry->wkbType() ) )
+                .arg( QgsWKBTypes::displayString( providerGeomType ) );
+  const_cast<QgsVectorDataProvider*>( this )->pushError( msg );
   return nullptr;
 }
 

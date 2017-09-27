@@ -248,7 +248,11 @@ void QgsGeometryCheckerSetupTab::runChecks()
           features.append( feature );
         }
       }
-      newlayer->dataProvider()->addFeatures( features );
+      if ( !newlayer->dataProvider()->addFeatures( features ) )
+      {
+        QMessageBox::critical( this, tr( "Populate output Layer" ), tr( "Can not add features to output layer: %1." ).arg( filename ) );
+        return;
+      }
 
       // Set selected features
       newlayer->selectByIds( selectedFeatures );

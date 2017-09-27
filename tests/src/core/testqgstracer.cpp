@@ -59,9 +59,9 @@ static QgsFeature make_feature( const QString& wkt )
   return f;
 }
 
-static QgsVectorLayer* make_layer( const QStringList& wkts )
+static QgsVectorLayer* make_layer( const QStringList& wkts, const QString& type = "LineString" )
 {
-  QgsVectorLayer* vl = new QgsVectorLayer( "LineString", "x", "memory" );
+  QgsVectorLayer* vl = new QgsVectorLayer( type, "x", "memory" );
   Q_ASSERT( vl->isValid() );
 
   vl->startEditing();
@@ -163,7 +163,7 @@ void TestQgsTracer::testPolygon()
   QStringList wkts;
   wkts << "POLYGON((0 0, 0 10, 20 10, 10 0, 0 0))";
 
-  QgsVectorLayer* vl = make_layer( wkts );
+  QgsVectorLayer* vl = make_layer( wkts, "Polygon" );
 
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer*>() << vl );

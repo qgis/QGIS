@@ -7162,7 +7162,7 @@ void QgisApp::mergeSelectedFeatures()
     if ( !isDefaultValue && !vl->fields().at( i ).convertCompatible( val ) )
     {
       messageBar()->pushMessage(
-        tr( "Invalid result" ),
+        tr( "Merge features" ),
         tr( "Could not store value '%1' in field of type %2" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
         QgsMessageBar::WARNING );
     }
@@ -7176,9 +7176,15 @@ void QgisApp::mergeSelectedFeatures()
     vl->deleteFeature( *feature_it );
   }
 
-  vl->addFeature( newFeature, false );
-
-  vl->endEditCommand();
+  // addFeature can fail if newFeature has no compatibile geometry
+  if ( !vl->addFeature( newFeature, false ) )
+  {
+    vl->destroyEditCommand();
+  }
+  else
+  {
+    vl->endEditCommand();
+  }
 
   if ( mapCanvas() )
   {
@@ -7533,8 +7539,14 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     ++featureIt;
   }
 
-  pasteVectorLayer->addFeatures( features );
-  pasteVectorLayer->endEditCommand();
+  if ( !pasteVectorLayer->addFeatures( features ) )
+  {
+    pasteVectorLayer->destroyEditCommand();
+  }
+  else
+  {
+    pasteVectorLayer->endEditCommand();
+  }
 
   int nCopiedFeatures = features.count();
   if ( nCopiedFeatures == 0 )
@@ -7721,7 +7733,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
       feature.geometry()->convertToMultiType();
     }
   }
-  if ( ! layer->addFeatures( features, false ) || !layer->commitChanges() )
+  if ( !layer->addFeatures( features, false ) || !layer->commitChanges() )
   {
     QgsDebugMsg( "Cannot add features or commit changes" );
     delete layer;

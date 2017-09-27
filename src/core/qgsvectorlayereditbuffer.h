@@ -178,6 +178,19 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     void updateLayerFields();
 
+    /** \brief Apply geometry modification basing on provider geometry type.
+     * Geometry is modified only if successful conversion is possible.
+     * adaptGeometry calls \ref QgsVectorDataProvider::convertToProviderType()
+     * if necessary and that apply the modifications.
+     * \param geometry pointer to the geometry that should be adapted to provider
+     * \returns bool true if success.
+     *  True: Input geometry is changed because conversion is applied or
+     *  geometry is untouched if geometry conversion is not necessary.
+     *  False: Conversion is not possible and geometry is untouched.
+     * \note added in QGIS 2.18.14
+     */
+    bool adaptGeometry( QgsGeometry* geometry );
+
   protected:
     QgsVectorLayer* L;
     friend class QgsVectorLayer;

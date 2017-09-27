@@ -468,8 +468,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** Old-style mapping of index to name for QgsPalLabeling fix */
     QgsAttrPalIndexNameHash mAttrPalIndexName;
 
-    /** Converts the geometry to the provider type if possible / necessary
-    @return the converted geometry or nullptr if no conversion was necessary or possible*/
+    /** \brief Converts the geometry to the provider type if possible / necessary
+     * this is the list of possible modifications:
+     * - convert compoundcurve to circularstring
+     *   (possible if compoundcurve consists of one circular string)
+     * - convert to multitype if necessary
+     * - convert to curved type if necessary
+     * - convert to linear type from curved type
+     * - Add z/m 0 default values
+     * - Remove z/m
+     * \ref QgsVectorLayerEditBuffer::adaptGeometry()
+     * \param geom Geometry to convert
+     * \returns the converted geometry or nullptr if no conversion was necessary or possible*/
     QgsGeometry* convertToProviderType( const QgsGeometry* geom ) const;
 
   private:

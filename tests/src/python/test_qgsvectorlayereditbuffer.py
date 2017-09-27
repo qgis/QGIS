@@ -20,7 +20,9 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
                        QgsPoint,
-                       QgsField)
+                       QgsField,
+                       QgsWKBTypes,
+                       QGis)
 from qgis.testing import start_app, unittest
 start_app()
 
@@ -46,6 +48,13 @@ def createLayerWithOnePoint():
 
 def createEmptyLinestringLayer():
     layer = QgsVectorLayer("Linestring?field=fldtxt:string&field=fldint:integer",
+                           "addfeat", "memory")
+    assert layer.isValid()
+    return layer
+
+
+def createEmptyMultiLinestringLayer():
+    layer = QgsVectorLayer("MultiLinestring?field=fldtxt:string&field=fldint:integer",
                            "addfeat", "memory")
     assert layer.isValid()
     return layer
@@ -100,11 +109,58 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             [QgsPoint(1, 1), QgsPoint(2, 2)],
             [QgsPoint(3, 3), QgsPoint(4, 4)],
         ]
+        geom = QgsGeometry.fromMultiPolyline(multiline)
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromMultiPolyline(multiline))
+        f1.setGeometry(geom)
         f1.setAttributes(["test", 123])
-        self.assertTrue(layer.addFeatures([f1]))
-        self.assertFalse(layer.commitChanges())
+
+        self.assertTrue(QgsWKBTypes.isMultiType(QGis.fromOldWkbType(geom.wkbType())))
+        self.assertFalse((layer.editBuffer().addFeatures([f1])))
+
+        # check is possibile to adapt single to multi
+        # This test should belong to vectordataprovider test
+        layer = createEmptyMultiLinestringLayer()
+        self.assertTrue(layer.startEditing())
+        self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        line = [
+            QgsPoint(1, 1), QgsPoint(2, 2), QgsPoint(3, 3)
+        ]
+        geom = QgsGeometry.fromPolyline(line)
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(geom)
+        f1.setAttributes(["test", 123])
+
+        self.assertTrue(QgsWKBTypes.isSingleType(QGis.fromOldWkbType(geom.wkbType())))
+        self.assertTrue((layer.editBuffer().addFeatures([f1])))
+
+        # check that is NOT possibile to adapt Multi to single if only one simple geometry
+        # This because to avoid to have a bunch of successful import for that
+        # thac can be converted and other feature that fails => better leave to
+        # the user the explicit work to convert to singletype
+        layer = createEmptyLinestringLayer()
+        self.assertTrue(layer.startEditing())
+        self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        multiline = [
+            [QgsPoint(1, 1), QgsPoint(2, 2), QgsPoint(3, 3)]
+        ]
+        geom = QgsGeometry.fromMultiPolyline(multiline)
+        self.assertTrue(QgsWKBTypes.isMultiType(QGis.fromOldWkbType(geom.wkbType())))
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(geom)
+        f1.setAttributes(["test", 123])
+        self.assertFalse((layer.editBuffer().addFeatures([f1])))
+
+        # check is possibile to adapt M geom to NOT M provider type
+        layer = createEmptyLayer()
+        self.assertTrue(layer.startEditing())
+        self.assertEqual(layer.editBuffer().addedFeatures(), {})
+        geom = QgsGeometry.fromPoint(QgsPoint(1, 1))
+        geom.geometry().addMValue(1)
+        self.assertTrue(QgsWKBTypes.hasM(geom.geometry().wkbType()))
+        f1 = QgsFeature(layer.fields(), 1)
+        f1.setGeometry(geom)
+        f1.setAttributes(["test", 123])
+        self.assertTrue((layer.editBuffer().addFeatures([f1])))
 
     def testAddMultipleFeatures(self):
         # test adding multiple features to an edit buffer

@@ -295,7 +295,12 @@ void QgsFieldCalculator::accept()
         if ( value.canConvert< QgsGeometry >() )
         {
           QgsGeometry geom = value.value< QgsGeometry >();
-          mVectorLayer->changeGeometry( feature.id(), &geom );
+          if ( !mVectorLayer->changeGeometry( feature.id(), &geom ) )
+          {
+            calculationSuccess = false;
+            error = tr( "Can not change geometry for feature: %1", "Field calculator" ).arg( feature.id() );
+            break;
+          }
         }
       }
       else
