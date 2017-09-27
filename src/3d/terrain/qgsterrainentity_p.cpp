@@ -68,7 +68,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
 QgsTerrainEntity::~QgsTerrainEntity()
 {
   // cancel / wait for jobs
-  if ( activeJob )
+  if ( mActiveJob )
     cancelActiveJob();
 
   delete mTextureGenerator;
@@ -87,17 +87,17 @@ void QgsTerrainEntity::invalidateMapImages()
 
   // handle active nodes
 
-  updateNodes( activeNodes, mUpdateJobFactory.get() );
-  qDebug() << " updating " << activeNodes.count() << " active nodes";
+  updateNodes( mActiveNodes, mUpdateJobFactory.get() );
+  qDebug() << " updating " << mActiveNodes.count() << " active nodes";
 
   // handle inactive nodes afterwards
 
   QList<QgsChunkNode *> inactiveNodes;
-  Q_FOREACH ( QgsChunkNode *node, rootNode->descendants() )
+  Q_FOREACH ( QgsChunkNode *node, mRootNode->descendants() )
   {
-    if ( !node->entity )
+    if ( !node->entity() )
       continue;
-    if ( activeNodes.contains( node ) )
+    if ( mActiveNodes.contains( node ) )
       continue;
     inactiveNodes << node;
   }
@@ -105,7 +105,7 @@ void QgsTerrainEntity::invalidateMapImages()
   updateNodes( inactiveNodes, mUpdateJobFactory.get() );
   qDebug() << " updating " << inactiveNodes.count() << " inactive nodes";
 
-  needsUpdate = true;
+  setNeedsUpdate( true );
 }
 
 void QgsTerrainEntity::onLayersChanged()
@@ -137,7 +137,7 @@ TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGen
   : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
 {
-  QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity );
+  QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
   connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
   mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), entity->textureImage()->imageDebugText() );
 }
@@ -153,7 +153,7 @@ void TerrainMapUpdateJob::onTileReady( int jobId, const QImage &image )
 {
   if ( mJobId == jobId )
   {
-    QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity );
+    QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( mNode->entity() );
     entity->textureImage()->setImage( image );
     mJobId = -1;
     emit finished();

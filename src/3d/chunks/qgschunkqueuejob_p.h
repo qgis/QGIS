@@ -39,14 +39,14 @@ class QgsChunkQueueJob : public QObject
   public:
     //! Constructs a job for given chunk node
     QgsChunkQueueJob( QgsChunkNode *node )
-      : node( node )
+      : mNode( node )
     {
     }
 
     virtual ~QgsChunkQueueJob();
 
     //! Returns chunk node of this job
-    QgsChunkNode *chunk() { return node; }
+    QgsChunkNode *chunk() { return mNode; }
 
     //! Request that the job gets canceled.
     //! Returns only after the async job has been stopped.
@@ -58,7 +58,7 @@ class QgsChunkQueueJob : public QObject
     void finished();
 
   protected:
-    QgsChunkNode *node;
+    QgsChunkNode *mNode;
 };
 
 /** \ingroup 3d

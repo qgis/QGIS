@@ -16,7 +16,7 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
 {
   public:
     //! Construct the loader for a node
-    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
@@ -61,7 +61,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   entity->addComponent( transform );
 
   // set up transform according to the extent covered by the quad geometry
-  QgsAABB bbox = node->bbox;
+  QgsAABB bbox = mNode->bbox();
   double side = bbox.xMax - bbox.xMin;
   double half = side / 2;
 

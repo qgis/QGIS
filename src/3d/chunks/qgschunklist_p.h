@@ -18,21 +18,17 @@ class QgsChunkNode;
  * Element of a double-linked list
  * \since QGIS 3.0
  */
-class QgsChunkListEntry
+struct QgsChunkListEntry
 {
-  public:
-    //! Constructs entry for a particular node
-    QgsChunkListEntry( QgsChunkNode *node )
-      : prev( nullptr )
-      , next( nullptr )
-      , chunk( node )
-    {
-    }
+  //! Constructs entry for a particular node
+  QgsChunkListEntry( QgsChunkNode *node )
+    : chunk( node )
+  {
+  }
 
-    QgsChunkListEntry *prev;
-    QgsChunkListEntry *next;
-
-    QgsChunkNode *chunk;   //!< TODO: shared pointer
+  QgsChunkListEntry *prev = nullptr;
+  QgsChunkListEntry *next = nullptr;
+  QgsChunkNode *chunk;   //!< TODO: shared pointer
 };
 
 

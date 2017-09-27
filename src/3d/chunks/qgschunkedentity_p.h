@@ -25,20 +25,6 @@ class QgsChunkQueueJobFactory;
 #include <QVector3D>
 #include <QMatrix4x4>
 
-/** \ingroup 3d
- * Records some bits about the scene
- * \since QGIS 3.0
- */
-class SceneState
-{
-  public:
-    QVector3D cameraPos;
-    float cameraFov;
-    int screenSizePx;
-
-    QMatrix4x4 viewProjectionMatrix; //!< For frustum culling
-};
-
 #include <QTime>
 
 /** \ingroup 3d
@@ -51,13 +37,23 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float tau, int maxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float mTau, int mMaxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity();
+
+    //! Records some bits about the scene (context for update() method)
+    struct SceneState
+    {
+      QVector3D cameraPos;   //!< Camera position
+      float cameraFov;       //!< Field of view (in degrees)
+      int screenSizePx;      //!< Size of the viewport in pixels
+      QMatrix4x4 viewProjectionMatrix; //!< For frustum culling
+    };
 
     //! Called when e.g. camera changes and entity may need updated
     void update( const SceneState &state );
 
-    bool needsUpdate; //!< A chunk has been loaded recently - let's display it!
+    //! Returns whether the entity needs update of active nodes
+    bool needsUpdate() const { return mNeedsUpdate; }
 
     //! Determines whether bounding boxes of tiles should be shown (for debugging)
     void setShowBoundingBoxes( bool enabled );
@@ -66,13 +62,15 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     void updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunkQueueJobFactory *updateJobFactory );
 
     //! Returns list of active nodes - i.e. nodes that are get rendered
-    QList<QgsChunkNode *> getActiveNodes() const { return activeNodes; }
+    QList<QgsChunkNode *> activeNodes() const { return mActiveNodes; }
     //! Returns the root node of the whole quadtree hierarchy of nodes
-    QgsChunkNode *getRootNode() const { return rootNode; }
+    QgsChunkNode *rootNode() const { return mRootNode; }
 
   protected:
     //! Cancels the background job that is currently in progress
     void cancelActiveJob();
+    //! Sets whether the entity needs to get active nodes updated
+    void setNeedsUpdate( bool needsUpdate ) { mNeedsUpdate = needsUpdate; }
 
   private:
     void update( QgsChunkNode *node, const SceneState &state );
@@ -87,32 +85,36 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
   protected:
     //! root node of the quadtree hierarchy
-    QgsChunkNode *rootNode;
+    QgsChunkNode *mRootNode;
+    //! A chunk has been loaded recently? let's display it!
+    bool mNeedsUpdate;
     //! max. allowed screen space error
-    float tau;
+    float mTau;
     //! maximum allowed depth of quad tree
-    int maxLevel;
+    int mMaxLevel;
     //! factory that creates loaders for individual chunk nodes
-    QgsChunkLoaderFactory *chunkLoaderFactory;
+    QgsChunkLoaderFactory *mChunkLoaderFactory;
     //! queue of chunks to be loaded
-    QgsChunkList *chunkLoaderQueue;
+    QgsChunkList *mChunkLoaderQueue;
     //! queue of chunk to be eventually replaced
-    QgsChunkList *replacementQueue;
-
-    QList<QgsChunkNode *> activeNodes;
-    int frustumCulled;
+    QgsChunkList *mReplacementQueue;
+    //! list of nodes that are being currently used for rendering
+    QList<QgsChunkNode *> mActiveNodes;
+    //! number of nodes omitted during frustum culling - for the curious ones
+    int mFrustumCulled;
 
     // TODO: max. length for loading queue
 
-    QTime currentTime;
+    QTime mCurrentTime;
 
     //! max. length for replacement queue
-    int maxLoadedChunks;
+    int mMaxLoadedChunks;
 
-    QgsChunkBoundsEntity *bboxesEntity;
+    //! Entity that shows bounding boxes of active chunks (null if not enabled)
+    QgsChunkBoundsEntity *mBboxesEntity = nullptr;
 
     //! job that is currently being processed (asynchronously in a worker thread)
-    QgsChunkQueueJob *activeJob = nullptr;
+    QgsChunkQueueJob *mActiveJob = nullptr;
 };
 
 /// @endcond

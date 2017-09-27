@@ -39,7 +39,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     Q_OBJECT
   public:
     //! Constructs terrain entity. The argument maxLevel determines how deep the tree of tiles will be
-    explicit QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent = nullptr );
+    explicit QgsTerrainEntity( int mMaxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent = nullptr );
 
     ~QgsTerrainEntity();
 
@@ -81,7 +81,7 @@ class TerrainMapUpdateJob : public QgsChunkQueueJob
 {
     Q_OBJECT
   public:
-    TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *node );
+    TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *mNode );
 
     virtual void cancel() override;
 

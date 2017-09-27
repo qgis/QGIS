@@ -152,10 +152,10 @@ void Qgs3DMapScene::viewZoomFull()
   mCameraController->resetView( side );  // assuming FOV being 45 degrees
 }
 
-SceneState _sceneState( QgsCameraController *cameraController )
+QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )
 {
   Qt3DRender::QCamera *camera = cameraController->camera();
-  SceneState state;
+  QgsChunkedEntity::SceneState state;
   state.cameraFov = camera->fieldOfView();
   state.cameraPos = camera->position();
   QRect rect = cameraController->viewport();
@@ -191,19 +191,19 @@ void Qgs3DMapScene::onCameraChanged()
     float near = 1e9;
     float far = 0;
 
-    QList<QgsChunkNode *> activeNodes = mTerrain->getActiveNodes();
+    QList<QgsChunkNode *> activeNodes = mTerrain->activeNodes();
 
     // it could be that there are no active nodes - they could be all culled or because root node
     // is not yet loaded - we still need at least something to understand bounds of our scene
     // so lets use the root node
     if ( activeNodes.isEmpty() )
-      activeNodes << mTerrain->getRootNode();
+      activeNodes << mTerrain->rootNode();
 
     Q_FOREACH ( QgsChunkNode *node, activeNodes )
     {
       // project each corner of bbox to camera coordinates
       // and determine closest and farthest point.
-      QgsAABB bbox = node->bbox;
+      QgsAABB bbox = node->bbox();
       for ( int i = 0; i < 8; ++i )
       {
         QVector4D p( ( ( i >> 0 ) & 1 ) ? bbox.xMin : bbox.xMax,
@@ -246,7 +246,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 
   Q_FOREACH ( QgsChunkedEntity *entity, chunkEntities )
   {
-    if ( entity->isEnabled() && entity->needsUpdate )
+    if ( entity->isEnabled() && entity->needsUpdate() )
     {
       qDebug() << "need for update";
       entity->update( _sceneState( mCameraController ) );

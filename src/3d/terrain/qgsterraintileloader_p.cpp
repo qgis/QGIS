@@ -36,9 +36,9 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
   else
 #endif
   {
-    tx = node->x;
-    ty = node->y;
-    tz = node->z;
+    tx = node->tileX();
+    ty = node->tileY();
+    tz = node->tileZ();
   }
 
   QgsRectangle extentTerrainCrs = map.terrainGenerator()->terrainTilingScheme.tileToExtent( tx, ty, tz );

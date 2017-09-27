@@ -32,7 +32,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     Q_OBJECT
   public:
     //! Constructs loader for the given chunk node
-    QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
     ~QgsDemTerrainTileLoader();
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );

@@ -24,13 +24,8 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
 
   m_positionAttribute = new Qt3DRender::QAttribute( this );
   m_positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
-#if QT_VERSION >= 0x050800
   m_positionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
   m_positionAttribute->setVertexSize( 3 );
-#else
-  m_positionAttribute->setDataType( Qt3DRender::QAttribute::Float );
-  m_positionAttribute->setDataSize( 3 );
-#endif
   m_positionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
   m_positionAttribute->setBuffer( m_vertexBuffer );
   m_positionAttribute->setByteStride( stride );
@@ -40,13 +35,8 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
   {
     m_normalAttribute = new Qt3DRender::QAttribute( this );
     m_normalAttribute->setName( Qt3DRender::QAttribute::defaultNormalAttributeName() );
-#if QT_VERSION >= 0x050800
     m_normalAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
     m_normalAttribute->setVertexSize( 3 );
-#else
-    m_normalAttribute->setDataType( Qt3DRender::QAttribute::Float );
-    m_normalAttribute->setDataSize( 3 );
-#endif
     m_normalAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
     m_normalAttribute->setBuffer( m_vertexBuffer );
     m_normalAttribute->setByteStride( stride );

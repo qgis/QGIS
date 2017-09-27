@@ -44,9 +44,65 @@ class QgsChunkNode
 {
   public:
     //! constructs a skeleton chunk
-    QgsChunkNode( int x, int y, int z, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
+    QgsChunkNode( int tileX, int tileY, int tileZ, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
 
     ~QgsChunkNode();
+
+    /**
+     * Enumeration that identifies state of the chunk node.
+     *
+     * Enjoy the ASCII art for the state machine:
+     *
+     *    |<---------------------------------------------------------------------(unloaded)--------+
+     *    |<---------------------------------------(canceled)--------------+                       |
+     *    |<--------(canceled)------------+                                |                       |
+     *    |                               |                                |                       |
+     * Skeleton  --(requested)-->  QueuedForLoad  --(started load)-->  Loading  --(finished)-->  Loaded
+     *                                                                                             |  |
+     *                                                                                             |  |
+     *                        Updating  <--(started update)--  QueuedForUpdate  <--(needs update)--+  |
+     *                           |                                    |                               |
+     *                           |                                    +---------(canceled)----------->|
+     *                           +-------(finished / canceled)--------------------------------------->|
+     *
+     */
+    enum State
+    {
+      Skeleton,         //!< Does not contain data of the chunk and data are not being loaded
+      QueuedForLoad,    //!< Data are not available yet, but node is in the request queue
+      Loading,          //!< Data are being loaded right now
+      Loaded,           //!< Data are fully available
+      QueuedForUpdate,  //!< Loaded, but some data need to be updated - the node is in the queue
+      Updating,         //!< Data are being updated right now
+    };
+
+    //! Returns 3D bounding box of the chunk
+    QgsAABB bbox() const { return mBbox; }
+    //! Returns measure geometric/texture error of the chunk (in world coordinates)
+    float error() const { return mError; }
+    //! Returns chunk tile X coordinate of the tiling scheme
+    int tileX() const { return mTileX; }
+    //! Returns chunk tile Y coordinate of the tiling scheme
+    int tileY() const { return mTileY; }
+    //! Returns chunk tile Z coordinate of the tiling scheme
+    int tileZ() const { return mTileZ; }
+    //! Returns pointer to the parent node. Parent is a null pointer in the root node
+    QgsChunkNode *parent() const { return mParent; }
+    //! Returns array of the four children. Children may be null pointers if they were not created yet
+    QgsChunkNode *const *children() const { return mChildren; }
+    //! Returns current state of the node
+    State state() const { return mState; }
+
+    //! Returns node's entry in the loader queue. Not null only when in QueuedForLoad / QueuedForUpdate state
+    QgsChunkListEntry *loaderQueueEntry() const { return mLoaderQueueEntry; }
+    //! Returns node's entry in the replacement queue. Not null only when in Loaded / QueuedForUpdate / Updating state
+    QgsChunkListEntry *replacementQueueEntry() const { return mReplacementQueueEntry; }
+    //! Returns loader of the node. Not null only when in Loading state
+    QgsChunkLoader *loader() const { return mLoader; }
+    //! Returns associated entity (3D object). Not null only when Loaded / QueuedForUpdate / Updating state
+    Qt3DCore::QEntity *entity() const { return mEntity; }
+    //! Returns updater job. Not null only when in Updating state
+    QgsChunkQueueJob *updater() const { return mUpdater; }
 
     //! Returns true if all child chunks are available and thus this node could be swapped to the child nodes
     bool allChildChunksResident( const QTime &currentTime ) const;
@@ -77,7 +133,7 @@ class QgsChunkNode
     void cancelLoading();
 
     //! mark a chunk as loaded, using the loaded entity
-    void setLoaded( Qt3DCore::QEntity *entity );
+    void setLoaded( Qt3DCore::QEntity *mEntity );
 
     //! turn a loaded chunk into skeleton
     void unloadChunk();
@@ -100,54 +156,27 @@ class QgsChunkNode
     //! called when bounding box
     void setExactBbox( const QgsAABB &box );
 
-    QgsAABB bbox;      //!< Bounding box in world coordinates
-    float error;    //!< Error of the node in world coordinates
+  private:
+    QgsAABB mBbox;      //!< Bounding box in world coordinates
+    float mError;    //!< Error of the node in world coordinates
 
-    int x, y, z;  //!< Chunk coordinates (for use with a tiling scheme)
+    int mTileX, mTileY, mTileZ;  //!< Chunk coordinates (for use with a tiling scheme)
 
-    QgsChunkNode *parent;        //!< TODO: should be shared pointer
-    QgsChunkNode *children[4];   //!< TODO: should be weak pointers. May be null if not created yet or removed already
+    QgsChunkNode *mParent;        //!< TODO: should be shared pointer
+    QgsChunkNode *mChildren[4];   //!< TODO: should be weak pointers. May be null if not created yet or removed already
 
-    /**
-     * Enumeration that identifies state of the chunk node.
-     *
-     * Enjoy the ASCII art for the state machine:
-     *
-     *    |<---------------------------------------------------------------------(unloaded)--------+
-     *    |<---------------------------------------(canceled)--------------+                       |
-     *    |<--------(canceled)------------+                                |                       |
-     *    |                               |                                |                       |
-     * Skeleton  --(requested)-->  QueuedForLoad  --(started load)-->  Loading  --(finished)-->  Loaded
-     *                                                                                             |  |
-     *                                                                                             |  |
-     *                        Updating  <--(started update)--  QueuedForUpdate  <--(needs update)--+  |
-     *                           |                                    |                               |
-     *                           |                                    +---------(canceled)----------->|
-     *                           +-------(finished / canceled)--------------------------------------->|
-     *
-     */
-    enum State
-    {
-      Skeleton,         //!< Does not contain data of the chunk and data are not being loaded
-      QueuedForLoad,    //!< Data are not available yet, but node is in the request queue
-      Loading,          //!< Data are being loaded right now
-      Loaded,           //!< Data are fully available
-      QueuedForUpdate,  //!< Loaded, but some data need to be updated - the node is in the queue
-      Updating,         //!< Data are being updated right now
-    };
+    State mState;  //!< State of the node
 
-    State state;  //!< State of the node
+    QgsChunkListEntry *mLoaderQueueEntry;       //!< Not null <=> QueuedForLoad or QueuedForUpdate state
+    QgsChunkListEntry *mReplacementQueueEntry;  //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
 
-    QgsChunkListEntry *loaderQueueEntry;       //!< Not null <=> QueuedForLoad or QueuedForUpdate state
-    QgsChunkListEntry *replacementQueueEntry;  //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
+    QgsChunkLoader *mLoader;         //!< Contains extra data necessary for entity creation (not null <=> Loading state)
+    Qt3DCore::QEntity *mEntity;   //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
 
-    QgsChunkLoader *loader;         //!< Contains extra data necessary for entity creation (not null <=> Loading state)
-    Qt3DCore::QEntity *entity;   //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
+    QgsChunkQueueJobFactory *mUpdaterFactory;  //!< Object that creates updater (not null <=> QueuedForUpdate state)
+    QgsChunkQueueJob *mUpdater;                //!< Object that does update of the chunk (not null <=> Updating state)
 
-    QgsChunkQueueJobFactory *updaterFactory;  //!< Object that creates updater (not null <=> QueuedForUpdate state)
-    QgsChunkQueueJob *updater;                //!< Object that does update of the chunk (not null <=> Updating state)
-
-    QTime entityCreatedTime;
+    QTime mEntityCreatedTime;
 };
 
 /// @endcond

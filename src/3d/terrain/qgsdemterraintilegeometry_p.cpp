@@ -223,26 +223,16 @@ void DemTerrainTileGeometry::init()
   const int faces = 2 * ( m_resolution - 1 ) * ( m_resolution - 1 );
 
   m_positionAttribute->setName( QAttribute::defaultPositionAttributeName() );
-#if QT_VERSION >= 0x050800
   m_positionAttribute->setVertexBaseType( QAttribute::Float );
   m_positionAttribute->setVertexSize( 3 );
-#else
-  m_positionAttribute->setDataType( QAttribute::Float );
-  m_positionAttribute->setDataSize( 3 );
-#endif
   m_positionAttribute->setAttributeType( QAttribute::VertexAttribute );
   m_positionAttribute->setBuffer( m_vertexBuffer );
   m_positionAttribute->setByteStride( stride );
   m_positionAttribute->setCount( nVerts );
 
   m_texCoordAttribute->setName( QAttribute::defaultTextureCoordinateAttributeName() );
-#if QT_VERSION >= 0x050800
   m_texCoordAttribute->setVertexBaseType( QAttribute::Float );
   m_texCoordAttribute->setVertexSize( 2 );
-#else
-  m_texCoordAttribute->setDataType( QAttribute::Float );
-  m_texCoordAttribute->setDataSize( 2 );
-#endif
   m_texCoordAttribute->setAttributeType( QAttribute::VertexAttribute );
   m_texCoordAttribute->setBuffer( m_vertexBuffer );
   m_texCoordAttribute->setByteStride( stride );
@@ -250,13 +240,8 @@ void DemTerrainTileGeometry::init()
   m_texCoordAttribute->setCount( nVerts );
 
   m_normalAttribute->setName( QAttribute::defaultNormalAttributeName() );
-#if QT_VERSION >= 0x050800
   m_normalAttribute->setVertexBaseType( QAttribute::Float );
   m_normalAttribute->setVertexSize( 3 );
-#else
-  m_normalAttribute->setDataType( QAttribute::Float );
-  m_normalAttribute->setDataSize( 3 );
-#endif
   m_normalAttribute->setAttributeType( QAttribute::VertexAttribute );
   m_normalAttribute->setBuffer( m_vertexBuffer );
   m_normalAttribute->setByteStride( stride );
@@ -264,11 +249,7 @@ void DemTerrainTileGeometry::init()
   m_normalAttribute->setCount( nVerts );
 
   m_indexAttribute->setAttributeType( QAttribute::IndexAttribute );
-#if QT_VERSION >= 0x050800
   m_indexAttribute->setVertexBaseType( QAttribute::UnsignedInt );
-#else
-  m_indexAttribute->setDataType( QAttribute::UnsignedInt );
-#endif
   m_indexAttribute->setBuffer( m_indexBuffer );
 
   // Each primitive has 3 vertives

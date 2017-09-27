@@ -30,7 +30,7 @@ class QgsTerrainTileLoader : public QgsChunkLoader
 {
   public:
     //! Constructs loader for a chunk node
-    QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
+    QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
 
   protected:
     //! Starts asynchronous rendering of map texture

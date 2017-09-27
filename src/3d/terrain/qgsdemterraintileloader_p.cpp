@@ -37,7 +37,7 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
 
   // get heightmap asynchronously
   connect( generator->heightMapGenerator(), &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainTileLoader::onHeightMapReady );
-  heightMapJobId = generator->heightMapGenerator()->render( node->x, node->y, node->z );
+  heightMapJobId = generator->heightMapGenerator()->render( node->tileX(), node->tileY(), node->tileZ() );
   resolution = generator->heightMapGenerator()->resolution();
 }
 
@@ -70,7 +70,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   _heightMapMinMax( heightMap, zMin, zMax );
 
   const Qgs3DMapSettings &map = terrain()->map3D();
-  QgsRectangle extent = map.terrainGenerator()->terrainTilingScheme.tileToExtent( node->x, node->y, node->z ); //node->extent;
+  QgsRectangle extent = map.terrainGenerator()->terrainTilingScheme.tileToExtent( mNode->tileX(), mNode->tileY(), mNode->tileZ() ); //node->extent;
   double x0 = extent.xMinimum() - map.originX;
   double y0 = extent.yMinimum() - map.originY;
   double side = extent.width();
@@ -79,7 +79,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   transform->setScale3D( QVector3D( side, map.terrainVerticalScale(), side ) );
   transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
 
-  node->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
+  mNode->setExactBbox( QgsAABB( x0, zMin * map.terrainVerticalScale(), -y0, x0 + side, zMax * map.terrainVerticalScale(), -( y0 + side ) ) );
 
   entity->setEnabled( false );
   entity->setParent( parent );
