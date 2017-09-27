@@ -9,10 +9,6 @@
 class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
-    QgsRectangle extent;
-    QString debugText;
-    QImage img;
-    int version;
 
     static QImage placeholderImage()
     {
@@ -26,23 +22,29 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
     }
 
     TerrainTextureImageDataGenerator( const QgsRectangle &extent, const QString &debugText, const QImage &img, int version )
-      : extent( extent ), debugText( debugText ), img( img ), version( version ) {}
+      : mExtent( extent ), mDebugText( debugText ), mImage( img ), mVersion( version ) {}
 
     virtual Qt3DRender::QTextureImageDataPtr operator()() override
     {
       Qt3DRender::QTextureImageDataPtr dataPtr = Qt3DRender::QTextureImageDataPtr::create();
-      dataPtr->setImage( img.isNull() ? placeholderImage() : img ); // will copy image data to the internal byte array
+      dataPtr->setImage( mImage.isNull() ? placeholderImage() : mImage ); // will copy image data to the internal byte array
       return dataPtr;
     }
 
     virtual bool operator ==( const QTextureImageDataGenerator &other ) const override
     {
       const TerrainTextureImageDataGenerator *otherFunctor = functor_cast<TerrainTextureImageDataGenerator>( &other );
-      return otherFunctor != nullptr && otherFunctor->version == version &&
-             extent == otherFunctor->extent;
+      return otherFunctor != nullptr && otherFunctor->mVersion == mVersion &&
+             mExtent == otherFunctor->mExtent;
     }
 
     QT3D_FUNCTOR( TerrainTextureImageDataGenerator )
+
+  private:
+    QgsRectangle mExtent;
+    QString mDebugText;
+    QImage mImage;
+    int mVersion;
 };
 
 
@@ -52,10 +54,10 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
 
 QgsTerrainTextureImage::QgsTerrainTextureImage( const QImage &image, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent )
   : Qt3DRender::QAbstractTextureImage( parent )
-  , extent( extent )
-  , debugText( debugText )
-  , img( image )
-  , version( 1 )
+  , mExtent( extent )
+  , mDebugText( debugText )
+  , mImage( image )
+  , mVersion( 1 )
 {
 }
 
@@ -66,20 +68,20 @@ QgsTerrainTextureImage::~QgsTerrainTextureImage()
 
 Qt3DRender::QTextureImageDataGeneratorPtr QgsTerrainTextureImage::dataGenerator() const
 {
-  return Qt3DRender::QTextureImageDataGeneratorPtr( new TerrainTextureImageDataGenerator( extent, debugText, img, version ) );
+  return Qt3DRender::QTextureImageDataGeneratorPtr( new TerrainTextureImageDataGenerator( mExtent, mDebugText, mImage, mVersion ) );
 }
 
 void QgsTerrainTextureImage::invalidate()
 {
-  img = QImage();
-  version++;
+  mImage = QImage();
+  mVersion++;
   notifyDataGeneratorChanged();
 }
 
 void QgsTerrainTextureImage::setImage( const QImage &img )
 {
-  this->img = img;
-  version++;
+  this->mImage = img;
+  mVersion++;
   notifyDataGeneratorChanged();
 }
 

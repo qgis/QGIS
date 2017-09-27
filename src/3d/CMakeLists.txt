@@ -58,7 +58,6 @@ SET(QGIS_3D_MOC_HDRS
   chunks/qgschunkqueuejob_p.h
 
   terrain/qgsdemterraintileloader_p.h
-  terrain/qgsdemterraintilegeometry_p.h
   terrain/qgsterrainentity_p.h
   terrain/qgsterraingenerator.h
   terrain/qgsterraintexturegenerator_p.h

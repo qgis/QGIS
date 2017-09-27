@@ -71,11 +71,14 @@ class QgsTerrainGenerator : public QgsChunkLoaderFactory
     //! Converts terrain generator type enumeration into a string
     static QString typeToString( Type type );
 
+    //! Returns tiling scheme of the terrain
+    const QgsTilingScheme &tilingScheme() const { return mTerrainTilingScheme; }
+
     //! Returns CRS of the terrain
-    QgsCoordinateReferenceSystem crs() const { return terrainTilingScheme.crs; }
+    QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs; }
 
-    QgsTilingScheme terrainTilingScheme;   //!< Tiling scheme of the terrain
-
+  protected:
+    QgsTilingScheme mTerrainTilingScheme;   //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
 };
 

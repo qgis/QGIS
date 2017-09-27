@@ -109,31 +109,31 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
 {
   public:
     explicit PlaneVertexBufferFunctor( int resolution, const QByteArray &heightMap )
-      : m_resolution( resolution )
-      , m_heightMap( heightMap )
+      : mResolution( resolution )
+      , mHeightMap( heightMap )
     {}
 
     ~PlaneVertexBufferFunctor() {}
 
     QByteArray operator()() Q_DECL_FINAL
     {
-      return createPlaneVertexData( m_resolution, m_heightMap );
+      return createPlaneVertexData( mResolution, mHeightMap );
     }
 
     bool operator ==( const QBufferDataGenerator &other ) const Q_DECL_FINAL
     {
       const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
-        return ( otherFunctor->m_resolution == m_resolution &&
-                 otherFunctor->m_heightMap == m_heightMap );
+        return ( otherFunctor->mResolution == mResolution &&
+                 otherFunctor->mHeightMap == mHeightMap );
       return false;
     }
 
     QT3D_FUNCTOR( PlaneVertexBufferFunctor )
 
   private:
-    int m_resolution;
-    QByteArray m_heightMap;
+    int mResolution;
+    QByteArray mHeightMap;
 };
 
 
@@ -142,28 +142,28 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
 {
   public:
     explicit PlaneIndexBufferFunctor( int resolution )
-      : m_resolution( resolution )
+      : mResolution( resolution )
     {}
 
     ~PlaneIndexBufferFunctor() {}
 
     QByteArray operator()() Q_DECL_FINAL
     {
-      return createPlaneIndexData( m_resolution );
+      return createPlaneIndexData( mResolution );
     }
 
     bool operator ==( const QBufferDataGenerator &other ) const Q_DECL_FINAL
     {
       const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
-        return ( otherFunctor->m_resolution == m_resolution );
+        return ( otherFunctor->mResolution == mResolution );
       return false;
     }
 
     QT3D_FUNCTOR( PlaneIndexBufferFunctor )
 
   private:
-    int m_resolution;
+    int mResolution;
 };
 
 
@@ -172,14 +172,8 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
 
 DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, const QByteArray &heightMap, DemTerrainTileGeometry::QNode *parent )
   : QGeometry( parent )
-  , m_resolution( resolution )
-  , m_heightMap( heightMap )
-  , m_positionAttribute( nullptr )
-  , m_normalAttribute( nullptr )
-  , m_texCoordAttribute( nullptr )
-  , m_indexAttribute( nullptr )
-  , m_vertexBuffer( nullptr )
-  , m_indexBuffer( nullptr )
+  , mResolution( resolution )
+  , mHeightMap( heightMap )
 {
   init();
 }
@@ -188,80 +182,59 @@ DemTerrainTileGeometry::~DemTerrainTileGeometry()
 {
 }
 
-QAttribute *DemTerrainTileGeometry::positionAttribute() const
-{
-  return m_positionAttribute;
-}
-
-QAttribute *DemTerrainTileGeometry::normalAttribute() const
-{
-  return m_normalAttribute;
-}
-
-QAttribute *DemTerrainTileGeometry::texCoordAttribute() const
-{
-  return m_texCoordAttribute;
-}
-
-QAttribute *DemTerrainTileGeometry::indexAttribute() const
-{
-  return m_indexAttribute;
-}
-
-
 void DemTerrainTileGeometry::init()
 {
-  m_positionAttribute = new QAttribute( this );
-  m_normalAttribute = new QAttribute( this );
-  m_texCoordAttribute = new QAttribute( this );
-  m_indexAttribute = new QAttribute( this );
-  m_vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-  m_indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
+  mPositionAttribute = new QAttribute( this );
+  mNormalAttribute = new QAttribute( this );
+  mTexCoordAttribute = new QAttribute( this );
+  mIndexAttribute = new QAttribute( this );
+  mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
+  mIndexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
 
-  const int nVerts = m_resolution * m_resolution;
+  const int nVerts = mResolution * mResolution;
   const int stride = ( 3 + 2 + 3 ) * sizeof( float );
-  const int faces = 2 * ( m_resolution - 1 ) * ( m_resolution - 1 );
+  const int faces = 2 * ( mResolution - 1 ) * ( mResolution - 1 );
 
-  m_positionAttribute->setName( QAttribute::defaultPositionAttributeName() );
-  m_positionAttribute->setVertexBaseType( QAttribute::Float );
-  m_positionAttribute->setVertexSize( 3 );
-  m_positionAttribute->setAttributeType( QAttribute::VertexAttribute );
-  m_positionAttribute->setBuffer( m_vertexBuffer );
-  m_positionAttribute->setByteStride( stride );
-  m_positionAttribute->setCount( nVerts );
+  mPositionAttribute->setName( QAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setVertexBaseType( QAttribute::Float );
+  mPositionAttribute->setVertexSize( 3 );
+  mPositionAttribute->setAttributeType( QAttribute::VertexAttribute );
+  mPositionAttribute->setBuffer( mVertexBuffer );
+  mPositionAttribute->setByteStride( stride );
+  mPositionAttribute->setCount( nVerts );
 
-  m_texCoordAttribute->setName( QAttribute::defaultTextureCoordinateAttributeName() );
-  m_texCoordAttribute->setVertexBaseType( QAttribute::Float );
-  m_texCoordAttribute->setVertexSize( 2 );
-  m_texCoordAttribute->setAttributeType( QAttribute::VertexAttribute );
-  m_texCoordAttribute->setBuffer( m_vertexBuffer );
-  m_texCoordAttribute->setByteStride( stride );
-  m_texCoordAttribute->setByteOffset( 3 * sizeof( float ) );
-  m_texCoordAttribute->setCount( nVerts );
+  mTexCoordAttribute->setName( QAttribute::defaultTextureCoordinateAttributeName() );
+  mTexCoordAttribute->setVertexBaseType( QAttribute::Float );
+  mTexCoordAttribute->setVertexSize( 2 );
+  mTexCoordAttribute->setAttributeType( QAttribute::VertexAttribute );
+  mTexCoordAttribute->setBuffer( mVertexBuffer );
+  mTexCoordAttribute->setByteStride( stride );
+  mTexCoordAttribute->setByteOffset( 3 * sizeof( float ) );
+  mTexCoordAttribute->setCount( nVerts );
 
-  m_normalAttribute->setName( QAttribute::defaultNormalAttributeName() );
-  m_normalAttribute->setVertexBaseType( QAttribute::Float );
-  m_normalAttribute->setVertexSize( 3 );
-  m_normalAttribute->setAttributeType( QAttribute::VertexAttribute );
-  m_normalAttribute->setBuffer( m_vertexBuffer );
-  m_normalAttribute->setByteStride( stride );
-  m_normalAttribute->setByteOffset( 5 * sizeof( float ) );
-  m_normalAttribute->setCount( nVerts );
+  mNormalAttribute->setName( QAttribute::defaultNormalAttributeName() );
+  mNormalAttribute->setVertexBaseType( QAttribute::Float );
+  mNormalAttribute->setVertexSize( 3 );
+  mNormalAttribute->setAttributeType( QAttribute::VertexAttribute );
+  mNormalAttribute->setBuffer( mVertexBuffer );
+  mNormalAttribute->setByteStride( stride );
+  mNormalAttribute->setByteOffset( 5 * sizeof( float ) );
+  mNormalAttribute->setCount( nVerts );
 
-  m_indexAttribute->setAttributeType( QAttribute::IndexAttribute );
-  m_indexAttribute->setVertexBaseType( QAttribute::UnsignedInt );
-  m_indexAttribute->setBuffer( m_indexBuffer );
+  mIndexAttribute->setAttributeType( QAttribute::IndexAttribute );
+  mIndexAttribute->setVertexBaseType( QAttribute::UnsignedInt );
+  mIndexAttribute->setBuffer( mIndexBuffer );
 
   // Each primitive has 3 vertives
-  m_indexAttribute->setCount( faces * 3 );
+  mIndexAttribute->setCount( faces * 3 );
 
-  m_vertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( m_resolution, m_heightMap ) );
-  m_indexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( m_resolution ) );
+  mVertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( mResolution, mHeightMap ) );
+  mIndexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( mResolution ) );
 
-  addAttribute( m_positionAttribute );
-  addAttribute( m_texCoordAttribute );
-  addAttribute( m_normalAttribute );
-  addAttribute( m_indexAttribute );
+  addAttribute( mPositionAttribute );
+  addAttribute( mTexCoordAttribute );
+  addAttribute( mNormalAttribute );
+  addAttribute( mIndexAttribute );
 }
 
 /// @endcond

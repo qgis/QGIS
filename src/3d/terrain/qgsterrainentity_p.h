@@ -39,12 +39,12 @@ class QgsTerrainEntity : public QgsChunkedEntity
     Q_OBJECT
   public:
     //! Constructs terrain entity. The argument maxLevel determines how deep the tree of tiles will be
-    explicit QgsTerrainEntity( int mMaxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent = nullptr );
+    explicit QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Qt3DCore::QNode *parent = nullptr );
 
     ~QgsTerrainEntity();
 
     //! Returns associated 3D map settings
-    const Qgs3DMapSettings &map3D() const { return map; }
+    const Qgs3DMapSettings &map3D() const { return mMap; }
     //! Returns pointer to the generator of textures for terrain tiles
     QgsTerrainTextureGenerator *textureGenerator() { return mTextureGenerator; }
     //! Returns transform from terrain's CRS to map CRS
@@ -62,7 +62,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
 
     void connectToLayersRepaintRequest();
 
-    const Qgs3DMapSettings &map;
+    const Qgs3DMapSettings &mMap;
     //! picker of terrain to know height of terrain when dragging
     Qt3DRender::QObjectPicker *mTerrainPicker;
     QgsTerrainTextureGenerator *mTextureGenerator;

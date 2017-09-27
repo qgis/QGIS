@@ -41,7 +41,7 @@ QgsTerrainTileLoader::QgsTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkN
     tz = node->tileZ();
   }
 
-  QgsRectangle extentTerrainCrs = map.terrainGenerator()->terrainTilingScheme.tileToExtent( tx, ty, tz );
+  QgsRectangle extentTerrainCrs = map.terrainGenerator()->tilingScheme().tileToExtent( tx, ty, tz );
   mExtentMapCrs = terrain->terrainToMapTransform().transformBoundingBox( extentTerrainCrs );
   mTileDebugText = QString( "%1 | %2 | %3" ).arg( tx ).arg( ty ).arg( tz );
 }

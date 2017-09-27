@@ -32,7 +32,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     Q_OBJECT
   public:
     //! Constructs loader for the given chunk node
-    QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
+    QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
     ~QgsDemTerrainTileLoader();
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
@@ -42,9 +42,9 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
 
   private:
 
-    int heightMapJobId;
-    QByteArray heightMap;
-    int resolution;
+    int mHeightMapJobId;
+    QByteArray mHeightMap;
+    int mResolution;
 };
 
 
@@ -69,7 +69,7 @@ class QgsDemHeightMapGenerator : public QObject
     QByteArray renderSynchronously( int x, int y, int z );
 
     //! Returns resolution(number of height values on each side of tile)
-    int resolution() const { return res; }
+    int resolution() const { return mResolution; }
 
     //! returns height at given position (in terrain's CRS)
     float heightAt( double x, double y );
@@ -83,16 +83,16 @@ class QgsDemHeightMapGenerator : public QObject
 
   private:
     //! raster used to build terrain
-    QgsRasterLayer *dtm;
+    QgsRasterLayer *mDtm;
 
     //! cloned provider to be used in worker thread
-    QgsRasterDataProvider *clonedProvider;
+    QgsRasterDataProvider *mClonedProvider;
 
-    QgsTilingScheme tilingScheme;
+    QgsTilingScheme mTilingScheme;
 
-    int res;
+    int mResolution;
 
-    int lastJobId;
+    int mLastJobId;
 
     struct JobData
     {
@@ -103,10 +103,10 @@ class QgsDemHeightMapGenerator : public QObject
       QElapsedTimer timer;
     };
 
-    QHash<QFutureWatcher<QByteArray>*, JobData> jobs;
+    QHash<QFutureWatcher<QByteArray>*, JobData> mJobs;
 
     //! used for height queries
-    QByteArray dtmCoarseData;
+    QByteArray mDtmCoarseData;
 };
 
 /// @endcond

@@ -38,7 +38,7 @@ QgsTerrainGenerator::Type QgsDemTerrainGenerator::type() const
 
 QgsRectangle QgsDemTerrainGenerator::extent() const
 {
-  return terrainTilingScheme.tileToExtent( 0, 0, 0 );
+  return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
 float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DMapSettings &map ) const
@@ -75,12 +75,12 @@ void QgsDemTerrainGenerator::updateGenerator()
   QgsRasterLayer *dem = layer();
   if ( dem )
   {
-    terrainTilingScheme = QgsTilingScheme( dem->extent(), dem->crs() );
-    mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( dem, terrainTilingScheme, mResolution ) );
+    mTerrainTilingScheme = QgsTilingScheme( dem->extent(), dem->crs() );
+    mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution ) );
   }
   else
   {
-    terrainTilingScheme = QgsTilingScheme();
+    mTerrainTilingScheme = QgsTilingScheme();
     mHeightMapGenerator.reset();
   }
 }

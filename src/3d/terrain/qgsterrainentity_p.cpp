@@ -41,7 +41,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
   : QgsChunkedEntity( map.terrainGenerator()->rootChunkBbox( map ),
                       map.terrainGenerator()->rootChunkError( map ),
                       map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
-  , map( map )
+  , mMap( map )
   , mTerrainPicker( nullptr )
 {
   map.terrainGenerator()->setTerrain( this );
@@ -77,7 +77,7 @@ QgsTerrainEntity::~QgsTerrainEntity()
 
 void QgsTerrainEntity::onShowBoundingBoxesChanged()
 {
-  setShowBoundingBoxes( map.showTerrainBoundingBoxes() );
+  setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 }
 
 
@@ -121,7 +121,7 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsTerrainEntity::invalidateMapImages );
   }
 
-  mLayers = map.layers();
+  mLayers = mMap.layers();
 
   Q_FOREACH ( QgsMapLayer *layer, mLayers )
   {

@@ -7,8 +7,6 @@
 
 #include "qgsrectangle.h"
 
-//#include "chunkloader.h"
-
 
 /** \ingroup 3d
  * Terrain generator that creates a simple square flat area.

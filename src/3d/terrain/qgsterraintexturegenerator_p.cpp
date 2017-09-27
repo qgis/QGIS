@@ -10,8 +10,8 @@
 ///@cond PRIVATE
 
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
-  : map( map )
-  , lastJobId( 0 )
+  : mMap( map )
+  , mLastJobId( 0 )
 {
 }
 
@@ -25,19 +25,19 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, const QStrin
   job->start();
 
   JobData jobData;
-  jobData.jobId = ++lastJobId;
+  jobData.jobId = ++mLastJobId;
   jobData.job = job;
   jobData.extent = extent;
   jobData.debugText = debugText;
 
-  jobs.insert( job, jobData );
+  mJobs.insert( job, jobData );
   //qDebug() << "added job: " << jobData.jobId << "  .... in queue: " << jobs.count();
   return jobData.jobId;
 }
 
 void QgsTerrainTextureGenerator::cancelJob( int jobId )
 {
-  Q_FOREACH ( const JobData &jd, jobs )
+  Q_FOREACH ( const JobData &jd, mJobs )
   {
     if ( jd.jobId == jobId )
     {
@@ -45,7 +45,7 @@ void QgsTerrainTextureGenerator::cancelJob( int jobId )
       jd.job->cancelWithoutBlocking();
       disconnect( jd.job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
       jd.job->deleteLater();
-      jobs.remove( jd.job );
+      mJobs.remove( jd.job );
       return;
     }
   }
@@ -67,7 +67,7 @@ QImage QgsTerrainTextureGenerator::renderSynchronously( const QgsRectangle &exte
   QgsMapRendererCustomPainterJob job( mapSettings, &p );
   job.renderSynchronously();
 
-  if ( map.showTerrainTilesInfo() )
+  if ( mMap.showTerrainTilesInfo() )
   {
     // extra tile information for debugging
     p.setPen( Qt::white );
@@ -85,12 +85,12 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
 {
   QgsMapRendererSequentialJob *mapJob = static_cast<QgsMapRendererSequentialJob *>( sender() );
 
-  Q_ASSERT( jobs.contains( mapJob ) );
-  JobData jobData = jobs.value( mapJob );
+  Q_ASSERT( mJobs.contains( mapJob ) );
+  JobData jobData = mJobs.value( mapJob );
 
   QImage img = mapJob->renderedImage();
 
-  if ( map.showTerrainTilesInfo() )
+  if ( mMap.showTerrainTilesInfo() )
   {
     // extra tile information for debugging
     QPainter p( &img );
@@ -101,7 +101,7 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   }
 
   mapJob->deleteLater();
-  jobs.remove( mapJob );
+  mJobs.remove( mapJob );
 
   //qDebug() << "finished job " << jobData.jobId << "  ... in queue: " << jobs.count();
 
@@ -112,10 +112,10 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
 QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
 {
   QgsMapSettings mapSettings;
-  mapSettings.setLayers( map.layers() );
-  mapSettings.setOutputSize( QSize( map.mapTileResolution(), map.mapTileResolution() ) );
-  mapSettings.setDestinationCrs( map.crs );
-  mapSettings.setBackgroundColor( map.backgroundColor() );
+  mapSettings.setLayers( mMap.layers() );
+  mapSettings.setOutputSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) );
+  mapSettings.setDestinationCrs( mMap.crs );
+  mapSettings.setBackgroundColor( mMap.backgroundColor() );
   return mapSettings;
 }
 

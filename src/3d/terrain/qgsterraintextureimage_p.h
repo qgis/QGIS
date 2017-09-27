@@ -38,19 +38,19 @@ class QgsTerrainTextureImage : public Qt3DRender::QAbstractTextureImage
     //! Clears the current map image and emits signal that data generator has changed
     void invalidate();
     //! Stores a new map image and emits signal that data generator has changed
-    void setImage( const QImage &img );
+    void setImage( const QImage &image );
 
     //! Returns extent of the image in map coordinates
-    QgsRectangle imageExtent() const { return extent; }
+    QgsRectangle imageExtent() const { return mExtent; }
     //! Returns debug information (normally map tile coordinates)
-    QString imageDebugText() const { return debugText; }
+    QString imageDebugText() const { return mDebugText; }
 
   private:
-    QgsRectangle extent;
-    QString debugText;
-    QImage img;
-    int version;
-    int jobId;
+    QgsRectangle mExtent;
+    QString mDebugText;
+    QImage mImage;
+    int mVersion;
+    int mJobId;
 };
 
 /// @endcond

@@ -60,7 +60,7 @@ class QgsTerrainTextureGenerator : public QObject
   private:
     QgsMapSettings baseMapSettings();
 
-    const Qgs3DMapSettings &map;
+    const Qgs3DMapSettings &mMap;
 
     struct JobData
     {
@@ -70,8 +70,8 @@ class QgsTerrainTextureGenerator : public QObject
       QString debugText;
     };
 
-    QHash<QgsMapRendererSequentialJob *, JobData> jobs;
-    int lastJobId;
+    QHash<QgsMapRendererSequentialJob *, JobData> mJobs;
+    int mLastJobId;
 };
 
 /// @endcond

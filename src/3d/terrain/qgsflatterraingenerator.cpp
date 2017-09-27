@@ -103,7 +103,7 @@ QgsTerrainGenerator::Type QgsFlatTerrainGenerator::type() const
 
 QgsRectangle QgsFlatTerrainGenerator::extent() const
 {
-  return terrainTilingScheme.tileToExtent( 0, 0, 0 );
+  return mTerrainTilingScheme.tileToExtent( 0, 0, 0 );
 }
 
 void QgsFlatTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
@@ -153,11 +153,11 @@ void QgsFlatTerrainGenerator::updateTilingScheme()
 {
   if ( mExtent.isNull() )
   {
-    terrainTilingScheme = QgsTilingScheme();
+    mTerrainTilingScheme = QgsTilingScheme();
   }
   else
   {
     // the real extent will be a square where the given extent fully fits
-    terrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
+    mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
   }
 }
