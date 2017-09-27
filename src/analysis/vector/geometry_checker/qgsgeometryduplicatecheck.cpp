@@ -48,6 +48,11 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
 
     QgsRectangle bboxA = layerFeatureA.geometry()->boundingBox();
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
+    if ( !geomEngineA->isValid() )
+    {
+      messages.append( tr( "Duplicate check failed for %1: the geometry is invalid" ).arg( layerFeatureA.id() ) );
+      continue;
+    }
     QMap<QString, QList<QgsFeatureId>> duplicates;
 
     QgsWkbTypes::GeometryType geomType = layerFeatureA.feature().geometry().type();
@@ -59,29 +64,17 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       {
         continue;
       }
-      if ( geomType == QgsWkbTypes::PointGeometry )
+      QString errMsg;
+      QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( layerFeatureB.geometry(), &errMsg );
+      if ( errMsg.isEmpty() && diffGeom && diffGeom->isEmpty() )
       {
-        const QgsPoint *p = dynamic_cast<const QgsPoint *>( layerFeatureA.geometry() );
-        const QgsPoint *q = dynamic_cast<const QgsPoint *>( layerFeatureB.geometry() );
-        if ( p && q && p->distanceSquared( *q ) < mContext->tolerance * mContext->tolerance )
-        {
-          duplicates[layerFeatureB.layer().id()].append( layerFeatureB.feature().id() );
-        }
+        duplicates[layerFeatureB.layer().id()].append( layerFeatureB.feature().id() );
       }
-      else if ( geomType == QgsWkbTypes::PolygonGeometry )
+      else if ( !errMsg.isEmpty() )
       {
-        QString errMsg;
-        QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( layerFeatureB.geometry(), &errMsg );
-        if ( diffGeom && diffGeom->area() < mContext->tolerance )
-        {
-          duplicates[layerFeatureB.layer().id()].append( layerFeatureB.feature().id() );
-        }
-        else if ( !diffGeom )
-        {
-          messages.append( tr( "Duplicate check between features %1 and %2: %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
-        }
-        delete diffGeom;
+        messages.append( tr( "Duplicate check failed for %1, %2: %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
       }
+      delete diffGeom;
     }
     if ( !duplicates.isEmpty() )
     {
@@ -106,8 +99,6 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
   }
   else if ( method == RemoveDuplicates )
   {
-    QgsWkbTypes::GeometryType geomType = featureA.geometry().type();
-
     QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, true );
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
 
@@ -123,27 +114,14 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
           continue;
         }
         QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, true );
-        if ( geomType == QgsWkbTypes::PointGeometry )
+        QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( layerFeatureB.geometry() );
+        if ( diffGeom && diffGeom->isEmpty() )
         {
-          const QgsPoint *p = dynamic_cast<const QgsPoint *>( layerFeatureA.geometry() );
-          const QgsPoint *q = dynamic_cast<const QgsPoint *>( layerFeatureB.geometry() );
-          if ( p && q && p->distanceSquared( *q ) < mContext->tolerance * mContext->tolerance )
-          {
-            featurePoolB->deleteFeature( featureB );
-            changes[layerIdB][idB].append( Change( ChangeFeature, ChangeRemoved ) );
-          }
+          featurePoolB->deleteFeature( featureB );
+          changes[layerIdB][idB].append( Change( ChangeFeature, ChangeRemoved ) );
         }
-        else if ( geomType == QgsWkbTypes::PolygonGeometry )
-        {
-          QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( layerFeatureB.geometry() );
-          if ( diffGeom && diffGeom->area() < mContext->tolerance )
-          {
-            featurePoolB->deleteFeature( featureB );
-            changes[layerIdB][idB].append( Change( ChangeFeature, ChangeRemoved ) );
-          }
 
-          delete diffGeom;
-        }
+        delete diffGeom;
       }
     }
     error->setFixed( method );
