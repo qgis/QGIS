@@ -1321,7 +1321,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns the calculated default value for the specified field index. The default
-     * value may be taken from a client side default value expression (see setDefaultValueExpression())
+     * value may be taken from a client side default value expression (see setDefaultValueDefinition())
      * or taken from the underlying data provider.
      * \param index field index
      * \param feature optional feature to use for default value evaluation. If passed,
@@ -1331,7 +1331,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * specified, a default context will be created
      * \returns calculated default value
      * \since QGIS 3.0
-     * \see setDefaultValueExpression()
+     * \see setDefaultValueDefinition()
      */
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
                            QgsExpressionContext *context = nullptr ) const;
