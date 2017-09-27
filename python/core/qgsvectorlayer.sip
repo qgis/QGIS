@@ -1392,7 +1392,7 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
                            QgsExpressionContext *context = 0 ) const;
 %Docstring
  Returns the calculated default value for the specified field index. The default
- value may be taken from a client side default value expression (see setDefaultValueExpression())
+ value may be taken from a client side default value expression (see setDefaultValueDefinition())
  or taken from the underlying data provider.
  \param index field index
  \param feature optional feature to use for default value evaluation. If passed,
@@ -1402,7 +1402,7 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  specified, a default context will be created
  :return: calculated default value
 .. versionadded:: 3.0
-.. seealso:: setDefaultValueExpression()
+.. seealso:: setDefaultValueDefinition()
  :rtype: QVariant
 %End
 
