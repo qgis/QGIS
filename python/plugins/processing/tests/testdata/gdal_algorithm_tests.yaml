@@ -521,47 +521,47 @@ tests:
         name: expected/gdal/buffer_polys_dissolve.gml
         type: vector
 
-  #~ - algorithm: gdal:clipvectorbyextent
-    #~ name: Clip points by extent
-    #~ params:
-      #~ EXTENT: 0.6180722891566264,5.408433734939758,0.4337349397590362,2.306024096385542
-        #~ [EPSG:4326]
-      #~ INPUT:
-        #~ name: points.gml
-        #~ type: vector
-      #~ OPTIONS: ''
-    #~ results:
-      #~ OUTPUT:
-        #~ name: expected/gdal/clip_points.gml
-        #~ type: vector
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip points by extent
+    params:
+      EXTENT: 0.6180722891566264,5.408433734939758,0.4337349397590362,2.306024096385542
+        [EPSG:4326]
+      INPUT:
+        name: points.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_points.gml
+        type: vector
 
-  #~ - algorithm: gdal:clipvectorbyextent
-    #~ name: Clip lines by extent
-    #~ params:
-      #~ EXTENT: 4.464372469635628,8.749392712550609,-1.7716599190283402,2.972469635627531
-        #~ [EPSG:4326]
-      #~ INPUT:
-        #~ name: lines.gml
-        #~ type: vector
-      #~ OPTIONS: ''
-    #~ results:
-      #~ OUTPUT:
-        #~ name: expected/gdal/clip_lines.gml
-        #~ type: vector
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip lines by extent
+    params:
+      EXTENT: 4.362348178137652,8.698380566801621,-1.193522267206478,3.0914979757085024
+        [EPSG:4326]
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines.gml
+        type: vector
 
-  #~ - algorithm: gdal:clipvectorbyextent
-    #~ name: Clip polygons by extent
-    #~ params:
-      #~ EXTENT: 0.06912650602409443,4.6043674698795165,1.253313253012048,5.295180722891566
-        #~ [EPSG:4326]
-      #~ INPUT:
-        #~ name: polys.gml
-        #~ type: vector
-      #~ OPTIONS: ''
-    #~ results:
-      #~ OUTPUT:
-        #~ name: expected/gdal/clip_polygons.gml
-        #~ type: vector
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip polygons by extent
+    params:
+      EXTENT: 0.7143072289156609,4.718222891566264,1.4430722891566266,5.390060240963856
+        [EPSG:4326]
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_polygons.gml
+        type: vector
 
   #~ - algorithm: gdal:clipvectorbypolygon
     #~ name: Clip lines by polygons
