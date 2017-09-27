@@ -27,7 +27,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsProject,
                        QgsFieldConstraints,
                        QgsVectorLayerUtils,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsDefaultValue)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -553,7 +554,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 5.7, None])
 
         # test that vector layer default value expression overrides provider default literal
-        vl.setDefaultValueExpression(3, "4*3")
+        vl.setDefaultValueDefinition(3, QgsDefaultValue("4*3"))
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
         self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 12, None])
 
