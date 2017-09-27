@@ -82,6 +82,7 @@ class OffsetCurve(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback):
+        fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
@@ -90,6 +91,12 @@ class OffsetCurve(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
+        other_fields = []
+        for f in fields:
+            if f.name() == geometry:
+                continue
+            other_fields.append(f.name())
+
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
@@ -97,7 +104,7 @@ class OffsetCurve(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        sql = "SELECT ST_OffsetCurve({}, {}), * FROM '{}'".format(geometry, distance, layerName)
+        sql = "SELECT ST_OffsetCurve({}, {}) AS {}, {} FROM '{}'".format(geometry, distance, geometry, ','.join(other_fields), layerName)
         arguments.append(sql)
 
         if options:

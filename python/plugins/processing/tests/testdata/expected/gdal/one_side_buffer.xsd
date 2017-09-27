@@ -10,12 +10,12 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="one_side_buffer" type="ogr:one_side_buffer_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="one_side_buffer_Type">
+<xs:element name="SELECT" type="ogr:SELECT_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="SELECT_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
-        <xs:element name="geometryProperty" type="gml:MultiPolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="geometryProperty" type="gml:GeometryPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>

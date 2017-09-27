@@ -108,6 +108,7 @@ class OneSideBuffer(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback):
+        fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
@@ -119,6 +120,12 @@ class OneSideBuffer(GdalAlgorithm):
 
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
+        other_fields = []
+        for f in fields:
+            if f.name() == geometry:
+                continue
+            other_fields.append(f.name())
+
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
@@ -127,9 +134,9 @@ class OneSideBuffer(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})), * FROM '{}'".format(geometry, distance, side, layerName)
+            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
         else:
-            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}), * FROM '{}'".format(geometry, distance, side, layerName)
+            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
 
         if fieldName:
             sql = '"{} GROUP BY {}"'.format(sql, fieldName)
