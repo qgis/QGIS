@@ -260,7 +260,13 @@ IF(WITH_CORE)
   ENDIF(WITH_QTWEBKIT)
   #############################################################
   # search for Qt5
-  SET(QT_MIN_VERSION 5.2.0)
+  IF (WITH_3D)
+    # for 3D support we strictly require Qt >= 5.8
+    # (Qt 3D was introduced in 5.7 but it is not stable enough in that branch)
+    SET(QT_MIN_VERSION 5.8.0)
+  ELSE ()
+    SET(QT_MIN_VERSION 5.2.0)
+  ENDIF()
   FIND_PACKAGE(Qt5Core QUIET)
   FIND_PACKAGE(Qt5Gui REQUIRED)
   FIND_PACKAGE(Qt5Widgets REQUIRED)
