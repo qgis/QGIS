@@ -31,7 +31,8 @@ from qgis.core import (
     QgsSettings,
     QgsTransactionGroup,
     QgsReadWriteContext,
-    QgsRectangle
+    QgsRectangle,
+    QgsDefaultValue
 )
 from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
@@ -589,7 +590,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", "'qgis'::text", None, None])
 
         # test take vector layer default value expression overrides postgres provider default clause
-        vl.setDefaultValueExpression(3, "'mappy'")
+        vl.setDefaultValueDefinition(3, QgsDefaultValue("'mappy'"))
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
 
