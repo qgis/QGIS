@@ -259,7 +259,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer *layer, const QgsG
     // in order of priority:
 
     // 1. client side default expression
-    if ( !layer->defaultValueDefinition( idx ).isValid() )
+    if ( layer->defaultValueDefinition( idx ).isValid() )
     {
       // client side default expression set - takes precedence over all. Why? Well, this is the only default
       // which QGIS users have control over, so we assume that they're deliberately overriding any
