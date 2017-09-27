@@ -49,14 +49,14 @@ void QgsGeometryDangleCheck::collectErrors( QList<QgsGeometryCheckError *> &erro
       QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, QList<QString>() << layerFeature.layer().id(), line->boundingBox(), {QgsWkbTypes::LineGeometry} );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
-        if ( checkFeature.feature().id() == layerFeature.feature().id() )
-        {
-          // Skip current feature, it was already checked above
-          continue;
-        }
         const QgsAbstractGeometry *testGeom = checkFeature.geometry();
         for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
         {
+          if ( checkFeature.feature().id() == layerFeature.feature().id() && iPart == jPart )
+          {
+            // Skip current feature part, it was already checked above
+            continue;
+          }
           const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart ) );
           if ( !testLine )
           {
