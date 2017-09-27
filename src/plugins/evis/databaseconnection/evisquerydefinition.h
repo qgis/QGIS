@@ -130,7 +130,7 @@ class eVisQueryDefinition
     QString mDatabaseHost;
 
     //! \brief The port/socket on the database host to which a connection should be made
-    int mDatabasePort;
+    int mDatabasePort = -1;
 
     //! \brief The name, or filename, of the database to which a connection should be made
     QString mDatabaseName;
@@ -145,6 +145,6 @@ class eVisQueryDefinition
     QString mSqlStatement;
 
     //! \brief Boolean to allow for automated connection to the database when query definition is successfully loaded
-    bool mAutoConnect;
+    bool mAutoConnect = false;
 };
 #endif

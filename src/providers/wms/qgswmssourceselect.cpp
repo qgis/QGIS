@@ -847,8 +847,8 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
   }
   else if ( layers.isEmpty() || mCRSs.isEmpty() )
   {
-    mCRS = QLatin1String( "" );
-    labelCoordRefSys->setText( QLatin1String( "" ) );
+    mCRS.clear();
+    labelCoordRefSys->clear();
   }
 
   updateLayerOrderTab( layers, styles, titles );
@@ -970,7 +970,7 @@ void QgsWMSSourceSelect::updateButtons()
     }
     else
     {
-      mLastLayerName = QLatin1String( "" );
+      mLastLayerName.clear();
       leLayerName->setText( mLastLayerName );
     }
   }

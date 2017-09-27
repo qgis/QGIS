@@ -162,7 +162,7 @@ void QgsOfflineEditingPlugin::setLayerProgress( int layer, int numLayers )
 
 void QgsOfflineEditingPlugin::setProgressMode( QgsOfflineEditing::ProgressMode mode, int maximum )
 {
-  QString format = QLatin1String( "" );
+  QString format;
   switch ( mode )
   {
     case QgsOfflineEditing::CopyFeatures:

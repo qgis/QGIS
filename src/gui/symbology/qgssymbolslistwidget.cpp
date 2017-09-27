@@ -77,7 +77,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   connect( openStyleManagerButton, &QPushButton::pressed, this, &QgsSymbolsListWidget::openStyleManager );
 
-  lblSymbolName->setText( QLatin1String( "" ) );
+  lblSymbolName->clear();
 
   populateGroups();
 

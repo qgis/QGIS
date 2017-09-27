@@ -1349,7 +1349,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsReadWriteCont
 
   if ( pkeyNode.isNull() )
   {
-    mProviderKey = QLatin1String( "" );
+    mProviderKey.clear();
   }
   else
   {
@@ -4000,7 +4000,7 @@ QString QgsVectorLayer::htmlMetadata() const
   for ( int i = 0; i < myFields.size(); ++i )
   {
     QgsField myField = myFields.at( i );
-    QString rowClass = QLatin1String( "" );
+    QString rowClass;
     if ( i % 2 )
       rowClass = QStringLiteral( "class=\"odd-row\"" );
     myMetadata += "<tr " + rowClass + "><td>" + myField.name() + "</td><td>" + myField.typeName() + "</td><td>" + QString::number( myField.length() ) + "</td><td>" + QString::number( myField.precision() ) + "</td><td>" + myField.comment() + "</td></tr>\n";

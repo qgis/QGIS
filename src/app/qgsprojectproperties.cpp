@@ -1867,8 +1867,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   mEllipsoidIndex = newIndex;
   leSemiMajor->setEnabled( false );
   leSemiMinor->setEnabled( false );
-  leSemiMajor->setText( QLatin1String( "" ) );
-  leSemiMinor->setText( QLatin1String( "" ) );
+  leSemiMajor->clear();
+  leSemiMinor->clear();
 
   cmbEllipsoid->setEnabled( projectionSelector->crs().isValid() );
   cmbEllipsoid->setToolTip( QLatin1String( "" ) );

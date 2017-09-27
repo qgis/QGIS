@@ -110,8 +110,8 @@ void QgsDecorationGrid::projectRead()
   mGridAnnotationPosition = InsideMapFrame; // don't allow outside frame, doesn't make sense
   mGridAnnotationDirection = static_cast< GridAnnotationDirection >( QgsProject::instance()->readNumEntry( mNameConfig,
                              QStringLiteral( "/AnnotationDirection" ), 0 ) );
-  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/AnnotationFont" ), QLatin1String( "" ) );
-  if ( fontStr != QLatin1String( "" ) )
+  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/AnnotationFont" ), QString() );
+  if ( !fontStr.isEmpty() )
   {
     mGridAnnotationFont.fromString( fontStr );
   }
@@ -134,7 +134,7 @@ void QgsDecorationGrid::projectRead()
   if ( mLineSymbol )
     setLineSymbol( nullptr );
   xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/LineSymbol" ) );
-  if ( xml != QLatin1String( "" ) )
+  if ( !xml.isEmpty() )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
@@ -146,7 +146,7 @@ void QgsDecorationGrid::projectRead()
   if ( mMarkerSymbol )
     setMarkerSymbol( nullptr );
   xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/MarkerSymbol" ) );
-  if ( xml != QLatin1String( "" ) )
+  if ( !xml.isEmpty() )
   {
     doc.setContent( xml );
     elem = doc.documentElement();

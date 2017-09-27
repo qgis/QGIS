@@ -49,7 +49,6 @@ void QgsCollapsibleGroupBoxBasic::init()
   mShown = false;
   mParentScrollArea = nullptr;
   mSyncParent = nullptr;
-  mSyncGroup = QLatin1String( "" );
   mAltDown = false;
   mShiftDown = false;
   mTitleClicked = false;
@@ -516,7 +515,6 @@ void QgsCollapsibleGroupBox::init()
   // NOTE: only turn on mSaveCheckedState for groupboxes NOT used
   // in multiple places or used as options for different parent objects
   mSaveCheckedState = false;
-  mSettingGroup = QLatin1String( "" ); // if not set, use window object name
 
   connect( this, &QObject::objectNameChanged, this, &QgsCollapsibleGroupBox::loadState );
 }

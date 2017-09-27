@@ -581,8 +581,8 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
         if ( type == QLatin1String( "GEOMETRY" ) || type.isNull() || srid.isEmpty() )
         {
           addSearchGeometryColumn( connectionName, layer, estimateMetadata );
-          type = QLatin1String( "" );
-          srid = QLatin1String( "" );
+          type.clear();
+          srid.clear();
         }
       }
 
@@ -707,7 +707,7 @@ void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &connectionNam
 
 QString QgsMssqlSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
-  QString full_desc = QLatin1String( "" );
+  QString full_desc;
   if ( !schema.isEmpty() )
     full_desc = schema + '.';
   full_desc += table + " (" + column + ") " + type;

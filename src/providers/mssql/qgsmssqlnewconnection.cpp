@@ -130,9 +130,9 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
   if ( cb_trustedConnection->checkState() == Qt::Checked )
   {
     txtUsername->setEnabled( false );
-    txtUsername->setText( QLatin1String( "" ) );
+    txtUsername->clear();
     txtPassword->setEnabled( false );
-    txtPassword->setText( QLatin1String( "" ) );
+    txtPassword->clear();
   }
   else
   {

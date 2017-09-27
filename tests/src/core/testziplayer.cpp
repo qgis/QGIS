@@ -51,7 +51,7 @@ class TestZipLayer: public QObject
     // get map layer using QgsZipItem (only 1 child)
     QgsMapLayer *getZipLayer( const QString &myPath, const QString &myName );
     // test item(s) in zip item (supply name or test all)
-    bool testZipItem( const QString &myFileName, const QString &myChildName = QStringLiteral( "" ), const QString &myDriverName = QStringLiteral( "" ) );
+    bool testZipItem( const QString &myFileName, const QString &myChildName = QString(), const QString &myDriverName = QString() );
     // get layer transparency to test for .qml loading
     int getLayerTransparency( const QString &myFileName, const QString &myProviderKey, const QString &myScanZipSetting = QStringLiteral( "basic" ) );
     bool testZipItemTransparency( const QString &myFileName, const QString &myProviderKey, int myTarget );
@@ -100,7 +100,7 @@ class TestZipLayer: public QObject
 QgsMapLayer *TestZipLayer::getLayer( const QString &myPath, const QString &myName, const QString &myProviderKey )
 {
   QString fullName = myName;
-  if ( fullName == QLatin1String( "" ) )
+  if ( fullName.isEmpty() )
   {
     QFileInfo myFileInfo( myPath );
     fullName = myFileInfo.completeBaseName();
@@ -175,7 +175,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
       if ( layerItem )
       {
         QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name(), layerItem->providerKey(), layerItem->path() ) );
-        if ( myChildName == QLatin1String( "" ) || myChildName == item->name() )
+        if ( myChildName.isEmpty() || myChildName == item->name() )
         {
           QgsMapLayer *layer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
           if ( layer )
@@ -189,7 +189,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
             {
               QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
             }
-            if ( myChildName == QLatin1String( "" ) )
+            if ( myChildName.isEmpty() )
             {
               if ( ! ok )
                 break;
@@ -197,7 +197,7 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
             else
             {
               //verify correct provider was used
-              if ( myProviderName != QLatin1String( "" ) )
+              if ( !myProviderName.isEmpty() )
               {
                 ok = ( myProviderName == layerItem->providerKey() );
                 if ( ! ok )

@@ -58,7 +58,6 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mTempStyle->createMemoryDatabase();
 
   // TODO validate
-  mFileName = QLatin1String( "" );
   mProgressDlg = nullptr;
   mGroupSelectionDlg = nullptr;
   mTempFile = nullptr;
@@ -169,7 +168,7 @@ void QgsStyleExportImportDialog::doExportImport()
     accept();
   }
 
-  mFileName = QLatin1String( "" );
+  mFileName.clear();
   mTempStyle->clear();
 }
 
@@ -458,7 +457,7 @@ void QgsStyleExportImportDialog::importTypeChanged( int index )
 {
   QString type = importTypeCombo->itemData( index ).toString();
 
-  locationLineEdit->setText( QLatin1String( "" ) );
+  locationLineEdit->clear();
 
   if ( type == QLatin1String( "file" ) )
   {
@@ -548,7 +547,7 @@ void QgsStyleExportImportDialog::httpFinished()
   if ( mNetReply->error() )
   {
     mTempFile->remove();
-    mFileName = QLatin1String( "" );
+    mFileName.clear();
     mProgressDlg->hide();
     QMessageBox::information( this, tr( "HTTP Error!" ),
                               tr( "Download failed: %1." ).arg( mNetReply->errorString() ) );
@@ -577,7 +576,7 @@ void QgsStyleExportImportDialog::downloadCanceled()
 {
   mNetReply->abort();
   mTempFile->remove();
-  mFileName = QLatin1String( "" );
+  mFileName.clear();
 }
 
 void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )

@@ -622,20 +622,19 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     return;
   }
 
-  QString html = QLatin1String( "" );
-  html += "<style>"
-          "  body, table {"
-          "    padding:0px;"
-          "    margin:0px;"
-          "    font-family:verdana;"
-          "    font-size: 10pt;"
-          "  }"
-          "  div#votes {"
-          "    width:360px;"
-          "    margin-left:98px;"
-          "    padding-top:3px;"
-          "  }"
-          "</style>";
+  QString html = "<style>"
+                 "  body, table {"
+                 "    padding:0px;"
+                 "    margin:0px;"
+                 "    font-family:verdana;"
+                 "    font-size: 10pt;"
+                 "  }"
+                 "  div#votes {"
+                 "    width:360px;"
+                 "    margin-left:98px;"
+                 "    padding-top:3px;"
+                 "  }"
+                 "</style>";
 
   if ( !metadata->value( QStringLiteral( "plugin_id" ) ).isEmpty() )
   {
@@ -1135,7 +1134,7 @@ void QgsPluginManager::setCurrentTab( int idx )
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
     // load tab description HTML to the detail browser
-    QString tabInfoHTML = QLatin1String( "" );
+    QString tabInfoHTML;
     QMap<QString, QString>::const_iterator it = mTabDescriptions.constFind( tabTitle );
     if ( it != mTabDescriptions.constEnd() )
     {

@@ -655,7 +655,7 @@ void eVisGenericEventBrowserGui::restoreDefaultOptions()
   rbtnManualCompassOffset->setChecked( true );
   dsboxCompassOffset->setValue( 0.0 );
 
-  leBasePath->setText( QLatin1String( "" ) );
+  leBasePath->clear();
   chkboxUseOnlyFilename->setChecked( false );
 
   chkboxSaveEventImagePathData->setChecked( false );
@@ -1039,7 +1039,7 @@ void eVisGenericEventBrowserGui::on_pbtnResetApplyPathRulesToDocs_clicked()
 
 void eVisGenericEventBrowserGui::on_pbtnResetBasePathData_clicked()
 {
-  leBasePath->setText( QLatin1String( "" ) );
+  leBasePath->clear();
   if ( chkboxEventImagePathRelative->isChecked() )
   {
     setBasePathToDataSource();

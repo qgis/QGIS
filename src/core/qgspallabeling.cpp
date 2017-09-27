@@ -240,7 +240,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   useSubstitutions = false;
 
   // text formatting
-  wrapChar = QLatin1String( "" );
   multilineAlign = MultiFollowPlacement;
   addDirectionSymbol = false;
   leftDirectionSymbol = QStringLiteral( "<" );

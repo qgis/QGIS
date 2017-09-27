@@ -22,7 +22,7 @@
 
 QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &user, const QString &password )
 {
-  QString uri = QLatin1String( "" );
+  QString uri;
 
   //todo:add default ports for all kind of databases
   if ( connectionType == QLatin1String( "ESRI Personal GeoDatabase" ) )
@@ -192,7 +192,7 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
 
 QString createProtocolURI( const QString &type, const QString &url )
 {
-  QString uri = QLatin1String( "" );
+  QString uri;
   if ( type == QLatin1String( "GeoJSON" ) )
   {
     uri = url;

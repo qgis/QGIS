@@ -691,7 +691,7 @@ QgsStringMap QgsCptCityColorRamp::properties() const
 
 QString QgsCptCityColorRamp::fileName() const
 {
-  if ( mSchemeName == QLatin1String( "" ) )
+  if ( mSchemeName.isEmpty() )
     return QString();
   else
   {

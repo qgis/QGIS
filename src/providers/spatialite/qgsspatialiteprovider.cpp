@@ -3840,7 +3840,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     sql = QStringLiteral( "INSERT INTO %1(" ).arg( quotedIdentifier( mTableName ) );
     values = QStringLiteral( ") VALUES (" );
-    separator = QLatin1String( "" );
+    separator.clear();
 
     if ( !mGeometryColumn.isEmpty() )
     {

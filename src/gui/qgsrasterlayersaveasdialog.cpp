@@ -190,7 +190,7 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
                                  QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
         break;
 
-      fileName = QLatin1String( "" );
+      fileName.clear();
     }
   }
   else

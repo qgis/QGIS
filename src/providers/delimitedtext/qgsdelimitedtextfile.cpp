@@ -169,13 +169,13 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
     if ( type == QLatin1String( "plain" ) )
     {
       quote = QStringLiteral( "'\"" );
-      escape = QLatin1String( "" );
+      escape.clear();
     }
     else if ( type == QLatin1String( "regexp " ) )
     {
-      delimiter = QLatin1String( "" );
-      quote = QLatin1String( "" );
-      escape = QLatin1String( "" );
+      delimiter.clear();
+      quote.clear();
+      escape.clear();
     }
   }
   if ( url.hasQueryItem( QStringLiteral( "delimiter" ) ) )

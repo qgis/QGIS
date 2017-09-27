@@ -804,7 +804,7 @@ const QString QgsAuthManager::uniqueConfigId() const
 
   while ( true )
   {
-    id = QLatin1String( "" );
+    id.clear();
     for ( int i = 0; i < len; i++ )
     {
       switch ( qrand() % 2 )
@@ -3051,7 +3051,7 @@ void QgsAuthManager::setPasswordHelperLoggingEnabled( const bool enabled )
 void QgsAuthManager::passwordHelperClearErrors()
 {
   mPasswordHelperErrorCode = QKeychain::NoError;
-  mPasswordHelperErrorMessage = QLatin1String( "" );
+  mPasswordHelperErrorMessage.clear();
 }
 
 void QgsAuthManager::passwordHelperProcessError()

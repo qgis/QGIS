@@ -308,7 +308,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, con
 void QgsCustomProjectionDialog::on_pbnAdd_clicked()
 {
   QString name = tr( "new CRS" );
-  QString id = QLatin1String( "" );
+  QString id;
   QgsCoordinateReferenceSystem parameters;
 
   QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
@@ -331,7 +331,7 @@ void QgsCustomProjectionDialog::on_pbnRemove_clicked()
   }
   QTreeWidgetItem *item = leNameList->takeTopLevelItem( i );
   delete item;
-  if ( customCRSids[i] != QLatin1String( "" ) )
+  if ( !customCRSids[i].isEmpty() )
   {
     deletedCRSs.push_back( customCRSids[i] );
   }
@@ -361,8 +361,8 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
   else
   {
     //Can happen that current is null, for example if we just deleted the last element
-    leName->setText( QLatin1String( "" ) );
-    teParameters->setPlainText( QLatin1String( "" ) );
+    leName->clear();
+    teParameters->clear();
     return;
   }
 }
@@ -415,7 +415,7 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   {
     CRS.createFromProj4( customCRSparameters[i] );
     //Test if we just added this CRS (if it has no existing ID)
-    if ( customCRSids[i] == QLatin1String( "" ) )
+    if ( !customCRSids[i].isEmpty() )
     {
       save_success &= saveCrs( CRS, customCRSnames[i], QLatin1String( "" ), true );
     }
@@ -462,8 +462,8 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                               tr( "This proj4 projection definition is not valid." ) );
-    projectedX->setText( QLatin1String( "" ) );
-    projectedY->setText( QLatin1String( "" ) );
+    projectedX->clear();
+    projectedY->clear();
     pj_free( myProj );
     pj_ctx_free( pContext );
     return;
@@ -478,8 +478,8 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                               tr( "Northing and Easthing must be in decimal form." ) );
-    projectedX->setText( QLatin1String( "" ) );
-    projectedY->setText( QLatin1String( "" ) );
+    projectedX->clear();
+    projectedY->clear();
     pj_free( myProj );
     pj_ctx_free( pContext );
     return;
@@ -491,8 +491,8 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                               tr( "Internal Error (source projection invalid?)" ) );
-    projectedX->setText( QLatin1String( "" ) );
-    projectedY->setText( QLatin1String( "" ) );
+    projectedX->clear();
+    projectedY->clear();
     pj_free( wgs84Proj );
     pj_ctx_free( pContext );
     return;

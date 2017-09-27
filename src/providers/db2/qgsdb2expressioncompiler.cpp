@@ -114,7 +114,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
         rr = compileNode( n->operand(), result );
         if ( "NULL" == result.toUpper() )
         {
-          result = QLatin1String( "" );
+          result.clear();
           return Fail;
         }
 

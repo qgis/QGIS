@@ -159,7 +159,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
-  if ( vsiPrefix != QLatin1String( "" ) )
+  if ( !vsiPrefix.isEmpty() )
   {
     if ( !uri.startsWith( vsiPrefix ) )
       setDataSourceUri( vsiPrefix + uri );
@@ -948,7 +948,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
               QString dim = ( *j );
               if ( values.at( 0 ) != "NETCDF_DIM_" + dim )
                 continue;
-              if ( unitsMap.contains( dim ) && unitsMap[ dim ] != QLatin1String( "" ) && unitsMap[ dim ] != QLatin1String( "none" ) )
+              if ( unitsMap.contains( dim ) && !unitsMap[ dim ].isEmpty() && unitsMap[ dim ] != QLatin1String( "none" ) )
                 bandNameValues.append( dim + '=' + values.at( 1 ) + " (" + unitsMap[ dim ] + ')' );
               else
                 bandNameValues.append( dim + '=' + values.at( 1 ) );
@@ -1943,7 +1943,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   // driver, which will be found in DMD_LONGNAME, which will have the
   // same form.
 
-  fileFiltersString = QLatin1String( "" );
+  fileFiltersString.clear();
 
   QgsDebugMsg( QString( "GDAL driver count: %1" ).arg( GDALGetDriverCount() ) );
 
@@ -1970,7 +1970,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     // QgsDebugMsg(QString("got driver string %1").arg(myGdalDriverDescription));
 
-    myGdalDriverExtension = myGdalDriverLongName = QLatin1String( "" );
+    myGdalDriverExtension.clear();
+    myGdalDriverLongName.clear();
 
     myGdalDriverMetadata = GDALGetMetadata( myGdalDriver, nullptr );
 
@@ -2146,7 +2147,7 @@ QGISEXTERN bool isValidRasterFileName( QString const &fileNameQString, QString &
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   // TODO suppress error messages and report in debug, like in OGR provider
   QString vsiPrefix = QgsZipItem::vsiPrefix( fileName );
-  if ( vsiPrefix != QLatin1String( "" ) )
+  if ( !vsiPrefix.isEmpty() )
   {
     if ( !fileName.startsWith( vsiPrefix ) )
       fileName = vsiPrefix + fileName;
