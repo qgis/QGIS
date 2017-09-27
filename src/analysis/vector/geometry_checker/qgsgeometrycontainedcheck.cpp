@@ -26,6 +26,11 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
   {
     QgsRectangle bboxA = layerFeatureA.geometry()->boundingBox();
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
+    if ( !geomEngineA->isValid() )
+    {
+      messages.append( tr( "Contained check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
+      continue;
+    }
     QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( mContext->featurePools, featureIds.keys(), bboxA, mCompatibleGeometryTypes );
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
@@ -33,14 +38,21 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       {
         continue;
       }
-      QString errMsg;
-      if ( geomEngineA->within( layerFeatureB.geometry(), &errMsg ) )
+      QSharedPointer<QgsGeometryEngine> geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->tolerance );
+      if ( !geomEngineB->isValid() )
       {
-        errors.append( new QgsGeometryContainedCheckError( this, layerFeatureA, layerFeatureA.geometry()->centroid(), layerFeatureB ) );
+        messages.append( tr( "Contained check failed for (%1): the geometry is invalid" ).arg( layerFeatureB.id() ) );
+        continue;
+      }
+      QString errMsg;
+      // If A contains B and B contains A, it would mean that the geometries are identical, which is covered by the duplicate check
+      if ( geomEngineA->contains( layerFeatureB.geometry(), &errMsg ) && !geomEngineB->contains( layerFeatureA.geometry(), &errMsg ) && errMsg.isEmpty() )
+      {
+        errors.append( new QgsGeometryContainedCheckError( this, layerFeatureB, layerFeatureB.geometry()->centroid(), layerFeatureA ) );
       }
       else if ( !errMsg.isEmpty() )
       {
-        messages.append( tr( "Feature %1 within feature %2: %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
+        messages.append( tr( "Contained check failed for (%1, %2): %3" ).arg( layerFeatureB.id() ).arg( layerFeatureA.id() ).arg( errMsg ) );
       }
     }
   }
@@ -66,8 +78,9 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
   QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, true );
 
   QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
+  QSharedPointer<QgsGeometryEngine> geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->tolerance );
 
-  if ( !geomEngineA->within( layerFeatureB.geometry() ) )
+  if ( !( geomEngineA->contains( layerFeatureB.geometry() ) && !geomEngineB->contains( layerFeatureA.geometry() ) ) )
   {
     error->setObsolete();
     return;
