@@ -89,17 +89,22 @@ class AlgorithmDialogBase(BASE, WIDGET):
 
         isText, algHelp = self.alg.help()
         if algHelp is not None:
-            algHelp = algHelp if isText else QUrl(algHelp)
             try:
                 if isText:
                     self.txtHelp.setHtml(algHelp)
                 else:
-                    html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
-                    self.txtHelp.setHtml(html)
-                    rq = QNetworkRequest(algHelp)
-                    self.reply = QgsNetworkAccessManager.instance().get(rq)
-                    self.reply.finished.connect(self.requestFinished)
-            except Exception, e:
+                    if algHelp.startswith('http'):
+                        html = self.tr('<p>Downloading algorithm help... Please wait.</p>')
+                        self.txtHelp.setHtml(html)
+                        rq = QNetworkRequest(QUrl(algHelp))
+                        self.reply = QgsNetworkAccessManager.instance().get(rq)
+                        self.reply.finished.connect(self.requestFinished)
+                    else:
+                        if algHelp.startswith('file://'):
+                            p = os.path.dirname(algHelp[7:])
+                            self.txtHelp.setSearchPaths([p])
+                            self.txtHelp.setSource(QUrl(algHelp))
+            except Exception as e:
                 self.tabWidget.removeTab(2)
         else:
             self.tabWidget.removeTab(2)
