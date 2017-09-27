@@ -52,7 +52,7 @@ void QgsMapToolRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEven
         createNumberSidesSpinBox();
         if ( mNumberSidesSpinBox )
         {
-          mNumberSidesSpinBox->setMinimum( 5 );
+          mNumberSidesSpinBox->setMinimum( 3 );
         }
       }
     }
