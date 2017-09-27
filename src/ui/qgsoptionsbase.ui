@@ -320,7 +320,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>13</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -349,8 +349,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>678</height>
+                <width>846</width>
+                <height>672</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -998,8 +998,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>561</width>
-                <height>1079</height>
+                <width>537</width>
+                <height>1128</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1528,8 +1528,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>511</width>
-                <height>719</height>
+                <width>499</width>
+                <height>754</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1896,8 +1896,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>692</width>
-                <height>994</height>
+                <width>672</width>
+                <height>1043</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2647,8 +2647,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>146</width>
-                <height>241</height>
+                <width>130</width>
+                <height>322</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2798,8 +2798,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>514</width>
-                <height>334</height>
+                <width>500</width>
+                <height>340</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3141,8 +3141,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>625</width>
-                <height>612</height>
+                <width>623</width>
+                <height>734</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3585,8 +3585,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>487</width>
-                <height>588</height>
+                <width>491</width>
+                <height>610</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3854,8 +3854,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>556</width>
-                <height>740</height>
+                <width>548</width>
+                <height>785</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4432,8 +4432,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>427</width>
-                <height>380</height>
+                <width>431</width>
+                <height>376</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4571,8 +4571,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>429</width>
-                <height>549</height>
+                <width>418</width>
+                <height>544</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4784,8 +4784,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>282</width>
-                <height>234</height>
+                <width>268</width>
+                <height>232</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4892,9 +4892,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>509</width>
-                <height>723</height>
+                <y>-44</y>
+                <width>846</width>
+                <height>830</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5125,39 +5125,11 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <property name="rightMargin">
                         <number>0</number>
                        </property>
-                       <item row="2" column="2">
-                        <widget class="QLineEdit" name="leProxyUser">
-                         <property name="toolTip">
-                          <string>Leave this blank if no proxy username / password are required</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="2">
-                        <widget class="QgsPasswordLineEdit" name="leProxyPassword">
-                         <property name="toolTip">
-                          <string>Leave this blank if no proxy username / password are required</string>
-                         </property>
-                         <property name="echoMode">
-                          <enum>QLineEdit::Password</enum>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="2" column="1">
-                        <widget class="QLabel" name="lblUser">
-                         <property name="text">
-                          <string>User</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="1">
-                        <widget class="QLabel" name="lblPassword">
-                         <property name="text">
-                          <string>Password</string>
-                         </property>
-                        </widget>
-                       </item>
                        <item row="0" column="2">
                         <widget class="QLineEdit" name="leProxyHost"/>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLineEdit" name="leProxyPort"/>
                        </item>
                        <item row="1" column="1">
                         <widget class="QLabel" name="lblProxyPort">
@@ -5165,9 +5137,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                           <string>Port</string>
                          </property>
                         </widget>
-                       </item>
-                       <item row="1" column="2">
-                        <widget class="QLineEdit" name="leProxyPort"/>
                        </item>
                        <item row="0" column="1">
                         <widget class="QLabel" name="lblProxyHost">
@@ -5191,6 +5160,51 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                           </size>
                          </property>
                         </spacer>
+                       </item>
+                       <item row="4" column="1" colspan="2">
+                        <widget class="QTabWidget" name="tabAuth">
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <widget class="QWidget" name="authLegacy">
+                          <attribute name="title">
+                           <string>Authentication</string>
+                          </attribute>
+                          <layout class="QGridLayout" name="gridLayout_25">
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="lblUser">
+                             <property name="text">
+                              <string>User name</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="2" column="0">
+                            <widget class="QLabel" name="lblPassword">
+                             <property name="text">
+                              <string>Password</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="1">
+                            <widget class="QLineEdit" name="leProxyUser">
+                             <property name="toolTip">
+                              <string>Leave this blank if no proxy username / password are required</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="2" column="1">
+                            <widget class="QgsPasswordLineEdit" name="leProxyPassword">
+                             <property name="toolTip">
+                              <string>Leave this blank if no proxy username / password are required</string>
+                             </property>
+                             <property name="echoMode">
+                              <enum>QLineEdit::Password</enum>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </widget>
                        </item>
                       </layout>
                      </widget>
@@ -5709,8 +5723,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mProxyTypeComboBox</tabstop>
   <tabstop>leProxyHost</tabstop>
   <tabstop>leProxyPort</tabstop>
-  <tabstop>leProxyUser</tabstop>
-  <tabstop>leProxyPassword</tabstop>
   <tabstop>mAddUrlPushButton</tabstop>
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mExcludeUrlListWidget</tabstop>

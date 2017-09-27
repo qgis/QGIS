@@ -332,6 +332,16 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool updateDataSourceUriItems( QStringList &connectionItems SIP_INOUT, const QString &authcfg,
                                    const QString &dataprovider = QString() );
 
+    /**
+     * Provider call to update a QNetworkProxy with an authentication config
+     * \param proxy the QNetworkProxy
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
+     * \returns Whether operation succeeded
+     */
+    bool updateNetworkProxy( QNetworkProxy &proxy SIP_INOUT, const QString &authcfg,
+                             const QString &dataprovider = QString() );
+
     ////////////////// Generic settings ///////////////////////
 
     //! Store an authentication setting (stored as string via QVariant( value ).toString() )

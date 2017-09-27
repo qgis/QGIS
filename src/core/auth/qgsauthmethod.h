@@ -51,7 +51,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
       NetworkReply         = 0x2,
       DataSourceUri        = 0x4,
       GenericDataSourceUri = 0x8,
-      All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri
+      NetworkProxy                = 0x16,
+      All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri | NetworkProxy
     };
     Q_DECLARE_FLAGS( Expansions, Expansion )
 
@@ -121,6 +122,22 @@ class CORE_EXPORT QgsAuthMethod : public QObject
                                            const QString &dataprovider = QString() )
     {
       Q_UNUSED( connectionItems )
+      Q_UNUSED( authcfg )
+      Q_UNUSED( dataprovider )
+      return true; // noop
+    }
+
+    /** Update proxy settings with authentication components
+     * \param proxy
+     * \param authcfg Authentication configuration ID
+     * \param dataprovider Textual key for a data provider, e.g. 'proxy', that allows
+     * for custom updater code specific to the provider
+     * \returns Whether the update succeeded
+     */
+    virtual bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg,
+                                     const QString &dataprovider = QString() )
+    {
+      Q_UNUSED( proxy )
       Q_UNUSED( authcfg )
       Q_UNUSED( dataprovider )
       return true; // noop

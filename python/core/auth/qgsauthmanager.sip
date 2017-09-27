@@ -359,6 +359,17 @@ Get list of authentication ids from database
  :rtype: bool
 %End
 
+    bool updateNetworkProxy( QNetworkProxy &proxy /In,Out/, const QString &authcfg,
+                             const QString &dataprovider = QString() );
+%Docstring
+ Provider call to update a QNetworkProxy with an authentication config
+ \param proxy the QNetworkProxy
+ \param authcfg Associated authentication config id
+ \param dataprovider Provider key filter, offering logic branching in authentication method
+ :return: Whether operation succeeded
+ :rtype: bool
+%End
+
 
     bool storeAuthSetting( const QString &key, const QVariant &value, bool encrypt = false );
 %Docstring

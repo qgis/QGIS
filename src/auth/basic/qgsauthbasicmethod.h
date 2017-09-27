@@ -44,6 +44,10 @@ class QgsAuthBasicMethod : public QgsAuthMethod
     bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
                                    const QString &dataprovider = QString() ) override;
 
+
+    bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg,
+                             const QString &dataprovider = QString() ) override;
+
     void clearCachedConfig( const QString &authcfg ) override;
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
