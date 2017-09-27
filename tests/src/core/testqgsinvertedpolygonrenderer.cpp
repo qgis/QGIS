@@ -68,10 +68,7 @@ class TestQgsInvertedPolygon : public QObject
 };
 
 
-TestQgsInvertedPolygon::TestQgsInvertedPolygon()
-{
-
-}
+TestQgsInvertedPolygon::TestQgsInvertedPolygon() = default;
 
 void TestQgsInvertedPolygon::initTestCase()
 {

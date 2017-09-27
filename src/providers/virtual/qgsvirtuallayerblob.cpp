@@ -19,9 +19,6 @@ email                : hugo dot mercier at oslandia dot com
 #include <string.h>
 #include <limits>
 
-SpatialiteBlobHeader::SpatialiteBlobHeader()
-{}
-
 void SpatialiteBlobHeader::readFrom( const char *p )
 {
   // we cannot use directly memcpy( this, p, sizeof(this) ),

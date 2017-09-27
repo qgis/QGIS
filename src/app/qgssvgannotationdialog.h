@@ -37,7 +37,7 @@ class APP_EXPORT QgsSvgAnnotationDialog: public QDialog, private Ui::QgsFormAnno
     void on_mButtonBox_clicked( QAbstractButton *button );
 
   private:
-    QgsSvgAnnotationDialog(); //forbidden
+    QgsSvgAnnotationDialog() = delete; //forbidden
 
     QgsMapCanvasAnnotationItem *mItem = nullptr;
     QgsAnnotationWidget *mEmbeddedWidget = nullptr;

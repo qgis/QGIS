@@ -52,10 +52,6 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   mBaseUri = uri.param( QStringLiteral( "url" ) );
 }
 
-QgsWfsLayerItem::~QgsWfsLayerItem()
-{
-}
-
 QList<QMenu *> QgsWfsLayerItem::menus( QWidget *parent )
 {
   QList<QMenu *> menus;
@@ -145,10 +141,6 @@ QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, Q
   mCapabilities |= Collapse;
 }
 
-QgsWfsConnectionItem::~QgsWfsConnectionItem()
-{
-}
-
 QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 {
   QgsDataSourceUri uri( mUri );
@@ -227,10 +219,6 @@ QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path 
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWfs.svg" );
   populate();
-}
-
-QgsWfsRootItem::~QgsWfsRootItem()
-{
 }
 
 QVector<QgsDataItem *> QgsWfsRootItem::createChildren()

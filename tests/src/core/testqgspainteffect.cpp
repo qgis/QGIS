@@ -129,10 +129,7 @@ class TestQgsPaintEffect: public QObject
 };
 
 
-TestQgsPaintEffect::TestQgsPaintEffect()
-{
-
-}
+TestQgsPaintEffect::TestQgsPaintEffect() = default;
 
 void TestQgsPaintEffect::initTestCase()
 {

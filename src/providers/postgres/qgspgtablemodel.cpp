@@ -23,7 +23,6 @@
 #include <climits>
 
 QgsPgTableModel::QgsPgTableModel()
-  : QStandardItemModel()
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );

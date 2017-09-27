@@ -28,8 +28,7 @@ class TestQgsMapToolZoom : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolZoom()
-    {}
+    TestQgsMapToolZoom() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.

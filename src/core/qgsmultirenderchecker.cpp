@@ -17,10 +17,6 @@
 #include "qgscomposition.h"
 #include <QDebug>
 
-QgsMultiRenderChecker::QgsMultiRenderChecker()
-{
-}
-
 void QgsMultiRenderChecker::setControlName( const QString &name )
 {
   mControlName = name;

@@ -20,9 +20,6 @@
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
 
-QgsCurve::QgsCurve(): QgsAbstractGeometry()
-{}
-
 bool QgsCurve::isClosed() const
 {
   if ( numPoints() == 0 )

@@ -46,10 +46,7 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-{
-
-}
+TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog() = default;
 
 //runs before all tests
 void TestQgsVectorLayerSaveAsDialog::initTestCase()

@@ -40,8 +40,7 @@
 #include <cfloat>
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
-  : QDialog()
-  , mLayer( vl )
+  : mLayer( vl )
   , mFieldIdx( fieldIdx )
 {
   setupUi( this );

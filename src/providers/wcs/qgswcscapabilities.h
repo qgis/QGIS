@@ -37,8 +37,7 @@ class QNetworkReply;
 //! CoverageSummary structure
 struct QgsWcsCoverageSummary
 {
-  QgsWcsCoverageSummary()
-  { }
+  QgsWcsCoverageSummary() = default;
 
   int           orderId = 0;
   QString       identifier;
@@ -92,10 +91,7 @@ class QgsWcsCapabilities : public QObject
      *
      */
     explicit QgsWcsCapabilities( QgsDataSourceUri const &uri );
-    QgsWcsCapabilities();
-
-
-    ~QgsWcsCapabilities();
+    QgsWcsCapabilities() = default;
 
     void setUri( QgsDataSourceUri const &uri );
 

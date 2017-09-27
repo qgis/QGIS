@@ -49,10 +49,7 @@ class TestQgsMeasureTool : public QObject
     QgsMapCanvas *mCanvas = nullptr;
 };
 
-TestQgsMeasureTool::TestQgsMeasureTool()
-{
-
-}
+TestQgsMeasureTool::TestQgsMeasureTool() = default;
 
 //runs before all tests
 void TestQgsMeasureTool::initTestCase()

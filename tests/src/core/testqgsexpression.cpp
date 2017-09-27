@@ -50,8 +50,7 @@ class TestQgsExpression: public QObject
 
   public:
 
-    TestQgsExpression()
-    {}
+    TestQgsExpression() = default;
 
   private:
 

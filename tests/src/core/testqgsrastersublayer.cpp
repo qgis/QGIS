@@ -66,10 +66,7 @@ class TestQgsRasterSubLayer : public QObject
     bool mHasNetCDF =  false ;
 };
 
-TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-{
-
-}
+TestQgsRasterSubLayer::TestQgsRasterSubLayer() = default;
 
 //runs before all tests
 void TestQgsRasterSubLayer::initTestCase()

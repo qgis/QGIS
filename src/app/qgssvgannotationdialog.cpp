@@ -49,13 +49,6 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
-QgsSvgAnnotationDialog::QgsSvgAnnotationDialog()
-  : QDialog()
-
-{
-
-}
-
 void QgsSvgAnnotationDialog::on_mBrowseToolButton_clicked()
 {
   QString directory;

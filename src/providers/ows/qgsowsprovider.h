@@ -48,9 +48,6 @@ class QgsOwsProvider : public QgsDataProvider
      */
     explicit QgsOwsProvider( const QString &uri = QString() );
 
-
-    ~QgsOwsProvider();
-
     /* Pure virtuals */
 
     QString name() const override;

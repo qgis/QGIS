@@ -37,7 +37,6 @@ class QgsAuthPkiPathsEdit : public QgsAuthMethodEdit, private Ui::QgsAuthPkiPath
     };
 
     explicit QgsAuthPkiPathsEdit( QWidget *parent = nullptr );
-    virtual ~QgsAuthPkiPathsEdit();
 
     bool validateConfig() override;
 

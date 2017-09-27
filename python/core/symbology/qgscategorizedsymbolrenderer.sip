@@ -19,7 +19,11 @@ class QgsRendererCategory
 #include "qgscategorizedsymbolrenderer.h"
 %End
   public:
+
     QgsRendererCategory();
+%Docstring
+ Constructor for QgsRendererCategory.
+%End
 
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
 %Docstring

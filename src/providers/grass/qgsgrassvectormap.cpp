@@ -717,10 +717,6 @@ void QgsGrassVectorMap::closeAllIterators()
 //------------------------------------ QgsGrassVectorMapStore ------------------------------------
 QgsGrassVectorMapStore *QgsGrassVectorMapStore::sStore = 0;
 
-QgsGrassVectorMapStore::QgsGrassVectorMapStore()
-{
-}
-
 QgsGrassVectorMapStore *QgsGrassVectorMapStore::instance()
 {
   static QgsGrassVectorMapStore sInstance;

@@ -186,7 +186,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       public:
         //! Constructor
-        FieldValueConverter();
+        FieldValueConverter() = default;
 
         virtual ~FieldValueConverter() = default;
 

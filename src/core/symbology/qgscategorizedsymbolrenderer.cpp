@@ -34,10 +34,6 @@
 #include <QDomElement>
 #include <QSettings> // for legend
 
-QgsRendererCategory::QgsRendererCategory()
-{
-}
-
 QgsRendererCategory::QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render )
   : mValue( value )
   , mSymbol( symbol )

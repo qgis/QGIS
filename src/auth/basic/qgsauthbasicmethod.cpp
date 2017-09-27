@@ -29,7 +29,6 @@ QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::sAuthConfigCache = QMap<Q
 
 
 QgsAuthBasicMethod::QgsAuthBasicMethod()
-  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -41,10 +40,6 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" )
                     << QStringLiteral( "proxy" ) );
-}
-
-QgsAuthBasicMethod::~QgsAuthBasicMethod()
-{
 }
 
 QString QgsAuthBasicMethod::key() const

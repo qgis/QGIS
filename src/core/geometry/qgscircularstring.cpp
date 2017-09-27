@@ -28,7 +28,7 @@
 #include <QPainterPath>
 #include <memory>
 
-QgsCircularString::QgsCircularString(): QgsCurve()
+QgsCircularString::QgsCircularString()
 {
   mWkbType = QgsWkbTypes::CircularString;
 }

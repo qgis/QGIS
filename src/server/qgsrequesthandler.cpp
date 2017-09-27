@@ -40,10 +40,6 @@ QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerRespon
 {
 }
 
-QgsRequestHandler::~QgsRequestHandler()
-{
-}
-
 QMap<QString, QString> QgsRequestHandler::parameterMap() const
 {
   return mRequest.parameters();

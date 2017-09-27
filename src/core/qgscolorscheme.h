@@ -135,7 +135,10 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 {
   public:
 
-    QgsGplColorScheme();
+    /**
+     * Constructor for QgsGplColorScheme.
+     */
+    QgsGplColorScheme() = default;
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
@@ -209,7 +212,10 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 {
   public:
 
-    QgsRecentColorScheme();
+    /**
+     * Constructor for QgsRecentColorScheme.
+     */
+    QgsRecentColorScheme() = default;
 
     virtual QString schemeName() const override { return QObject::tr( "Recent colors" ); }
 
@@ -243,7 +249,10 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 {
   public:
 
-    QgsCustomColorScheme();
+    /**
+     * Constructor for QgsCustomColorScheme.
+     */
+    QgsCustomColorScheme() = default;
 
     virtual QString schemeName() const override { return QObject::tr( "Standard colors" ); }
 

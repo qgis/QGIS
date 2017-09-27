@@ -417,7 +417,11 @@ class QgsRandomColorRamp: QgsColorRamp
 #include "qgscolorramp.h"
 %End
   public:
+
     QgsRandomColorRamp();
+%Docstring
+ Constructor for QgsRandomColorRamp.
+%End
 
     virtual int count() const;
 

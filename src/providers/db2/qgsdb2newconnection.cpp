@@ -144,10 +144,6 @@ void QgsDb2NewConnection::on_cb_trustedConnection_clicked()
 
 //! End  Autoconnected SLOTS *
 
-QgsDb2NewConnection::~QgsDb2NewConnection()
-{
-}
-
 bool QgsDb2NewConnection::testConnection()
 {
   QSqlDatabase db;

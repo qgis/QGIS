@@ -30,8 +30,6 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     //QgsGrassSelect(QWidget *parent = 0, int type = VECTOR );
     QgsGrassSelect( QWidget *parent, int type = Vector );
 
-    ~QgsGrassSelect();
-
     enum Type
     {
       MapSet,

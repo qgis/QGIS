@@ -34,8 +34,7 @@ class TestQgsComposerShapes : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerShapes()
-    {}
+    TestQgsComposerShapes() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

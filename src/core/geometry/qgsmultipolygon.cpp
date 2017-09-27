@@ -23,7 +23,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultilinestring.h"
 
 QgsMultiPolygonV2::QgsMultiPolygonV2()
-  : QgsMultiSurface()
 {
   mWkbType = QgsWkbTypes::MultiPolygon;
 }

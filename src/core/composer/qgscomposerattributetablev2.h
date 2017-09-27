@@ -33,7 +33,11 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsComposerAttributeTableCompareV2
 {
   public:
-    QgsComposerAttributeTableCompareV2();
+
+    /**
+     * Constructor for QgsComposerAttributeTableCompareV2.
+     */
+    QgsComposerAttributeTableCompareV2() = default;
     bool operator()( const QgsComposerTableRow &m1, const QgsComposerTableRow &m2 );
 
     /** Sets column number to sort by

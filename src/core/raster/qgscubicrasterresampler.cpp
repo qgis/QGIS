@@ -18,10 +18,6 @@
 #include "qgscubicrasterresampler.h"
 #include <QImage>
 
-QgsCubicRasterResampler::QgsCubicRasterResampler()
-{
-}
-
 QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const
 {
   return new QgsCubicRasterResampler();

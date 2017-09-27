@@ -29,7 +29,5 @@
 /**
 * Constructor
 */
-eVisQueryDefinition::eVisQueryDefinition()
-{
-}
+eVisQueryDefinition::eVisQueryDefinition() = default;
 

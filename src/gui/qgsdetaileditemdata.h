@@ -30,7 +30,12 @@
 class GUI_EXPORT QgsDetailedItemData
 {
   public:
-    QgsDetailedItemData();
+
+    /**
+     * Constructor for QgsDetailedItemData.
+     */
+    QgsDetailedItemData() = default;
+
     void setTitle( const QString &title );
     void setDetail( const QString &detail );
     void setCategory( const QString &category );

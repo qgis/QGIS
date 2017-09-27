@@ -52,9 +52,7 @@ class TestQgsMapRendererJob : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapRendererJob()
-    {
-    }
+    TestQgsMapRendererJob() = default;
 
     ~TestQgsMapRendererJob()
     {

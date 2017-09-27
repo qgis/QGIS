@@ -28,6 +28,9 @@ class QgsDxfExport
     };
 
     QgsDxfExport();
+%Docstring
+ Constructor for QgsDxfExport.
+%End
 
     void setMapSettings( const QgsMapSettings &settings );
 %Docstring

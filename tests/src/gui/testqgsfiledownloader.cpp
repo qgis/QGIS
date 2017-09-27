@@ -28,8 +28,7 @@ class TestQgsFileDownloader: public QObject
 {
     Q_OBJECT
   public:
-    TestQgsFileDownloader()
-    {}
+    TestQgsFileDownloader() = default;
 
   public slots:
     //! Called when the download has completed successfully

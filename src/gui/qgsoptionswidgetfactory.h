@@ -74,14 +74,11 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
   public:
 
     //! Constructor
-    QgsOptionsWidgetFactory()
-      : QObject()
-    {}
+    QgsOptionsWidgetFactory() {}
 
     //! Constructor
     QgsOptionsWidgetFactory( const QString &title, const QIcon &icon )
-      : QObject()
-      , mTitle( title )
+      : mTitle( title )
       , mIcon( icon )
     {}
 

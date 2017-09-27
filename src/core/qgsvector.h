@@ -30,7 +30,7 @@ class CORE_EXPORT QgsVector
 
     /** Default constructor for QgsVector. Creates a vector with length of 0.0.
      */
-    QgsVector();
+    QgsVector() = default;
 
     /** Constructor for QgsVector taking x and y component values.
      * \param x x-component

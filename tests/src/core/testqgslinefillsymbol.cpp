@@ -44,8 +44,7 @@ class TestQgsLineFillSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsLineFillSymbol()
-    {}
+    TestQgsLineFillSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

@@ -30,7 +30,11 @@ class QgsActionMenu : QMenu
 
     struct ActionData
     {
+
       ActionData();
+%Docstring
+ Constructor for ActionData.
+%End
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 

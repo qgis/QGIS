@@ -41,8 +41,7 @@ class TestQgs25DRenderer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgs25DRenderer()
-    {}
+    TestQgs25DRenderer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

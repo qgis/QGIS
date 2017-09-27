@@ -117,9 +117,7 @@ class TestQgsNodeTool : public QObject
     QgsFeatureId mFidPointF1 = 0;
 };
 
-TestQgsNodeTool::TestQgsNodeTool()
-{
-}
+TestQgsNodeTool::TestQgsNodeTool() = default;
 
 
 //runs before all tests

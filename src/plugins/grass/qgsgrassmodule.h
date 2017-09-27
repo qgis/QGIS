@@ -42,7 +42,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
         QString label;
         // supported by GRASS Direct
         bool direct = true;
-        Description() {}
+        Description() = default;
         Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
         Description( const Description &desc ) { label = desc.label; direct = desc.direct; }
     };

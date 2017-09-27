@@ -30,8 +30,7 @@
 #include <QMenu>
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
-  : QgsPanelWidget()
-  , mLayer( layer )
+  : mLayer( layer )
   , mStyle( style )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );

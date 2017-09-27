@@ -86,7 +86,7 @@ class ANALYSIS_EXPORT QgsInterpolator
     QList<LayerData> mLayerData;
 
   private:
-    QgsInterpolator(); //forbidden
+    QgsInterpolator() = delete;
 
     /** Helper method that adds the vertices of a geometry to the mCachedBaseData
        \param geom the geometry

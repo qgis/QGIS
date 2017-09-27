@@ -38,7 +38,6 @@ QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::sPkiConfigBundleCache
 
 
 QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
-  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );

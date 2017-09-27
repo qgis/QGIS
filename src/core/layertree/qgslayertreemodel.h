@@ -329,9 +329,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 #ifndef SIP_RUN
     struct LayerLegendData
     {
-      LayerLegendData()
-      {
-      }
+      LayerLegendData() = default;
 
       //! Active legend nodes. May have been filtered.
       //! Owner of legend nodes is still originalNodes !

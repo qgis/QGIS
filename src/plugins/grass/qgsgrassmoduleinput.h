@@ -58,7 +58,6 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     };
 
     explicit QgsGrassModuleInputModel( QObject *parent = 0 );
-    ~QgsGrassModuleInputModel();
 
     //! Get singleton instance of this class.
     static QgsGrassModuleInputModel *instance();
@@ -166,7 +165,6 @@ class QgsGrassModuleInputComboBox : public QComboBox
 
   public:
     explicit QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent = 0 );
-    ~QgsGrassModuleInputComboBox();
 
     virtual bool eventFilter( QObject *watched, QEvent *event ) override;
     virtual void showPopup() override;
@@ -241,9 +239,6 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
                          QgsGrassModuleStandardOptions *options, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                          bool direct, QWidget *parent = 0 );
-
-
-    ~QgsGrassModuleInput();
 
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;

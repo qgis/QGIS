@@ -49,10 +49,6 @@ void QgsMessageOutput::showMessage( const QString &title, const QString &message
 ////////////////////////////////
 // QgsMessageOutputConsole
 
-QgsMessageOutputConsole::QgsMessageOutputConsole()
-{
-}
-
 void QgsMessageOutputConsole::setMessage( const QString &message, MessageType msgType )
 {
   mMessage = message;

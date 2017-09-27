@@ -19,8 +19,7 @@ email                : jef at norbit dot de
 #include "qgslogger.h"
 
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QList<QgsGeometry::Error> *errors, QgsGeometry::ValidationMethod method )
-  : QThread()
-  , mGeometry( geometry )
+  : mGeometry( geometry )
   , mErrors( errors )
   , mStop( false )
   , mErrorCount( 0 )

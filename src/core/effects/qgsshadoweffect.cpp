@@ -21,8 +21,7 @@
 #include "qgsunittypes.h"
 
 QgsShadowEffect::QgsShadowEffect()
-  : QgsPaintEffect()
-  , mColor( Qt::black )
+  : mColor( Qt::black )
 {
 
 }

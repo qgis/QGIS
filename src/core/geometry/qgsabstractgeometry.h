@@ -98,7 +98,10 @@ class CORE_EXPORT QgsAbstractGeometry
       MaximumDifference
     };
 
-    QgsAbstractGeometry();
+    /**
+     * Constructor for QgsAbstractGeometry.
+     */
+    QgsAbstractGeometry() = default;
     virtual ~QgsAbstractGeometry() = default;
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
     QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );

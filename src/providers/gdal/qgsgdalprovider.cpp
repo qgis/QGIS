@@ -118,7 +118,6 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   : QgsRasterDataProvider( uri )
-  , QgsGdalProviderBase()
   , mUpdate( update )
 {
   mGeoTransform[0] = 0;

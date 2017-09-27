@@ -56,7 +56,7 @@ class CORE_EXPORT QgsInterval
 
     /** Default constructor for QgsInterval. Creates an invalid interval.
      */
-    QgsInterval();
+    QgsInterval() = default;
 
     /** Constructor for QgsInterval.
      * \param seconds duration of interval in seconds

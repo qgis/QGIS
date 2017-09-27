@@ -57,7 +57,10 @@ class CORE_EXPORT QgsDxfExport
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
-    QgsDxfExport();
+    /**
+     * Constructor for QgsDxfExport.
+     */
+    QgsDxfExport() = default;
     QgsDxfExport( const QgsDxfExport &dxfExport ) SIP_SKIP;
     QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 

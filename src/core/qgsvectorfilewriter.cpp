@@ -52,9 +52,6 @@
 #include <cpl_string.h>
 #include <gdal.h>
 
-QgsVectorFileWriter::FieldValueConverter::FieldValueConverter()
-  = default;
-
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
 {
   return field;

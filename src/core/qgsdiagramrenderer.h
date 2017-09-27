@@ -487,8 +487,11 @@ class CORE_EXPORT QgsDiagramRenderer
 
   public:
 
-    QgsDiagramRenderer();
-    virtual ~QgsDiagramRenderer();
+    /**
+     * Constructor for QgsDiagramRenderer.
+     */
+    QgsDiagramRenderer() = default;
+    virtual ~QgsDiagramRenderer() = default;
 
     /** Returns new instance that is equivalent to this one
      * \since QGIS 2.4 */
@@ -514,7 +517,7 @@ class CORE_EXPORT QgsDiagramRenderer
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
 
     void setDiagram( QgsDiagram *d SIP_TRANSFER );
-    QgsDiagram *diagram() const { return mDiagram; }
+    QgsDiagram *diagram() const { return mDiagram.get(); }
 
     //! Returns list with all diagram settings in the renderer
     virtual QList<QgsDiagramSettings> diagramSettings() const = 0;
@@ -589,7 +592,7 @@ class CORE_EXPORT QgsDiagramRenderer
     void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     //! Reference to the object that does the real diagram rendering
-    QgsDiagram *mDiagram = nullptr;
+    std::unique_ptr< QgsDiagram > mDiagram;
 
     //! Whether to show an attribute legend for the diagrams
     bool mShowAttributeLegend = true;

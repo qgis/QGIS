@@ -35,10 +35,6 @@ QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   setupUi( this );
 }
 
-QgsAuthPkcs12Edit::~QgsAuthPkcs12Edit()
-{
-}
-
 bool QgsAuthPkcs12Edit::validateConfig()
 {
   // required components

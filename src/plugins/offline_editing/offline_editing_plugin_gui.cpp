@@ -38,10 +38,6 @@ QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObjec
   setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, true );
 }
 
-QgsSelectLayerTreeModel::~QgsSelectLayerTreeModel()
-{
-}
-
 QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) const
 {
   if ( role == Qt::CheckStateRole )

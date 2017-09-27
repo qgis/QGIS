@@ -36,9 +36,6 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      */
     explicit QgsVirtualLayerProvider( QString const &uri = QString() );
 
-
-    virtual ~QgsVirtualLayerProvider();
-
     virtual QgsAbstractFeatureSource *featureSource() const override;
     virtual QString storageType() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;

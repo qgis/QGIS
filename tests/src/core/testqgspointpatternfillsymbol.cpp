@@ -44,8 +44,7 @@ class TestQgsPointPatternFillSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsPointPatternFillSymbol()
-    {}
+    TestQgsPointPatternFillSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

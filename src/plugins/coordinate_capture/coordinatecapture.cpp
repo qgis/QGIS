@@ -73,11 +73,6 @@ CoordinateCapture::CoordinateCapture( QgisInterface *qgisInterface )
 {
 }
 
-CoordinateCapture::~CoordinateCapture()
-{
-
-}
-
 /*
  * Initialize the GUI interface for the plugin - this is only called once when the plugin is
  * added to the plugin registry in the QGIS application.

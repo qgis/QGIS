@@ -19,10 +19,6 @@
 #include <cstring>
 #include <cmath>
 
-QgsRasterMatrix::QgsRasterMatrix()
-{
-}
-
 QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue )
   : mColumns( nCols )
   , mRows( nRows )

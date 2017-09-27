@@ -43,7 +43,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Constructor for the wizard.
      */
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
-    ~QgsMetadataWidget();
 
     /**
      * Save all fields in a QgsLayerMetadata object.

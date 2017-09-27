@@ -463,6 +463,9 @@ class QgsDiagramRenderer
   public:
 
     QgsDiagramRenderer();
+%Docstring
+ Constructor for QgsDiagramRenderer.
+%End
     virtual ~QgsDiagramRenderer();
 
     virtual QgsDiagramRenderer *clone() const = 0 /Factory/;

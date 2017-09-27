@@ -69,8 +69,7 @@ class TestQgsVectorLayer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsVectorLayer()
-    {}
+    TestQgsVectorLayer() = default;
 
   private:
     bool mTestHasError =  false ;

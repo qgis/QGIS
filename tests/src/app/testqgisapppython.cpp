@@ -47,10 +47,7 @@ class TestQgisAppPython : public QObject
     QString mTestDataDir;
 };
 
-TestQgisAppPython::TestQgisAppPython()
-{
-
-}
+TestQgisAppPython::TestQgisAppPython() = default;
 
 //runs before all tests
 void TestQgisAppPython::initTestCase()

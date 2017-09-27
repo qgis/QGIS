@@ -57,7 +57,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Constructor
      */
-    QgsServerRequest();
+    QgsServerRequest() = default;
 
     /**
      * Constructor

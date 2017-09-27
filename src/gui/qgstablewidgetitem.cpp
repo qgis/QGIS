@@ -15,11 +15,6 @@
  ***************************************************************************/
 #include "qgstablewidgetitem.h"
 
-QgsTableWidgetItem::QgsTableWidgetItem()
-  : QTableWidgetItem()
-{
-}
-
 QgsTableWidgetItem::QgsTableWidgetItem( const QString &text )
   : QTableWidgetItem( text )
 {

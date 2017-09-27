@@ -28,7 +28,7 @@ class QgsApplyDialog: public QDialog
     Q_OBJECT
 
   public:
-    QgsApplyDialog(): QDialog() {}
+    QgsApplyDialog() {}
     ~QgsApplyDialog() {}
 
     /**

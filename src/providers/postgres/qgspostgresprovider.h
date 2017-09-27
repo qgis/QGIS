@@ -483,7 +483,7 @@ class QgsPostgresUtils
 class QgsPostgresSharedData
 {
   public:
-    QgsPostgresSharedData();
+    QgsPostgresSharedData() = default;
 
     long featuresCounted();
     void setFeaturesCounted( long count );

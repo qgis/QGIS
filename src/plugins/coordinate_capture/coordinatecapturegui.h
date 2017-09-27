@@ -23,7 +23,6 @@ class CoordinateCaptureGui : public QDialog
 
   public:
     CoordinateCaptureGui( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
-    ~CoordinateCaptureGui();
 
   private slots:
     void on_buttonBox_accepted();

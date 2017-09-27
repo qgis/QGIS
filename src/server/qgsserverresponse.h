@@ -44,7 +44,7 @@ class SERVER_EXPORT QgsServerResponse
   public:
 
     //!constructor
-    QgsServerResponse();
+    QgsServerResponse() = default;
 
     //! destructor
     virtual ~QgsServerResponse() = default;

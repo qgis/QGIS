@@ -71,7 +71,10 @@ class CORE_EXPORT QgsAttributeTableConfig
       DropDown      //!< A tool button with a drop-down to select the current action
     };
 
-    QgsAttributeTableConfig();
+    /**
+     * Constructor for QgsAttributeTableConfig.
+     */
+    QgsAttributeTableConfig() = default;
 
     /**
      * Get the list with all columns and their configuration.

@@ -264,10 +264,6 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString pat
   setState( Populated );
 }
 
-QgsWMSLayerItem::~QgsWMSLayerItem()
-{
-}
-
 QString QgsWMSLayerItem::createUri()
 {
   if ( mLayerProperty.name.isEmpty() )
@@ -338,10 +334,6 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
   setState( Populated );
 }
 
-QgsWMTSLayerItem::~QgsWMTSLayerItem()
-{
-}
-
 QString QgsWMTSLayerItem::createUri()
 {
   // TODO dimensions
@@ -362,10 +354,6 @@ QgsWMSRootItem::QgsWMSRootItem( QgsDataItem *parent, QString name, QString path 
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWms.svg" );
   populate();
-}
-
-QgsWMSRootItem::~QgsWMSRootItem()
-{
 }
 
 QVector<QgsDataItem *> QgsWMSRootItem::createChildren()

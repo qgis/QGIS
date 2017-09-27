@@ -24,7 +24,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include <memory>
 
 QgsMultiCurve::QgsMultiCurve()
-  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiCurve;
 }

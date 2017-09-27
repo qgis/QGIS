@@ -34,6 +34,9 @@ class QgsRegularPolygon
     };
 
     QgsRegularPolygon();
+%Docstring
+ Constructor for QgsRegularPolygon.
+%End
 
     QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numberSides, const ConstructionOption circle );
 %Docstring

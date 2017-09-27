@@ -72,7 +72,11 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opNONE,
     };
 
-    QgsRasterCalcNode();
+    /**
+     * Constructor for QgsRasterCalcNode.
+     */
+    QgsRasterCalcNode() = default;
+
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );

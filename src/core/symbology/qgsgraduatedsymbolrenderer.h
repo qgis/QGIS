@@ -32,7 +32,11 @@
 class CORE_EXPORT QgsRendererRange
 {
   public:
-    QgsRendererRange();
+
+    /**
+     * Constructor for QgsRendererRange.
+     */
+    QgsRendererRange() = default;
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 

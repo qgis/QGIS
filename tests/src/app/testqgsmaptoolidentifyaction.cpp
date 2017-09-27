@@ -33,8 +33,7 @@ class TestQgsMapToolIdentifyAction : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolIdentifyAction()
-    {}
+    TestQgsMapToolIdentifyAction() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
