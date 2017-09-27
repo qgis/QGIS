@@ -435,6 +435,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         fet = next(vl.getFeatures())
         self.assertFalse(fet.hasGeometry())
 
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Fails with GDAL 2.2')
     def testDeleteShapes(self):
         ''' Test fix for #11007 '''
 
