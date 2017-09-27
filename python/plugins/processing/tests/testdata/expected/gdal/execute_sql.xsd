@@ -10,12 +10,12 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="execute_sql" type="ogr:execute_sql_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="execute_sql_Type">
+<xs:element name="polys2" type="ogr:polys2_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="polys2_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
-        <xs:element name="geometryProperty" type="gml:MultiPolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="geometryProperty" type="gml:PolygonPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
         <xs:element name="name" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
@@ -26,15 +26,13 @@
         <xs:element name="intval" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:integer">
-              <xs:totalDigits value="9"/>
+              <xs:totalDigits value="16"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
         <xs:element name="floatval" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:decimal">
-              <xs:totalDigits value="24"/>
-              <xs:fractionDigits value="15"/>
             </xs:restriction>
           </xs:simpleType>
         </xs:element>

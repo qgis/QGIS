@@ -608,21 +608,19 @@ tests:
         name: expected/gdal/clip_lines_by_multipolygon.gml
         type: vector
 
-  #~ - algorithm: gdal:executesql
-    #~ name: Execute SQL
-    #~ params:
-      #~ DIALECT: 0
-      #~ INPUT:
-        #~ name: polys.gml
-        #~ type: vector
-      #~ OPTIONS: ''
-      #~ SQL: SELECT * FROM polys2 WHERE intval=2
-    #~ results:
-      #~ OUTPUT:
-        #~ name: expected/gdal/execute_sql.gml
-        #~ type: vector
-        #~ compare:
-          #~ ignore_crs_check: true
+  - algorithm: gdal:executesql
+    name: Execute SQL
+    params:
+      DIALECT: 0
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+      SQL: SELECT * FROM polys2 WHERE intval=2
+    results:
+      OUTPUT:
+        name: expected/gdal/execute_sql.gml
+        type: vector
 
   - algorithm: gdal:offsetcurve
     name: Offset curve (right-sided)

@@ -12,11 +12,11 @@
   </gml:boundedBy>
                                                                                                                                                                
   <gml:featureMember>
-    <ogr:execute_sql fid="polys.5">
-      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3,2 6,1 6,-3 2,-1 2,2 3,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
+    <ogr:polys2 fid="polys.5">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3,2 6,1 6,-3 2,-1 2,2 3,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
-      <ogr:floatval>3.330000000000000</ogr:floatval>
-    </ogr:execute_sql>
+      <ogr:floatval>3.33</ogr:floatval>
+    </ogr:polys2>
   </gml:featureMember>
 </ogr:FeatureCollection>
