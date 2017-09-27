@@ -279,7 +279,6 @@
      <addaction name="mActionCircle2Points"/>
      <addaction name="mActionCircle3Points"/>
      <addaction name="mActionCircleCenterPoint"/>
-     <addaction name="mActionCircle3Tangents"/>
     </widget>
     <widget class="QMenu" name="mMenuEllipse">
      <property name="title">
@@ -2923,7 +2922,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionRectangle3Points.svg</normaloff>:/images/themes/default/mActionRectangle3Points.svg</iconset>
    </property>
    <property name="text">
-    <string>Add Rectangle From 3 Points</string>
+    <string>Add Rectangle &amp;From 3 Points</string>
    </property>
    <property name="toolTip">
     <string>Add rectangle from 3 points</string>

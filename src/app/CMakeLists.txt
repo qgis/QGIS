@@ -135,7 +135,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolcircle2points.cpp
   qgsmaptoolcircle3points.cpp
   qgsmaptoolcirclecenterpoint.cpp
-  qgsmaptoolcircle3tangents.cpp
   qgsmaptooladdellipse.cpp
   qgsmaptoolellipsefoci.cpp
   qgsmaptoolellipseextent.cpp
@@ -310,7 +309,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolcircle2points.h
   qgsmaptoolcircle3points.h
   qgsmaptoolcirclecenterpoint.h
-  qgsmaptoolcircle3tangents.h
   qgsmaptooladdellipse.h
   qgsmaptoolellipsefoci.h
   qgsmaptoolellipseextent.h
