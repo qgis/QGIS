@@ -304,7 +304,8 @@ Depends:
  qgis-provider-grass (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends},
- grass-core
+ grass-core,
+ grass{GRASSABI}
 Replaces: qgis-provider-grass (<< 1:2.11.0+git20151002)
 Conflicts: qgis-provider-grass (<< 1:2.11.0+git20151002)
 Description: GRASS plugin for QGIS
