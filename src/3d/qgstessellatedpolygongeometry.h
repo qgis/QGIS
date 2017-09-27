@@ -31,11 +31,11 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
   private:
     QList<QgsPolygonV2 *> mPolygons;
 
-    Qt3DRender::QAttribute *m_positionAttribute;
-    Qt3DRender::QAttribute *m_normalAttribute;
-    Qt3DRender::QBuffer *m_vertexBuffer;
+    Qt3DRender::QAttribute *mPositionAttribute;
+    Qt3DRender::QAttribute *mNormalAttribute;
+    Qt3DRender::QBuffer *mVertexBuffer;
 
-    bool m_withNormals;
+    bool mWithNormals;
 };
 
 #endif // QGSTESSELLATEDPOLYGONGEOMETRY_H

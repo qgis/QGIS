@@ -60,18 +60,18 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! height of terrain when mouse button was last pressed - for camera control
     float mLastPressedHeight;
 
-    struct CamData
+    struct CameraData
     {
       float x = 0, y = 0;  // ground point towards which the camera is looking
       float dist = 40;  // distance of camera from the point it is looking at
       float pitch = 0; // aircraft nose up/down (0 = looking straight down to the plane)
       float yaw = 0;   // aircraft nose left/right
 
-      bool operator==( const CamData &other ) const
+      bool operator==( const CameraData &other ) const
       {
         return x == other.x && y == other.y && dist == other.dist && pitch == other.pitch && yaw == other.yaw;
       }
-      bool operator!=( const CamData &other ) const
+      bool operator!=( const CameraData &other ) const
       {
         return !operator==( other );
       }
@@ -91,7 +91,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     };
 
-    CamData cd;
+    CameraData mCameraData;
 
     //! Last mouse position recorded
     QPoint mMousePos;

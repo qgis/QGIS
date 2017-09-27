@@ -115,7 +115,7 @@ void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )
     return;
   mCamera = camera;
 
-  cd.setCamera( mCamera ); // initial setup
+  mCameraData.setCamera( mCamera ); // initial setup
 
   // TODO: set camera's parent if not set already?
   // TODO: registerDestructionHelper (?)
@@ -133,15 +133,15 @@ void QgsCameraController::setViewport( const QRect &viewport )
 
 void QgsCameraController::setCameraData( float x, float y, float dist, float pitch, float yaw )
 {
-  cd.x = x;
-  cd.y = y;
-  cd.dist = dist;
-  cd.pitch = pitch;
-  cd.yaw = yaw;
+  mCameraData.x = x;
+  mCameraData.y = y;
+  mCameraData.dist = dist;
+  mCameraData.pitch = pitch;
+  mCameraData.yaw = yaw;
 
   if ( mCamera )
   {
-    cd.setCamera( mCamera );
+    mCameraData.setCamera( mCamera );
   }
 }
 
@@ -175,37 +175,37 @@ void QgsCameraController::frameTriggered( float dt )
   if ( mCamera == nullptr )
     return;
 
-  CamData oldCamData = cd;
+  CameraData oldCamData = mCameraData;
 
   int dx = mMousePos.x() - mLastMousePos.x();
   int dy = mMousePos.y() - mLastMousePos.y();
   mLastMousePos = mMousePos;
 
-  cd.dist -= cd.dist * mWheelAxis->value() * 10 * dt;
+  mCameraData.dist -= mCameraData.dist * mWheelAxis->value() * 10 * dt;
 
   if ( mRightMouseButtonAction->isActive() )
   {
-    cd.dist -= cd.dist * dy * 0.01;
+    mCameraData.dist -= mCameraData.dist * dy * 0.01;
   }
 
-  float tx = mTxAxis->value() * dt * cd.dist * 1.5;
-  float ty = -mTyAxis->value() * dt * cd.dist * 1.5;
+  float tx = mTxAxis->value() * dt * mCameraData.dist * 1.5;
+  float ty = -mTyAxis->value() * dt * mCameraData.dist * 1.5;
 
   if ( tx || ty )
   {
     // moving with keyboard - take into account yaw of camera
     float t = sqrt( tx * tx + ty * ty );
-    float a = atan2( ty, tx ) - cd.yaw * M_PI / 180;
+    float a = atan2( ty, tx ) - mCameraData.yaw * M_PI / 180;
     float dx = cos( a ) * t;
     float dy = sin( a ) * t;
-    cd.x += dx;
-    cd.y += dy;
+    mCameraData.x += dx;
+    mCameraData.y += dy;
   }
 
   if ( ( mLeftMouseButtonAction->isActive() && mShiftAction->isActive() ) || mMiddleMouseButtonAction->isActive() )
   {
-    cd.pitch += dy;
-    cd.yaw -= dx / 2;
+    mCameraData.pitch += dy;
+    mCameraData.yaw -= dx / 2;
   }
   else if ( mLeftMouseButtonAction->isActive() && !mShiftAction->isActive() )
   {
@@ -217,27 +217,27 @@ void QgsCameraController::frameTriggered( float dt )
     QPointF p1 = screen_point_to_point_on_plane( QPointF( mMousePos - QPoint( dx, dy ) ), mViewport, mCamera, z );
     QPointF p2 = screen_point_to_point_on_plane( QPointF( mMousePos ), mViewport, mCamera, z );
 
-    cd.x -= p2.x() - p1.x();
-    cd.y -= p2.y() - p1.y();
+    mCameraData.x -= p2.x() - p1.x();
+    mCameraData.y -= p2.y() - p1.y();
   }
 
-  if ( qIsNaN( cd.x ) || qIsNaN( cd.y ) )
+  if ( qIsNaN( mCameraData.x ) || qIsNaN( mCameraData.y ) )
   {
     // something went horribly wrong but we need to at least try to fix it somehow
     qDebug() << "camera position got NaN!";
-    cd.x = cd.y = 0;
+    mCameraData.x = mCameraData.y = 0;
   }
 
-  if ( cd.pitch > 80 )
-    cd.pitch = 80;  // prevent going under the plane
-  if ( cd.pitch < 0 )
-    cd.pitch = 0;   // prevent going over the head
-  if ( cd.dist < 10 )
-    cd.dist = 10;
+  if ( mCameraData.pitch > 80 )
+    mCameraData.pitch = 80;  // prevent going under the plane
+  if ( mCameraData.pitch < 0 )
+    mCameraData.pitch = 0;   // prevent going over the head
+  if ( mCameraData.dist < 10 )
+    mCameraData.dist = 10;
 
-  if ( cd != oldCamData )
+  if ( mCameraData != oldCamData )
   {
-    cd.setCamera( mCamera );
+    mCameraData.setCamera( mCamera );
     emit cameraChanged();
   }
 }

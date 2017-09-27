@@ -13,10 +13,9 @@
 
 
 Qgs3DMapSettings::Qgs3DMapSettings()
-  : originX( 0 )
-  , originY( 0 )
-  , originZ( 0 )
-  , skybox( false )
+  : mOriginX( 0 )
+  , mOriginY( 0 )
+  , mOriginZ( 0 )
   , mBackgroundColor( Qt::black )
   , mTerrainVerticalScale( 1 )
   , mMapTileResolution( 512 )
@@ -24,18 +23,16 @@ Qgs3DMapSettings::Qgs3DMapSettings()
   , mMaxTerrainGroundError( 1.f )
   , mShowTerrainBoundingBoxes( false )
   , mShowTerrainTileInfo( false )
+  , mSkyboxEnabled( false )
 {
 }
 
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   : QObject()
-  , originX( other.originX )
-  , originY( other.originY )
-  , originZ( other.originZ )
-  , crs( other.crs )
-  , skybox( other.skybox )
-  , skyboxFileBase( other.skyboxFileBase )
-  , skyboxFileExtension( other.skyboxFileExtension )
+  , mOriginX( other.mOriginX )
+  , mOriginY( other.mOriginY )
+  , mOriginZ( other.mOriginZ )
+  , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )
   , mTerrainVerticalScale( other.mTerrainVerticalScale )
   , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
@@ -45,27 +42,30 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
   , mLayers( other.mLayers )
+  , mSkyboxEnabled( other.mSkyboxEnabled )
+  , mSkyboxFileBase( other.mSkyboxFileBase )
+  , mSkyboxFileExtension( other.mSkyboxFileExtension )
 {
-  Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.renderers )
+  Q_FOREACH ( QgsAbstract3DRenderer *renderer, other.mRenderers )
   {
-    renderers << renderer->clone();
+    mRenderers << renderer->clone();
   }
 }
 
 Qgs3DMapSettings::~Qgs3DMapSettings()
 {
-  qDeleteAll( renderers );
+  qDeleteAll( mRenderers );
 }
 
 void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   QDomElement elemOrigin = elem.firstChildElement( "origin" );
-  originX = elemOrigin.attribute( "x" ).toDouble();
-  originY = elemOrigin.attribute( "y" ).toDouble();
-  originZ = elemOrigin.attribute( "z" ).toDouble();
+  mOriginX = elemOrigin.attribute( "x" ).toDouble();
+  mOriginY = elemOrigin.attribute( "y" ).toDouble();
+  mOriginZ = elemOrigin.attribute( "z" ).toDouble();
 
   QDomElement elemCrs = elem.firstChildElement( "crs" );
-  crs.readXml( elemCrs );
+  mCrs.readXml( elemCrs );
 
   QDomElement elemTerrain = elem.firstChildElement( "terrain" );
   mTerrainVerticalScale = elemTerrain.attribute( "exaggeration", "1" ).toFloat();
@@ -97,13 +97,13 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   else // "flat"
   {
     QgsFlatTerrainGenerator *flatGen = new QgsFlatTerrainGenerator;
-    flatGen->setCrs( crs );
+    flatGen->setCrs( mCrs );
     mTerrainGenerator.reset( flatGen );
   }
   mTerrainGenerator->readXml( elemTerrainGenerator );
 
-  qDeleteAll( renderers );
-  renderers.clear();;
+  qDeleteAll( mRenderers );
+  mRenderers.clear();
 
   QDomElement elemRenderers = elem.firstChildElement( "renderers" );
   QDomElement elemRenderer = elemRenderers.firstChildElement( "renderer" );
@@ -119,15 +119,15 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     if ( renderer )
     {
       renderer->readXml( elemRenderer, context );
-      renderers.append( renderer );
+      mRenderers.append( renderer );
     }
     elemRenderer = elemRenderer.nextSiblingElement( "renderer" );
   }
 
   QDomElement elemSkybox = elem.firstChildElement( "skybox" );
-  skybox = elemSkybox.attribute( "enabled", "0" ).toInt();
-  skyboxFileBase = elemSkybox.attribute( "file-base" );
-  skyboxFileExtension = elemSkybox.attribute( "file-ext" );
+  mSkyboxEnabled = elemSkybox.attribute( "enabled", "0" ).toInt();
+  mSkyboxFileBase = elemSkybox.attribute( "file-base" );
+  mSkyboxFileExtension = elemSkybox.attribute( "file-ext" );
 
   QDomElement elemDebug = elem.firstChildElement( "debug" );
   mShowTerrainBoundingBoxes = elemDebug.attribute( "bounding-boxes", "0" ).toInt();
@@ -139,13 +139,13 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elem = doc.createElement( "qgis3d" );
 
   QDomElement elemOrigin = doc.createElement( "origin" );
-  elemOrigin.setAttribute( "x", QString::number( originX ) );
-  elemOrigin.setAttribute( "y", QString::number( originY ) );
-  elemOrigin.setAttribute( "z", QString::number( originZ ) );
+  elemOrigin.setAttribute( "x", QString::number( mOriginX ) );
+  elemOrigin.setAttribute( "y", QString::number( mOriginY ) );
+  elemOrigin.setAttribute( "z", QString::number( mOriginZ ) );
   elem.appendChild( elemOrigin );
 
   QDomElement elemCrs = doc.createElement( "crs" );
-  crs.writeXml( elemCrs, doc );
+  mCrs.writeXml( elemCrs, doc );
   elem.appendChild( elemCrs );
 
   QDomElement elemTerrain = doc.createElement( "terrain" );
@@ -168,7 +168,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemTerrain );
 
   QDomElement elemRenderers = doc.createElement( "renderers" );
-  Q_FOREACH ( const QgsAbstract3DRenderer *renderer, renderers )
+  Q_FOREACH ( const QgsAbstract3DRenderer *renderer, mRenderers )
   {
     QDomElement elemRenderer = doc.createElement( "renderer" );
     elemRenderer.setAttribute( "type", renderer->type() );
@@ -178,10 +178,10 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elem.appendChild( elemRenderers );
 
   QDomElement elemSkybox = doc.createElement( "skybox" );
-  elemSkybox.setAttribute( "enabled", skybox ? 1 : 0 );
+  elemSkybox.setAttribute( "enabled", mSkyboxEnabled ? 1 : 0 );
   // TODO: use context for relative paths, maybe explicitly list all files(?)
-  elemSkybox.setAttribute( "file-base", skyboxFileBase );
-  elemSkybox.setAttribute( "file-ext", skyboxFileExtension );
+  elemSkybox.setAttribute( "file-base", mSkyboxFileBase );
+  elemSkybox.setAttribute( "file-ext", mSkyboxFileExtension );
   elem.appendChild( elemSkybox );
 
   QDomElement elemDebug = doc.createElement( "debug" );
@@ -202,11 +202,23 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
 
   mTerrainGenerator->resolveReferences( project );
 
-  for ( int i = 0; i < renderers.count(); ++i )
+  for ( int i = 0; i < mRenderers.count(); ++i )
   {
-    QgsAbstract3DRenderer *renderer = renderers[i];
+    QgsAbstract3DRenderer *renderer = mRenderers[i];
     renderer->resolveReferences( project );
   }
+}
+
+void Qgs3DMapSettings::setOrigin( double originX, double originY, double originZ )
+{
+  mOriginX = originX;
+  mOriginY = originY;
+  mOriginZ = originZ;
+}
+
+void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrs = crs;
 }
 
 void Qgs3DMapSettings::setBackgroundColor( const QColor &color )
@@ -325,6 +337,11 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
 {
   mTerrainGenerator.reset( gen );
   emit terrainGeneratorChanged();
+}
+
+void Qgs3DMapSettings::setRenderers( const QList<QgsAbstract3DRenderer *> &renderers )
+{
+  mRenderers = renderers;
 }
 
 void Qgs3DMapSettings::setShowTerrainBoundingBoxes( bool enabled )

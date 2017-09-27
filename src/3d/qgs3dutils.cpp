@@ -162,7 +162,7 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
       QgsPoint *pt = static_cast<QgsPoint *>( g );
       // TODO: use Z coordinates if the point is 3D
       float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
-      positions.append( QVector3D( pt->x() - map.originX, h, -( pt->y() - map.originY ) ) );
+      positions.append( QVector3D( pt->x() - map.originX(), h, -( pt->y() - map.originY() ) ) );
       //qDebug() << positions.last();
     }
     else

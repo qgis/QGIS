@@ -69,7 +69,7 @@ void Qgs3DMapConfigWidget::apply()
   else if ( !demLayer && mMap->terrainGenerator()->type() != QgsTerrainGenerator::Flat )
   {
     QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
-    flatTerrainGen->setCrs( mMap->crs );
+    flatTerrainGen->setCrs( mMap->crs() );
     flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
     mMap->setTerrainGenerator( flatTerrainGen );
   }
@@ -102,7 +102,7 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   else
   {
     QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
-    flatTerrainGen->setCrs( mMap->crs );
+    flatTerrainGen->setCrs( mMap->crs() );
     flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
     tGen.reset( flatTerrainGen );
   }

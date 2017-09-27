@@ -63,7 +63,7 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstract3DRenderer
     void resolveReferences( const QgsProject &project ) override;
 
   private:
-    QgsMapLayerRef layerRef; //!< Layer used to extract polygons from
+    QgsMapLayerRef mLayerRef; //!< Layer used to extract polygons from
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
 };
 

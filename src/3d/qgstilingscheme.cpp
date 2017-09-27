@@ -4,31 +4,31 @@
 
 
 QgsTilingScheme::QgsTilingScheme()
-  : mapOrigin()
-  , baseTileSide( 0 )
+  : mMapOrigin()
+  , mBaseTileSide( 0 )
 {
 }
 
 QgsTilingScheme::QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs )
-  : crs( crs )
+  : mCrs( crs )
 {
-  mapOrigin = QgsPointXY( fullExtent.xMinimum(), fullExtent.yMinimum() );
-  baseTileSide = qMax( fullExtent.width(), fullExtent.height() );
+  mMapOrigin = QgsPointXY( fullExtent.xMinimum(), fullExtent.yMinimum() );
+  mBaseTileSide = qMax( fullExtent.width(), fullExtent.height() );
 }
 
 QgsPointXY QgsTilingScheme::tileToMap( int x, int y, int z ) const
 {
-  double tileSide = baseTileSide / pow( 2, z );
-  double mx = mapOrigin.x() + x * tileSide;
-  double my = mapOrigin.y() + y * tileSide;
+  double tileSide = mBaseTileSide / pow( 2, z );
+  double mx = mMapOrigin.x() + x * tileSide;
+  double my = mMapOrigin.y() + y * tileSide;
   return QgsPointXY( mx, my );
 }
 
 void QgsTilingScheme::mapToTile( const QgsPointXY &pt, int z, float &x, float &y ) const
 {
-  double tileSide = baseTileSide / pow( 2, z );
-  x = ( pt.x() - mapOrigin.x() ) / tileSide;
-  y = ( pt.y() - mapOrigin.y() ) / tileSide;
+  double tileSide = mBaseTileSide / pow( 2, z );
+  x = ( pt.x() - mMapOrigin.x() ) / tileSide;
+  y = ( pt.y() - mMapOrigin.y() ) / tileSide;
 }
 
 QgsRectangle QgsTilingScheme::tileToExtent( int x, int y, int z ) const

@@ -31,9 +31,13 @@ class QgsTilingScheme
     //! Returns coordinates of a tile that most tightly fits the whole extent
     void extentToTile( const QgsRectangle &extent, int &x, int &y, int &z ) const;
 
-    QgsPointXY mapOrigin; //!< Origin point in map coordinates: (0,0) in the tiling scheme
-    double baseTileSide;  //!< Length of tile side at zoom level 0 in map coordinates
-    QgsCoordinateReferenceSystem crs;  //!< CRS of the coordinates
+    //! Returns CRS of the tiling scheme
+    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+
+  private:
+    QgsPointXY mMapOrigin; //!< Origin point in map coordinates: (0,0) in the tiling scheme
+    double mBaseTileSide;  //!< Length of tile side at zoom level 0 in map coordinates
+    QgsCoordinateReferenceSystem mCrs;  //!< CRS of the coordinates
 
 };
 

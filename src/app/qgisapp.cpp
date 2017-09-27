@@ -9916,15 +9916,14 @@ void QgisApp::new3DMapCanvas()
   }
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->crs = prj->crs();
-  map->originX = fullExtent.center().x();
-  map->originY = fullExtent.center().y();
+  map->setCrs( prj->crs() );
+  map->setOrigin( fullExtent.center().x(), fullExtent.center().y(), 0 );
   map->setSelectionColor( mMapCanvas->selectionColor() );
   map->setBackgroundColor( mMapCanvas->canvasColor() );
   map->setLayers( mMapCanvas->layers() );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs );
+  flatTerrain->setCrs( map->crs() );
   flatTerrain->setExtent( fullExtent );
   map->setTerrainGenerator( flatTerrain );
 

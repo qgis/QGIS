@@ -42,7 +42,7 @@ void QgsLine3DSymbolEntity::addEntityForSelectedLines( const Qgs3DMapSettings &m
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs );
+  req.setDestinationCrs( map.crs() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
   // build the entity
@@ -58,7 +58,7 @@ void QgsLine3DSymbolEntity::addEntityForNotSelectedLines( const Qgs3DMapSettings
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs );
+  req.setDestinationCrs( map.crs() );
 
   QgsFeatureIds notSelected = layer->allFeatureIds();
   notSelected.subtract( layer->selectedFeatureIds() );
@@ -78,7 +78,7 @@ QgsLine3DSymbolEntityNode::QgsLine3DSymbolEntityNode( const Qgs3DMapSettings &ma
 
 Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  QgsPointXY origin( map.originX, map.originY );
+  QgsPointXY origin( map.originX(), map.originY() );
 
   // TODO: configurable
   int nSegments = 4;

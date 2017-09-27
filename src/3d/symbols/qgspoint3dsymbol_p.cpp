@@ -136,7 +136,7 @@ void QgsPoint3DSymbolInstancedEntityFactory::addEntityForSelectedPoints( const Q
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs );
+  req.setDestinationCrs( map.crs() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
   // build the entity
@@ -152,7 +152,7 @@ void QgsPoint3DSymbolInstancedEntityFactory::addEntityForNotSelectedPoints( cons
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs );
+  req.setDestinationCrs( map.crs() );
 
   QgsFeatureIds notSelected = layer->allFeatureIds();
   notSelected.subtract( layer->selectedFeatureIds() );
@@ -296,7 +296,7 @@ static Qt3DExtras::QPhongMaterial *phongMaterial( const QgsPoint3DSymbol &symbol
 void QgsPoint3DSymbolModelEntityFactory::addEntitiesForSelectedPoints( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, QgsPoint3DSymbolEntity *parent )
 {
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs );
+  req.setDestinationCrs( map.crs() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
   addMeshEntities( map, layer, req, symbol, parent, true );
@@ -308,7 +308,7 @@ void QgsPoint3DSymbolModelEntityFactory::addEntitiesForNotSelectedPoints( const 
 {
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs );
+  req.setDestinationCrs( map.crs() );
   QgsFeatureIds notSelected = layer->allFeatureIds();
   notSelected.subtract( layer->selectedFeatureIds() );
   req.setFilterFids( notSelected );

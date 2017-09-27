@@ -7,19 +7,19 @@
 QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = extent();
-  QgsCoordinateTransform terrainToMapTransform( crs(), map.crs );
+  QgsCoordinateTransform terrainToMapTransform( crs(), map.crs() );
   te = terrainToMapTransform.transformBoundingBox( te );
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  return QgsAABB( te.xMinimum() - map.originX, hMin * map.terrainVerticalScale(), -te.yMaximum() + map.originY,
-                  te.xMaximum() - map.originX, hMax * map.terrainVerticalScale(), -te.yMinimum() + map.originY );
+  return QgsAABB( te.xMinimum() - map.originX(), hMin * map.terrainVerticalScale(), -te.yMaximum() + map.originY(),
+                  te.xMaximum() - map.originX(), hMax * map.terrainVerticalScale(), -te.yMinimum() + map.originY() );
 }
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = extent();
-  QgsCoordinateTransform terrainToMapTransform( crs(), map.crs );
+  QgsCoordinateTransform terrainToMapTransform( crs(), map.crs() );
   te = terrainToMapTransform.transformBoundingBox( te );
 
   // use texel size as the error

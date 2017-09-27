@@ -69,7 +69,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
 
   // create entities of renderers
 
-  Q_FOREACH ( const QgsAbstract3DRenderer *renderer, map.renderers )
+  Q_FOREACH ( const QgsAbstract3DRenderer *renderer, map.renderers() )
   {
     Qt3DCore::QEntity *newEntity = renderer->createEntity( map );
     newEntity->setParent( this );
@@ -128,11 +128,11 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
   meshEntity->setParent( this );
 #endif
 
-  if ( map.skybox )
+  if ( map.hasSkyboxEnabled() )
   {
     Qt3DExtras::QSkyboxEntity *skybox = new Qt3DExtras::QSkyboxEntity;
-    skybox->setBaseName( map.skyboxFileBase );
-    skybox->setExtension( map.skyboxFileExtension );
+    skybox->setBaseName( map.skyboxFileBase() );
+    skybox->setExtension( map.skyboxFileExtension() );
     skybox->setParent( this );
 
     // docs say frustum culling must be disabled for skybox.
@@ -166,7 +166,7 @@ QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController 
 
 void Qgs3DMapScene::onCameraChanged()
 {
-  Q_FOREACH ( QgsChunkedEntity *entity, chunkEntities )
+  Q_FOREACH ( QgsChunkedEntity *entity, mChunkEntities )
   {
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
@@ -244,7 +244,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
-  Q_FOREACH ( QgsChunkedEntity *entity, chunkEntities )
+  Q_FOREACH ( QgsChunkedEntity *entity, mChunkEntities )
   {
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
@@ -258,7 +258,7 @@ void Qgs3DMapScene::createTerrain()
 {
   if ( mTerrain )
   {
-    chunkEntities.removeOne( mTerrain );
+    mChunkEntities.removeOne( mTerrain );
 
     mTerrain->deleteLater();
     mTerrain = nullptr;
@@ -286,7 +286,7 @@ void Qgs3DMapScene::createTerrainDeferred()
 
   mCameraController->addTerrainPicker( mTerrain->terrainPicker() );
 
-  chunkEntities << mTerrain;
+  mChunkEntities << mTerrain;
 
   onCameraChanged();  // force update of the new terrain
 

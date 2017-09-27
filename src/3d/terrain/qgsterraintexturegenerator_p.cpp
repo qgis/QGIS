@@ -114,7 +114,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   QgsMapSettings mapSettings;
   mapSettings.setLayers( mMap.layers() );
   mapSettings.setOutputSize( QSize( mMap.mapTileResolution(), mMap.mapTileResolution() ) );
-  mapSettings.setDestinationCrs( mMap.crs );
+  mapSettings.setDestinationCrs( mMap.crs() );
   mapSettings.setBackgroundColor( mMap.backgroundColor() );
   return mapSettings;
 }

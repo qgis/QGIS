@@ -43,8 +43,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Resolves references to other objects (map layers) after the call to readXml()
     void resolveReferences( const QgsProject &project );
 
-    double originX, originY, originZ;   //!< Coordinates in map CRS at which our 3D world has origin (0,0,0)
-    QgsCoordinateReferenceSystem crs;   //!< Destination coordinate system of the world  (TODO: not needed? can be
+    //! Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
+    void setOrigin( double originX, double originY, double originZ );
+    //! Returns X coordinate in map CRS at which 3D scene has origin (zero)
+    double originX() const { return mOriginX; }
+    //! Returns Y coordinate in map CRS at which 3D scene has origin (zero)
+    double originY() const { return mOriginY; }
+    //! Returns Z coordinate in map CRS at which 3D scene has origin (zero)
+    double originZ() const { return mOriginZ; }
+
+    //! Sets coordinate reference system used in the 3D scene
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+    //! Returns coordinate reference system used in the 3D scene
+    QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
     //! Sets background color of the 3D map view
     void setBackgroundColor( const QColor &color );
@@ -99,19 +110,26 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 
     //! Sets terrain generator. It takes care of producing terrain tiles from the input data.
     //! Takes ownership of the generator
-    void setTerrainGenerator( QgsTerrainGenerator *gen );
+    void setTerrainGenerator( QgsTerrainGenerator *gen SIP_TRANSFER );
     //! Returns terrain generator. It takes care of producing terrain tiles from the input data.
     QgsTerrainGenerator *terrainGenerator() const { return mTerrainGenerator.get(); }
 
-    //
-    // 3D renderers
-    //
+    //! Sets list of extra 3D renderers to use in the scene. Takes ownership of the objects.
+    void setRenderers( const QList<QgsAbstract3DRenderer *> &renderers SIP_TRANSFER );
+    //! Returns list of extra 3D renderers
+    QList<QgsAbstract3DRenderer *> renderers() const { return mRenderers; }
 
-    QList<QgsAbstract3DRenderer *> renderers;  //!< Stuff to render as 3D object
-
-    bool skybox;  //!< Whether to render skybox
-    QString skyboxFileBase;
-    QString skyboxFileExtension;
+    //! Sets skybox configuration. When enabled, map scene will try to load six texture files
+    //! using the following syntax of filenames: "[base]_[side][extension]" where [side] is one
+    //! of the following: posx/posy/posz/negx/negy/negz and [base] and [extension] are the arguments
+    //! passed this method.
+    void setSkybox( bool enabled, const QString &fileBase = QString(), const QString &fileExtension = QString() );
+    //! Returns whether skybox is enabled
+    bool hasSkyboxEnabled() const { return mSkyboxEnabled; }
+    //! Returns base part of filenames of skybox (see setSkybox())
+    QString skyboxFileBase() const { return mSkyboxFileBase; }
+    //! Returns extension part of filenames of skybox (see setSkybox())
+    QString skyboxFileExtension() const { return mSkyboxFileExtension; }
 
     //! Sets whether to display bounding boxes of terrain tiles (for debugging)
     void setShowTerrainBoundingBoxes( bool enabled );
@@ -145,8 +163,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void showTerrainTilesInfoChanged();
 
   private:
+    double mOriginX, mOriginY, mOriginZ;   //!< Coordinates in map CRS at which our 3D world has origin (0,0,0)
+    QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
     QColor mBackgroundColor;   //!< Background color of the scene
-    QColor mSelectionColor;
+    QColor mSelectionColor;    //!< Color to be used for selected map features
     double mTerrainVerticalScale;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
     std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
     int mMapTileResolution;   //!< Size of map textures of tiles in pixels (width/height)
@@ -155,6 +175,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     bool mShowTerrainBoundingBoxes;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
+    QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
+    bool mSkyboxEnabled;  //!< Whether to render skybox
+    QString mSkyboxFileBase;   //!< Base part of the files with skybox textures
+    QString mSkyboxFileExtension;  //!< Extension part of the files with skybox textures
 };
 
 

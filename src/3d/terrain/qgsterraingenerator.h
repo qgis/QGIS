@@ -75,7 +75,7 @@ class QgsTerrainGenerator : public QgsChunkLoaderFactory
     const QgsTilingScheme &tilingScheme() const { return mTerrainTilingScheme; }
 
     //! Returns CRS of the terrain
-    QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs; }
+    QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs(); }
 
   protected:
     QgsTilingScheme mTerrainTilingScheme;   //!< Tiling scheme of the terrain

@@ -35,7 +35,7 @@ void QgsPolygon3DSymbolEntity::addEntityForSelectedPolygons( const Qgs3DMapSetti
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs );
+  req.setDestinationCrs( map.crs() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
   // build the entity
@@ -56,7 +56,7 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs );
+  req.setDestinationCrs( map.crs() );
 
   QgsFeatureIds notSelected = layer->allFeatureIds();
   notSelected.subtract( layer->selectedFeatureIds() );
@@ -87,7 +87,7 @@ QgsPolygon3DSymbolEntityNode::QgsPolygon3DSymbolEntityNode( const Qgs3DMapSettin
 
 Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  QgsPointXY origin( map.originX, map.originY );
+  QgsPointXY origin( map.originX(), map.originY() );
   QList<QgsPolygonV2 *> polygons;
   QgsFeature f;
   QgsFeatureIterator fi = layer->getFeatures( request );

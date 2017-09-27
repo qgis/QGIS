@@ -67,7 +67,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     QgsTerrainEntity *mTerrain;
     //! Forward renderer provided by 3D window
     Qt3DExtras::QForwardRenderer *mForwardRenderer;
-    QList<QgsChunkedEntity *> chunkEntities;
+    QList<QgsChunkedEntity *> mChunkEntities;
     //! Keeps track of entities that belong to a particular layer
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
     bool mTerrainUpdateScheduled = false;
