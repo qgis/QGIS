@@ -563,50 +563,50 @@ tests:
         name: expected/gdal/clip_polygons.gml
         type: vector
 
-  #~ - algorithm: gdal:clipvectorbypolygon
-    #~ name: Clip lines by polygons
-    #~ params:
-      #~ INPUT:
-        #~ name: lines.gml
-        #~ type: vector
-      #~ MASK:
-        #~ name: polys.gml
-        #~ type: vector
-      #~ OPTIONS: ''
-    #~ results:
-      #~ OUTPUT:
-        #~ name: expected/gdal/clip_lines_by_polygon.gml
-        #~ type: vector
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip points by polygons
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      MASK:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_points_by_polygon.gml
+        type: vector
 
-  #~ - algorithm: gdal:clipvectorbypolygon
-    #~ name: Clip lines by multipolygons
-    #~ params:
-      #~ INPUT:
-        #~ name: lines.gml
-        #~ type: vector
-      #~ MASK:
-        #~ name: multipolys.gml
-        #~ type: vector
-      #~ OPTIONS: ''
-    #~ results:
-      #~ OUTPUT:
-        #~ name: expected/gdal/clip_lines_by_multipolygon.gml
-        #~ type: vector
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip lines by polygons
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      MASK:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines_by_polygon.gml
+        type: vector
 
-  #~ - algorithm: gdal:clipvectorbypolygon
-    #~ name: Clip points by polygons
-    #~ params:
-      #~ INPUT:
-        #~ name: points.gml
-        #~ type: vector
-      #~ MASK:
-        #~ name: polys.gml
-        #~ type: vector
-      #~ OPTIONS: ''
-    #~ results:
-      #~ OUTPUT:
-        #~ name: expected/gdal/clip_points_by_polygon.gml
-        #~ type: vector
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip lines by multipolygons
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      MASK:
+        name: multipolys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines_by_multipolygon.gml
+        type: vector
 
   #~ - algorithm: gdal:executesql
     #~ name: Execute SQL

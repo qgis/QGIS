@@ -10,12 +10,12 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="clip_lines_by_multipolygon" type="ogr:clip_lines_by_multipolygon_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="clip_lines_by_multipolygon_Type">
+<xs:element name="lines" type="ogr:lines_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="lines_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
-        <xs:element name="geometryProperty" type="gml:MultiLineStringPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="geometryProperty" type="gml:LineStringPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
       </xs:sequence>
     </xs:extension>
   </xs:complexContent>

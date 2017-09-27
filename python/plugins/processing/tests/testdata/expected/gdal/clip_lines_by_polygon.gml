@@ -12,22 +12,22 @@
   </gml:boundedBy>
                                                                                                                                                              
   <gml:featureMember>
-    <ogr:clip_lines_by_polygon fid="lines.1">
-      <ogr:geometryProperty><gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>-1,-1 1,-1</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString></ogr:geometryProperty>
-    </ogr:clip_lines_by_polygon>
+    <ogr:lines fid="lines.1">
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>-1,-1 1,-1</gml:coordinates></gml:LineString></ogr:geometryProperty>
+    </ogr:lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:clip_lines_by_polygon fid="lines.4">
-      <ogr:geometryProperty><gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>7,-3 10,-3</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString></ogr:geometryProperty>
-    </ogr:clip_lines_by_polygon>
+    <ogr:lines fid="lines.4">
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:4326"><gml:coordinates>7,-3 10,-3</gml:coordinates></gml:LineString></ogr:geometryProperty>
+    </ogr:lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:clip_lines_by_polygon fid="lines.5">
+    <ogr:lines fid="lines.5">
       <ogr:geometryProperty><gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>6,-3 7,-2</gml:coordinates></gml:LineString></gml:lineStringMember><gml:lineStringMember><gml:LineString><gml:coordinates>9,0 10,1</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString></ogr:geometryProperty>
-    </ogr:clip_lines_by_polygon>
+    </ogr:lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:clip_lines_by_polygon fid="lines.6">
-    </ogr:clip_lines_by_polygon>
+    <ogr:lines fid="lines.6">
+    </ogr:lines>
   </gml:featureMember>
 </ogr:FeatureCollection>
