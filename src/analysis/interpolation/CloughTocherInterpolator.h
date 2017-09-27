@@ -99,7 +99,8 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 
   public:
     //! Standard constructor
-    CloughTocherInterpolator();
+    CloughTocherInterpolator() = default;
+
     //! Constructor with a pointer to the triangulation as argument
     CloughTocherInterpolator( NormVecDecorator *tin );
 

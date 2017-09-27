@@ -49,7 +49,10 @@ class CORE_EXPORT QgsMessageLog : public QObject
     };
     Q_ENUM( MessageLevel );
 
-    QgsMessageLog();
+    /**
+     * Constructor for QgsMessageLog.
+     */
+    QgsMessageLog() = default;
 
     //! add a message to the instance (and create it if necessary)
     static void logMessage( const QString &message, const QString &tag = QString(), MessageLevel level = QgsMessageLog::WARNING );

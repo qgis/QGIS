@@ -24,7 +24,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmulticurve.h"
 
 QgsMultiSurface::QgsMultiSurface()
-  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiSurface;
 }

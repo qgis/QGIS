@@ -21,10 +21,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 
-
-QgsPropertyDefinition::QgsPropertyDefinition()
-{}
-
 QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type )
   : mName( name )
   , mDescription( description )

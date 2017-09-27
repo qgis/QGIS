@@ -472,10 +472,6 @@ QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider *p )
   , mCrs( p->crs() )
 {}
 
-QgsDb2FeatureSource::~QgsDb2FeatureSource()
-{
-}
-
 QgsFeatureIterator QgsDb2FeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsDb2FeatureIterator( this, false, request ) );

@@ -62,7 +62,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
 
   private:
     //default constructor forbidden. We need input file, output file and format obligatory
-    QgsNineCellFilter();
+    QgsNineCellFilter() = delete;
 
     //! Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction
     GDALDatasetH openInputFile( int &nCellsX, int &nCellsY );

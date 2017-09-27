@@ -34,8 +34,7 @@ class TestQgsFieldExpressionWidget : public QObject
     Q_OBJECT
 
   public:
-    TestQgsFieldExpressionWidget()
-    {}
+    TestQgsFieldExpressionWidget() = default;
 
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.

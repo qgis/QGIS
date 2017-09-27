@@ -39,7 +39,11 @@ class CORE_EXPORT QgsEllipse
 {
 
   public:
-    QgsEllipse();
+
+    /**
+     * Constructor for QgsEllipse.
+     */
+    QgsEllipse() = default;
 
     virtual ~QgsEllipse() = default;
 

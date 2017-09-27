@@ -35,7 +35,7 @@ class CORE_EXPORT QgsSimplifyMethod
     };
 
     //! construct a default method
-    QgsSimplifyMethod();
+    QgsSimplifyMethod() = default;
 
     //! Sets the simplification type
     void setMethodType( MethodType methodType );

@@ -89,6 +89,9 @@ be the right choice for apps without GUI.
   public:
 
     QgsMessageOutputConsole();
+%Docstring
+ Constructor for QgsMessageOutputConsole.
+%End
 
     virtual void setMessage( const QString &message, MessageType msgType );
 

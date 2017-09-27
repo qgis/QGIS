@@ -257,10 +257,6 @@ bool QgsGrassObject::operator==( const QgsGrassObject &other ) const
          && mName == other.mName && mType == other.mType;
 }
 
-QgsGrass::QgsGrass()
-{
-}
-
 QString QgsGrass::pathSeparator()
 {
 #ifdef Q_OS_WIN

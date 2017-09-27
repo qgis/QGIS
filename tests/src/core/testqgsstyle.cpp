@@ -69,10 +69,7 @@ class TestStyle : public QObject
 
 };
 
-TestStyle::TestStyle()
-{
-
-}
+TestStyle::TestStyle() = default;
 
 // slots
 void TestStyle::initTestCase()

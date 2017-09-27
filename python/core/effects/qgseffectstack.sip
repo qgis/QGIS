@@ -44,6 +44,10 @@ class QgsEffectStack : QgsPaintEffect
 %End
 
     QgsEffectStack();
+%Docstring
+ Constructor for empty QgsEffectStack.
+%End
+
     QgsEffectStack( const QgsEffectStack &other );
 
     explicit QgsEffectStack( const QgsPaintEffect &effect );

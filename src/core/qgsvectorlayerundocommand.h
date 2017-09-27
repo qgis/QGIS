@@ -45,8 +45,7 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
      * \param buffer associated edit buffer
      */
     QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER )
-      : QUndoCommand()
-      , mBuffer( buffer )
+      : mBuffer( buffer )
     {}
 
     //! Returns the layer associated with the undo command

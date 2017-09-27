@@ -44,8 +44,7 @@ class TestQgsFontMarkerSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsFontMarkerSymbol()
-    {}
+    TestQgsFontMarkerSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

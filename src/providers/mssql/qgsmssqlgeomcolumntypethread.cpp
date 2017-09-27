@@ -7,8 +7,7 @@
 #include "qgsmssqlprovider.h"
 
 QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata )
-  : QThread()
-  , mConnectionName( connectionName )
+  : mConnectionName( connectionName )
   , mUseEstimatedMetadata( useEstimatedMetadata )
   , mStopped( false )
 {

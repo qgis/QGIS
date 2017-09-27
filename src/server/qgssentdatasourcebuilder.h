@@ -30,7 +30,7 @@ class QgsRasterLayer;
 class QgsSentDataSourceBuilder: public QgsMSLayerBuilder
 {
   public:
-    QgsSentDataSourceBuilder();
+    QgsSentDataSourceBuilder() = default;
 
     /** Creates a maplayer from xml tag
        \param elem xml element containing description of datasource

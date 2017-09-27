@@ -34,7 +34,7 @@ class TestQgsCurve : public QObject
     Q_OBJECT
 
   public:
-    TestQgsCurve() {};
+    TestQgsCurve() = default;;
 
   private slots:
     //void initTestCase();// will be called before the first testfunction is executed.

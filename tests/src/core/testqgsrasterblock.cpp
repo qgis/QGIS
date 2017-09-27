@@ -28,11 +28,7 @@ class TestQgsRasterBlock : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRasterBlock()
-    {}
-    ~TestQgsRasterBlock()
-    {
-    }
+    TestQgsRasterBlock() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

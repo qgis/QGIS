@@ -47,8 +47,7 @@ class TestQgsDiagram : public QObject
     Q_OBJECT
 
   public:
-    TestQgsDiagram()
-    {}
+    TestQgsDiagram() = default;
 
   private:
     bool mTestHasError =  false ;

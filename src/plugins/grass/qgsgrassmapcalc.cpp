@@ -613,10 +613,6 @@ QStringList QgsGrassMapcalc::output( int type )
   return list;
 }
 
-QgsGrassMapcalc::~QgsGrassMapcalc()
-{
-}
-
 void QgsGrassMapcalc::showOptions( int tool )
 {
   QgsDebugMsg( QString( "tool = %1" ).arg( tool ) );
@@ -1382,13 +1378,6 @@ void QgsGrassMapcalc::clear()
 }
 
 /******************** CANVAS ITEMS ******************************/
-QgsGrassMapcalcItem::QgsGrassMapcalcItem()
-{
-}
-
-QgsGrassMapcalcItem::~QgsGrassMapcalcItem()
-{
-}
 
 /**************************** OBJECT ************************/
 QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
@@ -1803,8 +1792,7 @@ QString QgsGrassMapcalcObject::expression()
 
 /************************* CONNECTOR **********************************/
 QgsGrassMapcalcConnector::QgsGrassMapcalcConnector( QGraphicsScene *canvas )
-  : QGraphicsLineItem()
-  , QgsGrassMapcalcItem()
+  : QgsGrassMapcalcItem()
   , mSelectedEnd( -1 )
 {
 
@@ -2015,14 +2003,6 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
   {
     mInputLabels = labels.split( QStringLiteral( "," ), QString::SkipEmptyParts );
   }
-}
-
-QgsGrassMapcalcFunction::QgsGrassMapcalcFunction()
-{
-}
-
-QgsGrassMapcalcFunction::~QgsGrassMapcalcFunction()
-{
 }
 
 /******************** CANVAS VIEW ******************************/

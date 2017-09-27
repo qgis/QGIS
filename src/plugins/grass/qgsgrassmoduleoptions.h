@@ -55,8 +55,7 @@ class QgsGrassModuleOptions
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface, bool direct );
 
-
-    virtual ~QgsGrassModuleOptions();
+    virtual ~QgsGrassModuleOptions() = default;
 
     //! Get module options as list of arguments for QProcess
     virtual QStringList arguments();
@@ -148,9 +147,6 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QgisInterface *iface,
       QString xname, QDomElement confDocElem,
       bool direct, QWidget *parent = 0, Qt::WindowFlags f = 0 );
-
-
-    ~QgsGrassModuleStandardOptions();
 
     //! Get module options as list of arguments for QProcess
     QStringList arguments() override;

@@ -23,7 +23,6 @@
 #include "qgsapplication.h"
 
 QgsDb2TableModel::QgsDb2TableModel()
-  : QStandardItemModel()
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -37,9 +36,6 @@ QgsDb2TableModel::QgsDb2TableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsDb2TableModel::~QgsDb2TableModel()
-{
-}
 void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
 {
   QgsDebugMsg( QString( " DB2 **** %1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )

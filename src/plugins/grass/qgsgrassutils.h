@@ -31,10 +31,7 @@ class QgsGrassUtils
 
   public:
     //! Constructor
-    QgsGrassUtils();
-
-
-    ~QgsGrassUtils();
+    QgsGrassUtils() = default;
 
   public:
     // Create vector name from map name, layer name and number of layers
@@ -61,9 +58,6 @@ class QgsGrassElementDialog: public QObject
   public:
     //! Constructor
     explicit QgsGrassElementDialog( QWidget *parent );
-
-
-    ~QgsGrassElementDialog();
 
   public:
     //! Get a name for new GRASS element (map)

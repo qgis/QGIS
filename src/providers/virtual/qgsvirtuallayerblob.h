@@ -42,7 +42,7 @@ struct SpatialiteBlobHeader
   double mbrMaxY = DBL_MAX;
   unsigned char end = 0x7C;
 
-  SpatialiteBlobHeader();
+  SpatialiteBlobHeader() = default;
 
   static const size_t LENGTH = 39;
 

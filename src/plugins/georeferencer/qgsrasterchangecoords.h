@@ -24,7 +24,7 @@
 class QgsRasterChangeCoords
 {
   public:
-    QgsRasterChangeCoords();
+    QgsRasterChangeCoords() = default;
     void setRaster( const QString &fileRaster );
     bool hasCrs() const { return mHasCrs; }
     QVector<QgsPointXY> getPixelCoords( const QVector<QgsPointXY> &mapCoords );

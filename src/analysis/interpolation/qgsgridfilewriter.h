@@ -42,7 +42,8 @@ class ANALYSIS_EXPORT QgsGridFileWriter
 
   private:
 
-    QgsGridFileWriter(); //forbidden
+    QgsGridFileWriter() = delete;
+
     int writeHeader( QTextStream &outStream );
 
     QgsInterpolator *mInterpolator = nullptr;

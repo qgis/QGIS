@@ -37,8 +37,6 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
   public:
 
     QgsBufferServerResponse();
-    ~QgsBufferServerResponse();
-
 
     /**
      *  Set Header entry

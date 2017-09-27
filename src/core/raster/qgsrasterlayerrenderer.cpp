@@ -29,8 +29,7 @@
 ///@cond PRIVATE
 
 QgsRasterLayerRendererFeedback::QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r )
-  : QgsRasterBlockFeedback()
-  , mR( r )
+  : mR( r )
   , mMinimalPreviewInterval( 250 )
 {
   setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );

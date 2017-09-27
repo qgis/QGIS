@@ -44,8 +44,7 @@ class TestQgsSvgMarkerSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsSvgMarkerSymbol()
-    {}
+    TestQgsSvgMarkerSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

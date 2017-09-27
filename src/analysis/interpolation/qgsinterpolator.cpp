@@ -28,11 +28,6 @@ QgsInterpolator::QgsInterpolator( const QList<LayerData> &layerData )
 
 }
 
-QgsInterpolator::QgsInterpolator()
-{
-
-}
-
 int QgsInterpolator::cacheBaseData()
 {
   if ( mLayerData.empty() )

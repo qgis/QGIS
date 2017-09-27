@@ -18,13 +18,7 @@
 
 #include "qgsgcplist.h"
 
-QgsGCPList::QgsGCPList()
-  : QList<QgsGeorefDataPoint *>()
-{
-}
-
 QgsGCPList::QgsGCPList( const QgsGCPList &list )
-  : QList<QgsGeorefDataPoint *>()
 {
   clear();
   QgsGCPList::const_iterator it = list.constBegin();

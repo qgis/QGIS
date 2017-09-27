@@ -41,7 +41,7 @@ class QgsInterpolationLayerBuilder: public QgsMSLayerBuilder
     QgsMapLayer *createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const override;
 
   private:
-    QgsInterpolationLayerBuilder(); //forbidden
+    QgsInterpolationLayerBuilder() = delete; //forbidden
 
     QgsVectorLayer *mVectorLayer = nullptr;
 };

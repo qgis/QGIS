@@ -26,7 +26,6 @@ class QgsWfsRootItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsWfsRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsWfsRootItem();
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -49,7 +48,6 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsWfsConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
-    ~QgsWfsConnectionItem();
 
     QVector<QgsDataItem *> createChildren() override;
     //virtual bool equal( const QgsDataItem *other );
@@ -77,7 +75,6 @@ class QgsWfsLayerItem : public QgsLayerItem
 
   public:
     QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
-    ~QgsWfsLayerItem();
 
     virtual QList<QMenu *> menus( QWidget *parent ) override;
 

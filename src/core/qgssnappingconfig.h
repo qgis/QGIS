@@ -76,7 +76,7 @@ class CORE_EXPORT QgsSnappingConfig
         /**
          * Constructs an invalid setting
          */
-        IndividualLayerSettings();
+        IndividualLayerSettings() = default;
 
         //! return if settings are valid
         bool valid() const;

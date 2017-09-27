@@ -26,13 +26,6 @@
 #include "qgssettings.h"
 #include "qgsgui.h"
 
-/// @cond PRIVATE
-CustomActionRegistry::CustomActionRegistry()
-  : QgsMapLayerActionRegistry()
-{
-}
-///@endcond
-
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   : QMenu( canvas )
   , mCanvas( canvas )

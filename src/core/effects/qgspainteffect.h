@@ -105,7 +105,11 @@ class CORE_EXPORT QgsPaintEffect
       ModifyAndRender //!< The result of the effect is both rendered and passed on to subsequent effects in the stack
     };
 
-    QgsPaintEffect();
+    /**
+     * Constructor for QgsPaintEffect.
+     */
+    QgsPaintEffect() = default;
+
     QgsPaintEffect( const QgsPaintEffect &other );
     virtual ~QgsPaintEffect();
 

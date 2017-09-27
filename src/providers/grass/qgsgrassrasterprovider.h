@@ -53,7 +53,7 @@ class QgsCoordinateTransform;
 class GRASS_LIB_EXPORT QgsGrassRasterValue
 {
   public:
-    QgsGrassRasterValue();
+    QgsGrassRasterValue() = default;
     ~QgsGrassRasterValue();
 
     QgsGrassRasterValue( const QgsGrassRasterValue &other ) = delete;

@@ -24,7 +24,12 @@ class QgsLegendSymbolItem
 #include "qgslegendsymbolitem.h"
 %End
   public:
+
     QgsLegendSymbolItem();
+%Docstring
+ Constructor for QgsLegendSymbolItem.
+%End
+
     QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
 %Docstring
 .. versionadded:: 2.8

@@ -29,7 +29,7 @@ class QgsVectorLayer;
 class QgsRemoteDataSourceBuilder: public QgsMSLayerBuilder
 {
   public:
-    QgsRemoteDataSourceBuilder();
+    QgsRemoteDataSourceBuilder() = default;
     QgsMapLayer *createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const override;
 
   private:

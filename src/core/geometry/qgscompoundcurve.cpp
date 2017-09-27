@@ -25,7 +25,7 @@
 #include <QPainterPath>
 #include <memory>
 
-QgsCompoundCurve::QgsCompoundCurve(): QgsCurve()
+QgsCompoundCurve::QgsCompoundCurve()
 {
   mWkbType = QgsWkbTypes::CompoundCurve;
 }

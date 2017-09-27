@@ -31,7 +31,11 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
     Q_OBJECT
 
   public:
-    QgsComposerEffect();
+
+    /**
+     * Constructor for QgsComposerEffect.
+     */
+    QgsComposerEffect() = default;
 
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 

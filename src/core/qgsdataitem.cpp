@@ -112,8 +112,7 @@ QgsAnimatedIcon *QgsDataItem::sPopulatingIcon = nullptr;
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent, const QString &name, const QString &path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
-  : QObject()
-  , mType( type )
+  : mType( type )
   , mCapabilities( NoCapabilities )
   , mParent( parent )
   , mState( NotPopulated )

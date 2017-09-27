@@ -37,7 +37,10 @@ class CORE_EXPORT QgsHistogram
 {
   public:
 
-    QgsHistogram();
+    /**
+     * Constructor for QgsHistogram.
+     */
+    QgsHistogram() = default;
 
     virtual ~QgsHistogram() = default;
 

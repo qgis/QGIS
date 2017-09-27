@@ -305,7 +305,7 @@ struct QgsWmtsTheme
   QgsWmtsTheme *subTheme = nullptr;
   QStringList layerRefs;
 
-  QgsWmtsTheme() {}
+  QgsWmtsTheme() = default;
   ~QgsWmtsTheme() { delete subTheme; }
 };
 
@@ -618,7 +618,7 @@ class QgsWmsSettings
 class QgsWmsCapabilities
 {
   public:
-    QgsWmsCapabilities();
+    QgsWmsCapabilities() = default;
 
     bool isValid() const { return mValid; }
 

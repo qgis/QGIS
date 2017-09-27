@@ -26,7 +26,11 @@
 class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
 {
   public:
-    QgsTableWidgetItem();
+
+    /**
+      * Constructor for QgsTableWidgetItem.
+      */
+    QgsTableWidgetItem() = default;
 
     /**
      * Creates a new table widget item with the specified text.

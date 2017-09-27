@@ -40,7 +40,6 @@
 #include "qgsmapcanvas.h"
 
 QgsClipboard::QgsClipboard()
-  : QObject()
 {
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );
 }

@@ -34,8 +34,7 @@ class TestQgsDualView : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsDualView()
-    {}
+    TestQgsDualView() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.

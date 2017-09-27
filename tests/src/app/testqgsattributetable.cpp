@@ -53,10 +53,7 @@ class TestQgsAttributeTable : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsAttributeTable::TestQgsAttributeTable()
-{
-
-}
+TestQgsAttributeTable::TestQgsAttributeTable() = default;
 
 //runs before all tests
 void TestQgsAttributeTable::initTestCase()

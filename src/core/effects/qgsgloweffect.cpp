@@ -22,8 +22,7 @@
 #include "qgsunittypes.h"
 
 QgsGlowEffect::QgsGlowEffect()
-  : QgsPaintEffect()
-  , mColor( Qt::white )
+  : mColor( Qt::white )
 {
 
 }

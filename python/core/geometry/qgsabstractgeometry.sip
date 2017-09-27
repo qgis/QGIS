@@ -66,6 +66,9 @@ class QgsAbstractGeometry
     };
 
     QgsAbstractGeometry();
+%Docstring
+ Constructor for QgsAbstractGeometry.
+%End
     virtual ~QgsAbstractGeometry();
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
 

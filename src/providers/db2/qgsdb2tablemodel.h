@@ -48,7 +48,6 @@ class QgsDb2TableModel : public QStandardItemModel
     Q_OBJECT
   public:
     QgsDb2TableModel();
-    ~QgsDb2TableModel();
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsDb2LayerProperty &property );

@@ -25,7 +25,11 @@ class QgsEllipse
 #include "qgsellipse.h"
 %End
   public:
+
     QgsEllipse();
+%Docstring
+ Constructor for QgsEllipse.
+%End
 
     virtual ~QgsEllipse();
 

@@ -28,7 +28,7 @@
 #include <QPainterPath>
 #include <memory>
 
-QgsCurvePolygon::QgsCurvePolygon(): QgsSurface()
+QgsCurvePolygon::QgsCurvePolygon()
 {
   mWkbType = QgsWkbTypes::CurvePolygon;
 }

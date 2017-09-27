@@ -40,6 +40,10 @@ class CORE_EXPORT QgsTracer : public QObject
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsTracer.
+     */
     QgsTracer();
     ~QgsTracer();
 

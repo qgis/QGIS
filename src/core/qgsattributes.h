@@ -57,9 +57,7 @@ typedef QMap<int, QgsField> QgsFieldMap;
 class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 {
   public:
-    QgsAttributes()
-      : QVector<QVariant>()
-    {}
+    QgsAttributes() {}
 
     /**
      * Create a new vector of attributes with the given size

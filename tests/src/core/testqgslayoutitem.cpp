@@ -36,7 +36,7 @@ class TestItem : public QgsLayoutItem
   public:
 
     TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
-    ~TestItem() {}
+    ~TestItem() = default;
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
@@ -71,7 +71,7 @@ class MinSizedItem : public TestItem
       setMinimumSize( size );
     }
 
-    ~MinSizedItem() {}
+    ~MinSizedItem() = default;
 };
 
 //item with fixed size
@@ -90,7 +90,7 @@ class FixedSizedItem : public TestItem
     {
       setFixedSize( size );
     }
-    ~FixedSizedItem() {}
+    ~FixedSizedItem() = default;
 };
 
 //item with both conflicting fixed and minimum size
@@ -105,7 +105,7 @@ class FixedMinSizedItem : public TestItem
       setFixedSize( QgsLayoutSize( 2.0, 4.0, QgsUnitTypes::LayoutCentimeters ) );
       setMinimumSize( QgsLayoutSize( 5.0, 9.0, QgsUnitTypes::LayoutCentimeters ) );
     }
-    ~FixedMinSizedItem() {}
+    ~FixedMinSizedItem() = default;
 };
 
 

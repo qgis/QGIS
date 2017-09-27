@@ -27,6 +27,9 @@ class QgsHistogram
   public:
 
     QgsHistogram();
+%Docstring
+ Constructor for QgsHistogram.
+%End
 
     virtual ~QgsHistogram();
 

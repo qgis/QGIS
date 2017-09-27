@@ -40,10 +40,6 @@ QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent
   layerChanged( mMapCanvas->currentLayer() );
 }
 
-QgsTileScaleWidget::~QgsTileScaleWidget()
-{
-}
-
 void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
 {
   mSlider->setDisabled( true );

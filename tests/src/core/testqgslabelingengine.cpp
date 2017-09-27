@@ -32,7 +32,7 @@ class TestQgsLabelingEngine : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsLabelingEngine() {}
+    TestQgsLabelingEngine() = default;
 
   private slots:
     void initTestCase();

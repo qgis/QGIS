@@ -28,7 +28,6 @@ class QgsResidualPlotItem: public QgsComposerItem
 
   public:
     explicit QgsResidualPlotItem( QgsComposition *c );
-    ~QgsResidualPlotItem();
 
     //! \brief Reimplementation of QCanvasItem::paint
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;

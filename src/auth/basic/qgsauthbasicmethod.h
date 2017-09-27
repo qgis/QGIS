@@ -29,7 +29,6 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
   public:
     explicit QgsAuthBasicMethod();
-    ~QgsAuthBasicMethod();
 
     // QgsAuthMethod interface
     QString key() const override;

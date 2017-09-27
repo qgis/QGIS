@@ -25,8 +25,7 @@ class TestQgsNetworkContentFetcher : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsNetworkContentFetcher()
-    {}
+    TestQgsNetworkContentFetcher() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

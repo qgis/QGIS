@@ -21,8 +21,7 @@
 #include "qgsproject.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
-  : QGraphicsScene()
-  , mProject( project )
+  : mProject( project )
   , mSnapper( QgsLayoutSnapper( this ) )
   , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )

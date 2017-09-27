@@ -59,9 +59,6 @@ class QgsGrassModuleCheckBox : public QCheckBox
      */
     QgsGrassModuleCheckBox( const QString &text, QWidget *parent = 0 );
 
-
-    virtual ~QgsGrassModuleCheckBox();
-
     void resizeEvent( QResizeEvent *event ) override;
 
   public slots:
@@ -93,8 +90,7 @@ class QgsGrassModuleParam
     QgsGrassModuleParam( QgsGrassModule *module, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct );
 
-
-    virtual ~QgsGrassModuleParam();
+    virtual ~QgsGrassModuleParam() = default;
 
     //! Is the item hidden
     bool hidden();
@@ -184,9 +180,6 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
                                 QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                                 bool direct, QWidget *parent = 0 );
 
-
-    virtual ~QgsGrassModuleGroupBoxItem();
-
     void resizeEvent( QResizeEvent *event ) override;
 
   public slots:
@@ -207,8 +200,6 @@ class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
     QgsGrassModuleMultiParam( QgsGrassModule *module, QString key,
                               QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                               bool direct, QWidget *parent = 0 );
-
-    virtual ~QgsGrassModuleMultiParam();
 
   public slots:
     virtual void addRow() {}
@@ -249,9 +240,6 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     QgsGrassModuleOption( QgsGrassModule *module, QString key,
                           QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                           bool direct, QWidget *parent = 0 );
-
-
-    ~QgsGrassModuleOption();
 
     //! Control option
     enum ControlType { NoControl, LineEdit, ComboBox, SpinBox, CheckBoxes };
@@ -356,9 +344,6 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                         bool direct, QWidget *parent = 0 );
 
-
-    ~QgsGrassModuleFlag();
-
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;
 
@@ -383,9 +368,6 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
     QgsGrassModuleGdalInput( QgsGrassModule *module, QgsGrassModuleGdalInput::Type type, QString key,
                              QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                              bool direct, QWidget *parent = 0 );
-
-
-    ~QgsGrassModuleGdalInput();
 
     //! Reimplemented
     QStringList options() override;
@@ -445,9 +427,6 @@ class QgsGrassModuleField : public QgsGrassModuleOption
     QgsGrassModuleField( QgsGrassModule *module, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                          bool direct, QWidget *parent = 0 );
-
-
-    ~QgsGrassModuleField();
 };
 
 /*********************** QgsGrassModuleVectorField **********************/
@@ -470,9 +449,6 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
                                QString key,
                                QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                                bool direct, QWidget *parent = 0 );
-
-
-    ~QgsGrassModuleVectorField();
 
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;
@@ -536,9 +512,6 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
                              QDomNode &gnode,
                              bool direct, QWidget *parent = 0 );
 
-
-    ~QgsGrassModuleSelection();
-
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;
 
@@ -601,9 +574,6 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
                         QDomElement &qdesc, QDomElement &gdesc,
                         QDomNode &gnode,
                         bool direct, QWidget *parent = 0 );
-
-
-    ~QgsGrassModuleFile();
 
     //! File type
     enum Type { Old, New, Multiple, Directory };

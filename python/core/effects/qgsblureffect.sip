@@ -38,6 +38,9 @@ class QgsBlurEffect : QgsPaintEffect
 %End
 
     QgsBlurEffect();
+%Docstring
+ Constructor for QgsBlurEffect.
+%End
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;

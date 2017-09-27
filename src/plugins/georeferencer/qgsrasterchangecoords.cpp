@@ -20,10 +20,6 @@
 
 #include <QFile>
 
-QgsRasterChangeCoords::QgsRasterChangeCoords()
-{
-}
-
 void QgsRasterChangeCoords::setRaster( const QString &fileRaster )
 {
   GDALAllRegister();

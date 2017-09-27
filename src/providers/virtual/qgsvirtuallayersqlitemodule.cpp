@@ -162,8 +162,8 @@ struct VTable
 
   private:
 
-    VTable( const VTable &other );
-    VTable &operator=( const VTable &other );
+    VTable( const VTable &other ) = delete;
+    VTable &operator=( const VTable &other ) = delete;
 
     // connection
     sqlite3 *mSql = nullptr;

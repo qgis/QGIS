@@ -20,7 +20,11 @@ class QgsComposerAttributeTableCompareV2
 #include "qgscomposerattributetablev2.h"
 %End
   public:
+
     QgsComposerAttributeTableCompareV2();
+%Docstring
+ Constructor for QgsComposerAttributeTableCompareV2.
+%End
     bool operator()( const QgsComposerTableRow &m1, const QgsComposerTableRow &m2 );
 %Docstring
  :rtype: bool

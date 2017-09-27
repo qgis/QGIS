@@ -40,10 +40,6 @@ QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceUR
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
 }
 
-QgsWFSFeatureHitsAsyncRequest::~QgsWFSFeatureHitsAsyncRequest()
-{
-}
-
 void QgsWFSFeatureHitsAsyncRequest::launch( const QUrl &url )
 {
   sendGET( url,
@@ -1279,11 +1275,6 @@ QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider *p )
   : mShared( p->mShared )
   , mCrs( p->crs() )
 {
-}
-
-QgsWFSFeatureSource::~QgsWFSFeatureSource()
-{
-
 }
 
 QgsFeatureIterator QgsWFSFeatureSource::getFeatures( const QgsFeatureRequest &request )

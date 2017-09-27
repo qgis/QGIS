@@ -24,6 +24,9 @@ class QgsRenderChecker
   public:
 
     QgsRenderChecker();
+%Docstring
+ Constructor for QgsRenderChecker.
+%End
 
     QString controlImagePath() const;
 %Docstring

@@ -29,10 +29,6 @@ QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &o
 
 }
 
-QgsNineCellFilter::QgsNineCellFilter()
-{
-}
-
 int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
 {
   GDALAllRegister();

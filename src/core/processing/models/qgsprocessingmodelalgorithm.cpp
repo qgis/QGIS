@@ -27,8 +27,7 @@
 ///@cond NOT_STABLE
 
 QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group )
-  : QgsProcessingAlgorithm()
-  , mModelName( name.isEmpty() ? QObject::tr( "model" ) : name )
+  : mModelName( name.isEmpty() ? QObject::tr( "model" ) : name )
   , mModelGroup( group )
 {}
 

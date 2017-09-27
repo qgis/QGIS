@@ -90,8 +90,7 @@ class QgisPlugin
       , mType( type )
     {}
 
-    virtual ~QgisPlugin()
-    {}
+    virtual ~QgisPlugin() = default;
 
     //! Get the name of the plugin
     QString const &name() const

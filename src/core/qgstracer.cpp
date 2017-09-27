@@ -453,10 +453,7 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolyline &mpl )
 // -------------
 
 
-QgsTracer::QgsTracer()
-{
-}
-
+QgsTracer::QgsTracer() = default;
 
 bool QgsTracer::initGraph()
 {

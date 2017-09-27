@@ -22,10 +22,6 @@
 
 #include <QFileInfo>
 
-
-QgsGrassUtils::QgsGrassUtils() {}
-QgsGrassUtils::~QgsGrassUtils() {}
-
 QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
                                         int nLayers )
 {
@@ -82,12 +78,9 @@ QString QgsGrassUtils::htmlBrowserPath()
 }
 
 QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
-  : QObject()
-  , mParent( parent )
+  : mParent( parent )
 {
 }
-
-QgsGrassElementDialog::~QgsGrassElementDialog() {}
 
 QString QgsGrassElementDialog::getItem( QString element,
                                         QString title, QString label,

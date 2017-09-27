@@ -20,11 +20,6 @@
 #include "qgsserverrequest.h"
 #include <QUrlQuery>
 
-QgsServerRequest::QgsServerRequest()
-{
-
-}
-
 QgsServerRequest::QgsServerRequest( const QString &url, Method method, const Headers &headers )
   : mUrl( url )
   , mMethod( method )

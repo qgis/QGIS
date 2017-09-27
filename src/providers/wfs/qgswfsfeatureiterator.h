@@ -40,7 +40,6 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
     Q_OBJECT
   public:
     explicit QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri );
-    ~QgsWFSFeatureHitsAsyncRequest();
 
     void launch( const QUrl &url );
 
@@ -254,7 +253,6 @@ class QgsWFSFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsWFSFeatureSource( const QgsWFSProvider *p );
-    ~QgsWFSFeatureSource();
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 

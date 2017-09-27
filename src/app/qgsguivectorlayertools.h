@@ -28,7 +28,11 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     Q_OBJECT
 
   public:
-    QgsGuiVectorLayerTools();
+
+    /**
+     * Constructor for QgsGuiVectorLayerTools.
+     */
+    QgsGuiVectorLayerTools() = default;
 
     /**
      * This method should be called, whenever a new feature is added to a layer

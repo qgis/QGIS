@@ -218,7 +218,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 class GRASS_LIB_EXPORT QgsGrassVectorMapStore
 {
   public:
-    QgsGrassVectorMapStore();
+    QgsGrassVectorMapStore() = default;
 
     static QgsGrassVectorMapStore *instance();
 

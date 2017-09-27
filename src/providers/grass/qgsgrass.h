@@ -68,7 +68,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
                 Strds, Stvds, Str3ds, Stds
               };
 
-    QgsGrassObject() {}
+    QgsGrassObject() = default;
     QgsGrassObject( const QString &gisdbase, const QString &location = QString(),
                     const QString &mapset = QString(), const QString &name = QString(),
                     Type type = None );
@@ -161,7 +161,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
       int red1, red2, green1, green2, blue1, blue2;
     };
 
-    QgsGrass();
+    QgsGrass() = default;
 
     //! Get singleton instance of this class. Used as signals proxy between provider and plugin.
     static QgsGrass *instance();

@@ -25,7 +25,11 @@ class QgsTracer : QObject
 #include "qgstracer.h"
 %End
   public:
+
     QgsTracer();
+%Docstring
+ Constructor for QgsTracer.
+%End
     ~QgsTracer();
 
     QList<QgsVectorLayer *> layers() const;

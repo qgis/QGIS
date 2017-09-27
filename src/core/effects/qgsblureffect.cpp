@@ -26,12 +26,6 @@ QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
   return newEffect;
 }
 
-QgsBlurEffect::QgsBlurEffect()
-  : QgsPaintEffect()
-{
-
-}
-
 void QgsBlurEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )

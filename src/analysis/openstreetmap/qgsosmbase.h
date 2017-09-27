@@ -71,7 +71,12 @@ point features or be used to define the path of a way.
 class ANALYSIS_EXPORT QgsOSMNode : public QgsOSMElement
 {
   public:
-    QgsOSMNode() {}
+
+    /**
+     * Constructor for QgsOSMNode.
+     */
+    QgsOSMNode() = default;
+
     QgsOSMNode( QgsOSMId id, const QgsPointXY &point )
       : QgsOSMElement( QgsOSMElementID::Node, id )
       , mPoint( point )
@@ -94,7 +99,12 @@ or both.
 class ANALYSIS_EXPORT QgsOSMWay : public QgsOSMElement
 {
   public:
-    QgsOSMWay() {}
+
+    /**
+     * Constructor for QgsOSMWay.
+     */
+    QgsOSMWay() = default;
+
     QgsOSMWay( QgsOSMId id, const QList<QgsOSMId> &nodes )
       : QgsOSMElement( QgsOSMElementID::Way, id )
       , mNodes( nodes )
@@ -133,7 +143,11 @@ class ANALYSIS_EXPORT QgsOSMRelation : public QgsOSMElement
 class ANALYSIS_EXPORT QgsOSMTags
 {
   public:
-    QgsOSMTags() {}
+
+    /**
+     * Constructor for QgsOSMTags.
+     */
+    QgsOSMTags() = default;
 
     int count() const { return mMap.count(); }
     QList<QString> keys() const { return mMap.keys(); }

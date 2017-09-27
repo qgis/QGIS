@@ -35,10 +35,6 @@ QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   setupUi( this );
 }
 
-QgsAuthPkiPathsEdit::~QgsAuthPkiPathsEdit()
-{
-}
-
 bool QgsAuthPkiPathsEdit::validateConfig()
 {
   // required components

@@ -35,10 +35,6 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem *parent, QString name, Q
   mCapabilities |= Collapse;
 }
 
-QgsWCSConnectionItem::~QgsWCSConnectionItem()
-{
-}
-
 QVector<QgsDataItem *> QgsWCSConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
@@ -149,10 +145,6 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem *parent, QString name, QString pat
   setState( Populated );
 }
 
-QgsWCSLayerItem::~QgsWCSLayerItem()
-{
-}
-
 QString QgsWCSLayerItem::createUri()
 {
   if ( mCoverageSummary.identifier.isEmpty() )
@@ -227,10 +219,6 @@ QgsWCSRootItem::QgsWCSRootItem( QgsDataItem *parent, QString name, QString path 
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWcs.svg" );
   populate();
-}
-
-QgsWCSRootItem::~QgsWCSRootItem()
-{
 }
 
 QVector<QgsDataItem *>QgsWCSRootItem::createChildren()

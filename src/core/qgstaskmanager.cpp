@@ -26,8 +26,7 @@
 //
 
 QgsTask::QgsTask( const QString &name, const Flags &flags )
-  : QObject()
-  , mFlags( flags )
+  : mFlags( flags )
   , mDescription( name )
 {
   mNotFinishedMutex.lock();
@@ -320,8 +319,7 @@ class QgsTaskRunnableWrapper : public QRunnable
   public:
 
     explicit QgsTaskRunnableWrapper( QgsTask *task )
-      : QRunnable()
-      , mTask( task )
+      : mTask( task )
     {
       setAutoDelete( true );
     }

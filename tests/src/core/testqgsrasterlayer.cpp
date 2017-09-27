@@ -53,8 +53,7 @@ class TestQgsRasterLayer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRasterLayer()
-    {}
+    TestQgsRasterLayer() = default;
     ~TestQgsRasterLayer()
     {
       delete mMapSettings;

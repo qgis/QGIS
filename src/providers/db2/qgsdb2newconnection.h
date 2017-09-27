@@ -33,9 +33,6 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     //! Constructor
     QgsDb2NewConnection( QWidget *parent = 0, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-
-    ~QgsDb2NewConnection();
-
     //! Tests the connection using the parameters supplied
     bool testConnection();
 

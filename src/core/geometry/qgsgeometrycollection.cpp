@@ -27,7 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
 
-QgsGeometryCollection::QgsGeometryCollection(): QgsAbstractGeometry()
+QgsGeometryCollection::QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::GeometryCollection;
 }

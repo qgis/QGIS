@@ -99,10 +99,6 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   adjustSize();
 }
 
-QgsGrassSelect::~QgsGrassSelect()
-{
-}
-
 bool QgsGrassSelect::sFirst = true;
 QString QgsGrassSelect::sLastGisdbase;
 QString QgsGrassSelect::sLastLocation;

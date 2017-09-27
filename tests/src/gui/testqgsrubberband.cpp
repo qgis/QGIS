@@ -30,8 +30,7 @@ class TestQgsRubberband : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRubberband()
-    {}
+    TestQgsRubberband() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.

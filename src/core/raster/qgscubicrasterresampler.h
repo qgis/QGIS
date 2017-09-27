@@ -30,7 +30,11 @@
 class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
 {
   public:
-    QgsCubicRasterResampler();
+
+    /**
+     * Constructor for QgsCubicRasterResampler.
+     */
+    QgsCubicRasterResampler() = default;
     QgsCubicRasterResampler *clone() const override SIP_FACTORY;
     void resample( const QImage &srcImage, QImage &dstImage ) override;
     QString type() const override { return QStringLiteral( "cubic" ); }

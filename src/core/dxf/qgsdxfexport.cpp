@@ -362,10 +362,6 @@ const char *QgsDxfExport::DXF_ENCODINGS[][2] =
   { "ANSI_1258", "CP1258" },
 };
 
-QgsDxfExport::QgsDxfExport()
-{
-}
-
 QgsDxfExport::QgsDxfExport( const QgsDxfExport &dxfExport )
 {
   *this = dxfExport;

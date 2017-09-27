@@ -16,7 +16,11 @@ class QgsRendererRange
 #include "qgsgraduatedsymbolrenderer.h"
 %End
   public:
+
     QgsRendererRange();
+%Docstring
+ Constructor for QgsRendererRange.
+%End
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 

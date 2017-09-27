@@ -48,7 +48,10 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
-    QgsBlurEffect();
+    /**
+     * Constructor for QgsBlurEffect.
+     */
+    QgsBlurEffect() = default;
 
     virtual QString type() const override { return QStringLiteral( "blur" ); }
     virtual QgsStringMap properties() const override;

@@ -29,8 +29,7 @@ class TestQgsRasterCalculator : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRasterCalculator()
-    {}
+    TestQgsRasterCalculator() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

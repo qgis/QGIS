@@ -81,8 +81,6 @@ class CoordinateCapture: public QObject, public QgisPlugin
      */
     explicit CoordinateCapture( QgisInterface *interface );
 
-    virtual ~CoordinateCapture();
-
   public slots:
     //! init the gui
     virtual void initGui() override;
