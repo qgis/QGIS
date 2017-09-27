@@ -2103,6 +2103,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         feature.setFields(layer.fields())
         feature.setValid(True)
 
+        # Both default values should be set on feature create
         feature.setAttribute(1, layer.defaultValue(1, feature))
         feature.setAttribute(0, layer.defaultValue(0, feature))
 
@@ -2111,9 +2112,22 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 4,f: 4')
         self.assertEqual(layer.getFeature(fid)['fldint'], 4)
 
+        # ApplyOnUpdateDefaultValue should be set on changeAttributeValue
         layer.changeAttributeValue(fid, 1, 20)
         self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 4,f: 20')
         self.assertEqual(layer.getFeature(fid)['fldint'], 20)
+
+        # When changing the value of the "derived" attribute, only this one
+        # should be updated
+        QgsExpressionContextUtils.setLayerVariable(layer, 'number', 8)
+        layer.changeAttributeValue(fid, 0, 0)
+        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 8,f: 20')
+        self.assertEqual(layer.getFeature(fid)['fldint'], 20)
+
+        # Check update on geometry change
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("x($geometry)", True))
+        layer.changeGeometry(fid, QgsGeometry.fromPoint(QgsPointXY(300, 200)))
+        self.assertEqual(layer.getFeature(fid)['fldint'], 300)
 
     def testGetSetConstraints(self):
         """ test getting and setting field constraints """
