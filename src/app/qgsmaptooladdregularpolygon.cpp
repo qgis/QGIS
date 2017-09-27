@@ -32,15 +32,6 @@ QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *par
   clean();
 }
 
-QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
-  , mParentTool( nullptr )
-  , mTempRubberBand( nullptr )
-  , mRegularPolygon( QgsRegularPolygon() )
-{
-  clean();
-}
-
 QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 {
   clean();

@@ -32,15 +32,6 @@ QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMa
   clean();
 }
 
-QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapCanvas *canvas )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
-  , mParentTool( nullptr )
-  , mTempRubberBand( nullptr )
-  , mEllipse( QgsEllipse() )
-{
-  clean();
-}
-
 QgsMapToolAddEllipse::~QgsMapToolAddEllipse()
 {
   clean();

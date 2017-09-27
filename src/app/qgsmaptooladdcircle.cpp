@@ -32,15 +32,6 @@ QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapC
   clean();
 }
 
-QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapCanvas *canvas )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
-  , mParentTool( nullptr )
-  , mTempRubberBand( nullptr )
-  , mCircle( QgsCircle() )
-{
-  clean();
-}
-
 QgsMapToolAddCircle::~QgsMapToolAddCircle()
 {
   clean();

@@ -33,15 +33,6 @@ QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, Q
   clean();
 }
 
-QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapCanvas *canvas )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
-  , mParentTool( nullptr )
-  , mTempRubberBand( nullptr )
-  , mRectangle( QgsRectangle() )
-{
-  clean();
-}
-
 void QgsMapToolAddRectangle::setAzimuth( const double azimuth )
 {
   mAzimuth = azimuth;
