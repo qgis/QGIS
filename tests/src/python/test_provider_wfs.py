@@ -754,7 +754,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         f.setAttributes([1, 1234567890123, 'foo', QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.UTC))])
         f.setGeometry(QgsGeometry.fromWkt('Point (2 49)'))
 
-        def logMessage(self, msg, tag, level):
+        def logMessage(msg, tag, level):
             print('--------################----------------')
             print(msg)
             print('--------################----------------')
