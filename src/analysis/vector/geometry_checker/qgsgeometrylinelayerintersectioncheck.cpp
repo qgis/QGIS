@@ -47,7 +47,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
           {
             for ( const QgsPoint &inter : QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance ) )
             {
-              errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId(), checkFeature.id() ) );
+              errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );
             }
           }
           else if ( const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( part ) )
@@ -56,7 +56,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
             {
               for ( const QgsPoint &inter : QgsGeometryCheckerUtils::lineIntersections( line, ring, mContext->tolerance ) )
               {
-                errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId(), checkFeature.id() ) );
+                errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );
               }
             }
           }
