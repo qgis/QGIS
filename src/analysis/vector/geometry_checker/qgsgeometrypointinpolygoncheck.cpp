@@ -17,7 +17,7 @@
 #include "qgspolygon.h"
 #include "qgsgeometryengine.h"
 
-void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
+void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &messages, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, true );
@@ -32,58 +32,29 @@ void QgsGeometryPointInPolygonCheck::collectErrors( QList<QgsGeometryCheckError 
         // Should not happen
         continue;
       }
+      int nTested = 0;
+      int nInside = 0;
 
       // Check whether point is contained by a fully contained by a polygon
-      bool contained = false;
       QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
                          point->x() + mContext->tolerance, point->y() + mContext->tolerance );
       QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, featureIds.keys(), rect, {QgsWkbTypes::PolygonGeometry} );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
+        ++nTested;
         const QgsAbstractGeometry *testGeom = checkFeature.geometry();
-        for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
+        QSharedPointer<QgsGeometryEngine> testGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( testGeom, mContext->reducedTolerance );
+        if ( !testGeomEngine->isValid() )
         {
-          const QgsPolygonV2 *testPoly = dynamic_cast<const QgsPolygonV2 *>( QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart ) );
-          if ( !testPoly )
-          {
-            continue;
-          }
-          QSharedPointer<QgsGeometryEngine> testGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( testPoly, mContext->tolerance );
-          if ( testGeomEngine->contains( point ) )
-          {
-            // Check whether point does not lie on a ring boundary
-            bool touchesBoundary = false;
-            if ( dynamic_cast<const QgsLineString *>( testPoly->exteriorRing() ) &&
-                 QgsGeometryCheckerUtils::pointOnLine( *point, static_cast<const QgsLineString *>( testPoly->exteriorRing() ), mContext->tolerance ) )
-            {
-              touchesBoundary = true;
-            }
-            else
-            {
-              for ( int jRing = 1, mRings = testPoly->ringCount( jPart ); jRing < mRings; ++jRing )
-              {
-                if ( dynamic_cast<const QgsLineString *>( testPoly->interiorRing( jRing - 1 ) ) &&
-                     QgsGeometryCheckerUtils::pointOnLine( *point, static_cast<const QgsLineString *>( testPoly->interiorRing( jRing - 1 ) ), mContext->tolerance ) )
-                {
-                  touchesBoundary = true;
-                  break;
-                }
-              }
-            }
-            if ( !touchesBoundary )
-            {
-              // Ok, point is contained by a polygon and does not touch its boundaries
-              contained = true;
-              break;
-            }
-          }
+          messages.append( tr( "Point in polygon check failed for (%1): the geometry is invalid" ).arg( checkFeature.id() ) );
+          continue;
         }
-        if ( contained )
+        if ( testGeomEngine->contains( point ) && !testGeomEngine->touches( point ) )
         {
-          break;
+          ++nInside;
         }
       }
-      if ( !contained )
+      if ( nTested == 0 || nTested != nInside )
       {
         errors.append( new QgsGeometryCheckError( this, layerFeature, *point, QgsVertexId( iPart, 0, 0 ) ) );
       }
