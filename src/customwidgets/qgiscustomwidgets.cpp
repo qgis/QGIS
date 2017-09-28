@@ -25,6 +25,7 @@
 #include "qgsdoublespinboxplugin.h"
 #include "qgsexpressionbuilderwidgetplugin.h"
 #include "qgsextentgroupboxplugin.h"
+#include "qgsexternalresourcewidgetplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
 #include "qgsfilterlineeditplugin.h"
@@ -49,6 +50,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsDoubleSpinBoxPlugin( this ) );
   mWidgets.append( new QgsExpressionBuilderWidgetPlugin( this ) );
   mWidgets.append( new QgsExtentGroupBoxPlugin( this ) );
+  mWidgets.append( new QgsExternalResourceWidgetPlugin( this ) );
   mWidgets.append( new QgsFieldComboBoxPlugin( this ) );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin( this ) );
   mWidgets.append( new QgsFilterLineEditPlugin( this ) );
