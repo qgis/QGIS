@@ -50,7 +50,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
     QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
     if ( !geomEngineA->isValid() )
     {
-      messages.append( tr( "Duplicate check failed for %1: the geometry is invalid" ).arg( layerFeatureA.id() ) );
+      messages.append( tr( "Duplicate check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
       continue;
     }
     QMap<QString, QList<QgsFeatureId>> duplicates;
@@ -72,7 +72,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       }
       else if ( !errMsg.isEmpty() )
       {
-        messages.append( tr( "Duplicate check failed for %1, %2: %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
+        messages.append( tr( "Duplicate check failed for (%1, %2): %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
       }
       delete diffGeom;
     }
