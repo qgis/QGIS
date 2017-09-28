@@ -191,8 +191,8 @@ Gets variant type of the field as it will be retrieved from data source
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
 %Docstring
  Sets an expression to use when calculating the default value for the field.
- \param expression expression to evaluate when calculating default values for field. Pass
- an empty expression to clear the default.
+ \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
+ a default constructed QgsDefaultValue() to reset.
 .. versionadded:: 3.0
 .. seealso:: defaultValueDefinition()
 %End

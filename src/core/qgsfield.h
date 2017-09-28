@@ -203,8 +203,8 @@ class CORE_EXPORT QgsField
     QgsDefaultValue defaultValueDefinition() const;
 
     /** Sets an expression to use when calculating the default value for the field.
-     * \param expression expression to evaluate when calculating default values for field. Pass
-     * an empty expression to clear the default.
+     * \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
+     * a default constructed QgsDefaultValue() to reset.
      * \since QGIS 3.0
      * \see defaultValueDefinition()
      */

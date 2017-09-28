@@ -44,6 +44,7 @@ def _geometryNonZero(self):
 def _isValid(self):
     return self.isValid()
 
+
 QgsGeometry.__nonzero__ = _geometryNonZero
 QgsGeometry.__bool__ = _geometryNonZero
 
