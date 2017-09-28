@@ -27,10 +27,6 @@ QgsMapToolRectangleExtent::QgsMapToolRectangleExtent( QgsMapToolCapture *parentT
 {
 }
 
-QgsMapToolRectangleExtent::~QgsMapToolRectangleExtent()
-{
-}
-
 void QgsMapToolRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

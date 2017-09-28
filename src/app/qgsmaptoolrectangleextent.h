@@ -24,7 +24,6 @@ class QgsMapToolRectangleExtent: public QgsMapToolAddRectangle
 
   public:
     QgsMapToolRectangleExtent( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolRectangleExtent();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

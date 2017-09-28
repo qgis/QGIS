@@ -24,7 +24,6 @@ class QgsMapToolEllipseFoci: public QgsMapToolAddEllipse
 
   public:
     QgsMapToolEllipseFoci( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolEllipseFoci();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

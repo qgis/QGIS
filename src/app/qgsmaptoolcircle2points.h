@@ -24,7 +24,6 @@ class QgsMapToolCircle2Points: public QgsMapToolAddCircle
 
   public:
     QgsMapToolCircle2Points( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolCircle2Points();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

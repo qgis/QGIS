@@ -24,7 +24,6 @@ class QgsMapToolCircle3Points: public QgsMapToolAddCircle
 
   public:
     QgsMapToolCircle3Points( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolCircle3Points();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

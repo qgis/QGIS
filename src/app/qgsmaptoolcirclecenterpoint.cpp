@@ -26,10 +26,6 @@ QgsMapToolCircleCenterPoint::QgsMapToolCircleCenterPoint( QgsMapToolCapture *par
 
 }
 
-QgsMapToolCircleCenterPoint::~QgsMapToolCircleCenterPoint()
-{
-}
-
 void QgsMapToolCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

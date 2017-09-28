@@ -26,10 +26,6 @@ QgsMapToolCircle3Points::QgsMapToolCircle3Points( QgsMapToolCapture *parentTool,
 {
 }
 
-QgsMapToolCircle3Points::~QgsMapToolCircle3Points()
-{
-}
-
 void QgsMapToolCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

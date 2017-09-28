@@ -28,10 +28,6 @@ QgsMapToolRectangle3Points::QgsMapToolRectangle3Points( QgsMapToolCapture *paren
 {
 }
 
-QgsMapToolRectangle3Points::~QgsMapToolRectangle3Points()
-{
-}
-
 void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

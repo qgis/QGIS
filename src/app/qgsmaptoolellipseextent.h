@@ -24,7 +24,6 @@ class QgsMapToolEllipseExtent: public QgsMapToolAddEllipse
 
   public:
     QgsMapToolEllipseExtent( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolEllipseExtent();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

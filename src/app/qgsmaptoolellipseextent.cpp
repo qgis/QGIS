@@ -26,10 +26,6 @@ QgsMapToolEllipseExtent::QgsMapToolEllipseExtent( QgsMapToolCapture *parentTool,
 
 }
 
-QgsMapToolEllipseExtent::~QgsMapToolEllipseExtent()
-{
-}
-
 void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

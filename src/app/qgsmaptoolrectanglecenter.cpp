@@ -28,10 +28,6 @@ QgsMapToolRectangleCenter::QgsMapToolRectangleCenter( QgsMapToolCapture *parentT
 {
 }
 
-QgsMapToolRectangleCenter::~QgsMapToolRectangleCenter()
-{
-}
-
 void QgsMapToolRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

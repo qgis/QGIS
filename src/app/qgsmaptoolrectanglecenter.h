@@ -24,7 +24,6 @@ class QgsMapToolRectangleCenter: public QgsMapToolAddRectangle
 
   public:
     QgsMapToolRectangleCenter( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolRectangleCenter();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

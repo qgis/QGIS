@@ -24,7 +24,6 @@ class QgsMapToolRectangle3Points: public QgsMapToolAddRectangle
 
   public:
     QgsMapToolRectangle3Points( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolRectangle3Points();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

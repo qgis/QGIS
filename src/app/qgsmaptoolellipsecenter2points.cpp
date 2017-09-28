@@ -27,10 +27,6 @@ QgsMapToolEllipseCenter2Points::QgsMapToolEllipseCenter2Points( QgsMapToolCaptur
 {
 }
 
-QgsMapToolEllipseCenter2Points::~QgsMapToolEllipseCenter2Points()
-{
-}
-
 void QgsMapToolEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

@@ -25,7 +25,6 @@ class QgsMapToolCircleCenterPoint: public QgsMapToolAddCircle
 
   public:
     QgsMapToolCircleCenterPoint( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolCircleCenterPoint();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

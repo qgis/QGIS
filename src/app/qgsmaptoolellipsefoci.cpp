@@ -27,10 +27,6 @@ QgsMapToolEllipseFoci::QgsMapToolEllipseFoci( QgsMapToolCapture *parentTool,
 {
 }
 
-QgsMapToolEllipseFoci::~QgsMapToolEllipseFoci()
-{
-}
-
 void QgsMapToolEllipseFoci::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );

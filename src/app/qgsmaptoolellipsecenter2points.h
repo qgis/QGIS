@@ -24,7 +24,6 @@ class QgsMapToolEllipseCenter2Points: public QgsMapToolAddEllipse
 
   public:
     QgsMapToolEllipseCenter2Points( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolEllipseCenter2Points();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
