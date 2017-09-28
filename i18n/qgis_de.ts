@@ -4864,6 +4864,29 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     </message>
 </context>
 <context>
+    <name>ExtractByExpression</name>
+    <message>
+        <source>Extract by expression</source>
+        <translation>Nach Ausdruck extrahieren</translation>
+    </message>
+    <message>
+        <source>Vector selection tools</source>
+        <translation>Vektorauswahlwerkzeuge</translation>
+    </message>
+    <message>
+        <source>Input Layer</source>
+        <translation>Eingabelayer</translation>
+    </message>
+    <message>
+        <source>Expression</source>
+        <translation>Ausdruck</translation>
+    </message>
+    <message>
+        <source>Extracted (expression)</source>
+        <translation>Extrahiert (Ausdruck)</translation>
+    </message>
+</context>
+<context>
     <name>ExtractByLocation</name>
     <message>
         <source>Layer to select from</source>
@@ -7362,11 +7385,11 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Performs contextual image classification using sequential maximum a posteriori (SMAP) estimation.</source>
-        <translation>Führt eine kontextbezogene Bildklassifizierung mittels sequentieller Maximum-Aposterori-Schätzung (SMAP) durch</translation>
+        <translation>Führt eine kontextbezogene Bildklassifizierung mittels sequentieller Maximum-Aposterori-Schätzung (SMAP) durch.</translation>
     </message>
     <message>
         <source>Generates spectral signatures for land cover types in an image using a clustering algorithm.</source>
-        <translation>Generiert Spektralsignaturen für Bodenbedeckungstypen in eimem Bild mittels Häufungsalgorithmus</translation>
+        <translation>Generiert Spektralsignaturen für Bodenbedeckungstypen in eimem Bild mittels Häufungsalgorithmus.</translation>
     </message>
     <message>
         <source>i.eb.hsebal01.coords - Computes sensible heat flux iteration SEBAL 01. Inline coordinates</source>
@@ -7378,7 +7401,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Computes biomass growth, precursor of crop yield calculation.</source>
-        <translation>Berechnet Biomassenzuwachs, Vorläufer von Feldfruchtberechnungen</translation>
+        <translation>Berechnet Biomassenzuwachs, Vorläufer von Feldfruchtberechnungen.</translation>
     </message>
     <message>
         <source>Rectifies an image by computing a coordinate transformation for each pixel in the image based on the control points. </source>
@@ -7422,7 +7445,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>r.mask.rast - Creates a MASK for limiting raster operation.</source>
-        <translation>r.mask.rast - Maske (MASK) erzeugen, um Rasteroperationen zu begrenzen</translation>
+        <translation>r.mask.rast - Maske (MASK) erzeugen, um Rasteroperationen zu begrenzen.</translation>
     </message>
     <message>
         <source>i.topo.coor.ill - Creates illumination model for topographic correction of reflectance.</source>
@@ -7430,7 +7453,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Calculates dominance&apos;s diversity index on a raster map</source>
-        <translation>Berechnet Dominanzdiversitätsindex einer Rasterkarte.</translation>
+        <translation>Berechnet Dominanzdiversitätsindex einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.walk.points - Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost from point vector layers.</source>
@@ -7506,7 +7529,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>r.li.simpson.ascii - Calculates Simpson&apos;s diversity index on a raster map</source>
-        <translation>Berechnet Simpsons-Diversitäts-Index einer Rasterkarte.</translation>
+        <translation>r.li.simpson.ascii - Berechnet Simpsons-Diversitäts-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.stats.quantile.out - Compute category quantiles using two passes and output statistics</source>
@@ -7518,7 +7541,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Calculates mean pixel attribute index on a raster map</source>
-        <translation>Berechnet den Mittelwert der Attribute (Rasterwerte) -Index einer Rasterkarte.</translation>
+        <translation>Berechnet den Mittelwert der Attribute (Rasterwerte) -Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>Calculates multiple linear regression from raster maps.</source>
@@ -7538,7 +7561,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Calculates Shannon&apos;s diversity index on a raster map</source>
-        <translation>Berechnet Shannons-Diversitäts-Index einer Rasterkarte.</translation>
+        <translation>Berechnet Shannons-Diversitäts-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>r.li.edgedensity.ascii - Calculates edge density index on a raster map, using a 4 neighbour algorithm</source>
@@ -7554,15 +7577,15 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>r.li.shannon.ascii - Calculates Shannon&apos;s diversity index on a raster map</source>
-        <translation>Berechnet Shannons-Diversitäts-Index einer Rasterkarte.</translation>
+        <translation>r.li.shannon.ascii - Berechnet Shannons-Diversitäts-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>Calculates patch density index on a raster map, using a 4 neighbour algorithm</source>
-        <translation>Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus</translation>
     </message>
     <message>
         <source>Calculates mean patch size index on a raster map, using a 4 neighbour algorithm</source>
-        <translation>Berechnet mitteleren Patch-Größen-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>Berechnet mitteleren Patch-Größen-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus</translation>
     </message>
     <message>
         <source>Calculates standard deviation of patch area a raster map</source>
@@ -7582,7 +7605,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Creates/modifies the color table associated with a raster map.</source>
-        <translation>Erzeugt/Ändert die einer Rasterkarte zugeordnete Farbtabelle </translation>
+        <translation>Erzeugt/ändert die einer Rasterkarte zugeordnete Farbtabelle.</translation>
     </message>
     <message>
         <source>r.li.padcv.ascii - Calculates coefficient of variation of patch area on a raster map</source>
@@ -7598,7 +7621,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>r.li.mps.ascii - Calculates mean patch size index on a raster map, using a 4 neighbour algorithm</source>
-        <translation>r.li.mps.ascii - Berechnet mitteleren Patch-Größen-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>r.li.mps.ascii - Berechnet mitteleren Patch-Größen-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus</translation>
     </message>
     <message>
         <source>Generates random surface(s) with spatial dependence.</source>
@@ -7646,7 +7669,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Calculates coefficient of variation of patch area on a raster map</source>
-        <translation>Variationskoeffizienten eines Patchbereiches einer Rasterkarte berechnen.</translation>
+        <translation>Variationskoeffizienten eines Patchbereiches einer Rasterkarte berechnen</translation>
     </message>
     <message>
         <source>Generates rate of spread raster maps.</source>
@@ -7654,7 +7677,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Calculates Simpson&apos;s diversity index on a raster map</source>
-        <translation>Berechnet Simpsons-Diversitäts-Index einer Rasterkarte.</translation>
+        <translation>Berechnet Simpsons-Diversitäts-Index einer Rasterkarte</translation>
     </message>
     <message>
         <source>Makes each output cell value an accumulation function of the values assigned to the corresponding cells in the input raster map layers.</source>
@@ -7714,7 +7737,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Locates the closest points between objects in two raster maps.</source>
-        <translation>Nächste Punkte zwischen Objekten in zwei Rasterkasten bestimmen</translation>
+        <translation>Nächste Punkte zwischen Objekten in zwei Rasterkasten bestimmen.</translation>
     </message>
     <message>
         <source>r.li.padsd.ascii - Calculates standard deviation of patch area a raster map</source>
@@ -7730,11 +7753,11 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>r.li.patchdensity.ascii - Calculates patch density index on a raster map, using a 4 neighbour algorithm</source>
-        <translation>r.li.patchdensity.ascii - Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus.</translation>
+        <translation>r.li.patchdensity.ascii - Berechnet Patch-Anzahl-Index einer Rasterkarte, unter Verwendung eines 4-Nachbarn-Algorithmus</translation>
     </message>
     <message>
         <source>Numerical calculation program for transient, confined and unconfined solute transport in two dimensions</source>
-        <translation>Numerisches Berechnungsprogramm für transienten, beschränkten und unbeschränkte Grundwasserfluß in zwei Dimensionen.</translation>
+        <translation>Numerisches Berechnungsprogramm für transienten, beschränkten und unbeschränkte Grundwasserfluß in zwei Dimensionen</translation>
     </message>
     <message>
         <source>Creates a latitude/longitude raster map.</source>
@@ -7742,7 +7765,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Simulates TOPMODEL which is a physically based hydrologic model.</source>
-        <translation>Simuliert TOPMODEL (physikbasiertes hydrologisches Modell)</translation>
+        <translation>Simuliert TOPMODEL (physikbasiertes hydrologisches Modell).</translation>
     </message>
     <message>
         <source>Simulates elliptically anisotropic spread.</source>
@@ -7750,7 +7773,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Drapes a color raster over an shaded relief or aspect map. </source>
-        <translation>Drapiert eine Rasterkarte mit Farbwerten über Schummerungs- oder Expositionskarte</translation>
+        <translation>Drapiert eine Rasterkarte mit Farbwerten über Schummerungs- oder Expositionskarte. </translation>
     </message>
     <message>
         <source>Exports GRASS vector map layers to DXF file format.</source>
@@ -7958,7 +7981,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Computes the shortest path between all pairs of nodes in the network</source>
-        <translation>Berechnet die kürzesten Pfad zwischen allen Knotenpaaren eines Netzwerkes.</translation>
+        <translation>Berechnet die kürzesten Pfad zwischen allen Knotenpaaren eines Netzwerkes</translation>
     </message>
     <message>
         <source>Computes vertex connectivity between two sets of nodes in the network.</source>
@@ -7974,7 +7997,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Performs visibility graph construction.</source>
-        <translation>Erstellt Sichtbarkeitsgraphen</translation>
+        <translation>Erstellt Sichtbarkeitsgraphen.</translation>
     </message>
     <message>
         <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result.</source>
@@ -8070,7 +8093,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Sets color rules based on stddev from a raster map&apos;s mean value.</source>
-        <translation>Setzt Farbregeln basierend auf Standardabweichung des Mittelwerts eines Raster</translation>
+        <translation>Setzt Farbregeln basierend auf Standardabweichung des Mittelwerts eines Raster.</translation>
     </message>
     <message>
         <source>Generate images with textural features from a raster map.</source>
@@ -8194,7 +8217,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Import ASCII x,y[,z] coordinates as a series of lines.</source>
-        <translation>ASCII-x,y[,z]-Koordinaten als Linienreihe importieren</translation>
+        <translation>ASCII-x,y[,z]-Koordinaten als Linienreihe importieren.</translation>
     </message>
     <message>
         <source>Creates points/segments from input lines, linear reference system and positions read from stdin or a file.</source>
@@ -8214,7 +8237,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Change the type of geometry elements.</source>
-        <translation>Typ der Geometrieelemente ändern</translation>
+        <translation>Typ der Geometrieelemente ändern.</translation>
     </message>
     <message>
         <source>Finds line id and real km+offset for given points in vector map using linear reference system. </source>
@@ -8222,7 +8245,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>v.in.ascii.points - Creates a vector map from an ASCII points file.</source>
-        <translation>v.in.ascii.points - Erzeugt eine Vektorkarte aus ASCII-Punktdatei</translation>
+        <translation>v.in.ascii.points - Erzeugt eine Vektorkarte aus ASCII-Punktdatei.</translation>
     </message>
     <message>
         <source>Imports Mapgen or Matlab-ASCII vector maps into GRASS.</source>
@@ -8250,7 +8273,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Extrudes flat vector object to 3D with defined height.</source>
-        <translation>Flaches Vektorobjekt mit definierter Höhe in 3D extrudieren</translation>
+        <translation>Flaches Vektorobjekt mit definierter Höhe in 3D extrudieren.</translation>
     </message>
     <message>
         <source>v.in.ascii.standard - Creates a vector map from an ASCII vector file. </source>
@@ -8282,7 +8305,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Uploads vector values at positions of vector points to the table.</source>
-        <translation>Lade Vektorwerte an den Positionen von Vektorpunkten in die Tabelle</translation>
+        <translation>Lade Vektorwerte an den Positionen von Vektorpunkten in die Tabelle.</translation>
     </message>
     <message>
         <source>Selects vector objects from a vector layer a new layer containing only the selected objects.</source>
@@ -8354,7 +8377,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Computes the maximum flow between two sets of nodes in the network.</source>
-        <translation>Berechnet den maximalen Fluß zwischen zwei Knotenmengen im Netzwerk</translation>
+        <translation>Berechnet den maximalen Fluß zwischen zwei Knotenmengen im Netzwerk.</translation>
     </message>
     <message>
         <source>v.net.nodes - Creates points for each network arcs</source>
@@ -8370,11 +8393,11 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Computes bridges in the network.</source>
-        <translation>Berechnet Brücken im Netzwerk</translation>
+        <translation>Berechnet Brücken im Netzwerk.</translation>
     </message>
     <message>
         <source>Splits network by cost isolines.</source>
-        <translation>Schnitt durch Netzwerk entlang veranschlagten Isolinien</translation>
+        <translation>Schnitt durch Netzwerk entlang veranschlagten Isolinien.</translation>
     </message>
     <message>
         <source>Output basic information about a raster layer.</source>
@@ -8390,7 +8413,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Computes shortest distance via the network between the given sets of features.</source>
-        <translation>Berechnet die kürzesten Abstand zwischen zwei gegebenen Objektmengen im Netzwerk</translation>
+        <translation>Berechnet die kürzesten Abstand zwischen zwei gegebenen Objektmengen im Netzwerk.</translation>
     </message>
     <message>
         <source>v.net.arcs - Creates arcs from a file of points</source>
@@ -8402,7 +8425,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Computes strongly and weakly connected components in the network.</source>
-        <translation>Berechnet stark und schwach verbundene Komponenten eines Netzwerks</translation>
+        <translation>Berechnet stark und schwach verbundene Komponenten eines Netzwerks.</translation>
     </message>
     <message>
         <source>v.net.articulation - Computes articulation points in the network</source>
@@ -8446,7 +8469,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>Manages NULL-values of given raster map.</source>
-        <translation>NULL-Werte eine gegebenen Rasterkarte behandeln</translation>
+        <translation>NULL-Werte eine gegebenen Rasterkarte behandeln.</translation>
     </message>
     <message>
         <source>Makes each cell category value a function of the category values assigned to the cells around it</source>
@@ -8458,7 +8481,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>v.what.rast.points - Uploads raster values at positions of vector points to the table.</source>
-        <translation>v.what.rast.points - Läd Rasterwerte an gegebenen Position von Vektorpunkten in eine Tabelle</translation>
+        <translation>v.what.rast.points - Läd Rasterwerte an gegebenen Position von Vektorpunkten in eine Tabelle.</translation>
     </message>
     <message>
         <source>Generates a raster layer of distance to features in input layer.</source>
@@ -8490,7 +8513,7 @@ Bitte vor der Ausführung von GRASS-Algorithmen konfigurieren.</translation>
     </message>
     <message>
         <source>v.what.rast.centroids - Uploads raster values at positions of vector centroids to the table.</source>
-        <translation>v.what.rast.centroids - Lade Rasterwerte an den Position von Vektorzentroiden in die Tabelle</translation>
+        <translation>v.what.rast.centroids - Lade Rasterwerte an den Position von Vektorzentroiden in die Tabelle.</translation>
     </message>
     <message>
         <source>Creates a raster layer and vector point map containing randomly located points.</source>
@@ -11353,7 +11376,7 @@ Strg (Cmd) erhöht um 15 Grad.</translation>
     </message>
     <message>
         <source>Add Arc&amp;GIS MapServer Layer...</source>
-        <translation>ArcGIS-MapServer-Layer hinzufügen...</translation>
+        <translation>Arc&amp;GIS-MapServer-Layer hinzufügen...</translation>
     </message>
     <message>
         <source>Add ArcGIS MapServer Layer</source>
@@ -15301,7 +15324,7 @@ Fehler(%2): %3</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1&apos; to color</source>
-        <translation>Kann &apos;%1:%2:%3:%4:%5&apos; nicht in Farbe umwandeln</translation>
+        <translation>Kann &apos;%1&apos; nicht in Farbe umwandeln</translation>
     </message>
     <message>
         <source>Unknown color component &apos;%1&apos;</source>
@@ -18139,7 +18162,7 @@ Soll das Schema inkl. dieser Objekte wirklich gelöscht werden?</translation>
     </message>
     <message>
         <source>Authority Issuer Serial Number Mismatch</source>
-        <translation>Seriennummer des Autoritätsausstellers paßt nicht.</translation>
+        <translation>Seriennummer des Autoritätsausstellers paßt nicht</translation>
     </message>
     <message>
         <source>No Peer Certificate</source>
@@ -18211,7 +18234,7 @@ Soll das Schema inkl. dieser Objekte wirklich gelöscht werden?</translation>
     </message>
     <message>
         <source>DISABLED. Resources authenticating via the system can not be accessed</source>
-        <translation>DEAKTIVIERT. Über das System autorisierte Resourcen sind nicht zugreifbar.</translation>
+        <translation>DEAKTIVIERT. Über das System autorisierte Resourcen sind nicht zugreifbar</translation>
     </message>
     <message>
         <source>Master password already set</source>
@@ -18437,7 +18460,7 @@ Nur verfügbar wenn der Layer klassifiziert dargestellt wird.</translation>
     </message>
     <message>
         <source>This use of unary operator not implemented yet</source>
-        <translation>Diese Verwendung eines unären Operators ist noch nicht implementiert.</translation>
+        <translation>Diese Verwendung eines unären Operators ist noch nicht implementiert</translation>
     </message>
     <message>
         <source>Unary operator %1 not implemented yet</source>
@@ -18505,11 +18528,11 @@ Nur verfügbar wenn der Layer klassifiziert dargestellt wird.</translation>
     </message>
     <message>
         <source>%1: Argument %2 must be numeric literal</source>
-        <translation>%1: Argument %1 muss eine Zahl sein</translation>
+        <translation>%1: Argument %2 muss eine Zahl sein</translation>
     </message>
     <message>
         <source>%1 Argument %2 must be numeric literal</source>
-        <translation>%1 Argument %1 muß nummerisch sein</translation>
+        <translation>%1 Argument %2 muß nummerisch sein</translation>
     </message>
     <message>
         <source>Function %1 should have 1 argument</source>
@@ -18842,7 +18865,7 @@ Fehler: %2</translation>
     </message>
     <message>
         <source>Could not add header record %1 [%2]</source>
-        <translation>Konnte Kopfdatensatz %1 nicht hinzufügen %1 [%2]</translation>
+        <translation>Konnte Kopfdatensatz %1 nicht hinzufügen [%2]</translation>
     </message>
     <message>
         <source>dotted linetypes - dot ignored</source>
@@ -19497,7 +19520,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     </message>
     <message>
         <source>Cannot create new layer.</source>
-        <translation>Kann  neuen Layer nicht erzeugen</translation>
+        <translation>Kann  neuen Layer nicht erzeugen.</translation>
     </message>
     <message>
         <source>Cannot copy style</source>
@@ -20498,6 +20521,10 @@ Aktuelles letztes Änderungsdateum ist: %2</translation>
     <message>
         <source>http://qgis.org/en/site/about/sponsorship.html</source>
         <translation>http://qgis.org/de/site/about/sponsorship.html</translation>
+    </message>
+    <message>
+        <source>Merge features</source>
+        <translation>Objekte verschmelzen</translation>
     </message>
 </context>
 <context>
@@ -22595,7 +22622,7 @@ Ausdruckfehler:
     </message>
     <message>
         <source>Serial #</source>
-        <translation>Seriennr.</translation>
+        <translation>Seriennr. #</translation>
     </message>
     <message>
         <source>Expiry Date</source>
@@ -22901,7 +22928,7 @@ Operation kann nicht zurückgenommen werden!</translation>
     </message>
     <message>
         <source>Serial #</source>
-        <translation>Seriennr.</translation>
+        <translation>Seriennr. #</translation>
     </message>
     <message>
         <source>Not valid before</source>
@@ -23310,7 +23337,7 @@ Operation kann nicht zurückgenommen werden!</translation>
     </message>
     <message>
         <source>Serial #</source>
-        <translation>Seriennr.</translation>
+        <translation>Seriennr. #</translation>
     </message>
     <message>
         <source>Expiry Date</source>
@@ -24242,7 +24269,7 @@ Operation kann nicht zurückgenommen werden!</translation>
     </message>
     <message>
         <source>Serial #</source>
-        <translation>Seriennr. </translation>
+        <translation>Seriennr. #</translation>
     </message>
     <message>
         <source>Expiry Date</source>
@@ -35773,7 +35800,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Returns a specific component from a color string, eg the red component or alpha component.</source>
-        <translation>Gibt eine bestimmte Komponente einer Farbzeichnekette zurück, z.B. rote oder Alpha-Komponente</translation>
+        <translation>Gibt eine bestimmte Komponente einer Farbzeichnekette zurück, z.B. rote oder Alpha-Komponente.</translation>
     </message>
     <message>
         <source>color_part</source>
@@ -37030,7 +37057,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>Creates a line geometry from a series of point geometries.</source>
-        <translation>Erzeugt eine Liniengeometrie aus  einer Reihe von Punktgeometrien</translation>
+        <translation>Erzeugt eine Liniengeometrie aus  einer Reihe von Punktgeometrien.</translation>
     </message>
     <message>
         <source>make_line</source>
@@ -37054,7 +37081,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>Creates a point geometry from an x and y (and optional z and m) value.</source>
-        <translation>Erzeugt eine Punktgeometrie aus einem X- und Y-Wert und ggf. Z- und M-Wert)</translation>
+        <translation>Erzeugt eine Punktgeometrie aus einem X- und Y-Wert und ggf. Z- und M-Wert).</translation>
     </message>
     <message>
         <source>make_point</source>
@@ -37298,7 +37325,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>Returns the all aggregated strings from a field or expression joined by a delimiter.</source>
-        <translation>Liefert alle durch ein Trennzeichen verbundene aggregierten Zeichenketten eines Felds oder Ausdruck</translation>
+        <translation>Liefert alle durch ein Trennzeichen verbundene aggregierten Zeichenketten eines Felds oder Ausdruck.</translation>
     </message>
     <message>
         <source>concatenate</source>
@@ -37394,7 +37421,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>Returns the calculated inter quartile range from a field or expression.</source>
-        <translation>Liefert den berechneten Interquartilebereich eines Felds oder Ausdrucks</translation>
+        <translation>Liefert den berechneten Interquartilebereich eines Felds oder Ausdrucks.</translation>
     </message>
     <message>
         <source>iqr</source>
@@ -37570,7 +37597,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>closed line geometry for polygon&apos;s outer ring</source>
-        <translation>Geschlossene Liniengeometrie des äußeren Rings des Polygons.</translation>
+        <translation>Geschlossene Liniengeometrie des äußeren Rings des Polygons</translation>
     </message>
     <message>
         <source>optional closed line geometry for inner ring</source>
@@ -37610,7 +37637,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>Returns the maximum length of strings from a field or expression.</source>
-        <translation>Liefert die maximale Zeichenkettenlängen eines Felds oder Ausdrucks</translation>
+        <translation>Liefert die maximale Zeichenkettenlängen eines Felds oder Ausdrucks.</translation>
     </message>
     <message>
         <source>max_length</source>
@@ -37654,7 +37681,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>Returns the aggregate median value from a field or expression.</source>
-        <translation>Liefert den aggegierten Medianwert aus einem Feld oder Ausdruck</translation>
+        <translation>Liefert den aggregierten Medianwert aus einem Feld oder Ausdruck.</translation>
     </message>
     <message>
         <source>median</source>
@@ -38634,7 +38661,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>Reverses the direction of a line string by reversing the order of its vertices.</source>
-        <translation>Kehrt die Richtung einer Linien durch die Umkehrung der Stützpunktreihenfolge um</translation>
+        <translation>Kehrt die Richtung einer Linien durch die Umkehrung der Stützpunktreihenfolge um.</translation>
     </message>
     <message>
         <source>reverse</source>
@@ -38862,7 +38889,7 @@ valign=&quot;top&quot;&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lange lokale Wo
     </message>
     <message>
         <source>Sets a specific color component for a color string, eg the red component or alpha component.</source>
-        <translation>Setzt eine bestimmte Komponente einer Farbzeichenkette, z.B. rote oder Alpha-Komponente</translation>
+        <translation>Setzt eine bestimmte Komponente einer Farbzeichenkette, z.B. rote oder Alpha-Komponente.</translation>
     </message>
     <message>
         <source>set_color_part</source>
@@ -40526,6 +40553,11 @@ Name des Skripts ändern und speichern, um QGIS das automatische Laden beim Star
  The expression is invalid see (more info) for details</source>
         <translation>
 Der Ausdruck ist ungültig (siehe (mehr Information) für Näheres)</translation>
+    </message>
+    <message>
+        <source>Can not change geometry for feature: %1</source>
+        <comment>Field calculator</comment>
+        <translation>Kann Geometrie des Objekts nicht ändern: %1</translation>
     </message>
 </context>
 <context>
@@ -42748,6 +42780,14 @@ Bitte wählen Sie eine gültige Datei.</translation>
     <message>
         <source>&lt;b&gt;Building spatial index...&lt;/b&gt;</source>
         <translation>&lt;b&gt;Räumlicher Index wird aufgebaut...&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Populate output Layer</source>
+        <translation>Ausgabelayer füllen</translation>
+    </message>
+    <message>
+        <source>Can not add features to output layer: %1.</source>
+        <translation>Konnte Objekte nicht zum Ausgabelayer hinzufügen: %1.</translation>
     </message>
 </context>
 <context>
@@ -48069,7 +48109,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     </message>
     <message>
         <source>Labels are placed in an equal radius circle around point features.</source>
-        <translation>Beschriftungen werden auf einem Kreis um das Punktobjekt plaziert</translation>
+        <translation>Beschriftungen werden auf einem Kreis um das Punktobjekt plaziert.</translation>
     </message>
     <message>
         <source>Labels are placed at a fixed offset from the point.</source>
@@ -49382,6 +49422,10 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <source>Selected geometry could not be found</source>
         <translation>Die gewählte Geometrie wurde nicht gefunden</translation>
+    </message>
+    <message>
+        <source>Update geometry error</source>
+        <translation>Geometrieaktualisierungsfehler</translation>
     </message>
 </context>
 <context>
@@ -52400,6 +52444,10 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
         <source>Will drop Z and M values from layer %1 in offline copy.</source>
         <translation>In der Offline-Kopie werden Z- und M-Werte des Layers %1 weggelassen.</translation>
     </message>
+    <message>
+        <source>Syncronization failed</source>
+        <translation>Synchronisation gescheitert</translation>
+    </message>
 </context>
 <context>
     <name>QgsOfflineEditingPlugin</name>
@@ -53211,7 +53259,7 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
     </message>
     <message>
         <source>The text you entered is not a valid scale.</source>
-        <translation>Der eingegebene Text ist kein gültiger Maßstab</translation>
+        <translation>Der eingegebene Text ist kein gültiger Maßstab.</translation>
     </message>
     <message>
         <source>Off</source>
@@ -53954,11 +54002,11 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
     </message>
     <message>
         <source>Automatically enable &apos;on the fly&apos; reprojection if layers ha&amp;ve different CRS</source>
-        <translation>Spontanreprojektion (SRP) automatisch aktivieren, wenn die Layer unterschiedliche KBS haben</translation>
+        <translation>Spontanreprojektion (SRP) automatisch akti&amp;vieren, wenn die Layer unterschiedliche KBS haben</translation>
     </message>
     <message>
         <source>O&amp;verride system locale</source>
-        <translation>System-Locale überschreiben</translation>
+        <translation>System-Locale überschreiben (&amp;v)</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing override on local requires an application restart</source>
@@ -53974,7 +54022,7 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
     </message>
     <message>
         <source>Use pro&amp;xy for web access</source>
-        <translation>Proxy für Webzugriff benutzen</translation>
+        <translation>Proxy für Webzugriff benutzen (&amp;x)</translation>
     </message>
     <message>
         <source>Remove selected URL</source>
@@ -57976,7 +58024,7 @@ Fortfahren?</translation>
     </message>
     <message>
         <source>The text you entered is not a valid scale.</source>
-        <translation>Der eingegebene Text ist kein gültiger Maßstab</translation>
+        <translation>Der eingegebene Text ist kein gültiger Maßstab.</translation>
     </message>
 </context>
 <context>
@@ -58421,7 +58469,7 @@ Fortfahren?</translation>
     </message>
     <message>
         <source>A name used to identify the root layer. The short name is a text string used for machine-to-machine communication.</source>
-        <translation>Name zur Identifikation des Wurzellayers. Der Kurzname ist eine Zeichenkette, die für die Kommunikation zwischen Maschinen verwendet wird</translation>
+        <translation>Name zur Identifikation des Wurzellayers. Der Kurzname ist eine Zeichenkette, die für die Kommunikation zwischen Maschinen verwendet wird.</translation>
     </message>
     <message>
         <source>GetFeatureInfo geometry precision (decimal places)</source>
@@ -58445,7 +58493,7 @@ Fortfahren?</translation>
     </message>
     <message>
         <source>Last revision date</source>
-        <translation>Letztes Bearbeitungsdatum:</translation>
+        <translation>Letztes Bearbeitungsdatum</translation>
     </message>
     <message>
         <source>Scenario 1 - INSPIRE related fields using referenced external service metadata</source>
@@ -60056,7 +60104,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</source>
-        <translation>Name zur Identifikation des Layers. Der Kurzname ist eine Zeichenkette, die für die Kommunikation zwischen Maschinen verwendet wird</translation>
+        <translation>Name zur Identifikation des Layers. Der Kurzname ist eine Zeichenkette, die für die Kommunikation zwischen Maschinen verwendet wird.</translation>
     </message>
     <message>
         <source>Embedded widgets in legend</source>
@@ -65439,6 +65487,11 @@ Fehler war:%2</translation>
         <source>Curved Geometries</source>
         <translation>Kurvengeometrien</translation>
     </message>
+    <message>
+        <source>Geometry type %1 not compatible with provider type %2.</source>
+        <comment>not compatible geometry</comment>
+        <translation>Geometrietyp %1 ist nicht kompatibel mit dem Datenanbietertyp %2.</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorFieldSymbolLayerWidget</name>
@@ -65844,7 +65897,7 @@ Datenanbieterfehler:</translation>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added - geometry type is not compatible with the current layer.</source>
         <comment>not added features count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>FEHLER: Ein Objekt nicht hinzugefügt - Geometrietyp paßt nicht zum aktuellen Layer.</numerusform>
             <numerusform>FEHLER: %n Objekte nicht hinzugefügt - Geometrietyp paßt nicht zum aktuellen Layer.</numerusform>
         </translation>
@@ -66364,7 +66417,7 @@ Datenanbieterfehler:</translation>
     </message>
     <message>
         <source>The file already exists</source>
-        <translation>Die Datei ist bereits vorhanden.</translation>
+        <translation>Die Datei ist bereits vorhanden</translation>
     </message>
     <message>
         <source>Do you want to overwrite the existing file?</source>
