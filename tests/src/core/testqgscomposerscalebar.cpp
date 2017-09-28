@@ -37,10 +37,6 @@ class TestQgsComposerScaleBar : public QObject
 
   public:
     TestQgsComposerScaleBar()
-      : mComposition( 0 )
-      , mComposerMap( 0 )
-      , mComposerScaleBar( 0 )
-      , mRasterLayer( 0 )
     {}
 
   private slots:

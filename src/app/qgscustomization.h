@@ -151,7 +151,7 @@ class APP_EXPORT QgsCustomization : public QObject
     ~QgsCustomization() = default;
     QgsCustomizationDialog *pDialog = nullptr;
 
-    bool mEnabled;
+    bool mEnabled = false;
     QSettings *mSettings = nullptr;
     QString mStatusPath;
 

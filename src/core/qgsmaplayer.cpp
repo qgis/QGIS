@@ -52,11 +52,9 @@
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
-  : mValid( false ) // assume the layer is invalid
-  , mDataSource( source )
+  : mDataSource( source )
   , mLayerOrigName( lyrname ) // store the original name
   , mLayerType( type )
-  , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   // Set the display name = internal name
@@ -1698,7 +1696,7 @@ QString QgsMapLayer::htmlMetadata() const
 
 QDateTime QgsMapLayer::timestamp() const
 {
-  return QDateTime() ;
+  return QDateTime();
 }
 
 void QgsMapLayer::emitStyleChanged()

@@ -204,16 +204,16 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   private:
 
-    bool mClearButtonVisible;
-    bool mSearchIconVisible;
+    bool mClearButtonVisible = true;
+    bool mSearchIconVisible = false;
 
-    ClearMode mClearMode;
+    ClearMode mClearMode = ClearToNull;
 
     QString mNullValue;
     QString mDefaultValue;
     QString mStyleSheet;
-    bool mFocusInEvent;
-    bool mClearHover;
+    bool mFocusInEvent = false;
+    bool mClearHover = false;
 
     QSize mClearIconSize;
     QPixmap mClearIconPixmap;

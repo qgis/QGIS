@@ -35,6 +35,10 @@ class QgsSymbolLayer;
 class QIODevice;
 class QgsPalLayerSettings;
 
+#define DXF_HANDSEED 100
+#define DXF_HANDMAX 9999999
+#define DXF_HANDPLOTSTYLE 0xf
+
 namespace pal SIP_SKIP
 {
   class LabelPosition;
@@ -352,19 +356,19 @@ class CORE_EXPORT QgsDxfExport
     //! Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported
     QgsRectangle mExtent;
     //! Scale for symbology export (used if symbols units are mm)
-    double mSymbologyScale;
-    SymbologyExport mSymbologyExport;
-    QgsUnitTypes::DistanceUnit mMapUnits;
-    bool mLayerTitleAsName;
+    double mSymbologyScale = 1.0;
+    SymbologyExport mSymbologyExport = NoSymbology;
+    QgsUnitTypes::DistanceUnit mMapUnits = QgsUnitTypes::DistanceMeters;
+    bool mLayerTitleAsName = false;
 
     QTextStream mTextStream;
 
     static int sDxfColors[][3];
     static const char *DXF_ENCODINGS[][2];
 
-    int mSymbolLayerCounter; //internal counter
-    int mNextHandleId;
-    int mBlockCounter;
+    int mSymbolLayerCounter = 0; //internal counter
+    int mNextHandleId = DXF_HANDSEED;
+    int mBlockCounter = 0;
 
     QHash< const QgsSymbolLayer *, QString > mLineStyles; //symbol layer name types
     QHash< const QgsSymbolLayer *, QString > mPointSymbolBlocks; //reference to point symbol blocks

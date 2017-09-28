@@ -36,12 +36,10 @@
 #include <QImageReader>
 #include "qgshelp.h"
 
-QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QgsAbstractDataSourceWidget( parent, fl, widgetMode ),
-  mServiceName( serviceName ),
-  mServiceType( serviceType ),
-  mBuildQueryButton( 0 ),
-  mImageEncodingGroup( 0 )
+QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+  , mServiceName( serviceName )
+  , mServiceType( serviceType )
 {
   setupUi( this );
   setupButtons( buttonBox );

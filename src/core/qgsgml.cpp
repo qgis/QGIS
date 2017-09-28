@@ -843,7 +843,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
-  mDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.top() ;
+  mDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.top();
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 

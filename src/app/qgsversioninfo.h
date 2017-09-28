@@ -53,10 +53,10 @@ class QgsVersionInfo : public QObject
     void versionInfoAvailable();
 
   private:
-    int mLatestVersion;
+    int mLatestVersion = 0;
     QString mDownloadInfo;
     QString mAdditionalHtml;
-    QNetworkReply::NetworkError mError;
+    QNetworkReply::NetworkError mError = QNetworkReply::NoError;
     QString mErrorString;
 };
 

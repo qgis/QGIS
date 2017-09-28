@@ -80,7 +80,7 @@ void QgsColorSchemeList::removeSelection()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
 
   //remove rows in descending order
   std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
@@ -121,7 +121,7 @@ void QgsColorSchemeList::copyColors()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToCopy =  QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToCopy = QList<int>::fromSet( rows.toSet() );
 
   QgsNamedColorList colorsToCopy;
   Q_FOREACH ( int row, rowsToCopy )
@@ -203,7 +203,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
       rows << index.row();
     }
     //remove duplicates
-    QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
+    QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
 
     //remove rows in descending order
     std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );

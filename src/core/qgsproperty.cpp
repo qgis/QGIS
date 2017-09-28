@@ -23,7 +23,6 @@
 
 
 QgsPropertyDefinition::QgsPropertyDefinition()
-  : mTypes( DataTypeString )
 {}
 
 QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type )

@@ -222,7 +222,7 @@ class QgsSnapIndex
     class GridRow
     {
       public:
-        GridRow() : mColStartIdx( 0 ) {}
+        GridRow() {}
         ~GridRow();
         const Cell *getCell( int col ) const;
         Cell &getCreateCell( int col );
@@ -230,7 +230,7 @@ class QgsSnapIndex
 
       private:
         QList<QgsSnapIndex::Cell> mCells;
-        int mColStartIdx;
+        int mColStartIdx = 0;
     };
 
     QgsPoint mOrigin;

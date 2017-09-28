@@ -54,12 +54,6 @@ class TestQgsRasterLayer : public QObject
     Q_OBJECT
   public:
     TestQgsRasterLayer()
-      : mpRasterLayer( nullptr )
-      , mpLandsatRasterLayer( nullptr )
-      , mpFloat32RasterLayer( nullptr )
-      , mPngRasterLayer( nullptr )
-      , mGeoJp2RasterLayer( nullptr )
-      , mMapSettings( nullptr )
     {}
     ~TestQgsRasterLayer()
     {
@@ -119,9 +113,8 @@ class TestSignalReceiver : public QObject
   public:
     TestSignalReceiver()
       : QObject( nullptr )
-      , rendererChanged( false )
     {}
-    bool rendererChanged;
+    bool rendererChanged =  false ;
   public slots:
     void onRendererChanged()
     {

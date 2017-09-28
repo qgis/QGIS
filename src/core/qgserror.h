@@ -39,8 +39,6 @@ class CORE_EXPORT QgsErrorMessage
     };
 
     QgsErrorMessage()
-      : mLine( 0 )
-      , mFormat( Text )
     {}
 
     /** Constructor.
@@ -68,10 +66,10 @@ class CORE_EXPORT QgsErrorMessage
     //! Detailed debug info
     QString mFile;
     QString mFunction;
-    int mLine;
+    int mLine = 0;
 
     //! Message format
-    Format mFormat;
+    Format mFormat = Text;
 };
 
 /** \ingroup core

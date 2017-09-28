@@ -38,8 +38,6 @@
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QTableView( parent )
-  , mRowSectionAnchor( 0 )
-  , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
@@ -371,7 +369,7 @@ void QgsAttributeTableView::selectRow( int row, bool anchor )
   {
     int column = horizontalHeader()->logicalIndexAt( isRightToLeft() ? viewport()->width() : 0 );
     QModelIndex index = model()->index( row, column );
-    QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
+    QItemSelectionModel::SelectionFlags command = selectionCommand( index );
     selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
     if ( ( anchor && !( command & QItemSelectionModel::Current ) )
          || ( selectionMode() == QTableView::SingleSelection ) )

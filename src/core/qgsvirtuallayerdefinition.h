@@ -168,8 +168,8 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     QString mGeometryField;
     QString mFilePath;
     QgsFields mFields;
-    QgsWkbTypes::Type mGeometryWkbType;
-    long mGeometrySrid;
+    QgsWkbTypes::Type mGeometryWkbType = QgsWkbTypes::Unknown;
+    long mGeometrySrid = 0;
 };
 
 // clazy:excludeall=qstring-allocations

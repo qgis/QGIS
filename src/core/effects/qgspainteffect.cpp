@@ -25,10 +25,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
 QgsPaintEffect::QgsPaintEffect()
-  : mEnabled( true )
-  , mDrawMode( ModifyAndRender )
-  , requiresQPainterDpiFix( true )
-  , mOwnsImage( false )
 {
 
 }
@@ -36,8 +32,6 @@ QgsPaintEffect::QgsPaintEffect()
 QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
   : mEnabled( other.enabled() )
   , mDrawMode( other.drawMode() )
-  , requiresQPainterDpiFix( true )
-  , mOwnsImage( false )
 {
 
 }
@@ -239,9 +233,7 @@ QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) cons
 
 QgsDrawSourceEffect::QgsDrawSourceEffect()
   : QgsPaintEffect()
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
 {
-
 }
 
 QgsPaintEffect *QgsDrawSourceEffect::create( const QgsStringMap &map )

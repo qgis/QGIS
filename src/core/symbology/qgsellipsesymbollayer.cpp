@@ -30,15 +30,7 @@
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
   : QgsMarkerSymbolLayer()
   , mSymbolName( QStringLiteral( "circle" ) )
-  , mSymbolWidth( 4 )
-  , mSymbolWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mSymbolHeight( 3 )
-  , mSymbolHeightUnit( QgsUnitTypes::RenderMillimeters )
   , mStrokeColor( Qt::black )
-  , mStrokeStyle( Qt::SolidLine )
-  , mPenJoinStyle( DEFAULT_ELLIPSE_JOINSTYLE )
-  , mStrokeWidth( 0 )
-  , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = Qt::white;
   mPen.setColor( mStrokeColor );
@@ -216,7 +208,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
 
     if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
     {
-      QString symbolName =  mSymbolName;
+      QString symbolName = mSymbolName;
       context.setOriginalValueVariable( mSymbolName );
       exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
       if ( exprVal.isValid() )

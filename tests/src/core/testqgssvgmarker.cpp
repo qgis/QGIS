@@ -45,11 +45,6 @@ class TestQgsSvgMarkerSymbol : public QObject
 
   public:
     TestQgsSvgMarkerSymbol()
-      : mTestHasError( false )
-      , mpPointsLayer( 0 )
-      , mSvgMarkerLayer( 0 )
-      , mMarkerSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -62,7 +57,7 @@ class TestQgsSvgMarkerSymbol : public QObject
     void bounds();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

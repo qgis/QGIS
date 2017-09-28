@@ -177,8 +177,6 @@ void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
-    default:
-      ss = QLatin1String( "" );
       break;
   }
   teValidation->setStyleSheet( ss );

@@ -56,7 +56,6 @@ class TestQgsComposerHtml : public QObject
 };
 
 TestQgsComposerHtml::TestQgsComposerHtml()
-  : mComposition( 0 )
 {
 
 }

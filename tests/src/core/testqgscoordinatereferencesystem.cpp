@@ -388,7 +388,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 
     // do test with shapefiles
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
-    if ( myFiles[i] != QLatin1String( "" ) )
+    if ( !myFiles[i].isEmpty() )
     {
       // use ogr to open file, make sure CRS is OK
       // this probably could be in another test, but leaving it here since it deals with CRS

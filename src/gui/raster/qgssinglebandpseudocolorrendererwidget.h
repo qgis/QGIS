@@ -92,8 +92,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mColorInterpolationComboBox_currentIndexChanged( int index );
     void on_mMinLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
     void on_mMaxLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
-    void on_mMinLineEdit_textEdited( const QString &text ) ;
-    void on_mMaxLineEdit_textEdited( const QString &text ) ;
+    void on_mMinLineEdit_textEdited( const QString &text );
+    void on_mMaxLineEdit_textEdited( const QString &text );
     void on_mClassificationModeComboBox_currentIndexChanged( int index );
     void changeColor();
     void changeOpacity();

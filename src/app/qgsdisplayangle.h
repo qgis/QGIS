@@ -38,7 +38,7 @@ class APP_EXPORT QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBas
     QgsMapToolMeasureAngle *mTool = nullptr;
 
     //! The value we're showing
-    double mValue;
+    double mValue = 0.0;
 
     //! Updates UI according to user settings.
     void updateUi();

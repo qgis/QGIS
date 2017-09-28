@@ -82,7 +82,6 @@
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   : QDialog( parent )
-  , mExecErrorsDialog( false )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

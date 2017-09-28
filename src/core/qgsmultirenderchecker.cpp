@@ -18,7 +18,6 @@
 #include <QDebug>
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
-  : mColorTolerance( 0 )
 {
 }
 

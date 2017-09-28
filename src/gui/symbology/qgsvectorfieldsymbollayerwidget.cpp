@@ -159,7 +159,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mHeightRadioButton_toggled( bool checke
   if ( mLayer && checked )
   {
     mLayer->setVectorFieldType( QgsVectorFieldSymbolLayer::Height );
-    mXAttributeLabel->setText( QLatin1String( "" ) );
+    mXAttributeLabel->clear();
     mXAttributeComboBox->setEnabled( false );
     mYAttributeLabel->setText( tr( "Height attribute" ) );
     emit changed();

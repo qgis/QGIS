@@ -43,7 +43,7 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 
   public:
     //! Construct a new raster block feedback object
-    QgsRasterBlockFeedback( QObject *parent = nullptr ) : QgsFeedback( parent ), mPreviewOnly( false ), mRenderPartialOutput( false ) {}
+    QgsRasterBlockFeedback( QObject *parent = nullptr ) : QgsFeedback( parent ) {}
 
     //! May be emitted by raster data provider to indicate that some partial data are available
     //! and a new preview image may be produced
@@ -67,10 +67,10 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
   private:
     //! Whether the raster provider should return only data that are already available
     //! without waiting for full result
-    bool mPreviewOnly;
+    bool mPreviewOnly = false;
 
     //! Whether our painter is drawing to a temporary image used just by this layer
-    bool mRenderPartialOutput;
+    bool mRenderPartialOutput = false;
 };
 
 
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsRasterInterface
     QList<QgsRasterHistogram> mHistograms;
 
     // On/off state, if off, it does not do anything, replicates input
-    bool mOn;
+    bool mOn = true;
 
     /** Fill in histogram defaults if not specified
      * \note the parameters are the same as in \see histogram()

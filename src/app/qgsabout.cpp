@@ -186,7 +186,7 @@ void QgsAbout::init()
 #endif
   if ( translatorFile.open( QIODevice::ReadOnly ) )
   {
-    QString translatorHTML = QLatin1String( "" );
+    QString translatorHTML;
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8
     translatorStream.setCodec( "UTF-8" );

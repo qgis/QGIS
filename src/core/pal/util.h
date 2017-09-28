@@ -51,14 +51,11 @@ namespace pal
   {
     public:
       Feats()
-        : feature( nullptr )
-        , shape( nullptr )
-        , priority( 0 )
       {}
 
       FeaturePart *feature = nullptr;
       PointSet *shape = nullptr;
-      double priority;
+      double priority = 0;
       QList< LabelPosition *> lPos;
   };
 

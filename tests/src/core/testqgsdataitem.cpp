@@ -51,7 +51,6 @@ class TestQgsDataItem : public QObject
 };
 
 TestQgsDataItem::TestQgsDataItem()
-  : mDirItem( nullptr )
 {
 
 }

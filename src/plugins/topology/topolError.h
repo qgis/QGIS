@@ -30,8 +30,6 @@ class FeatureLayer
 {
   public:
     FeatureLayer()
-      : layer( nullptr )
-      , feature( QgsFeature() )
     {}
 
     /**

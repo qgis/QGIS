@@ -33,9 +33,6 @@ class TestQgsComposerLabel : public QObject
 
   public:
     TestQgsComposerLabel()
-      : mComposition( 0 )
-      , mComposerLabel( 0 )
-      , mVectorLayer( 0 )
     {}
 
   private slots:

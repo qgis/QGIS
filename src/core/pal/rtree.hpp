@@ -135,11 +135,10 @@ namespace pal
           struct StackElement
           {
             StackElement()
-              : m_node( NULL )
-              , m_branchIndex( 0 )
             {}
+
             Node *m_node = nullptr;
-            int m_branchIndex;
+            int m_branchIndex = 0;
           };
 
         public:
@@ -1055,7 +1054,7 @@ namespace pal
     ELEMTYPEREAL increase;
     ELEMTYPEREAL bestIncr = static_cast< ELEMTYPEREAL >( -1 );
     ELEMTYPEREAL area;
-    ELEMTYPEREAL bestArea =  0;
+    ELEMTYPEREAL bestArea = 0;
     int best = 0;
     Rect tempRect;
 

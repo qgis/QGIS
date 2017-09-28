@@ -111,7 +111,7 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   setWindowTitle( mComposition->name() );
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
-  setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
+  setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 #endif
   setupTheme();
 
@@ -1678,7 +1678,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       mComposition->beginPrintAsPDF( printer, outputFileName );
       // set the correct resolution
       mComposition->beginPrint( printer );
-      bool printReady =  painter.begin( &printer );
+      bool printReady = painter.begin( &printer );
       if ( !printReady )
       {
         QMessageBox::warning( this, tr( "Atlas processing error" ),
@@ -2270,7 +2270,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
           imageFilename = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         }
 
-        bool saveOk =  saveImage( image, imageFilename, format );
+        bool saveOk = saveImage( image, imageFilename, format );
         if ( !saveOk )
         {
           QMessageBox::warning( this, tr( "Atlas processing error" ),

@@ -168,7 +168,7 @@ void usage( const QString &appName )
 // AppleEvent handler as well as by the main routine argv processing
 
 // This behavior will cause QGIS to autoload a project
-static QString sProjectFileName = QLatin1String( "" );
+static QString sProjectFileName;
 
 // This is the 'leftover' arguments collection
 static QStringList sFileList;
@@ -492,8 +492,8 @@ int main( int argc, char *argv[] )
 
   // This behavior is used to load the app, snapshot the map,
   // save the image to disk and then exit
-  QString mySnapshotFileName = QLatin1String( "" );
-  QString configLocalStorageLocation =  QLatin1String( "" );
+  QString mySnapshotFileName;
+  QString configLocalStorageLocation;
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
@@ -520,7 +520,7 @@ int main( int argc, char *argv[] )
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
-  QString myInitialExtent = QLatin1String( "" );
+  QString myInitialExtent;
   if ( argc == 1 )
     myInitialExtent = QStringLiteral( "-1,-1,1,1" );
 
@@ -998,7 +998,7 @@ int main( int argc, char *argv[] )
   if ( activeStyleName.isEmpty() ) // not set, using default style
   {
     //not set, check default
-    activeStyleName = QApplication::style()->metaObject()->className() ;
+    activeStyleName = QApplication::style()->metaObject()->className();
   }
   if ( activeStyleName.contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
   {
@@ -1238,7 +1238,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////`////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
   /////////////////////////////////////////////////////////////////////
-  if ( mySnapshotFileName != QLatin1String( "" ) )
+  if ( !mySnapshotFileName.isEmpty() )
   {
     /*You must have at least one paintEvent() delivered for the window to be
       rendered properly.

@@ -66,7 +66,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   supportsHits = false;
   supportsPaging = false;
   supportsJoins = false;
-  version = QLatin1String( "" );
+  version.clear();
   featureTypes.clear();
   spatialPredicatesList.clear();
   functionList.clear();

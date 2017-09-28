@@ -166,10 +166,10 @@ bool QgsGenericNumericTransformer::loadVariant( const QVariant &transformer )
 
   QVariantMap transformerMap = transformer.toMap();
 
-  mMinOutput =  transformerMap.value( QStringLiteral( "minOutput" ), 0.0 ).toDouble();
-  mMaxOutput =  transformerMap.value( QStringLiteral( "maxOutput" ), 1.0 ).toDouble();
+  mMinOutput = transformerMap.value( QStringLiteral( "minOutput" ), 0.0 ).toDouble();
+  mMaxOutput = transformerMap.value( QStringLiteral( "maxOutput" ), 1.0 ).toDouble();
   mNullOutput = transformerMap.value( QStringLiteral( "nullOutput" ), 0.0 ).toDouble();
-  mExponent =   transformerMap.value( QStringLiteral( "exponent" ), 1.0 ).toDouble();
+  mExponent = transformerMap.value( QStringLiteral( "exponent" ), 1.0 ).toDouble();
   return true;
 }
 
@@ -298,7 +298,6 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
 //
 QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent )
   : QgsPropertyTransformer( minValue, maxValue )
-  , mType( Linear )
   , mMinSize( minSize )
   , mMaxSize( maxSize )
   , mNullSize( nullSize )
@@ -746,7 +745,7 @@ double QgsCurveTransform::y( double x ) const
     // linear
     if ( x <= mControlPoints.at( 0 ).x() )
       return qBound( 0.0, mControlPoints.at( 0 ).y(), 1.0 );
-    else if ( x >=  mControlPoints.at( n - 1 ).x() )
+    else if ( x >= mControlPoints.at( n - 1 ).x() )
       return qBound( 0.0, mControlPoints.at( 1 ).y(), 1.0 );
     else
     {

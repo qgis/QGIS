@@ -36,9 +36,6 @@
 
 QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   : QWidget( parent )
-  , mContext( nullptr )
-  , mEditableScopeIndex( -1 )
-  , mShown( false )
 {
   QVBoxLayout *verticalLayout = new QVBoxLayout( this );
   verticalLayout->setSpacing( 3 );
@@ -252,7 +249,6 @@ void QgsVariableEditorWidget::selectionChanged()
 
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   : QTreeWidget( parent )
-  , mEditableScopeIndex( -1 )
 {
   // init icons
   if ( mExpandIcon.isNull() )

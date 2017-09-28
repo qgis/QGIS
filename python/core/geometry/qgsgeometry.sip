@@ -1201,7 +1201,9 @@ Returns an extruded version of this geometry.
 %End
       public:
         Error();
+
         explicit Error( const QString &m );
+
         Error( const QString &m, const QgsPointXY &p );
         QString what();
 %Docstring

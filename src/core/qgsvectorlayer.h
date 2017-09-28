@@ -1984,7 +1984,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsActionManager *mActions = nullptr;
 
     //! Flag indicating whether the layer is in read-only mode (editing disabled) or not
-    bool mReadOnly;
+    bool mReadOnly = false;
 
     /** Set holding the feature IDs that are activated.  Note that if a feature
         subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds),
@@ -2022,7 +2022,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QSet<QString> mExcludeAttributesWFS;
 
     //! Geometry type as defined in enum WkbType (qgis.h)
-    QgsWkbTypes::Type mWkbType;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     //! Renderer object which holds the information about how to display the features
     QgsFeatureRenderer *mRenderer = nullptr;
@@ -2034,16 +2034,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsAbstractVectorLayerLabeling *mLabeling = nullptr;
 
     //! Whether 'labeling font not found' has be shown for this layer (only show once in QgsMessageBar, on first rendering)
-    bool mLabelFontNotFoundNotified;
+    bool mLabelFontNotFoundNotified = false;
 
     //! Blend mode for features
-    QPainter::CompositionMode mFeatureBlendMode;
+    QPainter::CompositionMode mFeatureBlendMode = QPainter::CompositionMode_SourceOver;
 
     //! Layer opacity
     double mLayerOpacity = 1.0;
 
     //! Flag if the vertex markers should be drawn only for selection (true) or for all features (false)
-    bool mVertexMarkerOnlyForSelection;
+    bool mVertexMarkerOnlyForSelection = false;
 
     QStringList mCommitErrors;
 
@@ -2063,17 +2063,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //stores infos about diagram placement (placement type, priority, position distance)
     QgsDiagramLayerSettings *mDiagramLayerSettings = nullptr;
 
-    mutable bool mValidExtent;
-    mutable bool mLazyExtent;
+    mutable bool mValidExtent = false;
+    mutable bool mLazyExtent = true;
 
     // Features in renderer classes counted
-    bool mSymbolFeatureCounted;
+    bool mSymbolFeatureCounted = false;
 
     // Feature counts for each renderer legend key
     QHash<QString, long> mSymbolFeatureCountMap;
 
     //! True while an undo command is active
-    bool mEditCommandActive;
+    bool mEditCommandActive = false;
 
     bool mReadExtentFromXml;
     QgsRectangle mXmlExtent;

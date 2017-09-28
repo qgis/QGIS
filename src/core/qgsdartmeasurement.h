@@ -34,7 +34,6 @@ class CORE_EXPORT QgsDartMeasurement
     };
 
     QgsDartMeasurement()
-      : mType( Text )
     {}
 
     QgsDartMeasurement( const QString &name, Type type, const QString &value );
@@ -53,7 +52,7 @@ class CORE_EXPORT QgsDartMeasurement
 
   private:
     QString mName;
-    Type mType;
+    Type mType = Text;
     QString mValue;
 };
 

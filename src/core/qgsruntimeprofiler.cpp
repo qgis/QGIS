@@ -35,7 +35,7 @@ void QgsRuntimeProfiler::end()
 {
   QString name = mCurrentName;
   name.prepend( mGroupPrefix );
-  double timing =  mProfileTime.elapsed() / 1000.0;
+  double timing = mProfileTime.elapsed() / 1000.0;
   mProfileTimes.append( QPair<QString, double>( name, timing ) );
   QgsDebugMsg( QStringLiteral( "PROFILE: %1 - %2" ).arg( name ).arg( timing ) );
 }

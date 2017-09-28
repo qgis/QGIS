@@ -35,9 +35,8 @@ class TestSignalReceiver : public QObject
   public:
     TestSignalReceiver()
       : QObject( 0 )
-      , blendMode( QPainter::CompositionMode_SourceOver )
     {}
-    QPainter::CompositionMode blendMode;
+    QPainter::CompositionMode blendMode =  QPainter::CompositionMode_SourceOver ;
   public slots:
     void onBlendModeChanged( const QPainter::CompositionMode blendMode )
     {
@@ -54,7 +53,6 @@ class TestQgsMapLayer : public QObject
 
   public:
     TestQgsMapLayer()
-      : mpLayer( 0 )
     {}
 
   private slots:

@@ -217,14 +217,14 @@ class CORE_EXPORT QgsLegendSettings
     QString mTitle;
 
     //! Title alignment, one of Qt::AlignLeft, Qt::AlignHCenter, Qt::AlignRight)
-    Qt::AlignmentFlag mTitleAlignment;
+    Qt::AlignmentFlag mTitleAlignment = Qt::AlignLeft;
 
     QString mWrapChar;
 
     QColor mFontColor;
 
     //! Space between item box and contents
-    qreal mBoxSpace;
+    qreal mBoxSpace = 2;
 
     //! Width and height of symbol icon
     QSizeF mSymbolSize;
@@ -233,37 +233,37 @@ class CORE_EXPORT QgsLegendSettings
     QSizeF mWmsLegendSize;
 
     //! Spacing between lines when wrapped
-    double mLineSpacing;
+    double mLineSpacing = 1;
 
     //! Space between columns
-    double mColumnSpace;
+    double mColumnSpace = 2;
 
     //! Number of legend columns
-    int mColumnCount;
+    int mColumnCount = 1;
 
     //! Allow splitting layers into multiple columns
-    bool mSplitLayer;
+    bool mSplitLayer = false;
 
     //! Use the same width (maximum) for all columns
-    bool mEqualColumnWidth;
+    bool mEqualColumnWidth = false;
 
-    bool mRasterSymbolStroke;
+    bool mRasterSymbolStroke = true;
     QColor mRasterStrokeColor;
-    double mRasterStrokeWidth;
+    double mRasterStrokeWidth = 0.0;
 
     QMap<QgsLegendStyle::Style, QgsLegendStyle> mStyleMap;
 
     //! Conversion ratio between millimeters and map units - for symbols with size given in map units
-    double mMmPerMapUnit;
+    double mMmPerMapUnit = 1;
 
     //! Whether to use advanced effects like opacity for symbols - may require their rasterization
-    bool mUseAdvancedEffects;
+    bool mUseAdvancedEffects = true;
 
     //! Denominator of map's scale
-    double mMapScale;
+    double mMapScale = 1;
 
     //! DPI to be used when rendering legend
-    int mDpi;
+    int mDpi = 96;
 };
 
 

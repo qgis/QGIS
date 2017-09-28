@@ -120,20 +120,20 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
   protected:
     Qt::PenStyle mPenStyle;
-    Qt::PenJoinStyle mPenJoinStyle;
-    Qt::PenCapStyle mPenCapStyle;
+    Qt::PenJoinStyle mPenJoinStyle = DEFAULT_SIMPLELINE_JOINSTYLE;
+    Qt::PenCapStyle mPenCapStyle = DEFAULT_SIMPLELINE_CAPSTYLE;
     QPen mPen;
     QPen mSelPen;
 
     //use a custom dash dot pattern instead of the predefined ones
-    bool mUseCustomDashPattern;
-    QgsUnitTypes::RenderUnit mCustomDashPatternUnit;
+    bool mUseCustomDashPattern = false;
+    QgsUnitTypes::RenderUnit mCustomDashPatternUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
 
     //! Vector with an even number of entries for the
     QVector<qreal> mCustomDashVector;
 
-    bool mDrawInsidePolygon;
+    bool mDrawInsidePolygon = false;
 
   private:
     //helper functions for data defined symbology

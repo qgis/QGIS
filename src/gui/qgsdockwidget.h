@@ -107,7 +107,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
 
   private:
 
-    bool mVisibleAndActive;
+    bool mVisibleAndActive = false;
 
 };
 #endif //QGSDOCKWIDGET_H

@@ -201,7 +201,6 @@ TestQgsGeometry::TestQgsGeometry()
   , mpPolygonGeometryA( nullptr )
   , mpPolygonGeometryB( nullptr )
   , mpPolygonGeometryC( nullptr )
-  , mpPainter( nullptr )
 {
 
 }

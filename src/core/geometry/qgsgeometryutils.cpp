@@ -301,8 +301,8 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
     }
     else if ( t > 0 )
     {
-      minDistX += dx * t ;
-      minDistY += dy * t ;
+      minDistX += dx * t;
+      minDistY += dy * t;
     }
   }
 

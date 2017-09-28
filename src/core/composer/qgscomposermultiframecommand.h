@@ -54,7 +54,7 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     QDomDocument mPreviousState;
     QDomDocument mAfterState;
 
-    bool mFirstRun;
+    bool mFirstRun = false;
 
     QgsComposerMultiFrameCommand(); //forbidden
     void saveState( QDomDocument &stateDoc );

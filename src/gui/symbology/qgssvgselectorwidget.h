@@ -90,11 +90,11 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
   private:
 
     QString mPath;
-    bool mCanceled;
+    bool mCanceled = false;
     QStringList mQueuedSvgs;
 
     QElapsedTimer mTimer;
-    int mTimerThreshold;
+    int mTimerThreshold = 0;
     QSet< QString > mTraversedPaths;
 
     void loadPath( const QString &path );
@@ -149,7 +149,7 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
   private:
 
     QStringList mParentPaths;
-    bool mCanceled;
+    bool mCanceled = false;
     QSet< QString > mTraversedPaths;
 
     void loadGroup( const QString &parentPath );

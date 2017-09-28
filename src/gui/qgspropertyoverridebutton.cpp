@@ -597,7 +597,7 @@ void QgsPropertyOverrideButton::showAssistant()
   {
     // Show the dialog version if not in a panel
     QDialog *dlg = new QDialog( this );
-    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
+    QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( widget->panelTitle() );

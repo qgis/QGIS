@@ -1143,7 +1143,7 @@ void QgsTextShadowSettings::readXml( const QDomElement &elem )
 {
   QDomElement shadowElem = elem.firstChildElement( QStringLiteral( "shadow" ) );
   d->enabled = shadowElem.attribute( QStringLiteral( "shadowDraw" ), QStringLiteral( "0" ) ).toInt();
-  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( QStringLiteral( "shadowUnder" ), QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest ;
+  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( QStringLiteral( "shadowUnder" ), QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest;
   d->offsetAngle = shadowElem.attribute( QStringLiteral( "shadowOffsetAngle" ), QStringLiteral( "135" ) ).toInt();
   d->offsetDist = shadowElem.attribute( QStringLiteral( "shadowOffsetDist" ), QStringLiteral( "1" ) ).toDouble();
 
@@ -1233,7 +1233,6 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
 //
 
 QgsTextFormat::QgsTextFormat()
-  : mTextFontFound( true )
 {
   d = new QgsTextSettingsPrivate();
 }

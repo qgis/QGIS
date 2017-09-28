@@ -513,7 +513,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   // allow only normal files, supported directories, or VSIFILE items to continue
   bool isOgrSupportedDirectory = info.isDir() && dirExtensions.contains( suffix );
-  if ( !isOgrSupportedDirectory && !info.isFile() && vsiPrefix == QLatin1String( "" ) )
+  if ( !isOgrSupportedDirectory && !info.isFile() && vsiPrefix.isEmpty() )
     return nullptr;
 
   // skip *.aux.xml files (GDAL auxiliary metadata files),
@@ -556,7 +556,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   }
 
   // fix vsifile path and name
-  if ( vsiPrefix != QLatin1String( "" ) )
+  if ( !vsiPrefix.isEmpty() )
   {
     // add vsiPrefix to path if needed
     if ( !path.startsWith( vsiPrefix ) )

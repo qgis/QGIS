@@ -71,10 +71,10 @@ class CORE_EXPORT QgsRasterIdentifyResult
 
   private:
     //! \brief Is valid
-    bool mValid;
+    bool mValid = false;
 
     //! \brief Results format
-    QgsRaster::IdentifyFormat mFormat;
+    QgsRaster::IdentifyFormat mFormat = QgsRaster::IdentifyFormatUndefined;
 
     //! \brief Results
     // TODO: better hierarchy (sublayer multiple feature sets)?

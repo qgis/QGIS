@@ -88,7 +88,6 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
                                 bool direct, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassModuleBase()
-  , mOptions( 0 )
   , mSuccess( false )
   , mDirect( direct )
 {
@@ -799,7 +798,7 @@ void QgsGrassModule::readStderr()
 
     QString text, html;
     int percent;
-    QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
+    QgsGrass::ModuleOutput type = QgsGrass::parseModuleOutput( line, text, html, percent );
     if ( type == QgsGrass::OutputPercent )
     {
       setProgress( percent );
@@ -955,7 +954,7 @@ void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment &environment )
   separator = QStringLiteral( ":" );
 #endif
   QString lp = environment.value( pathVariable );
-  lp =  QgsApplication::pluginPath() + separator + lp;
+  lp = QgsApplication::pluginPath() + separator + lp;
   environment.insert( pathVariable, lp );
   QgsDebugMsg( pathVariable + "=" + lp );
 }

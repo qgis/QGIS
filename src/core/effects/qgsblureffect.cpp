@@ -28,9 +28,6 @@ QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
 
 QgsBlurEffect::QgsBlurEffect()
   : QgsPaintEffect()
-  , mBlurLevel( 10 )
-  , mBlurMethod( StackBlur )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
 {
 
 }

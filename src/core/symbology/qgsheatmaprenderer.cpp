@@ -33,18 +33,8 @@
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
   : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
-  , mCalculatedMaxValue( 0 )
-  , mRadius( 10 )
-  , mRadiusPixels( 0 )
-  , mRadiusSquared( 0 )
-  , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
-  , mWeightAttrNum( -1 )
-  , mExplicitMax( 0.0 )
-  , mRenderQuality( 3 )
-  , mFeaturesRendered( 0 )
 {
   mGradientRamp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
-
 }
 
 QgsHeatmapRenderer::~QgsHeatmapRenderer()

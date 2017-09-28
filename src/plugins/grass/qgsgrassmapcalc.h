@@ -233,10 +233,10 @@ class QgsGrassMapcalcFunction
     /* Value used in expression, e.g. 'if' */
     QString mName;
 
-    int mType;
+    int mType = 0;
 
     /* Number of inputs */
-    int mInputCount;
+    int mInputCount = 0;
 
     /* Identification name, e.g., 'if(x,a,b)' */
     //QString mName;
@@ -251,7 +251,7 @@ class QgsGrassMapcalcFunction
     QStringList mInputLabels;
 
     // Draw main label in box
-    bool mDrawLabel;
+    bool mDrawLabel = false;
 };
 
 /******************** CANVAS ITEMS *****************************/
@@ -274,9 +274,9 @@ class QgsGrassMapcalcItem
     void setId( int id ) { mId = id; }
 
   protected:
-    bool mSelected;
+    bool mSelected = false;
 
-    int mId;
+    int mId = -1;
 };
 
 /*

@@ -23,8 +23,6 @@
 
 QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )
-  , mBrightness( 0 )
-  , mContrast( 0 )
 {
 }
 

@@ -56,7 +56,6 @@
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
-  , mCurrentTileset( nullptr )
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWMSSourceSelect::showHelp );
@@ -848,8 +847,8 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
   }
   else if ( layers.isEmpty() || mCRSs.isEmpty() )
   {
-    mCRS = QLatin1String( "" );
-    labelCoordRefSys->setText( QLatin1String( "" ) );
+    mCRS.clear();
+    labelCoordRefSys->clear();
   }
 
   updateLayerOrderTab( layers, styles, titles );
@@ -971,7 +970,7 @@ void QgsWMSSourceSelect::updateButtons()
     }
     else
     {
-      mLastLayerName = QLatin1String( "" );
+      mLastLayerName.clear();
       leLayerName->setText( mLastLayerName );
     }
   }

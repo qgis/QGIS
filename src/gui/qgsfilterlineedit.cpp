@@ -25,12 +25,7 @@
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
   : QLineEdit( parent )
-  , mClearButtonVisible( true )
-  , mSearchIconVisible( false )
-  , mClearMode( ClearToNull )
   , mNullValue( nullValue )
-  , mFocusInEvent( false )
-  , mClearHover( false )
 {
   // need mouse tracking to handle cursor changes
   setMouseTracking( true );

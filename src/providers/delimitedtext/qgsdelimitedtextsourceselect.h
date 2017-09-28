@@ -52,8 +52,8 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
 
   private:
     QgsDelimitedTextFile *mFile = nullptr;
-    int mExampleRowCount;
-    int mBadRowCount;
+    int mExampleRowCount = 20;
+    int mBadRowCount = 0;
     QString mPluginKey;
     QString mLastFileType;
     QButtonGroup *bgFileFormat = nullptr;

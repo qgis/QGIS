@@ -44,8 +44,6 @@
 
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mTableNameEdited( false )
-  , mLayerIdentifierEdited( false )
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewGeoPackageLayerDialog::showHelp );
@@ -114,7 +112,7 @@ void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
   QString myType = mFieldTypeBox->currentData( Qt::UserRole ).toString();
   mFieldLengthEdit->setEnabled( myType == QLatin1String( "text" ) );
   if ( myType != QLatin1String( "text" ) )
-    mFieldLengthEdit->setText( QLatin1String( "" ) );
+    mFieldLengthEdit->clear();
 }
 
 

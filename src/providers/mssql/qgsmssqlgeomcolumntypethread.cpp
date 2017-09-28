@@ -97,8 +97,8 @@ void QgsMssqlGeomColumnTypeThread::run()
     }
     else
     {
-      layerProperty.type = QLatin1String( "" );
-      layerProperty.srid = QLatin1String( "" );
+      layerProperty.type.clear();
+      layerProperty.srid.clear();
     }
 
     // Now tell the layer list dialog box...

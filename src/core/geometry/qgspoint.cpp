@@ -544,7 +544,7 @@ double QgsPoint::distanceSquared( double x, double y ) const
 
 double QgsPoint::distanceSquared( const QgsPoint &other ) const
 {
-  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) ;
+  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
 }
 
 double QgsPoint::distance3D( double x, double y, double z ) const

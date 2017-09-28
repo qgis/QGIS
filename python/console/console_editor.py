@@ -34,6 +34,7 @@ from operator import itemgetter
 import traceback
 import codecs
 import re
+import importlib
 
 
 class KeyFilter(QObject):
@@ -520,7 +521,7 @@ class Editor(QsciScintilla):
         if dir not in sys.path:
             sys.path.append(dir)
         if name in sys.modules:
-            reload(sys.modules[name])  # NOQA
+            importlib.reload(sys.modules[name])  # NOQA
         try:
             # set creationflags for running command without shell window
             if sys.platform.startswith('win'):
@@ -1174,7 +1175,7 @@ class EditorTabWidget(QTabWidget):
                     sys.path.append(pathFile)
                     found = True
                 try:
-                    reload(pyclbr)  # NOQA
+                    importlib.reload(pyclbr)  # NOQA
                     dictObject = {}
                     readModule = pyclbr.readmodule(module)
                     readModuleFunction = pyclbr.readmodule_ex(module)
@@ -1236,10 +1237,10 @@ class EditorTabWidget(QTabWidget):
                     iconWarning = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
                     msgItem.setIcon(0, iconWarning)
                     self.parent.listClassMethod.addTopLevelItem(msgItem)
-#                     s = traceback.format_exc()
-#                     print '## Error: '
-#                     sys.stderr.write(s)
-#                     pass
+                    # s = traceback.format_exc()
+                    # print('## Error: ')
+                    # sys.stderr.write(s)
+                    # pass
 
     def refreshSettingsEditor(self):
         countTab = self.count()

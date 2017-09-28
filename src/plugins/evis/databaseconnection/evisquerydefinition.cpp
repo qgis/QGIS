@@ -31,13 +31,5 @@
 */
 eVisQueryDefinition::eVisQueryDefinition()
 {
-  mDatabaseType = QLatin1String( "" );
-  mDatabaseHost = QLatin1String( "" );
-  mDatabasePort = -1;
-  mDatabaseName = QLatin1String( "" );
-  mDatabaseUsername = QLatin1String( "" );
-  mDatabasePassword = QLatin1String( "" );
-  mSqlStatement = QLatin1String( "" );
-  mAutoConnect = false;
 }
 

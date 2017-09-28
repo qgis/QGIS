@@ -770,7 +770,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
         case AreaSquareKilometers:
           return 1.0;
         case AreaSquareFeet:
-          return KM2_TO_M2 / FT2_TO_M2 ;
+          return KM2_TO_M2 / FT2_TO_M2;
         case AreaSquareYards:
           return KM2_TO_M2 / YD2_TO_M2;
         case AreaSquareMiles:
@@ -1032,7 +1032,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
         case AreaSquareKilometers:
           return MM2_TO_M2 / KM2_TO_M2;
         case AreaSquareFeet:
-          return MM2_TO_M2 / FT2_TO_M2 ;
+          return MM2_TO_M2 / FT2_TO_M2;
         case AreaSquareYards:
           return MM2_TO_M2 / YD2_TO_M2;
         case AreaSquareMiles:
@@ -1064,7 +1064,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
         case AreaSquareKilometers:
           return CM2_TO_M2 / KM2_TO_M2;
         case AreaSquareFeet:
-          return CM2_TO_M2 / FT2_TO_M2 ;
+          return CM2_TO_M2 / FT2_TO_M2;
         case AreaSquareYards:
           return CM2_TO_M2 / YD2_TO_M2;
         case AreaSquareMiles:

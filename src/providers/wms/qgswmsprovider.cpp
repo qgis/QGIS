@@ -106,14 +106,7 @@ struct LessThanTileRequest
 QgsWmsProvider::QgsWmsProvider( QString const &uri, const QgsWmsCapabilities *capabilities )
   : QgsRasterDataProvider( uri )
   , mHttpGetLegendGraphicResponse( nullptr )
-  , mGetLegendGraphicImage()
-  , mGetLegendGraphicScale( 0.0 )
   , mImageCrs( DEFAULT_LATLON_CRS )
-  , mIdentifyReply( nullptr )
-  , mExtentDirty( true )
-  , mTileReqNo( 0 )
-  , mTileLayer( nullptr )
-  , mTileMatrixSet( nullptr )
 {
   QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
@@ -1854,7 +1847,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
 
 QString QgsWmsProvider::metadata()
 {
-  QString metadata = QLatin1String( "" );
+  QString metadata;
 
   metadata += QLatin1String( "<tr><td>" );
 
@@ -2581,7 +2574,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     Q_ASSERT( mTileMatrixSet );
     Q_ASSERT( !mTileMatrixSet->tileMatrices.isEmpty() );
 
-    QMap<double, QgsWmtsTileMatrix> &m =  mTileMatrixSet->tileMatrices;
+    QMap<double, QgsWmtsTileMatrix> &m = mTileMatrixSet->tileMatrices;
 
     // find nearest resolution
     QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = m.constBegin();
@@ -3386,7 +3379,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   if ( !forceRefresh )
     return mGetLegendGraphicImage;
 
-  mError = QLatin1String( "" );
+  mError.clear();
 
   QUrl url( getLegendGraphicFullURL( scale, mGetLegendGraphicExtent ) );
   if ( !url.isValid() )
@@ -3448,7 +3441,7 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
   }
   else
   {
-    QgsImageFetcher *fetcher =  new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url );
+    QgsImageFetcher *fetcher = new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url );
     fetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
     fetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
     connect( fetcher, &QgsImageFetcher::finish, this, &QgsWmsProvider::getLegendGraphicReplyFinished );
@@ -3546,7 +3539,6 @@ QGISEXTERN bool isProvider()
 
 QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsWmsAuthorization &auth, QImage *image, QgsRasterBlockFeedback *feedback )
   : mProviderUri( providerUri )
-  , mCacheReply( nullptr )
   , mCachedImage( image )
   , mEventLoop( new QEventLoop )
   , mFeedback( feedback )
@@ -4079,7 +4071,6 @@ void QgsWmsProvider::setSRSQueryItem( QUrl &url )
 QgsWmsLegendDownloadHandler::QgsWmsLegendDownloadHandler( QgsNetworkAccessManager &networkAccessManager, const QgsWmsSettings &settings, const QUrl &url )
   : mNetworkAccessManager( networkAccessManager )
   , mSettings( settings )
-  , mReply( nullptr )
   , mInitialUrl( url )
 {
 }

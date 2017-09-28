@@ -622,7 +622,6 @@ QgisApp *QgisApp::sInstance = nullptr;
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCheck, const QString &rootProfileLocation, const QString &activeProfile, QWidget *parent, Qt::WindowFlags fl )
   : QMainWindow( parent, fl )
   , mSplash( splash )
-  , mShowProjectionTab( false )
 {
   if ( sInstance )
   {
@@ -644,8 +643,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
   endProfile();
 
-  namSetup();
-
   // load GUI: actions, menus, toolbars
   profiler->beginGroup( QStringLiteral( "qgisapp" ) );
   profiler->beginGroup( QStringLiteral( "startup" ) );
@@ -654,7 +651,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
 #if QT_VERSION >= 0x050600
-  setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
+  setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 #endif
 
   //////////
@@ -670,6 +667,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
   endProfile();
 
+  mTray = new QSystemTrayIcon();
+  mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
+  mTray->hide();
+
   startProfile( QStringLiteral( "Initializing authentication" ) );
   mSplash->showMessage( tr( "Initializing authentication" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -679,6 +680,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     masterPasswordSetup();
   }
   endProfile();
+
+  // Setup QgsNetworkAccessManager (this needs to happen after authentication, for proxy settings)
+  namSetup();
 
   // Create the themes folder for the user
   startProfile( QStringLiteral( "Creating theme folder" ) );
@@ -1170,11 +1174,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     grabGesture( Qt::TapAndHoldGesture );
   }
 
-
-  mTray = new QSystemTrayIcon();
-  mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
-  mTray->hide();
-
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
 #ifdef Q_OS_WIN
@@ -1238,13 +1237,6 @@ QgisApp::QgisApp()
 #ifdef Q_OS_MAC
   , mWindowMenu( nullptr )
 #endif
-  , mShowProjectionTab( false )
-  , mMapTipsVisible( false )
-  , mFullScreenMode( false )
-  , mPrevScreenModeMaximized( false )
-  , mSaveRollbackInProgress( false )
-  , mTrustedMacros( false )
-  , mProjOpen( 0 )
 {
   sInstance = this;
   setupUi( this );
@@ -2456,7 +2448,7 @@ void QgisApp::createToolBars()
       defAnnotationAction = mActionSvgAnnotation;
       break;
     case 4:
-      defAnnotationAction =  mActionAnnotation;
+      defAnnotationAction = mActionAnnotation;
       break;
 
   }
@@ -5919,7 +5911,7 @@ void QgisApp::saveMapAsPdf()
 //overloaded version of the above function
 void QgisApp::saveMapAsImage( const QString &imageFileNameQString, QPixmap *theQPixmap )
 {
-  if ( imageFileNameQString == QLatin1String( "" ) )
+  if ( imageFileNameQString.isEmpty() )
   {
     //no fileName chosen
     return;
@@ -9254,7 +9246,7 @@ void QgisApp::legendLayerZoomNative()
   if ( !currentLayer )
     return;
 
-  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer );
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
   if ( layer )
   {
     QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
@@ -9286,7 +9278,7 @@ void QgisApp::legendLayerStretchUsingCurrentExtent()
   if ( !currentLayer )
     return;
 
-  QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer );
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( currentLayer );
   if ( layer )
   {
     QgsRectangle myRectangle;
@@ -10105,7 +10097,7 @@ void QgisApp::setExtent( const QgsRectangle &rect )
  */
 bool QgisApp::saveDirty()
 {
-  QString whyDirty = QLatin1String( "" );
+  QString whyDirty;
   bool hasUnsavedEdits = false;
   // extra check to see if there are any vector layers with unsaved provider edits
   // to ensure user has opportunity to save any editing
@@ -12087,7 +12079,7 @@ void QgisApp::oldProjectVersionWarning( const QString &oldVersion )
                             " When saving this project file, QGIS will update it to the latest version, "
                             "possibly rendering it useless for older versions of QGIS." );
 
-    QString title =  tr( "Project file is older" );
+    QString title = tr( "Project file is older" );
 
     messageBar()->pushMessage( title, smalltext );
   }

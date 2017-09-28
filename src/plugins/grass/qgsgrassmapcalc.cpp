@@ -43,8 +43,6 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   , QgsGrassMapcalcBase()
   , QgsGrassModuleOptions( tools, module, iface, false )
   , mTool( -1 )
-  , mObject( 0 )
-  , mConnector( 0 )
 {
   Q_UNUSED( parent );
   Q_UNUSED( f );
@@ -1349,7 +1347,7 @@ void QgsGrassMapcalc::load()
 
         int socket = e2.attribute( QStringLiteral( "socket" ), QStringLiteral( "0" ) ).toInt();
 
-        QgsDebugMsg( QString( "end =  %1 objId = %2 socketType = %3 socket = %4" ).arg( n2 ).arg( objId ).arg( socketType ).arg( socket ) );
+        QgsDebugMsg( QString( "end = %1 objId = %2 socketType = %3 socket = %4" ).arg( n2 ).arg( objId ).arg( socketType ).arg( socket ) );
 
         con->setSocket( n2, objects[objId], socketType, socket );
 
@@ -1385,8 +1383,6 @@ void QgsGrassMapcalc::clear()
 
 /******************** CANVAS ITEMS ******************************/
 QgsGrassMapcalcItem::QgsGrassMapcalcItem()
-  : mSelected( false )
-  , mId( -1 )
 {
 }
 
@@ -1407,7 +1403,6 @@ QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
   , mTextHeight( 0 )
   , mInputTextWidth( 0 )
   , mSelectionBoxSize( 5 )
-  , mOutputConnector( 0 )
   , mOutputConnectorEnd( 0 )
 {
 
@@ -2023,9 +2018,6 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
 }
 
 QgsGrassMapcalcFunction::QgsGrassMapcalcFunction()
-  : mType( 0 )
-  , mInputCount( 0 )
-  , mDrawLabel( false )
 {
 }
 

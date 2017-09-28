@@ -129,14 +129,14 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     std::unique_ptr< QgsMarkerSymbol > mCenterSymbol;
 
     //! Displacement placement mode
-    Placement mPlacement;
+    Placement mPlacement = Ring;
 
     //! Line width for the circle
-    double mCircleWidth;
+    double mCircleWidth = 0.4;
     //! Color to draw the circle
     QColor mCircleColor;
     //! Addition to the default circle radius
-    double mCircleRadiusAddition;
+    double mCircleRadiusAddition = 0;
 
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
 

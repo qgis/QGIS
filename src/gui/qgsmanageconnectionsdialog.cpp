@@ -207,7 +207,7 @@ void QgsManageConnectionsDialog::doExportImport()
     accept();
   }
 
-  mFileName = QLatin1String( "" );
+  mFileName.clear();
 }
 
 bool QgsManageConnectionsDialog::populateConnections()

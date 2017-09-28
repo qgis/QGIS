@@ -123,8 +123,8 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
     QWidget *mAnchorWidget = nullptr;
     QgsFloatingWidgetEventFilter *mParentEventFilter = nullptr;
     QgsFloatingWidgetEventFilter *mAnchorEventFilter = nullptr;
-    AnchorPoint mFloatAnchorPoint;
-    AnchorPoint mAnchorWidgetAnchorPoint;
+    AnchorPoint mFloatAnchorPoint = BottomMiddle;
+    AnchorPoint mAnchorWidgetAnchorPoint = TopMiddle;
 
 };
 

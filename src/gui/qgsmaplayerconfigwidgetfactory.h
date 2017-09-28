@@ -114,8 +114,8 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
   private:
     QIcon mIcon;
     QString mTitle;
-    bool mSupportsDock;
-    bool mSupportsProperties;
+    bool mSupportsDock = true;
+    bool mSupportsProperties = true;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGETFACTORY_H

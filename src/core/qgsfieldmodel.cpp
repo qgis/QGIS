@@ -25,8 +25,6 @@
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mAllowExpression( false )
-  , mAllowEmpty( false )
 {
 }
 

@@ -93,7 +93,7 @@ Emitted when the widget curve changes
 
   protected:
 
-    virtual void keyPressEvent( QKeyEvent *event ) ;
+    virtual void keyPressEvent( QKeyEvent *event );
 
 };
 

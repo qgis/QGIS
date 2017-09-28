@@ -70,8 +70,8 @@ class ANALYSIS_EXPORT QgsGraphEdge
 
     QVector< QVariant > mStrategies;
 
-    int mOut;
-    int mIn;
+    int mOut = 0;
+    int mIn = 0;
 
     friend class QgsGraph;
 };

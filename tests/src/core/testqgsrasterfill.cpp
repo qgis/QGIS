@@ -43,11 +43,6 @@ class TestQgsRasterFill : public QObject
 
   public:
     TestQgsRasterFill()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mRasterFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -63,7 +58,7 @@ class TestQgsRasterFill : public QObject
     void width();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

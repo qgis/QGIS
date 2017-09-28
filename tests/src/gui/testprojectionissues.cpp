@@ -29,8 +29,6 @@ class TestProjectionIssues : public QObject
     Q_OBJECT
   public:
     TestProjectionIssues()
-      : mRasterLayer( 0 )
-      , mMapCanvas( 0 )
     {}
 
   private slots:

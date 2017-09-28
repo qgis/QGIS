@@ -205,8 +205,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // import other file
   else if ( tabWidget->currentIndex() == 1 )
   {
-    if ( ( leIMPInput->text() == QLatin1String( "" ) ) || ( leIMPOutput->text() == QLatin1String( "" ) ) ||
-         ( leIMPLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leIMPInput->text().isEmpty() ) || ( leIMPOutput->text().isEmpty() ) ||
+         ( leIMPLayer->text().isEmpty() ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -215,8 +215,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // download from device
   else if ( tabWidget->currentIndex() == 2 )
   {
-    if ( cmbDLDevice->currentText() == QLatin1String( "" ) || leDLBasename->text() == QLatin1String( "" ) ||
-         leDLOutput->text() == QLatin1String( "" ) )
+    if ( cmbDLDevice->currentText().isEmpty() || leDLBasename->text().isEmpty() ||
+         leDLOutput->text().isEmpty() )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -225,7 +225,7 @@ void QgsGPSPluginGui::enableRelevantControls()
   // upload to device
   else if ( tabWidget->currentIndex() == 3 )
   {
-    if ( cmbULDevice->currentText() == QLatin1String( "" ) || cmbULLayer->currentText() == QLatin1String( "" ) )
+    if ( cmbULDevice->currentText().isEmpty() || cmbULLayer->currentText().isEmpty() )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -234,8 +234,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // convert between waypoint/routes
   else if ( tabWidget->currentIndex() == 4 )
   {
-    if ( ( leCONVInput->text() == QLatin1String( "" ) ) || ( leCONVOutput->text() == QLatin1String( "" ) ) ||
-         ( leCONVLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leCONVInput->text().isEmpty() ) || ( leCONVOutput->text().isEmpty() ) ||
+         ( leCONVLayer->text().isEmpty() ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -369,7 +369,7 @@ void QgsGPSPluginGui::populateULLayerComboBox()
 
 void QgsGPSPluginGui::populateIMPBabelFormats()
 {
-  mBabelFilter = QLatin1String( "" );
+  mBabelFilter.clear();
   cmbULDevice->clear();
   cmbDLDevice->clear();
   QgsSettings settings;

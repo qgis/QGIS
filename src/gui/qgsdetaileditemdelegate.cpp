@@ -188,7 +188,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   }
   else
   {
-    myTextStartY +=  myDetailMetrics.height() + verticalSpacing();
+    myTextStartY += myDetailMetrics.height() + verticalSpacing();
   }
   QStringList myList =
     wordWrap( data.detail(), myDetailMetrics, option.rect.width() - myTextStartX );
@@ -221,7 +221,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   }
   else
   {
-    myTextStartY +=  myCategoryMetrics.height() + verticalSpacing();
+    myTextStartY += myCategoryMetrics.height() + verticalSpacing();
   }
   myList =
     wordWrap( data.category(), myCategoryMetrics, option.rect.width() - myTextStartX );
@@ -336,8 +336,8 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
   //qDebug(myDebug.toLocal8Bit());
   //iterate the string
   QStringList myList;
-  QString myCumulativeLine = QLatin1String( "" );
-  QString myStringToPreviousSpace = QLatin1String( "" );
+  QString myCumulativeLine;
+  QString myStringToPreviousSpace;
   int myPreviousSpacePos = 0;
   for ( int i = 0; i < string.count(); ++i )
   {
@@ -355,8 +355,8 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
       //forcing a break at current pos...
       myList << myStringToPreviousSpace.trimmed();
       i = myPreviousSpacePos;
-      myStringToPreviousSpace = QLatin1String( "" );
-      myCumulativeLine = QLatin1String( "" );
+      myStringToPreviousSpace.clear();
+      myCumulativeLine.clear();
     }
   }//end of i loop
   //add whatever is left in the string to the list

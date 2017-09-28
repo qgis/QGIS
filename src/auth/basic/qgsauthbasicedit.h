@@ -50,7 +50,7 @@ class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
 
   private:
     QgsStringMap mConfigMap;
-    bool mValid;
+    bool mValid = 0;
 };
 
 #endif // QGSAUTHBASICEDIT_H

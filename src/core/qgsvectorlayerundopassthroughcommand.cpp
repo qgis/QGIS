@@ -249,7 +249,7 @@ void QgsVectorLayerUndoPassthroughCommandAddAttribute::redo()
   if ( setSavePoint() && mBuffer->L->dataProvider()->addAttributes( QList<QgsField>() << mField ) )
   {
     mBuffer->updateLayerFields();
-    const int attr =  mBuffer->L->dataProvider()->fieldNameIndex( mField.name() );
+    const int attr = mBuffer->L->dataProvider()->fieldNameIndex( mField.name() );
     emit mBuffer->attributeAdded( attr );
   }
   else

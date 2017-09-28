@@ -227,7 +227,7 @@ void QgsAttributeTableFilterModel::sort( const QString &expression, Qt::SortOrde
 
   QSortFilterProxyModel::sort( -1 );
   masterModel()->prefetchSortData( expression );
-  QSortFilterProxyModel::sort( 0, order ) ;
+  QSortFilterProxyModel::sort( 0, order );
 }
 
 QString QgsAttributeTableFilterModel::sortExpression() const

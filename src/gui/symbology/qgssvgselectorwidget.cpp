@@ -38,8 +38,6 @@
 ///@cond PRIVATE
 QgsSvgSelectorLoader::QgsSvgSelectorLoader( QObject *parent )
   : QThread( parent )
-  , mCanceled( false )
-  , mTimerThreshold( 0 )
 {
 }
 
@@ -159,7 +157,6 @@ void QgsSvgSelectorLoader::loadImages( const QString &path )
 
 QgsSvgGroupLoader::QgsSvgGroupLoader( QObject *parent )
   : QThread( parent )
-  , mCanceled( false )
 {
 
 }

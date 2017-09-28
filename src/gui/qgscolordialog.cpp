@@ -34,7 +34,6 @@
 QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
   : QDialog( parent, fl )
   , mPreviousColor( color )
-  , mAllowOpacity( true )
 {
   setupUi( this );
 

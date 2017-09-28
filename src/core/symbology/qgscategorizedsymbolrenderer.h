@@ -64,7 +64,7 @@ class CORE_EXPORT QgsRendererCategory
     QVariant mValue;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
-    bool mRender;
+    bool mRender = true;
 
     void swap( QgsRendererCategory &other );
 };
@@ -209,11 +209,11 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 
     //! attribute index (derived from attribute name in startRender)
-    int mAttrNum;
+    int mAttrNum = -1;
 
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbol *> mSymbolHash;
-    bool mCounting;
+    bool mCounting = false;
 
     void rebuildHash();
 

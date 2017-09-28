@@ -72,7 +72,7 @@ class QgsGeoPackageRasterWriterTask : public QgsTask
 
     QgsGeoPackageRasterWriter mWriter;
     std::unique_ptr< QgsFeedback > mFeedback;
-    QgsGeoPackageRasterWriter::WriterError mError = QgsGeoPackageRasterWriter::WriterError::NoError ;
+    QgsGeoPackageRasterWriter::WriterError mError = QgsGeoPackageRasterWriter::WriterError::NoError;
     QString mErrorMessage;
 
 };

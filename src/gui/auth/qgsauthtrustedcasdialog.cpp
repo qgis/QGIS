@@ -31,8 +31,6 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
     const QList<QSslCertificate> &trustedCAs )
   : QDialog( parent )
   , mTrustedCAs( trustedCAs )
-  , mDisabled( false )
-
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

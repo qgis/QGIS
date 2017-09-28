@@ -66,7 +66,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     std::unique_ptr< QgsRasterResampler > mZoomedOutResampler;
 
     //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
-    double mMaxOversampling;
+    double mMaxOversampling = 2.0;
 
   private:
 };

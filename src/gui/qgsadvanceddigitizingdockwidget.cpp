@@ -105,13 +105,13 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 {
   setupUi( this );
 
-  mCadPaintItem = new QgsAdvancedDigitizingCanvasItem( canvas, this ) ;
+  mCadPaintItem = new QgsAdvancedDigitizingCanvasItem( canvas, this );
 
   mAngleConstraint.reset( new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton ) );
   mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
   mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
   mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
-  mAdditionalConstraint = NoConstraint ;
+  mAdditionalConstraint = NoConstraint;
 
   mMapCanvas->installEventFilter( this );
   mAngleLineEdit->installEventFilter( this );
@@ -662,7 +662,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
     if ( std::fabs( softAngle - quo * commonAngle ) * 180.0 * M_1_PI <= SOFT_CONSTRAINT_TOLERANCE_DEGREES )
     {
       // also check the distance in pixel to the line, otherwise it's too sticky at long ranges
-      softAngle = quo * commonAngle ;
+      softAngle = quo * commonAngle;
       // http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
       // use the direction vector (cos(a),sin(a)) from previous point. |x2-x1|=1 since sin2+cos2=1
       const double dist = std::fabs( std::cos( softAngle + deltaAngle ) * ( previousPt.y() - point.y() )
@@ -686,7 +686,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
 
     double cosa = std::cos( angleValue );
     double sina = std::sin( angleValue );
-    double v = ( point.x() - previousPt.x() ) * cosa + ( point.y() - previousPt.y() ) * sina ;
+    double v = ( point.x() - previousPt.x() ) * cosa + ( point.y() - previousPt.y() ) * sina;
     if ( mXConstraint->isLocked() && mYConstraint->isLocked() )
     {
       // do nothing if both X,Y are already locked
@@ -1049,7 +1049,7 @@ bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
   {
     return false;
   }
-  return filterKeyPress( keyEvent ) ;
+  return filterKeyPress( keyEvent );
 }
 
 bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
@@ -1263,7 +1263,7 @@ void QgsAdvancedDigitizingDockWidget::updateCurrentPoint( const QgsPointXY &poin
   }
   else
   {
-    mCadPointList[0] = point ;
+    mCadPointList[0] = point;
   }
 }
 

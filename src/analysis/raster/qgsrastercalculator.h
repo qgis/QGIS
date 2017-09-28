@@ -118,9 +118,9 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QgsCoordinateReferenceSystem mOutputCrs;
 
     //! Number of output columns
-    int mNumOutputColumns;
+    int mNumOutputColumns = 0;
     //! Number of output rows
-    int mNumOutputRows;
+    int mNumOutputRows = 0;
 
     /***/
     QVector<QgsRasterCalculatorEntry> mRasterEntries;

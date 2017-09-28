@@ -116,18 +116,18 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
 
     QString mXAttribute;
     QString mYAttribute;
-    QgsUnitTypes::RenderUnit mDistanceUnit;
+    QgsUnitTypes::RenderUnit mDistanceUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mDistanceMapUnitScale;
-    double mScale;
-    VectorFieldType mVectorFieldType;
-    AngleOrientation mAngleOrientation;
-    AngleUnits mAngleUnits;
+    double mScale = 1.0;
+    VectorFieldType mVectorFieldType = Cartesian;
+    AngleOrientation mAngleOrientation = ClockwiseFromNorth;
+    AngleUnits mAngleUnits = Degrees;
 
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
 
     //Attribute indices are resolved in startRender method
-    int mXIndex;
-    int mYIndex;
+    int mXIndex = -1;
+    int mYIndex = -1;
 
     //Converts length/angle to Cartesian x/y
     void convertPolarToCartesian( double length, double angle, double &x, double &y ) const;

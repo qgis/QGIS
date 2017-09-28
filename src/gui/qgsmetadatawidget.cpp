@@ -134,7 +134,7 @@ void QgsMetadataWidget::removeSelectedVocabulary() const
 {
   QItemSelectionModel *selectionModel = tabKeywords->selectionModel();
   const QModelIndexList selectedRows = selectionModel->selectedRows();
-  for ( int i = 0 ; i < selectedRows.size() ; i++ )
+  for ( int i = 0; i < selectedRows.size() ; i++ )
   {
     tabKeywords->model()->removeRow( selectedRows[i].row() );
   }
@@ -156,7 +156,7 @@ void QgsMetadataWidget::removeSelectedLicence() const
 {
   QItemSelectionModel *selectionModel = tabLicenses->selectionModel();
   const QModelIndexList selectedRows = selectionModel->selectedRows();
-  for ( int i = 0 ; i < selectedRows.size() ; i++ )
+  for ( int i = 0; i < selectedRows.size() ; i++ )
   {
     tabLicenses->model()->removeRow( selectedRows[i].row() );
   }
@@ -227,7 +227,7 @@ void QgsMetadataWidget::removeSelectedContact() const
 {
   QItemSelectionModel *selectionModel = tabContacts->selectionModel();
   const QModelIndexList selectedRows = selectionModel->selectedRows();
-  for ( int i = 0 ; i < selectedRows.size() ; i++ )
+  for ( int i = 0; i < selectedRows.size() ; i++ )
   {
     tabContacts->model()->removeRow( selectedRows[i].row() );
   }
@@ -449,7 +449,7 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
   // Keywords, it will save categories too.
   syncFromCategoriesTabToKeywordsTab();
   QMap<QString, QStringList> keywords;
-  for ( int i = 0 ; i < tabKeywords->rowCount() ; i++ )
+  for ( int i = 0; i < tabKeywords->rowCount() ; i++ )
   {
     keywords.insert( tabKeywords->item( i, 0 )->text(), tabKeywords->item( i, 1 )->text().split( ',' ) );
   }
@@ -460,7 +460,7 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 
   // Licenses
   QStringList licenses;
-  for ( int i = 0 ; i < tabLicenses->rowCount() ; i++ )
+  for ( int i = 0; i < tabLicenses->rowCount() ; i++ )
   {
     licenses.append( tabLicenses->item( i, 0 )->text() );
   }
@@ -471,7 +471,7 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 
   // Constraints
   QList<QgsLayerMetadata::Constraint> constraints;
-  for ( int row = 0 ; row < mConstraintsModel->rowCount() ; row++ )
+  for ( int row = 0; row < mConstraintsModel->rowCount() ; row++ )
   {
     struct QgsLayerMetadata::Constraint constraint = QgsLayerMetadata::Constraint();
     constraint.type = mConstraintsModel->item( row, 0 )->text();
@@ -485,7 +485,7 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 
   // Links
   QList<QgsLayerMetadata::Link> links;
-  for ( int row = 0 ; row < mLinksModel->rowCount() ; row++ )
+  for ( int row = 0; row < mLinksModel->rowCount() ; row++ )
   {
     struct QgsLayerMetadata::Link link = QgsLayerMetadata::Link();
     link.name = mLinksModel->item( row, 0 )->text();

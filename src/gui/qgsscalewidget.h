@@ -149,7 +149,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     QgsScaleComboBox *mScaleComboBox = nullptr;
     QToolButton *mCurrentScaleButton = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
-    bool mShowCurrentScaleButton;
+    bool mShowCurrentScaleButton = false;
 };
 
 #endif // QGSSCALEWIDGET_H

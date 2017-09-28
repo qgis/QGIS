@@ -450,7 +450,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
       oneAddress.country = addressElement.namedItem( QStringLiteral( "country" ) ).toElement().text();
       oneAddress.postalCode = addressElement.namedItem( QStringLiteral( "postalcode" ) ).toElement().text();
       oneAddress.type = addressElement.namedItem( QStringLiteral( "type" ) ).toElement().text();
-      addresses << oneAddress ;
+      addresses << oneAddress;
     }
     oneContact.addresses = addresses;
     addContact( oneContact );

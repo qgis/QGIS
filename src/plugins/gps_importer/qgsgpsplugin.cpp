@@ -65,8 +65,6 @@ static const QString icon_ = QStringLiteral( ":/gps_importer.svg" );
 QgsGPSPlugin::QgsGPSPlugin( QgisInterface *qgisInterFace )
   : QgisPlugin( name_, description_, category_, version_, type_ )
   , mQGisInterface( qgisInterFace )
-  , mQActionPointer( nullptr )
-  , mCreateGPXAction( nullptr )
 {
   setupBabel();
 }

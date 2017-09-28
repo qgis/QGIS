@@ -39,8 +39,6 @@ email                : hugo dot mercier at oslandia dot com
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
-  , mSrid( 0 )
-  , mTreeView( nullptr )
 {
   setupUi( this );
   setupButtons( buttonBox );

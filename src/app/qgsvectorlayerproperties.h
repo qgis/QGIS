@@ -168,7 +168,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsVectorLayer *mLayer = nullptr;
 
-    bool mMetadataFilled;
+    bool mMetadataFilled = false;
 
     QString mOriginalSubsetSQL;
 

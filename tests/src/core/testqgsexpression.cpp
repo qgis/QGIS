@@ -51,11 +51,6 @@ class TestQgsExpression: public QObject
   public:
 
     TestQgsExpression()
-      : mPointsLayer( nullptr )
-      , mMemoryLayer( nullptr )
-      , mAggregatesLayer( nullptr )
-      , mChildLayer( nullptr )
-      , mRasterLayer( nullptr )
     {}
 
   private:

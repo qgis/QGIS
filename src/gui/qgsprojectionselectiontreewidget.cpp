@@ -29,11 +29,6 @@
 
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent )
   : QWidget( parent )
-  , mProjListDone( false )
-  , mUserProjListDone( false )
-  , mRecentProjListDone( false )
-  , mSearchColumn( QgsProjectionSelectionTreeWidget::None )
-  , mPushProjectionToFront( false )
 {
   setupUi( this );
 
@@ -239,8 +234,8 @@ void QgsProjectionSelectionTreeWidget::applySelection( int column, QString value
     // deselect the selected item to avoid confusing the user
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
-    teProjection->setText( QLatin1String( "" ) );
-    teSelected->setText( QLatin1String( "" ) );
+    teProjection->clear();
+    teSelected->clear();
   }
 }
 
@@ -729,8 +724,8 @@ void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_currentItemChange
   {
     // Not an CRS - remove the highlight so the user doesn't get too confused
     current->setSelected( false );
-    teProjection->setText( QLatin1String( "" ) );
-    teSelected->setText( QLatin1String( "" ) );
+    teProjection->clear();
+    teSelected->clear();
     lstRecent->clearSelection();
   }
 }
@@ -795,8 +790,8 @@ void QgsProjectionSelectionTreeWidget::hideDeprecated( QTreeWidgetItem *item )
     if ( item->isSelected() && item->isHidden() )
     {
       item->setSelected( false );
-      teProjection->setText( QLatin1String( "" ) );
-      teSelected->setText( QLatin1String( "" ) );
+      teProjection->clear();
+      teSelected->clear();
     }
   }
 

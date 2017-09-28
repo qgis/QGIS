@@ -50,8 +50,6 @@ class TestQgsMeasureTool : public QObject
 };
 
 TestQgsMeasureTool::TestQgsMeasureTool()
-  : mQgisApp( nullptr )
-  , mCanvas( nullptr )
 {
 
 }

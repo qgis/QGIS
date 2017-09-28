@@ -177,7 +177,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
                     + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
   // allow only normal files or VSIFILE items to continue
-  if ( !info.isFile() && vsiPrefix == QLatin1String( "" ) )
+  if ( !info.isFile() && vsiPrefix.isEmpty() )
     return nullptr;
 
   // get supported extensions
@@ -225,7 +225,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   }
 
   // fix vsifile path and name
-  if ( vsiPrefix != QLatin1String( "" ) )
+  if ( !vsiPrefix.isEmpty() )
   {
     // add vsiPrefix to path if needed
     if ( !path.startsWith( vsiPrefix ) )

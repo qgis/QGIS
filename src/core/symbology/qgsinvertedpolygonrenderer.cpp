@@ -31,7 +31,6 @@
 
 QgsInvertedPolygonRenderer::QgsInvertedPolygonRenderer( QgsFeatureRenderer *subRenderer )
   : QgsFeatureRenderer( QStringLiteral( "invertedPolygonRenderer" ) )
-  , mPreprocessingEnabled( false )
 {
   if ( subRenderer )
   {

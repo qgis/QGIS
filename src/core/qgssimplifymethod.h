@@ -62,13 +62,13 @@ class CORE_EXPORT QgsSimplifyMethod
 
   protected:
     //! Simplification method
-    MethodType mMethodType;
+    MethodType mMethodType = QgsSimplifyMethod::NoSimplification;
     //! Simplification tolerance, it represents the maximum distance between two coordinates which can be considered equal
-    double mTolerance;
+    double mTolerance = 1;
     //! Simplification threshold
-    float mThreshold;
+    float mThreshold = 1;
     //! Simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
-    bool mForceLocalOptimization;
+    bool mForceLocalOptimization = true;
 };
 
 #endif // QGSSIMPLIFYMETHOD_H

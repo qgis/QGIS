@@ -90,9 +90,9 @@ class CORE_EXPORT QgsHistogram
   private:
 
     QList<double> mValues;
-    double mMax;
-    double mMin;
-    double mIQR;
+    double mMax = 0;
+    double mMin = 0;
+    double mIQR = 0;
 
     void prepareValues();
 

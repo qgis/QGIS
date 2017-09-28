@@ -26,9 +26,6 @@
 
 QgsRasterProjector::QgsRasterProjector()
   : QgsRasterInterface( nullptr )
-  , mSrcDatumTransform( -1 )
-  , mDestDatumTransform( -1 )
-  , mPrecision( Approximate )
 {
   QgsDebugMsgLevel( "Entered", 4 );
 }

@@ -279,22 +279,18 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     bool fieldIsEditable( int fieldIndex ) const;
 
-    bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const ;
+    bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const;
 
     struct WidgetInfo
     {
       WidgetInfo()
-        : widget( nullptr )
-        , labelOnTop( false )
-        , labelAlignRight( false )
-        , showLabel( true )
       {}
 
       QWidget *widget = nullptr;
       QString labelText;
-      bool labelOnTop;
-      bool labelAlignRight;
-      bool showLabel;
+      bool labelOnTop = false;
+      bool labelAlignRight = false;
+      bool showLabel = true;
     };
 
     WidgetInfo createWidgetFromDef( const QgsAttributeEditorElement *widgetDef, QWidget *parent, QgsVectorLayer *vl, QgsAttributeEditorContext &context );
@@ -358,8 +354,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       {}
 
       ContainerInformation( QWidget *widget, const QgsExpression &expression )
-        : tabWidget( nullptr )
-        , widget( widget )
+        : widget( widget )
         , expression( expression )
         , isVisible( true )
       {}

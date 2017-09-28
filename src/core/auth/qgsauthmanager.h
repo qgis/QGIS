@@ -332,6 +332,16 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool updateDataSourceUriItems( QStringList &connectionItems SIP_INOUT, const QString &authcfg,
                                    const QString &dataprovider = QString() );
 
+    /**
+     * Provider call to update a QNetworkProxy with an authentication config
+     * \param proxy the QNetworkProxy
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
+     * \returns Whether operation succeeded
+     */
+    bool updateNetworkProxy( QNetworkProxy &proxy SIP_INOUT, const QString &authcfg,
+                             const QString &dataprovider = QString() );
+
     ////////////////// Generic settings ///////////////////////
 
     //! Store an authentication setting (stored as string via QVariant( value ).toString() )
@@ -693,7 +703,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static const QString AUTH_TRUST_TABLE;
     static const QString AUTH_CFG_REGEX;
 
-    bool mAuthInit;
+    bool mAuthInit = false;
     QString mAuthDbPath;
 
     QCA::Initializer *mQcaInitializer = nullptr;
@@ -702,14 +712,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QHash<QString, QgsAuthMethod *> mAuthMethods;
 
     QString mMasterPass;
-    int mPassTries;
-    bool mAuthDisabled;
+    int mPassTries = 0;
+    bool mAuthDisabled = false;
     QString mAuthDisabledMessage;
     QTimer *mScheduledDbEraseTimer = nullptr;
-    bool mScheduledDbErase;
-    int mScheduledDbEraseRequestWait; // in seconds
-    bool mScheduledDbEraseRequestEmitted;
-    int mScheduledDbEraseRequestCount;
+    bool mScheduledDbErase = false;
+    int mScheduledDbEraseRequestWait = 3 ; // in seconds
+    bool mScheduledDbEraseRequestEmitted = false;
+    int mScheduledDbEraseRequestCount = 0;
     QMutex *mMutex = nullptr;
 
 #ifndef QT_NO_SSL
@@ -728,19 +738,19 @@ class CORE_EXPORT QgsAuthManager : public QObject
     // Password Helper Variables
 
     //! Master password verification has failed
-    bool mPasswordHelperVerificationError;
+    bool mPasswordHelperVerificationError = false;
 
     //! Store last error message
     QString mPasswordHelperErrorMessage;
 
     //! Store last error code (enum)
-    QKeychain::Error mPasswordHelperErrorCode;
+    QKeychain::Error mPasswordHelperErrorCode = QKeychain::NoError;
 
     //! Enable logging
-    bool mPasswordHelperLoggingEnabled;
+    bool mPasswordHelperLoggingEnabled = false;
 
     //! Whether the keychain bridge failed to initialize
-    bool mPasswordHelperFailedInit;
+    bool mPasswordHelperFailedInit = false;
 
     //! Master password name in the wallets
     static const QLatin1String AUTH_PASSWORD_HELPER_KEY_NAME;

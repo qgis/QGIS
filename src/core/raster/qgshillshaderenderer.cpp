@@ -236,10 +236,10 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
 
         double cosSlope = cosZenithRad * std::cos( slopeRad );
         double sinSlope = sinZenithRad * std::sin( slopeRad );
-        double color0 = cosSlope + sinSlope * std::cos( angle0Rad - aspectRad ) ;
-        double color1 = cosSlope + sinSlope * std::cos( angle1Rad - aspectRad ) ;
-        double color2 = cosSlope + sinSlope * std::cos( angle2Rad - aspectRad ) ;
-        double color3 = cosSlope + sinSlope * std::cos( angle3Rad - aspectRad ) ;
+        double color0 = cosSlope + sinSlope * std::cos( angle0Rad - aspectRad );
+        double color1 = cosSlope + sinSlope * std::cos( angle1Rad - aspectRad );
+        double color2 = cosSlope + sinSlope * std::cos( angle2Rad - aspectRad );
+        double color3 = cosSlope + sinSlope * std::cos( angle3Rad - aspectRad );
         grayValue = qBound( 0.0, 255 * ( weight0 * color0 + weight1 * color1 + weight2 * color2 + weight3 * color3 ) * 0.5, 255.0 );
       }
 

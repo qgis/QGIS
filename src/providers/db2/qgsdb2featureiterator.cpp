@@ -78,7 +78,7 @@ QgsDb2FeatureIterator::~QgsDb2FeatureIterator()
 void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 {
   bool limitAtProvider = ( mRequest.limit() >= 0 );
-  QString delim = QLatin1String( "" );
+  QString delim;
 
   // build sql statement
   mStatement = QStringLiteral( "SELECT " );

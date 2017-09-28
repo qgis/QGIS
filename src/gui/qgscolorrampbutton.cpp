@@ -39,11 +39,6 @@
 QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mColorRampDialogTitle( dialogTitle.isEmpty() ? tr( "Select Color Ramp" ) : dialogTitle )
-  , mShowGradientOnly( false )
-  , mAcceptLiveUpdates( true )
-  , mColorRampSet( false )
-  , mShowRandomColorRamp( false )
-  , mShowNull( false )
 {
   setAcceptDrops( true );
   setMinimumSize( QSize( 24, 16 ) );

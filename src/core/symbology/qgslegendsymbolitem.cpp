@@ -19,10 +19,6 @@
 #include "qgssymbol.h"
 
 QgsLegendSymbolItem::QgsLegendSymbolItem()
-  : mCheckable( false )
-  , mScaleMinDenom( -1 )
-  , mScaleMaxDenom( -1 )
-  , mLevel( 0 )
 {
 }
 

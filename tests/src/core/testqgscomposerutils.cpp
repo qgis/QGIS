@@ -73,7 +73,6 @@ class TestQgsComposerUtils : public QObject
 };
 
 TestQgsComposerUtils::TestQgsComposerUtils()
-  : mComposition( 0 )
 {
 }
 

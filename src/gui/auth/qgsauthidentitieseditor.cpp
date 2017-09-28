@@ -32,8 +32,6 @@
 
 QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
   : QWidget( parent )
-  , mDisabled( false )
-
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

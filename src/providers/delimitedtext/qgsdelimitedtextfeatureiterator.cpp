@@ -194,7 +194,7 @@ bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature &feature )
   bool gotFeature = false;
   if ( mMode == FileScan )
   {
-    gotFeature =  nextFeatureInternal( feature );
+    gotFeature = nextFeatureInternal( feature );
   }
   else
   {

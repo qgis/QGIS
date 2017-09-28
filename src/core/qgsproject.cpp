@@ -334,9 +334,6 @@ QgsProject::QgsProject( QObject *parent )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsProjectArchive() )
-  , mAutoTransaction( false )
-  , mEvaluateDefaultValues( false )
-  , mDirty( false )
 {
   mProperties.setName( QStringLiteral( "properties" ) );
   clear();
@@ -586,7 +583,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "title" ) );
 
-  title = QLatin1String( "" );               // by default the title will be empty
+  title.clear();               // by default the title will be empty
 
   if ( !nl.count() )
   {
@@ -833,7 +830,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   QgsDebugMsg( "Project title: " + mTitle );
 
   // get project version string, if any
-  QgsProjectVersion fileVersion =  getVersion( *doc );
+  QgsProjectVersion fileVersion = getVersion( *doc );
   QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )

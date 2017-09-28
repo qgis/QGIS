@@ -41,7 +41,6 @@
 
 QgsClipboard::QgsClipboard()
   : QObject()
-  , mUseSystemClipboard( false )
 {
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );
 }

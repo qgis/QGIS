@@ -115,10 +115,10 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool log10();
 
   private:
-    int mColumns;
-    int mRows;
+    int mColumns = 0;
+    int mRows = 0;
     double *mData = nullptr;
-    double mNodataValue;
+    double mNodataValue = -1;
 
     //! +,-,*,/,^,<,>,<=,>=,=,!=, and, or
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix &other );

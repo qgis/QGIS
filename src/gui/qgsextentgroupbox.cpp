@@ -29,7 +29,6 @@
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
   , mTitleBase( tr( "Extent" ) )
-  , mExtentState( OriginalExtent )
 {
   setupUi( this );
 

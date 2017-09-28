@@ -134,7 +134,7 @@ QRectF QgsGCPCanvasItem::boundingRect() const
 
   QRectF residualArrowRect( QPointF( residualLeft, residualTop ), QPointF( residualRight, residualBottom ) );
   QRectF markerRect( -2, -2, mTextBounds.width() + 6, mTextBounds.height() + 6 );
-  QRectF boundingRect =  residualArrowRect.united( markerRect );
+  QRectF boundingRect = residualArrowRect.united( markerRect );
   if ( !mTextBoxRect.isNull() )
   {
     boundingRect = boundingRect.united( mTextBoxRect );

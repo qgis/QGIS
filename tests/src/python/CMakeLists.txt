@@ -181,6 +181,7 @@ ADD_PYTHON_TEST(PyQgsFileDownloader test_qgsfiledownloader.py)
 ADD_PYTHON_TEST(PyQgsSettings test_qgssettings.py)
 ADD_PYTHON_TEST(PyQgsZipUtils test_qgsziputils.py)
 ADD_PYTHON_TEST(PyQgsSourceSelectProvider test_qgssourceselectprovider.py)
+ADD_PYTHON_TEST(PyQgsAuthManagerProxy test_authmanager_proxy.py)
 
 IF (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)

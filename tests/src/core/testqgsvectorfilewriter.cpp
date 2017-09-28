@@ -84,7 +84,7 @@ class TestQgsVectorFileWriter: public QObject
     // a little util fn used by all tests
     bool cleanupFile( QString fileBase );
     QString mEncoding;
-    QgsVectorFileWriter::WriterError mError;
+    QgsVectorFileWriter::WriterError mError =  QgsVectorFileWriter::NoError ;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
     QgsPointXY mPoint1;
@@ -93,7 +93,6 @@ class TestQgsVectorFileWriter: public QObject
 };
 
 TestQgsVectorFileWriter::TestQgsVectorFileWriter()
-  : mError( QgsVectorFileWriter::NoError )
 {
 
 }

@@ -655,7 +655,7 @@ void eVisGenericEventBrowserGui::restoreDefaultOptions()
   rbtnManualCompassOffset->setChecked( true );
   dsboxCompassOffset->setValue( 0.0 );
 
-  leBasePath->setText( QLatin1String( "" ) );
+  leBasePath->clear();
   chkboxUseOnlyFilename->setChecked( false );
 
   chkboxSaveEventImagePathData->setChecked( false );
@@ -833,7 +833,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
       return;
 
     QgsAttributes myAttrs = myFeature->attributes();
-    for ( int i = 0 ; i < myAttrs.count(); ++i )
+    for ( int i = 0; i < myAttrs.count(); ++i )
     {
       if ( myFields.at( i ).name() == cboxEventImagePathField->currentText() )
       {
@@ -1039,7 +1039,7 @@ void eVisGenericEventBrowserGui::on_pbtnResetApplyPathRulesToDocs_clicked()
 
 void eVisGenericEventBrowserGui::on_pbtnResetBasePathData_clicked()
 {
-  leBasePath->setText( QLatin1String( "" ) );
+  leBasePath->clear();
   if ( chkboxEventImagePathRelative->isChecked() )
   {
     setBasePathToDataSource();

@@ -75,9 +75,9 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     int spinButtonWidth() const;
     int frameWidth() const;
 
-    bool mAllowNull;
-    bool mIsNull;
-    bool mIsEmpty;
+    bool mAllowNull = true;
+    bool mIsNull = true;
+    bool mIsEmpty = false;
 
     QLineEdit *mNullLabel = nullptr;
     QToolButton *mClearButton = nullptr;

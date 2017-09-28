@@ -119,8 +119,6 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mColumnTypeThread( nullptr )
-  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
   setupButtons( buttonBox );
@@ -494,7 +492,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
 
-  mConnInfo =  "dbname='" + database + '\'';
+  mConnInfo = "dbname='" + database + '\'';
   if ( !host.isEmpty() )
     mConnInfo += " host='" + host + '\'';
   if ( !username.isEmpty() )
@@ -583,8 +581,8 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
         if ( type == QLatin1String( "GEOMETRY" ) || type.isNull() || srid.isEmpty() )
         {
           addSearchGeometryColumn( connectionName, layer, estimateMetadata );
-          type = QLatin1String( "" );
-          srid = QLatin1String( "" );
+          type.clear();
+          srid.clear();
         }
       }
 
@@ -709,7 +707,7 @@ void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &connectionNam
 
 QString QgsMssqlSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
-  QString full_desc = QLatin1String( "" );
+  QString full_desc;
   if ( !schema.isEmpty() )
     full_desc = schema + '.';
   full_desc += table + " (" + column + ") " + type;

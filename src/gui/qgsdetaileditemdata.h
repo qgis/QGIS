@@ -62,10 +62,10 @@ class GUI_EXPORT QgsDetailedItemData
     QString mCategory;
     QString mLibraryName;
     QPixmap mPixmap;
-    bool mCheckableFlag;
-    bool mCheckedFlag;
-    bool mEnabledFlag;
-    bool mRenderAsWidgetFlag;
+    bool mCheckableFlag = false;
+    bool mCheckedFlag = false;
+    bool mEnabledFlag = true;
+    bool mRenderAsWidgetFlag = false;
 };
 
 // Make QVariant aware of this data type (see qtdocs star

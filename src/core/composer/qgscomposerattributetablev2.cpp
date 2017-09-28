@@ -32,8 +32,6 @@
 //QgsComposerAttributeTableCompareV2
 
 QgsComposerAttributeTableCompareV2::QgsComposerAttributeTableCompareV2()
-  : mCurrentSortColumn( 0 )
-  , mAscending( true )
 {
 }
 
@@ -59,7 +57,7 @@ QgsComposerAttributeTableV2::QgsComposerAttributeTableV2( QgsComposition *compos
   , mFeatureFilter( QLatin1String( "" ) )
 {
   //set first vector layer from layer registry as default one
-  QMap<QString, QgsMapLayer *> layerMap =  mComposition->project()->mapLayers();
+  QMap<QString, QgsMapLayer *> layerMap = mComposition->project()->mapLayers();
   QMap<QString, QgsMapLayer *>::const_iterator mapIt = layerMap.constBegin();
   for ( ; mapIt != layerMap.constEnd(); ++mapIt )
   {

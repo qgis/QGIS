@@ -29,7 +29,6 @@ class TestQgsRasterBlock : public QObject
     Q_OBJECT
   public:
     TestQgsRasterBlock()
-      : mpRasterLayer( nullptr )
     {}
     ~TestQgsRasterBlock()
     {

@@ -166,14 +166,14 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
   private:
     QString mFilePath;
-    bool mButtonVisible;
-    bool mUseLink;
-    bool mFullUrl;
+    bool mButtonVisible = true;
+    bool mUseLink = false;
+    bool mFullUrl = false;
     QString mDialogTitle;
     QString mFilter;
     QString mDefaultRoot;
-    StorageMode mStorageMode;
-    RelativeStorage mRelativeStorage;
+    StorageMode mStorageMode = GetFile;
+    RelativeStorage mRelativeStorage = Absolute;
 
     QLabel *mLinkLabel = nullptr;
     QgsFileDropEdit *mLineEdit = nullptr;

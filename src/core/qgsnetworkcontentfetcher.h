@@ -69,7 +69,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 
     QNetworkReply *mReply = nullptr;
 
-    bool mContentLoaded;
+    bool mContentLoaded = false;
 
     /** Tries to create a text codec for decoding html content. Works around bugs in Qt's built in method.
      * \param array input html byte array

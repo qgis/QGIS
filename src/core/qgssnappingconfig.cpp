@@ -24,11 +24,6 @@
 #include "qgsproject.h"
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings()
-  : mValid( false )
-  , mEnabled( false )
-  , mType( Vertex )
-  , mTolerance( 0 )
-  , mUnits( QgsTolerance::Pixels )
 {}
 
 
@@ -415,7 +410,7 @@ void QgsSnappingConfig::readLegacySettings()
   QString snapMode = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
 
   mTolerance = mProject->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ), 0 );
-  mUnits =  static_cast< QgsTolerance::UnitType >( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), QgsTolerance::ProjectUnits ) );
+  mUnits = static_cast< QgsTolerance::UnitType >( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), QgsTolerance::ProjectUnits ) );
 
   mIntersectionSnapping = mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/IntersectionSnapping" ), 0 );
 

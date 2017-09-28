@@ -35,8 +35,6 @@
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
-  , mEditSelectionDrag( false )
-  , mRowAnchor( 0 )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
@@ -306,7 +304,7 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
 
 void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 {
-  QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
+  QItemSelectionModel::SelectionFlags command = selectionCommand( index );
   int row = index.row();
 
   if ( anchor )

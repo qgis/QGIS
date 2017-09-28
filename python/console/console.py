@@ -238,7 +238,7 @@ class PythonConsoleWidget(QWidget):
         self.pasteEditorButton.setToolTip(pasteEditorBt)
         self.pasteEditorButton.setText(pasteEditorBt)
         # Action Run Script (subprocess)
-        runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run script")
+        runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run Script")
         self.runScriptEditorButton = QAction(self)
         self.runScriptEditorButton.setCheckable(False)
         self.runScriptEditorButton.setEnabled(True)

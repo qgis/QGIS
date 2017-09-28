@@ -81,8 +81,6 @@ static const QString sPluginIcon = QStringLiteral( ":/icons/default/mGeorefRun.p
 QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mActionRunGeoref( nullptr )
-  , mPluginGui( nullptr )
 {
 }
 

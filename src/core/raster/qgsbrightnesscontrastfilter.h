@@ -58,10 +58,10 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     int  adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor ) const;
 
     //! Current brightness coefficient value. Default: 0. Range: -255...255
-    int mBrightness;
+    int mBrightness = 0;
 
     //! Current contrast coefficient value. Default: 0. Range: -100...100
-    double mContrast;
+    double mContrast = 0;
 };
 
 #endif // QGSBRIGHTNESSCONTRASTFILTER_H

@@ -24,7 +24,6 @@
 QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
   : QWidget( parent )
   , mAuthCfgOrig( authcfg )
-  , mValid( false )
   , mAllowEmpty( allowEmpty )
 {
   setupUi( this );

@@ -399,9 +399,9 @@ void QgsFieldsProperties::loadRelations()
 
       const QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
-      const QVariant nmrelcfg =  editFormConfig.widgetConfig( relation.id() ).value( QStringLiteral( "nm-rel" ) );
+      const QVariant nmrelcfg = editFormConfig.widgetConfig( relation.id() ).value( QStringLiteral( "nm-rel" ) );
 
-      int idx =  nmCombo->findData( nmrelcfg.toString() );
+      int idx = nmCombo->findData( nmrelcfg.toString() );
 
       if ( idx != -1 )
         nmCombo->setCurrentIndex( idx );
@@ -1077,17 +1077,12 @@ void QgsFieldsProperties::apply()
  */
 
 QgsFieldsProperties::FieldConfig::FieldConfig()
-  : mEditable( true )
-  , mEditableEnabled( true )
-  , mLabelOnTop( false )
-  , mConstraints( 0 )
+  : mConstraints( 0 )
   , mConstraintDescription( QString() )
-
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
-
 {
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
@@ -1334,7 +1329,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   {
     QDialog dlg;
     dlg.setWindowTitle( tr( "Configure Container" ) );
-    QFormLayout *layout = new QFormLayout() ;
+    QFormLayout *layout = new QFormLayout();
     dlg.setLayout( layout );
     layout->addRow( baseWidget );
 
@@ -1393,7 +1388,7 @@ void DesignerTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   {
     QDialog dlg;
     dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
-    QFormLayout *layout = new QFormLayout() ;
+    QFormLayout *layout = new QFormLayout();
     dlg.setLayout( layout );
     layout->addWidget( baseWidget );
 

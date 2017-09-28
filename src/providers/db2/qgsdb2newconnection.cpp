@@ -30,7 +30,6 @@
 QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
-  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2NewConnection::showHelp );

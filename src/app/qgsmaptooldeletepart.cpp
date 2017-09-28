@@ -74,7 +74,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent *e )
 
   if ( mPressedFid != -1 )
   {
-    mRubberBand = createRubberBand( vlayer->geometryType() ) ;
+    mRubberBand = createRubberBand( vlayer->geometryType() );
 
     mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();

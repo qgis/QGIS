@@ -57,30 +57,16 @@ QgsRasterDataProvider *QgsRasterFileWriter::createMultiBandRaster( Qgis::DataTyp
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter( const QString &outputUrl )
-  : mMode( Raw )
-  , mOutputUrl( outputUrl )
+  : mOutputUrl( outputUrl )
   , mOutputProviderKey( QStringLiteral( "gdal" ) )
   , mOutputFormat( QStringLiteral( "GTiff" ) )
-  , mTiledMode( false )
-  , mMaxTileWidth( 500 )
-  , mMaxTileHeight( 500 )
-  , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
-  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-
 {
 
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter()
-  : mMode( Raw )
-  , mOutputProviderKey( QStringLiteral( "gdal" ) )
+  : mOutputProviderKey( QStringLiteral( "gdal" ) )
   , mOutputFormat( QStringLiteral( "GTiff" ) )
-  , mTiledMode( false )
-  , mMaxTileWidth( 500 )
-  , mMaxTileHeight( 500 )
-  , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
-  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-
 {
 
 }
@@ -324,7 +310,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destDataTypeList.replace( i, destDataType );
       destNoDataValueList.replace( i, destNoDataValue );
     }
-    destDataType =  destDataTypeList.value( 0 );
+    destDataType = destDataTypeList.value( 0 );
 
     // Try again
     destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList );

@@ -69,9 +69,9 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Flags
     Flags mFlags;
     //! search method to use for removal collisions between labels
-    Search mSearchMethod;
+    Search mSearchMethod = Chain;
     //! Number of candedate positions that will be generated for features
-    int mCandPoint, mCandLine, mCandPolygon;
+    int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
 
 };
 

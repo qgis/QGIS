@@ -35,7 +35,7 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Association with a triangulation object
     NormVecDecorator *mTIN = nullptr;
     //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)
-    double mEdgeTolerance;
+    double mEdgeTolerance = 0.00001;
     //! First point of the triangle in x-,y-,z-coordinates
     QgsPoint point1 = QgsPoint( 0, 0, 0 );
     //! Second point of the triangle in x-,y-,z-coordinates
@@ -75,17 +75,17 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Control point 16
     QgsPoint cp16 = QgsPoint( 0, 0, 0 );
     //! Derivative in x-direction at point1
-    double der1X;
+    double der1X = 0.0;
     //! Derivative in y-direction at point1
-    double der1Y;
+    double der1Y = 0.0;
     //! Derivative in x-direction at point2
-    double der2X;
+    double der2X = 0.0;
     //! Derivative in y-direction at point2
-    double der2Y;
+    double der2Y = 0.0;
     //! Derivative in x-direction at point3
-    double der3X;
+    double der3X = 0.0;
     //! Derivative in y-direction at point3
-    double der3Y;
+    double der3Y = 0.0;
     //! Stores point1 of the last run
     QgsPoint lpoint1 = QgsPoint( 0, 0, 0 );
     //! Stores point2 of the last run

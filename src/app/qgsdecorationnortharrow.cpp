@@ -57,10 +57,6 @@ const double QgsDecorationNorthArrow::TOL = 1e-8;
  */
 QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject *parent )
   : QgsDecorationItem( parent )
-  , mRotationInt( 0 )
-  , mAutomatic( true )
-  , mMarginHorizontal( 0 )
-  , mMarginVertical( 0 )
 {
   mPlacement = BottomLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;

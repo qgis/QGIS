@@ -50,8 +50,8 @@ class GUI_EXPORT QgsMasterPasswordResetDialog : public QDialog, private Ui::QgsM
   private:
     void validatePasswords();
 
-    bool mPassCurOk;
-    bool mPassNewOk;
+    bool mPassCurOk = false;
+    bool mPassNewOk = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

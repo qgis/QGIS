@@ -20,9 +20,6 @@
 #include <cmath>
 
 QgsRasterMatrix::QgsRasterMatrix()
-  : mColumns( 0 )
-  , mRows( 0 )
-  , mNodataValue( -1 )
 {
 }
 
@@ -35,8 +32,6 @@ QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nod
 }
 
 QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix &m )
-  : mColumns( 0 )
-  , mRows( 0 )
 {
   operator=( m );
 }

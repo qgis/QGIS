@@ -60,7 +60,6 @@ class TestQgisAppClipboard : public QObject
 };
 
 TestQgisAppClipboard::TestQgisAppClipboard()
-  : mQgisApp( nullptr )
 {
 
 }
@@ -265,7 +264,7 @@ void TestQgisAppClipboard::pasteGeoJson()
 void TestQgisAppClipboard::retrieveFields()
 {
   //empty string
-  mQgisApp->clipboard()->setText( QLatin1String( "" ) );
+  mQgisApp->clipboard()->setText( QString() );
 
   QgsFields fields = mQgisApp->clipboard()->fields();
   QCOMPARE( fields.count(), 0 );

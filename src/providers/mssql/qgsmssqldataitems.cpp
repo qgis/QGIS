@@ -43,7 +43,6 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, QString nam
   , mUseGeometryColumns( false )
   , mUseEstimatedMetadata( false )
   , mAllowGeometrylessTables( true )
-  , mColumnTypeThread( nullptr )
 {
   mCapabilities |= Fast | Collapse;
   mIconName = QStringLiteral( "mIconConnect.png" );
@@ -75,7 +74,7 @@ void QgsMssqlConnectionItem::readConnectionSettings()
   mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
   mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
 
-  mConnInfo =  "dbname='" + mDatabase + "' host='" + mHost + "' user='" + mUsername + "' password='" + mPassword + '\'';
+  mConnInfo = "dbname='" + mDatabase + "' host='" + mHost + "' user='" + mUsername + "' password='" + mPassword + '\'';
   if ( !mService.isEmpty() )
     mConnInfo += " service='" + mService + '\'';
   if ( mUseEstimatedMetadata )
@@ -304,7 +303,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
   QStringList sridList = layerProperty.srid.split( ',', QString::SkipEmptyParts );
   Q_ASSERT( typeList.size() == sridList.size() );
 
-  for ( int i = 0 ; i < typeList.size(); i++ )
+  for ( int i = 0; i < typeList.size(); i++ )
   {
     QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
     if ( wkbType == QgsWkbTypes::Unknown )

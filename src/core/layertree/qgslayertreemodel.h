@@ -330,8 +330,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     struct LayerLegendData
     {
       LayerLegendData()
-        : embeddedNodeInParent( nullptr )
-        , tree( nullptr )
       {
       }
 
