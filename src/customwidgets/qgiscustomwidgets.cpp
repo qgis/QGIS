@@ -28,6 +28,7 @@
 #include "qgsexternalresourcewidgetplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
+#include "qgsfilewidgetplugin.h"
 #include "qgsfilterlineeditplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
 #include "qgsprojectionselectionwidgetplugin.h"
@@ -53,6 +54,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsExternalResourceWidgetPlugin( this ) );
   mWidgets.append( new QgsFieldComboBoxPlugin( this ) );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin( this ) );
+  mWidgets.append( new QgsFileWidgetPlugin( this ) );
   mWidgets.append( new QgsFilterLineEditPlugin( this ) );
   mWidgets.append( new QgsMapLayerComboBoxPlugin( this ) );
   mWidgets.append( new QgsProjectionSelectionWidgetPlugin( this ) );
@@ -71,5 +73,3 @@ QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const
 #if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2( customwidgetsplugin, QgisCustomWidgets )
 #endif
-
-
