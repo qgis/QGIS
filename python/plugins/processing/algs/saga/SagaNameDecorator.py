@@ -155,7 +155,7 @@ algorithms = {'Add Grid Values to Points': 'Add raster values to points',
               'Threshold Buffer': 'Threshold raster buffer',
               'Transform Shapes': 'Transform vector layer',
               'Transpose Grids': 'Transpose Raster layers',
-              'Union': 'Polygon uUnion',
+              'Union': 'Polygon Union',
               'Update': 'Polygon update',
               'Upslope Area': 'Upslope Area',
               'Zonal Grid Statistics': 'Zonal raster statistics'}
