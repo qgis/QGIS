@@ -77,4 +77,6 @@ class rasterize_over(GdalAlgorithm):
         arguments.append(ogrLayer)
         arguments.append(ogrRasterLayer)
 
+        if None in arguments:
+            return ['gdal_rasterize']
         return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
