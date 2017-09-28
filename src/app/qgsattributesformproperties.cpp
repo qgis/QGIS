@@ -185,7 +185,7 @@ QgsAttributesFormProperties::FieldConfig QgsAttributesFormProperties::configForC
 }
 
 
-QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *mTree )
+QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree )
 {
   QTreeWidgetItem *newWidget = nullptr;
   switch ( widgetDef->type() )
@@ -194,7 +194,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
     {
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, widgetDef->name() );
       itemData.setShowLabel( widgetDef->showLabel() );
-      newWidget = mTree->addItem( parent, itemData );
+      newWidget = tree->addItem( parent, itemData );
       break;
     }
 
@@ -208,7 +208,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
       itemData.setRelationEditorConfiguration( relEdConfig );
 
-      newWidget = mTree->addItem( parent, itemData );
+      newWidget = tree->addItem( parent, itemData );
       break;
     }
 
@@ -224,11 +224,12 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       itemData.setColumnCount( container->columnCount() );
       itemData.setShowAsGroupBox( container->isGroupBox() );
       itemData.setVisibilityExpression( container->visibilityExpression() );
-      newWidget = mTree->addItem( parent, itemData );
+      newWidget = tree->addItem( parent, itemData );
 
-      Q_FOREACH ( QgsAttributeEditorElement *wdg, container->children() )
+      const QList<QgsAttributeEditorElement *> children = container->children();
+      for ( QgsAttributeEditorElement *wdg : children )
       {
-        loadAttributeEditorTreeItem( wdg, newWidget, mTree );
+        loadAttributeEditorTreeItem( wdg, newWidget, tree );
       }
     }
     break;
