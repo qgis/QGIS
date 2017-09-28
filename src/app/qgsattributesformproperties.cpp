@@ -242,34 +242,32 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
 
 
-void QgsAttributesFormProperties::loadAttributeEditorTree( DnDTree *mTree )
+void QgsAttributesFormProperties::loadAttributeEditorTree( DnDTree *tree )
 {
-  if ( mTree->type() == DnDTree::Type::Drop )
+  if ( tree->type() == DnDTree::Type::Drop )
   {
     // tabs and groups info
-    mTree->clear();
-    mTree->setSortingEnabled( false );
-    mTree->setSelectionBehavior( QAbstractItemView::SelectRows );
-    mTree->setDragDropMode( QAbstractItemView::InternalMove );
-    mTree->setAcceptDrops( true );
-    mTree->setDragDropMode( QAbstractItemView::DragDrop );
+    tree->clear();
+    tree->setSortingEnabled( false );
+    tree->setSelectionBehavior( QAbstractItemView::SelectRows );
+    tree->setAcceptDrops( true );
+    tree->setDragDropMode( QAbstractItemView::DragDrop );
 
     Q_FOREACH ( QgsAttributeEditorElement *wdg, mLayer->editFormConfig().tabs() )
     {
-      loadAttributeEditorTreeItem( wdg, mTree->invisibleRootItem(), mTree );
+      loadAttributeEditorTreeItem( wdg, tree->invisibleRootItem(), tree );
     }
 
   }
   else
   {
-    mTree->clear();
-    mTree->setSortingEnabled( false );
-    mTree->setSelectionBehavior( QAbstractItemView::SelectRows );
-    mTree->setDragDropMode( QAbstractItemView::InternalMove );
-    mTree->setAcceptDrops( false );
-    mTree->setDragDropMode( QAbstractItemView::DragOnly );
+    tree->clear();
+    tree->setSortingEnabled( false );
+    tree->setSelectionBehavior( QAbstractItemView::SelectRows );
+    tree->setAcceptDrops( false );
+    tree->setDragDropMode( QAbstractItemView::DragOnly );
 
-    mTree->mIndexedWidgets.clear();
+    tree->mIndexedWidgets.clear();
 
     const QgsFields &fields = mLayer->fields();
     for ( int i = 0; i < fields.size(); ++i )
@@ -283,7 +281,7 @@ void QgsAttributesFormProperties::loadAttributeEditorTree( DnDTree *mTree )
 
       itemData.setData( 0, FieldConfigRole, QVariant::fromValue<FieldConfig>( cfg ) );
 
-      mTree->mIndexedWidgets.insert( i, mTree->addItem( mTree->invisibleRootItem(), itemData ) );
+      tree->mIndexedWidgets.insert( i, tree->addItem( tree->invisibleRootItem(), itemData ) );
     }
 
     /*some stuff for containers

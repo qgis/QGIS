@@ -163,8 +163,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
     void loadRelations();
 
-    void loadAttributeEditorTree( DnDTree *mTree );
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *mTree );
+    void loadAttributeEditorTree(DnDTree *tree );
+    QTreeWidgetItem *loadAttributeEditorTreeItem(QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
 
   protected:
     void updateButtons();
