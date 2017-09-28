@@ -129,17 +129,16 @@ class SagaAlgorithm(GeoAlgorithm):
                 line = lines.readline().strip('\n').strip()
             hasRaster = False
             for param in self.parameters:
-                if (isinstance(param, ParameterRaster) or 
-                    (isinstance(param, ParameterMultipleInput) 
-                        and param.type == ParameterMultipleInput.TYPE_RASTER)):
+                if (isinstance(param, ParameterRaster) or
+                    (isinstance(param, ParameterMultipleInput)
+                        and param.datatype == ParameterMultipleInput.TYPE_RASTER)):
                     hasRaster = True
-                    break;
+                    break
 
             if (not self.noResamplingChoice and hasRaster):
                 param = ParameterSelection(self.RESAMPLING, "Resampling method", ["Nearest Neighbour", "Bilinear Interpolation", "Bicubic Spline Interpolation", "B-Spline Interpolation"], 3)
                 param.isAdvanced = True
                 self.addParameter(param)
-
 
     def processAlgorithm(self, progress):
         commands = list()
