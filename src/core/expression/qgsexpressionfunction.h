@@ -40,7 +40,7 @@ class CORE_EXPORT QgsExpressionFunction
 
     /** Function definition for evaluation against an expression context, using a list of values as parameters to the function.
      */
-    typedef QVariant( *FcnEval )( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) SIP_SKIP;
+    typedef QVariant( *FcnEval )( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) SIP_SKIP;
 
     /** \ingroup core
       * Represents a single parameter passed to a function.
@@ -271,11 +271,12 @@ class CORE_EXPORT QgsExpressionFunction
      * \param values list of values passed to the function
      * \param context context expression is being evaluated against
      * \param parent parent expression
+     * \param node expression node
      * \returns result of function
      */
-    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) = 0;
+    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) = 0;
 
-    virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent );
+    virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node );
 
     bool operator==( const QgsExpressionFunction &other ) const;
 
@@ -402,9 +403,9 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * \param parent parent expression
      * \returns result of function
      */
-    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override
+    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override
     {
-      return mFnc ? mFnc( values, context, parent ) : QVariant();
+      return mFnc ? mFnc( values, context, parent, node ) : QVariant();
     }
 
     virtual QStringList aliases() const override;
@@ -471,9 +472,9 @@ class QgsWithVariableExpressionFunction : public QgsExpressionFunction
 
     bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-    QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent ) override;
+    QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override;
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override;
+    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override;
 
     bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 

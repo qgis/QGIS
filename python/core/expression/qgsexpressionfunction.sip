@@ -239,17 +239,18 @@ The help text for the function.
  :rtype: str
 %End
 
-    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) = 0;
+    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) = 0;
 %Docstring
  Returns result of evaluating the function.
  \param values list of values passed to the function
  \param context context expression is being evaluated against
  \param parent parent expression
+ \param node expression node
  :return: result of function
  :rtype: QVariant
 %End
 
-    virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent );
+    virtual QVariant run( QgsExpressionNode::NodeList *args, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node );
 %Docstring
  :rtype: QVariant
 %End

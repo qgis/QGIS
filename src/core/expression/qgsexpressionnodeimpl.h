@@ -241,7 +241,6 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
   private:
     int mFnIndex;
     NodeList *mArgs = nullptr;
-
 };
 
 /** \ingroup core

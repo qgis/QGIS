@@ -240,9 +240,15 @@ bool QgsExpression::isValid() const
   return d->mRootNode;
 }
 
-bool QgsExpression::hasParserError() const { return !d->mParserErrorString.isNull(); }
+bool QgsExpression::hasParserError() const
+{
+  return !d->mParserErrorString.isNull();
+}
 
-QString QgsExpression::parserErrorString() const { return d->mParserErrorString; }
+QString QgsExpression::parserErrorString() const
+{
+  return d->mParserErrorString;
+}
 
 QSet<QString> QgsExpression::referencedColumns() const
 {
