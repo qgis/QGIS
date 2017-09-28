@@ -21,6 +21,7 @@
 void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
 {
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
+  featureIds.remove( mCheckLayer ); // Don't check layer against itself
   QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, progressCounter, true );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
@@ -38,11 +39,6 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
       QgsGeometryCheckerUtils::LayerFeatures checkFeatures( mContext->featurePools, QStringList() << mCheckLayer, line->boundingBox(), {QgsWkbTypes::LineGeometry, QgsWkbTypes::PolygonGeometry} );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
-        if ( checkFeature == layerFeature )
-        {
-          // Skip current feature
-          continue;
-        }
         const QgsAbstractGeometry *testGeom = checkFeature.geometry();
         for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
         {
