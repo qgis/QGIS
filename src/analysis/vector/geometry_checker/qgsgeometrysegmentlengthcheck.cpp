@@ -42,7 +42,8 @@ void QgsGeometrySegmentLengthCheck::collectErrors( QList<QgsGeometryCheckError *
           QgsPoint pi = geom->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
           QgsPoint pj = geom->vertexAt( QgsVertexId( iPart, iRing, jVert ) );
           double dist = qSqrt( QgsGeometryUtils::sqrDistance2D( pi, pj ) );
-          if ( dist < minLength )
+          // Don't report very small lengths, they are either duplicate nodes or degenerate geometries
+          if ( dist < minLength && dist > mContext->tolerance )
           {
             QgsPointXY pos( 0.5 * ( pi.x() + pj.x() ), 0.5 * ( pi.y() + pj.y() ) );
             errors.append( new QgsGeometryCheckError( this, layerFeature, pos, QgsVertexId( iPart, iRing, iVert ), dist * layerToMapUnits, QgsGeometryCheckError::ValueLength ) );
