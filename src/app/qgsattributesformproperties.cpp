@@ -60,7 +60,6 @@ void QgsAttributesFormProperties::init()
 
 void QgsAttributesFormProperties::loadAttributeTypeDialog()
 {
-
   FieldConfig cfg;
 
   int index = mDragTree->mIndexedWidgets.indexOf( mDragTree->currentItem() );
@@ -118,7 +117,6 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
 void QgsAttributesFormProperties::storeAttributeTypeDialog()
 {
-
   FieldConfig cfg;
 
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
