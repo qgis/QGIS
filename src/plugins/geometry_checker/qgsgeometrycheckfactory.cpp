@@ -194,9 +194,9 @@ template<> void QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::restorePrev
   ui.checkBoxDuplicates->setChecked( QgsSettings().value( sSettingsGroup + "checkDuplicates" ).toBool() );
 }
 
-template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int /*nLineString*/, int nPolygon ) const
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryDuplicateCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int nLineString, int nPolygon ) const
 {
-  ui.checkBoxDuplicates->setEnabled( nPoint > 0 || nPolygon > 0 );
+  ui.checkBoxDuplicates->setEnabled( nPoint > 0 || nLineString > 0 || nPolygon > 0 );
   return ui.checkBoxDuplicates->isEnabled();
 }
 
