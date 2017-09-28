@@ -19,7 +19,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mDragListWidgetLayout->addWidget( mDragTree );
   mDragListWidget->setLayout( mDragListWidgetLayout );
   mDragTree->setHeaderLabels( QStringList() << tr( "Label" ) );
-  mDragTree->type = DnDTree::Type::Drag;
+  mDragTree->setType( DnDTree::Type::Drag );
 
   // drop tree
   QGridLayout *mDropListWidgetLayout = new QGridLayout;
@@ -28,7 +28,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mDropListWidgetLayout->setMargin( 0 );
   mDropListWidget->setLayout( mDropListWidgetLayout );
   mDropTree->setHeaderLabels( QStringList() << tr( "Label" ) );
-  mDropTree->type = DnDTree::Type::Drop;
+  mDropTree->setType( DnDTree::Type::Drop );
 
   // AttributeTypeDialog
   mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, 0, mAttributeTypeFrame );
@@ -244,7 +244,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
 void QgsAttributesFormProperties::loadAttributeEditorTree( DnDTree *mTree )
 {
-  if ( mTree->type == DnDTree::Type::Drop )
+  if ( mTree->type() == DnDTree::Type::Drop )
   {
     // tabs and groups info
     mTree->clear();
@@ -819,6 +819,16 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData.asQVariant() );
     }
   }
+}
+
+DnDTree::Type DnDTree::type() const
+{
+  return mType;
+}
+
+void DnDTree::setType( const Type &value )
+{
+  mType = value;
 }
 
 

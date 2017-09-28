@@ -24,7 +24,6 @@
 #include <QSpinBox>
 #include <QTreeWidgetItem>
 #include <QDropEvent>
-#include <QPushButton>
 #include <QTableWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -165,7 +164,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void loadRelations();
 
     void loadAttributeEditorTree( DnDTree *mTree );
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree* mTree);
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *mTree );
 
   protected:
     void updateButtons();
@@ -187,10 +186,10 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
   signals:
 
   private slots:
-  void addTabOrGroupButton();
-  void removeTabOrGroupButton();
-  void loadAttributeTypeDialog( );
-  void storeAttributeTypeDialog( );
+    void addTabOrGroupButton();
+    void removeTabOrGroupButton();
+    void loadAttributeTypeDialog( );
+    void storeAttributeTypeDialog( );
 };
 
 
@@ -222,9 +221,11 @@ class DnDTree : public QTreeWidget
       Drop
     };
 
-    Type type;
 
     QList<QTreeWidgetItem *> mIndexedWidgets;
+    Type type() const;
+    void setType( const Type &value );
+
   protected:
     virtual void dragMoveEvent( QDragMoveEvent *event ) override;
     virtual void dropEvent( QDropEvent *event ) override;
@@ -242,6 +243,7 @@ class DnDTree : public QTreeWidget
 
   private:
     QgsVectorLayer *mLayer = nullptr;
+    Type mType;
 };
 
 
