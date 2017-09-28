@@ -42,22 +42,21 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
         const QgsAbstractGeometry *testGeom = checkFeature.geometry();
         for ( int jPart = 0, mParts = testGeom->partCount(); jPart < mParts; ++jPart )
         {
-          QgsPoint inter;
           const QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart );
           if ( const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( part ) )
           {
-            if ( QgsGeometryCheckerUtils::linesIntersect( line, testLine, mContext->tolerance, inter ) )
+            for ( const QgsPoint &inter : QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance ) )
             {
-              errors.append( new QgsGeometryCheckError( this, layerFeature, inter ) );
+              errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId(), checkFeature.id() ) );
             }
           }
           else if ( const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( part ) )
           {
             for ( const QgsLineString *ring : QgsGeometryCheckerUtils::polygonRings( polygon ) )
             {
-              if ( QgsGeometryCheckerUtils::linesIntersect( ring, testLine, mContext->tolerance, inter ) )
+              for ( const QgsPoint &inter : QgsGeometryCheckerUtils::lineIntersections( line, ring, mContext->tolerance ) )
               {
-                errors.append( new QgsGeometryCheckError( this, layerFeature, inter ) );
+                errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId(), checkFeature.id() ) );
               }
             }
           }

@@ -59,10 +59,9 @@ void QgsGeometryLineIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
           {
             continue;
           }
-          QgsPoint inter;
-          if ( QgsGeometryCheckerUtils::linesIntersect( line, testLine, mContext->tolerance, inter ) )
+          for ( const QgsPoint &inter : QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance ) )
           {
-            errors.append( new QgsGeometryCheckError( this, layerFeature, inter ) );
+            errors.append( new QgsGeometryCheckError( this, layerFeatureA, inter, QgsVertexId(), layerFeatureB.id() ) );
           }
         }
       }
