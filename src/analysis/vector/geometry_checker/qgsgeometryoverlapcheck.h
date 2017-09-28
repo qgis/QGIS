@@ -22,14 +22,13 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
 {
   public:
     QgsGeometryOverlapCheckError( const QgsGeometryCheck *check,
-                                  const QString &layerId,
-                                  QgsFeatureId featureId,
+                                  const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
                                   QgsAbstractGeometry *geometry,
                                   const QgsPointXY &errorLocation,
                                   const QVariant &value,
-                                  const QPair<QString, QgsFeatureId> &overlappedFeature )
-      : QgsGeometryCheckError( check, layerId, featureId, geometry, errorLocation, QgsVertexId(), value, ValueArea )
-      , mOverlappedFeature( overlappedFeature )
+                                  const QgsGeometryCheckerUtils::LayerFeature &overlappedFeature )
+      : QgsGeometryCheckError( check, layerFeature.layer().id(), layerFeature.feature().id(), geometry, errorLocation, QgsVertexId(), value, ValueArea )
+      , mOverlappedFeature( qMakePair( overlappedFeature.layer().id(), overlappedFeature.feature().id() ) )
     { }
     const QPair<QString, QgsFeatureId> &overlappedFeature() const { return mOverlappedFeature; }
 

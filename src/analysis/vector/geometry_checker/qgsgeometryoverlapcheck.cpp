@@ -54,10 +54,11 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &err
           QgsGeometryCheckerUtils::filter1DTypes( interGeom );
           for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
           {
-            double area = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart )->area();
+            QgsAbstractGeometry *interPart = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart );
+            double area = interPart->area();
             if ( area > mContext->reducedTolerance && area < overlapThreshold )
             {
-              errors.append( new QgsGeometryOverlapCheckError( this, layerFeatureA.layer().id(), layerFeatureA.feature().id(), interGeom->clone(), QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart )->centroid(), area, qMakePair( layerFeatureB.layer().id(), layerFeatureB.feature().id() ) ) );
+              errors.append( new QgsGeometryOverlapCheckError( this, layerFeatureA, interPart->clone(), interPart->centroid(), area, layerFeatureB ) );
             }
           }
         }
