@@ -1186,6 +1186,8 @@ Change feature's geometry
  \param field The index of the field to be updated
  \param newValue The value which will be assigned to the field
  \param oldValue The previous value to restore on undo (will otherwise be retrieved)
+ \param skipDefaultValues If this is set to true, default values will not
+ be updated. This can be used to override default values. Defaults to false.
 
  :return: true in case of success
  :rtype: bool
