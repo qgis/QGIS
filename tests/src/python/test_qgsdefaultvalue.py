@@ -40,5 +40,6 @@ class TestQgsRasterColorRampShader(unittest.TestCase):
         value.setApplyOnUpdate(True)
         self.assertEqual(value.applyOnUpdate(), True)
 
+
 if __name__ == '__main__':
     unittest.main()
