@@ -23,7 +23,8 @@ class QgsPointDisplacementRenderer: QgsPointDistanceRenderer
     enum Placement
     {
       Ring,
-      ConcentricRings
+      ConcentricRings,
+      Grid
     };
 
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
