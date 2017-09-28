@@ -22,7 +22,6 @@
 # name is reserved for the Windows qmake project file
 
 echo "deprecated - use push_ts.sh and pull_ts.sh" >&2
-echo "deprecated - src/core/qgscontexthelp_texts.cpp are no longer used" >&2
 
 set -e
 
@@ -112,7 +111,7 @@ if [ -d "$builddir" ]; then
 	exit 1
 fi
 
-if [ ! -f "$builddir/src/core/qgsexpression_texts.cpp" -o ! -f "$builddir/src/core/qgscontexthelp_texts.cpp" ]; then
+if [ ! -f "$builddir/src/core/qgsexpression_texts.cpp" ]; then
 	echo Generated help files not found
 	exit 1
 fi
@@ -140,7 +139,7 @@ for i in \
 do
 	[ -f "$i" ] && mv "$i" "$i.save"
 done
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp" "$builddir/src/core/qgscontexthelp_texts.cpp"
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp"
 if [ -n "$add" ]; then
 	for i in $add; do
 		echo "Adding translation for $i"

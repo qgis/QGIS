@@ -78,7 +78,7 @@ files=
 if [ -d "$2" ]; then
 	builddir=$(realpath $2)
 	textcpp=
-	for i in $builddir/src/core/qgsexpression_texts.cpp $builddir/src/core/qgscontexthelp_texts.cpp; do
+	for i in $builddir/src/core/qgsexpression_texts.cpp; do
 		if [ -f $i ]; then
 			textcpp="$textcpp $i"
 		elif [ "$action" != "pull" ]; then
