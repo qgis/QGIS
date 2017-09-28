@@ -241,15 +241,27 @@ void QgsRequestHandler::parseInput()
       setupParameters();
 
       QDomElement docElem = doc.documentElement();
-      if ( docElem.hasAttribute( QStringLiteral( "version" ) ) )
-      {
-        mRequest.setParameter( QStringLiteral( "VERSION" ), docElem.attribute( QStringLiteral( "version" ) ) );
-      }
-      if ( docElem.hasAttribute( QStringLiteral( "service" ) ) )
-      {
-        mRequest.setParameter( QStringLiteral( "SERVICE" ), docElem.attribute( QStringLiteral( "service" ) ) );
-      }
+      // the document element tag name is the request
       mRequest.setParameter( QStringLiteral( "REQUEST" ), docElem.tagName() );
+      // loop through the attributes which are the parameters
+      // excepting the attributes started by xmlns or xsi
+      QDomNamedNodeMap map = docElem.attributes();
+      for ( int i = 0 ; i < map.length() ; ++i )
+      {
+        if ( map.item( i ).isNull() )
+          continue;
+
+        QDomNode attrNode = map.item( i );
+        QDomAttr attr = attrNode.toAttr();
+        if ( attr.isNull() )
+          continue;
+
+        QString attrName = attr.name();
+        if ( attrName.startsWith( "xmlns" ) || attrName.startsWith( "xsi:" ) )
+          continue;
+
+        mRequest.setParameter( attrName.toUpper(), attr.value() );
+      }
       mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString );
     }
   }
