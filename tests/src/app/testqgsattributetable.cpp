@@ -54,7 +54,6 @@ class TestQgsAttributeTable : public QObject
 };
 
 TestQgsAttributeTable::TestQgsAttributeTable()
-  : mQgisApp( nullptr )
 {
 
 }
@@ -114,7 +113,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
   double expected = 26932.156;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
@@ -126,7 +125,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 88360.0918635;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
 void TestQgsAttributeTable::testFieldCalculationArea()
@@ -164,7 +163,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
   double expected = 1009089817.0;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 1.0 );
 
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
@@ -176,7 +175,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 389.6117565069;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
 void TestQgsAttributeTable::testNoGeom()
@@ -255,7 +254,7 @@ void TestQgsAttributeTable::testRegression15974()
   QString path = QDir::tempPath() + "/testshp15974.shp";
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
-  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get(), path, "system", QgsCoordinateReferenceSystem( 4326 ), "ESRI Shapefile" );
+  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get(), path, QStringLiteral( "system" ), QgsCoordinateReferenceSystem( 4326 ), QStringLiteral( "ESRI Shapefile" ) );
   std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path, QStringLiteral( "test" ),  QStringLiteral( "ogr" ) ) );
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
   QgsGeometry geom;

@@ -27,13 +27,10 @@
 
 QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   : QTableView( parent )
-  , mGCPList( nullptr )
   , mGCPListModel( new QgsGCPListModel( this ) )
   , mNonEditableDelegate( new QgsNonEditableDelegate( this ) )
   , mDmsAndDdDelegate( new QgsDmsAndDdDelegate( this ) )
   , mCoordDelegate( new QgsCoordDelegate( this ) )
-  , mPrevRow( 0 )
-  , mPrevColumn( 0 )
 {
   // Create a proxy model, which will handle dynamic sorting
   QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel( this );

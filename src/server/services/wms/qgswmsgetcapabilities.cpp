@@ -842,6 +842,7 @@ namespace QgsWms
           if ( projectSettings )
           {
             layerElem.setAttribute( QStringLiteral( "visible" ), treeGroupChild->isVisible() );
+            layerElem.setAttribute( QStringLiteral( "mutuallyExclusive" ), treeGroupChild->isMutuallyExclusive() );
           }
 
           QString shortName = treeGroupChild->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
@@ -902,7 +903,7 @@ namespace QgsWms
             continue;
           }
 
-          QString wmsName =  l->name();
+          QString wmsName = l->name();
           if ( useLayerIds )
           {
             wmsName = l->id();
@@ -1001,7 +1002,7 @@ namespace QgsWms
             if ( version == QLatin1String( "1.1.1" ) )
             {
               double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
-              double SCALE_TO_SCALEHINT = OGC_PX_M * sqrt( 2.0 );
+              double SCALE_TO_SCALEHINT = OGC_PX_M * M_SQRT2;
 
               QDomElement scaleHintElem = doc.createElement( QStringLiteral( "ScaleHint" ) );
               scaleHintElem.setAttribute( QStringLiteral( "min" ), QString::number( l->maximumScale() * SCALE_TO_SCALEHINT ) );
@@ -1122,9 +1123,6 @@ namespace QgsWms
       hrefString.append( href.hasQuery() ? "&" : "?" );
       Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
       {
-        if ( styleName.isEmpty() )
-          styleName = EMPTY_STYLE_NAME;
-
         QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
         QDomElement styleNameElem = doc.createElement( QStringLiteral( "Name" ) );
         QDomText styleNameText = doc.createTextNode( styleName );
@@ -1162,7 +1160,7 @@ namespace QgsWms
         // no parameters on custom hrefUrl, because should link directly to graphic
         if ( customHrefString.isEmpty() )
         {
-          QString layerName =  currentLayer->name();
+          QString layerName = currentLayer->name();
           if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
             layerName = currentLayer->id();
           else if ( !currentLayer->shortName().isEmpty() )
@@ -1600,7 +1598,7 @@ namespace QgsWms
           continue;
         }
 
-        QString wmsName =  l->name();
+        QString wmsName = l->name();
         if ( useLayerIds )
         {
           wmsName = l->id();

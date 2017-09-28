@@ -405,22 +405,22 @@ class CORE_EXPORT QgsRasterBlock
     static void *convert( void *srcData, Qgis::DataType srcDataType, Qgis::DataType destDataType, qgssize size );
 
     // Valid
-    bool mValid;
+    bool mValid = true;
 
     // Data type
-    Qgis::DataType mDataType;
+    Qgis::DataType mDataType = Qgis::UnknownDataType;
 
     // Data type size in bytes, to make bits() fast
-    int mTypeSize;
+    int mTypeSize = 0;
 
     // Width
-    int mWidth;
+    int mWidth = 0;
 
     // Height
-    int mHeight;
+    int mHeight = 0;
 
     // Has no data value
-    bool mHasNoDataValue;
+    bool mHasNoDataValue = false;
 
     // No data value
     double mNoDataValue;
@@ -440,10 +440,10 @@ class CORE_EXPORT QgsRasterBlock
     char *mNoDataBitmap = nullptr;
 
     // number of bytes in mNoDataBitmap row
-    int mNoDataBitmapWidth;
+    int mNoDataBitmapWidth = 0;
 
     // total size in bytes of mNoDataBitmap
-    qgssize mNoDataBitmapSize;
+    qgssize mNoDataBitmapSize = 0;
 
     // Error
     QgsError mError;
@@ -497,16 +497,16 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
       ( static_cast< quint8 * >( data ) )[index] = static_cast< quint8 >( value );
       break;
     case Qgis::UInt16:
-      ( static_cast< quint16 * >( data ) )[index] =  static_cast< quint16 >( value );
+      ( static_cast< quint16 * >( data ) )[index] = static_cast< quint16 >( value );
       break;
     case Qgis::Int16:
-      ( static_cast< qint16 * >( data ) )[index] =  static_cast< qint16 >( value );
+      ( static_cast< qint16 * >( data ) )[index] = static_cast< qint16 >( value );
       break;
     case Qgis::UInt32:
-      ( static_cast< quint32 * >( data ) )[index] =  static_cast< quint32 >( value );
+      ( static_cast< quint32 * >( data ) )[index] = static_cast< quint32 >( value );
       break;
     case Qgis::Int32:
-      ( static_cast< qint32 * >( data ) )[index] =  static_cast< qint32 >( value );
+      ( static_cast< qint32 * >( data ) )[index] = static_cast< qint32 >( value );
       break;
     case Qgis::Float32:
       ( static_cast< float * >( data ) )[index] = static_cast< float >( value );
@@ -532,7 +532,7 @@ inline double QgsRasterBlock::value( qgssize index ) const SIP_SKIP
 
 inline bool QgsRasterBlock::isNoDataValue( double value ) const SIP_SKIP
 {
-  return qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue );
+  return std::isnan( value ) || qgsDoubleNear( value, mNoDataValue );
 }
 
 #endif

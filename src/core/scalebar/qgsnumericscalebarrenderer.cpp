@@ -60,8 +60,6 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
 QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings,
     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
-  QRectF rect;
-
   double textWidth = QgsComposerUtils::textWidthMM( settings.font(), scaleText( scaleContext.scale ) );
   double textHeight = QgsComposerUtils::fontAscentMM( settings.font() );
 

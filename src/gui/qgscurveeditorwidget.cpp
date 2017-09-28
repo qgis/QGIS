@@ -16,7 +16,6 @@
 
 #include "qgscurveeditorwidget.h"
 
-#include <qmath.h>
 #include <QPainter>
 #include <QVBoxLayout>
 #include <QMouseEvent>
@@ -41,7 +40,6 @@
 QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTransform &transform )
   : QWidget( parent )
   , mCurve( transform )
-  , mCurrentPlotMarkerIndex( -1 )
 {
   mPlot = new QwtPlot();
   mPlot->setMinimumSize( QSize( 0, 100 ) );
@@ -190,7 +188,7 @@ int QgsCurveEditorWidget::findNearestControlPoint( QPointF point ) const
   {
     QgsPointXY currentPoint = controlPoints.at( i );
     double currentDist;
-    currentDist = qPow( point.x() - currentPoint.x(), 2.0 ) + qPow( point.y() - currentPoint.y(), 2.0 );
+    currentDist = std::pow( point.x() - currentPoint.x(), 2.0 ) + std::pow( point.y() - currentPoint.y(), 2.0 );
     if ( currentDist < minDist )
     {
       minDist = currentDist;
@@ -214,7 +212,7 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   bool removePoint = false;
   if ( mCurrentPlotMarkerIndex == 0 )
   {
-    point.setX( qMin( point.x(), cp.at( 1 ).x() - 0.01 ) );
+    point.setX( std::min( point.x(), cp.at( 1 ).x() - 0.01 ) );
   }
   else
   {
@@ -222,7 +220,7 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   }
   if ( mCurrentPlotMarkerIndex == cp.count() - 1 )
   {
-    point.setX( qMax( point.x(), cp.at( mCurrentPlotMarkerIndex - 1 ).x() + 0.01 ) );
+    point.setX( std::max( point.x(), cp.at( mCurrentPlotMarkerIndex - 1 ).x() + 0.01 ) );
     removePoint = false;
   }
   else

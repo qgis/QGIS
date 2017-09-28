@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
+class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInterface
 {
 %Docstring
  Base class for graphical items within a QgsLayout.
@@ -219,6 +219,9 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
  :rtype: bool
 %End
 
+    virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
+
+
   public slots:
 
     virtual void refresh();
@@ -226,6 +229,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem
 %Docstring
  Refreshes the item, causing a recalculation of any property overrides and
  recalculation of its position and size.
+%End
+
+    virtual void redraw();
+%Docstring
+ Triggers a redraw (update) of the item.
 %End
 
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );

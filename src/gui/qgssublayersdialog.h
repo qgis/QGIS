@@ -18,8 +18,8 @@
 
 #include <QDialog>
 #include <QCheckBox>
-#include <ui_qgssublayersdialogbase.h>
-#include "qgscontexthelp.h"
+#include "ui_qgssublayersdialogbase.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 /** \ingroup gui
@@ -41,11 +41,11 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     //! \since QGIS 2.16
     struct LayerDefinition
     {
-      LayerDefinition() : layerId( -1 ), count( -1 ) {}
+      LayerDefinition() {}
 
-      int layerId;        //!< Identifier of the layer (one unique layer id may have multiple types though)
+      int layerId = -1 ;        //!< Identifier of the layer (one unique layer id may have multiple types though)
       QString layerName;  //!< Name of the layer (not necessarily unique)
-      int count;          //!< Number of features (might be unused)
+      int count = -1 ;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
     };
 
@@ -85,7 +85,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     int countColumn() const { return mShowCount ? 2 : -1; }
 
   public slots:
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     int exec();
 
   protected:

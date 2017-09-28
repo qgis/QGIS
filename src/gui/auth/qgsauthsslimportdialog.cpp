@@ -82,13 +82,6 @@
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   : QDialog( parent )
-  , mSocket( nullptr )
-  , mExecErrorsDialog( false )
-  , mTimer( nullptr )
-  , mSslErrors( QList<QSslError>() )
-  , mTrustedCAs( QList<QSslCertificate>() )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

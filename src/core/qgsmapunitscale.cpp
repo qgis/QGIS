@@ -23,11 +23,11 @@ double QgsMapUnitScale::computeMapUnitsPerPixel( const QgsRenderContext &c ) con
   double renderScale = c.rendererScale();
   if ( !qgsDoubleNear( minScale, 0 ) )
   {
-    mup = qMin( mup / ( renderScale / minScale ), mup );
+    mup = std::min( mup / ( renderScale / minScale ), mup );
   }
   if ( !qgsDoubleNear( maxScale, 0 ) )
   {
-    mup = qMax( mup / ( renderScale / maxScale ), mup );
+    mup = std::max( mup / ( renderScale / maxScale ), mup );
   }
   return mup;
 }

@@ -36,6 +36,7 @@ from qgis.core import (QgsFeature,
                        NULL,
                        QgsWkbTypes,
                        QgsMessageLog,
+                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsSpatialIndex)
@@ -55,7 +56,7 @@ class SymmetricalDifference(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sym_difference.png'))
 
     def group(self):
-        return self.tr('Vector overlay tools')
+        return self.tr('Vector overlay')
 
     def __init__(self):
         super().__init__()
@@ -79,7 +80,7 @@ class SymmetricalDifference(QgisAlgorithm):
         sourceB = self.parameterAsSource(parameters, self.OVERLAY, context)
 
         geomType = QgsWkbTypes.multiType(sourceA.wkbType())
-        fields = vector.combineFields(sourceA.fields(), sourceB.fields())
+        fields = QgsProcessingUtils.combineFields(sourceA.fields(), sourceB.fields())
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, geomType, sourceA.sourceCrs())

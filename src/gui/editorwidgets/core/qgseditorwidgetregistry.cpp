@@ -60,10 +60,6 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
 }
 
-QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
-{
-}
-
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
 {
   qDeleteAll( mWidgetFactories );

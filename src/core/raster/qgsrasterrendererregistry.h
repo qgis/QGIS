@@ -48,8 +48,8 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
   QString name;
   QString visibleName; //visible (and translatable) name
   QIcon icon();
-  QgsRasterRendererCreateFunc rendererCreateFunction; //pointer to create function
-  QgsRasterRendererWidgetCreateFunc widgetCreateFunction; //pointer to create function for renderer widget
+  QgsRasterRendererCreateFunc rendererCreateFunction = nullptr ; //pointer to create function
+  QgsRasterRendererWidgetCreateFunc widgetCreateFunction = nullptr ; //pointer to create function for renderer widget
 };
 
 /** \ingroup core

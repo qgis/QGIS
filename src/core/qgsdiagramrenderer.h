@@ -30,9 +30,8 @@
 #include "qgssymbol.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
+#include "qgsdatadefinedsizelegend.h"
 
-
-class QgsDataDefinedSizeLegend;
 class QgsDiagram;
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -366,20 +365,9 @@ class CORE_EXPORT QgsDiagramSettings
     };
 
     QgsDiagramSettings()
-      : enabled( true )
-      , sizeType( QgsUnitTypes::RenderMillimeters )
-      , lineSizeUnit( QgsUnitTypes::RenderMillimeters )
-      , penWidth( 0.0 )
-      , labelPlacementMethod( QgsDiagramSettings::Height )
-      , diagramOrientation( QgsDiagramSettings::Up )
-      , barWidth( 5.0 )
-      , opacity( 1.0 )
-      , scaleByArea( true )
-      , rotationOffset( 270 ) //top
-      , scaleBasedVisibility( false )
-      , minimumSize( 0.0 )
     {}
-    bool enabled;
+
+    bool enabled = true;
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;
@@ -389,7 +377,7 @@ class CORE_EXPORT QgsDiagramSettings
 
     /** Diagram size unit
      */
-    QgsUnitTypes::RenderUnit sizeType;
+    QgsUnitTypes::RenderUnit sizeType = QgsUnitTypes::RenderMillimeters;
 
     /** Diagram size unit scale
      * \since QGIS 2.16
@@ -399,7 +387,7 @@ class CORE_EXPORT QgsDiagramSettings
     /** Line unit index
      * \since QGIS 2.16
      */
-    QgsUnitTypes::RenderUnit lineSizeUnit;
+    QgsUnitTypes::RenderUnit lineSizeUnit = QgsUnitTypes::RenderMillimeters;
 
     /** Line unit scale
      * \since QGIS 2.16
@@ -408,23 +396,23 @@ class CORE_EXPORT QgsDiagramSettings
 
     QColor backgroundColor;
     QColor penColor;
-    double penWidth;
-    LabelPlacementMethod labelPlacementMethod;
-    DiagramOrientation diagramOrientation;
-    double barWidth;
+    double penWidth = 0.0;
+    LabelPlacementMethod labelPlacementMethod = QgsDiagramSettings::Height;
+    DiagramOrientation diagramOrientation = QgsDiagramSettings::Up;
+    double barWidth = 5.0;
 
     //! Opacity, from 0 (transparent) to 1.0 (opaque)
-    double opacity;
+    double opacity = 1.0;
 
-    bool scaleByArea;
+    bool scaleByArea = true;
 
     /**
      * Rotation offset, in degrees clockwise from horizontal.
      * \since QGIS 3.0
      */
-    double rotationOffset;
+    double rotationOffset = 270;
 
-    bool scaleBasedVisibility;
+    bool scaleBasedVisibility = false;
 
     /**
      * The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.
@@ -443,7 +431,7 @@ class CORE_EXPORT QgsDiagramSettings
     double minimumScale = 0;
 
     //! Scale diagrams smaller than mMinimumSize to mMinimumSize
-    double minimumSize;
+    double minimumSize = 0.0;
 
     //! Reads diagram settings from XML
     void readXml( const QDomElement &elem );
@@ -604,7 +592,7 @@ class CORE_EXPORT QgsDiagramRenderer
     QgsDiagram *mDiagram = nullptr;
 
     //! Whether to show an attribute legend for the diagrams
-    bool mShowAttributeLegend;
+    bool mShowAttributeLegend = true;
 };
 
 /** \ingroup core

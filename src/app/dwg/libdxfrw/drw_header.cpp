@@ -19,7 +19,7 @@
 #include "qgslogger.h"
 #include <QStringList>
 
-#include <assert.h>
+#include <cassert>
 
 DRW_Header::DRW_Header()
   : curr( nullptr )
@@ -2708,7 +2708,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   for ( int i = 0; i < 16; i++ )
   {
     t = buf->getRawChar8();
-    l << QString( "0x%1" ).arg( t, 0, 16 );
+    l << QStringLiteral( "0x%1" ).arg( t, 0, 16 );
   }
   QgsDebugMsg( QString( "dwg header end sentinel=%1" ).arg( l.join( " " ) ) );
 
@@ -2753,7 +2753,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   for ( int i = 0; i < 16; i++ )
   {
     t = buf->getRawChar8();
-    l << QString( "0x%1" ).arg( t, 0, 16 );
+    l << QStringLiteral( "0x%1" ).arg( t, 0, 16 );
   }
   QgsDebugMsg( QString( "dwg header end sentinel=%1" ).arg( l.join( " " ) ) );
 

@@ -71,7 +71,7 @@ class QgsRasterCalculator
 .. versionadded:: 2.10
 %End
 
-    int processCalculation( QProgressDialog *p = 0 );
+    int processCalculation( QgsFeedback *feedback = 0 );
 %Docstring
  :rtype: int
 %End

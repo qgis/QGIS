@@ -612,6 +612,12 @@ Returns the number of registered layers.
  :rtype: QMap<str, QgsMapLayer *>
 %End
 
+    bool isZipped() const;
+%Docstring
+ Returns true if the project comes from a zip archive, false otherwise.
+ :rtype: bool
+%End
+
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &mapLayers /Transfer/,
                                        bool addToLegend = true);
@@ -770,6 +776,39 @@ Returns the number of registered layers.
  Reload all registered layer's provider data caches, synchronising the layer
  with any changes in the datasource.
 .. seealso:: QgsMapLayer.reload()
+%End
+
+    QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
+%Docstring
+ Returns the default CRS for new layers based on the settings and
+ the current project CRS
+ :rtype: QgsCoordinateReferenceSystem
+%End
+
+    void setTrustLayerMetadata( bool trust );
+%Docstring
+ Sets the trust option allowing to indicate if the extent has to be
+ read from the XML document when data source has no metadata or if the
+ data provider has to determine it. Moreover, when this option is
+ activated, primary key unicity is not checked for views and
+ materialized views with Postgres provider.
+
+ \param trust True to trust the project, false otherwise
+
+.. versionadded:: 3.0
+%End
+
+    bool trustLayerMetadata() const;
+%Docstring
+ Returns true if the trust option is activated, false otherwise. This
+ option allows indicateing if the extent has to be read from the XML
+ document when data source has no metadata or if the data provider has
+ to determine it. Moreover, when this option is activated, primary key
+ unicity is not checked for views and materialized views with Postgres
+ provider.
+
+.. versionadded:: 3.0
+ :rtype: bool
 %End
 
   signals:
@@ -1003,6 +1042,8 @@ emitted whenever the configuration for snapping has changed
 
  \param layers List of QgsMapLayer which were added to the legend.
 %End
+
+
 
   public slots:
 

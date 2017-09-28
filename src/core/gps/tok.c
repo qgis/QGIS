@@ -26,6 +26,14 @@
 
 //! \file tok.h
 
+#if defined(__clang__)
+#define FALLTHROUGH //[[clang::fallthrough]]
+#elif defined(__GNUC__) && __GNUC__ >= 7
+#define FALLTHROUGH __attribute__((fallthrough));
+#else
+#define FALLTHROUGH
+#endif
+
 #include "tok.h"
 
 #include <stdarg.h>
@@ -165,15 +173,21 @@ int nmea_scanf( const char *buff, int buff_sz, const char *format, ... )
         width = 0;
         beg_fmt = format;
         tok_type = NMEA_TOKS_WIDTH;
-      //intentional fall-through
+
+        FALLTHROUGH
+
       case NMEA_TOKS_WIDTH:
+      {
         if ( isdigit( *format ) )
           break;
-        {
-          tok_type = NMEA_TOKS_TYPE;
-          if ( format > beg_fmt )
-            width = nmea_atoi( beg_fmt, ( int )( format - beg_fmt ), 10 );
-        }
+
+        tok_type = NMEA_TOKS_TYPE;
+        if ( format > beg_fmt )
+          width = nmea_atoi( beg_fmt, ( int )( format - beg_fmt ), 10 );
+
+        FALLTHROUGH
+      }
+
       case NMEA_TOKS_TYPE:
         beg_tok = buff;
 

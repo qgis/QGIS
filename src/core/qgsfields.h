@@ -56,9 +56,8 @@ class CORE_EXPORT QgsFields
     typedef struct Field
     {
       Field()
-        : origin( OriginUnknown )
-        , originIndex( -1 )
       {}
+
       Field( const QgsField &f, FieldOrigin o, int oi )
         : field( f )
         , origin( o )
@@ -71,8 +70,8 @@ class CORE_EXPORT QgsFields
       bool operator!=( const Field &other ) const { return !( *this == other ); }
 
       QgsField field;      //!< Field
-      FieldOrigin origin;  //!< Origin of the field
-      int originIndex;     //!< Index specific to the origin
+      FieldOrigin origin = OriginUnknown ;  //!< Origin of the field
+      int originIndex = -1 ;     //!< Index specific to the origin
     } Field;
 
 #endif
@@ -343,8 +342,8 @@ class CORE_EXPORT QgsFields
         typedef qptrdiff difference_type;
 
         inline iterator()
-          : d( nullptr )
         {}
+
         inline iterator( QgsFields::Field *n )
           : d( n )
         {}
@@ -380,7 +379,8 @@ class CORE_EXPORT QgsFields
         typedef qptrdiff difference_type;
 
         inline const_iterator()
-          : d( nullptr ) {}
+        {}
+
         inline const_iterator( const QgsFields::Field *f )
           : d( f ) {}
         inline const_iterator( const const_iterator &o )

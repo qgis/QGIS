@@ -34,7 +34,6 @@
 QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
   : QDialog( parent, fl )
   , mPreviousColor( color )
-  , mAllowOpacity( true )
 {
   setupUi( this );
 
@@ -57,6 +56,7 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
 
   connect( mColorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorDialog::currentColorChanged );
   connect( this, &QDialog::rejected, this, &QgsColorDialog::discardColor );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsColorDialog::showHelp );
 }
 
 QColor QgsColorDialog::color() const
@@ -204,4 +204,9 @@ void QgsColorDialog::closeEvent( QCloseEvent *e )
 {
   saveSettings();
   QDialog::closeEvent( e );
+}
+
+void QgsColorDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#color-selector" ) );
 }

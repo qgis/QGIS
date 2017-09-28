@@ -41,10 +41,7 @@
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
-  , mAutoSave( true )
-  , mLayer( nullptr )
-  , highlighter( nullptr )
-  , mExpressionValid( false )
+  , mProject( QgsProject::instance() )
 {
   setupUi( this );
 
@@ -106,7 +103,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
 
-  lblAutoSave->setText( QLatin1String( "" ) );
+  lblAutoSave->clear();
   txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
 }
 
@@ -136,7 +133,7 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
 {
-  txtSearchEditValues->setText( QLatin1String( "" ) );
+  txtSearchEditValues->clear();
 
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
@@ -317,9 +314,9 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields &fields )
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
 {
   QgsFields fields;
-  Q_FOREACH ( const QString &fieldName, fieldValues.keys() )
+  for ( auto it = fieldValues.constBegin(); it != fieldValues.constEnd(); ++it )
   {
-    fields.append( QgsField( fieldName ) );
+    fields.append( QgsField( it.key() ) );
   }
   loadFieldNames( fields );
   mFieldValues = fieldValues;
@@ -380,7 +377,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString &group,
     //Recent group should always be last group
     newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CUSTOM_SORT_ROLE );
     newgroupNode->appendRow( item );
-    newgroupNode->setBackground( QBrush( QColor( "#eee" ) ) );
+    newgroupNode->setBackground( QBrush( QColor( 238, 238, 238 ) ) );
     mModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
   }
@@ -445,7 +442,10 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
 
 void QgsExpressionBuilderWidget::loadLayers()
 {
-  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  if ( !mProject )
+    return;
+
+  QMap<QString, QgsMapLayer *> layers = mProject->mapLayers();
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
@@ -455,7 +455,10 @@ void QgsExpressionBuilderWidget::loadLayers()
 
 void QgsExpressionBuilderWidget::loadRelations()
 {
-  QMap<QString, QgsRelation> relations = QgsProject::instance()->relationManager()->relations();
+  if ( !mProject )
+    return;
+
+  QMap<QString, QgsRelation> relations = mProject->relationManager()->relations();
   QMap<QString, QgsRelation>::const_iterator relIt = relations.constBegin();
   for ( ; relIt != relations.constEnd(); ++relIt )
   {
@@ -558,7 +561,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   // we don't show the user an error as it will be confusing.
   if ( text.isEmpty() )
   {
-    lblPreview->setText( QLatin1String( "" ) );
+    lblPreview->clear();
     lblPreview->setStyleSheet( QLatin1String( "" ) );
     txtExpressionString->setToolTip( QLatin1String( "" ) );
     lblPreview->setToolTip( QLatin1String( "" ) );
@@ -655,6 +658,22 @@ QString QgsExpressionBuilderWidget::formatLayerHelp( const QgsMapLayer *layer ) 
   QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
   text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( layer->id() ) ) );
   return text;
+}
+
+QStandardItemModel *QgsExpressionBuilderWidget::model()
+{
+  return mModel;
+}
+
+QgsProject *QgsExpressionBuilderWidget::project()
+{
+  return mProject;
+}
+
+void QgsExpressionBuilderWidget::setProject( QgsProject *project )
+{
+  mProject = project;
+  updateFunctionTree();
 }
 
 void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )

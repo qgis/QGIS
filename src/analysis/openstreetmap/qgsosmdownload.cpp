@@ -26,7 +26,7 @@
 QString QgsOSMDownload::defaultServiceUrl()
 {
   QgsSettings settings;
-  return settings.value( "overpass_url", "http://overpass-api.de/api/interpreter" ).toString();
+  return settings.value( QStringLiteral( "overpass_url" ), "http://overpass-api.de/api/interpreter" ).toString();
 }
 
 
@@ -39,14 +39,12 @@ QString QgsOSMDownload::queryFromRect( const QgsRectangle &rect )
 
 QgsOSMDownload::QgsOSMDownload()
   : mServiceUrl( defaultServiceUrl() )
-  , mReply( nullptr )
 {
 }
 
 QgsOSMDownload::QgsOSMDownload( const QString &query )
   : mServiceUrl( defaultServiceUrl() )
   , mQuery( query )
-  , mReply( nullptr )
 {
 }
 

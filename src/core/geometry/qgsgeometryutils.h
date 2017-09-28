@@ -296,7 +296,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns list of WKT child block strings, e.g., List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
      * \note not available in Python bindings
      */
-    static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = "" ) SIP_SKIP;
+    static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = QString() ) SIP_SKIP;
 
     /** Returns a middle point between points pt1 and pt2.
      * Z value is computed if one of this point have Z.

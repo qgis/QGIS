@@ -42,6 +42,7 @@ and from OSGeo4W (select //Advanced Installation//):
 - grass
 - gsl-devel
 - iconv
+- libzip-devel
 - libspatialindex-devel
 - pyqt5
 - python3-devel
@@ -60,6 +61,9 @@ and from OSGeo4W (select //Advanced Installation//):
 - qwt-devel-qt5
 - sip-qt5
 - spatialite
+- oci
+- qtkeychain
+- libzip
 -
 
 
@@ -89,19 +93,25 @@ installed in the default locations):
 
 ```
 @echo off
-set VS90COMNTOOLS=%PROGRAMFILES%\Microsoft Visual Studio 9.0\Common7\Tools\
-call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
-
-set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\include
-set LIB=%LIB%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\lib
-
 set OSGEO4W_ROOT=C:\OSGeo4W
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
-path %PATH%;%PROGRAMFILES%\CMake\bin;c:\cygwin\bin
+call "%OSGEO4W_ROOT%\bin\py3_env.bat"
+call "%OSGEO4W_ROOT%\bin\qt5_env.bat"
 
-@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.4
+set O4W_ROOT=%OSGEO4W_ROOT:\=/%
+set LIB_DIR=%O4W_ROOT%
+
+call "C:\Program Files\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+path %path%;C:\Program Files\Microsoft Visual Studio 14.0\VC\bin
+
+path %PATH%;C:\Program Files\CMake\bin;c:\cygwin\bin
+
+@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-7.2.1
 @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 @set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
+
+set LIB=%LIB%;%OSGEO4W_ROOT%\apps\Qt5\lib;%OSGEO4W_ROOT%\lib
+set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\Qt5\include;%OSGEO4W_ROOT%\include
 
 @cmd
 ```

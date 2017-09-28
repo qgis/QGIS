@@ -46,7 +46,7 @@ class Boundary(QgisFeatureBasedAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def name(self):
         return 'boundary'

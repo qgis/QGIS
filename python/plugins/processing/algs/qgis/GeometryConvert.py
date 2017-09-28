@@ -27,15 +27,17 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
+                       QgsMultiPointV2,
+                       QgsMultiLineString,
+                       QgsLineString,
+                       QgsPolygonV2,
                        QgsFeatureSink,
                        QgsWkbTypes,
-                       QgsApplication,
-                       QgsProcessingUtils)
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
 
 
 class GeometryConvert(QgisAlgorithm):
@@ -44,7 +46,7 @@ class GeometryConvert(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -56,12 +58,13 @@ class GeometryConvert(QgisAlgorithm):
                       self.tr('Multilinestrings'),
                       self.tr('Polygons')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterSelection(self.TYPE,
-                                             self.tr('New geometry type'), self.types))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterEnum(self.TYPE,
+                                                     self.tr('New geometry type'), options=self.types))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('Converted')))
 
     def name(self):
         return 'convertgeometrytype'
@@ -70,159 +73,162 @@ class GeometryConvert(QgisAlgorithm):
         return self.tr('Convert geometry type')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        index = self.getParameterValue(self.TYPE)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        index = self.parameterAsEnum(parameters, self.TYPE, context)
 
-        splitNodes = False
         if index == 0:
             newType = QgsWkbTypes.Point
         elif index == 1:
             newType = QgsWkbTypes.Point
-            splitNodes = True
+            if QgsWkbTypes.hasM(source.wkbType()):
+                newType = QgsWkbTypes.addM(newType)
+            if QgsWkbTypes.hasZ(source.wkbType()):
+                newType = QgsWkbTypes.addZ(newType)
         elif index == 2:
             newType = QgsWkbTypes.LineString
+            if QgsWkbTypes.hasM(source.wkbType()):
+                newType = QgsWkbTypes.addM(newType)
+            if QgsWkbTypes.hasZ(source.wkbType()):
+                newType = QgsWkbTypes.addZ(newType)
         elif index == 3:
             newType = QgsWkbTypes.MultiLineString
-        elif index == 4:
-            newType = QgsWkbTypes.Polygon
+            if QgsWkbTypes.hasM(source.wkbType()):
+                newType = QgsWkbTypes.addM(newType)
+            if QgsWkbTypes.hasZ(source.wkbType()):
+                newType = QgsWkbTypes.addZ(newType)
         else:
-            newType = QgsWkbTypes.Point
+            newType = QgsWkbTypes.Polygon
+            if QgsWkbTypes.hasM(source.wkbType()):
+                newType = QgsWkbTypes.addM(newType)
+            if QgsWkbTypes.hasZ(source.wkbType()):
+                newType = QgsWkbTypes.addZ(newType)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.fields(), newType, layer.crs(), context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), newType, source.sourceCrs())
 
-        features = QgsProcessingUtils.getFeatures(layer, context)
-        total = 100.0 / layer.featureCount() if layer.featureCount() else 0
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, f in enumerate(features):
-            geom = f.geometry()
-            geomType = geom.wkbType()
+            if feedback.isCanceled():
+                break
 
-            if geomType in [QgsWkbTypes.Point, QgsWkbTypes.Point25D]:
-                if newType == QgsWkbTypes.Point:
-                    writer.addFeature(f, QgsFeatureSink.FastInsert)
-                else:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
-            elif geomType in [QgsWkbTypes.MultiPoint, QgsWkbTypes.MultiPoint25D]:
-                if newType == QgsWkbTypes.Point and splitNodes:
-                    points = geom.asMultiPoint()
-                    for p in points:
-                        feat = QgsFeature()
-                        feat.setAttributes(f.attributes())
-                        feat.setGeometry(QgsGeometry.fromPoint(p))
-                        writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.Point:
+            if not f.hasGeometry():
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
+            else:
+                for p in self.convertGeometry(f.geometry(), index):
                     feat = QgsFeature()
                     feat.setAttributes(f.attributes())
-                    feat.setGeometry(geom.centroid())
-                    writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                else:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
-            elif geomType in [QgsWkbTypes.LineString, QgsWkbTypes.LineString25D]:
-                if newType == QgsWkbTypes.Point and splitNodes:
-                    points = geom.asPolyline()
-                    for p in points:
-                        feat = QgsFeature()
-                        feat.setAttributes(f.attributes())
-                        feat.setGeometry(QgsGeometry.fromPoint(p))
-                        writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.Point:
-                    feat = QgsFeature()
-                    feat.setAttributes(f.attributes())
-                    feat.setGeometry(geom.centroid())
-                    writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.LineString:
-                    writer.addFeature(f, QgsFeatureSink.FastInsert)
-                else:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
-            elif geomType in [QgsWkbTypes.MultiLineString, QgsWkbTypes.MultiLineString25D]:
-                if newType == QgsWkbTypes.Point and splitNodes:
-                    lines = geom.asMultiPolyline()
-                    for line in lines:
-                        for p in line:
-                            feat = QgsFeature()
-                            feat.setAttributes(f.attributes())
-                            feat.setGeometry(QgsGeometry.fromPoint(p))
-                            writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.Point:
-                    feat = QgsFeature()
-                    feat.setAttributes(f.attributes())
-                    feat.setGeometry(geom.centroid())
-                    writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.LineString:
-                    lines = geom.asMultiPolyline()
-                    for line in lines:
-                        feat = QgsFeature()
-                        feat.setAttributes(f.attributes())
-                        feat.setGeometry(QgsGeometry.fromPolyline(line))
-                        writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.MultiLineString:
-                    writer.addFeature(f, QgsFeatureSink.FastInsert)
-                else:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
-            elif geomType in [QgsWkbTypes.Polygon, QgsWkbTypes.Polygon25D]:
-                if newType == QgsWkbTypes.Point and splitNodes:
-                    rings = geom.asPolygon()
-                    for ring in rings:
-                        for p in ring:
-                            feat = QgsFeature()
-                            feat.setAttributes(f.attributes())
-                            feat.setGeometry(QgsGeometry.fromPoint(p))
-                            writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.Point:
-                    feat = QgsFeature()
-                    feat.setAttributes(f.attributes())
-                    feat.setGeometry(geom.centroid())
-                    writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.MultiLineString:
-                    rings = geom.asPolygon()
-                    feat = QgsFeature()
-                    feat.setAttributes(f.attributes())
-                    feat.setGeometry(QgsGeometry.fromMultiPolyline(rings))
-                    writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.Polygon:
-                    writer.addFeature(f, QgsFeatureSink.FastInsert)
-                else:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
-            elif geomType in [QgsWkbTypes.MultiPolygon, QgsWkbTypes.MultiPolygon25D]:
-                if newType == QgsWkbTypes.Point and splitNodes:
-                    polygons = geom.asMultiPolygon()
-                    for polygon in polygons:
-                        for line in polygon:
-                            for p in line:
-                                feat = QgsFeature()
-                                feat.setAttributes(f.attributes())
-                                feat.setGeometry(QgsGeometry.fromPoint(p))
-                                writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.Point:
-                    feat = QgsFeature()
-                    feat.setAttributes(f.attributes())
-                    feat.setGeometry(geom.centroid())
-                    writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.LineString:
-                    polygons = geom.asMultiPolygon()
-                    for polygons in polygons:
-                        feat = QgsFeature()
-                        feat.setAttributes(f.attributes())
-                        feat.setGeometry(QgsGeometry.fromPolyline(polygon))
-                        writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType == QgsWkbTypes.Polygon:
-                    polygons = geom.asMultiPolygon()
-                    for polygon in polygons:
-                        feat = QgsFeature()
-                        feat.setAttributes(f.attributes())
-                        feat.setGeometry(QgsGeometry.fromPolygon(polygon))
-                        writer.addFeature(feat, QgsFeatureSink.FastInsert)
-                elif newType in [QgsWkbTypes.MultiLineString, QgsWkbTypes.MultiPolygon]:
-                    writer.addFeature(f, QgsFeatureSink.FastInsert)
-                else:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Cannot convert from {0} to {1}').format(geomType, newType))
+                    feat.setGeometry(p)
+                    sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
+
+    def convertGeometry(self, geom, target_type):
+        # returns an array of output geometries for the input geometry
+        if target_type == 0:
+            #centroid
+            return self.convertToCentroid(geom)
+        elif target_type == 1:
+            #nodes
+            return self.convertToNodes(geom)
+        elif target_type == 2:
+            #linestrings
+            return self.convertToLineStrings(geom)
+        elif target_type == 3:
+            #multilinestrings
+            return self.convertToMultiLineStrings(geom)
+        elif target_type == 4:
+            #polygon
+            return self.convertToPolygon(geom)
+
+    def convertToCentroid(self, geom):
+        return [geom.centroid()]
+
+    def convertToNodes(self, geom):
+        mp = QgsMultiPointV2()
+        # TODO: mega inefficient - needs rework when geometry iterators land
+        # (but at least it doesn't lose Z/M values)
+        for g in geom.geometry().coordinateSequence():
+            for r in g:
+                for p in r:
+                    mp.addGeometry(p)
+        return [QgsGeometry(mp)]
+
+    def convertToLineStrings(self, geom):
+        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry:
+            raise QgsProcessingException(
+                self.tr('Cannot convert from {0} to LineStrings').format(QgsWkbTypes.displayString(geom.wkbType())))
+        elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.LineGeometry:
+            if QgsWkbTypes.isMultiType(geom.wkbType()):
+                return geom.asGeometryCollection()
+            else:
+                #line to line
+                return [geom]
+        else:
+            # polygons to lines
+            # we just use the boundary here - that consists of all rings in the (multi)polygon
+            boundary = QgsGeometry(geom.geometry().boundary())
+            # boundary will be multipart
+            return boundary.asGeometryCollection()
+
+    def convertToMultiLineStrings(self, geom):
+        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry:
+            raise QgsProcessingException(
+                self.tr('Cannot convert from {0} to MultiLineStrings').format(QgsWkbTypes.displayString(geom.wkbType())))
+        elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.LineGeometry:
+            if QgsWkbTypes.isMultiType(geom.wkbType()):
+                return [geom]
+            else:
+                # line to multiLine
+                ml = QgsMultiLineString()
+                ml.addGeometry(geom.geometry().clone())
+                return [QgsGeometry(ml)]
+        else:
+            # polygons to multilinestring
+            # we just use the boundary here - that consists of all rings in the (multi)polygon
+            return [QgsGeometry(geom.geometry().boundary())]
+
+    def convertToPolygon(self, geom):
+        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry and geom.geometry().nCoordinates() < 3:
+            raise QgsProcessingException(
+                self.tr('Cannot convert from Point to Polygon').format(QgsWkbTypes.displayString(geom.wkbType())))
+        elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry:
+            # multipoint with at least 3 points
+            # TODO: mega inefficient - needs rework when geometry iterators land
+            # (but at least it doesn't lose Z/M values)
+            points = []
+            for g in geom.geometry().coordinateSequence():
+                for r in g:
+                    for p in r:
+                        points.append(p)
+            linestring = QgsLineString(points)
+            linestring.close()
+            p = QgsPolygonV2()
+            p.setExteriorRing(linestring)
+            return [QgsGeometry(p)]
+        elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.LineGeometry:
+            if QgsWkbTypes.isMultiType(geom):
+                parts = []
+                for i in range(geom.geometry().numGeometries()):
+                    p = QgsPolygonV2()
+                    linestring = geom.geometry().geometryN(i).clone()
+                    linestring.close()
+                    p.setExteriorRing(linestring)
+                    parts.append(QgsGeometry(p))
+                return QgsGeometry.collectGeometry(parts)
+            else:
+                # linestring to polygon
+                p = QgsPolygonV2()
+                linestring = geom.geometry().clone()
+                linestring.close()
+                p.setExteriorRing(linestring)
+                return [QgsGeometry(p)]
+        else:
+            #polygon
+            if QgsWkbTypes.isMultiType(geom):
+                return geom.asGeometryCollection()
+            else:
+                return [geom]

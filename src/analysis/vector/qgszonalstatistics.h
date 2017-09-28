@@ -31,7 +31,6 @@ class QgsGeometry;
 class QgsVectorLayer;
 class QgsRasterLayer;
 class QgsRasterDataProvider;
-class QProgressDialog;
 class QgsRectangle;
 class QgsField;
 
@@ -65,7 +64,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      */
     QgsZonalStatistics( QgsVectorLayer *polygonLayer,
                         QgsRasterLayer *rasterLayer,
-                        const QString &attributePrefix = "",
+                        const QString &attributePrefix = QString(),
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 
@@ -98,8 +97,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
             sum += value;
             ++count;
           }
-          min = qMin( min, value );
-          max = qMax( max, value );
+          min = std::min( min, value );
+          max = std::max( max, value );
           if ( mStoreValueCounts )
             valueCount.insert( value, valueCount.value( value, 0 ) + 1 );
           if ( mStoreValues )
@@ -147,5 +146,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSZONALSTATISTICS_H

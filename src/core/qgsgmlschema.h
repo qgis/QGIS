@@ -39,7 +39,11 @@ class QgsFeature;
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
-    QgsGmlFeatureClass();
+
+    /**
+     * Constructor for QgsGmlFeatureClass.
+     */
+    QgsGmlFeatureClass() = default;
     QgsGmlFeatureClass( const QString &name, const QString &path );
 
     QList<QgsField> &fields() { return  mFields; }
@@ -181,7 +185,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QString mStringCash;
     QgsFeature *mCurrentFeature = nullptr;
     QString mCurrentFeatureId;
-    int mFeatureCount;
+    int mFeatureCount = 0;
     QString mAttributeName;
     //! Coordinate separator for coordinate strings. Usually ","
     QString mCoordinateSeparator;
@@ -191,7 +195,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     /* Schema information guessed/parsed from GML in getSchema() */
 
     //! Depth level, root element is 0
-    int mLevel;
+    int mLevel = 0;
 
     //! Skip all levels under this
     int mSkipLevel;

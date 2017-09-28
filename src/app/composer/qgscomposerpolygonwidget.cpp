@@ -45,10 +45,6 @@ QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon *composer
   }
 }
 
-QgsComposerPolygonWidget::~QgsComposerPolygonWidget()
-{
-}
-
 void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
 {
   if ( !mComposerPolygon )

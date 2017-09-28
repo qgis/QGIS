@@ -20,11 +20,9 @@
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
-#include <qmath.h>
 
 
 QgsPropertyDefinition::QgsPropertyDefinition()
-  : mTypes( DataTypeString )
 {}
 
 QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type )
@@ -86,7 +84,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case RenderUnits:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]" );
       break;
 
     case ColorWithAlpha:
@@ -101,14 +99,14 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case PenJoinStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>bevel</b>|<b>miter</b>|<b>round</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>bevel</b>|<b>miter</b>|<b>round</b>]" );
       break;
 
     case BlendMode:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
-                                              "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
-                                              "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
+                  "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
+                  "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
       break;
 
     case Point:
@@ -128,7 +126,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case LineStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
       break;
 
     case StrokeWidth:
@@ -138,31 +136,31 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case FillStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
-                                              "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
-                                              "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+      mHelpText = trString() + QStringLiteral( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
+                  "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                  "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
       break;
 
     case CapStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
       break;
 
     case HorizontalAnchor:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
       break;
 
     case VerticalAnchor:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
       break;
 
     case SvgPath:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>filepath</b>] as<br>"
-                                              "<b>''</b>=empty|absolute|search-paths-relative|<br>"
-                                              "project-relative|URL" );
+      mHelpText = trString() + QStringLiteral( "[<b>filepath</b>] as<br>"
+                  "<b>''</b>=empty|absolute|search-paths-relative|<br>"
+                  "project-relative|URL" );
       break;
 
     case Offset:
@@ -605,7 +603,7 @@ int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultVal
     {
       if ( ok )
         *ok = true;
-      return qRound( dbl );
+      return std::round( dbl );
     }
     else
     {

@@ -253,17 +253,17 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
   private:
 
     QString mColorRampDialogTitle;
-    bool mShowGradientOnly;
+    bool mShowGradientOnly = false;
     QgsColorRamp *mColorRamp = nullptr;
     QString mColorRampName;
     QgsStyle *mStyle = nullptr;
 
     QgsColorRamp *mDefaultColorRamp = nullptr;
     QString mContext;
-    bool mAcceptLiveUpdates;
-    bool mColorRampSet;
-    bool mShowRandomColorRamp;
-    bool mShowNull;
+    bool mAcceptLiveUpdates = true;
+    bool mColorRampSet = false;
+    bool mShowRandomColorRamp = false;
+    bool mShowNull = false;
 
     QMenu *mMenu = nullptr;
     QMenu *mAllRampsMenu = nullptr;

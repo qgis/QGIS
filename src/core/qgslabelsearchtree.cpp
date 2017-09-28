@@ -22,10 +22,6 @@ bool searchCallback( QgsLabelPosition *pos, void *context )
   return true;
 }
 
-QgsLabelSearchTree::QgsLabelSearchTree()
-{
-}
-
 QgsLabelSearchTree::~QgsLabelSearchTree()
 {
   clear();

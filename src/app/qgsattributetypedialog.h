@@ -22,6 +22,7 @@
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+#include "qgshelp.h"
 #include "qgis_app.h"
 
 class QWidget;
@@ -180,6 +181,8 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     void onCurrentWidgetChanged( int index );
 
     void defaultExpressionChanged();
+
+    void showHelp();
 
   private:
     QgsVectorLayer *mLayer = nullptr;

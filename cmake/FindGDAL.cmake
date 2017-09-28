@@ -62,8 +62,11 @@ ELSE(WIN32)
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
           IF (GDAL_VERSION_MAJOR LESS 2)
-            MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.0 or higher.")
+            MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.1 or higher.")
           ENDIF (GDAL_VERSION_MAJOR LESS 2)
+          IF ( (GDAL_VERSION_MAJOR EQUAL 2) AND (GDAL_VERSION_MINOR LESS 1) )
+            MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.1 or higher.")
+          ENDIF( (GDAL_VERSION_MAJOR EQUAL 2) AND (GDAL_VERSION_MINOR LESS 1) )
 
         ENDIF (GDAL_LIBRARY)
         SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
@@ -101,10 +104,13 @@ ELSE(WIN32)
   
         # check for gdal version
         # version 1.2.5 is known NOT to be supported (missing CPL_STDCALL macro)
-        # According to INSTALL, 2.0+ is required
+        # According to INSTALL, 2.1+ is required
         IF (GDAL_VERSION_MAJOR LESS 2)
-          MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.0 or higher.")
+          MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.1 or higher.")
         ENDIF (GDAL_VERSION_MAJOR LESS 2)
+        IF ( (GDAL_VERSION_MAJOR EQUAL 2) AND (GDAL_VERSION_MINOR LESS 1) )
+          MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 2.1 or higher.")
+        ENDIF( (GDAL_VERSION_MAJOR EQUAL 2) AND (GDAL_VERSION_MINOR LESS 1) )
 
         # set INCLUDE_DIR to prefix+include
         EXEC_PROGRAM(${GDAL_CONFIG}

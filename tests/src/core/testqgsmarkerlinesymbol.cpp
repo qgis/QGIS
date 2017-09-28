@@ -44,8 +44,6 @@ class TestQgsMarkerLineSymbol : public QObject
     Q_OBJECT
   public:
     TestQgsMarkerLineSymbol()
-      : mLinesLayer( 0 )
-      , mMapSettings( 0 )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }

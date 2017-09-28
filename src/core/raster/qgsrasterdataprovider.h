@@ -495,7 +495,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** Dots per inch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
     are suited for printing. A value of -1 means it has not been set */
-    int mDpi;
+    int mDpi = -1;
 
     /** Source no data value is available and is set to be used or internal no data
      *  is available. Used internally only  */
@@ -519,4 +519,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     mutable QgsRectangle mExtent;
 
 };
+
+// clazy:excludeall=qstring-allocations
+
 #endif

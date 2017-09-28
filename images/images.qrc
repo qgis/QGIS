@@ -135,6 +135,7 @@
         <file>themes/default/mActionAddWcsLayer.svg</file>
         <file>themes/default/mActionAddWfsLayer.svg</file>
         <file>themes/default/mActionAddWmsLayer.svg</file>
+        <file>themes/default/mActionAddGeonodeLayer.svg</file>
         <file>themes/default/mActionAddDelimitedTextLayer.svg</file>
         <file>themes/default/mActionAddVirtualLayer.svg</file>
         <file>themes/default/mActionAlignBottom.svg</file>
@@ -342,6 +343,9 @@
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconDeselected.svg</file>
         <file>themes/default/mIconDropDownMenu.svg</file>
+        <file>themes/default/mIconJoinNotEditable.svg</file>
+        <file>themes/default/mIconJoinedLayerNotEditable.svg</file>
+        <file>themes/default/mIconJoinHasNotUpsertOnEdit.svg</file>
         <file>themes/default/mIconEditableEdits.svg</file>
         <file>themes/default/mIconExpand.svg</file>
         <file>themes/default/mIconExpandSmall.svg</file>
@@ -356,6 +360,7 @@
         <file>themes/default/mIconFieldInteger.svg</file>
         <file>themes/default/mIconFieldText.svg</file>
         <file>themes/default/mIconFieldTime.svg</file>
+        <file>themes/default/mIconGeonode.svg</file>
         <file>themes/default/mIconInfo.svg</file>
         <file>themes/default/mIconImport.gif</file>
         <file>themes/default/mIconLabelQuadrantCenter.svg</file>
@@ -562,6 +567,8 @@
         <file>themes/default/mActionNewMap.svg</file>
         <file>themes/default/mActionMapSettings.svg</file>
         <file>themes/default/mActionLockExtent.svg</file>
+        <file>themes/default/mGeoPackage.svg</file>
+        <file>themes/default/mActionAddGeoPackageLayer.svg</file>
         <file>icons/qgis_icon.svg</file>
     </qresource>
     <qresource prefix="/images/tips">

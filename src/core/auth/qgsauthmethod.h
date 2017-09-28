@@ -51,7 +51,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
       NetworkReply         = 0x2,
       DataSourceUri        = 0x4,
       GenericDataSourceUri = 0x8,
-      All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri
+      NetworkProxy                = 0x16,
+      All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri | NetworkProxy
     };
     Q_DECLARE_FLAGS( Expansions, Expansion )
 
@@ -126,6 +127,22 @@ class CORE_EXPORT QgsAuthMethod : public QObject
       return true; // noop
     }
 
+    /** Update proxy settings with authentication components
+     * \param proxy
+     * \param authcfg Authentication configuration ID
+     * \param dataprovider Textual key for a data provider, e.g. 'proxy', that allows
+     * for custom updater code specific to the provider
+     * \returns Whether the update succeeded
+     */
+    virtual bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg,
+                                     const QString &dataprovider = QString() )
+    {
+      Q_UNUSED( proxy )
+      Q_UNUSED( authcfg )
+      Q_UNUSED( dataprovider )
+      return true; // noop
+    }
+
     /** Clear any cached configuration. Called when the QgsAuthManager deletes an authentication configuration (authcfg).
      * \note It is highly recommended that a cache of authentication components (per requested authcfg)
      * be implemented, to avoid excessive queries on the auth database. Such a cache could be as
@@ -147,7 +164,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     explicit QgsAuthMethod()
       : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
       , mDataProviders( QStringList() )
-      , mVersion( 0 )
     {}
 
     //! Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
@@ -163,7 +179,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
 
     QgsAuthMethod::Expansions mExpansions;
     QStringList mDataProviders;
-    int mVersion;
+    int mVersion = 0;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAuthMethod::Expansions )
 

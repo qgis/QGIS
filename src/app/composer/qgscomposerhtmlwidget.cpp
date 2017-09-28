@@ -72,14 +72,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposer
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
   : QgsComposerItemBaseWidget( nullptr, nullptr )
-  , mHtml( nullptr )
-  , mFrame( nullptr )
-  , mHtmlEditor( nullptr )
-  , mStylesheetEditor( nullptr )
-{
-}
 
-QgsComposerHtmlWidget::~QgsComposerHtmlWidget()
 {
 }
 
@@ -365,7 +358,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     QgsComposition *composition = mHtml->composition();
     if ( !expression.isEmpty() && composition )
     {

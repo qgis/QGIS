@@ -60,9 +60,6 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Close event
     void closeEvent( QCloseEvent *e ) override;
 
-    //! Show the help for the dialog
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) ); }
-
     //! When any external settings change
     void updateSettings();
 
@@ -118,6 +115,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsMeasureTool *mTool = nullptr;
 
     QgsPointXY mLastMousePoint;
+
+    void showHelp();
 
     friend class TestQgsMeasureTool;
 };

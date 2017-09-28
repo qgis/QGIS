@@ -26,7 +26,6 @@
 #include "qgis_analysis.h"
 
 class QgsFeatureSource;
-class QProgressDialog;
 class QgsFeature;
 
 

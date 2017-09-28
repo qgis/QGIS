@@ -252,7 +252,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 dlg.exec_()
                 # have to manually delete the dialog - otherwise it's owned by the
                 # iface mainWindow and never deleted
-                del dlg
+                dlg.deleteLater()
 
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
@@ -293,13 +293,13 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
                 # have to manually delete the dialog - otherwise it's owned by the
                 # iface mainWindow and never deleted
-                del dlg
+                dlg.deleteLater()
             else:
                 feedback = MessageBarProgress()
                 context = dataobjects.createContext(feedback)
                 parameters = {}
                 ret, results = execute(alg, parameters, context, feedback)
-                handleAlgorithmResults(alg, parameters, context, feedback)
+                handleAlgorithmResults(alg, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action
@@ -319,13 +319,13 @@ class ProcessingToolbox(BASE, WIDGET):
                 found = False
                 if updating:
                     recentItem = self.algorithmTree.topLevelItem(0)
-                    if recentItem.text(0) == self.tr('Recently used algorithms'):
+                    if recentItem.text(0) == self.tr('Recently used'):
                         treeWidget = recentItem.treeWidget()
                         treeWidget.takeTopLevelItem(
                             treeWidget.indexOfTopLevelItem(recentItem))
 
                 recentItem = QTreeWidgetItem()
-                recentItem.setText(0, self.tr('Recently used algorithms'))
+                recentItem.setText(0, self.tr('Recently used'))
                 for algname in recent:
                     alg = QgsApplication.processingRegistry().createAlgorithmById(algname)
                     if alg is not None:
@@ -430,7 +430,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 label = QLabel(text + "&nbsp;&nbsp;&nbsp;&nbsp;<a href='%s'>Activate</a>")
                 label.setStyleSheet("QLabel {background-color: white; color: grey;}")
                 label.linkActivated.connect(activateProvider)
-                self.algorithmTree.setItemWidget(item, 0, label)
+                self.algorithmTree.setItemWidget(parent, 0, label)
 
             else:
                 text += QCoreApplication.translate("TreeProviderItem", " [{0} geoalgorithms]").format(count)

@@ -26,31 +26,31 @@ class QgsAbstractGeometry
 %End
 
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsPoint *>( sipCpp ) != NULL )
+    if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPoint;
-    else if ( dynamic_cast<QgsLineString *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsLineString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsLineString;
-    else if ( dynamic_cast<QgsCircularString *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsCircularString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCircularString;
-    else if ( dynamic_cast<QgsCompoundCurve *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsCompoundCurve *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCompoundCurve;
-    else if ( dynamic_cast<QgsTriangle *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
-    else if ( dynamic_cast<QgsPolygonV2 *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsPolygonV2 *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPolygonV2;
-    else if ( dynamic_cast<QgsCurvePolygon *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
-    else if ( dynamic_cast<QgsMultiPointV2 *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiPointV2 *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiPointV2;
-    else if ( dynamic_cast<QgsMultiLineString *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiLineString;
-    else if ( dynamic_cast<QgsMultiPolygonV2 *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiPolygonV2 *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiPolygonV2;
-    else if ( dynamic_cast<QgsMultiSurface *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiSurface *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiSurface;
-    else if ( dynamic_cast<QgsMultiCurve *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsMultiCurve *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiCurve;
-    else if ( dynamic_cast<QgsGeometryCollection *>( sipCpp ) != NULL )
+    else if ( qgsgeometry_cast<QgsGeometryCollection *>( sipCpp ) != nullptr )
       sipType = sipType_QgsGeometryCollection;
     else
       sipType = 0;
@@ -275,7 +275,7 @@ class QgsAbstractGeometry
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/,
-                                   bool *leftOf /Out/, double epsilon ) const = 0;
+                                   bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const = 0;
 %Docstring
  Searches for the closest segment of the geometry to a given point.
  \param pt specifies the point to find closest segment to
@@ -372,12 +372,12 @@ Returns the centroid of the geometry
  :rtype: QgsAbstractGeometry
 %End
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsAbstractGeometry *toCurveType() const = 0 /Factory/;
 %Docstring
  Returns the geometry converted to the more generic curve type.
-E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
-QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
-:return: the converted geometry. Caller takes ownership*
+ E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
+ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
+ :return: the converted geometry. Caller takes ownership
  :rtype: QgsAbstractGeometry
 %End
 
@@ -526,6 +526,8 @@ struct QgsVertexId
   int vertex;
   VertexType type;
 };
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

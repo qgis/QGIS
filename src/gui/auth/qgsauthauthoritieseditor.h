@@ -128,11 +128,11 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     QTreeWidgetItem *mFileCaSecItem = nullptr;
     QTreeWidgetItem *mDbCaSecItem = nullptr;
 
-    QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
+    QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy = QgsAuthCertUtils::DefaultTrust;
     QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
 
     QMenu *mUtilitiesMenu = nullptr;
-    bool mDisabled;
+    bool mDisabled = false;
     QAction *mActionDefaultTrustPolicy = nullptr;
     QAction *mActionShowTrustedCAs = nullptr;
 };

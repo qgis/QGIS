@@ -350,9 +350,9 @@ bool QgsGrassVectorMap::closeEdit( bool newMap )
 
 void QgsGrassVectorMap::clearUndoCommands()
 {
-  Q_FOREACH ( int index, mUndoCommands.keys() )
+  for ( auto it = mUndoCommands.constBegin(); it != mUndoCommands.constEnd(); ++it )
   {
-    Q_FOREACH ( QgsGrassUndoCommand *command, mUndoCommands[index] )
+    Q_FOREACH ( QgsGrassUndoCommand *command, it.value() )
     {
       delete command;
     }
@@ -387,7 +387,7 @@ QgsGrassVectorMapLayer *QgsGrassVectorMap::openLayer( int field )
 
   if ( !layer )
   {
-    layer = new QgsGrassVectorMapLayer( this, field ) ;
+    layer = new QgsGrassVectorMapLayer( this, field );
     layer->load();
     mLayers << layer;
   }

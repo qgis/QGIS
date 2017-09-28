@@ -33,7 +33,6 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     };
 
     QgsPointRotationItem( QgsMapCanvas *canvas );
-    ~QgsPointRotationItem();
 
     void paint( QPainter *painter ) override;
 
@@ -51,7 +50,7 @@ class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
     Orientation orientation() const { return mOrientation; }
 
   private:
-    QgsPointRotationItem();
+
     //! Converts rotation into QPainter rotation considering mOrientation
     int painterRotation( int rotation ) const;
     //! Clockwise (default) or counterclockwise

@@ -141,14 +141,10 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QObje
   : QSortFilterProxyModel( parent )
   , mProject( project )
   , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
-  , mLayerTreeModel( nullptr )
+
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
-}
-
-QgsSnappingLayerTreeModel::~QgsSnappingLayerTreeModel()
-{
 }
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
@@ -236,9 +232,9 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
   const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
 
-  Q_FOREACH ( QgsVectorLayer *vl, oldSettings.keys() )
+  for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
-    if ( !mProject->snappingConfig().individualLayerSettings().contains( vl ) )
+    if ( !mProject->snappingConfig().individualLayerSettings().contains( it.key() ) )
     {
       beginResetModel();
       mIndividualLayerSettings = mProject->snappingConfig().individualLayerSettings();

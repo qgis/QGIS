@@ -90,7 +90,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
 #else
         // just iterate the com ports.
         // looks like GUID_DEVCLASS_PORTS doesn't find them all.
-        for( unsigned int i = 0 ; i < 256; i++ )
+        for( unsigned int i = 0; i < 256; i++ )
         {
           QString port = "\\\\.\\COM" + QString::number(i);
 

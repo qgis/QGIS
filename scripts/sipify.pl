@@ -463,8 +463,8 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^\s*friend class \w+/ ){
         next;
     }
-    # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET
-    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED).*?$/){
+    # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET etc.
+    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED|NOWARN_DEPRECATED_(PUSH|POP)).*?$/){
         next;
     }
 
@@ -748,7 +748,7 @@ while ($LINE_IDX < $LINE_COUNT){
     };
 
     # remove struct member assignment
-    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(\([^()]+\))?\s*;/ ){
         dbg_info("remove struct member assignment");
         $LINE = "$1;";
     }

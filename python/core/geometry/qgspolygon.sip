@@ -22,39 +22,34 @@ class QgsPolygonV2: QgsCurvePolygon
   public:
     QgsPolygonV2();
 
-    bool operator==( const QgsPolygonV2 &other ) const;
-    bool operator!=( const QgsPolygonV2 &other ) const;
-%Docstring
- :rtype: bool
-%End
-
     virtual QString geometryType() const;
-    virtual QgsPolygonV2 *clone() const /Factory/;
-    virtual void clear();
 
+    virtual QgsPolygonV2 *clone() const /Factory/;
+
+    virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
-
     virtual QByteArray asWkb() const;
-
 
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 %Docstring
  Returns the geometry converted to the more generic curve type QgsCurvePolygon
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsAbstractGeometry
+ :rtype: QgsCurvePolygon
 %End
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
 
+
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
 
     double pointDistanceToBoundary( double x, double y ) const;
 %Docstring

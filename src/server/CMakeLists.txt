@@ -43,7 +43,6 @@ SET(QGIS_SERVER_SRCS
   qgsserverinterface.cpp
   qgsserverinterfaceimpl.cpp
   qgsserverlogger.cpp
-  qgsserverprojectparser.cpp
   qgsserverprojectutils.cpp
   qgsserverrequest.cpp
   qgsserverresponse.cpp
@@ -52,9 +51,6 @@ SET(QGIS_SERVER_SRCS
   qgsservicemodule.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
-  qgssldconfigparser.cpp
-  qgswmsconfigparser.cpp
-  qgswmsprojectparser.cpp
 )
 
 SET (QGIS_SERVER_HDRS
@@ -120,7 +116,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation

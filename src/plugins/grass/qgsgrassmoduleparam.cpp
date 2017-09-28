@@ -230,9 +230,6 @@ QgsGrassModuleMultiParam::QgsGrassModuleMultiParam( QgsGrassModule *module, QStr
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
-  , mLayout( 0 )
-  , mParamsLayout( 0 )
-  , mButtonsLayout( 0 )
 {
   adjustTitle();
   setToolTip( mToolTip );
@@ -278,9 +275,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   , mHaveLimits( false )
   , mMin( INT_MAX )
   , mMax( INT_MIN )
-  , mComboBox( 0 )
   , mIsOutput( false )
-  , mValidator( 0 )
   , mUsesRegion( false )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
@@ -802,8 +797,6 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
   , mType( type )
-  , mOgrLayerOption( QLatin1String( "" ) )
-  , mOgrWhereOption( QLatin1String( "" ) )
 {
   if ( mTitle.isEmpty() )
   {
@@ -1073,7 +1066,7 @@ QgsGrassModuleVectorField::QgsGrassModuleVectorField(
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleMultiParam( module, key, qdesc, gdesc, gnode, direct, parent )
-  , mModuleStandardOptions( options ), mLayerInput( 0 )
+  , mModuleStandardOptions( options )
 {
   if ( mTitle.isEmpty() )
   {
@@ -1196,8 +1189,6 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
   , mModuleStandardOptions( options )
-  , mLayerInput( 0 )
-  , mVectorLayer( 0 )
 {
   if ( mTitle.isEmpty() )
   {

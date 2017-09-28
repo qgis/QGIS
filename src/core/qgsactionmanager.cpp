@@ -27,8 +27,9 @@
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include "qgsexpression.h"
+#include "qgsdataprovider.h"
 
 #include <QList>
 #include <QStringList>
@@ -38,6 +39,7 @@
 #include <QUrl>
 #include <QDir>
 #include <QFileInfo>
+#include <QRegularExpression>
 
 
 QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture )
@@ -56,20 +58,68 @@ QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString &na
 
 void QgsActionManager::addAction( const QgsAction &action )
 {
+  QgsDebugMsg( "add action " + action.name() );
   mActions.append( action );
+  if ( mLayer && mLayer->dataProvider() && !action.notificationMessage().isEmpty() )
+  {
+    mLayer->dataProvider()->setListening( true );
+    if ( !mOnNotifyConnected )
+    {
+      QgsDebugMsg( "connecting to notify" );
+      connect( mLayer->dataProvider(), &QgsDataProvider::notify, this, &QgsActionManager::onNotifyRunActions );
+      mOnNotifyConnected = true;
+    }
+  }
+}
+
+void QgsActionManager::onNotifyRunActions( const QString &message )
+{
+  for ( const QgsAction &act : qgsAsConst( mActions ) )
+  {
+    if ( !act.notificationMessage().isEmpty() && QRegularExpression( act.notificationMessage() ).match( message ).hasMatch() )
+    {
+      if ( !act.isValid() || !act.runable() )
+        continue;
+
+      QgsExpressionContext context = createExpressionContext();
+
+      Q_ASSERT( mLayer ); // if there is no layer, then where is the notification coming from ?
+      context << QgsExpressionContextUtils::layerScope( mLayer );
+      context << QgsExpressionContextUtils::notificationScope( message );
+
+      QString expandedAction = QgsExpression::replaceExpressionText( act.command(), &context );
+      if ( expandedAction.isEmpty() )
+        continue;
+      runAction( QgsAction( act.type(), act.name(), expandedAction, act.capture() ) );
+    }
+  }
 }
 
 void QgsActionManager::removeAction( const QUuid &actionId )
 {
   int i = 0;
-  Q_FOREACH ( const QgsAction &action, mActions )
+  for ( const QgsAction &action : qgsAsConst( mActions ) )
   {
     if ( action.id() == actionId )
     {
       mActions.removeAt( i );
-      return;
+      break;
     }
     ++i;
+  }
+
+  if ( mOnNotifyConnected )
+  {
+    bool hasActionOnNotify = false;
+    for ( const QgsAction &action : qgsAsConst( mActions ) )
+      hasActionOnNotify |= !action.notificationMessage().isEmpty();
+    if ( !hasActionOnNotify && mLayer && mLayer->dataProvider() )
+    {
+      // note that there is no way of knowing if the provider is listening only because
+      // this class has hasked it to, so we do not reset the provider listening state here
+      disconnect( mLayer->dataProvider(), &QgsDataProvider::notify, this, &QgsActionManager::onNotifyRunActions );
+      mOnNotifyConnected = false;
+    }
   }
 }
 
@@ -109,6 +159,13 @@ void QgsActionManager::doAction( const QUuid &actionId, const QgsFeature &feat, 
 void QgsActionManager::clearActions()
 {
   mActions.clear();
+  if ( mOnNotifyConnected && mLayer && mLayer->dataProvider() )
+  {
+    // note that there is no way of knowing if the provider is listening only because
+    // this class has hasked it to, so we do not reset the provider listening state here
+    disconnect( mLayer->dataProvider(), &QgsDataProvider::notify, this, &QgsActionManager::onNotifyRunActions );
+    mOnNotifyConnected = false;
+  }
 }
 
 QList<QgsAction> QgsActionManager::actions( const QString &actionScope ) const
@@ -119,7 +176,7 @@ QList<QgsAction> QgsActionManager::actions( const QString &actionScope ) const
   {
     QList<QgsAction> actions;
 
-    Q_FOREACH ( const QgsAction &action, mActions )
+    for ( const QgsAction &action : qgsAsConst( mActions ) )
     {
       if ( action.actionScopes().contains( actionScope ) )
         actions.append( action );
@@ -174,7 +231,7 @@ bool QgsActionManager::writeXml( QDomNode &layer_node ) const
     aActions.appendChild( defaultActionElement );
   }
 
-  Q_FOREACH ( const QgsAction &action, mActions )
+  for ( const QgsAction &action : qgsAsConst( mActions ) )
   {
     action.writeXml( aActions );
   }
@@ -185,7 +242,7 @@ bool QgsActionManager::writeXml( QDomNode &layer_node ) const
 
 bool QgsActionManager::readXml( const QDomNode &layer_node )
 {
-  mActions.clear();
+  clearActions();
 
   QDomNode aaNode = layer_node.namedItem( QStringLiteral( "attributeactions" ) );
 
@@ -196,15 +253,15 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
     {
       QgsAction action;
       action.readXml( actionsettings.item( i ) );
-      mActions.append( action );
+      addAction( action );
     }
 
-    QDomNodeList defaultActionNodes = aaNode.toElement().elementsByTagName( "defaultAction" );
+    QDomNodeList defaultActionNodes = aaNode.toElement().elementsByTagName( QStringLiteral( "defaultAction" ) );
 
     for ( int i = 0; i < defaultActionNodes.size(); ++i )
     {
       QDomElement defaultValueElem = defaultActionNodes.at( i ).toElement();
-      mDefaultActions.insert( defaultValueElem.attribute( "key" ), defaultValueElem.attribute( "value" ) );
+      mDefaultActions.insert( defaultValueElem.attribute( QStringLiteral( "key" ) ), defaultValueElem.attribute( QStringLiteral( "value" ) ) );
     }
   }
   return true;
@@ -212,7 +269,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
 
 QgsAction QgsActionManager::action( const QUuid &id )
 {
-  Q_FOREACH ( const QgsAction &action, mActions )
+  for ( const QgsAction &action : qgsAsConst( mActions ) )
   {
     if ( action.id() == id )
       return action;

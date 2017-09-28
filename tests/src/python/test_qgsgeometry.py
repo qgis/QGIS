@@ -35,8 +35,11 @@ from qgis.core import (
     QgsPolygonV2,
     QgsCoordinateTransform,
     QgsRectangle,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsRenderChecker
 )
+from qgis.PyQt.QtCore import QDir
+from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath
 
 from qgis.testing import (
     start_app,
@@ -56,6 +59,9 @@ TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestQgsGeometry(unittest.TestCase):
+
+    def setUp(self):
+        self.report = "<h1>Python QgsGeometry Tests</h1>\n"
 
     def testBool(self):
         """ Test boolean evaluation of QgsGeometry """
@@ -1423,14 +1429,14 @@ class TestQgsGeometry(unittest.TestCase):
         ]
 
         polyline = QgsGeometry.fromPolyline(points[0])
-        self.assertEqual(polyline.addPoints(points[1][0:1]), 2, "addPoints with one point line unexpectedly succeeded.")
-        self.assertEqual(polyline.addPoints(points[1][0:2]), 0, "addPoints with two point line failed.")
+        self.assertEqual(polyline.addPoints(points[1][0:1]), QgsGeometry.InvalidInput, "addPoints with one point line unexpectedly succeeded.")
+        self.assertEqual(polyline.addPoints(points[1][0:2]), QgsGeometry.Success, "addPoints with two point line failed.")
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         polyline = QgsGeometry.fromPolyline(points[0])
-        self.assertEqual(polyline.addPoints(points[1]), 0, "addPoints with %d point line failed." % len(points[1]))
+        self.assertEqual(polyline.addPoints(points[1]), QgsGeometry.Success, "addPoints with %d point line failed." % len(points[1]))
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1439,7 +1445,7 @@ class TestQgsGeometry(unittest.TestCase):
         polyline = QgsGeometry.fromPolyline(points[0])
         polyline.geometry().addZValue(4.0)
         points2 = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in points[1]]
-        self.assertEqual(polyline.addPointsV2(points2), 0)
+        self.assertEqual(polyline.addPointsV2(points2), QgsGeometry.Success)
         expwkt = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1456,12 +1462,12 @@ class TestQgsGeometry(unittest.TestCase):
 
         polygon = QgsGeometry.fromPolygon(points[0])
 
-        self.assertEqual(polygon.addPoints(points[1][0][0:1]), 2, "addPoints with one point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPoints(points[1][0][0:2]), 2, "addPoints with two point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPoints(points[1][0][0:3]), 2, "addPoints with unclosed three point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPoints([QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]), 2, "addPoints with 'closed' three point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPoints(points[1][0][0:1]), QgsGeometry.InvalidInput, "addPoints with one point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPoints(points[1][0][0:2]), QgsGeometry.InvalidInput, "addPoints with two point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPoints(points[1][0][0:3]), QgsGeometry.InvalidInput, "addPoints with unclosed three point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPoints([QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]), QgsGeometry.InvalidInput, "addPoints with 'closed' three point ring unexpectedly succeeded.")
 
-        self.assertEqual(polygon.addPoints(points[1][0]), 0, "addPoints failed")
+        self.assertEqual(polygon.addPoints(points[1][0]), QgsGeometry.Success, "addPoints failed")
         expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1469,13 +1475,13 @@ class TestQgsGeometry(unittest.TestCase):
         mp = QgsGeometry.fromMultiPolygon(points[:1])
         p = QgsGeometry.fromPolygon(points[1])
 
-        self.assertEqual(mp.addPartGeometry(p), 0)
+        self.assertEqual(mp.addPartGeometry(p), QgsGeometry.Success)
         wkt = mp.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         mp = QgsGeometry.fromMultiPolygon(points[:1])
         mp2 = QgsGeometry.fromMultiPolygon(points[1:])
-        self.assertEqual(mp.addPartGeometry(mp2), 0)
+        self.assertEqual(mp.addPartGeometry(mp2), QgsGeometry.Success)
         wkt = mp.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
@@ -1483,7 +1489,7 @@ class TestQgsGeometry(unittest.TestCase):
         polygon = QgsGeometry.fromPolygon(points[0])
         polygon.geometry().addZValue(4.0)
         points2 = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.PointZ) for pi in points[1][0]]
-        self.assertEqual(polygon.addPointsV2(points2), 0)
+        self.assertEqual(polygon.addPointsV2(points2), QgsGeometry.Success)
         expwkt = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
         wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1492,38 +1498,38 @@ class TestQgsGeometry(unittest.TestCase):
         empty = QgsGeometry()
         # if not default type specified, addPart should fail
         result = empty.addPoints([QgsPointXY(4, 0)])
-        assert result != 0, 'Got return code {}'.format(result)
+        assert result != QgsGeometry.Success, 'Got return code {}'.format(result)
         result = empty.addPoints([QgsPointXY(4, 0)], QgsWkbTypes.PointGeometry)
-        self.assertEqual(result, 0, 'Got return code {}'.format(result))
+        self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiPoint ((4 0))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
         result = empty.addPoints([QgsPointXY(5, 1)])
-        self.assertEqual(result, 0, 'Got return code {}'.format(result))
+        self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiPoint ((4 0),(5 1))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
         # next try with lines
         empty = QgsGeometry()
         result = empty.addPoints(points[0][0], QgsWkbTypes.LineGeometry)
-        self.assertEqual(result, 0, 'Got return code {}'.format(result))
+        self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
         result = empty.addPoints(points[1][0])
-        self.assertEqual(result, 0, 'Got return code {}'.format(result))
+        self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0),(4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
         # finally try with polygons
         empty = QgsGeometry()
         result = empty.addPoints(points[0][0], QgsWkbTypes.PolygonGeometry)
-        self.assertEqual(result, 0, 'Got return code {}'.format(result))
+        self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
         result = empty.addPoints(points[1][0])
-        self.assertEqual(result, 0, 'Got return code {}'.format(result))
+        self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -2256,6 +2262,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPoint25D), 'MultiPoint25D')
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiLineString25D), 'MultiLineString25D')
         self.assertEqual(QgsWkbTypes.displayString(QgsWkbTypes.MultiPolygon25D), 'MultiPolygon25D')
+        self.assertEqual(QgsWkbTypes.displayString(9999999), '')
 
         # test parseType method
         self.assertEqual(QgsWkbTypes.parseType('point( 1 2 )'), QgsWkbTypes.Point)
@@ -3205,6 +3212,14 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, False, True), QgsWkbTypes.MultiSurfaceM)
         self.assertEqual(QgsWkbTypes.zmType(QgsWkbTypes.MultiSurfaceZM, True, True), QgsWkbTypes.MultiSurfaceZM)
 
+    def testGeometryDisplayString(self):
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.PointGeometry), 'Point')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.LineGeometry), 'Line')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.PolygonGeometry), 'Polygon')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.UnknownGeometry), 'Unknown geometry')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(QgsWkbTypes.NullGeometry), 'No geometry')
+        self.assertEqual(QgsWkbTypes.geometryDisplayString(999999), 'Invalid type')
+
     def testDeleteVertexCircularString(self):
 
         wkt = "CircularString ((0 0,1 1,2 0))"
@@ -3381,7 +3396,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         wkt = "LineString( 0 0, 10 0, 10 10)"
         geom = QgsGeometry.fromWkt(wkt)
-        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight, QgsGeometry.JoinStyleMitre)
+        out = geom.singleSidedBuffer(1, 8, QgsGeometry.SideRight, QgsGeometry.JoinStyleMiter)
         result = out.exportToWkt()
         expected_wkt = "Polygon ((0 0, 10 0, 10 10, 11 10, 11 -1, 0 -1, 0 0))"
         self.assertTrue(compareWkt(result, expected_wkt, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(expected_wkt, result))
@@ -3498,7 +3513,7 @@ class TestQgsGeometry(unittest.TestCase):
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
         point = QgsGeometry.fromWkt('Point(9 -2)')
-        self.assertAlmostEqual(geom.lineLocatePoint(point), 7.372, places=3)
+        self.assertAlmostEqual(geom.lineLocatePoint(point), 7.377, places=3)
 
     def testInterpolateAngle(self):
         """ test QgsGeometry.interpolateAngle() """
@@ -3542,7 +3557,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
-        self.assertAlmostEqual(geom.interpolateAngle(5), 1.69120, places=3)
+        self.assertAlmostEqual(geom.interpolateAngle(5), 1.6919, places=3)
 
     def testInterpolate(self):
         """ test QgsGeometry.interpolate() """
@@ -4222,6 +4237,122 @@ class TestQgsGeometry(unittest.TestCase):
             result = o.exportToWkt()
             self.assertTrue(compareWkt(result, exp, 0.00001),
                             "clipped: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+    def testHausdorff(self):
+        tests = [["POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))", "POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))", 0.707106781186548],
+                 ["LINESTRING (0 0, 2 1)", "LINESTRING (0 0, 2 0)", 1],
+                 ["LINESTRING (0 0, 2 0)", "LINESTRING (0 1, 1 2, 2 1)", 2],
+                 ["LINESTRING (0 0, 2 0)", "MULTIPOINT (0 1, 1 0, 2 1)", 1],
+                 ["LINESTRING (130 0, 0 0, 0 150)", "LINESTRING (10 10, 10 150, 130 10)", 14.142135623730951]
+                 ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            g2 = QgsGeometry.fromWkt(t[1])
+            o = g1.hausdorffDistance(g2)
+            exp = t[2]
+            self.assertAlmostEqual(o, exp, 5,
+                                   "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
+
+    def testHausdorffDensify(self):
+        tests = [
+            ["LINESTRING (130 0, 0 0, 0 150)", "LINESTRING (10 10, 10 150, 130 10)", 0.5, 70.0]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            g2 = QgsGeometry.fromWkt(t[1])
+            densify = t[2]
+            o = g1.hausdorffDistanceDensify(g2, densify)
+            exp = t[3]
+            self.assertAlmostEqual(o, exp, 5,
+                                   "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
+
+    def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
+        image = QImage(200, 200, QImage.Format_RGB32)
+        image.fill(QColor(0, 0, 0))
+
+        painter = QPainter(image)
+        if use_pen:
+            painter.setPen(QPen(QColor(255, 255, 255), 4))
+        else:
+            painter.setBrush(QBrush(QColor(255, 255, 255)))
+
+        if as_painter_path:
+            path = QPainterPath()
+            geom.geometry().addToPainterPath(path)
+            painter.drawPath(path)
+        else:
+            if as_polygon:
+                geom.geometry().drawAsPolygon(painter)
+            else:
+                geom.draw(painter)
+        painter.end()
+        return image
+
+    def testGeometryDraw(self):
+        '''Tests drawing geometries'''
+
+        tests = [{'name': 'Point',
+                  'wkt': 'Point (40 60)',
+                  'reference_image': 'point',
+                  'use_pen': False},
+                 {'name': 'LineString',
+                  'wkt': 'LineString (20 30, 50 30, 50 90)',
+                  'reference_image': 'linestring',
+                  'as_polygon_reference_image': 'linestring_aspolygon',
+                  'use_pen': True},
+                 {'name': 'CircularString',
+                  'wkt': 'CircularString (20 30, 50 30, 50 90)',
+                  'reference_image': 'circularstring',
+                  'as_polygon_reference_image': 'circularstring_aspolygon',
+                  'use_pen': True},
+                 {'name': 'CurvePolygon',
+                  'wkt': 'CurvePolygon(CircularString (20 30, 50 30, 50 90, 10 50, 20 30))',
+                  'reference_image': 'curvepolygon_circularstring',
+                  'use_pen': False},
+                 {'name': 'CurvePolygonInteriorRings',
+                  'wkt': 'CurvePolygon(CircularString (20 30, 50 30, 50 90, 10 50, 20 30),LineString(30 45, 55 45, 30 75, 30 45))',
+                  'reference_image': 'curvepolygon_circularstring_interiorrings',
+                  'use_pen': False},
+                 {'name': 'CompoundCurve',
+                  'wkt': 'CompoundCurve(CircularString (20 30, 50 30, 50 90),LineString(50 90, 10 90))',
+                  'reference_image': 'compoundcurve',
+                  'use_pen': True,
+                  'as_polygon_reference_image': 'compoundcurve_aspolygon'},
+                 {'name': 'GeometryCollection',
+                  'wkt': 'GeometryCollection(LineString (20 30, 50 30, 50 70),LineString(10 90, 90 90))',
+                  'reference_image': 'geometrycollection',
+                  'use_pen': True}
+                 ]
+
+        for test in tests:
+            geom = QgsGeometry.fromWkt(test['wkt'])
+            self.assertTrue(geom and not geom.isNull(), 'Could not create geometry {}'.format(test['wkt']))
+            rendered_image = self.renderGeometry(geom, test['use_pen'])
+            assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+
+            if hasattr(geom.geometry(), 'addToPainterPath'):
+                # also check using painter path
+                rendered_image = self.renderGeometry(geom, test['use_pen'], as_painter_path=True)
+                assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
+
+            if 'as_polygon_reference_image' in test:
+                rendered_image = self.renderGeometry(geom, False, True)
+                assert self.imageCheck(test['name'] + '_aspolygon', test['as_polygon_reference_image'], rendered_image)
+
+    def imageCheck(self, name, reference_image, image):
+        self.report += "<h2>Render {}</h2>\n".format(name)
+        temp_dir = QDir.tempPath() + '/'
+        file_name = temp_dir + 'geometry_' + name + ".png"
+        image.save(file_name, "PNG")
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("geometry")
+        checker.setControlName("expected_" + reference_image)
+        checker.setRenderedImage(file_name)
+        checker.setColorTolerance(2)
+        result = checker.compareImages(name, 20)
+        self.report += checker.report()
+        print((self.report))
+        return result
 
 
 if __name__ == '__main__':

@@ -120,6 +120,12 @@ namespace QgsServerProjectUtils
     */
   SERVER_EXPORT int wmsMaxHeight( const QgsProject &project );
 
+  /** Returns the quality for WMS images defined in a QGIS project.
+    * \param project the QGIS project
+    * \returns quality if defined in project, -1 otherwise.
+    */
+  SERVER_EXPORT int wmsImageQuality( const QgsProject &project );
+
   /** Returns if layer ids are used as name in WMS.
     * \param project the QGIS project
     * \returns if layer ids are used as name.

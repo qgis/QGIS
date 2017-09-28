@@ -37,9 +37,6 @@ class CORE_EXPORT QgsProjectVersion
      * Creates a new NULL version
      */
     QgsProjectVersion()
-      : mMajor( 0 )
-      , mMinor( 0 )
-      , mSub( 0 )
     {}
 
     QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
@@ -71,10 +68,12 @@ class CORE_EXPORT QgsProjectVersion
     bool operator>( const QgsProjectVersion &other ) const;
 
   private:
-    int mMajor;
-    int mMinor;
-    int mSub;
+    int mMajor = 0;
+    int mMinor = 0;
+    int mSub = 0;
     QString mName;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSPROJECTVERSION_H

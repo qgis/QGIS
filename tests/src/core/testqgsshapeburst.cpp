@@ -43,11 +43,6 @@ class TestQgsShapeburst : public QObject
     Q_OBJECT
   public:
     TestQgsShapeburst()
-      : mTestHasError( false )
-      , mpPolysLayer()
-      , mShapeburstFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -66,7 +61,7 @@ class TestQgsShapeburst : public QObject
     void shapeburstSymbolFromQml();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

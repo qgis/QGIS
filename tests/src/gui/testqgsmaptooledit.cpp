@@ -27,7 +27,6 @@ class TestQgsMapToolEdit : public QObject
     Q_OBJECT
   public:
     TestQgsMapToolEdit()
-      : mCanvas( 0 )
     {}
 
   private slots:
@@ -68,7 +67,7 @@ void TestQgsMapToolEdit::cleanup()
 void TestQgsMapToolEdit::checkDefaultZValue()
 {
   QgsSettings settings;
-  settings.remove( "/qgis/digitizing/default_z_value" );
+  settings.remove( QStringLiteral( "/qgis/digitizing/default_z_value" ) );
 
   QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
   QCOMPARE( tool->defaultZValue(), Qgis::DEFAULT_Z_COORDINATE );

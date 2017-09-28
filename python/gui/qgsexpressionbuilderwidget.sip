@@ -180,7 +180,7 @@ Sets the expression string for the widget
 %End
 
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
-                       const QString &helpText = "",
+                       const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1 );
 %Docstring
@@ -236,6 +236,30 @@ Sets the expression string for the widget
  Update the list of function files found at the given path
 %End
 
+    QStandardItemModel *model();
+%Docstring
+ Returns a pointer to the dialog's function item model.
+ This method is exposed for testing purposes only - it should not be used to modify the model.
+.. versionadded:: 3.0
+ :rtype: QStandardItemModel
+%End
+
+    QgsProject *project();
+%Docstring
+ Returns the project currently associated with the widget.
+.. seealso:: setProject()
+.. versionadded:: 3.0
+ :rtype: QgsProject
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+ Sets the ``project`` currently associated with the widget. This
+ controls which layers and relations and other project-specific items are shown in the widget.
+.. seealso:: project()
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void loadSampleValues();
@@ -274,6 +298,7 @@ Sets the expression string for the widget
     void showEvent( QShowEvent *e );
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

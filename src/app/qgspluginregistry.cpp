@@ -54,13 +54,6 @@ QgsPluginRegistry *QgsPluginRegistry::instance()
   return sInstance;
 }
 
-QgsPluginRegistry::QgsPluginRegistry()
-  : mPythonUtils( nullptr )
-  , mQgisInterface( nullptr )
-{
-// constructor does nothing
-}
-
 void QgsPluginRegistry::setQgisInterface( QgisInterface *iface )
 {
   mQgisInterface = iface;

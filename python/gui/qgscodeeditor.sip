@@ -27,7 +27,7 @@ class QgsCodeEditor : QsciScintilla
 %End
   public:
 
-    QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = "", bool folding = false, bool margin = false );
+    QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), bool folding = false, bool margin = false );
 %Docstring
  Construct a new code editor.
 
@@ -89,6 +89,7 @@ class QgsCodeEditor : QsciScintilla
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

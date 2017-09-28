@@ -81,7 +81,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     struct ColorRampItem
     {
       //! default constructor
-      ColorRampItem() : value( 0 ) {}
+      ColorRampItem() {}
       //! convenience constructor
       ColorRampItem( double val, const QColor &col, const QString &lbl = QString() )
         : label( lbl )
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       {}
 
       QString label;
-      double value;
+      double value = 0;
       QColor color;
 
       // compare operator for sorting
@@ -191,12 +191,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** Look up table to speed up finding the right color.
       * It is initialized on the first call to shade(). */
     QVector<int> mLUT;
-    double mLUTOffset;
-    double mLUTFactor;
-    bool mLUTInitialized;
+    double mLUTOffset = 0.0;
+    double mLUTFactor = 1.0;
+    bool mLUTInitialized = false;
 
     //! Do not render values out of range
-    bool mClip;
+    bool mClip = false;
 };
 
 #endif

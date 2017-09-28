@@ -63,12 +63,10 @@ class TestQgsRasterSubLayer : public QObject
     QString mFileName;
     QgsRasterLayer *mpRasterLayer = nullptr;
     QString mReport;
-    bool mHasNetCDF;
+    bool mHasNetCDF =  false ;
 };
 
 TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-  : mpRasterLayer( nullptr )
-  , mHasNetCDF( false )
 {
 
 }
@@ -175,8 +173,8 @@ void TestQgsRasterSubLayer::checkStats()
 
     QVERIFY( sublayer->width() == width );
     QVERIFY( sublayer->height() == height );
-    QVERIFY( qgsDoubleNear( myStatistics.minimumValue, min ) );
-    QVERIFY( qgsDoubleNear( myStatistics.maximumValue, max ) );
+    QGSCOMPARENEAR( myStatistics.minimumValue, min, 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( myStatistics.maximumValue, max, 4 * DBL_EPSILON );
     mReport += QLatin1String( "<p>Passed</p>" );
     delete sublayer;
   }

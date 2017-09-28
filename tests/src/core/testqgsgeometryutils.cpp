@@ -19,7 +19,6 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
-#include "qgstestutils.h"
 
 class TestQgsGeometryUtils: public QObject
 {
@@ -190,8 +189,8 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
             midPoint, radius, left );
 
   QVERIFY( ok );
-  QVERIFY( qgsDoubleNear( midPoint.x(), expectedX ) );
-  QVERIFY( qgsDoubleNear( midPoint.y(), expectedY ) );
+  QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( midPoint.y(), expectedY, 4 * DBL_EPSILON );
 }
 
 void TestQgsGeometryUtils::testCircleLength_data()
@@ -218,7 +217,7 @@ void TestQgsGeometryUtils::testCircleLength()
   QFETCH( double, y3 );
   QFETCH( double, expected );
 
-  QVERIFY( qgsDoubleNear( expected, QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 ) ) );
+  QGSCOMPARENEAR( expected, QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 ), 4 * DBL_EPSILON );
 }
 
 void TestQgsGeometryUtils::testNormalizedAngle_data()
@@ -243,7 +242,7 @@ void TestQgsGeometryUtils::testNormalizedAngle()
 {
   QFETCH( double, input );
   QFETCH( double, expected );
-  QVERIFY( qgsDoubleNear( expected, QgsGeometryUtils::normalizedAngle( input ), 0.0001 ) );
+  QGSCOMPARENEAR( expected, QgsGeometryUtils::normalizedAngle( input ), 0.0001 );
 }
 
 void TestQgsGeometryUtils::testLineAngle_data()
@@ -275,7 +274,7 @@ void TestQgsGeometryUtils::testLineAngle()
 
   double lineAngle = QgsGeometryUtils::lineAngle( x1, y1, x2, y2 ) * 180 / M_PI;
   if ( expected > -99999 )
-    QVERIFY( qgsDoubleNear( lineAngle, expected ) );
+    QGSCOMPARENEAR( lineAngle, expected, 4 * DBL_EPSILON );
 }
 
 void TestQgsGeometryUtils::testLinePerpendicularAngle_data()
@@ -307,7 +306,7 @@ void TestQgsGeometryUtils::testLinePerpendicularAngle()
 
   double pAngle = QgsGeometryUtils::linePerpendicularAngle( x1, y1, x2, y2 ) * 180 / M_PI;
   if ( expected > -99999 )
-    QVERIFY( qgsDoubleNear( pAngle, expected, 0.01 ) );
+    QGSCOMPARENEAR( pAngle, expected, 0.01 );
 }
 
 void TestQgsGeometryUtils::testAverageAngle_data()
@@ -340,7 +339,7 @@ void TestQgsGeometryUtils::testAverageAngle()
   QFETCH( double, expected );
 
   double averageAngle = QgsGeometryUtils::averageAngle( angle1 * M_PI / 180.0, angle2 * M_PI / 180.0 ) * 180.0 / M_PI;
-  QVERIFY( qgsDoubleNear( averageAngle, expected, 0.0000000001 ) );
+  QGSCOMPARENEAR( averageAngle, expected, 0.0000000001 );
 }
 
 void TestQgsGeometryUtils::testAdjacentVertices()
@@ -485,7 +484,7 @@ void TestQgsGeometryUtils::testCircleCenterRadius_data()
   QTest::addColumn<double>( "expectedCenterX" );
   QTest::addColumn<double>( "expectedCenterY" );
 
-  QTest::newRow( "circleCenterRadius1" ) << 1.0 << 1.0 << 5.0 << 7.0 << 1.0 << 1.0 << sqrt( 13.0 ) << 3.0 << 4.0;
+  QTest::newRow( "circleCenterRadius1" ) << 1.0 << 1.0 << 5.0 << 7.0 << 1.0 << 1.0 << std::sqrt( 13.0 ) << 3.0 << 4.0;
   QTest::newRow( "circleCenterRadius1" ) << 0.0 << 2.0 << 2.0 << 2.0 << 0.0 << 2.0 << 1.0 << 1.0 << 2.0;
 }
 
@@ -503,9 +502,9 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
 
   double radius, centerX, centerY;
   QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
-  QVERIFY( qgsDoubleNear( expectedRadius, radius ) );
-  QVERIFY( qgsDoubleNear( expectedCenterX, centerX ) );
-  QVERIFY( qgsDoubleNear( expectedCenterY, centerY ) );
+  QGSCOMPARENEAR( expectedRadius, radius, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( expectedCenterX, centerX, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( expectedCenterY, centerY, 4 * DBL_EPSILON );
 }
 
 //QgsGeometryUtils::sqrDistToLine
@@ -642,14 +641,14 @@ void TestQgsGeometryUtils::testClosestPoint()
 
   QgsPoint pt1 = QgsGeometryUtils::closestPoint( linestringZ, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt1.z(), 1, 0.0001 );
-  QVERIFY( qIsNaN( pt1.m() ) );
+  QVERIFY( std::isnan( pt1.m() ) );
 
   QgsLineString linestringM( QVector<QgsPoint>()
                              << QgsPoint( 1, 1, std::numeric_limits<double>::quiet_NaN(), 1 )
                              << QgsPoint( 1, 3, std::numeric_limits<double>::quiet_NaN(), 2 ) );
 
   QgsPoint pt2 = QgsGeometryUtils::closestPoint( linestringM, QgsPoint( 1, 4 ) );
-  QVERIFY( qIsNaN( pt2.z() ) );
+  QVERIFY( std::isnan( pt2.z() ) );
   QGSCOMPARENEAR( pt2.m(), 2, 0.0001 );
 
   QgsLineString linestringZM( QVector<QgsPoint>()

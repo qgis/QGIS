@@ -63,7 +63,7 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
     // list of widget with their corresponding line separator
     QMap<QWidget *, QFrame *> mWidgetList;
 
-    bool mLayoutHorizontal;
+    bool mLayoutHorizontal = true;
     QBoxLayout *mLayout = nullptr;
 };
 

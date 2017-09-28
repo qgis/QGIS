@@ -69,9 +69,7 @@ bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const
 
 bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
 {
-  return ( ( mMajor >= other.mMajor ) ||
-           ( ( mMajor == other.mMajor ) && ( mMinor >= other.mMinor ) ) ||
-           ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub >= other.mSub ) ) );
+  return ( *this == other ) || ( *this > other );
 }
 
 bool QgsProjectVersion::operator>( const QgsProjectVersion &other ) const

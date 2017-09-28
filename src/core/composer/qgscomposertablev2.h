@@ -65,12 +65,11 @@ class CORE_EXPORT QgsComposerTableStyle
   public:
 
     QgsComposerTableStyle()
-      : enabled( false )
-      , cellBackgroundColor( QColor( 255, 255, 255, 255 ) )
+      : cellBackgroundColor( QColor( 255, 255, 255, 255 ) )
     {}
 
     //! Whether the styling option is enabled
-    bool enabled;
+    bool enabled = false;
 
     //! Cell background color
     QColor cellBackgroundColor;
@@ -486,16 +485,16 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
   protected:
     //! Margin between cell borders and cell text
-    double mCellMargin;
+    double mCellMargin = 1.0;
 
     //! Behavior for empty tables
-    EmptyTableMode mEmptyTableMode;
+    EmptyTableMode mEmptyTableMode = HeadersOnly;
 
     //! String to show in empty tables
     QString mEmptyTableMessage;
 
     //! True if empty rows should be shown in the table
-    bool mShowEmptyRows;
+    bool mShowEmptyRows = false;
 
     //! Header font
     QFont mHeaderFont;
@@ -504,10 +503,10 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     QColor mHeaderFontColor;
 
     //! Alignment for table headers
-    HeaderHAlignment mHeaderHAlignment;
+    HeaderHAlignment mHeaderHAlignment = FollowColumn;
 
     //! Header display mode
-    HeaderMode mHeaderMode;
+    HeaderMode mHeaderMode = FirstFrame;
 
     //! Table contents font
     QFont mContentFont;
@@ -516,19 +515,19 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     QColor mContentFontColor;
 
     //! True if grid should be shown
-    bool mShowGrid;
+    bool mShowGrid = true;
 
     //! Width of grid lines
-    double mGridStrokeWidth;
+    double mGridStrokeWidth = 0.5;
 
     //! Color for grid lines
     QColor mGridColor;
 
     //! True if grid should be shown
-    bool mHorizontalGrid;
+    bool mHorizontalGrid = true;
 
     //! True if grid should be shown
-    bool mVerticalGrid;
+    bool mVerticalGrid = true;
 
     //! Color for table background
     QColor mBackgroundColor;
@@ -547,7 +546,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
 
     QSizeF mTableSize;
 
-    WrapBehavior mWrapBehavior;
+    WrapBehavior mWrapBehavior = TruncateText;
 
     QMap< CellStyleGroup, QgsComposerTableStyle * > mCellStyles;
 

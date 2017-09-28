@@ -62,7 +62,7 @@ QString TestQgsMapSettings::toString( const QPolygonF &p, int dec ) const
 {
   QString s;
   const char *sep = "";
-  double r = pow( 10.0, dec );
+  double r = std::pow( 10.0, dec );
   for ( int i = 0; i < p.size(); ++i )
   {
     s += QStringLiteral( "%1%2 %3" ).arg( sep )
@@ -169,8 +169,8 @@ void TestQgsMapSettings::visiblePolygon()
 
 void TestQgsMapSettings::testIsLayerVisible()
 {
-  QgsVectorLayer *vlA = new QgsVectorLayer( "Point", "a", "memory" );
-  QgsVectorLayer *vlB = new QgsVectorLayer( "Point", "b", "memory" );
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
 
   QList<QgsMapLayer *> layers;
   layers << vlA << vlB;
@@ -181,17 +181,17 @@ void TestQgsMapSettings::testIsLayerVisible()
   context << QgsExpressionContextUtils::mapSettingsScope( ms );
 
   // test checking for visible layer by id
-  QgsExpression e( QString( "is_layer_visible( '%1' )" ).arg( vlA-> id() ) );
+  QgsExpression e( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlA-> id() ) );
   QVariant r = e.evaluate( &context );
   QCOMPARE( r.toBool(), true );
 
   // test checking for visible layer by name
-  QgsExpression e2( QString( "is_layer_visible( '%1' )" ).arg( vlB-> name() ) );
+  QgsExpression e2( QStringLiteral( "is_layer_visible( '%1' )" ).arg( vlB-> name() ) );
   r = e2.evaluate( &context );
   QCOMPARE( r.toBool(), true );
 
   // test checking for non-existent layer
-  QgsExpression e3( QString( "is_layer_visible( 'non matching name' )" ) );
+  QgsExpression e3( QStringLiteral( "is_layer_visible( 'non matching name' )" ) );
   r = e3.evaluate( &context );
   QCOMPARE( r.toBool(), false );
 
@@ -201,8 +201,8 @@ void TestQgsMapSettings::testIsLayerVisible()
 
 void TestQgsMapSettings::testMapLayerListUtils()
 {
-  QgsVectorLayer *vlA = new QgsVectorLayer( "Point", "a", "memory" );
-  QgsVectorLayer *vlB = new QgsVectorLayer( "Point", "b", "memory" );
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
 
   QList<QgsMapLayer *> listRawSource;
   listRawSource << vlA << vlB;
@@ -256,9 +256,9 @@ void TestQgsMapSettings::testXmlReadWrite()
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
-  QDomElement element = doc.createElement( "s" );
+  QDomElement element = doc.createElement( QStringLiteral( "s" ) );
 
   //create a map settings object
   QgsMapSettings s1;
@@ -274,7 +274,7 @@ void TestQgsMapSettings::testXmlReadWrite()
   QCOMPARE( s2.destinationCrs().authid(), QStringLiteral( "EPSG:3111" ) );
 
   // test writing a map settings without a valid CRS
-  element = doc.createElement( "s" );
+  element = doc.createElement( QStringLiteral( "s" ) );
   s1.setDestinationCrs( QgsCoordinateReferenceSystem() );
   s1.writeXml( element, doc );
   s2.readXml( element );

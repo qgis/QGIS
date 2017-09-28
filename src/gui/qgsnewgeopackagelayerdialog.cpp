@@ -28,6 +28,7 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgshelp.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -43,11 +44,9 @@
 
 QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mOkButton( nullptr )
-  , mTableNameEdited( false )
-  , mLayerIdentifierEdited( false )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewGeoPackageLayerDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewGeoPackageLayer/geometry" ) ).toByteArray() );
@@ -113,7 +112,7 @@ void QgsNewGeoPackageLayerDialog::on_mFieldTypeBox_currentIndexChanged( int )
   QString myType = mFieldTypeBox->currentData( Qt::UserRole ).toString();
   mFieldLengthEdit->setEnabled( myType == QLatin1String( "text" ) );
   if ( myType != QLatin1String( "text" ) )
-    mFieldLengthEdit->setText( QLatin1String( "" ) );
+    mFieldLengthEdit->clear();
 }
 
 
@@ -323,7 +322,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QString tableName( mTableNameEdit->text() );
 
   bool overwriteTable = false;
-  if ( OGR_DS_GetLayerByName( hDS, tableName.toUtf8().constData() ) != nullptr )
+  if ( OGR_DS_GetLayerByName( hDS, tableName.toUtf8().constData() ) )
   {
     if ( property( "hideDialogs" ).toBool() )
     {
@@ -348,6 +347,13 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>
                                ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+
+  // z-coordinate & m-value.
+  if ( mGeometryWithZCheckBox->isChecked() )
+    wkbType = OGR_GT_SetZ( wkbType );
+
+  if ( mGeometryWithMCheckBox->isChecked() )
+    wkbType = OGR_GT_SetM( wkbType );
 
   OGRSpatialReferenceH hSRS = nullptr;
   // consider spatial reference system of the layer
@@ -381,9 +387,9 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
   OGRLayerH hLayer = OGR_DS_CreateLayer( hDS, tableName.toUtf8().constData(), hSRS, wkbType, options );
   CSLDestroy( options );
-  if ( hSRS != nullptr )
+  if ( hSRS )
     OSRRelease( hSRS );
-  if ( hLayer == nullptr )
+  if ( !hLayer )
   {
     QString msg( tr( "Creation of layer failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
@@ -404,7 +410,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
       ogrType = OFTString;
     else if ( fieldType == QLatin1String( "integer" ) )
       ogrType = OFTInteger;
-    else if ( fieldType == "integer64" )
+    else if ( fieldType == QLatin1String( "integer64" ) )
       ogrType = OFTInteger64;
     else if ( fieldType == QLatin1String( "real" ) )
       ogrType = OFTReal;
@@ -473,3 +479,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   return false;
 }
 
+void QgsNewGeoPackageLayerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-geopackage-layer" ) );
+}

@@ -55,8 +55,7 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
   , mIdentityType( CertIdentity )
   , mPkiBundle( QgsPkiBundle() )
   , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -178,8 +177,6 @@ void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
-    default:
-      ss = QLatin1String( "" );
       break;
   }
   teValidation->setStyleSheet( ss );
@@ -329,10 +326,6 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
       writeValidation( tr( "Private key password may not match" ), Invalid, true );
     }
     return false;
-  }
-  else
-  {
-    isvalid = isvalid && true;
   }
 
   if ( isvalid )

@@ -99,6 +99,13 @@ Constructor
 .. seealso:: createNewMapCanvas()
 %End
 
+    virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
+%Docstring
+ Returns the toolbar icon size. If ``dockedToolbar`` is true, the icon size
+ for toolbars contained within docks is returned.
+ :rtype: QSize
+%End
+
   public slots: // TODO: do these functions really need to be slots?
 
 
@@ -148,6 +155,15 @@ Add a project
     virtual void newProject( bool promptToSaveFlag = false ) = 0;
 %Docstring
 Start a blank project
+%End
+
+    virtual void reloadConnections( ) = 0;
+%Docstring
+ Triggered when connections have changed.
+ This calls reloadConnections in the main application and triggers a signal that is
+ forwarded to the GUI elements that needs to be updated (i.e. the source
+ select dialogs and the browser widgets)
+.. versionadded:: 3.0
 %End
 
     virtual QgsMapLayer *activeLayer() = 0;
@@ -568,7 +584,6 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
  url to the QGIS documentation directory path (prefix/share/doc)
  \deprecated
 %End
-
 
 
     virtual QMenu *projectMenu() = 0;
@@ -1250,6 +1265,7 @@ Get timeout for timed messages: default of 5 seconds
  \note
  added in version 2.7
 %End
+
 };
 
 /************************************************************************

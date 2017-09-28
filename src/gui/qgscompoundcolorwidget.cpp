@@ -33,10 +33,6 @@
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
   : QgsPanelWidget( parent )
-  , mAllowAlpha( true )
-  , mLastCustomColorIndex( 0 )
-  , mPickingColor( false )
-  , mDiscarded( false )
 {
   setupUi( this );
 
@@ -201,13 +197,6 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   int currentTab = settings.value( QStringLiteral( "Windows/ColorDialog/activeTab" ), 0 ).toInt();
   mTabWidget->setCurrentIndex( currentTab );
 
-#ifdef Q_OS_MAC
-  //disable color picker tab for OSX, as it is impossible to grab the mouse under OSX
-  //see note for QWidget::grabMouse() re OSX Cocoa
-  //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
-  mTabWidget->removeTab( 3 );
-#endif
-
   //setup connections
   connect( mColorBox, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
   connect( mColorWheel, &QgsColorWidget::colorChanged, this, &QgsCompoundColorWidget::setColor );
@@ -366,7 +355,7 @@ void QgsCompoundColorWidget::removePalette()
   //remove scheme from registry
   QgsApplication::colorSchemeRegistry()->removeColorScheme( userScheme );
   refreshSchemeComboBox();
-  prevIndex = qMax( qMin( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
+  prevIndex = std::max( std::min( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
   mSchemeComboBox->setCurrentIndex( prevIndex );
 }
 
@@ -814,7 +803,7 @@ void QgsCompoundColorWidget::updateActionsForCurrentScheme()
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
 
   QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
-  mActionRemovePalette->setEnabled( userScheme ? true : false );
+  mActionRemovePalette->setEnabled( static_cast< bool >( userScheme ) );
   if ( userScheme )
   {
     mActionShowInButtons->setEnabled( true );

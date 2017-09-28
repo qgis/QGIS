@@ -25,9 +25,6 @@
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayer( nullptr )
-  , mAllowExpression( false )
-  , mAllowEmpty( false )
 {
 }
 
@@ -48,7 +45,7 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
   if ( mAllowEmpty && fieldName.isEmpty() )
     return index( 0, 0 );
 
-  int r = mFields.indexFromName( fldName );
+  int r = mFields.lookupField( fldName );
   if ( r >= 0 )
   {
     if ( mAllowEmpty )

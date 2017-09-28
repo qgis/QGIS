@@ -31,7 +31,6 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
 
   public:
     explicit QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid, QgsComposerMap *composerMap );
-    virtual ~QgsComposerMapGridWidget();
 
   public slots:
 

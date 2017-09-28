@@ -24,18 +24,22 @@
 
 class Vector3D;
 
+#define SIP_NO_FILE
+
 /** \ingroup analysis
  * ParametricLine is an Interface for parametric lines. It is possible, that a parametric line is composed of several parametric
- * lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.*/
+ * lines (see the composite pattern in Gamma et al. 'Design Patterns'). Do not build instances of it since it is an abstract class.
+ * \note Not available in Python bindings
+*/
 class ANALYSIS_EXPORT ParametricLine
 {
   protected:
     //! Degree of the parametric Line
-    int mDegree;
+    int mDegree = 0;
     //! Pointer to the parent object. If there isn't one, mParent is 0
     ParametricLine *mParent = nullptr;
     //! MControlPoly stores the points of the control polygon
-    QVector<QgsPoint *> *mControlPoly;
+    QVector<QgsPoint *> *mControlPoly = nullptr;
   public:
     //! Default constructor
     ParametricLine();
@@ -66,16 +70,12 @@ class ANALYSIS_EXPORT ParametricLine
 //-----------------------------------------constructors and destructor----------------------
 
 inline ParametricLine::ParametricLine()
-  : mDegree( 0 )
-  , mParent( nullptr )
-  , mControlPoly( nullptr )
 {
 
 }
 
 inline ParametricLine::ParametricLine( ParametricLine *par, QVector<QgsPoint *> *controlpoly )
-  : mDegree( 0 )
-  , mParent( par )
+  : mParent( par )
   , mControlPoly( controlpoly )
 {
 

@@ -77,7 +77,7 @@ class QgsServerLogger: public QObject
 
     QFile mLogFile;
     QTextStream mTextStream;
-    QgsMessageLog::MessageLevel mLogLevel;
+    QgsMessageLog::MessageLevel mLogLevel = QgsMessageLog::NONE;
 };
 
 #endif // QGSSERVERLOGGER_H

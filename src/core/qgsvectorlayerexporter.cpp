@@ -51,7 +51,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     QgsWkbTypes::Type geometryType,
     const QgsCoordinateReferenceSystem &crs,
     bool overwrite,
-    const QMap<QString, QVariant> *options )
+    const QMap<QString, QVariant> &options )
   : mErrorCount( 0 )
   , mAttributeCount( -1 )
 
@@ -78,7 +78,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   // create an empty layer
   QString errMsg;
-  mError = pCreateEmpty( uri, fields, geometryType, crs, overwrite, &mOldToNewAttrIdx, &errMsg, options );
+  mError = pCreateEmpty( uri, fields, geometryType, crs, overwrite, &mOldToNewAttrIdx, &errMsg, !options.isEmpty() ? &options : nullptr );
   if ( errorCode() )
   {
     mErrorMessage = errMsg;
@@ -97,14 +97,14 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   QString uriUpdated( uri );
   // HACK sorry...
-  if ( providerKey == "ogr" )
+  if ( providerKey == QLatin1String( "ogr" ) )
   {
     QString layerName;
-    if ( options && options->contains( QStringLiteral( "layerName" ) ) )
-      layerName = options->value( QStringLiteral( "layerName" ) ).toString();
+    if ( options.contains( QStringLiteral( "layerName" ) ) )
+      layerName = options.value( QStringLiteral( "layerName" ) ).toString();
     if ( !layerName.isEmpty() )
     {
-      uriUpdated += "|layername=";
+      uriUpdated += QLatin1String( "|layername=" );
       uriUpdated += layerName;
     }
   }
@@ -114,9 +114,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
     mError = ErrInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
 
-    if ( vectorProvider )
-      delete vectorProvider;
-
+    delete vectorProvider;
     return;
   }
 
@@ -231,7 +229,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
                                      const QgsCoordinateReferenceSystem &destCRS,
                                      bool onlySelected,
                                      QString *errorMessage,
-                                     QMap<QString, QVariant> *options,
+                                     const QMap<QString, QVariant> &options,
                                      QgsFeedback *feedback )
 {
   QgsCoordinateReferenceSystem outputCRS;
@@ -256,10 +254,11 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
 
   bool overwrite = false;
   bool forceSinglePartGeom = false;
-  if ( options )
+  QMap<QString, QVariant> providerOptions = options;
+  if ( !options.isEmpty() )
   {
-    overwrite = options->take( QStringLiteral( "overwrite" ) ).toBool();
-    forceSinglePartGeom = options->take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
+    overwrite = providerOptions.take( QStringLiteral( "overwrite" ) ).toBool();
+    forceSinglePartGeom = providerOptions.take( QStringLiteral( "forceSinglePartGeometryType" ) ).toBool();
   }
 
   QgsFields fields = layer->fields();
@@ -304,7 +303,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
   }
 
   QgsVectorLayerExporter *writer =
-    new QgsVectorLayerExporter( uri, providerKey, fields, wkbType, outputCRS, overwrite, options );
+    new QgsVectorLayerExporter( uri, providerKey, fields, wkbType, outputCRS, overwrite, providerOptions );
 
   // check whether file creation was successful
   ExportError err = writer->errorCode();
@@ -456,21 +455,21 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
 // QgsVectorLayerExporterTask
 //
 
-QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, QMap<QString, QVariant> *options, bool ownsLayer )
+QgsVectorLayerExporterTask::QgsVectorLayerExporterTask( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, const QMap<QString, QVariant> &options, bool ownsLayer )
   : QgsTask( tr( "Exporting %1" ).arg( layer->name() ), QgsTask::CanCancel )
   , mLayer( layer )
   , mOwnsLayer( ownsLayer )
   , mDestUri( uri )
   , mDestProviderKey( providerKey )
   , mDestCrs( destinationCrs )
-  , mOptions( options ? * options : QMap<QString, QVariant>() )
+  , mOptions( options )
   , mOwnedFeedback( new QgsFeedback() )
 {
   if ( mLayer )
     setDependentLayers( QList< QgsMapLayer * >() << mLayer );
 }
 
-QgsVectorLayerExporterTask *QgsVectorLayerExporterTask::withLayerOwnership( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, QMap<QString, QVariant> *options )
+QgsVectorLayerExporterTask *QgsVectorLayerExporterTask::withLayerOwnership( QgsVectorLayer *layer, const QString &uri, const QString &providerKey, const QgsCoordinateReferenceSystem &destinationCrs, const QMap<QString, QVariant> &options )
 {
   std::unique_ptr< QgsVectorLayerExporterTask > newTask( new QgsVectorLayerExporterTask( layer, uri, providerKey, destinationCrs, options ) );
   newTask->mOwnsLayer = true;
@@ -493,7 +492,7 @@ bool QgsVectorLayerExporterTask::run()
 
   mError = QgsVectorLayerExporter::exportLayer(
              mLayer.data(), mDestUri, mDestProviderKey, mDestCrs, false, &mErrorMessage,
-             &mOptions, mOwnedFeedback.get() );
+             mOptions, mOwnedFeedback.get() );
 
   return mError == QgsVectorLayerExporter::NoError;
 }

@@ -22,11 +22,6 @@ QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling
   mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
-QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
-{
-  // sub-providers owned by labeling engine
-}
-
 QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {
   return new QgsVectorLayerLabelProvider( layer, providerId, withFeatureLoop, settings );
@@ -68,7 +63,7 @@ QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDen
   , mDescription( description )
   , mElseRule( elseRule )
   , mIsActive( true )
-  , mFilter( nullptr )
+
 {
   mRuleKey = QUuid::createUuid().toString();
   initFilter();

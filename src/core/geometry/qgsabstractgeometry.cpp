@@ -23,7 +23,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <limits>
 #include <QTransform>
 
-QgsAbstractGeometry::QgsAbstractGeometry(): mWkbType( QgsWkbTypes::Unknown )
+QgsAbstractGeometry::QgsAbstractGeometry()
 {
 }
 
@@ -87,7 +87,7 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
   else if ( hasM )
   {
-    mWkbType =  QgsWkbTypes::addM( baseGeomType );
+    mWkbType = QgsWkbTypes::addM( baseGeomType );
   }
   else
   {
@@ -130,9 +130,10 @@ int QgsAbstractGeometry::nCoordinates() const
 {
   int nCoords = 0;
 
-  Q_FOREACH ( const QgsRingSequence &r, coordinateSequence() )
+  const QgsCoordinateSequence seq = coordinateSequence();
+  for ( const QgsRingSequence &r : seq )
   {
-    Q_FOREACH ( const QgsPointSequence &p, r )
+    for ( const QgsPointSequence &p : r )
     {
       nCoords += p.size();
     }
@@ -261,16 +262,10 @@ bool QgsAbstractGeometry::hasCurvedSegments() const
   return false;
 }
 
-
 QgsAbstractGeometry *QgsAbstractGeometry::segmentize( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   Q_UNUSED( tolerance );
   Q_UNUSED( toleranceType );
   return clone();
-}
-
-QgsAbstractGeometry *QgsAbstractGeometry::toCurveType() const
-{
-  return 0;
 }
 

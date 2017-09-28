@@ -51,14 +51,11 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
 
   connect( mTabButton, &QAbstractButton::toggled, this, &QgsAddTabOrGroup::on_mTabButton_toggled );
   connect( mGroupButton, &QAbstractButton::toggled, this, &QgsAddTabOrGroup::on_mGroupButton_toggled );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAddTabOrGroup::showHelp );
 
   mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
 
   setWindowTitle( tr( "Add Tab or Group for %1" ).arg( mLayer->name() ) );
-} // QgsVectorLayerProperties ctor
-
-QgsAddTabOrGroup::~QgsAddTabOrGroup()
-{
 }
 
 QString QgsAddTabOrGroup::name()
@@ -114,4 +111,9 @@ void QgsAddTabOrGroup::on_mTabButton_toggled( bool checked )
   mTabList->setEnabled( !checked );
   if ( checked )
     mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
+}
+
+void QgsAddTabOrGroup::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#customize-a-form-for-your-data" ) );
 }

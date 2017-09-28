@@ -11,7 +11,6 @@
 
 
 
-
 class QgsDiagramLayerSettings
 {
 %Docstring
@@ -319,6 +318,7 @@ class QgsDiagramSettings
     };
 
     QgsDiagramSettings();
+
     bool enabled;
     QFont font;
     QList< QColor > categoryColors;

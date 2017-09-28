@@ -23,9 +23,7 @@
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mTextEdit( nullptr )
-  , mPlainTextEdit( nullptr )
-  , mLineEdit( nullptr )
+
 {
 }
 

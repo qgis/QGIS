@@ -36,8 +36,6 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     //! Constructor
     QgsDecorationNorthArrow( QObject *parent = nullptr );
 
-    virtual ~QgsDecorationNorthArrow();
-
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
     void projectRead() override;
@@ -60,13 +58,13 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     QColor mOutlineColor;
 
     // The amount of rotation for the north arrow
-    int mRotationInt;
+    int mRotationInt = 0;
 
     //! enable or disable the automatic setting of the arrow direction
-    bool mAutomatic;
+    bool mAutomatic = true;
     //! margin values
-    int mMarginHorizontal;
-    int mMarginVertical;
+    int mMarginHorizontal = 0;
+    int mMarginVertical = 0;
 
     friend class QgsDecorationNorthArrowDialog;
 };

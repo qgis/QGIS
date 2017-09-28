@@ -14,6 +14,13 @@
    <string>DXF Export</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="2" column="0">
+    <widget class="QLabel" name="mSymbologyScaleLabel">
+     <property name="text">
+      <string>Symbology scale</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="2">
     <widget class="QToolButton" name="mFileSelectionButton">
      <property name="text">
@@ -54,13 +61,6 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mSymbologyScaleLabel">
-     <property name="text">
-      <string>Symbology scale</string>
-     </property>
-    </widget>
-   </item>
    <item row="7" column="0" colspan="3">
     <widget class="QgsLayerTreeView" name="mTreeView">
      <property name="selectionMode">
@@ -72,11 +72,11 @@
     </widget>
    </item>
    <item row="2" column="1" colspan="2">
-    <widget class="QgsScaleWidget" name="mScaleWidget">
+    <widget class="QgsScaleWidget" name="mScaleWidget" native="true">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
-     <property name="showCurrentScaleButton">
+     <property name="showCurrentScaleButton" stdset="0">
       <bool>true</bool>
      </property>
     </widget>
@@ -125,13 +125,13 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="0" colspan="3">
+   <item row="13" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -167,9 +167,16 @@
     </widget>
    </item>
    <item row="5" column="1" colspan="2">
-    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="3">
+    <widget class="QCheckBox" name="mForce2d">
+     <property name="text">
+      <string>Force 2d output (eg. to support polyline width)</string>
      </property>
     </widget>
    </item>
@@ -177,15 +184,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeView</class>
@@ -197,8 +204,8 @@
   <tabstop>mFileLineEdit</tabstop>
   <tabstop>mFileSelectionButton</tabstop>
   <tabstop>mSymbologyModeComboBox</tabstop>
-  <tabstop>mScaleWidget</tabstop>
   <tabstop>mEncoding</tabstop>
+  <tabstop>mScaleWidget</tabstop>
   <tabstop>mVisibilityPresets</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mTreeView</tabstop>
@@ -206,6 +213,8 @@
   <tabstop>mDeselectAllButton</tabstop>
   <tabstop>mLayerTitleAsName</tabstop>
   <tabstop>mMapExtentCheckBox</tabstop>
+  <tabstop>mForce2d</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

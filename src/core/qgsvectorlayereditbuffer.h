@@ -207,7 +207,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
   protected:
 
-    QgsVectorLayerEditBuffer() : L( nullptr ) {}
+    QgsVectorLayerEditBuffer() {}
 
     void updateFields( QgsFields &fields );
 
@@ -240,6 +240,15 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     friend class QgsVectorLayerUndoCommandAddAttribute;
     friend class QgsVectorLayerUndoCommandDeleteAttribute;
     friend class QgsVectorLayerUndoCommandRenameAttribute;
+
+    friend class QgsVectorLayerUndoPassthroughCommand;
+    friend class QgsVectorLayerUndoPassthroughCommandAddFeatures;
+    friend class QgsVectorLayerUndoPassthroughCommandDeleteFeatures;
+    friend class QgsVectorLayerUndoPassthroughCommandChangeGeometry;
+    friend class QgsVectorLayerUndoPassthroughCommandChangeAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandAddAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandDeleteAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandRenameAttribute;
 
     /** Deleted feature IDs which are not committed.  Note a feature can be added and then deleted
         again before the change is committed - in that case the added feature would be removed

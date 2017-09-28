@@ -76,9 +76,8 @@ class CORE_EXPORT QgsLegendRenderer
     {
       public:
         Nucleon()
-          : item( nullptr )
-          , labelXOffset( 0.0 )
         {}
+
         QObject *item = nullptr;
         // Symbol size size without any space around for symbol item
         QSizeF symbolSize;
@@ -87,7 +86,7 @@ class CORE_EXPORT QgsLegendRenderer
         QSizeF size;
         // Offset of symbol label, this offset is the same for all symbol labels
         // of the same layer in the same column
-        double labelXOffset;
+        double labelXOffset = 0.0;
     };
 
     /** Atom is indivisible set (indivisible into more columns). It may consists
@@ -102,11 +101,11 @@ class CORE_EXPORT QgsLegendRenderer
     class Atom
     {
       public:
-        Atom(): size( QSizeF( 0, 0 ) ), column( 0 ) {}
+        Atom(): size( QSizeF( 0, 0 ) ) {}
         QList<Nucleon> nucleons;
         // Atom size including nucleons interspaces but without any space around atom.
         QSizeF size;
-        int column;
+        int column = 0;
     };
 
     QSizeF paintAndDetermineSize( QPainter *painter );

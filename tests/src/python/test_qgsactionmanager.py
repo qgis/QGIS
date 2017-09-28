@@ -154,6 +154,7 @@ class TestQgsActionManager(unittest.TestCase):
         return output
 
     @unittest.expectedFailure(platform.system() != 'Linux')
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test is flaky on Travis environment')
     def testDoAction(self):
         """ test running action """
 

@@ -165,6 +165,8 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     return StringConcatenate;
   else if ( normalized == QLatin1String( "collect" ) )
     return GeometryCollect;
+  else if ( normalized == QLatin1String( "array_agg" ) )
+    return ArrayAggregate;
 
   if ( ok )
     *ok = false;
@@ -177,6 +179,13 @@ QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate ag
 {
   if ( ok )
     *ok = false;
+
+  if ( aggregate == QgsAggregateCalculator::ArrayAggregate )
+  {
+    if ( ok )
+      *ok = true;
+    return calculateArrayAggregate( fit, attr, expression, context );
+  }
 
   switch ( resultType )
   {
@@ -293,6 +302,7 @@ QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregat
     case StringMaximumLength:
     case StringConcatenate:
     case GeometryCollect:
+    case ArrayAggregate:
     {
       if ( ok )
         *ok = false;
@@ -340,6 +350,7 @@ QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAgg
     case InterQuartileRange:
     case StringConcatenate:
     case GeometryCollect:
+    case ArrayAggregate:
     {
       if ( ok )
         *ok = false;
@@ -386,6 +397,7 @@ QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFro
     case StringMaximumLength:
     case StringConcatenate:
     case GeometryCollect:
+    case ArrayAggregate:
     {
       if ( ok )
         *ok = false;
@@ -422,7 +434,7 @@ QVariant QgsAggregateCalculator::calculateNumericAggregate( QgsFeatureIterator &
   }
   s.finalize();
   double val = s.statistic( stat );
-  return qIsNaN( val ) ? QVariant() : val;
+  return std::isnan( val ) ? QVariant() : val;
 }
 
 QVariant QgsAggregateCalculator::calculateStringAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
@@ -512,6 +524,9 @@ QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate
     case StringConcatenate:
       return ""; // zero length string - not null!
 
+    case ArrayAggregate:
+      return QVariantList(); // empty list
+
     // undefined - nothing makes sense here
     case Sum:
     case Min:
@@ -558,4 +573,30 @@ QVariant QgsAggregateCalculator::calculateDateTimeAggregate( QgsFeatureIterator 
   }
   s.finalize();
   return s.statistic( stat );
+}
+
+QVariant QgsAggregateCalculator::calculateArrayAggregate( QgsFeatureIterator &fit, int attr, QgsExpression *expression,
+    QgsExpressionContext *context )
+{
+  Q_ASSERT( expression || attr >= 0 );
+
+  QgsFeature f;
+
+  QVariantList array;
+
+  while ( fit.nextFeature( f ) )
+  {
+    if ( expression )
+    {
+      Q_ASSERT( context );
+      context->setFeature( f );
+      QVariant v = expression->evaluate( context );
+      array.append( v );
+    }
+    else
+    {
+      array.append( f.attribute( attr ) );
+    }
+  }
+  return array;
 }

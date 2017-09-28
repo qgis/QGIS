@@ -53,7 +53,7 @@ class CORE_EXPORT QgsCoordinateTransformCache
   private:
     QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > mTransforms; //same auth_id pairs might have different datum transformations
 
-    QgsCoordinateTransformCache();
+    QgsCoordinateTransformCache() = default;
 
 #ifdef SIP_RUN
     QgsCoordinateTransformCache( const QgsCoordinateTransformCache &rh );

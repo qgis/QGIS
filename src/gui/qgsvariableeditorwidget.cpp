@@ -36,9 +36,6 @@
 
 QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   : QWidget( parent )
-  , mContext( nullptr )
-  , mEditableScopeIndex( -1 )
-  , mShown( false )
 {
   QVBoxLayout *verticalLayout = new QVBoxLayout( this );
   verticalLayout->setSpacing( 3 );
@@ -252,9 +249,6 @@ void QgsVariableEditorWidget::selectionChanged()
 
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   : QTreeWidget( parent )
-  , mEditorDelegate( nullptr )
-  , mEditableScopeIndex( -1 )
-  , mContext( nullptr )
 {
   // init icons
   if ( mExpandIcon.isNull() )
@@ -273,8 +267,8 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   setAlternatingRowColors( true );
   setEditTriggers( QAbstractItemView::AllEditTriggers );
   setRootIsDecorated( false );
-  header()->setMovable( false );
-  header()->setResizeMode( QHeaderView::Interactive );
+  header()->setSectionsMovable( false );
+  header()->setSectionResizeMode( QHeaderView::Interactive );
 
   mEditorDelegate = new VariableEditorDelegate( this, this );
   setItemDelegate( mEditorDelegate );

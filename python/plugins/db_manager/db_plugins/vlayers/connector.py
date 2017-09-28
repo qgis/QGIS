@@ -18,8 +18,6 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 """
-from __future__ import print_function
-from builtins import object
 
 from qgis.PyQt.QtCore import QUrl, QTemporaryFile
 

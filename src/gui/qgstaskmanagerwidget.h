@@ -220,7 +220,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
   signals:
 
     /**
-     * Emitted when the user clicks a cancellable task.
+     * Emitted when the user clicks a cancelable task.
      */
     void cancelClicked();
 
@@ -235,7 +235,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 
     bool mCanCancel;
     QgsTask::TaskStatus mStatus;
-    bool mInside;
+    bool mInside = false;
 };
 
 ///@endcond

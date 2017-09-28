@@ -101,12 +101,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
     {
         //! construct invalid match
         Match()
-          : mType( Invalid )
-          , mDist( 0 )
-          , mPoint()
-          , mLayer( nullptr )
-          , mFid( 0 )
-          , mVertexIndex( 0 )
         {}
 
         Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = nullptr )
@@ -172,12 +166,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
         }
 
       protected:
-        Type mType;
-        double mDist;
+        Type mType = Invalid;
+        double mDist = 0;
         QgsPointXY mPoint;
         QgsVectorLayer *mLayer = nullptr;
-        QgsFeatureId mFid;
-        int mVertexIndex; // e.g. vertex index
+        QgsFeatureId mFid = 0;
+        int mVertexIndex = 0; // e.g. vertex index
         QgsPointXY mEdgePoints[2];
     };
 

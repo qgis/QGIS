@@ -22,26 +22,20 @@
 #include <QObject>
 #include "qgstest.h"
 
-// some of these tests have intermittent failure on Travis, probably due
-// to inconsistent availability to multiple threads on the platform.
-// These tests are disabled unless WITH_FLAKY is 1.
-
-#define WITH_FLAKY 0 //TODO - disable only for Travis?
-
 class TestTask : public QgsTask
 {
     Q_OBJECT
 
   public:
 
-    TestTask( const QString &desc = QString() ) : QgsTask( desc ), runCalled( false ) {}
-    TestTask( const QString &desc, const QgsTask::Flags &flags ) : QgsTask( desc, flags ), runCalled( false ) {}
+    TestTask( const QString &desc = QString() ) : QgsTask( desc ) {}
+    TestTask( const QString &desc, const QgsTask::Flags &flags ) : QgsTask( desc, flags ) {}
 
     void emitProgressChanged( double progress ) { setProgress( progress ); }
     void emitTaskStopped() {  }
     void emitTaskCompleted() { }
 
-    bool runCalled;
+    bool runCalled =  false ;
 
   protected:
 
@@ -59,12 +53,12 @@ class ProgressReportingTask : public QgsTask
 
   public:
 
-    ProgressReportingTask( const QString &desc = QString() ) : QgsTask( desc ), finished( false ), terminated( false ) {}
+    ProgressReportingTask( const QString &desc = QString() ) : QgsTask( desc ) {}
 
     void emitProgressChanged( double progress ) { setProgress( progress ); }
 
-    bool finished;
-    bool terminated;
+    bool finished =  false ;
+    bool terminated =  false ;
 
   public slots:
     void finish() { finished = true; }
@@ -200,15 +194,11 @@ class TestQgsTaskManager : public QObject
     void task();
     void taskResult();
     void taskFinished();
-#if WITH_FLAKY
     void subTask();
-#endif
     void addTask();
     void taskTerminationBeforeDelete();
     void taskId();
-#if WITH_FLAKY
     void waitForFinished();
-#endif
     void progressChanged();
     void statusChanged();
     void allTasksFinished();
@@ -245,7 +235,7 @@ void TestQgsTaskManager::cleanup()
 
 void TestQgsTaskManager::task()
 {
-  std::unique_ptr< TestTask > task( new TestTask( "desc" ) );
+  std::unique_ptr< TestTask > task( new TestTask( QStringLiteral( "desc" ) ) );
   QCOMPARE( task->status(), QgsTask::Queued );
   QCOMPARE( task->description(), QString( "desc" ) );
   QVERIFY( !task->isActive() );
@@ -294,10 +284,10 @@ void TestQgsTaskManager::task()
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   // test flags
-  task.reset( new TestTask( "desc", 0 ) );
+  task.reset( new TestTask( QStringLiteral( "desc" ), 0 ) );
   QVERIFY( !task->canCancel() );
   QVERIFY( !( task->flags() & QgsTask::CanCancel ) );
-  task.reset( new TestTask( "desc", QgsTask::CanCancel ) );
+  task.reset( new TestTask( QStringLiteral( "desc" ), QgsTask::CanCancel ) );
   QVERIFY( task->canCancel() );
   QVERIFY( task->flags() & QgsTask::CanCancel );
 }
@@ -442,9 +432,11 @@ void TestQgsTaskManager::taskFinished()
   QCOMPARE( *resultObtained, false );
 }
 
-#if WITH_FLAKY
 void TestQgsTaskManager::subTask()
 {
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   QgsTaskManager manager;
 
   // parent with one subtask
@@ -489,14 +481,14 @@ void TestQgsTaskManager::subTask()
   // test progress calculation
   QSignalSpy spy( parent, &QgsTask::progressChanged );
   parent->emitProgressChanged( 50 );
-  QCOMPARE( qRound( parent->progress() ), 17 );
+  QCOMPARE( std::round( parent->progress() ), 17.0 );
   //QCOMPARE( spy.count(), 1 );
-  QCOMPARE( qRound( spy.last().at( 0 ).toDouble() ), 17 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 17.0 );
 
   subTask->emitProgressChanged( 100 );
-  QCOMPARE( qRound( parent->progress() ), 50 );
+  QCOMPARE( std::round( parent->progress() ), 50.0 );
   //QCOMPARE( spy.count(), 2 );
-  QCOMPARE( qRound( spy.last().at( 0 ).toDouble() ), 50 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 50.0 );
 
   subTask2->finish();
   while ( subTask2->status() != QgsTask::Complete )
@@ -504,14 +496,14 @@ void TestQgsTaskManager::subTask()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( qRound( parent->progress() ), 83 );
+  QCOMPARE( std::round( parent->progress() ), 83.0 );
   //QCOMPARE( spy.count(), 3 );
-  QCOMPARE( qRound( spy.last().at( 0 ).toDouble() ), 83 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 83.0 );
 
   parent->emitProgressChanged( 100 );
-  QCOMPARE( qRound( parent->progress() ), 100 );
+  QCOMPARE( std::round( parent->progress() ), 100.0 );
   //QCOMPARE( spy.count(), 4 );
-  QCOMPARE( qRound( spy.last().at( 0 ).toDouble() ), 100 );
+  QCOMPARE( std::round( spy.last().at( 0 ).toDouble() ), 100.0 );
   parent->terminate();
   subTask->terminate();
 
@@ -641,7 +633,6 @@ void TestQgsTaskManager::subTask()
   flushEvents();
   QVERIFY( parentFinished2.count() > 0 );
 }
-#endif
 
 void TestQgsTaskManager::taskId()
 {
@@ -665,9 +656,11 @@ void TestQgsTaskManager::taskId()
   delete task3;
 }
 
-#if WITH_FLAKY
 void TestQgsTaskManager::waitForFinished()
 {
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   QgsTaskManager manager;
   QEventLoop loop;
 
@@ -705,7 +698,6 @@ void TestQgsTaskManager::waitForFinished()
   QCOMPARE( timeoutTooShortTask->waitForFinished( 20 ), false );
   QCOMPARE( timeoutTooShortTask->status(), QgsTask::Running );
 }
-#endif
 
 void TestQgsTaskManager::progressChanged()
 {
@@ -1066,11 +1058,11 @@ void TestQgsTaskManager::dependencies()
 void TestQgsTaskManager::layerDependencies()
 {
   //make some layers
-  QgsVectorLayer *layer1 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer1", "memory" );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "layer1" ), QStringLiteral( "memory" ) );
   QVERIFY( layer1->isValid() );
-  QgsVectorLayer *layer2 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer2", "memory" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "layer2" ), QStringLiteral( "memory" ) );
   QVERIFY( layer2->isValid() );
-  QgsVectorLayer *layer3 = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "layer3", "memory" );
+  QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "layer3" ), QStringLiteral( "memory" ) );
   QVERIFY( layer3->isValid() );
   QgsProject::instance()->addMapLayers( QList< QgsMapLayer * >() << layer1 << layer2 << layer3 );
 
@@ -1105,10 +1097,13 @@ void TestQgsTaskManager::layerDependencies()
 
 void TestQgsTaskManager::managerWithSubTasks()
 {
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   // parent with subtasks
-  ProgressReportingTask *parent = new ProgressReportingTask( "parent" );
-  ProgressReportingTask *subTask = new ProgressReportingTask( "subtask" );
-  ProgressReportingTask *subsubTask = new ProgressReportingTask( "subsubtask" );
+  ProgressReportingTask *parent = new ProgressReportingTask( QStringLiteral( "parent" ) );
+  ProgressReportingTask *subTask = new ProgressReportingTask( QStringLiteral( "subtask" ) );
+  ProgressReportingTask *subsubTask = new ProgressReportingTask( QStringLiteral( "subsubtask" ) );
   subTask->addSubTask( subsubTask );
   parent->addSubTask( subTask );
 
@@ -1125,7 +1120,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( manager->activeTasks().count(), 1 );
   QVERIFY( manager->activeTasks().contains( parent ) );
   QCOMPARE( spy.count(), 1 );
-#if WITH_FLAKY
+
   //manager should not directly listen to progress reports from subtasks
   //(only parent tasks, which themselves include their subtask progress)
   QCOMPARE( spyProgress.count(), 0 );
@@ -1146,7 +1141,6 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( spyProgress.count(), 3 );
   QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 0LL );
   QCOMPARE( spyProgress.last().at( 1 ).toInt(), 63 );
-#endif
 
   //manager should not emit statusChanged signals for subtasks
   QSignalSpy statusSpy( manager, &QgsTaskManager::statusChanged );
@@ -1223,11 +1217,11 @@ void TestQgsTaskManager::managerWithSubTasks3()
 {
   //test 2
   QgsTaskManager manager3;
-  TestTask *parent = new TestTask( "parent" );
+  TestTask *parent = new TestTask( QStringLiteral( "parent" ) );
   parent->hold();
-  TestTask *subTask = new TestTask( "subtask" );
+  TestTask *subTask = new TestTask( QStringLiteral( "subtask" ) );
   subTask->hold();
-  TestTask *subTask2 = new TestTask( "subtask2" );
+  TestTask *subTask2 = new TestTask( QStringLiteral( "subtask2" ) );
   subTask2->hold();
 
   parent->addSubTask( subTask, QgsTaskList() << subTask2 );

@@ -54,25 +54,6 @@
 
 QgsComposerView::QgsComposerView( QWidget *parent, const char *name, Qt::WindowFlags f )
   : QGraphicsView( parent )
-  , mCurrentTool( Select )
-  , mPreviousTool( Select )
-  , mRubberBandItem( nullptr )
-  , mRubberBandLineItem( nullptr )
-  , mMoveContentItem( nullptr )
-  , mMarqueeSelect( false )
-  , mMarqueeZoom( false )
-  , mTemporaryZoomStatus( QgsComposerView::Inactive )
-  , mPaintingEnabled( true )
-  , mHorizontalRuler( nullptr )
-  , mVerticalRuler( nullptr )
-  , mMoveContentSearchRadius( 25 )
-  , mNodesItem( nullptr )
-  , mNodesItemIndex( -1 )
-  , mToolPanning( false )
-  , mMousePanning( false )
-  , mKeyPanning( false )
-  , mMovingItemContent( false )
-  , mPreviewEffect( nullptr )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -753,7 +734,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
 
   //was this just a click? or a click and drag?
   bool clickOnly = false;
-  if ( qAbs( diffX ) < 2 && qAbs( diffY ) < 2 )
+  if ( std::fabs( diffX ) < 2 && std::fabs( diffY ) < 2 )
   {
     clickOnly = true;
   }
@@ -1049,8 +1030,8 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
         newLabelItem->adjustSizeToText();
 
         //make sure label size is sufficient to fit text
-        double labelWidth = qMax( mRubberBandItem->rect().width(), newLabelItem->rect().width() );
-        double labelHeight = qMax( mRubberBandItem->rect().height(), newLabelItem->rect().height() );
+        double labelWidth = std::max( mRubberBandItem->rect().width(), newLabelItem->rect().width() );
+        double labelHeight = std::max( mRubberBandItem->rect().height(), newLabelItem->rect().height() );
         newLabelItem->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), labelWidth, labelHeight ) );
 
         composition()->addComposerLabel( newLabelItem );
@@ -1315,14 +1296,14 @@ void QgsComposerView::updateRubberBandRect( QPointF &pos, const bool constrainSq
 
   if ( constrainSquare )
   {
-    if ( fabs( dx ) > fabs( dy ) )
+    if ( std::fabs( dx ) > std::fabs( dy ) )
     {
-      width = fabs( dx );
+      width = std::fabs( dx );
       height = width;
     }
     else
     {
-      height = fabs( dy );
+      height = std::fabs( dy );
       width = height;
     }
 
@@ -2015,7 +1996,7 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( event->angleDelta().y() );
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
 
   if ( event->modifiers() & Qt::ControlModifier )
   {

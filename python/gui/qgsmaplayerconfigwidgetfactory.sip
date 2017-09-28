@@ -69,6 +69,7 @@ Constructor
     virtual bool supportsStyleDock() const;
 %Docstring
  Flag if widget is supported for use in style dock.
+ The default implementation returns false.
  :return: True if supported
  :rtype: bool
 %End
@@ -82,6 +83,7 @@ Constructor
     virtual bool supportLayerPropertiesDialog() const;
 %Docstring
  Flag if widget is supported for use in layer properties dialog.
+ The default implementation returns false.
  :return: True if supported
  :rtype: bool
 %End

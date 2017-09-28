@@ -161,13 +161,16 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
     ProjectionSettingRestorer restorer;
     ( void )restorer; // no warnings
 
+    QFileInfo fi( string );
+    QString name = fi.baseName();
+
     // brute force attempt to load a matching layer
-    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, QStringLiteral( "temp" ), QStringLiteral( "ogr" ), false ) );
+    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), false ) );
     if ( layer->isValid() )
     {
       return layer.release();
     }
-    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, QStringLiteral( "temp" ), QStringLiteral( "gdal" ), false ) );
+    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), false ) );
     if ( rasterLayer->isValid() )
     {
       return rasterLayer.release();
@@ -279,13 +282,13 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
 {
   QString normalized = source;
   normalized.replace( '\\', '/' );
-  normalized.replace( '"', "'" );
+  normalized.replace( '"', QLatin1String( "'" ) );
   return normalized.trimmed();
 }
 
 void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
 {
-  QRegularExpression splitRx( "^(.{3,}):(.*)$" );
+  QRegularExpression splitRx( QStringLiteral( "^(.{3,}):(.*)$" ) );
   QRegularExpressionMatch match = splitRx.match( destination );
   if ( match.hasMatch() )
   {
@@ -299,7 +302,7 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
   else
   {
     providerKey = QStringLiteral( "ogr" );
-    QRegularExpression splitRx( "^(.*)\\.(.*?)$" );
+    QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
     QString extension;
     if ( match.hasMatch() )
@@ -356,7 +359,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     QString format;
     parseDestinationString( destination, providerKey, uri, format, options );
 
-    if ( providerKey == "ogr" )
+    if ( providerKey == QLatin1String( "ogr" ) )
     {
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
@@ -369,7 +372,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     else
     {
       //create empty layer
-      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, false, &options ) );
+      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, false, options ) );
       if ( exporter->errorCode() )
         return nullptr;
 
@@ -495,7 +498,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
 
   QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n " );
   s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
-  s +=  QObject::tr( "<h2>Input parameters</h2>\n" );
+  s += QObject::tr( "<h2>Input parameters</h2>\n" );
 
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, algorithm->parameterDefinitions() )
   {
@@ -508,7 +511,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
     s += QStringLiteral( "<h3>" ) + def->description() + QStringLiteral( "</h3>\n" );
     s += QStringLiteral( "<p>" ) + getText( def->name() ) + QStringLiteral( "</p>\n" );
   }
-  s += "<br>";
+  s += QLatin1String( "<br>" );
   s += QObject::tr( "<p align=\"right\">Algorithm author: %1</p>" ).arg( getText( QStringLiteral( "ALG_CREATOR" ) ) );
   s += QObject::tr( "<p align=\"right\">Help author: %1</p>" ).arg( getText( QStringLiteral( "ALG_HELP_CREATOR" ) ) );
   s += QObject::tr( "<p align=\"right\">Algorithm version: %1</p>" ).arg( getText( QStringLiteral( "ALG_VERSION" ) ) );
@@ -550,6 +553,41 @@ QString QgsProcessingUtils::convertToCompatibleFormat( const QgsVectorLayer *vl,
   {
     return vl->source();
   }
+}
+
+QgsFields QgsProcessingUtils::combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB )
+{
+  QgsFields outFields = fieldsA;
+  QSet< QString > usedNames;
+  for ( const QgsField &f : fieldsA )
+  {
+    usedNames.insert( f.name().toLower() );
+  }
+
+  for ( const QgsField &f : fieldsB )
+  {
+    if ( usedNames.contains( f.name().toLower() ) )
+    {
+      int idx = 2;
+      QString newName = f.name() + '_' + QString::number( idx );
+      while ( usedNames.contains( newName.toLower() ) )
+      {
+        idx++;
+        newName = f.name() + '_' + QString::number( idx );
+      }
+      QgsField newField = f;
+      newField.setName( newName );
+      outFields.append( newField );
+      usedNames.insert( newName.toLower() );
+    }
+    else
+    {
+      usedNames.insert( f.name().toLower() );
+      outFields.append( f );
+    }
+  }
+
+  return outFields;
 }
 
 

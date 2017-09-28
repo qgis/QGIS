@@ -643,7 +643,7 @@ void QgsProjectFileTransform::transform2990()
   {
     srsElem = mDom.createElement( QStringLiteral( "SpatialRefSys" ) );
     projElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
-    projElem.setAttribute( "type", "int" );
+    projElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
     QDomText projText = mDom.createTextNode( QStringLiteral( "0" ) );
     projElem.appendChild( projText );
     srsElem.appendChild( projElem );
@@ -656,14 +656,6 @@ void QgsProjectFileTransform::transform2990()
   if ( canvasNodes.count() > 0 )
   {
     QDomElement canvasElem = canvasNodes.at( 0 ).toElement();
-    QDomNodeList projectionsNodes = canvasElem.elementsByTagName( QStringLiteral( "projections" ) );
-    bool hasOtf = false;
-    if ( projectionsNodes.count() > 0 )
-    {
-      QDomElement projectionsElem = projectionsNodes.at( 0 ).toElement();
-      hasOtf = projectionsElem.text().toInt();
-    }
-
     QDomNodeList canvasSrsNodes = canvasElem.elementsByTagName( QStringLiteral( "spatialrefsys" ) );
     if ( canvasSrsNodes.count() > 0 )
     {
@@ -727,7 +719,7 @@ void QgsProjectFileTransform::transform2990()
       projectCrsIdElem.appendChild( srsidText );
       QDomElement projectionsEnabledElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
       projectionsEnabledElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-      QDomText projectionsEnabledText = mDom.createTextNode( hasOtf ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+      QDomText projectionsEnabledText = mDom.createTextNode( QStringLiteral( "1" ) );
       projectionsEnabledElem.appendChild( projectionsEnabledText );
       srsElem.appendChild( proj4Elem );
       srsElem.appendChild( projectCrsElem );
@@ -769,14 +761,14 @@ void QgsProjectFileTransform::transform2990()
       QString name = editTypeElement.attribute( QStringLiteral( "name" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), name );
       QDomElement constraintExpressionElem = mDom.createElement( QStringLiteral( "constraint" ) );
-      constraintExpressionElem.setAttribute( "field", name );
+      constraintExpressionElem.setAttribute( QStringLiteral( "field" ), name );
       constraintExpressionsElem.appendChild( constraintExpressionElem );
 
       QDomElement editWidgetElement = mDom.createElement( QStringLiteral( "editWidget" ) );
       fieldElement.appendChild( editWidgetElement );
 
       QString ewv2Type = editTypeElement.attribute( QStringLiteral( "widgetv2type" ) );
-      editWidgetElement.setAttribute( "type", ewv2Type );
+      editWidgetElement.setAttribute( QStringLiteral( "type" ), ewv2Type );
 
       QDomElement ewv2CfgElem = editTypeElement.namedItem( QStringLiteral( "widgetv2config" ) ).toElement();
 
@@ -805,11 +797,11 @@ void QgsProjectFileTransform::transform2990()
           }
           else if ( configAttr.name() == QStringLiteral( "constraint" ) )
           {
-            constraintExpressionElem.setAttribute( "exp", configAttr.value() );
+            constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), configAttr.value() );
           }
           else if ( configAttr.name() == QStringLiteral( "constraintDescription" ) )
           {
-            constraintExpressionElem.setAttribute( "desc", configAttr.value() );
+            constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), configAttr.value() );
           }
           else
           {
@@ -830,7 +822,7 @@ void QgsProjectFileTransform::transform2990()
         }
         else if ( ewv2Type == QStringLiteral( "Photo" ) )
         {
-          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewer" ), 1 );
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
@@ -839,13 +831,13 @@ void QgsProjectFileTransform::transform2990()
         }
         else if ( ewv2Type == QStringLiteral( "FileName" ) )
         {
-          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 
           editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
         }
         else if ( ewv2Type == QStringLiteral( "WebView" ) )
         {
-          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
@@ -873,7 +865,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
     QDomElement noDataRangeList = doc.createElement( QStringLiteral( "noDataRangeList" ) );
     noDataRangeList.setAttribute( QStringLiteral( "bandNo" ), 1 );
 
-    QDomElement noDataRange =  doc.createElement( QStringLiteral( "noDataRange" ) );
+    QDomElement noDataRange = doc.createElement( QStringLiteral( "noDataRange" ) );
     noDataRange.setAttribute( QStringLiteral( "min" ), noDataElement.text() );
     noDataRange.setAttribute( QStringLiteral( "max" ), noDataElement.text() );
     noDataRangeList.appendChild( noDataRange );

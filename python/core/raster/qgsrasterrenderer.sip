@@ -25,7 +25,10 @@ class QgsRasterRenderer : QgsRasterInterface
 
     static const QRgb NODATA_COLOR;
 
-    QgsRasterRenderer( QgsRasterInterface *input = 0, const QString &type = "" );
+    QgsRasterRenderer( QgsRasterInterface *input = 0, const QString &type = QString() );
+%Docstring
+ Constructor for QgsRasterRenderer.
+%End
     virtual ~QgsRasterRenderer();
 
 

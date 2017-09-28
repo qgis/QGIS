@@ -45,11 +45,6 @@ class TestQgsFontMarkerSymbol : public QObject
 
   public:
     TestQgsFontMarkerSymbol()
-      : mTestHasError( false )
-      , mpPointsLayer( 0 )
-      , mFontMarkerLayer( 0 )
-      , mMarkerSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -63,7 +58,7 @@ class TestQgsFontMarkerSymbol : public QObject
     void bounds();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

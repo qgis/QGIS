@@ -206,7 +206,7 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement &sub
 
 QgsSubstitutionListDialog::QgsSubstitutionListDialog( QWidget *parent )
   : QDialog( parent )
-  , mWidget( nullptr )
+
 {
   setWindowTitle( tr( "Substitutions" ) );
   QVBoxLayout *vLayout = new QVBoxLayout();

@@ -20,10 +20,6 @@
 
 QgsLabelingEngineSettings::QgsLabelingEngineSettings()
   : mFlags( RenderOutlineLabels | UsePartialCandidates )
-  , mSearchMethod( Chain )
-  , mCandPoint( 16 )
-  , mCandLine( 50 )
-  , mCandPolygon( 30 )
 {
 }
 

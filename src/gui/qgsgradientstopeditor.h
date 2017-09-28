@@ -168,7 +168,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     QgsGradientStopsList mStops;
 
     //! Stop number of selected stop, where 0 = first stop
-    int mSelectedStop;
+    int mSelectedStop = 0;
 
     //! Polygon for stop triangle marker outer
     QPolygonF sOuterTriangle;

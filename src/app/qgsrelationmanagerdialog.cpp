@@ -30,10 +30,6 @@ QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relation
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRelationManagerDialog::onSelectionChanged );
 }
 
-QgsRelationManagerDialog::~QgsRelationManagerDialog()
-{
-}
-
 void QgsRelationManagerDialog::setLayers( const QList< QgsVectorLayer * > &layers )
 {
   mLayers = layers;
@@ -92,7 +88,7 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     relation.setReferencingLayer( addDlg.referencingLayerId() );
     relation.setReferencedLayer( addDlg.referencedLayerId() );
     QString relationId = addDlg.relationId();
-    if ( addDlg.relationId() == QLatin1String( "" ) )
+    if ( addDlg.relationId().isEmpty() )
       relationId = QStringLiteral( "%1_%2_%3_%4" )
                    .arg( addDlg.referencingLayerId(),
                          addDlg.references().at( 0 ).first,

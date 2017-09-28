@@ -78,8 +78,6 @@ change search string shown in text field
  are inserted into the values list box.
 %End
 
-    void on_buttonBox_helpRequested();
-
     void saveQuery();
     void loadQuery();
 

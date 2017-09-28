@@ -34,6 +34,8 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/saveStyleToDb/geometry" ) ).toByteArray() );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSaveStyleToDbDialog::showHelp );
 }
 
 QgsSaveStyleToDbDialog::~QgsSaveStyleToDbDialog()
@@ -102,4 +104,9 @@ void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
     mUIFileContent = content;
     mFileNameLabel->setText( myFI.fileName() );
   }
+}
+
+void QgsSaveStyleToDbDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#save-and-share-layer-properties" ) );
 }

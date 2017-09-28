@@ -13,7 +13,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/analysis
   ${CMAKE_SOURCE_DIR}/src/analysis/vector
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
@@ -63,7 +63,6 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 SET(TESTS
- testqgsvectoranalyzer.cpp
  testqgsgeometrysnapper.cpp
  testopenstreetmap.cpp
  testqgszonalstatistics.cpp

@@ -35,7 +35,6 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
 
   public:
     explicit QgsComposerLegendWidget( QgsComposerLegend *legend );
-    ~QgsComposerLegendWidget();
 
     //! Updates the legend layers and groups
     void updateLegend();

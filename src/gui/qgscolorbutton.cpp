@@ -40,19 +40,8 @@
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )
-  , mBehavior( QgsColorButton::ShowDialog )
   , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
-  , mColor( QColor() )
-  , mDefaultColor( QColor() ) //default to invalid color
-  , mAllowOpacity( false )
-  , mAcceptLiveUpdates( true )
-  , mColorSet( false )
-  , mShowNoColorOption( false )
   , mNoColorString( tr( "No color" ) )
-  , mShowNull( false )
-  , mPickingColor( false )
-  , mMenu( nullptr )
-
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
   mColorSchemeRegistry = registry ? registry : QgsApplication::colorSchemeRegistry();
@@ -66,19 +55,26 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   connect( mMenu, &QMenu::aboutToShow, this, &QgsColorButton::prepareMenu );
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
+
+#ifdef Q_OS_WIN
+  mMinimumSize = QSize( 120, 22 );
+#else
+  mMinimumSize = QSize( 120, 28 );
+#endif
+
+  mMinimumSize.setHeight( std::max( static_cast<int>( fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 }
+
+
 
 QSize QgsColorButton::minimumSizeHint() const
 {
-  //make sure height of button looks good under different platforms
-  QSize size;
-#ifdef Q_OS_WIN
-  size = QSize( 120, 22 );
-#else
-  size = QSize( 120, 28 );
-#endif
-  int textHeight = fontMetrics().height() * 1.1;
-  return QSize( size.width(), qMax( size.height(), textHeight ) );
+  return mMinimumSize;
+}
+
+QSize QgsColorButton::sizeHint() const
+{
+  return mMinimumSize;
 }
 
 const QPixmap &QgsColorButton::transparentBackground()
@@ -513,14 +509,13 @@ void QgsColorButton::prepareMenu()
   mMenu->addAction( pasteColorAction );
   connect( pasteColorAction, &QAction::triggered, this, &QgsColorButton::pasteColor );
 
-#ifndef Q_OS_MAC
   //disabled for OSX, as it is impossible to grab the mouse under OSX
   //see note for QWidget::grabMouse() re OSX Cocoa
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
   QAction *pickColorAction = new QAction( tr( "Pick color" ), this );
   mMenu->addAction( pickColorAction );
   connect( pickColorAction, &QAction::triggered, this, &QgsColorButton::activatePicker );
-#endif
+
   QAction *chooseColorAction = new QAction( tr( "Choose color..." ), this );
   mMenu->addAction( chooseColorAction );
   connect( chooseColorAction, &QAction::triggered, this, &QgsColorButton::showColorDialog );

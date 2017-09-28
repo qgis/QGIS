@@ -20,8 +20,8 @@
 #include <QEvent>
 #include <QStringList>
 
-#include <qgis.h>
-#include <qgsconfig.h>
+#include "qgis.h"
+#include "qgsconfig.h"
 
 class QgsActionScopeRegistry;
 class QgsRuntimeProfiler;
@@ -234,11 +234,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString licenceFilePath();
 
-    //! Returns the path to the help application.
-    static QString helpAppPath();
-
     //! Returns the path to the translation directory.
     static QString i18nPath();
+
+    /** Returns the path to the metadata directory.
+    * \since QGIS 3.0
+    */
+    static QString metadataPath();
 
     //! Returns the path to the master qgis.db file.
     static QString qgisMasterDatabaseFilePath();
@@ -732,5 +734,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static ApplicationMembers *members();
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

@@ -217,7 +217,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! Base part of the title used for the extent
     QString mTitleBase;
 
-    ExtentState mExtentState;
+    ExtentState mExtentState = OriginalExtent;
 
     QgsCoordinateReferenceSystem mOutputCrs;
 

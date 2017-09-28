@@ -56,7 +56,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
   private:
     QgsGrassObject mGrassObject;
     /* layer number */
-    int mNumber;
+    int mNumber = 0;
     /* optional name */
     QString mName;
     QString mDriver;

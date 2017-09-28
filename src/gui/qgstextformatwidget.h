@@ -17,7 +17,7 @@
 #ifndef QGSTEXTFORMATWIDGET_H
 #define QGSTEXTFORMATWIDGET_H
 
-#include <ui_qgstextformatwidgetbase.h>
+#include "ui_qgstextformatwidgetbase.h"
 #include "qgis.h"
 #include "qgstextrenderer.h"
 #include "qgsstringutils.h"
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     //! Polygon placement button group
     QButtonGroup *mPlacePolygonBtnGrp = nullptr;
     //! Pixel size font limit
-    int mMinPixelLimit;
+    int mMinPixelLimit = 0;
 
   protected slots:
 
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     void updatePlacementWidgets();
 
   private:
-    Mode mWidgetMode;
+    Mode mWidgetMode = Text;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
     std::unique_ptr< QgsPaintEffect > mBufferEffect;
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
     QFont mRefFont;
     bool mDockMode;
 
-    bool mLoadSvgParams;
+    bool mLoadSvgParams = false;
 
     void initWidget();
     void setWidgetMode( Mode mode );

@@ -53,8 +53,6 @@ email                : sbr00pwb@users.sourceforge.net
 
 QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
   : QgsDecorationItem( parent )
-  , mMarginHorizontal( 0 )
-  , mMarginVertical( 0 )
 {
   mPlacement = TopLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
@@ -63,11 +61,6 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
 
   setName( "Scale Bar" );
   projectRead();
-}
-
-QgsDecorationScaleBar::~QgsDecorationScaleBar()
-{
-
 }
 
 void QgsDecorationScaleBar::projectRead()
@@ -113,7 +106,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMapUnitsPerPixelDouble = qAbs( context.mapToPixel().mapUnitsPerPixel() );
+  double myMapUnitsPerPixelDouble = std::fabs( context.mapToPixel().mapUnitsPerPixel() );
   double myActualSize = mPreferredSize;
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
@@ -158,13 +151,13 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
 
     // Work out the exponent for the number - e.g, 1234 will give 3,
     // and .001234 will give -3
-    double myPowerOf10 = floor( log10( myActualSize ) );
+    double myPowerOf10 = std::floor( std::log10( myActualSize ) );
 
     // snap to integer < 10 times power of 10
     if ( mSnapping )
     {
-      double scaler = pow( 10.0, myPowerOf10 );
-      myActualSize = qRound( myActualSize / scaler ) * scaler;
+      double scaler = std::pow( 10.0, myPowerOf10 );
+      myActualSize = std::round( myActualSize / scaler ) * scaler;
       myScaleBarWidth = myActualSize / myMapUnitsPerPixelDouble;
     }
 

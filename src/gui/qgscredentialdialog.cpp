@@ -31,7 +31,7 @@ static QString invalidStyle_( const QString &selector = QStringLiteral( "QLineEd
 
 QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mOkButton( nullptr )
+
 {
   setupUi( this );
   setInstance( this );

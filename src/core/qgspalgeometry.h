@@ -17,7 +17,7 @@
 
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
-#include <pal/feature.h>
+#include "pal/feature.h"
 
 #include "qgslabelingengine.h"
 

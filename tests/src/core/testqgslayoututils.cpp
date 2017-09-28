@@ -18,7 +18,6 @@
 #include "qgslayout.h"
 #include "qgstest.h"
 #include "qgslayoututils.h"
-#include "qgstestutils.h"
 #include "qgsproject.h"
 #include "qgslayoutitemmap.h"
 
@@ -42,7 +41,7 @@ class TestQgsLayoutUtils: public QObject
 
 void TestQgsLayoutUtils::initTestCase()
 {
-  mReport = "<h1>Layout Utils Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Utils Tests</h1>\n" );
 }
 
 void TestQgsLayoutUtils::cleanupTestCase()
@@ -89,8 +88,8 @@ void TestQgsLayoutUtils::normalizedAngle()
 
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first );
-    qDebug() << QString( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QVERIFY( qgsDoubleNear( result, ( *it ).second ) );
+    qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
   }
 
@@ -110,8 +109,8 @@ void TestQgsLayoutUtils::normalizedAngle()
 
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first, true );
-    qDebug() << QString( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QVERIFY( qgsDoubleNear( result, ( *it ).second ) );
+    qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
   }
 }

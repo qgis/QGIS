@@ -16,6 +16,8 @@
 #define QGSWFSDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgswfscapabilities.h"
 
@@ -29,13 +31,13 @@ class QgsWfsRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
-    void connectionsChanged();
+    void onConnectionsChanged();
     void newConnection();
 #endif
 };
@@ -53,7 +55,7 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
     //virtual bool equal( const QgsDataItem *other );
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   private slots:
@@ -77,6 +79,34 @@ class QgsWfsLayerItem : public QgsLayerItem
     QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
     ~QgsWfsLayerItem();
 
+    virtual QList<QMenu *> menus( QWidget *parent ) override;
+
+  protected:
+    QString mBaseUri;
+
+  private slots:
+
+    /** Get style of the active data item (geonode layer item) and copy it to the clipboard.
+     */
+    void copyStyle();
+
+    /** Paste style on the clipboard to the active data item (geonode layer item) and push it to the source.
+     */
+    //    void pasteStyle();
+};
+
+
+//! Provider for WFS root data item
+class QgsWfsDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    virtual QString name() override { return QStringLiteral( "WFS" ); }
+
+    virtual int capabilities() override { return QgsDataProvider::Net; }
+
+    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+
+    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 

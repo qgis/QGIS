@@ -30,8 +30,6 @@ const QRgb QgsRasterRenderer::NODATA_COLOR = qRgba( 0, 0, 0, 0 );
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &type )
   : QgsRasterInterface( input )
   , mType( type )
-  , mRasterTransparency( nullptr )
-  , mAlphaBand( -1 ) //, mInvertColor( false )
 {
 }
 

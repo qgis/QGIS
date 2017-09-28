@@ -70,7 +70,7 @@ void TestQgsHistogram::optimalBinWidth()
 
   QgsHistogram h;
   h.setValues( vals );
-  QVERIFY( qgsDoubleNear( h.optimalBinWidth(), 4.641, 0.001 ) );
+  QGSCOMPARENEAR( h.optimalBinWidth(), 4.641, 0.001 );
 }
 
 void TestQgsHistogram::optimalBinCount()

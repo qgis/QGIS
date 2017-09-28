@@ -41,7 +41,6 @@ class CORE_EXPORT QgsOptional
      * A QgsOptional is disabled by default if default constructed.
      */
     QgsOptional()
-      : mEnabled( false )
     {
     }
 
@@ -135,7 +134,7 @@ class CORE_EXPORT QgsOptional
     }
 
   private:
-    bool mEnabled;
+    bool mEnabled = false;
     T mData;
 };
 

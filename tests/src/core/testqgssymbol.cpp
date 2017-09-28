@@ -71,9 +71,6 @@ class TestQgsSymbol : public QObject
 };
 
 TestQgsSymbol::TestQgsSymbol()
-  : mpPointsLayer( 0 )
-  , mpLinesLayer( 0 )
-  , mpPolysLayer( 0 )
 {
 
 }

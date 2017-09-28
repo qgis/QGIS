@@ -22,7 +22,7 @@
 
 QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
   : QgsTransaction( connString )
-  , mConn( nullptr )
+
 {
 
 }

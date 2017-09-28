@@ -30,10 +30,6 @@
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   : QWidget( parent )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
-  , mRootSslConfigItem( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -143,7 +139,7 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
     QgsAuthServersEditor::ConfigType conftype,
     QTreeWidgetItem *parent )
 {
-  if ( configs.size() < 1 )
+  if ( configs.empty() )
     return;
 
   if ( !parent )
@@ -182,7 +178,7 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
     QgsAuthServersEditor::ConfigType conftype,
     QTreeWidgetItem *parent )
 {
-  if ( configs.size() < 1 )
+  if ( configs.empty() )
     return;
 
   if ( !parent )

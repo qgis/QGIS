@@ -76,6 +76,7 @@ Sets geometry calculator used in distance/area calculations.
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -41,8 +41,6 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     void on_pbnRemove_clicked();
     void on_pbnCopyCRS_clicked();
     void on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html#custom-coordinate-reference-system" ) ); }
     void on_buttonBox_accepted();
 
   private:
@@ -53,6 +51,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     bool deleteCrs( const QString &id );
     bool saveCrs( QgsCoordinateReferenceSystem myParameters, const QString &myName, QString myId, bool newEntry );
     void insertProjection( const QString &myProjectionAcronym );
+    void showHelp();
 
     //These two QMap store the values as they are on the database when loading
     QMap <QString, QString> existingCRSparameters;

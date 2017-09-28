@@ -27,8 +27,6 @@
 #include <QByteArray>
 #include <QVariant>
 
-#include <qmath.h>
-
 #define ERR(message) QgsError(message, "Raster provider")
 
 void QgsRasterDataProvider::setUseSourceNoDataValue( int bandNo, bool use )
@@ -79,8 +77,8 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   {
     providerXRes = extent().width() / xSize();
     providerYRes = extent().height() / ySize();
-    tmpXRes = qMax( providerXRes, xRes );
-    tmpYRes = qMax( providerYRes, yRes );
+    tmpXRes = std::max( providerXRes, xRes );
+    tmpYRes = std::max( providerYRes, yRes );
     if ( qgsDoubleNear( tmpXRes, xRes ) ) tmpXRes = xRes;
     if ( qgsDoubleNear( tmpYRes, yRes ) ) tmpYRes = yRes;
   }
@@ -102,10 +100,10 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     }
 
     // Calculate row/col limits (before tmpExtent is aligned)
-    int fromRow = qRound( ( boundingBox.yMaximum() - tmpExtent.yMaximum() ) / yRes );
-    int toRow = qRound( ( boundingBox.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
-    int fromCol = qRound( ( tmpExtent.xMinimum() - boundingBox.xMinimum() ) / xRes );
-    int toCol = qRound( ( tmpExtent.xMaximum() - boundingBox.xMinimum() ) / xRes ) - 1;
+    int fromRow = std::round( ( boundingBox.yMaximum() - tmpExtent.yMaximum() ) / yRes );
+    int toRow = std::round( ( boundingBox.yMaximum() - tmpExtent.yMinimum() ) / yRes ) - 1;
+    int fromCol = std::round( ( tmpExtent.xMinimum() - boundingBox.xMinimum() ) / xRes );
+    int toCol = std::round( ( tmpExtent.xMaximum() - boundingBox.xMinimum() ) / xRes ) - 1;
 
     QgsDebugMsgLevel( QString( "fromRow = %1 toRow = %2 fromCol = %3 toCol = %4" ).arg( fromRow ).arg( toRow ).arg( fromCol ).arg( toCol ), 4 );
 
@@ -121,20 +119,20 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     // resolution to avoid possible shift due to resampling
     if ( tmpXRes > xRes )
     {
-      int col = floor( ( tmpExtent.xMinimum() - extent().xMinimum() ) / providerXRes );
+      int col = std::floor( ( tmpExtent.xMinimum() - extent().xMinimum() ) / providerXRes );
       tmpExtent.setXMinimum( extent().xMinimum() + col * providerXRes );
-      col = ceil( ( tmpExtent.xMaximum() - extent().xMinimum() ) / providerXRes );
+      col = std::ceil( ( tmpExtent.xMaximum() - extent().xMinimum() ) / providerXRes );
       tmpExtent.setXMaximum( extent().xMinimum() + col * providerXRes );
     }
     if ( tmpYRes > yRes )
     {
-      int row = floor( ( extent().yMaximum() - tmpExtent.yMaximum() ) / providerYRes );
+      int row = std::floor( ( extent().yMaximum() - tmpExtent.yMaximum() ) / providerYRes );
       tmpExtent.setYMaximum( extent().yMaximum() - row * providerYRes );
-      row = ceil( ( extent().yMaximum() - tmpExtent.yMinimum() ) / providerYRes );
+      row = std::ceil( ( extent().yMaximum() - tmpExtent.yMinimum() ) / providerYRes );
       tmpExtent.setYMinimum( extent().yMaximum() - row * providerYRes );
     }
-    int tmpWidth = qRound( tmpExtent.width() / tmpXRes );
-    int tmpHeight = qRound( tmpExtent.height() / tmpYRes );
+    int tmpWidth = std::round( tmpExtent.width() / tmpXRes );
+    int tmpHeight = std::round( tmpExtent.height() / tmpYRes );
     tmpXRes = tmpExtent.width() / tmpWidth;
     tmpYRes = tmpExtent.height() / tmpHeight;
 
@@ -159,12 +157,12 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
     for ( int row = fromRow; row <= toRow; row++ )
     {
       double y = yMax - ( row + 0.5 ) * yRes;
-      int tmpRow = floor( ( tmpYMax - y ) / tmpYRes );
+      int tmpRow = std::floor( ( tmpYMax - y ) / tmpYRes );
 
       for ( int col = fromCol; col <= toCol; col++ )
       {
         double x = xMin + ( col + 0.5 ) * xRes;
-        int tmpCol = floor( ( x - tmpXMin ) / tmpXRes );
+        int tmpCol = std::floor( ( x - tmpXMin ) / tmpXRes );
 
         if ( tmpRow < 0 || tmpRow >= tmpHeight || tmpCol < 0 || tmpCol >= tmpWidth )
         {
@@ -209,14 +207,12 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
 QgsRasterDataProvider::QgsRasterDataProvider()
   : QgsRasterInterface( nullptr )
-  , mDpi( -1 )
 {
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider( QString const &uri )
   : QgsDataProvider( uri )
   , QgsRasterInterface( nullptr )
-  , mDpi( -1 )
 {
 }
 
@@ -307,8 +303,8 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
   double xres = ( finalExtent.width() ) / width;
   double yres = ( finalExtent.height() ) / height;
 
-  int col = static_cast< int >( floor( ( point.x() - finalExtent.xMinimum() ) / xres ) );
-  int row = static_cast< int >( floor( ( finalExtent.yMaximum() - point.y() ) / yres ) );
+  int col = static_cast< int >( std::floor( ( point.x() - finalExtent.xMinimum() ) / xres ) );
+  int row = static_cast< int >( std::floor( ( finalExtent.yMaximum() - point.y() ) / yres ) );
 
   double xMin = finalExtent.xMinimum() + col * xres;
   double xMax = xMin + xres;

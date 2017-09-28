@@ -116,7 +116,7 @@ Get an md5 hash that uniquely identifies an image
  :rtype: bool
 %End
 
-    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = "" );
+    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
 %Docstring
  Test using two arbitrary images (map renderer will not be used)
  \param testName - to be used as the basis for writing a file to

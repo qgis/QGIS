@@ -52,6 +52,8 @@ class pct2rgb(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(pct2rgb.INPUT,
                                           self.tr('Input layer'), False))
         options = []
@@ -70,7 +72,7 @@ class pct2rgb(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-b')
         arguments.append(str(self.getParameterValue(pct2rgb.NBAND) + 1))

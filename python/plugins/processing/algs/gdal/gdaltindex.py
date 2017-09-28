@@ -50,6 +50,8 @@ class gdaltindex(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'), dataobjects.TYPE_RASTER))
         self.addParameter(ParameterString(self.FIELD_NAME,
@@ -71,7 +73,7 @@ class gdaltindex(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         fieldName = str(self.getParameterValue(self.FIELD_NAME))
 
         arguments = []

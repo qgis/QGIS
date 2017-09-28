@@ -30,7 +30,7 @@ class QgsVectorLayerExporter;
 
 class QgsOgrFeatureIterator;
 
-#include <ogr_api.h>
+#include <gdal.h>
 
 /**
   \class QgsOgrProvider
@@ -58,7 +58,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * Constructor of the vector provider
      * \param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsOgrProvider( QString const &uri = "" );
+    explicit QgsOgrProvider( QString const &uri = QString() );
 
     virtual ~QgsOgrProvider();
 
@@ -178,16 +178,16 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Map of field index to default value
     QMap<int, QString> mDefaultValues;
 
-    bool mFirstFieldIsFid;
-    OGRDataSourceH ogrDataSource;
-    mutable OGREnvelope *mExtent;
-    bool mForceRecomputeExtent;
+    bool mFirstFieldIsFid = false;
+    GDALDatasetH mGDALDataset = nullptr;
+    mutable OGREnvelope *mExtent = nullptr;
+    bool mForceRecomputeExtent = false;
 
     /** This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
     mutable QgsRectangle mExtentRect;
-    OGRLayerH ogrLayer;
-    OGRLayerH ogrOrigLayer;
+    OGRLayerH ogrLayer = nullptr;
+    OGRLayerH ogrOrigLayer = nullptr;
 
     //! path to filename
     QString mFilePath;
@@ -196,15 +196,15 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString mLayerName;
 
     //! layer index
-    int mLayerIndex;
+    int mLayerIndex = 0;
 
     //! was a sub layer requested?
-    bool mIsSubLayer;
+    bool mIsSubLayer = false;
 
     /** Optional geometry type for layers with multiple geometries,
      *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
      *  that 2D, 25D, single and multi types are mixed in one sublayer */
-    OGRwkbGeometryType mOgrGeometryTypeFilter;
+    OGRwkbGeometryType mOgrGeometryTypeFilter = wkbUnknown;
 
     //! current spatial filter
     QgsRectangle mFetchRect;
@@ -212,16 +212,16 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    // OGR Driver that was actually used to open the layer
-    OGRSFDriverH ogrDriver;
+    // GDAL Driver that was actually used to open the layer
+    GDALDriverH mGDALDriver = nullptr;
 
-    // Friendly name of the OGR Driver that was actually used to open the layer
-    QString ogrDriverName;
+    // Friendly name of the GDAL Driver that was actually used to open the layer
+    QString mGDALDriverName;
 
-    bool mValid;
+    bool mValid = false;
 
-    OGRwkbGeometryType mOGRGeomType;
-    long mFeaturesCounted;
+    OGRwkbGeometryType mOGRGeomType = wkbUnknown;
+    long mFeaturesCounted = QgsVectorDataProvider::Uncounted;
 
     mutable QStringList mSubLayerList;
 
@@ -232,25 +232,27 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Calls OGR_L_SyncToDisk and recreates the spatial index if present
     bool syncToDisc();
 
-    OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds );
+    OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds );
 
     friend class QgsOgrFeatureSource;
 
     //! Whether the file is opened in write mode
-    bool mWriteAccess;
+    bool mWriteAccess = false;
 
     //! Whether the file can potentially be opened in write mode (but not necessarily currently)
-    bool mWriteAccessPossible;
+    bool mWriteAccessPossible = false;
 
     //! Whether the open mode of the datasource changes w.r.t calls to enterUpdateMode() / leaveUpdateMode()
-    bool mDynamicWriteAccess;
+    bool mDynamicWriteAccess = false;
 
-    bool mShapefileMayBeCorrupted;
+    bool mShapefileMayBeCorrupted = false;
 
     //! Converts the geometry to the layer type if necessary. Takes ownership of the passed geometry
     OGRGeometryH ConvertGeometryIfNecessary( OGRGeometryH );
 
-    int mUpdateModeStackDepth;
+    int mUpdateModeStackDepth = 0;
+
+    bool mDeferRepack = false;
 
     void computeCapabilities();
 
@@ -264,15 +266,17 @@ class QgsOgrProviderUtils
 {
   public:
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
-    static OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds, QTextCodec *encoding, const QString &subsetString );
-    static QByteArray quotedIdentifier( QByteArray field, const QString &ogrDriverName );
+    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
+    static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
 
     /** Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value );
 
-    static OGRDataSourceH OGROpenWrapper( const char *pszPath, bool bUpdate, OGRSFDriverH *phDriver );
-    static void OGRDestroyWrapper( OGRDataSourceH ogrDataSource );
+    static GDALDatasetH GDALOpenWrapper( const char *pszPath, bool bUpdate, GDALDriverH *phDriver );
+    static void GDALCloseWrapper( GDALDatasetH mhDS );
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSOGRPROVIDER_H

@@ -37,7 +37,6 @@ static const int COLUMN_IDX_EXPORT_AS_DISPLAYED_VALUE = 2;
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mCRS( srsid )
-  , mLayer( 0 )
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
@@ -73,6 +72,8 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 void QgsVectorLayerSaveAsDialog::setup()
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveAsDialog::showHelp );
+
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
 
@@ -371,7 +372,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
             !leFilename->text().isEmpty() )
   {
     QString layerName = QFileInfo( leFilename->text() ).baseName();
-    leLayername->setText( layerName ) ;
+    leLayername->setText( layerName );
   }
 
   if ( mLayer )
@@ -470,7 +471,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 
   if ( QgsVectorFileWriter::driverMetadata( format(), driverMetaData ) )
   {
-    if ( driverMetaData.driverOptions.size() != 0 )
+    if ( !driverMetaData.driverOptions.empty() )
     {
       mDatasourceOptionsGroupBox->setVisible( true );
       QList<QPair<QLabel *, QWidget *> > controls = createControls( driverMetaData.driverOptions );
@@ -487,7 +488,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
       mDatasourceOptionsGroupBox->setVisible( false );
     }
 
-    if ( driverMetaData.layerOptions.size() != 0 )
+    if ( !driverMetaData.layerOptions.empty() )
     {
       mLayerOptionsGroupBox->setVisible( true );
       QList<QPair<QLabel *, QWidget *> > controls = createControls( driverMetaData.layerOptions );
@@ -967,4 +968,9 @@ void QgsVectorLayerSaveAsDialog::on_mDeselectAllAttributes_clicked()
   }
   mAttributeTableItemChangedSlotEnabled = true;
   mReplaceRawFieldValuesStateChangedSlotEnabled = true;
+}
+
+void QgsVectorLayerSaveAsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#save-layer-from-an-existing-file" ) );
 }

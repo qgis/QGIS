@@ -18,6 +18,7 @@
 
 #include <QDialog>
 #include "ui_qgsexpressionbuilderdialogbase.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 
@@ -75,6 +76,12 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
   private:
     QString mRecentKey;
+
+  private slots:
+    void showHelp();
+
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

@@ -17,6 +17,8 @@
 #include "qgslayoutitem.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgspagesizeregistry.h"
+#include "qgslayoutitemundocommand.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -25,9 +27,11 @@
 
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   : QgsLayoutObject( layout )
-  , QGraphicsRectItem( 0 )
+  , QGraphicsRectItem( nullptr )
   , mUuid( QUuid::createUuid().toString() )
 {
+  setZValue( QgsLayout::ZItem );
+
   // needed to access current view transform during paint operations
   setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
@@ -238,8 +242,8 @@ double QgsLayoutItem::itemRotation() const
 
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement element = doc.createElement( "LayoutItem" );
-  element.setAttribute( "type", stringType() );
+  QDomElement element = doc.createElement( QStringLiteral( "LayoutItem" ) );
+  element.setAttribute( QStringLiteral( "type" ), stringType() );
 
   writePropertiesToElement( element, doc, context );
   parentElement.appendChild( element );
@@ -249,12 +253,17 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
 
 bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( itemElem.nodeName() != QString( "LayoutItem" ) || itemElem.attribute( "type" ) != stringType() )
+  if ( itemElem.nodeName() != QStringLiteral( "LayoutItem" ) || itemElem.attribute( QStringLiteral( "type" ) ) != stringType() )
   {
     return false;
   }
 
   return readPropertiesFromElement( itemElem, doc, context );
+}
+
+QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutItemUndoCommand( this, text, id, parent );
 }
 
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
@@ -278,8 +287,22 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   }
 
   QgsExpressionContext context = createExpressionContext();
-  double evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, size.width() );
-  double evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, size.height() );
+
+  // lowest priority is page size
+  QString pageSize = mDataDefinedProperties.valueAsString( QgsLayoutObject::PresetPaperSize, context );
+  QgsPageSize matchedSize;
+  double evaluatedWidth = size.width();
+  double evaluatedHeight = size.height();
+  if ( QgsApplication::pageSizeRegistry()->decodePageSize( pageSize, matchedSize ) )
+  {
+    QgsLayoutSize convertedSize = mLayout->context().measurementConverter().convert( matchedSize.size, size.units() );
+    evaluatedWidth = convertedSize.width();
+    evaluatedHeight = convertedSize.height();
+  }
+
+  // highest priority is dd width/height
+  evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, evaluatedWidth );
+  evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, evaluatedHeight );
   return QgsLayoutSize( evaluatedWidth, evaluatedHeight, size.units() );
 }
 
@@ -357,6 +380,11 @@ void QgsLayoutItem::refresh()
   refreshItemSize();
 
   refreshDataDefinedProperty();
+}
+
+void QgsLayoutItem::redraw()
+{
+  update();
 }
 
 void QgsLayoutItem::drawDebugRect( QPainter *painter )

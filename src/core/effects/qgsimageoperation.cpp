@@ -22,7 +22,6 @@
 #include <QtConcurrentMap>
 #include <QColor>
 #include <QPainter>
-#include <qmath.h>
 
 //determined via trial-and-error. Could possibly be optimised, or varied
 //depending on the image size.
@@ -44,7 +43,7 @@ void QgsImageOperation::runPixelOperation( QImage &image, PixelOperation &operat
   else
   {
     //large image, multithread operation
-    QgsImageOperation::ProcessBlockUsingPixelOperation<PixelOperation> blockOp( operation ) ;
+    QgsImageOperation::ProcessBlockUsingPixelOperation<PixelOperation> blockOp( operation );
     runBlockOperationInThreads( image, blockOp, QgsImageOperation::ByRow );
   }
 }
@@ -110,7 +109,7 @@ void QgsImageOperation::runLineOperation( QImage &image, LineOperation &operatio
   else
   {
     //large image, multithread operation
-    QgsImageOperation::ProcessBlockUsingLineOperation<LineOperation> blockOp( operation ) ;
+    QgsImageOperation::ProcessBlockUsingLineOperation<LineOperation> blockOp( operation );
     runBlockOperationInThreads( image, blockOp, operation.direction() );
   }
 }
@@ -221,10 +220,10 @@ void QgsImageOperation::grayscaleLightnessOp( QRgb &rgb )
   int green = qGreen( rgb );
   int blue = qBlue( rgb );
 
-  int min = qMin( qMin( red, green ), blue );
-  int max = qMax( qMax( red, green ), blue );
+  int min = std::min( std::min( red, green ), blue );
+  int max = std::max( std::max( red, green ), blue );
 
-  int lightness = qMin( ( min + max ) / 2, 255 );
+  int lightness = std::min( ( min + max ) / 2, 255 );
   rgb = qRgba( lightness, lightness, lightness, qAlpha( rgb ) );
 }
 
@@ -284,13 +283,13 @@ void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, cons
   if ( mSaturation < 1.0 )
   {
     // Lowering the saturation. Use a simple linear relationship
-    s = qMin( static_cast< int >( s * mSaturation ), 255 );
+    s = std::min( static_cast< int >( s * mSaturation ), 255 );
   }
   else if ( mSaturation > 1.0 )
   {
     // Raising the saturation. Use a saturation curve to prevent
     // clipping at maximum saturation with ugly results.
-    s = qMin( static_cast< int >( 255. * ( 1 - qPow( 1 - ( s / 255. ), qPow( mSaturation, 2 ) ) ) ), 255 );
+    s = std::min( static_cast< int >( 255. * ( 1 - std::pow( 1 - ( s / 255. ), std::pow( mSaturation, 2 ) ) ) ), 255 );
   }
 
   if ( mColorize )
@@ -349,7 +348,7 @@ void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, co
 {
   Q_UNUSED( x );
   Q_UNUSED( y );
-  rgb = qRgba( qRed( rgb ), qGreen( rgb ), qBlue( rgb ), qBound( 0, qRound( mFactor * qAlpha( rgb ) ), 255 ) );
+  rgb = qRgba( qRed( rgb ), qGreen( rgb ), qBlue( rgb ), qBound( 0.0, std::round( mFactor * qAlpha( rgb ) ), 255.0 ) );
 }
 
 // overlay color
@@ -388,7 +387,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
   double spread;
   if ( properties.useMaxDistance )
   {
-    spread = sqrt( maxValueInDistanceTransformArray( array, image.width() * image.height() ) );
+    spread = std::sqrt( maxValueInDistanceTransformArray( array, image.width() * image.height() ) );
   }
   else
   {
@@ -479,7 +478,7 @@ double QgsImageOperation::maxValueInDistanceTransformArray( const double *array,
 /* distance transform of 2d function using squared distance */
 void QgsImageOperation::distanceTransform2d( double *im, int width, int height )
 {
-  int maxDimension = qMax( width, height );
+  int maxDimension = std::max( width, height );
 
   double *f = new double[ maxDimension ];
   int *v = new int[ maxDimension ];
@@ -541,7 +540,7 @@ void QgsImageOperation::ShadeFromArrayOperation::operator()( QRgb &rgb, const in
     return;
   }
 
-  double distance = sqrt( squaredVal );
+  double distance = std::sqrt( squaredVal );
   double val = distance / mSpread;
   QColor rampColor = mProperties.ramp->color( val );
 
@@ -764,14 +763,14 @@ double *QgsImageOperation::createGaussianKernel( const int radius )
   double *kernel = new double[ radius * 2 + 1 ];
   double sigma = radius / 3.0;
   double twoSigmaSquared = 2 * sigma * sigma;
-  double coefficient = 1.0 / sqrt( M_PI * twoSigmaSquared );
+  double coefficient = 1.0 / std::sqrt( M_PI * twoSigmaSquared );
   double expCoefficient = -1.0 / twoSigmaSquared;
 
   double sum = 0;
   double result;
   for ( int i = 0; i <= radius; ++i )
   {
-    result = coefficient * exp( i * i * expCoefficient );
+    result = coefficient * std::exp( i * i * expCoefficient );
     kernel[ radius - i ] = result;
     sum += result;
     if ( i > 0 )
@@ -837,8 +836,8 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
       if ( qAlpha( imgScanline[x] ) )
       {
         ymax = y;
-        xmin = qMin( xmin, x );
-        xmax = qMax( xmax, x );
+        xmin = std::min( xmin, x );
+        xmax = std::max( xmax, x );
         found = true;
         break;
       }
@@ -877,24 +876,24 @@ QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, QSize min
   {
     if ( xmax - xmin < minSize.width() ) // centers image on x
     {
-      xmin = qMax( ( xmax + xmin ) / 2 - minSize.width() / 2, 0 );
+      xmin = std::max( ( xmax + xmin ) / 2 - minSize.width() / 2, 0 );
       xmax = xmin + minSize.width();
     }
     if ( ymax - ymin < minSize.height() ) // centers image on y
     {
-      ymin = qMax( ( ymax + ymin ) / 2 - minSize.height() / 2, 0 );
+      ymin = std::max( ( ymax + ymin ) / 2 - minSize.height() / 2, 0 );
       ymax = ymin + minSize.height();
     }
   }
   if ( center )
   {
     // recompute min and max to center image
-    const int dx = qMax( qAbs( xmax - width / 2 ), qAbs( xmin - width / 2 ) );
-    const int dy = qMax( qAbs( ymax - height / 2 ), qAbs( ymin - height / 2 ) );
-    xmin = qMax( 0, width / 2 - dx );
-    xmax = qMin( width, width / 2 + dx );
-    ymin = qMax( 0, height / 2 - dy );
-    ymax = qMin( height, height / 2 + dy );
+    const int dx = std::max( std::abs( xmax - width / 2 ), std::abs( xmin - width / 2 ) );
+    const int dy = std::max( std::abs( ymax - height / 2 ), std::abs( ymin - height / 2 ) );
+    xmin = std::max( 0, width / 2 - dx );
+    xmax = std::min( width, width / 2 + dx );
+    ymin = std::max( 0, height / 2 - dy );
+    ymax = std::min( height, height / 2 + dy );
   }
 
   return QRect( xmin, ymin, xmax - xmin, ymax - ymin );

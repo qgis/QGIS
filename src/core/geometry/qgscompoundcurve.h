@@ -38,8 +38,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual bool operator==( const QgsCurve &other ) const override;
     virtual bool operator!=( const QgsCurve &other ) const override;
 
-    virtual QString geometryType() const override { return QStringLiteral( "CompoundCurve" ); }
-    virtual int dimension() const override { return 1; }
+    virtual QString geometryType() const override;
+    virtual int dimension() const override;
     virtual QgsCompoundCurve *clone() const override SIP_FACTORY;
     virtual void clear() override;
 
@@ -99,8 +99,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     virtual bool deleteVertex( QgsVertexId position ) override;
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
-                                   double epsilon ) const override;
+                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr,
+                                   double epsilon = 4 * DBL_EPSILON ) const override;
 
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
 
@@ -126,6 +126,22 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsCompoundCurve.
+     * Should be used by qgsgeometry_cast<QgsCompoundCurve *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsCompoundCurve *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::CompoundCurve )
+        return static_cast<const QgsCompoundCurve *>( geom );
+      return nullptr;
+    }
+#endif
 
   protected:
 
@@ -139,5 +155,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QList< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSCOMPOUNDCURVEV2_H

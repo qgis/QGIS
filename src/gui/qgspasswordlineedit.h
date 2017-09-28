@@ -66,7 +66,7 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
     QIcon mShowPasswordIcon;
     QIcon mHidePasswordIcon;
 
-    bool mLockIconVisible;
+    bool mLockIconVisible = false;
     QSize mIconsSize;
 };
 

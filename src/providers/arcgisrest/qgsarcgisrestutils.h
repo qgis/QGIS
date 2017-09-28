@@ -75,8 +75,8 @@ class QgsArcGisAsyncParallelQuery : public QObject
     void handleReply();
 
   private:
-    QVector<QByteArray> *mResults;
-    int mPendingRequests;
+    QVector<QByteArray> *mResults = nullptr;
+    int mPendingRequests = 0;
     QStringList mErrors;
 };
 

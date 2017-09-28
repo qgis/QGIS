@@ -117,7 +117,7 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
-  return QSize( width, qMax( ( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
+  return QSize( width, std::max( ( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
 }
 
 QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject *parent )
@@ -150,7 +150,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
     case PathRole:
       return QDir::toNativeSeparators( mRecentProjects.at( index.row() ).path );
     case CrsRole:
-      if ( mRecentProjects.at( index.row() ).crs != QLatin1String( "" ) )
+      if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
         QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
         return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );

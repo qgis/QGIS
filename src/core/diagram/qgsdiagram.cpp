@@ -20,13 +20,6 @@
 
 #include <QPainter>
 
-
-
-QgsDiagram::QgsDiagram()
-{
-
-}
-
 QgsDiagram::QgsDiagram( const QgsDiagram &other )
 {
   Q_UNUSED( other );
@@ -97,9 +90,9 @@ QSizeF QgsDiagram::sizeForValue( double value, const QgsDiagramSettings &s, cons
   // interpolate the squared value if scale by area
   if ( s.scaleByArea )
   {
-    scaledValue = sqrt( scaledValue );
-    scaledLowerValue = sqrt( scaledLowerValue );
-    scaledUpperValue = sqrt( scaledUpperValue );
+    scaledValue = std::sqrt( scaledValue );
+    scaledLowerValue = std::sqrt( scaledLowerValue );
+    scaledUpperValue = std::sqrt( scaledUpperValue );
   }
 
   //interpolate size

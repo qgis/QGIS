@@ -34,7 +34,6 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
 
   public:
     explicit QgsComposerMapWidget( QgsComposerMap *composerMap );
-    virtual ~QgsComposerMapWidget();
 
   public slots:
     void on_mScaleLineEdit_editingFinished();

@@ -20,6 +20,8 @@
 
 class QgsWfsConnection : public QgsOwsConnection
 {
+    Q_OBJECT
+
   public:
 
     /**

@@ -28,7 +28,7 @@ class QgsAmsSourceSelect: public QgsArcGisServiceSourceSelect
     Q_OBJECT
 
   public:
-    QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode =  QgsProviderRegistry::WidgetMode::None );
+    QgsAmsSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
   protected:
     bool connectToService( const QgsOwsConnection &connection ) override;
@@ -37,6 +37,9 @@ class QgsAmsSourceSelect: public QgsArcGisServiceSourceSelect
                          const QString &crs = QString(),
                          const QString &filter = QString(),
                          const QgsRectangle &bBox = QgsRectangle() ) const override;
+  private:
+    //! A layer is added from the dialog
+    virtual void addServiceLayer( QString uri, QString typeName ) override;
 };
 
 #endif // QGSAMSSOURCESELECT_H

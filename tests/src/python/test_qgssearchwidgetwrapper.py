@@ -87,9 +87,13 @@ class PyQgsDefaultSearchWidgetWrapper(unittest.TestCase):
         case_sensitive.setChecked(False)
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.Contains), '"fldtxt" ILIKE \'%test%\'')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.DoesNotContain), 'NOT ("fldtxt" ILIKE \'%test%\')')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.StartsWith), '"fldtxt" ILIKE \'test%\'')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EndsWith), '"fldtxt" ILIKE \'%test\'')
         case_sensitive.setChecked(True)
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.Contains), '"fldtxt" LIKE \'%test%\'')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.DoesNotContain), 'NOT ("fldtxt" LIKE \'%test%\')')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.StartsWith), '"fldtxt" LIKE \'test%\'')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EndsWith), '"fldtxt" LIKE \'%test\'')
         case_sensitive.setChecked(False)
 
         # numeric field

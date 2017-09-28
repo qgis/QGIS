@@ -29,10 +29,6 @@
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mComboBox( nullptr )
-  , mListWidget( nullptr )
-  , mLineEdit( nullptr )
-  , mLayer( nullptr )
   , mUpdating( false )
 {
 }

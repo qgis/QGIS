@@ -68,8 +68,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
 
-        iconSize = int(settings.value("IconSize", 24))
-        self.toolBar.setIconSize(QSize(iconSize, iconSize))
+        self.toolBar.setIconSize(iface.iconSize())
 
         self.actionOpenScript.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
@@ -280,7 +279,7 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         # have to manually delete the dialog - otherwise it's owned by the
         # iface mainWindow and never deleted
-        del dlg
+        dlg.deleteLater()
 
         if canvas.mapTool() != prevMapTool:
             try:

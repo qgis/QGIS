@@ -75,9 +75,9 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     int spinButtonWidth() const;
     int frameWidth() const;
 
-    bool mAllowNull;
-    bool mIsNull;
-    bool mIsEmpty;
+    bool mAllowNull = true;
+    bool mIsNull = true;
+    bool mIsEmpty = false;
 
     QLineEdit *mNullLabel = nullptr;
     QToolButton *mClearButton = nullptr;
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     */
     void setMinimumEditDateTime()
     {
-      setMinimumDateTime( QDateTime::fromString( "0100-01-01", Qt::ISODate ) );
+      setMinimumDateTime( QDateTime::fromString( QStringLiteral( "0100-01-01" ), Qt::ISODate ) );
     }
 
 };

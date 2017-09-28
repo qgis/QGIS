@@ -37,7 +37,7 @@ class CORE_EXPORT QgsColorSchemeRegistry
 
     /** Constructor for an empty color scheme registry
      */
-    QgsColorSchemeRegistry();
+    QgsColorSchemeRegistry() = default;
 
     virtual ~QgsColorSchemeRegistry();
 

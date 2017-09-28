@@ -44,11 +44,6 @@ class TestQgsSimpleMarkerSymbol : public QObject
 
   public:
     TestQgsSimpleMarkerSymbol()
-      : mTestHasError( false )
-      , mpPointsLayer( 0 )
-      , mSimpleMarkerLayer( 0 )
-      , mMarkerSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -68,7 +63,7 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void colors();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

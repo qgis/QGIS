@@ -53,9 +53,6 @@ class TestQgsMapRendererJob : public QObject
 
   public:
     TestQgsMapRendererJob()
-      : mError( QgsVectorFileWriter::NoError )
-      , mMapSettings( 0 )
-      , mpPolysLayer( 0 )
     {
     }
 
@@ -81,7 +78,7 @@ class TestQgsMapRendererJob : public QObject
 
   private:
     QString mEncoding;
-    QgsVectorFileWriter::WriterError mError;
+    QgsVectorFileWriter::WriterError mError =  QgsVectorFileWriter::NoError ;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
     QgsMapSettings *mMapSettings = nullptr;

@@ -31,6 +31,9 @@ class QgsExpressionFieldBuffer
     };
 
     QgsExpressionFieldBuffer();
+%Docstring
+ Constructor for QgsExpressionFieldBuffer.
+%End
 
     void addExpression( const QString &exp, const QgsField &fld );
 %Docstring

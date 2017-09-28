@@ -40,22 +40,22 @@ const QString QgsCrashReport::toHtml() const
 
   if ( flags().testFlag( QgsCrashReport::Stack ) )
   {
-    reportData.append( "<br>" );
-    reportData.append( "<b>Stack Trace</b>" );
+    reportData.append( QStringLiteral( "<br>" ) );
+    reportData.append( QStringLiteral( "<b>Stack Trace</b>" ) );
     if ( mStackTrace.isEmpty() )
     {
-      reportData.append( "Stack trace unable to be generated." );
+      reportData.append( QStringLiteral( "Stack trace unable to be generated." ) );
     }
     else
     {
-      reportData.append( "<pre>" );
+      reportData.append( QStringLiteral( "<pre>" ) );
       Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
       {
         QFileInfo fileInfo( line.fileName );
         QString filename( fileInfo.fileName() );
-        reportData.append( QString( "(%1) %2 %3:%4" ).arg( line.moduleName, line.symbolName, filename, line.lineNumber ) );
+        reportData.append( QStringLiteral( "(%1) %2 %3:%4" ).arg( line.moduleName, line.symbolName, filename, line.lineNumber ) );
       }
-      reportData.append( "</pre>" );
+      reportData.append( QStringLiteral( "</pre>" ) );
     }
   }
 
@@ -77,38 +77,38 @@ const QString QgsCrashReport::toHtml() const
 
   if ( flags().testFlag( QgsCrashReport::QgisInfo ) )
   {
-    reportData.append( "<br>" );
-    reportData.append( "<b>QGIS Info</b>" );
-    reportData.append( QString( "QGIS Version: %1" ).arg( Qgis::QGIS_VERSION ) );
+    reportData.append( QStringLiteral( "<br>" ) );
+    reportData.append( QStringLiteral( "<b>QGIS Info</b>" ) );
+    reportData.append( QStringLiteral( "QGIS Version: %1" ).arg( Qgis::QGIS_VERSION ) );
 
     if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
     {
-      reportData.append( QString( "QGIS code branch: Release %1.%2" )
+      reportData.append( QStringLiteral( "QGIS code branch: Release %1.%2" )
                          .arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ) );
     }
     else
     {
-      reportData.append( QString( "QGIS code revision: %1" ).arg( Qgis::QGIS_DEV_VERSION ) );
+      reportData.append( QStringLiteral( "QGIS code revision: %1" ).arg( Qgis::QGIS_DEV_VERSION ) );
     }
 
-    reportData.append( QString( "Compiled against Qt: %1" ).arg( QT_VERSION_STR ) );
-    reportData.append( QString( "Running against Qt: %1" ).arg( qVersion() ) );
+    reportData.append( QStringLiteral( "Compiled against Qt: %1" ).arg( QT_VERSION_STR ) );
+    reportData.append( QStringLiteral( "Running against Qt: %1" ).arg( qVersion() ) );
 
-    reportData.append( QString( "Compiled against GDAL: %1" ).arg( GDAL_RELEASE_NAME ) );
-    reportData.append( QString( "Running against GDAL: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
+    reportData.append( QStringLiteral( "Compiled against GDAL: %1" ).arg( GDAL_RELEASE_NAME ) );
+    reportData.append( QStringLiteral( "Running against GDAL: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
   }
 
   if ( flags().testFlag( QgsCrashReport::SystemInfo ) )
   {
-    reportData.append( "<br>" );
-    reportData.append( "<b>System Info</b>" );
-    reportData.append( QString( "CPU Type: %1" ).arg( QSysInfo::currentCpuArchitecture() ) );
-    reportData.append( QString( "Kernel Type: %1" ).arg( QSysInfo::kernelType() ) );
-    reportData.append( QString( "Kernel Version: %1" ).arg( QSysInfo::kernelVersion() ) );
+    reportData.append( QStringLiteral( "<br>" ) );
+    reportData.append( QStringLiteral( "<b>System Info</b>" ) );
+    reportData.append( QStringLiteral( "CPU Type: %1" ).arg( QSysInfo::currentCpuArchitecture() ) );
+    reportData.append( QStringLiteral( "Kernel Type: %1" ).arg( QSysInfo::kernelType() ) );
+    reportData.append( QStringLiteral( "Kernel Version: %1" ).arg( QSysInfo::kernelVersion() ) );
   }
 
   QString report;
-  Q_FOREACH ( QString line, reportData )
+  Q_FOREACH ( const QString &line, reportData )
   {
     report += line + "<br>";
   }
@@ -118,20 +118,22 @@ const QString QgsCrashReport::toHtml() const
 const QString QgsCrashReport::crashID() const
 {
   if ( mStackTrace.isEmpty() )
-    return "ID not generated due to missing information\n\n Your version of QGIS install might not have debug information included.";
+    return QStringLiteral( "ID not generated due to missing information\n\n Your version of QGIS install might not have debug information included." );
 
   QString data = QString();
 
   // Hashes the full stack.
   Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
   {
+#if 0
     QFileInfo fileInfo( line.fileName );
     QString filename( fileInfo.fileName() );
+#endif
     data += line.symbolName;
   }
 
   if ( data.isNull() )
-    return "ID not generated due to missing information";
+    return QStringLiteral( "ID not generated due to missing information" );
 
   QString hash = QString( QCryptographicHash::hash( data.toAscii(), QCryptographicHash::Sha1 ).toHex() );
   return hash;

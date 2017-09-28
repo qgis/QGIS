@@ -71,9 +71,9 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
     case QgsProjectionSelectionWidget::LayerCrs:
       return mLayerCrs;
     case QgsProjectionSelectionWidget::ProjectCrs:
-      return mProjectCrs ;
+      return mProjectCrs;
     case QgsProjectionSelectionWidget::DefaultCrs:
-      return mDefaultCrs ;
+      return mDefaultCrs;
     case QgsProjectionSelectionWidget::CurrentCrs:
       return mCrs;
     case QgsProjectionSelectionWidget::RecentCrs:

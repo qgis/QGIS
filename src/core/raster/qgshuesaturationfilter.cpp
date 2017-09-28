@@ -24,14 +24,7 @@
 
 QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )
-  , mSaturation( 0 )
-  , mSaturationScale( 1 )
-  , mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff )
-  , mColorizeOn( false )
   , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-  , mColorizeH( 0 )
-  , mColorizeS( 50 )
-  , mColorizeStrength( 100 )
 {
 }
 
@@ -301,13 +294,13 @@ void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, 
       if ( mSaturationScale < 1 )
       {
         // Lowering the saturation. Use a simple linear relationship
-        s = qMin( ( int )( s * mSaturationScale ), 255 );
+        s = std::min( ( int )( s * mSaturationScale ), 255 );
       }
       else
       {
         // Raising the saturation. Use a saturation curve to prevent
         // clipping at maximum saturation with ugly results.
-        s = qMin( ( int )( 255. * ( 1 - pow( 1 - ( s / 255. ), pow( mSaturationScale, 2 ) ) ) ), 255 );
+        s = std::min( ( int )( 255. * ( 1 - std::pow( 1 - ( s / 255. ), std::pow( mSaturationScale, 2 ) ) ) ), 255 );
       }
 
       // Saturation changed, so update rgb values

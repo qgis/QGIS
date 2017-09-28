@@ -11,7 +11,7 @@
 #ifndef QGSCRSSELECTOR_H
 #define QGSCRSSELECTOR_H
 
-#include <ui_qgsprojectionselectorbase.h>
+#include "ui_qgsprojectionselectorbase.h"
 
 #include <QSet>
 #include <QStringList>
@@ -228,20 +228,20 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void insertRecent( long crsId );
 
     //! Has the Projection List been populated?
-    bool mProjListDone;
+    bool mProjListDone = false;
 
     //! Has the User Projection List been populated?
-    bool mUserProjListDone;
+    bool mUserProjListDone = false;
 
 
     //! Has the Recent Projection List been populated?
-    bool mRecentProjListDone;
+    bool mRecentProjListDone = false;
 
     enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, None };
-    int mSearchColumn;
+    int mSearchColumn = QgsProjectionSelectionTreeWidget::None;
     QString mSearchValue;
 
-    bool mPushProjectionToFront;
+    bool mPushProjectionToFront = false;
 
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;

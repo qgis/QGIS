@@ -106,7 +106,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      */
     void setDocumentViewerHeight( int height );
     //! returns the width of the document viewer
-    int documentViewerWidth() const ;
+    int documentViewerWidth() const;
 
     /**
      * \brief setDocumentViewerWidth set the width of the document viewer.
@@ -155,11 +155,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QString resolvePath( const QString &path );
 
     //! properties
-    bool mFileWidgetVisible;
-    DocumentViewerContent mDocumentViewerContent;
-    int mDocumentViewerHeight;
-    int mDocumentViewerWidth;
-    QgsFileWidget::RelativeStorage mRelativeStorage;
+    bool mFileWidgetVisible = true;
+    DocumentViewerContent mDocumentViewerContent = NoContent;
+    int mDocumentViewerHeight = 0;
+    int mDocumentViewerWidth = 0;
+    QgsFileWidget::RelativeStorage mRelativeStorage = QgsFileWidget::Absolute;
     QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects

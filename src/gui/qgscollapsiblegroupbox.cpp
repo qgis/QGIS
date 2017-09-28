@@ -49,7 +49,6 @@ void QgsCollapsibleGroupBoxBasic::init()
   mShown = false;
   mParentScrollArea = nullptr;
   mSyncParent = nullptr;
-  mSyncGroup = QLatin1String( "" );
   mAltDown = false;
   mShiftDown = false;
   mTitleClicked = false;
@@ -314,7 +313,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   int offsetLeft = 0;   // offset for oxygen theme
   int offsetStyle = QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) ? ( usingQgsStyle ? 1 : 8 ) : 0;
   int topBuffer = ( usingQgsStyle ? 3 : 1 ) + offsetStyle; // space between top of title or triangle and widget above
-  int offsetTop =  topBuffer;
+  int offsetTop = topBuffer;
   int offsetTopTri = topBuffer; // offset for triangle
 
   if ( mCollapseButton->height() < rectTitle.height() ) // triangle's height > title text's, offset triangle
@@ -516,7 +515,6 @@ void QgsCollapsibleGroupBox::init()
   // NOTE: only turn on mSaveCheckedState for groupboxes NOT used
   // in multiple places or used as options for different parent objects
   mSaveCheckedState = false;
-  mSettingGroup = QLatin1String( "" ); // if not set, use window object name
 
   connect( this, &QObject::objectNameChanged, this, &QgsCollapsibleGroupBox::loadState );
 }

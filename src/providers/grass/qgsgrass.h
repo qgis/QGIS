@@ -35,7 +35,7 @@ extern "C"
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
-#include <qgsrectangle.h>
+#include "qgsrectangle.h"
 #include <QFileSystemWatcher>
 #include <QProcess>
 #include <QString>
@@ -68,7 +68,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
                 Strds, Stvds, Str3ds, Stds
               };
 
-    QgsGrassObject() : mType( None ) {}
+    QgsGrassObject() {}
     QgsGrassObject( const QString &gisdbase, const QString &location = QString(),
                     const QString &mapset = QString(), const QString &name = QString(),
                     Type type = None );
@@ -117,7 +117,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString mLocation;
     QString mMapset;
     QString mName;  // map name
-    Type mType;
+    Type mType = None;
 };
 
 /** QString gisdbase()
@@ -685,5 +685,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Mute mode, do not show warning dialogs.
     static bool sMute;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSGRASS_H

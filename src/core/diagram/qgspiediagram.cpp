@@ -64,7 +64,12 @@ QSizeF QgsPieDiagram::diagramSize( const QgsFeature &feature, const QgsRenderCon
 double QgsPieDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
 {
   QSizeF size = sizeForValue( value, s, is );
-  return qMax( size.width(), size.height() );
+  return std::max( size.width(), size.height() );
+}
+
+QString QgsPieDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_PIE;
 }
 
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

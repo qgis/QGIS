@@ -243,12 +243,12 @@ void QgsBench::render()
     {
       for ( int i = 0; i < mTimes.size(); i++ )
       {
-        double d = fabs( avg[t] - mTimes.at( i )[t] );
-        stdev[t] += pow( d, 2 );
+        double d = std::fabs( avg[t] - mTimes.at( i )[t] );
+        stdev[t] += std::pow( d, 2 );
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }
 
-      stdev[t] = sqrt( stdev[t] / mTimes.size() );
+      stdev[t] = std::sqrt( stdev[t] / mTimes.size() );
     }
 
     QMap<QString, QVariant> map;

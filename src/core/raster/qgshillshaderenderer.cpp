@@ -124,10 +124,10 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
 
   double cellXSize = extent.width() / double( width );
   double cellYSize = extent.height() / double( height );
-  double zenithRad = qMax( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
+  double zenithRad = std::max( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
   double azimuthRad = -1 * mLightAzimuth * M_PI / 180.0;
-  double cosZenithRad = cos( zenithRad );
-  double sinZenithRad = sin( zenithRad );
+  double cosZenithRad = std::cos( zenithRad );
+  double sinZenithRad = std::sin( zenithRad );
 
   // Multi direction hillshade: http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
   double angle0Rad = ( -1 * mLightAzimuth - 45 - 45 * 0.5 ) * M_PI / 180.0;
@@ -210,36 +210,36 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       double derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellXSize );
       double derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellYSize );
 
-      double slopeRad = atan( mZFactor * sqrt( derX * derX + derY * derY ) );
-      double aspectRad = atan2( derX, -derY );
+      double slopeRad = std::atan( mZFactor * std::sqrt( derX * derX + derY * derY ) );
+      double aspectRad = std::atan2( derX, -derY );
 
 
       double grayValue;
       if ( !mMultiDirectional )
       {
         // Standard single direction hillshade
-        grayValue = qBound( 0.0, 255.0 * ( cosZenithRad * cos( slopeRad )
-                                           + sinZenithRad * sin( slopeRad )
-                                           * cos( azimuthRad - aspectRad ) ), 255.0 );
+        grayValue = qBound( 0.0, 255.0 * ( cosZenithRad * std::cos( slopeRad )
+                                           + sinZenithRad * std::sin( slopeRad )
+                                           * std::cos( azimuthRad - aspectRad ) ), 255.0 );
       }
       else
       {
         // Weighted multi direction as in http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
-        double weight0 = sin( aspectRad - angle0Rad );
-        double weight1 = sin( aspectRad - angle1Rad );
-        double weight2 = sin( aspectRad - angle2Rad );
-        double weight3 = sin( aspectRad - angle3Rad );
+        double weight0 = std::sin( aspectRad - angle0Rad );
+        double weight1 = std::sin( aspectRad - angle1Rad );
+        double weight2 = std::sin( aspectRad - angle2Rad );
+        double weight3 = std::sin( aspectRad - angle3Rad );
         weight0 = weight0 * weight0;
         weight1 = weight1 * weight1;
         weight2 = weight2 * weight2;
         weight3 = weight3 * weight3;
 
-        double cosSlope = cosZenithRad * cos( slopeRad );
-        double sinSlope = sinZenithRad * sin( slopeRad );
-        double color0 = cosSlope + sinSlope * cos( angle0Rad - aspectRad ) ;
-        double color1 = cosSlope + sinSlope * cos( angle1Rad - aspectRad ) ;
-        double color2 = cosSlope + sinSlope * cos( angle2Rad - aspectRad ) ;
-        double color3 = cosSlope + sinSlope * cos( angle3Rad - aspectRad ) ;
+        double cosSlope = cosZenithRad * std::cos( slopeRad );
+        double sinSlope = sinZenithRad * std::sin( slopeRad );
+        double color0 = cosSlope + sinSlope * std::cos( angle0Rad - aspectRad );
+        double color1 = cosSlope + sinSlope * std::cos( angle1Rad - aspectRad );
+        double color2 = cosSlope + sinSlope * std::cos( angle2Rad - aspectRad );
+        double color3 = cosSlope + sinSlope * std::cos( angle3Rad - aspectRad );
         grayValue = qBound( 0.0, 255 * ( weight0 * color0 + weight1 * color1 + weight2 * color2 + weight3 * color3 ) * 0.5, 255.0 );
       }
 

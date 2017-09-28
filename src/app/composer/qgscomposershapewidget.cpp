@@ -60,11 +60,6 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape *composerShape 
   mShapeStyleButton->setLayer( atlasCoverageLayer() );
 }
 
-QgsComposerShapeWidget::~QgsComposerShapeWidget()
-{
-
-}
-
 void QgsComposerShapeWidget::blockAllSignals( bool block )
 {
   mShapeComboBox->blockSignals( block );

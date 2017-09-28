@@ -22,12 +22,12 @@
 
 #include <list>
 
-#include <pal/pal.h>
-#include <pal/feature.h>
-#include <pal/layer.h>
-#include <pal/palexception.h>
-#include <pal/problem.h>
-#include <pal/labelposition.h>
+#include "pal/pal.h"
+#include "pal/feature.h"
+#include "pal/layer.h"
+#include "pal/palexception.h"
+#include "pal/problem.h"
+#include "pal/labelposition.h"
 
 #include <cmath>
 
@@ -46,15 +46,15 @@
 #include "qgslabelingengine.h"
 #include "qgsvectorlayerlabeling.h"
 
-#include <qgslogger.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayerdiagramprovider.h>
-#include <qgsvectorlayerlabelprovider.h>
-#include <qgsgeometry.h>
-#include <qgsmarkersymbollayer.h>
-#include <qgspainting.h>
-#include <qgsproject.h>
+#include "qgslogger.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayerdiagramprovider.h"
+#include "qgsvectorlayerlabelprovider.h"
+#include "qgsgeometry.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgspainting.h"
+#include "qgsproject.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
@@ -229,14 +229,6 @@ void QgsPalLayerSettings::initPropertyDefinitions()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-  : upsidedownLabels( Upright )
-  , mCurFeat( nullptr )
-  , xform( nullptr )
-  , extentGeom( nullptr )
-  , mFeaturesToLabel( 0 )
-  , mFeatsSendingToPal( 0 )
-  , mFeatsRegPal( 0 )
-  , expression( nullptr )
 {
   initPropertyDefinitions();
 
@@ -248,7 +240,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   useSubstitutions = false;
 
   // text formatting
-  wrapChar = QLatin1String( "" );
   multilineAlign = MultiFollowPlacement;
   addDirectionSymbol = false;
   leftDirectionSymbol = QStringLiteral( "<" );
@@ -303,15 +294,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
-  : mCurFeat( nullptr )
-  , fieldIndex( 0 )
-  , xform( nullptr )
-  , extentGeom( nullptr )
-  , mFeaturesToLabel( 0 )
-  , mFeatsSendingToPal( 0 )
-  , mFeatsRegPal( 0 )
+  : fieldIndex( 0 )
   , mDataDefinedProperties( s.mDataDefinedProperties )
-  , expression( nullptr )
 {
   *this = s;
 }
@@ -604,7 +588,7 @@ void QgsPalLayerSettings::readFromLayerCustomProperties( QgsVectorLayer *layer )
   if ( tempAngle.isValid() )
   {
     double oldAngle = layer->customProperty( QStringLiteral( "labeling/angleOffset" ), QVariant( 0.0 ) ).toDouble();
-    angleOffset = fmod( 360 - oldAngle, 360.0 );
+    angleOffset = std::fmod( 360 - oldAngle, 360.0 );
   }
   else
   {
@@ -802,7 +786,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   yOffset = placementElem.attribute( QStringLiteral( "yOffset" ), QStringLiteral( "0" ) ).toDouble();
   if ( !placementElem.hasAttribute( QStringLiteral( "offsetUnits" ) ) )
   {
-    offsetUnits =  placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
+    offsetUnits = placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
   }
   else
   {
@@ -824,7 +808,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   if ( placementElem.hasAttribute( QStringLiteral( "angleOffset" ) ) )
   {
     double oldAngle = placementElem.attribute( QStringLiteral( "angleOffset" ), QStringLiteral( "0" ) ).toDouble();
-    angleOffset = fmod( 360 - oldAngle, 360.0 );
+    angleOffset = std::fmod( 360 - oldAngle, 360.0 );
   }
   else
   {
@@ -1171,8 +1155,8 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, QString t
 
 #if 0 // XXX strk
   QgsPointXY ptSize = xform->toMapCoordinatesF( w, h );
-  labelX = qAbs( ptSize.x() - ptZero.x() );
-  labelY = qAbs( ptSize.y() - ptZero.y() );
+  labelX = std::fabs( ptSize.x() - ptZero.x() );
+  labelY = std::fabs( ptSize.y() - ptZero.y() );
 #else
   double uPP = xform->mapUnitsPerPixel();
   labelX = w * uPP;
@@ -1224,7 +1208,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     // scales closer than 1:1
     if ( maxScale < 0 )
     {
-      maxScale = 1 / qAbs( maxScale );
+      maxScale = 1 / std::fabs( maxScale );
     }
 
     if ( !qgsDoubleNear( maxScale, 0.0 ) && context.rendererScale() < maxScale )
@@ -1239,7 +1223,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     // scales closer than 1:1
     if ( minScale < 0 )
     {
-      minScale = 1 / qAbs( minScale );
+      minScale = 1 / std::fabs( minScale );
     }
 
     if ( !qgsDoubleNear( minScale, 0.0 ) && context.rendererScale() > minScale )
@@ -1436,7 +1420,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
       }
     }
     // make sure maxcharangleout is always negative
-    maxcharangleout = -( qAbs( maxcharangleout ) );
+    maxcharangleout = -( std::fabs( maxcharangleout ) );
   }
 
   // data defined centroid whole or clipped?
@@ -1782,8 +1766,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
         if ( dataDefinedRotation )
         {
           //adjust xdiff and ydiff because the hali/vali point needs to be the rotation center
-          double xd = xdiff * cos( angle ) - ydiff * sin( angle );
-          double yd = xdiff * sin( angle ) + ydiff * cos( angle );
+          double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
+          double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
           xdiff = xd;
           ydiff = yd;
         }
@@ -1876,7 +1860,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
 
   //set label's visual margin so that top visual margin is the leading, and bottom margin is the font's descent
   //this makes labels align to the font's baseline or highest character
-  double topMargin = qMax( 0.25 * labelFontMetrics->ascent(), 0.0 );
+  double topMargin = std::max( 0.25 * labelFontMetrics->ascent(), 0.0 );
   double bottomMargin = 1.0 + labelFontMetrics->descent();
   QgsMargins vm( 0.0, topMargin, 0.0, bottomMargin );
   vm *= xform->mapUnitsPerPixel();
@@ -1921,7 +1905,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   // candidates are created just offset from a border and avoids candidates being incorrectly flagged as colliding with neighbours
   if ( placement == QgsPalLayerSettings::Line || placement == QgsPalLayerSettings::Curved || placement == QgsPalLayerSettings::PerimeterCurved )
   {
-    distance = qMax( distance, 1.0 );
+    distance = std::max( distance, 1.0 );
   }
 
   if ( !qgsDoubleNear( distance, 0.0 ) )
@@ -2989,7 +2973,7 @@ bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext &context, const 
     double area = geom.area();
     if ( area >= 0.0 )
     {
-      return ( sqrt( area ) >= ( minSize * mapUnitsPerMM ) );
+      return ( std::sqrt( area ) >= ( minSize * mapUnitsPerMM ) );
     }
   }
   return true; //should never be reached. Return true in this case to label such geometries anyway.

@@ -38,13 +38,30 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     Q_OBJECT
 
   public:
+
+    //! Different capture modes
+    enum CaptureMode
+    {
+      CaptureNone,    //!< Do not capture / determine mode from layer geometry type
+      CapturePoint,   //!< Capture points
+      CaptureLine,    //!< Capture lines
+      CapturePolygon  //!< Capture polygons
+    };
+
     //! constructor
-    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = CaptureNone );
+    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
     virtual ~QgsMapToolCapture();
 
     virtual void activate() override;
     virtual void deactivate() override;
+
+    /**
+     * The capture mode
+     *
+     * \returns Capture mode
+     */
+    CaptureMode mode() const { return mCaptureMode; }
 
     //! Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
     int addCurve( QgsCurve *c );
@@ -148,11 +165,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool isCapturing() const;
 
     /**
-     * Stop capturing
-     */
-    void stopCapturing();
-
-    /**
      * Number of points digitized
      *
      * \returns Number of points
@@ -177,6 +189,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void closePolygon();
 
+  protected slots:
+
+    /**
+     * Stop capturing
+     */
+    void stopCapturing();
+
   private:
     //! whether tracing has been requested by the user
     bool tracingEnabled();
@@ -188,6 +207,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool tracingAddVertex( const QgsPointXY &point );
 
   private:
+    //! The capture mode in which this tool operates
+    CaptureMode mCaptureMode;
+
     //! Flag to indicate a map canvas capture operation is taking place
     bool mCapturing;
 

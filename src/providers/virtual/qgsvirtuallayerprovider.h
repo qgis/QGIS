@@ -17,7 +17,7 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUAL_LAYER_PROVIDER_H
 #define QGSVIRTUAL_LAYER_PROVIDER_H
 
-#include <qgsvectordataprovider.h>
+#include "qgsvectordataprovider.h"
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvirtuallayerdefinition.h"
@@ -34,7 +34,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      * Constructor of the vector provider
      * \param uri  uniform resource locator (URI) for a dataset
      */
-    explicit QgsVirtualLayerProvider( QString const &uri = "" );
+    explicit QgsVirtualLayerProvider( QString const &uri = QString() );
 
 
     virtual ~QgsVirtualLayerProvider();
@@ -67,14 +67,13 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     // underlying vector layers
     struct SourceLayer
     {
-      SourceLayer(): layer( nullptr ) {}
-      SourceLayer( QgsVectorLayer *l, const QString &n = "" )
+      SourceLayer() {}
+      SourceLayer( QgsVectorLayer *l, const QString &n = QString() )
         : layer( l )
         , name( n )
       {}
-      SourceLayer( const QString &p, const QString &s, const QString &n, const QString &e = "UTF-8" )
-        : layer( nullptr )
-        , name( n )
+      SourceLayer( const QString &p, const QString &s, const QString &n, const QString &e = QStringLiteral( "UTF-8" ) )
+        : name( n )
         , source( s )
         , provider( p )
         , encoding( e )
@@ -91,7 +90,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     SourceLayers mLayers;
 
 
-    bool mValid;
+    bool mValid = true;
 
     QString mTableName;
 
@@ -103,8 +102,8 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
 
     void resetSqlite();
 
-    mutable bool mCachedStatistics;
-    mutable qint64 mFeatureCount;
+    mutable bool mCachedStatistics = false;
+    mutable qint64 mFeatureCount = 0;
     mutable QgsRectangle mExtent;
 
     void updateStatistics() const;
@@ -118,5 +117,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
   private slots:
     void invalidateStatistics();
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

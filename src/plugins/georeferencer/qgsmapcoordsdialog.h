@@ -21,7 +21,7 @@
 #include "qgsvertexmarker.h"
 #include "qgsmapcanvas.h"
 
-#include <ui_qgsmapcoordsdialogbase.h>
+#include "ui_qgsmapcoordsdialogbase.h"
 
 class QPushButton;
 
@@ -90,9 +90,9 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
   private:
     struct MappedPoint
     {
-      MappedPoint() : snapped( false ) {}
+      MappedPoint() {}
       QgsPointXY point;
-      bool snapped;
+      bool snapped = false;
     };
 
     MappedPoint mapPoint( QMouseEvent *e )

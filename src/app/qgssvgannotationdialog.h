@@ -29,7 +29,6 @@ class APP_EXPORT QgsSvgAnnotationDialog: public QDialog, private Ui::QgsFormAnno
     Q_OBJECT
   public:
     QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsSvgAnnotationDialog();
 
   private slots:
     void on_mBrowseToolButton_clicked();

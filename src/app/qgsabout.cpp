@@ -40,10 +40,6 @@ QgsAbout::QgsAbout( QWidget * parent )
   init();
 }
 
-QgsAbout::~QgsAbout()
-{
-}
-
 void QgsAbout::init()
 {
   setPluginInfo();
@@ -190,7 +186,7 @@ void QgsAbout::init()
 #endif
   if ( translatorFile.open( QIODevice::ReadOnly ) )
   {
-    QString translatorHTML = QLatin1String( "" );
+    QString translatorHTML;
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8
     translatorStream.setCodec( "UTF-8" );
@@ -255,8 +251,8 @@ void QgsAbout::setPluginInfo()
   myString += QApplication::libraryPaths().join( QStringLiteral( "<br>" ) );
   myString += QLatin1String( "<ol>\n<li>\n" );
   QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
-  QList<QByteArray>::const_iterator myIterator = myImageFormats.begin();
-  while ( myIterator != myImageFormats.end() )
+  QList<QByteArray>::const_iterator myIterator = myImageFormats.constBegin();
+  while ( myIterator != myImageFormats.constEnd() )
   {
     QString myFormat = ( *myIterator ).data();
     myString += myFormat + "</li>\n<li>";

@@ -42,7 +42,6 @@ class TestQgs25DRenderer : public QObject
     Q_OBJECT
   public:
     TestQgs25DRenderer()
-      : mpPolysLayer( nullptr )
     {}
 
   private slots:

@@ -148,9 +148,9 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
 
   private:
 
-    Limits mLimits;
-    Extent mExtent;
-    StatAccuracy mAccuracy;
+    Limits mLimits = None;
+    Extent mExtent = WholeRaster;
+    StatAccuracy mAccuracy = Estimated;
     double mCumulativeCutLower;
     double mCumulativeCutUpper;
     double mStdDevFactor;

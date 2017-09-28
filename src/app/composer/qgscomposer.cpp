@@ -57,7 +57,6 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessageviewer.h"
-#include "qgscontexthelp.h"
 #include "qgscursors.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgeometry.h"
@@ -77,6 +76,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QIcon>
+#include <QImageWriter>
 #include <QLabel>
 #include <QMatrix>
 #include <QMenuBar>
@@ -111,7 +111,7 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   setWindowTitle( mComposition->name() );
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
-  setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
+  setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 #endif
   setupTheme();
 
@@ -326,16 +326,12 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, mActionZoomIn, &QAction::trigger );
 
-#ifndef Q_OS_MAC
-  //disabled for OSX - see #10761
-  //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
   QMenu *previewMenu = viewMenu->addMenu( QStringLiteral( "&Preview" ) );
   previewMenu->addAction( mActionPreviewModeOff );
   previewMenu->addAction( mActionPreviewModeGrayscale );
   previewMenu->addAction( mActionPreviewModeMono );
   previewMenu->addAction( mActionPreviewProtanope );
   previewMenu->addAction( mActionPreviewDeuteranope );
-#endif
 
   viewMenu->addSeparator();
   viewMenu->addAction( mActionZoomIn );
@@ -596,9 +592,9 @@ QgsComposer::QgsComposer( QgsComposition *composition )
 
   mItemsTreeView->setColumnWidth( 0, 30 );
   mItemsTreeView->setColumnWidth( 1, 30 );
-  mItemsTreeView->header()->setResizeMode( 0, QHeaderView::Fixed );
-  mItemsTreeView->header()->setResizeMode( 1, QHeaderView::Fixed );
-  mItemsTreeView->header()->setMovable( false );
+  mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionsMovable( false );
 
   mItemsTreeView->setDragEnabled( true );
   mItemsTreeView->setAcceptDrops( true );
@@ -1682,7 +1678,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       mComposition->beginPrintAsPDF( printer, outputFileName );
       // set the correct resolution
       mComposition->beginPrint( printer );
-      bool printReady =  painter.begin( &printer );
+      bool printReady = painter.begin( &printer );
       if ( !printReady )
       {
         QMessageBox::warning( this, tr( "Atlas processing error" ),
@@ -2074,7 +2070,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         outputFilePath = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
       }
 
-      saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+      saveOk = saveImage( image, outputFilePath, fileNExt.second );
 
       if ( !saveOk )
       {
@@ -2130,7 +2126,6 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     QgsSettings myQSettings;
     QString lastUsedDir = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesDir" ), QDir::homePath() ).toString();
-    QString lastUsedFormat = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesFormat" ), "jpg" ).toString();
 
     QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
@@ -2142,7 +2137,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
     }
     QStringList s = dlg.selectedFiles();
-    if ( s.size() < 1 || s.at( 0 ).isEmpty() )
+    if ( s.empty() || s.at( 0 ).isEmpty() )
     {
       return;
     }
@@ -2275,7 +2270,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
           imageFilename = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         }
 
-        bool saveOk = image.save( imageFilename, format.toLocal8Bit().constData() );
+        bool saveOk = saveImage( image, imageFilename, format );
         if ( !saveOk )
         {
           QMessageBox::warning( this, tr( "Atlas processing error" ),
@@ -2315,6 +2310,16 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     mView->setPaintingEnabled( true );
     QApplication::restoreOverrideCursor();
   }
+}
+
+bool QgsComposer::saveImage( const QImage &img, const QString &imageFilename, const QString &imageFormat )
+{
+  QImageWriter w( imageFilename, imageFormat.toLocal8Bit().constData() );
+  if ( imageFormat.compare( QLatin1String( "tiff" ), Qt::CaseInsensitive ) == 0 || imageFormat.compare( QLatin1String( "tif" ), Qt::CaseInsensitive ) == 0 )
+  {
+    w.setCompression( 1 ); //use LZW compression
+  }
+  return w.write( img );
 }
 
 void QgsComposer::on_mActionExportAtlasAsSVG_triggered()
@@ -2701,8 +2706,8 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
              && !mComposition->gridVisible() ) items.pop_back();
         QgsItemTempHider itemsHider( items );
         int composerItemLayerIdx = 0;
-        QList<QGraphicsItem *>::const_iterator it = items.begin();
-        for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
+        QList<QGraphicsItem *>::const_iterator it = items.constBegin();
+        for ( unsigned svgLayerId = 1; it != items.constEnd(); ++svgLayerId )
         {
           itemsHider.hideAll();
           QgsComposerItem *composerItem = dynamic_cast<QgsComposerItem *>( *it );
@@ -2716,7 +2721,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           else
           {
             // show all items until the next item that renders on a separate layer
-            for ( ; it != items.end(); ++it )
+            for ( ; it != items.constEnd(); ++it )
             {
               composerItem = dynamic_cast<QgsComposerMap *>( *it );
               if ( composerItem && composerItem->numberExportLayers() )

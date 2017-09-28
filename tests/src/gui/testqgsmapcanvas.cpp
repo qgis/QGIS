@@ -22,7 +22,6 @@
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>
 #include <qgsmaptoolpan.h>
-#include "qgstestutils.h"
 
 namespace QTest
 {
@@ -46,7 +45,6 @@ class TestQgsMapCanvas : public QObject
     Q_OBJECT
   public:
     TestQgsMapCanvas()
-      : mCanvas( nullptr )
     {}
 
   private slots:

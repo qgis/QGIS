@@ -29,8 +29,7 @@
 
 QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mQDateTimeEdit( nullptr )
-  , mQgsDateTimeEdit( nullptr )
+
 {
 }
 

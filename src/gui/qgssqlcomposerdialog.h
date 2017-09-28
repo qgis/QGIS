@@ -20,9 +20,8 @@ email                : even.rouault at spatialys.com
 #define QGSSQLCOMPOSERDIALOG_H
 
 #include "ui_qgssqlcomposerdialogbase.h"
-#include <qgis.h>
+#include "qgis.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 
 #include <QPair>
 #include <QStringList>
@@ -91,9 +90,9 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       //! return type, or empty if unknown
       QString returnType;
       //! minimum number of argument (or -1 if unknown)
-      int minArgs;
+      int minArgs = -1;
       //! maximum number of argument (or -1 if unknown)
-      int maxArgs;
+      int maxArgs = -1;
       //! list of arguments. May be empty despite minArgs > 0
       QList<Argument> argumentList;
 
@@ -102,7 +101,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       //! constructor with name and min,max number of arguments
       Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
       //! default constructor
-      Function() : minArgs( -1 ), maxArgs( -1 ) {}
+      Function() {}
     };
 
     //! constructor
@@ -162,9 +161,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     void on_mAddJoinButton_clicked();
     void on_mRemoveJoinButton_clicked();
     void on_mTableJoins_itemSelectionChanged();
-
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
+    void showHelp();
     void reset();
     void buildSQLFromFields();
     void splitSQLIntoFields();
@@ -175,8 +172,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     TableSelectedCallback *mTableSelectedCallback = nullptr;
     SQLValidatorCallback *mSQLValidatorCallback = nullptr;
     QObject *mFocusedObject = nullptr;
-    bool mAlreadyModifyingFields;
-    bool mDistinct;
+    bool mAlreadyModifyingFields = false;
+    bool mDistinct = false;
     QString mResetSql;
     QMap<QString, QString> mapTableEntryTextToName;
     QMap<QString, QString> mapColumnEntryTextToName;

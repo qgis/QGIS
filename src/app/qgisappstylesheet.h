@@ -32,7 +32,6 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
 
   public:
     QgisAppStyleSheet( QObject *parent = nullptr );
-    ~QgisAppStyleSheet();
 
     //! Return changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultOptions();

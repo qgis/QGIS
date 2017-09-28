@@ -21,7 +21,6 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRect>
-#include <qmath.h>
 
 QgsSlider::QgsSlider( QWidget *parent ) : QSlider( parent )
 {
@@ -95,14 +94,14 @@ void QgsSlider::update()
     if ( minimum() != 0 )
       QSlider::setMinimum( 0 );
 
-    int max = qCeil( ( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
+    int max = std::ceil( ( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
     if ( maximum() != max )
       QSlider::setMaximum( max );
 
     if ( singleStep() != 1 )
       QSlider::setSingleStep( 1 );
 
-    QSlider::setValue( qCeil( ( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
+    QSlider::setValue( std::ceil( ( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
   }
 
   connect( this, &QSlider::valueChanged, this, &QgsSlider::onValueChanged );

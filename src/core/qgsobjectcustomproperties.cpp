@@ -21,10 +21,6 @@
 #include <QStringList>
 
 
-QgsObjectCustomProperties::QgsObjectCustomProperties()
-{
-}
-
 QStringList QgsObjectCustomProperties::keys() const
 {
   return mMap.keys();

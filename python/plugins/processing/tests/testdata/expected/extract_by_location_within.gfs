@@ -12,15 +12,5 @@
       <ExtentYMin>1.00000</ExtentYMin>
       <ExtentYMax>1.00000</ExtentYMax>
     </DatasetSpecificInfo>
-    <PropertyDefn>
-      <Name>id</Name>
-      <ElementPath>id</ElementPath>
-      <Type>Integer</Type>
-    </PropertyDefn>
-    <PropertyDefn>
-      <Name>id2</Name>
-      <ElementPath>id2</ElementPath>
-      <Type>Integer</Type>
-    </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>

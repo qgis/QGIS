@@ -19,9 +19,9 @@
 
 #include "ui_qgsgpsinformationwidgetbase.h"
 
-#include <qgsmapcanvas.h>
-#include <qgsgpsmarker.h>
-#include <qgsmaptoolcapture.h>
+#include "qgsmapcanvas.h"
+#include "qgsgpsmarker.h"
+#include "qgsmaptoolcapture.h"
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>

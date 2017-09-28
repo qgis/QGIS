@@ -83,12 +83,6 @@ QString QgsGrassUtils::htmlBrowserPath()
 
 QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
   : QObject()
-  , mDialog( 0 )
-  , mLineEdit( 0 )
-  , mLabel( 0 )
-  , mErrorLabel( 0 )
-  , mOkButton( 0 )
-  , mCancelButton( 0 )
   , mParent( parent )
 {
 }

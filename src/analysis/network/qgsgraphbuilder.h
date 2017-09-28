@@ -19,8 +19,7 @@
 #include "qgsgraphbuilderinterface.h"
 #include "qgis.h"
 
-#include <qgis.h>
-#include <qgsspatialindex.h>
+#include "qgsspatialindex.h"
 #include "qgis_analysis.h"
 
 class QgsDistanceArea;
@@ -60,5 +59,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
 
     QgsGraph *mGraph = nullptr;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSGRAPHBUILDER_H

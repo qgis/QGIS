@@ -20,7 +20,6 @@
 
 QgsAuthBasicEdit::QgsAuthBasicEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
-  , mValid( 0 )
 {
   setupUi( this );
 }

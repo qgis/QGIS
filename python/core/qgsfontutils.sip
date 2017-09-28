@@ -204,6 +204,7 @@ class QgsFontUtils
 %End
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -34,10 +34,6 @@ QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )
   , mClassificationMode( classificationMode )
-  , mLUTOffset( 0.0 )
-  , mLUTFactor( 1.0 )
-  , mLUTInitialized( false )
-  , mClip( false )
 {
   QgsDebugMsgLevel( "called.", 4 );
 
@@ -281,15 +277,15 @@ void QgsColorRampShader::classifyColorRamp( const int classes, const int band, c
     }
   }
 
-  QList<double>::const_iterator value_it = entryValues.begin();
-  QVector<QColor>::const_iterator color_it = entryColors.begin();
+  QList<double>::const_iterator value_it = entryValues.constBegin();
+  QVector<QColor>::const_iterator color_it = entryColors.constBegin();
 
   // calculate a reasonable number of decimals to display
-  double maxabs = log10( qMax( qAbs( max ), qAbs( min ) ) );
-  int nDecimals = qRound( qMax( 3.0 + maxabs - log10( max - min ), maxabs <= 15.0 ? maxabs + 0.49 : 0.0 ) );
+  double maxabs = std::log10( std::max( std::fabs( max ), std::fabs( min ) ) );
+  int nDecimals = std::round( std::max( 3.0 + maxabs - std::log10( max - min ), maxabs <= 15.0 ? maxabs + 0.49 : 0.0 ) );
 
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
-  for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
+  for ( ; value_it != entryValues.constEnd(); ++value_it, ++color_it )
   {
     QgsColorRampShader::ColorRampItem newColorRampItem;
     newColorRampItem.value = *value_it;
@@ -313,7 +309,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   {
     return false;
   }
-  if ( qIsNaN( value ) || qIsInf( value ) )
+  if ( std::isnan( value ) || std::isinf( value ) )
     return false;
 
   int colorRampItemListCount = mColorRampItemList.count();

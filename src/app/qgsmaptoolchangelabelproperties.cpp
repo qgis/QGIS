@@ -25,10 +25,6 @@ QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *
 {
 }
 
-QgsMapToolChangeLabelProperties::~QgsMapToolChangeLabelProperties()
-{
-}
-
 void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
 {
   deleteRubberBands();

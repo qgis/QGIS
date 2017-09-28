@@ -47,6 +47,11 @@ class CORE_EXPORT QgsRectangle
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
 
+    // IMPORTANT - while QgsRectangle is inherited by QgsReferencedRectangle, we do NOT want a virtual destructor here
+    // because this class MUST be lightweight and we don't want the cost of the vtable here.
+    // see https://github.com/qgis/QGIS/pull/4720#issuecomment-308652392
+    ~QgsRectangle() = default;
+
     /**
      * Sets the rectangle from two QgsPoints. The rectangle is
      * normalised after construction.
@@ -156,7 +161,8 @@ class CORE_EXPORT QgsRectangle
     void scale( double scaleFactor, double centerX, double centerY );
 
     /**
-     * Grows the rectangle by the specified amount.
+     * Grows the rectangle in place by the specified amount.
+     * \see buffered()
      */
     void grow( double delta );
 
@@ -168,8 +174,9 @@ class CORE_EXPORT QgsRectangle
     /**
      * Get rectangle enlarged by buffer.
      * \since QGIS 2.1
+     * \see grow()
     */
-    QgsRectangle buffer( double width );
+    QgsRectangle buffered( double width ) const;
 
     /**
      * Return the intersection with the given rectangle.
@@ -301,6 +308,12 @@ class CORE_EXPORT QgsRectangle
      */
     QgsBox3d toBox3d( double zMin, double zMax ) const;
 
+    //! Allows direct construction of QVariants from rectangles.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
   private:
 
     double mXmin;
@@ -309,6 +322,8 @@ class CORE_EXPORT QgsRectangle
     double mYmax;
 
 };
+
+Q_DECLARE_METATYPE( QgsRectangle )
 
 #ifndef SIP_RUN
 

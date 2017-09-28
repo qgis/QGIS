@@ -41,7 +41,6 @@ class TestQgsSnappingUtils : public QObject
     Q_OBJECT
   public:
     TestQgsSnappingUtils()
-      : mVL( 0 )
     {}
 
   private:

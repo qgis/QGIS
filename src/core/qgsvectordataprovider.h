@@ -67,26 +67,26 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     enum Capability
     {
-      NoCapabilities =                              0,       //!< Provider has no capabilities
-      AddFeatures =                                 1,       //!< Allows adding features
-      DeleteFeatures =                              1 <<  1, //!< Allows deletion of features
-      ChangeAttributeValues =                       1 <<  2, //!< Allows modification of attribute values
-      AddAttributes =                               1 <<  3, //!< Allows addition of new attributes (fields)
-      DeleteAttributes =                            1 <<  4, //!< Allows deletion of attributes (fields)
-      CreateSpatialIndex =                          1 <<  6, //!< Allows creation of spatial index
-      SelectAtId =                                  1 <<  7, //!< Fast access to features using their ID
-      ChangeGeometries =                            1 <<  8, //!< Allows modifications of geometries
-      SelectEncoding =                              1 << 13, //!< Allows user to select encoding
-      CreateAttributeIndex =                        1 << 12, //!< Can create indexes on provider's fields
-      SimplifyGeometries =                          1 << 14, //!< Supports simplification of geometries on provider side according to a distance tolerance
+      NoCapabilities = 0,       //!< Provider has no capabilities
+      AddFeatures = 1,       //!< Allows adding features
+      DeleteFeatures = 1 <<  1, //!< Allows deletion of features
+      ChangeAttributeValues = 1 <<  2, //!< Allows modification of attribute values
+      AddAttributes = 1 <<  3, //!< Allows addition of new attributes (fields)
+      DeleteAttributes = 1 <<  4, //!< Allows deletion of attributes (fields)
+      CreateSpatialIndex = 1 <<  6, //!< Allows creation of spatial index
+      SelectAtId = 1 <<  7, //!< Fast access to features using their ID
+      ChangeGeometries = 1 <<  8, //!< Allows modifications of geometries
+      SelectEncoding = 1 << 13, //!< Allows user to select encoding
+      CreateAttributeIndex = 1 << 12, //!< Can create indexes on provider's fields
+      SimplifyGeometries = 1 << 14, //!< Supports simplification of geometries on provider side according to a distance tolerance
       SimplifyGeometriesWithTopologicalValidation = 1 << 15, //!< Supports topological simplification of geometries on provider side according to a distance tolerance
-      TransactionSupport =                          1 << 16, //!< Supports transactions
-      CircularGeometries =                          1 << 17, //!< Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
-      ChangeFeatures =                              1 << 18, /**  Supports joint updates for attributes and geometry
+      TransactionSupport = 1 << 16, //!< Supports transactions
+      CircularGeometries = 1 << 17, //!< Supports circular geometry types (circularstring, compoundcurve, curvepolygon)
+      ChangeFeatures = 1 << 18, /**  Supports joint updates for attributes and geometry
                                                                *  Providers supporting this should still define
                                                                *  ChangeGeometries | ChangeAttributeValues */
-      RenameAttributes =                            1 << 19, //!< Supports renaming attributes (fields). Since QGIS 2.16
-      FastTruncate =                                1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
+      RenameAttributes = 1 << 19, //!< Supports renaming attributes (fields). Since QGIS 2.16
+      FastTruncate = 1 << 20, //!< Supports fast truncation of the layer (removing all features). Since QGIS 3.0
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -516,6 +516,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ); return value.toString(); }
 
+    /** Returns true if the data source has metadata, false otherwise.
+     *
+     * \returns true if data source has metadata, false otherwise.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool hasMetadata() const { return true; };
+
   signals:
 
     /**
@@ -571,7 +579,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QTextCodec *textEncoding() const;
 
   private:
-    mutable bool mCacheMinMaxDirty;
+    mutable bool mCacheMinMaxDirty = true;
     mutable QMap<int, QVariant> mCacheMinValues, mCacheMaxValues;
 
     //! Encoding

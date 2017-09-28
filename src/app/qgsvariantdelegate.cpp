@@ -190,10 +190,10 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
       break;
     case QVariant::Color:
       ( void )mColorExp.exactMatch( text );
-      value = QColor( qMin( mColorExp.cap( 1 ).toInt(), 255 ),
-                      qMin( mColorExp.cap( 2 ).toInt(), 255 ),
-                      qMin( mColorExp.cap( 3 ).toInt(), 255 ),
-                      qMin( mColorExp.cap( 4 ).toInt(), 255 ) );
+      value = QColor( std::min( mColorExp.cap( 1 ).toInt(), 255 ),
+                      std::min( mColorExp.cap( 2 ).toInt(), 255 ),
+                      std::min( mColorExp.cap( 3 ).toInt(), 255 ),
+                      std::min( mColorExp.cap( 4 ).toInt(), 255 ) );
       break;
     case QVariant::Date:
     {

@@ -18,9 +18,9 @@
 #ifndef TOPOLERROR_H
 #define TOPOLERROR_H
 
-#include <qgsvectorlayer.h>
-#include <qgsgeometry.h>
-#include <qgsrectangle.h>
+#include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
+#include "qgsrectangle.h"
 
 class TopolError;
 typedef QList<TopolError *> ErrorList;
@@ -30,8 +30,6 @@ class FeatureLayer
 {
   public:
     FeatureLayer()
-      : layer( nullptr )
-      , feature( QgsFeature() )
     {}
 
     /**

@@ -46,8 +46,6 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
      */
     QgsAttributeTableDelegate( QObject *parent SIP_TRANSFERTHIS = 0 )
       : QItemDelegate( parent )
-      , mLayer( nullptr )
-      , mFeatureSelectionModel( nullptr )
     {
     }
 

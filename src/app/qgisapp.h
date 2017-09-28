@@ -123,6 +123,9 @@ class QgsLayerStylingWidget;
 class QgsDiagramProperties;
 class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
+class QgsBrowserModel;
+class QgsGeoCmsProviderRegistry;
+
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -165,8 +168,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   public:
     //! Constructor
     QgisApp( QSplashScreen *splash, bool restorePlugins = true,
-             bool skipVersionCheck = false, const QString rootProfileLocation = QString(),
-             const QString activeProfile = QString(),
+             bool skipVersionCheck = false, const QString &rootProfileLocation = QString(),
+             const QString &activeProfile = QString(),
              QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Window );
     //! Constructor for unit tests
     QgisApp();
@@ -211,6 +214,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open a composer template file and create a new composition
     void openTemplate( const QString &fileName );
+
+    /** Attempts to run a Python script
+     * \param filePath full path to Python script
+     * \since QGIS 2.7
+     */
+    void runScript( const QString &filePath );
 
     /** Opens a qgis project file
       \returns false if unable to open the project
@@ -377,7 +386,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param title
      * \param message
      */
-    void showSystemNotification( const QString title, const QString message );
+    void showSystemNotification( const QString &title, const QString &message );
 
 
     //! Actions to be inserted in menus and toolbars
@@ -621,6 +630,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the active map layer.
     QgsMapLayer *activeLayer();
 
+    /**
+     * Returns the toolbar icon size. If \a dockedToolbar is true, the icon size
+     * for toolbars contained within docks is returned.
+     */
+    QSize iconSize( bool dockedToolbar = false ) const;
+
   public slots:
     //! Process the list of URIs that have been dropped in QGIS
     void handleDropUriList( const QgsMimeDataUtils::UriList &lst );
@@ -783,11 +798,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
 
     /**
-     * \brief dataSourceManager Open the DataSourceManager dialog/dock
+     * \brief dataSourceManager Open the DataSourceManager dialog
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
-    void dataSourceManager( QString pageName = QString() );
+    void dataSourceManager( const QString &pageName = QString() );
 
     /** Add a raster layer directly without prompting user for location
       The caller must provide information compatible with the provider plugin
@@ -848,6 +863,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! set the active layer
     bool setActiveLayer( QgsMapLayer * );
+
+    /** Reload connections emitting the connectionsChanged signal
+     * \since QGIS 3.0
+     */
+    void reloadConnections();
 
   protected:
 
@@ -1109,12 +1129,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open the project file corresponding to the
     //! text)= of the given action.
     void openProject( QAction *action );
-
-    /** Attempts to run a Python script
-     * \param filePath full path to Python script
-     * \since QGIS 2.7
-     */
-    void runScript( const QString &filePath );
     //! Save the map view as an image - user is prompted for image name using a dialog
     void saveMapAsImage();
     //! Save the map view as a pdf - user is prompted for image name using a dialog
@@ -1497,12 +1511,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Set the layer for the map style dock. Doesn't show the style dock
     void setMapStyleDockLayer( QgsMapLayer *layer );
 
-    //! Handles processing of dropped mimedata
-    void dropEventTimeout();
-
     void annotationCreated( QgsAnnotation *annotation );
 
     void updateCrsStatusBar();
+
+    void onFocusChanged( QWidget *oldWidget, QWidget *newWidget );
 
   signals:
 
@@ -1591,7 +1604,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   private:
     void startProfile( const QString &name );
     void endProfile();
-    void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, QString name );
+    void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
 
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * \returns true if any items were loaded
@@ -1715,6 +1728,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Attempts to choose a reasonable default icon size based on the window's screen DPI
     int chooseReasonableDefaultIconSize() const;
 
+    /**
+     * Returns the size of docked toolbars for a given standard (non-docked) toolbar icon size.
+     */
+    int dockedToolbarIconSize( int standardToolbarIconSize ) const;
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
 
     // actions for menus and toolbars -----------------
@@ -1761,50 +1779,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       public:
 
         Tools()
-          : mZoomIn( nullptr )
-          , mZoomOut( nullptr )
-          , mPan( nullptr )
-          , mIdentify( nullptr )
-          , mFeatureAction( nullptr )
-          , mMeasureDist( nullptr )
-          , mMeasureArea( nullptr )
-          , mMeasureAngle( nullptr )
-          , mAddFeature( nullptr )
-          , mCircularStringCurvePoint( nullptr )
-          , mCircularStringRadius( nullptr )
-          , mMoveFeature( nullptr )
-          , mOffsetCurve( nullptr )
-          , mReshapeFeatures( nullptr )
-          , mSplitFeatures( nullptr )
-          , mSplitParts( nullptr )
-          , mSelect( nullptr )
-          , mSelectFeatures( nullptr )
-          , mSelectPolygon( nullptr )
-          , mSelectFreehand( nullptr )
-          , mSelectRadius( nullptr )
-          , mVertexAdd( nullptr )
-          , mVertexMove( nullptr )
-          , mVertexDelete( nullptr )
-          , mAddRing( nullptr )
-          , mFillRing( nullptr )
-          , mAddPart( nullptr )
-          , mSimplifyFeature( nullptr )
-          , mDeleteRing( nullptr )
-          , mDeletePart( nullptr )
-          , mNodeTool( nullptr )
-          , mRotatePointSymbolsTool( nullptr )
-          , mOffsetPointSymbolTool( nullptr )
-          , mAnnotation( nullptr )
-          , mFormAnnotation( nullptr )
-          , mHtmlAnnotation( nullptr )
-          , mSvgAnnotation( nullptr )
-          , mTextAnnotation( nullptr )
-          , mPinLabels( nullptr )
-          , mShowHideLabels( nullptr )
-          , mMoveLabel( nullptr )
-          , mRotateFeature( nullptr )
-          , mRotateLabel( nullptr )
-          , mChangeLabelProperties( nullptr )
         {}
 
         QgsMapTool *mZoomIn = nullptr;
@@ -1931,7 +1905,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! QGIS-internal vector feature clipboard
     QgsClipboard *mInternalClipboard = nullptr;
     //! Flag to indicate how the project properties dialog was summoned
-    bool mShowProjectionTab;
+    bool mShowProjectionTab = false;
 
     /** String containing supporting vector file formats
       Suitable for a QFileDialog file filter.  Build in ctor.
@@ -1953,16 +1927,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapTip *mpMaptip = nullptr;
 
     //! Flag to indicate if maptips are on or off
-    bool mMapTipsVisible;
+    bool mMapTipsVisible = false;
 
     //! Flag to indicate whether we are in fullscreen mode or not
-    bool mFullScreenMode;
+    bool mFullScreenMode = false;
 
     //! Flag to indicate that the previous screen mode was 'maximised'
-    bool mPrevScreenModeMaximized;
+    bool mPrevScreenModeMaximized = false;
 
     //! Flag to indicate an edits save/rollback for active layer is in progress
-    bool mSaveRollbackInProgress;
+    bool mSaveRollbackInProgress = false;
 
     QgsPythonUtils *mPythonUtils = nullptr;
 
@@ -2011,7 +1985,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool cmpByText( QAction *a, QAction *b );
 
     //! the user has trusted the project macros
-    bool mTrustedMacros;
+    bool mTrustedMacros = false;
 
     //! a bar to display warnings in a non-blocker manner
     QgsMessageBar *mInfoBar = nullptr;
@@ -2035,7 +2009,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
-    QList<QgsCustomDropHandler *> mCustomDropHandlers;
+    QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
 
     QDateTime mProjectLastModified;
 
@@ -2045,7 +2019,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QHash< QgsComposition *, QgsMapLayerAction * > mAtlasFeatureActions;
 
-    int mProjOpen;
+    int mProjOpen = 0;
 
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
@@ -2056,6 +2030,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsStatusBar *mStatusBar = nullptr;
 
+    QTime mLastRenderTime;
+    double mLastRenderTimeSeconds = 0;
+    QTimer mRenderProgressBarTimer;
+    QMetaObject::Connection mRenderProgressBarTimerConnection;
+
+    QgsBrowserModel *mBrowserModel = nullptr;
+
     friend class TestQgisAppPython;
 };
 
@@ -2064,5 +2045,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 #else
 #define QGIS_ICON_SIZE 24
 #endif
+
+// clazy:excludeall=qstring-allocations
 
 #endif

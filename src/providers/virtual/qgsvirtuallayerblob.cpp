@@ -20,14 +20,6 @@ email                : hugo dot mercier at oslandia dot com
 #include <limits>
 
 SpatialiteBlobHeader::SpatialiteBlobHeader()
-  : start( 0x00 )
-  , endianness( 0x01 )
-  , srid( -1 )
-  , mbrMinX( -DBL_MAX )
-  , mbrMinY( -DBL_MAX )
-  , mbrMaxX( DBL_MAX )
-  , mbrMaxY( DBL_MAX )
-  , end( 0x7C )
 {}
 
 void SpatialiteBlobHeader::readFrom( const char *p )

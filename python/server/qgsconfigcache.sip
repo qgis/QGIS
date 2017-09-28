@@ -34,17 +34,6 @@ class QgsConfigCache : QObject
  :rtype: QgsConfigCache
 %End
 
-    QgsServerProjectParser *serverConfiguration( const QString &filePath );
-%Docstring
- :rtype: QgsServerProjectParser
-%End
-    QgsWmsConfigParser *wmsConfiguration( const QString &filePath,
-                                          const QgsAccessControl *accessControl,
-                                          const QMap<QString, QString> &parameterMap = QMap< QString, QString >() );
-%Docstring
- :rtype: QgsWmsConfigParser
-%End
-
     void removeEntry( const QString &path );
 
     const QgsProject *project( const QString &path );

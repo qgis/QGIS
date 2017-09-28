@@ -114,10 +114,6 @@ QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAtt
   connect( mContentFontToolButton, &QgsFontButton::changed, this, &QgsComposerAttributeTableWidget::contentFontChanged );
 }
 
-QgsComposerAttributeTableWidget::~QgsComposerAttributeTableWidget()
-{
-}
-
 void QgsComposerAttributeTableWidget::on_mRefreshPushButton_clicked()
 {
   if ( !mComposerTable )
@@ -788,7 +784,7 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
   exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       mFeatureFilterEdit->setText( expression );

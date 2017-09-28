@@ -19,7 +19,6 @@
 
 QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   : QDialog( parent )
-  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 

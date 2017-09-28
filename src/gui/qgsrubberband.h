@@ -321,18 +321,18 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QPen mSecondaryPen;
 
     //! The size of the icon for points.
-    int mIconSize;
+    int mIconSize = 5;
 
     //! Icon to be shown.
-    IconType mIconType;
+    IconType mIconType = ICON_CIRCLE;
 
     /**
      * Nested lists used for multitypes
      */
     QList< QList <QgsPointXY> > mPoints;
-    QgsWkbTypes::GeometryType mGeometryType;
-    double mTranslationOffsetX;
-    double mTranslationOffsetY;
+    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::PolygonGeometry;
+    double mTranslationOffsetX = 0.0;
+    double mTranslationOffsetY = 0.0;
 
     QgsRubberBand();
 

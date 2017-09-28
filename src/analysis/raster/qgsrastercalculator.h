@@ -26,7 +26,7 @@
 #include "qgis_analysis.h"
 
 class QgsRasterLayer;
-class QProgressDialog;
+class QgsFeedback;
 
 
 struct ANALYSIS_EXPORT QgsRasterCalculatorEntry
@@ -85,11 +85,13 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
                          const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 
-    /** Starts the calculation and writes new raster
-      \param p progress bar (or 0 if called from non-gui code)
-      \returns 0 in case of success*/
+    /** Starts the calculation and writes a new raster.
+     *
+     * The optional \a feedback argument can be used for progress reporting and cancelation support.
+     * \returns 0 in case of success
+    */
     //TODO QGIS 3.0 - return QgsRasterCalculator::Result
-    int processCalculation( QProgressDialog *p = nullptr );
+    int processCalculation( QgsFeedback *feedback = nullptr );
 
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
@@ -116,9 +118,9 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QgsCoordinateReferenceSystem mOutputCrs;
 
     //! Number of output columns
-    int mNumOutputColumns;
+    int mNumOutputColumns = 0;
     //! Number of output rows
-    int mNumOutputRows;
+    int mNumOutputRows = 0;
 
     /***/
     QVector<QgsRasterCalculatorEntry> mRasterEntries;

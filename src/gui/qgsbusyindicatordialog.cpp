@@ -25,7 +25,7 @@
 QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString &message, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mMessage( QString( message ) )
-  , mMsgLabel( nullptr )
+
 {
   setWindowTitle( tr( "QGIS" ) );
   setLayout( new QVBoxLayout() );

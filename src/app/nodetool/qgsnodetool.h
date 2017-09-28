@@ -90,7 +90,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void deleteNodeEditorSelection();
 
-    void validationErrorFound( QgsGeometry::Error e );
+    void validationErrorFound( const QgsGeometry::Error &e );
 
     void validationFinished();
 
@@ -133,7 +133,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void startDragging( QgsMapMouseEvent *e );
 
-    void startDraggingMoveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &m );
+    void startDraggingMoveVertex( const QgsPointLocator::Match &m );
 
     //! Get list of matches of all vertices of a layer exactly snapped to a map point
     QList<QgsPointLocator::Match> layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint );
@@ -298,11 +298,6 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! keeps information about previously used snap match
     //! to stick with the same highlighted feature next time if there are more options
     std::unique_ptr<QgsPointLocator::Match> mLastSnap;
-
-    //! List of two points that will be forced into CAD dock with fake mouse events
-    //! to allow correct functioning of node tool with CAD dock.
-    //! (CAD dock does various assumptions that work with simple capture tools, but not with node tool)
-    QList<QgsPointXY> mOverrideCadPoints;
 
     //! When double-clicking to add a new vertex, this member keeps the snap
     //! match from "press" event used to be used in following "release" event

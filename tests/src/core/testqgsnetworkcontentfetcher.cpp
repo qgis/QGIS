@@ -26,7 +26,6 @@ class TestQgsNetworkContentFetcher : public QObject
     Q_OBJECT
   public:
     TestQgsNetworkContentFetcher()
-      : mLoaded( false )
     {}
 
   private slots:
@@ -41,7 +40,7 @@ class TestQgsNetworkContentFetcher : public QObject
     void contentLoaded();
 
   private:
-    bool mLoaded;
+    bool mLoaded =  false ;
 };
 
 void TestQgsNetworkContentFetcher::initTestCase()

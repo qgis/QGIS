@@ -89,6 +89,11 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
 
   constraintExpressionWidget->setLayer( vl );
+
+  // TODO, what should this help be connected to?
+#if 0
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAttributeTypeDialog::showHelp );
+#endif
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -303,6 +308,7 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
 
 void QgsAttributeTypeDialog::onCurrentWidgetChanged( int index )
 {
+  Q_UNUSED( index )
   QStandardItem *item = currentItem();
   const QString editType = item ? item->data( Qt::UserRole ).toString() : QString();
 
@@ -371,4 +377,9 @@ QStandardItem *QgsAttributeTypeDialog::currentItem() const
 {
   QStandardItemModel *widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
   return widgetTypeModel->item( mWidgetTypeComboBox->currentIndex() );
+}
+
+void QgsAttributeTypeDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
 }

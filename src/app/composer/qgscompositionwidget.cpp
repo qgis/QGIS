@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgis.h>
+#include "qgis.h"
 #include "qgscompositionwidget.h"
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
@@ -125,14 +125,9 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget *parent, QgsComposition *c )
 
 QgsCompositionWidget::QgsCompositionWidget()
   : QgsPanelWidget( nullptr )
-  , mComposition( nullptr )
+
 {
   setupUi( this );
-}
-
-QgsCompositionWidget::~QgsCompositionWidget()
-{
-
 }
 
 void QgsCompositionWidget::populateDataDefinedButtons()
@@ -269,7 +264,7 @@ void QgsCompositionWidget::createPaperEntries()
       ;
   mPaperSizeComboBox->addItem( tr( "Custom" ) );
 
-  for ( QList<QgsCompositionPaper>::const_iterator it = formats.begin(); it != formats.end(); ++it )
+  for ( QList<QgsCompositionPaper>::const_iterator it = formats.constBegin(); it != formats.constEnd(); ++it )
   {
     mPaperSizeComboBox->addItem( it->mName );
     mPaperMap.insert( it->mName, *it );

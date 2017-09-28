@@ -38,17 +38,8 @@
 using namespace pal;
 
 PointSet::PointSet()
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , holeOf( nullptr )
-  , parent( nullptr )
-  , xmin( DBL_MAX )
-  , xmax( -DBL_MAX )
-  , ymin( DBL_MAX )
-  , ymax( -DBL_MAX )
-  , mPreparedGeom( nullptr )
 {
-  nbPoints = cHullSize =  0;
+  nbPoints = cHullSize = 0;
   x = nullptr;
   y = nullptr;
   cHull = nullptr;
@@ -56,16 +47,7 @@ PointSet::PointSet()
 }
 
 PointSet::PointSet( int nbPoints, double *x, double *y )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , cHullSize( 0 )
-  , holeOf( nullptr )
-  , parent( nullptr )
-  , xmin( DBL_MAX )
-  , xmax( -DBL_MAX )
-  , ymin( DBL_MAX )
-  , ymax( -DBL_MAX )
-  , mPreparedGeom( nullptr )
+  : cHullSize( 0 )
 {
   this->nbPoints = nbPoints;
   this->x = new double[nbPoints];
@@ -82,13 +64,10 @@ PointSet::PointSet( int nbPoints, double *x, double *y )
 }
 
 PointSet::PointSet( double aX, double aY )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , xmin( aX )
+  : xmin( aX )
   , xmax( aY )
   , ymin( aX )
   , ymax( aY )
-  , mPreparedGeom( nullptr )
 {
   nbPoints = cHullSize = 1;
   x = new double[1];
@@ -104,14 +83,10 @@ PointSet::PointSet( double aX, double aY )
 }
 
 PointSet::PointSet( const PointSet &ps )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , parent( nullptr )
-  , xmin( ps.xmin )
+  : xmin( ps.xmin )
   , xmax( ps.xmax )
   , ymin( ps.ymin )
   , ymax( ps.ymax )
-  , mPreparedGeom( nullptr )
 {
   int i;
 
@@ -371,9 +346,9 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
         // lookup for the deepest point in the hole
         for ( i = ips; i != cHull[ihn]; i = ( i + 1 ) % nbp )
         {
-          cp = qAbs( GeomFunction::cross_product( x[cHull[ihs]], y[cHull[ihs]],
-                                                  x[cHull[ihn]], y[cHull[ihn]],
-                                                  x[i], y[i] ) );
+          cp = std::fabs( GeomFunction::cross_product( x[cHull[ihs]], y[cHull[ihs]],
+                          x[cHull[ihn]], y[cHull[ihn]],
+                          x[i], y[i] ) );
           if ( cp - bestcp > EPSILON )
           {
             bestcp = cp;
@@ -416,7 +391,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
     // holeE = hole ending point
     // retainedPt = deppest point in hole
     // bestArea = area of triangle HoleS->holeE->retainedPoint
-    bestArea = sqrt( bestArea );
+    bestArea = std::sqrt( bestArea );
     double cx, cy, dx, dy, ex, ey, fx, fy, seg_length, ptx = 0, pty = 0, fptx = 0, fpty = 0;
     int ps = -1, pe = -1, fps = -1, fpe = -1;
     if ( retainedPt >= 0 && bestArea > labelArea ) // there is a hole so we'll cut the shape in two new shape (only if hole area is bigger than twice labelArea)
@@ -444,7 +419,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
         fx = cx + dx;
         fy = cy - dy;
 
-        if ( seg_length < EPSILON || qAbs( ( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )   // retainedPt is not fronting i->j
+        if ( seg_length < EPSILON || std::fabs( ( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )   // retainedPt is not fronting i->j
         {
           if ( ( ex = GeomFunction::dist_euc2d_sq( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = GeomFunction::dist_euc2d_sq( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
           {
@@ -508,7 +483,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
 
       // we will cut the shapeu in two new shapes, one from [retainedPoint] to [newPoint] and one form [newPoint] to [retainedPoint]
       int imin = retainedPt;
-      int imax = ( ( ( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? qMin( fps, fpe ) : qMax( fps, fpe ) );
+      int imax = ( ( ( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? std::min( fps, fpe ) : std::max( fps, fpe ) );
 
       int nbPtSh1, nbPtSh2; // how many points in new shapes ?
       if ( imax > imin )
@@ -601,8 +576,8 @@ CHullBox *PointSet::compute_chull_bbox()
   double best_width = 0;
 
 
-  bbox[0] =   DBL_MAX;
-  bbox[1] =   DBL_MAX;
+  bbox[0] = DBL_MAX;
+  bbox[1] = DBL_MAX;
   bbox[2] = - DBL_MAX;
   bbox[3] = - DBL_MAX;
 
@@ -627,8 +602,8 @@ CHullBox *PointSet::compute_chull_bbox()
   for ( alpha_d = 0; alpha_d < 90; alpha_d++ )
   {
     alpha = alpha_d *  M_PI / 180.0;
-    d1 = cos( alpha ) * dref;
-    d2 = sin( alpha ) * dref;
+    d1 = std::cos( alpha ) * dref;
+    d2 = std::sin( alpha ) * dref;
 
     bb[0]  = bbox[0];
     bb[1]  = bbox[3]; // ax, ay
@@ -656,7 +631,7 @@ CHullBox *PointSet::compute_chull_bbox()
     for ( i = 0; i < 16; i += 4 )
     {
 
-      alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI / 2 + alpha;
+      alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI_2 + alpha;
 
       best_cp = DBL_MAX;
       for ( j = 0; j < nbPoints; j++ )
@@ -670,8 +645,8 @@ CHullBox *PointSet::compute_chull_bbox()
 
       distNearestPoint = best_cp / dref;
 
-      d1 = cos( alpha_seg ) * distNearestPoint;
-      d2 = sin( alpha_seg ) * distNearestPoint;
+      d1 = std::cos( alpha_seg ) * distNearestPoint;
+      d2 = std::sin( alpha_seg ) * distNearestPoint;
 
       bb[i]   += d1; // x
       bb[i + 1] += d2; // y
@@ -827,7 +802,7 @@ void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px,
     {
       dx = x[nbPoints - 1] - x[0];
       dy = y[nbPoints - 1] - y[0];
-      di = sqrt( dx * dx + dy * dy );
+      di = std::sqrt( dx * dx + dy * dy );
     }
     else
     {

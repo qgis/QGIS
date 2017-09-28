@@ -202,9 +202,9 @@ class CORE_EXPORT QgsPaintEffect
 
   protected:
 
-    bool mEnabled;
-    DrawMode mDrawMode;
-    bool requiresQPainterDpiFix;
+    bool mEnabled = true;
+    DrawMode mDrawMode = ModifyAndRender;
+    bool requiresQPainterDpiFix = true;
 
     /** Handles drawing of the effect's result on to the specified render context.
      * Derived classes must reimplement this method to apply any transformations to
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsPaintEffect
 
     const QPicture *mPicture = nullptr;
     QImage *mSourceImage = nullptr;
-    bool mOwnsImage;
+    bool mOwnsImage = false;
 
     QPainter *mPrevPainter = nullptr;
     QPainter *mEffectPainter = nullptr;
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
   private:
 
     double mOpacity = 1.0;
-    QPainter::CompositionMode mBlendMode;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 };
 
 /** \ingroup core

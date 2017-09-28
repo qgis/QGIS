@@ -37,7 +37,7 @@
 
 SET(SIP_INCLUDES)
 SET(SIP_TAGS)
-SET(SIP_CONCAT_PARTS 8)
+SET(SIP_CONCAT_PARTS 16)
 SET(SIP_DISABLE_FEATURES)
 SET(SIP_EXTRA_OPTIONS)
 SET(SIP_EXTRA_OBJECTS)
@@ -79,10 +79,13 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP CPP_FILES)
   # Suppress warnings
   IF(PEDANTIC)
     IF(MSVC)
-      # 4996 deprecation warnings (bindings re-export deprecated methods)
-      # 4701 potentially uninitialized variable used (sip generated code)
-      # 4702 unreachable code (sip generated code)
-      ADD_DEFINITIONS( /wd4996 /wd4701 /wd4702 )
+      ADD_DEFINITIONS(
+        /wd4189  # local variable is initialized but not referenced
+        /wd4996  # deprecation warnings (bindings re-export deprecated methods)
+        /wd4701  # potentially uninitialized variable used (sip generated code)
+        /wd4702  # unreachable code (sip generated code)
+        /wd4703  # potentially uninitialized local pointer variable 'sipType' used
+      )
     ELSE(MSVC)
       # disable all warnings
       ADD_DEFINITIONS( -w -Wno-deprecated-declarations )

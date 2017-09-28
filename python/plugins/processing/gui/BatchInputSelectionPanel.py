@@ -72,7 +72,7 @@ class BatchInputSelectionPanel(QWidget):
                                 QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
-        self.pushButton.setText('...')
+        self.pushButton.setText('…')
         self.pushButton.clicked.connect(self.showPopupMenu)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
@@ -109,13 +109,13 @@ class BatchInputSelectionPanel(QWidget):
         elif isinstance(self.param, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         else:
-            datatypes = [QgsProcessing.TypeVectorAny]
+            datatypes = [QgsProcessing.TypeVectorAnyGeometry]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
                 datatypes = self.param.dataTypes()
             elif isinstance(self.param, QgsProcessingParameterMultipleLayers):
                 datatypes = [self.param.layerType()]
 
-            if QgsProcessing.TypeVectorAny not in datatypes:
+            if QgsProcessing.TypeVectorAnyGeometry not in datatypes:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), datatypes)
             else:
                 layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())

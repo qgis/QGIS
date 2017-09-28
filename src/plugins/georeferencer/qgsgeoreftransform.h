@@ -19,7 +19,7 @@
 
 #include <gdal_alg.h> // just needed for GDALTransformerFunc, forward?
 
-#include <qgspoint.h>
+#include "qgspoint.h"
 #include <QVector>
 #include <stdexcept>
 

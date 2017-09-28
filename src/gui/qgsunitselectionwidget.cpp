@@ -21,7 +21,6 @@
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
   : QgsPanelWidget( parent )
-  , mBlockSignals( true )
 {
   setupUi( this );
   mComboBoxMinScale->setScale( 10000000.0 );
@@ -125,7 +124,7 @@ QgsMapUnitScale QgsMapUnitScaleWidget::mapUnitScale() const
 
 QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
   : QWidget( parent )
-  , mCanvas( nullptr )
+
 {
   mMapUnitIdx = -1;
 
@@ -269,7 +268,7 @@ void QgsUnitSelectionWidget::widgetChanged( const QgsMapUnitScale &scale )
 
 QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget *parent )
   : QDialog( parent )
-  , mWidget( nullptr )
+
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsMapUnitScaleWidget();

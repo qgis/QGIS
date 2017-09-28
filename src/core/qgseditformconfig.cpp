@@ -19,6 +19,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsrelationmanager.h"
 #include "qgslogger.h"
+#include "qgsxmlutils.h"
 
 //#include "qgseditorwidgetregistry.h"
 
@@ -337,6 +338,16 @@ void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext
     }
   }
 
+  QDomNodeList widgetsNodeList = node.namedItem( QStringLiteral( "widgets" ) ).toElement().childNodes();
+
+  for ( int i = 0; i < widgetsNodeList.size(); ++i )
+  {
+    QDomElement widgetElement = widgetsNodeList.at( i ).toElement();
+    QVariant config = QgsXmlUtils::readVariant( widgetElement.firstChildElement( QStringLiteral( "config" ) ) );
+
+    d->mWidgetConfigs[widgetElement.attribute( QStringLiteral( "name" ) )] = config.toMap();
+  }
+
   // tabs and groups display info
   QDomNode attributeEditorFormNode = node.namedItem( QStringLiteral( "attributeEditorForm" ) );
   if ( !attributeEditorFormNode.isNull() )
@@ -413,7 +424,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   node.appendChild( editorLayoutElem );
 
   // tabs and groups of edit form
-  if ( tabs().size() > 0 && d->mConfiguredRootContainer )
+  if ( !tabs().empty() && d->mConfiguredRootContainer )
   {
     QDomElement tabsElem = doc.createElement( QStringLiteral( "attributeEditorForm" ) );
 
@@ -428,37 +439,20 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
     node.appendChild( tabsElem );
   }
 
-  //// TODO: MAKE THIS MORE GENERIC, SO INDIVIDUALL WIDGETS CAN NOT ONLY SAVE STRINGS
-  /// SEE QgsEditorWidgetFactory::writeConfig
-
   QDomElement widgetsElem = doc.createElement( QStringLiteral( "widgets" ) );
 
   QMap<QString, QVariantMap >::ConstIterator configIt( d->mWidgetConfigs.constBegin() );
 
   while ( configIt != d->mWidgetConfigs.constEnd() )
   {
-    if ( d->mFields.indexFromName( configIt.key() ) == -1 )
-    {
-      QDomElement widgetElem = doc.createElement( QStringLiteral( "widget" ) );
-      widgetElem.setAttribute( QStringLiteral( "name" ), configIt.key() );
-      // widgetElem.setAttribute( "notNull",  );
+    QDomElement widgetElem = doc.createElement( QStringLiteral( "widget" ) );
+    widgetElem.setAttribute( QStringLiteral( "name" ), configIt.key() );
+    // widgetElem.setAttribute( "notNull",  );
 
-      QDomElement configElem = doc.createElement( QStringLiteral( "config" ) );
-      widgetElem.appendChild( configElem );
-
-      QVariantMap::ConstIterator cfgIt( configIt.value().constBegin() );
-
-      while ( cfgIt != configIt.value().constEnd() )
-      {
-        QDomElement optionElem = doc.createElement( QStringLiteral( "option" ) );
-        optionElem.setAttribute( QStringLiteral( "key" ), cfgIt.key() );
-        optionElem.setAttribute( QStringLiteral( "value" ), cfgIt.value().toString() );
-        configElem.appendChild( optionElem );
-        ++cfgIt;
-      }
-
-      widgetsElem.appendChild( widgetElem );
-    }
+    QDomElement configElem = QgsXmlUtils::writeVariant( configIt.value(), doc );
+    configElem.setTagName( QStringLiteral( "config" ) );
+    widgetElem.appendChild( configElem );
+    widgetsElem.appendChild( widgetElem );
     ++configIt;
   }
 

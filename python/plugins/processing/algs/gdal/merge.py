@@ -59,6 +59,8 @@ class merge(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterMultipleInput(self.INPUT,
                                                  self.tr('Input layers'),
                                                  dataobjects.TYPE_RASTER))
@@ -87,7 +89,7 @@ class merge(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])

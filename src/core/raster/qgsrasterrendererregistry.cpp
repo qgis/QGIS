@@ -40,7 +40,7 @@ QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString &n
 {
 }
 
-QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreateFunction( nullptr ), widgetCreateFunction( nullptr )
+QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry()
 {
 }
 
