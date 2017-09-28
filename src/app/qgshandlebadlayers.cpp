@@ -31,6 +31,7 @@
 #include <QDomElement>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QToolButton>
 #include <QMessageBox>
 #include <QUrl>
 
