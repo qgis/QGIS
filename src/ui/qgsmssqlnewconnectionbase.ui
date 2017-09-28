@@ -184,9 +184,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>HEADS UP: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows
-
-Untick save if you don't wish to be the case.</string>
+            <string>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory (Unix-like systems) or user profile (Windows). If you want to avoid this, please uncheck the option.</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
