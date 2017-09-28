@@ -76,7 +76,11 @@ void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon( ) );
         }
         else
+        {
           emit messageEmitted( tr( "Cannot use this tool when the map canvas is rotated" ), QgsMessageBar::WARNING );
+          mPoints.clear();
+          break;
+        }
       }
       break;
       default:
