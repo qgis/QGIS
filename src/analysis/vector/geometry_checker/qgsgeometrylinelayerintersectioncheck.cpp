@@ -57,19 +57,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
           }
           else if ( const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( part ) )
           {
-            QList<const QgsLineString *> rings;
-            if ( const QgsLineString *exterior = dynamic_cast<const QgsLineString *>( polygon->exteriorRing() ) )
-            {
-              rings.append( exterior );
-            }
-            for ( int iInt = 0, nInt = polygon->numInteriorRings(); iInt < nInt; ++iInt )
-            {
-              if ( const QgsLineString *interior = dynamic_cast<const QgsLineString *>( polygon->interiorRing( iInt ) ) )
-              {
-                rings.append( interior );
-              }
-            }
-            for ( const QgsLineString *ring : rings )
+            for ( const QgsLineString *ring : QgsGeometryCheckerUtils::polygonRings( polygon ) )
             {
               if ( QgsGeometryCheckerUtils::linesIntersect( ring, testLine, mContext->tolerance, inter ) )
               {

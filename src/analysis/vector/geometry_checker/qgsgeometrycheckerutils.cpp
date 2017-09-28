@@ -18,10 +18,11 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgsfeaturepool.h"
-#include <qmath.h>
+#include "qgspolygon.h"
 #include "qgsgeos.h"
 #include "qgsgeometrycollection.h"
 #include "qgssurface.h"
+#include <qmath.h>
 
 namespace QgsGeometryCheckerUtils
 {
@@ -194,6 +195,23 @@ namespace QgsGeometryCheckerUtils
       return static_cast<const QgsGeometryCollection *>( geom )->geometryN( partIdx );
     }
     return geom;
+  }
+
+  QList<const QgsLineString *> polygonRings( const QgsPolygonV2 *polygon )
+  {
+    QList<const QgsLineString *> rings;
+    if ( const QgsLineString *exterior = dynamic_cast<const QgsLineString *>( polygon->exteriorRing() ) )
+    {
+      rings.append( exterior );
+    }
+    for ( int iInt = 0, nInt = polygon->numInteriorRings(); iInt < nInt; ++iInt )
+    {
+      if ( const QgsLineString *interior = dynamic_cast<const QgsLineString *>( polygon->interiorRing( iInt ) ) )
+      {
+        rings.append( interior );
+      }
+    }
+    return rings;
   }
 
   void filter1DTypes( QgsAbstractGeometry *geom )
