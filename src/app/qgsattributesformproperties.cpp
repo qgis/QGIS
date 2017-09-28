@@ -18,7 +18,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mDragTree = new DnDTree( mLayer, mDragListWidget );
   mDragListWidgetLayout->addWidget( mDragTree );
   mDragListWidget->setLayout( mDragListWidgetLayout );
-  mDragTree->setHeaderLabels( QStringList() << tr( "Label" ) );
+  mDragTree->setHeaderLabels( QStringList() << tr( "Available Widgets" ) );
   mDragTree->setType( DnDTree::Type::Drag );
 
   // drop tree
@@ -27,7 +27,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mDropListWidgetLayout->addWidget( mDropTree );
   mDropListWidgetLayout->setMargin( 0 );
   mDropListWidget->setLayout( mDropListWidgetLayout );
-  mDropTree->setHeaderLabels( QStringList() << tr( "Label" ) );
+  mDropTree->setHeaderLabels( QStringList() << tr( "Form Structure" ) );
   mDropTree->setType( DnDTree::Type::Drop );
 
   // AttributeTypeDialog
