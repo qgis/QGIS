@@ -430,11 +430,11 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_6">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_60">
                  <property name="title">
                   <string>Settings</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_26">
+                 <layout class="QVBoxLayout" name="verticalLayout_260">
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_13">
                     <item>
@@ -701,244 +701,6 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>644</width>
-                <height>522</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_18">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_6">
-                 <property name="title">
-                  <string>Settings</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_26">
-                  <item>
-                   <widget class="QFrame" name="mDataSourceEncodingFrame">
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_4">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="topMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="bottomMargin">
-                      <number>0</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_3">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>Data source encoding</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboProviderEncoding"/>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_2">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>0</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="indexGroupBox_2">
-                 <property name="focusPolicy">
-                  <enum>Qt::StrongFocus</enum>
-                 </property>
-                 <property name="title">
-                  <string>Coordinate reference system</string>
-                 </property>
-                 <property name="checkable">
-                  <bool>false</bool>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">vectorgeneral</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_28">
-                  <property name="spacing">
-                   <number>6</number>
-                  </property>
-                  <item>
-                   <widget class="QLabel" name="label_5">
-                    <property name="text">
-                     <string>Set source coordinate reference system</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-                    <property name="focusPolicy">
-                     <enum>Qt::StrongFocus</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_10">
-                    <item>
-                     <widget class="QPushButton" name="pbnIndex">
-                      <property name="text">
-                       <string>Create spatial index</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="pbnUpdateExtents">
-                      <property name="text">
-                       <string>Update extents</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_6">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <widget class="Line" name="line_2">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="mSubsetGroupBox">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>3</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>Provider feature filter</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_4">
-                  <item row="1" column="1">
-                   <widget class="QPushButton" name="pbnQueryBuilder">
-                    <property name="text">
-                     <string>Query Builder</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="0">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Expanding</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>0</width>
-                      <height>21</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QTextEdit" name="txtSubsetSQL">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="acceptDrops">
-                     <bool>false</bool>
-                    </property>
-                    <property name="acceptRichText">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                 <zorder>txtSubsetSQL</zorder>
-                 <zorder>pbnQueryBuilder</zorder>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="mOptsPage_Style">
-          <layout class="QVBoxLayout" name="verticalLayout_11">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QgsScrollArea" name="scrollArea_3">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_3">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
                 <width>100</width>
                 <height>30</height>
                </rect>
@@ -1074,7 +836,7 @@ border-radius: 2px;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_SourceFields">
-          <layout class="QVBoxLayout" name="verticalLayout_27">
+          <layout class="QVBoxLayout" name="verticalLayout_29">
            <item>
             <widget class="QScrollArea" name="scrollArea_2">
              <property name="widgetResizable">
@@ -1845,7 +1607,7 @@ border-radius: 2px;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_DataDependencies">
-          <layout class="QVBoxLayout" name="verticalLayout_29">
+          <layout class="QVBoxLayout" name="verticalLayout_30">
            <property name="leftMargin">
             <number>0</number>
            </property>
