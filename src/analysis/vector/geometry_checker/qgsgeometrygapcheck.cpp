@@ -114,10 +114,10 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
     // Add error
     errors.append( new QgsGeometryGapCheckError( this, "", gapGeom, neighboringIds, gapGeom->area(), gapAreaBBox ) );
 
-    delete unionGeom;
-    delete envelope;
-    delete diffGeom;
   }
+  delete unionGeom;
+  delete envelope;
+  delete diffGeom;
 }
 
 void QgsGeometryGapCheck::fixError( QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
