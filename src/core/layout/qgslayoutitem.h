@@ -61,6 +61,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 #endif
 
     Q_OBJECT
+    Q_PROPERTY( bool locked READ isLocked WRITE setLocked NOTIFY lockChanged )
 
   public:
 
@@ -121,6 +122,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see uuid()
      */
     virtual void setId( const QString &id );
+
+    /**
+     * Sets whether the item is \a locked, preventing mouse interactions with the item.
+     * \see isLocked()
+     * \see lockChanged()
+     */
+    void setLocked( const bool locked );
+
+    /**
+     * Returns true if the item is locked, and cannot be interacted with using the mouse.
+     * \see setLocked()
+     * \see lockChanged()
+     */
+    bool isLocked() const { return mIsLocked; }
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
@@ -374,6 +389,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     void frameChanged();
 
+    /**
+     * Emitted if the item's lock status changes.
+     * \see isLocked()
+     * \see setLocked()
+     */
+    void lockChanged();
+
   protected:
 
     /**
@@ -505,6 +527,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
+
+    bool mIsLocked = false;
 
     //! True if item has a frame
     bool mFrame = false;

@@ -102,6 +102,21 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: uuid()
 %End
 
+    void setLocked( const bool locked );
+%Docstring
+ Sets whether the item is ``locked``, preventing mouse interactions with the item.
+.. seealso:: isLocked()
+.. seealso:: lockChanged()
+%End
+
+    bool isLocked() const;
+%Docstring
+ Returns true if the item is locked, and cannot be interacted with using the mouse.
+.. seealso:: setLocked()
+.. seealso:: lockChanged()
+ :rtype: bool
+%End
+
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 %Docstring
@@ -370,6 +385,13 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
     void frameChanged();
 %Docstring
  Emitted if the item's frame style changes.
+%End
+
+    void lockChanged();
+%Docstring
+ Emitted if the item's lock status changes.
+.. seealso:: isLocked()
+.. seealso:: setLocked()
 %End
 
   protected:

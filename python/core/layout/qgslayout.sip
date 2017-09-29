@@ -66,6 +66,15 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %End
 
 
+    QList<QgsLayoutItem *> selectedLayoutItems( const bool includeLockedItems = true );
+%Docstring
+ Returns list of selected layout items.
+
+ If ``includeLockedItems`` is set to true, then locked items will also be included
+ in the returned list.
+ :rtype: list of QgsLayoutItem
+%End
+
     QgsLayoutItem *itemByUuid( const QString &uuid );
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None

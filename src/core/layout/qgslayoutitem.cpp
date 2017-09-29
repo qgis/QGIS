@@ -33,7 +33,8 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   setZValue( QgsLayout::ZItem );
 
   // needed to access current view transform during paint operations
-  setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
+  setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption | QGraphicsItem::ItemIsSelectable );
+
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
 
   //record initial position
@@ -68,6 +69,26 @@ void QgsLayoutItem::setId( const QString &id )
 
   emit itemChanged();
 #endif
+}
+
+void QgsLayoutItem::setLocked( const bool locked )
+{
+  if ( locked == mIsLocked )
+  {
+    return;
+  }
+
+  mIsLocked = locked;
+
+#if 0 //TODO
+  //inform model that id data has changed
+  if ( mLayout )
+  {
+    mLayout->itemsModel()->updateItemLockStatus( this );
+  }
+#endif
+  update();
+  emit lockChanged();
 }
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )

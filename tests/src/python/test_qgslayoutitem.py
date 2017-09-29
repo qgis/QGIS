@@ -22,6 +22,7 @@ from qgis.core import (QgsProject,
                        QgsLayoutMeasurement,
                        QgsUnitTypes)
 from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtTest import QSignalSpy
 
 
 start_app()
@@ -71,6 +72,34 @@ class TestQgsLayoutItem(unittest.TestCase):
         item.refreshDataDefinedProperty()
         self.assertEqual(item.backgroundColor(), QColor(255, 0, 0))  # should not change
         self.assertEqual(item.brush().color().name(), QColor(0, 0, 255).name())
+
+    def testSelected(self):
+        """
+        Ensure that items are selectable
+        """
+        layout = QgsLayout(QgsProject.instance())
+        item = QgsLayoutItemMap(layout)
+        item.setSelected(True)
+        self.assertTrue(item.isSelected())
+        item.setSelected(False)
+        self.assertFalse(item.isSelected())
+
+    def testLocked(self):
+        layout = QgsLayout(QgsProject.instance())
+        item = QgsLayoutItemMap(layout)
+
+        lock_changed_spy = QSignalSpy(item.lockChanged)
+        item.setLocked(True)
+        self.assertTrue(item.isLocked())
+        self.assertEqual(len(lock_changed_spy), 1)
+        item.setLocked(True)
+        self.assertEqual(len(lock_changed_spy), 1)
+
+        item.setLocked(False)
+        self.assertFalse(item.isLocked())
+        self.assertEqual(len(lock_changed_spy), 2)
+        item.setLocked(False)
+        self.assertEqual(len(lock_changed_spy), 2)
 
 
 if __name__ == '__main__':

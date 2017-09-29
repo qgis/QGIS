@@ -105,6 +105,14 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     }
 
     /**
+     * Returns list of selected layout items.
+     *
+     * If \a includeLockedItems is set to true, then locked items will also be included
+     * in the returned list.
+     */
+    QList<QgsLayoutItem *> selectedLayoutItems( const bool includeLockedItems = true );
+
+    /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
      */

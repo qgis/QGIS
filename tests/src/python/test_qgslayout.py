@@ -25,7 +25,8 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutPageCollection,
                        QgsLayoutMeasurement,
                        QgsFillSymbol,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsLayoutItemMap)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -77,6 +78,29 @@ class TestQgsLayout(unittest.TestCase):
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().length(), 5.0)
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().units(), QgsUnitTypes.LayoutCentimeters)
         self.assertEqual(l2.snapper().snapTolerance(), 7)
+
+    def testSelectedItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        l.addItem(item3)
+
+        self.assertFalse(l.selectedLayoutItems())
+        item1.setSelected(True)
+        self.assertEqual(set(l.selectedLayoutItems()), set([item1]))
+        item2.setSelected(True)
+        self.assertEqual(set(l.selectedLayoutItems()), set([item1, item2]))
+        item3.setSelected(True)
+        self.assertEqual(set(l.selectedLayoutItems()), set([item1, item2, item3]))
+        item3.setLocked(True)
+        self.assertEqual(set(l.selectedLayoutItems(False)), set([item1, item2]))
+        self.assertEqual(set(l.selectedLayoutItems(True)), set([item1, item2, item3]))
 
 
 if __name__ == '__main__':

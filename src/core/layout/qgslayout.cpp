@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutguidecollection.h"
 #include "qgsreadwritecontext.h"
@@ -43,6 +44,23 @@ void QgsLayout::initializeDefaults()
 QgsProject *QgsLayout::project() const
 {
   return mProject;
+}
+
+QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedItems )
+{
+  QList<QgsLayoutItem *> layoutItemList;
+
+  const QList<QGraphicsItem *> graphicsItemList = selectedItems();
+  for ( QGraphicsItem *item : graphicsItemList )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    if ( layoutItem && ( includeLockedItems || !layoutItem->isLocked() ) )
+    {
+      layoutItemList.push_back( layoutItem );
+    }
+  }
+
+  return layoutItemList;
 }
 
 QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
