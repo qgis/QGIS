@@ -19,4 +19,5 @@ QgsAuthenticationWidget::QgsAuthenticationWidget( QWidget *parent, const QString
   : QWidget( parent )
 {
   setupUi( new QgsAuthConfigSelect( this, dataprovider ) );
+  mAuthConfigSelect->hide();
 }

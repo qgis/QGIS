@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Tests for auth manager Basic configuration update proxy
+Tests for authentication widget
 
 From build dir, run from test directory:
-LC_ALL=en_US.UTF-8 ctest -R PyQgsAuthManagerProxy -V
+LC_ALL=en_US.UTF-8 ctest -R PyQgsAuthenticationWidget -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,10 @@ import tempfile
 import random
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings
+from qgis.gui import QgsAuthenticationWidget
 from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '27/09/2017'
@@ -35,7 +38,7 @@ os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH
 qgis_app = start_app()
 
 
-class TestAuthManager(unittest.TestCase):
+class TestAuthenticationWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -66,36 +69,14 @@ class TestAuthManager(unittest.TestCase):
         """Run after each test."""
         pass
 
-    def testProxyIsUpdated(self):
+    def testWidget(self):
         """
-        Test that proxy is updated
+        Test the widget
         """
-        authm = QgsAuthManager.instance()
-        nam = QgsNetworkAccessManager.instance()
-        proxy = nam.proxy()
-        self.assertEqual(proxy.password(), '')
-        self.assertEqual(proxy.user(), '')
-        self.assertTrue(authm.updateNetworkProxy(proxy, self.auth_config.id()))
-        self.assertEqual(proxy.user(), self.username)
-        self.assertEqual(proxy.password(), self.password)
-
-    def testProxyIsUpdatedByUserSettings(self):
-        """
-        Test that proxy is updated
-        """
-        nam = QgsNetworkAccessManager.instance()
-        nam.setupDefaultProxyAndCache()
-        proxy = nam.proxy()
-        self.assertEqual(proxy.password(), '')
-        self.assertEqual(proxy.user(), '')
-        settings = QgsSettings()
-        settings.setValue("proxy/authcfg", self.auth_config.id())
-        settings.setValue("proxy/proxyEnabled", True)
-        del(settings)
-        nam.setupDefaultProxyAndCache()
-        proxy = nam.fallbackProxy()
-        self.assertEqual(proxy.password(), self.password)
-        self.assertEqual(proxy.user(), self.username)
+        w = QgsAuthenticationWidget()
+        w.show()
+        from IPython import embed
+        embed()
 
 
 if __name__ == '__main__':

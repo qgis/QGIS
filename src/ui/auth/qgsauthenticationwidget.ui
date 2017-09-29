@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>304</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tabConfigurations">
          <attribute name="title">
@@ -47,9 +47,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsAuthConfigSelect" name="mAuthConfigSelect" native="true">
+           <widget class="QgsAuthConfigSelect" name="mAuthConfigSelect">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -135,7 +135,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Password</string>
+             <string>Passwor&amp;d</string>
             </property>
             <property name="buddy">
              <cstring>txtPassword</cstring>
@@ -188,9 +188,8 @@
   </customwidget>
   <customwidget>
    <class>QgsAuthConfigSelect</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsauthconfigselect.h</header>
-   <container>1</container>
+   <extends>QLineEdit</extends>
+   <header>qgsauthconfigselect.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
