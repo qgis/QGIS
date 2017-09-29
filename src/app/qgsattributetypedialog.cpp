@@ -313,7 +313,7 @@ bool QgsAttributeTypeDialog::applyDefaultValueOnUpdate() const
   return mApplyDefaultValueOnUpdateCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setApplyDefaultValueOnUpdate(bool applyDefaultValueOnUpdate)
+void QgsAttributeTypeDialog::setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate )
 {
   mApplyDefaultValueOnUpdateCheckBox->setChecked( applyDefaultValueOnUpdate );
 }
