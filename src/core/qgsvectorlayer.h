@@ -907,13 +907,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
 
-    /** Updates an existing feature. This method needs to query the datasource
-        on every call. Consider using changeAttributeValue() or
-        changeGeometry() instead.
-        \param f  Feature to update
-        \returns   True in case of success and False in case of error
+    /**
+     * Updates an existing feature. This method needs to query the datasource
+     * on every call. Consider using changeAttributeValue() or
+     * changeGeometry() instead. The id of the feature will be used to match
+     * an existing feature.
+     *
+     *  \param feature  Feature with changed geometry or attributes.
+     *  \param skipDefaultValues Default values will not be updated if this is true. False by default.
+     *  \returns   True in case of success and False in case of error
      */
-    bool updateFeature( const QgsFeature &f );
+    bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
 
     /** Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature

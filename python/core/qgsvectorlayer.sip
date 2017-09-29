@@ -925,13 +925,16 @@ Return the provider type for this layer
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
-    bool updateFeature( const QgsFeature &f );
+    bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
  Updates an existing feature. This method needs to query the datasource
-on every call. Consider using changeAttributeValue() or
-changeGeometry() instead.
-\param f  Feature to update
-:return:   True in case of success and False in case of error
+ on every call. Consider using changeAttributeValue() or
+ changeGeometry() instead. The id of the feature will be used to match
+ an existing feature.
+
+  \param feature  Feature with changed geometry or attributes.
+  \param skipDefaultValues Default values will not be updated if this is true. False by default.
+  :return:   True in case of success and False in case of error
  :rtype: bool
 %End
 
