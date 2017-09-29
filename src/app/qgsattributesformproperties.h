@@ -182,14 +182,12 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
 
   private:
-
-  signals:
+    void loadAttributeTypeDialog();
+    void storeAttributeTypeDialog( );
 
   private slots:
     void addTabOrGroupButton();
     void removeTabOrGroupButton();
-    void loadAttributeTypeDialog( );
-    void storeAttributeTypeDialog( );
 };
 
 
