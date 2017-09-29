@@ -63,6 +63,7 @@ void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
   connect( mForm, &QgsAttributeForm::zoomToFeatures, this, &QgsSelectByFormDialog::zoomToFeatures );
+  connect( mForm, &QgsAttributeForm::flashFeatures, this, &QgsSelectByFormDialog::flashFeatures );
 }
 
 void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
@@ -103,6 +104,38 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
                                 QgsMessageBar::INFO,
                                 timeout );
     }
+  }
+  else if ( mMessageBar )
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "No matching features found" ),
+                              QgsMessageBar::INFO,
+                              timeout );
+  }
+}
+
+void QgsSelectByFormDialog::flashFeatures( const QString &filter )
+{
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+
+  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
+                              .setFlags( QgsFeatureRequest::NoGeometry )
+                              .setExpressionContext( context )
+                              .setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator features = mLayer->getFeatures( request );
+  QgsFeature feat;
+  QgsFeatureIds ids;
+  while ( features.nextFeature( feat ) )
+  {
+    ids.insert( feat.id() );
+  }
+
+  QgsSettings settings;
+  int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+  if ( !ids.empty() )
+  {
+    mMapCanvas->flashFeatureIds( mLayer, ids );
   }
   else if ( mMessageBar )
   {

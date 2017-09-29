@@ -236,6 +236,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer *layer = nullptr );
 
+    /**
+     * Causes a set of features with matching \a ids from a vector \a layer to flash
+     * within the canvas.
+     *
+     * The \a startColor and \a endColor can be specified, along with the number of
+     * \a flashes and \a duration of each flash (in milliseconds).
+     *
+     * \since QGIS 3.0
+     */
+    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+
     //! \brief Sets the map tool currently being used on the canvas
     void setMapTool( QgsMapTool *mapTool );
 

@@ -234,6 +234,19 @@ Zoom to the next extent (view)
 Pan to the selected features of current (vector) layer keeping same extent.
 %End
 
+    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+%Docstring
+ Causes a set of features with matching ``ids`` from a vector ``layer`` to flash
+ within the canvas.
+
+ The ``startColor`` and ``endColor`` can be specified, along with the number of
+ ``flashes`` and ``duration`` of each flash (in milliseconds).
+
+.. versionadded:: 3.0
+%End
+
     void setMapTool( QgsMapTool *mapTool );
 %Docstring
  Sets the map tool currently being used on the canvas
