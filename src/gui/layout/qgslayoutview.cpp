@@ -295,10 +295,6 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
       QGraphicsView::mousePressEvent( event );
     }
   }
-  else
-  {
-    QGraphicsView::mousePressEvent( event );
-  }
 }
 
 void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
