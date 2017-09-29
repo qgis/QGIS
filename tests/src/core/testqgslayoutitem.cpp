@@ -686,6 +686,8 @@ void TestQgsLayoutItem::resize()
   //resize test item (no restrictions), same units as layout
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
   TestItem *item = new TestItem( &l );
+  QSignalSpy spySizeChanged( item, &QgsLayoutItem::sizeChanged );
+
   item->setRect( 0, 0, 55, 45 );
   item->attemptMove( QgsLayoutPoint( 27, 29 ) );
   item->attemptResize( QgsLayoutSize( 100.0, 200.0, QgsUnitTypes::LayoutMillimeters ) );
@@ -693,6 +695,7 @@ void TestQgsLayoutItem::resize()
   QCOMPARE( item->rect().height(), 200.0 );
   QCOMPARE( item->scenePos().x(), 27.0 ); //item should not move
   QCOMPARE( item->scenePos().y(), 29.0 );
+  QCOMPARE( spySizeChanged.count(), 1 );
 
   //test conversion of units
   l.setUnits( QgsUnitTypes::LayoutCentimeters );
@@ -700,34 +703,41 @@ void TestQgsLayoutItem::resize()
   item->attemptResize( QgsLayoutSize( 0.30, 0.45, QgsUnitTypes::LayoutMeters ) );
   QCOMPARE( item->rect().width(), 30.0 );
   QCOMPARE( item->rect().height(), 45.0 );
+  QCOMPARE( spySizeChanged.count(), 2 );
 
   //test pixel -> page conversion
   l.setUnits( QgsUnitTypes::LayoutInches );
   l.context().setDpi( 100.0 );
   item->refresh();
+  QCOMPARE( spySizeChanged.count(), 3 );
   item->setRect( 0, 0, 1, 2 );
   item->attemptResize( QgsLayoutSize( 140, 280, QgsUnitTypes::LayoutPixels ) );
   QCOMPARE( item->rect().width(), 1.4 );
   QCOMPARE( item->rect().height(), 2.8 );
+  QCOMPARE( spySizeChanged.count(), 4 );
   //changing the dpi should resize the item
   l.context().setDpi( 200.0 );
   item->refresh();
   QCOMPARE( item->rect().width(), 0.7 );
   QCOMPARE( item->rect().height(), 1.4 );
+  QCOMPARE( spySizeChanged.count(), 5 );
 
   //test page -> pixel conversion
   l.setUnits( QgsUnitTypes::LayoutPixels );
   l.context().setDpi( 100.0 );
   item->refresh();
   item->setRect( 0, 0, 2, 2 );
+  QCOMPARE( spySizeChanged.count(), 6 );
   item->attemptResize( QgsLayoutSize( 1, 3, QgsUnitTypes::LayoutInches ) );
   QCOMPARE( item->rect().width(), 100.0 );
   QCOMPARE( item->rect().height(), 300.0 );
+  QCOMPARE( spySizeChanged.count(), 7 );
   //changing dpi results in item resize
   l.context().setDpi( 200.0 );
   item->refresh();
   QCOMPARE( item->rect().width(), 200.0 );
   QCOMPARE( item->rect().height(), 600.0 );
+  QCOMPARE( spySizeChanged.count(), 8 );
 
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
 }
@@ -1133,6 +1143,9 @@ void TestQgsLayoutItem::rotation()
   QgsLayout l( &proj );
 
   TestItem *item = new TestItem( &l );
+
+  QSignalSpy spyRotationChanged( item, &QgsLayoutItem::rotationChanged );
+
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
   item->setPos( 6.0, 10.0 );
   item->setRect( 0.0, 0.0, 10.0, 8.0 );
@@ -1151,6 +1164,9 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( bounds.right(), 15.0 );
   QCOMPARE( bounds.top(), 9.0 );
   QCOMPARE( bounds.bottom(), 19.0 );
+  QCOMPARE( spyRotationChanged.count(), 1 );
+  QCOMPARE( spyRotationChanged.at( 0 ).at( 0 ).toDouble(), 90.0 );
+
 
   //check that negative angles are preserved as negative
   item->setItemRotation( -90.0 );
@@ -1159,14 +1175,21 @@ void TestQgsLayoutItem::rotation()
   bounds = item->sceneBoundingRect();
   QCOMPARE( bounds.width(), 8.0 );
   QCOMPARE( bounds.height(), 10.0 );
+  QCOMPARE( spyRotationChanged.count(), 2 );
+  QCOMPARE( spyRotationChanged.at( 1 ).at( 0 ).toDouble(), -90.0 );
 
   //check that rotating changes stored item position for reference point
   item->setItemRotation( 0.0 );
+  QCOMPARE( spyRotationChanged.count(), 3 );
+  QCOMPARE( spyRotationChanged.at( 2 ).at( 0 ).toDouble(), 0.0 );
+
   item->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
   item->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
   item->setItemRotation( 90.0 );
   QCOMPARE( item->positionWithUnits().x(), 13.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
+  QCOMPARE( spyRotationChanged.count(), 4 );
+  QCOMPARE( spyRotationChanged.at( 3 ).at( 0 ).toDouble(), 90.0 );
 
   //setting item position (for reference point) respects rotation
   item->attemptMove( QgsLayoutPoint( 10.0, 8.0 ) );
@@ -1184,15 +1207,22 @@ void TestQgsLayoutItem::rotation()
 
   //data defined rotation
   item->setItemRotation( 0.0 );
+  QCOMPARE( spyRotationChanged.count(), 5 );
+  QCOMPARE( spyRotationChanged.at( 4 ).at( 0 ).toDouble(), 0.0 );
+
   item->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
   item->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "90" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::ItemRotation );
   QCOMPARE( item->itemRotation(), 90.0 );
+  QCOMPARE( spyRotationChanged.count(), 6 );
+  QCOMPARE( spyRotationChanged.at( 5 ).at( 0 ).toDouble(), 90.0 );
   //also check when refreshing all properties
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "45" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::AllProperties );
   QCOMPARE( item->itemRotation(), 45.0 );
+  QCOMPARE( spyRotationChanged.count(), 7 );
+  QCOMPARE( spyRotationChanged.at( 6 ).at( 0 ).toDouble(), 45.0 );
 
   delete item;
 

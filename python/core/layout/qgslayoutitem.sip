@@ -419,6 +419,16 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: setLocked()
 %End
 
+    void rotationChanged( double newRotation );
+%Docstring
+ Emitted on item rotation change.
+%End
+
+    void sizeChanged();
+%Docstring
+ Emitted when the item's size changes.
+%End
+
   protected:
 
     virtual void drawDebugRect( QPainter *painter );

@@ -230,6 +230,7 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
   mItemSize = actualSizeTargetUnits;
 
   setRect( 0, 0, actualSizeLayoutUnits.width(), actualSizeLayoutUnits.height() );
+  emit sizeChanged();
   refreshItemPosition();
 }
 
@@ -482,12 +483,10 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF &transformOrig
   //adjust stored position of item to match scene pos of reference point
   updateStoredItemPosition();
 
-  //TODO
-  //  emit itemRotationChanged( rotation );
+  emit rotationChanged( evaluatedAngle );
 
-  //TODO
   //update bounds of scene, since rotation may affect this
-  //mLayout->updateBounds();
+  mLayout->updateBounds();
 }
 
 

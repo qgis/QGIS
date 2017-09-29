@@ -419,6 +419,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     void lockChanged();
 
+    /**
+     * Emitted on item rotation change.
+     */
+    void rotationChanged( double newRotation );
+
+    /**
+     * Emitted when the item's size changes.
+     */
+    void sizeChanged();
+
   protected:
 
     /**
