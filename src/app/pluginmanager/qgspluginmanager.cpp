@@ -537,7 +537,6 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( it->value( QStringLiteral( "downloads" ) ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "zip_repository" ) ), PLUGIN_REPOSITORY_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "average_vote" ) ), PLUGIN_VOTE_ROLE );
-      mypDetailItem->setData( it->value( QStringLiteral( "trusted" ) ), PLUGIN_TRUSTED_ROLE );
 
       if ( QFileInfo( iconPath ).isFile() )
       {
@@ -799,15 +798,6 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                      "    <img src=\"qrc:/images/themes/default/pluginDeprecated.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is deprecated" ) );
-  }
-
-  if ( metadata->value( QStringLiteral( "trusted" ) ) == QLatin1String( "true" ) )
-  {
-    html += QString( "<table bgcolor=\"#90EE90\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#660000\">"
-                     "    <img src=\"qrc:/images/themes/default/mIconSuccess.svg\" width=\"32\"><b>%1</b>"
-                     "  </td></tr>"
-                     "</table>" ).arg( tr( "This plugin is trusted" ) );
   }
 
   if ( metadata->value( QStringLiteral( "readonly" ) ) == QLatin1String( "true" ) )
