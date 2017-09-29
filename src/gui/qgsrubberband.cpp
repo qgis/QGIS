@@ -249,7 +249,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *la
     geom.transform( ct );
   }
 
-  switch ( geom.wkbType() )
+  switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
   {
 
     case QgsWkbTypes::Point:
