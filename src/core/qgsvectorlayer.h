@@ -907,13 +907,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
 
-    /** Updates an existing feature. This method needs to query the datasource
-        on every call. Consider using changeAttributeValue() or
-        changeGeometry() instead.
-        \param f  Feature to update
-        \returns   True in case of success and False in case of error
+    /**
+     * Updates an existing feature. This method needs to query the datasource
+     * on every call. Consider using changeAttributeValue() or
+     * changeGeometry() instead. The id of the feature will be used to match
+     * an existing feature.
+     *
+     *  \param feature  Feature with changed geometry or attributes.
+     *  \param skipDefaultValues Default values will not be updated if this is true. False by default.
+     *  \returns   True in case of success and False in case of error
      */
-    bool updateFeature( QgsFeature &f );
+    bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
 
     /** Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature
@@ -1142,7 +1146,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool setReadOnly( bool readonly = true );
 
     //! Change feature's geometry
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue = false );
 
     /**
      * Changes an attribute value (but does not commit it)
@@ -1151,10 +1155,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param field The index of the field to be updated
      * \param newValue The value which will be assigned to the field
      * \param oldValue The previous value to restore on undo (will otherwise be retrieved)
+     * \param skipDefaultValues If this is set to true, default values will not
+     * be updated. This can be used to override default values. Defaults to false.
      *
      * \returns true in case of success
      */
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
 
     /** Add an attribute field (but does not commit it)
      * returns true if the field was added
@@ -1309,11 +1315,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
     static void drawVertexMarker( double x, double y, QPainter &p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
-    //! Assembles mUpdatedFields considering provider fields, joined fields and added fields
+    /**
+     * Will regenerate the `fields` property of this layer by obtaining all fields
+     * from the dataProvider, joined fields and virtual fields. It will also
+     * take any changes made to default values into consideration.
+     *
+     * \note Unless the fields on the provider have directly been modified, there is
+     * no reason to call this method.
+     */
     void updateFields();
 
-    /** Returns the calculated default value for the specified field index. The default
-     * value may be taken from a client side default value expression (see setDefaultValueExpression())
+    /**
+     * Returns the calculated default value for the specified field index. The default
+     * value may be taken from a client side default value expression (see setDefaultValueDefinition())
      * or taken from the underlying data provider.
      * \param index field index
      * \param feature optional feature to use for default value evaluation. If passed,
@@ -1323,30 +1337,35 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * specified, a default context will be created
      * \returns calculated default value
      * \since QGIS 3.0
-     * \see setDefaultValueExpression()
+     * \see setDefaultValueDefinition()
      */
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
                            QgsExpressionContext *context = nullptr ) const;
 
-    /** Sets an expression to use when calculating the default value for a field.
+    /**
+     * Sets the definition of the expression to use when calculating the default value for a field.
      * \param index field index
-     * \param expression expression to evaluate when calculating default values for field. Pass
+     * \param definition default value definition to use and evaluate
+     * when calculating default values for field. Pass
      * an empty expression to clear the default.
+     *
      * \since QGIS 3.0
      * \see defaultValue()
-     * \see defaultValueExpression()
+     * \see defaultValueDefinition()
      */
-    void setDefaultValueExpression( int index, const QString &expression );
+    void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
 
-    /** Returns the expression used when calculating the default value for a field.
+    /**
+     * Returns the definition of the expression used when calculating the default value for a field.
      * \param index field index
-     * \returns expression evaluated when calculating default values for field, or an
+     * \returns definition of the default value with the expression evaluated
+     * when calculating default values for field, or definition with an
      * empty string if no default is set
      * \since QGIS 3.0
      * \see defaultValue()
-     * \see setDefaultValueExpression()
+     * \see setDefaultValueDefinition()
      */
-    QString defaultValueExpression( int index ) const;
+    QgsDefaultValue defaultValueDefinition( int index ) const;
 
     /**
      * Returns any constraints which are present for a specified
@@ -1945,6 +1964,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
   private:                       // Private methods
 
+    void updateDefaultValues( QgsFeatureId fid, QgsFeature feature = QgsFeature() );
+
     /**
      * Returns true if the provider is in read-only mode
      */
@@ -1999,7 +2020,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsStringMap mAttributeAliasMap;
 
     //! Map which stores default value expressions for fields
-    QgsStringMap mDefaultExpressionMap;
+    QMap<QString, QgsDefaultValue> mDefaultExpressionMap;
+
+    //! An internal structure to keep track of fields that have a defaultValueOnUpdate
+    QSet<int> mDefaultValueOnUpdateFields;
 
     //! Map which stores constraints for fields
     QMap< QString, QgsFieldConstraints::Constraints > mFieldConstraints;

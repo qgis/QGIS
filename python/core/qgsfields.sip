@@ -220,7 +220,7 @@ Get field's origin index (its meaning is specific to each type of origin)
     int indexFromName( const QString &fieldName ) const;
 %Docstring
  Get the field index from the field name.
- This method takes is case sensitive and only matches the data source
+ This method is case sensitive and only matches the data source
  name of the field.
  Alias for indexOf
 
@@ -234,7 +234,7 @@ Get field's origin index (its meaning is specific to each type of origin)
     int indexOf( const QString &fieldName ) const;
 %Docstring
  Get the field index from the field name.
- This method takes is case sensitive and only matches the data source
+ This method is case sensitive and only matches the data source
  name of the field.
 
  \param fieldName The name of the field.

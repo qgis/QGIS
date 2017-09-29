@@ -41,8 +41,14 @@ def _geometryNonZero(self):
     return not self.isEmpty()
 
 
+def _isValid(self):
+    return self.isValid()
+
+
 QgsGeometry.__nonzero__ = _geometryNonZero
 QgsGeometry.__bool__ = _geometryNonZero
+
+QgsDefaultValue.__bool__ = _isValid
 
 
 def register_function(function, arg_count, group, usesgeometry=False,
