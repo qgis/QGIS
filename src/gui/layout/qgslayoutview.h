@@ -218,6 +218,14 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void viewChanged();
 
+    /**
+     * Pushes a new status bar \a message to the view. This causes statusMessage()
+     * to be emitted, which should cause the message to appear in the status bar
+     * for the parent window.
+     * \see statusMessage()
+     */
+    void pushStatusMessage( const QString &message );
+
   signals:
 
     /**
@@ -252,6 +260,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see currentPage()
      */
     void pageChanged( int page );
+
+    /**
+     * Emitted when the view has a \a message for display in a parent window's
+     * status bar.
+     * \see pushStatusMessage()
+     */
+    void statusMessage( const QString &message );
 
   protected:
     void mousePressEvent( QMouseEvent *event ) override;

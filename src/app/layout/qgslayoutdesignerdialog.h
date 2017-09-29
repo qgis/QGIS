@@ -163,6 +163,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void toggleFullScreen( bool enabled );
 
     void addPages();
+    void statusMessageReceived( const QString &message );
 
   private:
 

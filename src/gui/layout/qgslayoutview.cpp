@@ -445,6 +445,11 @@ void QgsLayoutView::viewChanged()
   }
 }
 
+void QgsLayoutView::pushStatusMessage( const QString &message )
+{
+  emit statusMessage( message );
+}
+
 void QgsLayoutView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings

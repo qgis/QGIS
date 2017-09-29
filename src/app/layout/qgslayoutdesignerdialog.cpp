@@ -312,6 +312,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   tabifyDockWidget( mGeneralDock, mItemDock );
 
   restoreWindowState();
+
+  //listen out to status bar updates from the view
+  connect( mView, &QgsLayoutView::statusMessage, this, &QgsLayoutDesignerDialog::statusMessageReceived );
 }
 
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
@@ -650,6 +653,11 @@ void QgsLayoutDesignerDialog::addPages()
       mLayout->undoStack()->endMacro();
 
   }
+}
+
+void QgsLayoutDesignerDialog::statusMessageReceived( const QString &message )
+{
+  mStatusBar->showMessage( message );
 }
 
 QgsLayoutView *QgsLayoutDesignerDialog::view()

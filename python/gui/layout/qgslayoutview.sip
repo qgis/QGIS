@@ -179,6 +179,14 @@ class QgsLayoutView: QGraphicsView
  i.e. QGraphicsView.fitInView().
 %End
 
+    void pushStatusMessage( const QString &message );
+%Docstring
+ Pushes a new status bar ``message`` to the view. This causes statusMessage()
+ to be emitted, which should cause the message to appear in the status bar
+ for the parent window.
+.. seealso:: statusMessage()
+%End
+
   signals:
 
     void layoutSet( QgsLayout *layout );
@@ -212,6 +220,13 @@ class QgsLayoutView: QGraphicsView
  considers the page at the center of the view as the current visible
  page.
 .. seealso:: currentPage()
+%End
+
+    void statusMessage( const QString &message );
+%Docstring
+ Emitted when the view has a ``message`` for display in a parent window's
+ status bar.
+.. seealso:: pushStatusMessage()
 %End
 
   protected:
