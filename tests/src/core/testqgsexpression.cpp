@@ -425,6 +425,13 @@ class TestQgsExpression: public QObject
       mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Pilots = 1" ) ).nextFeature( feature );
       context.setFeature( feature );
       QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
+
+
+      QgsExpression expression4( "represent_value('Class')" );
+      if ( expression4.hasParserError() )
+        qDebug() << expression4.parserErrorString();
+      Q_ASSERT( !expression4.hasParserError() );
+      Q_ASSERT( expression4.hasEvalError() );
     }
 
     void evaluation_data()
