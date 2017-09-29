@@ -230,9 +230,9 @@ void QgsRubberBand::setToGeometry( const QgsGeometry &geom, QgsVectorLayer *laye
   addGeometry( geom, layer );
 }
 
-void QgsRubberBand::addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer )
+void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer )
 {
-  if ( geom.isNull() )
+  if ( geometry.isEmpty() )
   {
     return;
   }
@@ -242,21 +242,20 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer 
 
   int idx = mPoints.size();
 
+  QgsGeometry geom = geometry;
+  if ( layer )
+  {
+    QgsCoordinateTransform ct = ms.layerTransform( layer );
+    geom.transform( ct );
+  }
+
   switch ( geom.wkbType() )
   {
 
     case QgsWkbTypes::Point:
     case QgsWkbTypes::Point25D:
     {
-      QgsPointXY pt;
-      if ( layer )
-      {
-        pt = ms.layerToMapCoordinates( layer, geom.asPoint() );
-      }
-      else
-      {
-        pt = geom.asPoint();
-      }
+      QgsPointXY pt = geom.asPoint();
       addPoint( pt, false, idx );
       removeLastPoint( idx, false );
     }
@@ -265,20 +264,12 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer 
     case QgsWkbTypes::MultiPoint:
     case QgsWkbTypes::MultiPoint25D:
     {
-      QgsMultiPoint mpt = geom.asMultiPoint();
-      for ( int i = 0; i < mpt.size(); ++i, ++idx )
+      const QgsMultiPoint mpt = geom.asMultiPoint();
+      for ( QgsPointXY pt : mpt )
       {
-        QgsPointXY pt = mpt[i];
-        if ( layer )
-        {
-          addPoint( ms.layerToMapCoordinates( layer, pt ), false, idx );
-          removeLastPoint( idx, false );
-        }
-        else
-        {
-          addPoint( pt, false, idx );
-          removeLastPoint( idx, false );
-        }
+        addPoint( pt, false, idx );
+        removeLastPoint( idx, false );
+        idx++;
       }
     }
     break;
@@ -286,17 +277,10 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer 
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
     {
-      QgsPolyline line = geom.asPolyline();
-      for ( int i = 0; i < line.count(); i++ )
+      const QgsPolyline line = geom.asPolyline();
+      for ( QgsPointXY pt : line )
       {
-        if ( layer )
-        {
-          addPoint( ms.layerToMapCoordinates( layer, line[i] ), false, idx );
-        }
-        else
-        {
-          addPoint( line[i], false, idx );
-        }
+        addPoint( pt, false, idx );
       }
     }
     break;
@@ -305,27 +289,19 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer 
     case QgsWkbTypes::MultiLineString25D:
     {
 
-      QgsMultiPolyline mline = geom.asMultiPolyline();
-      for ( int i = 0; i < mline.size(); ++i, ++idx )
+      const QgsMultiPolyline mline = geom.asMultiPolyline();
+      for ( const QgsPolyline &line : mline )
       {
-        QgsPolyline line = mline[i];
-
         if ( line.isEmpty() )
         {
-          --idx;
+          continue;
         }
 
-        for ( int j = 0; j < line.size(); ++j )
+        for ( QgsPointXY pt : line )
         {
-          if ( layer )
-          {
-            addPoint( ms.layerToMapCoordinates( layer, line[j] ), false, idx );
-          }
-          else
-          {
-            addPoint( line[j], false, idx );
-          }
+          addPoint( pt, false, idx );
         }
+        idx++;
       }
     }
     break;
@@ -333,18 +309,11 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer 
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     {
-      QgsPolygon poly = geom.asPolygon();
-      QgsPolyline line = poly[0];
-      for ( int i = 0; i < line.count(); i++ )
+      const QgsPolygon poly = geom.asPolygon();
+      const QgsPolyline line = poly.at( 0 );
+      for ( QgsPointXY pt : line )
       {
-        if ( layer )
-        {
-          addPoint( ms.layerToMapCoordinates( layer, line[i] ), false, idx );
-        }
-        else
-        {
-          addPoint( line[i], false, idx );
-        }
+        addPoint( pt, false, idx );
       }
     }
     break;
@@ -353,22 +322,18 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer 
     case QgsWkbTypes::MultiPolygon25D:
     {
 
-      QgsMultiPolygon multipoly = geom.asMultiPolygon();
-      for ( int i = 0; i < multipoly.size(); ++i, ++idx )
+      const QgsMultiPolygon multipoly = geom.asMultiPolygon();
+      for ( const QgsPolygon &poly : multipoly )
       {
-        QgsPolygon poly = multipoly[i];
-        QgsPolyline line = poly[0];
-        for ( int j = 0; j < line.count(); ++j )
+        if ( poly.empty() )
+          continue;
+
+        const QgsPolyline line = poly.at( 0 );
+        for ( QgsPointXY pt : line )
         {
-          if ( layer )
-          {
-            addPoint( ms.layerToMapCoordinates( layer, line[j] ), false, idx );
-          }
-          else
-          {
-            addPoint( line[j], false, idx );
-          }
+          addPoint( pt, false, idx );
         }
+        idx++;
       }
     }
     break;
