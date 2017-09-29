@@ -780,8 +780,7 @@ void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
         continue;
 
       feature.setAttribute( idx, defaultValue( idx, feature ) );
-      // TODO catch recursion!!
-      updateFeature( feature );
+      updateFeature( feature, true );
     }
   }
 }
@@ -961,7 +960,7 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
   return success;
 }
 
-bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature )
+bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipDefaultValues )
 {
   bool hasChanged = false;
   bool hasError = false;
@@ -1003,7 +1002,7 @@ bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature )
     }
   }
 
-  if ( hasChanged && !mDefaultValueOnUpdateFields.isEmpty() )
+  if ( hasChanged && !mDefaultValueOnUpdateFields.isEmpty() && !skipDefaultValues )
     updateDefaultValues( updatedFeature.id(), updatedFeature );
 
   return !hasError;

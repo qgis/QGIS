@@ -164,12 +164,10 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
      */
     void setDefaultValueExpression( const QString &expression );
 
-
-
     QgsExpressionContext createExpressionContext() const override;
 
     bool applyDefaultValueOnUpdate() const;
-    void setApplyDefaultValueOnUpdate(bool applyDefaultValueOnUpdate);
+    void setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate );
 
   private slots:
 
