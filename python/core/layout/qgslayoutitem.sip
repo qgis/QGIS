@@ -344,6 +344,31 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: setBackgroundEnabled()
 %End
 
+    virtual double estimatedFrameBleed() const;
+%Docstring
+ Returns the estimated amount the item's frame bleeds outside the item's
+ actual rectangle. For instance, if the item has a 2mm frame stroke, then
+ 1mm of this frame is drawn outside the item's rect. In this case the
+ return value will be 1.0.
+
+ Returned values are in layout units.
+
+.. seealso:: rectWithFrame()
+ :rtype: float
+%End
+
+    virtual QRectF rectWithFrame() const;
+%Docstring
+ Returns the item's rectangular bounds, including any bleed caused by the item's frame.
+ The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
+ more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
+ function, as rect() makes no allowances for the portion of outlines which are drawn
+ outside of the item.
+
+.. seealso:: estimatedFrameBleed()
+ :rtype: QRectF
+%End
+
   public slots:
 
     virtual void refresh();

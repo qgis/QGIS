@@ -347,6 +347,29 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     void setBackgroundColor( const QColor &color );
 
+    /**
+     * Returns the estimated amount the item's frame bleeds outside the item's
+     * actual rectangle. For instance, if the item has a 2mm frame stroke, then
+     * 1mm of this frame is drawn outside the item's rect. In this case the
+     * return value will be 1.0.
+     *
+     * Returned values are in layout units.
+
+     * \see rectWithFrame()
+     */
+    virtual double estimatedFrameBleed() const;
+
+    /**
+     * Returns the item's rectangular bounds, including any bleed caused by the item's frame.
+     * The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
+     * more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
+     * function, as rect() makes no allowances for the portion of outlines which are drawn
+     * outside of the item.
+     *
+     * \see estimatedFrameBleed()
+     */
+    virtual QRectF rectWithFrame() const;
+
   public slots:
 
     /**

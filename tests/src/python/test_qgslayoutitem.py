@@ -20,7 +20,10 @@ from qgis.core import (QgsProject,
                        QgsLayoutObject,
                        QgsProperty,
                        QgsLayoutMeasurement,
-                       QgsUnitTypes)
+                       QgsUnitTypes,
+                       QgsLayoutPoint,
+                       QgsLayoutSize)
+from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
 
@@ -100,6 +103,37 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertEqual(len(lock_changed_spy), 2)
         item.setLocked(False)
         self.assertEqual(len(lock_changed_spy), 2)
+
+    def testFrameBleed(self):
+        layout = QgsLayout(QgsProject.instance())
+        item = QgsLayoutItemMap(layout)
+        item.setFrameEnabled(False)
+        self.assertEqual(item.estimatedFrameBleed(), 0)
+
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutMillimeters))
+        item.setFrameEnabled(False)
+        self.assertEqual(item.estimatedFrameBleed(), 0)
+        item.setFrameEnabled(True)
+        self.assertEqual(item.estimatedFrameBleed(), 5) # only half bleeds out!
+
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(item.estimatedFrameBleed(), 50)  # only half bleeds out!
+
+    def testRectWithFrame(self):
+        layout = QgsLayout(QgsProject.instance())
+        item = QgsLayoutItemMap(layout)
+        item.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
+        item.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+
+        item.setFrameEnabled(False)
+        self.assertEqual(item.rectWithFrame(), QRectF(0, 0, 18, 12))
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutMillimeters))
+        item.setFrameEnabled(False)
+        self.assertEqual(item.rectWithFrame(), QRectF(0, 0, 18, 12))
+        item.setFrameEnabled(True)
+        self.assertEqual(item.rectWithFrame(), QRectF(-5.0, -5.0, 28.0, 22.0))
+        item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(item.rectWithFrame(), QRectF(-50.0, -50.0, 118.0, 112.0))
 
 
 if __name__ == '__main__':

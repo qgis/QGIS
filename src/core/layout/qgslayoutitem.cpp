@@ -359,6 +359,22 @@ void QgsLayoutItem::setBackgroundColor( const QColor &color )
   refreshBackgroundColor( true );
 }
 
+double QgsLayoutItem::estimatedFrameBleed() const
+{
+  if ( !hasFrame() )
+  {
+    return 0;
+  }
+
+  return pen().widthF() / 2.0;
+}
+
+QRectF QgsLayoutItem::rectWithFrame() const
+{
+  double frameBleed = estimatedFrameBleed();
+  return rect().adjusted( -frameBleed, -frameBleed, frameBleed, frameBleed );
+}
+
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
 {
   if ( !mLayout )
