@@ -23,6 +23,8 @@
 QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
+  setBackgroundEnabled( false );
+  setFrameEnabled( false );
   QgsStringMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
