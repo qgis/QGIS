@@ -46,8 +46,8 @@ namespace QgsWms
 
     QDomDocument xsdDoc;
 
-    QDir fcgiBinDir = QFileInfo( QCoreApplication::applicationFilePath() ).absoluteDir();
-    QFileInfo xsdFileInfo( fcgiBinDir, QStringLiteral( "schemaExtension.xsd" ) );
+    QDir resourcesDir = QFileInfo( QgsApplication::serverResourcesPath() ).absoluteDir();
+    QFileInfo xsdFileInfo( resourcesDir, QStringLiteral( "schemaExtension.xsd" ) );
 
     if ( !xsdFileInfo.exists() )
     {

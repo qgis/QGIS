@@ -846,6 +846,11 @@ QString QgsApplication::defaultThemesFolder()
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/themes" );
 }
 
+QString QgsApplication::serverResourcesPath()
+{
+  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/server/" );
+}
+
 QString QgsApplication::libraryPath()
 {
   return ABISYM( mLibraryPath );
