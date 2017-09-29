@@ -138,6 +138,19 @@ class QgsLayoutContext
 .. seealso:: gridVisible()
 %End
 
+    bool boundingBoxesVisible() const;
+%Docstring
+ Returns true if the item bounding boxes should be drawn.
+.. seealso:: setBoundingBoxesVisible()
+ :rtype: bool
+%End
+
+    void setBoundingBoxesVisible( bool visible );
+%Docstring
+ Sets whether the item bounding boxes should be ``visible``.
+.. seealso:: boundingBoxesVisible()
+%End
+
 };
 
 

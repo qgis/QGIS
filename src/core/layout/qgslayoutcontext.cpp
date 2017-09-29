@@ -87,3 +87,13 @@ void QgsLayoutContext::setGridVisible( bool visible )
 {
   mGridVisible = visible;
 }
+
+bool QgsLayoutContext::boundingBoxesVisible() const
+{
+  return mBoundingBoxesVisible;
+}
+
+void QgsLayoutContext::setBoundingBoxesVisible( bool visible )
+{
+  mBoundingBoxesVisible = visible;
+}

@@ -151,6 +151,18 @@ class CORE_EXPORT QgsLayoutContext
      */
     void setGridVisible( bool visible );
 
+    /**
+     * Returns true if the item bounding boxes should be drawn.
+     * \see setBoundingBoxesVisible()
+     */
+    bool boundingBoxesVisible() const;
+
+    /**
+     * Sets whether the item bounding boxes should be \a visible.
+     * \see boundingBoxesVisible()
+     */
+    void setBoundingBoxesVisible( bool visible );
+
   private:
 
     Flags mFlags = 0;
@@ -161,6 +173,7 @@ class CORE_EXPORT QgsLayoutContext
     QgsLayoutMeasurementConverter mMeasurementConverter;
 
     bool mGridVisible = false;
+    bool mBoundingBoxesVisible = true;
 
 
 };

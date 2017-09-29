@@ -122,6 +122,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void showGrid( bool visible );
 
     /**
+     * Toggles whether the item bounding boxes should be \a visible.
+     */
+    void showBoxes( bool visible );
+
+    /**
      * Toggles whether snapping to the page grid is \a enabled.
      */
     void snapToGrid( bool enabled );

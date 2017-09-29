@@ -56,14 +56,14 @@ void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphics
   }
 #endif
 
-  if ( true /*|| mLayout->boundingBoxesVisible() TODO */ )
+  if ( mLayout->context().boundingBoxesVisible() )
   {
     //draw resize handles around bounds of entire selection
     double rectHandlerSize = rectHandlerBorderTolerance();
     drawHandles( painter, rectHandlerSize );
   }
 
-  if ( mIsResizing || mIsDragging /*|| mComposition->boundingBoxesVisible()*/ )
+  if ( mIsResizing || mIsDragging || mLayout->context().boundingBoxesVisible() )
   {
     //draw dotted boxes around selected items
     drawSelectedItemBounds( painter );
