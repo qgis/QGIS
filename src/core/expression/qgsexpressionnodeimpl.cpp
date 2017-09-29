@@ -846,7 +846,7 @@ QVariant QgsExpressionNodeFunction::evalNode( QgsExpression *parent, const QgsEx
   QString name = QgsExpression::QgsExpression::Functions()[mFnIndex]->name();
   QgsExpressionFunction *fd = context && context->hasFunction( name ) ? context->function( name ) : QgsExpression::QgsExpression::Functions()[mFnIndex];
 
-  QVariant res = fd->run( mArgs, context, parent );
+  QVariant res = fd->run( mArgs, context, parent, this );
   ENSURE_NO_EVAL_ERROR;
 
   // everything went fine

@@ -84,7 +84,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
             self.uses_geometry = usesGeometry
             self.referenced_columns = referencedColumns
 
-        def func(self, values, context, parent):
+        def func(self, values, context, parent, node):
             feature = None
             if context:
                 feature = context.feature()
