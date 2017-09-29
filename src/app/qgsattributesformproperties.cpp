@@ -67,8 +67,6 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
     mAttributeTypeDialog->setEnabled( true );
 
-    qWarning() << "LOAD WIDGET : " << index << " : " << cfg.mEditorWidgetType;
-
     // AttributeTypeDialog
 
     mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog );
