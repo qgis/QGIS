@@ -243,9 +243,28 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * The \a startColor and \a endColor can be specified, along with the number of
      * \a flashes and \a duration of each flash (in milliseconds).
      *
+     * \note If the features or geometries are already available, flashGeometries() is much more efficient.
+     *
      * \since QGIS 3.0
+     * \see flashGeometries()
      */
     void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+
+    /**
+     * Causes a set of \a geometries to flash within the canvas.
+     *
+     * If \a layer is non-null, the geometries will be automatically transformed from the layer
+     * CRS to canvas CRS.
+     *
+     * The \a startColor and \a endColor can be specified, along with the number of
+     * \a flashes and \a duration of each flash (in milliseconds).
+     *
+     * \since QGIS 3.0
+     * \see flashFeatureIds()
+     */
+    void flashGeometries( QgsVectorLayer *layer, const QList< QgsGeometry > &geometries,
                           const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
                           int flashes = 3, int duration = 500 );
 

@@ -244,7 +244,28 @@ Pan to the selected features of current (vector) layer keeping same extent.
  The ``startColor`` and ``endColor`` can be specified, along with the number of
  ``flashes`` and ``duration`` of each flash (in milliseconds).
 
+.. note::
+
+   If the features or geometries are already available, flashGeometries() is much more efficient.
+
 .. versionadded:: 3.0
+.. seealso:: flashGeometries()
+%End
+
+    void flashGeometries( QgsVectorLayer *layer, const QList< QgsGeometry > &geometries,
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+%Docstring
+ Causes a set of ``geometries`` to flash within the canvas.
+
+ If ``layer`` is non-null, the geometries will be automatically transformed from the layer
+ CRS to canvas CRS.
+
+ The ``startColor`` and ``endColor`` can be specified, along with the number of
+ ``flashes`` and ``duration`` of each flash (in milliseconds).
+
+.. versionadded:: 3.0
+.. seealso:: flashFeatureIds()
 %End
 
     void setMapTool( QgsMapTool *mapTool );

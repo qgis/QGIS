@@ -119,23 +119,23 @@ void QgsSelectByFormDialog::flashFeatures( const QString &filter )
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
-                              .setFlags( QgsFeatureRequest::NoGeometry )
                               .setExpressionContext( context )
                               .setSubsetOfAttributes( QgsAttributeList() );
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
   QgsFeature feat;
-  QgsFeatureIds ids;
+  QList< QgsGeometry > geoms;
   while ( features.nextFeature( feat ) )
   {
-    ids.insert( feat.id() );
+    if ( feat.hasGeometry() )
+      geoms << feat.geometry();
   }
 
   QgsSettings settings;
   int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
-  if ( !ids.empty() )
+  if ( !geoms.empty() )
   {
-    mMapCanvas->flashFeatureIds( mLayer, ids );
+    mMapCanvas->flashGeometries( mLayer, geoms );
   }
   else if ( mMessageBar )
   {
