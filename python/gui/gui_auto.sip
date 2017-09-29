@@ -29,6 +29,7 @@
 %Include auth/qgsauthcerttrustpolicycombobox.sip
 %Include auth/qgsauthconfigeditor.sip
 %Include auth/qgsauthconfigselect.sip
+%Include auth/qgsauthenticationwidget.sip
 %Include auth/qgsautheditorwidgets.sip
 %Include auth/qgsauthidentitieseditor.sip
 %Include auth/qgsauthimportcertdialog.sip
