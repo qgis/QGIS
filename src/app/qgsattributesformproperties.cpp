@@ -4,30 +4,28 @@
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
   , mLayer( layer )
-  , mAvailableWidgetsTree( nullptr )
-  , mFormLayoutTree( nullptr )
-  , mAttributeTypeDialog( nullptr )
 {
   if ( !layer )
     return;
 
   setupUi( this );
 
-  // drag tree (not mixup with drag queen)
-  QGridLayout *mDragListWidgetLayout = new QGridLayout;
-  mAvailableWidgetsTree = new DnDTree( mLayer, mDragListWidget );
-  mDragListWidgetLayout->addWidget( mAvailableWidgetsTree );
-  mDragListWidget->setLayout( mDragListWidgetLayout );
+  // available widgets tree
+  QGridLayout *availableWidgetsWidgetLayout = new QGridLayout;
+  mAvailableWidgetsTree = new DnDTree( mLayer );
+  availableWidgetsWidgetLayout->addWidget( mAvailableWidgetsTree );
+  availableWidgetsWidgetLayout->setMargin( 0 );
+  mAvailableWidgetsWidget->setLayout( availableWidgetsWidgetLayout );
   mAvailableWidgetsTree->setHeaderLabels( QStringList() << tr( "Available Widgets" ) );
   mAvailableWidgetsTree->setType( DnDTree::Type::Drag );
 
-  // drop tree
-  QGridLayout *mDropListWidgetLayout = new QGridLayout;
-  mFormLayoutTree = new DnDTree( mLayer, mDropListWidget );
-  mDropListWidgetLayout->addWidget( mFormLayoutTree );
-  mDropListWidgetLayout->setMargin( 0 );
-  mDropListWidget->setLayout( mDropListWidgetLayout );
-  mFormLayoutTree->setHeaderLabels( QStringList() << tr( "Form Structure" ) );
+  // form layout tree
+  QGridLayout *formLayoutWidgetLayout = new QGridLayout;
+  mFormLayoutTree = new DnDTree( mLayer );
+  mFormLayoutWidget->setLayout( formLayoutWidgetLayout );
+  formLayoutWidgetLayout->addWidget( mFormLayoutTree );
+  formLayoutWidgetLayout->setMargin( 0 );
+  mFormLayoutTree->setHeaderLabels( QStringList() << tr( "Form Layout" ) );
   mFormLayoutTree->setType( DnDTree::Type::Drop );
 
   // AttributeTypeDialog
