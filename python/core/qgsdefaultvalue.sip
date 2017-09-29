@@ -41,6 +41,7 @@ class QgsDefaultValue
     QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
 %Docstring
  Create a new default value with the given ``expression`` and ``applyOnUpdate`` flag.
+.. seealso:: QgsVectorLayer.setDefaultValueDefinition
 %End
     bool operator==( const QgsDefaultValue &other ) const;
 

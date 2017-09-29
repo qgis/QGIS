@@ -55,6 +55,7 @@ class CORE_EXPORT QgsDefaultValue
 
     /**
      * Create a new default value with the given \a expression and \a applyOnUpdate flag.
+     * \see QgsVectorLayer::setDefaultValueDefinition
      */
     QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
     bool operator==( const QgsDefaultValue &other ) const;
