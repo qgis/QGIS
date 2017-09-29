@@ -978,6 +978,8 @@ void QgsFieldsProperties::on_mEditorLayoutComboBox_currentIndexChanged( int inde
 
 void QgsFieldsProperties::apply()
 {
+  // Disabled: we deal with the configuration in the new tabs
+#if 0
   QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
 
   QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
@@ -1071,6 +1073,7 @@ void QgsFieldsProperties::apply()
   }
 
   mLayer->setEditFormConfig( editFormConfig );
+#endif
 
 }
 /*
