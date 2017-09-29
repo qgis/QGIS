@@ -275,7 +275,7 @@ for tracking the mouse while drawing polylines or polygons.
   \param p The QPainter object
 %End
 
-    void drawShape( QPainter *p, QVector<QPointF> &pts );
+    void drawShape( QPainter *p, const QVector<QPointF> &pts );
 %Docstring
  Draws shape of the rubber band.
   \param p The QPainter object

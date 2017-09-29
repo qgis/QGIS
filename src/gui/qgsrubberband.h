@@ -310,7 +310,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  \param p The QPainter object
      *  \param pts A list of points used to draw the shape
      */
-    void drawShape( QPainter *p, QVector<QPointF> &pts );
+    void drawShape( QPainter *p, const QVector<QPointF> &pts );
 
     //! Recalculates needed rectangle
     void updateRect();

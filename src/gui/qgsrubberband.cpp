@@ -405,35 +405,47 @@ void QgsRubberBand::setToCanvasRectangle( QRect rect )
 
 void QgsRubberBand::paint( QPainter *p )
 {
-  if ( !mPoints.isEmpty() )
+  if ( mPoints.isEmpty() )
+    return;
+
+  QVector< QVector<QPointF> > shapes;
+  for ( const QList<QgsPointXY> &line : qgsAsConst( mPoints ) )
   {
-    Q_FOREACH ( const QList<QgsPointXY> &line, mPoints )
+    QVector<QPointF> pts;
+    for ( const QgsPointXY &pt : line )
     {
-      QVector<QPointF> pts;
-      Q_FOREACH ( const QgsPointXY &pt, line )
-      {
-        const QPointF cur = toCanvasCoordinates( QgsPointXY( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
-        if ( pts.empty() || std::abs( pts.back().x() - cur.x() ) > 1 ||  std::abs( pts.back().y() - cur.y() ) > 1 )
-          pts.append( cur );
-      }
+      const QPointF cur = toCanvasCoordinates( QgsPointXY( pt.x() + mTranslationOffsetX, pt.y() + mTranslationOffsetY ) ) - pos();
+      if ( pts.empty() || std::abs( pts.back().x() - cur.x() ) > 1 ||  std::abs( pts.back().y() - cur.y() ) > 1 )
+        pts.append( cur );
+    }
+    shapes << pts;
+  }
 
-      if ( mSecondaryPen.color().isValid() )
-      {
-        mSecondaryPen.setWidth( mPen.width() + 2 );
-
-        p->setBrush( Qt::NoBrush );
-        p->setPen( mSecondaryPen );
-        drawShape( p, pts );
-      }
-
+  int iterations = mSecondaryPen.color().isValid() ? 2 : 1;
+  for ( int i = 0; i < iterations; ++i )
+  {
+    if ( i == 0 && iterations > 1 )
+    {
+      // first iteration with multi-pen painting, so use secondary pen
+      mSecondaryPen.setWidth( mPen.width() + 2 );
+      p->setBrush( Qt::NoBrush );
+      p->setPen( mSecondaryPen );
+    }
+    else
+    {
+      // "top" layer, use primary pen/brush
       p->setBrush( mBrush );
       p->setPen( mPen );
-      drawShape( p, pts );
+    }
+
+    for ( const QVector<QPointF> &shape : qgsAsConst( shapes ) )
+    {
+      drawShape( p, shape );
     }
   }
 }
 
-void QgsRubberBand::drawShape( QPainter *p, QVector<QPointF> &pts )
+void QgsRubberBand::drawShape( QPainter *p, const QVector<QPointF> &pts )
 {
   switch ( mGeometryType )
   {
