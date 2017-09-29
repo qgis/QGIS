@@ -63,11 +63,7 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   }
 
   mIsSelecting = false;
-  if ( !isClickAndDrag( mMousePressStartPos, event->pos() ) )
-  {
-    //just a click, do nothing
-    return;
-  }
+  bool wasClick = !isClickAndDrag( mMousePressStartPos, event->pos() );
 
   QRectF rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
 
@@ -96,8 +92,12 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   }
 
   //find all items in rect
-  const QList<QGraphicsItem *> itemList = layout()->items( rect, selectionMode );
-  for ( QGraphicsItem *item : itemList )
+  QList<QGraphicsItem *> itemList;
+  if ( wasClick )
+    itemList = layout()->items( rect.center(), selectionMode );
+  else
+    itemList = layout()->items( rect, selectionMode );
+  for ( QGraphicsItem *item : qgsAsConst( itemList ) )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
     QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
@@ -112,6 +112,11 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
         else
         {
           layoutItem->setSelected( true );
+        }
+        if ( wasClick )
+        {
+          // found an item, and only a click - nothing more to do
+          break;
         }
       }
     }
