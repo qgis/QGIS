@@ -14,6 +14,7 @@ class QgsAuthenticationWidget : QWidget
 %Docstring
  Widget for entering authentication credentials both in the form username/password
  and by using QGIS Authentication Database and its authentication configurations.
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

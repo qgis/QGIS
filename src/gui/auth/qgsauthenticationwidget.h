@@ -26,6 +26,7 @@
 /** \ingroup gui
  * Widget for entering authentication credentials both in the form username/password
  * and by using QGIS Authentication Database and its authentication configurations.
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAuthenticationWidget : public QWidget, private Ui::QgsAuthenticationWidget
 {
