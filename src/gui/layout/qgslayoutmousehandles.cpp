@@ -511,6 +511,11 @@ QgsLayoutMouseHandles::MouseAction QgsLayoutMouseHandles::mouseActionForScenePos
   return mouseActionForPosition( itemPos );
 }
 
+bool QgsLayoutMouseHandles::shouldBlockEvent( QInputEvent * ) const
+{
+  return mIsDragging || mIsResizing;
+}
+
 void QgsLayoutMouseHandles::hoverMoveEvent( QGraphicsSceneHoverEvent *event )
 {
   setViewportCursor( cursorForPosition( event->pos() ) );
@@ -575,6 +580,9 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 
     QPointF mEndHandleMovePos = scenePos();
 
+    double deltaX = mEndHandleMovePos.x() - mBeginHandlePos.x();
+    double deltaY = mEndHandleMovePos.y() - mBeginHandlePos.y();
+
     //move all selected items
     const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems( false );
     for ( QgsLayoutItem *item : selectedItems )
@@ -587,7 +595,15 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 #if 0 //TODO
       QgsComposerItemCommand *subcommand = new QgsComposerItemCommand( item, QLatin1String( "" ), parentCommand );
       subcommand->savePreviousState();
-      item->move( mEndHandleMovePos.x() - mBeginHandlePos.x(), mEndHandleMovePos.y() - mBeginHandlePos.y() );
+#endif
+
+      // need to convert delta from layout units -> item units
+      QgsLayoutPoint itemPos = item->positionWithUnits();
+      QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
+      itemPos.setX( itemPos.x() + deltaPos.x() );
+      itemPos.setY( itemPos.y() + deltaPos.y() );
+      item->attemptMove( itemPos );
+#if 0
       subcommand->saveAfterState();
 #endif
     }
@@ -629,6 +645,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 
       itemRect = itemRect.normalized();
       QPointF newPos = mapToScene( itemRect.topLeft() );
+
 #if 0 //TODO - convert to existing units
       item->attemptMove( newPos.x(), newPos.y(), itemRect.width(), itemRect.height(), QgsComposerItem::UpperLeft, true );
 #endif
@@ -782,6 +799,9 @@ void QgsLayoutMouseHandles::dragMouseMove( QPointF currentPosition, bool lockMov
   QPointF upperLeftPoint( mBeginHandlePos.x() + moveX, mBeginHandlePos.y() + moveY );
 
   QPointF snappedLeftPoint;
+
+  //TODO
+  snappedLeftPoint = upperLeftPoint;
 #if 0
   //no snapping for rotated items for now
   if ( !preventSnap && qgsDoubleNear( rotation(), 0.0 ) )

@@ -38,6 +38,7 @@
 #include "qgsdockwidget.h"
 #include "qgslayoutpagepropertieswidget.h"
 #include "qgslayoutguidewidget.h"
+#include "qgslayoutmousehandles.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>

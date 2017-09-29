@@ -158,6 +158,15 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     QList< int > visiblePageNumbers() const;
 
+    ///@cond PRIVATE
+
+    /**
+     * Returns the view's mouse handles.
+     * \note Not available in Python bindings.
+     */
+    SIP_SKIP QgsLayoutMouseHandles *mouseHandles();
+    ///@endcond
+
   public slots:
 
     /**

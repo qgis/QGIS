@@ -28,6 +28,7 @@
 class QgsLayout;
 class QGraphicsView;
 class QgsLayoutView;
+class QInputEvent;
 
 ///@cond PRIVATE
 
@@ -101,10 +102,12 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     QgsLayoutMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
 
     //! Returns true is user is currently dragging the handles
-    bool isDragging() { return mIsDragging; }
+    bool isDragging() const { return mIsDragging; }
 
     //! Returns true is user is currently resizing with the handles
-    bool isResizing() { return mIsResizing; }
+    bool isResizing() const { return mIsResizing; }
+
+    bool shouldBlockEvent( QInputEvent *event ) const;
 
   protected:
 

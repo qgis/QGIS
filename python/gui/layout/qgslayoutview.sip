@@ -127,6 +127,8 @@ class QgsLayoutView: QGraphicsView
  :rtype: list of int
 %End
 
+
+
   public slots:
 
     void zoomFull();
