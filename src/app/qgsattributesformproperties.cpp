@@ -33,7 +33,6 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   // AttributeTypeDialog
   mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, 0, mAttributeTypeFrame );
   mAttributeTypeDialog->layout()->setMargin( 0 );
-  mAttributeTypeFrame->setLayout( new QVBoxLayout( mAttributeTypeFrame ) );
   mAttributeTypeFrame->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
 
@@ -108,7 +107,6 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   mAttributeTypeDialog->setEditorWidgetType( cfg.mEditorWidgetType );
 
   mAttributeTypeDialog->layout()->setMargin( 0 );
-  mAttributeTypeFrame->setLayout( new QVBoxLayout( mAttributeTypeFrame ) );
   mAttributeTypeFrame->layout()->setMargin( 0 );
 
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
