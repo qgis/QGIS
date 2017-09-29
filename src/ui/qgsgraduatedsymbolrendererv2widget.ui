@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>442</width>
+    <width>481</width>
     <height>554</height>
    </rect>
   </property>
@@ -206,7 +206,7 @@ Negative rounds to powers of 10</string>
        <property name="value">
         <double>1.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -238,7 +238,7 @@ Negative rounds to powers of 10</string>
        <property name="value">
         <double>10.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -316,6 +316,9 @@ Negative rounds to powers of 10</string>
          </item>
          <item>
           <widget class="QComboBox" name="cboGraduatedMode">
+           <property name="mouseTracking">
+            <bool>false</bool>
+           </property>
            <item>
             <property name="text">
              <string>Equal Interval</string>
@@ -339,6 +342,11 @@ Negative rounds to powers of 10</string>
            <item>
             <property name="text">
              <string>Pretty Breaks</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Symmetric around zero</string>
             </property>
            </item>
           </widget>

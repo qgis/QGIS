@@ -205,6 +205,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
       Jenks,
       StdDev,
       Pretty,
+      AroundZero,
       Custom
     };
 
