@@ -262,18 +262,15 @@ void QgsAttributesFormProperties::loadAttributeEditorTree( DnDTree *tree )
 
     tree->mIndexedWidgets.clear();
 
-    const QgsFields &fields = mLayer->fields();
+    const QgsFields fields = mLayer->fields();
     for ( int i = 0; i < fields.size(); ++i )
     {
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, fields.at( i ).name() );
       itemData.setShowLabel( true );
 
       FieldConfig cfg( mLayer, i );
-      QgsGui::editorWidgetRegistry()->name( cfg.mEditorWidgetType );
-
 
       itemData.setData( 0, FieldConfigRole, QVariant::fromValue<FieldConfig>( cfg ) );
-
       tree->mIndexedWidgets.insert( i, tree->addItem( tree->invisibleRootItem(), itemData ) );
     }
 
