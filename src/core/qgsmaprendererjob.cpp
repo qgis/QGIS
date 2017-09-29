@@ -219,7 +219,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     Q_UNUSED( cacheValid );
-    QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
+    QgsDebugMsgLevel( QString( "CACHE VALID: %1" ).arg( cacheValid ), 4 );
   }
 
   bool requiresLabelRedraw = !( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) );
