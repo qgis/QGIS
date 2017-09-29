@@ -102,6 +102,44 @@ class TestQgsLayout(unittest.TestCase):
         self.assertEqual(set(l.selectedLayoutItems(False)), set([item1, item2]))
         self.assertEqual(set(l.selectedLayoutItems(True)), set([item1, item2, item3]))
 
+    def testSelections(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        l.addItem(item3)
+
+        select_changed_spy = QSignalSpy(l.selectedItemChanged)
+        l.setSelectedItem(None)
+        self.assertFalse(l.selectedLayoutItems())
+        self.assertEqual(len(select_changed_spy), 1)
+        self.assertEqual(select_changed_spy[-1][0], None)
+
+        l.setSelectedItem(item1)
+        self.assertEqual(l.selectedLayoutItems(), [item1])
+        self.assertEqual(len(select_changed_spy), 2)
+        self.assertEqual(select_changed_spy[-1][0], item1)
+
+        l.setSelectedItem(None)
+        self.assertFalse(l.selectedLayoutItems())
+        self.assertEqual(len(select_changed_spy), 3)
+        self.assertEqual(select_changed_spy[-1][0], None)
+
+        l.setSelectedItem(item2)
+        self.assertEqual(l.selectedLayoutItems(), [item2])
+        self.assertEqual(len(select_changed_spy), 4)
+        self.assertEqual(select_changed_spy[-1][0], item2)
+
+        l.deselectAll()
+        self.assertFalse(l.selectedLayoutItems())
+        self.assertEqual(len(select_changed_spy), 5)
+        self.assertEqual(select_changed_spy[-1][0], None)
+
 
 if __name__ == '__main__':
     unittest.main()

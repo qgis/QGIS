@@ -113,6 +113,19 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QList<QgsLayoutItem *> selectedLayoutItems( const bool includeLockedItems = true );
 
     /**
+     * Clears any selected items and sets \a item as the current selection.
+    */
+    void setSelectedItem( QgsLayoutItem *item );
+
+    /**
+     * Clears any selected items in the layout.
+     *
+     * Call this method rather than QGraphicsScene::clearSelection, as the latter does
+     * not correctly emit signals to allow the layout's model to update.
+    */
+    void deselectAll();
+
+    /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
      */
@@ -357,6 +370,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Emitted whenever the expression variables stored in the layout have been changed.
      */
     void variablesChanged();
+
+    /**
+     * Emitted whenever the selected item changes.
+     * If nullptr, no item is selected.
+     */
+    void selectedItemChanged( QgsLayoutItem *selected );
 
   private:
 

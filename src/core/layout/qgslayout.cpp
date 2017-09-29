@@ -63,6 +63,33 @@ QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedI
   return layoutItemList;
 }
 
+void QgsLayout::setSelectedItem( QgsLayoutItem *item )
+{
+  whileBlocking( this )->deselectAll();
+  if ( item )
+  {
+    item->setSelected( true );
+  }
+  emit selectedItemChanged( item );
+}
+
+void QgsLayout::deselectAll()
+{
+  //we can't use QGraphicsScene::clearSelection, as that emits no signals
+  //and we don't know which items are being deselected
+  //accordingly, we can't inform the layout model of selection changes
+  //instead, do the clear selection manually...
+  const QList<QGraphicsItem *> selectedItemList = selectedItems();
+  for ( QGraphicsItem *item : selectedItemList )
+  {
+    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+    {
+      layoutItem->setSelected( false );
+    }
+  }
+  emit selectedItemChanged( nullptr );
+}
+
 QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
 {
   QList<QgsLayoutItem *> itemList;

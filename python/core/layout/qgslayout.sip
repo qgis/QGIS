@@ -75,6 +75,19 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  :rtype: list of QgsLayoutItem
 %End
 
+    void setSelectedItem( QgsLayoutItem *item );
+%Docstring
+ Clears any selected items and sets ``item`` as the current selection.
+%End
+
+    void deselectAll();
+%Docstring
+ Clears any selected items in the layout.
+
+ Call this method rather than QGraphicsScene.clearSelection, as the latter does
+ not correctly emit signals to allow the layout's model to update.
+%End
+
     QgsLayoutItem *itemByUuid( const QString &uuid );
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None
@@ -300,6 +313,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
     void variablesChanged();
 %Docstring
  Emitted whenever the expression variables stored in the layout have been changed.
+%End
+
+    void selectedItemChanged( QgsLayoutItem *selected );
+%Docstring
+ Emitted whenever the selected item changes.
+ If None, no item is selected.
 %End
 
 };
