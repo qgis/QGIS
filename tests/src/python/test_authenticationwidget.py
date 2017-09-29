@@ -69,14 +69,75 @@ class TestAuthenticationWidget(unittest.TestCase):
         """Run after each test."""
         pass
 
-    def testWidget(self):
+    def testWidgetNoArgs(self):
         """
-        Test the widget
+        Test the widget with no args
         """
         w = QgsAuthenticationWidget()
-        w.show()
-        from IPython import embed
-        embed()
+        self.assertEqual(w.username(), '')
+        self.assertEqual(w.password(), '')
+        self.assertEqual(w.configId(), '')
+        self.assertEqual(w.currentTabIndex(), 0)
+        self.assertFalse(w.btnConvertToEncryptedIsEnabled())
+
+    def testWidgetConfigId(self):
+        """
+        Test the widget with configId
+        """
+        w = QgsAuthenticationWidget(None, self.auth_config.id())
+        self.assertEqual(w.username(), '')
+        self.assertEqual(w.password(), '')
+        self.assertEqual(w.configId(), self.auth_config.id())
+        self.assertEqual(w.currentTabIndex(), 0)
+        self.assertFalse(w.btnConvertToEncryptedIsEnabled())
+
+    def testWidgetUsername(self):
+        """
+        Test the widget with username only
+        """
+        w = QgsAuthenticationWidget(None, None, 'username')
+        self.assertEqual(w.username(), 'username')
+        self.assertEqual(w.password(), '')
+        self.assertEqual(w.configId(), '')
+        self.assertEqual(w.currentTabIndex(), 1)
+
+    def testWidgetPassword(self):
+        """
+        Test the widget with password only
+        """
+        w = QgsAuthenticationWidget(None, None, None, 'password')
+        self.assertEqual(w.username(), '')
+        self.assertEqual(w.password(), 'password')
+        self.assertEqual(w.configId(), '')
+        self.assertEqual(w.currentTabIndex(), 1)
+
+    def testWidgetUsernameAndPassword(self):
+        """
+        Test the widget with username and password
+        """
+        w = QgsAuthenticationWidget(None, None, 'username', 'password')
+        self.assertEqual(w.username(), 'username')
+        self.assertEqual(w.password(), 'password')
+        self.assertEqual(w.configId(), '')
+        self.assertEqual(w.currentTabIndex(), 1)
+        self.assertTrue(w.btnConvertToEncryptedIsEnabled())
+
+    def testConvertToEncrypted(self):
+        """
+        Test the widget to encrypted conversion
+        """
+        w = QgsAuthenticationWidget(None, None, 'username', 'password')
+        self.assertEqual(w.username(), 'username')
+        self.assertEqual(w.password(), 'password')
+        self.assertEqual(w.configId(), '')
+        self.assertEqual(w.currentTabIndex(), 1)
+        self.assertTrue(w.btnConvertToEncryptedIsEnabled())
+        self.assertTrue(w.on_btnConvertToEncrypted_clicked())
+        self.assertNotEqual(w.configId(), '')
+        self.assertEqual(w.username(), '')
+        self.assertEqual(w.password(), '')
+        self.assertEqual(w.currentTabIndex(), 0)
+        self.assertFalse(w.btnConvertToEncryptedIsEnabled())
 
 
 if __name__ == '__main__':

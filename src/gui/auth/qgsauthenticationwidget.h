@@ -38,9 +38,85 @@ class GUI_EXPORT QgsAuthenticationWidget : public QWidget, private Ui::QgsAuthen
      * Create a dialog for setting an associated authentication config, either
      * from existing configs, or creating/removing them from auth database
      * \param parent Parent widget
+     * \param configId authentication configuration id
+     * \param username
+     * \param password
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthenticationWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &dataprovider = QString() );
+    explicit QgsAuthenticationWidget( QWidget *parent SIP_TRANSFERTHIS = 0,
+                                      const QString &configId = QString(),
+                                      const QString &username = QString(),
+                                      const QString &password = QString(),
+                                      const QString &dataprovider = QString() );
+
+    /**
+     * \brief setWarningText set the text of the warning label
+     * \param warningText the text of the warning label
+     */
+    void setWarningText( const QString &warningText );
+
+    /**
+     * \brief setBasicText set the text of the warning label
+     * \param warningText the text of the basic tab label
+     */
+    void setBasicText( const QString &basicText );
+
+    /**
+     * \brief username
+     * \return basic authentication username
+     */
+    const QString username( ) const;
+
+    /**
+     * \brief password
+     * \return basic authentication password
+     */
+    const QString password( ) const;
+
+    /**
+     * \brief configId
+     * \return authentication configuration id
+     */
+    const QString configId( ) const;
+
+    /**
+     * \brief currentTabIndex, mainly useful for unit tests
+     * \return active tab index
+     */
+    int currentTabIndex( ) const;
+
+    /**
+     * \brief convertButtonEnabled, mainly useful for unit tests
+     * \return true if the convert button is enabled
+     */
+    bool btnConvertToEncryptedIsEnabled( ) const;
+
+  public slots:
+
+    /**
+     * \brief on_btnConvertToEncrypted_clicked create a Basic authentication configuration from
+     *        username and password specified in the Basic tab
+     * \return return true on success
+     */
+    bool on_btnConvertToEncrypted_clicked( );
+
+    /**
+     * \brief on_txtUserName_textChanged set convert button state
+     * \param Not available in Python bindings
+     */
+    void on_txtUserName_textChanged( const QString &text ) SIP_SKIP;
+
+    /**
+     * \brief on_txtPassword_textChanged set convert button state
+     * \param text
+     * \note Not available in Python bindings
+     */
+    void on_txtPassword_textChanged( const QString &text ) SIP_SKIP;
+
+
+  private:
+
+    void setConvertBtnState( );
 
 };
 

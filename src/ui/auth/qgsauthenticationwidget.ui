@@ -29,7 +29,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tabConfigurations">
          <attribute name="title">
@@ -48,8 +48,11 @@
           </item>
           <item>
            <widget class="QgsAuthConfigSelect" name="mAuthConfigSelect">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -93,9 +96,9 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="3" column="0" colspan="2">
-           <widget class="QLabel" name="label_4">
+           <widget class="QLabel" name="lblWarning">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;Note: credentials are stored unencrypted (in clear text) in the project file.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;Warning: credentials are stored unencrypted (in clear text) in the project file!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -165,9 +168,9 @@
            </widget>
           </item>
           <item row="4" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="btnConvertToEncrypted">
             <property name="text">
-             <string>Convert to encrypted</string>
+             <string>Convert to configuration</string>
             </property>
            </widget>
           </item>
@@ -192,6 +195,13 @@
    <header>qgsauthconfigselect.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabAuth</tabstop>
+  <tabstop>mAuthConfigSelect</tabstop>
+  <tabstop>txtUserName</tabstop>
+  <tabstop>txtPassword</tabstop>
+  <tabstop>btnConvertToEncrypted</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
