@@ -22,6 +22,7 @@
 #include "qgslayoutviewtooltemporarykeypan.h"
 #include "qgslayoutviewtooltemporarykeyzoom.h"
 #include "qgslayoutviewtooltemporarymousepan.h"
+#include "qgslayoutmousehandles.h"
 #include "qgslayoutruler.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
@@ -87,6 +88,12 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
     connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
     connect( &layout->guides(), &QAbstractItemModel::modelReset, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
   }
+
+  //add mouse selection handles to layout, and initially hide
+  mMouseHandles = new QgsLayoutMouseHandles( layout, this );
+  mMouseHandles->hide();
+  mMouseHandles->setZValue( QgsLayout::ZMouseHandles );
+  layout->addItem( mMouseHandles );
 
   //emit layoutSet, so that designer dialogs can update for the new layout
   emit layoutSet( layout );

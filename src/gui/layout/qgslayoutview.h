@@ -35,6 +35,7 @@ class QgsLayoutViewToolTemporaryMousePan;
 class QgsLayoutRuler;
 class QgsLayoutViewMenuProvider;
 class QgsLayoutViewSnapMarker;
+class QgsLayoutMouseHandles;
 
 /**
  * \ingroup gui
@@ -299,6 +300,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
     std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
+
+    QgsLayoutMouseHandles *mMouseHandles = nullptr; //owned by scene
 
     int mCurrentPage = 0;
 
