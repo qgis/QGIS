@@ -16,6 +16,8 @@
 #include "qgslayoutviewtoolselect.h"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutview.h"
+#include "qgslayout.h"
+#include "qgslayoutitempage.h"
 
 QgsLayoutViewToolSelect::QgsLayoutViewToolSelect( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Select" ) )
@@ -61,8 +63,68 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   }
 
   mIsSelecting = false;
+  if ( !isClickAndDrag( mMousePressStartPos, event->pos() ) )
+  {
+    //just a click, do nothing
+    return;
+  }
+
   QRectF rect = mRubberBand->finish( event->layoutPoint(), event->modifiers() );
-  Q_UNUSED( rect );
+
+  bool subtractingSelection = false;
+  if ( event->modifiers() & Qt::ShiftModifier )
+  {
+    //shift modifer means adding to selection, nothing required here
+  }
+  else if ( event->modifiers() & Qt::ControlModifier )
+  {
+    //control modifier means subtract from current selection
+    subtractingSelection = true;
+  }
+  else
+  {
+    //not adding to or removing from selection, so clear current selection
+    layout()->deselectAll();
+  }
+
+  //determine item selection mode, default to intersection
+  Qt::ItemSelectionMode selectionMode = Qt::IntersectsItemShape;
+  if ( event->modifiers() & Qt::AltModifier )
+  {
+    //alt modifier switches to contains selection mode
+    selectionMode = Qt::ContainsItemShape;
+  }
+
+  //find all items in rect
+  const QList<QGraphicsItem *> itemList = layout()->items( rect, selectionMode );
+  for ( QGraphicsItem *item : itemList )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
+    if ( layoutItem && !paperItem )
+    {
+      if ( !layoutItem->isLocked() )
+      {
+        if ( subtractingSelection )
+        {
+          layoutItem->setSelected( false );
+        }
+        else
+        {
+          layoutItem->setSelected( true );
+        }
+      }
+    }
+  }
+
+#if 0 //TODO
+  //update item panel
+  QList<QgsComposerItem *> selectedItemList = composition()->selectedComposerItems();
+  if ( !selectedItemList.isEmpty() )
+  {
+    emit selectedItemChanged( selectedItemList[0] );
+  }
+#endif
 }
 
 void QgsLayoutViewToolSelect::deactivate()
