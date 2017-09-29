@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>546</width>
-    <height>90</height>
+    <width>547</width>
+    <height>94</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,27 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0" colspan="6">
+     <item row="1" column="1">
+      <widget class="QToolButton" name="btnConfigEdit">
+       <property name="toolTip">
+        <string>Edit selected configuration</string>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QToolButton" name="btnConfigRemove">
+       <property name="toolTip">
+        <string>Delete selected configuration</string>
+       </property>
+       <property name="text">
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="5">
       <widget class="QFrame" name="frConfigMsg">
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
@@ -79,7 +99,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btnConfigMsgClear">
+         <widget class="QToolButton" name="btnConfigMsgClear">
           <property name="minimumSize">
            <size>
             <width>26</width>
@@ -104,50 +124,18 @@
             <height>22</height>
            </size>
           </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
          </widget>
         </item>
        </layout>
       </widget>
      </item>
-     <item row="1" column="4">
-      <widget class="QPushButton" name="btnConfigAdd">
+     <item row="1" column="3">
+      <widget class="QToolButton" name="btnConfigAdd">
        <property name="toolTip">
         <string>Create a new authentication configuration</string>
        </property>
        <property name="text">
         <string>New</string>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="btnConfigRemove">
-       <property name="toolTip">
-        <string>Delete selected configuration</string>
-       </property>
-       <property name="text">
-        <string>Delete</string>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="btnConfigEdit">
-       <property name="toolTip">
-        <string>Edit selected configuration</string>
-       </property>
-       <property name="text">
-        <string>Edit</string>
-       </property>
-       <property name="flat">
-        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -173,8 +161,6 @@
   <tabstop>btnConfigMsgClear</tabstop>
   <tabstop>cmbConfigSelect</tabstop>
  </tabstops>
- <resources>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
