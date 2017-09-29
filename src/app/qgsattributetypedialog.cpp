@@ -54,7 +54,6 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     it.next();
     mWidgetTypeComboBox->addItem( it.value()->name(), it.key() );
     QStandardItem *item = widgetTypeModel->item( mWidgetTypeComboBox->count() - 1 );
-    item->setData( it.key(), Qt::UserRole );
     if ( !it.value()->supportsField( vl, fieldIdx ) )
       item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
   }
@@ -148,6 +147,7 @@ const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
 
 void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
 {
+
   mWidgetTypeComboBox->setCurrentIndex( mWidgetTypeComboBox->findData( type ) );
 
   if ( mEditorConfigWidgets.contains( type ) )
