@@ -115,12 +115,12 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
 
     ~PlaneVertexBufferFunctor() {}
 
-    QByteArray operator()() Q_DECL_FINAL
+    QByteArray operator()() final
     {
       return createPlaneVertexData( mResolution, mHeightMap );
     }
 
-    bool operator ==( const QBufferDataGenerator &other ) const Q_DECL_FINAL
+    bool operator ==( const QBufferDataGenerator &other ) const final
     {
       const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
@@ -147,12 +147,12 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
 
     ~PlaneIndexBufferFunctor() {}
 
-    QByteArray operator()() Q_DECL_FINAL
+    QByteArray operator()() final
     {
       return createPlaneIndexData( mResolution );
     }
 
-    bool operator ==( const QBufferDataGenerator &other ) const Q_DECL_FINAL
+    bool operator ==( const QBufferDataGenerator &other ) const final
     {
       const PlaneIndexBufferFunctor *otherFunctor = functor_cast<PlaneIndexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
@@ -176,10 +176,6 @@ DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, const QByteArray
   , mHeightMap( heightMap )
 {
   init();
-}
-
-DemTerrainTileGeometry::~DemTerrainTileGeometry()
-{
 }
 
 void DemTerrainTileGeometry::init()

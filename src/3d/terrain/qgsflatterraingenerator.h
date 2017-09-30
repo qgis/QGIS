@@ -16,11 +16,11 @@
 class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
   public:
-    QgsFlatTerrainGenerator();
+    QgsFlatTerrainGenerator() = default;
 
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
-    virtual QgsTerrainGenerator *clone() const override;
+    virtual QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
     QgsRectangle extent() const override;
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const override;

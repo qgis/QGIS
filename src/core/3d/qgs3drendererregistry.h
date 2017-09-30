@@ -20,7 +20,7 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
 {
   public:
 
-    virtual ~Qgs3DRendererAbstractMetadata();
+    virtual ~Qgs3DRendererAbstractMetadata() = default;
 
     /**
      * Returns unique identifier of the 3D renderer class
@@ -54,7 +54,7 @@ class CORE_EXPORT Qgs3DRendererAbstractMetadata
 class CORE_EXPORT Qgs3DRendererRegistry
 {
   public:
-    Qgs3DRendererRegistry();
+    Qgs3DRendererRegistry() = default;
 
     ~Qgs3DRendererRegistry();
 

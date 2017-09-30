@@ -108,7 +108,7 @@ bool Qgs3DUtils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClam
     centroid = polygon->centroid();
 
   QgsCurve *curve = const_cast<QgsCurve *>( polygon->exteriorRing() );
-  QgsLineString *lineString = dynamic_cast<QgsLineString *>( curve );
+  QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( curve );
   if ( !lineString )
     return false;
 
@@ -117,7 +117,7 @@ bool Qgs3DUtils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClam
   for ( int i = 0; i < polygon->numInteriorRings(); ++i )
   {
     QgsCurve *curve = const_cast<QgsCurve *>( polygon->interiorRing( i ) );
-    QgsLineString *lineString = dynamic_cast<QgsLineString *>( curve );
+    QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( curve );
     if ( !lineString )
       return false;
 
@@ -156,10 +156,9 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
     if ( f.geometry().isNull() )
       continue;
 
-    QgsAbstractGeometry *g = f.geometry().geometry();
-    if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::Point )
+    const QgsAbstractGeometry *g = f.geometry().geometry();
+    if ( const QgsPoint *pt = qgsgeometry_cast< const QgsPoint *>( g ) )
     {
-      QgsPoint *pt = static_cast<QgsPoint *>( g );
       // TODO: use Z coordinates if the point is 3D
       float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
       positions.append( QVector3D( pt->x() - map.originX(), h, -( pt->y() - map.originY() ) ) );

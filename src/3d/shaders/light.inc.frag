@@ -1,3 +1,6 @@
+
+// copy of light.inc.frag from qt3d extras
+
 const int MAX_LIGHTS = 8;
 const int TYPE_POINT = 0;
 const int TYPE_DIRECTIONAL = 1;

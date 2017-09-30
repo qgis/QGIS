@@ -32,7 +32,7 @@ namespace Qt3DCore
 class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
 {
   public:
-    virtual ~QgsAbstract3DRenderer();
+    virtual ~QgsAbstract3DRenderer() = default;
 
     //! Returns unique identifier of the renderer class (used to identify subclass)
     virtual QString type() const = 0;

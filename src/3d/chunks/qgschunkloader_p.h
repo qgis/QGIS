@@ -28,7 +28,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
     {
     }
 
-    virtual ~QgsChunkLoader();
+    virtual ~QgsChunkLoader() = default;
 
     //! Run in main thread to use loaded data.
     //! Returns entity attached to the given parent entity in disabled state
@@ -44,7 +44,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
 class QgsChunkLoaderFactory
 {
   public:
-    virtual ~QgsChunkLoaderFactory();
+    virtual ~QgsChunkLoaderFactory() = default;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const = 0;

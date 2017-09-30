@@ -2,10 +2,6 @@
 
 ///@cond PRIVATE
 
-QgsChunkQueueJob::~QgsChunkQueueJob()
-{
-}
-
 void QgsChunkQueueJob::cancel()
 {
   // TODO: what to do...

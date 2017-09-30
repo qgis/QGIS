@@ -70,11 +70,11 @@ class QuantizedMeshGeometry : public Qt3DRender::QGeometry
     static void downloadTileIfMissing( int tx, int ty, int tz );
 
   private:
-    Qt3DRender::QBuffer *m_vertexBuffer;
-    Qt3DRender::QBuffer *m_indexBuffer;
-    Qt3DRender::QAttribute *m_positionAttribute;
-    Qt3DRender::QAttribute *m_texCoordAttribute;
-    Qt3DRender::QAttribute *m_indexAttribute;
+    Qt3DRender::QBuffer *mVertexBuffer;
+    Qt3DRender::QBuffer *mIndexBuffer;
+    Qt3DRender::QAttribute *mPositionAttribute;
+    Qt3DRender::QAttribute *mTexCoordAttribute;
+    Qt3DRender::QAttribute *mIndexAttribute;
 };
 
 #endif // QUANTIZEDMESHGEOMETRY_H

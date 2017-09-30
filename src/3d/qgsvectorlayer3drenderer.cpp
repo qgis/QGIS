@@ -32,10 +32,6 @@ QgsVectorLayer3DRenderer::QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s )
 {
 }
 
-QgsVectorLayer3DRenderer::~QgsVectorLayer3DRenderer()
-{
-}
-
 QgsVectorLayer3DRenderer *QgsVectorLayer3DRenderer::clone() const
 {
   QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( mSymbol ? mSymbol->clone() : nullptr );

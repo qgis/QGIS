@@ -43,8 +43,6 @@ class QgsChunkQueueJob : public QObject
     {
     }
 
-    virtual ~QgsChunkQueueJob();
-
     //! Returns chunk node of this job
     QgsChunkNode *chunk() { return mNode; }
 

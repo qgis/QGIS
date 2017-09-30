@@ -2,6 +2,7 @@
 #define QGSABSTRACT3DSYMBOL_H
 
 #include "qgis_3d.h"
+#include "qgis_sip.h"
 
 class QDomElement;
 class QString;
@@ -20,12 +21,12 @@ class QgsReadWriteContext;
 class _3D_EXPORT QgsAbstract3DSymbol
 {
   public:
-    virtual ~QgsAbstract3DSymbol() {}
+    virtual ~QgsAbstract3DSymbol() = default;
 
     //! Returns identifier of symbol type. Each 3D symbol implementation should return a different type.
     virtual QString type() const = 0;
     //! Returns a new instance of the symbol with the same settings
-    virtual QgsAbstract3DSymbol *clone() const = 0;
+    virtual QgsAbstract3DSymbol *clone() const = 0 SIP_FACTORY;
 
     //! Writes symbol configuration to the given DOM element
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;

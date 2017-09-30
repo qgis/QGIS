@@ -1,6 +1,8 @@
 #ifndef QGSTERRAINGENERATOR_H
 #define QGSTERRAINGENERATOR_H
 
+#include "qgis_3d.h"
+
 #include "qgstilingscheme.h"
 #include "qgschunkloader_p.h"
 
@@ -21,7 +23,7 @@ class QgsProject;
  * whenever that is deemed necessary by the terrain controller (that caches generated tiles).
  * \since QGIS 3.0
  */
-class QgsTerrainGenerator : public QgsChunkLoaderFactory
+class _3D_EXPORT QgsTerrainGenerator : public QgsChunkLoaderFactory
 {
   public:
 
@@ -33,13 +35,11 @@ class QgsTerrainGenerator : public QgsChunkLoaderFactory
       QuantizedMesh,  //!< Terrain is built from downloaded tiles in quantized mesh format
     };
 
-    virtual ~QgsTerrainGenerator() {}
-
-    //! Sets terrain entity for the generator
+    //! Sets terrain entity for the generator (does not transfer ownership)
     void setTerrain( QgsTerrainEntity *t ) { mTerrain = t; }
 
     //! Makes a copy of the current instance
-    virtual QgsTerrainGenerator *clone() const = 0;
+    virtual QgsTerrainGenerator *clone() const = 0 SIP_FACTORY;
 
     //! What texture generator implementation is this
     virtual Type type() const = 0;

@@ -17,31 +17,31 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
 {
   QDomDocument doc = elem.ownerDocument();
 
-  QDomElement elemMaterial = doc.createElement( "material" );
+  QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
   mMaterial.writeXml( elemMaterial );
   elem.appendChild( elemMaterial );
 
   QVariantMap shapePropertiesCopy( mShapeProperties );
   shapePropertiesCopy["model"] = QVariant( context.pathResolver().writePath( shapePropertiesCopy["model"].toString() ) );
 
-  QDomElement elemShapeProperties = doc.createElement( "shape-properties" );
+  QDomElement elemShapeProperties = doc.createElement( QStringLiteral( "shape-properties" ) );
   elemShapeProperties.appendChild( QgsXmlUtils::writeVariant( shapePropertiesCopy, doc ) );
   elem.appendChild( elemShapeProperties );
 
-  QDomElement elemTransform = doc.createElement( "transform" );
-  elemTransform.setAttribute( "matrix", Qgs3DUtils::matrix4x4toString( mTransform ) );
+  QDomElement elemTransform = doc.createElement( QStringLiteral( "transform" ) );
+  elemTransform.setAttribute( QStringLiteral( "matrix" ), Qgs3DUtils::matrix4x4toString( mTransform ) );
   elem.appendChild( elemTransform );
 }
 
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  QDomElement elemMaterial = elem.firstChildElement( "material" );
+  QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );
 
-  QDomElement elemShapeProperties = elem.firstChildElement( "shape-properties" );
+  QDomElement elemShapeProperties = elem.firstChildElement( QStringLiteral( "shape-properties" ) );
   mShapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
   mShapeProperties["model"] = QVariant( context.pathResolver().readPath( mShapeProperties["model"].toString() ) );
 
-  QDomElement elemTransform = elem.firstChildElement( "transform" );
-  mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( "matrix" ) );
+  QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
+  mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( QStringLiteral( "matrix" ) ) );
 }

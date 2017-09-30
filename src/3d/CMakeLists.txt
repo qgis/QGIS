@@ -59,7 +59,6 @@ SET(QGIS_3D_MOC_HDRS
 
   terrain/qgsdemterraintileloader_p.h
   terrain/qgsterrainentity_p.h
-  terrain/qgsterraingenerator.h
   terrain/qgsterraintexturegenerator_p.h
   terrain/qgsterraintextureimage_p.h
   terrain/qgsterraintileentity_p.h

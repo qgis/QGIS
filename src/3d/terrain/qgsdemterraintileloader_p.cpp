@@ -43,7 +43,6 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
 
 QgsDemTerrainTileLoader::~QgsDemTerrainTileLoader()
 {
-  qDebug() << "DEM chunk loader done.";
 }
 
 Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
@@ -137,7 +136,6 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
     data.detach();  // this should make a deep copy
     delete block;
   }
-  qDebug() << "[TT] read block time " << t.elapsed() << "ms";
   return data;
 }
 
@@ -165,7 +163,6 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
   connect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
 
   mJobs.insert( fw, jd );
-  qDebug() << "[TT] added job: " << jd.jobId << " " << x << "|" << y << "|" << z << "  .... in queue: " << mJobs.count();
 
   return jd.jobId;
 }
@@ -226,7 +223,6 @@ void QgsDemHeightMapGenerator::onFutureFinished()
 
   mJobs.remove( fw );
   fw->deleteLater();
-  qDebug() << "[TT] finished job " << jobData.jobId << "total time " << jobData.timer.elapsed() << "ms  ... in queue: " << mJobs.count();
 
   QByteArray data = jobData.future.result();
   emit heightMapReady( jobData.jobId, data );

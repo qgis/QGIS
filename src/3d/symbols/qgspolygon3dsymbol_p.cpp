@@ -36,6 +36,7 @@ void QgsPolygon3DSymbolEntity::addEntityForSelectedPolygons( const Qgs3DMapSetti
   // build the feature request to select features
   QgsFeatureRequest req;
   req.setDestinationCrs( map.crs() );
+  req.setSubsetOfAttributes( QgsAttributeList() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
   // build the entity
@@ -56,6 +57,7 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
 
   // build the feature request to select features
   QgsFeatureRequest req;
+  req.setSubsetOfAttributes( QgsAttributeList() );
   req.setDestinationCrs( map.crs() );
 
   QgsFeatureIds notSelected = layer->allFeatureIds();
@@ -109,23 +111,21 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
       continue;
     }
 
-    QgsAbstractGeometry *g = geom.geometry();
+    const QgsAbstractGeometry *g = geom.geometry();
 
-    if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::Polygon )
+    if ( const QgsPolygonV2 *poly = qgsgeometry_cast< const QgsPolygonV2 *>( g ) )
     {
-      QgsPolygonV2 *poly = static_cast<QgsPolygonV2 *>( g );
       QgsPolygonV2 *polyClone = poly->clone();
       Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
       polygons.append( polyClone );
     }
-    else if ( QgsWkbTypes::flatType( g->wkbType() ) == QgsWkbTypes::MultiPolygon )
+    else if ( const QgsMultiPolygonV2 *mpoly = qgsgeometry_cast< const QgsMultiPolygonV2 *>( g ) )
     {
-      QgsMultiPolygonV2 *mpoly = static_cast<QgsMultiPolygonV2 *>( g );
       for ( int i = 0; i < mpoly->numGeometries(); ++i )
       {
-        QgsAbstractGeometry *g2 = mpoly->geometryN( i );
+        const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
-        QgsPolygonV2 *polyClone = static_cast<QgsPolygonV2 *>( g2 )->clone();
+        QgsPolygonV2 *polyClone = static_cast< const QgsPolygonV2 *>( g2 )->clone();
         Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
         polygons.append( polyClone );
       }

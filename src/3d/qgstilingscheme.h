@@ -1,6 +1,8 @@
 #ifndef QGSTILINGSCHEME_H
 #define QGSTILINGSCHEME_H
 
+#include "qgis_3d.h"
+
 #include <qgscoordinatereferencesystem.h>
 #include <qgspointxy.h>
 
@@ -11,7 +13,7 @@ class QgsRectangle;
  * The origin (tile [0,0]) is in bottom-left corner.
  * \since QGIS 3.0
  */
-class QgsTilingScheme
+class _3D_EXPORT QgsTilingScheme
 {
   public:
     //! Creates invalid tiling scheme

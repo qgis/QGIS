@@ -19,7 +19,7 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     QgsPoint3DSymbol();
 
     QString type() const override { return "point"; }
-    QgsAbstract3DSymbol *clone() const override;
+    QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;

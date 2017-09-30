@@ -2,12 +2,5 @@
 
 ///@cond PRIVATE
 
-QgsChunkLoader::~QgsChunkLoader()
-{
-}
-
-QgsChunkLoaderFactory::~QgsChunkLoaderFactory()
-{
-}
 
 /// @endcond

@@ -100,7 +100,7 @@ Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::renderer( const Qgs3DM
     if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
       geom = QgsGeometry( geom.geometry()->segmentize() );
 
-    QgsAbstractGeometry *g = geom.geometry();
+    const QgsAbstractGeometry *g = geom.geometry();
 
     QgsGeos engine( g );
     QgsAbstractGeometry *buffered = engine.buffer( symbol.width() / 2., nSegments, endCapStyle, joinStyle, mitreLimit ); // factory

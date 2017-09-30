@@ -83,12 +83,9 @@ void QgsTerrainEntity::onShowBoundingBoxesChanged()
 
 void QgsTerrainEntity::invalidateMapImages()
 {
-  qDebug() << "TERRAIN - INVALIDATE MAP IMAGES";
-
   // handle active nodes
 
   updateNodes( mActiveNodes, mUpdateJobFactory.get() );
-  qDebug() << " updating " << mActiveNodes.count() << " active nodes";
 
   // handle inactive nodes afterwards
 
@@ -103,7 +100,6 @@ void QgsTerrainEntity::invalidateMapImages()
   }
 
   updateNodes( inactiveNodes, mUpdateJobFactory.get() );
-  qDebug() << " updating " << inactiveNodes.count() << " inactive nodes";
 
   setNeedsUpdate( true );
 }

@@ -138,6 +138,7 @@ void QgsPoint3DSymbolInstancedEntityFactory::addEntityForSelectedPoints( const Q
   QgsFeatureRequest req;
   req.setDestinationCrs( map.crs() );
   req.setFilterFids( layer->selectedFeatureIds() );
+  req.setSubsetOfAttributes( QgsAttributeList() );
 
   // build the entity
   QgsPoint3DSymbolInstancedEntityNode *entity = new QgsPoint3DSymbolInstancedEntityNode( map, layer, symbol, req );
@@ -153,6 +154,7 @@ void QgsPoint3DSymbolInstancedEntityFactory::addEntityForNotSelectedPoints( cons
   // build the feature request to select features
   QgsFeatureRequest req;
   req.setDestinationCrs( map.crs() );
+  req.setSubsetOfAttributes( QgsAttributeList() );
 
   QgsFeatureIds notSelected = layer->allFeatureIds();
   notSelected.subtract( layer->selectedFeatureIds() );
@@ -297,6 +299,7 @@ void QgsPoint3DSymbolModelEntityFactory::addEntitiesForSelectedPoints( const Qgs
 {
   QgsFeatureRequest req;
   req.setDestinationCrs( map.crs() );
+  req.setSubsetOfAttributes( QgsAttributeList() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
   addMeshEntities( map, layer, req, symbol, parent, true );
@@ -309,6 +312,7 @@ void QgsPoint3DSymbolModelEntityFactory::addEntitiesForNotSelectedPoints( const 
   // build the feature request to select features
   QgsFeatureRequest req;
   req.setDestinationCrs( map.crs() );
+  req.setSubsetOfAttributes( QgsAttributeList() );
   QgsFeatureIds notSelected = layer->allFeatureIds();
   notSelected.subtract( layer->selectedFeatureIds() );
   req.setFilterFids( notSelected );

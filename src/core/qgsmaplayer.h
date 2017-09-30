@@ -683,14 +683,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Sets 3D renderer for the layer. Takes ownership of the renderer.
-     * \note not available in Python bindings
      * \since QGIS 3.0
      */
     void setRenderer3D( QgsAbstract3DRenderer *renderer SIP_TRANSFER );
 
     /**
      * Returns 3D renderer associated with the layer. May be null.
-     * \note not available in Python bindings
      * \since QGIS 3.0
      */
     QgsAbstract3DRenderer *renderer3D() const;

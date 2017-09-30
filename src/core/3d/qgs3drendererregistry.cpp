@@ -6,10 +6,6 @@ Qgs3DRendererAbstractMetadata::Qgs3DRendererAbstractMetadata( const QString &typ
 {
 }
 
-Qgs3DRendererAbstractMetadata::~Qgs3DRendererAbstractMetadata()
-{
-}
-
 QString Qgs3DRendererAbstractMetadata::type() const
 {
   return mType;
@@ -18,10 +14,6 @@ QString Qgs3DRendererAbstractMetadata::type() const
 
 // ----------
 
-
-Qgs3DRendererRegistry::Qgs3DRendererRegistry()
-{
-}
 
 Qgs3DRendererRegistry::~Qgs3DRendererRegistry()
 {
