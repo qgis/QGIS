@@ -32,7 +32,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QDoubleSpinBox" name="spinRadius">
+    <widget class="QgsDoubleSpinBox" name="spinRadius">
      <property name="maximum">
       <double>99999.000000000000000</double>
      </property>
@@ -49,7 +49,7 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QDoubleSpinBox" name="spinMinorRadius">
+    <widget class="QgsDoubleSpinBox" name="spinMinorRadius">
      <property name="maximum">
       <double>99999.000000000000000</double>
      </property>
@@ -66,7 +66,7 @@
     </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QDoubleSpinBox" name="spinTopRadius">
+    <widget class="QgsDoubleSpinBox" name="spinTopRadius">
      <property name="maximum">
       <double>99999.000000000000000</double>
      </property>
@@ -80,7 +80,7 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QDoubleSpinBox" name="spinBottomRadius">
+    <widget class="QgsDoubleSpinBox" name="spinBottomRadius">
      <property name="maximum">
       <double>99999.000000000000000</double>
      </property>
@@ -97,7 +97,7 @@
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QDoubleSpinBox" name="spinSize">
+    <widget class="QgsDoubleSpinBox" name="spinSize">
      <property name="maximum">
       <double>99999.000000000000000</double>
      </property>
@@ -114,7 +114,7 @@
     </widget>
    </item>
    <item row="6" column="1">
-    <widget class="QDoubleSpinBox" name="spinLength">
+    <widget class="QgsDoubleSpinBox" name="spinLength">
      <property name="maximum">
       <double>99999.000000000000000</double>
      </property>
@@ -208,21 +208,21 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="spinTX">
+      <widget class="QgsDoubleSpinBox" name="spinTX">
        <property name="minimum">
         <double>-99.900000000000006</double>
        </property>
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QDoubleSpinBox" name="spinTY">
+      <widget class="QgsDoubleSpinBox" name="spinTY">
        <property name="minimum">
         <double>-99.900000000000006</double>
        </property>
       </widget>
      </item>
      <item row="1" column="3">
-      <widget class="QDoubleSpinBox" name="spinTZ">
+      <widget class="QgsDoubleSpinBox" name="spinTZ">
        <property name="minimum">
         <double>-99.900000000000006</double>
        </property>
@@ -236,21 +236,21 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="spinSX">
+      <widget class="QgsDoubleSpinBox" name="spinSX">
        <property name="value">
         <double>1.000000000000000</double>
        </property>
       </widget>
      </item>
      <item row="2" column="2">
-      <widget class="QDoubleSpinBox" name="spinSY">
+      <widget class="QgsDoubleSpinBox" name="spinSY">
        <property name="value">
         <double>1.000000000000000</double>
        </property>
       </widget>
      </item>
      <item row="2" column="3">
-      <widget class="QDoubleSpinBox" name="spinSZ">
+      <widget class="QgsDoubleSpinBox" name="spinSZ">
        <property name="value">
         <double>1.000000000000000</double>
        </property>
@@ -264,7 +264,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QDoubleSpinBox" name="spinRX">
+      <widget class="QgsDoubleSpinBox" name="spinRX">
        <property name="decimals">
         <number>0</number>
        </property>
@@ -274,7 +274,7 @@
       </widget>
      </item>
      <item row="3" column="2">
-      <widget class="QDoubleSpinBox" name="spinRY">
+      <widget class="QgsDoubleSpinBox" name="spinRY">
        <property name="decimals">
         <number>0</number>
        </property>
@@ -284,7 +284,7 @@
       </widget>
      </item>
      <item row="3" column="3">
-      <widget class="QDoubleSpinBox" name="spinRZ">
+      <widget class="QgsDoubleSpinBox" name="spinRZ">
        <property name="decimals">
         <number>0</number>
        </property>
@@ -303,6 +303,11 @@
    <extends>QWidget</extends>
    <header>qgsphongmaterialwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

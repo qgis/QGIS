@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QDoubleSpinBox" name="spinHeight">
+      <widget class="QgsDoubleSpinBox" name="spinHeight">
        <property name="minimum">
         <double>-99999.000000000000000</double>
        </property>
@@ -41,7 +41,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="spinExtrusion">
+      <widget class="QgsDoubleSpinBox" name="spinExtrusion">
        <property name="maximum">
         <double>99999.000000000000000</double>
        </property>
@@ -114,6 +114,11 @@
    <extends>QWidget</extends>
    <header>qgsphongmaterialwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
