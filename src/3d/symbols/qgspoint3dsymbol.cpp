@@ -21,6 +21,8 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
   mMaterial.writeXml( elemMaterial );
   elem.appendChild( elemMaterial );
 
+  elem.setAttribute( QStringLiteral( "shape" ), shapeToString( mShape ) );
+
   QVariantMap shapePropertiesCopy( mShapeProperties );
   shapePropertiesCopy["model"] = QVariant( context.pathResolver().writePath( shapePropertiesCopy["model"].toString() ) );
 
@@ -38,10 +40,48 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );
 
+  mShape = shapeFromString( elem.attribute( QStringLiteral( "shape" ) ) );
+
   QDomElement elemShapeProperties = elem.firstChildElement( QStringLiteral( "shape-properties" ) );
   mShapeProperties = QgsXmlUtils::readVariant( elemShapeProperties.firstChildElement() ).toMap();
   mShapeProperties["model"] = QVariant( context.pathResolver().readPath( mShapeProperties["model"].toString() ) );
 
   QDomElement elemTransform = elem.firstChildElement( QStringLiteral( "transform" ) );
   mTransform = Qgs3DUtils::stringToMatrix4x4( elemTransform.attribute( QStringLiteral( "matrix" ) ) );
+}
+
+QgsPoint3DSymbol::Shape QgsPoint3DSymbol::shapeFromString( const QString &shape )
+{
+  if ( shape ==  QStringLiteral( "sphere" ) )
+    return Sphere;
+  else if ( shape == QStringLiteral( "cone" ) )
+    return Cone;
+  else if ( shape == QStringLiteral( "cube" ) )
+    return Cube;
+  else if ( shape == QStringLiteral( "torus" ) )
+    return Torus;
+  else if ( shape == QStringLiteral( "plane" ) )
+    return Plane;
+  else if ( shape == QStringLiteral( "extruded-text" ) )
+    return ExtrudedText;
+  else if ( shape == QStringLiteral( "model" ) )
+    return Model;
+  else   // "cylinder" (default)
+    return Cylinder;
+}
+
+QString QgsPoint3DSymbol::shapeToString( QgsPoint3DSymbol::Shape shape )
+{
+  switch ( shape )
+  {
+    case Cylinder: return QStringLiteral( "cylinder" );
+    case Sphere: return QStringLiteral( "sphere" );
+    case Cone: return QStringLiteral( "cone" );
+    case Cube: return QStringLiteral( "cube" );
+    case Torus: return QStringLiteral( "torus" );
+    case Plane: return QStringLiteral( "plane" );
+    case ExtrudedText: return QStringLiteral( "extruded-text" );
+    case Model: return QStringLiteral( "model" );
+    default: Q_ASSERT( false ); return QString();
+  }
 }

@@ -10,13 +10,13 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
 {
   setupUi( this );
 
-  cboShape->addItem( tr( "Sphere" ), "sphere" );
-  cboShape->addItem( tr( "Cylinder" ), "cylinder" );
-  cboShape->addItem( tr( "Cube" ), "cube" );
-  cboShape->addItem( tr( "Cone" ), "cone" );
-  cboShape->addItem( tr( "Plane" ), "plane" );
-  cboShape->addItem( tr( "Torus" ), "torus" );
-  cboShape->addItem( tr( "3D Model" ), "model" );
+  cboShape->addItem( tr( "Sphere" ), QgsPoint3DSymbol::Sphere );
+  cboShape->addItem( tr( "Cylinder" ), QgsPoint3DSymbol::Cylinder );
+  cboShape->addItem( tr( "Cube" ), QgsPoint3DSymbol::Cube );
+  cboShape->addItem( tr( "Cone" ), QgsPoint3DSymbol::Cone );
+  cboShape->addItem( tr( "Plane" ), QgsPoint3DSymbol::Plane );
+  cboShape->addItem( tr( "Torus" ), QgsPoint3DSymbol::Torus );
+  cboShape->addItem( tr( "3D Model" ), QgsPoint3DSymbol::Model );
 
   setSymbol( QgsPoint3DSymbol() );
   onShapeChanged();
@@ -72,7 +72,7 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
 void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 {
   QVariantMap vm = symbol.shapeProperties();
-  int index = cboShape->findData( vm["shape"] );
+  int index = cboShape->findData( symbol.shape() );
   cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
 
   widgetMaterial->setEnabled( true );
@@ -141,8 +141,6 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
 {
   QVariantMap vm;
-  vm["shape"] = cboShape->itemData( cboShape->currentIndex() );
-
   switch ( cboShape->currentIndex() )
   {
     case 0:  // sphere
@@ -183,6 +181,7 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.rotate( rot );
 
   QgsPoint3DSymbol sym;
+  sym.setShape( ( QgsPoint3DSymbol::Shape ) cboShape->itemData( cboShape->currentIndex() ).toInt() );
   sym.setShapeProperties( vm );
   sym.setMaterial( widgetMaterial->material() );
   sym.setTransform( tr );

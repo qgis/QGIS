@@ -29,6 +29,29 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     //! Sets material used for shading of the symbol
     void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
 
+    //! 3D shape types supported by the symbol
+    enum Shape
+    {
+      Cylinder,
+      Sphere,
+      Cone,
+      Cube,
+      Torus,
+      Plane,
+      ExtrudedText,  //!< Supported in Qt 5.9+
+      Model,
+    };
+
+    //! Returns shape enum value from a string
+    static Shape shapeFromString( const QString &shape );
+    //! Returns string from a shape enum value
+    static QString shapeToString( Shape shape );
+
+    //! Returns 3D shape for points
+    Shape shape() const { return mShape; }
+    //! Sets 3D shape for points
+    void setShape( Shape shape ) { mShape = shape; }
+
     //! Returns a key-value dictionary of point shape properties
     QVariantMap shapeProperties() const { return mShapeProperties; }
     //! Sets a key-value dictionary of point shape properties
@@ -41,7 +64,8 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 
   private:
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
-    QVariantMap mShapeProperties;  //!< What kind of shape to use and what
+    Shape mShape = Cylinder;  //!< What kind of shape to use
+    QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)
     QMatrix4x4 mTransform;  //!< Transform of individual instanced models
 };
 

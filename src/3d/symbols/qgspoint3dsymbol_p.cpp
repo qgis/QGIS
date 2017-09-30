@@ -37,7 +37,7 @@
 QgsPoint3DSymbolEntity::QgsPoint3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  if ( symbol.shapeProperties()["shape"].toString() == "model" )
+  if ( symbol.shape() == QgsPoint3DSymbol::Model )
   {
     QgsPoint3DSymbolModelEntityFactory::addEntitiesForSelectedPoints( map, layer, symbol, this );
     QgsPoint3DSymbolModelEntityFactory::addEntitiesForNotSelectedPoints( map, layer, symbol, this );
@@ -199,78 +199,7 @@ Qt3DRender::QGeometryRenderer *QgsPoint3DSymbolInstancedEntityNode::renderer( co
   instanceDataAttribute->setCount( count );
   instanceDataAttribute->setByteStride( 3 * sizeof( float ) );
 
-  Qt3DRender::QGeometry *geometry = nullptr;
-  QVariantMap shapeProperties = symbol.shapeProperties();
-  QString shape = shapeProperties["shape"].toString();
-  if ( shape == "sphere" )
-  {
-    float radius = shapeProperties["radius"].toFloat();
-    Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
-    g->setRadius( radius ? radius : 10 );
-    geometry = g;
-  }
-  else if ( shape == "cone" )
-  {
-    float length = shapeProperties["length"].toFloat();
-    float bottomRadius = shapeProperties["bottomRadius"].toFloat();
-    float topRadius = shapeProperties["topRadius"].toFloat();
-    Qt3DExtras::QConeGeometry *g = new Qt3DExtras::QConeGeometry;
-    g->setLength( length ? length : 10 );
-    g->setBottomRadius( bottomRadius );
-    g->setTopRadius( topRadius );
-    //g->setHasBottomEndcap(hasBottomEndcap);
-    //g->setHasTopEndcap(hasTopEndcap);
-    geometry = g;
-  }
-  else if ( shape == "cube" )
-  {
-    float size = shapeProperties["size"].toFloat();
-    Qt3DExtras::QCuboidGeometry *g = new Qt3DExtras::QCuboidGeometry;
-    g->setXExtent( size ? size : 10 );
-    g->setYExtent( size ? size : 10 );
-    g->setZExtent( size ? size : 10 );
-    geometry = g;
-  }
-  else if ( shape == "torus" )
-  {
-    float radius = shapeProperties["radius"].toFloat();
-    float minorRadius = shapeProperties["minorRadius"].toFloat();
-    Qt3DExtras::QTorusGeometry *g = new Qt3DExtras::QTorusGeometry;
-    g->setRadius( radius ? radius : 10 );
-    g->setMinorRadius( minorRadius ? minorRadius : 5 );
-    geometry = g;
-  }
-  else if ( shape == "plane" )
-  {
-    float size = shapeProperties["size"].toFloat();
-    Qt3DExtras::QPlaneGeometry *g = new Qt3DExtras::QPlaneGeometry;
-    g->setWidth( size ? size : 10 );
-    g->setHeight( size ? size : 10 );
-    geometry = g;
-  }
-#if QT_VERSION >= 0x050900
-  else if ( shape == "extrudedText" )
-  {
-    float depth = shapeProperties["depth"].toFloat();
-    QString text = shapeProperties["text"].toString();
-    Qt3DExtras::QExtrudedTextGeometry *g = new Qt3DExtras::QExtrudedTextGeometry;
-    g->setDepth( depth ? depth : 1 );
-    g->setText( text );
-    geometry = g;
-  }
-#endif
-  else  // shape == "cylinder" or anything else
-  {
-    float radius = shapeProperties["radius"].toFloat();
-    float length = shapeProperties["length"].toFloat();
-    Qt3DExtras::QCylinderGeometry *g = new Qt3DExtras::QCylinderGeometry;
-    //g->setRings(2);  // how many vertices vertically
-    //g->setSlices(8); // how many vertices on circumference
-    g->setRadius( radius ? radius : 10 );
-    g->setLength( length ? length : 10 );
-    geometry = g;
-  }
-
+  Qt3DRender::QGeometry *geometry = symbolGeometry( symbol.shape(), symbol.shapeProperties() );
   geometry->addAttribute( instanceDataAttribute );
   geometry->setBoundingVolumePositionAttribute( instanceDataAttribute );
 
@@ -279,6 +208,91 @@ Qt3DRender::QGeometryRenderer *QgsPoint3DSymbolInstancedEntityNode::renderer( co
   renderer->setInstanceCount( count );
 
   return renderer;
+}
+
+Qt3DRender::QGeometry *QgsPoint3DSymbolInstancedEntityNode::symbolGeometry( QgsPoint3DSymbol::Shape shape, const QVariantMap &shapeProperties ) const
+{
+  switch ( shape )
+  {
+    case QgsPoint3DSymbol::Cylinder:
+    {
+      float radius = shapeProperties["radius"].toFloat();
+      float length = shapeProperties["length"].toFloat();
+      Qt3DExtras::QCylinderGeometry *g = new Qt3DExtras::QCylinderGeometry;
+      //g->setRings(2);  // how many vertices vertically
+      //g->setSlices(8); // how many vertices on circumference
+      g->setRadius( radius ? radius : 10 );
+      g->setLength( length ? length : 10 );
+      return g;
+    }
+
+    case QgsPoint3DSymbol::Sphere:
+    {
+      float radius = shapeProperties["radius"].toFloat();
+      Qt3DExtras::QSphereGeometry *g = new Qt3DExtras::QSphereGeometry;
+      g->setRadius( radius ? radius : 10 );
+      return g;
+    }
+
+    case QgsPoint3DSymbol::Cone:
+    {
+      float length = shapeProperties["length"].toFloat();
+      float bottomRadius = shapeProperties["bottomRadius"].toFloat();
+      float topRadius = shapeProperties["topRadius"].toFloat();
+      Qt3DExtras::QConeGeometry *g = new Qt3DExtras::QConeGeometry;
+      g->setLength( length ? length : 10 );
+      g->setBottomRadius( bottomRadius );
+      g->setTopRadius( topRadius );
+      //g->setHasBottomEndcap(hasBottomEndcap);
+      //g->setHasTopEndcap(hasTopEndcap);
+      return g;
+    }
+
+    case QgsPoint3DSymbol::Cube:
+    {
+      float size = shapeProperties["size"].toFloat();
+      Qt3DExtras::QCuboidGeometry *g = new Qt3DExtras::QCuboidGeometry;
+      g->setXExtent( size ? size : 10 );
+      g->setYExtent( size ? size : 10 );
+      g->setZExtent( size ? size : 10 );
+      return g;
+    }
+
+    case QgsPoint3DSymbol::Torus:
+    {
+      float radius = shapeProperties["radius"].toFloat();
+      float minorRadius = shapeProperties["minorRadius"].toFloat();
+      Qt3DExtras::QTorusGeometry *g = new Qt3DExtras::QTorusGeometry;
+      g->setRadius( radius ? radius : 10 );
+      g->setMinorRadius( minorRadius ? minorRadius : 5 );
+      return g;
+    }
+
+    case QgsPoint3DSymbol::Plane:
+    {
+      float size = shapeProperties["size"].toFloat();
+      Qt3DExtras::QPlaneGeometry *g = new Qt3DExtras::QPlaneGeometry;
+      g->setWidth( size ? size : 10 );
+      g->setHeight( size ? size : 10 );
+      return g;
+    }
+
+#if QT_VERSION >= 0x050900
+    case QgsPoint3DSymbol::ExtrudedText:
+    {
+      float depth = shapeProperties["depth"].toFloat();
+      QString text = shapeProperties["text"].toString();
+      Qt3DExtras::QExtrudedTextGeometry *g = new Qt3DExtras::QExtrudedTextGeometry;
+      g->setDepth( depth ? depth : 1 );
+      g->setText( text );
+      return g;
+    }
+#endif
+
+    default:
+      Q_ASSERT( false );
+      return nullptr;
+  }
 }
 
 //* 3D MODEL RENDERING *//

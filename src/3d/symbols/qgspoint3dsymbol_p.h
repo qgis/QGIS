@@ -17,6 +17,8 @@
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DCore/QTransform>
 
+#include "qgspoint3dsymbol.h"
+
 class Qgs3DMapSettings;
 class QgsPoint3DSymbol;
 
@@ -48,6 +50,7 @@ class QgsPoint3DSymbolInstancedEntityNode : public Qt3DCore::QEntity
 
   private:
     Qt3DRender::QGeometryRenderer *renderer( const QgsPoint3DSymbol &symbol, const QList<QVector3D> &positions ) const;
+    Qt3DRender::QGeometry *symbolGeometry( QgsPoint3DSymbol::Shape shape, const QVariantMap &shapeProperties ) const;
 };
 
 class QgsPoint3DSymbolModelEntityFactory
