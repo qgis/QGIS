@@ -757,8 +757,8 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
         my $ACTUAL_CLASS = $CLASSNAME[$#CLASSNAME];
         dbg_info("Declare flags: $ACTUAL_CLASS");
-        $LINE = "$1typedef QFlags<$ACTUAL_CLASS::$3> $2;\n";
-        $QFLAG_HASH{"$ACTUAL_CLASS::$2"} = "$ACTUAL_CLASS::$3";
+        $LINE = "$1typedef QFlags<${ACTUAL_CLASS}::$3> $2;\n";
+        $QFLAG_HASH{"${ACTUAL_CLASS}::$2"} = "${ACTUAL_CLASS}::$3";
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){
