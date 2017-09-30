@@ -1,6 +1,24 @@
-#include <QVector4D>
-#include "qgs3dutils.h"
+/***************************************************************************
+  qgschunkedentity_p.cpp
+  --------------------------------------
+  Date                 : July 2017
+  Copyright            : (C) 2017 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgschunkedentity_p.h"
+
+#include <QElapsedTimer>
+#include <QVector4D>
+
+#include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
 #include "qgschunklist_p.h"
 #include "qgschunkloader_p.h"
@@ -96,7 +114,6 @@ QgsChunkedEntity::~QgsChunkedEntity()
   //delete chunkLoaderFactory;
 }
 
-#include <QElapsedTimer>
 
 void QgsChunkedEntity::update( const SceneState &state )
 {
@@ -216,7 +233,6 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
   if ( !node->entity() )
   {
     // this happens initially when root node is not ready yet
-    qDebug() << "BOOM!";
     return;
   }
 

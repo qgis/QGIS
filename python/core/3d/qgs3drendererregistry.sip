@@ -1,10 +1,11 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/3d/qgs3drendererregistry.h                                  *
+ * src/core/./3d/qgs3drendererregistry.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
+
 
 
 
@@ -60,6 +61,9 @@ class Qgs3DRendererRegistry
 %End
   public:
     Qgs3DRendererRegistry();
+%Docstring
+Creates registry of 3D renderers
+%End
 
     ~Qgs3DRendererRegistry();
 
@@ -90,7 +94,7 @@ class Qgs3DRendererRegistry
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/3d/qgs3drendererregistry.h                                  *
+ * src/core/./3d/qgs3drendererregistry.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

@@ -1,5 +1,20 @@
-#ifndef QGS3DMAPWIDGET_H
-#define QGS3DMAPWIDGET_H
+/***************************************************************************
+  qgs3dmapcanvas.h
+  --------------------------------------
+  Date                 : July 2017
+  Copyright            : (C) 2017 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGS3DMAPCANVAS_H
+#define QGS3DMAPCANVAS_H
 
 #include <QWidget>
 
@@ -41,4 +56,4 @@ class Qgs3DMapCanvas : public QWidget
     Qgs3DMapScene *mScene;
 };
 
-#endif // QGS3DMAPWIDGET_H
+#endif // QGS3DMAPCANVAS_H
