@@ -58,7 +58,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVecto
   QSet<QString> defaultActionScopes;
   defaultActionScopes << QStringLiteral( "Canvas" )
                       << QStringLiteral( "FieldSpecific" )
-                      << QStringLiteral( "AttributeTableRow" )
+                      << QStringLiteral( "Feature" )
                       << QStringLiteral( "FeatureForm" );
 
   init( defaultActionScopes );
