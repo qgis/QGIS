@@ -23,10 +23,10 @@ class QgsAuthSettingsWidget : QWidget
   public:
 
     explicit QgsAuthSettingsWidget( QWidget *parent /TransferThis/ = 0,
-                                      const QString &configId = QString(),
-                                      const QString &username = QString(),
-                                      const QString &password = QString(),
-                                      const QString &dataprovider = QString() );
+                                    const QString &configId = QString(),
+                                    const QString &username = QString(),
+                                    const QString &password = QString(),
+                                    const QString &dataprovider = QString() );
 %Docstring
  Create a dialog for setting an associated authentication config, either
  from existing configs, or creating/removing them from auth database

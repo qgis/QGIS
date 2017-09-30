@@ -45,10 +45,10 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \param dataprovider The key of the calling layer provider, if applicable
      */
     explicit QgsAuthSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = 0,
-                                      const QString &configId = QString(),
-                                      const QString &username = QString(),
-                                      const QString &password = QString(),
-                                      const QString &dataprovider = QString() );
+                                    const QString &configId = QString(),
+                                    const QString &username = QString(),
+                                    const QString &password = QString(),
+                                    const QString &dataprovider = QString() );
 
     /**
      * \brief setWarningText set the text of the warning label
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     /**
      * \brief on_txtUserName_textChanged set convert button state
      * \param text the changet text
-     * \param Not available in Python bindings
+     * \note Not available in Python bindings
      */
     void on_txtUserName_textChanged( const QString &text ) SIP_SKIP;
 
