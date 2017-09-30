@@ -73,7 +73,7 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthconfigeditor.cpp
   auth/qgsauthconfigidedit.cpp
   auth/qgsauthconfigselect.cpp
-  auth/qgsauthenticationwidget.cpp
+  auth/qgsauthsettingswidget.cpp
   auth/qgsautheditorwidgets.cpp
   auth/qgsauthguiutils.cpp
   auth/qgsauthidentitieseditor.cpp
@@ -580,7 +580,7 @@ SET(QGIS_GUI_MOC_HDRS
   auth/qgsauthconfigeditor.h
   auth/qgsauthconfigidedit.h
   auth/qgsauthconfigselect.h
-  auth/qgsauthenticationwidget.h
+  auth/qgsauthsettingswidget.h
   auth/qgsautheditorwidgets.h
   auth/qgsauthidentitieseditor.h
   auth/qgsauthimportcertdialog.h
@@ -730,7 +730,7 @@ SET(QGIS_GUI_HDRS
   auth/qgsauthconfigeditor.h
   auth/qgsauthconfigidedit.h
   auth/qgsauthconfigselect.h
-  auth/qgsauthenticationwidget.h
+  auth/qgsauthsettingswidget.h
   auth/qgsautheditorwidgets.h
   auth/qgsauthguiutils.h
   auth/qgsauthidentitieseditor.h
@@ -785,7 +785,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigeditor.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigidedit.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigselect.h
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthenticationwidget.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsettingswidget.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfiguriedit.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsautheditorwidgets.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthidentitieseditor.h

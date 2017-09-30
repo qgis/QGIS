@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/auth/qgsauthenticationwidget.h                               *
+ * src/gui/auth/qgsauthsettingswidget.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,7 +9,7 @@
 
 
 
-class QgsAuthenticationWidget : QWidget
+class QgsAuthSettingsWidget : QWidget
 {
 %Docstring
  Widget for entering authentication credentials both in the form username/password
@@ -18,11 +18,11 @@ class QgsAuthenticationWidget : QWidget
 %End
 
 %TypeHeaderCode
-#include "qgsauthenticationwidget.h"
+#include "qgsauthsettingswidget.h"
 %End
   public:
 
-    explicit QgsAuthenticationWidget( QWidget *parent /TransferThis/ = 0,
+    explicit QgsAuthSettingsWidget( QWidget *parent /TransferThis/ = 0,
                                       const QString &configId = QString(),
                                       const QString &username = QString(),
                                       const QString &password = QString(),
@@ -46,7 +46,7 @@ class QgsAuthenticationWidget : QWidget
     void setBasicText( const QString &basicText );
 %Docstring
  setBasicText set the text of the warning label
- \param warningText the text of the basic tab label
+ \param basicText the text of the basic tab label
 %End
 
     const QString username( ) const;
@@ -102,7 +102,7 @@ class QgsAuthenticationWidget : QWidget
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/auth/qgsauthenticationwidget.h                               *
+ * src/gui/auth/qgsauthsettingswidget.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

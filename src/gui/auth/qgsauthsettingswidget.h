@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsauthenticationwidget.h - QgsAuthenticationWidget
+  qgsauthsettingswidget.h - QgsAuthSettingsWidget
 
  ---------------------
  begin                : 28.9.2017
@@ -13,13 +13,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSAUTHENTICATIONWIDGET_H
-#define QGSAUTHENTICATIONWIDGET_H
+#ifndef QGSAUTHSETTINGSWIDGET_H
+#define QGSAUTHSETTINGSWIDGET_H
 
 #include "qgis_gui.h"
 #include "qgis.h"
 
-#include "ui_qgsauthenticationwidget.h"
+#include "ui_qgsauthsettingswidget.h"
 
 #include <QWidget>
 
@@ -28,7 +28,7 @@
  * and by using QGIS Authentication Database and its authentication configurations.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsAuthenticationWidget : public QWidget, private Ui::QgsAuthenticationWidget
+class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSettingsWidget
 {
 
     Q_OBJECT
@@ -44,7 +44,7 @@ class GUI_EXPORT QgsAuthenticationWidget : public QWidget, private Ui::QgsAuthen
      * \param password
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthenticationWidget( QWidget *parent SIP_TRANSFERTHIS = 0,
+    explicit QgsAuthSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = 0,
                                       const QString &configId = QString(),
                                       const QString &username = QString(),
                                       const QString &password = QString(),
@@ -58,7 +58,7 @@ class GUI_EXPORT QgsAuthenticationWidget : public QWidget, private Ui::QgsAuthen
 
     /**
      * \brief setBasicText set the text of the warning label
-     * \param warningText the text of the basic tab label
+     * \param basicText the text of the basic tab label
      */
     void setBasicText( const QString &basicText );
 
@@ -103,13 +103,14 @@ class GUI_EXPORT QgsAuthenticationWidget : public QWidget, private Ui::QgsAuthen
 
     /**
      * \brief on_txtUserName_textChanged set convert button state
+     * \param text the changet text
      * \param Not available in Python bindings
      */
     void on_txtUserName_textChanged( const QString &text ) SIP_SKIP;
 
     /**
      * \brief on_txtPassword_textChanged set convert button state
-     * \param text
+     * \param text the changed text
      * \note Not available in Python bindings
      */
     void on_txtPassword_textChanged( const QString &text ) SIP_SKIP;
@@ -117,8 +118,8 @@ class GUI_EXPORT QgsAuthenticationWidget : public QWidget, private Ui::QgsAuthen
 
   private:
 
-    void setConvertBtnState( );
+    void updateConvertBtnState( );
 
 };
 
-#endif // QGSAUTHENTICATIONWIDGET_H
+#endif // QGSAUTHSETTINGSWIDGET_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsauthenticationwidget.cpp - QgsAuthenticationWidget
+  qgsauthsettingswidget.cpp - QgsAuthSettingsWidget
 
  ---------------------
  begin                : 28.9.2017
@@ -13,13 +13,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsauthenticationwidget.h"
+#include "qgsauthsettingswidget.h"
 #include "qgsauthmanager.h"
 #include "qgsauthconfig.h"
 
 #include <QDateTime>
 
-QgsAuthenticationWidget::QgsAuthenticationWidget( QWidget *parent,
+QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
     const QString &configId,
     const QString &username,
     const QString &password,
@@ -42,45 +42,45 @@ QgsAuthenticationWidget::QgsAuthenticationWidget( QWidget *parent,
   {
     tabAuth->setCurrentIndex( tabAuth->indexOf( tabBasic ) );
   }
-  setConvertBtnState();
+  updateConvertBtnState();
 }
 
-void QgsAuthenticationWidget::setWarningText( const QString &warningText )
+void QgsAuthSettingsWidget::setWarningText( const QString &warningText )
 {
   lblWarning->setText( warningText );
 }
 
-void QgsAuthenticationWidget::setBasicText( const QString &basicText )
+void QgsAuthSettingsWidget::setBasicText( const QString &basicText )
 {
   lblBasic->setText( basicText );
 }
 
-const QString QgsAuthenticationWidget::username() const
+const QString QgsAuthSettingsWidget::username() const
 {
   return txtUserName->text();
 }
 
-const QString QgsAuthenticationWidget::password() const
+const QString QgsAuthSettingsWidget::password() const
 {
   return txtPassword->text();
 }
 
-const QString QgsAuthenticationWidget::configId() const
+const QString QgsAuthSettingsWidget::configId() const
 {
   return mAuthConfigSelect->configId();
 }
 
-int QgsAuthenticationWidget::currentTabIndex() const
+int QgsAuthSettingsWidget::currentTabIndex() const
 {
   return tabAuth->currentIndex( );
 }
 
-bool QgsAuthenticationWidget::btnConvertToEncryptedIsEnabled() const
+bool QgsAuthSettingsWidget::btnConvertToEncryptedIsEnabled() const
 {
   return btnConvertToEncrypted->isEnabled( );
 }
 
-bool QgsAuthenticationWidget::on_btnConvertToEncrypted_clicked()
+bool QgsAuthSettingsWidget::on_btnConvertToEncrypted_clicked()
 {
   tabAuth->setCurrentIndex( tabAuth->indexOf( tabConfigurations ) );
   QgsAuthMethodConfig config( QStringLiteral( "Basic" ) );
@@ -101,19 +101,19 @@ bool QgsAuthenticationWidget::on_btnConvertToEncrypted_clicked()
   }
 }
 
-void QgsAuthenticationWidget::on_txtUserName_textChanged( const QString &text )
+void QgsAuthSettingsWidget::on_txtUserName_textChanged( const QString &text )
 {
   Q_UNUSED( text );
-  setConvertBtnState();
+  updateConvertBtnState();
 }
 
-void QgsAuthenticationWidget::on_txtPassword_textChanged( const QString &text )
+void QgsAuthSettingsWidget::on_txtPassword_textChanged( const QString &text )
 {
   Q_UNUSED( text );
-  setConvertBtnState();
+  updateConvertBtnState();
 }
 
-void QgsAuthenticationWidget::setConvertBtnState()
+void QgsAuthSettingsWidget::updateConvertBtnState()
 {
   btnConvertToEncrypted->setEnabled( ! txtUserName->text().isEmpty() || ! txtPassword->text().isEmpty() );
 }

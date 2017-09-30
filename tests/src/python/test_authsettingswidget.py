@@ -3,7 +3,7 @@
 Tests for authentication widget
 
 From build dir, run from test directory:
-LC_ALL=en_US.UTF-8 ctest -R PyQgsAuthenticationWidget -V
+LC_ALL=en_US.UTF-8 ctest -R PyQgsAuthSettingsWidget -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ import tempfile
 import random
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings
-from qgis.gui import QgsAuthenticationWidget
+from qgis.gui import QgsAuthSettingsWidget
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
@@ -73,7 +73,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         """
         Test the widget with no args
         """
-        w = QgsAuthenticationWidget()
+        w = QgsAuthSettingsWidget()
         self.assertEqual(w.username(), '')
         self.assertEqual(w.password(), '')
         self.assertEqual(w.configId(), '')
@@ -84,7 +84,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         """
         Test the widget with configId
         """
-        w = QgsAuthenticationWidget(None, self.auth_config.id())
+        w = QgsAuthSettingsWidget(None, self.auth_config.id())
         self.assertEqual(w.username(), '')
         self.assertEqual(w.password(), '')
         self.assertEqual(w.configId(), self.auth_config.id())
@@ -95,7 +95,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         """
         Test the widget with username only
         """
-        w = QgsAuthenticationWidget(None, None, 'username')
+        w = QgsAuthSettingsWidget(None, None, 'username')
         self.assertEqual(w.username(), 'username')
         self.assertEqual(w.password(), '')
         self.assertEqual(w.configId(), '')
@@ -105,7 +105,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         """
         Test the widget with password only
         """
-        w = QgsAuthenticationWidget(None, None, None, 'password')
+        w = QgsAuthSettingsWidget(None, None, None, 'password')
         self.assertEqual(w.username(), '')
         self.assertEqual(w.password(), 'password')
         self.assertEqual(w.configId(), '')
@@ -115,7 +115,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         """
         Test the widget with username and password
         """
-        w = QgsAuthenticationWidget(None, None, 'username', 'password')
+        w = QgsAuthSettingsWidget(None, None, 'username', 'password')
         self.assertEqual(w.username(), 'username')
         self.assertEqual(w.password(), 'password')
         self.assertEqual(w.configId(), '')
@@ -126,7 +126,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         """
         Test the widget to encrypted conversion
         """
-        w = QgsAuthenticationWidget(None, None, 'username', 'password')
+        w = QgsAuthSettingsWidget(None, None, 'username', 'password')
         self.assertEqual(w.username(), 'username')
         self.assertEqual(w.password(), 'password')
         self.assertEqual(w.configId(), '')
