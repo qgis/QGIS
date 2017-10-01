@@ -9929,7 +9929,7 @@ void QgisApp::new3DMapCanvas()
 
   // TODO: combine with code in createNewMapCanvasDock()
   Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
-  map3DWidget->setWindowTitle( "Super 3D Map Widget" );
+  map3DWidget->setWindowTitle( "3D Map" );
   map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
   map3DWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
   map3DWidget->setMap( map );
