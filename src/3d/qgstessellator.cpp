@@ -16,6 +16,7 @@
 #include "qgstessellator.h"
 
 #include "qgscurve.h"
+#include "qgsgeometry.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
 
@@ -111,6 +112,42 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
 
 void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight )
 {
+  // At this point we assume that input polygons are valid according to the OGC definition.
+  // This means e.g. no duplicate points, polygons are simple (no butterfly shaped polygon with self-intersection),
+  // internal rings are inside exterior rings, rings do not cross each other, no dangles.
+
+  // There is however an issue with polygons where rings touch:
+  //  +---+
+  //  |   |
+  //  | +-+-+
+  //  | | | |
+  //  | +-+ |
+  //  |     |
+  //  +-----+
+  // This is a valid polygon with one exterior and one interior ring that touch at one point,
+  // but poly2tri library does not allow interior rings touch each other or exterior ring.
+  // TODO: Handle the situation better - rather than just detecting the problem, try to fix
+  // it by converting touching rings into one ring.
+
+  if ( polygon.numInteriorRings() > 0 )
+  {
+    QList<QgsGeometry> geomRings;
+    geomRings << QgsGeometry( polygon.exteriorRing()->clone() );
+    for ( int i = 0; i < polygon.numInteriorRings(); ++i )
+      geomRings << QgsGeometry( polygon.interiorRing( i )->clone() );
+
+    for ( int i = 0; i < geomRings.count(); ++i )
+      for ( int j = i + 1; j < geomRings.count(); ++j )
+      {
+        if ( geomRings[i].intersects( geomRings[j] ) )
+        {
+          // skip the polygon - it would cause a crash inside poly2tri library
+          qDebug() << "polygon rings intersect each other - skipping";
+          return;
+        }
+      }
+  }
+
   const QgsCurve *exterior = polygon.exteriorRing();
 
   QList< std::vector<p2t::Point *> > polylinesToDelete;
