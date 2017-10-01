@@ -917,10 +917,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "simplify null" ) << "simplify(NULL,5)" << false << QVariant();
       QTest::newRow( "simplify point" ) << "geom_to_wkt(simplify(geom_from_wkt('POINT(1 2)'),10))" << false << QVariant( "Point (1 2)" );
       QTest::newRow( "simplify line" ) << "geom_to_wkt(simplify(geometry:=geom_from_wkt('LineString(0 0, 5 0, 10 0)'),tolerance:=5))" << false << QVariant( "LineString (0 0, 10 0)" );
-      QTest::newRow( "simplify_vw not geom" ) << "simplify_vw('g',5)" << true << QVariant();
-      QTest::newRow( "simplify_vw null" ) << "simplify_vw(NULL,5)" << false << QVariant();
-      QTest::newRow( "simplify_vw point" ) << "geom_to_wkt(simplify_vw(geom_from_wkt('POINT(1 2)'),10))" << false << QVariant( "Point (1 2)" );
-      QTest::newRow( "simplify_vw line" ) << "geom_to_wkt(simplify_vw(geometry:=geom_from_wkt('LineString(0 0, 5 0, 5.01 10, 5.02 0, 10 0)'),tolerance:=5))" << false << QVariant( "LineString (0 0, 10 0)" );
+      QTest::newRow( "simplify_by_area not geom" ) << "simplify_by_area('g',5)" << true << QVariant();
+      QTest::newRow( "simplify_by_area null" ) << "simplify_by_area(NULL,5)" << false << QVariant();
+      QTest::newRow( "simplify_by_area point" ) << "geom_to_wkt(simplify_by_area(geom_from_wkt('POINT(1 2)'),10))" << false << QVariant( "Point (1 2)" );
+      QTest::newRow( "simplify_by_area line" ) << "geom_to_wkt(simplify_by_area(geometry:=geom_from_wkt('LineString(0 0, 5 0, 5.01 10, 5.02 0, 10 0)'),tolerance:=5))" << false << QVariant( "LineString (0 0, 10 0)" );
       QTest::newRow( "smooth not geom" ) << "smooth('g',5)" << true << QVariant();
       QTest::newRow( "smooth null" ) << "smooth(NULL,5)" << false << QVariant();
       QTest::newRow( "smooth point" ) << "geom_to_wkt(smooth(geom_from_wkt('POINT(1 2)'),10))" << false << QVariant( "Point (1 2)" );
