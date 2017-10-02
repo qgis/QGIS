@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>405</width>
     <height>264</height>
    </rect>
   </property>
@@ -89,16 +89,6 @@
        <string>Basic</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="3" column="0" colspan="2">
-        <widget class="QLabel" name="lblWarning">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;Warning: credentials are stored unencrypted (in clear text) in the project file!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="5" column="1">
         <spacer name="verticalSpacer">
          <property name="orientation">
@@ -142,7 +132,44 @@
        <item row="1" column="1">
         <widget class="QLineEdit" name="txtUserName"/>
        </item>
-       <item row="0" column="0" colspan="2">
+       <item row="1" column="2">
+        <widget class="QCheckBox" name="cbStoreUsername">
+         <property name="text">
+          <string>Store</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QCheckBox" name="cbStorePassword">
+         <property name="text">
+          <string>Store</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="3">
+        <widget class="QPushButton" name="btnConvertToEncrypted">
+         <property name="text">
+          <string>Convert to configuration</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="3">
+        <widget class="QLabel" name="lblWarning">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;Warning: credentials are stored unencrypted (in clear text) in the project file!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
         <widget class="QLabel" name="lblBasic">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -158,13 +185,6 @@
          </property>
          <property name="wordWrap">
           <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QPushButton" name="btnConvertToEncrypted">
-         <property name="text">
-          <string>Convert to configuration</string>
          </property>
         </widget>
        </item>
@@ -186,6 +206,15 @@
    <header>qgsauthconfigselect.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabAuth</tabstop>
+  <tabstop>mAuthConfigSelect</tabstop>
+  <tabstop>txtUserName</tabstop>
+  <tabstop>cbStoreUsername</tabstop>
+  <tabstop>txtPassword</tabstop>
+  <tabstop>cbStorePassword</tabstop>
+  <tabstop>btnConvertToEncrypted</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

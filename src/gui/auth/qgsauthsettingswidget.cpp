@@ -25,6 +25,7 @@ QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
     const QString &password,
     const QString &dataprovider )
   : QWidget( parent )
+  , mDataprovider( dataprovider )
 {
   setupUi( this );
   txtPassword->setText( password );
@@ -40,6 +41,8 @@ QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
   connect( btnConvertToEncrypted, &QPushButton::clicked, this, &QgsAuthSettingsWidget::convertToEncrypted );
   connect( txtUserName, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::userNameTextChanged );
   connect( txtPassword, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::passwordTextChanged );
+  // Hide store password and username by default
+  showStoreCheckboxes( false );
   updateSelectedTab();
   updateConvertBtnState();
 }
@@ -82,19 +85,64 @@ void QgsAuthSettingsWidget::setConfigId( const QString &configId )
   updateSelectedTab();
 }
 
+void QgsAuthSettingsWidget::setDataprovider( const QString &dataprovider )
+{
+  mDataprovider = dataprovider;
+  mAuthConfigSelect->setDataProviderKey( dataprovider );
+}
+
+const QString QgsAuthSettingsWidget::dataprovider() const
+{
+  return mDataprovider;
+}
+
 const QString QgsAuthSettingsWidget::configId() const
 {
   return mAuthConfigSelect->configId();
 }
 
-int QgsAuthSettingsWidget::currentTabIndex() const
-{
-  return tabAuth->currentIndex( );
-}
-
 bool QgsAuthSettingsWidget::btnConvertToEncryptedIsEnabled() const
 {
   return btnConvertToEncrypted->isEnabled( );
+}
+
+void QgsAuthSettingsWidget::showStoreCheckboxes( bool enabled )
+{
+  if ( enabled )
+  {
+    cbStorePassword->show();
+    cbStoreUsername->show();
+  }
+  else
+  {
+    cbStorePassword->hide();
+    cbStoreUsername->hide();
+  }
+}
+
+void QgsAuthSettingsWidget::setStoreUsername( bool checked )
+{
+  cbStoreUsername->setChecked( checked );
+}
+
+void QgsAuthSettingsWidget::setStorePassword( bool checked )
+{
+  cbStorePassword->setChecked( checked );
+}
+
+bool QgsAuthSettingsWidget::storePasswordIsChecked() const
+{
+  return cbStorePassword->isChecked( );
+}
+
+bool QgsAuthSettingsWidget::storeUsernameIsChecked() const
+{
+  return cbStoreUsername->isChecked( );
+}
+
+bool QgsAuthSettingsWidget::configurationTabIsSelected()
+{
+  return tabAuth->currentIndex( ) == tabAuth->indexOf( tabConfigurations );
 }
 
 bool QgsAuthSettingsWidget::convertToEncrypted( )

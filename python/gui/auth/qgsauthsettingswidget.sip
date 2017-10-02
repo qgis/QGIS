@@ -88,17 +88,68 @@ class QgsAuthSettingsWidget : QWidget
   param configId the authentication configuration id
 %End
 
-    int currentTabIndex( ) const;
+    void setDataprovider( const QString &dataprovider );
 %Docstring
- currentTabIndex, mainly useful for unit tests
- :return: active tab index
- :rtype: int
+ setDataprovider set the data provider key for filtering compatible authentication configurations
+ \param dataprovider data provider key
+%End
+
+    const QString dataprovider( ) const;
+%Docstring
+ dataprovider
+ :return: the data provider key used to filter compatible authentication configurations
+ :rtype: str
 %End
 
     bool btnConvertToEncryptedIsEnabled( ) const;
 %Docstring
  convertButtonEnabled, mainly useful for unit tests
  :return: true if the convert button is enabled
+ :rtype: bool
+%End
+
+    void showStoreCheckboxes( bool enabled );
+%Docstring
+ showStoreCheckboxes show the "Store" checkboxes for basic auth.
+        Some connection configurations allow the user to enter credentials
+        for testing the connection without storing them in the project.
+        "Store" checkboxes are disabled by default.
+ \param enabled
+%End
+
+    void setStoreUsername( bool checked );
+%Docstring
+ setStoreUsername check the "Store" checkbox for the username
+ \param checked
+.. seealso:: showStoreCheckboxes
+%End
+
+    void setStorePassword( bool checked );
+%Docstring
+  updateStorePasswordcheck the "Store" checkbox for the password
+ \param checked
+.. seealso:: showStoreCheckboxes
+%End
+
+    bool storePasswordIsChecked( ) const;
+%Docstring
+ storePassword
+ :return: true if "Store" checkbox for the password is checked
+ :rtype: bool
+%End
+
+    bool storeUsernameIsChecked( ) const;
+%Docstring
+ storeUsername
+ :return: true if "Store" checkbox for the username is checked
+ :rtype: bool
+%End
+
+
+    bool configurationTabIsSelected( );
+%Docstring
+ configurationTabIsSelected
+ :return: true if the configuration tab is the currently selected tab
  :rtype: bool
 %End
 

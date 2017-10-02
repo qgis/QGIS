@@ -99,16 +99,64 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     void setConfigId( const QString &configId );
 
     /**
-     * \brief currentTabIndex, mainly useful for unit tests
-     * \return active tab index
+     * \brief setDataprovider set the data provider key for filtering compatible authentication configurations
+     * \param dataprovider data provider key
      */
-    int currentTabIndex( ) const;
+    void setDataprovider( const QString &dataprovider );
+
+    /**
+     * \brief dataprovider
+     * \return the data provider key used to filter compatible authentication configurations
+     */
+    const QString dataprovider( ) const;
 
     /**
      * \brief convertButtonEnabled, mainly useful for unit tests
      * \return true if the convert button is enabled
      */
     bool btnConvertToEncryptedIsEnabled( ) const;
+
+    /**
+     * \brief showStoreCheckboxes show the "Store" checkboxes for basic auth.
+     *        Some connection configurations allow the user to enter credentials
+     *        for testing the connection without storing them in the project.
+     *        "Store" checkboxes are disabled by default.
+     * \param enabled
+     */
+    void showStoreCheckboxes( bool enabled );
+
+    /**
+     * \brief setStoreUsername check the "Store" checkbox for the username
+     * \param checked
+     * \see showStoreCheckboxes
+     */
+    void setStoreUsername( bool checked );
+
+    /**
+     * \brief  updateStorePasswordcheck the "Store" checkbox for the password
+     * \param checked
+     * \see showStoreCheckboxes
+     */
+    void setStorePassword( bool checked );
+
+    /**
+     * \brief storePassword
+     * \return true if "Store" checkbox for the password is checked
+     */
+    bool storePasswordIsChecked( ) const;
+
+    /**
+     * \brief storeUsername
+     * \return true if "Store" checkbox for the username is checked
+     */
+    bool storeUsernameIsChecked( ) const;
+
+
+    /**
+     * \brief configurationTabIsSelected
+     * \return true if the configuration tab is the currently selected tab
+     */
+    bool configurationTabIsSelected( );
 
   public slots:
 
@@ -136,6 +184,9 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
 
 
   private:
+
+    // Mainly for tests
+    QString mDataprovider;
 
     void updateConvertBtnState( );
 
