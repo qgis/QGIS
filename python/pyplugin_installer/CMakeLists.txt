@@ -10,7 +10,6 @@ SET(PY_PLUGININSTALLER_FILES
     qgsplugininstallerfetchingdialog.py
     qgsplugininstallerrepositorydialog.py
     unzip.py
-    version_compare.py
 )
 
 # FILE(GLOB UI_FILES *.ui)

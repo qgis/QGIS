@@ -293,6 +293,7 @@ SET(PY_FILES
   __init__.py
   utils.py
   user.py
+  version_compare.py
 )
 
 ADD_CUSTOM_TARGET(pyutils ALL)
