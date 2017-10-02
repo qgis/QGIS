@@ -236,6 +236,38 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Pan to the selected features of current (vector) layer keeping same extent.
     void panToSelected( QgsVectorLayer *layer = nullptr );
 
+    /**
+     * Causes a set of features with matching \a ids from a vector \a layer to flash
+     * within the canvas.
+     *
+     * The \a startColor and \a endColor can be specified, along with the number of
+     * \a flashes and \a duration of each flash (in milliseconds).
+     *
+     * \note If the features or geometries are already available, flashGeometries() is much more efficient.
+     *
+     * \since QGIS 3.0
+     * \see flashGeometries()
+     */
+    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+
+    /**
+     * Causes a set of \a geometries to flash within the canvas.
+     *
+     * If \a crs is a valid coordinate reference system, the geometries will be automatically
+     * transformed from this CRS to the canvas CRS.
+     *
+     * The \a startColor and \a endColor can be specified, along with the number of
+     * \a flashes and \a duration of each flash (in milliseconds).
+     *
+     * \since QGIS 3.0
+     * \see flashFeatureIds()
+     */
+    void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+
     //! \brief Sets the map tool currently being used on the canvas
     void setMapTool( QgsMapTool *mapTool );
 

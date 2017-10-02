@@ -64,6 +64,7 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
   private slots:
 
     void zoomToFeatures( const QString &filter );
+    void flashFeatures( const QString &filter );
 
   private:
 

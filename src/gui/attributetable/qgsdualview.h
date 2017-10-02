@@ -328,6 +328,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     //! Pans to the active feature
     void panToCurrentFeature();
 
+    void flashCurrentFeature();
+
     void rebuildFullLayerCache();
 
   private:
