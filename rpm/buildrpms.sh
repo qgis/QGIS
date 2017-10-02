@@ -91,6 +91,8 @@ patch=$(grep -e 'SET(CPACK_PACKAGE_VERSION_PATCH' ../CMakeLists.txt |
 
 version=$(echo $major.$minor.$patch)
 
+timestamp=$(date +'%s')
+
 print_info "Building version $version-$RELVER"
 
 if [ "$build_only" -ne "1" ]
@@ -101,12 +103,13 @@ then
 
   print_info "Creating source tarball"
   # Create source tarball
-  git -C .. archive --format=tar --prefix=qgis-$version/ $BRANCH | bzip2 > sources/qgis-$version.tar.gz
+  git -C .. archive --format=tar --prefix=qgis-$version/ $BRANCH | bzip2 > sources/qgis-$version.tar.bz2
 
   print_info "Creating source package"
   # Create spec file
   cat qgis.spec.template | sed -e s/%{_version}/$version/g \
     | sed -e s/%{_relver}/$RELVER/g \
+    | sed -e s/%{_timestamp}/$timestamp/g \
     | tee qgis.spec 1>/dev/null
   # Build source package
   mock --buildsrpm --spec qgis.spec --sources ./sources --define "_relver $RELVER" --define "_version $version" --resultdir=$OUTDIR
