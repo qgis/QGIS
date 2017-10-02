@@ -1255,10 +1255,13 @@ namespace QgsWms
 
     Q_FOREACH ( QString queryLayer, queryLayers )
     {
+      bool validLayer = false;
       Q_FOREACH ( QgsMapLayer *layer, layers )
       {
         if ( queryLayer == layerNickname( *layer ) )
         {
+          validLayer = true;
+
           QDomElement layerElement;
           if ( infoFormat == QgsWmsParameters::Format::GML )
           {
@@ -1315,6 +1318,12 @@ namespace QgsWms
           }
           break;
         }
+      }
+
+      if ( !validLayer )
+      {
+        QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
+        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
       }
     }
 
