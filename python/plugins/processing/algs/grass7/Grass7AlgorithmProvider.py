@@ -90,7 +90,6 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
                     ProcessingLog.addToLog(
                         ProcessingLog.LOG_ERROR,
                         self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s') % (descriptionFile, unicode(e)))
-        self.preloadedAlgs.append(nviz7())
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
