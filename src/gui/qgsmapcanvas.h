@@ -255,8 +255,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Causes a set of \a geometries to flash within the canvas.
      *
-     * If \a layer is non-null, the geometries will be automatically transformed from the layer
-     * CRS to canvas CRS.
+     * If \a crs is a valid coordinate reference system, the geometries will be automatically
+     * transformed from this CRS to the canvas CRS.
      *
      * The \a startColor and \a endColor can be specified, along with the number of
      * \a flashes and \a duration of each flash (in milliseconds).
@@ -264,7 +264,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 3.0
      * \see flashFeatureIds()
      */
-    void flashGeometries( QgsVectorLayer *layer, const QList< QgsGeometry > &geometries,
+    void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
                           const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
                           int flashes = 3, int duration = 500 );
 

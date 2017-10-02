@@ -135,7 +135,7 @@ void QgsSelectByFormDialog::flashFeatures( const QString &filter )
   int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
   if ( !geoms.empty() )
   {
-    mMapCanvas->flashGeometries( mLayer, geoms );
+    mMapCanvas->flashGeometries( geoms, mLayer->crs() );
   }
   else if ( mMessageBar )
   {

@@ -257,11 +257,21 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * of the rubberband explicitly by calling reset() or setToGeometry() with appropriate arguments.
      * setToGeometry() is also to be preferred for backwards-compatibility.
      *
-     *  \param geom the geometry object. Will be treated as a collection of vertices.
+     *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
+    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
+
+    /**
+     * Adds a \a geometry to the rubberband.
+     *
+     * If \a crs is specified, the geometry will be automatically reprojected from \a crs
+     * to the canvas CRS.
+     *
+     * \since QGIS 3.0
+     */
+    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)

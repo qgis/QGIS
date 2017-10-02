@@ -1078,10 +1078,10 @@ void QgsMapCanvas::flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &
     geoms << fet.geometry();
   }
 
-  flashGeometries( layer, geoms, color1, color2, flashes, duration );
+  flashGeometries( geoms, layer->crs(), color1, color2, flashes, duration );
 }
 
-void QgsMapCanvas::flashGeometries( QgsVectorLayer *layer, const QList<QgsGeometry> &geometries, const QColor &color1, const QColor &color2, int flashes, int duration )
+void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const QgsCoordinateReferenceSystem &crs, const QColor &color1, const QColor &color2, int flashes, int duration )
 {
   if ( geometries.isEmpty() )
     return;
@@ -1089,7 +1089,7 @@ void QgsMapCanvas::flashGeometries( QgsVectorLayer *layer, const QList<QgsGeomet
   QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( geometries.at( 0 ).wkbType() );
   QgsRubberBand *rb = new QgsRubberBand( this, geomType );
   for ( const QgsGeometry &geom : geometries )
-    rb->addGeometry( geom, layer );
+    rb->addGeometry( geom, crs );
 
   if ( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PointGeometry )
   {

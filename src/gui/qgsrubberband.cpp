@@ -232,6 +232,18 @@ void QgsRubberBand::setToGeometry( const QgsGeometry &geom, QgsVectorLayer *laye
 
 void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer )
 {
+  QgsGeometry geom = geometry;
+  if ( layer )
+  {
+    QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( layer );
+    geom.transform( ct );
+  }
+
+  addGeometry( geom );
+}
+
+void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs )
+{
   if ( geometry.isEmpty() )
   {
     return;
@@ -243,9 +255,9 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *la
   int idx = mPoints.size();
 
   QgsGeometry geom = geometry;
-  if ( layer )
+  if ( crs.isValid() )
   {
-    QgsCoordinateTransform ct = ms.layerTransform( layer );
+    QgsCoordinateTransform ct( crs, ms.destinationCrs() );
     geom.transform( ct );
   }
 
