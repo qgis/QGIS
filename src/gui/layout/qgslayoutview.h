@@ -35,7 +35,6 @@ class QgsLayoutViewToolTemporaryMousePan;
 class QgsLayoutRuler;
 class QgsLayoutViewMenuProvider;
 class QgsLayoutViewSnapMarker;
-class QgsLayoutMouseHandles;
 
 /**
  * \ingroup gui
@@ -157,15 +156,6 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see visiblePages()
      */
     QList< int > visiblePageNumbers() const;
-
-    ///@cond PRIVATE
-
-    /**
-     * Returns the view's mouse handles.
-     * \note Not available in Python bindings.
-     */
-    SIP_SKIP QgsLayoutMouseHandles *mouseHandles();
-    ///@endcond
 
   public slots:
 
@@ -309,8 +299,6 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
     std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
-
-    QgsLayoutMouseHandles *mMouseHandles = nullptr; //owned by scene
 
     int mCurrentPage = 0;
 

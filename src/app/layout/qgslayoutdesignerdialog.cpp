@@ -352,6 +352,8 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   connect( mActionRedo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::redo );
   mUndoView->setStack( mLayout->undoStack()->stack() );
 
+  mSelectTool->setLayout( layout );
+
   createLayoutPropertiesWidget();
 }
 
@@ -440,7 +442,7 @@ void QgsLayoutDesignerDialog::showGrid( bool visible )
 void QgsLayoutDesignerDialog::showBoxes( bool visible )
 {
   mLayout->context().setBoundingBoxesVisible( visible );
-  mView->mouseHandles()->update();
+  mSelectTool->mouseHandles()->update();
 }
 
 void QgsLayoutDesignerDialog::snapToGrid( bool enabled )

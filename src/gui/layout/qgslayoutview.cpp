@@ -89,12 +89,6 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
     connect( &layout->guides(), &QAbstractItemModel::modelReset, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
   }
 
-  //add mouse selection handles to layout, and initially hide
-  mMouseHandles = new QgsLayoutMouseHandles( layout, this );
-  mMouseHandles->hide();
-  mMouseHandles->setZValue( QgsLayout::ZMouseHandles );
-  layout->addItem( mMouseHandles );
-
   //emit layoutSet, so that designer dialogs can update for the new layout
   emit layoutSet( layout );
 }
@@ -220,13 +214,6 @@ QList<int> QgsLayoutView::visiblePageNumbers() const
   return currentLayout()->pageCollection()->visiblePageNumbers( visibleRect );
 }
 
-///@cond PRIVATE
-QgsLayoutMouseHandles *QgsLayoutView::mouseHandles()
-{
-  return mMouseHandles;
-}
-///@endcond
-
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
@@ -280,17 +267,6 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
   mSnapMarker->setVisible( false );
 
-  if ( mMouseHandles->shouldBlockEvent( event ) )
-  {
-    //ignore clicks while dragging/resizing items
-    return;
-  }
-  else if ( mMouseHandles->isVisible() )
-  {
-    QGraphicsView::mousePressEvent( event );
-    return;
-  }
-
   if ( mTool )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
@@ -324,13 +300,6 @@ void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 
 void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( event->button() != Qt::LeftButton &&
-       mMouseHandles->shouldBlockEvent( event ) )
-  {
-    //ignore clicks while dragging/resizing items
-    return;
-  }
-
   if ( mTool )
   {
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
@@ -388,12 +357,6 @@ void QgsLayoutView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void QgsLayoutView::wheelEvent( QWheelEvent *event )
 {
-  if ( mMouseHandles->shouldBlockEvent( event ) )
-  {
-    //ignore wheel events while dragging/resizing items
-    return;
-  }
-
   if ( mTool )
   {
     mTool->wheelEvent( event );
@@ -408,11 +371,6 @@ void QgsLayoutView::wheelEvent( QWheelEvent *event )
 
 void QgsLayoutView::keyPressEvent( QKeyEvent *event )
 {
-  if ( mMouseHandles->isDragging() || mMouseHandles->isResizing() )
-  {
-    return;
-  }
-
   if ( mTool )
   {
     mTool->keyPressEvent( event );
