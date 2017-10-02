@@ -24,6 +24,7 @@
 #include "qgslayoututils.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtoolselect.h"
+#include "qgslayoutsnapper.h"
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
@@ -41,6 +42,13 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
 
   //accept hover events, required for changing cursor to resize cursors
   setAcceptHoverEvents( true );
+
+  mHorizontalSnapLine.reset( mView->createSnapLine() );
+  mHorizontalSnapLine->hide();
+  layout->addItem( mHorizontalSnapLine.get() );
+  mVerticalSnapLine.reset( mView->createSnapLine() );
+  mVerticalSnapLine->hide();
+  layout->addItem( mVerticalSnapLine.get() );
 }
 
 void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -697,6 +705,58 @@ void QgsLayoutMouseHandles::resetStatusBar()
   }
 }
 
+QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseHandles::SnapGuideMode mode )
+{
+  //align item
+  double alignX = 0;
+  double alignY = 0;
+
+  bool snapped = false;
+
+  const QList< QgsLayoutItem * > selectedItems = mLayout->selectedLayoutItems();
+
+  //depending on the mode, we either snap just the single point, or all the bounds of the selection
+  QPointF snappedPoint;
+  switch ( mode )
+  {
+    case Item:
+      //snappedPoint = alignItem( alignX, alignY, point.x(), point.y() );
+      break;
+    case Point:
+      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, mHorizontalSnapLine.get(), mVerticalSnapLine.get(), &selectedItems );
+      break;
+  }
+#if 0
+  if ( !qgsDoubleNear( alignX, -1.0 ) )
+  {
+    QGraphicsLineItem *item = hAlignSnapItem();
+    int numPages = mComposition->numPages();
+    double yLineCoord = 300; //default in case there is no single page
+    if ( numPages > 0 )
+    {
+      yLineCoord = mComposition->paperHeight() * numPages + mComposition->spaceBetweenPages() * ( numPages - 1 );
+    }
+    item->setLine( QLineF( alignX, 0, alignX, yLineCoord ) );
+    item->show();
+  }
+  else
+  {
+    deleteHAlignSnapItem();
+  }
+  if ( !qgsDoubleNear( alignY, -1.0 ) )
+  {
+    QGraphicsLineItem *item = vAlignSnapItem();
+    item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );
+    item->show();
+  }
+  else
+  {
+    deleteVAlignSnapItem();
+  }
+#endif
+  return snappedPoint;
+}
+
 void QgsLayoutMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
   //save current cursor position
@@ -797,9 +857,6 @@ void QgsLayoutMouseHandles::dragMouseMove( QPointF currentPosition, bool lockMov
 
   QPointF snappedLeftPoint;
 
-  //TODO
-  snappedLeftPoint = upperLeftPoint;
-#if 0
   //no snapping for rotated items for now
   if ( !preventSnap && qgsDoubleNear( rotation(), 0.0 ) )
   {
@@ -810,9 +867,11 @@ void QgsLayoutMouseHandles::dragMouseMove( QPointF currentPosition, bool lockMov
   {
     //no snapping
     snappedLeftPoint = upperLeftPoint;
+#if 0
     deleteAlignItems();
-  }
 #endif
+  }
+
   //calculate total shift for item from beginning of drag operation to current position
   double moveRectX = snappedLeftPoint.x() - mBeginHandlePos.x();
   double moveRectY = snappedLeftPoint.y() - mBeginHandlePos.y();
@@ -859,11 +918,8 @@ void QgsLayoutMouseHandles::resizeMouseMove( QPointF currentPosition, bool lockR
     //subtract cursor edge offset from begin mouse event and current cursor position, so that snapping occurs to edge of mouse handles
     //rather then cursor position
     beginMousePos = mapFromScene( QPointF( mBeginMouseEventPos.x() - mCursorOffset.width(), mBeginMouseEventPos.y() - mCursorOffset.height() ) );
-#if 0
     QPointF snappedPosition = snapPoint( QPointF( currentPosition.x() - mCursorOffset.width(), currentPosition.y() - mCursorOffset.height() ), QgsLayoutMouseHandles::Point );
     finalPosition = mapFromScene( snappedPosition );
-#endif
-    finalPosition = mapFromScene( currentPosition );
   }
   else
   {

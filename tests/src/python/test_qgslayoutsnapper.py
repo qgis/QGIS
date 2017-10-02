@@ -314,6 +314,11 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertTrue(snapped)
         self.assertEqual(point, QPointF(0, 1.1))
 
+        # ... unless item is ignored!
+        point, snapped = s.snapPoint(QPointF(1, 1), 1, None, None, [item1])
+        self.assertTrue(snapped)
+        self.assertEqual(point, QPointF(0, 0))
+
     def testReadWriteXml(self):
         p = QgsProject()
         l = QgsLayout(p)

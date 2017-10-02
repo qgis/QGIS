@@ -49,7 +49,8 @@ void QgsLayoutSnapper::setSnapToItems( bool enabled )
   mSnapToItems = enabled;
 }
 
-QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine ) const
+QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine,
+                                     const QList< QgsLayoutItem * > *ignoreItems ) const
 {
   snapped = false;
 
@@ -77,7 +78,7 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
   bool snappedYToItems = false;
   if ( !snappedXToGuides )
   {
-    newX = snapPointToItems( point.x(), Qt::Horizontal, scaleFactor, QList< QgsLayoutItem * >(), snappedXToItems, verticalSnapLine );
+    newX = snapPointToItems( point.x(), Qt::Horizontal, scaleFactor, ignoreItems ? *ignoreItems : QList< QgsLayoutItem * >(), snappedXToItems, verticalSnapLine );
     if ( snappedXToItems )
     {
       snapped = true;
@@ -86,7 +87,7 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
   }
   if ( !snappedYToGuides )
   {
-    newY = snapPointToItems( point.y(), Qt::Vertical, scaleFactor, QList< QgsLayoutItem * >(), snappedYToItems, horizontalSnapLine );
+    newY = snapPointToItems( point.y(), Qt::Vertical, scaleFactor, ignoreItems ? *ignoreItems : QList< QgsLayoutItem * >(), snappedYToItems, horizontalSnapLine );
     if ( snappedYToItems )
     {
       snapped = true;

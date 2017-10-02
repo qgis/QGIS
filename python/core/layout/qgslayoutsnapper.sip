@@ -83,7 +83,8 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
 %End
 
     QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0,
-                       QGraphicsLineItem *verticalSnapLine = 0 ) const;
+                       QGraphicsLineItem *verticalSnapLine = 0,
+                       const QList< QgsLayoutItem * > *ignoreItems = 0 ) const;
 %Docstring
  Snaps a layout coordinate ``point``. If ``point`` was snapped, ``snapped`` will be set to true.
 
@@ -95,6 +96,8 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
 
  If the ``horizontalSnapLine`` and ``verticalSnapLine`` arguments are specified, then the snapper
  will automatically display and position these lines to indicate snapping positions to item bounds.
+
+ A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
  :rtype: QPointF
 %End
 

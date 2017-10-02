@@ -105,9 +105,12 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      *
      * If the \a horizontalSnapLine and \a verticalSnapLine arguments are specified, then the snapper
      * will automatically display and position these lines to indicate snapping positions to item bounds.
+     *
+     * A list of items to ignore during the snapping can be specified via the \a ignoreItems list.
      */
     QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr,
-                       QGraphicsLineItem *verticalSnapLine = nullptr ) const;
+                       QGraphicsLineItem *verticalSnapLine = nullptr,
+                       const QList< QgsLayoutItem * > *ignoreItems = nullptr ) const;
 
     /**
      * Snaps a layout coordinate \a point to the grid. If \a point

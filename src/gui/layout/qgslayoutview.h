@@ -306,6 +306,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     int mCurrentPage = 0;
 
     friend class TestQgsLayoutView;
+    friend class QgsLayoutMouseHandles;
 
     QGraphicsLineItem *createSnapLine() const;
 };

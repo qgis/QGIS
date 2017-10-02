@@ -22,6 +22,7 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QPointer>
+#include <memory>
 
 #include "qgis_gui.h"
 
@@ -157,8 +158,8 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     bool mIsResizing = false;
 
     //! Align snap lines
-    QGraphicsLineItem *mHAlignSnapItem = nullptr;
-    QGraphicsLineItem *mVAlignSnapItem = nullptr;
+    std::unique_ptr< QGraphicsLineItem > mHorizontalSnapLine;
+    std::unique_ptr< QGraphicsLineItem > mVerticalSnapLine;
 
     QSizeF mCursorOffset;
 
@@ -199,6 +200,10 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
 
     //resets the composer window status bar to the default message
     void resetStatusBar();
+
+    //! Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers
+    QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode );
+
 };
 
 ///@endcond PRIVATE
