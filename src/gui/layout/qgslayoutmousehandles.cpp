@@ -577,7 +577,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
   if ( mCurrentMouseMoveAction == QgsLayoutMouseHandles::MoveItem )
   {
     //move selected items
-    QUndoCommand *parentCommand = new QUndoCommand( tr( "Change item position" ) );
+    mLayout->undoStack()->beginMacro( tr( "Change item position" ) );
 
     QPointF mEndHandleMovePos = scenePos();
 
@@ -593,10 +593,8 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
         //don't move locked items
         continue;
       }
-#if 0 //TODO
-      QgsComposerItemCommand *subcommand = new QgsComposerItemCommand( item, QLatin1String( "" ), parentCommand );
-      subcommand->savePreviousState();
-#endif
+
+      mLayout->undoStack()->beginCommand( item, QString() );
 
       // need to convert delta from layout units -> item units
       QgsLayoutPoint itemPos = item->positionWithUnits();
@@ -604,19 +602,15 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       itemPos.setX( itemPos.x() + deltaPos.x() );
       itemPos.setY( itemPos.y() + deltaPos.y() );
       item->attemptMove( itemPos );
-#if 0
-      subcommand->saveAfterState();
-#endif
+
+      mLayout->undoStack()->endCommand();
     }
-#if 0
-    mLayout->undoStack()->push( parentCommand );
-    mLayout->project()->setDirty( true );
-#endif
+    mLayout->undoStack()->endMacro();
   }
   else if ( mCurrentMouseMoveAction != QgsLayoutMouseHandles::NoAction )
   {
     //resize selected items
-    QUndoCommand *parentCommand = new QUndoCommand( tr( "Change item size" ) );
+    mLayout->undoStack()->beginMacro( tr( "Change item size" ) );
 
     //resize all selected items
     const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems( false );
@@ -627,10 +621,9 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
         //don't resize locked items or deselectable items (e.g., items which make up an item group)
         continue;
       }
-#if 0
-      QgsComposerItemCommand *subcommand = new QgsComposerItemCommand( item, QLatin1String( "" ), parentCommand );
-      subcommand->savePreviousState();
-#endif
+
+      mLayout->undoStack()->beginCommand( item, QString() );
+
       QRectF itemRect;
       if ( selectedItems.size() == 1 )
       {
@@ -653,14 +646,10 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 
       QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
       item->attemptResize( itemSize );
-#if 0
-      subcommand->saveAfterState();
-#endif
+
+      mLayout->undoStack()->endCommand();
     }
-#if 0
-    mLayout->undoStack()->push( parentCommand );
-    mLayout->project()->setDirty( true );
-#endif
+    mLayout->undoStack()->endMacro();
   }
 
 #if 0
