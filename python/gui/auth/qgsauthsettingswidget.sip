@@ -86,9 +86,10 @@ class QgsAuthSettingsWidget : QWidget
 
   public slots:
 
-    bool on_btnConvertToEncrypted_clicked( );
+    bool convertToEncrypted( );
 %Docstring
- on_btnConvertToEncrypted_clicked create a Basic authentication configuration from
+ convertToEncrypted is called when the convert to encrypted button is
+        clicked and it creates a Basic authentication configuration from
         username and password specified in the Basic tab
  :return: return true on success
  :rtype: bool

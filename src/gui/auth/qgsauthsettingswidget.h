@@ -95,11 +95,12 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
   public slots:
 
     /**
-     * \brief on_btnConvertToEncrypted_clicked create a Basic authentication configuration from
+     * \brief convertToEncrypted is called when the convert to encrypted button is
+     *        clicked and it creates a Basic authentication configuration from
      *        username and password specified in the Basic tab
      * \return return true on success
      */
-    bool on_btnConvertToEncrypted_clicked( );
+    bool convertToEncrypted( );
 
     /**
      * \brief on_txtUserName_textChanged set convert button state

@@ -132,7 +132,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertEqual(w.configId(), '')
         self.assertEqual(w.currentTabIndex(), 1)
         self.assertTrue(w.btnConvertToEncryptedIsEnabled())
-        self.assertTrue(w.on_btnConvertToEncrypted_clicked())
+        self.assertTrue(w.convertToEncrypted())
         self.assertNotEqual(w.configId(), '')
         self.assertEqual(w.username(), '')
         self.assertEqual(w.password(), '')
