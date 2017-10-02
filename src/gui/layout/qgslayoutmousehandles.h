@@ -202,7 +202,9 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     void resetStatusBar();
 
     //! Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers
-    QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode );
+    QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true );
+
+    void hideAlignItems();
 
 };
 

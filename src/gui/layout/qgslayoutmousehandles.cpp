@@ -580,6 +580,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
     mIsDragging = false;
     mIsResizing = false;
     update();
+    hideAlignItems();
     return;
   }
 
@@ -661,9 +662,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
     mLayout->undoStack()->endMacro();
   }
 
-#if 0
-  deleteAlignItems();
-#endif
+  hideAlignItems();
   if ( mIsDragging )
   {
     mIsDragging = false;
@@ -705,7 +704,7 @@ void QgsLayoutMouseHandles::resetStatusBar()
   }
 }
 
-QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseHandles::SnapGuideMode mode )
+QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseHandles::SnapGuideMode mode, bool snapHorizontal, bool snapVertical )
 {
   //align item
   double alignX = 0;
@@ -723,7 +722,8 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
       //snappedPoint = alignItem( alignX, alignY, point.x(), point.y() );
       break;
     case Point:
-      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, mHorizontalSnapLine.get(), mVerticalSnapLine.get(), &selectedItems );
+      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
+                     snapVertical ? mVerticalSnapLine.get() : nullptr, &selectedItems );
       break;
   }
 #if 0
@@ -757,6 +757,12 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   return snappedPoint;
 }
 
+void QgsLayoutMouseHandles::hideAlignItems()
+{
+  mHorizontalSnapLine->hide();
+  mVerticalSnapLine->hide();
+}
+
 void QgsLayoutMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
   //save current cursor position
@@ -770,9 +776,7 @@ void QgsLayoutMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *event )
   //type of mouse move action
   mCurrentMouseMoveAction = mouseActionForPosition( event->pos() );
 
-#if 0
-  deleteAlignItems();
-#endif
+  hideAlignItems();
 
   if ( mCurrentMouseMoveAction == QgsLayoutMouseHandles::MoveItem )
   {
@@ -862,14 +866,13 @@ void QgsLayoutMouseHandles::dragMouseMove( QPointF currentPosition, bool lockMov
   {
     //snap to grid and guides
     snappedLeftPoint = snapPoint( upperLeftPoint, QgsLayoutMouseHandles::Item );
+
   }
   else
   {
     //no snapping
     snappedLeftPoint = upperLeftPoint;
-#if 0
-    deleteAlignItems();
-#endif
+    hideAlignItems();
   }
 
   //calculate total shift for item from beginning of drag operation to current position
@@ -915,10 +918,24 @@ void QgsLayoutMouseHandles::resizeMouseMove( QPointF currentPosition, bool lockR
   {
     //snapping only occurs if handles are not rotated for now
 
+    bool snapVertical = mCurrentMouseMoveAction == ResizeLeft ||
+                        mCurrentMouseMoveAction == ResizeRight ||
+                        mCurrentMouseMoveAction == ResizeLeftUp ||
+                        mCurrentMouseMoveAction == ResizeRightUp ||
+                        mCurrentMouseMoveAction == ResizeLeftDown ||
+                        mCurrentMouseMoveAction == ResizeRightDown;
+
+    bool snapHorizontal = mCurrentMouseMoveAction == ResizeUp ||
+                          mCurrentMouseMoveAction == ResizeDown ||
+                          mCurrentMouseMoveAction == ResizeLeftUp ||
+                          mCurrentMouseMoveAction == ResizeRightUp ||
+                          mCurrentMouseMoveAction == ResizeLeftDown ||
+                          mCurrentMouseMoveAction == ResizeRightDown;
+
     //subtract cursor edge offset from begin mouse event and current cursor position, so that snapping occurs to edge of mouse handles
     //rather then cursor position
     beginMousePos = mapFromScene( QPointF( mBeginMouseEventPos.x() - mCursorOffset.width(), mBeginMouseEventPos.y() - mCursorOffset.height() ) );
-    QPointF snappedPosition = snapPoint( QPointF( currentPosition.x() - mCursorOffset.width(), currentPosition.y() - mCursorOffset.height() ), QgsLayoutMouseHandles::Point );
+    QPointF snappedPosition = snapPoint( QPointF( currentPosition.x() - mCursorOffset.width(), currentPosition.y() - mCursorOffset.height() ), QgsLayoutMouseHandles::Point, snapHorizontal, snapVertical );
     finalPosition = mapFromScene( snappedPosition );
   }
   else
