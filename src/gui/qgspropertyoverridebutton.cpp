@@ -343,13 +343,13 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
 
     mActionCreateAuxiliaryField->setEnabled( true );
     mActionCreateAuxiliaryField->setChecked( false );
-    if ( alayer && alayer->exists( mDefinition ) )
+
+    int index = mVectorLayer->fields().indexFromName( mFieldName );
+    int srcIndex;
+    if ( index >= 0 && alayer && mVectorLayer->isAuxiliaryField( index, srcIndex ) )
     {
-      if ( mProperty.field() == QgsAuxiliaryLayer::nameFromProperty( mDefinition, true ) )
-      {
-        mActionCreateAuxiliaryField->setEnabled( false );
-        mActionCreateAuxiliaryField->setChecked( true );
-      }
+      mActionCreateAuxiliaryField->setEnabled( false );
+      mActionCreateAuxiliaryField->setChecked( true );
     }
   }
 
