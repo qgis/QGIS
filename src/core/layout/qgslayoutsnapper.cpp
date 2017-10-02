@@ -395,13 +395,13 @@ double QgsLayoutSnapper::snapPointsToItems( const QList<double> &points, Qt::Ori
       {
         case Qt::Vertical:
         {
-          snapLine->setLine( QLineF( 0, closest, 300, closest ) );
+          snapLine->setLine( QLineF( -100000, closest, 100000, closest ) );
           break;
         }
 
         case Qt::Horizontal:
         {
-          snapLine->setLine( QLineF( closest, 0, closest, 300 ) );
+          snapLine->setLine( QLineF( closest, -100000, closest, 100000 ) );
           break;
         }
       }
