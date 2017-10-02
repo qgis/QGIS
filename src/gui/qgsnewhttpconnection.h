@@ -23,7 +23,7 @@
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
 
-class QgsAuthConfigSelect;
+class QgsAuthSettingsWidget;
 
 /** \ingroup gui
  * \brief Dialog to allow the user to configure and save connection
@@ -139,7 +139,6 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     QString mBaseKey;
     QString mCredentialsBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
     void showHelp();
 
 };
