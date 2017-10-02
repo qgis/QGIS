@@ -44,6 +44,7 @@ class SelectByExpression(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Select by expression')
         self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
+        self.showInModeler = False
 
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
