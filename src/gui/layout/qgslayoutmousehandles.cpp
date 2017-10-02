@@ -646,9 +646,12 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       itemRect = itemRect.normalized();
       QPointF newPos = mapToScene( itemRect.topLeft() );
 
-#if 0 //TODO - convert to existing units
-      item->attemptMove( newPos.x(), newPos.y(), itemRect.width(), itemRect.height(), QgsComposerItem::UpperLeft, true );
-#endif
+      // translate new position to current item units
+      QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, item->positionWithUnits().units() );
+      item->attemptMove( itemPos );
+
+      QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
+      item->attemptResize( itemSize );
 #if 0
       subcommand->saveAfterState();
 #endif
@@ -777,11 +780,9 @@ QSizeF QgsLayoutMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )
 
     case QgsLayoutMouseHandles::ResizeLeftDown:
       return QSizeF( sceneMousePos.x(), sceneMousePos.y() - rect().height() );
-
-      //  default:
-      //    return QSizeF( 0, 0 );
   }
 
+  return QSizeF();
 }
 
 void QgsLayoutMouseHandles::dragMouseMove( QPointF currentPosition, bool lockMovement, bool preventSnap )
@@ -866,6 +867,7 @@ void QgsLayoutMouseHandles::resizeMouseMove( QPointF currentPosition, bool lockR
     QPointF snappedPosition = snapPoint( QPointF( currentPosition.x() - mCursorOffset.width(), currentPosition.y() - mCursorOffset.height() ), QgsLayoutMouseHandles::Point );
     finalPosition = mapFromScene( snappedPosition );
 #endif
+    finalPosition = mapFromScene( currentPosition );
   }
   else
   {
