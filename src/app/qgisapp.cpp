@@ -5551,6 +5551,8 @@ void QgisApp::runScript( const QString &filePath )
              "from qgis.utils import iface\n"
              "exec(open(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding())).read())\n" ).arg( filePath )
     , tr( "Failed to run Python script:" ), false );
+#else
+  Q_UNUSED( filePath );
 #endif
 }
 
@@ -9227,6 +9229,9 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
       {
         return mPythonUtils->runString( command, messageOnError, false );
       }
+#else
+      Q_UNUSED( command );
+      Q_UNUSED( messageOnError );
 #endif
       return false;
     }
@@ -9238,6 +9243,9 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
       {
         return mPythonUtils->evalString( command, result );
       }
+#else
+      Q_UNUSED( command );
+      Q_UNUSED( result );
 #endif
       return false;
     }
