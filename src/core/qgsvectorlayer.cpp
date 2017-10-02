@@ -2313,6 +2313,7 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
   {
     case QgsFields::OriginJoin:
       result = mJoinBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+      break;
 
     case QgsFields::OriginProvider:
     case QgsFields::OriginEdit:
@@ -2320,6 +2321,7 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
     {
       if ( mEditBuffer && mDataProvider )
         result = mEditBuffer->changeAttributeValue( fid, field, newValue, oldValue );
+      break;
     }
 
     case QgsFields::OriginUnknown:
