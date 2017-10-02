@@ -1,4 +1,5 @@
-#TODO: Run test suite (see debian/rules)
+# vi:syntax=spec
+# TODO: Run test suite (see debian/rules)
 
 Name:           qgis
 Version:        %{_version}
