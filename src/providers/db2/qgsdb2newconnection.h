@@ -47,7 +47,6 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     void on_cb_trustedConnection_clicked();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
     void showHelp();
 };
 
