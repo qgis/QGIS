@@ -291,6 +291,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! \since QGIS 2.4
     void setSelectionColor( const QColor &color );
 
+    //! Returns color for selected features
+    //! \since QGIS 3.0
+    QColor selectionColor() const;
+
     //! Emits signal scaleChanged to update scale in main window
     void updateScale();
 
@@ -667,6 +671,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the scale of the map changes
     //! \since QGIS 2.16
     void magnificationChanged( double );
+
+    //! Emitted when canvas background color changes
+    //! \since QGIS 3.0
+    void canvasColorChanged();
 
     /** Emitted when the canvas has rendered.
      * Passes a pointer to the painter on which the map was drawn. This is

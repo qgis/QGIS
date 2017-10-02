@@ -80,6 +80,15 @@
 #include "qgsziputils.h"
 #include "qgsbrowsermodel.h"
 
+#ifdef HAVE_3D
+#include "qgsabstract3drenderer.h"
+#include "qgs3dmapcanvasdockwidget.h"
+#include "qgs3drendererregistry.h"
+#include "qgs3dmapsettings.h"
+#include "qgsflatterraingenerator.h"
+#include "qgsvectorlayer3drenderer.h"
+#endif
+
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QAuthenticator>
@@ -806,6 +815,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::updateRecentProjectPaths, this, QStringLiteral( "Update recent project paths" ) );
   functionProfile( &QgisApp::updateProjectFromTemplates, this, QStringLiteral( "Update project from templates" ) );
   functionProfile( &QgisApp::legendLayerSelectionChanged, this, QStringLiteral( "Legend layer selection changed" ) );
+  functionProfile( &QgisApp::init3D, this, QStringLiteral( "Initialize 3D support" ) );
 
   QgsApplication::annotationRegistry()->addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "FormAnnotationItem" ), &QgsFormAnnotation::create ) );
   connect( QgsProject::instance()->annotationManager(), &QgsAnnotationManager::annotationAdded, this, &QgisApp::annotationCreated );
@@ -1729,6 +1739,7 @@ void QgisApp::createActions()
   connect( mActionSaveMapAsImage, &QAction::triggered, this, [ = ] { saveMapAsImage(); } );
   connect( mActionSaveMapAsPdf, &QAction::triggered, this, [ = ] { saveMapAsPdf(); } );
   connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
+  connect( mActionNew3DMapCanvas, &QAction::triggered, this, &QgisApp::new3DMapCanvas );
   connect( mActionNewPrintComposer, &QAction::triggered, this, &QgisApp::newPrintComposer );
   connect( mActionShowComposerManager, &QAction::triggered, this, &QgisApp::showComposerManager );
   connect( mActionExit, &QAction::triggered, this, &QgisApp::fileExit );
@@ -9908,6 +9919,55 @@ void QgisApp::newMapCanvas()
     dock->mapCanvas()->setDestinationCrs( QgsProject::instance()->crs() );
     dock->mapCanvas()->freeze( false );
   }
+}
+
+void QgisApp::init3D()
+{
+#ifdef HAVE_3D
+  // register 3D renderers
+  QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
+#else
+  mActionNew3DMapCanvas->setVisible( false );
+#endif
+}
+
+void QgisApp::new3DMapCanvas()
+{
+#ifdef HAVE_3D
+
+  // initialize from project
+  QgsProject *prj = QgsProject::instance();
+  QgsRectangle fullExtent = mMapCanvas->fullExtent();
+
+  // some layers may go crazy and make full extent unusable
+  // we can't go any further - invalid extent would break everything
+  if ( fullExtent.isEmpty() || !fullExtent.isFinite() )
+  {
+    QMessageBox::warning( this, tr( "Error" ), tr( "Project extent is not valid." ) );
+    return;
+  }
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( prj->crs() );
+  map->setOrigin( fullExtent.center().x(), fullExtent.center().y(), 0 );
+  map->setSelectionColor( mMapCanvas->selectionColor() );
+  map->setBackgroundColor( mMapCanvas->canvasColor() );
+  map->setLayers( mMapCanvas->layers() );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setExtent( fullExtent );
+  map->setTerrainGenerator( flatTerrain );
+
+  // TODO: combine with code in createNewMapCanvasDock()
+  Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
+  map3DWidget->setWindowTitle( "3D Map" );
+  map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
+  map3DWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
+  map3DWidget->setMap( map );
+  map3DWidget->setMainCanvas( mMapCanvas );
+  addDockWidget( Qt::BottomDockWidgetArea, map3DWidget );
+#endif
 }
 
 void QgisApp::setExtent( const QgsRectangle &rect )

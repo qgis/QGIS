@@ -453,6 +453,12 @@ Invoked by QgsProject.read().
  :rtype: bool
 %End
 
+    virtual void resolveReferences( QgsProject *project );
+%Docstring
+ Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+.. versionadded:: 3.0
+%End
+
     QStringList customPropertyKeys() const;
 %Docstring
  Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
@@ -754,6 +760,19 @@ Return pointer to layer's undo stack
  :rtype: QgsMapLayerStyleManager
 %End
 
+    void setRenderer3D( QgsAbstract3DRenderer *renderer /Transfer/ );
+%Docstring
+ Sets 3D renderer for the layer. Takes ownership of the renderer.
+.. versionadded:: 3.0
+%End
+
+    QgsAbstract3DRenderer *renderer3D() const;
+%Docstring
+ Returns 3D renderer associated with the layer. May be null.
+.. versionadded:: 3.0
+ :rtype: QgsAbstract3DRenderer
+%End
+
     bool isInScaleRange( double scale ) const;
 %Docstring
  Tests whether the layer should be visible at the specified ``scale``.
@@ -1049,6 +1068,12 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
 .. versionadded:: 2.6
 %End
 
+    void renderer3DChanged();
+%Docstring
+ Signal emitted when 3D renderer associated with the layer has changed.
+.. versionadded:: 3.0
+%End
+
     void configChanged();
 %Docstring
  Emitted whenever the configuration is changed. The project listens to this signal
@@ -1115,7 +1140,6 @@ Set whether layer is valid or not - should be used in constructor.
   project files.
  :rtype: bool
 %End
-
 
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 %Docstring

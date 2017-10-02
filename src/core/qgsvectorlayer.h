@@ -716,7 +716,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /** Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
      * \since QGIS 3.0
      */
-    void resolveReferences( QgsProject *project );
+    virtual void resolveReferences( QgsProject *project ) override;
 
     /**
      * Save named and sld style of the layer to the style table in the db.

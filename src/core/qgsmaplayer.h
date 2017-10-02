@@ -36,6 +36,7 @@
 #include "qgsmaplayerdependency.h"
 #include "qgslayermetadata.h"
 
+class QgsAbstract3DRenderer;
 class QgsDataProvider;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
@@ -430,6 +431,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+    /** Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+     * \since QGIS 3.0
+     */
+    virtual void resolveReferences( QgsProject *project );
+
     /** Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
      * \see customProperty()
      * \since QGIS 3.0
@@ -674,6 +680,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 2.8
      */
     QgsMapLayerStyleManager *styleManager() const;
+
+    /**
+     * Sets 3D renderer for the layer. Takes ownership of the renderer.
+     * \since QGIS 3.0
+     */
+    void setRenderer3D( QgsAbstract3DRenderer *renderer SIP_TRANSFER );
+
+    /**
+     * Returns 3D renderer associated with the layer. May be null.
+     * \since QGIS 3.0
+     */
+    QgsAbstract3DRenderer *renderer3D() const;
 
     /** Tests whether the layer should be visible at the specified \a scale.
      *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
@@ -929,6 +947,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void legendChanged();
 
     /**
+     * Signal emitted when 3D renderer associated with the layer has changed.
+     * \since QGIS 3.0
+     */
+    void renderer3DChanged();
+
+    /**
      * Emitted whenever the configuration is changed. The project listens to this signal
      * to be marked as dirty.
      */
@@ -989,7 +1013,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  project files.
      */
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
-
 
     /** Read custom properties from project file.
       \param layerNode note to read from
@@ -1117,6 +1140,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QTimer mRefreshTimer;
 
     QgsLayerMetadata mMetadata;
+
+    //! Renderer for 3D views
+    QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
 };
 

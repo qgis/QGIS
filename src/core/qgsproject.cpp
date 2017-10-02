@@ -939,13 +939,12 @@ bool QgsProject::readProjectFile( const QString &filename )
     mBadLayerHandler->handleBadLayers( brokenNodes );
   }
 
-  // Resolve references to other vector layers
+  // Resolve references to other layers
   // Needs to be done here once all dependent layers are loaded
   QMap<QString, QgsMapLayer *> layers = mLayerStore->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); it++ )
   {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
-      vl->resolveReferences( this );
+    it.value()->resolveReferences( this );
   }
 
   mLayerTreeRegistryBridge->setEnabled( true );

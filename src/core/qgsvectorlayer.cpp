@@ -1674,6 +1674,7 @@ bool QgsVectorLayer::writeXml( QDomNode &layer_node,
 
 void QgsVectorLayer::resolveReferences( QgsProject *project )
 {
+  QgsMapLayer::resolveReferences( project );
   mJoinBuffer->resolveReferences( project );
 }
 

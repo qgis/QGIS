@@ -65,6 +65,11 @@ for module in "${modules[@]}"; do
       if [[ ! -z $if_cond ]]; then
         echo "$if_cond" >> $file
       fi
+      if [[ "$sip" == [0-9]* ]]; then
+        # unfortunately SIP parser does not accept relative paths starting with a number
+        # so "%Include 3d/xxxx.sip" is a syntax error but everything works with "%Include ./3d/xxxx.sip"
+        sip="./$sip"
+      fi
       echo "%Include $sip" >> $file
       if [[ ! -z $if_cond ]]; then
         echo "%End" >> $file

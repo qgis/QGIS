@@ -101,10 +101,16 @@ sub exit_with_error {
 }
 
 sub write_header_footer {
+    # small hack to turn files src/core/3d/X.h to src/core/./3d/X.h
+    # otherwise "sip up to date" test fails. This is because the test uses %Include entries
+    # and over there we have to use ./3d/X.h entries because SIP parser does not allow a number
+    # as the first letter of a relative path
+    my $headerfile_x = $headerfile;
+    $headerfile_x =~ s/src\/core\/3d/src\/core\/.\/3d/;
     push @OUTPUT,  "/************************************************************************\n";
     push @OUTPUT,  " * This file has been generated automatically from                      *\n";
     push @OUTPUT,  " *                                                                      *\n";
-    push @OUTPUT, sprintf " * %-*s *\n", 68, $headerfile;
+    push @OUTPUT, sprintf " * %-*s *\n", 68, $headerfile_x;
     push @OUTPUT,  " *                                                                      *\n";
     push @OUTPUT,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
     push @OUTPUT,  " ************************************************************************/\n";

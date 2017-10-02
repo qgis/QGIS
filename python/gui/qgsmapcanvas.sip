@@ -303,6 +303,12 @@ Read property of QColor bgColor.
 .. versionadded:: 2.4
 %End
 
+    QColor selectionColor() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: QColor
+%End
+
     void updateScale();
 %Docstring
 Emits signal scaleChanged to update scale in main window
@@ -752,6 +758,11 @@ Emitted when the extents of the map change
     void magnificationChanged( double );
 %Docstring
 .. versionadded:: 2.16
+%End
+
+    void canvasColorChanged();
+%Docstring
+.. versionadded:: 3.0
 %End
 
     void renderComplete( QPainter * );

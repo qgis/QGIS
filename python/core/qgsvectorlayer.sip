@@ -712,7 +712,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    void resolveReferences( QgsProject *project );
+    virtual void resolveReferences( QgsProject *project );
 %Docstring
  Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
 .. versionadded:: 3.0

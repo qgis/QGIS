@@ -95,6 +95,7 @@
      <addaction name="mActionPreviewDeuteranope"/>
     </widget>
     <addaction name="mActionNewMapCanvas"/>
+    <addaction name="mActionNew3DMapCanvas"/>
     <addaction name="mActionPan"/>
     <addaction name="mActionPanToSelected"/>
     <addaction name="mActionZoomIn"/>
@@ -2668,6 +2669,17 @@ Acts on currently active editable layer</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="mActionNew3DMapCanvas">
+   <property name="text">
+    <string>New &amp;3D Map View</string>
+   </property>
+   <property name="toolTip">
+    <string>New 3D Map View</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+M</string>
    </property>
   </action>
  </widget>
