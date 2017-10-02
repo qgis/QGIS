@@ -67,11 +67,14 @@ Get Flex
 http://sourceforge.net/project/showfiles.php?group_id=23617&package_id=16424
 (the zip bin) and extract it into c:\msys\mingw\bin
 
-=== Python stuff (optional) ===
+=== Python ===
 
 Follow this section in case you would like to use Python bindings for QGIS.  To
 be able to compile bindings, you need to compile SIP and PyQt4 from sources as
 their installer doesn't include some development files which are necessary.
+
+Note that even if you compile without the Python bindings, Python3 is still
+a necessary dependancy for building QGIS.
 
 ==== Download and install Python - use Windows installer ====
 
