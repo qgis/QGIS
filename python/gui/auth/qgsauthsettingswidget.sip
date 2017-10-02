@@ -56,11 +56,29 @@ class QgsAuthSettingsWidget : QWidget
  :rtype: str
 %End
 
+    void setUsername( const QString &username );
+%Docstring
+ setUsername set the username
+ \param username the user name
+%End
+
     const QString password( ) const;
 %Docstring
  password
  :return: basic authentication password
  :rtype: str
+%End
+
+    void setPassword( const QString &password );
+%Docstring
+ setPassword set the password
+ \param password the password
+%End
+
+    void setConfigId( const QString &configId );
+%Docstring
+ setConfigId set the authentication configuration id
+  param configId the authentication configuration id
 %End
 
     const QString configId( ) const;

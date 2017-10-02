@@ -36,13 +36,11 @@ QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
   if ( ! configId.isEmpty( ) )
   {
     mAuthConfigSelect->setConfigId( configId );
-    tabAuth->setCurrentIndex( tabAuth->indexOf( tabConfigurations ) );
-  }
-  else if ( !( username.isEmpty() && password.isEmpty( ) ) )
-  {
-    tabAuth->setCurrentIndex( tabAuth->indexOf( tabBasic ) );
   }
   connect( btnConvertToEncrypted, &QPushButton::clicked, this, &QgsAuthSettingsWidget::convertToEncrypted );
+  connect( txtUserName, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::userNameTextChanged );
+  connect( txtPassword, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::passwordTextChanged );
+  updateSelectedTab();
   updateConvertBtnState();
 }
 
@@ -61,9 +59,27 @@ const QString QgsAuthSettingsWidget::username() const
   return txtUserName->text();
 }
 
+void QgsAuthSettingsWidget::setUsername( const QString &username )
+{
+  txtUserName->setText( username );
+  updateSelectedTab();
+}
+
 const QString QgsAuthSettingsWidget::password() const
 {
   return txtPassword->text();
+}
+
+void QgsAuthSettingsWidget::setPassword( const QString &password )
+{
+  txtPassword->setText( password );
+  updateSelectedTab();
+}
+
+void QgsAuthSettingsWidget::setConfigId( const QString &configId )
+{
+  mAuthConfigSelect->setConfigId( configId );
+  updateSelectedTab();
 }
 
 const QString QgsAuthSettingsWidget::configId() const
@@ -102,13 +118,13 @@ bool QgsAuthSettingsWidget::convertToEncrypted( )
   }
 }
 
-void QgsAuthSettingsWidget::on_txtUserName_textChanged( const QString &text )
+void QgsAuthSettingsWidget::userNameTextChanged( const QString &text )
 {
   Q_UNUSED( text );
   updateConvertBtnState();
 }
 
-void QgsAuthSettingsWidget::on_txtPassword_textChanged( const QString &text )
+void QgsAuthSettingsWidget::passwordTextChanged( const QString &text )
 {
   Q_UNUSED( text );
   updateConvertBtnState();
@@ -117,4 +133,16 @@ void QgsAuthSettingsWidget::on_txtPassword_textChanged( const QString &text )
 void QgsAuthSettingsWidget::updateConvertBtnState()
 {
   btnConvertToEncrypted->setEnabled( ! txtUserName->text().isEmpty() || ! txtPassword->text().isEmpty() );
+}
+
+void QgsAuthSettingsWidget::updateSelectedTab()
+{
+  if ( ! mAuthConfigSelect->configId().isEmpty( ) )
+  {
+    tabAuth->setCurrentIndex( tabAuth->indexOf( tabConfigurations ) );
+  }
+  else if ( !( txtUserName->text( ).isEmpty() && txtPassword->text( ).isEmpty( ) ) )
+  {
+    tabAuth->setCurrentIndex( tabAuth->indexOf( tabBasic ) );
+  }
 }

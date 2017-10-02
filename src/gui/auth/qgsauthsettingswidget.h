@@ -69,10 +69,28 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     const QString username( ) const;
 
     /**
+     * \brief setUsername set the username
+     * \param username the user name
+     */
+    void setUsername( const QString &username );
+
+    /**
      * \brief password
      * \return basic authentication password
      */
     const QString password( ) const;
+
+    /**
+     * \brief setPassword set the password
+     * \param password the password
+     */
+    void setPassword( const QString &password );
+
+    /**
+     * \brief setConfigId set the authentication configuration id
+     *  param configId the authentication configuration id
+     */
+    void setConfigId( const QString &configId );
 
     /**
      * \brief configId
@@ -107,19 +125,21 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \param text the changet text
      * \note Not available in Python bindings
      */
-    void on_txtUserName_textChanged( const QString &text ) SIP_SKIP;
+    void userNameTextChanged( const QString &text ) SIP_SKIP;
 
     /**
      * \brief on_txtPassword_textChanged set convert button state
      * \param text the changed text
      * \note Not available in Python bindings
      */
-    void on_txtPassword_textChanged( const QString &text ) SIP_SKIP;
+    void passwordTextChanged( const QString &text ) SIP_SKIP;
 
 
   private:
 
     void updateConvertBtnState( );
+
+    void updateSelectedTab( );
 
 };
 
