@@ -112,109 +112,217 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
   return point;
 }
 
+QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine, const QList<QgsLayoutItem *> *ignoreItems ) const
+{
+  snapped = false;
+  QRectF snappedRect = rect;
+
+  QList< double > xCoords;
+  xCoords << rect.left() << rect.center().x() << rect.right();
+  QList< double > yCoords;
+  yCoords << rect.top() << rect.center().y() << rect.bottom();
+
+  // highest priority - guides
+  bool snappedXToGuides = false;
+  double deltaX = snapPointsToGuides( xCoords, QgsLayoutGuide::Vertical, scaleFactor, snappedXToGuides );
+  if ( snappedXToGuides )
+  {
+    snapped = true;
+    snappedRect.translate( deltaX, 0 );
+    if ( verticalSnapLine )
+      verticalSnapLine->setVisible( false );
+  }
+  bool snappedYToGuides = false;
+  double deltaY = snapPointsToGuides( yCoords, QgsLayoutGuide::Horizontal, scaleFactor, snappedYToGuides );
+  if ( snappedYToGuides )
+  {
+    snapped = true;
+    snappedRect.translate( 0, deltaY );
+    if ( horizontalSnapLine )
+      horizontalSnapLine->setVisible( false );
+  }
+
+  bool snappedXToItems = false;
+  bool snappedYToItems = false;
+  if ( !snappedXToGuides )
+  {
+    deltaX = snapPointsToItems( xCoords, Qt::Horizontal, scaleFactor, ignoreItems ? *ignoreItems : QList< QgsLayoutItem * >(), snappedXToItems, verticalSnapLine );
+    if ( snappedXToItems )
+    {
+      snapped = true;
+      snappedRect.translate( deltaX, 0 );
+    }
+  }
+  if ( !snappedYToGuides )
+  {
+    deltaY = snapPointsToItems( yCoords, Qt::Vertical, scaleFactor, ignoreItems ? *ignoreItems : QList< QgsLayoutItem * >(), snappedYToItems, horizontalSnapLine );
+    if ( snappedYToItems )
+    {
+      snapped = true;
+      snappedRect.translate( 0, deltaY );
+    }
+  }
+
+  bool snappedXToGrid = false;
+  bool snappedYToGrid = false;
+  QList< QPointF > points;
+  points << rect.topLeft() << rect.topRight() << rect.bottomLeft() << rect.bottomRight();
+  QPointF res = snapPointsToGrid( points, scaleFactor, snappedXToGrid, snappedYToGrid );
+  if ( snappedXToGrid && !snappedXToGuides && !snappedXToItems )
+  {
+    snapped = true;
+    snappedRect.translate( res.x(), 0 );
+  }
+  if ( snappedYToGrid && !snappedYToGuides && !snappedYToItems )
+  {
+    snapped = true;
+    snappedRect.translate( 0, res.y() );
+  }
+
+  return snappedRect;
+}
+
 QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX, bool &snappedY ) const
+{
+  QPointF delta = snapPointsToGrid( QList< QPointF >() << point, scaleFactor, snappedX, snappedY );
+  return point + delta;
+}
+
+QPointF QgsLayoutSnapper::snapPointsToGrid( const QList<QPointF> &points, double scaleFactor, bool &snappedX, bool &snappedY ) const
 {
   snappedX = false;
   snappedY = false;
   if ( !mLayout || !mSnapToGrid )
   {
-    return point;
+    return QPointF( 0, 0 );
   }
   const QgsLayoutGridSettings &grid = mLayout->gridSettings();
   if ( grid.resolution().length() <= 0 )
-    return point;
+    return QPointF( 0, 0 );
 
-  //calculate y offset to current page
-  QPointF pagePoint = mLayout->pageCollection()->positionOnPage( point );
+  double deltaX = 0;
+  double deltaY = 0;
+  double smallestDiffX = DBL_MAX;
+  double smallestDiffY = DBL_MAX;
+  for ( QPointF point : points )
+  {
+    //calculate y offset to current page
+    QPointF pagePoint = mLayout->pageCollection()->positionOnPage( point );
 
-  double yPage = pagePoint.y(); //y-coordinate relative to current page
-  double yAtTopOfPage = mLayout->pageCollection()->page( mLayout->pageCollection()->pageNumberForPoint( point ) )->pos().y();
+    double yPage = pagePoint.y(); //y-coordinate relative to current page
+    double yAtTopOfPage = mLayout->pageCollection()->page( mLayout->pageCollection()->pageNumberForPoint( point ) )->pos().y();
 
-  //snap x coordinate
-  double gridRes = mLayout->convertToLayoutUnits( grid.resolution() );
-  QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
-  int xRatio = static_cast< int >( ( point.x() - gridOffset.x() ) / gridRes + 0.5 ); //NOLINT
-  int yRatio = static_cast< int >( ( yPage - gridOffset.y() ) / gridRes + 0.5 ); //NOLINT
+    //snap x coordinate
+    double gridRes = mLayout->convertToLayoutUnits( grid.resolution() );
+    QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
+    int xRatio = static_cast< int >( ( point.x() - gridOffset.x() ) / gridRes + 0.5 ); //NOLINT
+    int yRatio = static_cast< int >( ( yPage - gridOffset.y() ) / gridRes + 0.5 ); //NOLINT
 
-  double xSnapped = xRatio * gridRes + gridOffset.x();
-  double ySnapped = yRatio * gridRes + gridOffset.y() + yAtTopOfPage;
+    double xSnapped = xRatio * gridRes + gridOffset.x();
+    double ySnapped = yRatio * gridRes + gridOffset.y() + yAtTopOfPage;
+
+    double currentDiffX = std::fabs( xSnapped - point.x() );
+    if ( currentDiffX < smallestDiffX )
+    {
+      smallestDiffX = currentDiffX;
+      deltaX = xSnapped - point.x();
+    }
+
+    double currentDiffY = std::fabs( ySnapped - point.y() );
+    if ( currentDiffY < smallestDiffY )
+    {
+      smallestDiffY = currentDiffY;
+      deltaY = ySnapped - point.y();
+    }
+  }
 
   //convert snap tolerance from pixels to layout units
   double alignThreshold = mTolerance / scaleFactor;
 
-  if ( std::fabs( xSnapped - point.x() ) > alignThreshold )
+  QPointF delta( 0, 0 );
+  if ( smallestDiffX <= alignThreshold )
   {
-    //snap distance is outside of tolerance
-    xSnapped = point.x();
-  }
-  else
-  {
+    //snap distance is inside of tolerance
     snappedX = true;
+    delta.setX( deltaX );
   }
-  if ( std::fabs( ySnapped - point.y() ) > alignThreshold )
+  if ( smallestDiffY <= alignThreshold )
   {
-    //snap distance is outside of tolerance
-    ySnapped = point.y();
-  }
-  else
-  {
+    //snap distance is inside of tolerance
     snappedY = true;
+    delta.setY( deltaY );
   }
 
-  return QPointF( xSnapped, ySnapped );
+  return delta;
 }
 
 double QgsLayoutSnapper::snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped ) const
 {
+  double delta = snapPointsToGuides( QList< double >() << original, orientation, scaleFactor, snapped );
+  return original + delta;
+}
+
+double QgsLayoutSnapper::snapPointsToGuides( const QList<double> &points, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped ) const
+{
   snapped = false;
   if ( !mLayout || !mSnapToGuides )
   {
-    return original;
+    return 0;
   }
 
   //convert snap tolerance from pixels to layout units
   double alignThreshold = mTolerance / scaleFactor;
 
-  double bestPos = original;
+  double bestDelta = 0;
   double smallestDiff = DBL_MAX;
 
-  Q_FOREACH ( QgsLayoutGuide *guide, mLayout->guides().guides( orientation ) )
+  for ( double p : points )
   {
-    double guidePos = guide->layoutPosition();
-    double diff = std::fabs( original - guidePos );
-    if ( diff < smallestDiff )
+    Q_FOREACH ( QgsLayoutGuide *guide, mLayout->guides().guides( orientation ) )
     {
-      smallestDiff = diff;
-      bestPos = guidePos;
+      double guidePos = guide->layoutPosition();
+      double diff = std::fabs( p - guidePos );
+      if ( diff < smallestDiff )
+      {
+        smallestDiff = diff;
+        bestDelta = guidePos - p;
+      }
     }
   }
 
   if ( smallestDiff <= alignThreshold )
   {
     snapped = true;
-    return bestPos;
+    return bestDelta;
   }
   else
   {
-    return original;
+    return 0;
   }
 }
 
 double QgsLayoutSnapper::snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList<QgsLayoutItem *> &ignoreItems, bool &snapped,
     QGraphicsLineItem *snapLine ) const
 {
+  double delta = snapPointsToItems( QList< double >() << original, orientation, scaleFactor, ignoreItems, snapped, snapLine );
+  return original + delta;
+}
+
+double QgsLayoutSnapper::snapPointsToItems( const QList<double> &points, Qt::Orientation orientation, double scaleFactor, const QList<QgsLayoutItem *> &ignoreItems, bool &snapped, QGraphicsLineItem *snapLine ) const
+{
   snapped = false;
   if ( !mLayout || !mSnapToItems )
   {
     if ( snapLine )
       snapLine->setVisible( false );
-    return original;
+    return 0;
   }
 
   double alignThreshold = mTolerance / scaleFactor;
 
-  double closest = original;
-  double closestDist = DBL_MAX;
+  double bestDelta = 0;
+  double smallestDiff = DBL_MAX;
+  double closest = 0;
   const QList<QGraphicsItem *> itemList = mLayout->items();
   QList< double > currentCoords;
   for ( QGraphicsItem *item : itemList )
@@ -264,12 +372,16 @@ double QgsLayoutSnapper::snapPointToItems( double original, Qt::Orientation orie
 
     for ( double val : qgsAsConst( currentCoords ) )
     {
-      double dist = std::fabs( original - val );
-      if ( dist <= alignThreshold && dist < closestDist )
+      for ( double p : points )
       {
-        snapped = true;
-        closestDist = dist;
-        closest = val;
+        double dist = std::fabs( p - val );
+        if ( dist <= alignThreshold && dist < smallestDiff )
+        {
+          snapped = true;
+          smallestDiff = dist;
+          bestDelta = val - p;
+          closest = val;
+        }
       }
     }
   }
@@ -300,8 +412,9 @@ double QgsLayoutSnapper::snapPointToItems( double original, Qt::Orientation orie
     }
   }
 
-  return closest;
+  return bestDelta;
 }
+
 
 bool QgsLayoutSnapper::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {

@@ -706,10 +706,6 @@ void QgsLayoutMouseHandles::resetStatusBar()
 
 QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseHandles::SnapGuideMode mode, bool snapHorizontal, bool snapVertical )
 {
-  //align item
-  double alignX = 0;
-  double alignY = 0;
-
   bool snapped = false;
 
   const QList< QgsLayoutItem * > selectedItems = mLayout->selectedLayoutItems();
@@ -719,42 +715,16 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   switch ( mode )
   {
     case Item:
-      //snappedPoint = alignItem( alignX, alignY, point.x(), point.y() );
+      snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
+                     snapVertical ? mVerticalSnapLine.get() : nullptr, &selectedItems ).topLeft();
       break;
     case Point:
       snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
                      snapVertical ? mVerticalSnapLine.get() : nullptr, &selectedItems );
       break;
   }
-#if 0
-  if ( !qgsDoubleNear( alignX, -1.0 ) )
-  {
-    QGraphicsLineItem *item = hAlignSnapItem();
-    int numPages = mComposition->numPages();
-    double yLineCoord = 300; //default in case there is no single page
-    if ( numPages > 0 )
-    {
-      yLineCoord = mComposition->paperHeight() * numPages + mComposition->spaceBetweenPages() * ( numPages - 1 );
-    }
-    item->setLine( QLineF( alignX, 0, alignX, yLineCoord ) );
-    item->show();
-  }
-  else
-  {
-    deleteHAlignSnapItem();
-  }
-  if ( !qgsDoubleNear( alignY, -1.0 ) )
-  {
-    QGraphicsLineItem *item = vAlignSnapItem();
-    item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );
-    item->show();
-  }
-  else
-  {
-    deleteVAlignSnapItem();
-  }
-#endif
-  return snappedPoint;
+
+  return snapped ? snappedPoint : originalPoint;
 }
 
 void QgsLayoutMouseHandles::hideAlignItems()
