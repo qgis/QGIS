@@ -179,8 +179,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMessageBarItem* mMessageBarItem;
     QString mRelationName;
     QgsAttributeForm* mReferencedAttributeForm;
-    QgsVectorLayer* mReferencedLayer;
-    QgsVectorLayer* mReferencingLayer;
+    QPointer<QgsVectorLayer> mReferencedLayer;
+    QPointer<QgsVectorLayer> mReferencingLayer;
     QgsAttributeTableModel* mMasterModel;
     QgsAttributeTableFilterModel* mFilterModel;
     QgsFeatureListModel* mFeatureListModel;
