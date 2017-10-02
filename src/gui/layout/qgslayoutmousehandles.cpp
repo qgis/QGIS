@@ -23,6 +23,7 @@
 #include "qgslayoutitem.h"
 #include "qgslayoututils.h"
 #include "qgslayoutview.h"
+#include "qgslayoutviewtoolselect.h"
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
@@ -532,7 +533,7 @@ void QgsLayoutMouseHandles::setViewportCursor( Qt::CursorShape cursor )
   //workaround qt bug #3732 by setting cursor for QGraphicsView viewport,
   //rather then setting it directly here
 
-  if ( true /* TODO !mLayout->preventCursorChange() */ )
+  if ( dynamic_cast< QgsLayoutViewToolSelect *>( mView->tool() ) )
   {
     mView->viewport()->setCursor( cursor );
   }
@@ -780,6 +781,11 @@ QSizeF QgsLayoutMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )
 
     case QgsLayoutMouseHandles::ResizeLeftDown:
       return QSizeF( sceneMousePos.x(), sceneMousePos.y() - rect().height() );
+
+    case MoveItem:
+    case SelectItem:
+    case NoAction:
+      return QSizeF();
   }
 
   return QSizeF();
