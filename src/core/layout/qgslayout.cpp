@@ -105,6 +105,42 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
   return nullptr;
 }
 
+QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const bool ignoreLocked ) const
+{
+  return layoutItemAt( position, nullptr, ignoreLocked );
+}
+
+QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked ) const
+{
+  //get a list of items which intersect the specified position, in descending z order
+  const QList<QGraphicsItem *> itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
+
+  bool foundBelowItem = false;
+  for ( QGraphicsItem *graphicsItem : itemList )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );
+    if ( layoutItem && !paperItem )
+    {
+      // If we are not checking for a an item below a specified item, or if we've
+      // already found that item, then we've found our target
+      if ( ( ! belowItem || foundBelowItem ) && ( !ignoreLocked || !layoutItem->isLocked() ) )
+      {
+        return layoutItem;
+      }
+      else
+      {
+        if ( layoutItem == belowItem )
+        {
+          //Target item is next in list
+          foundBelowItem = true;
+        }
+      }
+    }
+  }
+  return nullptr;
+}
+
 double QgsLayout::convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const
 {
   return mContext.measurementConverter().convert( measurement, mUnits ).length();

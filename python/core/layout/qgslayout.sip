@@ -96,6 +96,20 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  :rtype: QgsLayoutItem
 %End
 
+    QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
+%Docstring
+ Returns the topmost layout item at a specified ``position``. Ignores paper items.
+ If ``ignoreLocked`` is set to true any locked items will be ignored.
+ :rtype: QgsLayoutItem
+%End
+
+    QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
+%Docstring
+ Returns the topmost composer item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
+ If ``ignoreLocked`` is set to true any locked items will be ignored.
+ :rtype: QgsLayoutItem
+%End
+
     void setUnits( QgsUnitTypes::LayoutUnit units );
 %Docstring
  Sets the native measurement ``units`` for the layout. These also form the default unit

@@ -26,7 +26,9 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutMeasurement,
                        QgsFillSymbol,
                        QgsReadWriteContext,
-                       QgsLayoutItemMap)
+                       QgsLayoutItemMap,
+                       QgsLayoutSize,
+                       QgsLayoutPoint)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -139,6 +141,43 @@ class TestQgsLayout(unittest.TestCase):
         self.assertFalse(l.selectedLayoutItems())
         self.assertEqual(len(select_changed_spy), 5)
         self.assertEqual(select_changed_spy[-1][0], None)
+
+    def testLayoutItemAt(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+
+        item2 = QgsLayoutItemMap(l)
+        item2.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
+        item2.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item2)
+
+        item3 = QgsLayoutItemMap(l)
+        item3.attemptMove(QgsLayoutPoint(8, 12, QgsUnitTypes.LayoutMillimeters))
+        item3.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        item3.setLocked(True)
+        l.addItem(item3)
+
+        self.assertIsNone(l.layoutItemAt(QPointF(0, 0)))
+        self.assertIsNone(l.layoutItemAt(QPointF(100, 100)))
+
+        self.assertEqual(l.layoutItemAt(QPointF(5, 9)), item1)
+        self.assertEqual(l.layoutItemAt(QPointF(25, 23)), item3)
+        self.assertIsNone(l.layoutItemAt(QPointF(25, 23), True))
+        self.assertEqual(l.layoutItemAt(QPointF(7, 11)), item2)
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13)), item3)
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13), True), item2)
+
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13), item3), item2)
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13), item2), item1)
+        self.assertIsNone(l.layoutItemAt(QPointF(9, 13), item1))
+        item2.setLocked(True)
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13), item3, True), item1)
 
 
 if __name__ == '__main__':

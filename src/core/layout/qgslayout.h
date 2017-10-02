@@ -133,6 +133,18 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutItem *itemByUuid( const QString &uuid );
 
     /**
+     * Returns the topmost layout item at a specified \a position. Ignores paper items.
+     * If \a ignoreLocked is set to true any locked items will be ignored.
+     */
+    QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
+
+    /**
+     * Returns the topmost composer item at a specified \a position which is below a specified \a item. Ignores paper items.
+     * If \a ignoreLocked is set to true any locked items will be ignored.
+     */
+    QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
+
+    /**
      * Sets the native measurement \a units for the layout. These also form the default unit
      * for measurements for the layout.
      * \see units()
