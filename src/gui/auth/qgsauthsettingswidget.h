@@ -87,16 +87,16 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     void setPassword( const QString &password );
 
     /**
-     * \brief setConfigId set the authentication configuration id
-     *  param configId the authentication configuration id
-     */
-    void setConfigId( const QString &configId );
-
-    /**
      * \brief configId
      * \return authentication configuration id
      */
     const QString configId( ) const;
+
+    /**
+     * \brief setConfigId set the authentication configuration id
+     *  param configId the authentication configuration id
+     */
+    void setConfigId( const QString &configId );
 
     /**
      * \brief currentTabIndex, mainly useful for unit tests

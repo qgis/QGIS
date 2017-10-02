@@ -75,17 +75,17 @@ class QgsAuthSettingsWidget : QWidget
  \param password the password
 %End
 
-    void setConfigId( const QString &configId );
-%Docstring
- setConfigId set the authentication configuration id
-  param configId the authentication configuration id
-%End
-
     const QString configId( ) const;
 %Docstring
  configId
  :return: authentication configuration id
  :rtype: str
+%End
+
+    void setConfigId( const QString &configId );
+%Docstring
+ setConfigId set the authentication configuration id
+  param configId the authentication configuration id
 %End
 
     int currentTabIndex( ) const;
