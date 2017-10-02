@@ -103,7 +103,7 @@ then
 
   print_info "Creating source tarball"
   # Create source tarball
-  git -C .. archive --format=tar --prefix=qgis-$version/ $BRANCH | bzip2 > sources/qgis-$version.tar.gz
+  git -C .. archive --format=tar --prefix=qgis-$version/ $BRANCH | bzip2 > sources/qgis-$version.tar.bz2
 
   print_info "Creating source package"
   # Create spec file

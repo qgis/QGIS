@@ -227,12 +227,19 @@ install -pm0644 %{SOURCE5} \
 # Install application and MIME icons
 for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do
     install -pd %{buildroot}%{_datadir}/icons/hicolor/$size/apps
-    install -pm0644 debian/icons/%{name}-icon$size.png %{buildroot}%{_datadir}/icons/hicolor/$size/apps/qgis.png
+    install -pm0644 debian/icons/%{name}-icon${size}.png %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/%{name}.png
 done
 
-for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128; do
+for ext in qgs qlr qml qpt; do
+    for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do
+        install -pd %{buildroot}%{_datadir}/icons/hicolor/$size/apps
+        install -pm0644 debian/icons/%{name}-${ext}${size}.png %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/%{name}-${ext}.png
+    done
+done
+
+for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do
     install -pd %{buildroot}%{_datadir}/icons/hicolor/$size/mimetypes
-    install -pm0644 debian/icons/qgis-mime-icon$size.png %{buildroot}%{_datadir}/icons/hicolor/$size/mimetypes/qgis-mime.png
+    install -pm0644 debian/icons/qgis-mime-icon${size}.png %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/qgis-mime.png
 done
 
 install -pd %{buildroot}%{_datadir}/pixmaps
