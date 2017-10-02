@@ -20,7 +20,6 @@
 #include "ui_qgsdb2newconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsauthconfigselect.h"
 
 /** \class QgsDb2NewConnection
  * \brief Dialog to allow the user to configure and save connection

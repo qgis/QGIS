@@ -117,16 +117,16 @@ class QgsAuthSettingsWidget : QWidget
  \param enabled
 %End
 
-    void setStoreUsername( bool checked );
+    void setStoreUsernameChecked( bool checked );
 %Docstring
- setStoreUsername check the "Store" checkbox for the username
+ setStoreUsernameChecked check the "Store" checkbox for the username
  \param checked
 .. seealso:: showStoreCheckboxes
 %End
 
-    void setStorePassword( bool checked );
+    void setStorePasswordChecked( bool checked );
 %Docstring
-  updateStorePasswordcheck the "Store" checkbox for the password
+ setStorePasswordCheched check the "Store" checkbox for the password
  \param checked
 .. seealso:: showStoreCheckboxes
 %End

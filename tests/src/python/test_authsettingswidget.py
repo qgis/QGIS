@@ -178,18 +178,18 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertFalse(w.storeUsernameIsChecked())
 
         w = QgsAuthSettingsWidget()
-        w.setStorePassword(True)
+        w.setStorePasswordChecked(True)
         self.assertTrue(w.storePasswordIsChecked())
         self.assertFalse(w.storeUsernameIsChecked())
 
         w = QgsAuthSettingsWidget()
-        w.setStoreUsername(True)
+        w.setStoreUsernameChecked(True)
         self.assertFalse(w.storePasswordIsChecked())
         self.assertTrue(w.storeUsernameIsChecked())
 
         w = QgsAuthSettingsWidget()
-        w.setStoreUsername(True)
-        w.setStorePassword(True)
+        w.setStoreUsernameChecked(True)
+        w.setStorePasswordChecked(True)
         self.assertTrue(w.storePasswordIsChecked())
         self.assertTrue(w.storeUsernameIsChecked())
 

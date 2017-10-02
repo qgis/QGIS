@@ -53,13 +53,13 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
       mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
-      mAuthSettings->setStoreUsername( true );
+      mAuthSettings->setStoreUsernameChecked( true );
     }
 
     if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
     {
       mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
-      mAuthSettings->setStorePassword( true );
+      mAuthSettings->setStorePasswordChecked( true );
     }
 
     QString authcfg = settings.value( key + "/authcfg" ).toString();

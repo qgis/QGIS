@@ -126,18 +126,18 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     void showStoreCheckboxes( bool enabled );
 
     /**
-     * \brief setStoreUsername check the "Store" checkbox for the username
+     * \brief setStoreUsernameChecked check the "Store" checkbox for the username
      * \param checked
      * \see showStoreCheckboxes
      */
-    void setStoreUsername( bool checked );
+    void setStoreUsernameChecked( bool checked );
 
     /**
-     * \brief  updateStorePasswordcheck the "Store" checkbox for the password
+     * \brief setStorePasswordCheched check the "Store" checkbox for the password
      * \param checked
      * \see showStoreCheckboxes
      */
-    void setStorePassword( bool checked );
+    void setStorePasswordChecked( bool checked );
 
     /**
      * \brief storePassword

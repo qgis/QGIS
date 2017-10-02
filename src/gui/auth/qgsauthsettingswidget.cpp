@@ -120,12 +120,12 @@ void QgsAuthSettingsWidget::showStoreCheckboxes( bool enabled )
   }
 }
 
-void QgsAuthSettingsWidget::setStoreUsername( bool checked )
+void QgsAuthSettingsWidget::setStoreUsernameChecked( bool checked )
 {
   cbStoreUsername->setChecked( checked );
 }
 
-void QgsAuthSettingsWidget::setStorePassword( bool checked )
+void QgsAuthSettingsWidget::setStorePasswordChecked( bool checked )
 {
   cbStorePassword->setChecked( checked );
 }
