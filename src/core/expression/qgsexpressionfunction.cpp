@@ -4360,7 +4360,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
       }
       else
       {
-        parent->setEvalErrorString( tr( "represent_value must be called with exaactly 1 or 2 parameters." ) );
+        parent->setEvalErrorString( tr( "represent_value must be called with exactly 1 or 2 parameters." ) );
         return false;
       }
     }
