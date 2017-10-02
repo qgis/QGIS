@@ -139,6 +139,32 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertEqual(w.currentTabIndex(), 0)
         self.assertFalse(w.btnConvertToEncryptedIsEnabled())
 
+    def test_setters(self):
+        """
+        Test setters
+        """
+        w = QgsAuthSettingsWidget()
+        w.setUsername('username')
+        self.assertEqual(w.currentTabIndex(), 1)
+        self.assertEqual(w.username(), 'username')
+
+        w = QgsAuthSettingsWidget()
+        w.setPassword('password')
+        self.assertEqual(w.password(), 'password')
+        self.assertEqual(w.currentTabIndex(), 1)
+
+        w = QgsAuthSettingsWidget()
+        w.setConfigId(self.auth_config.id())
+        self.assertEqual(w.configId(), self.auth_config.id())
+        self.assertEqual(w.currentTabIndex(), 0)
+
+        w = QgsAuthSettingsWidget()
+        w.setUsername('username')
+        w.setPassword('password')
+        w.setConfigId(self.auth_config.id())
+        self.assertEqual(w.configId(), self.auth_config.id())
+        self.assertEqual(w.currentTabIndex(), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
