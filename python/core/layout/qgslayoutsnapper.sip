@@ -69,7 +69,21 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
 .. seealso:: snapToGuides()
 %End
 
-    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped /Out/ ) const;
+    bool snapToItems() const;
+%Docstring
+ Returns true if snapping to items is enabled.
+.. seealso:: setSnapToItems()
+ :rtype: bool
+%End
+
+    void setSnapToItems( bool enabled );
+%Docstring
+ Sets whether snapping to items is ``enabled``.
+.. seealso:: snapToItems()
+%End
+
+    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0,
+                       QGraphicsLineItem *verticalSnapLine = 0 ) const;
 %Docstring
  Snaps a layout coordinate ``point``. If ``point`` was snapped, ``snapped`` will be set to true.
 
@@ -78,6 +92,9 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  graphics view transform().m11() value.
 
  This method considers snapping to the grid, snap lines, etc.
+
+ If the ``horizontalSnapLine`` and ``verticalSnapLine`` arguments are specified, then the snapper
+ will automatically display and position these lines to indicate snapping positions to item bounds.
  :rtype: QPointF
 %End
 
@@ -98,15 +115,35 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
 
     double snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
 %Docstring
- Snaps a layout coordinate ``point`` to the grid. If ``point``
+ Snaps an ``original`` layout coordinate to the guides. If the point
  was snapped, ``snapped`` will be set to true.
 
  The ``scaleFactor`` argument should be set to the transformation from
  scalar transform from layout coordinates to pixels, i.e. the
  graphics view transform().m11() value.
 
- If snapToGrid() is disabled, this method will return the point
+ If snapToGuides() is disabled, this method will return the point
  unchanged.
+ :rtype: float
+%End
+
+    double snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped /Out/,
+                             QGraphicsLineItem *snapLine = 0 ) const;
+%Docstring
+ Snaps an ``original`` layout coordinate to the item bounds. If the point
+ was snapped, ``snapped`` will be set to true.
+
+ The ``scaleFactor`` argument should be set to the transformation from
+ scalar transform from layout coordinates to pixels, i.e. the
+ graphics view transform().m11() value.
+
+ If snapToItems() is disabled, this method will return the point
+ unchanged.
+
+ A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
+
+ If ``snapLine`` is specified, the snapper will automatically show (or hide) the snap line
+ based on the result of the snap, and position it at the correct location for the snap.
  :rtype: float
 %End
 

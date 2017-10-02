@@ -44,7 +44,12 @@ void QgsLayoutSnapper::setSnapToGuides( bool enabled )
   mSnapToGuides = enabled;
 }
 
-QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped ) const
+void QgsLayoutSnapper::setSnapToItems( bool enabled )
+{
+  mSnapToItems = enabled;
+}
+
+QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine ) const
 {
   snapped = false;
 
@@ -55,6 +60,8 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
   {
     snapped = true;
     point.setX( newX );
+    if ( verticalSnapLine )
+      verticalSnapLine->setVisible( false );
   }
   bool snappedYToGuides = false;
   double newY = snapPointToGuides( point.y(), QgsLayoutGuide::Horizontal, scaleFactor, snappedYToGuides );
@@ -62,17 +69,40 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
   {
     snapped = true;
     point.setY( newY );
+    if ( horizontalSnapLine )
+      horizontalSnapLine->setVisible( false );
+  }
+
+  bool snappedXToItems = false;
+  bool snappedYToItems = false;
+  if ( !snappedXToGuides )
+  {
+    newX = snapPointToItems( point.x(), Qt::Horizontal, scaleFactor, QList< QgsLayoutItem * >(), snappedXToItems, verticalSnapLine );
+    if ( snappedXToItems )
+    {
+      snapped = true;
+      point.setX( newX );
+    }
+  }
+  if ( !snappedYToGuides )
+  {
+    newY = snapPointToItems( point.y(), Qt::Vertical, scaleFactor, QList< QgsLayoutItem * >(), snappedYToItems, horizontalSnapLine );
+    if ( snappedYToItems )
+    {
+      snapped = true;
+      point.setY( newY );
+    }
   }
 
   bool snappedXToGrid = false;
   bool snappedYToGrid = false;
   QPointF res = snapPointToGrid( point, scaleFactor, snappedXToGrid, snappedYToGrid );
-  if ( snappedXToGrid && !snappedXToGuides )
+  if ( snappedXToGrid && !snappedXToGuides && !snappedXToItems )
   {
     snapped = true;
     point.setX( res.x() );
   }
-  if ( snappedYToGrid && !snappedYToGuides )
+  if ( snappedYToGrid && !snappedYToGuides && !snappedYToItems )
   {
     snapped = true;
     point.setY( res.y() );
@@ -169,6 +199,109 @@ double QgsLayoutSnapper::snapPointToGuides( double original, QgsLayoutGuide::Ori
   }
 }
 
+double QgsLayoutSnapper::snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList<QgsLayoutItem *> &ignoreItems, bool &snapped,
+    QGraphicsLineItem *snapLine ) const
+{
+  snapped = false;
+  if ( !mLayout || !mSnapToItems )
+  {
+    if ( snapLine )
+      snapLine->setVisible( false );
+    return original;
+  }
+
+  double alignThreshold = mTolerance / scaleFactor;
+
+  double closest = original;
+  double closestDist = DBL_MAX;
+  const QList<QGraphicsItem *> itemList = mLayout->items();
+  QList< double > currentCoords;
+  for ( QGraphicsItem *item : itemList )
+  {
+    QgsLayoutItem *currentItem = dynamic_cast< QgsLayoutItem *>( item );
+    if ( ignoreItems.contains( currentItem ) )
+      continue;
+
+    //don't snap to selected items, since they're the ones that will be snapping to something else
+    //also ignore group members - only snap to bounds of group itself
+    //also ignore hidden items
+    if ( !currentItem /* TODO || currentItem->selected() || currentItem->isGroupMember() */ || !currentItem->isVisible() )
+    {
+      continue;
+    }
+    QRectF itemRect;
+    if ( dynamic_cast<const QgsLayoutItemPage *>( currentItem ) )
+    {
+      //if snapping to paper use the paper item's rect rather then the bounding rect,
+      //since we want to snap to the page edge and not any outlines drawn around the page
+      itemRect = currentItem->mapRectToScene( currentItem->rect() );
+    }
+    else
+    {
+      itemRect = currentItem->mapRectToScene( currentItem->rectWithFrame() );
+    }
+
+    currentCoords.clear();
+    switch ( orientation )
+    {
+      case Qt::Horizontal:
+      {
+        currentCoords << itemRect.left();
+        currentCoords << itemRect.right();
+        currentCoords << itemRect.center().x();
+        break;
+      }
+
+      case Qt::Vertical:
+      {
+        currentCoords << itemRect.top();
+        currentCoords << itemRect.center().y();
+        currentCoords << itemRect.bottom();
+        break;
+      }
+    }
+
+    for ( double val : qgsAsConst( currentCoords ) )
+    {
+      double dist = std::fabs( original - val );
+      if ( dist <= alignThreshold && dist < closestDist )
+      {
+        snapped = true;
+        closestDist = dist;
+        closest = val;
+      }
+    }
+  }
+
+  if ( snapLine )
+  {
+    if ( snapped )
+    {
+      snapLine->setVisible( true );
+      switch ( orientation )
+      {
+        case Qt::Vertical:
+        {
+          snapLine->setLine( QLineF( 0, closest, 300, closest ) );
+          break;
+        }
+
+        case Qt::Horizontal:
+        {
+          snapLine->setLine( QLineF( closest, 0, closest, 300 ) );
+          break;
+        }
+      }
+    }
+    else
+    {
+      snapLine->setVisible( false );
+    }
+  }
+
+  return closest;
+}
+
 bool QgsLayoutSnapper::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "Snapper" ) );
@@ -176,6 +309,7 @@ bool QgsLayoutSnapper::writeXml( QDomElement &parentElement, QDomDocument &docum
   element.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
   element.setAttribute( QStringLiteral( "snapToGrid" ), mSnapToGrid );
   element.setAttribute( QStringLiteral( "snapToGuides" ), mSnapToGuides );
+  element.setAttribute( QStringLiteral( "snapToItems" ), mSnapToItems );
 
   parentElement.appendChild( element );
   return true;
@@ -197,7 +331,6 @@ bool QgsLayoutSnapper::readXml( const QDomElement &e, const QDomDocument &, cons
   mTolerance = element.attribute( QStringLiteral( "tolerance" ), QStringLiteral( "5" ) ).toInt();
   mSnapToGrid = element.attribute( QStringLiteral( "snapToGrid" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
   mSnapToGuides = element.attribute( QStringLiteral( "snapToGuides" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
+  mSnapToItems = element.attribute( QStringLiteral( "snapToItems" ), QStringLiteral( "0" ) ) != QLatin1String( "0" );
   return true;
 }
-
-

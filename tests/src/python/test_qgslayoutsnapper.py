@@ -23,8 +23,11 @@ from qgis.core import (QgsProject,
                        QgsLayoutPoint,
                        QgsLayoutItemPage,
                        QgsLayoutGuide,
-                       QgsReadWriteContext)
-from qgis.PyQt.QtCore import QPointF
+                       QgsReadWriteContext,
+                       QgsLayoutItemMap,
+                       QgsLayoutSize)
+from qgis.PyQt.QtCore import QPointF, Qt
+from qgis.PyQt.QtWidgets import QGraphicsLineItem
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.testing import start_app, unittest
@@ -48,6 +51,11 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertFalse(s.snapToGuides())
         s.setSnapToGuides(True)
         self.assertTrue(s.snapToGuides())
+
+        s.setSnapToItems(False)
+        self.assertFalse(s.snapToItems())
+        s.setSnapToItems(True)
+        self.assertTrue(s.snapToItems())
 
         s.setSnapTolerance(15)
         self.assertEqual(s.snapTolerance(), 15)
@@ -164,6 +172,98 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         point, snapped = s.snapPointToGuides(0.5, QgsLayoutGuide.Horizontal, 3)
         self.assertFalse(snapped)
 
+    def testSnapPointToItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        #l.pageCollection().addPage(page)
+        s = QgsLayoutSnapper(l)
+        guides = l.guides()
+
+        s.setSnapToItems(True)
+        s.setSnapTolerance(1)
+
+        # no items
+        point, snapped = s.snapPointToItems(0.5, Qt.Horizontal, 1, [])
+        self.assertFalse(snapped)
+
+        line = QGraphicsLineItem()
+        line.setVisible(True)
+        point, snapped = s.snapPointToItems(0.5, Qt.Horizontal, 1, [], line)
+        self.assertFalse(line.isVisible())
+
+        guides.addGuide(QgsLayoutGuide(QgsLayoutGuide.Vertical, QgsLayoutMeasurement(1), page))
+
+        # add an item
+        item1 = QgsLayoutItemMap(l)
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+
+        point, snapped = s.snapPointToItems(3.5, Qt.Horizontal, 1, [], line)
+        self.assertTrue(snapped)
+        self.assertEqual(point, 4)
+        self.assertTrue(line.isVisible())
+        point, snapped = s.snapPointToItems(4.5, Qt.Horizontal, 1, [])
+        self.assertTrue(snapped)
+        self.assertEqual(point, 4)
+
+        # ignoring item
+        point, snapped = s.snapPointToItems(4.5, Qt.Horizontal, 1, [item1])
+        self.assertFalse(snapped)
+
+        # outside tolerance
+        point, snapped = s.snapPointToItems(5.5, Qt.Horizontal, 1, [], line)
+        self.assertFalse(snapped)
+        self.assertFalse(line.isVisible())
+
+        # snap to center
+        point, snapped = s.snapPointToItems(12.5, Qt.Horizontal, 1, [])
+        self.assertTrue(snapped)
+        self.assertEqual(point, 13)
+
+        # snap to right
+        point, snapped = s.snapPointToItems(22.5, Qt.Horizontal, 1, [])
+        self.assertTrue(snapped)
+        self.assertEqual(point, 22)
+
+        #snap to top
+        point, snapped = s.snapPointToItems(7.5, Qt.Vertical, 1, [], line)
+        self.assertTrue(snapped)
+        self.assertEqual(point, 8)
+        self.assertTrue(line.isVisible())
+        point, snapped = s.snapPointToItems(8.5, Qt.Vertical, 1, [])
+        self.assertTrue(snapped)
+        self.assertEqual(point, 8)
+
+        # outside tolerance
+        point, snapped = s.snapPointToItems(5.5, Qt.Vertical, 1, [], line)
+        self.assertFalse(snapped)
+        self.assertFalse(line.isVisible())
+
+        # snap to center
+        point, snapped = s.snapPointToItems(13.5, Qt.Vertical, 1, [])
+        self.assertTrue(snapped)
+        self.assertEqual(point, 14)
+
+        # snap to bottom
+        point, snapped = s.snapPointToItems(20.5, Qt.Vertical, 1, [])
+        self.assertTrue(snapped)
+        self.assertEqual(point, 20)
+
+        # snapping off
+        s.setSnapToItems(False)
+        line.setVisible(True)
+        point, snapped = s.snapPointToItems(20.5, Qt.Vertical, 1, [], line)
+        self.assertFalse(snapped)
+        self.assertFalse(line.isVisible())
+
+        # with different pixel scale
+        s.setSnapToItems(True)
+        point, snapped = s.snapPointToItems(20.5, Qt.Vertical, 3, [])
+        self.assertFalse(snapped)
+
     def testSnapPoint(self):
         p = QgsProject()
         l = QgsLayout(p)
@@ -182,6 +282,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertTrue(snapped)
         self.assertEqual(point, QPointF(0, 0))
 
+        s.setSnapToItems(False)
         s.setSnapToGrid(False)
         point, snapped = s.snapPoint(QPointF(1, 1), 1)
         self.assertFalse(snapped)
@@ -195,6 +296,24 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertTrue(snapped)
         self.assertEqual(point, QPointF(0, 0.5))
 
+        # add an item
+        item1 = QgsLayoutItemMap(l)
+        item1.attemptMove(QgsLayoutPoint(121, 1.1, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+
+        # test that guide takes precedence over item
+        s.setSnapToGrid(True)
+        s.setSnapToGuides(True)
+        s.setSnapToItems(True)
+        point, snapped = s.snapPoint(QPointF(1, 1), 1)
+        self.assertTrue(snapped)
+        self.assertEqual(point, QPointF(0, 0.5))
+        # but items take precedence over grid
+        s.setSnapToGuides(False)
+        point, snapped = s.snapPoint(QPointF(1, 1), 1)
+        self.assertTrue(snapped)
+        self.assertEqual(point, QPointF(0, 1.1))
+
     def testReadWriteXml(self):
         p = QgsProject()
         l = QgsLayout(p)
@@ -204,6 +323,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         snapper.setSnapToGrid(True)
         snapper.setSnapTolerance(1)
         snapper.setSnapToGuides(True)
+        snapper.setSnapToItems(True)
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
@@ -217,10 +337,12 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertTrue(snapper2.snapToGrid())
         self.assertEqual(snapper2.snapTolerance(), 1)
         self.assertTrue(snapper2.snapToGuides())
+        self.assertTrue(snapper2.snapToItems())
 
         snapper.setSnapToGrid(False)
         snapper.setSnapTolerance(1)
         snapper.setSnapToGuides(False)
+        snapper.setSnapToItems(False)
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
@@ -229,6 +351,7 @@ class TestQgsLayoutSnapper(unittest.TestCase):
         self.assertTrue(snapper2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
         self.assertFalse(snapper2.snapToGrid())
         self.assertFalse(snapper2.snapToGuides())
+        self.assertFalse(snapper2.snapToItems())
 
 
 if __name__ == '__main__':
