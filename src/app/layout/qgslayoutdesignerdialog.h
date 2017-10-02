@@ -141,6 +141,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void snapToGuides( bool enabled );
 
+    /**
+     * Toggles whether snapping to the item guides ("smart" guides) is \a enabled.
+     */
+    void snapToItems( bool enabled );
+
   signals:
 
     /**

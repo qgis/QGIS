@@ -141,6 +141,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionShowGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGuides );
   connect( mActionSnapGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGuides );
+  connect( mActionSmartGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToItems );
 
   connect( mActionShowBoxes, &QAction::triggered, this, &QgsLayoutDesignerDialog::showBoxes );
 
@@ -344,6 +345,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
   mActionShowGuides->setChecked( mLayout->guides().visible() );
   mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
+  mActionSmartGuides->setChecked( mLayout->snapper().snapToItems() );
   mActionShowBoxes->setChecked( mLayout->context().boundingBoxesVisible() );
 
   connect( mLayout->undoStack()->stack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
@@ -458,6 +460,11 @@ void QgsLayoutDesignerDialog::showGuides( bool visible )
 void QgsLayoutDesignerDialog::snapToGuides( bool enabled )
 {
   mLayout->snapper().setSnapToGuides( enabled );
+}
+
+void QgsLayoutDesignerDialog::snapToItems( bool enabled )
+{
+  mLayout->snapper().setSnapToItems( enabled );
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )

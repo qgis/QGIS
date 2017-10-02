@@ -127,6 +127,7 @@
     <addaction name="separator"/>
     <addaction name="mActionShowGuides"/>
     <addaction name="mActionSnapGuides"/>
+    <addaction name="mActionSmartGuides"/>
     <addaction name="mActionManageGuides"/>
     <addaction name="mActionClearGuides"/>
     <addaction name="separator"/>
@@ -449,6 +450,20 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="mActionSmartGuides">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>S&amp;mart Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Smart guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+;</string>
    </property>
   </action>
  </widget>

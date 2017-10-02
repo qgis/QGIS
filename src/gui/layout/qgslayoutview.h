@@ -300,10 +300,14 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
 
+    std::unique_ptr< QGraphicsLineItem > mHorizontalSnapLine;
+    std::unique_ptr< QGraphicsLineItem > mVerticalSnapLine;
+
     int mCurrentPage = 0;
 
     friend class TestQgsLayoutView;
 
+    QGraphicsLineItem *createSnapLine() const;
 };
 
 

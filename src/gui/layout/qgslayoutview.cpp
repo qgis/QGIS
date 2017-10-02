@@ -74,6 +74,13 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
   mSnapMarker->hide();
   layout->addItem( mSnapMarker.get() );
 
+  mHorizontalSnapLine.reset( createSnapLine() );
+  mHorizontalSnapLine->hide();
+  layout->addItem( mHorizontalSnapLine.get() );
+  mVerticalSnapLine.reset( createSnapLine() );
+  mVerticalSnapLine->hide();
+  layout->addItem( mVerticalSnapLine.get() );
+
   if ( mHorizontalRuler )
   {
     connect( &layout->guides(), &QAbstractItemModel::dataChanged, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
@@ -318,7 +325,11 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
   QPointF cursorPos = mapToScene( mMouseCurrentXY );
   if ( mTool )
   {
-    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, mTool->flags() & QgsLayoutViewTool::FlagSnaps ) );
+    std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, false ) );
+    if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
+    {
+      me->snapPoint( mHorizontalSnapLine.get(), mVerticalSnapLine.get() );
+    }
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
       //draw snapping point indicator
@@ -494,6 +505,16 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   }
 }
 
+QGraphicsLineItem *QgsLayoutView::createSnapLine() const
+{
+  std::unique_ptr< QGraphicsLineItem>  item( new QGraphicsLineItem( nullptr ) );
+  QPen pen = QPen( QColor( Qt::blue ) );
+  pen.setStyle( Qt::DotLine );
+  pen.setWidthF( 0.0 );
+  item->setPen( pen );
+  item->setZValue( QgsLayout::ZSmartGuide );
+  return item.release();
+}
 
 //
 // QgsLayoutViewSnapMarker

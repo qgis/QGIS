@@ -408,9 +408,10 @@ Qt::CursorShape QgsLayoutMouseHandles::cursorForPosition( QPointF itemCoordPos )
         return Qt::SizeVerCursor;
       }
     case SelectItem:
-      // default:
       return Qt::ArrowCursor;
   }
+
+  return Qt::ArrowCursor;
 }
 
 QgsLayoutMouseHandles::MouseAction QgsLayoutMouseHandles::mouseActionForPosition( QPointF itemCoordPos )
