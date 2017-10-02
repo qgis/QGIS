@@ -124,7 +124,7 @@ https://git-scm.com/download/win
 
 CMake is build system used by QGIS. Download it from here:
 
-http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe
+https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.msi
 
 === QGIS ===
 
