@@ -130,6 +130,18 @@ Quick way to test if there is any join at all
  :rtype: QgsFeature
 %End
 
+    bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
+%Docstring
+ Returns true if the join information is about auxiliary layer, false otherwise
+
+ \param info The join information
+
+ :return: true if the join information is about auxiliary layer, false otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     QgsVectorLayerJoinBuffer *clone() const /Factory/;
 %Docstring
  Create a copy of the join buffer

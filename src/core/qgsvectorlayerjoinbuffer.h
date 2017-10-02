@@ -122,6 +122,17 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     QgsFeature targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 
     /**
+     * Returns true if the join information is about auxiliary layer, false otherwise
+     *
+     * \param info The join information
+     *
+     * \returns true if the join information is about auxiliary layer, false otherwise
+     *
+     * \since QGIS 3.0
+     */
+    bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
+
+    /**
      * Create a copy of the join buffer
      * \since QGIS 2.6
      */

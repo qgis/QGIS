@@ -79,6 +79,7 @@
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
 #include "qgsbrowsermodel.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 #ifdef HAVE_3D
 #include "qgsabstract3drenderer.h"
@@ -8635,7 +8636,14 @@ void QgisApp::layerSubsetString()
   if ( !vlayer )
     return;
 
-  if ( !vlayer->vectorJoins().isEmpty() )
+  bool joins = !vlayer->vectorJoins().isEmpty();
+  if ( vlayer->vectorJoins().size() == 1 )
+  {
+    QgsVectorLayerJoinInfo info = vlayer->vectorJoins()[0];
+    joins = !vlayer->joinBuffer()->isAuxiliaryJoin( info );
+  }
+
+  if ( joins )
   {
     if ( QMessageBox::question( nullptr, tr( "Filter on joined fields" ),
                                 tr( "You are about to set a subset filter on a layer that has joined fields. "
