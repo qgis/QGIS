@@ -42,6 +42,7 @@ QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
   {
     tabAuth->setCurrentIndex( tabAuth->indexOf( tabBasic ) );
   }
+  connect( btnConvertToEncrypted, &QPushButton::clicked, this, &QgsAuthSettingsWidget::convertToEncrypted );
   updateConvertBtnState();
 }
 
@@ -80,7 +81,7 @@ bool QgsAuthSettingsWidget::btnConvertToEncryptedIsEnabled() const
   return btnConvertToEncrypted->isEnabled( );
 }
 
-bool QgsAuthSettingsWidget::on_btnConvertToEncrypted_clicked()
+bool QgsAuthSettingsWidget::convertToEncrypted( )
 {
   tabAuth->setCurrentIndex( tabAuth->indexOf( tabConfigurations ) );
   QgsAuthMethodConfig config( QStringLiteral( "Basic" ) );
