@@ -26,6 +26,7 @@
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
@@ -43,6 +44,17 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   else
   {
     setupUi( this );
+
+    // Set icons and remove texts
+    btnConfigAdd->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+    btnConfigRemove->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
+    btnConfigEdit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+    btnConfigMsgClear->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
+
+    btnConfigAdd->setText( QStringLiteral( "" ) );
+    btnConfigRemove->setText( QStringLiteral( "" ) );
+    btnConfigEdit->setText( QStringLiteral( "" ) );
+    btnConfigMsgClear->setText( QStringLiteral( "" ) );
 
     leConfigMsg->setStyleSheet( QStringLiteral( "QLineEdit{background-color: %1}" )
                                 .arg( QgsAuthGuiUtils::yellowColor().name() ) );
@@ -94,9 +106,8 @@ void QgsAuthConfigSelect::loadConfig()
     {
       methoddesc = authmethod->description();
     }
-    leConfigMethodDesc->setText( methoddesc );
-    leConfigMethodDesc->setCursorPosition( 0 ); // left justify
-    leConfigId->setText( config.id() );
+    cmbConfigSelect->setToolTip( tr( "<ul><li><b>Method type:</b> %1</li>"
+                                     "<li><b>Configuration ID:</b> %2</li></ul>" ).arg( methoddesc, config.id( ) ) );
     btnConfigEdit->setEnabled( true );
     btnConfigRemove->setEnabled( true );
   }
@@ -105,8 +116,7 @@ void QgsAuthConfigSelect::loadConfig()
 
 void QgsAuthConfigSelect::clearConfig()
 {
-  leConfigMethodDesc->clear();
-  leConfigId->clear();
+  cmbConfigSelect->setToolTip( QStringLiteral( "" ) );
   btnConfigEdit->setEnabled( false );
   btnConfigRemove->setEnabled( false );
 }
@@ -134,7 +144,7 @@ void QgsAuthConfigSelect::populateConfigSelector()
   for ( cit = mConfigs.constBegin(); cit != mConfigs.constEnd(); ++cit )
   {
     QgsAuthMethodConfig config = cit.value();
-    sortmap.insert( config.name(), cit.key() );
+    sortmap.insert( QStringLiteral( "%1 (%2)" ).arg( config.name(), config.method() ), cit.key() );
   }
 
   QgsStringMap::const_iterator sm = sortmap.constBegin();
