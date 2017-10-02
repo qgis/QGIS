@@ -115,7 +115,11 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
     mTool->deactivate();
   }
 
-  mSnapMarker->setVisible( false );
+  mSnapMarker->hide();
+  if ( mHorizontalSnapLine )
+    mHorizontalSnapLine->hide();
+  if ( mVerticalSnapLine )
+    mVerticalSnapLine->hide();
 
   // activate new tool before setting it - gives tools a chance
   // to respond to whatever the current tool is
