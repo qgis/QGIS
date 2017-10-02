@@ -278,6 +278,7 @@
      </property>
      <addaction name="mActionCircle2Points"/>
      <addaction name="mActionCircle3Points"/>
+     <addaction name="mActionCircle3Tangents"/>
      <addaction name="mActionCircleCenterPoint"/>
     </widget>
     <widget class="QMenu" name="mMenuEllipse">
