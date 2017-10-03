@@ -56,7 +56,7 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
 
   // highest priority - guides
   bool snappedXToGuides = false;
-  double newX = snapPointToGuides( point.x(), QgsLayoutGuide::Vertical, scaleFactor, snappedXToGuides );
+  double newX = snapPointToGuides( point.x(), Qt::Vertical, scaleFactor, snappedXToGuides );
   if ( snappedXToGuides )
   {
     snapped = true;
@@ -65,7 +65,7 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
       verticalSnapLine->setVisible( false );
   }
   bool snappedYToGuides = false;
-  double newY = snapPointToGuides( point.y(), QgsLayoutGuide::Horizontal, scaleFactor, snappedYToGuides );
+  double newY = snapPointToGuides( point.y(), Qt::Horizontal, scaleFactor, snappedYToGuides );
   if ( snappedYToGuides )
   {
     snapped = true;
@@ -124,7 +124,7 @@ QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool 
 
   // highest priority - guides
   bool snappedXToGuides = false;
-  double deltaX = snapPointsToGuides( xCoords, QgsLayoutGuide::Vertical, scaleFactor, snappedXToGuides );
+  double deltaX = snapPointsToGuides( xCoords, Qt::Vertical, scaleFactor, snappedXToGuides );
   if ( snappedXToGuides )
   {
     snapped = true;
@@ -133,7 +133,7 @@ QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool 
       verticalSnapLine->setVisible( false );
   }
   bool snappedYToGuides = false;
-  double deltaY = snapPointsToGuides( yCoords, QgsLayoutGuide::Horizontal, scaleFactor, snappedYToGuides );
+  double deltaY = snapPointsToGuides( yCoords, Qt::Horizontal, scaleFactor, snappedYToGuides );
   if ( snappedYToGuides )
   {
     snapped = true;
@@ -256,13 +256,13 @@ QPointF QgsLayoutSnapper::snapPointsToGrid( const QList<QPointF> &points, double
   return delta;
 }
 
-double QgsLayoutSnapper::snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped ) const
+double QgsLayoutSnapper::snapPointToGuides( double original, Qt::Orientation orientation, double scaleFactor, bool &snapped ) const
 {
   double delta = snapPointsToGuides( QList< double >() << original, orientation, scaleFactor, snapped );
   return original + delta;
 }
 
-double QgsLayoutSnapper::snapPointsToGuides( const QList<double> &points, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped ) const
+double QgsLayoutSnapper::snapPointsToGuides( const QList<double> &points, Qt::Orientation orientation, double scaleFactor, bool &snapped ) const
 {
   snapped = false;
   if ( !mLayout || !mSnapToGuides )

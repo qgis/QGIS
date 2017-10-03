@@ -162,7 +162,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  :rtype: QPointF
 %End
 
-    double snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
+    double snapPointToGuides( double original, Qt::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
 %Docstring
  Snaps an ``original`` layout coordinate to the guides. If the point
  was snapped, ``snapped`` will be set to true.
@@ -178,7 +178,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  :rtype: float
 %End
 
-    double snapPointsToGuides( const QList< double > &points, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
+    double snapPointsToGuides( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
 %Docstring
  Snaps a set of ``points`` to the guides. If the points
  were snapped, ``snapped`` will be set to true.

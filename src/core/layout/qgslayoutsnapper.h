@@ -183,7 +183,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      *
      * \see snapPointsToGuides()
      */
-    double snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
+    double snapPointToGuides( double original, Qt::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
 
     /**
      * Snaps a set of \a points to the guides. If the points
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      *
      * \see snapPointToGuides()
      */
-    double snapPointsToGuides( const QList< double > &points, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
+    double snapPointsToGuides( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
 
     /**
      * Snaps an \a original layout coordinate to the item bounds. If the point
