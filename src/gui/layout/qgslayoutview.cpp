@@ -398,6 +398,130 @@ void QgsLayoutView::selectNextItemBelow()
   selectNextByZOrder( currentLayout(), false );
 }
 
+void QgsLayoutView::raiseSelectedItems()
+{
+  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  bool itemsRaised = false;
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    itemsRaised = itemsRaised | currentLayout()->raiseItem( item, true );
+  }
+
+  if ( !itemsRaised )
+  {
+    //no change
+    return;
+  }
+
+  //update all positions
+  currentLayout()->updateZValues();
+  currentLayout()->update();
+}
+
+void QgsLayoutView::lowerSelectedItems()
+{
+  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  bool itemsLowered = false;
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    itemsLowered  = itemsLowered  | currentLayout()->lowerItem( item, true );
+  }
+
+  if ( !itemsLowered )
+  {
+    //no change
+    return;
+  }
+
+  //update all positions
+  currentLayout()->updateZValues();
+  currentLayout()->update();
+}
+
+void QgsLayoutView::moveSelectedItemsToTop()
+{
+  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  bool itemsRaised = false;
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    itemsRaised = itemsRaised | currentLayout()->moveItemToTop( item, true );
+  }
+
+  if ( !itemsRaised )
+  {
+    //no change
+    return;
+  }
+
+  //update all positions
+  currentLayout()->updateZValues();
+  currentLayout()->update();
+}
+
+void QgsLayoutView::moveSelectedItemsToBottom()
+{
+  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  bool itemsLowered = false;
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    itemsLowered = itemsLowered | currentLayout()->moveItemToBottom( item, true );
+  }
+
+  if ( !itemsLowered )
+  {
+    //no change
+    return;
+  }
+
+  //update all positions
+  currentLayout()->updateZValues();
+  currentLayout()->update();
+}
+
+void QgsLayoutView::lockSelectedItems()
+{
+  currentLayout()->undoStack()->beginMacro( tr( "Items locked" ) );
+  const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
+  for ( QgsLayoutItem *item : selectionList )
+  {
+    currentLayout()->undoStack()->beginCommand( item, QString() );
+    item->setLocked( true );
+    currentLayout()->undoStack()->endCommand();
+  }
+
+  currentLayout()->deselectAll();
+  currentLayout()->undoStack()->endMacro();
+}
+
+void QgsLayoutView::unlockAllItems()
+{
+  //unlock all items in layout
+  currentLayout()->undoStack()->beginMacro( tr( "Items unlocked" ) );
+
+  //first, clear the selection
+  currentLayout()->deselectAll();
+
+  QgsLayoutItem *focusItem = nullptr;
+
+  const QList<QGraphicsItem *> itemList = currentLayout()->items();
+  for ( QGraphicsItem *graphicItem : itemList )
+  {
+    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicItem );
+    if ( item && item->isLocked() )
+    {
+      focusItem = item;
+      currentLayout()->undoStack()->beginCommand( item, QString() );
+      item->setLocked( false );
+      //select unlocked items, same behavior as illustrator
+      item->setSelected( true );
+      currentLayout()->undoStack()->endCommand();
+    }
+  }
+  currentLayout()->undoStack()->endMacro();
+
+  emit itemFocused( focusItem );
+}
+
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
   mSnapMarker->setVisible( false );

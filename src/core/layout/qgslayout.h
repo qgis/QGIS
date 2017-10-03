@@ -136,19 +136,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void deselectAll();
 
     /**
-     * Locks any selected items, preventing them from being interacted with
-     * by mouse interactions.
-     * \see unlockAllItems()
-     */
-    void lockSelectedItems();
-
-    /**
-     * Unlocks all locked items in the layout.
-     * \see lockSelectedItems()
-     */
-    void unlockAllItems();
-
-    /**
      * Raises an \a item up the z-order.
      * Returns true if the item was successfully raised.
      *
@@ -158,6 +145,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * updating the scene for each one.
      *
      * \see lowerItem()
+     * \see updateZValues()
      */
     bool raiseItem( QgsLayoutItem *item, bool deferUpdate = false );
 
@@ -171,6 +159,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * updating the scene for each one.
      *
      * \see raiseItem()
+     * \see updateZValues()
      */
     bool lowerItem( QgsLayoutItem *item, bool deferUpdate = false );
 
@@ -184,6 +173,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * updating the scene for each one.
      *
      * \see moveItemToBottom()
+     * \see updateZValues()
      */
     bool moveItemToTop( QgsLayoutItem *item, bool deferUpdate = false );
 
@@ -196,40 +186,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * updating the scene for each one.
      *
      * \see moveItemToTop()
+     * \see updateZValues()
      */
     bool moveItemToBottom( QgsLayoutItem *item, bool deferUpdate = false );
 
     /**
-     * Raises the selected items up the z-order.
-     * \see lowerSelectedItems()
-     * \see moveSelectedItemsToTop()
-     * \see moveSelectedItemsToBottom()
+     * Resets the z-values of items based on their position in the internal
+     * z order list. This should be called after any stacking changes
+     * which deferred z-order updates.
      */
-    void raiseSelectedItems();
-
-    /**
-     * Lowers the selected items down the z-order.
-     * \see raiseSelectedItems()
-     * \see moveSelectedItemsToTop()
-     * \see moveSelectedItemsToBottom()
-     */
-    void lowerSelectedItems();
-
-    /**
-     * Raises the selected items to the top of the z-order.
-     * \see raiseSelectedItems()
-     * \see lowerSelectedItems()
-     * \see moveSelectedItemsToBottom()
-     */
-    void moveSelectedItemsToTop();
-
-    /**
-     * Lowers the selected items to the bottom of the z-order.
-     * \see raiseSelectedItems()
-     * \see lowerSelectedItems()
-     * \see moveSelectedItemsToTop()
-     */
-    void moveSelectedItemsToBottom();
+    void updateZValues( const bool addUndoCommands = true );
 
     /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
@@ -522,9 +488,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
     //! Reads only the layout settings (not member settings like grid settings, etc) from XML
     bool readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
-
-    //! Reset z-values of items based on position in z list
-    void updateZValues( const bool addUndoCommands = true );
 
 
     friend class QgsLayoutUndoCommand;

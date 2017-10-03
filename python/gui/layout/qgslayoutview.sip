@@ -212,6 +212,51 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: deselectAll()
 %End
 
+    void raiseSelectedItems();
+%Docstring
+ Raises the selected items up the z-order.
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void lowerSelectedItems();
+%Docstring
+ Lowers the selected items down the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void moveSelectedItemsToTop();
+%Docstring
+ Raises the selected items to the top of the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void moveSelectedItemsToBottom();
+%Docstring
+ Lowers the selected items to the bottom of the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+%End
+
+    void lockSelectedItems();
+%Docstring
+ Locks any selected items, preventing them from being interacted with
+ by mouse interactions.
+.. seealso:: unlockAllItems()
+%End
+
+    void unlockAllItems();
+%Docstring
+ Unlocks all locked items in the layout.
+.. seealso:: lockSelectedItems()
+%End
+
     void viewChanged();
 %Docstring
  Updates associated rulers and other widgets after view extent or zoom has changed.

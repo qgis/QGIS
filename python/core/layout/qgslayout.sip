@@ -98,19 +98,6 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  not correctly emit signals to allow the layout's model to update.
 %End
 
-    void lockSelectedItems();
-%Docstring
- Locks any selected items, preventing them from being interacted with
- by mouse interactions.
-.. seealso:: unlockAllItems()
-%End
-
-    void unlockAllItems();
-%Docstring
- Unlocks all locked items in the layout.
-.. seealso:: lockSelectedItems()
-%End
-
     bool raiseItem( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
  Raises an ``item`` up the z-order.
@@ -122,6 +109,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  updating the scene for each one.
 
 .. seealso:: lowerItem()
+.. seealso:: updateZValues()
  :rtype: bool
 %End
 
@@ -136,6 +124,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  updating the scene for each one.
 
 .. seealso:: raiseItem()
+.. seealso:: updateZValues()
  :rtype: bool
 %End
 
@@ -150,6 +139,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  updating the scene for each one.
 
 .. seealso:: moveItemToBottom()
+.. seealso:: updateZValues()
  :rtype: bool
 %End
 
@@ -163,39 +153,15 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  updating the scene for each one.
 
 .. seealso:: moveItemToTop()
+.. seealso:: updateZValues()
  :rtype: bool
 %End
 
-    void raiseSelectedItems();
+    void updateZValues( const bool addUndoCommands = true );
 %Docstring
- Raises the selected items up the z-order.
-.. seealso:: lowerSelectedItems()
-.. seealso:: moveSelectedItemsToTop()
-.. seealso:: moveSelectedItemsToBottom()
-%End
-
-    void lowerSelectedItems();
-%Docstring
- Lowers the selected items down the z-order.
-.. seealso:: raiseSelectedItems()
-.. seealso:: moveSelectedItemsToTop()
-.. seealso:: moveSelectedItemsToBottom()
-%End
-
-    void moveSelectedItemsToTop();
-%Docstring
- Raises the selected items to the top of the z-order.
-.. seealso:: raiseSelectedItems()
-.. seealso:: lowerSelectedItems()
-.. seealso:: moveSelectedItemsToBottom()
-%End
-
-    void moveSelectedItemsToBottom();
-%Docstring
- Lowers the selected items to the bottom of the z-order.
-.. seealso:: raiseSelectedItems()
-.. seealso:: lowerSelectedItems()
-.. seealso:: moveSelectedItemsToTop()
+ Resets the z-values of items based on their position in the internal
+ z order list. This should be called after any stacking changes
+ which deferred z-order updates.
 %End
 
     QgsLayoutItem *itemByUuid( const QString &uuid );

@@ -256,6 +256,51 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void selectNextItemBelow();
 
     /**
+     * Raises the selected items up the z-order.
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void raiseSelectedItems();
+
+    /**
+     * Lowers the selected items down the z-order.
+     * \see raiseSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void lowerSelectedItems();
+
+    /**
+     * Raises the selected items to the top of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToBottom()
+     */
+    void moveSelectedItemsToTop();
+
+    /**
+     * Lowers the selected items to the bottom of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     */
+    void moveSelectedItemsToBottom();
+
+    /**
+     * Locks any selected items, preventing them from being interacted with
+     * by mouse interactions.
+     * \see unlockAllItems()
+     */
+    void lockSelectedItems();
+
+    /**
+     * Unlocks all locked items in the layout.
+     * \see lockSelectedItems()
+     */
+    void unlockAllItems();
+
+    /**
      * Updates associated rulers and other widgets after view extent or zoom has changed.
      * This should be called after calling any of the QGraphicsView
      * base class methods which alter the view's zoom level or extent,

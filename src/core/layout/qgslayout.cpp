@@ -113,47 +113,6 @@ void QgsLayout::deselectAll()
   emit selectedItemChanged( nullptr );
 }
 
-void QgsLayout::lockSelectedItems()
-{
-  mUndoStack->beginMacro( tr( "Items locked" ) );
-  const QList<QgsLayoutItem *> selectionList = selectedLayoutItems();
-  for ( QgsLayoutItem *item : selectionList )
-  {
-    mUndoStack->beginCommand( item, QString() );
-    item->setLocked( true );
-    mUndoStack->endCommand();
-  }
-
-  deselectAll();
-  mUndoStack->endMacro();
-}
-
-void QgsLayout::unlockAllItems()
-{
-  //unlock all items in composer
-
-  mUndoStack->beginMacro( tr( "Items unlocked" ) );
-
-  //first, clear the selection
-  deselectAll();
-
-  const QList<QGraphicsItem *> itemList = items();
-  for ( QGraphicsItem *graphicItem : itemList )
-  {
-    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicItem );
-    if ( item && item->isLocked() )
-    {
-      mUndoStack->beginCommand( item, QString() );
-      item->setLocked( false );
-      //select unlocked items, same behavior as illustrator
-      item->setSelected( true );
-      emit selectedItemChanged( item );
-      mUndoStack->endCommand();
-    }
-  }
-  mUndoStack->endMacro();
-}
-
 bool QgsLayout::raiseItem( QgsLayoutItem *item, bool deferUpdate )
 {
   //model handles reordering items
@@ -204,86 +163,6 @@ bool QgsLayout::moveItemToBottom( QgsLayoutItem *item, bool deferUpdate )
     update();
   }
   return result;
-}
-
-void QgsLayout::raiseSelectedItems()
-{
-  const QList<QgsLayoutItem *> selectedItems = selectedLayoutItems();
-  bool itemsRaised = false;
-  for ( QgsLayoutItem *item : selectedItems )
-  {
-    itemsRaised = itemsRaised | raiseItem( item, true );
-  }
-
-  if ( !itemsRaised )
-  {
-    //no change
-    return;
-  }
-
-  //update all positions
-  updateZValues();
-  update();
-}
-
-void QgsLayout::lowerSelectedItems()
-{
-  const QList<QgsLayoutItem *> selectedItems = selectedLayoutItems();
-  bool itemsLowered = false;
-  for ( QgsLayoutItem *item : selectedItems )
-  {
-    itemsLowered  = itemsLowered  | lowerItem( item, true );
-  }
-
-  if ( !itemsLowered )
-  {
-    //no change
-    return;
-  }
-
-  //update all positions
-  updateZValues();
-  update();
-}
-
-void QgsLayout::moveSelectedItemsToTop()
-{
-  const QList<QgsLayoutItem *> selectedItems = selectedLayoutItems();
-  bool itemsRaised = false;
-  for ( QgsLayoutItem *item : selectedItems )
-  {
-    itemsRaised = itemsRaised | moveItemToTop( item, true );
-  }
-
-  if ( !itemsRaised )
-  {
-    //no change
-    return;
-  }
-
-  //update all positions
-  updateZValues();
-  update();
-}
-
-void QgsLayout::moveSelectedItemsToBottom()
-{
-  const QList<QgsLayoutItem *> selectedItems = selectedLayoutItems();
-  bool itemsLowered = false;
-  for ( QgsLayoutItem *item : selectedItems )
-  {
-    itemsLowered = itemsLowered | moveItemToBottom( item, true );
-  }
-
-  if ( !itemsLowered )
-  {
-    //no change
-    return;
-  }
-
-  //update all positions
-  updateZValues();
-  update();
 }
 
 QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )

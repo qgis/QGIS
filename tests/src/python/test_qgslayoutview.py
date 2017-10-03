@@ -251,6 +251,43 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertFalse(item3.isSelected())
         self.assertEqual(len(focused_item_spy), 5)
 
+    def testLockActions(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        l.addItem(item3)
+
+        item1.setLocked(True)
+        item3.setLocked(True)
+        self.assertTrue(item1.isLocked())
+        self.assertFalse(item2.isLocked())
+        self.assertTrue(item3.isLocked())
+
+        view.unlockAllItems()
+        self.assertFalse(item1.isLocked())
+        self.assertFalse(item2.isLocked())
+        self.assertFalse(item3.isLocked())
+        self.assertTrue(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertTrue(item3.isSelected())
+
+        view.lockSelectedItems()
+        self.assertTrue(item1.isLocked())
+        self.assertFalse(item2.isLocked())
+        self.assertTrue(item3.isLocked())
+        self.assertFalse(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertFalse(item3.isSelected())
+
 
 if __name__ == '__main__':
     unittest.main()

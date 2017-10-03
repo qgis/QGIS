@@ -542,18 +542,12 @@ void QgsLayoutDesignerDialog::snapToItems( bool enabled )
 
 void QgsLayoutDesignerDialog::unlockAllItems()
 {
-  if ( mLayout )
-  {
-    mLayout->unlockAllItems();
-  }
+  mView->unlockAllItems();
 }
 
 void QgsLayoutDesignerDialog::lockSelectedItems()
 {
-  if ( mLayout )
-  {
-    mLayout->lockSelectedItems();
-  }
+  mView->lockSelectedItems();
 }
 
 void QgsLayoutDesignerDialog::setPanelVisibility( bool hidden )
@@ -616,22 +610,22 @@ void QgsLayoutDesignerDialog::setPanelVisibility( bool hidden )
 
 void QgsLayoutDesignerDialog::raiseSelectedItems()
 {
-  mLayout->raiseSelectedItems();
+  mView->raiseSelectedItems();
 }
 
 void QgsLayoutDesignerDialog::lowerSelectedItems()
 {
-  mLayout->lowerSelectedItems();
+  mView->lowerSelectedItems();
 }
 
 void QgsLayoutDesignerDialog::moveSelectedItemsToTop()
 {
-  mLayout->moveSelectedItemsToTop();
+  mView->moveSelectedItemsToTop();
 }
 
 void QgsLayoutDesignerDialog::moveSelectedItemsToBottom()
 {
-  mLayout->moveSelectedItemsToBottom();
+  mView->moveSelectedItemsToBottom();
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
