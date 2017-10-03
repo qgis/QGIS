@@ -39,12 +39,12 @@ QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
 {
   deleteNumberSidesSpinBox();
-  mNumberSidesSpinBox = new QSpinBox();
+  mNumberSidesSpinBox = std::unique_ptr<QSpinBox>( new QSpinBox() );
   mNumberSidesSpinBox->setMaximum( 99999999 );
   mNumberSidesSpinBox->setMinimum( 3 );
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );
   mNumberSidesSpinBox->setValue( mNumberSides );
-  QgisApp::instance()->addUserInputWidget( mNumberSidesSpinBox );
+  QgisApp::instance()->addUserInputWidget( mNumberSidesSpinBox.get() );
   mNumberSidesSpinBox->setFocus( Qt::TabFocusReason );
 }
 
@@ -52,9 +52,8 @@ void QgsMapToolAddRegularPolygon::deleteNumberSidesSpinBox()
 {
   if ( mNumberSidesSpinBox )
   {
-    QgisApp::instance()->statusBarIface()->removeWidget( mNumberSidesSpinBox );
-    delete mNumberSidesSpinBox;
-    mNumberSidesSpinBox = nullptr;
+    QgisApp::instance()->statusBarIface()->removeWidget( mNumberSidesSpinBox.get() );
+    mNumberSidesSpinBox.reset( nullptr );
   }
 }
 

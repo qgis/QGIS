@@ -40,7 +40,7 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
   protected:
     explicit QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas ); //forbidden
 
-    QSpinBox *mNumberSidesSpinBox = nullptr;
+    std::unique_ptr<QSpinBox> mNumberSidesSpinBox;
     int mNumberSides;
 
     //! (re-)create the spin box to enter the number of sides
