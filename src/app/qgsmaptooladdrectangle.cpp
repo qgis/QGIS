@@ -27,7 +27,6 @@
 QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
-  , mTempRubberBand( nullptr )
   , mRectangle( QgsRectangle() )
 {
   clean();

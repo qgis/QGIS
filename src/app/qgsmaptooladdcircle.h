@@ -46,7 +46,7 @@ class QgsMapToolAddCircle: public QgsMapToolCapture
     /** The parent map tool, e.g. the add feature tool.
      *  Completed circle will be added to this tool by calling its addCurve() method.
      * */
-    QgsMapToolCapture *mParentTool = nullptr;
+    QgsMapToolCapture *mParentTool;
     //! Circle points (in map coordinates)
     QgsPointSequence mPoints;
     //! The rubberband to show the circular string currently working on
