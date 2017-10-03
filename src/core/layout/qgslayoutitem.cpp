@@ -96,6 +96,16 @@ void QgsLayoutItem::setId( const QString &id )
 #endif
 }
 
+void QgsLayoutItem::setSelected( bool selected )
+{
+  QGraphicsRectItem::setSelected( selected );
+  //inform model that id data has changed
+  if ( mLayout )
+  {
+    mLayout->itemsModel()->updateItemSelectStatus( this );
+  }
+}
+
 void QgsLayoutItem::setLocked( const bool locked )
 {
   if ( locked == mIsLocked )

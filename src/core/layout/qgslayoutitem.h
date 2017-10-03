@@ -129,6 +129,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setId( const QString &id );
 
     /**
+     * Sets whether the item should be selected.
+     */
+    virtual void setSelected( bool selected );
+
+    /**
      * Sets whether the item is \a locked, preventing mouse interactions with the item.
      * \see isLocked()
      * \see lockChanged()

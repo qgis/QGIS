@@ -108,6 +108,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: uuid()
 %End
 
+    virtual void setSelected( bool selected );
+%Docstring
+ Sets whether the item should be selected.
+%End
+
     void setLocked( const bool locked );
 %Docstring
  Sets whether the item is ``locked``, preventing mouse interactions with the item.
