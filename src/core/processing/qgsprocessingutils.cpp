@@ -286,6 +286,15 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   return normalized.trimmed();
 }
 
+QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
+{
+  QString s = string;
+  s.replace( '"', QStringLiteral( "\\\"" ) );
+  s.replace( '\'', QStringLiteral( "\\\'" ) );
+  s = s.prepend( '\'' ).append( '\'' );
+  return s;
+}
+
 void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
 {
   QRegularExpression splitRx( QStringLiteral( "^(.{3,}):(.*)$" ) );

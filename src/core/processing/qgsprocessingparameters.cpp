@@ -1202,7 +1202,7 @@ QString QgsProcessingParameterDefinition::valueAsPythonString( const QVariant &v
   if ( value.canConvert<QgsProperty>() )
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
-  return value.toString().prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
 QString QgsProcessingParameterDefinition::asScriptCode() const
@@ -1304,7 +1304,7 @@ QString QgsProcessingParameterCrs::valueAsPythonString( const QVariant &value, Q
   p.insert( name(), value );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
   if ( layer )
-    return QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' );
+    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
@@ -1364,7 +1364,8 @@ QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val
   QVariantMap p;
   p.insert( name(), val );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
-  return layer ? QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' ) : QString();
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+         : QString();
 }
 
 QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -1833,7 +1834,7 @@ QString QgsProcessingParameterMultipleLayers::valueAsPythonString( const QVarian
     QStringList parts;
     Q_FOREACH ( const QgsMapLayer *layer, list )
     {
-      parts << QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' );
+      parts << QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
     }
     return parts.join( ',' ).prepend( '[' ).append( ']' );
   }
@@ -2551,7 +2552,8 @@ QString QgsProcessingParameterVectorLayer::valueAsPythonString( const QVariant &
   QVariantMap p;
   p.insert( name(), val );
   QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( this, p, context );
-  return layer ? QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' ) : QString();
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+         : QString();
 }
 
 QList<int> QgsProcessingParameterLimitedDataTypes::dataTypes() const
@@ -2652,7 +2654,7 @@ QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value,
     QStringList parts;
     Q_FOREACH ( const QVariant &val, value.toList() )
     {
-      parts << val.toString().prepend( '\'' ).append( '\'' );
+      parts << QgsProcessingUtils::stringToPythonLiteral( val.toString() );
     }
     return parts.join( ',' ).prepend( '[' ).append( ']' );
   }
@@ -2661,12 +2663,12 @@ QString QgsProcessingParameterField::valueAsPythonString( const QVariant &value,
     QStringList parts;
     Q_FOREACH ( QString s, value.toStringList() )
     {
-      parts << s.prepend( '\'' ).append( '\'' );
+      parts << QgsProcessingUtils::stringToPythonLiteral( s );
     }
     return parts.join( ',' ).prepend( '[' ).append( ']' );
   }
 
-  return value.toString().prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
 QString QgsProcessingParameterField::asScriptCode() const
