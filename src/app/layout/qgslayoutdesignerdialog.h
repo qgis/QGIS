@@ -162,6 +162,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void lockSelectedItems();
 
+    /**
+     * Sets whether the dock panels are \a hidden.
+     */
+    void setPanelVisibility( bool hidden );
+
   signals:
 
     /**
@@ -190,6 +195,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void addPages();
     void statusMessageReceived( const QString &message );
+    void dockVisibilityChanged( bool visible );
 
   private:
 
@@ -239,6 +245,17 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QgsDockWidget *mItemsDock = nullptr;
     QTreeView *mItemsTreeView = nullptr;
+
+    struct PanelStatus
+    {
+      PanelStatus( bool visible = true, bool active = false )
+        : isVisible( visible )
+        , isActive( active )
+      {}
+      bool isVisible;
+      bool isActive;
+    };
+    QMap< QString, PanelStatus > mPanelStatus;
 
     //! Save window state
     void saveWindowState();

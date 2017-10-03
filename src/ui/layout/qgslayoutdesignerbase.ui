@@ -137,6 +137,7 @@
     <addaction name="mToolbarMenu"/>
     <addaction name="mPanelsMenu"/>
     <addaction name="mActionToggleFullScreen"/>
+    <addaction name="mActionHidePanels"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -582,6 +583,20 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="mActionHidePanels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Panel &amp;Visibility</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide panels</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
    </property>
   </action>
  </widget>

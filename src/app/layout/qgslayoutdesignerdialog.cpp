@@ -203,6 +203,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionUnlockAll, &QAction::triggered, this, &QgsLayoutDesignerDialog::unlockAllItems );
   connect( mActionLockItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lockSelectedItems );
 
+  connect( mActionHidePanels, &QAction::toggled, this, &QgsLayoutDesignerDialog::setPanelVisibility );
+
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
   mStatusCursorXLabel->setMinimumWidth( 100 );
@@ -329,6 +331,12 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mItemsTreeView->setIndentation( 0 );
   mItemsDock->setWidget( mItemsTreeView );
 
+  const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  for ( QDockWidget *dock : docks )
+  {
+    connect( dock, &QDockWidget::visibilityChanged, this, &QgsLayoutDesignerDialog::dockVisibilityChanged );
+  }
+
   addDockWidget( Qt::RightDockWidgetArea, mItemDock );
   addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
   addDockWidget( Qt::RightDockWidgetArea, mGuideDock );
@@ -397,6 +405,8 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 #endif
   mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
   mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
+  mItemsTreeView->setColumnWidth( 0, 30 );
+  mItemsTreeView->setColumnWidth( 1, 30 );
   mItemsTreeView->header()->setSectionsMovable( false );
 
   connect( mItemsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, mLayout->itemsModel(), &QgsLayoutModel::setSelected );
@@ -527,6 +537,64 @@ void QgsLayoutDesignerDialog::lockSelectedItems()
   if ( mLayout )
   {
     mLayout->lockSelectedItems();
+  }
+}
+
+void QgsLayoutDesignerDialog::setPanelVisibility( bool hidden )
+{
+  /*
+  workaround the limited Qt dock widget API
+  see http://qt-project.org/forums/viewthread/1141/
+  and http://qt-project.org/faq/answer/how_can_i_check_which_tab_is_the_current_one_in_a_tabbed_qdockwidget
+  */
+
+  const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  const QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+
+  if ( hidden )
+  {
+    mPanelStatus.clear();
+    //record status of all docks
+
+    for ( QDockWidget *dock : docks )
+    {
+      mPanelStatus.insert( dock->windowTitle(), PanelStatus( dock->isVisible(), false ) );
+      dock->setVisible( false );
+    }
+
+    //record active dock tabs
+    for ( QTabBar *tabBar : tabBars )
+    {
+      QString currentTabTitle = tabBar->tabText( tabBar->currentIndex() );
+      mPanelStatus[ currentTabTitle ].isActive = true;
+    }
+  }
+  else
+  {
+    //restore visibility of all docks
+    for ( QDockWidget *dock : docks )
+    {
+      if ( ! mPanelStatus.contains( dock->windowTitle() ) )
+      {
+        dock->setVisible( true );
+        continue;
+      }
+      dock->setVisible( mPanelStatus.value( dock->windowTitle() ).isVisible );
+    }
+
+    //restore previously active dock tabs
+    for ( QTabBar *tabBar : tabBars )
+    {
+      //loop through all tabs in tab bar
+      for ( int i = 0; i < tabBar->count(); ++i )
+      {
+        QString tabTitle = tabBar->tabText( i );
+        if ( mPanelStatus.value( tabTitle ).isActive )
+        {
+          tabBar->setCurrentIndex( i );
+        }
+      }
+    }
   }
 }
 
@@ -740,6 +808,14 @@ void QgsLayoutDesignerDialog::addPages()
 void QgsLayoutDesignerDialog::statusMessageReceived( const QString &message )
 {
   mStatusBar->showMessage( message );
+}
+
+void QgsLayoutDesignerDialog::dockVisibilityChanged( bool visible )
+{
+  if ( visible )
+  {
+    whileBlocking( mActionHidePanels )->setChecked( false );
+  }
 }
 
 QgsLayoutView *QgsLayoutDesignerDialog::view()
