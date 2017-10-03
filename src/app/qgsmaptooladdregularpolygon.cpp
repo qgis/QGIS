@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptooladdregularpolygon.h  -  map tool for adding regular polygon
+    qgsmaptooladdregularpolygon.cpp  -  map tool for adding regular polygon
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
