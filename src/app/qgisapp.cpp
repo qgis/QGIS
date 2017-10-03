@@ -2305,9 +2305,27 @@ void QgisApp::createToolBars()
   selectActions << mActionSelectByForm << mActionSelectByExpression << mActionSelectAll
                 << mActionInvertSelection;
   bt->addActions( selectActions );
-  bt->setDefaultAction( mActionSelectByForm );
+
+  QAction *defSelectionAction = mActionSelectByForm;
+  switch ( settings.value( QStringLiteral( "UI/selectionTool" ), 0 ).toInt() )
+  {
+    case 0:
+      defSelectionAction = mActionSelectByForm;
+      break;
+    case 1:
+      defSelectionAction = mActionSelectByExpression;
+      break;
+    case 2:
+      defSelectionAction = mActionSelectAll;
+      break;
+    case 3:
+      defSelectionAction = mActionInvertSelection;
+      break;
+  }
+  bt->setDefaultAction( defSelectionAction );
   QAction *selectionAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
   selectionAction->setObjectName( QStringLiteral( "ActionSelection" ) );
+  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
   // select tool button
 
@@ -2409,7 +2427,6 @@ void QgisApp::createToolBars()
     case 4:
       defAnnotationAction = mActionAnnotation;
       break;
-
   }
   bt->setDefaultAction( defAnnotationAction );
   QAction *annotationAction = mAttributesToolBar->addWidget( bt );
