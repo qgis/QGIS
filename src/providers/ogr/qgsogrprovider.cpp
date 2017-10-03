@@ -171,7 +171,7 @@ void QgsOgrProvider::repack()
       GDALClose( mGDALDataset );
       ogrLayer = ogrOrigLayer = nullptr;
 
-      mGDALDataset = QgsOgrProviderUtils::GDALOpenWrapper( mFilePath.toUtf8().constData(), true, nullptr );
+      mGDALDataset = QgsOgrProviderUtils::GDALOpenWrapper( mFilePath.toUtf8().constData(), true, false, nullptr );
       if ( mGDALDataset )
       {
         if ( mLayerName.isNull() )
@@ -1963,10 +1963,8 @@ bool QgsOgrProvider::doInitialActionsForEdition()
   if ( mUpdateModeStackDepth == 0 )
   {
     QgsDebugMsg( "Enter update mode implictly" );
-    if ( !enterUpdateMode() )
+    if ( !_enterUpdateMode( true ) )
       return false;
-    // For implicitly entered updateMode, don't defer repacking
-    mDeferRepack = false;
   }
 
   return true;
@@ -3169,7 +3167,7 @@ void QgsOgrProvider::forceReload()
   QgsOgrConnPool::instance()->invalidateConnections( dataSourceUri() );
 }
 
-GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUpdate, GDALDriverH *phDriver )
+GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUpdate, bool bDisableReapck, GDALDriverH *phDriver )
 {
   CPLErrorReset();
 
@@ -3195,6 +3193,10 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     {
       papszOpenOptions = CSLSetNameValue( papszOpenOptions, "FORCE_SRS_DETECTION", "YES" );
     }
+  }
+  if ( bDisableReapck )
+  {
+    papszOpenOptions = CSLSetNameValue( papszOpenOptions, "AUTO_REPACK", "OFF" );
   }
 
   const int nOpenFlags = GDAL_OF_VECTOR | ( bUpdate ? GDAL_OF_UPDATE : 0 );
@@ -3643,7 +3645,7 @@ void QgsOgrProvider::open( OpenMode mode )
       // on network shares
       CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
     }
-    mGDALDataset = QgsOgrProviderUtils::GDALOpenWrapper( mFilePath.toUtf8().constData(), true, &mGDALDriver );
+    mGDALDataset = QgsOgrProviderUtils::GDALOpenWrapper( mFilePath.toUtf8().constData(), true, mode == OpenModeForceUpdateRepackOff, &mGDALDriver );
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", nullptr );
   }
 
@@ -3662,7 +3664,7 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
     // try to open read-only
-    mGDALDataset = QgsOgrProviderUtils::GDALOpenWrapper( mFilePath.toUtf8().constData(), false, &mGDALDriver );
+    mGDALDataset = QgsOgrProviderUtils::GDALOpenWrapper( mFilePath.toUtf8().constData(), false, false, &mGDALDriver );
   }
 
   if ( mGDALDataset )
@@ -3741,7 +3743,7 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 #endif
 
-    mGDALDataset = QgsOgrProviderUtils::GDALOpenWrapper( mFilePath.toUtf8().constData(), false, &mGDALDriver );
+    mGDALDataset = QgsOgrProviderUtils::GDALOpenWrapper( mFilePath.toUtf8().constData(), false, false, &mGDALDriver );
 
     mWriteAccess = false;
 
@@ -3813,7 +3815,7 @@ void QgsOgrProvider::reloadData()
     pushError( tr( "Cannot reopen datasource %1" ).arg( dataSourceUri() ) );
 }
 
-bool QgsOgrProvider::enterUpdateMode()
+bool QgsOgrProvider::_enterUpdateMode( bool implicit )
 {
   if ( !mWriteAccessPossible )
   {
@@ -3829,7 +3831,7 @@ bool QgsOgrProvider::enterUpdateMode()
     Q_ASSERT( mDynamicWriteAccess );
     QgsDebugMsg( QString( "Reopening %1 in update mode" ).arg( dataSourceUri() ) );
     close();
-    open( OpenModeForceUpdate );
+    open( implicit ? OpenModeForceUpdate : OpenModeForceUpdateRepackOff );
     if ( !mGDALDataset || !mWriteAccess )
     {
       QgsMessageLog::logMessage( tr( "Cannot reopen datasource %1 in update mode" ).arg( dataSourceUri() ), tr( "OGR" ) );
@@ -3838,7 +3840,8 @@ bool QgsOgrProvider::enterUpdateMode()
     }
   }
   ++mUpdateModeStackDepth;
-  mDeferRepack = true;
+  // For implicitly entered updateMode, don't defer repacking
+  mDeferRepack = !implicit;
   return true;
 }
 
@@ -3911,7 +3914,7 @@ GDALDatasetH LoadDataSourceAndLayer( const QString &uri,
                                  subsetString,
                                  ogrGeometryType );
 
-  GDALDatasetH hDS = QgsOgrProviderUtils::GDALOpenWrapper( filePath.toUtf8().constData(), true, nullptr );
+  GDALDatasetH hDS = QgsOgrProviderUtils::GDALOpenWrapper( filePath.toUtf8().constData(), true, false, nullptr );
   if ( !hDS )
   {
     QgsDebugMsg( "Connection to database failed.." );
