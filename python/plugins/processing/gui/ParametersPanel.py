@@ -145,6 +145,12 @@ class ParametersPanel(BASE, WIDGET):
                     if isinstance(widget, InputLayerSelectorPanel):
                         widget = widget.cmbText
 
+                        if widget is not None:
+                            idx = widget.findData(layer)
+                            if idx != -1:
+                                widget.removeItem(idx)
+                            widget = None
+
         elif layer.type() == QgsMapLayer.RasterLayer:
             for param in self.alg.parameters:
                 if param.hidden:
@@ -152,10 +158,11 @@ class ParametersPanel(BASE, WIDGET):
                 if isinstance(param, ParameterRaster):
                     widget = self.valueItems[param.name].cmbText
 
-        if widget is not None:
-            idx = widget.findData(layer)
-            if idx != -1:
-                widget.removeItem(idx)
+                    if widget is not None:
+                        idx = widget.findData(layer)
+                        if idx != -1:
+                            widget.removeItem(idx)
+                        widget = None
 
         self.updateMultipleInputs()
 

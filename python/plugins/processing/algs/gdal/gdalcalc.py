@@ -56,7 +56,6 @@ class gdalcalc(GdalAlgorithm):
     EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
-    #DEBUG = 'DEBUG'
 
     def defineCharacteristics(self):
         self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
@@ -85,14 +84,13 @@ class gdalcalc(GdalAlgorithm):
             self.INPUT_F, self.tr('Input layer F'), True))
         self.addParameter(ParameterString(self.BAND_F,
                                           self.tr('Number of raster band for raster F'), '1', optional=True))
+
         self.addParameter(ParameterString(self.FORMULA,
                                           self.tr('Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())'), 'A*2', optional=False))
         self.addParameter(ParameterString(self.NO_DATA,
                                           self.tr('Set output nodata value'), '', optional=True))
         self.addParameter(ParameterSelection(self.RTYPE,
                                              self.tr('Output raster type'), self.TYPE, 5))
-        #self.addParameter(ParameterBoolean(
-        #    self.DEBUG, self.tr('Print debugging information'), False))
         self.addParameter(ParameterString(self.EXTRA,
                                           self.tr('Additional creation parameters'), '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Calculated')))
@@ -102,7 +100,6 @@ class gdalcalc(GdalAlgorithm):
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
             extra = unicode(extra)
-        #debug = self.getParameterValue(self.DEBUG)
         formula = self.getParameterValue(self.FORMULA)
         noData = self.getParameterValue(self.NO_DATA)
         if noData is not None:
@@ -120,8 +117,7 @@ class gdalcalc(GdalAlgorithm):
             arguments.append(noData)
         if extra and len(extra) > 0:
             arguments.append(extra)
-        #if debug:
-        #    arguments.append('--debug')
+
         arguments.append('-A')
         arguments.append(self.getParameterValue(self.INPUT_A))
         if self.getParameterValue(self.BAND_A):
