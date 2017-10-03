@@ -168,6 +168,17 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //..and listen out for new item types
   connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
 
+  QToolButton *orderingToolButton = new QToolButton( this );
+  orderingToolButton->setPopupMode( QToolButton::InstantPopup );
+  orderingToolButton->setAutoRaise( true );
+  orderingToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  orderingToolButton->addAction( mActionRaiseItems );
+  orderingToolButton->addAction( mActionLowerItems );
+  orderingToolButton->addAction( mActionMoveItemsToTop );
+  orderingToolButton->addAction( mActionMoveItemsToBottom );
+  orderingToolButton->setDefaultAction( mActionRaiseItems );
+  mActionsToolbar->addWidget( orderingToolButton );
+
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
   mPanTool = new QgsLayoutViewToolPan( mView );
   mPanTool->setAction( mActionPan );
@@ -197,6 +208,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionInvertSelection, &QAction::triggered, mView, &QgsLayoutView::invertSelection );
   connect( mActionSelectNextAbove, &QAction::triggered, mView, &QgsLayoutView::selectNextItemAbove );
   connect( mActionSelectNextBelow, &QAction::triggered, mView, &QgsLayoutView::selectNextItemBelow );
+
+  connect( mActionRaiseItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::raiseSelectedItems );
+  connect( mActionLowerItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lowerSelectedItems );
+  connect( mActionMoveItemsToTop, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToTop );
+  connect( mActionMoveItemsToBottom, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToBottom );
 
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
 
@@ -596,6 +612,26 @@ void QgsLayoutDesignerDialog::setPanelVisibility( bool hidden )
       }
     }
   }
+}
+
+void QgsLayoutDesignerDialog::raiseSelectedItems()
+{
+  mLayout->raiseSelectedItems();
+}
+
+void QgsLayoutDesignerDialog::lowerSelectedItems()
+{
+  mLayout->lowerSelectedItems();
+}
+
+void QgsLayoutDesignerDialog::moveSelectedItemsToTop()
+{
+  mLayout->moveSelectedItemsToTop();
+}
+
+void QgsLayoutDesignerDialog::moveSelectedItemsToBottom()
+{
+  mLayout->moveSelectedItemsToBottom();
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )

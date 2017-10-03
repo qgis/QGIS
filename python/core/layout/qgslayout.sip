@@ -111,6 +111,70 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 .. seealso:: lockSelectedItems()
 %End
 
+    bool raiseItem( QgsLayoutItem *item );
+%Docstring
+ Raises an ``item`` up the z-order.
+ Returns true if the item was successfully raised.
+.. seealso:: lowerItem()
+ :rtype: bool
+%End
+
+    bool lowerItem( QgsLayoutItem *item );
+%Docstring
+ Lowers an ``item`` down the z-order.
+ Returns true if the item was successfully lowered.
+.. seealso:: raiseItem()
+ :rtype: bool
+%End
+
+    bool moveItemToTop( QgsLayoutItem *item );
+%Docstring
+ Raises an ``item`` up to the top of the z-order.
+ Returns true if the item was successfully raised.
+.. seealso:: moveItemToBottom()
+ :rtype: bool
+%End
+
+    bool moveItemToBottom( QgsLayoutItem *item );
+%Docstring
+ Lowers an ``item`` down to the bottom of the z-order.
+ Returns true if the item was successfully lowered.
+.. seealso:: moveItemToTop()
+ :rtype: bool
+%End
+
+    void raiseSelectedItems();
+%Docstring
+ Raises the selected items up the z-order.
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void lowerSelectedItems();
+%Docstring
+ Lowers the selected items down the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void moveSelectedItemsToTop();
+%Docstring
+ Raises the selected items to the top of the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void moveSelectedItemsToBottom();
+%Docstring
+ Lowers the selected items to the bottom of the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+%End
+
     QgsLayoutItem *itemByUuid( const QString &uuid );
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None

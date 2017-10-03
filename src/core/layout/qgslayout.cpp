@@ -154,6 +154,110 @@ void QgsLayout::unlockAllItems()
   mUndoStack->endMacro();
 }
 
+bool QgsLayout::raiseItem( QgsLayoutItem *item )
+{
+  //model handles reordering items
+  return mItemsModel->reorderItemUp( item );
+}
+
+bool QgsLayout::lowerItem( QgsLayoutItem *item )
+{
+  //model handles reordering items
+  return mItemsModel->reorderItemDown( item );
+}
+
+bool QgsLayout::moveItemToTop( QgsLayoutItem *item )
+{
+  //model handles reordering items
+  return mItemsModel->reorderItemToTop( item );
+}
+
+bool QgsLayout::moveItemToBottom( QgsLayoutItem *item )
+{
+  //model handles reordering items
+  return mItemsModel->reorderItemToBottom( item );
+}
+
+void QgsLayout::raiseSelectedItems()
+{
+  const QList<QgsLayoutItem *> selectedItems = selectedLayoutItems();
+  bool itemsRaised = false;
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    itemsRaised = itemsRaised | raiseItem( item );
+  }
+
+  if ( !itemsRaised )
+  {
+    //no change
+    return;
+  }
+
+  //update all positions
+  updateZValues();
+  update();
+}
+
+void QgsLayout::lowerSelectedItems()
+{
+  const QList<QgsLayoutItem *> selectedItems = selectedLayoutItems();
+  bool itemsLowered = false;
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    itemsLowered  = itemsLowered  | lowerItem( item );
+  }
+
+  if ( !itemsLowered )
+  {
+    //no change
+    return;
+  }
+
+  //update all positions
+  updateZValues();
+  update();
+}
+
+void QgsLayout::moveSelectedItemsToTop()
+{
+  const QList<QgsLayoutItem *> selectedItems = selectedLayoutItems();
+  bool itemsRaised = false;
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    itemsRaised = itemsRaised | moveItemToTop( item );
+  }
+
+  if ( !itemsRaised )
+  {
+    //no change
+    return;
+  }
+
+  //update all positions
+  updateZValues();
+  update();
+}
+
+void QgsLayout::moveSelectedItemsToBottom()
+{
+  const QList<QgsLayoutItem *> selectedItems = selectedLayoutItems();
+  bool itemsLowered = false;
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    itemsLowered = itemsLowered | moveItemToBottom( item );
+  }
+
+  if ( !itemsLowered )
+  {
+    //no change
+    return;
+  }
+
+  //update all positions
+  updateZValues();
+  update();
+}
+
 QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
 {
   QList<QgsLayoutItem *> itemList;
@@ -443,6 +547,37 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
   setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
   return true;
+}
+
+void QgsLayout::updateZValues( const bool addUndoCommands )
+{
+  int counter = mItemsModel->zOrderListSize();
+  const QList<QgsLayoutItem *> zOrderList = mItemsModel->zOrderList();
+
+  if ( addUndoCommands )
+  {
+    mUndoStack->beginMacro( tr( "Item z-order changed" ) );
+  }
+  for ( QgsLayoutItem *currentItem : zOrderList )
+  {
+    if ( currentItem )
+    {
+      if ( addUndoCommands )
+      {
+        mUndoStack->beginCommand( currentItem, QString() );
+      }
+      currentItem->setZValue( counter );
+      if ( addUndoCommands )
+      {
+        mUndoStack->endCommand();
+      }
+    }
+    --counter;
+  }
+  if ( addUndoCommands )
+  {
+    mUndoStack->endMacro();
+  }
 }
 
 bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )

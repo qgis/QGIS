@@ -213,6 +213,44 @@ class TestQgsLayout(unittest.TestCase):
         self.assertFalse(item2.isSelected())
         self.assertFalse(item3.isSelected())
 
+    def testStacking(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        l.addItem(item3)
+
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
+        # no effect interactions
+        self.assertFalse(l.raiseItem(None))
+        self.assertFalse(l.lowerItem(None))
+        self.assertFalse(l.moveItemToTop(None))
+        self.assertFalse(l.moveItemToBottom(None))
+
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
+        # raising
+        l.setSelectedItem(item3)
+        l.raiseSelectedItems()
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+        l.setSelectedItem(item2)
+        l.raiseSelectedItems()
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
 
 if __name__ == '__main__':
     unittest.main()

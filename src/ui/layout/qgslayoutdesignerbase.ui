@@ -156,6 +156,10 @@
     <property name="title">
      <string>Layout</string>
     </property>
+    <addaction name="mActionRaiseItems"/>
+    <addaction name="mActionLowerItems"/>
+    <addaction name="mActionMoveItemsToTop"/>
+    <addaction name="mActionMoveItemsToBottom"/>
     <addaction name="mActionLockItems"/>
     <addaction name="mActionUnlockAll"/>
    </widget>
@@ -597,6 +601,66 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="mActionRaiseItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRaiseItems.svg</normaloff>:/images/themes/default/mActionRaiseItems.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Raise</string>
+   </property>
+   <property name="toolTip">
+    <string>Raise selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+]</string>
+   </property>
+  </action>
+  <action name="mActionLowerItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLowerItems.svg</normaloff>:/images/themes/default/mActionLowerItems.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Lower</string>
+   </property>
+   <property name="toolTip">
+    <string>Lower selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+[</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToTop">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveItemsToTop.svg</normaloff>:/images/themes/default/mActionMoveItemsToTop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Bring to &amp;Front</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected items to top</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+]</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToBottom">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveItemsToBottom.svg</normaloff>:/images/themes/default/mActionMoveItemsToBottom.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Send to &amp;Back</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected items to bottom</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+[</string>
    </property>
   </action>
  </widget>

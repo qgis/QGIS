@@ -167,6 +167,38 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void setPanelVisibility( bool hidden );
 
+    /**
+     * Raises the selected items up the z-order.
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void raiseSelectedItems();
+
+    /**
+     * Lowers the selected items down the z-order.
+     * \see raiseSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void lowerSelectedItems();
+
+    /**
+     * Raises the selected items to the top of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToBottom()
+     */
+    void moveSelectedItemsToTop();
+
+    /**
+     * Lowers the selected items to the bottom of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     */
+    void moveSelectedItemsToBottom();
+
   signals:
 
     /**

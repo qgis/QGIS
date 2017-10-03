@@ -149,6 +149,66 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void unlockAllItems();
 
     /**
+     * Raises an \a item up the z-order.
+     * Returns true if the item was successfully raised.
+     * \see lowerItem()
+     */
+    bool raiseItem( QgsLayoutItem *item );
+
+    /**
+     * Lowers an \a item down the z-order.
+     * Returns true if the item was successfully lowered.
+     * \see raiseItem()
+     */
+    bool lowerItem( QgsLayoutItem *item );
+
+    /**
+     * Raises an \a item up to the top of the z-order.
+     * Returns true if the item was successfully raised.
+     * \see moveItemToBottom()
+     */
+    bool moveItemToTop( QgsLayoutItem *item );
+
+    /**
+     * Lowers an \a item down to the bottom of the z-order.
+     * Returns true if the item was successfully lowered.
+     * \see moveItemToTop()
+     */
+    bool moveItemToBottom( QgsLayoutItem *item );
+
+    /**
+     * Raises the selected items up the z-order.
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void raiseSelectedItems();
+
+    /**
+     * Lowers the selected items down the z-order.
+     * \see raiseSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void lowerSelectedItems();
+
+    /**
+     * Raises the selected items to the top of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToBottom()
+     */
+    void moveSelectedItemsToTop();
+
+    /**
+     * Lowers the selected items to the bottom of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     */
+    void moveSelectedItemsToBottom();
+
+    /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
      */
@@ -440,7 +500,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //! Reads only the layout settings (not member settings like grid settings, etc) from XML
     bool readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    //! Reset z-values of items based on position in z list
+    void updateZValues( const bool addUndoCommands = true );
+
+
     friend class QgsLayoutUndoCommand;
+    friend class QgsLayoutModel;
 };
 
 #endif //QGSLAYOUT_H
