@@ -100,6 +100,12 @@ class QgsProcessingUtils
  :rtype: str
 %End
 
+    static QString stringToPythonLiteral( const QString &string );
+%Docstring
+ Converts a string to a Python string literal. E.g. by replacing ' with \'.
+ :rtype: str
+%End
+
 
     static void createFeatureSinkPython(
       QgsFeatureSink **sink /Out,TransferBack/,
