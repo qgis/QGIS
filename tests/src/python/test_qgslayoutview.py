@@ -17,7 +17,10 @@ import qgis  # NOQA
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsUnitTypes,
-                       QgsLayoutItemMap)
+                       QgsLayoutItemMap,
+                       QgsLayoutPoint,
+                       QgsLayoutSize,
+                       QgsLayoutAligner)
 from qgis.gui import QgsLayoutView
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QTransform
@@ -406,6 +409,81 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertEqual(item1.zValue(), 3)
         self.assertEqual(item2.zValue(), 1)
         self.assertEqual(item3.zValue(), 2)
+
+    def testAlign(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        item2.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
+        item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
+        item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+        l.addItem(item3)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+
+        view.alignSelectedItems(QgsLayoutAligner.Left)
+
+        item1.setSelected(True)
+        item2.setSelected(True)
+        item3.setSelected(True)
+
+        view.alignSelectedItems(QgsLayoutAligner.Left)
+        self.assertEqual(item1.positionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.positionWithUnits(), QgsLayoutPoint(4, 10, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.positionWithUnits(), QgsLayoutPoint(0.4, 1.2, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
+        view.alignSelectedItems(QgsLayoutAligner.HCenter)
+        self.assertEqual(item1.positionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.positionWithUnits(), QgsLayoutPoint(8, 10, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.positionWithUnits(), QgsLayoutPoint(0.4, 1.2, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
+        view.alignSelectedItems(QgsLayoutAligner.Right)
+        self.assertEqual(item1.positionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.positionWithUnits(), QgsLayoutPoint(12, 10, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.positionWithUnits(), QgsLayoutPoint(0.4, 1.2, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
+        view.alignSelectedItems(QgsLayoutAligner.Top)
+        self.assertEqual(item1.positionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.positionWithUnits(), QgsLayoutPoint(12, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.positionWithUnits(), QgsLayoutPoint(0.4, 0.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
+        view.alignSelectedItems(QgsLayoutAligner.VCenter)
+        self.assertEqual(item1.positionWithUnits(), QgsLayoutPoint(4, 10, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.positionWithUnits(), QgsLayoutPoint(12, 11.5, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.positionWithUnits(), QgsLayoutPoint(0.4, 0.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
+        view.alignSelectedItems(QgsLayoutAligner.Bottom)
+        self.assertEqual(item1.positionWithUnits(), QgsLayoutPoint(4, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.positionWithUnits(), QgsLayoutPoint(12, 15, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.positionWithUnits(), QgsLayoutPoint(0.4, 0.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
 
 
 if __name__ == '__main__':
