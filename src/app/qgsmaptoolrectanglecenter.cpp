@@ -42,7 +42,6 @@ void QgsMapToolRectangleCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
       mTempRubberBand->show();
     }
-
   }
   else if ( e->button() == Qt::RightButton )
   {
@@ -64,7 +63,6 @@ void QgsMapToolRectangleCenter::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       case 1:
       {
-
         if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
         {
           double xOffset = fabs( mapPoint.x() - mPoints.at( 0 ).x() );

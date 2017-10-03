@@ -24,7 +24,6 @@ QgsMapToolEllipseExtent::QgsMapToolEllipseExtent( QgsMapToolCapture *parentTool,
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddEllipse( parentTool, canvas, mode )
 {
-
 }
 
 void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -61,7 +60,6 @@ void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     {
       case 1:
       {
-
         if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
         {
           mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mapPoint );

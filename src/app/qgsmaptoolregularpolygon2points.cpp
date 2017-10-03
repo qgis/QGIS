@@ -24,7 +24,6 @@ QgsMapToolRegularPolygon2Points::QgsMapToolRegularPolygon2Points( QgsMapToolCapt
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddRegularPolygon( parentTool, canvas, mode )
 {
-
 }
 
 QgsMapToolRegularPolygon2Points::~QgsMapToolRegularPolygon2Points()
@@ -51,7 +50,6 @@ void QgsMapToolRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
         mTempRubberBand->show();
 
         createNumberSidesSpinBox();
-
       }
     }
   }
