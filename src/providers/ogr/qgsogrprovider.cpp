@@ -3409,6 +3409,8 @@ bool QgsOgrProvider::syncToDisc()
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
 
+  // Repack is done automatically on OGR_L_SyncToDisk with gdal-2.2.0+
+#if !defined(GDAL_VERSION_NUM) || GDAL_VERSION_NUM < 2020000
   if ( !mDeferRepack )
   {
     if ( mShapefileMayBeCorrupted )
@@ -3416,6 +3418,7 @@ bool QgsOgrProvider::syncToDisc()
 
     mShapefileMayBeCorrupted = false;
   }
+#endif
 
   QgsOgrConnPool::instance()->ref( dataSourceUri() );
   if ( shapeIndex )
