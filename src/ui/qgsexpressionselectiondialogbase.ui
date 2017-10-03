@@ -29,7 +29,7 @@
    <item row="1" column="5">
     <widget class="QPushButton" name="mPbnClose">
      <property name="text">
-      <string>Close</string>
+      <string>&amp;Close</string>
      </property>
     </widget>
    </item>
