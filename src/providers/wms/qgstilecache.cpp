@@ -48,9 +48,12 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
       image = QImage::fromData( imageData );
 
       // cache it as well (mutex is already locked)
-      sTileCache.insert( url, new QImage( image ) );
-
-      return true;
+      // Check for null because it could be a redirect (see: https://issues.qgis.org/issues/16427 )
+      if ( ! image.isNull( ) )
+      {
+        sTileCache.insert( url, new QImage( image ) );
+        return true;
+      }
     }
   }
   return false;
