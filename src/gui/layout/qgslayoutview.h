@@ -268,6 +268,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void statusMessage( const QString &message );
 
+    /**
+     * Emitted when an \a item is "focused" in the view, i.e. it becomes the active
+     * item and should have its properties displayed in any designer windows.
+     */
+    void itemFocused( QgsLayoutItem *item );
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;

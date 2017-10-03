@@ -68,6 +68,8 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
   setScene( layout );
 
   connect( layout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutView::viewChanged );
+  connect( layout, &QgsLayout::selectedItemChanged, this, &QgsLayoutView::itemFocused );
+
   viewChanged();
 
   mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
@@ -113,6 +115,7 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
   if ( mTool )
   {
     mTool->deactivate();
+    disconnect( mTool, &QgsLayoutViewTool::itemFocused, this, &QgsLayoutView::itemFocused );
   }
 
   mSnapMarker->hide();
@@ -125,6 +128,7 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
   // to respond to whatever the current tool is
   tool->activate();
   mTool = tool;
+  connect( mTool, &QgsLayoutViewTool::itemFocused, this, &QgsLayoutView::itemFocused );
 
   emit toolSet( mTool );
 }

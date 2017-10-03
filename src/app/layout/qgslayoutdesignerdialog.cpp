@@ -249,6 +249,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mHorizontalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
   connect( mVerticalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
 
+  connect( mView, &QgsLayoutView::itemFocused, this, [ = ]( QgsLayoutItem * item )
+  {
+    showItemOptions( item, false );
+  } );
+
   // Panel and toolbar submenus
   mToolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mNavigationToolbar->toggleViewAction() );
@@ -372,7 +377,7 @@ void QgsLayoutDesignerDialog::setIconSizes( int size )
   }
 }
 
-void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
+void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPanelToFront )
 {
   if ( !item )
   {
@@ -394,7 +399,8 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
   } );
 
   mItemPropertiesStack->setMainPanel( widget.release() );
-  mItemDock->setUserVisible( true );
+  if ( bringPanelToFront )
+    mItemDock->setUserVisible( true );
 
 }
 

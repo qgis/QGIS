@@ -159,6 +159,12 @@ class QgsLayoutViewTool : QObject
  Emitted when the tool is deactivated.
 %End
 
+    void itemFocused( QgsLayoutItem *item );
+%Docstring
+ Emitted when an ``item`` is "focused" by the tool, i.e. it should become the active
+ item and should have its properties displayed in any designer windows.
+%End
+
   protected:
 
     void setFlags( const QgsLayoutViewTool::Flags flags );

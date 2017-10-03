@@ -112,21 +112,17 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     selectedItem->setSelected( false );
 
     //Check if we have any remaining selected items, and if so, update the item panel
-    QList<QgsLayoutItem *> selectedItems = layout()->selectedLayoutItems();
+    const QList<QgsLayoutItem *> selectedItems = layout()->selectedLayoutItems();
     if ( !selectedItems.isEmpty() )
     {
-#if 0 //TODO
-      emit selectedItemChanged( selectedItems.at( 0 ) );
-#endif
+      emit itemFocused( selectedItems.at( 0 ) );
     }
   }
   else
   {
     selectedItem->setSelected( true );
     event->ignore();
-#if 0 //TODO
-    emit selectedItemChanged( selectedItem );
-#endif
+    emit itemFocused( selectedItem );
   }
 }
 
@@ -216,14 +212,12 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
     }
   }
 
-#if 0 //TODO
   //update item panel
-  QList<QgsComposerItem *> selectedItemList = composition()->selectedComposerItems();
+  const QList<QgsLayoutItem *> selectedItemList = layout()->selectedLayoutItems();
   if ( !selectedItemList.isEmpty() )
   {
-    emit selectedItemChanged( selectedItemList[0] );
+    emit itemFocused( selectedItemList.at( 0 ) );
   }
-#endif
 }
 
 void QgsLayoutViewToolSelect::wheelEvent( QWheelEvent *event )

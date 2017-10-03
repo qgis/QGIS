@@ -229,6 +229,12 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: pushStatusMessage()
 %End
 
+    void itemFocused( QgsLayoutItem *item );
+%Docstring
+ Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
+ item and should have its properties displayed in any designer windows.
+%End
+
   protected:
     virtual void mousePressEvent( QMouseEvent *event );
 
