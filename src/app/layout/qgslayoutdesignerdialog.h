@@ -36,6 +36,7 @@ class QgsLayoutItem;
 class QgsPanelWidgetStack;
 class QgsDockWidget;
 class QUndoView;
+class QTreeView;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -235,6 +236,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QUndoView *mUndoView = nullptr;
     QgsDockWidget *mUndoDock = nullptr;
+
+    QgsDockWidget *mItemsDock = nullptr;
+    QTreeView *mItemsTreeView = nullptr;
 
     //! Save window state
     void saveWindowState();

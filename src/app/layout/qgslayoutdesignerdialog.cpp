@@ -39,6 +39,7 @@
 #include "qgslayoutpagepropertieswidget.h"
 #include "qgslayoutguidewidget.h"
 #include "qgslayoutmousehandles.h"
+#include "qgslayoutmodel.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -46,7 +47,7 @@
 #include <QSlider>
 #include <QLabel>
 #include <QUndoView>
-
+#include <QTreeView>
 
 //add some nice zoom levels for zoom comboboxes
 QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
@@ -311,16 +312,35 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mUndoView = new QUndoView( this );
   mUndoDock->setWidget( mUndoView );
 
+  mItemsDock = new QgsDockWidget( tr( "Items" ), this );
+  mItemsDock->setObjectName( QStringLiteral( "ItemsDock" ) );
+  mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
+
+  //items tree widget
+  mItemsTreeView = new QTreeView( mItemsDock );
+
+  mItemsTreeView->setColumnWidth( 0, 30 );
+  mItemsTreeView->setColumnWidth( 1, 30 );
+  mItemsTreeView->setDragEnabled( true );
+  mItemsTreeView->setAcceptDrops( true );
+  mItemsTreeView->setDropIndicatorShown( true );
+  mItemsTreeView->setDragDropMode( QAbstractItemView::InternalMove );
+
+  mItemsTreeView->setIndentation( 0 );
+  mItemsDock->setWidget( mItemsTreeView );
+
   addDockWidget( Qt::RightDockWidgetArea, mItemDock );
   addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
   addDockWidget( Qt::RightDockWidgetArea, mGuideDock );
   addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
+  addDockWidget( Qt::RightDockWidgetArea, mItemsDock );
 
   createLayoutPropertiesWidget();
 
   mUndoDock->show();
   mItemDock->show();
   mGeneralDock->show();
+  mItemsDock->show();
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -328,6 +348,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   tabifyDockWidget( mGeneralDock, mUndoDock );
   tabifyDockWidget( mItemDock, mUndoDock );
   tabifyDockWidget( mGeneralDock, mItemDock );
+  tabifyDockWidget( mItemDock, mItemsDock );
 
   restoreWindowState();
 
@@ -369,6 +390,17 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mUndoView->setStack( mLayout->undoStack()->stack() );
 
   mSelectTool->setLayout( layout );
+
+  mItemsTreeView->setModel( mLayout->itemsModel() );
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mLayout->itemsModel(), this );
+#endif
+  mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionsMovable( false );
+
+  connect( mItemsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, mLayout->itemsModel(), &QgsLayoutModel::setSelected );
+
 
   createLayoutPropertiesWidget();
 }
