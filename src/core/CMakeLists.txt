@@ -139,6 +139,7 @@ SET(QGIS_CORE_SRCS
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
+  qgscadutils.cpp
   qgsclipper.cpp
   qgscolorramp.cpp
   qgscolorscheme.cpp
@@ -792,6 +793,7 @@ SET(QGIS_CORE_HDRS
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h
+  qgscadutils.h
   qgsclipper.h
   qgscolorramp.h
   qgscolorscheme.h
