@@ -358,33 +358,6 @@ QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl
 }
 #endif
 
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::Net;
-}
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
-  QgsDebugMsg( "path = " + path );
-  if ( path.isEmpty() )
-  {
-    return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );
-  }
-
-  // path schema: wfs:/connection name (used by OWS)
-  if ( path.startsWith( QLatin1String( "wfs:/" ) ) )
-  {
-    QString connectionName = path.split( '/' ).last();
-    if ( QgsWfsConnection::connectionList().contains( connectionName ) )
-    {
-      QgsWfsConnection connection( connectionName );
-      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, connection.uri().uri() );
-    }
-  }
-
-  return nullptr;
-}
-
 QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
 {
   QList<QgsDataItemProvider *> *providers = new QList<QgsDataItemProvider *>();
