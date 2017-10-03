@@ -19,6 +19,8 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
+import re
+
 from builtins import str
 
 # this will disable the dbplugin if the connector raise an ImportError
@@ -189,7 +191,7 @@ class GPKGTable(Table):
     def mimeUri(self):
 
         # QGIS has no provider to load Geopackage vectors, let's use OGR
-        return u"vector:ogr:%s:%s" % (self.name, self.ogrUri())
+        return u"vector:ogr:%s:%s" % (self.name, re.sub(":", "\:", self.ogrUri()))
 
     def toMapLayer(self):
         from qgis.core import QgsVectorLayer
