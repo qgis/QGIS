@@ -35,14 +35,12 @@ void QgsMapToolCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
     mPoints.append( mapPoint );
 
-    if ( !mPoints.isEmpty() )
+    if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
-      if ( !mTempRubberBand )
-      {
-        mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-        mTempRubberBand->show();
-      }
+      mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+      mTempRubberBand->show();
     }
+
   }
   else if ( e->button() == Qt::RightButton )
   {
