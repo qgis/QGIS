@@ -136,6 +136,19 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void deselectAll();
 
     /**
+     * Locks any selected items, preventing them from being interacted with
+     * by mouse interactions.
+     * \see unlockAllItems()
+     */
+    void lockSelectedItems();
+
+    /**
+     * Unlocks all locked items in the layout.
+     * \see lockSelectedItems()
+     */
+    void unlockAllItems();
+
+    /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
      */

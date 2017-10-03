@@ -115,13 +115,12 @@ void QgsLayoutItem::setLocked( const bool locked )
 
   mIsLocked = locked;
 
-#if 0 //TODO
   //inform model that id data has changed
   if ( mLayout )
   {
     mLayout->itemsModel()->updateItemLockStatus( this );
   }
-#endif
+
   update();
   emit lockChanged();
 }

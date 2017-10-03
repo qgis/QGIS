@@ -98,6 +98,19 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  not correctly emit signals to allow the layout's model to update.
 %End
 
+    void lockSelectedItems();
+%Docstring
+ Locks any selected items, preventing them from being interacted with
+ by mouse interactions.
+.. seealso:: unlockAllItems()
+%End
+
+    void unlockAllItems();
+%Docstring
+ Unlocks all locked items in the layout.
+.. seealso:: lockSelectedItems()
+%End
+
     QgsLayoutItem *itemByUuid( const QString &uuid );
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None

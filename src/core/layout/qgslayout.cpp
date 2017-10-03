@@ -113,6 +113,47 @@ void QgsLayout::deselectAll()
   emit selectedItemChanged( nullptr );
 }
 
+void QgsLayout::lockSelectedItems()
+{
+  mUndoStack->beginMacro( tr( "Items locked" ) );
+  const QList<QgsLayoutItem *> selectionList = selectedLayoutItems();
+  for ( QgsLayoutItem *item : selectionList )
+  {
+    mUndoStack->beginCommand( item, QString() );
+    item->setLocked( true );
+    mUndoStack->endCommand();
+  }
+
+  deselectAll();
+  mUndoStack->endMacro();
+}
+
+void QgsLayout::unlockAllItems()
+{
+  //unlock all items in composer
+
+  mUndoStack->beginMacro( tr( "Items unlocked" ) );
+
+  //first, clear the selection
+  deselectAll();
+
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *graphicItem : itemList )
+  {
+    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicItem );
+    if ( item && item->isLocked() )
+    {
+      mUndoStack->beginCommand( item, QString() );
+      item->setLocked( false );
+      //select unlocked items, same behavior as illustrator
+      item->setSelected( true );
+      emit selectedItemChanged( item );
+      mUndoStack->endCommand();
+    }
+  }
+  mUndoStack->endMacro();
+}
+
 QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
 {
   QList<QgsLayoutItem *> itemList;
