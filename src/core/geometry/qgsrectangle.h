@@ -173,7 +173,8 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Get rectangle enlarged by buffer.
-     * \since QGIS 2.1
+     * \note In earlier QGIS releases this method was named buffer().
+     * \since QGIS 3.0
      * \see grow()
     */
     QgsRectangle buffered( double width ) const;

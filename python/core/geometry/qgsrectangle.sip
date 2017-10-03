@@ -175,7 +175,10 @@ Copy constructor
     QgsRectangle buffered( double width ) const;
 %Docstring
  Get rectangle enlarged by buffer.
-.. versionadded:: 2.1
+.. note::
+
+   In earlier QGIS releases this method was named buffer().
+.. versionadded:: 3.0
 .. seealso:: grow()
  :rtype: QgsRectangle
 %End
