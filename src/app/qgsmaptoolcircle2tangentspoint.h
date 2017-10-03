@@ -36,6 +36,7 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
 
   public slots:
     void radiusSpinBoxChanged( int radius );
+
   private:
     //! Return the point where segments are intersected. Method from QgsGeometryUtils doesn't work for special cases used by this tool.
     QgsPointXY intersect( QgsPointXY seg1_pt1, QgsPointXY seg1_pt2, QgsPointXY seg2_pt1, QgsPointXY seg2_pt2 );
@@ -49,7 +50,6 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
     void deleteRadiusSpinBox();
 
     QSpinBox *mRadiusSpinBox = nullptr;
-
 
     int mRadius = 0;
     QVector<QgsPointXY> mCenters;

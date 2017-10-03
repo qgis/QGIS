@@ -32,7 +32,6 @@ QgsMapToolCircle3Tangents::QgsMapToolCircle3Tangents( QgsMapToolCapture *parentT
 
 void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-
   QgsPoint mapPoint( e->mapPoint() );
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
@@ -66,7 +65,6 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( match.isValid() && ( mPoints.size() == 4 ) )
     {
-
       match.edgePoints( p1, p2 );
       mPoints.append( QgsPoint( p1 ) );
       mPoints.append( QgsPoint( p2 ) );

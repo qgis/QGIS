@@ -70,10 +70,9 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
             QgsMessageBar::CRITICAL, QgisApp::instance()->messageTimeout() );
         deactivate();
       }
+
       createRadiusSpinBox();
-
     }
-
   }
   else if ( e->button() == Qt::RightButton )
   {
@@ -222,8 +221,6 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
     mCenters.append( p4 );
 
   }
-
-
 }
 
 void QgsMapToolCircle2TangentsPoint::createRadiusSpinBox()
@@ -270,6 +267,5 @@ void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( int radius )
       tempRB->show();
       mRubberBands.append( tempRB.release() );
     }
-
   }
 }
