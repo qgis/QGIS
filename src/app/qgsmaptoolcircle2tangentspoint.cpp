@@ -112,10 +112,10 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     }
 
     QgsPoint center = QgsPoint( mCenters.at( 0 ) );
-    double currentDist = mapPoint.distanceSquared( center );
+    const double currentDist = mapPoint.distanceSquared( center );
     for ( int i = 1; i < mCenters.size(); ++i )
     {
-      double testDist = mapPoint.distanceSquared( mCenters.at( i ).x(), mCenters.at( i ).y() );
+      const double testDist = mapPoint.distanceSquared( mCenters.at( i ).x(), mCenters.at( i ).y() );
       if ( testDist < currentDist )
         center = QgsPoint( mCenters.at( i ) );
     }
@@ -264,6 +264,7 @@ void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( int radius )
     std::unique_ptr<QgsMultiPolygonV2> rb( new QgsMultiPolygonV2() );
     for ( int i = 0; i < mCenters.size(); ++i )
     {
+      // TODO: Point instead of polygon?
       std::unique_ptr<QgsGeometryRubberBand> tempRB( createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true ) );
       tempRB->setGeometry( QgsCircle( QgsPoint( mCenters.at( i ) ), static_cast<int>( log10( mRadius ) ) + 1 ).toPolygon() );
       tempRB->show();

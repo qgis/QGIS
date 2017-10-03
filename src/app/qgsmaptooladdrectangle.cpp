@@ -93,7 +93,7 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
   QgsPoint x1, x2, x3;
   if ( isOriented )
   {
-    double perpendicular = 90.0 * mSide;
+    const double perpendicular = 90.0 * mSide;
     x1 = x0.project( mDistance1, mAzimuth );
     x3 = x0.project( mDistance2, mAzimuth + perpendicular );
     x2 = x1.project( mDistance2, mAzimuth + perpendicular );
