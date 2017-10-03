@@ -2301,10 +2301,10 @@ void QgisApp::createToolBars()
 
   QToolButton *bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
-  QList<QAction *> selectActions;
-  selectActions << mActionSelectByForm << mActionSelectByExpression << mActionSelectAll
-                << mActionInvertSelection;
-  bt->addActions( selectActions );
+  QList<QAction *> selectionActions;
+  selectionActions << mActionSelectByForm << mActionSelectByExpression << mActionSelectAll
+                   << mActionInvertSelection;
+  bt->addActions( selectionActions );
 
   QAction *defSelectionAction = mActionSelectByForm;
   switch ( settings.value( QStringLiteral( "UI/selectionTool" ), 0 ).toInt() )
@@ -2331,10 +2331,10 @@ void QgisApp::createToolBars()
 
   bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
-  QList<QAction *> selectionActions;
-  selectionActions << mActionSelectFeatures << mActionSelectPolygon
-                   << mActionSelectFreehand << mActionSelectRadius;
-  bt->addActions( selectionActions );
+  QList<QAction *> selectActions;
+  selectActions << mActionSelectFeatures << mActionSelectPolygon
+                << mActionSelectFreehand << mActionSelectRadius;
+  bt->addActions( selectActions );
 
   QAction *defSelectAction = mActionSelectFeatures;
   switch ( settings.value( QStringLiteral( "UI/selectTool" ), 0 ).toInt() )
