@@ -78,7 +78,6 @@ Constraint for soft lock to a common angle
 point (index 2) for alignment purposes.
 %End
 
-      void dump() const;
     };
 
     struct AlignMapPointOutput

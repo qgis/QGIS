@@ -74,7 +74,11 @@ class CORE_EXPORT QgsCadUtils
       //! point (index 2) for alignment purposes.
       QList<QgsPointXY> cadPointList;
 
-      void dump() const;
+      /**
+       * Dumps the context's properties, for debugging.
+       * \note Not available in Python bindings.
+       */
+      SIP_SKIP void dump() const;
     };
 
     //! Structure returned from alignMapPoint() method
