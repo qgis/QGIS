@@ -2960,6 +2960,8 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Add regular polygon from center and a corner</string>
+    </property>
+    </action>
   <action name="mActionNew3DMapCanvas">
    <property name="text">
     <string>New &amp;3D Map View</string>
