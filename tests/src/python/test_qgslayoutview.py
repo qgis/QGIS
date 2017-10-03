@@ -288,6 +288,125 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertFalse(item2.isSelected())
         self.assertFalse(item3.isSelected())
 
+    def testStacking(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addLayoutItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addLayoutItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        l.addLayoutItem(item3)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
+        # no effect interactions
+        view.raiseSelectedItems()
+        view.lowerSelectedItems()
+        view.moveSelectedItemsToTop()
+        view.moveSelectedItemsToBottom()
+
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
+        # raising
+        item3.setSelected(True)
+        view.raiseSelectedItems()
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
+        item3.setSelected(False)
+        item2.setSelected(True)
+        view.raiseSelectedItems()
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        view.raiseSelectedItems()
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        item2.setSelected(False)
+        item1.setSelected(True)
+        view.raiseSelectedItems()
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        # lower
+        item1.setSelected(False)
+        item3.setSelected(True)
+        view.lowerSelectedItems()
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        item3.setSelected(False)
+        item2.setSelected(True)
+        view.lowerSelectedItems()
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 1)
+
+        view.lowerSelectedItems()
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
+
+        # raise to top
+        item2.setSelected(False)
+        item1.setSelected(True)
+        view.moveSelectedItemsToTop()
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
+
+        item1.setSelected(False)
+        item3.setSelected(True)
+        view.moveSelectedItemsToTop()
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 3)
+
+        item3.setSelected(False)
+        item2.setSelected(True)
+        view.moveSelectedItemsToTop()
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        # move to bottom
+        item2.setSelected(False)
+        item1.setSelected(True)
+        view.moveSelectedItemsToBottom()
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        item1.setSelected(False)
+        item3.setSelected(True)
+        view.moveSelectedItemsToBottom()
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        item3.setSelected(False)
+        item2.setSelected(True)
+        view.moveSelectedItemsToBottom()
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
+
 
 if __name__ == '__main__':
     unittest.main()
