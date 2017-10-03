@@ -25,7 +25,6 @@ class QgsMapToolSquareCenter: public QgsMapToolAddRegularPolygon
 
   public:
     QgsMapToolSquareCenter( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolSquareCenter();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

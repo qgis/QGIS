@@ -29,10 +29,6 @@ QgsMapToolSquareCenter::QgsMapToolSquareCenter( QgsMapToolCapture *parentTool,
 {
 }
 
-QgsMapToolSquareCenter::~QgsMapToolSquareCenter()
-{
-}
-
 void QgsMapToolSquareCenter::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );
