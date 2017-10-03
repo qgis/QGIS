@@ -30,10 +30,6 @@ QgsAuthIdentCertEdit::QgsAuthIdentCertEdit( QWidget *parent )
   populateIdentityComboBox();
 }
 
-QgsAuthIdentCertEdit::~QgsAuthIdentCertEdit()
-{
-}
-
 bool QgsAuthIdentCertEdit::validateConfig()
 {
   bool curvalid = cmbIdentityCert->currentIndex() != 0;

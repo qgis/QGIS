@@ -43,8 +43,7 @@ QgsGml::QgsGml(
   const QString &typeName,
   const QString &geometryAttribute,
   const QgsFields &fields )
-  : QObject()
-  , mParser( typeName, geometryAttribute, fields )
+  : mParser( typeName, geometryAttribute, fields )
   , mTypeName( typeName )
   , mFinished( false )
 {

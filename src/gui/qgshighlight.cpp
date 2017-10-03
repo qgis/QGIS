@@ -256,7 +256,7 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 
 void QgsHighlight::updatePosition()
 {
-  updateRect();
+  if ( isVisible() ) updateRect();
 }
 
 void QgsHighlight::paint( QPainter *p )

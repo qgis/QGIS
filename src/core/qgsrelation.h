@@ -61,8 +61,7 @@ class CORE_EXPORT QgsRelation
     {
       public:
         //! Default constructor: NULL strings
-        FieldPair()
-          : QPair< QString, QString >() {}
+        FieldPair() {}
 
         //! Constructor which takes two fields
         FieldPair( const QString &referencingField, const QString &referencedField )
@@ -80,7 +79,7 @@ class CORE_EXPORT QgsRelation
     /**
      * Default constructor. Creates an invalid relation.
      */
-    QgsRelation();
+    QgsRelation() = default;
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.

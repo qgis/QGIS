@@ -55,10 +55,6 @@ Topol::Topol( QgisInterface *qgisInterface )
   mDock = nullptr;
 }
 
-Topol::~Topol()
-{
-}
-
 /*
  * Initialize the GUI interface for the plugin - this is only called once when the plugin is
  * added to the plugin registry in the QGIS application.

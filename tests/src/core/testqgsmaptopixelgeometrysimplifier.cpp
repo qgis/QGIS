@@ -78,9 +78,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
 
 };
 
-TestQgsMapToPixelGeometrySimplifier::TestQgsMapToPixelGeometrySimplifier()
-{
-}
+TestQgsMapToPixelGeometrySimplifier::TestQgsMapToPixelGeometrySimplifier() = default;
 
 void TestQgsMapToPixelGeometrySimplifier::initTestCase()
 {

@@ -76,8 +76,6 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
      */
     explicit QgsGeorefPlugin( QgisInterface * );
 
-    virtual ~ QgsGeorefPlugin();
-
   public slots:
     //! init the gui
     virtual void initGui() override;

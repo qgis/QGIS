@@ -106,10 +106,6 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   updateContactDetails();
 }
 
-QgsMetadataWidget::~QgsMetadataWidget()
-{
-}
-
 void QgsMetadataWidget::fillSourceFromLayer() const
 {
   lineEditIdentifier->setText( mLayer->publicSource() );

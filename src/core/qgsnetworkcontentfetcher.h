@@ -39,7 +39,11 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     Q_OBJECT
 
   public:
-    QgsNetworkContentFetcher();
+
+    /**
+     * Constructor for QgsNetworkContentFetcher.
+     */
+    QgsNetworkContentFetcher() = default;
 
     virtual ~QgsNetworkContentFetcher();
 

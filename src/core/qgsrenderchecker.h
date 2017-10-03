@@ -38,7 +38,10 @@ class CORE_EXPORT QgsRenderChecker
 {
   public:
 
-    QgsRenderChecker();
+    /**
+     * Constructor for QgsRenderChecker.
+     */
+    QgsRenderChecker() = default;
 
     QString controlImagePath() const;
 

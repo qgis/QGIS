@@ -234,6 +234,40 @@ Zoom to the next extent (view)
 Pan to the selected features of current (vector) layer keeping same extent.
 %End
 
+    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+%Docstring
+ Causes a set of features with matching ``ids`` from a vector ``layer`` to flash
+ within the canvas.
+
+ The ``startColor`` and ``endColor`` can be specified, along with the number of
+ ``flashes`` and ``duration`` of each flash (in milliseconds).
+
+.. note::
+
+   If the features or geometries are already available, flashGeometries() is much more efficient.
+
+.. versionadded:: 3.0
+.. seealso:: flashGeometries()
+%End
+
+    void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+%Docstring
+ Causes a set of ``geometries`` to flash within the canvas.
+
+ If ``crs`` is a valid coordinate reference system, the geometries will be automatically
+ transformed from this CRS to the canvas CRS.
+
+ The ``startColor`` and ``endColor`` can be specified, along with the number of
+ ``flashes`` and ``duration`` of each flash (in milliseconds).
+
+.. versionadded:: 3.0
+.. seealso:: flashFeatureIds()
+%End
+
     void setMapTool( QgsMapTool *mapTool );
 %Docstring
  Sets the map tool currently being used on the canvas
@@ -267,6 +301,12 @@ Read property of QColor bgColor.
     void setSelectionColor( const QColor &color );
 %Docstring
 .. versionadded:: 2.4
+%End
+
+    QColor selectionColor() const;
+%Docstring
+.. versionadded:: 3.0
+ :rtype: QColor
 %End
 
     void updateScale();
@@ -718,6 +758,11 @@ Emitted when the extents of the map change
     void magnificationChanged( double );
 %Docstring
 .. versionadded:: 2.16
+%End
+
+    void canvasColorChanged();
+%Docstring
+.. versionadded:: 3.0
 %End
 
     void renderComplete( QPainter * );

@@ -64,10 +64,6 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   projectRead();
 }
 
-rulesDialog::~rulesDialog()
-{
-}
-
 void rulesDialog::setHorizontalHeaderItems()
 {
   QStringList labels;

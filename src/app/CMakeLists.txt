@@ -405,6 +405,34 @@ SET (QGIS_APP_MOC_HDRS
   qgscrashdialog.h
   )
 
+
+IF (WITH_3D)
+  SET(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    3d/qgs3dmapcanvas.cpp
+    3d/qgs3dmapcanvasdockwidget.cpp
+    3d/qgs3dmapconfigwidget.cpp
+    3d/qgsline3dsymbolwidget.cpp
+    3d/qgspoint3dsymbolwidget.cpp
+    3d/qgspolygon3dsymbolwidget.cpp
+    3d/qgsphongmaterialwidget.cpp
+    3d/qgsvectorlayer3drendererwidget.cpp
+  )
+
+  SET (QGIS_APP_MOC_HDRS
+    ${QGIS_APP_MOC_HDRS}
+    3d/qgs3dmapcanvas.h
+    3d/qgs3dmapcanvasdockwidget.h
+    3d/qgs3dmapconfigwidget.h
+    3d/qgsline3dsymbolwidget.h
+    3d/qgspoint3dsymbolwidget.h
+    3d/qgspolygon3dsymbolwidget.h
+    3d/qgsphongmaterialwidget.h
+    3d/qgsvectorlayer3drendererwidget.h
+  )
+ENDIF (WITH_3D)
+
+
 SET (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
 
 IF (WITH_QWTPOLAR)
@@ -582,6 +610,18 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/native
 )
 
+IF (WITH_3D)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/app/3d
+    ${CMAKE_SOURCE_DIR}/src/core/3d
+    ${CMAKE_SOURCE_DIR}/src/3d
+    ${CMAKE_SOURCE_DIR}/src/3d/symbols
+    ${CMAKE_SOURCE_DIR}/src/3d/terrain
+    ${CMAKE_SOURCE_DIR}/src/3d/chunks
+    ${CMAKE_BINARY_DIR}/src/3d
+  )
+ENDIF (WITH_3D)
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
@@ -678,6 +718,12 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_native
   libdxfrw
 )
+
+IF (WITH_3D)
+  TARGET_LINK_LIBRARIES(qgis_app
+    qgis_3d
+  )
+ENDIF (WITH_3D)
 
 GENERATE_EXPORT_HEADER(
    qgis_app

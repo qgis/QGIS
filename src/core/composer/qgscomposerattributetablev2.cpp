@@ -31,11 +31,6 @@
 
 //QgsComposerAttributeTableCompareV2
 
-QgsComposerAttributeTableCompareV2::QgsComposerAttributeTableCompareV2()
-{
-}
-
-
 bool QgsComposerAttributeTableCompareV2::operator()( const QgsComposerTableRow &m1, const QgsComposerTableRow &m2 )
 {
   return ( mAscending ? qgsVariantLessThan( m1[mCurrentSortColumn], m2[mCurrentSortColumn] )

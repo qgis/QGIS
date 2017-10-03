@@ -18,7 +18,11 @@ class QgsTableWidgetItem : QTableWidgetItem
 #include "qgstablewidgetitem.h"
 %End
   public:
+
     QgsTableWidgetItem();
+%Docstring
+ Constructor for QgsTableWidgetItem.
+%End
 
     QgsTableWidgetItem( const QString &text );
 %Docstring

@@ -38,8 +38,7 @@ class TestQgsRenderers : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRenderers()
-    {}
+    TestQgsRenderers() = default;
     ~TestQgsRenderers()
     {
       delete mMapSettings;

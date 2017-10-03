@@ -28,8 +28,7 @@ class TestQgsScaleComboBox : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsScaleComboBox()
-    {}
+    TestQgsScaleComboBox() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

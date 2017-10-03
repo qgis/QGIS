@@ -46,10 +46,7 @@ class TestQgsFieldCalculator : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsFieldCalculator::TestQgsFieldCalculator()
-{
-
-}
+TestQgsFieldCalculator::TestQgsFieldCalculator() = default;
 
 //runs before all tests
 void TestQgsFieldCalculator::initTestCase()

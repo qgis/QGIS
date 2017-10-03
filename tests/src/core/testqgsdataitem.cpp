@@ -50,10 +50,7 @@ class TestQgsDataItem : public QObject
     bool isValidDirItem( QgsDirectoryItem *item );
 };
 
-TestQgsDataItem::TestQgsDataItem()
-{
-
-}
+TestQgsDataItem::TestQgsDataItem() = default;
 
 void TestQgsDataItem::initTestCase()
 {

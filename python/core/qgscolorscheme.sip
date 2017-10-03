@@ -131,6 +131,9 @@ class QgsGplColorScheme : QgsColorScheme
   public:
 
     QgsGplColorScheme();
+%Docstring
+ Constructor for QgsGplColorScheme.
+%End
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() );
@@ -216,6 +219,9 @@ class QgsRecentColorScheme : QgsColorScheme
   public:
 
     QgsRecentColorScheme();
+%Docstring
+ Constructor for QgsRecentColorScheme.
+%End
 
     virtual QString schemeName() const;
 
@@ -257,6 +263,9 @@ class QgsCustomColorScheme : QgsColorScheme
   public:
 
     QgsCustomColorScheme();
+%Docstring
+ Constructor for QgsCustomColorScheme.
+%End
 
     virtual QString schemeName() const;
 

@@ -37,12 +37,6 @@
 
 QgsStyle *QgsStyle::sDefaultStyle = nullptr;
 
-
-QgsStyle::QgsStyle() : QObject()
-{
-  mCurrentDB = nullptr;
-}
-
 QgsStyle::~QgsStyle()
 {
   clear();

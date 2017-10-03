@@ -108,7 +108,7 @@ class CORE_EXPORT QgsPropertyDefinition
     /**
      * Constructs an empty property.
      */
-    QgsPropertyDefinition();
+    QgsPropertyDefinition() = default;
 
     /**
      * Constructor for QgsPropertyDefinition, using a standard property template.

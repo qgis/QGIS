@@ -222,7 +222,7 @@ class QgsSnapIndex
     class GridRow
     {
       public:
-        GridRow() {}
+        GridRow() = default;
         ~GridRow();
         const Cell *getCell( int col ) const;
         Cell &getCreateCell( int col );

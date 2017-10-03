@@ -53,7 +53,6 @@ class SERVER_EXPORT QgsRequestHandler
      * Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
      */
     explicit QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response );
-    ~QgsRequestHandler();
 
     //! Allow plugins to return a QgsMapServiceException
     void setServiceException( const QgsServerException &ex );

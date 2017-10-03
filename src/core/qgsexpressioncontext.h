@@ -91,7 +91,7 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
       , mReferencedColumns( referencedColumns )
     {}
 
-    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) override = 0;
+    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override = 0;
 
     /** Returns a clone of the function.
      */

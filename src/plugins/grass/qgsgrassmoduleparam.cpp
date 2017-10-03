@@ -112,8 +112,6 @@ QgsGrassModuleParam::QgsGrassModuleParam( QgsGrassModule *module, QString key,
   mId = qdesc.attribute( QStringLiteral( "id" ) );
 }
 
-QgsGrassModuleParam::~QgsGrassModuleParam() {}
-
 bool QgsGrassModuleParam::hidden()
 {
   return mHidden;
@@ -208,8 +206,6 @@ QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, 
   setToolTip( mToolTip );
 }
 
-QgsGrassModuleGroupBoxItem::~QgsGrassModuleGroupBoxItem() {}
-
 void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent *event )
 {
   Q_UNUSED( event );
@@ -242,8 +238,6 @@ QgsGrassModuleMultiParam::QgsGrassModuleMultiParam( QgsGrassModule *module, QStr
   mLayout->insertLayout( -1, mParamsLayout );
 
 }
-
-QgsGrassModuleMultiParam::~QgsGrassModuleMultiParam() {}
 
 void QgsGrassModuleMultiParam::showAddRemoveButtons()
 {
@@ -753,10 +747,6 @@ QString QgsGrassModuleOption::ready()
   return error;
 }
 
-QgsGrassModuleOption::~QgsGrassModuleOption()
-{
-}
-
 /***************** QgsGrassModuleFlag *********************/
 QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
@@ -784,10 +774,6 @@ QStringList QgsGrassModuleFlag::options()
     list.push_back( "-" + mKey );
   }
   return list;
-}
-
-QgsGrassModuleFlag::~QgsGrassModuleFlag()
-{
 }
 
 /***************** QgsGrassModuleGdalInput *********************/
@@ -1036,10 +1022,6 @@ void QgsGrassModuleGdalInput::changed( int i )
   mLayerPassword->setEnabled( i < mUri.size() && mUri.value( i ).startsWith( QLatin1String( "PG:" ) ) && !mUri.value( i ).contains( QLatin1String( "password=" ) ) );
 }
 
-QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()
-{
-}
-
 /***************** QgsGrassModuleField *********************/
 QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent )
@@ -1053,10 +1035,6 @@ QgsGrassModuleField::QgsGrassModuleField( QgsGrassModule *module, QString key,
     lineEdit->setValidator( new QRegExpValidator( rx, this ) );
   }
 #endif
-}
-
-QgsGrassModuleField::~QgsGrassModuleField()
-{
 }
 
 /***************** QgsGrassModuleVectorField *********************/
@@ -1175,10 +1153,6 @@ QStringList QgsGrassModuleVectorField::options()
   }
 
   return list;
-}
-
-QgsGrassModuleVectorField::~QgsGrassModuleVectorField()
-{
 }
 
 /***************** QgsGrassModuleSelection *********************/
@@ -1417,10 +1391,6 @@ QStringList QgsGrassModuleSelection::options()
   return list;
 }
 
-QgsGrassModuleSelection::~QgsGrassModuleSelection()
-{
-}
-
 /***************** QgsGrassModuleFile *********************/
 
 QgsGrassModuleFile::QgsGrassModuleFile(
@@ -1550,10 +1520,6 @@ QString QgsGrassModuleFile::ready()
   return error;
 }
 
-QgsGrassModuleFile::~QgsGrassModuleFile()
-{
-}
-
 /***************************** QgsGrassModuleCheckBox *********************************/
 
 QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString &text, QWidget *parent )
@@ -1561,10 +1527,6 @@ QgsGrassModuleCheckBox::QgsGrassModuleCheckBox( const QString &text, QWidget *pa
   , mText( text )
 {
   adjustText();
-}
-
-QgsGrassModuleCheckBox::~QgsGrassModuleCheckBox()
-{
 }
 
 void QgsGrassModuleCheckBox::resizeEvent( QResizeEvent *event )

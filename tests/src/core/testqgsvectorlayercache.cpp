@@ -36,8 +36,7 @@ class TestVectorLayerCache : public QObject
 {
     Q_OBJECT
   public:
-    TestVectorLayerCache()
-    {}
+    TestVectorLayerCache() = default;
 
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.

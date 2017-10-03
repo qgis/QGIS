@@ -124,8 +124,7 @@ void QgsGrassImportProgress::setValue( int value )
 
 //------------------------------ QgsGrassImport ------------------------------------
 QgsGrassImport::QgsGrassImport( const QgsGrassObject &grassObject )
-  : QObject()
-  , mGrassObject( grassObject )
+  : mGrassObject( grassObject )
   , mCanceled( false )
   , mFutureWatcher( 0 )
 {

@@ -70,10 +70,6 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
   , mStatus( StatusPending )
 {}
 
-QgsGeometryCheckError::~QgsGeometryCheckError()
-{
-}
-
 QgsAbstractGeometry *QgsGeometryCheckError::geometry()
 {
   QgsFeature f;

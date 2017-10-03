@@ -86,7 +86,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
     Q_OBJECT
   public:
     explicit QgsCachedImageFetcher( const QImage &img );
-    virtual ~QgsCachedImageFetcher();
+    virtual ~QgsCachedImageFetcher() = default;
     virtual void start() override;
   private:
     const QImage _img; // copy is intentional
@@ -541,8 +541,7 @@ class QgsWmsStatistics
   public:
     struct Stat
     {
-      Stat()
-      {}
+      Stat() = default;
       int errors = 0;
       int cacheHits = 0;
       int cacheMisses = 0;

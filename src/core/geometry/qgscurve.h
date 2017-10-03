@@ -34,7 +34,11 @@ class QPainterPath;
 class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 {
   public:
-    QgsCurve();
+
+    /**
+     * Constructor for QgsCurve.
+     */
+    QgsCurve() = default;
 
     virtual bool operator==( const QgsCurve &other ) const = 0;
     virtual bool operator!=( const QgsCurve &other ) const = 0;

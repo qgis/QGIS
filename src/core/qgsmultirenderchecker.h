@@ -52,7 +52,11 @@
 class CORE_EXPORT QgsMultiRenderChecker
 {
   public:
-    QgsMultiRenderChecker();
+
+    /**
+     * Constructor for QgsMultiRenderChecker.
+     */
+    QgsMultiRenderChecker() = default;
 
     virtual ~QgsMultiRenderChecker() = default;
 

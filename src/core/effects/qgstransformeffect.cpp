@@ -28,12 +28,6 @@ QgsPaintEffect *QgsTransformEffect::create( const QgsStringMap &map )
   return newEffect;
 }
 
-QgsTransformEffect::QgsTransformEffect()
-  : QgsPaintEffect()
-{
-
-}
-
 void QgsTransformEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )

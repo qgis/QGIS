@@ -75,11 +75,6 @@ int QgsGraph::findVertex( const QgsPointXY &pt ) const
   return -1;
 }
 
-QgsGraphEdge::QgsGraphEdge()
-{
-
-}
-
 QVariant QgsGraphEdge::cost( int i ) const
 {
   return mStrategies[ i ];

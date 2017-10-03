@@ -52,7 +52,6 @@ scripts/astyle.exe
 scripts/Debug
 scripts/qgisstyle*
 scripts/RelWithDebInfo
-src/core/qgscontexthelp_texts.cpp
 src/core/qgsexpression_texts.cpp
 tests/testdata/cache/
 tests/testdata/checker360by180.asc.aux.xml

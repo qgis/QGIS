@@ -51,7 +51,10 @@ class CORE_EXPORT QgsRegularPolygon
       CircumscribedCircle //<! Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
     };
 
-    QgsRegularPolygon();
+    /**
+     * Constructor for QgsRegularPolygon.
+     */
+    QgsRegularPolygon() = default;
 
     /** Constructs a regular polygon by \a center and parameters for the first vertex. An empty regular polygon is returned if \a numberSides < 3 or \a ConstructionOption isn't valid.
      * \param center The center of the regular polygon.

@@ -4883,10 +4883,6 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
 
 // ----------
 
-QgsPostgresSharedData::QgsPostgresSharedData()
-{
-}
-
 void QgsPostgresSharedData::addFeaturesCounted( long diff )
 {
   QMutexLocker locker( &mMutex );

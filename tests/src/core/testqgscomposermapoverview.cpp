@@ -33,8 +33,7 @@ class TestQgsComposerMapOverview : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerMapOverview()
-    {}
+    TestQgsComposerMapOverview() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

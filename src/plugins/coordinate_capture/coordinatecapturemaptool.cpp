@@ -38,10 +38,6 @@ CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas )
   mpRubberBand->setWidth( 1 );
 }
 
-CoordinateCaptureMapTool::~CoordinateCaptureMapTool()
-{
-}
-
 void CoordinateCaptureMapTool::canvasMoveEvent( QgsMapMouseEvent *thepEvent )
 {
   QgsPointXY myOriginalPoint =

@@ -30,6 +30,7 @@
 %Include qgsdatetimestatisticalsummary.sip
 %Include qgsdatumtransformstore.sip
 %Include qgsdbfilterproxymodel.sip
+%Include qgsdefaultvalue.sip
 %Include qgsdiagramrenderer.sip
 %Include qgsdistancearea.sip
 %Include qgseditformconfig.sip
@@ -279,6 +280,8 @@
 %Include geometry/qgssurface.sip
 %Include geometry/qgswkbptr.sip
 %Include geometry/qgswkbtypes.sip
+%Include ./3d/qgs3drendererregistry.sip
+%Include ./3d/qgsabstract3drenderer.sip
 %Include fieldformatter/qgsdatetimefieldformatter.sip
 %Include fieldformatter/qgsfallbackfieldformatter.sip
 %Include fieldformatter/qgskeyvaluefieldformatter.sip

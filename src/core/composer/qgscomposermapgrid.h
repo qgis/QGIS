@@ -834,8 +834,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     struct GridExtension
     {
-      GridExtension()
-      {}
+      GridExtension() = default;
       double top = 0.0;
       double right = 0.0;
       double bottom = 0.0;

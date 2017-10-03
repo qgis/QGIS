@@ -58,15 +58,6 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
   retrieveServerCapabilities();
 }
 
-QgsWcsCapabilities::QgsWcsCapabilities()
-{
-}
-
-QgsWcsCapabilities::~QgsWcsCapabilities()
-{
-  QgsDebugMsg( "deconstructing." );
-}
-
 void QgsWcsCapabilities::parseUri()
 {
   mCacheLoadControl = QNetworkRequest::PreferNetwork;

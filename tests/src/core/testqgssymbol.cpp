@@ -70,10 +70,7 @@ class TestQgsSymbol : public QObject
     void symbolProperties();
 };
 
-TestQgsSymbol::TestQgsSymbol()
-{
-
-}
+TestQgsSymbol::TestQgsSymbol() = default;
 
 // slots
 void TestQgsSymbol::initTestCase()

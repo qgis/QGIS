@@ -24,11 +24,6 @@
 #include <QTemporaryFile>
 #include <QTextStream>
 
-QgsSentDataSourceBuilder::QgsSentDataSourceBuilder()
-{
-
-}
-
 QgsMapLayer *QgsSentDataSourceBuilder::createMapLayer( const QDomElement &elem,
     const QString &layerName,
     QList<QTemporaryFile *> &filesToRemove,

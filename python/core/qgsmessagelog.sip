@@ -39,6 +39,9 @@ class QgsMessageLog : QObject
     };
 
     QgsMessageLog();
+%Docstring
+ Constructor for QgsMessageLog.
+%End
 
     static void logMessage( const QString &message, const QString &tag = QString(), MessageLevel level = QgsMessageLog::WARNING );
 %Docstring

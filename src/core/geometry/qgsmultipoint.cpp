@@ -20,7 +20,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 QgsMultiPointV2::QgsMultiPointV2()
-  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiPoint;
 }

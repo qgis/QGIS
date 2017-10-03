@@ -23,10 +23,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include <limits>
 #include <QTransform>
 
-QgsAbstractGeometry::QgsAbstractGeometry()
-{
-}
-
 QgsAbstractGeometry::QgsAbstractGeometry( const QgsAbstractGeometry &geom )
 {
   mWkbType = geom.mWkbType;

@@ -29,7 +29,11 @@
 class CORE_EXPORT QgsRasterIdentifyResult
 {
   public:
-    QgsRasterIdentifyResult();
+
+    /**
+     * Constructor for QgsRasterIdentifyResult.
+     */
+    QgsRasterIdentifyResult() = default;
 
     /** \brief Constructor. Creates valid result.
      *  \param format the result format

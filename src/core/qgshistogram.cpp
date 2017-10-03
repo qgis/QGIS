@@ -20,11 +20,6 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsvectorlayer.h"
 
-QgsHistogram::QgsHistogram()
-{
-
-}
-
 void QgsHistogram::prepareValues()
 {
   std::sort( mValues.begin(), mValues.end() );

@@ -47,7 +47,11 @@ class GUI_EXPORT QgsActionMenu : public QMenu
 
     struct GUI_EXPORT ActionData
     {
-      ActionData();
+
+      /**
+       * Constructor for ActionData.
+       */
+      ActionData() = default;
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 

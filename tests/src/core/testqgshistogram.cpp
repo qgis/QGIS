@@ -46,10 +46,7 @@ class TestQgsHistogram : public QObject
 
 };
 
-TestQgsHistogram::TestQgsHistogram()
-{
-
-}
+TestQgsHistogram::TestQgsHistogram() = default;
 
 void TestQgsHistogram::initTestCase()
 {

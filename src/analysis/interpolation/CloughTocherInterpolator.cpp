@@ -19,11 +19,6 @@
 #include "MathUtils.h"
 #include "NormVecDecorator.h"
 
-CloughTocherInterpolator::CloughTocherInterpolator()
-{
-
-}
-
 CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
   : mTIN( tin )
 {

@@ -50,8 +50,7 @@ class TestQgsExpression: public QObject
 
   public:
 
-    TestQgsExpression()
-    {}
+    TestQgsExpression() = default;
 
   private:
 
@@ -386,7 +385,7 @@ class TestQgsExpression: public QObject
 
       // Usage on a value map
       QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mPointsLayer ) );
-      QgsExpression expression( "represent_value('Pilots', \"Pilots\")" );
+      QgsExpression expression( "represent_value(\"Pilots\", 'Pilots')" );
       if ( expression.hasParserError() )
         qDebug() << expression.parserErrorString();
       Q_ASSERT( !expression.hasParserError() );
@@ -401,7 +400,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
 
       // Usage on a simple string
-      QgsExpression expression2( "represent_value('Class', \"Class\")" );
+      QgsExpression expression2( "represent_value(\"Class\", 'Class')" );
       if ( expression2.hasParserError() )
         qDebug() << expression2.parserErrorString();
       Q_ASSERT( !expression2.hasParserError() );
@@ -412,6 +411,26 @@ class TestQgsExpression: public QObject
       mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Class = 'Jet'" ) ).nextFeature( feature );
       context.setFeature( feature );
       QCOMPARE( expression2.evaluate( &context ).toString(), QStringLiteral( "Jet" ) );
+
+      // Test with implicit field name discovery
+      QgsExpression expression3( "represent_value(\"Pilots\")" );
+      if ( expression3.hasParserError() )
+        qDebug() << expression.parserErrorString();
+      Q_ASSERT( !expression3.hasParserError() );
+      if ( expression3.hasEvalError() )
+        qDebug() << expression3.evalErrorString();
+      Q_ASSERT( !expression3.hasEvalError() );
+      expression3.prepare( &context );
+      mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Pilots = 1" ) ).nextFeature( feature );
+      context.setFeature( feature );
+      QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
+
+
+      QgsExpression expression4( "represent_value('Class')" );
+      if ( expression4.hasParserError() )
+        qDebug() << expression4.parserErrorString();
+      Q_ASSERT( !expression4.hasParserError() );
+      Q_ASSERT( expression4.hasEvalError() );
     }
 
     void evaluation_data()

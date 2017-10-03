@@ -86,6 +86,10 @@ class QgsPaintEffect
     };
 
     QgsPaintEffect();
+%Docstring
+ Constructor for QgsPaintEffect.
+%End
+
     QgsPaintEffect( const QgsPaintEffect &other );
     virtual ~QgsPaintEffect();
 

@@ -87,6 +87,7 @@
         <file>themes/default/console/iconSyntaxErrorConsole.png</file>
         <file>themes/default/console/iconResetColorConsole.png</file>
         <file>themes/default/copyright_label.svg</file>
+        <file>themes/default/dbmanager.svg</file>
         <file>themes/default/extents.svg</file>
         <file>themes/default/gpsicons/barchart.svg</file>
         <file>themes/default/gpsicons/polarchart.svg</file>
@@ -586,6 +587,7 @@
         <file>icons/qgis_icon.svg</file>
         <file>themes/default/mActionCircle2TangentsPoint.svg</file>
         <file>themes/default/mActionRegularPolygonCenterPoint.svg</file>
+        <file>themes/default/3d.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

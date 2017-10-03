@@ -626,7 +626,7 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
       }
     }
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       QString colorName = values.at( 0 ).toString().toLower();
       if ( mColors.contains( colorName ) )
@@ -657,7 +657,7 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
       , mComposition( c )
     {}
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       if ( !mComposition )
         return QVariant();
@@ -692,7 +692,7 @@ class GetLayerVisibility : public QgsScopedExpressionFunction
       , mLayers( layers )
     {}
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       if ( mLayers.isEmpty() )
       {
@@ -729,7 +729,7 @@ class GetProcessingParameterValue : public QgsScopedExpressionFunction
       , mParams( params )
     {}
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       return mParams.value( values.at( 0 ).toString() );
     }

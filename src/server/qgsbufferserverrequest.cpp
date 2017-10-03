@@ -40,8 +40,3 @@ QgsBufferServerRequest::QgsBufferServerRequest( const QUrl &url, Method method, 
     mData = *data;
   }
 }
-
-QgsBufferServerRequest::~QgsBufferServerRequest()
-{
-
-}

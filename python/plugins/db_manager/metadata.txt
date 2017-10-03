@@ -8,6 +8,6 @@ qgisMinimumVersion=2.0
 author=Giuseppe Sucameli
 email=brush.tyler@gmail.com
 
-icon=icons/dbmanager.png
+icon=icons/dbmanager.svg
 
 class_name=DBManagerPlugin

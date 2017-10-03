@@ -20,7 +20,12 @@ class QgsDetailedItemData
 #include "qgsdetaileditemdata.h"
 %End
   public:
+
     QgsDetailedItemData();
+%Docstring
+ Constructor for QgsDetailedItemData.
+%End
+
     void setTitle( const QString &title );
     void setDetail( const QString &detail );
     void setCategory( const QString &category );

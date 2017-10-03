@@ -44,7 +44,11 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {
   QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction,
                                   QgsRasterRendererWidgetCreateFunc widgetFunction );
-  QgsRasterRendererRegistryEntry();
+
+  /**
+   * Constructor for QgsRasterRendererRegistryEntry.
+   */
+  QgsRasterRendererRegistryEntry() = default;
   QString name;
   QString visibleName; //visible (and translatable) name
   QIcon icon();

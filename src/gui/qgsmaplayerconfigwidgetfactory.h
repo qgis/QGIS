@@ -34,7 +34,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
   public:
 
     //! Constructor
-    QgsMapLayerConfigWidgetFactory();
+    QgsMapLayerConfigWidgetFactory() = default;
 
     //! Constructor
     QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );

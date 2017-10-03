@@ -37,7 +37,6 @@ QMap<QString, QgsPkiConfigBundle *> QgsAuthIdentCertMethod::sPkiConfigBundleCach
 
 
 QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
-  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );

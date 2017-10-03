@@ -79,8 +79,6 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 }
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
-  : QDialog()
-
 {
   setupUi( this );
 

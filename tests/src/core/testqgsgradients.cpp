@@ -42,8 +42,7 @@ class TestQgsGradients : public QObject
     Q_OBJECT
 
   public:
-    TestQgsGradients()
-    {}
+    TestQgsGradients() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

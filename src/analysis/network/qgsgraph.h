@@ -43,7 +43,11 @@ class QgsGraphVertex;
 class ANALYSIS_EXPORT QgsGraphEdge
 {
   public:
-    QgsGraphEdge();
+
+    /**
+     * Constructor for QgsGraphEdge.
+     */
+    QgsGraphEdge() = default;
 
     /**
      * Returns edge cost calculated using specified strategy

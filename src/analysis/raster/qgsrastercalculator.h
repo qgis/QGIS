@@ -95,7 +95,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
 
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
-    QgsRasterCalculator();
+    QgsRasterCalculator() = delete;
 
     /** Opens the output driver and tests if it supports the creation of a new dataset
       \returns nullptr on error and the driver handle on success*/

@@ -92,7 +92,10 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
 
   public:
 
-    QgsMessageOutputConsole();
+    /**
+     * Constructor for QgsMessageOutputConsole.
+     */
+    QgsMessageOutputConsole() = default;
 
     virtual void setMessage( const QString &message, MessageType msgType ) override;
 

@@ -36,7 +36,7 @@ from xml tag*/
 class QgsMSLayerBuilder
 {
   public:
-    QgsMSLayerBuilder();
+    QgsMSLayerBuilder() = default;
     virtual ~QgsMSLayerBuilder() = default;
 
     /** Creates a maplayer from xml tag

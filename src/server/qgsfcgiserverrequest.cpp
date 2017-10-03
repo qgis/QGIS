@@ -127,11 +127,6 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   }
 }
 
-QgsFcgiServerRequest::~QgsFcgiServerRequest()
-{
-
-}
-
 QByteArray QgsFcgiServerRequest::data() const
 {
   return mData;

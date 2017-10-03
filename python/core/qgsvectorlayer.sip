@@ -712,7 +712,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    void resolveReferences( QgsProject *project );
+    virtual void resolveReferences( QgsProject *project );
 %Docstring
  Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
 .. versionadded:: 3.0
@@ -925,13 +925,16 @@ Return the provider type for this layer
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
-    bool updateFeature( QgsFeature &f );
+    bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
  Updates an existing feature. This method needs to query the datasource
-on every call. Consider using changeAttributeValue() or
-changeGeometry() instead.
-\param f  Feature to update
-:return:   True in case of success and False in case of error
+ on every call. Consider using changeAttributeValue() or
+ changeGeometry() instead. The id of the feature will be used to match
+ an existing feature.
+
+  \param feature  Feature with changed geometry or attributes.
+  \param skipDefaultValues Default values will not be updated if this is true. False by default.
+  :return:   True in case of success and False in case of error
  :rtype: bool
 %End
 
@@ -1172,13 +1175,13 @@ Returns list of attributes making up the primary key
  :rtype: bool
 %End
 
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue = false );
 %Docstring
 Change feature's geometry
  :rtype: bool
 %End
 
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
 %Docstring
  Changes an attribute value (but does not commit it)
 
@@ -1186,6 +1189,8 @@ Change feature's geometry
  \param field The index of the field to be updated
  \param newValue The value which will be assigned to the field
  \param oldValue The previous value to restore on undo (will otherwise be retrieved)
+ \param skipDefaultValues If this is set to true, default values will not
+ be updated. This can be used to override default values. Defaults to false.
 
  :return: true in case of success
  :rtype: bool
@@ -1378,14 +1383,21 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
 
     void updateFields();
 %Docstring
-Assembles mUpdatedFields considering provider fields, joined fields and added fields
+ Will regenerate the `fields` property of this layer by obtaining all fields
+ from the dataProvider, joined fields and virtual fields. It will also
+ take any changes made to default values into consideration.
+
+.. note::
+
+   Unless the fields on the provider have directly been modified, there is
+ no reason to call this method.
 %End
 
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
                            QgsExpressionContext *context = 0 ) const;
 %Docstring
  Returns the calculated default value for the specified field index. The default
- value may be taken from a client side default value expression (see setDefaultValueExpression())
+ value may be taken from a client side default value expression (see setDefaultValueDefinition())
  or taken from the underlying data provider.
  \param index field index
  \param feature optional feature to use for default value evaluation. If passed,
@@ -1395,31 +1407,34 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  specified, a default context will be created
  :return: calculated default value
 .. versionadded:: 3.0
-.. seealso:: setDefaultValueExpression()
+.. seealso:: setDefaultValueDefinition()
  :rtype: QVariant
 %End
 
-    void setDefaultValueExpression( int index, const QString &expression );
+    void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
 %Docstring
- Sets an expression to use when calculating the default value for a field.
+ Sets the definition of the expression to use when calculating the default value for a field.
  \param index field index
- \param expression expression to evaluate when calculating default values for field. Pass
+ \param definition default value definition to use and evaluate
+ when calculating default values for field. Pass
  an empty expression to clear the default.
+
 .. versionadded:: 3.0
 .. seealso:: defaultValue()
-.. seealso:: defaultValueExpression()
+.. seealso:: defaultValueDefinition()
 %End
 
-    QString defaultValueExpression( int index ) const;
+    QgsDefaultValue defaultValueDefinition( int index ) const;
 %Docstring
- Returns the expression used when calculating the default value for a field.
+ Returns the definition of the expression used when calculating the default value for a field.
  \param index field index
- :return: expression evaluated when calculating default values for field, or an
+ :return: definition of the default value with the expression evaluated
+ when calculating default values for field, or definition with an
  empty string if no default is set
 .. versionadded:: 3.0
 .. seealso:: defaultValue()
-.. seealso:: setDefaultValueExpression()
- :rtype: str
+.. seealso:: setDefaultValueDefinition()
+ :rtype: QgsDefaultValue
 %End
 
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;

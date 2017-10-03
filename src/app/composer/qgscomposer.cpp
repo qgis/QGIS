@@ -102,8 +102,7 @@
 #endif
 
 QgsComposer::QgsComposer( QgsComposition *composition )
-  : QMainWindow()
-  , mInterface( new QgsAppComposerInterface( this ) )
+  : mInterface( new QgsAppComposerInterface( this ) )
   , mComposition( composition )
   , mQgis( QgisApp::instance() )
 {

@@ -661,8 +661,7 @@ void QgsDb2SourceSelect::treeWidgetSelectionChanged( const QItemSelection &selec
 
 
 QgsDb2GeomColumnTypeThread::QgsDb2GeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata )
-  : QThread()
-  , mConnectionName( connectionName )
+  : mConnectionName( connectionName )
   , mUseEstimatedMetadata( useEstimatedMetadata )
   , mStopped( false )
 {

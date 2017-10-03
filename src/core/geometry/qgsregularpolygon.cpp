@@ -20,12 +20,6 @@
 
 #include <memory>
 
-QgsRegularPolygon::QgsRegularPolygon()
-{
-
-}
-
-
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )
 {

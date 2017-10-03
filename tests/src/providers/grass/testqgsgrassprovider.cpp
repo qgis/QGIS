@@ -81,8 +81,7 @@ class TestQgsGrassCommand
       RedoAll
     };
 
-    TestQgsGrassCommand()
-    {}
+    TestQgsGrassCommand() = default;
     explicit TestQgsGrassCommand( Command c )
       : command( c )
     {}

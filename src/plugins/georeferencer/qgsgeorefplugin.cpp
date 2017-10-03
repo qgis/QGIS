@@ -84,10 +84,6 @@ QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface *qgisInterface )
 {
 }
 
-QgsGeorefPlugin::~QgsGeorefPlugin()
-{
-}
-
 /*
  * Initialize the GUI interface for the plugin
  */

@@ -88,6 +88,16 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-html')
 
+        # Test getfeatureinfo response text
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'info_format=text/plain',
+                                 'wms_getfeatureinfo-text-plain')
+
         # Test getfeatureinfo default info_format
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
@@ -96,6 +106,16 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-plain')
+
+        # Test getfeatureinfo invalid info_format
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'info_format=InvalidFormat',
+                                 'wms_getfeatureinfo-invalid-format')
 
         # Regression for #8656
         # Mind the gap! (the space in the FILTER expression)
@@ -144,6 +164,15 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&' +
                                  'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
                                  'wms_getfeatureinfo_geometry_filter')
+
+        # Test feature info request with invalid query_layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=InvalidLayer&' +
+                                 'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
+                                 'wms_getfeatureinfo_invalid_query_layers')
 
         # Test DescribeLayer
         self.wms_request_compare('DescribeLayer',

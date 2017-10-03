@@ -53,7 +53,7 @@ class QgsScopedExpressionFunction : QgsExpressionFunction
 .. versionadded:: 3.0
 %End
 
-    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent ) = 0;
+    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) = 0;
 
     virtual QgsScopedExpressionFunction *clone() const = 0 /Factory/;
 %Docstring

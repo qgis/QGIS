@@ -27,11 +27,6 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsInterval::QgsInterval()
-{
-
-}
-
 QgsInterval::QgsInterval( double seconds )
   : mSeconds( seconds )
   , mValid( true )

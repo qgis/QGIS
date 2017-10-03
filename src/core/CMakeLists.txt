@@ -160,6 +160,7 @@ SET(QGIS_CORE_SRCS
   qgsdatetimestatisticalsummary.cpp
   qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
+  qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgseditformconfig.cpp
@@ -463,6 +464,9 @@ SET(QGIS_CORE_SRCS
   geometry/qgstriangle.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
+
+  3d/qgs3drendererregistry.cpp
+  3d/qgsabstract3drenderer.cpp
 
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
@@ -805,6 +809,7 @@ SET(QGIS_CORE_HDRS
   qgsdatetimestatisticalsummary.h
   qgsdatumtransformstore.h
   qgsdbfilterproxymodel.h
+  qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditformconfig.h
@@ -1096,6 +1101,9 @@ SET(QGIS_CORE_HDRS
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
 
+  3d/qgs3drendererregistry.h
+  3d/qgsabstract3drenderer.h
+
   fieldformatter/qgsdatetimefieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
@@ -1121,6 +1129,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${LIBZIP_INCLUDE_DIR}
+  3d
   annotations
   auth
   composer

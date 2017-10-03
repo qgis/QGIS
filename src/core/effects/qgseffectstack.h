@@ -52,7 +52,11 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
-    QgsEffectStack();
+    /**
+     * Constructor for empty QgsEffectStack.
+     */
+    QgsEffectStack() = default;
+
     QgsEffectStack( const QgsEffectStack &other );
 
     /** Creates a new QgsEffectStack effect from a single initial effect.

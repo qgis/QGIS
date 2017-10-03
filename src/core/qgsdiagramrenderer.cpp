@@ -395,19 +395,12 @@ void QgsDiagramSettings::writeXml( QDomElement &rendererElem, QDomDocument &doc 
   rendererElem.appendChild( categoryElem );
 }
 
-QgsDiagramRenderer::QgsDiagramRenderer()
-{
-}
-
-QgsDiagramRenderer::~QgsDiagramRenderer()
-{
-  delete mDiagram;
-}
-
 void QgsDiagramRenderer::setDiagram( QgsDiagram *d )
 {
-  delete mDiagram;
-  mDiagram = d;
+  if ( mDiagram.get() == d )
+    return;
+
+  mDiagram.reset( d );
 }
 
 QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer &other )
@@ -418,7 +411,7 @@ QgsDiagramRenderer::QgsDiagramRenderer( const QgsDiagramRenderer &other )
 
 QgsDiagramRenderer &QgsDiagramRenderer::operator=( const QgsDiagramRenderer &other )
 {
-  mDiagram = other.mDiagram ? other.mDiagram->clone() : nullptr;
+  mDiagram.reset( other.mDiagram ? other.mDiagram->clone() : nullptr );
   mShowAttributeLegend = other.mShowAttributeLegend;
   return *this;
 }
@@ -515,23 +508,19 @@ int QgsDiagramRenderer::dpiPaintDevice( const QPainter *painter )
 void QgsDiagramRenderer::_readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context );
-  delete mDiagram;
+  mDiagram.reset();
   QString diagramType = elem.attribute( QStringLiteral( "diagramType" ) );
   if ( diagramType == QLatin1String( "Pie" ) )
   {
-    mDiagram = new QgsPieDiagram();
+    mDiagram.reset( new QgsPieDiagram() );
   }
   else if ( diagramType == QLatin1String( "Text" ) )
   {
-    mDiagram = new QgsTextDiagram();
+    mDiagram.reset( new QgsTextDiagram() );
   }
   else if ( diagramType == QLatin1String( "Histogram" ) )
   {
-    mDiagram = new QgsHistogramDiagram();
-  }
-  else
-  {
-    mDiagram = nullptr;
+    mDiagram.reset( new QgsHistogramDiagram() );
   }
   mShowAttributeLegend = ( elem.attribute( QStringLiteral( "attributeLegend" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
 }

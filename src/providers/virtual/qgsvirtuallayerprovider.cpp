@@ -447,10 +447,6 @@ bool QgsVirtualLayerProvider::createIt()
   return true;
 }
 
-QgsVirtualLayerProvider::~QgsVirtualLayerProvider()
-{
-}
-
 void QgsVirtualLayerProvider::resetSqlite()
 {
   bool hasSpatialrefsys = false;

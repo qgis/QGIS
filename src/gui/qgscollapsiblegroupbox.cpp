@@ -91,16 +91,16 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent *event )
 
   // find parent QScrollArea - this might not work in complex layouts - should we look deeper?
   if ( parent() && parent()->parent() )
-    mParentScrollArea = dynamic_cast<QScrollArea *>( parent()->parent()->parent() );
+    mParentScrollArea = qobject_cast<QScrollArea *>( parent()->parent()->parent() );
   else
     mParentScrollArea = nullptr;
   if ( mParentScrollArea )
   {
-    QgsDebugMsg( "found a QScrollArea parent: " + mParentScrollArea->objectName() );
+    QgsDebugMsgLevel( "found a QScrollArea parent: " + mParentScrollArea->objectName(), 5 );
   }
   else
   {
-    QgsDebugMsg( "did not find a QScrollArea parent" );
+    QgsDebugMsgLevel( "did not find a QScrollArea parent", 5 );
   }
 
   updateStyle();
@@ -355,8 +355,8 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
     }
   }
 
-  QgsDebugMsg( QString( "groupbox: %1 style: %2 offset: left=%3 top=%4 top2=%5" ).arg(
-                 objectName(), QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTopTri ) );
+  QgsDebugMsgLevel( QString( "groupbox: %1 style: %2 offset: left=%3 top=%4 top2=%5" ).arg(
+                      objectName(), QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTopTri ), 5 );
 
   // customize style sheet for collapse/expand button and force left-aligned title
   QString ss;

@@ -2868,8 +2868,6 @@ void QgsAuthManager::tryToStartDbErase()
 }
 
 QgsAuthManager::QgsAuthManager()
-  : QObject()
-  , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
 {
   mMutex = new QMutex( QMutex::Recursive );
   connect( this, &QgsAuthManager::messageOut,

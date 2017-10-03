@@ -256,7 +256,6 @@ class QgsWFSFeatureHitsRequest: public QgsWfsRequest
     Q_OBJECT
   public:
     explicit QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri );
-    ~QgsWFSFeatureHitsRequest();
 
     //! Return the feature count, or -1 in case of error
     int getFeatureCount( const QString &WFSVersion, const QString &filter );
@@ -272,7 +271,6 @@ class QgsWFSSingleFeatureRequest: public QgsWfsRequest
     Q_OBJECT
   public:
     explicit QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared );
-    ~QgsWFSSingleFeatureRequest();
 
     //! Return the feature  extent of the single feature requested
     QgsRectangle getExtent();

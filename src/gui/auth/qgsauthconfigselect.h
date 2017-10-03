@@ -18,6 +18,7 @@
 #define QGSAUTHCONFIGSELECT_H
 
 #include <QWidget>
+#include <QLabel>
 #include "qgis.h"
 
 #include "ui_qgsauthconfigselect.h"

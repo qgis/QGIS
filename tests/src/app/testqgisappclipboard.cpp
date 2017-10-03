@@ -59,10 +59,7 @@ class TestQgisAppClipboard : public QObject
     QString mTestDataDir;
 };
 
-TestQgisAppClipboard::TestQgisAppClipboard()
-{
-
-}
+TestQgisAppClipboard::TestQgisAppClipboard() = default;
 
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()

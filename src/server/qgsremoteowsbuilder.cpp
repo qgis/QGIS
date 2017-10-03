@@ -25,14 +25,7 @@
 #include <QTemporaryFile>
 
 QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const QMap<QString, QString> &parameterMap )
-  : QgsMSLayerBuilder()
-  , mParameterMap( parameterMap )
-{
-
-}
-
-QgsRemoteOWSBuilder::QgsRemoteOWSBuilder()
-  : QgsMSLayerBuilder()
+  : mParameterMap( parameterMap )
 {
 
 }

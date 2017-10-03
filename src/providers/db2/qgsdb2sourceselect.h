@@ -72,7 +72,7 @@ class QgsDb2GeomColumnTypeThread : public QThread
     void stop();
 
   private:
-    QgsDb2GeomColumnTypeThread() {}
+    QgsDb2GeomColumnTypeThread() = delete;
 
     QString mConnectionName;
     bool mUseEstimatedMetadata;

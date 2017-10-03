@@ -44,10 +44,6 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWCSSourceSelect::showHelp );
 }
 
-QgsWCSSourceSelect::~QgsWCSSourceSelect()
-{
-}
-
 void QgsWCSSourceSelect::populateLayerList()
 {
 

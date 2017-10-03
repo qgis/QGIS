@@ -1164,15 +1164,13 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
-  for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
+  for ( const QString &layerName : qgsAsConst( sFileList ) )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
-    QString myLayerName = *myIterator;
+    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
     {
-      qgis->openLayer( myLayerName );
+      qgis->openLayer( layerName );
     }
   }
 

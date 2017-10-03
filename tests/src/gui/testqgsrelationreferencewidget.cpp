@@ -30,7 +30,7 @@ class TestQgsRelationReferenceWidget : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRelationReferenceWidget() {}
+    TestQgsRelationReferenceWidget() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.

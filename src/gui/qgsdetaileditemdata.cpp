@@ -16,10 +16,6 @@
  ***************************************************************************/
 
 #include "qgsdetaileditemdata.h"
-QgsDetailedItemData::QgsDetailedItemData()
-{
-
-}
 
 void QgsDetailedItemData::setTitle( const QString &title )
 {

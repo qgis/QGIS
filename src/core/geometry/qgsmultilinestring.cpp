@@ -23,7 +23,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmulticurve.h"
 
 QgsMultiLineString::QgsMultiLineString()
-  : QgsMultiCurve()
 {
   mWkbType = QgsWkbTypes::MultiLineString;
 }

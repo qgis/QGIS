@@ -202,6 +202,12 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void zoomToFeatures( const QString &filter );
 
+    /**
+     * Emitted when the user chooses to flash a filtered set of features.
+     * \since QGIS 3.0
+     */
+    void flashFeatures( const QString &filter );
+
   public slots:
 
     /**
@@ -263,6 +269,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void filterTriggered();
 
     void searchZoomTo();
+    void searchFlash();
     void searchSetSelection();
     void searchAddToSelection();
     void searchRemoveFromSelection();

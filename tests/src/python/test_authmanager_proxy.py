@@ -14,15 +14,12 @@ import os
 import re
 import string
 import sys
-from functools import partial
 from shutil import rmtree
 import tempfile
 import random
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings
 from qgis.testing import start_app, unittest
-
-from utilities import unitTestDataPath, waitServer
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '27/09/2017'
@@ -44,7 +41,6 @@ class TestAuthManager(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests:
         Creates an auth configuration"""
-        cls.testdata_path = unitTestDataPath('qgis_server') + '/'
         # Enable auth
         # os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
         authm = QgsAuthManager.instance()

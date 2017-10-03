@@ -25,7 +25,11 @@ handled.
 #include "qgsnetworkcontentfetcher.h"
 %End
   public:
+
     QgsNetworkContentFetcher();
+%Docstring
+ Constructor for QgsNetworkContentFetcher.
+%End
 
     virtual ~QgsNetworkContentFetcher();
 

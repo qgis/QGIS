@@ -43,8 +43,11 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     struct FeatureInfo
     {
       public:
-        FeatureInfo()
-        {}
+
+        /**
+         * Constructor for FeatureInfo.
+         */
+        FeatureInfo() = default;
 
         bool isNew = false;
         bool isEdited = false;

@@ -23,7 +23,6 @@
 #include "qgswkbptr.h"
 
 QgsPolygonV2::QgsPolygonV2()
-  : QgsCurvePolygon()
 {
   mWkbType = QgsWkbTypes::Polygon;
 }
