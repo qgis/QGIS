@@ -215,26 +215,32 @@ bool QgsAuxiliaryLayer::save()
   return rc;
 }
 
-int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *layer, const QString &providerId )
+int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *layer )
 {
   int index = -1;
 
   if ( layer && layer->labeling() && layer->auxiliaryLayer() )
   {
-    const QgsPropertyDefinition def = layer->labeling()->settings( providerId ).propertyDefinitions()[property];
+    // property definition are identical whatever the provider id
+    const QgsPropertyDefinition def = layer->labeling()->settings().propertyDefinitions()[property];
     const QString fieldName = nameFromProperty( def, true );
 
-    if ( layer->auxiliaryLayer()->addAuxiliaryField( def ) )
+    layer->auxiliaryLayer()->addAuxiliaryField( def );
+
+    if ( layer->auxiliaryLayer()->indexOfPropertyDefinition( def ) >= 0 )
     {
       const QgsProperty prop = QgsProperty::fromField( fieldName );
 
-      QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
+      for ( const QString &providerId : layer->labeling()->subProviders() )
+      {
+        QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
 
-      QgsPropertyCollection c = settings->dataDefinedProperties();
-      c.setProperty( property, prop );
-      settings->setDataDefinedProperties( c );
+        QgsPropertyCollection c = settings->dataDefinedProperties();
+        c.setProperty( property, prop );
+        settings->setDataDefinedProperties( c );
 
-      layer->labeling()->setSettings( settings, providerId );
+        layer->labeling()->setSettings( settings, providerId );
+      }
     }
 
     index = layer->fields().lookupField( fieldName );

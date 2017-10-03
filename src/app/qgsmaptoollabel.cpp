@@ -744,7 +744,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
     }
     else
     {
-      index = QgsAuxiliaryLayer::createProperty( p, vlayer, providerId );
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
     }
 
     indexes[p] = index;

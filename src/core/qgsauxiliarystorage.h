@@ -200,11 +200,10 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \param property The property to create
      * \param vlayer The vector layer
-     * \param providerId The id of the provider to use
      *
      * \returns The index of the auxiliary field or -1
      */
-    static int createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *vlayer, const QString &providerId = QString() );
+    static int createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *vlayer );
 
     /**
      * Creates if necessary a new auxiliary field for a diagram's property and
