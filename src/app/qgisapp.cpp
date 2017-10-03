@@ -12499,6 +12499,14 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/selectTool" ), 3 );
   else if ( action == mActionSelectFreehand )
     settings.setValue( QStringLiteral( "UI/selectTool" ), 4 );
+  else if ( action == mActionSelectByForm )
+    settings.setValue( QStringLiteral( "UI/selectionTool" ), 0 );
+  else if ( action == mActionSelectByExpression )
+    settings.setValue( QStringLiteral( "UI/selectionTool" ), 1 );
+  else if ( action == mActionSelectAll )
+    settings.setValue( QStringLiteral( "UI/selectionTool" ), 2 );
+  else if ( action == mActionInvertSelection )
+    settings.setValue( QStringLiteral( "UI/selectionTool" ), 3 );
   else if ( action == mActionMeasure )
     settings.setValue( QStringLiteral( "UI/measureTool" ), 0 );
   else if ( action == mActionMeasureArea )
