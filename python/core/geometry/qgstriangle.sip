@@ -388,7 +388,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QgsCircle circumscribedCircle() const;
 %Docstring
  Circumscribed circle of the triangle.
- @return The circumbscribed of the triangle with a QgsCircle.
+ :return: The circumbscribed of the triangle with a QgsCircle.
  An empty circle is returned for empty or invalid triangle.
  Example:
  \code{.py}
@@ -448,7 +448,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QgsCircle inscribedCircle() const;
 %Docstring
  Inscribed circle of the triangle.
- @return The inscribed of the triangle with a QgsCircle.
+ :return: The inscribed of the triangle with a QgsCircle.
  An empty circle is returned for empty or invalid triangle.
  Example:
  \code{.py}

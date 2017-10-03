@@ -367,7 +367,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Circumscribed circle of the triangle.
-     * @return The circumbscribed of the triangle with a QgsCircle.
+     * \returns The circumbscribed of the triangle with a QgsCircle.
      * An empty circle is returned for empty or invalid triangle.
      * Example:
      * \code{.py}
@@ -424,7 +424,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     /**
      * Inscribed circle of the triangle.
-     * @return The inscribed of the triangle with a QgsCircle.
+     * \returns The inscribed of the triangle with a QgsCircle.
      * An empty circle is returned for empty or invalid triangle.
      * Example:
      * \code{.py}
