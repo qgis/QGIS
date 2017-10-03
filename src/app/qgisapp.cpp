@@ -338,6 +338,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolcircle2points.h"
 #include "qgsmaptoolcircle3points.h"
 #include "qgsmaptoolcircle3tangents.h"
+#include "qgsmaptoolcircle2tangentspoint.h"
 #include "qgsmaptoolcirclecenterpoint.h"
 #include "qgsmaptoolellipsecenter2points.h"
 #include "qgsmaptoolellipsecenterpoint.h"
@@ -349,6 +350,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolsquarecenter.h"
 #include "qgsmaptoolregularpolygon2points.h"
 #include "qgsmaptoolregularpolygoncenterpoint.h"
+#include "qgsmaptoolregularpolygoncentercorner.h"
 #include "qgsmaptooldeletering.h"
 #include "qgsmaptooldeletepart.h"
 #include "qgsmaptoolfeatureaction.h"
@@ -1303,6 +1305,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mCircle2Points;
   delete mMapTools.mCircle3Points;
   delete mMapTools.mCircle3Tangents;
+  delete mMapTools.mCircle2TangentsPoint;
   delete mMapTools.mCircleCenterPoint;
   delete mMapTools.mEllipseCenter2Points;
   delete mMapTools.mEllipseCenterPoint;
@@ -1314,6 +1317,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mSquareCenter;
   delete mMapTools.mRegularPolygon2Points;
   delete mMapTools.mRegularPolygonCenterPoint;
+  delete mMapTools.mRegularPolygonCenterCorner;
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -1779,6 +1783,7 @@ void QgisApp::createActions()
   connect( mActionCircle2Points, &QAction::triggered, this, &QgisApp::circle2Points );
   connect( mActionCircle3Points, &QAction::triggered, this, &QgisApp::circle3Points );
   connect( mActionCircle3Tangents, &QAction::triggered, this, &QgisApp::circle3Tangents );
+  connect( mActionCircle2TangentsPoint, &QAction::triggered, this, &QgisApp::circle2TangentsPoint );
   connect( mActionCircleCenterPoint, &QAction::triggered, this, &QgisApp::circleCenterPoint );
   connect( mActionEllipseCenter2Points, &QAction::triggered, this, &QgisApp::ellipseCenter2Points );
   connect( mActionEllipseCenterPoint, &QAction::triggered, this, &QgisApp::ellipseCenterPoint );
@@ -1790,6 +1795,7 @@ void QgisApp::createActions()
   connect( mActionSquareCenter, &QAction::triggered, this, &QgisApp::squareCenter );
   connect( mActionRegularPolygon2Points, &QAction::triggered, this, &QgisApp::regularPolygon2Points );
   connect( mActionRegularPolygonCenterPoint, &QAction::triggered, this, &QgisApp::regularPolygonCenterPoint );
+  connect( mActionRegularPolygonCenterCorner, &QAction::triggered, this, &QgisApp::regularPolygonCenterCorner );
   connect( mActionMoveFeature, &QAction::triggered, this, &QgisApp::moveFeature );
   connect( mActionMoveFeature, &QAction::triggered, this, &QgisApp::moveFeature );
   connect( mActionMoveFeatureCopy, &QAction::triggered, this, &QgisApp::moveFeatureCopy );
@@ -2067,6 +2073,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionCircle2Points );
   mMapToolGroup->addAction( mActionCircle3Points );
   mMapToolGroup->addAction( mActionCircle3Tangents );
+  mMapToolGroup->addAction( mActionCircle2TangentsPoint );
   mMapToolGroup->addAction( mActionCircleCenterPoint );
   mMapToolGroup->addAction( mActionEllipseCenter2Points );
   mMapToolGroup->addAction( mActionEllipseCenterPoint );
@@ -2078,6 +2085,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionSquareCenter );
   mMapToolGroup->addAction( mActionRegularPolygon2Points );
   mMapToolGroup->addAction( mActionRegularPolygonCenterPoint );
+  mMapToolGroup->addAction( mActionRegularPolygonCenterCorner );
   mMapToolGroup->addAction( mActionMoveFeature );
   mMapToolGroup->addAction( mActionMoveFeatureCopy );
   mMapToolGroup->addAction( mActionRotateFeature );
@@ -2592,6 +2600,7 @@ void QgisApp::createToolBars()
   tbAddCircle->addAction( mActionCircle2Points );
   tbAddCircle->addAction( mActionCircle3Points );
   tbAddCircle->addAction( mActionCircle3Tangents );
+  tbAddCircle->addAction( mActionCircle2TangentsPoint );
   tbAddCircle->addAction( mActionCircleCenterPoint );
   tbAddCircle->setDefaultAction( mActionCircle2Points );
   connect( tbAddCircle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
@@ -2624,6 +2633,7 @@ void QgisApp::createToolBars()
   tbAddRegularPolygon->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddRegularPolygon->addAction( mActionRegularPolygon2Points );
   tbAddRegularPolygon->addAction( mActionRegularPolygonCenterPoint );
+  tbAddRegularPolygon->addAction( mActionRegularPolygonCenterCorner );
   tbAddRegularPolygon->setDefaultAction( mActionRegularPolygon2Points );
   connect( tbAddRegularPolygon, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
   mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddRegularPolygon );
@@ -3203,6 +3213,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mCircle3Points->setAction( mActionCircle3Points );
   mMapTools.mCircle3Tangents = new QgsMapToolCircle3Tangents( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mCircle3Tangents->setAction( mActionCircle3Tangents );
+  mMapTools.mCircle2TangentsPoint = new QgsMapToolCircle2TangentsPoint( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
+  mMapTools.mCircle2TangentsPoint->setAction( mActionCircle2TangentsPoint );
   mMapTools.mCircleCenterPoint = new QgsMapToolCircleCenterPoint( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mCircleCenterPoint->setAction( mActionCircleCenterPoint );
   mMapTools.mEllipseCenter2Points = new QgsMapToolEllipseCenter2Points( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
@@ -3225,6 +3237,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mRegularPolygon2Points->setAction( mActionRegularPolygon2Points );
   mMapTools.mRegularPolygonCenterPoint = new QgsMapToolRegularPolygonCenterPoint( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mRegularPolygonCenterPoint->setAction( mActionRegularPolygonCenterPoint );
+  mMapTools.mRegularPolygonCenterCorner = new QgsMapToolRegularPolygonCenterCorner( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
+  mMapTools.mRegularPolygonCenterCorner->setAction( mActionRegularPolygonCenterCorner );
   mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas, QgsMapToolMoveFeature::Move );
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
   mMapTools.mMoveFeatureCopy = new QgsMapToolMoveFeature( mMapCanvas, QgsMapToolMoveFeature::CopyMove );
@@ -7806,6 +7820,11 @@ void QgisApp::circle3Tangents()
   mMapCanvas->setMapTool( mMapTools.mCircle3Tangents );
 }
 
+void QgisApp::circle2TangentsPoint()
+{
+  mMapCanvas->setMapTool( mMapTools.mCircle2TangentsPoint );
+}
+
 void QgisApp::circleCenterPoint()
 {
   mMapCanvas->setMapTool( mMapTools.mCircleCenterPoint );
@@ -7859,6 +7878,11 @@ void QgisApp::regularPolygon2Points()
 void QgisApp::regularPolygonCenterPoint()
 {
   mMapCanvas->setMapTool( mMapTools.mRegularPolygonCenterPoint );
+}
+
+void QgisApp::regularPolygonCenterCorner()
+{
+  mMapCanvas->setMapTool( mMapTools.mRegularPolygonCenterCorner );
 }
 
 void QgisApp::selectFeatures()
@@ -11202,6 +11226,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionCircle2Points->setEnabled( false );
     mActionCircle3Points->setEnabled( false );
     mActionCircle3Tangents->setEnabled( false );
+    mActionCircle2TangentsPoint->setEnabled( false );
     mActionCircleCenterPoint->setEnabled( false );
     mActionEllipseCenter2Points->setEnabled( false );
     mActionEllipseCenterPoint->setEnabled( false );
@@ -11212,6 +11237,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionSquareCenter->setEnabled( false );
     mActionRegularPolygon2Points->setEnabled( false );
     mActionRegularPolygonCenterPoint->setEnabled( false );
+    mActionRegularPolygonCenterCorner->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
@@ -11354,6 +11380,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
                                         && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionCircle3Tangents->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
                                           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
+      mActionCircle2TangentsPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
+          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionCircleCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
                                             && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionEllipseCenter2Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
@@ -11375,6 +11403,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRegularPolygon2Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionRegularPolygonCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
+          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
+      mActionRegularPolygonCenterCorner->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       //does provider allow deleting of features?
       mActionDeleteSelected->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );

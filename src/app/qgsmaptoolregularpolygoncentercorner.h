@@ -1,6 +1,9 @@
+#ifndef QGSMAPTOOLREGULARPOLYGONCENTERCORNER_H
+#define QGSMAPTOOLREGULARPOLYGONCENTERCORNER_H
+
 /***************************************************************************
-    qgsmaptoolcircle3tangents.h  -  map tool for adding circle
-    from 3 tangents
+    qgsmaptoolregularpolygoncentercorner.h  -  map tool for adding regular
+    polygon from center and a corner
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
@@ -9,26 +12,23 @@
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 3 of the License, or     *
+ *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPTOOLCIRCLE3TANGENTS_H
-#define QGSMAPTOOLCIRCLE3TANGENTS_H
+#include "qgsmaptooladdregularpolygon.h"
 
-#include "qgspointlocator.h"
-#include "qgsmaptooladdcircle.h"
-
-class QgsMapToolCircle3Tangents: public QgsMapToolAddCircle
+class QgsMapToolRegularPolygonCenterCorner: public QgsMapToolAddRegularPolygon
 {
     Q_OBJECT
 
   public:
-    QgsMapToolCircle3Tangents( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
+    QgsMapToolRegularPolygonCenterCorner( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
+    ~QgsMapToolRegularPolygonCenterCorner();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 };
 
-#endif // QGSMAPTOOLCIRCLE3TANGENTS_H
+#endif // QGSMAPTOOLREGULARPOLYGONCENTERCORNER_H

@@ -1229,6 +1229,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void circle3Points();
     //! activates the add circle from 3 tangents tool
     void circle3Tangents();
+    //! activates the add circle from 2 tangents and a point tool
+    void circle2TangentsPoint();
     //! activates the add circle from center and radius tool
     void circleCenterPoint();
     //! activates the add ellipse from center and 2 points tool
@@ -1251,6 +1253,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void regularPolygon2Points();
     //! activates the add regular polygon from center and a point tool
     void regularPolygonCenterPoint();
+    //! activates the add regular polygon from center and a corner tool
+    void regularPolygonCenterCorner();
     //! activates the move feature tool
     void moveFeature();
     //! activates the copy and move feature tool
@@ -1823,6 +1827,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mCircle2Points = nullptr;
         QgsMapTool *mCircle3Points = nullptr;
         QgsMapTool *mCircle3Tangents = nullptr;
+        QgsMapTool *mCircle2TangentsPoint = nullptr;
         QgsMapTool *mCircleCenterPoint = nullptr;
         QgsMapTool *mEllipseCenter2Points = nullptr;
         QgsMapTool *mEllipseCenterPoint = nullptr;
@@ -1834,6 +1839,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mSquareCenter = nullptr;
         QgsMapTool *mRegularPolygon2Points = nullptr;
         QgsMapTool *mRegularPolygonCenterPoint = nullptr;
+        QgsMapTool *mRegularPolygonCenterCorner = nullptr;
         QgsMapTool *mMoveFeature = nullptr;
         QgsMapTool *mMoveFeatureCopy = nullptr;
         QgsMapTool *mOffsetCurve = nullptr;

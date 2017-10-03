@@ -42,7 +42,7 @@
      id="namedview4018"
      showgrid="false"
      inkscape:zoom="31.083333"
-     inkscape:cx="2.0715941"
+     inkscape:cx="7.1707899"
      inkscape:cy="13.088849"
      inkscape:window-x="0"
      inkscape:window-y="0"
@@ -68,7 +68,7 @@
        id="stop3994" />
   </linearGradient>
   <g
-     id="g4506">
+     id="g4510">
     <path
        inkscape:transform-center-y="0.064125878"
        inkscape:transform-center-x="0.75844594"
@@ -109,7 +109,7 @@
          style="opacity:0.3;fill:#fcffff;fill-rule:evenodd" />
     </g>
     <path
-       d="m 4.6662194,5.7841821 h 3 v 2.9999998 h -3 z"
+       d="m 1.9959781,9.9343162 h 3 v 2.9999998 h -3 z"
        id="path4008"
        inkscape:connector-curvature="0"
        style="fill:#bebebe;stroke:#8c8c8c;stroke-width:0.99999994" />

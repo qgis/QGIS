@@ -20,6 +20,11 @@
 
 class QgsGeometryRubberBand;
 
+struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
+{
+  bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
+};
+
 class QgsMapToolAddCircle: public QgsMapToolCapture
 {
     Q_OBJECT

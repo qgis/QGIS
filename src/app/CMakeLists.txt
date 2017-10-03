@@ -135,6 +135,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolcircle2points.cpp
   qgsmaptoolcircle3points.cpp
   qgsmaptoolcircle3tangents.cpp
+  qgsmaptoolcircle2tangentspoint.cpp
   qgsmaptoolcirclecenterpoint.cpp
   qgsmaptooladdellipse.cpp
   qgsmaptoolellipsefoci.cpp
@@ -149,6 +150,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsquarecenter.cpp
   qgsmaptoolregularpolygon2points.cpp
   qgsmaptoolregularpolygoncenterpoint.cpp
+  qgsmaptoolregularpolygoncentercorner.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -310,6 +312,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolcircle2points.h
   qgsmaptoolcircle3points.h
   qgsmaptoolcircle3tangents.h
+  qgsmaptoolcircle2tangentspoint.h
   qgsmaptoolcirclecenterpoint.h
   qgsmaptooladdellipse.h
   qgsmaptoolellipsefoci.h
@@ -324,6 +327,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolsquarecenter.h
   qgsmaptoolregularpolygon2points.h
   qgsmaptoolregularpolygoncenterpoint.h
+  qgsmaptoolregularpolygoncentercorner.h
 
   nodetool/qgsselectedfeature.h
   nodetool/qgsnodeeditor.h

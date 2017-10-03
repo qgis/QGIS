@@ -235,7 +235,7 @@
    </widget>
    <widget class="QMenu" name="mVectorMenu">
     <property name="title">
-     <string>Vect&amp;or</string>
+     <string>&amp;Vector</string>
     </property>
     <widget class="QMenu" name="menuOpenStreetMap">
      <property name="title">
@@ -279,6 +279,7 @@
      <addaction name="mActionCircle2Points"/>
      <addaction name="mActionCircle3Points"/>
      <addaction name="mActionCircle3Tangents"/>
+     <addaction name="mActionCircle2TangentsPoint"/>
      <addaction name="mActionCircleCenterPoint"/>
     </widget>
     <widget class="QMenu" name="mMenuEllipse">
@@ -304,6 +305,7 @@
       <string>Add Regular Polygon</string>
      </property>
      <addaction name="mActionRegularPolygonCenterPoint"/>
+     <addaction name="mActionRegularPolygonCenterCorner"/>
      <addaction name="mActionRegularPolygon2Points"/>
     </widget>
     <addaction name="mActionUndo"/>
@@ -2927,6 +2929,36 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Add rectangle from 3 points</string>
+   </property>
+  </action>
+  <action name="mActionCircle2TangentsPoint">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCircle2TangentsPoint.svg</normaloff>:/images/themes/default/mActionCircle2TangentsPoint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Circle &amp;from 2 Tangents and a point</string>
+   </property>
+   <property name="toolTip">
+    <string>Add circle from 2 tangents and a point</string>
+   </property>
+  </action>
+  <action name="mActionRegularPolygonCenterCorner">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRegularPolygonCenterCorner.svg</normaloff>:/images/themes/default/mActionRegularPolygonCenterCorner.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Regular &amp;Polygon From Center and a Corner</string>
+   </property>
+   <property name="toolTip">
+    <string>Add regular polygon from center and a corner</string>
    </property>
   </action>
  </widget>
