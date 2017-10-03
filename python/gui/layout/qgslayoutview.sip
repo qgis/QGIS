@@ -171,6 +171,29 @@ class QgsLayoutView: QGraphicsView
 
     void emitZoomLevelChanged();
 
+
+    void selectAll();
+%Docstring
+ Selects all items in the view.
+.. seealso:: deselectAll()
+.. seealso:: invertSelection()
+%End
+
+    void deselectAll();
+%Docstring
+ Deselects all items in the view.
+.. seealso:: selectAll()
+.. seealso:: invertSelection()
+%End
+
+    void invertSelection();
+%Docstring
+ Inverts the current selection, selecting deselected items
+ and deselecting and selected items.
+.. seealso:: selectAll()
+.. seealso:: deselectAll()
+%End
+
     void viewChanged();
 %Docstring
  Updates associated rulers and other widgets after view extent or zoom has changed.

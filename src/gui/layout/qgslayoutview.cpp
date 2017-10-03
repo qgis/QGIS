@@ -278,6 +278,81 @@ void QgsLayoutView::emitZoomLevelChanged()
   emit zoomLevelChanged();
 }
 
+void QgsLayoutView::selectAll()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+  //select all items in layout
+  QgsLayoutItem *focusedItem = nullptr;
+  const QList<QGraphicsItem *> itemList = currentLayout()->items();
+  for ( QGraphicsItem *graphicsItem : itemList )
+  {
+    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( graphicsItem );
+    if ( item && !paperItem )
+    {
+      if ( !item->isLocked() )
+      {
+        item->setSelected( true );
+        if ( !focusedItem )
+          focusedItem = item;
+      }
+      else
+      {
+        //deselect all locked items
+        item->setSelected( false );
+      }
+    }
+  }
+  emit itemFocused( focusedItem );
+}
+
+void QgsLayoutView::deselectAll()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+  currentLayout()->deselectAll();
+}
+
+void QgsLayoutView::invertSelection()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+  QgsLayoutItem *focusedItem = nullptr;
+  //check all items in layout
+  const QList<QGraphicsItem *> itemList = currentLayout()->items();
+  for ( QGraphicsItem *graphicsItem : itemList )
+  {
+    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( graphicsItem );
+    if ( item && !paperItem )
+    {
+      //flip selected state for items (and deselect any locked items)
+      if ( item->isSelected() || item->isLocked() )
+      {
+        item->setSelected( false );
+      }
+      else
+      {
+        item->setSelected( true );
+        if ( !focusedItem )
+          focusedItem = item;
+      }
+    }
+  }
+  if ( focusedItem )
+    emit itemFocused( focusedItem );
+}
+
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
   mSnapMarker->setVisible( false );

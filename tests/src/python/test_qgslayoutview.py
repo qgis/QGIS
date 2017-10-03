@@ -14,10 +14,14 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsProject, QgsLayout, QgsUnitTypes
+from qgis.core import (QgsProject,
+                       QgsLayout,
+                       QgsUnitTypes,
+                       QgsLayoutItemMap)
 from qgis.gui import QgsLayoutView
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QTransform
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
 
@@ -70,6 +74,110 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertEqual(view.transform().m11(), 1)
         view.setZoomLevel(0.5)
         self.assertEqual(view.transform().m11(), 0.5)
+
+    def testSelectAll(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        item3.setLocked(True)
+        l.addItem(item3)
+
+        view = QgsLayoutView()
+        # no layout, no crash
+        view.selectAll()
+
+        view.setCurrentLayout(l)
+
+        focused_item_spy = QSignalSpy(view.itemFocused)
+
+        view.selectAll()
+        self.assertTrue(item1.isSelected())
+        self.assertTrue(item2.isSelected())
+        self.assertFalse(item3.isSelected()) # locked
+
+        self.assertEqual(len(focused_item_spy), 1)
+
+        item3.setSelected(True) # locked item selection should be cleared
+        view.selectAll()
+        self.assertTrue(item1.isSelected())
+        self.assertTrue(item2.isSelected())
+        self.assertFalse(item3.isSelected())  # locked
+
+    def testDeselectAll(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        item3.setLocked(True)
+        l.addItem(item3)
+
+        view = QgsLayoutView()
+        # no layout, no crash
+        view.deselectAll()
+
+        view.setCurrentLayout(l)
+
+        focused_item_spy = QSignalSpy(view.itemFocused)
+
+        view.deselectAll()
+        self.assertFalse(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertFalse(item3.isSelected())
+
+        self.assertEqual(len(focused_item_spy), 1)
+
+        item1.setSelected(True)
+        item2.setSelected(True)
+        item3.setSelected(True)
+        view.deselectAll()
+        self.assertFalse(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertFalse(item3.isSelected())
+
+    def testInvertSelection(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        item3.setLocked(True)
+        l.addItem(item3)
+
+        view = QgsLayoutView()
+        # no layout, no crash
+        view.invertSelection()
+
+        view.setCurrentLayout(l)
+
+        focused_item_spy = QSignalSpy(view.itemFocused)
+
+        view.invertSelection()
+        self.assertTrue(item1.isSelected())
+        self.assertTrue(item2.isSelected())
+        self.assertFalse(item3.isSelected()) # locked
+
+        self.assertEqual(len(focused_item_spy), 1)
+
+        item3.setSelected(True) # locked item selection should be cleared
+        view.invertSelection()
+        self.assertFalse(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertFalse(item3.isSelected())  # locked
 
 
 if __name__ == '__main__':

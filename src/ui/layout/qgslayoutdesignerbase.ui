@@ -144,6 +144,12 @@
     </property>
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSelectAll"/>
+    <addaction name="mActionDeselectAll"/>
+    <addaction name="mActionInvertSelection"/>
+    <addaction name="mActionSelectNextBelow"/>
+    <addaction name="mActionSelectNextAbove"/>
    </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="menuEdit"/>
@@ -464,6 +470,70 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+;</string>
+   </property>
+  </action>
+  <action name="mActionDeselectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>D&amp;eselect All</string>
+   </property>
+   <property name="toolTip">
+    <string>Deselect all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Invert Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert selection</string>
+   </property>
+  </action>
+  <action name="mActionSelectNextBelow">
+   <property name="text">
+    <string>Select Next Item &amp;Below</string>
+   </property>
+   <property name="toolTip">
+    <string>Select next item below</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+[</string>
+   </property>
+  </action>
+  <action name="mActionSelectNextAbove">
+   <property name="text">
+    <string>Select Next Item &amp;Above</string>
+   </property>
+   <property name="toolTip">
+    <string>Select next item above</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+]</string>
    </property>
   </action>
  </widget>

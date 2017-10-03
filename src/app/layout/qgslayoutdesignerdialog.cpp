@@ -191,6 +191,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
   connect( mActionZoomToWidth, &QAction::triggered, mView, &QgsLayoutView::zoomWidth );
 
+  connect( mActionSelectAll, &QAction::triggered, mView, &QgsLayoutView::selectAll );
+  connect( mActionDeselectAll, &QAction::triggered, mView, &QgsLayoutView::deselectAll );
+  connect( mActionInvertSelection, &QAction::triggered, mView, &QgsLayoutView::invertSelection );
+
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
 
   //create status bar labels

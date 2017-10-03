@@ -210,6 +210,33 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     // methods also adds noise to the API.
     void emitZoomLevelChanged();
 
+    // Why are these select methods in the view and not in the scene (QgsLayout)?
+    // Well, in my opinion selections are purely a GUI concept. Ideally
+    // NONE of the selection handling would be done in core, but we're restrained
+    // by the QGraphicsScene API here.
+
+    /**
+     * Selects all items in the view.
+     * \see deselectAll()
+     * \see invertSelection()
+     */
+    void selectAll();
+
+    /**
+     * Deselects all items in the view.
+     * \see selectAll()
+     * \see invertSelection()
+     */
+    void deselectAll();
+
+    /**
+     * Inverts the current selection, selecting deselected items
+     * and deselecting and selected items.
+     * \see selectAll()
+     * \see deselectAll()
+     */
+    void invertSelection();
+
     /**
      * Updates associated rulers and other widgets after view extent or zoom has changed.
      * This should be called after calling any of the QGraphicsView
