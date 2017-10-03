@@ -153,10 +153,13 @@ void QgsMapToolAddRectangle::clean()
     delete mTempRubberBand;
     mTempRubberBand = nullptr;
   }
+
   mPoints.clear();
+
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
   }
+
   mRectangle = QgsRectangle();
 }

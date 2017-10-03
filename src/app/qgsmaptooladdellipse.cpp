@@ -86,10 +86,13 @@ void QgsMapToolAddEllipse::clean()
     delete mTempRubberBand;
     mTempRubberBand = nullptr;
   }
+
   mPoints.clear();
+
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
   }
+
   mEllipse = QgsEllipse();
 }

@@ -54,7 +54,6 @@ class QgsMapToolAddCircle: public QgsMapToolCapture
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Circle
     QgsCircle mCircle;
-
 };
 
 #endif // QGSMAPTOOLADDCIRCLE_H

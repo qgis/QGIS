@@ -49,7 +49,6 @@ class QgsMapToolAddEllipse: public QgsMapToolCapture
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Ellipse
     QgsEllipse mEllipse;
-
 };
 
 #endif // QGSMAPTOOLADDELLIPSE_H

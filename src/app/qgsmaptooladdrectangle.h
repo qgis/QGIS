@@ -87,5 +87,4 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     int mSide = 1;
 };
 
-
 #endif // QGSMAPTOOLADDRECTANGLE_H

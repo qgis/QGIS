@@ -86,10 +86,13 @@ void QgsMapToolAddCircle::clean()
     delete mTempRubberBand;
     mTempRubberBand = nullptr;
   }
+
   mPoints.clear();
+
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
   }
+
   mCircle = QgsCircle();
 }

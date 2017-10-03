@@ -106,14 +106,18 @@ void QgsMapToolAddRegularPolygon::clean()
     delete mTempRubberBand;
     mTempRubberBand = nullptr;
   }
+
   mPoints.clear();
+
   if ( mParentTool )
   {
     mParentTool->deleteTempRubberBand();
   }
+
   if ( mNumberSidesSpinBox )
   {
     deleteNumberSidesSpinBox();
   }
+
   mRegularPolygon = QgsRegularPolygon();
 }

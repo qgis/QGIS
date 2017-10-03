@@ -26,6 +26,7 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 {
     Q_OBJECT
     void clean();
+
   public:
     QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddRegularPolygon();
@@ -58,7 +59,6 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Regular shape as a regular polygon
     QgsRegularPolygon mRegularPolygon;
-
 };
 
 #endif // QGSMAPTOOLADDREGULARPOLYGON_H
