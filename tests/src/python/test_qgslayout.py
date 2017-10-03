@@ -219,11 +219,11 @@ class TestQgsLayout(unittest.TestCase):
 
         # add some items
         item1 = QgsLayoutItemMap(l)
-        l.addItem(item1)
+        l.addLayoutItem(item1)
         item2 = QgsLayoutItemMap(l)
-        l.addItem(item2)
+        l.addLayoutItem(item2)
         item3 = QgsLayoutItemMap(l)
-        l.addItem(item3)
+        l.addLayoutItem(item3)
 
         self.assertEqual(item1.zValue(), 1)
         self.assertEqual(item2.zValue(), 2)
@@ -240,16 +240,73 @@ class TestQgsLayout(unittest.TestCase):
         self.assertEqual(item3.zValue(), 3)
 
         # raising
-        l.setSelectedItem(item3)
-        l.raiseSelectedItems()
+        self.assertFalse(l.raiseItem(item3))
         self.assertEqual(item1.zValue(), 1)
         self.assertEqual(item2.zValue(), 2)
         self.assertEqual(item3.zValue(), 3)
-        l.setSelectedItem(item2)
-        l.raiseSelectedItems()
+
+        self.assertTrue(l.raiseItem(item2))
         self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        self.assertFalse(l.raiseItem(item2))
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        self.assertTrue(l.raiseItem(item1))
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        # lower
+        self.assertFalse(l.lowerItem(item3))
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        self.assertTrue(l.lowerItem(item2))
+        self.assertEqual(item1.zValue(), 3)
         self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 1)
+
+        self.assertTrue(l.lowerItem(item2))
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
+
+        # raise to top
+        self.assertFalse(l.moveItemToTop(item1))
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
+
+        self.assertTrue(l.moveItemToTop(item3))
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 1)
         self.assertEqual(item3.zValue(), 3)
+
+        self.assertTrue(l.moveItemToTop(item2))
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        # move to bottom
+        self.assertFalse(l.moveItemToBottom(item1))
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        self.assertTrue(l.moveItemToBottom(item3))
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        self.assertTrue(l.moveItemToBottom(item2))
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
 
 
 if __name__ == '__main__':

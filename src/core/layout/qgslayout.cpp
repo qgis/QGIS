@@ -154,28 +154,56 @@ void QgsLayout::unlockAllItems()
   mUndoStack->endMacro();
 }
 
-bool QgsLayout::raiseItem( QgsLayoutItem *item )
+bool QgsLayout::raiseItem( QgsLayoutItem *item, bool deferUpdate )
 {
   //model handles reordering items
-  return mItemsModel->reorderItemUp( item );
+  bool result = mItemsModel->reorderItemUp( item );
+  if ( result && !deferUpdate )
+  {
+    //update all positions
+    updateZValues();
+    update();
+  }
+  return result;
 }
 
-bool QgsLayout::lowerItem( QgsLayoutItem *item )
+bool QgsLayout::lowerItem( QgsLayoutItem *item, bool deferUpdate )
 {
   //model handles reordering items
-  return mItemsModel->reorderItemDown( item );
+  bool result = mItemsModel->reorderItemDown( item );
+  if ( result && !deferUpdate )
+  {
+    //update all positions
+    updateZValues();
+    update();
+  }
+  return result;
 }
 
-bool QgsLayout::moveItemToTop( QgsLayoutItem *item )
+bool QgsLayout::moveItemToTop( QgsLayoutItem *item, bool deferUpdate )
 {
   //model handles reordering items
-  return mItemsModel->reorderItemToTop( item );
+  bool result = mItemsModel->reorderItemToTop( item );
+  if ( result && !deferUpdate )
+  {
+    //update all positions
+    updateZValues();
+    update();
+  }
+  return result;
 }
 
-bool QgsLayout::moveItemToBottom( QgsLayoutItem *item )
+bool QgsLayout::moveItemToBottom( QgsLayoutItem *item, bool deferUpdate )
 {
   //model handles reordering items
-  return mItemsModel->reorderItemToBottom( item );
+  bool result = mItemsModel->reorderItemToBottom( item );
+  if ( result && !deferUpdate )
+  {
+    //update all positions
+    updateZValues();
+    update();
+  }
+  return result;
 }
 
 void QgsLayout::raiseSelectedItems()
@@ -184,7 +212,7 @@ void QgsLayout::raiseSelectedItems()
   bool itemsRaised = false;
   for ( QgsLayoutItem *item : selectedItems )
   {
-    itemsRaised = itemsRaised | raiseItem( item );
+    itemsRaised = itemsRaised | raiseItem( item, true );
   }
 
   if ( !itemsRaised )
@@ -204,7 +232,7 @@ void QgsLayout::lowerSelectedItems()
   bool itemsLowered = false;
   for ( QgsLayoutItem *item : selectedItems )
   {
-    itemsLowered  = itemsLowered  | lowerItem( item );
+    itemsLowered  = itemsLowered  | lowerItem( item, true );
   }
 
   if ( !itemsLowered )
@@ -224,7 +252,7 @@ void QgsLayout::moveSelectedItemsToTop()
   bool itemsRaised = false;
   for ( QgsLayoutItem *item : selectedItems )
   {
-    itemsRaised = itemsRaised | moveItemToTop( item );
+    itemsRaised = itemsRaised | moveItemToTop( item, true );
   }
 
   if ( !itemsRaised )
@@ -244,7 +272,7 @@ void QgsLayout::moveSelectedItemsToBottom()
   bool itemsLowered = false;
   for ( QgsLayoutItem *item : selectedItems )
   {
-    itemsLowered = itemsLowered | moveItemToBottom( item );
+    itemsLowered = itemsLowered | moveItemToBottom( item, true );
   }
 
   if ( !itemsLowered )

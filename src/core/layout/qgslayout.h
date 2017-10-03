@@ -151,30 +151,53 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Raises an \a item up the z-order.
      * Returns true if the item was successfully raised.
+     *
+     * If \a deferUpdate is true, the scene will not be visibly updated
+     * to reflect the new stacking order. This allows multiple
+     * raiseItem() calls to be made in sequence without the cost of
+     * updating the scene for each one.
+     *
      * \see lowerItem()
      */
-    bool raiseItem( QgsLayoutItem *item );
+    bool raiseItem( QgsLayoutItem *item, bool deferUpdate = false );
 
     /**
      * Lowers an \a item down the z-order.
      * Returns true if the item was successfully lowered.
+     *
+     * If \a deferUpdate is true, the scene will not be visibly updated
+     * to reflect the new stacking order. This allows multiple
+     * raiseItem() calls to be made in sequence without the cost of
+     * updating the scene for each one.
+     *
      * \see raiseItem()
      */
-    bool lowerItem( QgsLayoutItem *item );
+    bool lowerItem( QgsLayoutItem *item, bool deferUpdate = false );
 
     /**
      * Raises an \a item up to the top of the z-order.
      * Returns true if the item was successfully raised.
+     *
+     * If \a deferUpdate is true, the scene will not be visibly updated
+     * to reflect the new stacking order. This allows multiple
+     * raiseItem() calls to be made in sequence without the cost of
+     * updating the scene for each one.
+     *
      * \see moveItemToBottom()
      */
-    bool moveItemToTop( QgsLayoutItem *item );
+    bool moveItemToTop( QgsLayoutItem *item, bool deferUpdate = false );
 
     /**
      * Lowers an \a item down to the bottom of the z-order.
      * Returns true if the item was successfully lowered.
+     * If \a deferUpdate is true, the scene will not be visibly updated
+     * to reflect the new stacking order. This allows multiple
+     * raiseItem() calls to be made in sequence without the cost of
+     * updating the scene for each one.
+     *
      * \see moveItemToTop()
      */
-    bool moveItemToBottom( QgsLayoutItem *item );
+    bool moveItemToBottom( QgsLayoutItem *item, bool deferUpdate = false );
 
     /**
      * Raises the selected items up the z-order.

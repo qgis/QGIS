@@ -111,34 +111,57 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 .. seealso:: lockSelectedItems()
 %End
 
-    bool raiseItem( QgsLayoutItem *item );
+    bool raiseItem( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
  Raises an ``item`` up the z-order.
  Returns true if the item was successfully raised.
+
+ If ``deferUpdate`` is true, the scene will not be visibly updated
+ to reflect the new stacking order. This allows multiple
+ raiseItem() calls to be made in sequence without the cost of
+ updating the scene for each one.
+
 .. seealso:: lowerItem()
  :rtype: bool
 %End
 
-    bool lowerItem( QgsLayoutItem *item );
+    bool lowerItem( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
  Lowers an ``item`` down the z-order.
  Returns true if the item was successfully lowered.
+
+ If ``deferUpdate`` is true, the scene will not be visibly updated
+ to reflect the new stacking order. This allows multiple
+ raiseItem() calls to be made in sequence without the cost of
+ updating the scene for each one.
+
 .. seealso:: raiseItem()
  :rtype: bool
 %End
 
-    bool moveItemToTop( QgsLayoutItem *item );
+    bool moveItemToTop( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
  Raises an ``item`` up to the top of the z-order.
  Returns true if the item was successfully raised.
+
+ If ``deferUpdate`` is true, the scene will not be visibly updated
+ to reflect the new stacking order. This allows multiple
+ raiseItem() calls to be made in sequence without the cost of
+ updating the scene for each one.
+
 .. seealso:: moveItemToBottom()
  :rtype: bool
 %End
 
-    bool moveItemToBottom( QgsLayoutItem *item );
+    bool moveItemToBottom( QgsLayoutItem *item, bool deferUpdate = false );
 %Docstring
  Lowers an ``item`` down to the bottom of the z-order.
  Returns true if the item was successfully lowered.
+ If ``deferUpdate`` is true, the scene will not be visibly updated
+ to reflect the new stacking order. This allows multiple
+ raiseItem() calls to be made in sequence without the cost of
+ updating the scene for each one.
+
 .. seealso:: moveItemToTop()
  :rtype: bool
 %End
