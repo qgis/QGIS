@@ -194,8 +194,13 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionSelectAll, &QAction::triggered, mView, &QgsLayoutView::selectAll );
   connect( mActionDeselectAll, &QAction::triggered, mView, &QgsLayoutView::deselectAll );
   connect( mActionInvertSelection, &QAction::triggered, mView, &QgsLayoutView::invertSelection );
+  connect( mActionSelectNextAbove, &QAction::triggered, mView, &QgsLayoutView::selectNextItemAbove );
+  connect( mActionSelectNextBelow, &QAction::triggered, mView, &QgsLayoutView::selectNextItemBelow );
 
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
+
+  connect( mActionUnlockAll, &QAction::triggered, this, &QgsLayoutDesignerDialog::unlockAllItems );
+  connect( mActionLockItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lockSelectedItems );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
@@ -475,6 +480,22 @@ void QgsLayoutDesignerDialog::snapToGuides( bool enabled )
 void QgsLayoutDesignerDialog::snapToItems( bool enabled )
 {
   mLayout->snapper().setSnapToItems( enabled );
+}
+
+void QgsLayoutDesignerDialog::unlockAllItems()
+{
+  if ( mLayout )
+  {
+    mLayout->unlockAllItems();
+  }
+}
+
+void QgsLayoutDesignerDialog::lockSelectedItems()
+{
+  if ( mLayout )
+  {
+    mLayout->lockSelectedItems();
+  }
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )

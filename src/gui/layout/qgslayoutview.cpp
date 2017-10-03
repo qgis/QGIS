@@ -24,6 +24,7 @@
 #include "qgslayoutviewtooltemporarymousepan.h"
 #include "qgslayoutmousehandles.h"
 #include "qgslayoutruler.h"
+#include "qgslayoutmodel.h"
 #include "qgssettings.h"
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
@@ -351,6 +352,50 @@ void QgsLayoutView::invertSelection()
   }
   if ( focusedItem )
     emit itemFocused( focusedItem );
+}
+
+
+void selectNextByZOrder( QgsLayout *layout, bool above )
+{
+  if ( !layout )
+    return;
+
+  QgsLayoutItem *previousSelectedItem = nullptr;
+  const QList<QgsLayoutItem *> selectedItems = layout->selectedLayoutItems();
+  if ( !selectedItems.isEmpty() )
+  {
+    previousSelectedItem = selectedItems.at( 0 );
+  }
+
+  if ( !previousSelectedItem )
+  {
+    return;
+  }
+
+  //select item with target z value
+  QgsLayoutItem *selectedItem = nullptr;
+  if ( !above )
+    selectedItem = layout->itemsModel()->findItemBelow( previousSelectedItem );
+  else
+    selectedItem = layout->itemsModel()->findItemAbove( previousSelectedItem );
+
+  if ( !selectedItem )
+  {
+    return;
+  }
+
+  //OK, found a good target item
+  layout->setSelectedItem( selectedItem );
+}
+
+void QgsLayoutView::selectNextItemAbove()
+{
+  selectNextByZOrder( currentLayout(), true );
+}
+
+void QgsLayoutView::selectNextItemBelow()
+{
+  selectNextByZOrder( currentLayout(), false );
 }
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )

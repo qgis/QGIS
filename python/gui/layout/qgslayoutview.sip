@@ -177,6 +177,8 @@ class QgsLayoutView: QGraphicsView
  Selects all items in the view.
 .. seealso:: deselectAll()
 .. seealso:: invertSelection()
+.. seealso:: selectNextItemAbove()
+.. seealso:: selectNextItemBelow()
 %End
 
     void deselectAll();
@@ -190,6 +192,22 @@ class QgsLayoutView: QGraphicsView
 %Docstring
  Inverts the current selection, selecting deselected items
  and deselecting and selected items.
+.. seealso:: selectAll()
+.. seealso:: deselectAll()
+%End
+
+    void selectNextItemAbove();
+%Docstring
+ Selects the next item above the existing selection, by item z order.
+.. seealso:: selectNextItemBelow()
+.. seealso:: selectAll()
+.. seealso:: deselectAll()
+%End
+
+    void selectNextItemBelow();
+%Docstring
+ Selects the next item below the existing selection, by item z order.
+.. seealso:: selectNextItemAbove()
 .. seealso:: selectAll()
 .. seealso:: deselectAll()
 %End

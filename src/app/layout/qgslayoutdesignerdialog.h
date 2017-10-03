@@ -149,6 +149,18 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void snapToItems( bool enabled );
 
+    /**
+     * Unlocks all locked items in the layout.
+     * \see lockSelectedItems()
+     */
+    void unlockAllItems();
+
+    /**
+     * Locks any selected items in the layout.
+     * \see unlockAllItems()
+     */
+    void lockSelectedItems();
+
   signals:
 
     /**

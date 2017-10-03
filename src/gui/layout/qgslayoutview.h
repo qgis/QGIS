@@ -219,6 +219,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * Selects all items in the view.
      * \see deselectAll()
      * \see invertSelection()
+     * \see selectNextItemAbove()
+     * \see selectNextItemBelow()
      */
     void selectAll();
 
@@ -236,6 +238,22 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see deselectAll()
      */
     void invertSelection();
+
+    /**
+     * Selects the next item above the existing selection, by item z order.
+     * \see selectNextItemBelow()
+     * \see selectAll()
+     * \see deselectAll()
+     */
+    void selectNextItemAbove();
+
+    /**
+     * Selects the next item below the existing selection, by item z order.
+     * \see selectNextItemAbove()
+     * \see selectAll()
+     * \see deselectAll()
+     */
+    void selectNextItemBelow();
 
     /**
      * Updates associated rulers and other widgets after view extent or zoom has changed.

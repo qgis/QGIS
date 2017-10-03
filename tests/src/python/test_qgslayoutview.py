@@ -179,6 +179,78 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertFalse(item2.isSelected())
         self.assertFalse(item3.isSelected())  # locked
 
+    def testSelectNextByZOrder(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        item3.setLocked(True)
+        l.addItem(item3)
+
+        view = QgsLayoutView()
+        # no layout, no crash
+        view.selectNextItemAbove()
+        view.selectNextItemBelow()
+
+        view.setCurrentLayout(l)
+
+        focused_item_spy = QSignalSpy(view.itemFocused)
+
+        # no selection
+        view.selectNextItemAbove()
+        view.selectNextItemBelow()
+        self.assertEqual(len(focused_item_spy), 0)
+
+        l.setSelectedItem(item1)
+        self.assertEqual(len(focused_item_spy), 1)
+        # already bottom most
+        view.selectNextItemBelow()
+        self.assertTrue(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertFalse(item3.isSelected())
+        self.assertEqual(len(focused_item_spy), 1)
+
+        view.selectNextItemAbove()
+        self.assertFalse(item1.isSelected())
+        self.assertTrue(item2.isSelected())
+        self.assertFalse(item3.isSelected())
+        self.assertEqual(len(focused_item_spy), 2)
+
+        view.selectNextItemAbove()
+        self.assertFalse(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertTrue(item3.isSelected())
+        self.assertEqual(len(focused_item_spy), 3)
+
+        view.selectNextItemAbove() # already top most
+        self.assertFalse(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertTrue(item3.isSelected())
+        self.assertEqual(len(focused_item_spy), 3)
+
+        view.selectNextItemBelow()
+        self.assertFalse(item1.isSelected())
+        self.assertTrue(item2.isSelected())
+        self.assertFalse(item3.isSelected())
+        self.assertEqual(len(focused_item_spy), 4)
+
+        view.selectNextItemBelow()
+        self.assertTrue(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertFalse(item3.isSelected())
+        self.assertEqual(len(focused_item_spy), 5)
+
+        view.selectNextItemBelow() # back to bottom most
+        self.assertTrue(item1.isSelected())
+        self.assertFalse(item2.isSelected())
+        self.assertFalse(item3.isSelected())
+        self.assertEqual(len(focused_item_spy), 5)
+
 
 if __name__ == '__main__':
     unittest.main()
