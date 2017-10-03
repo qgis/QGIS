@@ -540,6 +540,58 @@ void QgsLayoutView::unlockAllItems()
   emit itemFocused( focusItem );
 }
 
+void QgsLayoutView::deleteSelectedItems()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+#if 0 //TODO
+  if ( mCurrentTool == QgsComposerView::EditNodesItem )
+  {
+    if ( mNodesItemIndex != -1 )
+    {
+      composition()->beginCommand( mNodesItem, tr( "Remove item node" ) );
+      if ( mNodesItem->removeNode( mNodesItemIndex ) )
+      {
+        composition()->endCommand();
+        if ( mNodesItem->nodesSize() > 0 )
+        {
+          mNodesItemIndex = mNodesItem->selectedNode();
+          // setSelectedNode( mNodesItem, mNodesItemIndex );
+        }
+        else
+        {
+          mNodesItemIndex = -1;
+          mNodesItem = nullptr;
+        }
+        scene()->update();
+      }
+      else
+      {
+        composition()->cancelCommand();
+      }
+    }
+  }
+  else
+  {
+#endif
+    const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+
+    currentLayout()->undoStack()->beginMacro( tr( "Items deleted" ) );
+    //delete selected items
+    for ( QgsLayoutItem *item : selectedItems )
+    {
+      currentLayout()->removeLayoutItem( item );
+    }
+    currentLayout()->undoStack()->endMacro();
+
+#if 0
+  }
+#endif
+}
+
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
   mSnapMarker->setVisible( false );

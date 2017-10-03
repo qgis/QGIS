@@ -278,6 +278,11 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: lockSelectedItems()
 %End
 
+    void deleteSelectedItems();
+%Docstring
+ Deletes all selected items.
+%End
+
     void viewChanged();
 %Docstring
  Updates associated rulers and other widgets after view extent or zoom has changed.

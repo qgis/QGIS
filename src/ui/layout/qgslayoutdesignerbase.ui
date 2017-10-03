@@ -146,6 +146,8 @@
     <addaction name="mActionUndo"/>
     <addaction name="mActionRedo"/>
     <addaction name="separator"/>
+    <addaction name="mActionDeleteSelection"/>
+    <addaction name="separator"/>
     <addaction name="mActionSelectAll"/>
     <addaction name="mActionDeselectAll"/>
     <addaction name="mActionInvertSelection"/>
@@ -892,6 +894,21 @@
    </property>
    <property name="toolTip">
     <string>Resizes item height to match the tallest selected item</string>
+   </property>
+  </action>
+  <action name="mActionDeleteSelection">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Delete</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
    </property>
   </action>
  </widget>

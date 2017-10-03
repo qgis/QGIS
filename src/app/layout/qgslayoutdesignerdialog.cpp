@@ -233,6 +233,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //Ctrl+= should also trigger zoom in
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, mActionZoomIn, &QAction::trigger );
+  //Backspace should also trigger delete selection
+  QShortcut *backSpace = new QShortcut( QKeySequence( QStringLiteral( "Backspace" ) ), this );
+  connect( backSpace, &QShortcut::activated, mActionDeleteSelection, &QAction::trigger );
+
 
   connect( mActionZoomIn, &QAction::triggered, mView, &QgsLayoutView::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );
@@ -321,6 +325,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionLockItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lockSelectedItems );
 
   connect( mActionHidePanels, &QAction::toggled, this, &QgsLayoutDesignerDialog::setPanelVisibility );
+
+  connect( mActionDeleteSelection, &QAction::triggered, this, [ = ]
+  {
+    mView->deleteSelectedItems();
+  } );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
