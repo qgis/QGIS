@@ -156,6 +156,30 @@
     <property name="title">
      <string>Layout</string>
     </property>
+    <widget class="QMenu" name="menuAlign_Items">
+     <property name="title">
+      <string>&amp;Align Items</string>
+     </property>
+     <addaction name="mActionAlignLeft"/>
+     <addaction name="mActionAlignHCenter"/>
+     <addaction name="mActionAlignRight"/>
+     <addaction name="separator"/>
+     <addaction name="mActionAlignBottom"/>
+     <addaction name="mActionAlignVCenter"/>
+     <addaction name="mActionAlignTop"/>
+    </widget>
+    <widget class="QMenu" name="menu_Distribute_Items">
+     <property name="title">
+      <string>&amp;Distribute Items</string>
+     </property>
+     <addaction name="mActionDistributeLeft"/>
+     <addaction name="mActionDistributeHCenter"/>
+     <addaction name="mActionDistributeRight"/>
+     <addaction name="separator"/>
+     <addaction name="mActionDistributeTop"/>
+     <addaction name="mActionDistributeVCenter"/>
+     <addaction name="mActionDistributeBottom"/>
+    </widget>
     <addaction name="mActionRaiseItems"/>
     <addaction name="mActionLowerItems"/>
     <addaction name="mActionMoveItemsToTop"/>
@@ -164,12 +188,8 @@
     <addaction name="mActionLockItems"/>
     <addaction name="mActionUnlockAll"/>
     <addaction name="separator"/>
-    <addaction name="mActionAlignLeft"/>
-    <addaction name="mActionAlignHCenter"/>
-    <addaction name="mActionAlignRight"/>
-    <addaction name="mActionAlignTop"/>
-    <addaction name="mActionAlignVCenter"/>
-    <addaction name="mActionAlignBottom"/>
+    <addaction name="menuAlign_Items"/>
+    <addaction name="menu_Distribute_Items"/>
    </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="menuEdit"/>
@@ -677,7 +697,7 @@
      <normaloff>:/images/themes/default/mActionAlignLeft.svg</normaloff>:/images/themes/default/mActionAlignLeft.svg</iconset>
    </property>
    <property name="text">
-    <string>Align Left</string>
+    <string>Align &amp;Left</string>
    </property>
    <property name="toolTip">
     <string>Align selected items left</string>
@@ -689,7 +709,7 @@
      <normaloff>:/images/themes/default/mActionAlignHCenter.svg</normaloff>:/images/themes/default/mActionAlignHCenter.svg</iconset>
    </property>
    <property name="text">
-    <string>Align Center</string>
+    <string>Align &amp;Center</string>
    </property>
    <property name="toolTip">
     <string>Align center horizontal</string>
@@ -701,7 +721,7 @@
      <normaloff>:/images/themes/default/mActionAlignRight.svg</normaloff>:/images/themes/default/mActionAlignRight.svg</iconset>
    </property>
    <property name="text">
-    <string>Align Right</string>
+    <string>Align &amp;Right</string>
    </property>
    <property name="toolTip">
     <string>Align selected items right</string>
@@ -713,7 +733,7 @@
      <normaloff>:/images/themes/default/mActionAlignTop.svg</normaloff>:/images/themes/default/mActionAlignTop.svg</iconset>
    </property>
    <property name="text">
-    <string>Align Top</string>
+    <string>Align &amp;Top</string>
    </property>
    <property name="toolTip">
     <string>Align selected items to top</string>
@@ -725,7 +745,7 @@
      <normaloff>:/images/themes/default/mActionAlignVCenter.svg</normaloff>:/images/themes/default/mActionAlignVCenter.svg</iconset>
    </property>
    <property name="text">
-    <string>Align Center Vertical</string>
+    <string>Align Center &amp;Vertical</string>
    </property>
    <property name="toolTip">
     <string>Align center vertical</string>
@@ -737,10 +757,82 @@
      <normaloff>:/images/themes/default/mActionAlignBottom.svg</normaloff>:/images/themes/default/mActionAlignBottom.svg</iconset>
    </property>
    <property name="text">
-    <string>Align Bottom</string>
+    <string>Align &amp;Bottom</string>
    </property>
    <property name="toolTip">
     <string>Align selected items bottom</string>
+   </property>
+  </action>
+  <action name="mActionDistributeLeft">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignLeft.svg</normaloff>:/images/themes/default/mActionAlignLeft.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Left Edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes left edges of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeHCenter">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignHCenter.svg</normaloff>:/images/themes/default/mActionAlignHCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Centers</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes horizontal centers of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeRight">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignRight.svg</normaloff>:/images/themes/default/mActionAlignRight.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Right Edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes right edges of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeTop">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignTop.svg</normaloff>:/images/themes/default/mActionAlignTop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Top Edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes top edges of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeVCenter">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignVCenter.svg</normaloff>:/images/themes/default/mActionAlignVCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Vertical Centers</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes vertical centers of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeBottom">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignBottom.svg</normaloff>:/images/themes/default/mActionAlignBottom.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Bottom Edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes bottom edges of items equidistantly</string>
    </property>
   </action>
  </widget>

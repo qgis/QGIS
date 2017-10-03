@@ -130,6 +130,13 @@ class QgsLayoutView: QGraphicsView
     void alignSelectedItems( QgsLayoutAligner::Alignment alignment );
 %Docstring
  Aligns all selected items using the specified ``alignment``.
+.. seealso:: distributeSelectedItems()
+%End
+
+    void distributeSelectedItems( QgsLayoutAligner::Distribution distribution );
+%Docstring
+ Distributes all selected items using the specified ``distribution``.
+ see alignSelectedItems()
 %End
 
   public slots:

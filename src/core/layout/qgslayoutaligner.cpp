@@ -34,27 +34,27 @@ void QgsLayoutAligner::alignItems( QgsLayout *layout, const QList<QgsLayoutItem 
   double refCoord = 0;
   switch ( alignment )
   {
-    case Left:
+    case AlignLeft:
       refCoord = itemBBox.left();
       break;
-    case HCenter:
+    case AlignHCenter:
       refCoord = itemBBox.center().x();
       break;
-    case Right:
+    case AlignRight:
       refCoord = itemBBox.right();
       break;
-    case Top:
+    case AlignTop:
       refCoord = itemBBox.top();
       break;
-    case VCenter:
+    case AlignVCenter:
       refCoord = itemBBox.center().y();
       break;
-    case Bottom:
+    case AlignBottom:
       refCoord = itemBBox.bottom();
       break;
   }
 
-  layout->undoStack()->beginMacro( QObject::tr( "Aligned items bottom" ) );
+  layout->undoStack()->beginMacro( undoText( alignment ) );
   for ( QgsLayoutItem *item : items )
   {
     layout->undoStack()->beginCommand( item, QString() );
@@ -62,22 +62,22 @@ void QgsLayoutAligner::alignItems( QgsLayout *layout, const QList<QgsLayoutItem 
     QPointF shifted = item->pos();
     switch ( alignment )
     {
-      case Left:
+      case AlignLeft:
         shifted.setX( refCoord );
         break;
-      case HCenter:
+      case AlignHCenter:
         shifted.setX( refCoord - item->rect().width() / 2.0 );
         break;
-      case Right:
+      case AlignRight:
         shifted.setX( refCoord - item->rect().width() );
         break;
-      case Top:
+      case AlignTop:
         shifted.setY( refCoord );
         break;
-      case VCenter:
+      case AlignVCenter:
         shifted.setY( refCoord - item->rect().height() / 2.0 );
         break;
-      case Bottom:
+      case AlignBottom:
         shifted.setY( refCoord - item->rect().height() );
         break;
     }
@@ -87,6 +87,91 @@ void QgsLayoutAligner::alignItems( QgsLayout *layout, const QList<QgsLayoutItem 
     item->attemptMove( newPos );
 
     layout->undoStack()->endCommand();
+  }
+  layout->undoStack()->endMacro();
+}
+
+void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, QgsLayoutAligner::Distribution distribution )
+{
+  if ( items.size() < 2 )
+    return;
+
+  auto collectReferenceCoord = [distribution]( QgsLayoutItem * item )->double
+  {
+    QRectF itemBBox = item->sceneBoundingRect();
+    switch ( distribution )
+    {
+      case AlignLeft:
+        return itemBBox.left();
+      case AlignHCenter:
+        return itemBBox.center().x();
+      case AlignRight:
+        return itemBBox.right();
+      case AlignTop:
+        return itemBBox.top();
+      case AlignVCenter:
+        return itemBBox.center().y();
+      case AlignBottom:
+        return itemBBox.bottom();
+    }
+    // no warnings
+    return itemBBox.left();
+  };
+
+
+  double minCoord = DBL_MAX;
+  double maxCoord = -DBL_MAX;
+  QMap< double, QgsLayoutItem * > itemCoords;
+  for ( QgsLayoutItem *item : items )
+  {
+    double refCoord = collectReferenceCoord( item );
+    minCoord = std::min( minCoord, refCoord );
+    maxCoord = std::max( maxCoord, refCoord );
+    itemCoords.insert( refCoord, item );
+  }
+
+  double step = ( maxCoord - minCoord ) / ( items.size() - 1 );
+
+  auto distributeItemToCoord = [layout, distribution]( QgsLayoutItem * item, double refCoord )
+  {
+    QPointF shifted = item->pos();
+    switch ( distribution )
+    {
+      case DistributeLeft:
+        shifted.setX( refCoord );
+        break;
+      case DistributeHCenter:
+        shifted.setX( refCoord - item->rect().width() / 2.0 );
+        break;
+      case DistributeRight:
+        shifted.setX( refCoord - item->rect().width() );
+        break;
+      case DistributeTop:
+        shifted.setY( refCoord );
+        break;
+      case DistributeVCenter:
+        shifted.setY( refCoord - item->rect().height() / 2.0 );
+        break;
+      case DistributeBottom:
+        shifted.setY( refCoord - item->rect().height() );
+        break;
+    }
+
+    // need to keep item units
+    QgsLayoutPoint newPos = layout->convertFromLayoutUnits( shifted, item->positionWithUnits().units() );
+    item->attemptMove( newPos );
+  };
+
+
+  layout->undoStack()->beginMacro( undoText( distribution ) );
+  double currentVal = minCoord;
+  for ( auto itemIt = itemCoords.constBegin(); itemIt != itemCoords.constEnd(); ++itemIt )
+  {
+    layout->undoStack()->beginCommand( itemIt.value(), QString() );
+    distributeItemToCoord( itemIt.value(), currentVal );
+    layout->undoStack()->endCommand();
+
+    currentVal += step;
   }
   layout->undoStack()->endMacro();
 }
@@ -128,4 +213,44 @@ QRectF QgsLayoutAligner::boundingRectOfItems( const QList<QgsLayoutItem *> &item
   }
 
   return QRectF( QPointF( minX, minY ), QPointF( maxX, maxY ) );
+}
+
+QString QgsLayoutAligner::undoText( Distribution distribution )
+{
+  switch ( distribution )
+  {
+    case DistributeLeft:
+      return QObject::tr( "Distributed items by left" );
+    case DistributeHCenter:
+      return QObject::tr( "Distributed items by center" );
+    case DistributeRight:
+      return QObject::tr( "Distributed items by right" );
+    case DistributeTop:
+      return QObject::tr( "Distributed items by top" );
+    case DistributeVCenter:
+      return QObject::tr( "Distributed items by vertical center" );
+    case DistributeBottom:
+      return QObject::tr( "Distributed items by bottom" );
+  }
+  return QString(); //no warnings
+}
+
+QString QgsLayoutAligner::undoText( Alignment alignment )
+{
+  switch ( alignment )
+  {
+    case AlignLeft:
+      return QObject::tr( "Aligned items to left" );
+    case AlignHCenter:
+      return QObject::tr( "Aligned items to center" );
+    case AlignRight:
+      return QObject::tr( "Aligned items to right" );
+    case AlignTop:
+      return QObject::tr( "Aligned items to top" );
+    case AlignVCenter:
+      return QObject::tr( "Aligned items to vertical center" );
+    case AlignBottom:
+      return QObject::tr( "Aligned items to bottom" );
+  }
+  return QString(); //no warnings
 }

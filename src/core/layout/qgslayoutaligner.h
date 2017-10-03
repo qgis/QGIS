@@ -41,12 +41,23 @@ class CORE_EXPORT QgsLayoutAligner
     //! Alignment options
     enum Alignment
     {
-      Left, //!< Align left edges
-      HCenter, //!< Align horizontal centers
-      Right, //!< Align right edges
-      Top, //!< Align top edges
-      VCenter, //!< Align vertical centers
-      Bottom, //!< Align bottom edges
+      AlignLeft, //!< Align left edges
+      AlignHCenter, //!< Align horizontal centers
+      AlignRight, //!< Align right edges
+      AlignTop, //!< Align top edges
+      AlignVCenter, //!< Align vertical centers
+      AlignBottom, //!< Align bottom edges
+    };
+
+    //! Distribution options
+    enum Distribution
+    {
+      DistributeLeft, //!< Distribute left edges
+      DistributeHCenter, //!< Distribute horizontal centers
+      DistributeRight, //!< Distribute right edges
+      DistributeTop, //!< Distribute top edges
+      DistributeVCenter, //!< Distribute vertical centers
+      DistributeBottom, //!< Distribute bottom edges
     };
 
     /**
@@ -56,6 +67,13 @@ class CORE_EXPORT QgsLayoutAligner
      */
     static void alignItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Alignment alignment );
 
+    /**
+     * Distributes a set of \a items from a \a layout in place.
+     *
+     * The \a distribution argument specifies the method to use when distributing the items.
+     */
+    static void distributeItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Distribution distribution );
+
   private:
 
     /**
@@ -63,6 +81,9 @@ class CORE_EXPORT QgsLayoutAligner
      * scene coordinates.
     */
     static QRectF boundingRectOfItems( const QList< QgsLayoutItem * > &items );
+
+    static QString undoText( Alignment alignment );
+    static QString undoText( Distribution distribution );
 
 
 

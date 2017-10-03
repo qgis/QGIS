@@ -183,7 +183,6 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   alignToolButton->setPopupMode( QToolButton::InstantPopup );
   alignToolButton->setAutoRaise( true );
   alignToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
-
   alignToolButton->addAction( mActionAlignLeft );
   alignToolButton->addAction( mActionAlignHCenter );
   alignToolButton->addAction( mActionAlignRight );
@@ -192,6 +191,19 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   alignToolButton->addAction( mActionAlignBottom );
   alignToolButton->setDefaultAction( mActionAlignLeft );
   mActionsToolbar->addWidget( alignToolButton );
+
+  QToolButton *distributeToolButton = new QToolButton( this );
+  distributeToolButton->setPopupMode( QToolButton::InstantPopup );
+  distributeToolButton->setAutoRaise( true );
+  distributeToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  distributeToolButton->addAction( mActionDistributeLeft );
+  distributeToolButton->addAction( mActionDistributeHCenter );
+  distributeToolButton->addAction( mActionDistributeRight );
+  distributeToolButton->addAction( mActionDistributeTop );
+  distributeToolButton->addAction( mActionDistributeVCenter );
+  distributeToolButton->addAction( mActionDistributeBottom );
+  distributeToolButton->setDefaultAction( mActionDistributeLeft );
+  mActionsToolbar->addWidget( distributeToolButton );
 
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
   mPanTool = new QgsLayoutViewToolPan( mView );
@@ -229,27 +241,51 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionMoveItemsToBottom, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToBottom );
   connect( mActionAlignLeft, &QAction::triggered, this, [ = ]
   {
-    mView->alignSelectedItems( QgsLayoutAligner::Left );
+    mView->alignSelectedItems( QgsLayoutAligner::AlignLeft );
   } );
   connect( mActionAlignHCenter, &QAction::triggered, this, [ = ]
   {
-    mView->alignSelectedItems( QgsLayoutAligner::HCenter );
+    mView->alignSelectedItems( QgsLayoutAligner::AlignHCenter );
   } );
   connect( mActionAlignRight, &QAction::triggered, this, [ = ]
   {
-    mView->alignSelectedItems( QgsLayoutAligner::Right );
+    mView->alignSelectedItems( QgsLayoutAligner::AlignRight );
   } );
   connect( mActionAlignTop, &QAction::triggered, this, [ = ]
   {
-    mView->alignSelectedItems( QgsLayoutAligner::Top );
+    mView->alignSelectedItems( QgsLayoutAligner::AlignTop );
   } );
   connect( mActionAlignVCenter, &QAction::triggered, this, [ = ]
   {
-    mView->alignSelectedItems( QgsLayoutAligner::VCenter );
+    mView->alignSelectedItems( QgsLayoutAligner::AlignVCenter );
   } );
   connect( mActionAlignBottom, &QAction::triggered, this, [ = ]
   {
-    mView->alignSelectedItems( QgsLayoutAligner::Bottom );
+    mView->alignSelectedItems( QgsLayoutAligner::AlignBottom );
+  } );
+  connect( mActionDistributeLeft, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeLeft );
+  } );
+  connect( mActionDistributeHCenter, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeHCenter );
+  } );
+  connect( mActionDistributeRight, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeRight );
+  } );
+  connect( mActionDistributeTop, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeTop );
+  } );
+  connect( mActionDistributeVCenter, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeVCenter );
+  } );
+  connect( mActionDistributeBottom, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeBottom );
   } );
 
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
