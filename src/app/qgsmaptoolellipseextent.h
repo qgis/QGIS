@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMAPTOOLELLIPSEEXTENT_H
 #define QGSMAPTOOLELLIPSEEXTENT_H
 

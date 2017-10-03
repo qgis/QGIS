@@ -1,6 +1,3 @@
-#ifndef QGSMAPTOOLREGULARPOLYGON2POINTS_H
-#define QGSMAPTOOLREGULARPOLYGON2POINTS_H
-
 /***************************************************************************
     qgmaptoolregularpolygon2points.h  -  map tool for adding regular
     polygon from 2 points
@@ -16,6 +13,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#ifndef QGSMAPTOOLREGULARPOLYGON2POINTS_H
+#define QGSMAPTOOLREGULARPOLYGON2POINTS_H
 
 #include "qgsmaptooladdregularpolygon.h"
 

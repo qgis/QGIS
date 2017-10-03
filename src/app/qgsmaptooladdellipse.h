@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMAPTOOLADDELLIPSE_H
 #define QGSMAPTOOLADDELLIPSE_H
 

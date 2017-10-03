@@ -1,6 +1,3 @@
-#ifndef QGSMAPTOOLREGULARPOLYGONCENTERCORNER_H
-#define QGSMAPTOOLREGULARPOLYGONCENTERCORNER_H
-
 /***************************************************************************
     qgsmaptoolregularpolygoncentercorner.h  -  map tool for adding regular
     polygon from center and a corner
@@ -16,6 +13,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#ifndef QGSMAPTOOLREGULARPOLYGONCENTERCORNER_H
+#define QGSMAPTOOLREGULARPOLYGONCENTERCORNER_H
 
 #include "qgsmaptooladdregularpolygon.h"
 

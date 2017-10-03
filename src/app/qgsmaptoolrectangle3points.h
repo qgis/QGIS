@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMAPTOOLRECTANGLE3POINTS_H
 #define QGSMAPTOOLRECTANGLE3POINTS_H
 

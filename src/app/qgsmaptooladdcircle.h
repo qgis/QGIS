@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMAPTOOLADDCIRCLE_H
 #define QGSMAPTOOLADDCIRCLE_H
 

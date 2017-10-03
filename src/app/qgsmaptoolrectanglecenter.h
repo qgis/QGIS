@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMAPTOOLRECTANGLECENTER_H
 #define QGSMAPTOOLRECTANGLECENTER_H
 

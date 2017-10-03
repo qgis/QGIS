@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsmaptoolellipsefoci.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"

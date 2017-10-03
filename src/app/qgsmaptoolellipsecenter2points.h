@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMAPTOOLELLIPSECENTER2POINTS_H
 #define QGSMAPTOOLELLIPSECENTER2POINTS_H
 

@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMAPTOOLELLIPSEFOCI_H
 #define QGSMAPTOOLELLIPSEFOCI_H
 

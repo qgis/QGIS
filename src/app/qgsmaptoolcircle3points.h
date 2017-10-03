@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSMAPTOOLCIRCLE3POINTS_H
 #define QGSMAPTOOLCIRCLE3POINTS_H
 

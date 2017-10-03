@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsmaptoolcirclecenterpoint.h"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"

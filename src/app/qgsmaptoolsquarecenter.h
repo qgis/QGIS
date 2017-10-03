@@ -1,6 +1,3 @@
-#ifndef QGSMAPTOOLSQUARECENTER_H
-#define QGSMAPTOOLSQUARECENTER_H
-
 /***************************************************************************
     qgsmaptoolsquarecenter.h  -  map tool for adding square
     from center and a point
@@ -16,6 +13,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#ifndef QGSMAPTOOLSQUARECENTER_H
+#define QGSMAPTOOLSQUARECENTER_H
 
 #include "qgsmaptooladdregularpolygon.h"
 
