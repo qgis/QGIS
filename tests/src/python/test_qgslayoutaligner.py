@@ -188,6 +188,47 @@ class TestQgsLayoutAligner(unittest.TestCase):
         self.assertEqual(item3.positionWithUnits().units(), QgsUnitTypes.LayoutCentimeters)
         self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
 
+    def testResize(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
+        item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
+        item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+        l.addItem(item3)
+
+        QgsLayoutAligner.resizeItems(l, [item1, item2, item3], QgsLayoutAligner.ResizeNarrowest)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(10, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.0, 1.6, QgsUnitTypes.LayoutCentimeters))
+        l.undoStack().stack().undo()
+
+        QgsLayoutAligner.resizeItems(l, [item1, item2, item3], QgsLayoutAligner.ResizeWidest)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(18, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+        l.undoStack().stack().undo()
+
+        QgsLayoutAligner.resizeItems(l, [item1, item2, item3], QgsLayoutAligner.ResizeShortest)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 0.9, QgsUnitTypes.LayoutCentimeters))
+        l.undoStack().stack().undo()
+
+        QgsLayoutAligner.resizeItems(l, [item1, item2, item3], QgsLayoutAligner.ResizeTallest)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 16, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 16, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+
 
 if __name__ == '__main__':
     unittest.main()

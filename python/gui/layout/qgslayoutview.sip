@@ -131,12 +131,21 @@ class QgsLayoutView: QGraphicsView
 %Docstring
  Aligns all selected items using the specified ``alignment``.
 .. seealso:: distributeSelectedItems()
+.. seealso:: resizeSelectedItems()
 %End
 
     void distributeSelectedItems( QgsLayoutAligner::Distribution distribution );
 %Docstring
  Distributes all selected items using the specified ``distribution``.
- see alignSelectedItems()
+.. seealso:: alignSelectedItems()
+.. seealso:: resizeSelectedItems()
+%End
+
+    void resizeSelectedItems( QgsLayoutAligner::Resize resize );
+%Docstring
+ Resizes all selected items using the specified ``resize`` mode.
+.. seealso:: alignSelectedItems()
+.. seealso:: distributeSelectedItems()
 %End
 
   public slots:

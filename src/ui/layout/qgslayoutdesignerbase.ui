@@ -180,6 +180,16 @@
      <addaction name="mActionDistributeVCenter"/>
      <addaction name="mActionDistributeBottom"/>
     </widget>
+    <widget class="QMenu" name="menuResize">
+     <property name="title">
+      <string>Re&amp;size</string>
+     </property>
+     <addaction name="mActionResizeNarrowest"/>
+     <addaction name="mActionResizeWidest"/>
+     <addaction name="separator"/>
+     <addaction name="mActionResizeShortest"/>
+     <addaction name="mActionResizeTallest"/>
+    </widget>
     <addaction name="mActionRaiseItems"/>
     <addaction name="mActionLowerItems"/>
     <addaction name="mActionMoveItemsToTop"/>
@@ -190,6 +200,7 @@
     <addaction name="separator"/>
     <addaction name="menuAlign_Items"/>
     <addaction name="menu_Distribute_Items"/>
+    <addaction name="menuResize"/>
    </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="menuEdit"/>
@@ -833,6 +844,54 @@
    </property>
    <property name="toolTip">
     <string>Distributes bottom edges of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionResizeNarrowest">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignLeft.svg</normaloff>:/images/themes/default/mActionAlignLeft.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Narrowest</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes item width to match the narrowest selected item</string>
+   </property>
+  </action>
+  <action name="mActionResizeWidest">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignHCenter.svg</normaloff>:/images/themes/default/mActionAlignHCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Widest</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes item width to match the widest selected item</string>
+   </property>
+  </action>
+  <action name="mActionResizeShortest">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignRight.svg</normaloff>:/images/themes/default/mActionAlignRight.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Shortest</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes item height to match the shortest selected item</string>
+   </property>
+  </action>
+  <action name="mActionResizeTallest">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignTop.svg</normaloff>:/images/themes/default/mActionAlignTop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Tallest</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes item height to match the tallest selected item</string>
    </property>
   </action>
  </widget>

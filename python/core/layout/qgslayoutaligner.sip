@@ -44,6 +44,14 @@ class QgsLayoutAligner
       DistributeBottom,
     };
 
+    enum Resize
+    {
+      ResizeNarrowest,
+      ResizeWidest,
+      ResizeShortest,
+      ResizeTallest,
+    };
+
     static void alignItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Alignment alignment );
 %Docstring
  Aligns a set of ``items`` from a ``layout`` in place.
@@ -56,6 +64,13 @@ class QgsLayoutAligner
  Distributes a set of ``items`` from a ``layout`` in place.
 
  The ``distribution`` argument specifies the method to use when distributing the items.
+%End
+
+    static void resizeItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Resize resize );
+%Docstring
+ Resizes a set of ``items`` from a ``layout`` in place.
+
+ The ``resize`` argument specifies the method to use when resizing the items.
 %End
 
 };

@@ -176,6 +176,74 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
   layout->undoStack()->endMacro();
 }
 
+void QgsLayoutAligner::resizeItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, QgsLayoutAligner::Resize resize )
+{
+  if ( items.size() < 2 )
+    return;
+
+  auto collectSize = [resize]( QgsLayoutItem * item )->double
+  {
+    QRectF itemBBox = item->sceneBoundingRect();
+    switch ( resize )
+    {
+      case ResizeNarrowest:
+      case ResizeWidest:
+        return itemBBox.width();
+      case ResizeShortest:
+      case ResizeTallest:
+        return itemBBox.height();
+    }
+    // no warnings
+    return itemBBox.width();
+  };
+
+  double newSize = collectSize( items.at( 0 ) );
+  for ( QgsLayoutItem *item : items )
+  {
+    double size = collectSize( item );
+    switch ( resize )
+    {
+      case ResizeNarrowest:
+      case ResizeShortest:
+        newSize = std::min( size, newSize );
+        break;
+      case ResizeTallest:
+      case ResizeWidest:
+        newSize = std::max( size, newSize );
+        break;
+    }
+  }
+
+  auto resizeItemToSize = [layout, resize]( QgsLayoutItem * item, double size )
+  {
+    QSizeF newSize = item->rect().size();
+    switch ( resize )
+    {
+      case ResizeNarrowest:
+      case ResizeWidest:
+        newSize.setWidth( size );
+        break;
+      case ResizeTallest:
+      case ResizeShortest:
+        newSize.setHeight( size );
+        break;
+    }
+
+    // need to keep item units
+    QgsLayoutSize newSizeWithUnits = layout->convertFromLayoutUnits( newSize, item->sizeWithUnits().units() );
+    item->attemptResize( newSizeWithUnits );
+  };
+
+  layout->undoStack()->beginMacro( undoText( resize ) );
+  for ( QgsLayoutItem *item : items )
+  {
+    layout->undoStack()->beginCommand( item, QString() );
+    resizeItemToSize( item, newSize );
+    layout->undoStack()->endCommand();
+  }
+  layout->undoStack()->endMacro();
+}
+
 QRectF QgsLayoutAligner::boundingRectOfItems( const QList<QgsLayoutItem *> &items )
 {
   if ( items.empty() )
@@ -231,6 +299,22 @@ QString QgsLayoutAligner::undoText( Distribution distribution )
       return QObject::tr( "Distributed items by vertical center" );
     case DistributeBottom:
       return QObject::tr( "Distributed items by bottom" );
+  }
+  return QString(); //no warnings
+}
+
+QString QgsLayoutAligner::undoText( QgsLayoutAligner::Resize resize )
+{
+  switch ( resize )
+  {
+    case ResizeNarrowest:
+      return QObject::tr( "Resized items to narrowest" );
+    case ResizeWidest:
+      return QObject::tr( "Resized items to widest" );
+    case ResizeShortest:
+      return QObject::tr( "Resized items to shortest" );
+    case ResizeTallest:
+      return QObject::tr( "Resized items to tallest" );
   }
   return QString(); //no warnings
 }

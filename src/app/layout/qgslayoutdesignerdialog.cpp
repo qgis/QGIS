@@ -205,6 +205,17 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   distributeToolButton->setDefaultAction( mActionDistributeLeft );
   mActionsToolbar->addWidget( distributeToolButton );
 
+  QToolButton *resizeToolButton = new QToolButton( this );
+  resizeToolButton->setPopupMode( QToolButton::InstantPopup );
+  resizeToolButton->setAutoRaise( true );
+  resizeToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  resizeToolButton->addAction( mActionResizeNarrowest );
+  resizeToolButton->addAction( mActionResizeWidest );
+  resizeToolButton->addAction( mActionResizeShortest );
+  resizeToolButton->addAction( mActionResizeTallest );
+  resizeToolButton->setDefaultAction( mActionResizeNarrowest );
+  mActionsToolbar->addWidget( resizeToolButton );
+
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
   mPanTool = new QgsLayoutViewToolPan( mView );
   mPanTool->setAction( mActionPan );
@@ -286,6 +297,22 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionDistributeBottom, &QAction::triggered, this, [ = ]
   {
     mView->distributeSelectedItems( QgsLayoutAligner::DistributeBottom );
+  } );
+  connect( mActionResizeNarrowest, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeNarrowest );
+  } );
+  connect( mActionResizeWidest, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeWidest );
+  } );
+  connect( mActionResizeShortest, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeShortest );
+  } );
+  connect( mActionResizeTallest, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeTallest );
   } );
 
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );

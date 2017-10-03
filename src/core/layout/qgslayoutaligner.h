@@ -60,6 +60,15 @@ class CORE_EXPORT QgsLayoutAligner
       DistributeBottom, //!< Distribute bottom edges
     };
 
+    //! Resize options
+    enum Resize
+    {
+      ResizeNarrowest, //!< Resize width to match narrowest width
+      ResizeWidest, //!< Resize width to match widest width
+      ResizeShortest, //!< Resize height to match shortest height
+      ResizeTallest, //!< Resize height to match tallest height
+    };
+
     /**
      * Aligns a set of \a items from a \a layout in place.
      *
@@ -74,6 +83,13 @@ class CORE_EXPORT QgsLayoutAligner
      */
     static void distributeItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Distribution distribution );
 
+    /**
+     * Resizes a set of \a items from a \a layout in place.
+     *
+     * The \a resize argument specifies the method to use when resizing the items.
+     */
+    static void resizeItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Resize resize );
+
   private:
 
     /**
@@ -84,6 +100,7 @@ class CORE_EXPORT QgsLayoutAligner
 
     static QString undoText( Alignment alignment );
     static QString undoText( Distribution distribution );
+    static QString undoText( Resize resize );
 
 
 

@@ -242,6 +242,12 @@ void QgsLayoutView::distributeSelectedItems( QgsLayoutAligner::Distribution dist
   QgsLayoutAligner::distributeItems( currentLayout(), selectedItems, distribution );
 }
 
+void QgsLayoutView::resizeSelectedItems( QgsLayoutAligner::Resize resize )
+{
+  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  QgsLayoutAligner::resizeItems( currentLayout(), selectedItems, resize );
+}
+
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );

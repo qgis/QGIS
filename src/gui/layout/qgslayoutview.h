@@ -161,14 +161,23 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     /**
      * Aligns all selected items using the specified \a alignment.
      * \see distributeSelectedItems()
+     * \see resizeSelectedItems()
      */
     void alignSelectedItems( QgsLayoutAligner::Alignment alignment );
 
     /**
      * Distributes all selected items using the specified \a distribution.
-     * see alignSelectedItems()
+     * \see alignSelectedItems()
+     * \see resizeSelectedItems()
      */
     void distributeSelectedItems( QgsLayoutAligner::Distribution distribution );
+
+    /**
+     * Resizes all selected items using the specified \a resize mode.
+     * \see alignSelectedItems()
+     * \see distributeSelectedItems()
+     */
+    void resizeSelectedItems( QgsLayoutAligner::Resize resize );
 
   public slots:
 
