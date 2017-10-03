@@ -359,6 +359,7 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpallabeling.cpp
 
   layout/qgslayout.cpp
+  layout/qgslayoutaligner.cpp
   layout/qgslayoutcontext.cpp
   layout/qgslayoutgridsettings.cpp
   layout/qgslayoutguidecollection.cpp
@@ -965,6 +966,7 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
+  layout/qgslayoutaligner.h
   layout/qgslayoutcontext.h
   layout/qgslayoutgridsettings.h
   layout/qgslayoutitemundocommand.h

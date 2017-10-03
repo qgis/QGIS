@@ -21,6 +21,7 @@
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include "qgis_gui.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutaligner.h"
 #include <QPointer>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
@@ -156,6 +157,11 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see visiblePages()
      */
     QList< int > visiblePageNumbers() const;
+
+    /**
+     * Aligns all selected items using the specified \a alignment.
+     */
+    void alignSelectedItems( QgsLayoutAligner::Alignment alignment );
 
   public slots:
 

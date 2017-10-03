@@ -179,6 +179,20 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   orderingToolButton->setDefaultAction( mActionRaiseItems );
   mActionsToolbar->addWidget( orderingToolButton );
 
+  QToolButton *alignToolButton = new QToolButton( this );
+  alignToolButton->setPopupMode( QToolButton::InstantPopup );
+  alignToolButton->setAutoRaise( true );
+  alignToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+
+  alignToolButton->addAction( mActionAlignLeft );
+  alignToolButton->addAction( mActionAlignHCenter );
+  alignToolButton->addAction( mActionAlignRight );
+  alignToolButton->addAction( mActionAlignTop );
+  alignToolButton->addAction( mActionAlignVCenter );
+  alignToolButton->addAction( mActionAlignBottom );
+  alignToolButton->setDefaultAction( mActionAlignLeft );
+  mActionsToolbar->addWidget( alignToolButton );
+
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
   mPanTool = new QgsLayoutViewToolPan( mView );
   mPanTool->setAction( mActionPan );
@@ -213,6 +227,30 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionLowerItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lowerSelectedItems );
   connect( mActionMoveItemsToTop, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToTop );
   connect( mActionMoveItemsToBottom, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToBottom );
+  connect( mActionAlignLeft, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::Left );
+  } );
+  connect( mActionAlignHCenter, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::HCenter );
+  } );
+  connect( mActionAlignRight, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::Right );
+  } );
+  connect( mActionAlignTop, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::Top );
+  } );
+  connect( mActionAlignVCenter, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::VCenter );
+  } );
+  connect( mActionAlignBottom, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::Bottom );
+  } );
 
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
 

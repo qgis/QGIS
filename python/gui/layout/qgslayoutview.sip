@@ -127,6 +127,11 @@ class QgsLayoutView: QGraphicsView
  :rtype: list of int
 %End
 
+    void alignSelectedItems( QgsLayoutAligner::Alignment alignment );
+%Docstring
+ Aligns all selected items using the specified ``alignment``.
+%End
+
   public slots:
 
     void zoomFull();

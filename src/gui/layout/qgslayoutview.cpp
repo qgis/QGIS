@@ -230,6 +230,12 @@ QList<int> QgsLayoutView::visiblePageNumbers() const
   return currentLayout()->pageCollection()->visiblePageNumbers( visibleRect );
 }
 
+void QgsLayoutView::alignSelectedItems( QgsLayoutAligner::Alignment alignment )
+{
+  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  QgsLayoutAligner::alignItems( currentLayout(), selectedItems, alignment );
+}
+
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );

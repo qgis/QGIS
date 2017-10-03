@@ -157,6 +157,7 @@
 %Include composer/qgscomposermultiframecommand.sip
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
+%Include layout/qgslayoutaligner.sip
 %Include layout/qgslayoutcontext.sip
 %Include layout/qgslayoutgridsettings.sip
 %Include layout/qgslayoutmeasurement.sip

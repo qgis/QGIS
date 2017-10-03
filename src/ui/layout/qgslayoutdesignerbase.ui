@@ -85,7 +85,7 @@
      <x>0</x>
      <y>0</y>
      <width>1083</width>
-     <height>25</height>
+     <height>42</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -160,8 +160,16 @@
     <addaction name="mActionLowerItems"/>
     <addaction name="mActionMoveItemsToTop"/>
     <addaction name="mActionMoveItemsToBottom"/>
+    <addaction name="separator"/>
     <addaction name="mActionLockItems"/>
     <addaction name="mActionUnlockAll"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAlignLeft"/>
+    <addaction name="mActionAlignHCenter"/>
+    <addaction name="mActionAlignRight"/>
+    <addaction name="mActionAlignTop"/>
+    <addaction name="mActionAlignVCenter"/>
+    <addaction name="mActionAlignBottom"/>
    </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="menuEdit"/>
@@ -663,9 +671,80 @@
     <string>Ctrl+Shift+[</string>
    </property>
   </action>
+  <action name="mActionAlignLeft">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignLeft.svg</normaloff>:/images/themes/default/mActionAlignLeft.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align Left</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items left</string>
+   </property>
+  </action>
+  <action name="mActionAlignHCenter">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignHCenter.svg</normaloff>:/images/themes/default/mActionAlignHCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align Center</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center horizontal</string>
+   </property>
+  </action>
+  <action name="mActionAlignRight">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignRight.svg</normaloff>:/images/themes/default/mActionAlignRight.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align Right</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items right</string>
+   </property>
+  </action>
+  <action name="mActionAlignTop">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignTop.svg</normaloff>:/images/themes/default/mActionAlignTop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align Top</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items to top</string>
+   </property>
+  </action>
+  <action name="mActionAlignVCenter">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignVCenter.svg</normaloff>:/images/themes/default/mActionAlignVCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align Center Vertical</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center vertical</string>
+   </property>
+  </action>
+  <action name="mActionAlignBottom">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignBottom.svg</normaloff>:/images/themes/default/mActionAlignBottom.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align Bottom</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items bottom</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
