@@ -581,7 +581,6 @@
         <file>themes/default/mActionRectangleCenter.svg</file>
         <file>themes/default/mActionRegularPolygonCenterCorner.svg</file>
         <file>themes/default/mActionRegularPolygon2Points.svg</file>
-        <file>themes/default/mActionSquareCenter.svg</file>
         <file>themes/default/mActionCircle3Tangents.svg</file>
         <file>themes/default/mActionAddGeoPackageLayer.svg</file>
         <file>icons/qgis_icon.svg</file>

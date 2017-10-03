@@ -356,7 +356,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolrectanglecenter.h"
 #include "qgsmaptoolrectangleextent.h"
 #include "qgsmaptoolrectangle3points.h"
-#include "qgsmaptoolsquarecenter.h"
 #include "qgsmaptoolregularpolygon2points.h"
 #include "qgsmaptoolregularpolygoncenterpoint.h"
 #include "qgsmaptoolregularpolygoncentercorner.h"
@@ -1324,7 +1323,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mRectangleCenterPoint;
   delete mMapTools.mRectangleExtent;
   delete mMapTools.mRectangle3Points;
-  delete mMapTools.mSquareCenter;
   delete mMapTools.mRegularPolygon2Points;
   delete mMapTools.mRegularPolygonCenterPoint;
   delete mMapTools.mRegularPolygonCenterCorner;
@@ -1803,7 +1801,6 @@ void QgisApp::createActions()
   connect( mActionRectangleCenterPoint, &QAction::triggered, this, &QgisApp::rectangleCenterPoint );
   connect( mActionRectangleExtent, &QAction::triggered, this, &QgisApp::rectangleExtent );
   connect( mActionRectangle3Points, &QAction::triggered, this, &QgisApp::rectangle3Points );
-  connect( mActionSquareCenter, &QAction::triggered, this, &QgisApp::squareCenter );
   connect( mActionRegularPolygon2Points, &QAction::triggered, this, &QgisApp::regularPolygon2Points );
   connect( mActionRegularPolygonCenterPoint, &QAction::triggered, this, &QgisApp::regularPolygonCenterPoint );
   connect( mActionRegularPolygonCenterCorner, &QAction::triggered, this, &QgisApp::regularPolygonCenterCorner );
@@ -2093,7 +2090,6 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionRectangleCenterPoint );
   mMapToolGroup->addAction( mActionRectangleExtent );
   mMapToolGroup->addAction( mActionRectangle3Points );
-  mMapToolGroup->addAction( mActionSquareCenter );
   mMapToolGroup->addAction( mActionRegularPolygon2Points );
   mMapToolGroup->addAction( mActionRegularPolygonCenterPoint );
   mMapToolGroup->addAction( mActionRegularPolygonCenterCorner );
@@ -2634,7 +2630,6 @@ void QgisApp::createToolBars()
   tbAddRectangle->addAction( mActionRectangleCenterPoint );
   tbAddRectangle->addAction( mActionRectangleExtent );
   tbAddRectangle->addAction( mActionRectangle3Points );
-  tbAddRectangle->addAction( mActionSquareCenter );
   tbAddRectangle->setDefaultAction( mActionRectangleCenterPoint );
   connect( tbAddRectangle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
   mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddRectangle );
@@ -3242,8 +3237,6 @@ void QgisApp::createCanvasTools()
   mMapTools.mRectangleExtent->setAction( mActionRectangleExtent );
   mMapTools.mRectangle3Points = new QgsMapToolRectangle3Points( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mRectangle3Points->setAction( mActionRectangle3Points );
-  mMapTools.mSquareCenter = new QgsMapToolSquareCenter( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
-  mMapTools.mSquareCenter->setAction( mActionSquareCenter );
   mMapTools.mRegularPolygon2Points = new QgsMapToolRegularPolygon2Points( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
   mMapTools.mRegularPolygon2Points->setAction( mActionRegularPolygon2Points );
   mMapTools.mRegularPolygonCenterPoint = new QgsMapToolRegularPolygonCenterPoint( dynamic_cast<QgsMapToolAddFeature *>( mMapTools.mAddFeature ), mMapCanvas );
@@ -7878,11 +7871,6 @@ void QgisApp::rectangle3Points()
   mMapCanvas->setMapTool( mMapTools.mRectangle3Points );
 }
 
-void QgisApp::squareCenter()
-{
-  mMapCanvas->setMapTool( mMapTools.mSquareCenter );
-}
-
 void QgisApp::regularPolygon2Points()
 {
   mMapCanvas->setMapTool( mMapTools.mRegularPolygon2Points );
@@ -11302,7 +11290,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionEllipseFoci->setEnabled( false );
     mActionRectangleCenterPoint->setEnabled( false );
     mActionRectangleExtent->setEnabled( false );
-    mActionSquareCenter->setEnabled( false );
     mActionRegularPolygon2Points->setEnabled( false );
     mActionRegularPolygonCenterPoint->setEnabled( false );
     mActionRegularPolygonCenterCorner->setEnabled( false );
@@ -11466,8 +11453,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
                                           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionRectangle3Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
                                            && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionSquareCenter->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                       && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionRegularPolygon2Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
       mActionRegularPolygonCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )

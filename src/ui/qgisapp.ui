@@ -299,7 +299,6 @@
      <addaction name="mActionRectangleExtent"/>
      <addaction name="mActionRectangleCenterPoint"/>
      <addaction name="mActionRectangle3Points"/>
-     <addaction name="mActionSquareCenter"/>
     </widget>
     <widget class="QMenu" name="mMenuRegularPolygon">
      <property name="title">
@@ -2857,21 +2856,6 @@ Acts on currently active editable layer</string>
     <string>Add rectangle from center and a point</string>
    </property>
   </action>
-  <action name="mActionSquareCenter">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSquareCenter.svg</normaloff>:/images/themes/default/mActionSquareCenter.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add &amp;Square From Center</string>
-   </property>
-   <property name="toolTip">
-    <string>Add square from center</string>
-   </property>
-  </action>
   <action name="mActionRegularPolygonCenterPoint">
    <property name="checkable">
     <bool>true</bool>
@@ -2960,8 +2944,8 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Add regular polygon from center and a corner</string>
-    </property>
-    </action>
+   </property>
+  </action>
   <action name="mActionNew3DMapCanvas">
    <property name="text">
     <string>New &amp;3D Map View</string>
