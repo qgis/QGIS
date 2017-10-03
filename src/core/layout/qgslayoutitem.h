@@ -81,14 +81,19 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Constructor for QgsLayoutItem, with the specified parent \a layout.
+     *
+     * If \a manageZValue is true, the z-Value of this item will be managed by the layout.
+     * Generally this is the desired behavior.
      */
-    explicit QgsLayoutItem( QgsLayout *layout );
+    explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
+
+    ~QgsLayoutItem();
 
     /**
      * Return correct graphics item type
      * \see stringType()
      */
-    virtual int type() const override = 0;
+    int type() const override;
 
     /**
      * Return the item type as a string.
@@ -543,6 +548,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
   private:
+
+    // true if layout manages the z value for this item
+    bool mLayoutManagesZValue = false;
 
     //! id (not necessarily unique)
     QString mId;

@@ -16,6 +16,7 @@
 
 #include "qgslayout.h"
 #include "qgslayoutitem.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutguidecollection.h"
 #include "qgsreadwritecontext.h"
@@ -30,6 +31,23 @@ QgsLayout::QgsLayout( QgsProject *project )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
+  mItemsModel.reset( new QgsLayoutModel( this ) );
+}
+
+QgsLayout::~QgsLayout()
+{
+  // make sure that all layout items are removed before
+  // this class is deconstructed - to avoid segfaults
+  // when layout items access in destructor layout that isn't valid anymore
+
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    if ( dynamic_cast< QgsLayoutItem * >( item ) && !dynamic_cast< QgsLayoutItemPage *>( item ) )
+      delete item;
+  }
+
+  mItemsModel.reset(); // manually delete, so we can control order of destruction
 }
 
 void QgsLayout::initializeDefaults()
@@ -44,6 +62,11 @@ void QgsLayout::initializeDefaults()
 QgsProject *QgsLayout::project() const
 {
   return mProject;
+}
+
+QgsLayoutModel *QgsLayout::itemsModel()
+{
+  return mItemsModel.get();
 }
 
 QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedItems )
@@ -287,6 +310,16 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 {
   addItem( item );
   updateBounds();
+  mItemsModel->rebuildZList();
+}
+
+void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
+{
+  mItemsModel->setItemRemoved( item );
+  removeItem( item );
+#if 0 //TODO
+  emit itemRemoved( item );
+#endif
 }
 
 QgsLayoutUndoStack *QgsLayout::undoStack()

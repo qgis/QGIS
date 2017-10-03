@@ -24,7 +24,7 @@
 #include <QStyleOptionGraphicsItem>
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
-  : QgsLayoutItem( layout )
+  : QgsLayoutItem( layout, false )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   setFlag( QGraphicsItem::ItemIsMovable, false );

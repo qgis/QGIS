@@ -52,12 +52,18 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       LowerRight,
     };
 
-    explicit QgsLayoutItem( QgsLayout *layout );
+    explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
 %Docstring
  Constructor for QgsLayoutItem, with the specified parent ``layout``.
+
+ If ``manageZValue`` is true, the z-Value of this item will be managed by the layout.
+ Generally this is the desired behavior.
 %End
 
-    virtual int type() const = 0;
+    ~QgsLayoutItem();
+
+    virtual int type() const;
+
 %Docstring
  Return correct graphics item type
 .. seealso:: stringType()

@@ -27,6 +27,7 @@
 #include "qgslayoutundostack.h"
 
 class QgsLayoutItemMap;
+class QgsLayoutModel;
 
 /**
  * \ingroup core
@@ -62,6 +63,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     QgsLayout( QgsProject *project );
 
+    ~QgsLayout();
+
     /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
      * a new layout.
@@ -74,6 +77,11 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      */
     QgsProject *project() const;
+
+    /**
+     * Returns the items model attached to the layout.
+     */
+    QgsLayoutModel *itemsModel();
 
     /**
      * Returns the layout's name.
@@ -345,6 +353,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void addLayoutItem( QgsLayoutItem *item SIP_TRANSFER );
 
     /**
+     * Removes an \a item from the layout. This should be called instead of the base class removeItem()
+     * method.
+     */
+    void removeLayoutItem( QgsLayoutItem *item );
+
+    /**
      * Returns the layout's state encapsulated in a DOM element.
      * \see readXml()
      */
@@ -394,6 +408,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
   private:
 
     QgsProject *mProject = nullptr;
+    std::unique_ptr< QgsLayoutModel > mItemsModel;
 
     QString mName;
 

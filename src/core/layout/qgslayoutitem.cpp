@@ -19,13 +19,14 @@
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"
 #include "qgslayoutitemundocommand.h"
+#include "qgslayoutmodel.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
 
 #define CACHE_SIZE_LIMIT 5000
 
-QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
+QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   : QgsLayoutObject( layout )
   , QGraphicsRectItem( nullptr )
   , mUuid( QUuid::createUuid().toString() )
@@ -47,6 +48,30 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   refreshFrame( false );
 
   initConnectionsToLayout();
+
+  //let z-Value be managed by layout
+  if ( mLayout && manageZValue )
+  {
+    mLayoutManagesZValue = true;
+    mLayout->itemsModel()->addItemAtTop( this );
+  }
+  else
+  {
+    mLayoutManagesZValue = false;
+  }
+}
+
+QgsLayoutItem::~QgsLayoutItem()
+{
+  if ( mLayout && mLayoutManagesZValue )
+  {
+    mLayout->itemsModel()->removeItem( this );
+  }
+}
+
+int QgsLayoutItem::type() const
+{
+  return QgsLayoutItemRegistry::LayoutItem;
 }
 
 void QgsLayoutItem::setId( const QString &id )

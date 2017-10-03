@@ -405,6 +405,7 @@
 %Include layout/qgslayoutitempage.sip
 %Include layout/qgslayoutitemregistry.sip
 %Include layout/qgslayoutitemshape.sip
+%Include layout/qgslayoutmodel.sip
 %Include layout/qgslayoutpagecollection.sip
 %Include layout/qgslayoutobject.sip
 %Include symbology/qgscptcityarchive.sip

@@ -90,6 +90,15 @@ QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )
   initPropertyDefinitions();
 }
 
+const QgsLayout *QgsLayoutObject::layout() const
+{
+  return mLayout.data();
+}
+
+QgsLayout *QgsLayoutObject::layout()
+{
+  return mLayout.data();
+}
 
 void QgsLayoutObject::setCustomProperty( const QString &key, const QVariant &value )
 {

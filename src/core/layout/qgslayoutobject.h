@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QDomNode>
 #include <QMap>
+#include <QPointer>
 
 class QgsLayout;
 class QPainter;
@@ -110,12 +111,12 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     /**
      * Returns the layout the object is attached to.
      */
-    SIP_SKIP const QgsLayout *layout() const { return mLayout; }
+    SIP_SKIP const QgsLayout *layout() const;
 
     /**
      * Returns the layout the object is attached to.
      */
-    QgsLayout *layout() { return mLayout; }
+    QgsLayout *layout();
 
     /**
      * Returns a reference to the object's property collection, used for data defined overrides.
@@ -210,7 +211,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      */
     bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
-    QgsLayout *mLayout = nullptr;
+    QPointer< QgsLayout > mLayout;
 
     QgsPropertyCollection mDataDefinedProperties;
 

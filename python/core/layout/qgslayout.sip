@@ -41,6 +41,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  called on the new layout.
 %End
 
+    ~QgsLayout();
+
     void initializeDefaults();
 %Docstring
  Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
@@ -52,6 +54,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  The project associated with the layout. Used to get access to layers, map themes,
  relations and various other bits. It is never null.
  :rtype: QgsProject
+%End
+
+    QgsLayoutModel *itemsModel();
+%Docstring
+ Returns the items model attached to the layout.
+ :rtype: QgsLayoutModel
 %End
 
     QString name() const;
@@ -289,6 +297,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Adds an ``item`` to the layout. This should be called instead of the base class addItem()
  method. Ownership of the item is transferred to the layout.
+%End
+
+    void removeLayoutItem( QgsLayoutItem *item );
+%Docstring
+ Removes an ``item`` from the layout. This should be called instead of the base class removeItem()
+ method.
 %End
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
