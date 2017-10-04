@@ -75,7 +75,9 @@ Constraint for soft lock to a common angle
 
       QList<QgsPointXY> cadPointList;
 %Docstring
-point (index 2) for alignment purposes.
+ List of recent CAD points in map coordinates. These are used to turn relative constraints to absolute.
+ First point is the most recent point. Currently using only "previous" point (index 1) and "penultimate"
+ point (index 2) for alignment purposes.
 %End
 
     };
