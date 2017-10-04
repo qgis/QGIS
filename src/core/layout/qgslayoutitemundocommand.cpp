@@ -75,7 +75,7 @@ void QgsLayoutItemUndoCommand::restoreState( QDomDocument &stateDoc )
 QgsLayoutItem *QgsLayoutItemUndoCommand::recreateItem( int itemType, QgsLayout *layout )
 {
   QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( itemType, layout );
-  mLayout->addLayoutItem( item );
+  mLayout->addLayoutItemPrivate( item );
   return item;
 }
 
@@ -116,7 +116,7 @@ void QgsLayoutItemDeleteUndoCommand::redo()
   QgsLayoutItem *item = layout()->itemByUuid( itemUuid() );
   Q_ASSERT_X( item, "QgsLayoutItemDeleteUndoCommand::redo", "could not find item to re-delete!" );
 
-  layout()->removeLayoutItem( item );
+  layout()->removeLayoutItemPrivate( item );
 }
 
 QgsLayoutItemAddItemCommand::QgsLayoutItemAddItemCommand( QgsLayoutItem *item, const QString &text, int id, QUndoCommand *parent )
@@ -146,7 +146,7 @@ void QgsLayoutItemAddItemCommand::undo()
   QgsLayoutItem *item = layout()->itemByUuid( itemUuid() );
   if ( item )
   {
-    layout()->removeLayoutItem( item );
+    layout()->removeLayoutItemPrivate( item );
   }
 }
 

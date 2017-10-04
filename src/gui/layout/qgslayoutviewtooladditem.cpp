@@ -26,7 +26,6 @@
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutnewitempropertiesdialog.h"
 #include "qgssettings.h"
-#include "qgslayoutitemundocommand.h"
 #include <QGraphicsRectItem>
 #include <QPen>
 #include <QBrush>
@@ -119,7 +118,6 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
 
   layout()->addLayoutItem( item );
-  layout()->undoStack()->stack()->push( new QgsLayoutItemAddItemCommand( item, tr( "Created %1" ).arg( QgsApplication::layoutItemRegistry()->itemMetadata( mItemType )->visibleName() ) ) );
   layout()->setSelectedItem( item );
 }
 

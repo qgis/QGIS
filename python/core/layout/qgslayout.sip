@@ -369,6 +369,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Removes an ``item`` from the layout. This should be called instead of the base class removeItem()
  method.
+ The item will also be deleted.
 %End
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;

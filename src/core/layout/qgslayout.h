@@ -417,6 +417,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Removes an \a item from the layout. This should be called instead of the base class removeItem()
      * method.
+     * The item will also be deleted.
      */
     void removeLayoutItem( QgsLayoutItem *item );
 
@@ -489,7 +490,19 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //! Reads only the layout settings (not member settings like grid settings, etc) from XML
     bool readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    /**
+     * Adds a layout item to the layout, without adding the corresponding undo commands.
+     */
+    void addLayoutItemPrivate( QgsLayoutItem *item );
 
+    /**
+     * Removes an item from the layout, without adding the corresponding undo commands.
+     */
+    void removeLayoutItemPrivate( QgsLayoutItem *item );
+
+    friend class QgsLayoutItemAddItemCommand;
+    friend class QgsLayoutItemDeleteUndoCommand;
+    friend class QgsLayoutItemUndoCommand;
     friend class QgsLayoutUndoCommand;
     friend class QgsLayoutModel;
 };

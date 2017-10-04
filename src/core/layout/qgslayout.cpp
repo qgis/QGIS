@@ -21,6 +21,7 @@
 #include "qgslayoutguidecollection.h"
 #include "qgsreadwritecontext.h"
 #include "qgsproject.h"
+#include "qgslayoutitemundocommand.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -360,19 +361,24 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
 
 void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 {
-  addItem( item );
-  updateBounds();
-  mItemsModel->rebuildZList();
+  addLayoutItemPrivate( item );
+  QString undoText;
+  if ( QgsLayoutItemAbstractMetadata *metadata = QgsApplication::layoutItemRegistry()->itemMetadata( item->type() ) )
+  {
+    undoText = tr( "Created %1" ).arg( metadata->visibleName() );
+  }
+  else
+  {
+    undoText = tr( "Created item" );
+  }
+  mUndoStack->stack()->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
 }
 
 void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
 {
-  mItemsModel->setItemRemoved( item );
-  removeItem( item );
-#if 0 //TODO
-  emit itemRemoved( item );
-#endif
-  item->deleteLater();
+  QgsLayoutItemDeleteUndoCommand *deleteCommand = new QgsLayoutItemDeleteUndoCommand( item, tr( "Deleted item" ) );
+  removeLayoutItemPrivate( item );
+  mUndoStack->stack()->push( deleteCommand );
 }
 
 QgsLayoutUndoStack *QgsLayout::undoStack()
@@ -455,6 +461,23 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
   setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
   return true;
+}
+
+void QgsLayout::addLayoutItemPrivate( QgsLayoutItem *item )
+{
+  addItem( item );
+  updateBounds();
+  mItemsModel->rebuildZList();
+}
+
+void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
+{
+  mItemsModel->setItemRemoved( item );
+  removeItem( item );
+#if 0 //TODO
+  emit itemRemoved( item );
+#endif
+  item->deleteLater();
 }
 
 void QgsLayout::updateZValues( const bool addUndoCommands )

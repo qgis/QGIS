@@ -1372,7 +1372,6 @@ void TestQgsLayoutItem::undoRedo()
   item->setFrameStrokeColor( QColor( 255, 100, 200 ) );
   l.addLayoutItem( item );
 
-  l.undoStack()->stack()->push( new QgsLayoutItemAddItemCommand( item, QString() ) );
   QVERIFY( pItem );
   QVERIFY( l.items().contains( item ) );
   QCOMPARE( l.itemByUuid( uuid ), item );
@@ -1412,9 +1411,7 @@ void TestQgsLayoutItem::undoRedo()
   QCOMPARE( item->frameStrokeColor().name(), QColor( 255, 100, 200 ).name() );
 
   // delete item
-  QgsLayoutItemDeleteUndoCommand *deleteCommand = new QgsLayoutItemDeleteUndoCommand( item, QString() );
   l.removeLayoutItem( item );
-  l.undoStack()->stack()->push( deleteCommand );
 
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
   QVERIFY( !pItem );

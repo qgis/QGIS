@@ -585,9 +585,7 @@ void QgsLayoutView::deleteSelectedItems()
     //delete selected items
     for ( QgsLayoutItem *item : selectedItems )
     {
-      QgsLayoutItemDeleteUndoCommand *deleteCommand = new QgsLayoutItemDeleteUndoCommand( item, QString() );
       currentLayout()->removeLayoutItem( item );
-      currentLayout()->undoStack()->stack()->push( deleteCommand );
     }
     currentLayout()->undoStack()->endMacro();
     currentLayout()->project()->setDirty( true );
