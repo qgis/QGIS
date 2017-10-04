@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
-    <height>243</height>
+    <width>226</width>
+    <height>179</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Choose or create a configuration.</string>
+          <string>Choose or create an authentication configuration</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -101,7 +101,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Credentials are encrypted and stored in the QGIS authentication database. </string>
+          <string>Configurations store encrypted credentials in the QGIS authentication database.</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -146,26 +146,66 @@
        <property name="spacing">
         <number>6</number>
        </property>
-       <item row="6" column="1">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+       <item row="4" column="0" colspan="3">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QPushButton" name="btnConvertToEncrypted">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Convert to configuration</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="2">
+        <widget class="QCheckBox" name="cbStorePassword">
+         <property name="text">
+          <string>Store</string>
          </property>
-         <property name="sizeHint" stdset="0">
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="3">
+        <widget class="QLabel" name="lblWarning">
+         <property name="styleSheet">
+          <string notr="true">QLabel{color: rgb(255, 0, 0);font-weight: bold;}</string>
+         </property>
+         <property name="text">
+          <string>Warning text!</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="txtUserName">
+         <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>80</width>
            <height>0</height>
           </size>
          </property>
-        </spacer>
+        </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
+       <item row="1" column="2">
+        <widget class="QCheckBox" name="cbStoreUsername">
          <property name="text">
-          <string>&amp;User name</string>
+          <string>Store</string>
          </property>
-         <property name="buddy">
-          <cstring>txtUserName</cstring>
+         <property name="checked">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -195,49 +235,26 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="txtUserName">
-         <property name="minimumSize">
+       <item row="6" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>80</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
-        </widget>
+        </spacer>
        </item>
-       <item row="1" column="2">
-        <widget class="QCheckBox" name="cbStoreUsername">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Store</string>
+          <string>&amp;User name</string>
          </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <widget class="QCheckBox" name="cbStorePassword">
-         <property name="text">
-          <string>Store</string>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="3">
-        <widget class="QLabel" name="lblWarning">
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;Warning: credentials stored unencrypted!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
+         <property name="buddy">
+          <cstring>txtUserName</cstring>
          </property>
         </widget>
        </item>
@@ -256,23 +273,6 @@
           <set>Qt::NoTextInteraction</set>
          </property>
         </widget>
-       </item>
-       <item row="4" column="0" colspan="3">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QPushButton" name="btnConvertToEncrypted">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Convert to configuration</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>

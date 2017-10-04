@@ -312,7 +312,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mAuthSettings->setDataprovider( QStringLiteral( "proxy" ) );
   QString authcfg = mSettings->value( QStringLiteral( "proxy/authcfg" ) ).toString();
   mAuthSettings->setConfigId( authcfg );
-  mAuthSettings->setWarningText( tr( "<b style=\"color:red\">Warning: credentials are stored unencrypted (in clear text) in the system settings!</b>" ) );
+  mAuthSettings->setWarningText( mAuthSettings->formattedWarning( QgsAuthSettingsWidget::UserSettings ) );
 
   //Web proxy settings
   grpProxy->setChecked( mSettings->value( QStringLiteral( "proxy/proxyEnabled" ), "0" ).toBool() );

@@ -39,6 +39,8 @@ QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
     mAuthConfigSelect->setConfigId( configId );
   }
   setBasicText( "" );
+  // default to warning about basic settings stored in project file
+  setWarningText( formattedWarning( ProjectFile ) );
   connect( btnConvertToEncrypted, &QPushButton::clicked, this, &QgsAuthSettingsWidget::convertToEncrypted );
   connect( txtUserName, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::userNameTextChanged );
   connect( txtPassword, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::passwordTextChanged );
@@ -97,6 +99,18 @@ void QgsAuthSettingsWidget::setDataprovider( const QString &dataprovider )
 const QString QgsAuthSettingsWidget::dataprovider() const
 {
   return mDataprovider;
+}
+
+const QString QgsAuthSettingsWidget::formattedWarning( WarningType warning )
+{
+  QString out = tr( "<div>Warning: credentials stored as plain text in %1.</div>" );
+  switch ( warning )
+  {
+    case ProjectFile:
+      return out.arg( tr( "project file" ) );
+    case UserSettings:
+      return out.arg( tr( "user settings" ) );
+  }
 }
 
 const QString QgsAuthSettingsWidget::configId() const

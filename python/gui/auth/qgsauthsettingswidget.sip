@@ -22,6 +22,12 @@ class QgsAuthSettingsWidget : QWidget
 %End
   public:
 
+    enum WarningType
+    {
+      ProjectFile,
+      UserSettings
+    };
+
     explicit QgsAuthSettingsWidget( QWidget *parent /TransferThis/ = 0,
                                     const QString &configId = QString(),
                                     const QString &username = QString(),
@@ -41,6 +47,7 @@ class QgsAuthSettingsWidget : QWidget
 %Docstring
  setWarningText set the text of the warning label
  \param warningText the text of the warning label
+.. seealso:: formattedWarning()
 %End
 
     void setBasicText( const QString &basicText );
@@ -101,6 +108,14 @@ class QgsAuthSettingsWidget : QWidget
  :rtype: str
 %End
 
+    static const QString formattedWarning( WarningType warning );
+%Docstring
+ warning text message based upon where credentials are stored
+ \param enum of warning type
+ :return: pre-formatted warning text
+ :rtype: str
+%End
+
     bool btnConvertToEncryptedIsEnabled( ) const;
 %Docstring
  convertButtonEnabled, mainly useful for unit tests
@@ -144,7 +159,6 @@ class QgsAuthSettingsWidget : QWidget
  :return: true if "Store" checkbox for the username is checked
  :rtype: bool
 %End
-
 
     bool configurationTabIsSelected( );
 %Docstring

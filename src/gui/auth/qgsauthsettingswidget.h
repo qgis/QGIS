@@ -35,6 +35,14 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
 
   public:
 
+    //! Type of certificate usage
+    enum WarningType
+    {
+      ProjectFile,
+      UserSettings
+    };
+    Q_ENUM( WarningType )
+
     /**
      * Create a dialog for setting an associated authentication config, either
      * from existing configs, or creating/removing them from auth database
@@ -53,6 +61,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     /**
      * \brief setWarningText set the text of the warning label
      * \param warningText the text of the warning label
+     * \see formattedWarning()
      */
     void setWarningText( const QString &warningText );
 
@@ -111,6 +120,13 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     const QString dataprovider( ) const;
 
     /**
+     * \brief warning text message based upon where credentials are stored
+     * \param enum of warning type
+     * \return pre-formatted warning text
+     */
+    static const QString formattedWarning( WarningType warning );
+
+    /**
      * \brief convertButtonEnabled, mainly useful for unit tests
      * \return true if the convert button is enabled
      */
@@ -150,7 +166,6 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \return true if "Store" checkbox for the username is checked
      */
     bool storeUsernameIsChecked( ) const;
-
 
     /**
      * \brief configurationTabIsSelected
