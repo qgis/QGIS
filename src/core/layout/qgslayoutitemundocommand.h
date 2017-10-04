@@ -107,6 +107,35 @@ class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoComman
 
 };
 
+
+/**
+ * \ingroup core
+ * An undo command subclass for layout item addition undo commands.
+ *
+ * QgsLayoutItemAddItemCommand is a specific layout undo command which handles
+ * layout item creation. When applied (e.g. as a result of a 'redo' action),
+ * the associated layout item is recreated and added to the layout.
+ *
+ * \since QGIS 3.0
+*/
+class CORE_EXPORT QgsLayoutItemAddItemCommand: public QgsLayoutItemUndoCommand
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutItemAddItemCommand.
+     * \param item associated layout item
+     * \param text undo command descriptive text
+     * \param id optional undo command id, used for automatic command merging
+     * \param parent command
+     */
+    QgsLayoutItemAddItemCommand( QgsLayoutItem *item, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
+    bool containsChange() const override;
+    bool mergeWith( const QUndoCommand *command ) override;
+    void undo() override;
+
+};
+
 ///@endcond
 
 #endif

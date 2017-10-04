@@ -28,6 +28,8 @@
 #include "qgssettings.h"
 #include "qgsrectangle.h"
 #include "qgsapplication.h"
+#include "qgslayoutitemundocommand.h"
+#include "qgsproject.h"
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>
@@ -583,9 +585,12 @@ void QgsLayoutView::deleteSelectedItems()
     //delete selected items
     for ( QgsLayoutItem *item : selectedItems )
     {
+      QgsLayoutItemDeleteUndoCommand *deleteCommand = new QgsLayoutItemDeleteUndoCommand( item, QString() );
       currentLayout()->removeLayoutItem( item );
+      currentLayout()->undoStack()->stack()->push( deleteCommand );
     }
     currentLayout()->undoStack()->endMacro();
+    currentLayout()->project()->setDirty( true );
 
 #if 0
   }

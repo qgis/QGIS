@@ -116,8 +116,39 @@ void QgsLayoutItemDeleteUndoCommand::redo()
   QgsLayoutItem *item = layout()->itemByUuid( itemUuid() );
   Q_ASSERT_X( item, "QgsLayoutItemDeleteUndoCommand::redo", "could not find item to re-delete!" );
 
-  layout()->removeItem( item );
-  item->deleteLater();
+  layout()->removeLayoutItem( item );
 }
+
+QgsLayoutItemAddItemCommand::QgsLayoutItemAddItemCommand( QgsLayoutItem *item, const QString &text, int id, QUndoCommand *parent )
+  : QgsLayoutItemUndoCommand( item, text, id, parent )
+{
+  saveAfterState();
+}
+
+bool QgsLayoutItemAddItemCommand::containsChange() const
+{
+  return true;
+}
+
+bool QgsLayoutItemAddItemCommand::mergeWith( const QUndoCommand * )
+{
+  return false;
+}
+
+void QgsLayoutItemAddItemCommand::undo()
+{
+  if ( mFirstRun )
+  {
+    mFirstRun = false;
+    return;
+  }
+
+  QgsLayoutItem *item = layout()->itemByUuid( itemUuid() );
+  if ( item )
+  {
+    layout()->removeLayoutItem( item );
+  }
+}
+
 
 ///@endcond

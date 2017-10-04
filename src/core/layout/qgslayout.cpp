@@ -372,6 +372,7 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
 #if 0 //TODO
   emit itemRemoved( item );
 #endif
+  item->deleteLater();
 }
 
 QgsLayoutUndoStack *QgsLayout::undoStack()
