@@ -226,10 +226,9 @@ class ZonalStatistics(GeoAlgorithm):
             rasterizedArray = rasterizedDS.ReadAsArray()
 
             masked = numpy.ma.MaskedArray(srcArray,
-                                          mask=numpy.logical_or.reduce((
+                                          mask=numpy.logical_or(
                                               srcArray == noData,
-                                              numpy.logical_not(rasterizedArray),
-                                              numpy.isnan(srcArray))))
+                                              numpy.logical_not(rasterizedArray)))
 
             outFeat.setGeometry(geom)
 
