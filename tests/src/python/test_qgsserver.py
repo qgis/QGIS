@@ -51,7 +51,9 @@ import base64
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
-RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
+RE_ELEMENT = b'</*([^>\s]+)[ >]'
+RE_ELEMENT_CONTENT = b'\>([^><]+)'
+RE_ATTRIBUTES = rb'((?:(?!\s|=).)*)\s*?=\s*?["\']?((?:(?<=")(?:(?<=\\)"|[^"])*|(?<=\')(?:(?<=\\)\'|[^\'])*)|(?:(?!"|\')(?:(?!\/>|>|\s).)+))'
 
 
 class QgsServerTestBase(unittest.TestCase):
@@ -71,17 +73,26 @@ class QgsServerTestBase(unittest.TestCase):
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
             # Compare tag
-            try:
-                self.assertEqual(re.findall(b'<([^>\s]+)[ >]', expected_line)[0],
-                                 re.findall(b'<([^>\s]+)[ >]', response_line)[0], msg=msg + "\nTag mismatch on line %s: %s != %s" % (line_no, expected_line, response_line))
-            except IndexError:
+            if re.match(RE_ELEMENT, expected_line):
+                expected_elements = re.findall(RE_ELEMENT, expected_line)
+                response_elements = re.findall(RE_ELEMENT, response_line)
+                self.assertEqual(expected_elements[0],
+                                 response_elements[0], msg=msg + "\nTag mismatch on line %s: %s != %s" % (line_no, expected_line, response_line))
+                # Compare content
+                if len(expected_elements) == 2 and expected_elements[0] == expected_elements[1]:
+                    expected_element_content = re.findall(RE_ELEMENT_CONTENT, expected_line)
+                    response_element_content = re.findall(RE_ELEMENT_CONTENT, response_line)
+                    self.assertEqual(expected_element_content[0],
+                                     response_element_content[0], msg=msg + "\nContent mismatch on line %s: %s != %s" % (line_no, expected_line, response_line))
+            else:
                 self.assertEqual(expected_line, response_line, msg=msg + "\nTag line mismatch %s: %s != %s\n%s" % (line_no, expected_line, response_line, msg))
             # print("---->%s\t%s == %s" % (line_no, expected_line, response_line))
             # Compare attributes
-            if re.match(RE_ATTRIBUTES, expected_line):  # has attrs
-                expected_attrs = sorted(re.findall(RE_ATTRIBUTES, expected_line))
-                response_attrs = sorted(re.findall(RE_ATTRIBUTES, response_line))
+            if re.findall(RE_ATTRIBUTES, expected_line):  # has attrs
+                expected_attrs, expected_values = zip(*sorted(re.findall(RE_ATTRIBUTES, expected_line)))
+                response_attrs, response_values = zip(*sorted(re.findall(RE_ATTRIBUTES, response_line)))
                 self.assertEqual(expected_attrs, response_attrs, msg=msg + "\nXML attributes differ at line {0}: {1} != {2}".format(line_no, expected_attrs, response_attrs))
+                self.assertEqual(expected_values, response_values, msg=msg + "\nXML attribute values differ at line {0}: {1} != {2}".format(line_no, expected_attrs, response_attrs))
             line_no += 1
 
     @classmethod
