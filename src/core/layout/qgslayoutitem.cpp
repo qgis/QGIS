@@ -114,7 +114,13 @@ void QgsLayoutItem::setLocked( const bool locked )
     return;
   }
 
+  if ( mLayout && !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, locked ? tr( "Item locked" ) : tr( "Item unlocked" ) );
+
   mIsLocked = locked;
+
+  if ( mLayout && !mBlockUndoCommands )
+    mLayout->undoStack()->endCommand();
 
   //inform model that id data has changed
   if ( mLayout )
@@ -719,6 +725,7 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
 {
   readObjectPropertiesFromElement( element, document, context );
 
+  mBlockUndoCommands = true;
   mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
   setId( element.attribute( QStringLiteral( "id" ) ) );
   mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
@@ -826,6 +833,7 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
   mEvaluatedExcludeFromExports = mExcludeFromExports;
 #endif
 
+  mBlockUndoCommands = false;
   return true;
 }
 

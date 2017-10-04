@@ -504,9 +504,7 @@ void QgsLayoutView::lockSelectedItems()
   const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
   for ( QgsLayoutItem *item : selectionList )
   {
-    currentLayout()->undoStack()->beginCommand( item, QString() );
     item->setLocked( true );
-    currentLayout()->undoStack()->endCommand();
   }
 
   currentLayout()->deselectAll();
@@ -530,11 +528,9 @@ void QgsLayoutView::unlockAllItems()
     if ( item && item->isLocked() )
     {
       focusItem = item;
-      currentLayout()->undoStack()->beginCommand( item, QString() );
       item->setLocked( false );
       //select unlocked items, same behavior as illustrator
       item->setSelected( true );
-      currentLayout()->undoStack()->endCommand();
     }
   }
   currentLayout()->undoStack()->endMacro();

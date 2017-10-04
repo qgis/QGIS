@@ -590,6 +590,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     //! Background color
     QColor mBackgroundColor = QColor( 255, 255, 255 );
 
+    bool mBlockUndoCommands = false;
+
     void initConnectionsToLayout();
 
     //! Prepares a painter by setting rendering flags
