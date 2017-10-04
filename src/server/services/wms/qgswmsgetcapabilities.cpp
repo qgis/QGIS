@@ -769,7 +769,6 @@ namespace QgsWms
     const QgsLayerTree *projectLayerTreeRoot = project->layerTreeRoot();
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
-    layerParentElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "1" ) );
 
     // Root Layer name
     QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "Name" ) );
