@@ -30,6 +30,7 @@ ccache -z
 TIMEOUT=$(expr 40 \* 60 - `date +%s` + `cat /tmp/travis_timestamp`)
 
 export CTEST_BUILD_COMMAND=/usr/local/bin/ninja
+export CTEST_BUILD_DIR=${TRAVIS_BUILD_DIR}
 
 gtimeout ${TIMEOUT}s ctest -V -E "$(cat ${DIR}/blacklist.txt | gsed -r '/^(#.*?)?$/d' | gpaste -sd '|' -)" -S ${DIR}/../travis.ctest --output-on-failure
 
