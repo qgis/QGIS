@@ -228,6 +228,17 @@ class TestQgsLayoutAligner(unittest.TestCase):
         self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 16, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(10, 16, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
+        l.undoStack().stack().undo()
+
+        item2.attemptResize(QgsLayoutSize(10, 19, QgsUnitTypes.LayoutMillimeters))
+        QgsLayoutAligner.resizeItems(l, [item1, item2, item3], QgsLayoutAligner.ResizeToSquare)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 18, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(19, 19, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.8, QgsUnitTypes.LayoutCentimeters))
+
+        l.undoStack().stack().undo()
+        QgsLayoutAligner.resizeItems(l, [item1], QgsLayoutAligner.ResizeToSquare)
+        self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 18, QgsUnitTypes.LayoutMillimeters))
 
 
 if __name__ == '__main__':

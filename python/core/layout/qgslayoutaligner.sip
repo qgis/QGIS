@@ -50,6 +50,7 @@ class QgsLayoutAligner
       ResizeWidest,
       ResizeShortest,
       ResizeTallest,
+      ResizeToSquare,
     };
 
     static void alignItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Alignment alignment );

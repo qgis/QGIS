@@ -191,6 +191,8 @@
      <addaction name="separator"/>
      <addaction name="mActionResizeShortest"/>
      <addaction name="mActionResizeTallest"/>
+     <addaction name="separator"/>
+     <addaction name="mActionResizeToSquare"/>
     </widget>
     <addaction name="mActionRaiseItems"/>
     <addaction name="mActionLowerItems"/>
@@ -909,6 +911,18 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="mActionResizeToSquare">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionResizeTallest.svg</normaloff>:/images/themes/default/mActionResizeTallest.svg</iconset>
+   </property>
+   <property name="text">
+    <string>To S&amp;quare</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes items to squares</string>
    </property>
   </action>
  </widget>

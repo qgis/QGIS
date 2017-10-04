@@ -178,7 +178,7 @@ void QgsLayoutAligner::distributeItems( QgsLayout *layout, const QList<QgsLayout
 
 void QgsLayoutAligner::resizeItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, QgsLayoutAligner::Resize resize )
 {
-  if ( items.size() < 2 )
+  if ( !( items.size() >= 2 || ( items.size() == 1 && resize == ResizeToSquare ) ) )
     return;
 
   auto collectSize = [resize]( QgsLayoutItem * item )->double
@@ -188,6 +188,7 @@ void QgsLayoutAligner::resizeItems( QgsLayout *layout, const QList<QgsLayoutItem
     {
       case ResizeNarrowest:
       case ResizeWidest:
+      case ResizeToSquare:
         return itemBBox.width();
       case ResizeShortest:
       case ResizeTallest:
@@ -211,6 +212,8 @@ void QgsLayoutAligner::resizeItems( QgsLayout *layout, const QList<QgsLayoutItem
       case ResizeWidest:
         newSize = std::max( size, newSize );
         break;
+      case ResizeToSquare:
+        break;
     }
   }
 
@@ -227,6 +230,14 @@ void QgsLayoutAligner::resizeItems( QgsLayout *layout, const QList<QgsLayoutItem
       case ResizeShortest:
         newSize.setHeight( size );
         break;
+      case ResizeToSquare:
+      {
+        if ( newSize.width() > newSize.height() )
+          newSize.setHeight( newSize.width() );
+        else
+          newSize.setWidth( newSize.height() );
+        break;
+      }
     }
 
     // need to keep item units
@@ -315,6 +326,8 @@ QString QgsLayoutAligner::undoText( QgsLayoutAligner::Resize resize )
       return QObject::tr( "Resized items to shortest" );
     case ResizeTallest:
       return QObject::tr( "Resized items to tallest" );
+    case ResizeToSquare:
+      return QObject::tr( "Resized items to square" );
   }
   return QString(); //no warnings
 }

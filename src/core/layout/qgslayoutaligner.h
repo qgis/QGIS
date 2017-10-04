@@ -67,6 +67,7 @@ class CORE_EXPORT QgsLayoutAligner
       ResizeWidest, //!< Resize width to match widest width
       ResizeShortest, //!< Resize height to match shortest height
       ResizeTallest, //!< Resize height to match tallest height
+      ResizeToSquare, //!< Resize items to square
     };
 
     /**

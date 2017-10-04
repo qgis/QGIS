@@ -213,6 +213,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   resizeToolButton->addAction( mActionResizeWidest );
   resizeToolButton->addAction( mActionResizeShortest );
   resizeToolButton->addAction( mActionResizeTallest );
+  resizeToolButton->addAction( mActionResizeToSquare );
   resizeToolButton->setDefaultAction( mActionResizeNarrowest );
   mActionsToolbar->addWidget( resizeToolButton );
 
@@ -317,6 +318,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionResizeTallest, &QAction::triggered, this, [ = ]
   {
     mView->resizeSelectedItems( QgsLayoutAligner::ResizeTallest );
+  } );
+  connect( mActionResizeToSquare, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeToSquare );
   } );
 
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
