@@ -536,8 +536,8 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 #endif
   mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
   mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
-  mItemsTreeView->setColumnWidth( 0, 30 );
-  mItemsTreeView->setColumnWidth( 1, 30 );
+  mItemsTreeView->setColumnWidth( 0, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
+  mItemsTreeView->setColumnWidth( 1, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
   mItemsTreeView->header()->setSectionsMovable( false );
 
   connect( mItemsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, mLayout->itemsModel(), &QgsLayoutModel::setSelected );
