@@ -157,21 +157,90 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
   polyline.reserve( exterior->numPoints() );
 
   QgsVertexId::VertexType vt;
-  QgsPoint pt, ptPrev;
+  QgsPoint pt, ptFirst;
+
+  QVector3D pNormal(0, 0, 0);
+  int pCount = exterior->numPoints();
+  for (int i = 0; i < pCount - 1; i++)
+  {
+    QgsPoint pt1, pt2;
+    exterior->pointAt(i, pt1, vt);
+    exterior->pointAt((i + 1) % pCount, pt2, vt);
+    ptFirst = pt1;
+
+    pNormal.setX(pNormal.x() + (pt1.y() - pt2.y()) * (pt1.z() + pt2.z()));
+    pNormal.setY(pNormal.y() + (pt1.z() - pt2.z()) * (pt1.x() + pt2.x()));
+    pNormal.setZ(pNormal.z() + (pt1.x() - pt2.x()) * (pt1.y() + pt2.y()));
+  }
+
+  pNormal.normalize();
+
+  if (pNormal.length() < 0.999 || pNormal.length() > 1.001)
+  {
+      return;
+  }
+
+  if (pCount == 4)
+  {
+      QgsPoint pt;
+      for (int i = 0; i < 3; i++)
+      {
+          exterior->pointAt(i, pt, vt);
+          mData << pt.x() - mOriginX << pt.z() << - pt.y() + mOriginY;
+          if ( mAddNormals )
+            mData << pNormal.x() << pNormal.z() << - pNormal.y();
+      }
+
+      return;
+  }
+
+  QVector3D pOrigin(ptFirst.x(), ptFirst.y(), ptFirst.z()), pXVector;
+  if (pNormal.z() > 0.001 || pNormal.z() < -0.001)
+  {
+      pXVector = QVector3D(1, 0, -pNormal.x()/pNormal.z());
+  }
+  else if (pNormal.y() > 0.001 || pNormal.y() < -0.001)
+  {
+      pXVector = QVector3D(1, -pNormal.x()/pNormal.y(), 0);
+  }
+  else
+  {
+      pXVector = QVector3D(-pNormal.y() / pNormal.x(), 1, 0);
+  }
+  QVector3D pYVector = QVector3D::normal(pNormal, pXVector);
+  pXVector.normalize();
 
   for ( int i = 0; i < exterior->numPoints() - 1; ++i )
   {
     exterior->pointAt( i, pt, vt );
-    if ( i == 0 || pt != ptPrev )
+    QVector3D tempPt( pt.x(), pt.y(), (qIsNaN( pt.z() ) ? 0 : pt.z()) );
+    float x = QVector3D::dotProduct(tempPt - pOrigin, pXVector);
+    float y = QVector3D::dotProduct(tempPt - pOrigin, pYVector);
+
+    p2t::Point *pt2 = new p2t::Point( x, y );
+    bool found = false;
+    for (std::vector<p2t::Point *>::iterator it = polyline.begin(); it != polyline.end(); it++)
     {
-      p2t::Point *pt2 = new p2t::Point( pt.x() - mOriginX, pt.y() - mOriginY );
-      polyline.push_back( pt2 );
-      float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
-      z[pt2] = zPt;
+        if (*pt2 == **it)
+        {
+            found = true;
+        }
     }
-    ptPrev = pt;
+
+    if (found)
+    {
+        continue;
+    }
+
+    polyline.push_back(pt2);
+
+    float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
+    z[pt2] = zPt;
   }
   polylinesToDelete << polyline;
+
+  if (polyline.size() < 3)
+    return;
 
   p2t::CDT *cdt = new p2t::CDT( polyline );
 
@@ -184,14 +253,30 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     for ( int j = 0; j < hole->numPoints() - 1; ++j )
     {
       hole->pointAt( j, pt, vt );
-      if ( j == 0 || pt != ptPrev )
+      QVector3D tempPt( pt.x(), pt.y(), (qIsNaN( pt.z() ) ? 0 : pt.z()) );
+
+      float x = QVector3D::dotProduct(tempPt - pOrigin, pXVector);
+      float y = QVector3D::dotProduct(tempPt - pOrigin, pYVector);
+
+      p2t::Point *pt2 = new p2t::Point( x, y );
+      bool found = false;
+      for (std::vector<p2t::Point *>::iterator it = polyline.begin(); it != polyline.end(); it++)
       {
-        p2t::Point *pt2 = new p2t::Point( pt.x() - mOriginX, pt.y() - mOriginY );
-        holePolyline.push_back( pt2 );
-        float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
-        z[pt2] = zPt;
+        if (*pt2 == **it)
+        {
+          found = true;
+        }
       }
-      ptPrev = pt;
+
+      if (found)
+      {
+        continue;
+      }
+
+      holePolyline.push_back(pt2);
+
+      float zPt = qIsNaN( pt.z() ) ? 0 : pt.z();
+      z[pt2] = zPt;
     }
     cdt->AddHole( holePolyline );
     polylinesToDelete << holePolyline;
@@ -199,7 +284,32 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
 
   // TODO: robustness (no nearly duplicate points, invalid geometries ...)
 
-  cdt->Triangulate();
+  if (polyline.size() == 3)
+  {
+      for (std::vector<p2t::Point*>::iterator it = polyline.begin(); it != polyline.end(); it++)
+      {
+          p2t::Point *p = *it;
+          double zPt = z[p];
+          QVector3D nPoint = pOrigin + pXVector * p->x + pYVector * p->y;
+          double fx = nPoint.x() - mOriginX;
+          double fy = nPoint.y() - mOriginY;
+          double fz = extrusionHeight + (qIsNaN(zPt) ? 0 : zPt);
+          mData << fx << fz << -fy;
+          if ( mAddNormals )
+            mData << pNormal.x() << pNormal.z() << - pNormal.y();
+      }
+
+      return;
+  }
+
+  try {
+    cdt->Triangulate();
+  }
+  catch (...)
+  {
+    qDebug() << "Triangulation failed. Skipping polygon...";
+    return;
+  }
 
   std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
 
@@ -210,9 +320,13 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     {
       p2t::Point *p = t->GetPoint( j );
       float zPt = z[p];
-      mData << p->x << extrusionHeight + zPt << -p->y;
+      QVector3D nPoint = pOrigin + pXVector * p->x + pYVector * p->y;
+      float fx = nPoint.x() - mOriginX;
+      float fy = nPoint.y() - mOriginY;
+      float fz = extrusionHeight + (qIsNaN(zPt) ? 0 : zPt);
+      mData << fx << fz << -fy;
       if ( mAddNormals )
-        mData << 0.f << 1.f << 0.f;
+        mData << pNormal.x() << pNormal.z() << - pNormal.y();
     }
   }
 
