@@ -916,7 +916,7 @@
   <action name="mActionResizeToSquare">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionResizeTallest.svg</normaloff>:/images/themes/default/mActionResizeTallest.svg</iconset>
+     <normaloff>:/images/themes/default/mActionResizeSquare.svg</normaloff>:/images/themes/default/mActionResizeSquare.svg</iconset>
    </property>
    <property name="text">
     <string>Resize to S&amp;quare</string>

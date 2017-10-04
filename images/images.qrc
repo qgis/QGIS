@@ -582,6 +582,7 @@
         <file>themes/default/mActionAddGeoPackageLayer.svg</file>
         <file>icons/qgis_icon.svg</file>
         <file>themes/default/3d.svg</file>
+        <file>themes/default/mActionResizeSquare.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
