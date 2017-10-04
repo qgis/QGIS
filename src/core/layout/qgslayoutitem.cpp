@@ -649,21 +649,20 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
   element.setAttribute( QStringLiteral( "rotation" ), QString::number( rotation() ) );
 
-  //TODO
-  /*
-  composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
-  composerItemElem.setAttribute( "visibility", isVisible() );
+  element.setAttribute( "zValue", QString::number( zValue() ) );
+  element.setAttribute( "visibility", isVisible() );
   //position lock for mouse moves/resizes
-  if ( mItemPositionLocked )
+  if ( mIsLocked )
   {
-    composerItemElem.setAttribute( "positionLock", "true" );
+    element.setAttribute( "positionLock", "true" );
   }
   else
   {
-    composerItemElem.setAttribute( "positionLock", "false" );
+    element.setAttribute( "positionLock", "false" );
   }
-  */
 
+  //TODO
+#if 0
   //blend mode
   //  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
 
@@ -671,6 +670,7 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
   //  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
 
   //  composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
+#endif
 
   writeObjectPropertiesToElement( element, document, context );
   return true;
@@ -691,26 +691,30 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
   /*
   // temporary for groups imported from templates
   mTemplateUuid = itemElem.attribute( "templateUuid" );
+  */
+
   //position lock for mouse moves/resizes
-  QString positionLock = itemElem.attribute( "positionLock" );
+  QString positionLock = element.attribute( "positionLock" );
   if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
   {
-    setPositionLock( true );
+    setLocked( true );
   }
   else
   {
-    setPositionLock( false );
+    setLocked( false );
   }
   //visibility
-  setVisibility( itemElem.attribute( "visibility", "1" ) != "0" );
-  setZValue( itemElem.attribute( "zValue" ).toDouble() );
+  setVisible( element.attribute( "visibility", "1" ) != "0" );
+  setZValue( element.attribute( "zValue" ).toDouble() );
+#if 0 //TODO
   //blend mode
-  setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
+  setBlendMode( QgsMapRenderer::getCompositionMode( ( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
   //transparency
   setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
   mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
   mEvaluatedExcludeFromExports = mExcludeFromExports;
-  */
+#endif
+
   return true;
 }
 

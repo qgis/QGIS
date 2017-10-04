@@ -1321,6 +1321,9 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
   original->setItemRotation( 45.0 );
   original->setId( QStringLiteral( "test" ) );
+  original->setLocked( true );
+  original->setZValue( 55 );
+  original->setVisible( false );
 
   QgsLayoutItem *copy = createCopyViaXml( &l, original );
 
@@ -1334,6 +1337,9 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( copy->sizeWithUnits(), original->sizeWithUnits() );
   QCOMPARE( copy->positionWithUnits(), original->positionWithUnits() );
   QCOMPARE( copy->itemRotation(), original->itemRotation() );
+  QVERIFY( copy->isLocked() );
+  QCOMPARE( copy->zValue(), 55.0 );
+  QVERIFY( !copy->isVisible() );
 
   delete copy;
   delete original;
