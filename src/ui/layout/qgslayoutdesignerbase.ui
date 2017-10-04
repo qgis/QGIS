@@ -99,7 +99,7 @@
    </widget>
    <widget class="QMenu" name="mItemMenu">
     <property name="title">
-     <string>&amp;Items</string>
+     <string>&amp;Add Item</string>
     </property>
    </widget>
    <widget class="QMenu" name="mMenuView">
@@ -156,7 +156,7 @@
    </widget>
    <widget class="QMenu" name="menuLayout">
     <property name="title">
-     <string>Layout</string>
+     <string>&amp;Items</string>
     </property>
     <widget class="QMenu" name="menuAlign_Items">
      <property name="title">
@@ -856,7 +856,7 @@
      <normaloff>:/images/themes/default/mActionResizeNarrowest.svg</normaloff>:/images/themes/default/mActionResizeNarrowest.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Narrowest</string>
+    <string>To &amp;Narrowest</string>
    </property>
    <property name="toolTip">
     <string>Resizes item width to match the narrowest selected item</string>
@@ -868,7 +868,7 @@
      <normaloff>:/images/themes/default/mActionResizeWidest.svg</normaloff>:/images/themes/default/mActionResizeWidest.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Widest</string>
+    <string>To &amp;Widest</string>
    </property>
    <property name="toolTip">
     <string>Resizes item width to match the widest selected item</string>
@@ -880,7 +880,7 @@
      <normaloff>:/images/themes/default/mActionResizeShortest.svg</normaloff>:/images/themes/default/mActionResizeShortest.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Shortest</string>
+    <string>To &amp;Shortest</string>
    </property>
    <property name="toolTip">
     <string>Resizes item height to match the shortest selected item</string>
@@ -892,7 +892,7 @@
      <normaloff>:/images/themes/default/mActionResizeTallest.svg</normaloff>:/images/themes/default/mActionResizeTallest.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Tallest</string>
+    <string>To &amp;Tallest</string>
    </property>
    <property name="toolTip">
     <string>Resizes item height to match the tallest selected item</string>
