@@ -233,7 +233,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     void updateItemSelectStatus( QgsLayoutItem *item );
 
     /**
-     * Returns the QModelIndex corresponding to a QgsLayoutItem \a item and \column, if possible.
+     * Returns the QModelIndex corresponding to a QgsLayoutItem \a item and \a column, if possible.
      */
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
 

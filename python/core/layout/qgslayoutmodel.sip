@@ -222,7 +222,7 @@ class QgsLayoutModel: QAbstractItemModel
 
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
 %Docstring
- Returns the QModelIndex corresponding to a QgsLayoutItem ``item`` and \column, if possible.
+ Returns the QModelIndex corresponding to a QgsLayoutItem ``item`` and ``column``, if possible.
  :rtype: QModelIndex
 %End
 
