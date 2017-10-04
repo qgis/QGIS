@@ -856,7 +856,7 @@
      <normaloff>:/images/themes/default/mActionResizeNarrowest.svg</normaloff>:/images/themes/default/mActionResizeNarrowest.svg</iconset>
    </property>
    <property name="text">
-    <string>To &amp;Narrowest</string>
+    <string>Resize to &amp;Narrowest</string>
    </property>
    <property name="toolTip">
     <string>Resizes item width to match the narrowest selected item</string>
@@ -868,7 +868,7 @@
      <normaloff>:/images/themes/default/mActionResizeWidest.svg</normaloff>:/images/themes/default/mActionResizeWidest.svg</iconset>
    </property>
    <property name="text">
-    <string>To &amp;Widest</string>
+    <string>Resize to &amp;Widest</string>
    </property>
    <property name="toolTip">
     <string>Resizes item width to match the widest selected item</string>
@@ -880,7 +880,7 @@
      <normaloff>:/images/themes/default/mActionResizeShortest.svg</normaloff>:/images/themes/default/mActionResizeShortest.svg</iconset>
    </property>
    <property name="text">
-    <string>To &amp;Shortest</string>
+    <string>Resize to &amp;Shortest</string>
    </property>
    <property name="toolTip">
     <string>Resizes item height to match the shortest selected item</string>
@@ -892,7 +892,7 @@
      <normaloff>:/images/themes/default/mActionResizeTallest.svg</normaloff>:/images/themes/default/mActionResizeTallest.svg</iconset>
    </property>
    <property name="text">
-    <string>To &amp;Tallest</string>
+    <string>Resize to &amp;Tallest</string>
    </property>
    <property name="toolTip">
     <string>Resizes item height to match the tallest selected item</string>
@@ -919,7 +919,7 @@
      <normaloff>:/images/themes/default/mActionResizeTallest.svg</normaloff>:/images/themes/default/mActionResizeTallest.svg</iconset>
    </property>
    <property name="text">
-    <string>To S&amp;quare</string>
+    <string>Resize to S&amp;quare</string>
    </property>
    <property name="toolTip">
     <string>Resizes items to squares</string>
