@@ -779,7 +779,7 @@
   <action name="mActionDistributeLeft">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignLeft.svg</normaloff>:/images/themes/default/mActionAlignLeft.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDistributeLeft.svg</normaloff>:/images/themes/default/mActionDistributeLeft.svg</iconset>
    </property>
    <property name="text">
     <string>Distribute &amp;Left Edges</string>
@@ -791,7 +791,7 @@
   <action name="mActionDistributeHCenter">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignHCenter.svg</normaloff>:/images/themes/default/mActionAlignHCenter.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDistributeHCenter.svg</normaloff>:/images/themes/default/mActionDistributeHCenter.svg</iconset>
    </property>
    <property name="text">
     <string>Distribute &amp;Centers</string>
@@ -803,7 +803,7 @@
   <action name="mActionDistributeRight">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignRight.svg</normaloff>:/images/themes/default/mActionAlignRight.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDistributeRight.svg</normaloff>:/images/themes/default/mActionDistributeRight.svg</iconset>
    </property>
    <property name="text">
     <string>Distribute &amp;Right Edges</string>
@@ -815,7 +815,7 @@
   <action name="mActionDistributeTop">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignTop.svg</normaloff>:/images/themes/default/mActionAlignTop.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDistributeTop.svg</normaloff>:/images/themes/default/mActionDistributeTop.svg</iconset>
    </property>
    <property name="text">
     <string>Distribute &amp;Top Edges</string>
@@ -827,7 +827,7 @@
   <action name="mActionDistributeVCenter">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignVCenter.svg</normaloff>:/images/themes/default/mActionAlignVCenter.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDistributeVCenter.svg</normaloff>:/images/themes/default/mActionDistributeVCenter.svg</iconset>
    </property>
    <property name="text">
     <string>Distribute &amp;Vertical Centers</string>
@@ -839,7 +839,7 @@
   <action name="mActionDistributeBottom">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignBottom.svg</normaloff>:/images/themes/default/mActionAlignBottom.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDistributeBottom.svg</normaloff>:/images/themes/default/mActionDistributeBottom.svg</iconset>
    </property>
    <property name="text">
     <string>Distribute &amp;Bottom Edges</string>
@@ -851,7 +851,7 @@
   <action name="mActionResizeNarrowest">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignLeft.svg</normaloff>:/images/themes/default/mActionAlignLeft.svg</iconset>
+     <normaloff>:/images/themes/default/mActionResizeNarrowest.svg</normaloff>:/images/themes/default/mActionResizeNarrowest.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Narrowest</string>
@@ -863,7 +863,7 @@
   <action name="mActionResizeWidest">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignHCenter.svg</normaloff>:/images/themes/default/mActionAlignHCenter.svg</iconset>
+     <normaloff>:/images/themes/default/mActionResizeWidest.svg</normaloff>:/images/themes/default/mActionResizeWidest.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Widest</string>
@@ -875,7 +875,7 @@
   <action name="mActionResizeShortest">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignRight.svg</normaloff>:/images/themes/default/mActionAlignRight.svg</iconset>
+     <normaloff>:/images/themes/default/mActionResizeShortest.svg</normaloff>:/images/themes/default/mActionResizeShortest.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Shortest</string>
@@ -887,7 +887,7 @@
   <action name="mActionResizeTallest">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAlignTop.svg</normaloff>:/images/themes/default/mActionAlignTop.svg</iconset>
+     <normaloff>:/images/themes/default/mActionResizeTallest.svg</normaloff>:/images/themes/default/mActionResizeTallest.svg</iconset>
    </property>
    <property name="text">
     <string>&amp;Tallest</string>
