@@ -40,6 +40,7 @@ class QPicture;
 class CORE_EXPORT QgsSvgCacheEntry
 {
   public:
+
     QgsSvgCacheEntry();
 
     /** Constructor.
@@ -49,8 +50,10 @@ class CORE_EXPORT QgsSvgCacheEntry
      * \param widthScaleFactor width scale factor
      * \param fill color of fill
      * \param stroke color of stroke
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      */
-    QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke );
+    QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke,
+                      double fixedAspectRatio = 0 ) ;
     ~QgsSvgCacheEntry();
 
     //! QgsSvgCacheEntry cannot be copied.
@@ -63,6 +66,9 @@ class CORE_EXPORT QgsSvgCacheEntry
     double size = 0.0; //size in pixels (cast to int for QImage)
     double strokeWidth = 0;
     double widthScaleFactor = 1.0;
+
+    //! Fixed aspect ratio
+    double fixedAspectRatio = 0;
 
     /** SVG viewbox size.
      * \since QGIS 2.14
@@ -121,9 +127,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
      * \param fitsInCache
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      */
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                       double widthScaleFactor, bool &fitsInCache );
+                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
 
     /** Get SVG  as QPicture&.
      * \param path Absolute path to SVG file.
@@ -133,9 +140,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
      * \param forceVectorOutput
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      */
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, bool forceVectorOutput = false );
+                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
 
     /** Calculates the viewbox size of a (possibly cached) SVG file.
      * \param path Absolute path to SVG file.
@@ -144,11 +152,12 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param stroke color of stroke
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      * \returns viewbox size set in SVG file
      * \since QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor );
+                           double widthScaleFactor, double fixedAspectRatio = 0 );
 
     /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
@@ -187,7 +196,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     //! Get SVG content
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor );
+                           double widthScaleFactor, double fixedAspectRatio = 0 );
 
   signals:
     //! Emit a signal to be caught by qgisapp and display a msg on status bar
@@ -202,16 +211,17 @@ class CORE_EXPORT QgsSvgCache : public QObject
      * \param stroke color of stroke
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
+     * \param fixedAspectRatio fixed aspect ratio (optional)
      */
     QgsSvgCacheEntry *insertSvg( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                 double widthScaleFactor );
+                                 double widthScaleFactor, double fixedAspectRatio = 0 );
 
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry );
     void cacheImage( QgsSvgCacheEntry *entry );
     void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     //! Returns entry from cache or creates a new entry if it does not exist already
     QgsSvgCacheEntry *cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                  double widthScaleFactor );
+                                  double widthScaleFactor, double fixedAspectRatio = 0 );
 
     //! Removes the least used items until the maximum size is under the limit
     void trimToMaximumSize();

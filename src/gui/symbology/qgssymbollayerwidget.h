@@ -436,9 +436,6 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
   public slots:
     void setName( const QModelIndex &idx );
     void populateIcons( const QModelIndex &idx );
-    void setSize();
-    void setAngle();
-    void setOffset();
     void on_mFileToolButton_clicked();
     void on_mFileLineEdit_textEdited( const QString &text );
     void on_mFileLineEdit_editingFinished();
@@ -460,7 +457,11 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     QgsSvgMarkerSymbolLayer *mLayer = nullptr;
 
   private slots:
-
+    void setWidth();
+    void setHeight();
+    void lockAspectRatioChanged( const bool locked );
+    void setAngle();
+    void setOffset();
     void updateAssistantSymbol();
 
   private:

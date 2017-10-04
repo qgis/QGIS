@@ -481,8 +481,52 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
+    /** Returns the marker SVG path.
+     * \see setPath()
+     */
     QString path() const { return mPath; }
+
+    /** Set the marker SVG path.
+     * \param path SVG path
+     * \see path()
+     */
     void setPath( const QString &path );
+
+    /** Returns the default marker aspect ratio between width and height, 0 if not yet calculated.
+     * \see updateDefaultAspectRatio()
+     */
+    double defaultAspectRatio() const { return mDefaultAspectRatio; }
+
+    /** Calculates the default marker aspect ratio between width and height.
+     * \returns the default aspect ratio value
+     * \see defaultAspectRatio()
+     */
+    double updateDefaultAspectRatio();
+
+    /** Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
+     * \see setPreservedAspectRatio()
+     */
+    bool preservedAspectRatio() const { return mFixedAspectRatio <= 0.0; }
+
+    /** Set preserved the marker aspect ratio between width and height.
+     * \param par Preserved Aspect Ratio
+     * \returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
+     * \see preservedAspectRatio()
+     */
+    bool setPreservedAspectRatio( bool par );
+
+    /** Returns the marker aspect ratio between width and height to be used in rendering,
+     * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+     * \see setFixedAspectRatio() QgsSvgCache
+     */
+    double fixedAspectRatio() const { return mFixedAspectRatio; }
+
+    /** Set the marker aspect ratio between width and height to be used in rendering,
+     * if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+     * \param ratio Fixed Aspect Ratio
+     * \see fixedAspectRatio() QgsSvgCache
+     */
+    void setFixedAspectRatio( double ratio ) { mFixedAspectRatio = ratio; }
 
     QColor fillColor() const override { return color(); }
     void setFillColor( const QColor &color ) override { setColor( color ); }
@@ -518,8 +562,21 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
   protected:
+
+    /** Calculates the marker aspect ratio between width and height.
+     * \param context symbol render context
+     * \param scaledSize size of symbol to render
+     * \param hasDataDefinedAspectRatio will be set to true if marker has data defined aspectRatio
+     * \note not available in Python bindings
+     */
+    double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
+
     QString mPath;
 
+    //! The marker default aspect ratio
+    double mDefaultAspectRatio = 0.0;
+    //! The marker fixed aspect ratio
+    double mFixedAspectRatio = 0.0;
     //param(fill), param(stroke), param(stroke-width) are going
     //to be replaced in memory
     QColor mStrokeColor;
