@@ -104,6 +104,12 @@
         <file>themes/default/mAction.svg</file>
         <file>themes/default/mActionAdd.svg</file>
         <file>themes/default/mActionDataSourceManager.svg</file>
+        <file>themes/default/mActionDistributeBottom.svg</file>
+        <file>themes/default/mActionDistributeHCenter.svg</file>
+        <file>themes/default/mActionDistributeLeft.svg</file>
+        <file>themes/default/mActionDistributeRight.svg</file>
+        <file>themes/default/mActionDistributeTop.svg</file>
+        <file>themes/default/mActionDistributeVCenter.svg</file>
         <file>themes/default/mActionAddLayer.svg</file>
         <file>themes/default/mActionAddAllToOverview.svg</file>
         <file>themes/default/mActionAddArrow.svg</file>
@@ -261,6 +267,10 @@
         <file>themes/default/mActionRemoveLayer.svg</file>
         <file>themes/default/mActionRemoveSelectedFeature.png</file>
         <file>themes/default/mActionReshape.svg</file>
+        <file>themes/default/mActionResizeNarrowest.svg</file>
+        <file>themes/default/mActionResizeShortest.svg</file>
+        <file>themes/default/mActionResizeTallest.svg</file>
+        <file>themes/default/mActionResizeWidest.svg</file>
         <file>themes/default/mActionRollbackAllEdits.svg</file>
         <file>themes/default/mActionRollbackEdits.svg</file>
         <file>themes/default/mActionRotateFeature.svg</file>
