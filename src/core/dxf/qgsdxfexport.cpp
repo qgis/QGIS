@@ -499,6 +499,9 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
   mTextStream.setDevice( d );
   mTextStream.setCodec( encoding.toLocal8Bit() );
 
+  if ( mCrs.isValid() )
+    mMapSettings.setDestinationCrs( mCrs );
+
   if ( mExtent.isEmpty() )
   {
     const QList< QgsMapLayer * > layers = mMapSettings.layers();
@@ -529,8 +532,6 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
   mFactor = 1000 * dpi / mSymbologyScale / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, QgsUnitTypes::DistanceMeters );
   mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
   mMapSettings.setOutputDpi( dpi );
-  if ( mCrs.isValid() )
-    mMapSettings.setDestinationCrs( mCrs );
 
   writeHeader( dxfEncoding( encoding ) );
   writeTables();
