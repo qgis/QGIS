@@ -161,10 +161,7 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   QgsLineString *line = new QgsLineString();
   line->fromWkbPoints( ringType, wkbPtr );
-  if ( !mExteriorRing )
-  {
-    mExteriorRing.reset( line );
-  }
+  mExteriorRing.reset( line );
 
   return true;
 }
