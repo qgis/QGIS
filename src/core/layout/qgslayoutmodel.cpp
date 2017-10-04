@@ -207,7 +207,7 @@ bool QgsLayoutModel::setData( const QModelIndex &index, const QVariant &value, i
   {
     case Visibility:
       //first column is item visibility
-      item->setVisible( value.toBool() );
+      item->setVisibility( value.toBool() );
       return true;
 
     case LockStatus:

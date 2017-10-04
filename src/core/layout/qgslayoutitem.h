@@ -134,6 +134,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setSelected( bool selected );
 
     /**
+     * Sets whether the item is \a visible.
+     * \note QGraphicsItem::setVisible should not be called directly
+     * on a QgsLayoutItem, as some item types (e.g., groups) need to override
+     * the visibility toggle.
+     */
+    virtual void setVisibility( const bool visible );
+
+    /**
      * Sets whether the item is \a locked, preventing mouse interactions with the item.
      * \see isLocked()
      * \see lockChanged()

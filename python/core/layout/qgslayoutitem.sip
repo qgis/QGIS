@@ -113,6 +113,16 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  Sets whether the item should be selected.
 %End
 
+    virtual void setVisibility( const bool visible );
+%Docstring
+ Sets whether the item is ``visible``.
+.. note::
+
+   QGraphicsItem.setVisible should not be called directly
+ on a QgsLayoutItem, as some item types (e.g., groups) need to override
+ the visibility toggle.
+%End
+
     void setLocked( const bool locked );
 %Docstring
  Sets whether the item is ``locked``, preventing mouse interactions with the item.

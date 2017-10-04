@@ -85,14 +85,13 @@ void QgsLayoutItem::setId( const QString &id )
   mId = id;
   setToolTip( id );
 
-  //TODO
-#if 0
   //inform model that id data has changed
-  if ( mComposition )
+  if ( mLayout )
   {
-    mComposition->itemsModel()->updateItemDisplayName( this );
+    mLayout->itemsModel()->updateItemDisplayName( this );
   }
 
+#if 0 //TODO
   emit itemChanged();
 #endif
 }
@@ -104,6 +103,29 @@ void QgsLayoutItem::setSelected( bool selected )
   if ( mLayout )
   {
     mLayout->itemsModel()->updateItemSelectStatus( this );
+  }
+}
+
+void QgsLayoutItem::setVisibility( const bool visible )
+{
+  if ( visible == isVisible() )
+  {
+    //nothing to do
+    return;
+  }
+
+  if ( mLayout && !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, visible ? tr( "Item shown" ) : tr( "Item hidden" ) );
+
+  QGraphicsItem::setVisible( visible );
+
+  if ( mLayout && !mBlockUndoCommands )
+    mLayout->undoStack()->endCommand();
+
+  //inform model that visibility has changed
+  if ( mLayout )
+  {
+    mLayout->itemsModel()->updateItemVisibility( this );
   }
 }
 
@@ -750,7 +772,7 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
     setLocked( false );
   }
   //visibility
-  setVisible( element.attribute( "visibility", "1" ) != "0" );
+  setVisibility( element.attribute( "visibility", "1" ) != "0" );
   setZValue( element.attribute( "zValue" ).toDouble() );
 
   //frame
