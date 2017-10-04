@@ -6,20 +6,20 @@ Content-Type: text/xml; subtype=gml/2.1.2; charset=utf-8
  </gml:Box>
 </gml:boundedBy>
 <gml:featureMember>
- <qgs:testlayer fid="testlayer.0">
+ <qgs:testlayer fid="testlayer.2">
   <gml:boundedBy>
    <gml:Box srsName="EPSG:4326">
-    <gml:coordinates cs="," ts=" ">8.20349634,44.90148253 8.20349634,44.90148253</gml:coordinates>
+    <gml:coordinates cs="," ts=" ">8.20345931,44.90139484 8.20345931,44.90139484</gml:coordinates>
    </gml:Box>
   </gml:boundedBy>
   <qgs:geometry>
    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
-    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">8.20349634,44.90148253</coordinates>
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">8.20345931,44.90139484</coordinates>
    </Point>
   </qgs:geometry>
-  <qgs:id>1</qgs:id>
-  <qgs:name>one</qgs:name>
-  <qgs:utf8nameè>one èé</qgs:utf8nameè>
+  <qgs:id>3</qgs:id>
+  <qgs:name>three</qgs:name>
+  <qgs:utf8nameè>three èé↓</qgs:utf8nameè>
  </qgs:testlayer>
 </gml:featureMember>
 <gml:featureMember>
@@ -40,20 +40,20 @@ Content-Type: text/xml; subtype=gml/2.1.2; charset=utf-8
  </qgs:testlayer>
 </gml:featureMember>
 <gml:featureMember>
- <qgs:testlayer fid="testlayer.2">
+ <qgs:testlayer fid="testlayer.0">
   <gml:boundedBy>
    <gml:Box srsName="EPSG:4326">
-    <gml:coordinates cs="," ts=" ">8.20345931,44.90139484 8.20345931,44.90139484</gml:coordinates>
+    <gml:coordinates cs="," ts=" ">8.20349634,44.90148253 8.20349634,44.90148253</gml:coordinates>
    </gml:Box>
   </gml:boundedBy>
   <qgs:geometry>
    <Point xmlns="http://www.opengis.net/gml" srsName="EPSG:4326">
-    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">8.20345931,44.90139484</coordinates>
+    <coordinates xmlns="http://www.opengis.net/gml" cs="," ts=" ">8.20349634,44.90148253</coordinates>
    </Point>
   </qgs:geometry>
-  <qgs:id>3</qgs:id>
-  <qgs:name>three</qgs:name>
-  <qgs:utf8nameè>three èé↓</qgs:utf8nameè>
+  <qgs:id>1</qgs:id>
+  <qgs:name>one</qgs:name>
+  <qgs:utf8nameè>one èé</qgs:utf8nameè>
  </qgs:testlayer>
 </gml:featureMember>
 </wfs:FeatureCollection>
