@@ -38,6 +38,7 @@ QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent,
   {
     mAuthConfigSelect->setConfigId( configId );
   }
+  setBasicText( "" );
   connect( btnConvertToEncrypted, &QPushButton::clicked, this, &QgsAuthSettingsWidget::convertToEncrypted );
   connect( txtUserName, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::userNameTextChanged );
   connect( txtPassword, &QLineEdit::textChanged, this, &QgsAuthSettingsWidget::passwordTextChanged );
@@ -55,6 +56,8 @@ void QgsAuthSettingsWidget::setWarningText( const QString &warningText )
 void QgsAuthSettingsWidget::setBasicText( const QString &basicText )
 {
   lblBasic->setText( basicText );
+  // hide unused widget so its word wrapping does not add to parent widget's height
+  lblBasic->setVisible( ! basicText.isEmpty() );
 }
 
 const QString QgsAuthSettingsWidget::username() const

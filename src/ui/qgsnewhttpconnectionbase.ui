@@ -26,7 +26,7 @@
       <string>Connection details</string>
      </property>
      <layout class="QGridLayout">
-      <item row="6" column="0" colspan="2">
+      <item row="2" column="0" colspan="2">
        <widget class="QGroupBox" name="mWfsOptionsGroupBox">
         <property name="title">
          <string>WFS Options</string>
@@ -77,14 +77,45 @@
         </layout>
        </widget>
       </item>
-      <item row="16" column="0" colspan="2">
+      <item row="4" column="0" colspan="2">
        <widget class="QPushButton" name="mTestConnectionButton">
         <property name="text">
          <string>&amp;Test Connection</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="0" colspan="2">
+      <item row="1" column="0" colspan="2">
+       <widget class="QGroupBox" name="mAuthGroupBox">
+        <property name="title">
+         <string>Authentication</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2">
        <widget class="QGroupBox" name="mWmsOptionsGroupBox">
         <property name="title">
          <string>WMS Options</string>
@@ -154,73 +185,88 @@
         </layout>
        </widget>
       </item>
-      <item row="2" column="0">
-       <layout class="QFormLayout" name="formLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="TextLabel1_2">
-          <property name="text">
-           <string>&amp;Name</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-          <property name="margin">
-           <number>5</number>
-          </property>
-          <property name="buddy">
-           <cstring>txtName</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="txtName">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Name of the new connection</string>
-          </property>
-          <property name="frame">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="TextLabel1">
-          <property name="text">
-           <string>UR&amp;L</string>
-          </property>
-          <property name="margin">
-           <number>5</number>
-          </property>
-          <property name="buddy">
-           <cstring>txtUrl</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="txtUrl">
-          <property name="toolTip">
-           <string>HTTP address of the Web Map Server</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="4" column="0">
-       <widget class="QGroupBox" name="mAuthGroupBox">
-        <property name="title">
-         <string>Authentication</string>
+      <item row="0" column="0" colspan="2">
+       <widget class="QFrame" name="frame">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true"/>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="TextLabel1_2">
+           <property name="text">
+            <string>Name</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+           <property name="margin">
+            <number>5</number>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="txtName">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Name of the new connection</string>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="TextLabel1">
+           <property name="text">
+            <string>URL</string>
+           </property>
+           <property name="margin">
+            <number>5</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="txtUrl">
+           <property name="toolTip">
+            <string>HTTP address of the Web Map Server</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
+      </item>
+      <item row="5" column="0">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
