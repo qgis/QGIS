@@ -424,6 +424,7 @@ bool QgsLayoutModel::removeRows( int row, int count, const QModelIndex &parent )
   return true;
 }
 
+///@cond PRIVATE
 void QgsLayoutModel::clear()
 {
   //totally reset model
@@ -459,6 +460,7 @@ void QgsLayoutModel::rebuildZList()
   mItemZList = sortedList;
   rebuildSceneItemList();
 }
+///@endcond
 
 void QgsLayoutModel::rebuildSceneItemList()
 {
@@ -498,7 +500,7 @@ void QgsLayoutModel::rebuildSceneItemList()
     row++;
   }
 }
-
+///@cond PRIVATE
 void QgsLayoutModel::addItemAtTop( QgsLayoutItem *item )
 {
   beginInsertRows( QModelIndex(), 0, 0 );
@@ -888,6 +890,7 @@ QList<QgsLayoutItem *> &QgsLayoutModel::zOrderList()
   return mItemZList;
 }
 
+///@endcond
 
 Qt::ItemFlags QgsLayoutModel::flags( const QModelIndex &index ) const
 {
@@ -927,6 +930,7 @@ QModelIndex QgsLayoutModel::indexForItem( QgsLayoutItem *item, const int column 
   return index( row, column );
 }
 
+///@cond PRIVATE
 void QgsLayoutModel::setSelected( const QModelIndex &index )
 {
   QgsLayoutItem *item = itemFromIndex( index );
@@ -937,7 +941,7 @@ void QgsLayoutModel::setSelected( const QModelIndex &index )
 
   mLayout->setSelectedItem( item );
 }
-
+///@endcond
 
 //
 // QgsLayoutProxyModel

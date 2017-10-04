@@ -83,6 +83,9 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
+///@cond PRIVATE
+#ifndef SIP_RUN
+
     /**
      * Clears all items from z-order list and resets the model
      */
@@ -231,6 +234,8 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      * \see updateItemLockStatus()
      */
     void updateItemSelectStatus( QgsLayoutItem *item );
+#endif
+///@endcond
 
     /**
      * Returns the QModelIndex corresponding to a QgsLayoutItem \a item and \a column, if possible.
@@ -239,10 +244,15 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
 
   public slots:
 
+///@cond PRIVATE
+#ifndef SIP_RUN
+
     /**
      * Sets an item as the current selection from a QModelIndex \a index.
      */
     void setSelected( const QModelIndex &index );
+#endif
+///@endcond
 
   private:
 
