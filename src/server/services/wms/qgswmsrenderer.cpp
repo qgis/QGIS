@@ -909,7 +909,7 @@ namespace QgsWms
     QStringList queryLayers = mWmsParameters.queryLayersNickname();
     if ( queryLayers.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
+      throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ),
                                     QStringLiteral( "QUERY_LAYERS parameter is required for GetFeatureInfo" ) );
     }
 
