@@ -22,6 +22,9 @@
 #include "qgstest.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
+#include "qgslayoutitemundocommand.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemshape.h"
 #include <QObject>
 #include <QPainter>
 #include <QImage>
@@ -144,6 +147,7 @@ class TestQgsLayoutItem: public QObject
     void writeXml();
     void readXml();
     void writeReadXmlProperties();
+    void undoRedo();
 
   private:
 
@@ -1324,6 +1328,12 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setLocked( true );
   original->setZValue( 55 );
   original->setVisible( false );
+  original->setFrameEnabled( true );
+  original->setFrameStrokeColor( QColor( 100, 150, 200 ) );
+  original->setFrameStrokeWidth( QgsLayoutMeasurement( 5, QgsUnitTypes::LayoutCentimeters ) );
+  original->setFrameJoinStyle( Qt::MiterJoin );
+  original->setBackgroundEnabled( false );
+  original->setBackgroundColor( QColor( 200, 150, 100 ) );
 
   QgsLayoutItem *copy = createCopyViaXml( &l, original );
 
@@ -1340,9 +1350,109 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QVERIFY( copy->isLocked() );
   QCOMPARE( copy->zValue(), 55.0 );
   QVERIFY( !copy->isVisible() );
+  QVERIFY( copy->hasFrame() );
+  QCOMPARE( copy->frameStrokeColor(), QColor( 100, 150, 200 ) );
+  QCOMPARE( copy->frameStrokeWidth(), QgsLayoutMeasurement( 5, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( copy->frameJoinStyle(), Qt::MiterJoin );
+  QVERIFY( !copy->hasBackground() );
+  QCOMPARE( copy->backgroundColor(), QColor( 200, 150, 100 ) );
 
   delete copy;
   delete original;
+}
+
+void TestQgsLayoutItem::undoRedo()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QString uuid = item->uuid();
+  QPointer< QgsLayoutItemRectangularShape > pItem( item ); // for testing deletion
+  item->setFrameStrokeColor( QColor( 255, 100, 200 ) );
+  l.addLayoutItem( item );
+
+  l.undoStack()->stack()->push( new QgsLayoutItemAddItemCommand( item, QString() ) );
+  QVERIFY( pItem );
+  QVERIFY( l.items().contains( item ) );
+  QCOMPARE( l.itemByUuid( uuid ), item );
+
+  // undo should delete item
+  l.undoStack()->stack()->undo();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QVERIFY( !pItem );
+  QVERIFY( !l.items().contains( item ) );
+  QVERIFY( !l.itemByUuid( uuid ) );
+
+  // redo should restore
+  l.undoStack()->stack()->redo();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  item = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( uuid ) );
+  QVERIFY( item );
+  QVERIFY( l.items().contains( item ) );
+  pItem = item;
+  QCOMPARE( item->frameStrokeColor().name(), QColor( 255, 100, 200 ).name() );
+
+  //... and repeat!
+
+  // undo should delete item
+  l.undoStack()->stack()->undo();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QVERIFY( !pItem );
+  QVERIFY( !l.items().contains( item ) );
+  QVERIFY( !l.itemByUuid( uuid ) );
+
+  // redo should restore
+  l.undoStack()->stack()->redo();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  item = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( uuid ) );
+  QVERIFY( item );
+  QVERIFY( l.items().contains( item ) );
+  pItem = item;
+  QCOMPARE( item->frameStrokeColor().name(), QColor( 255, 100, 200 ).name() );
+
+  // delete item
+  QgsLayoutItemDeleteUndoCommand *deleteCommand = new QgsLayoutItemDeleteUndoCommand( item, QString() );
+  l.removeLayoutItem( item );
+  l.undoStack()->stack()->push( deleteCommand );
+
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QVERIFY( !pItem );
+  QVERIFY( !l.items().contains( item ) );
+  QVERIFY( !l.itemByUuid( uuid ) );
+
+  // undo should restore
+  l.undoStack()->stack()->undo();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  item = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( uuid ) );
+  QVERIFY( item );
+  QVERIFY( l.items().contains( item ) );
+  pItem = item;
+  QCOMPARE( item->frameStrokeColor().name(), QColor( 255, 100, 200 ).name() );
+
+  // another undo should delete item
+  l.undoStack()->stack()->undo();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QVERIFY( !pItem );
+  QVERIFY( !l.items().contains( item ) );
+  QVERIFY( !l.itemByUuid( uuid ) );
+
+  // redo should restore
+  l.undoStack()->stack()->redo();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  item = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( uuid ) );
+  QVERIFY( item );
+  QVERIFY( l.items().contains( item ) );
+  pItem = item;
+  QCOMPARE( item->frameStrokeColor().name(), QColor( 255, 100, 200 ).name() );
+
+  // another redo should delete item
+  l.undoStack()->stack()->redo();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QVERIFY( !pItem );
+  QVERIFY( !l.items().contains( item ) );
+  QVERIFY( !l.itemByUuid( uuid ) );
+
 }
 
 QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )

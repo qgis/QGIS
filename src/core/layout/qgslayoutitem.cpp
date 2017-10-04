@@ -20,6 +20,7 @@
 #include "qgspagesizeregistry.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutmodel.h"
+#include "qgssymbollayerutils.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -661,6 +662,44 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
     element.setAttribute( "positionLock", "false" );
   }
 
+  //frame
+  if ( mFrame )
+  {
+    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "true" ) );
+  }
+  else
+  {
+    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "false" ) );
+  }
+
+  //background
+  if ( mBackground )
+  {
+    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "true" ) );
+  }
+  else
+  {
+    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "false" ) );
+  }
+
+  //frame color
+  QDomElement frameColorElem = document.createElement( QStringLiteral( "FrameColor" ) );
+  frameColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFrameColor.red() ) );
+  frameColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFrameColor.green() ) );
+  frameColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFrameColor.blue() ) );
+  frameColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFrameColor.alpha() ) );
+  element.appendChild( frameColorElem );
+  element.setAttribute( QStringLiteral( "outlineWidthM" ), mFrameWidth.encodeMeasurement() );
+  element.setAttribute( QStringLiteral( "frameJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
+
+  //background color
+  QDomElement bgColorElem = document.createElement( QStringLiteral( "BackgroundColor" ) );
+  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mBackgroundColor.red() ) );
+  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mBackgroundColor.green() ) );
+  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mBackgroundColor.blue() ) );
+  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
+  element.appendChild( bgColorElem );
+
   //TODO
 #if 0
   //blend mode
@@ -706,6 +745,78 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
   //visibility
   setVisible( element.attribute( "visibility", "1" ) != "0" );
   setZValue( element.attribute( "zValue" ).toDouble() );
+
+  //frame
+  QString frame = element.attribute( QStringLiteral( "frame" ) );
+  if ( frame.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mFrame = true;
+  }
+  else
+  {
+    mFrame = false;
+  }
+
+  //frame
+  QString background = element.attribute( QStringLiteral( "background" ) );
+  if ( background.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mBackground = true;
+  }
+  else
+  {
+    mBackground = false;
+  }
+
+  //pen
+  mFrameWidth = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "outlineWidthM" ) ) );
+  mFrameJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( element.attribute( QStringLiteral( "frameJoinStyle" ), QStringLiteral( "miter" ) ) );
+  QDomNodeList frameColorList = element.elementsByTagName( QStringLiteral( "FrameColor" ) );
+  if ( !frameColorList.isEmpty() )
+  {
+    QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
+    bool redOk = false;
+    bool greenOk = false;
+    bool blueOk = false;
+    bool alphaOk = false;
+    int penRed, penGreen, penBlue, penAlpha;
+
+#if 0 // TODO, old style
+    double penWidth;
+    penWidth = element.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
+#endif
+    penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mFrameColor = QColor( penRed, penGreen, penBlue, penAlpha );
+    }
+  }
+  refreshFrame( false );
+
+  //brush
+  QDomNodeList bgColorList = element.elementsByTagName( QStringLiteral( "BackgroundColor" ) );
+  if ( !bgColorList.isEmpty() )
+  {
+    QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int bgRed, bgGreen, bgBlue, bgAlpha;
+    bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    bgGreen = bgColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    bgBlue = bgColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
+      setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+    }
+    //apply any data defined settings
+    refreshBackgroundColor( false );
+  }
+
 #if 0 //TODO
   //blend mode
   setBlendMode( QgsMapRenderer::getCompositionMode( ( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
@@ -794,6 +905,7 @@ void QgsLayoutItem::refreshFrame( bool updateItem )
   {
     itemPen.setColor( mFrameColor );
   }
+  itemPen.setJoinStyle( mFrameJoinStyle );
 
   if ( mLayout )
     itemPen.setWidthF( mLayout->convertToLayoutUnits( mFrameWidth ) );
