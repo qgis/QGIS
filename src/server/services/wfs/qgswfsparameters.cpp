@@ -226,6 +226,18 @@ namespace QgsWfs
     return value( ParameterName::RESULTTYPE ).toString();
   }
 
+  QgsWfsParameters::ResultType QgsWfsParameters::resultType() const
+  {
+    QString rtStr = resultTypeAsString();
+    if ( rtStr.isEmpty() )
+      return ResultType::RESULTS;
+
+    ResultType rt = ResultType::RESULTS;
+    if ( rtStr.compare( QLatin1String( "hits" ), Qt::CaseInsensitive ) == 0 )
+      rt = ResultType::HITS;
+    return rt;
+  }
+
   QStringList QgsWfsParameters::propertyNames() const
   {
     return toStringListWithExp( ParameterName::PROPERTYNAME );

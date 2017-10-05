@@ -67,6 +67,12 @@ namespace QgsWfs
         XSD
       };
 
+      enum ResultType
+      {
+        RESULTS,
+        HITS
+      };
+
       struct Parameter
       {
         ParameterName mName;
@@ -133,6 +139,12 @@ namespace QgsWfs
        * \returns resultType parameter as string
        */
       QString resultTypeAsString() const;
+
+      /** Returns resultType. If the RESULTTYPE parameter is not used, then the
+       *  default value is RESULTS.
+       * \returns resultType
+       */
+      ResultType resultType() const;
 
       /** Returns PROPERTYNAME parameter as list.
        * \returns propertyName parameter as list

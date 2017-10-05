@@ -84,6 +84,9 @@ class TestQgsServerWFS(QgsServerTestBase):
         query_string = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), request)
         header, body = self._execute_request(query_string)
 
+        if requestid == 'hits':
+            body = re.sub(b'timeStamp="\d+-\d+-\d+T\d+:\d+:\d+"', b'timeStamp="****-**-**T**:**:**"', body)
+
         self.result_compare(
             'wfs_getfeature_' + requestid + '.txt',
             "request %s failed.\n Query: %s" % (
@@ -101,6 +104,7 @@ class TestQgsServerWFS(QgsServerTestBase):
         tests.append(('start1_limit1', 'GetFeature&TYPENAME=testlayer&MAXFEATURES=1&STARTINDEX=1'))
         tests.append(('srsname', 'GetFeature&TYPENAME=testlayer&SRSNAME=EPSG:3857'))
         tests.append(('sortby', 'GetFeature&TYPENAME=testlayer&SORTBY=id D'))
+        tests.append(('hits', 'GetFeature&TYPENAME=testlayer&RESULTTYPE=hits'))
 
         for id, req in tests:
             self.wfs_getfeature_compare(id, req)

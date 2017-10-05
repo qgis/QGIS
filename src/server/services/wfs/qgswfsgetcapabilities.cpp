@@ -380,7 +380,7 @@ namespace QgsWfs
     getFeatureElement.appendChild( gfOutputFormatParameterElement );
     // GetFeature resultType
     QDomElement resultTypeParameterElement = getParameterElement( doc, QStringLiteral( "resultType" ),
-        QStringList() << QStringLiteral( "results" ) );
+        QStringList() << QStringLiteral( "results" ) << QStringLiteral( "hits" ) );
     getFeatureElement.appendChild( resultTypeParameterElement );
     // Add
     oprationsElement.appendChild( getFeatureElement );

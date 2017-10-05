@@ -62,6 +62,7 @@ Content-Type: text/xml; charset=utf-8
    </ows:Parameter>
    <ows:Parameter name="resultType">
     <ows:Value>results</ows:Value>
+    <ows:Value>hits</ows:Value>
    </ows:Parameter>
   </ows:Operation>
   <ows:Operation name="Transaction">
