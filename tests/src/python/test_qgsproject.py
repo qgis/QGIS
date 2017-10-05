@@ -49,6 +49,7 @@ class TestQgsProject(unittest.TestCase):
         unittest.TestCase.__init__(self, methodName)
         self.messageCaught = False
 
+    @classmethod
     def setUpClass(cls):
         cls.dbconn = 'dbname=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
@@ -694,16 +695,16 @@ class TestQgsProject(unittest.TestCase):
         QgsProject.instance().setAutoTransaction(False)
         noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
         self.assertIsNone(noTg)
-        
+
         # Undefined transaction group (wrong provider key).
         QgsProject.instance().setAutoTransaction(True)
         noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
         self.assertIsNone(noTg)
-        
+
         # Existing transaction group.
         vl = QgsVectorLayer(cls.dbconn + ' port=5432 sslmode=disable', 'test', 'postgres')
         QgsProject.instance().addMapLayer(vl)
-        tg = QgsProject.instance().transactionGroup("postgres", cls.dbconn +  " port=5432 sslmode=disable")
+        tg = QgsProject.instance().transactionGroup("postgres", cls.dbconn + " port=5432 sslmode=disable")
         self.assertIsNotNone(noTg)
 
     def test_zip_new_project(self):
