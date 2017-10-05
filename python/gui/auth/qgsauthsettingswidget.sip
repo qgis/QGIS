@@ -14,6 +14,10 @@ class QgsAuthSettingsWidget : QWidget
 %Docstring
  Widget for entering authentication credentials both in the form username/password
  and by using QGIS Authentication Database and its authentication configurations.
+
+ The widget also offers the functionality to convert username/password credentials
+ to an authentication configuration.
+
 .. versionadded:: 3.0
 %End
 
@@ -111,7 +115,7 @@ class QgsAuthSettingsWidget : QWidget
     static const QString formattedWarning( WarningType warning );
 %Docstring
  warning text message based upon where credentials are stored
- \param enum of warning type
+ \param warning enum of warning type
  :return: pre-formatted warning text
  :rtype: str
 %End
