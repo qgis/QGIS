@@ -79,14 +79,97 @@ class QgsLabelingEngineSettings;
 class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator
 {
     Q_OBJECT
+
+    /**
+     * The list of layers which should not be taken into account on map identification.
+     *
+     * \read nonIdentifiableLayers()
+     * \write setNonIdentifiableLayers()
+     * \notify nonIdentifiableLayersChanged()
+     */
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
+
+    /**
+     * The file name associated with the project.
+     * This is the file which contains the project's XML representation.
+     *
+     * \see fileInfo()
+     * \since QGIS 3.0
+     *
+     * \read fileName()
+     * \write setFileName()
+     * \notify fileNameChanged()
+     */
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
+
     Q_PROPERTY( QString homePath READ homePath NOTIFY homePathChanged )
+
+    /**
+     * The project's native coordinate reference system.
+     *
+     * \read crs()
+     * \write setCrs()
+     * \notify crsChanged()
+     *
+     * \since QGIS 3.0
+     *
+     * \see ellipsoid()
+     */
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
+
+    /**
+     * The proj string representing the project's ellipsoid setting, e.g. ``WGS84``.
+     *
+     * \read ellipsoid()
+     * \write setEllipsoid()
+     * \notify ellipsoidChanged()
+     *
+     * \since QGIS 3.0
+     *
+     * \see crs()
+     */
     Q_PROPERTY( QString ellipsoid READ ellipsoid WRITE setEllipsoid NOTIFY ellipsoidChanged )
+
+    /**
+     * The project's map theme collection.
+     * For validity see the notes in \link mapThemeCollectionChanged() \endlink
+     *
+     * \read mapThemeCollection()
+     * \notify mapThemeCollectionChanged()
+     *
+     * \since QGIS 3.0
+     * \note Renamed in QGIS 3.0, formerly ``QgsVisibilityPresetCollection`` (since QGIS 2.12)
+     */
     Q_PROPERTY( QgsMapThemeCollection *mapThemeCollection READ mapThemeCollection NOTIFY mapThemeCollectionChanged )
+
+    /**
+     * The snapping configuration for this project.
+     *
+     * \read snappingConfig()
+     * \write setSnappingConfig()
+     * \notify snappinConfigChanged()
+     *
+     * \since QGIS 3.0
+     */
     Q_PROPERTY( QgsSnappingConfig snappingConfig READ snappingConfig WRITE setSnappingConfig NOTIFY snappingConfigChanged )
+
+    /**
+     * The relation manager keeps track of all the relations which are available
+     * and defined in the project.
+     *
+     * \read relationManager()
+     */
     Q_PROPERTY( QgsRelationManager *relationManager READ relationManager )
+
+    /**
+     * A list of layers with which intersections should be avoided.
+     *
+     * \read avoidIntersectionLayers()
+     * \write setAvoidIntersectionLayers()
+     * \notify avoidIntersectionLayersChanged()
+     *
+     * \since QGIS 3.0
+     */
     Q_PROPERTY( QList<QgsVectorLayer *> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
 
   public:
@@ -119,55 +202,39 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool isDirty() const;
 
-    /** Sets the file name associated with the project. This is the file which contains the project's XML
-     * representation.
-     * \param name project file name
-     * \see fileName()
+    /**
+     * \copydoc fileName
      */
     void setFileName( const QString &name );
 
-    /** Returns the project's file name. This is the file which contains the project's XML
-     * representation.
-     * \see setFileName()
-     * \see fileInfo()
-    */
+    /**
+     * \copydoc fileName
+     */
     QString fileName() const;
 
     /** Returns QFileInfo object for the project's associated file.
-     * \see fileName()
+     * \see fileName
      * \since QGIS 2.9
      */
     QFileInfo fileInfo() const;
 
     /**
-     * Returns the project's native coordinate reference system.
-     * \since QGIS 3.0
-     * \see setCrs()
-     * \see ellipsoid()
+     * \copydoc crs
      */
     QgsCoordinateReferenceSystem crs() const;
 
     /**
-     * Sets the project's native coordinate reference system.
-     * \since QGIS 3.0
-     * \see crs()
-     * \see setEllipsoid()
+     * \copydoc crs
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
-     * Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
-     * \see setEllipsoid()
-     * \see crs()
-     * \since QGIS 3.0
+     * \copydoc ellipsoid
      */
     QString ellipsoid() const;
 
     /**
-     * Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
-     * \see ellipsoid()
-     * \see setCrs()
-     * \since QGIS 3.0
+     * \copydoc ellipsoid
      */
     void setEllipsoid( const QString &ellipsoid );
 
@@ -182,7 +249,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool read( const QString &filename );
 
-    /** Reads the project from its currently associated file (see fileName() ).
+    /** Reads the project from its currently associated file (\see fileName ).
      * \returns true if project file has been read successfully
      */
     bool read();
@@ -381,6 +448,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       \returns home path of project (or null QString if not set) */
     QString homePath() const;
 
+    /**
+     * \copydoc relationManager
+     */
     QgsRelationManager *relationManager() const;
 
     /**
@@ -408,9 +478,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
-    /** Returns pointer to the project's map theme collection.
-     * \since QGIS 2.12
-     * \note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
+    /**
+     * \copydoc mapThemeCollection
      */
     QgsMapThemeCollection *mapThemeCollection();
 
@@ -427,17 +496,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     const QgsAnnotationManager *annotationManager() const SIP_SKIP;
 
     /**
-     * Set a list of layers which should not be taken into account on map identification
+     * \copydoc nonIdentifiableLayers
      */
     void setNonIdentifiableLayers( const QList<QgsMapLayer *> &layers );
 
     /**
-     * Set a list of layers which should not be taken into account on map identification
+     * \copydoc nonIdentifiableLayers
      */
     void setNonIdentifiableLayers( const QStringList &layerIds );
 
     /**
-     * Get the list of layers which currently should not be taken into account on map identification
+     * \copydoc nonIdentifiableLayers
      */
     QStringList nonIdentifiableLayers() const;
 
@@ -489,23 +558,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsExpressionContext createExpressionContext() const override;
 
     /**
-     * The snapping configuration for this project.
-     *
-     * \since QGIS 3.0
+     * \copydoc snappingConfig
      */
     QgsSnappingConfig snappingConfig() const;
 
     /**
-     * A list of layers with which intersections should be avoided.
-     *
-     * \since QGIS 3.0
+     * \copydoc avoidIntersectionsLayers()
      */
     QList<QgsVectorLayer *> avoidIntersectionsLayers() const;
 
     /**
-     * A list of layers with which intersections should be avoided.
-     *
-     * \since QGIS 3.0
+     * \copydoc avoidIntersectionsLayers()
      */
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
 
@@ -822,36 +885,37 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     void loadingLayer( const QString & );
 
-    //! Emitted when the list of layer which are excluded from map identification changes
+    /**
+     * \copydoc nonIdentifiableLayers
+     */
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 
-    //! Emitted when the file name of the project changes
+    /**
+     * \copydoc fileName
+     */
     void fileNameChanged();
 
     //! Emitted when the home path of the project changes
     void homePathChanged();
 
-    //! emitted whenever the configuration for snapping has changed
+    /**
+     * \copydoc snappingConfig
+     */
     void snappingConfigChanged( const QgsSnappingConfig &config );
 
-    /** Emitted whenever the expression variables stored in the project have been changed.
+    /**
+     * Emitted whenever the expression variables stored in the project have been changed.
      * \since QGIS 3.0
      */
     void customVariablesChanged();
 
     /**
-     * Emitted when the CRS of the project has changed.
-     *
-     * \since QGIS 3.0
+     * \copydoc crs
      */
     void crsChanged();
 
     /**
-     * Emitted when the project \a ellipsoid is changed.
-     *
-     * \since QGIS 3.0
-     * \see setEllipsoid()
-     * \see ellipsoid()
+     * \copydoc ellipsoid
      */
     void ellipsoidChanged( const QString &ellipsoid );
 
@@ -871,13 +935,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void topologicalEditingChanged();
 
     /**
-     * Emitted whenever avoidIntersectionsLayers has changed.
-     *
-     * \since QGIS 3.0
+     * \copydoc avoidIntersectionsLayers()
      */
     void avoidIntersectionsLayersChanged();
 
     /**
+     * \copydoc mapThemeCollection
+     *
+     * \note
      * Emitted when the map theme collection changes.
      * This only happens when the map theme collection is reset.
      * Any pointer previously received from mapThemeCollection()
@@ -885,8 +950,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * You must still connect to signals from the map theme collection
      * if you want to be notified about new map themes being added and
      * map themes being removed.
-     *
-     * \since QGIS 3.0
      */
     void mapThemeCollectionChanged();
 
@@ -1002,9 +1065,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
   public slots:
 
     /**
-     * The snapping configuration for this project.
-     *
-     * \since QGIS 3.0
+     * \copydoc snappingConfig
      */
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 
