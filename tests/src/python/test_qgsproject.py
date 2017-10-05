@@ -705,7 +705,7 @@ class TestQgsProject(unittest.TestCase):
         vl = QgsVectorLayer(self.dbconn + ' port=5432 sslmode=disable', 'test', 'postgres')
         QgsProject.instance().addMapLayer(vl)
         tg = QgsProject.instance().transactionGroup("postgres", self.dbconn + " port=5432 sslmode=disable")
-        self.assertIsNotNone(noTg)
+        self.assertIsNotNone(tg)
 
     def test_zip_new_project(self):
         tmpDir = QTemporaryDir()
