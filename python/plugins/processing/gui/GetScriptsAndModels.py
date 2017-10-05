@@ -194,9 +194,6 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         else:
             reply.finished.connect(partial(loadFunction, reply))
 
-        while not reply.isFinished():
-            QCoreApplication.processEvents()
-
     def populateTree(self):
         self.uptodateItem = QTreeWidgetItem()
         self.uptodateItem.setText(0, self.tr('Installed'))
