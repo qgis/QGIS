@@ -554,6 +554,15 @@ void TestQgsExpressionContext::globalScope()
   QCOMPARE( globalScope2->variable( "newvar2" ).toString(), QString( "val2" ) );
 
   delete globalScope2;
+
+  //test deleteGlobalVariables
+  QgsExpressionContextUtils::setGlobalVariable( QStringLiteral( "key" ), "value" );
+  QgsExpressionContextScope *globalScope3 = QgsExpressionContextUtils::globalScope();
+  QVERIFY( globalScope3->hasVariable( "key" ) );
+  QgsExpressionContextUtils::deleteGlobalVariable( QStringLiteral( "key" ) );
+  globalScope3 = QgsExpressionContextUtils::globalScope();
+  QVERIFY( !globalScope3->hasVariable( "key" ) );
+  delete globalScope3;
 }
 
 void TestQgsExpressionContext::projectScope()

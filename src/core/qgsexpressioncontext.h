@@ -733,6 +733,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param value variable value
      * \see setGlobalVariable()
      * \see globalScope()
+     * \see deleteGlobalVariable()
      */
     static void setGlobalVariable( const QString &name, const QVariant &value );
 
@@ -742,8 +743,18 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param variables new set of global variables
      * \see setGlobalVariable()
      * \see globalScope()
+     * \see deleteGlobalVariable()
      */
     static void setGlobalVariables( const QVariantMap &variables );
+
+    /**
+     * Delete a global context variable.
+     * \param name variable name
+     * \see setGlobalVariable()
+     * \see setGlobalVariables()
+     * \see globalScope()
+     */
+    static void deleteGlobalVariable( const QString &name );
 
     /**
      * Creates a new scope which contains variables and functions relating to a QGIS project.

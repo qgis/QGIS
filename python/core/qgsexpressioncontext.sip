@@ -726,6 +726,7 @@ class QgsExpressionContextUtils
  \param value variable value
 .. seealso:: setGlobalVariable()
 .. seealso:: globalScope()
+.. seealso:: deleteGlobalVariable()
 %End
 
     static void setGlobalVariables( const QVariantMap &variables );
@@ -734,6 +735,16 @@ class QgsExpressionContextUtils
  with the variables specified.
  \param variables new set of global variables
 .. seealso:: setGlobalVariable()
+.. seealso:: globalScope()
+.. seealso:: deleteGlobalVariable()
+%End
+
+    static void deleteGlobalVariable( const QString &name );
+%Docstring
+ Delete a global context variable.
+ \param name variable name
+.. seealso:: setGlobalVariable()
+.. seealso:: setGlobalVariables()
 .. seealso:: globalScope()
 %End
 

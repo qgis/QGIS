@@ -593,6 +593,18 @@ void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables
   QgsApplication::setCustomVariables( variables );
 }
 
+void QgsExpressionContextUtils::deleteGlobalVariable( const QString &name )
+{
+  QVariantMap vars = QgsApplication::customVariables();
+  if ( !vars.contains( name ) )
+  {
+    return;
+  }
+  vars.remove( name );
+  QgsApplication::setCustomVariables( vars );
+}
+
+
 /// @cond PRIVATE
 
 class GetNamedProjectColor : public QgsScopedExpressionFunction
