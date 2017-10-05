@@ -31,7 +31,8 @@ class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
 
-/** Dialog to set project level properties
+/**
+ * Dialog to set project level properties
 
   \note actual state is stored in QgsProject singleton instance
 
@@ -68,11 +69,13 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void showProjectionsTab();
 
-    /** Let the user add a scale to the list of project scales
+    /**
+     * Let the user add a scale to the list of project scales
      * used in scale combobox instead of global ones */
     void on_pbnAddScale_clicked();
 
-    /** Let the user remove a scale from the list of project scales
+    /**
+     * Let the user remove a scale from the list of project scales
      * used in scale combobox instead of global ones */
     void on_pbnRemoveScale_clicked();
 

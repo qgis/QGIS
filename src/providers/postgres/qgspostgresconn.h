@@ -261,15 +261,18 @@ class QgsPostgresConn : public QObject
     // cancel running query
     bool cancel();
 
-    /** Double quote a PostgreSQL identifier for placement in a SQL string.
+    /**
+     * Double quote a PostgreSQL identifier for placement in a SQL string.
      */
     static QString quotedIdentifier( const QString &ident );
 
-    /** Quote a value for placement in a SQL string.
+    /**
+     * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value );
 
-    /** Get the list of supported layers
+    /**
+     * Get the list of supported layers
      * \param layers list to store layers in
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
@@ -284,7 +287,8 @@ class QgsPostgresConn : public QObject
                           bool allowGeometrylessTables = false,
                           const QString &schema = QString() );
 
-    /** Get the list of database schemas
+    /**
+     * Get the list of database schemas
      * \param schemas list to store schemas in
      * \returns true if schemas where fetched successfully
      * \since QGIS 2.7
@@ -293,7 +297,8 @@ class QgsPostgresConn : public QObject
 
     void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
 
-    /** Gets information about the spatial tables
+    /**
+     * Gets information about the spatial tables
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
      * \param searchPublicOnly

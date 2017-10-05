@@ -7,7 +7,8 @@
 
 class QgsProject;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Stores global configuration for labeling engine
  * \since QGIS 3.0
  */

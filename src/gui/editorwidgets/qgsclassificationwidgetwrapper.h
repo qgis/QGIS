@@ -23,7 +23,8 @@
 
 SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsClassificationWidgetWrapper
  * \note not available in Python bindings
  */

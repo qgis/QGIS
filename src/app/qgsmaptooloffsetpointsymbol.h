@@ -23,7 +23,8 @@
 class QgsMarkerSymbol;
 class QgsPointMarkerItem;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \class QgsMapToolOffsetPointSymbol
  * \brief A class that allows interactive manipulation of the offset field(s) for point layers.
  */
@@ -40,7 +41,8 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    /** Returns true if the symbols of a map layer can be offset. This means the layer
+    /**
+     * Returns true if the symbols of a map layer can be offset. This means the layer
      *  is a vector layer, has type point or multipoint and has at least one offset attribute in the renderer.
     */
     static bool layerIsOffsetable( QgsMapLayer *ml );
@@ -80,7 +82,8 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
      */
     QMap< int, QVariant > calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const;
 
-    /** Updates the preview item to reflect a new offset.
+    /**
+     * Updates the preview item to reflect a new offset.
      * \note start and end points are in map units
      */
     void updateOffsetPreviewItem( const QgsPointXY &startPoint, const QgsPointXY &endPoint );

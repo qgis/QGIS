@@ -22,7 +22,8 @@
 
 class QPaintEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSlider
  */
 class GUI_EXPORT QgsSlider : public QSlider

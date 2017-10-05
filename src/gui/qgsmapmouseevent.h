@@ -25,7 +25,8 @@
 class QgsMapCanvas;
 class QgsMapToolAdvancedDigitizing;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A QgsMapMouseEvent is the result of a user interaction with the mouse on a QgsMapCanvas.
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  * In addition to the coordinates in pixel space it also knows the coordinates in the mapcanvas' CRS

@@ -29,7 +29,8 @@
 typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Manages joined fields for a vector layer*/
 class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSink
 {
@@ -37,16 +38,19 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
   public:
     QgsVectorLayerJoinBuffer( QgsVectorLayer *layer = nullptr );
 
-    /** Joins another vector layer to this layer
+    /**
+     * Joins another vector layer to this layer
       \param joinInfo join object containing join layer id, target and source field
       \returns (since 2.6) whether the join was successfully added */
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 
-    /** Removes a vector layer join
+    /**
+     * Removes a vector layer join
       \returns true if join was found and successfully removed */
     bool removeJoin( const QString &joinLayerId );
 
-    /** Updates field map with joined attributes
+    /**
+     * Updates field map with joined attributes
       \param fields map to append joined attributes
      */
     void updateFields( QgsFields &fields );
@@ -74,7 +78,8 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
 
     const QgsVectorJoinList &vectorJoins() const { return mVectorJoins; }
 
-    /** Finds the vector join for a layer field index.
+    /**
+     * Finds the vector join for a layer field index.
       \param index this layers attribute index
       \param fields fields of the vector layer (including joined fields)
       \param sourceFieldIndex Output: field's index in source layer */
@@ -92,21 +97,24 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      */
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 
-    /** Returns joins where the field of a target layer is considered as an id.
+    /**
+     * Returns joins where the field of a target layer is considered as an id.
      * \param field the field of a target layer
      * \returns a list of vector joins
      * \since QGIS 3.0
      */
     QList<const QgsVectorLayerJoinInfo *> joinsWhereFieldIsId( const QgsField &field ) const;
 
-    /** Returns the joined feature corresponding to the feature.
+    /**
+     * Returns the joined feature corresponding to the feature.
      * \param info the vector join information
      * \param feature the feature of the target layer
      * \since QGIS 3.0
      */
     QgsFeature joinedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 
-    /** Returns the targeted feature corresponding to the joined feature.
+    /**
+     * Returns the targeted feature corresponding to the joined feature.
      * \param info the vector join information
      * \param feature the feature of the joined layer
      * \since QGIS 3.0

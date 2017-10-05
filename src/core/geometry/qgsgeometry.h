@@ -80,7 +80,8 @@ class QgsConstWkbPtr;
 
 struct QgsGeometryPrivate;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A geometry is the spatial representation of a feature. Since QGIS 2.10, QgsGeometry acts as a generic container
  * for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
  * container class can also be stored inside a QVariant object.
@@ -200,19 +201,22 @@ class CORE_EXPORT QgsGeometry
      */
     void fromWkb( const QByteArray &wkb );
 
-    /** Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
+    /**
+     * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      *  \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      *  \since QGIS 3.0
      *  \note not available in Python bindings
      */
     GEOSGeometry *exportToGeos( double precision = 0 ) const SIP_SKIP;
 
-    /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
+    /**
+     * Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * \see type
      */
     QgsWkbTypes::Type wkbType() const;
 
-    /** Returns type of the geometry as a QgsWkbTypes::GeometryType
+    /**
+     * Returns type of the geometry as a QgsWkbTypes::GeometryType
      * \see wkbType
      */
     QgsWkbTypes::GeometryType type() const;
@@ -228,17 +232,20 @@ class CORE_EXPORT QgsGeometry
     //! Returns true if WKB of the geometry is of WKBMulti* type
     bool isMultipart() const;
 
-    /** Compares the geometry with another geometry using GEOS
+    /**
+     * Compares the geometry with another geometry using GEOS
      * \since QGIS 1.5
      */
     bool isGeosEqual( const QgsGeometry & ) const;
 
-    /** Checks validity of the geometry using GEOS
+    /**
+     * Checks validity of the geometry using GEOS
      * \since QGIS 1.5
      */
     bool isGeosValid() const;
 
-    /** Determines whether the geometry is simple (according to OGC definition),
+    /**
+     * Determines whether the geometry is simple (according to OGC definition),
      * i.e. it has no anomalous geometric points, such as self-intersection or self-tangency.
      * Uses GEOS library for the test.
      * \note This is useful mainly for linestrings and linear rings. Polygons are simple by definition,
@@ -352,7 +359,8 @@ class CORE_EXPORT QgsGeometry
      */
     void adjacentVertices( int atVertex, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT ) const;
 
-    /** Insert a new vertex before the given vertex index,
+    /**
+     * Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
      *  If the requested vertex number (beforeVertex.back()) is greater
      *  than the last actual vertex on the requested ring and item,
@@ -365,7 +373,8 @@ class CORE_EXPORT QgsGeometry
      */
     bool insertVertex( double x, double y, int beforeVertex );
 
-    /** Insert a new vertex before the given vertex index,
+    /**
+     * Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
      *  If the requested vertex number (beforeVertex.back()) is greater
      *  than the last actual vertex on the requested ring and item,
@@ -637,37 +646,44 @@ class CORE_EXPORT QgsGeometry
     //! Tests for containment of a point (uses GEOS)
     bool contains( const QgsPointXY *p ) const;
 
-    /** Tests for if geometry is contained in another (uses GEOS)
+    /**
+     * Tests for if geometry is contained in another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool contains( const QgsGeometry &geometry ) const;
 
-    /** Tests for if geometry is disjoint of another (uses GEOS)
+    /**
+     * Tests for if geometry is disjoint of another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool disjoint( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry equals another (uses GEOS)
+    /**
+     * Test for if geometry equals another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool equals( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry touch another (uses GEOS)
+    /**
+     * Test for if geometry touch another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool touches( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry overlaps another (uses GEOS)
+    /**
+     * Test for if geometry overlaps another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool overlaps( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry is within another (uses GEOS)
+    /**
+     * Test for if geometry is within another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool within( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry crosses another (uses GEOS)
+    /**
+     * Test for if geometry crosses another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool crosses( const QgsGeometry &geometry ) const;
@@ -981,7 +997,8 @@ class CORE_EXPORT QgsGeometry
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
 
-    /** Export the geometry to WKB
+    /**
+     * Export the geometry to WKB
      * \since QGIS 3.0
      */
     QByteArray exportToWkb() const;
@@ -1139,7 +1156,8 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry makeValid();
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT Error
     {
@@ -1184,7 +1202,8 @@ class CORE_EXPORT QgsGeometry
      **/
     void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal );
 
-    /** Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
+    /**
+     * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
      */
@@ -1298,7 +1317,8 @@ class CORE_EXPORT QgsGeometry
 
 #ifndef SIP_RUN
 
-    /** Compares two polylines for equality within a specified tolerance.
+    /**
+     * Compares two polylines for equality within a specified tolerance.
      * \param p1 first polyline
      * \param p2 second polyline
      * \param epsilon maximum difference for coordinates between the polylines
@@ -1518,7 +1538,8 @@ class CORE_EXPORT QgsGeometry
     //! Try to convert the geometry to a polygon
     QgsGeometry convertToPolygon( bool destMultipart ) const;
 
-    /** Smooths a polyline using the Chaikin algorithm
+    /**
+     * Smooths a polyline using the Chaikin algorithm
      * \param line line to smooth
      * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
@@ -1531,7 +1552,8 @@ class CORE_EXPORT QgsGeometry
     QgsLineString *smoothLine( const QgsLineString &line, const unsigned int iterations = 1, const double offset = 0.25,
                                double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
-    /** Smooths a polygon using the Chaikin algorithm
+    /**
+     * Smooths a polygon using the Chaikin algorithm
      * \param polygon polygon to smooth
      * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry

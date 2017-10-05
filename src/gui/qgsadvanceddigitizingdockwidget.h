@@ -32,7 +32,8 @@ class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsPointXY;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
@@ -68,7 +69,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       Parallel       //!< Parallel
     };
 
-    /** \ingroup gui
+    /**
+     * \ingroup gui
      * \brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
      * \note Relative is not mandatory since it is not used for distance.
@@ -87,7 +89,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
           HardLock
         };
 
-        /** Constructor for CadConstraint.
+        /**
+         * Constructor for CadConstraint.
          * \param lineEdit associated line edit for constraint value
          * \param lockerButton associated button for locking constraint
          * \param relativeButton optional button for toggling relative constraint mode
@@ -115,7 +118,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         bool isLocked() const { return mLockMode != NoLock; }
 
-        /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
+        /**
+         * Returns true if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * \since QGIS 2.16
          * \see setRepeatingLock()
@@ -142,7 +146,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void setLockMode( LockMode mode );
 
-        /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
+        /**
+         * Sets whether a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * \param repeating set to true to set the lock to repeat automatically
          * \since QGIS 2.16
@@ -249,12 +254,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Constraint on a common angle
     bool commonAngleConstraint() const { return mCommonAngleConstraint; }
 
-    /** Removes all points from the CAD point list
+    /**
+     * Removes all points from the CAD point list
      * \since QGIS 3.0
      */
     void clearPoints();
 
-    /** Adds point to the CAD point list
+    /**
+     * Adds point to the CAD point list
      * \since QGIS 3.0
      */
     void addPoint( const QgsPointXY &point );
@@ -431,7 +438,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Attempts to convert a user input value to double, either directly or via expression
     double parseUserInput( const QString &inputValue, bool &ok ) const;
 
-    /** Updates a constraint value based on a text input.
+    /**
+     * Updates a constraint value based on a text input.
      * \param constraint constraint to update
      * \param textValue user entered text value, may be an expression
      * \param convertExpression set to true to update widget contents to calculated expression value

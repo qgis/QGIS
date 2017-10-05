@@ -20,7 +20,8 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERSHADERFUNCTION_H
 #define QGSRASTERSHADERFUNCTION_H
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The raster shade function applies a shader to a pixel at render time -
  * typically used to render grayscale images as false color.
  */

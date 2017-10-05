@@ -29,7 +29,8 @@
 
 #include "qgschunkqueuejob_p.h"
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Base class for jobs that load chunks
  * \since QGIS 3.0
  */
@@ -54,7 +55,8 @@ class QgsChunkLoader : public QgsChunkQueueJob
 };
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Factory for chunk loaders for a particular type of entity
  * \since QGIS 3.0
  */

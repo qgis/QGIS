@@ -33,7 +33,8 @@
 #include <langinfo.h>
 #endif
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsVectorFileWriter class.
  *
  *  Possible QVariant::Type s

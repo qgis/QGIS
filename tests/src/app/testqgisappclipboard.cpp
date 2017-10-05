@@ -31,7 +31,8 @@
 #include "qgspoint.h"
 #include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
  */
 class TestQgisAppClipboard : public QObject

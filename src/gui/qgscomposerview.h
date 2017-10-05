@@ -43,7 +43,8 @@ class QgsComposerNodesItem;
 class QgsComposerAttributeTableV2;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget to display the composer items. Manages the composer tools and the
  * mouse/key events.
  * Creates the composer items according to the current map tools and keeps track
@@ -137,7 +138,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t );
 
-    /** Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
+    /**
+     * Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
      * be set BEFORE adding any items to the composition.
      */
     void setComposition( QgsComposition *c SIP_KEEPREFERENCE );
@@ -160,21 +162,24 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     //! Set zoom level, where a zoom level of 1.0 corresponds to 100%
     void setZoomLevel( double zoomLevel );
 
-    /** Scales the view in a safe way, by limiting the acceptable range
+    /**
+     * Scales the view in a safe way, by limiting the acceptable range
      * of the scale applied.
      * \param scale factor to scale view by
      * \since QGIS 2.16
      */
     void scaleSafe( double scale );
 
-    /** Sets whether a preview effect should be used to alter the view's appearance
+    /**
+     * Sets whether a preview effect should be used to alter the view's appearance
      * \param enabled Set to true to enable the preview effect on the view
      * \since QGIS 2.3
      * \see setPreviewMode
      */
     void setPreviewModeEnabled( bool enabled );
 
-    /** Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
+    /**
+     * Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
      * if setPreviewMode is set to true.
      * \param mode PreviewMode to be used to draw the view
      * \since QGIS 2.3
@@ -182,7 +187,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
      */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
-    /** Sets the map canvas associated with the view. This allows the
+    /**
+     * Sets the map canvas associated with the view. This allows the
      * view to retrieve map settings from the canvas.
      * \since QGIS 3.0
      * \see mapCanvas()
@@ -307,7 +313,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     //! Is emitted when a composer item has been removed from the scene
     void itemRemoved( QgsComposerItem * );
 
-    /** Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
+    /**
+     * Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
     //! Is emitted when mouse cursor coordinates change

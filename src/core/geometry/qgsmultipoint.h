@@ -20,7 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgsgeometrycollection.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiPointV2
  * \brief Multi point geometry collection.
  * \since QGIS 2.10

@@ -21,7 +21,8 @@
 #include "qgssymbollayer.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsArrowSymbolLayer
  * \brief Line symbol layer used for representing lines as arrows.
  * \since QGIS 2.16

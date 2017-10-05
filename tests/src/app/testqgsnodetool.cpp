@@ -42,7 +42,8 @@ namespace QTest
   }
 }
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the node tool
  */
 class TestQgsNodeTool : public QObject

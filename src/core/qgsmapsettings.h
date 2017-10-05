@@ -41,7 +41,8 @@ class QgsScaleCalculator;
 class QgsMapRendererJob;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The QgsMapSettings class contains configuration for rendering of the map.
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *
@@ -148,14 +149,16 @@ class CORE_EXPORT QgsMapSettings
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
-    /** Get custom rendering flags. Layers might honour these to alter their rendering.
+    /**
+     * Get custom rendering flags. Layers might honour these to alter their rendering.
      *  \returns custom flags strings, separated by ';'
      * \since QGIS 2.16
      * \see setCustomRenderFlags()
      */
     QString customRenderFlags() const { return mCustomRenderFlags; }
 
-    /** Sets the custom rendering flags. Layers might honour these to alter their rendering.
+    /**
+     * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
      * \since QGIS 2.16
      * \see customRenderFlags()
@@ -180,7 +183,8 @@ class CORE_EXPORT QgsMapSettings
      */
     bool setEllipsoid( const QString &ellipsoid );
 
-    /** Returns ellipsoid's acronym. Calculations will only use the
+    /**
+     * Returns ellipsoid's acronym. Calculations will only use the
      * ellipsoid if a valid ellipsoid has been set.
      * \since QGIS 3.0
      * \see setEllipsoid()
@@ -247,14 +251,16 @@ class CORE_EXPORT QgsMapSettings
      */
     double scale() const;
 
-    /** Sets the expression context. This context is used for all expression evaluation
+    /**
+     * Sets the expression context. This context is used for all expression evaluation
      * associated with this map settings.
      * \see expressionContext()
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
-    /** Gets the expression context. This context should be used for all expression evaluation
+    /**
+     * Gets the expression context. This context should be used for all expression evaluation
      * associated with this map settings.
      * \see setExpressionContext()
      * \since QGIS 2.12
@@ -269,7 +275,8 @@ class CORE_EXPORT QgsMapSettings
 
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
-    /** Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+    /**
+     * Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
      * \param layer The layer
      * \param referenceExtent A reference extent based on which to perform the computation. If not specified, the layer extent is used
      * \since QGIS 2.12
@@ -332,13 +339,15 @@ class CORE_EXPORT QgsMapSettings
 
     void writeXml( QDomNode &node, QDomDocument &doc );
 
-    /** Sets the segmentation tolerance applied when rendering curved geometries
+    /**
+     * Sets the segmentation tolerance applied when rendering curved geometries
     \param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
     //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
-    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    /**
+     * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     \param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)

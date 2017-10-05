@@ -153,7 +153,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool isValid() const override;
 
-    /** Returns the base url
+    /**
+     * Returns the base url
      */
     virtual QString baseUrl() const;
 
@@ -285,7 +286,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Number of bands
     int mBandCount = 0;
 
-    /** \brief Gdal data types used to represent data in in QGIS,
+    /**
+     * \brief Gdal data types used to represent data in in QGIS,
                may be longer than source data type to keep nulls
                indexed from 0 */
     QList<GDALDataType> mGdalDataType;

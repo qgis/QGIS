@@ -25,7 +25,8 @@
 class QgsContrastEnhancement;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Renderer for multiband images with the color components
 */
 class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer

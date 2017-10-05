@@ -75,7 +75,8 @@ class QSslSocket;
 class QTimer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing an SSL server certificate exception into the authentication database
  */
 class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSslTestDialog

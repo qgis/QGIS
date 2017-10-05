@@ -90,7 +90,8 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     {
       public:
 
-        /** Constructor for NamedNode
+        /**
+         * Constructor for NamedNode
          * \param name node name
          * \param node node
          */
@@ -106,7 +107,8 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         QgsExpressionNode *node = nullptr;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT NodeList
     {
@@ -115,12 +117,14 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         //! Takes ownership of the provided node
         void append( QgsExpressionNode *node SIP_TRANSFER ) { mList.append( node ); mNameList.append( QString() ); }
 
-        /** Adds a named node. Takes ownership of the provided node.
+        /**
+         * Adds a named node. Takes ownership of the provided node.
          * \since QGIS 2.16
         */
         void append( QgsExpressionNode::NamedNode *node SIP_TRANSFER );
 
-        /** Returns the number of nodes in the list.
+        /**
+         * Returns the number of nodes in the list.
          */
         int count() const { return mList.count(); }
 

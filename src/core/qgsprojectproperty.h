@@ -248,7 +248,8 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
       return p;
     }
 
-    /** Set the value associated with this key
+    /**
+     * Set the value associated with this key
      *
      * \note that the single value node associated with each key is always
      * stored keyed by the current key name

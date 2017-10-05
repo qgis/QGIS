@@ -42,7 +42,8 @@ namespace Qt3DRender
 } // Qt3DRender
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Stores attributes and vertex/index buffers for one terrain tile based on DEM.
  * \since QGIS 3.0
  */

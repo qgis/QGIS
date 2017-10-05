@@ -29,7 +29,8 @@ class QgsFieldsPrivate;
  * See details in QEP #17
  ****************************************************************************/
 
-/** \class QgsFields
+/**
+ * \class QgsFields
  * \ingroup core
  * Container of fields for a vector layer.
  *
@@ -76,15 +77,18 @@ class CORE_EXPORT QgsFields
 
 #endif
 
-    /** Constructor for an empty field container
+    /**
+     * Constructor for an empty field container
      */
     QgsFields();
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsFields( const QgsFields &other );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
 
@@ -295,7 +299,8 @@ class CORE_EXPORT QgsFields
     //! \since QGIS 2.6
     bool operator!=( const QgsFields &other ) const { return !( *this == other ); }
 
-    /** Returns an icon corresponding to a field index, based on the field's type and source
+    /**
+     * Returns an icon corresponding to a field index, based on the field's type and source
      * \since QGIS 2.14
      */
     QIcon iconForField( int fieldIdx ) const SIP_FACTORY;

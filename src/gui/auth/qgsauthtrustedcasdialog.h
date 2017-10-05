@@ -28,7 +28,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for listing trusted Certificate (Intermediate) Authorities used in secure connections
  */
 class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTrustedCAsDialog

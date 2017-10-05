@@ -33,7 +33,8 @@ class QwtPlotZoomer;
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
 typedef QPointF QwtDoublePoint SIP_SKIP;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Histogram widget
   */
 
@@ -82,7 +83,8 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     //! Called when a selection has been made using the plot picker.
     void histoPickerSelected( QPointF );
 
-    /** Called when a selection has been made using the plot picker (for qwt5 only).
+    /**
+     * Called when a selection has been made using the plot picker (for qwt5 only).
       \note not available in Python bindings
       */
     void histoPickerSelectedQwt5( QwtDoublePoint ) SIP_SKIP;

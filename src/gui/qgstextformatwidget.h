@@ -29,7 +29,8 @@ class QgsMapCanvas;
 class QgsCharacterSelectorDialog;
 
 
-/** \class QgsTextFormatWidget
+/**
+ * \class QgsTextFormatWidget
  * \ingroup gui
  * A widget for customising text formatting settings.
  *
@@ -52,7 +53,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 
   public:
 
-    /** Constructor for QgsTextFormatWidget.
+    /**
+     * Constructor for QgsTextFormatWidget.
      * \param format initial formatting settings to show in widget
      * \param mapCanvas associated map canvas
      * \param parent parent widget
@@ -61,13 +63,15 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 
     ~QgsTextFormatWidget();
 
-    /** Returns the current formatting settings defined by the widget.
+    /**
+     * Returns the current formatting settings defined by the widget.
      */
     QgsTextFormat format() const;
 
   public slots:
 
-    /** Sets whether the widget should be shown in a compact dock mode.
+    /**
+     * Sets whether the widget should be shown in a compact dock mode.
      * \param enabled set to true to show in dock mode.
      */
     void setDockMode( bool enabled );
@@ -86,24 +90,28 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
       Labeling, //!< Show labeling settings in addition to text formatting settings
     };
 
-    /** Constructor for QgsTextFormatWidget.
+    /**
+     * Constructor for QgsTextFormatWidget.
      * \param mapCanvas associated map canvas
      * \param parent parent widget
      * \param mode widget mode
      */
     QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS, Mode mode );
 
-    /** Updates the widget's state to reflect the settings in a QgsTextFormat.
+    /**
+     * Updates the widget's state to reflect the settings in a QgsTextFormat.
      * \param format source format
      */
     void updateWidgetForFormat( const QgsTextFormat &format );
 
-    /** Sets the background color for the text preview widget.
+    /**
+     * Sets the background color for the text preview widget.
      * \param color background color
      */
     void setPreviewBackground( const QColor &color );
 
-    /** Controls whether data defined alignment buttons are enabled.
+    /**
+     * Controls whether data defined alignment buttons are enabled.
      * \param enable set to true to enable alignment controls
      */
     void enableDataDefinedAlignment( bool enable );
@@ -199,7 +207,8 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 };
 
 
-/** \class QgsTextFormatDialog
+/**
+ * \class QgsTextFormatDialog
  * \ingroup gui
  * A simple dialog for customising text formatting settings.
  *
@@ -216,7 +225,8 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
 
   public:
 
-    /** Constructor for QgsTextFormatDialog.
+    /**
+     * Constructor for QgsTextFormatDialog.
      * \param format initial format settings to show in dialog
      * \param mapCanvas optional associated map canvas
      * \param parent parent widget
@@ -226,7 +236,8 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
 
     virtual ~QgsTextFormatDialog();
 
-    /** Returns the current formatting settings defined by the widget.
+    /**
+     * Returns the current formatting settings defined by the widget.
      */
     QgsTextFormat format() const;
 
@@ -235,7 +246,8 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
     QgsTextFormatWidget *mFormatWidget = nullptr;
 };
 
-/** \class QgsTextFormatPanelWidget
+/**
+ * \class QgsTextFormatPanelWidget
  * \ingroup gui
  * A panel widget for customising text formatting settings.
  *
@@ -252,14 +264,16 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
 
   public:
 
-    /** Constructor for QgsTextFormatPanelWidget.
+    /**
+     * Constructor for QgsTextFormatPanelWidget.
      * \param format initial format settings to show in dialog
      * \param mapCanvas optional associated map canvas
      * \param parent parent widget
      */
     QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Returns the current formatting settings defined by the widget.
+    /**
+     * Returns the current formatting settings defined by the widget.
      */
     QgsTextFormat format() const;
 

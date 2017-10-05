@@ -26,7 +26,8 @@
 
 class QgsSnappingConfig;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class has all the configuration of snapping and can return answers to snapping queries.
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
@@ -143,7 +144,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! Query layers used for snapping
     QList<QgsSnappingUtils::LayerConfig> layers() const { return mLayers; }
 
-    /** Get extra information about the instance
+    /**
+     * Get extra information about the instance
      * \since QGIS 2.14
      */
     QString dump();

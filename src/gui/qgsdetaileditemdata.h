@@ -23,7 +23,8 @@
 #include <QPixmap>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class is the data only representation of a
  * QgsDetailedItemWidget, designed to be used in custom views.
  */
@@ -44,7 +45,8 @@ class GUI_EXPORT QgsDetailedItemData
     void setChecked( const bool flag );
     void setEnabled( bool flag );
 
-    /** This is a hint to the delegate to render using
+    /**
+     * This is a hint to the delegate to render using
      * a widget rather than manually painting every
      * part of the list item.
      * \note the delegate may completely ignore this

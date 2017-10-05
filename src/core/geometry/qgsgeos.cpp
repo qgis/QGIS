@@ -104,7 +104,8 @@ static GEOSInit geosinit;
 ///@endcond
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Scoped GEOS pointer
  * \note not available in Python bindings
  */

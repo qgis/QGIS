@@ -37,7 +37,8 @@ extern "C"
 #include <grass/gis.h>
 }
 
-/** \class QgsGrassRegion
+/**
+ * \class QgsGrassRegion
  *  \brief GRASS attributes.
  *
  */

@@ -22,7 +22,8 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSublayersDialog
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase

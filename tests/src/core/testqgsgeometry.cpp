@@ -49,7 +49,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
  */
 class TestQgsGeometry : public QObject

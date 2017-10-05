@@ -25,7 +25,8 @@
 #include "qgis_gui.h"
 
 
-/** \class QgsNewOgrConnection
+/**
+ * \class QgsNewOgrConnection
  * \brief Dialog to allow the user to define, test and save connection
  * information for OGR databases
  * \note not available in python bindings

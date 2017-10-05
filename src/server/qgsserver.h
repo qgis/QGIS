@@ -46,25 +46,29 @@
 class QgsServerResponse;
 class QgsProject;
 
-/** \ingroup server
+/**
+ * \ingroup server
  * The QgsServer class provides OGC web services.
  */
 class SERVER_EXPORT QgsServer
 {
   public:
 
-    /** Creates the server instance
+    /**
+     * Creates the server instance
      */
     QgsServer();
 
-    /** Set environment variable
+    /**
+     * Set environment variable
      * \param var environment variable name
      * \param val value
      * \since QGIS 2.14
      */
     void putenv( const QString &var, const QString &val );
 
-    /** Handles the request.
+    /**
+     * Handles the request.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable

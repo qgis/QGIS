@@ -28,7 +28,8 @@ class QString;
 typedef bool handlesDirectoryPath_t( const QString &path ) SIP_SKIP;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is the interface for those who want to add custom data items to the browser tree.
  *
  * The method createDataItem() is ever called only if capabilities() return non-zero value.

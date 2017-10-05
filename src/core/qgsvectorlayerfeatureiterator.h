@@ -42,14 +42,16 @@ class QgsVectorLayerFeatureIterator;
 % End
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Partial snapshot of vector layer's state (only the members necessary for access to features)
 */
 class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
 {
   public:
 
-    /** Constructor for QgsVectorLayerFeatureSource.
+    /**
+     * Constructor for QgsVectorLayerFeatureSource.
      * \param layer source layer
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
@@ -101,7 +103,8 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsCoordinateReferenceSystem mCrs;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>
 {
@@ -118,7 +121,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override SIP_SKIP;
 
-    /** Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
+    /**
+     * Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
      * Created in the select() method of QgsVectorLayerJoinBuffer for the joins that contain fetched attributes
      */
     struct CORE_EXPORT FetchJoinInfo
@@ -189,7 +193,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     void addVirtualAttributes( QgsFeature &f ) SIP_SKIP;
 
-    /** Adds an expression based attribute to a feature
+    /**
+     * Adds an expression based attribute to a feature
      * \param f feature
      * \param attrIndex attribute index
      * \since QGIS 2.14
@@ -197,12 +202,14 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      */
     void addExpressionAttribute( QgsFeature &f, int attrIndex ) SIP_SKIP;
 
-    /** Update feature with uncommitted attribute updates.
+    /**
+     * Update feature with uncommitted attribute updates.
      * \note not available in Python bindings
      */
     void updateChangedAttributes( QgsFeature &f ) SIP_SKIP;
 
-    /** Update feature with uncommitted geometry updates.
+    /**
+     * Update feature with uncommitted geometry updates.
      * \note not available in Python bindings
      */
     void updateFeatureGeometry( QgsFeature &f ) SIP_SKIP;
@@ -222,7 +229,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
 
     bool mFetchedFid; // when iterating by FID: indicator whether it has been fetched yet or not
 
-    /** Information about joins used in the current select() statement.
+    /**
+     * Information about joins used in the current select() statement.
       Allows faster mapping of attribute ids compared to mVectorJoins */
     QMap<const QgsVectorLayerJoinInfo *, QgsVectorLayerFeatureIterator::FetchJoinInfo> mFetchJoinInfo;
 

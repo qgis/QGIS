@@ -29,7 +29,8 @@
 
 class QgsChunkNode;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Element of a double-linked list
  * \since QGIS 3.0
  */
@@ -47,7 +48,8 @@ struct QgsChunkListEntry
 };
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Double linked list of chunks.
  * The list does not own entries.
  *

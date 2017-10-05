@@ -24,7 +24,8 @@ class QgsPathResolver;
 class QgsVectorLayer;
 class QgsSymbolLayerWidget SIP_EXTERNAL;
 
-/** \ingroup core
+/**
+ * \ingroup core
  Stores metadata about one symbol layer class.
 
  \note It's necessary to implement createSymbolLayer() function.
@@ -52,7 +53,8 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) SIP_FACTORY { return nullptr; }
 
-    /** Resolve paths in symbol layer's properties (if there are any paths).
+    /**
+     * Resolve paths in symbol layer's properties (if there are any paths).
      * When saving is true, paths are converted from absolute to relative,
      * when saving is false, paths are converted from relative to absolute.
      * This ensures that paths in project files can be relative, but in symbol layer
@@ -77,7 +79,8 @@ typedef QgsSymbolLayerWidget *( *QgsSymbolLayerWidgetFunc )( const QgsVectorLaye
 typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & ) SIP_SKIP;
 typedef void ( *QgsSymbolLayerPathResolverFunc )( QgsStringMap &, const QgsPathResolver &, bool ) SIP_SKIP;
 
-/** \ingroup core
+/**
+ * \ingroup core
  Convenience metadata class that uses static functions to create symbol layer and its widget.
  */
 class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
@@ -131,7 +134,8 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Registry of available symbol layer classes.
  *
  * QgsSymbolLayerRegistry is not usually directly created, but rather accessed through
@@ -161,7 +165,8 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     //! create a new instance of symbol layer given symbol layer name and SLD
     QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const SIP_FACTORY;
 
-    /** Resolve paths in properties of a particular symbol layer.
+    /**
+     * Resolve paths in properties of a particular symbol layer.
      * This normally means converting relative paths to absolute paths when loading
      * and converting absolute paths to relative paths when saving.
      * \since QGIS 3.0

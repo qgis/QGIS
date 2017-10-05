@@ -41,7 +41,8 @@ class QgsVectorLayerTools;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationEditorWidget
  */
 class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox

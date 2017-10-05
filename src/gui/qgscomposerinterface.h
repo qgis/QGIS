@@ -23,7 +23,8 @@
 class QgsComposerView;
 class QgsComposition;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsComposerInterface
  * A common interface for composer dialogs.
  *

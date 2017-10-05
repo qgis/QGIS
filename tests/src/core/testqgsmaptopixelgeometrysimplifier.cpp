@@ -41,7 +41,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapToPixelGeometrySimplifier class
  */
 class TestQgsMapToPixelGeometrySimplifier : public QObject

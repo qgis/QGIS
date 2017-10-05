@@ -22,7 +22,8 @@
 
 class QgsComposerScaleBar;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * A widget to define the properties of a QgsComposerScaleBarItem.
  */
 class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerScaleBarWidgetBase

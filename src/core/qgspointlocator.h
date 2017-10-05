@@ -36,7 +36,8 @@ namespace SpatialIndex SIP_SKIP
   class ISpatialIndex;
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The class defines interface for querying point location:
  *  - query nearest vertices / edges to a point
  *  - query vertices / edges in rectangle
@@ -51,7 +52,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Q_OBJECT
   public:
 
-    /** Construct point locator for a \a layer.
+    /**
+     * Construct point locator for a \a layer.
      *
      *  If a valid QgsCoordinateReferenceSystem is passed for \a destinationCrs then the locator will
      *  do the searches on data reprojected to the given CRS.
@@ -101,7 +103,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     Q_DECLARE_FLAGS( Types, Type )
 
-    /** Prepare the index for queries. Does nothing if the index already exists.
+    /**
+     * Prepare the index for queries. Does nothing if the index already exists.
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
      * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */

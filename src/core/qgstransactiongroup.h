@@ -24,7 +24,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTransactionGroup
  */
 class CORE_EXPORT QgsTransactionGroup : public QObject

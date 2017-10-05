@@ -23,7 +23,8 @@
 class QImage;
 class QUrl;
 
-/** A simple tile cache implementation. Tiles are cached according to their URL.
+/**
+ * A simple tile cache implementation. Tiles are cached according to their URL.
  * There is a small in-memory cache and a secondary caching in the local disk.
  * The in-memory cache is there to save CPU time otherwise wasted to read and
  * uncompress data saved on the disk.

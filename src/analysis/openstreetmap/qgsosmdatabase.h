@@ -30,7 +30,8 @@ class QgsOSMWayIterator;
 
 typedef QPair<QString, int> QgsOSMTagCountPair;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Class that encapsulates access to OpenStreetMap data stored in a database
  * previously imported from XML file.
  *
@@ -139,7 +140,8 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 };
 
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Encapsulate iteration over table of nodes/
  * \note not available in Python bindings
 */
@@ -154,7 +156,8 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 
   protected:
 
-    /** \note not available in Python bindings
+    /**
+     * \note not available in Python bindings
      */
     QgsOSMNodeIterator( sqlite3 *handle ) SIP_SKIP;
 
@@ -167,7 +170,8 @@ class ANALYSIS_EXPORT QgsOSMNodeIterator // clazy:exclude=rule-of-three
 
 
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Encapsulate iteration over table of ways
  * \note not available in Python bindings
  */
@@ -182,7 +186,8 @@ class ANALYSIS_EXPORT QgsOSMWayIterator // clazy:exclude=rule-of-three
 
   protected:
 
-    /** \note not available in Python bindings
+    /**
+     * \note not available in Python bindings
      */
     QgsOSMWayIterator( sqlite3 *handle ) SIP_SKIP;
 

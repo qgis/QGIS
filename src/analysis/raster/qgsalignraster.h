@@ -29,7 +29,8 @@ class QgsRectangle;
 typedef void *GDALDatasetH SIP_SKIP;
 
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \brief QgsAlignRaster takes one or more raster layers and warps (resamples) them
  * so they have the same:
  * - coordinate reference system

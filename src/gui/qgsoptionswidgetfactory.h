@@ -20,7 +20,8 @@
 #include "qgis_gui.h"
 #include "qgis.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsOptionsPageWidget
  * Base class for widgets for pages included in the options dialog.
  * \since QGIS 3.0
@@ -60,7 +61,8 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
 
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsOptionsWidgetFactory
  * A factory class for creating custom options pages.
  * \since QGIS 3.0

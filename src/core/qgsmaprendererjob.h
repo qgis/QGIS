@@ -39,7 +39,8 @@ class QgsFeatureFilterProvider;
 #ifndef SIP_RUN
 /// @cond PRIVATE
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Structure keeping low-level rendering job information.
  */
 struct LayerRenderJob
@@ -58,7 +59,8 @@ struct LayerRenderJob
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Structure keeping low-level label rendering job information.
  */
 struct LabelRenderJob
@@ -85,7 +87,8 @@ struct LabelRenderJob
 ///@endcond PRIVATE
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class for map rendering implementations.
  *
  * The API is designed in a way that rendering is done asynchronously, therefore
@@ -275,7 +278,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
   private:
 
-    /** Convenience function to project an extent into the layer source
+    /**
+     * Convenience function to project an extent into the layer source
      * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
      * source CRS coordinates, and if it was split, returns true, and
@@ -289,7 +293,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
  *

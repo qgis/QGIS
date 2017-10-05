@@ -23,7 +23,8 @@
 class QToolButton;
 class QLineEdit;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
  */
 class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
@@ -56,7 +57,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      */
     virtual void clear() override;
 
-    /** Resets the widget to show no value (ie, an "unknown" state).
+    /**
+     * Resets the widget to show no value (ie, an "unknown" state).
      * \since QGIS 2.16
      */
     void setEmpty();
@@ -82,7 +84,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     QLineEdit *mNullLabel = nullptr;
     QToolButton *mClearButton = nullptr;
 
-    /** Set the lowest Date that can be displayed with the Qt::ISODate format
+    /**
+     * Set the lowest Date that can be displayed with the Qt::ISODate format
      *  - uses QDateTimeEdit::setMinimumDateTime (since Qt 4.4)
      * \note
      *  - QDate and QDateTime does not support minus years for the Qt::ISODate format

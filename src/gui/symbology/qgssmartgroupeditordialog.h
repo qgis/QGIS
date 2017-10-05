@@ -20,7 +20,8 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSmartGroupCondition
  */
 class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGroupConditionWidget
@@ -63,7 +64,8 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 
 #include "qgsstyle.h" //for QgsSmartConditionMap
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSmartGroupEditorDialog
  */
 class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmartGroupEditorDialogBase

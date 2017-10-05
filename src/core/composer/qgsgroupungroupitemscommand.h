@@ -25,7 +25,8 @@
 class QgsComposition;
 class QgsComposerItemGroup;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A composer command class for grouping / ungrouping composer items.
  *
  * If mState == Ungrouped, the command owns the group item
@@ -43,7 +44,8 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
       Ungrouped
     };
 
-    /** Create a group or ungroup command
+    /**
+     * Create a group or ungroup command
      *
      * \param s command kind (\see State)
      * \param item the group item being created or ungrouped

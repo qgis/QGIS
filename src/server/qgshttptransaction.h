@@ -30,7 +30,8 @@ class QTimer;
 // needs porting to Qt5 - until then don't include in api docs
 ///@cond PRIVATE
 
-/** \ingroup server
+/**
+ * \ingroup server
  * HTTP request/response manager that is redirect-aware.
  * This class extends the Qt QHttp concept by being able to recognise
  *  and respond to redirection responses (e.g. HTTP code 302)
@@ -90,7 +91,8 @@ class QgsHttpTransaction : public QObject
      */
     QString errorString();
 
-    /** Apply proxy settings from QSettings to a http object
+    /**
+     * Apply proxy settings from QSettings to a http object
     \returns true if proxy settings was applied, false else*/
     static bool applyProxySettings( QHttp &http, const QString &url );
 

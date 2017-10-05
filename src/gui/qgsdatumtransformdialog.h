@@ -23,7 +23,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDatumTransformDialog
  * \note not available in Python bindings
  */

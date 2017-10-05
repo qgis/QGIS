@@ -23,7 +23,8 @@
 #include <Qt3DRender>
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Object that controls camera movement based on user input
  * \since QGIS 3.0
  */

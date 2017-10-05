@@ -27,7 +27,8 @@
 
 class QgsRasterMinMaxWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSingleBandPseudoColorRendererWidget
  */
 class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandPseudoColorRendererWidgetBase
@@ -49,7 +50,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
   public slots:
 
-    /** Executes the single band pseudo raster classficiation
+    /**
+     * Executes the single band pseudo raster classficiation
      */
     void classify();
     //! called when new min/max values are loaded
@@ -66,7 +68,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 
-    /** Generate labels from the values in the color map.
+    /**
+     * Generate labels from the values in the color map.
      *  Skip labels which were manually edited (black text).
      *  Text of generated labels is made gray
      */

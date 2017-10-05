@@ -31,7 +31,8 @@
 #include "qgis.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Configuration storage class for authentication method configurations
  */
 class CORE_EXPORT QgsAuthMethodConfig
@@ -180,7 +181,8 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 
 #ifndef QT_NO_SSL
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
  * \note Useful for caching the bundle during application run sessions
  */
@@ -249,7 +251,8 @@ class CORE_EXPORT QgsPkiBundle
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Storage set for constructed SSL certificate, key, associated with an authentication config
  */
 class CORE_EXPORT QgsPkiConfigBundle
@@ -343,7 +346,8 @@ class CORE_EXPORT QgsPkiConfigBundle
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Configuration container for SSL server connection exceptions or overrides
  */
 class CORE_EXPORT QgsAuthConfigSslServer
@@ -379,12 +383,14 @@ class CORE_EXPORT QgsAuthConfigSslServer
     //! Set SSL client's peer verify mode to use in connections
     void setSslPeerVerifyMode( QSslSocket::PeerVerifyMode mode ) { mSslPeerVerifyMode = mode; }
 
-    /** Number or SSL client's peer to verify in connections
+    /**
+     * Number or SSL client's peer to verify in connections
      * \note When set to 0 = unlimited depth
      */
     int sslPeerVerifyDepth() const { return mSslPeerVerifyDepth; }
 
-    /** Set number or SSL client's peer to verify in connections
+    /**
+     * Set number or SSL client's peer to verify in connections
      * \note When set to 0 = unlimited depth
      */
     void setSslPeerVerifyDepth( int depth ) { mSslPeerVerifyDepth = depth; }

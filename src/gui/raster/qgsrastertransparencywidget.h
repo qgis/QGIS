@@ -29,7 +29,8 @@ class QgsMapToolEmitPoint;
 class QgsPointXY;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Widget to control a layers transparency and related options
  */
 class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterTransparencyWidget

@@ -72,11 +72,22 @@ while ($LINE_IDX < $LINE_COUNT){
        }
     }
     else {
-        if ( !$PREVIOUS_WAS_BLANKLINE && $new_line =~ m/^(\s*)\/\*\*\s/ ){
+        if ( $new_line =~ m/^(\s*)\/\*\*(?!\*)\s*(.*)$/ ){
           # Space around doxygen start blocks (force blank line before /**)
-          print $out_handle "\n";
+          if ( !$PREVIOUS_WAS_BLANKLINE ){
+              print $out_handle "\n";
+          }
+          if ( $2 ne '' ){
+              # new line after /** begin block
+              print $out_handle "$1\/**\n$1 * $2\n";
+          }
+          else {
+              print $out_handle $new_line."\n";
+          }
         }
-        print $out_handle $new_line."\n";
+        else {
+            print $out_handle $new_line."\n";
+        }
     }
     $LINE_IDX++;
     $PREVIOUS_WAS_BLANKLINE = $is_blank_line;

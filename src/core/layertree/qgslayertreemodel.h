@@ -37,7 +37,8 @@ class QgsExpression;
 class QgsRenderContext;
 class QgsLayerTree;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The QgsLayerTreeModel class is model implementation for Qt item views framework.
  * The model can be used in any QTreeView, it is however recommended to use it
  * with QgsLayerTreeView which brings additional functionality specific to layer tree handling.
@@ -168,7 +169,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     QgsLayerTreeModelLegendNode *legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
 
-    /** Searches through the layer tree to find a legend node with a matching layer ID
+    /**
+     * Searches through the layer tree to find a legend node with a matching layer ID
      * and rule key.
      * \param layerId map layer ID
      * \param ruleKey legend node rule key
@@ -316,7 +318,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! emit dataChanged() for layer tree node items
     void recursivelyEmitDataChanged( const QModelIndex &index = QModelIndex() );
 
-    /** Updates layer data for scale dependent layers, should be called when map scale changes.
+    /**
+     * Updates layer data for scale dependent layers, should be called when map scale changes.
      * Emits dataChanged() for all scale dependent layers.
      * \since QGIS 2.16
      */
@@ -441,7 +444,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayerTreeModel::Flags )
 ///@cond PRIVATE
 #ifndef SIP_RUN
 
-/** In order to support embedded widgets in layer tree view, the model
+/**
+ * In order to support embedded widgets in layer tree view, the model
  * generates one placeholder legend node for each embedded widget.
  * The placeholder will be replaced by an embedded widget in QgsLayerTreeView
  */

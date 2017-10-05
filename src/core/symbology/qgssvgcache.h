@@ -34,7 +34,8 @@ class QDomElement;
 class QImage;
 class QPicture;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSvgCacheEntry
  */
 class CORE_EXPORT QgsSvgCacheEntry
@@ -43,7 +44,8 @@ class CORE_EXPORT QgsSvgCacheEntry
 
     QgsSvgCacheEntry();
 
-    /** Constructor.
+    /**
+     * Constructor.
      * \param path Absolute path to SVG file (relative paths are not resolved).
      * \param size
      * \param strokeWidth width of stroke
@@ -70,7 +72,8 @@ class CORE_EXPORT QgsSvgCacheEntry
     //! Fixed aspect ratio
     double fixedAspectRatio = 0;
 
-    /** SVG viewbox size.
+    /**
+     * SVG viewbox size.
      * \since QGIS 2.14
      */
     QSizeF viewboxSize;
@@ -98,7 +101,8 @@ class CORE_EXPORT QgsSvgCacheEntry
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
 according to the svg params specification (http://www.w3.org/TR/2009/WD-SVGParamPrimer-20090616/). Supported are
 the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"
@@ -119,7 +123,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
     ~QgsSvgCache();
 
-    /** Get SVG as QImage.
+    /**
+     * Get SVG as QImage.
      * \param path Absolute path to SVG file.
      * \param size size of cached image
      * \param fill color of fill
@@ -132,7 +137,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
 
-    /** Get SVG  as QPicture&.
+    /**
+     * Get SVG  as QPicture&.
      * \param path Absolute path to SVG file.
      * \param size size of cached image
      * \param fill color of fill
@@ -145,7 +151,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
 
-    /** Calculates the viewbox size of a (possibly cached) SVG file.
+    /**
+     * Calculates the viewbox size of a (possibly cached) SVG file.
      * \param path Absolute path to SVG file.
      * \param size size of cached image
      * \param fill color of fill
@@ -159,12 +166,14 @@ class CORE_EXPORT QgsSvgCache : public QObject
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, double fixedAspectRatio = 0 );
 
-    /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
+    /**
+     * Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
     void containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam,
                          double &defaultStrokeWidth ) const;
 
-    /** Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
+    /**
+     * Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
      * default values in the svg file, only the first one is considered.
      * \param path path to SVG file
      * \param hasFillParam will be true if fill param present in SVG
@@ -204,7 +213,8 @@ class CORE_EXPORT QgsSvgCache : public QObject
 
   protected:
 
-    /** Creates new cache entry and returns pointer to it
+    /**
+     * Creates new cache entry and returns pointer to it
      * \param path Absolute path to SVG file
      * \param size size of cached image
      * \param fill color of fill

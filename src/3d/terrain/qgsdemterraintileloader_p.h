@@ -38,7 +38,8 @@
 class QgsRasterDataProvider;
 class QgsRasterLayer;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Chunk loader for DEM terrain tiles.
  * \since QGIS 3.0
  */
@@ -64,7 +65,8 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
 
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Utility class to asynchronously create heightmaps from DEM raster for given tiles of terrain.
  * \since QGIS 3.0
  */

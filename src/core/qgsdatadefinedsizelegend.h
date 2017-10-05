@@ -29,7 +29,8 @@ class QgsRenderContext;
 class QgsSizeScaleTransformer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Object that keeps configuration of appearance of marker symbol's data-defined size in legend.
  * For example: the list of classes (size values), whether the classes should appear in separate
  * legend nodes or whether to collapse them into one legend node.

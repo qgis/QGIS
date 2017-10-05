@@ -351,7 +351,8 @@ class CORE_EXPORT QgsTask : public QObject
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsTask::Flags )
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTaskManager
  * \brief Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
  * or accessed via QgsApplication::taskManager().
@@ -363,7 +364,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
   public:
 
-    /** Constructor for QgsTaskManager.
+    /**
+     * Constructor for QgsTaskManager.
      * \param parent parent QObject
      */
     QgsTaskManager( QObject *parent SIP_TRANSFERTHIS = 0 );
@@ -397,7 +399,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     };
 
-    /** Adds a task to the manager. Ownership of the task is transferred
+    /**
+     * Adds a task to the manager. Ownership of the task is transferred
      * to the manager, and the task manager will be responsible for starting
      * the task. The priority argument can be used to control the run queue's
      * order of execution, with larger numbers
@@ -416,20 +419,23 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     long addTask( const TaskDefinition &task SIP_TRANSFER, int priority = 0 );
 
-    /** Returns the task with matching ID.
+    /**
+     * Returns the task with matching ID.
      * \param id task ID
      * \returns task if found, or nullptr
      */
     QgsTask *task( long id ) const;
 
-    /** Returns all tasks tracked by the manager.
+    /**
+     * Returns all tasks tracked by the manager.
      */
     QList<QgsTask *> tasks() const;
 
     //! Returns the number of tasks tracked by the manager.
     int count() const;
 
-    /** Returns the unique task ID corresponding to a task managed by the class.
+    /**
+     * Returns the unique task ID corresponding to a task managed by the class.
      * \param task task to find
      * \returns task ID, or -1 if task not found
      */
@@ -451,7 +457,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     QSet< long > dependencies( long taskId ) const SIP_SKIP;
 
-    /** Returns a list of layers on which as task is dependent. The task will automatically
+    /**
+     * Returns a list of layers on which as task is dependent. The task will automatically
      * be canceled if any of these layers are above to be removed.
      * \param taskId task ID
      * \returns list of layers
@@ -465,12 +472,14 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     QList< QgsTask * > tasksDependentOnLayer( QgsMapLayer *layer ) const;
 
-    /** Returns a list of the active (queued or running) tasks.
+    /**
+     * Returns a list of the active (queued or running) tasks.
      * \see countActiveTasks()
      */
     QList< QgsTask * > activeTasks() const;
 
-    /** Returns the number of active (queued or running) tasks.
+    /**
+     * Returns the number of active (queued or running) tasks.
      * \see activeTasks()
      * \see countActiveTasksChanged()
      */

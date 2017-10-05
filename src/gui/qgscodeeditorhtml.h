@@ -22,7 +22,8 @@
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A HTML editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \since QGIS 2.6

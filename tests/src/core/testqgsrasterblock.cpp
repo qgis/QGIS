@@ -21,7 +21,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterBlock class.
  */
 class TestQgsRasterBlock : public QObject

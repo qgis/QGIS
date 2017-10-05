@@ -28,7 +28,8 @@
 class QgsAuthMethodEdit;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing an authentication configuration
  * \note not available in Python bindings
  */

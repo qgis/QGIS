@@ -27,7 +27,8 @@
 
 class QgsFeature;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 * An action which can run on map layers
 */
 class GUI_EXPORT QgsMapLayerAction : public QAction
@@ -104,7 +105,8 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 * This class tracks map layer actions.
 *
 * QgsMapLayerActionRegistry is not usually directly created, but rather accessed through

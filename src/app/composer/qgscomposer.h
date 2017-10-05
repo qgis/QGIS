@@ -79,7 +79,8 @@ class QgsAppComposerInterface : public QgsComposerInterface
     QgsComposer *mComposer = nullptr;
 };
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \brief A gui for composing a printable map.
  */
 class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
@@ -122,7 +123,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Restore the window and toolbar state
     void restoreWindowState();
 
-    /** Loads the contents of a template document into the composer's composition.
+    /**
+     * Loads the contents of a template document into the composer's composition.
      * \param templateDoc template document to load
      * \param clearExisting set to true to remove all existing composition settings and items before loading template
      * \returns true if template load was successful
@@ -619,7 +621,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void dockVisibilityChanged( bool visible );
 
-    /** Repopulates the atlas page combo box with valid items.
+    /**
+     * Repopulates the atlas page combo box with valid items.
      */
     void updateAtlasPageComboBox( int pageCount );
 

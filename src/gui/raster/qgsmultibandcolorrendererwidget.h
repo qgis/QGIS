@@ -29,7 +29,8 @@ class QgsRasterLayer;
 class QLineEdit;
 class QgsRasterMinMaxWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMultiBandColorRendererWidget
  */
 class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsMultiBandColorRendererWidgetBase

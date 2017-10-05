@@ -29,7 +29,8 @@
 #include <QDialog>
 #include <QSize>
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \brief a dialog for saving a map to an image.
  * \since QGIS 3.0
 */
@@ -45,7 +46,8 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
       Pdf        // PDF-specific dialog
     };
 
-    /** Constructor for QgsMapSaveDialog
+    /**
+     * Constructor for QgsMapSaveDialog
      */
     QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr,
                       const QList< QgsDecorationItem * > &decorations = QList< QgsDecorationItem * >(),

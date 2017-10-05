@@ -52,7 +52,8 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
 };
 
 
-/** \class QgsPgSourceSelect
+/**
+ * \class QgsPgSourceSelect
  * \brief Dialog to create connections and add tables from PostgresQL.
  *
  * This dialog allows the user to define and save connection information
@@ -88,7 +89,8 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     void addButtonClicked() override;
     void buildQuery();
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();

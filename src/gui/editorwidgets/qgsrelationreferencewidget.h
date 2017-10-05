@@ -49,7 +49,8 @@ class QLabel;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationReferenceWidget
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
@@ -136,7 +137,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     QgsFeature referencedFeature() const;
 
-    /** Sets the widget to display in an indeterminate "mixed value" state.
+    /**
+     * Sets the widget to display in an indeterminate "mixed value" state.
      * \since QGIS 2.16
      */
     void showIndeterminateState();

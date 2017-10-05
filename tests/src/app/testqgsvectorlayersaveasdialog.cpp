@@ -25,7 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the save as dialog
  */
 class TestQgsVectorLayerSaveAsDialog : public QObject

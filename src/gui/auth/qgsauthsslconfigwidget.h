@@ -32,7 +32,8 @@ class QComboBox;
 class QGroupBox;
 class QSpinBox;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing an SSL server configuration
  */
 class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSslConfigWidget
@@ -76,7 +77,8 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     //! Get the client's peer verify mode for connections
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 
-    /** Get the client's peer verify depth for connections
+    /**
+     * Get the client's peer verify depth for connections
      * \note Value of 0 = unlimited
      */
     int sslPeerVerifyDepth();
@@ -182,7 +184,8 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper of widget for editing an SSL server configuration
  */
 class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog

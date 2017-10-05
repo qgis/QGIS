@@ -33,7 +33,8 @@ class QgsRubberBand;
 namespace QgsMapToolSelectUtils
 {
 
-  /** Calculates a list of features matching a selection geometry and flags.
+  /**
+   * Calculates a list of features matching a selection geometry and flags.
    * \param canvas the map canvas used to get the current selected vector layer and
     for any required geometry transformations
    * \param selectGeometry the geometry to select the layers features. This geometry

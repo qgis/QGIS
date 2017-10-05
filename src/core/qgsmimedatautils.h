@@ -25,7 +25,8 @@ class QgsLayerTreeNode;
 class QgsVectorLayer;
 class QgsRasterLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMimeDataUtils
  */
 class CORE_EXPORT QgsMimeDataUtils
@@ -48,13 +49,15 @@ class CORE_EXPORT QgsMimeDataUtils
       //! Returns encoded representation of the object
       QString data() const;
 
-      /** Get vector layer from uri if possible, otherwise returns 0 and error is set
+      /**
+       * Get vector layer from uri if possible, otherwise returns 0 and error is set
        * \param owner set to true if caller becomes owner
        * \param error set to error message if cannot get vector
        */
       QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
 
-      /** Get raster layer from uri if possible, otherwise returns 0 and error is set
+      /**
+       * Get raster layer from uri if possible, otherwise returns 0 and error is set
        * \param owner set to true if caller becomes owner
        * \param error set to error message if cannot get raster
        */

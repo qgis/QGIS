@@ -19,7 +19,8 @@
 #include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsNetworkSpeedStrategy
  * \since QGIS 3.0
  * \brief Strategy for calculating edge cost based on travel time. Should be

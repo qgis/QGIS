@@ -762,7 +762,8 @@ class QgsWmsCapabilities
 
 
 
-/** Class that handles download of capabilities.
+/**
+ * Class that handles download of capabilities.
  */
 class QgsWmsCapabilitiesDownload : public QObject
 {

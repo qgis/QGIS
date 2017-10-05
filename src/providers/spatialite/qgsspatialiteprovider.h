@@ -84,7 +84,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual bool supportsSubsetString() const override { return true; }
     QgsWkbTypes::Type wkbType() const override;
 
-    /** Return the number of layers for the current data source
+    /**
+     * Return the number of layers for the current data source
      *
      * \note Should this be subLayerCount() instead?
      */
@@ -112,7 +113,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     bool createAttributeIndex( int field ) override;
 
-    /** The SpatiaLite provider does its own transforms so we return
+    /**
+     * The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
      * should not be handled by the QgsCoordinateTransform object. See the
      * documentation on QgsVectorDataProvider for details on these functions.

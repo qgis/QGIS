@@ -31,7 +31,8 @@ class QgsReadWriteContext;
 class QgsVectorLayer;
 class QgsVectorLayerLabelProvider;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class - its implementations define different approaches to the labeling of a vector layer.
  *
  * \since QGIS 3.0
@@ -100,7 +101,8 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Basic implementation of the labeling interface.
  *
  * The configuration is kept in layer's custom properties for backward compatibility.

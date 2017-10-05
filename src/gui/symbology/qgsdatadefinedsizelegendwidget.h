@@ -37,7 +37,8 @@ class QgsMarkerSymbol;
 class QgsProperty;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for configuration of appearance of legend for marker symbols with data-defined size.
  *
  * \since QGIS 3.0

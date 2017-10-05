@@ -24,7 +24,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Custom widget for editing an authentication configuration ID
  * \note Validates the input against the database and for ID's 7-character alphanumeric syntax
  * \note not available in Python bindings

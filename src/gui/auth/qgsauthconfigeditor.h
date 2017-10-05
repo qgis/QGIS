@@ -27,7 +27,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing authentication configuration database
  */
 class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfigEditor

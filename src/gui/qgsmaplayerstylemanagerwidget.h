@@ -26,7 +26,8 @@ class QgsMapLayer;
 class QgsMapCanvas;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsMapLayerStyleManagerWidget class which is used to visually manage
  * the layer styles.
  */

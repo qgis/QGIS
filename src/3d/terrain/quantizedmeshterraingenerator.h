@@ -4,7 +4,8 @@
 #include "qgsterraingenerator.h"
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Terrain generator using downloaded terrain tiles using quantized mesh specification
  * \since QGIS 3.0
  */

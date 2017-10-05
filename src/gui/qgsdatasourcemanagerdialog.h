@@ -34,7 +34,8 @@ class QgsMapCanvas;
 class QgsAbstractDataSourceWidget;
 class QgsBrowserModel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * The QgsDataSourceManagerDialog class embeds the browser panel and all
  * the provider dialogs.
  * The dialog does not handle layer addition directly but emits signals that
@@ -48,7 +49,8 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
 
   public:
 
-    /** QgsDataSourceManagerDialog constructor
+    /**
+     * QgsDataSourceManagerDialog constructor
       * \param browserModel instance of the (shared) browser model
       * \param parent the object
       * \param canvas a pointer to the map canvas

@@ -37,7 +37,8 @@ class QgsProject;
 
 class QDomElement;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Definition of the world
  *
  * \since QGIS 3.0

@@ -21,7 +21,8 @@
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsRasterMatrix
  */
 class ANALYSIS_EXPORT QgsRasterMatrix

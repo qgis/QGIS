@@ -23,7 +23,8 @@
 
 class QgsRectangle;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * The class encapsulates tiling scheme (just like with WMTS / TMS / XYZ layers).
  * The origin (tile [0,0]) is in bottom-left corner.
  * \since QGIS 3.0

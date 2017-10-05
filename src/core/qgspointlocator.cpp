@@ -54,7 +54,8 @@ static const double POINT_LOC_EPSILON = 1e-12;
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Helper class for bulk loading of R-trees.
  * \note not available in Python bindings
 */
@@ -81,7 +82,8 @@ class QgsPointLocator_Stream : public IDataStream
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Helper class used when traversing the index looking for vertices - builds a list of matches.
  * \note not available in Python bindings
 */
@@ -129,7 +131,8 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Helper class used when traversing the index looking for edges - builds a list of matches.
  * \note not available in Python bindings
 */
@@ -179,7 +182,8 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Helper class used when traversing the index with areas - builds a list of matches.
  * \note not available in Python bindings
 */
@@ -520,7 +524,8 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   return lst;
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Helper class used when traversing the index looking for edges - builds a list of matches.
  * \note not available in Python bindings
 */
@@ -564,7 +569,8 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
 ////////////////////////////////////////////////////////////////////////////
 #include <QStack>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Helper class to dump the R-index nodes and their content
  * \note not available in Python bindings
 */

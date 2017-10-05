@@ -32,7 +32,8 @@
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Template that stores data related to one server.
  *
  * It is assumed that following functions exist:
@@ -223,7 +224,8 @@ class QgsConnectionPoolGroup
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Template class responsible for keeping a pool of open connections.
  * This is desired to avoid the overhead of creation of new connection every time.
  *

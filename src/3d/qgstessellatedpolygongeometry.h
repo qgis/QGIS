@@ -25,7 +25,8 @@ namespace Qt3DRender
   class QBuffer;
 }
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Class derived from Qt3DRender::QGeometry that represents polygons tessellated into 3D geometry.
  *
  * Takes a list of polygons as input, internally it does tessellation and writes output to the internal

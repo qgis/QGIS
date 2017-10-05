@@ -26,7 +26,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
  * This class provides abstraction of a dialog for requesting credentials to the user.
  * By default QgsCredentials will be used if not overridden with other
@@ -107,7 +108,8 @@ class CORE_EXPORT QgsCredentials
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
 \brief Default implementation of credentials interface
 
 This class doesn't prompt or return credentials
@@ -129,7 +131,8 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
 \brief Implementation of credentials interface for the console
 
 This class outputs message to the standard output and retrieves input from

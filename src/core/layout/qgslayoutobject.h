@@ -40,7 +40,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     Q_OBJECT
   public:
 
-    /** Data defined properties for different item types
+    /**
+     * Data defined properties for different item types
      */
     enum DataDefinedProperty
     {

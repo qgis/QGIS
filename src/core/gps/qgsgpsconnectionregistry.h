@@ -25,7 +25,8 @@
 
 class QgsGPSConnection;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to register / unregister existing GPS connections such that the information
  * is available to all classes and plugins.
  *

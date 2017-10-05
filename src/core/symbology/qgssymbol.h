@@ -54,7 +54,8 @@ class QgsExpressionContext;
 
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSymbol
  */
 class CORE_EXPORT QgsSymbol
@@ -113,7 +114,8 @@ class CORE_EXPORT QgsSymbol
 
     // symbol layers handling
 
-    /** Returns list of symbol layers contained in the symbol.
+    /**
+     * Returns list of symbol layers contained in the symbol.
      * \returns symbol layers list
      * \since QGIS 2.7
      * \see symbolLayer
@@ -121,7 +123,8 @@ class CORE_EXPORT QgsSymbol
      */
     QgsSymbolLayerList symbolLayers() { return mLayers; }
 
-    /** Returns a specific symbol layers contained in the symbol.
+    /**
+     * Returns a specific symbol layers contained in the symbol.
      * \param layer layer number
      * \returns corresponding symbol layer
      * \since QGIS 2.7
@@ -130,7 +133,8 @@ class CORE_EXPORT QgsSymbol
      */
     QgsSymbolLayer *symbolLayer( int layer );
 
-    /** Returns total number of symbol layers contained in the symbol.
+    /**
+     * Returns total number of symbol layers contained in the symbol.
      * \returns count of symbol layers
      * \since QGIS 2.7
      * \see symbolLayers
@@ -169,7 +173,8 @@ class CORE_EXPORT QgsSymbol
     //! delete layer at specified index and set a new one
     bool changeSymbolLayer( int index, QgsSymbolLayer *layer SIP_TRANSFER );
 
-    /** Begins the rendering process for the symbol. This must be called before renderFeature(),
+    /**
+     * Begins the rendering process for the symbol. This must be called before renderFeature(),
      * and should be followed by a call to stopRender().
      * \param context render context which symbol will be drawn using
      * \param fields fields for features to be rendered (usually the associated
@@ -179,7 +184,8 @@ class CORE_EXPORT QgsSymbol
      */
     void startRender( QgsRenderContext &context, const QgsFields &fields = QgsFields() );
 
-    /** Ends the rendering process. This should be called after rendering all desired features.
+    /**
+     * Ends the rendering process. This should be called after rendering all desired features.
      * \param context render context, must match the context specified when startRender()
      * was called.
      * \see startRender()
@@ -202,7 +208,8 @@ class CORE_EXPORT QgsSymbol
     //! Generate symbol as image
     QImage asImage( QSize size, QgsRenderContext *customContext = nullptr );
 
-    /** Returns a large (roughly 100x100 pixel) preview image for the symbol.
+    /**
+     * Returns a large (roughly 100x100 pixel) preview image for the symbol.
      * \param expressionContext optional expression context, for evaluation of
      * data defined symbol properties
      */
@@ -219,7 +226,8 @@ class CORE_EXPORT QgsSymbol
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
-    /** Returns the units to use for sizes and widths within the symbol. Individual
+    /**
+     * Returns the units to use for sizes and widths within the symbol. Individual
      * symbol layer definitions will interpret this in different ways, e.g., a marker symbol
      * may use it to specify the units for the marker size, while a line symbol
      * may use it to specify the units for the line width.
@@ -228,7 +236,8 @@ class CORE_EXPORT QgsSymbol
      */
     QgsUnitTypes::RenderUnit outputUnit() const;
 
-    /** Sets the units to use for sizes and widths within the symbol. Individual
+    /**
+     * Sets the units to use for sizes and widths within the symbol. Individual
      * symbol definitions will interpret this in different ways, e.g., a marker symbol
      * may use it to specify the units for the marker size, while a line symbol
      * may use it to specify the units for the line width.
@@ -254,17 +263,20 @@ class CORE_EXPORT QgsSymbol
      */
     void setOpacity( qreal opacity ) { mOpacity = opacity; }
 
-    /** Sets rendering hint flags for the symbol.
+    /**
+     * Sets rendering hint flags for the symbol.
      * \see renderHints()
      */
     void setRenderHints( RenderHints hints ) { mRenderHints = hints; }
 
-    /** Returns the rendering hint flags for the symbol.
+    /**
+     * Returns the rendering hint flags for the symbol.
      * \see setRenderHints()
      */
     RenderHints renderHints() const { return mRenderHints; }
 
-    /** Sets whether features drawn by the symbol should be clipped to the render context's
+    /**
+     * Sets whether features drawn by the symbol should be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
@@ -274,7 +286,8 @@ class CORE_EXPORT QgsSymbol
      */
     void setClipFeaturesToExtent( bool clipFeaturesToExtent ) { mClipFeaturesToExtent = clipFeaturesToExtent; }
 
-    /** Returns whether features drawn by the symbol will be clipped to the render context's
+    /**
+     * Returns whether features drawn by the symbol will be clipped to the render context's
      * extent. If this option is enabled then features which are partially outside the extent
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
@@ -291,7 +304,8 @@ class CORE_EXPORT QgsSymbol
      */
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    /** Returns whether the symbol utilizes any data defined properties.
+    /**
+     * Returns whether the symbol utilizes any data defined properties.
      * \since QGIS 2.12
      */
     bool hasDataDefinedProperties() const;
@@ -409,14 +423,16 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSymbol::RenderHints )
 
 ///////////////////////
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSymbolRenderContext
  */
 class CORE_EXPORT QgsSymbolRenderContext
 {
   public:
 
-    /** Constructor for QgsSymbolRenderContext
+    /**
+     * Constructor for QgsSymbolRenderContext
      * \param c
      * \param u
      * \param opacity value between 0 (fully transparent) and 1 (fully opaque)
@@ -431,7 +447,8 @@ class CORE_EXPORT QgsSymbolRenderContext
     QgsRenderContext &renderContext() { return mRenderContext; }
     const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
-    /** Sets the original value variable value for data defined symbology
+    /**
+     * Sets the original value variable value for data defined symbology
      * \param value value for original value variable. This usually represents the symbol property value
      * before any data defined overrides have been applied.
      * \since QGIS 2.12
@@ -464,12 +481,14 @@ class CORE_EXPORT QgsSymbolRenderContext
     bool selected() const { return mSelected; }
     void setSelected( bool selected ) { mSelected = selected; }
 
-    /** Returns the rendering hint flags for the symbol.
+    /**
+     * Returns the rendering hint flags for the symbol.
      * \see setRenderHints()
      */
     QgsSymbol::RenderHints renderHints() const { return mRenderHints; }
 
-    /** Sets rendering hint flags for the symbol.
+    /**
+     * Sets rendering hint flags for the symbol.
      * \see renderHints()
      */
     void setRenderHints( QgsSymbol::RenderHints hints ) { mRenderHints = hints; }
@@ -503,22 +522,26 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     QgsFields fields() const { return mFields; }
 
-    /** Part count of current geometry
+    /**
+     * Part count of current geometry
      * \since QGIS 2.16
      */
     int geometryPartCount() const { return mGeometryPartCount; }
 
-    /** Sets the part count of current geometry
+    /**
+     * Sets the part count of current geometry
      * \since QGIS 2.16
      */
     void setGeometryPartCount( int count ) { mGeometryPartCount = count; }
 
-    /** Part number of current geometry
+    /**
+     * Part number of current geometry
      * \since QGIS 2.16
      */
     int geometryPartNum() const { return mGeometryPartNum; }
 
-    /** Sets the part number of current geometry
+    /**
+     * Sets the part number of current geometry
      * \since QGIS 2.16
      */
     void setGeometryPartNum( int num ) { mGeometryPartNum = num; }
@@ -567,28 +590,32 @@ class CORE_EXPORT QgsSymbolRenderContext
 //////////////////////
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMarkerSymbol
  */
 class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 {
   public:
 
-    /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
+    /**
+     * Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
      * This is a convenience method for easier creation of marker symbols.
      */
     static QgsMarkerSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
 
     QgsMarkerSymbol( const QgsSymbolLayerList &layers SIP_TRANSFER = QgsSymbolLayerList() );
 
-    /** Sets the angle for the whole symbol. Individual symbol layer sizes
+    /**
+     * Sets the angle for the whole symbol. Individual symbol layer sizes
      * will be rotated to maintain their current relative angle to the whole symbol angle.
      * \param symbolAngle new symbol angle
      * \see angle()
      */
     void setAngle( double symbolAngle );
 
-    /** Returns the marker angle for the whole symbol. Note that for symbols with
+    /**
+     * Returns the marker angle for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the angle of
      * the first symbol layer.
      * \since QGIS 2.16
@@ -596,13 +623,15 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     double angle() const;
 
-    /** Set data defined angle for whole symbol (including all symbol layers).
+    /**
+     * Set data defined angle for whole symbol (including all symbol layers).
      * \since QGIS 3.0
      * \see dataDefinedAngle()
      */
     void setDataDefinedAngle( const QgsProperty &property );
 
-    /** Returns data defined angle for whole symbol (including all symbol layers).
+    /**
+     * Returns data defined angle for whole symbol (including all symbol layers).
      * \returns data defined angle, or invalid property if angle is not set
      * at the marker level.
      * \since QGIS 3.0
@@ -610,7 +639,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     QgsProperty dataDefinedAngle() const;
 
-    /** Sets the line angle modification for the symbol's angle. This angle is added to
+    /**
+     * Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
      * \param lineAngle Angle in degrees, valid values are between 0 and 360
@@ -618,7 +648,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     void setLineAngle( double lineAngle );
 
-    /** Sets the size for the whole symbol. Individual symbol layer sizes
+    /**
+     * Sets the size for the whole symbol. Individual symbol layer sizes
      * will be scaled to maintain their current relative size to the whole symbol size.
      * \param size new symbol size
      * \see size()
@@ -627,7 +658,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     void setSize( double size );
 
-    /** Returns the size for the whole symbol, which is the maximum size of
+    /**
+     * Returns the size for the whole symbol, which is the maximum size of
      * all marker symbol layers in the symbol.
      * \see setSize()
      * \see sizeUnit()
@@ -635,7 +667,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     double size() const;
 
-    /** Sets the size units for the whole symbol (including all symbol layers).
+    /**
+     * Sets the size units for the whole symbol (including all symbol layers).
      * \param unit size units
      * \since QGIS 2.16
      * \see sizeUnit()
@@ -644,7 +677,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 
-    /** Returns the size units for the whole symbol (including all symbol layers).
+    /**
+     * Returns the size units for the whole symbol (including all symbol layers).
      * \returns size units, or mixed units if symbol layers have different units
      * \since QGIS 2.16
      * \see setSizeUnit()
@@ -653,7 +687,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     QgsUnitTypes::RenderUnit sizeUnit() const;
 
-    /** Sets the size map unit scale for the whole symbol (including all symbol layers).
+    /**
+     * Sets the size map unit scale for the whole symbol (including all symbol layers).
      * \param scale map unit scale
      * \since QGIS 2.16
      * \see sizeMapUnitScale()
@@ -662,7 +697,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 
-    /** Returns the size map unit scale for the whole symbol. Note that for symbols with
+    /**
+     * Returns the size map unit scale for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the map unit scale
      * for the first symbol layer.
      * \since QGIS 2.16
@@ -672,13 +708,15 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      */
     QgsMapUnitScale sizeMapUnitScale() const;
 
-    /** Set data defined size for whole symbol (including all symbol layers).
+    /**
+     * Set data defined size for whole symbol (including all symbol layers).
      * \since QGIS 3.0
      * \see dataDefinedSize()
      */
     void setDataDefinedSize( const QgsProperty &property );
 
-    /** Returns data defined size for whole symbol (including all symbol layers).
+    /**
+     * Returns data defined size for whole symbol (including all symbol layers).
      * \returns data defined size, or invalid property if size is not set
      * at the marker level.
      * \since QGIS 3.0
@@ -691,7 +729,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 
     void renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    /** Returns the approximate bounding box of the marker symbol, which includes the bounding box
+    /**
+     * Returns the approximate bounding box of the marker symbol, which includes the bounding box
      * of all symbol layers for the symbol. It is recommended to use this method only between startRender()
      * and stopRender() calls, or data defined rotation and offset will not be correctly calculated.
      * \param point location of rendered point in painter units
@@ -712,14 +751,16 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLineSymbol
  */
 class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 {
   public:
 
-    /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
+    /**
+     * Create a line symbol with one symbol layer: SimpleLine with specified properties.
      * This is a convenience method for easier creation of line symbols.
      */
     static QgsLineSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;
@@ -729,13 +770,15 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
     void setWidth( double width );
     double width() const;
 
-    /** Set data defined width for whole symbol (including all symbol layers).
+    /**
+     * Set data defined width for whole symbol (including all symbol layers).
      * \see dataDefinedWidth()
      * \since QGIS 3.0
      */
     void setDataDefinedWidth( const QgsProperty &property );
 
-    /** Returns data defined width for whole symbol (including all symbol layers).
+    /**
+     * Returns data defined width for whole symbol (including all symbol layers).
      * \returns data defined width, or invalid property if size is not set
      * at the line level. Caller takes responsibility for deleting the returned object.
      * \since QGIS 3.0
@@ -754,14 +797,16 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsFillSymbol
  */
 class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 {
   public:
 
-    /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
+    /**
+     * Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */
     static QgsFillSymbol *createSimple( const QgsStringMap &properties ) SIP_FACTORY;

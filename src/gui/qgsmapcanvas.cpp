@@ -68,7 +68,8 @@ email                : sherman at mrcc.com
 #include <cmath>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
  * \note not available in Python bindings
 */

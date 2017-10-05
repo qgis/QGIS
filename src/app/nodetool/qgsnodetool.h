@@ -114,7 +114,8 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void removeTemporaryRubberBands();
 
-    /** Temporarily override snapping config and snap to vertices and edges
+    /**
+     * Temporarily override snapping config and snap to vertices and edges
      of any editable vector layer, to allow selection of node for editing
      (if snapped to edge, it would offer creation of a new vertex there).
     */

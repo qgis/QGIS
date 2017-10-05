@@ -26,7 +26,8 @@ class QRectF;
 #include "qgslegendstyle.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsLegendSettings class stores the appearance and layout settings
  * for legend drawing with QgsLegendRenderer. The content of the legend is given
  * in QgsLegendModel class.
@@ -41,13 +42,15 @@ class CORE_EXPORT QgsLegendSettings
     void setTitle( const QString &t ) { mTitle = t; }
     QString title() const { return mTitle; }
 
-    /** Returns the alignment of the legend title
+    /**
+     * Returns the alignment of the legend title
      * \returns Qt::AlignmentFlag for the legend title
      * \see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const { return mTitleAlignment; }
 
-    /** Sets the alignment of the legend title
+    /**
+     * Sets the alignment of the legend title
      * \param alignment Text alignment for drawing the legend title
      * \see titleAlignment
      */
@@ -87,7 +90,8 @@ class CORE_EXPORT QgsLegendSettings
     QSizeF symbolSize() const {return mSymbolSize;}
     void setSymbolSize( QSizeF s ) {mSymbolSize = s;}
 
-    /** Returns whether a stroke will be drawn around raster symbol items.
+    /**
+     * Returns whether a stroke will be drawn around raster symbol items.
      * \see setDrawRasterStroke()
      * \see rasterStrokeColor()
      * \see rasterStrokeWidth()
@@ -95,7 +99,8 @@ class CORE_EXPORT QgsLegendSettings
      */
     bool drawRasterStroke() const { return mRasterSymbolStroke; }
 
-    /** Sets whether a stroke will be drawn around raster symbol items.
+    /**
+     * Sets whether a stroke will be drawn around raster symbol items.
      * \param enabled set to true to draw borders
      * \see drawRasterStroke()
      * \see setRasterStrokeColor()
@@ -104,7 +109,8 @@ class CORE_EXPORT QgsLegendSettings
      */
     void setDrawRasterStroke( bool enabled ) { mRasterSymbolStroke = enabled; }
 
-    /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+    /**
+     * Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \see setRasterStrokeColor()
      * \see drawRasterStroke()
@@ -113,7 +119,8 @@ class CORE_EXPORT QgsLegendSettings
      */
     QColor rasterStrokeColor() const { return mRasterStrokeColor; }
 
-    /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
+    /**
+     * Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \param color stroke color
      * \see rasterStrokeColor()
@@ -123,7 +130,8 @@ class CORE_EXPORT QgsLegendSettings
      */
     void setRasterStrokeColor( const QColor &color ) { mRasterStrokeColor = color; }
 
-    /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
+    /**
+     * Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \see setRasterStrokeWidth()
      * \see drawRasterStroke()
@@ -132,7 +140,8 @@ class CORE_EXPORT QgsLegendSettings
      */
     double rasterStrokeWidth() const { return mRasterStrokeWidth; }
 
-    /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+    /**
+     * Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \param width stroke width in millimeters
      * \see rasterStrokeWidth()
@@ -173,17 +182,20 @@ class CORE_EXPORT QgsLegendSettings
 
     // utility functions
 
-    /** Splits a string using the wrap char taking into account handling empty
+    /**
+     * Splits a string using the wrap char taking into account handling empty
      * wrap char which means no wrapping
      */
     QStringList splitStringForWrapping( const QString &stringToSplt ) const;
 
-    /** Draws Text. Takes care about all the composer specific issues (calculation to
+    /**
+     * Draws Text. Takes care about all the composer specific issues (calculation to
      * pixel, scaling of font and painter to work around the Qt font bug)
      */
     void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
 
-    /** Like the above, but with a rectangle for multiline text
+    /**
+     * Like the above, but with a rectangle for multiline text
      * \param p painter to use
      * \param rect rectangle to draw into
      * \param text text to draw

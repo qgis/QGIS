@@ -53,7 +53,8 @@ class QgsAuthProvider;
 class QTimer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
  */
@@ -72,7 +73,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     };
     Q_ENUM( MessageLevel );
 
-    /** Enforce singleton pattern
+    /**
+     * Enforce singleton pattern
      * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
      */
     static QgsAuthManager *instance();
@@ -97,25 +99,29 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Standard message for when QCA's qca-ossl plugin is missing and system is disabled
     const QString disabledMessage() const;
 
-    /** The standard authentication database file in ~/.qgis3/ or defined location
+    /**
+     * The standard authentication database file in ~/.qgis3/ or defined location
      * \see QgsApplication::qgisAuthDatabaseFilePath
      */
     const QString authenticationDatabasePath() const { return mAuthDbPath; }
 
-    /** Main call to initially set or continually check master password is set
+    /**
+     * Main call to initially set or continually check master password is set
      * \note If it is not set, the user is asked for its input
      * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( bool verify = false );
 
-    /** Overloaded call to reset master password or set it initially without user interaction
+    /**
+     * Overloaded call to reset master password or set it initially without user interaction
      * \note Only use this in trusted reset functions, unit tests or user/app setup scripts!
      * \param pass Password to use
      * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( const QString &pass, bool verify = false );
 
-    /** Verify the supplied master password against any existing hash in authentication database
+    /**
+     * Verify the supplied master password against any existing hash in authentication database
      * \note Do not emit verification signals when only comparing
      * \param compare Password to compare against
      */
@@ -127,17 +133,20 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Verify a password hash existing in authentication database
     bool masterPasswordHashInDatabase() const;
 
-    /** Clear supplied master password
+    /**
+     * Clear supplied master password
      * \note This will not necessarily clear authenticated connections cached in network connection managers
      */
     void clearMasterPassword() { mMasterPass = QString(); }
 
-    /** Check whether supplied password is the same as the one already set
+    /**
+     * Check whether supplied password is the same as the one already set
      * \param pass Password to verify
      */
     bool masterPasswordSame( const QString &pass ) const;
 
-    /** Reset the master password to a new one, then re-encrypt all previous
+    /**
+     * Reset the master password to a new one, then re-encrypt all previous
      * configs in a new database file, optionally backup curren database
      * \param newpass New master password to replace existing
      * \param oldpass Current master password to replace existing
@@ -146,12 +155,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath SIP_INOUT = nullptr );
 
-    /** Whether there is a scheduled opitonal erase of authentication database.
+    /**
+     * Whether there is a scheduled opitonal erase of authentication database.
      * \note not available in Python bindings
      */
     bool scheduledAuthDatabaseErase() { return mScheduledDbErase; } SIP_SKIP
 
-    /** Schedule an optional erase of authentication database, starting when mutex is lockable.
+    /**
+     * Schedule an optional erase of authentication database, starting when mutex is lockable.
      * \note When an erase is scheduled, any attempt to set the master password,
      * e.g. password input dialog, is effectively canceled.
      * For example: In a GUI app, this keeps excess password input dialogs from popping
@@ -164,7 +175,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     void setScheduledAuthDatabaseErase( bool scheduleErase ) SIP_SKIP;
 
-    /** Re-emit a signal to schedule an optional erase of authentication database.
+    /**
+     * Re-emit a signal to schedule an optional erase of authentication database.
      * \note This can be called from the slot connected to a previously emitted scheduling signal,
      * so that the slot can ask for another emit later, if the slot noticies the current GUI
      * processing state is not ready for interacting with the user, e.g. project is still loading
@@ -368,7 +380,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Get a certificate identity by id (sha hash)
     const QSslCertificate getCertIdentity( const QString &id );
 
-    /** Get a certificate identity bundle by id (sha hash).
+    /**
+     * Get a certificate identity bundle by id (sha hash).
      * \note not available in Python bindings
      */
     const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString &id ) SIP_SKIP;
@@ -407,7 +420,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Remove an SSL certificate custom config
     bool removeSslCertCustomConfig( const QString &id, const QString &hostport );
 
-    /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
+    /**
+     * Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
      * \note not available in Python bindings
      */
     QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
@@ -452,7 +466,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Get sha1-mapped database-stored certificate authorities
     const QMap<QString, QSslCertificate> getMappedDatabaseCAs();
 
-    /** Get all CA certs mapped to their sha1 from cache.
+    /**
+     * Get all CA certs mapped to their sha1 from cache.
      * \note not available in Python bindings
      */
     const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > getCaCertsCache() SIP_SKIP
@@ -466,7 +481,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Store user trust value for a certificate
     bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy );
 
-    /** Get a whether certificate is trusted by user
+    /**
+     * Get a whether certificate is trusted by user
         \returns DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
      */
     QgsAuthCertUtils::CertTrustPolicy getCertTrustPolicy( const QSslCertificate &cert );
@@ -615,7 +631,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
   private slots:
     void writeToConsole( const QString &message, const QString &tag = QString(), QgsAuthManager::MessageLevel level = INFO );
 
-    /** This slot emits the authDatabaseEraseRequested signal, instead of attempting
+    /**
+     * This slot emits the authDatabaseEraseRequested signal, instead of attempting
      * the erase. It relies upon a slot connected to the signal in calling application
      * (the one that initiated the erase) to initiate the erase, when it is ready.
      * Upon activation, a receiving slot should get confimation from the user, then

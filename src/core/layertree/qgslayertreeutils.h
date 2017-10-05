@@ -31,7 +31,8 @@ class QgsLayerTreeLayer;
 class QgsMapLayer;
 class QgsProject;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Assorted functions for dealing with layer trees.
  *
  * \since QGIS 2.4

@@ -31,7 +31,8 @@ class QgsTerrainTextureImage;
 
 #include <Qt3DCore/QEntity>
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Base class for 3D entities representing one tile of terrain.
  * It contains pointer to tile's texture image.
  *

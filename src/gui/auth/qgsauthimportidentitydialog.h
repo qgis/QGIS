@@ -28,7 +28,8 @@
 #include "qgsauthconfig.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing an identity certificate/key bundle into the authentication database
  */
 class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAuthImportIdentityDialog
@@ -68,7 +69,8 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     //! Get identity type
     QgsAuthImportIdentityDialog::IdentityType identityType();
 
-    /** Get certificate/key bundle to be imported.
+    /**
+     * Get certificate/key bundle to be imported.
      * \note not available in Python bindings
      */
     const QPair<QSslCertificate, QSslKey> certBundleToImport() SIP_SKIP;

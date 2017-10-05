@@ -38,7 +38,8 @@ class QgsRasterLayer;
 
 class Qgs3DMapSettings;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Class responsible for rendering map images in background for the purposes of their use
  * as textures for terrain's tiles.
  *

@@ -19,7 +19,8 @@
 #include "qgis_core.h"
 #include <QFlags>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class contains information how to simplify geometries fetched from a vector layer
  * \since QGIS 2.2
  */

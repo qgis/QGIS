@@ -27,7 +27,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Composer legend components style
  */
 class CORE_EXPORT QgsLegendStyle

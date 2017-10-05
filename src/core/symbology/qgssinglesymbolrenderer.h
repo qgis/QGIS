@@ -22,7 +22,8 @@
 #include "qgsexpression.h"
 #include "qgsdatadefinedsizelegend.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSingleSymbolRenderer
  */
 class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer

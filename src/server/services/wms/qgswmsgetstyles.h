@@ -22,7 +22,8 @@
 namespace QgsWms
 {
 
-  /** Output GetStyles response
+  /**
+   * Output GetStyles response
    */
   void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                        const QgsServerRequest &request, QgsServerResponse &response );
@@ -36,12 +37,14 @@ namespace QgsWms
 
   //GetStyle for compatibility with earlier QGIS versions
 
-  /** Output GetStyle response
+  /**
+   * Output GetStyle response
    */
   void writeGetStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                       const QgsServerRequest &request, QgsServerResponse &response );
 
-  /** Returns an SLD file with the style of the requested layer
+  /**
+   * Returns an SLD file with the style of the requested layer
    */
   QDomDocument getStyle( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                          const QgsServerRequest &request );

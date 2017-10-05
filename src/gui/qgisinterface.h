@@ -57,7 +57,8 @@ class QgsStatusBar;
 #include "qgis_gui.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * QgisInterface
  * Abstract base class defining interfaces exposed by QgisApp and
  * made available to plugins.
@@ -83,7 +84,8 @@ class GUI_EXPORT QgisInterface : public QObject
 
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
-    /** Add action to context menu for layers in the layer tree.
+    /**
+     * Add action to context menu for layers in the layer tree.
      * If allLayers is true, then the action will be available for all layers of given type,
      * otherwise the action will be available only for specific layers added with addCustomActionForLayer()
      * after this call.
@@ -97,14 +99,16 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addCustomActionForLayerType( QAction *action, QString menu,
         QgsMapLayer::LayerType type, bool allLayers ) = 0;
 
-    /** Add action to context menu for a specific layer in the layer tree.
+    /**
+     * Add action to context menu for a specific layer in the layer tree.
      * It is necessary to first call addCustomActionForLayerType() with allLayers=false
      * in order for this method to have any effect.
      * \see addCustomActionForLayerType()
      */
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
 
-    /** Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
+    /**
+     * Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
      * \see addCustomActionForLayerType()
      */
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
@@ -342,7 +346,8 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Return changeable options built from settings and/or defaults
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 
-    /** Generate stylesheet
+    /**
+     * Generate stylesheet
      * \param opts generated default option values, or a changed copy of them
      */
     virtual void buildStyleSheet( const QMap<QString, QVariant> &opts ) = 0;
@@ -395,7 +400,8 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Remove specified dock widget from main window (doesn't delete it).
     virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
 
-    /** Advanced digitizing dock widget
+    /**
+     * Advanced digitizing dock widget
      *  \since QGIS 2.12
      */
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
@@ -406,11 +412,13 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Open attribute table dialog
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;
 
-    /** Add window to Window menu. The action title is the window title
+    /**
+     * Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     virtual void addWindow( QAction *action ) = 0;
 
-    /** Remove window from Window menu. Calling this is necessary only for
+    /**
+     * Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
@@ -420,47 +428,54 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
     virtual bool unregisterMainWindowAction( QAction *action ) = 0;
 
-    /** Register a new tab in the vector layer properties dialog.
+    /**
+     * Register a new tab in the vector layer properties dialog.
      * \since QGIS 2.16
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see unregisterMapLayerPropertiesFactory() */
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
-    /** Unregister a previously registered tab in the vector layer properties dialog.
+    /**
+     * Unregister a previously registered tab in the vector layer properties dialog.
      * \since QGIS 2.16
      * \see registerMapLayerPropertiesFactory()
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
-    /** Register a new tab in the options dialog.
+    /**
+     * Register a new tab in the options dialog.
      * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see unregisterOptionsWidgetFactory() */
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
-    /** Unregister a previously registered tab in the options dialog.
+    /**
+     * Unregister a previously registered tab in the options dialog.
      * \since QGIS 3.0
      * \see registerOptionsWidgetFactory()
     */
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
-    /** Register a new custom drop handler.
+    /**
+     * Register a new custom drop handler.
      * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see unregisterCustomDropHandler() */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
-    /** Unregister a previously registered custom drop handler.
+    /**
+     * Unregister a previously registered custom drop handler.
      * \since QGIS 3.0
      * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
 
-    /** Open a url in the users browser. By default the QGIS doc directory is used
+    /**
+     * Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to false.
      * \param url URL to open
@@ -473,7 +488,8 @@ class GUI_EXPORT QgisInterface : public QObject
 #endif
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 SIP_DEPRECATED;
 
-    /** Accessors for inserting items into menus and toolbars.
+    /**
+     * Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
      */
 
@@ -668,7 +684,8 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsVectorLayerTools *vectorLayerTools() = 0;
 
-    /** This method is only needed when using a UI form with a custom widget plugin and calling
+    /**
+     * This method is only needed when using a UI form with a custom widget plugin and calling
      * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
      * Python will crash bringing QGIS with it
      * if the custom form is not loaded from a C++ method call.
@@ -681,7 +698,8 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void preloadForm( const QString &uifile ) = 0;
 
-    /** Return vector layers in edit mode
+    /**
+     * Return vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
@@ -722,12 +740,14 @@ class GUI_EXPORT QgisInterface : public QObject
 
   signals:
 
-    /** Emitted whenever current (selected) layer changes.
+    /**
+     * Emitted whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
     void currentLayerChanged( QgsMapLayer *layer );
 
-    /** Signal emitted when the current \a theme is changed so plugins
+    /**
+     * Signal emitted when the current \a theme is changed so plugins
      * can change their tool button icons.
      * \since QGIS 3.0
     */
@@ -786,7 +806,8 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     void initializationCompleted();
 
-    /** Emitted when a project file is successfully read
+    /**
+     * Emitted when a project file is successfully read
      * \note
      * This is useful for plug-ins that store properties with project files.  A
      * plug-in can connect to this signal.  When it is emitted, the plug-in
@@ -794,7 +815,8 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     void projectRead();
 
-    /** Emitted when starting an entirely new project
+    /**
+     * Emitted when starting an entirely new project
      * \note
      * This is similar to projectRead(); plug-ins might want to be notified
      * that they're in a new project.  Yes, projectRead() could have been
@@ -804,7 +826,8 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     void newProjectCreated();
 
-    /** This signal is emitted when a layer has been saved using save as
+    /**
+     * This signal is emitted when a layer has been saved using save as
      * \note
      * added in version 2.7
      */

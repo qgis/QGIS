@@ -29,7 +29,8 @@ class QgsFeature;
 class QgsFeedback;
 class QgsFields;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  *  Interpolation in a triangular irregular network*/
 class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 {
@@ -49,7 +50,8 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, QgsFeedback *feedback = nullptr );
     ~QgsTINInterpolator();
 
-    /** Calculates interpolation value for map coordinates x, y
+    /**
+     * Calculates interpolation value for map coordinates x, y
        \param x x-coordinate (in map units)
        \param y y-coordinate (in map units)
        \param result out: interpolation result
@@ -90,7 +92,8 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     //! Create dual edge triangulation
     void initialize();
 
-    /** Inserts the vertices of a feature into the triangulation
+    /**
+     * Inserts the vertices of a feature into the triangulation
       \param f the feature
       \param zCoord true if the z coordinate is the interpolation attribute
       \param attr interpolation attribute index (if zCoord is false)

@@ -418,7 +418,8 @@ class QTreeWidgetItem;
 class QgsUserProfileManager;
 class QgsUserProfile;
 
-/** Set the application title bar text
+/**
+ * Set the application title bar text
 
   If the current project title is null
   if the project file is null then
@@ -6611,7 +6612,8 @@ void QgisApp::saveAsLayerDefinition()
 
 ///@cond PRIVATE
 
-/** Field value converter for export as vector layer
+/**
+ * Field value converter for export as vector layer
  * \note Not available in Python bindings
  */
 class QgisAppFieldValueConverter : public QgsVectorFileWriter::FieldValueConverter

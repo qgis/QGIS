@@ -30,7 +30,8 @@
 
 class QgsPoint;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to represent a 2D point.
  *
  * A QgsPointXY represents a position with X and Y coordinates.
@@ -54,7 +55,8 @@ class CORE_EXPORT QgsPointXY
     //! Create a point from another point
     QgsPointXY( const QgsPointXY &p );
 
-    /** Create a point from x,y coordinates
+    /**
+     * Create a point from x,y coordinates
      * \param x x coordinate
      * \param y y coordinate
      */
@@ -63,7 +65,8 @@ class CORE_EXPORT QgsPointXY
       , mY( y )
     {}
 
-    /** Create a point from a QPointF
+    /**
+     * Create a point from a QPointF
      * \param point QPointF source
      * \since QGIS 2.7
      */
@@ -72,7 +75,8 @@ class CORE_EXPORT QgsPointXY
       , mY( point.y() )
     {}
 
-    /** Create a point from a QPoint
+    /**
+     * Create a point from a QPoint
      * \param point QPoint source
      * \since QGIS 2.7
      */
@@ -94,7 +98,8 @@ class CORE_EXPORT QgsPointXY
     // see https://github.com/qgis/QGIS/pull/4720#issuecomment-308652392
     ~QgsPointXY() = default;
 
-    /** Sets the x value of the point
+    /**
+     * Sets the x value of the point
      * \param x x coordinate
      */
     void setX( double x )
@@ -102,7 +107,8 @@ class CORE_EXPORT QgsPointXY
       mX = x;
     }
 
-    /** Sets the y value of the point
+    /**
+     * Sets the y value of the point
      * \param y y coordinate
      */
     void setY( double y )
@@ -117,7 +123,8 @@ class CORE_EXPORT QgsPointXY
       mY = y;
     }
 
-    /** Get the x value of the point
+    /**
+     * Get the x value of the point
      * \returns x coordinate
      */
     double x() const
@@ -125,7 +132,8 @@ class CORE_EXPORT QgsPointXY
       return mX;
     }
 
-    /** Get the y value of the point
+    /**
+     * Get the y value of the point
      * \returns y coordinate
      */
     double y() const
@@ -133,7 +141,8 @@ class CORE_EXPORT QgsPointXY
       return mY;
     }
 
-    /** Converts a point to a QPointF
+    /**
+     * Converts a point to a QPointF
      * \returns QPointF with same x and y values
      * \since QGIS 2.7
      */
@@ -145,7 +154,8 @@ class CORE_EXPORT QgsPointXY
     //! As above but with precision for string representation of a point
     QString toString( int precision ) const;
 
-    /** Return a string representation as degrees minutes seconds.
+    /**
+     * Return a string representation as degrees minutes seconds.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
      *  \param precision number of decimal points to use for seconds
@@ -156,7 +166,8 @@ class CORE_EXPORT QgsPointXY
      */
     QString toDegreesMinutesSeconds( int precision, const bool useSuffix = true, const bool padded = false ) const;
 
-    /** Return a string representation as degrees minutes.
+    /**
+     * Return a string representation as degrees minutes.
      *  Its up to the calling function to ensure that this point can
      *  be meaningfully represented in this form.
      *  \param precision number of decimal points to use for minutes
@@ -168,23 +179,27 @@ class CORE_EXPORT QgsPointXY
     QString toDegreesMinutes( int precision, const bool useSuffix = true, const bool padded = false ) const;
 
 
-    /** Return the well known text representation for the point.
+    /**
+     * Return the well known text representation for the point.
      * The wkt is created without an SRID.
      * \returns Well known text in the form POINT(x y)
      */
     QString wellKnownText() const;
 
-    /** Returns the squared distance between this point a specified x, y coordinate.
+    /**
+     * Returns the squared distance between this point a specified x, y coordinate.
      * \see distance()
     */
     double sqrDist( double x, double y ) const;
 
-    /** Returns the squared distance between this point another point.
+    /**
+     * Returns the squared distance between this point another point.
      * \see distance()
     */
     double sqrDist( const QgsPointXY &other ) const;
 
-    /** Returns the distance between this point and a specified x, y coordinate.
+    /**
+     * Returns the distance between this point and a specified x, y coordinate.
      * \param x x-coordniate
      * \param y y-coordinate
      * \see sqrDist()
@@ -192,7 +207,8 @@ class CORE_EXPORT QgsPointXY
     */
     double distance( double x, double y ) const;
 
-    /** Returns the distance between this point and another point.
+    /**
+     * Returns the distance between this point and another point.
      * \param other other point
      * \see sqrDist()
      * \since QGIS 2.16
@@ -205,7 +221,8 @@ class CORE_EXPORT QgsPointXY
     //! Calculates azimuth between this point and other one (clockwise in degree, starting from north)
     double azimuth( const QgsPointXY &other ) const;
 
-    /** Returns a new point which corresponds to this point projected by a specified distance
+    /**
+     * Returns a new point which corresponds to this point projected by a specified distance
      * in a specified bearing.
      * \param distance distance to project
      * \param bearing angle to project in, clockwise in degrees starting from north
@@ -213,7 +230,8 @@ class CORE_EXPORT QgsPointXY
      */
     QgsPointXY project( double distance, double bearing ) const;
 
-    /** Compares this point with another point with a fuzzy tolerance
+    /**
+     * Compares this point with another point with a fuzzy tolerance
      * \param other point to compare with
      * \param epsilon maximum difference for coordinates between the points
      * \returns true if points are equal within specified tolerance

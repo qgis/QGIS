@@ -21,7 +21,8 @@
 
 class QgsSourceSelectProvider;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class keeps a list of source select providers that may add items to the QgsDataSourceManagerDialog
  * When created, it automatically adds providers from data provider plugins (e.g. PostGIS, WMS, ...)
  *

@@ -186,7 +186,8 @@ QgsProjectProperty *findKey_( const QString &scope,
 
 
 
-/** Add the given key and value
+/**
+ * Add the given key and value
 
 @param scope scope of key
 @param key key name

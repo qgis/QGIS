@@ -36,7 +36,8 @@ class QgsTerrainEntity;
 class QgsTerrainTileEntity;
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Base class for chunk loaders for terrain tiles.
  * Adds functionality for asynchronous rendering of terrain tile map texture and access to the terrain entity.
  * \since QGIS 3.0

@@ -22,7 +22,8 @@
 #include <QList>
 #include <QVector3D>
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Axis-aligned bounding box - in world coords.
  * \since QGIS 3.0
  */

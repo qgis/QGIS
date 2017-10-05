@@ -25,7 +25,8 @@ class QgsMapCanvas;
 class QgsRenderContext;
 class QPainter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * An abstract class for items that can be placed on the
  * map canvas.
  */
@@ -48,7 +49,8 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! schedules map canvas for repaint
     void updateCanvas();
 
-    /** Sets render context parameters
+    /**
+     * Sets render context parameters
     \param p painter for rendering
     \param context out: configured context
     \returns true in case of success */

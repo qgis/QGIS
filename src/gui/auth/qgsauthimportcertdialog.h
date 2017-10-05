@@ -26,7 +26,8 @@
 
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing a certificate into the authentication database
  */
 class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthImportCertDialog

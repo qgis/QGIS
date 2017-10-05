@@ -679,7 +679,8 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Used by QgsVectorLayer::countSymbolFeatures() to provide an interruption checker
  * \note not available in Python bindings
  */

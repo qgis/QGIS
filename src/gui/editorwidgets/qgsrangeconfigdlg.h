@@ -22,7 +22,8 @@
 
 SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRangeConfigDlg
  * \note not available in Python bindings
  */

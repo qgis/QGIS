@@ -25,7 +25,8 @@
 #include "qgis_gui.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wrapper widget to manage available certificate editors
  */
 class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertManager
@@ -50,7 +51,8 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper for widget to manage available certificate editors
  */
 class GUI_EXPORT QgsAuthCertManager : public QDialog

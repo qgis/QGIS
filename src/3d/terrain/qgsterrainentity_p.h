@@ -44,7 +44,8 @@ class QgsMapLayer;
 class QgsTerrainGenerator;
 class TerrainMapUpdateJobFactory;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Controller for terrain - decides on what terrain tiles to show based on camera position
  * and creates them using map's terrain tile generator.
  * \since QGIS 3.0

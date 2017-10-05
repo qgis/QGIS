@@ -22,7 +22,8 @@
 
 class QgsArrowSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsArrowSymbolLayerWidget
  */
 class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::QgsArrowSymbolLayerWidgetBase
@@ -31,13 +32,15 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
 
   public:
 
-    /** Constructor
+    /**
+     * Constructor
      * \param layer the layer where this symbol layer is applied
      * \param parent the parent widget
      */
     QgsArrowSymbolLayerWidget( const QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Static creation method
+    /**
+     * Static creation method
      * \param layer the layer where this symbol layer is applied
      */
     static QgsSymbolLayerWidget *create( const QgsVectorLayer *layer ) SIP_FACTORY { return new QgsArrowSymbolLayerWidget( layer ); }

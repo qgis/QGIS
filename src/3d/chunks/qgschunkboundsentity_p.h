@@ -33,7 +33,8 @@ class QgsAABB;
 class AABBMesh;
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Draws bounds of axis aligned bounding boxes
  * \since QGIS 3.0
  */

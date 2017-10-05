@@ -20,7 +20,8 @@
 class QgsComposition;
 class QgsComposerMap;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * Struct to hold map composer paper properties.
  */
 struct QgsCompositionPaper
@@ -31,7 +32,8 @@ struct QgsCompositionPaper
   double mHeight;
 };
 
-/** \ingroup app
+/**
+ * \ingroup app
   * Input widget for QgsComposition
   */
 class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWidgetBase

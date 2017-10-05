@@ -23,7 +23,8 @@
 
 class QgsComposerPicture;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * A widget for adding an image to a map composition.
  */
 class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPictureWidgetBase
@@ -62,7 +63,8 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     //! Sets the picture rotation GUI control value
     void setPicRotationSpinValue( double r );
 
-    /** Load SVG and pixel-based image previews
+    /**
+     * Load SVG and pixel-based image previews
      * \param collapsed Whether the parent group box is collapsed */
     void loadPicturePreviews( bool collapsed );
 

@@ -35,7 +35,8 @@
 
 class QgsRasterPyramid;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A call back function for showing progress of gdal operations.
  */
 int CPL_STDCALL progressCallback( double dfComplete,
@@ -173,7 +174,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! \brief Whether this raster has overviews / pyramids or not
     bool mHasPyramids = false;
 
-    /** \brief Gdal data types used to represent data in in QGIS,
+    /**
+     * \brief Gdal data types used to represent data in in QGIS,
      * may be longer than source data type to keep nulls
      * indexed from 0
      */

@@ -17,7 +17,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsgui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.
  *
  * \note not available in Python bindings
@@ -54,7 +55,8 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget auto conf plugin that reads the widget setup to use from what the data provider says.
  *
  * \note not available in Python bindings

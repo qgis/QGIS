@@ -23,7 +23,8 @@
 #include "qgsraster.h"
 #include "qgserror.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Raster identify results container.
  */
 class CORE_EXPORT QgsRasterIdentifyResult
@@ -35,13 +36,15 @@ class CORE_EXPORT QgsRasterIdentifyResult
      */
     QgsRasterIdentifyResult() = default;
 
-    /** \brief Constructor. Creates valid result.
+    /**
+     * \brief Constructor. Creates valid result.
      *  \param format the result format
      *  \param results the results
      */
     QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
 
-    /** \brief Constructor. Creates invalid result with error.
+    /**
+     * \brief Constructor. Creates invalid result with error.
      *  \param error the error
      */
     QgsRasterIdentifyResult( const QgsError &error );
@@ -54,7 +57,8 @@ class CORE_EXPORT QgsRasterIdentifyResult
     //! \brief Get results format
     QgsRaster::IdentifyFormat format() const { return mFormat; }
 
-    /** \brief Get results. Results are different for each format:
+    /**
+     * \brief Get results. Results are different for each format:
      * QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
      * QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
      * QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).

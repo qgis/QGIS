@@ -34,7 +34,8 @@ class QgsHighlight;
 class QgsIdentifyMenu;
 class QgsDistanceArea;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
   \brief Map tool for identifying features in layers
 
   after selecting a point, performs the identification:
@@ -100,7 +101,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     virtual void activate() override;
     virtual void deactivate() override;
 
-    /** Performs the identification.
+    /**
+     * Performs the identification.
     \param x x coordinates of mouseEvent
     \param y y coordinates of mouseEvent
     \param layerList Performs the identification within the given list of layers. Default value is an empty list, i.e. uses all the layers.
@@ -108,7 +110,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 
-    /** Performs the identification.
+    /**
+     * Performs the identification.
     To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
     \param x x coordinates of mouseEvent
@@ -134,7 +137,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
   protected:
 
-    /** Performs the identification.
+    /**
+     * Performs the identification.
     To avoid being forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
     \param x x coordinates of mouseEvent
@@ -155,25 +159,29 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
   private:
 
-    /** Desired units for distance display.
+    /**
+     * Desired units for distance display.
      * \since QGIS 2.14
      * \see displayAreaUnits()
      */
     virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
 
-    /** Desired units for area display.
+    /**
+     * Desired units for area display.
      * \since QGIS 2.14
      * \see displayDistanceUnits()
      */
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 
-    /** Format a distance into a suitable string for display to the user
+    /**
+     * Format a distance into a suitable string for display to the user
      * \since QGIS 2.14
      * \see formatArea()
      */
     QString formatDistance( double distance ) const;
 
-    /** Format a distance into a suitable string for display to the user
+    /**
+     * Format a distance into a suitable string for display to the user
      * \since QGIS 2.14
      * \see formatDistance()
      */
@@ -181,11 +189,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
 
-    /** Adds details of the closest vertex to derived attributes
+    /**
+     * Adds details of the closest vertex to derived attributes
      */
     void closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes );
 
-    /** Adds details of the closest point to derived attributes
+    /**
+     * Adds details of the closest point to derived attributes
      */
     void closestPointAttributes( const QgsAbstractGeometry &geometry, QgsMapLayer *layer, const QgsPointXY &layerPoint, QMap< QString, QString > &derivedAttributes );
 

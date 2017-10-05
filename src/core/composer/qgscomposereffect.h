@@ -23,7 +23,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerEffect
  */
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect

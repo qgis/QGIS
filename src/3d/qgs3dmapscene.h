@@ -42,7 +42,8 @@ class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Entity that encapsulates our 3D scene - contains all other entities (such as terrain) as children.
  * \since QGIS 3.0
  */

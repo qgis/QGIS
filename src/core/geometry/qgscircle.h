@@ -28,7 +28,8 @@
 #include "qgscircularstring.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCircle
  * \brief Circle geometry type.
  *
@@ -43,7 +44,8 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
   public:
     QgsCircle();
 
-    /** Constructs a circle by defining all the members.
+    /**
+     * Constructs a circle by defining all the members.
      * \param center The center of the circle.
      * \param radius The radius of the circle.
      * \param azimuth Angle in degrees started from the North to the first quadrant.
@@ -139,13 +141,15 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     // double azimuth() const {return mAzimuth; }
 
 
-    /** Inherited method. Use setRadius instead.
+    /**
+     * Inherited method. Use setRadius instead.
      * \see radius()
      * \see setRadius()
      */
     void setSemiMajorAxis( const double semiMajorAxis ) override;
 
-    /** Inherited method. Use setRadius instead.
+    /**
+     * Inherited method. Use setRadius instead.
      * \see radius()
      * \see setRadius()
      */
@@ -160,14 +164,16 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
       mSemiMinorAxis = mSemiMajorAxis;
     }
 
-    /** The four quadrants of the ellipse.
+    /**
+     * The four quadrants of the ellipse.
      * They are oriented and started from North.
      * \return quadrants defined by four points.
      * \see quadrant()
      */
     QVector<QgsPoint> northQuadrant() const SIP_FACTORY;
 
-    /** Returns a circular string from the circle.
+    /**
+     * Returns a circular string from the circle.
      * \param oriented If oriented is true the start point is from azimuth instead from north.
      */
     QgsCircularString *toCircularString( bool oriented = false ) const;

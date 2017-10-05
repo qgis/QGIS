@@ -23,7 +23,8 @@
 #include "qgs3dutils.h"
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * 3D symbol that draws polygon geometries as planar polygons, optionally extruded (with added walls).
  * \since QGIS 3.0
  */

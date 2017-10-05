@@ -54,7 +54,8 @@ class QgsMapToPixel;
 
 class Map3D;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Stores vertex and index buffer for one tile of quantized mesh terrain.
  * \since QGIS 3.0
  */

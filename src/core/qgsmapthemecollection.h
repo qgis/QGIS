@@ -212,7 +212,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      */
     void readXml( const QDomDocument &doc );
 
-    /** Writes the map theme collection state to XML.
+    /**
+     * Writes the map theme collection state to XML.
      * \param doc DOM document
      * \see readXml
      */
