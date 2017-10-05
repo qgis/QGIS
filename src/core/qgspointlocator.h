@@ -51,10 +51,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Q_OBJECT
   public:
 
-    /** Construct point locator for a layer.
-     *  \param destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
-     *  do the searches on data reprojected to the given CRS
-     *  \param extent  if not null, will index only a subset of the layer
+    /** Construct point locator for a \a layer.
+     *
+     *  If a valid QgsCoordinateReferenceSystem is passed for \a destinationCrs then the locator will
+     *  do the searches on data reprojected to the given CRS.
+     *
+     *  If \a extent is not null, the locator will index only a subset of the layer which falls within that extent.
      */
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsRectangle *extent = nullptr );

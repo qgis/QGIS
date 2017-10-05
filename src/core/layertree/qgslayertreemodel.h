@@ -127,9 +127,9 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 
     /**
-     * Convert a list of indexes to a list of layer tree nodes.
+     * Convert a \a list of indexes to a list of layer tree nodes.
      * Indices that do not represent layer tree nodes are skipped.
-     * \param skipInternal If true, a node is included in the output list only if no parent node is in the list
+     * If \a skipInternal is true, a node is included in the output list only if no parent node is in the list.
      */
     QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
 

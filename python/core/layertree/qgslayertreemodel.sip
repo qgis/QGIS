@@ -126,9 +126,9 @@ Return index for a given node. If the node does not belong to the layer tree, th
 
     QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
 %Docstring
- Convert a list of indexes to a list of layer tree nodes.
+ Convert a ``list`` of indexes to a list of layer tree nodes.
  Indices that do not represent layer tree nodes are skipped.
- \param skipInternal If true, a node is included in the output list only if no parent node is in the list
+ If ``skipInternal`` is true, a node is included in the output list only if no parent node is in the list.
  :rtype: list of QgsLayerTreeNode
 %End
 
