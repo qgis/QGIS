@@ -3,7 +3,7 @@
 
  ---------------------
  begin                : 25.09.2017
- copyright            : (C) 2017 by Clément MARCEL
+ copyright            : (C) 2017 by C. MARCEL
  email                : clement.marcel@nwanda.fr
  ***************************************************************************
  *                                                                         *

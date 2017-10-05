@@ -3,7 +3,7 @@
 
  ---------------------
  begin                : 25.09.2017
- copyright            : (C) 2017 by Clément MARCEL
+ copyright            : (C) 2017 by C. MARCEL
  email                : clement.marcel@nwanda.fr
  ***************************************************************************
  *                                                                         *
@@ -20,6 +20,8 @@
 #include <QString>
 #include <QAction>
 #include "qgsexpressioncontext.h"
+
+#define SIP_NO_FILE
 
 /** \ingroup core
  * QgsContextAction is derived from QAction and contains a context expression scope.

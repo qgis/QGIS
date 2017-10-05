@@ -85,7 +85,7 @@ class CORE_EXPORT QgsActionManager: public QObject
      */
     void removeAction( const QUuid &actionId );
 
-    /** Does the action like doAction() but allow to provide
+    /** Does the action like doAction() providing
       *  action context scope.
       */
     void doActionWithContext( const QUuid &actionId,

@@ -62,6 +62,15 @@ Constructor
 .. versionadded:: 3.0
 %End
 
+    void doActionWithContext( const QUuid &actionId,
+                              const QgsFeature &feat,
+                              QgsExpressionContextScope *actionScope,
+                              int defaultValueIndex = 0 );
+%Docstring
+ Does the action like doAction() providing
+  action context scope.
+%End
+
     void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 ) /PyName=doActionFeature/;
 %Docstring
  Does the given action. defaultValueIndex is the index of the
