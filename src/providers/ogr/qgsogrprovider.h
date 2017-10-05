@@ -89,7 +89,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual bool createAttributeIndex( int field ) override;
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
     virtual void setEncoding( const QString &e ) override;
-    virtual bool enterUpdateMode() override;
+    virtual bool enterUpdateMode() override { return _enterUpdateMode(); }
     virtual bool leaveUpdateMode() override;
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override;
     QString fileVectorFilters() const override;
@@ -158,10 +158,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
       OpenModeSameAsCurrent,
       OpenModeForceReadOnly,
       OpenModeForceUpdate,
+      OpenModeForceUpdateRepackOff
     };
 
     void open( OpenMode mode );
     void close();
+
+    bool _enterUpdateMode( bool implicit = false );
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
@@ -273,7 +276,7 @@ class QgsOgrProviderUtils
      */
     static QString quotedValue( const QVariant &value );
 
-    static GDALDatasetH GDALOpenWrapper( const char *pszPath, bool bUpdate, GDALDriverH *phDriver );
+    static GDALDatasetH GDALOpenWrapper( const char *pszPath, bool bUpdate, bool bDisableReapck, GDALDriverH *phDriver );
     static void GDALCloseWrapper( GDALDatasetH mhDS );
 };
 
