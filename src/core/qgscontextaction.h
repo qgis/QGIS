@@ -38,7 +38,19 @@ class CORE_EXPORT QgsContextAction: public QAction
      * \since QGIS 3.0
      */
     explicit QgsContextAction( QObject *parent );
+
+    /**
+     * Creates a new context action providing action text.
+     *
+     * \since QGIS 3.0
+     */
     QgsContextAction( const QString &text, QObject *parent );
+
+    /**
+     * Creates a new context action providing action text & icon.
+     *
+     * \since QGIS 3.0
+     */
     QgsContextAction( const QIcon &icon, const QString &text, QObject *parent );
 
     /**
