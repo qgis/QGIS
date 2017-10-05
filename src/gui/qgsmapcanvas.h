@@ -93,8 +93,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     ~QgsMapCanvas();
 
-    //! Returns the magnification factor
-    //! \since QGIS 2.16
+    /**
+     * Returns the magnification factor
+     * \since QGIS 2.16
+     */
     double magnificationFactor() const;
 
     /**
@@ -112,12 +114,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void setCurrentLayer( QgsMapLayer *layer );
 
-    //! Get access to properties used for map rendering
-    //! \since QGIS 2.4
+    /**
+     * Get access to properties used for map rendering
+     * \since QGIS 2.4
+     */
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
 
-    //! sets destination coordinate reference system
-    //! \since QGIS 2.4
+    /**
+     * sets destination coordinate reference system
+     * \since QGIS 2.4
+     */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
@@ -126,24 +132,34 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
-    //! Get access to the labeling results (may be null)
-    //! \since QGIS 2.4
+    /**
+     * Get access to the labeling results (may be null)
+     * \since QGIS 2.4
+     */
     const QgsLabelingResults *labelingResults() const;
 
-    //! Set whether to cache images of rendered layers
-    //! \since QGIS 2.4
+    /**
+     * Set whether to cache images of rendered layers
+     * \since QGIS 2.4
+     */
     void setCachingEnabled( bool enabled );
 
-    //! Check whether images of rendered layers are curerently being cached
-    //! \since QGIS 2.4
+    /**
+     * Check whether images of rendered layers are curerently being cached
+     * \since QGIS 2.4
+     */
     bool isCachingEnabled() const;
 
-    //! Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
-    //! \since QGIS 2.4
+    /**
+     * Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
+     * \since QGIS 2.4
+     */
     void clearCache();
 
-    //! Reload all layers, clear the cache and refresh the canvas
-    //! \since QGIS 2.9
+    /**
+     * Reload all layers, clear the cache and refresh the canvas
+     * \since QGIS 2.9
+     */
     void refreshAllLayers();
 
     /**
@@ -157,20 +173,28 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void waitWhileRendering();
 
-    //! Set whether the layers are rendered in parallel or sequentially
-    //! \since QGIS 2.4
+    /**
+     * Set whether the layers are rendered in parallel or sequentially
+     * \since QGIS 2.4
+     */
     void setParallelRenderingEnabled( bool enabled );
 
-    //! Check whether the layers are rendered in parallel or sequentially
-    //! \since QGIS 2.4
+    /**
+     * Check whether the layers are rendered in parallel or sequentially
+     * \since QGIS 2.4
+     */
     bool isParallelRenderingEnabled() const;
 
-    //! Set how often map preview should be updated while it is being rendered (in milliseconds)
-    //! \since QGIS 2.4
+    /**
+     * Set how often map preview should be updated while it is being rendered (in milliseconds)
+     * \since QGIS 2.4
+     */
     void setMapUpdateInterval( int timeMilliseconds );
 
-    //! Find out how often map preview should be updated while it is being rendered (in milliseconds)
-    //! \since QGIS 2.4
+    /**
+     * Find out how often map preview should be updated while it is being rendered (in milliseconds)
+     * \since QGIS 2.4
+     */
     int mapUpdateInterval() const;
 
     /**
@@ -190,20 +214,28 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Set the extent of the map canvas
     void setExtent( const QgsRectangle &r, bool magnified = false );
 
-    //! Get the current map canvas rotation in clockwise degrees
-    //! \since QGIS 2.8
+    /**
+     * Get the current map canvas rotation in clockwise degrees
+     * \since QGIS 2.8
+     */
     double rotation() const;
 
-    //! Set the rotation of the map canvas in clockwise degrees
-    //! \since QGIS 2.8
+    /**
+     * Set the rotation of the map canvas in clockwise degrees
+     * \since QGIS 2.8
+     */
     void setRotation( double degrees );
 
-    //! Set the center of the map canvas, in geographical coordinates
-    //! \since QGIS 2.8
+    /**
+     * Set the center of the map canvas, in geographical coordinates
+     * \since QGIS 2.8
+     */
     void setCenter( const QgsPointXY &center );
 
-    //! Get map center, in geographical coordinates
-    //! \since QGIS 2.8
+    /**
+     * Get map center, in geographical coordinates
+     * \since QGIS 2.8
+     */
     QgsPointXY center() const;
 
     //! Zoom to the full extent of all layers
@@ -287,12 +319,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Read property of QColor bgColor.
     QColor canvasColor() const;
 
-    //! Set color of selected vector features
-    //! \since QGIS 2.4
+    /**
+     * Set color of selected vector features
+     * \since QGIS 2.4
+     */
     void setSelectionColor( const QColor &color );
 
-    //! Returns color for selected features
-    //! \since QGIS 3.0
+    /**
+     * Returns color for selected features
+     * \since QGIS 3.0
+     */
     QColor selectionColor() const;
 
     //! Emits signal scaleChanged to update scale in main window
@@ -411,20 +447,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void zoomScale( double scale );
 
-    //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
-    //! If point is given, re-center on it
+    /**
+     * Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
+     * If point is given, re-center on it
+     */
     void zoomByFactor( double scaleFactor, const QgsPointXY *center = nullptr );
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
 
-    //! Zooms to feature extent. Adds a small margin around the extent
-    //! and does a pan if rect is empty (point extent)
+    /**
+     * Zooms to feature extent. Adds a small margin around the extent
+     * and does a pan if rect is empty (point extent)
+     */
     void zoomToFeatureExtent( QgsRectangle &rect );
 
-    //! Returns whether the scale is locked, so zooming can be performed using magnication.
-    //! \since QGIS 2.16
-    //! \see setScaleLocked()
+    /**
+     * Returns whether the scale is locked, so zooming can be performed using magnication.
+     * \since QGIS 2.16
+     * \see setScaleLocked()
+     */
     bool scaleLocked() const { return mScaleLocked;}
 
     //! used to determine if anti-aliasing is enabled or not
@@ -606,8 +648,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void setRenderFlag( bool flag );
 
-    //! stop rendering (if there is any right now)
-    //! \since QGIS 2.4
+    /**
+     * stop rendering (if there is any right now)
+     * \since QGIS 2.4
+     */
     void stopRendering();
 
     //! called to read map canvas settings from project
@@ -619,15 +663,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! ask user about datum transformation
     void getDatumTransformInfo( const QgsMapLayer *ml, const QString &srcAuthId, const QString &destAuthId );
 
-    //! Sets the factor of magnification to apply to the map canvas. Indeed, we
-    //! increase/decrease the DPI of the map settings according to this factor
-    //! in order to render marker point, labels, ... bigger.
-    //! \since QGIS 2.16
+    /**
+     * Sets the factor of magnification to apply to the map canvas. Indeed, we
+     * increase/decrease the DPI of the map settings according to this factor
+     * in order to render marker point, labels, ... bigger.
+     * \since QGIS 2.16
+     */
     void setMagnificationFactor( double factor );
 
-    //! Lock the scale, so zooming can be performed using magnication
-    //! \since QGIS 2.16
-    //! \see scaleLocked()
+    /**
+     * Lock the scale, so zooming can be performed using magnication
+     * \since QGIS 2.16
+     * \see scaleLocked()
+     */
     void setScaleLocked( bool isLocked );
 
     //! Zoom in with fixed factor
@@ -664,16 +712,22 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the extents of the map change
     void extentsChanged();
 
-    //! Emitted when the rotation of the map changes
-    //! \since QGIS 2.8
+    /**
+     * Emitted when the rotation of the map changes
+     * \since QGIS 2.8
+     */
     void rotationChanged( double );
 
-    //! Emitted when the scale of the map changes
-    //! \since QGIS 2.16
+    /**
+     * Emitted when the scale of the map changes
+     * \since QGIS 2.16
+     */
     void magnificationChanged( double );
 
-    //! Emitted when canvas background color changes
-    //! \since QGIS 3.0
+    /**
+     * Emitted when canvas background color changes
+     * \since QGIS 3.0
+     */
     void canvasColorChanged();
 
     /** Emitted when the canvas has rendered.
@@ -683,9 +737,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * being rendered onto a pixmap other than the mapCanvas own pixmap member.
      *
      */
-    //! TODO: deprecate when decorations are reimplemented as map canvas items
-    //! - anything related to rendering progress is not visible outside of map canvas
-    //! - additional drawing shall be done directly within the renderer job or independently as a map canvas item
+
+    /**
+     * TODO: deprecate when decorations are reimplemented as map canvas items
+     * - anything related to rendering progress is not visible outside of map canvas
+     * - additional drawing shall be done directly within the renderer job or independently as a map canvas item
+     */
     void renderComplete( QPainter * );
 
     // ### QGIS 3: renamte to mapRefreshFinished()
@@ -720,16 +777,22 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when zoom next status changed
     void zoomNextStatusChanged( bool );
 
-    //! Emitted when map CRS has changed
-    //! \since QGIS 2.4
+    /**
+     * Emitted when map CRS has changed
+     * \since QGIS 2.4
+     */
     void destinationCrsChanged();
 
-    //! Emitted when the current layer is changed
-    //! \since QGIS 2.8
+    /**
+     * Emitted when the current layer is changed
+     * \since QGIS 2.8
+     */
     void currentLayerChanged( QgsMapLayer *layer );
 
-    //! Emitted when the configuration of overridden layer styles changes
-    //! \since QGIS 2.12
+    /**
+     * Emitted when the configuration of overridden layer styles changes
+     * \since QGIS 2.12
+     */
     void layerStyleOverridesChanged();
 
     /**
@@ -917,8 +980,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     bool mUsePreviewJobs = false;
 
-    //! Force a resize of the map canvas item
-    //! \since QGIS 2.16
+    /**
+     * Force a resize of the map canvas item
+     * \since QGIS 2.16
+     */
     void updateMapSize();
 
     /** Starts zooming via rectangle

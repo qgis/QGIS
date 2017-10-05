@@ -255,8 +255,10 @@ class CORE_EXPORT QgsFeatureRenderer
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
-    //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
-    //! \since QGIS 2.8
+    /**
+     * create the SLD UserStyle element following the SLD v1.1 specs with the given name
+     * \since QGIS 2.8
+     */
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QgsStringMap &props = QgsStringMap() ) const;
 
     /** Create a new renderer according to the information contained in
@@ -278,16 +280,22 @@ class CORE_EXPORT QgsFeatureRenderer
       ( void ) props; // warning avoidance
     }
 
-    //! items of symbology items in legend should be checkable
-    //! \since QGIS 2.5
+    /**
+     * items of symbology items in legend should be checkable
+     * \since QGIS 2.5
+     */
     virtual bool legendSymbolItemsCheckable() const;
 
-    //! items of symbology items in legend is checked
-    //! \since QGIS 2.5
+    /**
+     * items of symbology items in legend is checked
+     * \since QGIS 2.5
+     */
     virtual bool legendSymbolItemChecked( const QString &key );
 
-    //! item in symbology was checked
-    //! \since QGIS 2.5
+    /**
+     * item in symbology was checked
+     * \since QGIS 2.5
+     */
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 
     /** Sets the symbol to be used for a legend symbol item.
@@ -297,12 +305,16 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER );
 
-    //! Returns a list of symbology items for the legend
-    //! \since QGIS 2.6
+    /**
+     * Returns a list of symbology items for the legend
+     * \since QGIS 2.6
+     */
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
-    //! If supported by the renderer, return classification attribute for the use in legend
-    //! \since QGIS 2.6
+    /**
+     * If supported by the renderer, return classification attribute for the use in legend
+     * \since QGIS 2.6
+     */
     virtual QString legendClassificationAttribute() const { return QString(); }
 
     //! set type and size of editing vertex markers for subsequent rendering

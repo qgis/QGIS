@@ -42,9 +42,11 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
     //! Human readable name - may be translatable with tr()
     virtual QString name() const = 0;
 
-    //! Factory to create widgets. The returned widget is owned by the caller.
-    //! The widgetIndex argument may be used to identify which widget is being
-    //! created (useful when using multiple widgets from the same provider for one layer).
+    /**
+     * Factory to create widgets. The returned widget is owned by the caller.
+     * The widgetIndex argument may be used to identify which widget is being
+     * created (useful when using multiple widgets from the same provider for one layer).
+     */
     virtual QWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) = 0 SIP_FACTORY;
 
     //! Whether it makes sense to use this widget for a particular layer

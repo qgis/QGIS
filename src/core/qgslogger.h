@@ -69,12 +69,16 @@ class CORE_EXPORT QgsLogger
     //! Similar to the previous method, but prints a variable int-value pair
     static void debug( const QString &var, int val, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 );
 
-    //! Similar to the previous method, but prints a variable double-value pair
-    //! \note not available in Python bindings
+    /**
+     * Similar to the previous method, but prints a variable double-value pair
+     * \note not available in Python bindings
+     */
     static void debug( const QString &var, double val, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 ) SIP_SKIP SIP_SKIP;
 
-    //! Prints out a variable/value pair for types with overloaded operator<<
-    //! \note not available in Python bindings
+    /**
+     * Prints out a variable/value pair for types with overloaded operator<<
+     * \note not available in Python bindings
+     */
     template <typename T> static void debug( const QString &var, T val, const char *file = nullptr, const char *function = nullptr,
         int line = -1, int debuglevel = 1 ) SIP_SKIP SIP_SKIP
     {

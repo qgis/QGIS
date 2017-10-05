@@ -81,8 +81,10 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   public:
 
-    //! Enumeration of flags that adjust the way the map tool operates
-    //! \since QGIS 2.16
+    /**
+     * Enumeration of flags that adjust the way the map tool operates
+     * \since QGIS 2.16
+     */
     enum Flag
     {
       Transient = 1 << 1, /*!< Indicates that this map tool performs a transient (one-off) operation.
@@ -152,8 +154,10 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! returns pointer to the tool's map canvas
     QgsMapCanvas *canvas();
 
-    //! Emit map tool changed with the old tool
-    //! \since QGIS 2.3
+    /**
+     * Emit map tool changed with the old tool
+     * \since QGIS 2.3
+     */
     QString toolName() { return mToolName; }
 
     /** Get search radius in mm. Used by identify, tip etc.
@@ -206,8 +210,10 @@ class GUI_EXPORT QgsMapTool : public QObject
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 
-    //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-    //! \note available in Python bindings as toMapCoordinatesV2
+    /**
+     * transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+     * \note available in Python bindings as toMapCoordinatesV2
+     */
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) SIP_PYNAME( toMapCoordinatesV2 );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
@@ -222,12 +228,16 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! cursor used in map tool
     QCursor mCursor;
 
-    //! optionally map tool can have pointer to action
-    //! which will be used to set that action as active
+    /**
+     * optionally map tool can have pointer to action
+     * which will be used to set that action as active
+     */
     QAction *mAction = nullptr;
 
-    //! optionally map tool can have pointer to a button
-    //! which will be used to set that action as active
+    /**
+     * optionally map tool can have pointer to a button
+     * which will be used to set that action as active
+     */
     QAbstractButton *mButton = nullptr;
 
     //! translated name of the map tool

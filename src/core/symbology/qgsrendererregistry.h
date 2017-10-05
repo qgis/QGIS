@@ -40,8 +40,10 @@ class CORE_EXPORT QgsRendererAbstractMetadata
 {
   public:
 
-    //! Layer types the renderer is compatible with
-    //! \since QGIS 2.16
+    /**
+     * Layer types the renderer is compatible with
+     * \since QGIS 2.16
+     */
     enum LayerType
     {
       PointLayer = 1, //!< Compatible with point layers
@@ -110,8 +112,10 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 {
   public:
 
-    //! Construct metadata
-    //! \note not available in Python bindings
+    /**
+     * Construct metadata
+     * \note not available in Python bindings
+     */
     QgsRendererMetadata( const QString &name,
                          const QString &visibleName,
                          QgsRendererCreateFunc pfCreate,
@@ -199,29 +203,39 @@ class CORE_EXPORT QgsRendererRegistry
     //! QgsRendererRegistry cannot be copied.
     QgsRendererRegistry &operator=( const QgsRendererRegistry &rh ) = delete;
 
-    //! Adds a renderer to the registry. Takes ownership of the metadata object.
-    //! \param metadata renderer metadata
-    //! \returns true if renderer was added successfully, or false if renderer could not
-    //! be added (e.g., a renderer with a duplicate name already exists)
+    /**
+     * Adds a renderer to the registry. Takes ownership of the metadata object.
+     * \param metadata renderer metadata
+     * \returns true if renderer was added successfully, or false if renderer could not
+     * be added (e.g., a renderer with a duplicate name already exists)
+     */
     bool addRenderer( QgsRendererAbstractMetadata *metadata SIP_TRANSFER );
 
-    //! Removes a renderer from registry.
-    //! \param rendererName name of renderer to remove from registry
-    //! \returns true if renderer was successfully removed, or false if matching
-    //! renderer could not be found
+    /**
+     * Removes a renderer from registry.
+     * \param rendererName name of renderer to remove from registry
+     * \returns true if renderer was successfully removed, or false if matching
+     * renderer could not be found
+     */
     bool removeRenderer( const QString &rendererName );
 
-    //! Returns the metadata for a specified renderer. Returns NULL if a matching
-    //! renderer was not found in the registry.
+    /**
+     * Returns the metadata for a specified renderer. Returns NULL if a matching
+     * renderer was not found in the registry.
+     */
     QgsRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
 
-    //! Returns a list of available renderers.
-    //! \param layerTypes flags to filter the renderers by compatible layer types
+    /**
+     * Returns a list of available renderers.
+     * \param layerTypes flags to filter the renderers by compatible layer types
+     */
     QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
 
-    //! Returns a list of available renderers which are compatible with a specified layer.
-    //! \param layer vector layer
-    //! \since QGIS 2.16
+    /**
+     * Returns a list of available renderers which are compatible with a specified layer.
+     * \param layer vector layer
+     * \since QGIS 2.16
+     */
     QStringList renderersList( const QgsVectorLayer *layer ) const;
 
   private:

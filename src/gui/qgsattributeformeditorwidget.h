@@ -124,8 +124,10 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
   signals:
 
-    //! Emitted when the widget's value changes
-    //! \param value new widget value
+    /**
+     * Emitted when the widget's value changes
+     * \param value new widget value
+     */
     void valueChanged( const QVariant &value );
 
   private slots:

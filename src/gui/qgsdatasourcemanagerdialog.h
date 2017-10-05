@@ -40,7 +40,7 @@ class QgsBrowserModel;
  * The dialog does not handle layer addition directly but emits signals that
  * need to be forwarded to the QGIS application to be handled.
  * \since QGIS 3.0
- * @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, private Ui::QgsDataSourceManagerDialog
 {
@@ -69,8 +69,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Sync current page with the leftbar list
     void setCurrentPage( int index );
 
-    //! A raster layer was added: for signal forwarding to QgisApp
-    //! TODO: use this with an internal source select dialog instead of forwarding the whole raster selection to app
+    /**
+     * A raster layer was added: for signal forwarding to QgisApp
+     * TODO: use this with an internal source select dialog instead of forwarding the whole raster selection to app
+     */
     void rasterLayerAdded( QString const &uri, QString const &baseName, QString const &providerKey );
     //! A vector layer was added: for signal forwarding to QgisApp
     void vectorLayerAdded( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
@@ -107,12 +109,18 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
     //! Update project home directory
     void updateProjectHome();
-    //! Emitted when a connection has changed inside the provider dialogs
-    //! This signal is normally forwarded to the application to notify other
-    //! browsers that they need to refresh their connections list
+
+    /**
+     * Emitted when a connection has changed inside the provider dialogs
+     * This signal is normally forwarded to the application to notify other
+     * browsers that they need to refresh their connections list
+     */
     void connectionsChanged();
-    //! One or more provider connections have changed and the
-    //! dialogs should be refreshed
+
+    /**
+     * One or more provider connections have changed and the
+     * dialogs should be refreshed
+     */
     void providerDialogsRefreshRequested();
 
   private:

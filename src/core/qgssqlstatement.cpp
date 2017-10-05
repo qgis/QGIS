@@ -191,7 +191,7 @@ void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeJoin &
 
 /** \ingroup core
  * Internal use.
- *  @note not available in Python bindings
+ *  \note not available in Python bindings
  */
 class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
 {

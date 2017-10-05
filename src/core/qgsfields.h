@@ -134,9 +134,11 @@ class CORE_EXPORT QgsFields
     //! Return number of items
     int size() const;
 
-    //! Return if a field index is valid
-    //! \param i  Index of the field which needs to be checked
-    //! \returns   True if the field exists
+    /**
+     * Return if a field index is valid
+     * \param i  Index of the field which needs to be checked
+     * \returns   True if the field exists
+     */
     bool exists( int i ) const;
 
 #ifndef SIP_RUN
@@ -279,8 +281,10 @@ class CORE_EXPORT QgsFields
      */
     int lookupField( const QString &fieldName ) const;
 
-    //! Utility function to get list of attribute indexes
-    //! \since QGIS 2.4
+    /**
+     * Utility function to get list of attribute indexes
+     * \since QGIS 2.4
+     */
     QgsAttributeList allAttributesList() const;
 
     //! Utility function to return a list of QgsField instances

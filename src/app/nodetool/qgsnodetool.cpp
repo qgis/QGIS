@@ -109,8 +109,10 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
 }
 
 
-//! Determine whether a vertex is in the middle of a circular edge or not
-//! (wrapper for slightly awkward API)
+/**
+ * Determine whether a vertex is in the middle of a circular edge or not
+ * (wrapper for slightly awkward API)
+ */
 static bool isCircularVertex( const QgsGeometry &geom, int vertexIndex )
 {
   QgsVertexId vid;

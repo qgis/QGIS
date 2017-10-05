@@ -593,7 +593,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString &rendererName )
 }
 
 /**
-  @note moved from ctor
+  \note moved from ctor
 
   Previously this dialog was created anew with each right-click pop-up menu
   invocation.  Changed so that the dialog always exists after first

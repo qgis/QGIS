@@ -90,8 +90,10 @@ class CORE_EXPORT QgsRenderContext
      */
     bool testFlag( Flag flag ) const;
 
-    //! create initialized QgsRenderContext instance from given QgsMapSettings
-    //! \since QGIS 2.4
+    /**
+     * create initialized QgsRenderContext instance from given QgsMapSettings
+     * \since QGIS 2.4
+     */
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 
     /**
@@ -154,8 +156,10 @@ class CORE_EXPORT QgsRenderContext
      */
     double rendererScale() const {return mRendererScale;}
 
-    //! Get access to new labeling engine (may be nullptr)
-    //! \note not available in Python bindings
+    /**
+     * Get access to new labeling engine (may be nullptr)
+     * \note not available in Python bindings
+     */
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
 
     QColor selectionColor() const { return mSelectionColor; }
@@ -211,8 +215,10 @@ class CORE_EXPORT QgsRenderContext
 
     void setForceVectorOutput( bool force );
 
-    //! Assign new labeling engine
-    //! \note not available in Python bindings
+    /**
+     * Assign new labeling engine
+     * \note not available in Python bindings
+     */
     void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; } SIP_SKIP
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
 

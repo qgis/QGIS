@@ -76,8 +76,10 @@ class QgsChunkList
     //! Returns whether the list is empty or it contains some entries
     bool isEmpty() const;
 
-    //! Inserts a new entry before the entry "next".
-    //! If "next" is null, entry will be inserted at the end of the list
+    /**
+     * Inserts a new entry before the entry "next".
+     * If "next" is null, entry will be inserted at the end of the list
+     */
     void insertEntry( QgsChunkListEntry *entry, QgsChunkListEntry *next );
 
     //! Takes the entry out of the list (does not delete it)

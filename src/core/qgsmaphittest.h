@@ -39,9 +39,11 @@ class CORE_EXPORT QgsMapHitTest
     //! Maps an expression string to a layer id
     typedef QMap<QString, QString> LayerFilterExpression;
 
-    //! \param settings Map settings used to evaluate symbols
-    //! \param polygon Polygon geometry to refine the hit test
-    //! \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+    /**
+     * \param settings Map settings used to evaluate symbols
+     * \param polygon Polygon geometry to refine the hit test
+     * \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+     */
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 
     //! Constructor version used with only expressions to filter symbols (no extent or polygon intersection)

@@ -98,25 +98,36 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! \since QGIS 2.6
     bool autoUpdateModel() const;
 
-    //! Set whether legend items should be filtered to show just the ones visible in the associated map
-    //! \since QGIS 2.6
+    /**
+     * Set whether legend items should be filtered to show just the ones visible in the associated map
+     * \since QGIS 2.6
+     */
     void setLegendFilterByMapEnabled( bool enabled );
-    //! Find out whether legend items are filtered to show just the ones visible in the associated map
-    //! \since QGIS 2.6
+
+    /**
+     * Find out whether legend items are filtered to show just the ones visible in the associated map
+     * \since QGIS 2.6
+     */
     bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
 
-    //! Update() overloading. Use it rather than update()
-    //! \since QGIS 2.12
+    /**
+     * Update() overloading. Use it rather than update()
+     * \since QGIS 2.12
+     */
     virtual void updateItem() override;
 
-    //! When set to true, during an atlas rendering, it will filter out legend elements
-    //! where features are outside the current atlas feature.
-    //! \since QGIS 2.14
+    /**
+     * When set to true, during an atlas rendering, it will filter out legend elements
+     * where features are outside the current atlas feature.
+     * \since QGIS 2.14
+     */
     void setLegendFilterOutAtlas( bool doFilter );
 
-    //! Whether to filter out legend elements outside of the current atlas feature
-    //! \see setLegendFilterOutAtlas()
-    //! \since QGIS 2.14
+    /**
+     * Whether to filter out legend elements outside of the current atlas feature
+     * \see setLegendFilterOutAtlas()
+     * \since QGIS 2.14
+     */
     bool legendFilterOutAtlas() const;
 
     //setters and getters

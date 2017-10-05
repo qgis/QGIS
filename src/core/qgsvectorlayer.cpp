@@ -681,7 +681,7 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
 
 /** \ingroup core
  * Used by QgsVectorLayer::countSymbolFeatures() to provide an interruption checker
- *  @note not available in Python bindings
+ * \note not available in Python bindings
  */
 class QgsVectorLayerInterruptionCheckerDuringCountSymbolFeatures: public QgsInterruptionChecker
 {

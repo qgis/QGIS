@@ -54,14 +54,18 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! returns path where QGIS Python stuff is located
     QString pythonPath();
 
-    //! run a statement (wrapper for PyRun_String)
-    //! this command is more advanced as enables error checking etc.
-    //! when an exception is raised, it shows dialog with exception details
-    //! \returns true if no error occurred
+    /**
+     * run a statement (wrapper for PyRun_String)
+     * this command is more advanced as enables error checking etc.
+     * when an exception is raised, it shows dialog with exception details
+     * \returns true if no error occurred
+     */
     bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) override;
 
-    //! run a statement, error reporting is not done
-    //! \returns true if no error occurred
+    /**
+     * run a statement, error reporting is not done
+     * \returns true if no error occurred
+     */
     bool runStringUnsafe( const QString &command, bool single = true ) override;
 
     bool evalString( const QString &command, QString &result ) override;
@@ -69,8 +73,10 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! \returns object's type name as a string
     QString getTypeAsString( PyObject *obj );
 
-    //! get information about error to the supplied arguments
-    //! \returns false if there was no Python error
+    /**
+     * get information about error to the supplied arguments
+     * \returns false if there was no Python error
+     */
     bool getError( QString &errorClassName, QString &errorText ) override;
 
     /* plugins related functions */
@@ -102,8 +108,10 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! start plugin: add to active plugins and call initGui()
     bool startPlugin( const QString &packageName ) override;
 
-    //! helper function to get some information about plugin
-    //! \param function one of these strings: name, tpye, version, description
+    /**
+     * helper function to get some information about plugin
+     * \param function one of these strings: name, tpye, version, description
+     */
     QString getPluginMetadata( const QString &pluginName, const QString &function ) override;
 
     //! confirm it is safe to uninstall the plugin

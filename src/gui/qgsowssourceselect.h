@@ -168,8 +168,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
      */
     virtual void populateLayerList();
 
-    //! create an item including possible parents
-    //! \note not available in Python bindings
+    /**
+     * create an item including possible parents
+     * \note not available in Python bindings
+     */
     QgsTreeWidgetItem *createItem( int id,
                                    const QStringList &names,
                                    QMap<int, QgsTreeWidgetItem *> &items,

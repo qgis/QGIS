@@ -108,8 +108,10 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! return index of category with specified value (-1 if not found)
     int categoryIndexForValue( const QVariant &val );
 
-    //! return index of category with specified label (-1 if not found or not unique)
-    //! \since QGIS 2.5
+    /**
+     * return index of category with specified label (-1 if not found or not unique)
+     * \since QGIS 2.5
+     */
     int categoryIndexForLabel( const QString &val );
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
@@ -179,9 +181,11 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }
 
-    //! creates a QgsCategorizedSymbolRenderer from an existing renderer.
-    //! \since QGIS 2.5
-    //! \returns a new renderer if the conversion was possible, otherwise 0.
+    /**
+     * creates a QgsCategorizedSymbolRenderer from an existing renderer.
+     * \since QGIS 2.5
+     * \returns a new renderer if the conversion was possible, otherwise 0.
+     */
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     /**

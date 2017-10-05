@@ -1044,8 +1044,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void clearError() SIP_SKIP;
 
-    //! Creates layer and adds it to maplayer registry
-    //! \note not available in Python bindings
+    /**
+     * Creates layer and adds it to maplayer registry
+     * \note not available in Python bindings
+     */
     bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsReadWriteContext &context ) SIP_SKIP;
 
     //! \note not available in Python bindings

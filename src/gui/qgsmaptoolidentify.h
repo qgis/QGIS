@@ -118,8 +118,10 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
-    //! return a pointer to the identify menu which will be used in layer selection mode
-    //! this menu can also be customized
+    /**
+     * return a pointer to the identify menu which will be used in layer selection mode
+     * this menu can also be customized
+     */
     QgsIdentifyMenu *identifyMenu() {return mIdentifyMenu;}
 
   public slots:

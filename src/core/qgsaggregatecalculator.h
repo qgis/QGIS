@@ -42,8 +42,10 @@ class CORE_EXPORT QgsAggregateCalculator
 {
   public:
 
-    //! Available aggregates to calculate. Not all aggregates are available for all field
-    //! types.
+    /**
+     * Available aggregates to calculate. Not all aggregates are available for all field
+     * types.
+     */
     enum Aggregate
     {
       Count,  //!< Count

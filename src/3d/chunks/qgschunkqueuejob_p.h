@@ -61,9 +61,11 @@ class QgsChunkQueueJob : public QObject
     //! Returns chunk node of this job
     QgsChunkNode *chunk() { return mNode; }
 
-    //! Request that the job gets canceled.
-    //! Returns only after the async job has been stopped.
-    //! The signal finished() will not be emitted afterwards.
+    /**
+     * Request that the job gets canceled.
+     * Returns only after the async job has been stopped.
+     * The signal finished() will not be emitted afterwards.
+     */
     virtual void cancel();
 
   signals:

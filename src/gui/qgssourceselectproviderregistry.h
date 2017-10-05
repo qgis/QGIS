@@ -56,8 +56,10 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
     //! Add a \a provider implementation. Takes ownership of the object.
     void addProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
 
-    //! Remove \a provider implementation from the list (\a provider object is deleted)
-    //! \returns true if the provider was actually removed and deleted
+    /**
+     * Remove \a provider implementation from the list (\a provider object is deleted)
+     * \returns true if the provider was actually removed and deleted
+     */
     bool removeProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
 
     //! Return a provider by \a name or nullptr if not found
@@ -68,8 +70,11 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry
 
 
   private:
-    //! Populate the providers list, this needs to happen after the data provider
-    //! registry has been initialized.
+
+    /**
+     * Populate the providers list, this needs to happen after the data provider
+     * registry has been initialized.
+     */
     void init();
     bool mInitialized = false;
 #ifdef SIP_RUN

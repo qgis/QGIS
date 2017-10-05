@@ -177,8 +177,10 @@ class CORE_EXPORT QgsJsonExporter
     //! Maximum number of decimal places for geometry coordinates
     int mPrecision;
 
-    //! List of attribute indexes to include in export, or empty list to include all attributes
-    //! \see mExcludedAttributeIndexes
+    /**
+     * List of attribute indexes to include in export, or empty list to include all attributes
+     * \see mExcludedAttributeIndexes
+     */
     QgsAttributeList mAttributeIndexes;
 
     //! List of attribute indexes to exclude from export

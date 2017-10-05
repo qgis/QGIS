@@ -189,9 +189,11 @@ class CORE_EXPORT QgsSymbol
     void setColor( const QColor &color );
     QColor color() const;
 
-    //! Draw icon of the symbol that occupyies area given by size using the painter.
-    //! Optionally custom context may be given in order to get rendering of symbols that use map units right.
-    //! \since QGIS 2.6
+    /**
+     * Draw icon of the symbol that occupyies area given by size using the painter.
+     * Optionally custom context may be given in order to get rendering of symbols that use map units right.
+     * \since QGIS 2.6
+     */
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = nullptr );
 
     //! export symbol as image format. PNG and SVG supported
@@ -368,8 +370,10 @@ class CORE_EXPORT QgsSymbol
      */
     void renderUsingLayer( QgsSymbolLayer *layer, QgsSymbolRenderContext &context );
 
-    //! Render editing vertex marker at specified point
-    //! \since QGIS 2.16
+    /**
+     * Render editing vertex marker at specified point
+     * \since QGIS 2.16
+     */
     void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, int currentVertexMarkerSize );
 
     SymbolType mType;
@@ -388,8 +392,10 @@ class CORE_EXPORT QgsSymbol
     QgsSymbol( const QgsSymbol & );
 #endif
 
-    //! True if render has already been started - guards against multiple calls to
-    //! startRender() (usually a result of not cloning a shared symbol instance before rendering).
+    /**
+     * True if render has already been started - guards against multiple calls to
+     * startRender() (usually a result of not cloning a shared symbol instance before rendering).
+     */
     bool mStarted = false;
 
     //! Initialized in startRender, destroyed in stopRender
@@ -489,10 +495,12 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     QgsWkbTypes::GeometryType originalGeometryType() const { return mOriginalGeometryType; }
 
-    //! Fields of the layer. Currently only available in startRender() calls
-    //! to allow symbols with data-defined properties prepare the expressions
-    //! (other times fields() returns null)
-    //! \since QGIS 2.4
+    /**
+     * Fields of the layer. Currently only available in startRender() calls
+     * to allow symbols with data-defined properties prepare the expressions
+     * (other times fields() returns null)
+     * \since QGIS 2.4
+     */
     QgsFields fields() const { return mFields; }
 
     /** Part count of current geometry

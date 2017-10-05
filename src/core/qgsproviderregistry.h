@@ -53,8 +53,10 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
-    //! Different ways a source select dialog can be used
-    //! (embedded is for the data source manager dialog)
+    /**
+     * Different ways a source select dialog can be used
+     * (embedded is for the data source manager dialog)
+     */
     enum WidgetMode
     {
       None,

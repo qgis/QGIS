@@ -136,8 +136,10 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     //! Location in map coordinates. May be snapped.
     QgsPointXY mMapPoint;
 
-    //! Location in pixel coordinates. May be snapped.
-    //! Original pixel point available through the parent QMouseEvent.
+    /**
+     * Location in pixel coordinates. May be snapped.
+     * Original pixel point available through the parent QMouseEvent.
+     */
     QPoint mPixelPoint;
 
     //! The map canvas on which the event was triggered.

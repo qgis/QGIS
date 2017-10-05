@@ -151,8 +151,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     bool mZombie;
 
-    //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
-    //! TODO QGIS3: make this private
+    /**
+     * reference counting (to allow seamless copying of QgsFeatureIterator instances)
+     * TODO QGIS3: make this private
+     */
     int refs;
     //! Add reference
     void ref();

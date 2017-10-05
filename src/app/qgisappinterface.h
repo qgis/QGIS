@@ -169,8 +169,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Add toolbar with specified name
     QToolBar *addToolBar( const QString &name ) override;
 
-    //! Add a toolbar
-    //! \since QGIS 2.3
+    /**
+     * Add a toolbar
+     * \since QGIS 2.3
+     */
     void addToolBar( QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) override;
 
     /** Open a url in the users browser. By default the QGIS doc directory is used

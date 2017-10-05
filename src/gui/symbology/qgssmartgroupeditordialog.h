@@ -76,15 +76,19 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     //! returns the value from mNameLineEdit
     QString smartgroupName();
 
-    //! returns the condition map
-    //! \note not available in Python bindings
+    /**
+     * returns the condition map
+     * \note not available in Python bindings
+     */
     QgsSmartConditionMap conditionMap() SIP_SKIP;
 
     //! returns the AND/OR condition
     QString conditionOperator();
 
-    //! sets up the GUI for the given conditionmap
-    //! \note not available in Python bindings
+    /**
+     * sets up the GUI for the given conditionmap
+     * \note not available in Python bindings
+     */
     void setConditionMap( const QgsSmartConditionMap & ) SIP_SKIP;
 
     //! sets the operator AND/OR

@@ -288,16 +288,22 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the default theme directory.
     static QString defaultThemePath();
 
-    //! Returns path to the desired icon file.
-    //! First it tries to use the active theme path, then default theme path
+    /**
+     * Returns path to the desired icon file.
+     * First it tries to use the active theme path, then default theme path
+     */
     static QString iconPath( const QString &iconFile );
 
-    //! Helper to get a theme icon. It will fall back to the
-    //! default theme if the active theme does not have the required icon.
+    /**
+     * Helper to get a theme icon. It will fall back to the
+     * default theme if the active theme does not have the required icon.
+     */
     static QIcon getThemeIcon( const QString &name );
 
-    //! Helper to get a theme icon as a pixmap. It will fall back to the
-    //! default theme if the active theme does not have the required icon.
+    /**
+     * Helper to get a theme icon as a pixmap. It will fall back to the
+     * default theme if the active theme does not have the required icon.
+     */
     static QPixmap getThemePixmap( const QString &name );
 
     //! Returns the path to user's style.

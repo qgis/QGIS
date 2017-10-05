@@ -116,12 +116,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     QgsMapRendererJob( const QgsMapSettings &settings );
 
-    //! Start the rendering job and immediately return.
-    //! Does nothing if the rendering is already in progress.
+    /**
+     * Start the rendering job and immediately return.
+     * Does nothing if the rendering is already in progress.
+     */
     virtual void start() = 0;
 
-    //! Stop the rendering job - does not return until the job has terminated.
-    //! Does nothing if the rendering is not active.
+    /**
+     * Stop the rendering job - does not return until the job has terminated.
+     * Does nothing if the rendering is not active.
+     */
     virtual void cancel() = 0;
 
     /**
@@ -153,16 +157,20 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     virtual QgsLabelingResults *takeLabelingResults() = 0 SIP_TRANSFER;
 
-    //! \since QGIS 3.0
-    //! Set the feature filter provider used by the QgsRenderContext of
-    //! each LayerRenderJob.
-    //! Ownership is not transferred and the provider must not be deleted
-    //! before the render job.
+    /**
+     * \since QGIS 3.0
+     * Set the feature filter provider used by the QgsRenderContext of
+     * each LayerRenderJob.
+     * Ownership is not transferred and the provider must not be deleted
+     * before the render job.
+     */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; }
 
-    //! \since QGIS 3.0
-    //! Returns the feature filter provider used by the QgsRenderContext of
-    //! each LayerRenderJob.
+    /**
+     * \since QGIS 3.0
+     * Returns the feature filter provider used by the QgsRenderContext of
+     * each LayerRenderJob.
+     */
     const QgsFeatureFilterProvider *featureFilterProvider() const { return mFeatureFilterProvider; }
 
     struct Error
@@ -182,8 +190,10 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     Errors errors() const;
 
 
-    //! Assign a cache to be used for reading and storing rendered images of individual layers.
-    //! Does not take ownership of the object.
+    /**
+     * Assign a cache to be used for reading and storing rendered images of individual layers.
+     * Does not take ownership of the object.
+     */
     void setCache( QgsMapRendererCache *cache );
 
     //! Find out how long it took to finish the job (in milliseconds)

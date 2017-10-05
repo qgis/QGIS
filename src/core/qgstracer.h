@@ -67,18 +67,22 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
     void setMaxFeatureCount( int count ) { mMaxFeatureCount = count; }
 
-    //! Build the internal data structures. This may take some time
-    //! depending on how big the input layers are. It is not necessary
-    //! to call this method explicitly - it will be called by findShortestPath()
-    //! if necessary.
+    /**
+     * Build the internal data structures. This may take some time
+     * depending on how big the input layers are. It is not necessary
+     * to call this method explicitly - it will be called by findShortestPath()
+     * if necessary.
+     */
     bool init();
 
     //! Whether the internal data structures have been initialized
     bool isInitialized() const { return static_cast< bool >( mGraph ); }
 
-    //! Whether there was an error during graph creation due to noding exception,
-    //! indicating some input data topology problems
-    //! \since QGIS 2.16
+    /**
+     * Whether there was an error during graph creation due to noding exception,
+     * indicating some input data topology problems
+     * \since QGIS 2.16
+     */
     bool hasTopologyProblem() const { return mHasTopologyProblem; }
 
     //! Possible errors that may happen when calling findShortestPath()
@@ -91,18 +95,23 @@ class CORE_EXPORT QgsTracer : public QObject
       ErrNoPath,             //!< Points are not connected in the graph
     };
 
-    //! Given two points, find the shortest path and return points on the way.
-    //! The optional "error" argument may receive error code (PathError enum) if it is not null
-    //! \returns array of points - trace of linestrings of other features (empty array one error)
+    /**
+     * Given two points, find the shortest path and return points on the way.
+     * The optional "error" argument may receive error code (PathError enum) if it is not null
+     * \returns array of points - trace of linestrings of other features (empty array one error)
+     */
     QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error SIP_OUT = nullptr );
 
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
     bool isPointSnapped( const QgsPointXY &pt );
 
   protected:
-    //! Allows derived classes to setup the settings just before the tracer is initialized.
-    //! This allows the configuration to be set in a lazy way only when it is really necessary.
-    //! Default implementation does nothing.
+
+    /**
+     * Allows derived classes to setup the settings just before the tracer is initialized.
+     * This allows the configuration to be set in a lazy way only when it is really necessary.
+     * Default implementation does nothing.
+     */
     virtual void configure() {}
 
   protected slots:
@@ -127,11 +136,17 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsCoordinateReferenceSystem mCRS;
     //! Extent for graph building (empty extent means no limit)
     QgsRectangle mExtent;
-    //! Limit of how many features can be in the graph (0 means no limit).
-    //! This is to avoid possibly long graph preparation for complicated layers
+
+    /**
+     * Limit of how many features can be in the graph (0 means no limit).
+     * This is to avoid possibly long graph preparation for complicated layers
+     */
     int mMaxFeatureCount = 0;
-    //! A flag indicating that there was an error during graph creation
-    //! due to noding exception, indicating some input data topology problems
+
+    /**
+     * A flag indicating that there was an error during graph creation
+     * due to noding exception, indicating some input data topology problems
+     */
     bool mHasTopologyProblem = false;
 };
 

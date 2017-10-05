@@ -160,8 +160,10 @@ class CORE_EXPORT QgsPalLayerSettings
       BottomRight, //!< Label on bottom right of point
     };
 
-    //! Behavior modifier for label offset and distance, only applies in some
-    //! label placement modes.
+    /**
+     * Behavior modifier for label offset and distance, only applies in some
+     * label placement modes.
+     */
     //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum OffsetType
     {
@@ -930,8 +932,10 @@ class CORE_EXPORT QgsPalLabeling
 {
   public:
 
-    //! called to find out whether the layer is used for labeling
-    //! \since QGIS 2.4
+    /**
+     * called to find out whether the layer is used for labeling
+     * \since QGIS 2.4
+     */
     static bool staticWillUseLayer( QgsVectorLayer *layer );
 
     //! \note not available in Python bindings

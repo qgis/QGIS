@@ -81,9 +81,11 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     };
 
 
-    //! Named node
-    //! \since QGIS 2.16
-    //! \ingroup core
+    /**
+     * Named node
+     * \since QGIS 2.16
+     * \ingroup core
+     */
     struct NamedNode
     {
       public:
@@ -122,8 +124,10 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
          */
         int count() const { return mList.count(); }
 
-        //! Returns true if list contains any named nodes
-        //! \since QGIS 2.16
+        /**
+         * Returns true if list contains any named nodes
+         * \since QGIS 2.16
+         */
         bool hasNamedNodes() const { return mHasNamedNodes; }
 
         /**
@@ -138,8 +142,10 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
          */
         QgsExpressionNode *at( int i ) { return mList.at( i ); }
 
-        //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
-        //! \since QGIS 2.16
+        /**
+         * Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
+         * \since QGIS 2.16
+         */
         QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller

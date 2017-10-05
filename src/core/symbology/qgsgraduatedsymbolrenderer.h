@@ -214,25 +214,35 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
-    //! Recalculate classes for a layer
-    //! \param vlayer  The layer being rendered (from which data values are calculated)
-    //! \param mode    The calculation mode
-    //! \param nclasses The number of classes to calculate (approximate for some modes)
-    //! \since QGIS 2.6
+
+    /**
+     * Recalculate classes for a layer
+     * \param vlayer  The layer being rendered (from which data values are calculated)
+     * \param mode    The calculation mode
+     * \param nclasses The number of classes to calculate (approximate for some modes)
+     * \since QGIS 2.6
+     */
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
 
-    //! Return the label format used to generate default classification labels
-    //! \since QGIS 2.6
+    /**
+     * Return the label format used to generate default classification labels
+     * \since QGIS 2.6
+     */
     const QgsRendererRangeLabelFormat &labelFormat() const { return mLabelFormat; }
-    //! Set the label format used to generate default classification labels
-    //! \param labelFormat The string appended to classification labels
-    //! \param updateRanges If true then ranges ending with the old unit string are updated to the new.
-    //! \since QGIS 2.6
+
+    /**
+     * Set the label format used to generate default classification labels
+     * \param labelFormat The string appended to classification labels
+     * \param updateRanges If true then ranges ending with the old unit string are updated to the new.
+     * \since QGIS 2.6
+     */
     void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false );
 
-    //! Reset the label decimal places to a numberbased on the minimum class interval
-    //! \param updateRanges if true then ranges currently using the default label will be updated
-    //! \since QGIS 2.6
+    /**
+     * Reset the label decimal places to a numberbased on the minimum class interval
+     * \param updateRanges if true then ranges currently using the default label will be updated
+     * \since QGIS 2.6
+     */
     void calculateLabelPrecision( bool updateRanges = true );
 
     /** Creates a new graduated renderer.
@@ -299,17 +309,23 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     void updateSymbols( QgsSymbol *sym );
 
-    //! set varying symbol size for classes
-    //! \note the classes must already be set so that symbols exist
-    //! \since QGIS 2.10
+    /**
+     * set varying symbol size for classes
+     * \note the classes must already be set so that symbols exist
+     * \since QGIS 2.10
+     */
     void setSymbolSizes( double minSize, double maxSize );
 
-    //! return the min symbol size when graduated by size
-    //! \since QGIS 2.10
+    /**
+     * return the min symbol size when graduated by size
+     * \since QGIS 2.10
+     */
     double minSymbolSize() const;
 
-    //! return the max symbol size when graduated by size
-    //! \since QGIS 2.10
+    /**
+     * return the max symbol size when graduated by size
+     * \since QGIS 2.10
+     */
     double maxSymbolSize() const;
 
     enum GraduatedMethod
@@ -318,12 +334,16 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
       GraduatedSize = 1
     };
 
-    //! return the method used for graduation (either size or color)
-    //! \since QGIS 2.10
+    /**
+     * return the method used for graduation (either size or color)
+     * \since QGIS 2.10
+     */
     GraduatedMethod graduatedMethod() const { return mGraduatedMethod; }
 
-    //! set the method used for graduation (either size or color)
-    //! \since QGIS 2.10
+    /**
+     * set the method used for graduation (either size or color)
+     * \since QGIS 2.10
+     */
     void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
 
     virtual bool legendSymbolItemsCheckable() const override;
@@ -332,9 +352,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }
 
-    //! creates a QgsGraduatedSymbolRenderer from an existing renderer.
-    //! \since QGIS 2.6
-    //! \returns a new renderer if the conversion was possible, otherwise 0.
+    /**
+     * creates a QgsGraduatedSymbolRenderer from an existing renderer.
+     * \since QGIS 2.6
+     * \returns a new renderer if the conversion was possible, otherwise 0.
+     */
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     /**

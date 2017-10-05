@@ -935,8 +935,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void saveLastMousePosition( const QgsPointXY & );
     //! Slot to show current map scale;
     void showScale( double scale );
-    //! Slot to handle user rotation input;
-    //! \since QGIS 2.8
+
+    /**
+     * Slot to handle user rotation input;
+     * \since QGIS 2.8
+     */
     void userRotation();
     //! Remove a layer from the map and legend
     void removeLayer();
@@ -1126,8 +1129,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void dxfExport();
     //! Import layers in dwg format
     void dwgImport();
-    //! Open the project file corresponding to the
-    //! text)= of the given action.
+
+    /**
+     * Open the project file corresponding to the
+     * text)= of the given action.
+     */
     void openProject( QAction *action );
     //! Save the map view as an image - user is prompted for image name using a dialog
     void saveMapAsImage();

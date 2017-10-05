@@ -245,13 +245,18 @@ Set evaluation error (used internally by evaluation functions)
 
     QString expression() const;
 %Docstring
-API calls, dump() will be used to create one instead.
+ Return the original, unmodified expression string.
+ If there was none supplied because it was constructed by sole
+ API calls, dump() will be used to create one instead.
  :rtype: str
 %End
 
     QString dump() const;
 %Docstring
-expression() instead.
+ Return an expression string, constructed from the internal
+ abstract syntax tree. This does not contain any nice whitespace
+ formatting or comments. In general it is preferable to use
+ expression() instead.
  :rtype: str
 %End
 

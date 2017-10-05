@@ -55,8 +55,10 @@ class QgsTerrainTextureGenerator : public QObject
     //! Initializes the object
     QgsTerrainTextureGenerator( const Qgs3DMapSettings &map );
 
-    //! Starts async rendering of a map for the given extent (must be a square!).
-    //! Returns job ID. The class will emit tileReady() signal with the job ID when rendering is done.
+    /**
+     * Starts async rendering of a map for the given extent (must be a square!).
+     * Returns job ID. The class will emit tileReady() signal with the job ID when rendering is done.
+     */
     int render( const QgsRectangle &extent, const QString &debugText = QString() );
 
     //! Cancels a rendering job

@@ -57,12 +57,16 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     //! Saves mVectorJoins to xml under the layer node
     void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
 
-    //! Reads joins from project file.
-    //! Does not resolve layer IDs to layers - call resolveReferences() afterwards
+    /**
+     * Reads joins from project file.
+     * Does not resolve layer IDs to layers - call resolveReferences() afterwards
+     */
     void readXml( const QDomNode &layer_node );
 
-    //! Resolves layer IDs of joined layers using given project's available layers
-    //! \since QGIS 3.0
+    /**
+     * Resolves layer IDs of joined layers using given project's available layers
+     * \since QGIS 3.0
+     */
     void resolveReferences( QgsProject *project );
 
     //! Quick way to test if there is any join at all
@@ -76,12 +80,16 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
       \param sourceFieldIndex Output: field's index in source layer */
     const QgsVectorLayerJoinInfo *joinForFieldIndex( int index, const QgsFields &fields, int &sourceFieldIndex SIP_OUT ) const;
 
-    //! Find out what is the first index of the join within fields. Returns -1 if join is not present
-    //! \since QGIS 2.6
+    /**
+     * Find out what is the first index of the join within fields. Returns -1 if join is not present
+     * \since QGIS 2.6
+     */
     int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );
 
-    //! Return a vector of indices for use in join based on field names from the layer
-    //! \since QGIS 2.6
+    /**
+     * Return a vector of indices for use in join based on field names from the layer
+     * \since QGIS 2.6
+     */
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 
     /** Returns joins where the field of a target layer is considered as an id.
@@ -105,8 +113,10 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
      */
     QgsFeature targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
 
-    //! Create a copy of the join buffer
-    //! \since QGIS 2.6
+    /**
+     * Create a copy of the join buffer
+     * \since QGIS 2.6
+     */
     QgsVectorLayerJoinBuffer *clone() const SIP_FACTORY;
 
     /**
@@ -167,8 +177,11 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     bool deleteFeatures( const QgsFeatureIds &fids ) const;
 
   signals:
-    //! Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)
-    //! \since QGIS 2.6
+
+    /**
+     * Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)
+     * \since QGIS 2.6
+     */
     void joinedFieldsChanged();
 
   private slots:

@@ -124,11 +124,16 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     //! used with new labeling engine (QgsPalLabeling): whether diagrams are enabled
     bool mDiagrams;
 
-    //! used with new labeling engine (QgsLabelingEngine): provider for labels.
-    //! may be null. no need to delete: if exists it is owned by labeling engine
+    /**
+     * used with new labeling engine (QgsLabelingEngine): provider for labels.
+     * may be null. no need to delete: if exists it is owned by labeling engine
+     */
     QgsVectorLayerLabelProvider *mLabelProvider = nullptr;
-    //! used with new labeling engine (QgsLabelingEngine): provider for diagrams.
-    //! may be null. no need to delete: if exists it is owned by labeling engine
+
+    /**
+     * used with new labeling engine (QgsLabelingEngine): provider for diagrams.
+     * may be null. no need to delete: if exists it is owned by labeling engine
+     */
     QgsVectorLayerDiagramProvider *mDiagramProvider = nullptr;
 
     QPainter::CompositionMode mFeatureBlendMode;

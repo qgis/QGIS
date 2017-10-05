@@ -117,16 +117,22 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     bool mSyncEnabled;
 
-    //! If sync is disabled
-    //! Holds a list of newly selected features which will be synced when re-enabled
+    /**
+     * If sync is disabled
+     * Holds a list of newly selected features which will be synced when re-enabled
+     */
     QgsFeatureIds mSelectedBuffer;
 
-    //! If sync is disabled
-    //! Holds a list of newly deselected features which will be synced when re-enabled
+    /**
+     * If sync is disabled
+     * Holds a list of newly deselected features which will be synced when re-enabled
+     */
     QgsFeatureIds mDeselectedBuffer;
 
-    //! If sync is disabled
-    //! Is set to true, if a clear and select operation should be performed before syncing
+    /**
+     * If sync is disabled
+     * Is set to true, if a clear and select operation should be performed before syncing
+     */
     bool mClearAndSelectBuffer;
 };
 

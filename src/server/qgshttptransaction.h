@@ -61,8 +61,10 @@ class QgsHttpTransaction : public QObject
 
     void getAsynchronously();
 
-    //! Gets the response synchronously.  Note that signals will still be emitted
-    //! while in this function.
+    /**
+     * Gets the response synchronously.  Note that signals will still be emitted
+     * while in this function.
+     */
 
     /*!
         The function returns false if there is an error while getting the response.

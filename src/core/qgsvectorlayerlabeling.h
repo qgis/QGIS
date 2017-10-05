@@ -49,8 +49,10 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     //! Return a new copy of the object
     virtual QgsAbstractVectorLayerLabeling *clone() const = 0 SIP_FACTORY;
 
-    //! Factory for label provider implementation
-    //! \note not available in Python bindings
+    /**
+     * Factory for label provider implementation
+     * \note not available in Python bindings
+     */
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ); return nullptr; }
 
     //! Return labeling configuration as XML element
@@ -59,8 +61,10 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     //! Get list of sub-providers within the layer's labeling.
     virtual QStringList subProviders() const { return QStringList( QString() ); }
 
-    //! Get associated label settings. In case of multiple sub-providers with different settings,
-    //! they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
+    /**
+     * Get associated label settings. In case of multiple sub-providers with different settings,
+     * they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
+     */
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 
     /**

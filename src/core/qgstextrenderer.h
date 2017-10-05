@@ -1248,8 +1248,11 @@ class CORE_EXPORT QgsTextRenderer
       QPointF offset;
       //! A stored QPicture of painting for the component
       QPicture picture;
-      //! Buffer for component to accommodate graphic items ignored by QPicture,
-      //! e.g. half-width of an applied QPen, which would extend beyond boundingRect() of QPicture
+
+      /**
+       * Buffer for component to accommodate graphic items ignored by QPicture,
+       * e.g. half-width of an applied QPen, which would extend beyond boundingRect() of QPicture
+       */
       double pictureBuffer = 0.0;
       //! A ratio of native painter dpi and that of rendering context's painter
       double dpiRatio = 1.0;

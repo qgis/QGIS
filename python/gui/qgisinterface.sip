@@ -174,7 +174,8 @@ Get pointer to the active layer (layer selected in the legend)
 
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 %Docstring
-returns true if the layer exists, false otherwise
+ Set the active layer (layer gets selected in the legend)
+ returns true if the layer exists, false otherwise
  :rtype: bool
 %End
 
@@ -296,6 +297,7 @@ Add toolbar with specified name
 
     virtual void addToolBar( QToolBar *toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 %Docstring
+ Add a toolbar
 .. versionadded:: 2.3
 %End
 

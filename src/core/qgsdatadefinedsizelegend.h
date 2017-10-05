@@ -125,9 +125,11 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     //! Generates legend symbol items according to the configuration
     QgsLegendSymbolList legendSymbolList() const;
 
-    //! Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
-    //! If the painter in context is null, it only does size calculation without actual rendering.
-    //! Does nothing if legend is not configured as collapsed.
+    /**
+     * Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
+     * If the painter in context is null, it only does size calculation without actual rendering.
+     * Does nothing if legend is not configured as collapsed.
+     */
     void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize SIP_OUT = nullptr, int *labelXOffset SIP_OUT = nullptr ) const;
 
     //! Returns output image that would be shown in the legend. Returns invalid image if legend is not configured as collapsed.

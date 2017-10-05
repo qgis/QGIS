@@ -41,8 +41,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Returns viewport rectangle
     QRect viewport() const { return mViewport; }
 
-    //! Connects to object picker attached to terrain entity. Called internally from 3D scene.
-    //! This allows camera controller understand how far from the camera is the terrain under mouse cursor
+    /**
+     * Connects to object picker attached to terrain entity. Called internally from 3D scene.
+     * This allows camera controller understand how far from the camera is the terrain under mouse cursor
+     */
     void addTerrainPicker( Qt3DRender::QObjectPicker *picker );
     //! Assigns camera that should be controlled by this class. Called internally from 3D scene.
     void setCamera( Qt3DRender::QCamera *camera );
@@ -120,8 +122,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
 
-    //! Allows us to define a set of actions that we wish to use
-    //! (it is a component that can be attached to 3D scene)
+    /**
+     * Allows us to define a set of actions that we wish to use
+     * (it is a component that can be attached to 3D scene)
+     */
     Qt3DInput::QLogicalDevice *mLogicalDevice = nullptr;
 
     Qt3DInput::QAction *mLeftMouseButtonAction = nullptr;

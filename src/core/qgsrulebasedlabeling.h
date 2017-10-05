@@ -248,20 +248,28 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
         // evaluation
 
-        //! add providers
-        //! \note not available in Python bindings
+        /**
+         * add providers
+         * \note not available in Python bindings
+         */
         void createSubProviders( QgsVectorLayer *layer, RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider ) SIP_SKIP;
 
-        //! append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
-        //! \note not available in Python bindings
+        /**
+         * append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
+         * \note not available in Python bindings
+         */
         void subProviderIds( QStringList &list ) const SIP_SKIP;
 
-        //! call prepare() on sub-providers and populate attributeNames
-        //! \note not available in Python bindings
+        /**
+         * call prepare() on sub-providers and populate attributeNames
+         * \note not available in Python bindings
+         */
         void prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
 
-        //! register individual features
-        //! \note not available in Python bindings
+        /**
+         * register individual features
+         * \note not available in Python bindings
+         */
         RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry() ) SIP_SKIP;
 
         /**

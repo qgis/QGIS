@@ -46,10 +46,13 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
 {
     Q_OBJECT
   public:
-    //! Creates the dialog and initializes the content to what is passed in the legend configuration (may be null).
-    //! The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned
-    //! to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
-    //! when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
+
+    /**
+     * Creates the dialog and initializes the content to what is passed in the legend configuration (may be null).
+     * The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned
+     * to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
+     * when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
+     */
     explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol SIP_TRANSFER, QgsMapCanvas *canvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsDataDefinedSizeLegendWidget();
 

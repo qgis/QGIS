@@ -126,12 +126,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 
   protected:
 
-    //! Prepares the layer for drawing the specified shape (QPolygonF version)
-    //! \note not available in Python bindings
+    /**
+     * Prepares the layer for drawing the specified shape (QPolygonF version)
+     * \note not available in Python bindings
+     */
     bool prepareMarkerShape( Shape shape );
 
-    //! Prepares the layer for drawing the specified shape (QPainterPath version)
-    //! \note not available in Python bindings
+    /**
+     * Prepares the layer for drawing the specified shape (QPainterPath version)
+     * \note not available in Python bindings
+     */
     bool prepareMarkerPath( Shape symbol );
 
     /** Creates a polygon representing the specified shape.
@@ -375,8 +379,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
     QBrush mSelBrush;
     //! Cached image of selected marker, if using cached version
     QImage mSelCache;
-    //! True if using cached images of markers for drawing. This is faster, but cannot
-    //! be used when data defined properties are present
+
+    /**
+     * True if using cached images of markers for drawing. This is faster, but cannot
+     * be used when data defined properties are present
+     */
     bool mUsingCache = false;
     //! Maximum width/height of cache image
     static const int MAXIMUM_CACHE_WIDTH = 3000;

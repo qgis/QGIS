@@ -664,8 +664,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     RecordMap getRecord( const QString &sql );
 
-    //! Open SQLite db and show message if cannot be opened
-    //! \returns the same code as sqlite3_open
+    /**
+     * Open SQLite db and show message if cannot be opened
+     * \returns the same code as sqlite3_open
+     */
     static int openDatabase( const QString &path, sqlite3 **db, bool readonly = true );
 
     //! Work out the projection units and set the appropriate local variable
@@ -677,8 +679,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for sql-safe value quoting
     static QString quotedValue( QString value );
 
-    //! Initialize the CRS object by looking up CRS database in path given in db argument,
-    //! using first CRS entry where expression = 'value'
+    /**
+     * Initialize the CRS object by looking up CRS database in path given in db argument,
+     * using first CRS entry where expression = 'value'
+     */
     bool loadFromDatabase( const QString &db, const QString &expression, const QString &value );
 
     static bool loadIds( QHash<int, QString> &wkts );

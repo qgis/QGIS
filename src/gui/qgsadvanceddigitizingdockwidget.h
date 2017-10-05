@@ -203,18 +203,24 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 
-    //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
-    //! \returns false if no solution was found (invalid constraints)
+    /**
+     * apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
+     * \returns false if no solution was found (invalid constraints)
+     */
     bool applyConstraints( QgsMapMouseEvent *e );
 
-    //! align to segment for additional constraint.
-    //! If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
-    //! \since QGIS 3.0
+    /**
+     * align to segment for additional constraint.
+     * If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
+     * \since QGIS 3.0
+     */
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
 
-    //! unlock all constraints
-    //! \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
-    //! \since QGIS 3.0
+    /**
+     * unlock all constraints
+     * \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+     * \since QGIS 3.0
+     */
     void releaseLocks( bool releaseRepeatingLocks = true );
 
     /**
@@ -314,8 +320,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void disable();
 
-    //! Updates canvas item that displays constraints on the ma
-    //! \since QGIS 3.0
+    /**
+     * Updates canvas item that displays constraints on the ma
+     * \since QGIS 3.0
+     */
     void updateCadPaintItem();
 
   signals:
@@ -347,12 +355,16 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );
 
-    //! Called when user has manually altered a constraint value. Any entered expressions will
-    //! be left intact
+    /**
+     * Called when user has manually altered a constraint value. Any entered expressions will
+     * be left intact
+     */
     void constraintTextEdited( const QString &textValue );
 
-    //! Called when a constraint input widget has lost focus. Any entered expressions
-    //! will be converted to their calculated value
+    /**
+     * Called when a constraint input widget has lost focus. Any entered expressions
+     * will be converted to their calculated value
+     */
     void constraintFocusOut();
 
     //! set the relative properties of constraints
@@ -361,8 +373,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Set the repeating lock property of constraints
     void setConstraintRepeatingLock( bool activate );
 
-    //! activate/deactivate tools. It is called when tools are activated manually (from the GUI)
-    //! it will call setCadEnabled to properly update the UI.
+    /**
+     * activate/deactivate tools. It is called when tools are activated manually (from the GUI)
+     * it will call setCadEnabled to properly update the UI.
+     */
     void activateCad( bool enabled );
 
     //! enable/disable construction mode (events are not forwarded to the map tool)
@@ -396,12 +410,16 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! remove previous point in the CAD point list
     void removePreviousPoint();
 
-    //! filters key press
-    //! \note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
+    /**
+     * filters key press
+     * \note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
+     */
     bool filterKeyPress( QKeyEvent *e );
 
-    //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
-    //! \note defined as private in Python bindings
+    /**
+     * event filter for line edits in the dock UI (angle/distance/x/y line edits)
+     * \note defined as private in Python bindings
+     */
     bool eventFilter( QObject *obj, QEvent *event ) override SIP_SKIP;
 
     //! trigger fake mouse move event to update map tool rubber band and/or show new constraints

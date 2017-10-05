@@ -290,8 +290,10 @@ class CORE_EXPORT QgsTask : public QObject
     //! Status of this task and all subtasks
     TaskStatus mOverallStatus = Queued;
 
-    //! This mutex remains locked from initialization until the task finishes,
-    //! it's used as a trigger for waitForFinished.
+    /**
+     * This mutex remains locked from initialization until the task finishes,
+     * it's used as a trigger for waitForFinished.
+     */
     QMutex mNotFinishedMutex;
 
     //! Progress of this (parent) task alone
@@ -443,8 +445,10 @@ class CORE_EXPORT QgsTaskManager : public QObject
     //! Returns true if all dependencies for the specified task are satisfied
     bool dependenciesSatisfied( long taskId ) const;
 
-    //! Returns the set of task IDs on which a task is dependent
-    //! \note not available in Python bindings
+    /**
+     * Returns the set of task IDs on which a task is dependent
+     * \note not available in Python bindings
+     */
     QSet< long > dependencies( long taskId ) const SIP_SKIP;
 
     /** Returns a list of layers on which as task is dependent. The task will automatically
@@ -474,35 +478,49 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
   signals:
 
-    //! Will be emitted when a task reports a progress change
-    //! \param taskId ID of task
-    //! \param progress percent of progress, from 0.0 - 100.0
+    /**
+     * Will be emitted when a task reports a progress change
+     * \param taskId ID of task
+     * \param progress percent of progress, from 0.0 - 100.0
+     */
     void progressChanged( long taskId, double progress );
 
-    //! Will be emitted when only a single task remains to complete
-    //! and that task has reported a progress change
-    //! \param progress percent of progress, from 0.0 - 100.0
+    /**
+     * Will be emitted when only a single task remains to complete
+     * and that task has reported a progress change
+     * \param progress percent of progress, from 0.0 - 100.0
+     */
     void finalTaskProgressChanged( double progress );
 
-    //! Will be emitted when a task reports a status change
-    //! \param taskId ID of task
-    //! \param status new task status
+    /**
+     * Will be emitted when a task reports a status change
+     * \param taskId ID of task
+     * \param status new task status
+     */
     void statusChanged( long taskId, int status );
 
-    //! Emitted when a new task has been added to the manager
-    //! \param taskId ID of task
+    /**
+     * Emitted when a new task has been added to the manager
+     * \param taskId ID of task
+     */
     void taskAdded( long taskId );
 
-    //! Emitted when a task is about to be deleted
-    //! \param taskId ID of task
+    /**
+     * Emitted when a task is about to be deleted
+     * \param taskId ID of task
+     */
     void taskAboutToBeDeleted( long taskId );
 
-    //! Emitted when all tasks are complete
-    //! \see countActiveTasksChanged()
+    /**
+     * Emitted when all tasks are complete
+     * \see countActiveTasksChanged()
+     */
     void allTasksFinished();
 
-    //! Emitted when the number of active tasks changes
-    //! \see countActiveTasks()
+    /**
+     * Emitted when the number of active tasks changes
+     * \see countActiveTasks()
+     */
     void countActiveTasksChanged( int count );
 
   private slots:
@@ -547,13 +565,17 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     bool cleanupAndDeleteTask( QgsTask *task );
 
-    //! Process the queue of outstanding jobs and starts up any
-    //! which are ready to go.
+    /**
+     * Process the queue of outstanding jobs and starts up any
+     * which are ready to go.
+     */
     void processQueue();
 
-    //! Recursively cancel dependent tasks
-    //! \param taskId id of terminated task to cancel any other tasks
-    //! which are dependent on
+    /**
+     * Recursively cancel dependent tasks
+     * \param taskId id of terminated task to cancel any other tasks
+     * which are dependent on
+     */
     void cancelDependentTasks( long taskId );
 
     bool resolveDependencies( long firstTaskId, long currentTaskId, QSet< long > &results ) const;

@@ -79,9 +79,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Returns the associated layer, or nullptr if no layer is associated with the provider.
     QgsMapLayer *layer() const { return mLayer.data(); }
 
-    //! Returns provider ID - useful in case there is more than one label provider within a layer
-    //! (e.g. in case of rule-based labeling - provider ID = rule's key). May be empty string if
-    //! layer ID is sufficient for identification of provider's configuration.
+    /**
+     * Returns provider ID - useful in case there is more than one label provider within a layer
+     * (e.g. in case of rule-based labeling - provider ID = rule's key). May be empty string if
+     * layer ID is sufficient for identification of provider's configuration.
+     */
     QString providerId() const { return mProviderId; }
 
     //! Flags associated with the provider

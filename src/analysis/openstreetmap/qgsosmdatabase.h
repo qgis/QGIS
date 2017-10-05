@@ -83,8 +83,10 @@ class ANALYSIS_EXPORT QgsOSMDatabase
 
     QgsOSMTags tags( bool way, QgsOSMId id ) const;
 
-    //! \note not available in Python bindings
-    //! SIP does not seem to handle this return type - strange
+    /**
+     * \note not available in Python bindings
+     * SIP does not seem to handle this return type - strange
+     */
     QList<QgsOSMTagCountPair> usedTags( bool ways ) const SIP_SKIP;
 
     QgsPolyline wayPoints( QgsOSMId id ) const;

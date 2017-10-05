@@ -308,9 +308,11 @@ class CORE_EXPORT QgsDiagramLayerSettings
     //! Diagram placement flags
     LinePlacementFlags mPlacementFlags = OnLine;
 
-    //! Placement priority, where 0 = low and 10 = high
-    //! \note placement priority is shared with labeling, so diagrams with a high priority may displace labels
-    //! and vice-versa
+    /**
+     * Placement priority, where 0 = low and 10 = high
+     * \note placement priority is shared with labeling, so diagrams with a high priority may displace labels
+     * and vice-versa
+     */
     int mPriority = 5;
 
     //! Z-index of diagrams, where diagrams with a higher z-index are drawn on top of diagrams with a lower z-index

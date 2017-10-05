@@ -248,15 +248,19 @@ class CORE_EXPORT QgsExpression
      */
     void setExpression( const QString &expression );
 
-    //! Return the original, unmodified expression string.
-    //! If there was none supplied because it was constructed by sole
-    //! API calls, dump() will be used to create one instead.
+    /**
+     * Return the original, unmodified expression string.
+     * If there was none supplied because it was constructed by sole
+     * API calls, dump() will be used to create one instead.
+     */
     QString expression() const;
 
-    //! Return an expression string, constructed from the internal
-    //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferable to use
-    //! expression() instead.
+    /**
+     * Return an expression string, constructed from the internal
+     * abstract syntax tree. This does not contain any nice whitespace
+     * formatting or comments. In general it is preferable to use
+     * expression() instead.
+     */
     QString dump() const;
 
     /** Return calculator used for distance and area calculations
@@ -368,8 +372,10 @@ class CORE_EXPORT QgsExpression
      */
     static bool unregisterFunction( const QString &name );
 
-    //! List of functions owned by the expression engine
-    //! \note not available in Python bindings
+    /**
+     * List of functions owned by the expression engine
+     * \note not available in Python bindings
+     */
     static QList<QgsExpressionFunction *> sOwnedFunctions SIP_SKIP;
 
     /** Deletes all registered functions whose ownership have been transferred to the expression engine.

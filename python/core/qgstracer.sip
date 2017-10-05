@@ -74,7 +74,10 @@ Get maximum possible number of features in graph. If the number is exceeded, gra
 
     bool init();
 %Docstring
-if necessary.
+ Build the internal data structures. This may take some time
+ depending on how big the input layers are. It is not necessary
+ to call this method explicitly - it will be called by findShortestPath()
+ if necessary.
  :rtype: bool
 %End
 
@@ -86,6 +89,8 @@ Whether the internal data structures have been initialized
 
     bool hasTopologyProblem() const;
 %Docstring
+ Whether there was an error during graph creation due to noding exception,
+ indicating some input data topology problems
 .. versionadded:: 2.16
  :rtype: bool
 %End
@@ -101,7 +106,9 @@ Whether the internal data structures have been initialized
 
     QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error /Out/ = 0 );
 %Docstring
-:return: array of points - trace of linestrings of other features (empty array one error)
+ Given two points, find the shortest path and return points on the way.
+ The optional "error" argument may receive error code (PathError enum) if it is not null
+ :return: array of points - trace of linestrings of other features (empty array one error)
  :rtype: list of QgsPointXY
 %End
 
@@ -112,9 +119,12 @@ Find out whether the point is snapped to a vertex or edge (i.e. it can be used f
 %End
 
   protected:
+
     virtual void configure();
 %Docstring
-Default implementation does nothing.
+ Allows derived classes to setup the settings just before the tracer is initialized.
+ This allows the configuration to be set in a lazy way only when it is really necessary.
+ Default implementation does nothing.
 %End
 
   protected slots:

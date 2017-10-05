@@ -49,8 +49,11 @@ namespace Qt3DRender
 class DemTerrainTileGeometry : public Qt3DRender::QGeometry
 {
   public:
-    //! Constructs a terrain tile geometry. Resolution is the number of vertices on one side of the tile,
-    //! heightMap is array of float values with one height value for each vertex
+
+    /**
+     * Constructs a terrain tile geometry. Resolution is the number of vertices on one side of the tile,
+     * heightMap is array of float values with one height value for each vertex
+     */
     explicit DemTerrainTileGeometry( int resolution, const QByteArray &heightMap, QNode *parent = nullptr );
     ~DemTerrainTileGeometry() = default;
 

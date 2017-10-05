@@ -64,8 +64,10 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     //! XML containing the state after executing the command
     QDomDocument mAfterState;
 
-    //! Parameters for frame items
-    //! Parent multiframe
+    /**
+     * Parameters for frame items
+     * Parent multiframe
+     */
     QgsComposerMultiFrame *mMultiFrame = nullptr;
     int mFrameNumber;
 

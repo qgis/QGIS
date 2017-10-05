@@ -105,8 +105,8 @@ static GEOSInit geosinit;
 
 
 /** \ingroup core
- * @brief Scoped GEOS pointer
- * @note not available in Python bindings
+ * \brief Scoped GEOS pointer
+ * \note not available in Python bindings
  */
 class GEOSGeomScopedPtr
 {

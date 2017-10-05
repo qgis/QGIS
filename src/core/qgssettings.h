@@ -161,7 +161,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     /** Adds prefix to the current group and starts writing an array of size size.
      * If size is -1 (the default), it is automatically determined based on the indexes of the entries written.
-     * @note This will completely shadow any existing array with the same name in the global settings
+     * \note This will completely shadow any existing array with the same name in the global settings
      */
     void beginWriteArray( const QString &prefix, int size = -1 );
     //! Closes the array that was started using beginReadArray() or beginWriteArray().

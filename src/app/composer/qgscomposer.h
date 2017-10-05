@@ -129,8 +129,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
      */
     bool loadFromTemplate( const QDomDocument &templateDoc, bool clearExisting );
 
-    //! Sets the specified feature as the current atlas feature
-    //! \since QGIS 2.1
+    /**
+     * Sets the specified feature as the current atlas feature
+     * \since QGIS 2.1
+     */
     void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
 
   protected:
@@ -598,8 +600,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Create a duplicate of a menu (for Mac)
     QMenu *mirrorOtherMenu( QMenu *otherMenu );
 
-    //! Toggles the state of the atlas preview and navigation controls
-    //! \since QGIS 2.1
+    /**
+     * Toggles the state of the atlas preview and navigation controls
+     * \since QGIS 2.1
+     */
     void toggleAtlasControls( bool atlasEnabled );
 
     //! Sets the printer page orientation when the page orientation changes

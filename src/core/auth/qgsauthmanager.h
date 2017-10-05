@@ -512,32 +512,46 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Return pointer to mutex
     QMutex *mutex() { return mMutex; }
 
-    //! Error message getter
-    //! @note not available in Python bindings
+    /**
+     * Error message getter
+     * \note not available in Python bindings
+     */
     const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; } SIP_SKIP
 
-    //! Delete master password from wallet
-    //! @note not available in Python bindings
+    /**
+     * Delete master password from wallet
+     * \note not available in Python bindings
+     */
     bool passwordHelperDelete() SIP_SKIP;
 
-    //! Password helper enabled getter
-    //! @note not available in Python bindings
+    /**
+     * Password helper enabled getter
+     * \note not available in Python bindings
+     */
     bool passwordHelperEnabled() const SIP_SKIP;
 
-    //! Password helper enabled setter
-    //! @note not available in Python bindings
+    /**
+     * Password helper enabled setter
+     * \note not available in Python bindings
+     */
     void setPasswordHelperEnabled( const bool enabled ) SIP_SKIP;
 
-    //! Password helper logging enabled getter
-    //! @note not available in Python bindings
+    /**
+     * Password helper logging enabled getter
+     * \note not available in Python bindings
+     */
     bool passwordHelperLoggingEnabled() const SIP_SKIP;
 
-    //! Password helper logging enabled setter
-    //! @note not available in Python bindings
+    /**
+     * Password helper logging enabled setter
+     * \note not available in Python bindings
+     */
     void setPasswordHelperLoggingEnabled( const bool enabled ) SIP_SKIP;
 
-    //! Store the password manager into the wallet
-    //! @note not available in Python bindings
+    /**
+     * Store the password manager into the wallet
+     * \note not available in Python bindings
+     */
     bool passwordHelperSync() SIP_SKIP;
 
     //! The display name of the password helper (platform dependent)
@@ -637,8 +651,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Clear error code and message
     void passwordHelperClearErrors();
 
-    //! Process the error: show it and/or disable the password helper system in case of
-    //! access denied or no backend, reset error flags at the end
+    /**
+     * Process the error: show it and/or disable the password helper system in case of
+     * access denied or no backend, reset error flags at the end
+     */
     void passwordHelperProcessError();
 
     bool createConfigTables();

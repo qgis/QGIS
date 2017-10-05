@@ -328,19 +328,22 @@ Returns the path to the default theme directory.
 
     static QString iconPath( const QString &iconFile );
 %Docstring
-First it tries to use the active theme path, then default theme path
+ Returns path to the desired icon file.
+ First it tries to use the active theme path, then default theme path
  :rtype: str
 %End
 
     static QIcon getThemeIcon( const QString &name );
 %Docstring
-default theme if the active theme does not have the required icon.
+ Helper to get a theme icon. It will fall back to the
+ default theme if the active theme does not have the required icon.
  :rtype: QIcon
 %End
 
     static QPixmap getThemePixmap( const QString &name );
 %Docstring
-default theme if the active theme does not have the required icon.
+ Helper to get a theme icon as a pixmap. It will fall back to the
+ default theme if the active theme does not have the required icon.
  :rtype: QPixmap
 %End
 

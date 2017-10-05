@@ -239,15 +239,19 @@ namespace pal
       //! Returns true if the feature's label has a fixed position
       bool hasFixedPosition() const { return mLF->hasFixedPosition(); }
 
-      //! Returns true if the feature's label should always been shown,
-      //! even when it collides with other labels
+      /**
+       * Returns true if the feature's label should always been shown,
+       * even when it collides with other labels
+       */
       bool alwaysShow() const { return mLF->alwaysShow(); }
 
       //! Returns true if the feature should act as an obstacle to labels
       bool isObstacle() const { return mLF->isObstacle(); }
 
-      //! Returns the feature's obstacle factor, which represents the penalty
-      //! incurred for a label to overlap the feature
+      /**
+       * Returns the feature's obstacle factor, which represents the penalty
+       * incurred for a label to overlap the feature
+       */
       double obstacleFactor() const { return mLF->obstacleFactor(); }
 
       //! Returns the distance between repeating labels for this feature

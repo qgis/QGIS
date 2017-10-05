@@ -477,8 +477,10 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
     const Flags &flags() const { return mFlags; }
 
-    //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-    //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+    /**
+     * Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
+     * To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+     */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
     /**
@@ -493,11 +495,16 @@ class CORE_EXPORT QgsFeatureRequest
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 
-    //! Set a simplification method for geometries that will be fetched
-    //! \since QGIS 2.2
+    /**
+     * Set a simplification method for geometries that will be fetched
+     * \since QGIS 2.2
+     */
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
-    //! Get simplification method for geometries that will be fetched
-    //! \since QGIS 2.2
+
+    /**
+     * Get simplification method for geometries that will be fetched
+     * \since QGIS 2.2
+     */
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**

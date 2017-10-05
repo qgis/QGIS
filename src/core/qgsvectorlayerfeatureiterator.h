@@ -139,8 +139,10 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature &feature ) override;
 
-    //! Overrides default method as we only need to filter features in the edit buffer
-    //! while for others filtering is left to the provider implementation.
+    /**
+     * Overrides default method as we only need to filter features in the edit buffer
+     * while for others filtering is left to the provider implementation.
+     */
     virtual bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
 
     //! Setup the simplification of geometries to fetch using the specified simplify method

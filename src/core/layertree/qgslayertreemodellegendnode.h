@@ -176,8 +176,10 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     virtual void invalidateMapBasedData() override;
 
-    //! Set the icon size
-    //! \since QGIS 2.10
+    /**
+     * Set the icon size
+     * \since QGIS 2.10
+     */
     void setIconSize( QSize sz ) { mIconSize = sz; }
     //! \since QGIS 2.10
     QSize iconSize() const { return mIconSize; }

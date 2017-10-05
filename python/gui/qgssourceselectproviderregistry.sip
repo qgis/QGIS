@@ -52,7 +52,8 @@ Add a ``provider`` implementation. Takes ownership of the object.
 
     bool removeProvider( QgsSourceSelectProvider *provider /Transfer/ );
 %Docstring
-:return: true if the provider was actually removed and deleted
+ Remove ``provider`` implementation from the list (``provider`` object is deleted)
+ :return: true if the provider was actually removed and deleted
  :rtype: bool
 %End
 

@@ -72,8 +72,10 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     QPair< projPJ, projPJ > threadLocalProjData();
 
-    //! Flag to indicate whether the transform is valid (ie has a valid
-    //! source and destination crs)
+    /**
+     * Flag to indicate whether the transform is valid (ie has a valid
+     * source and destination crs)
+     */
     bool mIsValid = false;
 
     /**

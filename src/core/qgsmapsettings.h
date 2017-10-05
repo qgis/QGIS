@@ -60,15 +60,20 @@ class CORE_EXPORT QgsMapSettings
   public:
     QgsMapSettings();
 
-    //! Return geographical coordinates of the rectangle that should be rendered.
-    //! The actual visible extent used for rendering could be slightly different
-    //! since the given extent may be expanded in order to fit the aspect ratio
-    //! of output size. Use visibleExtent() to get the resulting extent.
+    /**
+     * Return geographical coordinates of the rectangle that should be rendered.
+     * The actual visible extent used for rendering could be slightly different
+     * since the given extent may be expanded in order to fit the aspect ratio
+     * of output size. Use visibleExtent() to get the resulting extent.
+     */
     QgsRectangle extent() const;
-    //! Set coordinates of the rectangle which should be rendered.
-    //! The actual visible extent used for rendering could be slightly different
-    //! since the given extent may be expanded in order to fit the aspect ratio
-    //! of output size. Use visibleExtent() to get the resulting extent.
+
+    /**
+     * Set coordinates of the rectangle which should be rendered.
+     * The actual visible extent used for rendering could be slightly different
+     * since the given extent may be expanded in order to fit the aspect ratio
+     * of output size. Use visibleExtent() to get the resulting extent.
+     */
     void setExtent( const QgsRectangle &rect, bool magnified = true );
 
     //! Return the size of the resulting map image
@@ -90,8 +95,10 @@ class CORE_EXPORT QgsMapSettings
      */
     void setRotation( double rotation );
 
-    //! Return DPI used for conversion between real world units (e.g. mm) and pixels
-    //! Default value is 96
+    /**
+     * Return DPI used for conversion between real world units (e.g. mm) and pixels
+     * Default value is 96
+     */
     double outputDpi() const;
     //! Set DPI used for conversion between real world units (e.g. mm) and pixels
     void setOutputDpi( double dpi );
@@ -104,26 +111,41 @@ class CORE_EXPORT QgsMapSettings
      */
     void setMagnificationFactor( double factor );
 
-    //! Return the magnification factor.
-    //! \since QGIS 2.16
-    //! \see setMagnificationFactor()
+    /**
+     * Return the magnification factor.
+     * \since QGIS 2.16
+     * \see setMagnificationFactor()
+     */
     double magnificationFactor() const;
 
-    //! Get list of layer IDs for map rendering
-    //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+    /**
+     * Get list of layer IDs for map rendering
+     * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     */
     QStringList layerIds() const;
-    //! Get list of layers for map rendering
-    //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+
+    /**
+     * Get list of layers for map rendering
+     * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     */
     QList<QgsMapLayer *> layers() const;
-    //! Set list of layers for map rendering. The layers must be registered in QgsProject.
-    //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+
+    /**
+     * Set list of layers for map rendering. The layers must be registered in QgsProject.
+     * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
-    //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
-    //! \since QGIS 2.8
+    /**
+     * Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+     * \since QGIS 2.8
+     */
     QMap<QString, QString> layerStyleOverrides() const;
-    //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
-    //! \since QGIS 2.8
+
+    /**
+     * Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+     * \since QGIS 2.8
+     */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
     /** Get custom rendering flags. Layers might honour these to alter their rendering.
@@ -210,8 +232,11 @@ class CORE_EXPORT QgsMapSettings
     bool hasValidSettings() const;
     //! Return the actual extent derived from requested extent that takes takes output image size into account
     QgsRectangle visibleExtent() const;
-    //! Return the visible area as a polygon (may be rotated)
-    //! \since QGIS 2.8
+
+    /**
+     * Return the visible area as a polygon (may be rotated)
+     * \since QGIS 2.8
+     */
     QPolygonF visiblePolygon() const;
     //! Return the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;

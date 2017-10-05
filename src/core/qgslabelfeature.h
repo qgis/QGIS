@@ -186,19 +186,31 @@ class CORE_EXPORT QgsLabelFeature
      * \see quadOffset
      */
     void setHasFixedQuadrant( bool enabled ) { mHasFixedQuadrant = enabled; }
-    //! Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns true).
-    //! Determines which side of the point to use.
-    //! For X coordinate, values -1, 0, 1 mean left, center, right.
-    //! For Y coordinate, values -1, 0, 1 mean above, center, below.
+
+    /**
+     * Applies to "offset from point" placement strategy and "around point" (in case hasFixedQuadrant() returns true).
+     * Determines which side of the point to use.
+     * For X coordinate, values -1, 0, 1 mean left, center, right.
+     * For Y coordinate, values -1, 0, 1 mean above, center, below.
+     */
     QPointF quadOffset() const { return mQuadOffset; }
-    //! Set which side of the point to use
-    //! \see quadOffset
+
+    /**
+     * Set which side of the point to use
+     * \see quadOffset
+     */
     void setQuadOffset( QPointF quadOffset ) { mQuadOffset = quadOffset; }
-    //! Applies only to "offset from point" placement strategy.
-    //! What offset (in map units) to use from the point
+
+    /**
+     * Applies only to "offset from point" placement strategy.
+     * What offset (in map units) to use from the point
+     */
     QgsPointXY positionOffset() const { return mPositionOffset; }
-    //! Applies only to "offset from point" placement strategy.
-    //! Set what offset (in map units) to use from the point
+
+    /**
+     * Applies only to "offset from point" placement strategy.
+     * Set what offset (in map units) to use from the point
+     */
     void setPositionOffset( const QgsPointXY &offset ) { mPositionOffset = offset; }
 
     /** Returns the offset type, which determines how offsets and distance to label
@@ -215,11 +227,16 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setOffsetType( QgsPalLayerSettings::OffsetType type ) { mOffsetType = type; }
 
-    //! Applies to "around point" placement strategy or linestring features.
-    //! Distance of the label from the feature (in map units)
+    /**
+     * Applies to "around point" placement strategy or linestring features.
+     * Distance of the label from the feature (in map units)
+     */
     double distLabel() const { return mDistLabel; }
-    //! Applies to "around point" placement strategy or linestring features.
-    //! Set distance of the label from the feature (in map units)
+
+    /**
+     * Applies to "around point" placement strategy or linestring features.
+     * Set distance of the label from the feature (in map units)
+     */
     void setDistLabel( double dist ) { mDistLabel = dist; }
 
     /** Returns the priority ordered list of predefined positions for label candidates. This property
@@ -234,11 +251,16 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setPredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
 
-    //! Applies only to linestring features - after what distance (in map units)
-    //! the labels should be repeated (0 = no repetitions)
+    /**
+     * Applies only to linestring features - after what distance (in map units)
+     * the labels should be repeated (0 = no repetitions)
+     */
     double repeatDistance() const { return mRepeatDistance; }
-    //! Applies only to linestring features - set after what distance (in map units)
-    //! the labels should be repeated (0 = no repetitions)
+
+    /**
+     * Applies only to linestring features - set after what distance (in map units)
+     * the labels should be repeated (0 = no repetitions)
+     */
     void setRepeatDistance( double dist ) { mRepeatDistance = dist; }
 
     //! Whether label should be always shown (sets very high label priority)

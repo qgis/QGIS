@@ -69,15 +69,19 @@ class CORE_EXPORT QgsSQLStatement
     //! Returns root node of the statement. Root node is null is parsing has failed
     const QgsSQLStatement::Node *rootNode() const;
 
-    //! Return the original, unmodified statement string.
-    //! If there was none supplied because it was constructed by sole
-    //! API calls, dump() will be used to create one instead.
+    /**
+     * Return the original, unmodified statement string.
+     * If there was none supplied because it was constructed by sole
+     * API calls, dump() will be used to create one instead.
+     */
     QString statement() const;
 
-    //! Return  statement string, constructed from the internal
-    //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferable to use
-    //! statement() instead.
+    /**
+     * Return  statement string, constructed from the internal
+     * abstract syntax tree. This does not contain any nice whitespace
+     * formatting or comments. In general it is preferable to use
+     * statement() instead.
+     */
     QString dump() const;
 
     /** Returns a quoted column reference (in double quotes)

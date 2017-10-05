@@ -177,8 +177,10 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;
 
-    //! Set the active layer (layer gets selected in the legend)
-    //! returns true if the layer exists, false otherwise
+    /**
+     * Set the active layer (layer gets selected in the legend)
+     * returns true if the layer exists, false otherwise
+     */
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 
     //! Add an icon to the plugins toolbar
@@ -264,8 +266,10 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Add toolbar with specified name
     virtual QToolBar *addToolBar( const QString &name ) = 0 SIP_FACTORY;
 
-    //! Add a toolbar
-    //! \since QGIS 2.3
+    /**
+     * Add a toolbar
+     * \since QGIS 2.3
+     */
     virtual void addToolBar( QToolBar *toolbar SIP_TRANSFER, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
 
     //! Return a pointer to the map canvas

@@ -168,18 +168,24 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! Allow moving back and forth selected vertex within a feature
     void highlightAdjacentVertex( double offset );
 
-    //! Initialize rectangle that is being dragged to select nodes.
-    //! Argument point0 is in screen coordinates.
+    /**
+     * Initialize rectangle that is being dragged to select nodes.
+     * Argument point0 is in screen coordinates.
+     */
     void startSelectionRect( const QPoint &point0 );
 
-    //! Update bottom-right corner of the existing selection rectangle.
-    //! Argument point1 is in screen coordinates.
+    /**
+     * Update bottom-right corner of the existing selection rectangle.
+     * Argument point1 is in screen coordinates.
+     */
     void updateSelectionRect( const QPoint &point1 );
 
     void stopSelectionRect();
 
-    //! Using a given edge match and original map point, find out
-    //! center of the edge and whether we are close enough to the center
+    /**
+     * Using a given edge match and original map point, find out
+     * center of the edge and whether we are close enough to the center
+     */
     bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr = nullptr );
 
     void cleanupNodeEditor();
@@ -196,8 +202,11 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     //! marker of a snap match (if any) when dragging a vertex
     QgsVertexMarker *mSnapMarker = nullptr;
-    //! marker in the middle of an edge while pointer is close to a vertex and not dragging anything
-    //! (highlighting point that can be clicked to add a new vertex)
+
+    /**
+     * marker in the middle of an edge while pointer is close to a vertex and not dragging anything
+     * (highlighting point that can be clicked to add a new vertex)
+     */
     QgsVertexMarker *mEdgeCenterMarker = nullptr;
     //! rubber band for highlight of a whole feature on mouse over and not dragging anything
     QgsRubberBand *mFeatureBand = nullptr;
@@ -222,11 +231,16 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
       AddingEndpoint,
     };
 
-    //! markers for points used only for moving standalone point geoetry
-    //! (there are no adjacent vertices so it is not used in mDragBands)
+    /**
+     * markers for points used only for moving standalone point geoetry
+     * (there are no adjacent vertices so it is not used in mDragBands)
+     */
     QList<QgsVertexMarker *> mDragPointMarkers;
-    //! companion array to mDragPointMarkers: for each marker it keeps offset
-    //! (in map units) from the position of the main vertex
+
+    /**
+     * companion array to mDragPointMarkers: for each marker it keeps offset
+     * (in map units) from the position of the main vertex
+     */
     QList<QgsVector> mDragPointMarkersOffset;
 
     //! structure to keep information about a rubber band user for dragging of a straight line segment
@@ -260,13 +274,19 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     DraggingVertexType mDraggingVertexType = NotDragging;
     //! whether we are currently dragging an edge
     bool mDraggingEdge = false;
-    //! list of Vertex instances of further vertices that are dragged together with
-    //! the main vertex (mDraggingVertex) - either topologically connected points
-    //! (if topo editing is allowed) or the ones coming from the highlight
+
+    /**
+     * list of Vertex instances of further vertices that are dragged together with
+     * the main vertex (mDraggingVertex) - either topologically connected points
+     * (if topo editing is allowed) or the ones coming from the highlight
+     */
     QList<Vertex> mDraggingExtraVertices;
-    //! companion array to mDraggingExtraVertices: for each vertex in mDraggingExtraVertices
-    //! this is offset (in units of the layer) of the vertex from the position of the main
-    //! vertex (mDraggingVertex)
+
+    /**
+     * companion array to mDraggingExtraVertices: for each vertex in mDraggingExtraVertices
+     * this is offset (in units of the layer) of the vertex from the position of the main
+     * vertex (mDraggingVertex)
+     */
     QList<QgsVector> mDraggingExtraVerticesOffset;
 
     // members for selection handling
@@ -291,16 +311,23 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     std::unique_ptr<Vertex> mMouseAtEndpoint;
     //! QgsPointXY or None (can't get center from QgsVertexMarker)
     std::unique_ptr<QgsPointXY> mEndpointMarkerCenter;
-    //! marker shown near the end of a curve to suggest that the user
-    //! may add a new vertex at the end of the curve
+
+    /**
+     * marker shown near the end of a curve to suggest that the user
+     * may add a new vertex at the end of the curve
+     */
     QgsVertexMarker *mEndpointMarker = nullptr;
 
-    //! keeps information about previously used snap match
-    //! to stick with the same highlighted feature next time if there are more options
+    /**
+     * keeps information about previously used snap match
+     * to stick with the same highlighted feature next time if there are more options
+     */
     std::unique_ptr<QgsPointLocator::Match> mLastSnap;
 
-    //! When double-clicking to add a new vertex, this member keeps the snap
-    //! match from "press" event used to be used in following "release" event
+    /**
+     * When double-clicking to add a new vertex, this member keeps the snap
+     * match from "press" event used to be used in following "release" event
+     */
     std::unique_ptr<QgsPointLocator::Match> mNewVertexFromDoubleClick;
 
     //! Geometry cache for fast access to geometries

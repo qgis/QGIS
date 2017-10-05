@@ -79,8 +79,11 @@ class SERVER_EXPORT QgsServer
     QgsServerInterfaceImpl SIP_PYALTERNATIVETYPE( QgsServerInterface ) *serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! Initialize Python
-    //! Note: not in Python bindings
+
+    /**
+     * Initialize Python
+     * Note: not in Python bindings
+     */
     void initPython();
 #endif
 
