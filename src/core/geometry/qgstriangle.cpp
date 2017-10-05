@@ -161,10 +161,7 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   QgsLineString *line = new QgsLineString();
   line->fromWkbPoints( ringType, wkbPtr );
-  if ( !mExteriorRing )
-  {
-    mExteriorRing.reset( line );
-  }
+  mExteriorRing.reset( line );
 
   return true;
 }
@@ -257,7 +254,7 @@ bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPoint &vertex )
   Q_UNUSED( vertex );
   return false;
 }
-#include <iostream>
+
 bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
 {
   if ( !mExteriorRing || vId.part != 0 || vId.ring != 0 || vId.vertex < 0 || vId.vertex > 4 )

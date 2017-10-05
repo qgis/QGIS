@@ -775,6 +775,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
     break;
     case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Triangle:
     {
       QPolygonF pts;
       QList<QPolygonF> holes;

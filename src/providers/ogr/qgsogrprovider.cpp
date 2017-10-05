@@ -765,6 +765,17 @@ QStringList QgsOgrProvider::subLayers() const
         fCount[wkbUnknown] = 0;
       }
 
+      // List TIN and PolyhedralSurface as MultiPolygon
+      if ( fCount.contains( wkbTIN ) )
+      {
+        fCount[wkbMultiPolygon] = fCount.value( wkbMultiPolygon ) + fCount[wkbTIN];
+        fCount.remove( wkbTIN );
+      }
+      if ( fCount.contains( wkbPolyhedralSurface ) )
+      {
+        fCount[wkbMultiPolygon] = fCount.value( wkbMultiPolygon ) + fCount[wkbPolyhedralSurface];
+        fCount.remove( wkbPolyhedralSurface );
+      }
       // When there are CurvePolygons, promote Polygons
       if ( fCount.contains( wkbPolygon ) && fCount.contains( wkbCurvePolygon ) )
       {
@@ -1163,6 +1174,14 @@ QgsWkbTypes::Type QgsOgrProvider::wkbType() const
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) && ( wkb == QgsWkbTypes::LineString || wkb == QgsWkbTypes::Polygon ) )
   {
     wkb = QgsWkbTypes::multiType( wkb );
+  }
+  if ( wkb % 1000 == 15 ) // is PolyhedralSurface, PolyhedralSurfaceZ, PolyhedralSurfaceM or PolyhedralSurfaceZM => map to MultiPolygon
+  {
+    wkb = static_cast<QgsWkbTypes::Type>( wkb - 9 );
+  }
+  else if ( wkb % 1000 == 16 ) // is TIN, TINZ, TINM or TINZM => map to MultiPolygon
+  {
+    wkb = static_cast<QgsWkbTypes::Type>( wkb - 10 );
   }
   return wkb;
 }
