@@ -1058,7 +1058,7 @@ namespace QgsWfs
         fcString += " xmlns:qgs=\"" + QGS_NAMESPACE + "\"";
         fcString += QLatin1String( " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" );
         fcString += " xsi:schemaLocation=\"" + WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd " + QGS_NAMESPACE + " " + hrefString.replace( QLatin1String( "&" ), QLatin1String( "&amp;" ) ) + "\"";
-        fcString += QLatin1String( ">" );
+        fcString += QLatin1String( ">\n" );
 
         response.write( fcString.toUtf8() );
         response.flush();
