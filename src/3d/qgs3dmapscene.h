@@ -77,11 +77,11 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
   private:
     const Qgs3DMapSettings &mMap;
     //! Provides a way to have a synchronous function executed each frame
-    Qt3DLogic::QFrameAction *mFrameAction;
-    QgsCameraController *mCameraController;
-    QgsTerrainEntity *mTerrain;
+    Qt3DLogic::QFrameAction *mFrameAction = nullptr;
+    QgsCameraController *mCameraController = nullptr;
+    QgsTerrainEntity *mTerrain = nullptr;
     //! Forward renderer provided by 3D window
-    Qt3DExtras::QForwardRenderer *mForwardRenderer;
+    Qt3DExtras::QForwardRenderer *mForwardRenderer = nullptr;
     QList<QgsChunkedEntity *> mChunkEntities;
     //! Keeps track of entities that belong to a particular layer
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;

@@ -3033,7 +3033,7 @@ static QVariant fncColorRgba( const QVariantList &values, const QgsExpressionCon
 QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGradientColorRamp expRamp;
-  const QgsColorRamp *ramp;
+  const QgsColorRamp *ramp = nullptr;
   if ( values.at( 0 ).canConvert<QgsGradientColorRamp>() )
   {
     expRamp = QgsExpressionUtils::getRamp( values.at( 0 ), parent );

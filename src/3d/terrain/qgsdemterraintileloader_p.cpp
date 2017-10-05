@@ -76,7 +76,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
 
   // create transform
 
-  Qt3DCore::QTransform *transform;
+  Qt3DCore::QTransform *transform = nullptr;
   transform = new Qt3DCore::QTransform();
   entity->addComponent( transform );
 

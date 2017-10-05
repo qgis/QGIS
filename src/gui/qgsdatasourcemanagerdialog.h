@@ -118,7 +118,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
   private:
     void addProviderDialog( QgsAbstractDataSourceWidget *dlg, const QString &providerKey, const QString &providerName, const QIcon &icon, const QString &toolTip = QString() );
     void makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey );
-    Ui::QgsDataSourceManagerDialog *ui;
+    Ui::QgsDataSourceManagerDialog *ui = nullptr;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     int mPreviousRow;
     QStringList mPageNames;

@@ -98,10 +98,10 @@ class QgsDemHeightMapGenerator : public QObject
 
   private:
     //! raster used to build terrain
-    QgsRasterLayer *mDtm;
+    QgsRasterLayer *mDtm = nullptr;
 
     //! cloned provider to be used in worker thread
-    QgsRasterDataProvider *mClonedProvider;
+    QgsRasterDataProvider *mClonedProvider = nullptr;
 
     QgsTilingScheme mTilingScheme;
 

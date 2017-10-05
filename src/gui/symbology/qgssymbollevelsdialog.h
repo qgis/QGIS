@@ -66,7 +66,7 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
     //! maximal number of layers from all symbols
     int mMaxLayers;
 
-    QgsFeatureRenderer *mRenderer;
+    QgsFeatureRenderer *mRenderer = nullptr;
     QgsLegendSymbolList mList;
 
     //! whether symbol layers always should be used (default false)

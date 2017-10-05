@@ -219,7 +219,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     }
     else
     {
-      QgsMapLayer *srcLayer;
+      QgsMapLayer *srcLayer = nullptr;
       bool owner;
       bool isVector = false;
       QString error;
@@ -362,7 +362,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
     {
       QString baseUri = pieces.at( 1 );
       QString layerName = pieces.at( 2 );
-      sqlite3 *handle;
+      sqlite3 *handle = nullptr;
       int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
       if ( status != SQLITE_OK )
       {

@@ -74,7 +74,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity 
   texture->addTextureImage( textureImage );
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
-  Qt3DExtras::QTextureMaterial *material;
+  Qt3DExtras::QTextureMaterial *material = nullptr;
 #if QT_VERSION >= 0x050900
   material = new Qt3DExtras::QTextureMaterial;
   material->setTexture( texture );

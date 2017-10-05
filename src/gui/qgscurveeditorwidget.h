@@ -273,7 +273,7 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter: public QObject
 
   private:
 
-    QwtPlot *mPlot;
+    QwtPlot *mPlot = nullptr;
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond

@@ -47,7 +47,7 @@ class QgsChunkBoundsEntity : public Qt3DCore::QEntity
     void setBoxes( const QList<QgsAABB> &bboxes );
 
   private:
-    AABBMesh *mAabbMesh;
+    AABBMesh *mAabbMesh = nullptr;
 };
 
 /// @endcond

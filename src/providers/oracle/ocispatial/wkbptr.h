@@ -23,10 +23,10 @@
 union wkbPtr
 {
   void *vPtr = nullptr;
-  double *dPtr;
-  int *iPtr;
+  double *dPtr = nullptr;
+  int *iPtr = nullptr;
   unsigned char *ucPtr;
-  char *cPtr;
+  char *cPtr = nullptr;
 };
 
 const int SDO_ARRAY_SIZE = 1024;

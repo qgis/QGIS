@@ -100,7 +100,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
   protected:
     //! root node of the quadtree hierarchy
-    QgsChunkNode *mRootNode;
+    QgsChunkNode *mRootNode = nullptr;
     //! A chunk has been loaded recently? let's display it!
     bool mNeedsUpdate;
     //! max. allowed screen space error
@@ -108,11 +108,11 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! maximum allowed depth of quad tree
     int mMaxLevel;
     //! factory that creates loaders for individual chunk nodes
-    QgsChunkLoaderFactory *mChunkLoaderFactory;
+    QgsChunkLoaderFactory *mChunkLoaderFactory = nullptr;
     //! queue of chunks to be loaded
-    QgsChunkList *mChunkLoaderQueue;
+    QgsChunkList *mChunkLoaderQueue = nullptr;
     //! queue of chunk to be eventually replaced
-    QgsChunkList *mReplacementQueue;
+    QgsChunkList *mReplacementQueue = nullptr;
     //! list of nodes that are being currently used for rendering
     QList<QgsChunkNode *> mActiveNodes;
     //! number of nodes omitted during frustum culling - for the curious ones

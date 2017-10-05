@@ -46,7 +46,7 @@ struct Vertex
     return !operator==( other );
   }
 
-  QgsVectorLayer *layer;
+  QgsVectorLayer *layer = nullptr;
   QgsFeatureId fid;
   int vertexId;
 };

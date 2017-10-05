@@ -198,7 +198,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QMap< QString, QToolButton * > mItemGroupToolButtons;
     QMap< QString, QMenu * > mItemGroupSubmenus;
 
-    QgsLayoutAppMenuProvider *mMenuProvider;
+    QgsLayoutAppMenuProvider *mMenuProvider = nullptr;
 
     QgsDockWidget *mItemDock = nullptr;
     QgsPanelWidgetStack *mItemPropertiesStack = nullptr;

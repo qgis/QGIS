@@ -43,8 +43,8 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void onMainCanvasColorChanged();
 
   private:
-    Qgs3DMapCanvas *mCanvas;
-    QgsMapCanvas *mMainCanvas;
+    Qgs3DMapCanvas *mCanvas = nullptr;
+    QgsMapCanvas *mMainCanvas = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

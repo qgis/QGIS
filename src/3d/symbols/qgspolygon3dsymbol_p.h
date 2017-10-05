@@ -61,7 +61,7 @@ class QgsPolygon3DSymbolEntityNode : public Qt3DCore::QEntity
   private:
     Qt3DRender::QGeometryRenderer *renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request );
 
-    QgsTessellatedPolygonGeometry *mGeometry;
+    QgsTessellatedPolygonGeometry *mGeometry = nullptr;
 };
 
 /// @endcond

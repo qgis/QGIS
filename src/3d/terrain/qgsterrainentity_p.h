@@ -79,9 +79,9 @@ class QgsTerrainEntity : public QgsChunkedEntity
 
     const Qgs3DMapSettings &mMap;
     //! picker of terrain to know height of terrain when dragging
-    Qt3DRender::QObjectPicker *mTerrainPicker;
-    QgsTerrainTextureGenerator *mTextureGenerator;
-    QgsCoordinateTransform *mTerrainToMapTransform;
+    Qt3DRender::QObjectPicker *mTerrainPicker = nullptr;
+    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
+    QgsCoordinateTransform *mTerrainToMapTransform = nullptr;
 
     std::unique_ptr<TerrainMapUpdateJobFactory> mUpdateJobFactory;
 
@@ -104,7 +104,7 @@ class TerrainMapUpdateJob : public QgsChunkQueueJob
     void onTileReady( int jobId, const QImage &image );
 
   private:
-    QgsTerrainTextureGenerator *mTextureGenerator;
+    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
     int mJobId;
 };
 

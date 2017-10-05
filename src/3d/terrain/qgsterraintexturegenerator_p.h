@@ -80,7 +80,7 @@ class QgsTerrainTextureGenerator : public QObject
     struct JobData
     {
       int jobId;
-      QgsMapRendererSequentialJob *job;
+      QgsMapRendererSequentialJob *job = nullptr;
       QgsRectangle extent;
       QString debugText;
     };

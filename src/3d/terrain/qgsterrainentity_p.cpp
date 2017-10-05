@@ -45,7 +45,7 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
     }
 
   private:
-    QgsTerrainTextureGenerator *mTextureGenerator;
+    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
 };
 
 

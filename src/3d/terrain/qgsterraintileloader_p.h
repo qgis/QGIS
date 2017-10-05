@@ -59,7 +59,7 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     void onImageReady( int jobId, const QImage &image );
 
   private:
-    QgsTerrainEntity *mTerrain;
+    QgsTerrainEntity *mTerrain = nullptr;
     QgsRectangle mExtentMapCrs;
     QString mTileDebugText;
     int mTextureJobId;

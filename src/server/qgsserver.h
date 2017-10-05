@@ -129,7 +129,7 @@ class SERVER_EXPORT QgsServer
     static QgsServerSettings sSettings;
 
     //! cache
-    QgsConfigCache *mConfigCache;
+    QgsConfigCache *mConfigCache = nullptr;
 };
 #endif // QGSSERVER_H
 

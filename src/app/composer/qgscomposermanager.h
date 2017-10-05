@@ -52,7 +52,7 @@ class QgsLayoutManagerModel : public QAbstractListModel
     void compositionRemoved( const QString &name );
     void compositionRenamed( QgsComposition *composition, const QString &newName );
   private:
-    QgsLayoutManager *mLayoutManager;
+    QgsLayoutManager *mLayoutManager = nullptr;
 };
 
 /** A dialog that shows the existing composer instances. Lets the user add new

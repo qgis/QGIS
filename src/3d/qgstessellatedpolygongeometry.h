@@ -46,9 +46,9 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
   private:
     QList<QgsPolygonV2 *> mPolygons;
 
-    Qt3DRender::QAttribute *mPositionAttribute;
-    Qt3DRender::QAttribute *mNormalAttribute;
-    Qt3DRender::QBuffer *mVertexBuffer;
+    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
+    Qt3DRender::QAttribute *mNormalAttribute = nullptr;
+    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
 
     bool mWithNormals;
 };

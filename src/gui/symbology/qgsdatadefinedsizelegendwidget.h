@@ -69,12 +69,12 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
     std::unique_ptr<QgsMarkerSymbol> mSourceSymbol;   //!< Source symbol (without data-defined size set)
     bool mOverrideSymbol = false;  //!< If true, symbol should not be editable because it will be overridden
     QgsProperty mSizeProperty;    //!< Definition of data-defined size of symbol (should have a size scale transformer associated)
-    QgsLayerTreeModel *mPreviewModel;
-    QgsLayerTree *mPreviewTree;
-    QgsLayerTreeLayer *mPreviewLayerNode;
-    QgsVectorLayer *mPreviewLayer;
+    QgsLayerTreeModel *mPreviewModel = nullptr;
+    QgsLayerTree *mPreviewTree = nullptr;
+    QgsLayerTreeLayer *mPreviewLayerNode = nullptr;
+    QgsVectorLayer *mPreviewLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-    QStandardItemModel *mSizeClassesModel;
+    QStandardItemModel *mSizeClassesModel = nullptr;
 };
 
 #ifndef SIP_RUN

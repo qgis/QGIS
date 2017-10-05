@@ -137,7 +137,7 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
      * to automatically load the resulting sink/layer after completing processing.
      * The default behavior is not to load the result into any project (nullptr).
      */
-    QgsProject *destinationProject;
+    QgsProject *destinationProject = nullptr;
 
     /**
      * Name to use for sink if it's to be loaded into a destination project.

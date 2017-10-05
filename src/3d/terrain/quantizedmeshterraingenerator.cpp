@@ -59,7 +59,7 @@ class QuantizedMeshTerrainChunkLoader : public TerrainChunkLoader
 
       // create transform
 
-      Qt3DCore::QTransform *transform;
+      Qt3DCore::QTransform *transform = nullptr;
       transform = new Qt3DCore::QTransform();
       entity->addComponent( transform );
 
@@ -83,7 +83,7 @@ class QuantizedMeshTerrainChunkLoader : public TerrainChunkLoader
     }
 
   protected:
-    QuantizedMeshTile *qmt;
+    QuantizedMeshTile *qmt = nullptr;
     QgsMapSettings mapSettings;
     int tx, ty, tz;
     QgsRectangle tileRect;

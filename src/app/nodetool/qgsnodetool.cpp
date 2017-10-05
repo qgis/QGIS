@@ -152,7 +152,7 @@ class OneFeatureFilter : public QgsPointLocator::MatchFilter
     }
 
   private:
-    const QgsVectorLayer *layer;
+    const QgsVectorLayer *layer = nullptr;
     QgsFeatureId fid;
 };
 
@@ -162,7 +162,7 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 {
   public:
     QList<QgsPointLocator::Match> matches;
-    QgsNodeTool *nodetool;
+    QgsNodeTool *nodetool = nullptr;
 
     MatchCollectingFilter( QgsNodeTool *nodetool )
       : nodetool( nodetool ) {}

@@ -205,7 +205,7 @@ void QgsMetadataWidget::addContact() const
 {
   int row = tabContacts->rowCount();
   tabContacts->setRowCount( row + 1 );
-  QTableWidgetItem *pCell;
+  QTableWidgetItem *pCell = nullptr;
 
   // Name
   pCell = new QTableWidgetItem( QString( tr( "unnamed %1" ) ).arg( row + 1 ) );

@@ -71,7 +71,7 @@ class QgsChunkQueueJob : public QObject
     void finished();
 
   protected:
-    QgsChunkNode *mNode;
+    QgsChunkNode *mNode = nullptr;
 };
 
 /** \ingroup 3d

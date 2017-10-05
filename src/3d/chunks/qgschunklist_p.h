@@ -93,8 +93,8 @@ class QgsChunkList
     void insertLast( QgsChunkListEntry *entry );
 
   private:
-    QgsChunkListEntry *mHead;
-    QgsChunkListEntry *mTail;
+    QgsChunkListEntry *mHead = nullptr;
+    QgsChunkListEntry *mTail = nullptr;
     int mCount;
 };
 

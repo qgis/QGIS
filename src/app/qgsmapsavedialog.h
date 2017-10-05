@@ -92,7 +92,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     void updateOutputSize();
 
     DialogType mDialogType;
-    QgsMapCanvas *mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QList< QgsMapDecoration * > mDecorations;
     QList< QgsAnnotation *> mAnnotations;
 
