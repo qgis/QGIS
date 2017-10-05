@@ -796,6 +796,22 @@ void QgsExpressionContextUtils::setProjectVariables( QgsProject *project, const 
   project->setCustomVariables( variables );
 }
 
+void QgsExpressionContextUtils::deleteProjectVariable( QgsProject *project, const QString &name )
+{
+  if ( !project )
+  {
+    return;
+  }
+
+  QVariantMap vars = project->customVariables();
+  if ( !vars.contains( name ) )
+  {
+    return;
+  }
+  vars.remove( name );
+  project->setCustomVariables( vars );
+}
+
 QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLayer *layer )
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) );

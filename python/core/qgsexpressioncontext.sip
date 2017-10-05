@@ -754,6 +754,7 @@ class QgsExpressionContextUtils
  \param name variable name
  \param value variable value
 .. seealso:: setProjectVariables()
+.. seealso:: deleteProjectVariable()
 .. seealso:: projectScope()
 %End
 
@@ -764,6 +765,17 @@ class QgsExpressionContextUtils
  \param project Project to apply changes to
  \param variables new set of project variables
 .. seealso:: setProjectVariable()
+.. seealso:: deleteProjectVariable()
+.. seealso:: projectScope()
+%End
+
+    static void deleteProjectVariable( QgsProject *project, const QString &name );
+%Docstring
+ Delete a project context variable.
+ \param project Project to apply changes to
+ \param name variable name
+.. seealso:: setProjectVariable()
+.. seealso:: setProjectVariables()
 .. seealso:: projectScope()
 %End
 

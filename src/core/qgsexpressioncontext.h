@@ -760,6 +760,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param name variable name
      * \param value variable value
      * \see setProjectVariables()
+     * \see deleteProjectVariable()
      * \see projectScope()
      */
     static void setProjectVariable( QgsProject *project, const QString &name, const QVariant &value );
@@ -770,9 +771,20 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param project Project to apply changes to
      * \param variables new set of project variables
      * \see setProjectVariable()
+     * \see deleteProjectVariable()
      * \see projectScope()
      */
     static void setProjectVariables( QgsProject *project, const QVariantMap &variables );
+
+    /**
+     * Delete a project context variable.
+     * \param project Project to apply changes to
+     * \param name variable name
+     * \see setProjectVariable()
+     * \see setProjectVariables()
+     * \see projectScope()
+     */
+    static void deleteProjectVariable( QgsProject *project, const QString &name );
 
     /**
      * Creates a new scope which contains variables and functions relating to a QgsMapLayer.

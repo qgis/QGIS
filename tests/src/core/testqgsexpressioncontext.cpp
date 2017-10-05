@@ -599,6 +599,15 @@ void TestQgsExpressionContext::projectScope()
   QCOMPARE( projectScope->variable( "newvar1" ).toString(), QString( "val1" ) );
   QCOMPARE( projectScope->variable( "newvar2" ).toString(), QString( "val2" ) );
   delete projectScope;
+
+  //test deleteProjectVariable
+  QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "key" ), "value" );
+  projectScope = QgsExpressionContextUtils::projectScope( project );
+  QVERIFY( projectScope->hasVariable( "key" ) );
+  QgsExpressionContextUtils::deleteProjectVariable( project, QStringLiteral( "key" ) );
+  projectScope = QgsExpressionContextUtils::projectScope( project );
+  QVERIFY( !projectScope->hasVariable( "key" ) );
+  delete projectScope;
   projectScope = 0;
 
   //test project scope functions
