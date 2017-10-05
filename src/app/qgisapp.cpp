@@ -8003,6 +8003,32 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   if ( vlayer == activeLayer() )
     mSaveRollbackInProgress = true;
 
+  // wait for end of rendering to avoid lock in case of
+  // splilte and gpkg fix #15498
+  // Wait only if the current layer is in the rendering pool
+  if ( mMapCanvas->mapSettings().layers().contains( vlayer->id() ) )
+  {
+    if ( vlayer->dataProvider()->storageType().count( "SQLite" ) )
+    {
+      // notify wait the rendering end
+      if ( mMapCanvas->isDrawing() )
+      {
+        // notify
+        QgsMessageBarItem *item = new QgsMessageBarItem( tr( "Save edit paused" ),
+            tr( "Waiting for end of rendering" ),
+            QgsMessageBar::WARNING, 0 );
+        messageBar()->pushItem( item );
+        // wait
+        while ( mMapCanvas->isDrawing() )
+        {
+          QgsApplication::instance()->processEvents( QEventLoop::AllEvents, 100 );
+        }
+        // remove wait message
+        messageBar()->popWidget( item );
+      }
+    }
+  }
+
   if ( !vlayer->commitChanges() )
   {
     mSaveRollbackInProgress = false;
