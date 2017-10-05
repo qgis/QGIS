@@ -701,12 +701,6 @@ class TestQgsProject(unittest.TestCase):
         noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
         self.assertIsNone(noTg)
 
-        # Existing transaction group.
-        vl = QgsVectorLayer(self.dbconn + ' port=5432 sslmode=disable', 'test', 'postgres')
-        QgsProject.instance().addMapLayer(vl)
-        tg = QgsProject.instance().transactionGroup("postgres", self.dbconn + " port=5432 sslmode=disable")
-        self.assertIsNotNone(tg)
-
     def test_zip_new_project(self):
         tmpDir = QTemporaryDir()
         tmpFile = "{}/project.qgz".format(tmpDir.path())
