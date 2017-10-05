@@ -26,6 +26,10 @@
 /** \ingroup gui
  * Widget for entering authentication credentials both in the form username/password
  * and by using QGIS Authentication Database and its authentication configurations.
+ *
+ * The widget also offers the functionality to convert username/password credentials
+ * to an authentication configuration.
+ *
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSettingsWidget
@@ -35,7 +39,13 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
 
   public:
 
-    //! Type of certificate usage
+    /**
+     * \brief The WarningType enum is used to determine the text
+     * of the message shown to the user about the destination of
+     * the stored clear-text credentials from the "Basic" tab:
+     * depending on the provider or the settings, the credentials
+     * are stored in the user settings and/or in the project file.
+     */
     enum WarningType
     {
       ProjectFile,
@@ -121,7 +131,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
 
     /**
      * \brief warning text message based upon where credentials are stored
-     * \param enum of warning type
+     * \param warning enum of warning type
      * \return pre-formatted warning text
      */
     static const QString formattedWarning( WarningType warning );
