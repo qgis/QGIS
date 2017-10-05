@@ -69,6 +69,7 @@ void TestQgsMapToolEdit::checkDefaultZValue()
   QgsProject::instance()->removeEntry( QStringLiteral( "Defaults" ), QStringLiteral( "/ZValue" ) );
 
   QgsMapToolEdit *tool = new QgsMapToolEdit( mCanvas );
+
   QCOMPARE( tool->defaultZValue(), Qgis::DEFAULT_Z_COORDINATE );
 
   double z_value_for_test = Qgis::DEFAULT_Z_COORDINATE + 1;
