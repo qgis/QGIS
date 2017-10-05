@@ -704,7 +704,7 @@ class TestQgsProject(unittest.TestCase):
         # Existing transaction group.
         vl = QgsVectorLayer(cls.dbconn + ' port=5432 sslmode=disable', 'test', 'postgres')
         QgsProject.instance().addMapLayer(vl)
-        tg = QgsProject.instance().transactionGroup("postgres", cls.dbconn + " port=5432 sslmode=disable")
+        tg = QgsProject.instance().transactionGroup("postgres", self.dbconn + " port=5432 sslmode=disable")
         self.assertIsNotNone(noTg)
 
     def test_zip_new_project(self):
