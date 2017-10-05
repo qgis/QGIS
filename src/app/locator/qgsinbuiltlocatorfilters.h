@@ -131,6 +131,23 @@ class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
     void triggerResult( const QgsLocatorResult &result ) override;
 };
 
+class APP_EXPORT QgsGotoLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsGotoLocatorFilter( QObject *parent = nullptr );
+    QgsGotoLocatorFilter *clone() const override;
+    virtual QString name() const override { return QStringLiteral( "goto" ); }
+    virtual QString displayName() const override { return tr( "Go to" ); }
+    virtual Priority priority() const override { return Medium; }
+    QString prefix() const override { return QStringLiteral( "goto" ); }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
+};
 
 class QgsBookmarkLocatorFilter : public QgsLocatorFilter
 {
