@@ -20,7 +20,6 @@
 #include "ui_qgsdb2newconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsauthconfigselect.h"
 
 /** \class QgsDb2NewConnection
  * \brief Dialog to allow the user to configure and save connection
@@ -47,7 +46,6 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
     void on_cb_trustedConnection_clicked();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
     void showHelp();
 };
 

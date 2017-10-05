@@ -14,6 +14,10 @@ class QgsAuthSettingsWidget : QWidget
 %Docstring
  Widget for entering authentication credentials both in the form username/password
  and by using QGIS Authentication Database and its authentication configurations.
+
+ The widget also offers the functionality to convert username/password credentials
+ to an authentication configuration.
+
 .. versionadded:: 3.0
 %End
 
@@ -21,6 +25,12 @@ class QgsAuthSettingsWidget : QWidget
 #include "qgsauthsettingswidget.h"
 %End
   public:
+
+    enum WarningType
+    {
+      ProjectFile,
+      UserSettings
+    };
 
     explicit QgsAuthSettingsWidget( QWidget *parent /TransferThis/ = 0,
                                     const QString &configId = QString(),
@@ -41,6 +51,7 @@ class QgsAuthSettingsWidget : QWidget
 %Docstring
  setWarningText set the text of the warning label
  \param warningText the text of the warning label
+.. seealso:: formattedWarning()
 %End
 
     void setBasicText( const QString &basicText );
@@ -56,11 +67,23 @@ class QgsAuthSettingsWidget : QWidget
  :rtype: str
 %End
 
+    void setUsername( const QString &username );
+%Docstring
+ setUsername set the username
+ \param username the user name
+%End
+
     const QString password( ) const;
 %Docstring
  password
  :return: basic authentication password
  :rtype: str
+%End
+
+    void setPassword( const QString &password );
+%Docstring
+ setPassword set the password
+ \param password the password
 %End
 
     const QString configId( ) const;
@@ -70,17 +93,81 @@ class QgsAuthSettingsWidget : QWidget
  :rtype: str
 %End
 
-    int currentTabIndex( ) const;
+    void setConfigId( const QString &configId );
 %Docstring
- currentTabIndex, mainly useful for unit tests
- :return: active tab index
- :rtype: int
+ setConfigId set the authentication configuration id
+  param configId the authentication configuration id
+%End
+
+    void setDataprovider( const QString &dataprovider );
+%Docstring
+ setDataprovider set the data provider key for filtering compatible authentication configurations
+ \param dataprovider data provider key
+%End
+
+    const QString dataprovider( ) const;
+%Docstring
+ dataprovider
+ :return: the data provider key used to filter compatible authentication configurations
+ :rtype: str
+%End
+
+    static const QString formattedWarning( WarningType warning );
+%Docstring
+ warning text message based upon where credentials are stored
+ \param warning enum of warning type
+ :return: pre-formatted warning text
+ :rtype: str
 %End
 
     bool btnConvertToEncryptedIsEnabled( ) const;
 %Docstring
  convertButtonEnabled, mainly useful for unit tests
  :return: true if the convert button is enabled
+ :rtype: bool
+%End
+
+    void showStoreCheckboxes( bool enabled );
+%Docstring
+ showStoreCheckboxes show the "Store" checkboxes for basic auth.
+        Some connection configurations allow the user to enter credentials
+        for testing the connection without storing them in the project.
+        "Store" checkboxes are disabled by default.
+ \param enabled
+%End
+
+    void setStoreUsernameChecked( bool checked );
+%Docstring
+ setStoreUsernameChecked check the "Store" checkbox for the username
+ \param checked
+.. seealso:: showStoreCheckboxes
+%End
+
+    void setStorePasswordChecked( bool checked );
+%Docstring
+ setStorePasswordCheched check the "Store" checkbox for the password
+ \param checked
+.. seealso:: showStoreCheckboxes
+%End
+
+    bool storePasswordIsChecked( ) const;
+%Docstring
+ storePassword
+ :return: true if "Store" checkbox for the password is checked
+ :rtype: bool
+%End
+
+    bool storeUsernameIsChecked( ) const;
+%Docstring
+ storeUsername
+ :return: true if "Store" checkbox for the username is checked
+ :rtype: bool
+%End
+
+    bool configurationTabIsSelected( );
+%Docstring
+ configurationTabIsSelected
+ :return: true if the configuration tab is the currently selected tab
  :rtype: bool
 %End
 

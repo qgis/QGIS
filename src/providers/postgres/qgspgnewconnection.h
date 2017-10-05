@@ -19,7 +19,6 @@
 #include "ui_qgspgnewconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsauthconfigselect.h"
 
 /** \class QgsPgNewConnection
  * \brief Dialog to allow the user to configure and save connection
@@ -40,7 +39,6 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void on_cb_geometryColumnsOnly_clicked();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
     void showHelp();
 
 };

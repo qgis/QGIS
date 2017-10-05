@@ -309,21 +309,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultTileMaxRetrySpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/defaultTileMaxRetry" ), "3" ).toInt() );
 
   // Proxy stored authentication configurations
-  mProxyAuthConfigSelect = new QgsAuthConfigSelect( this, QStringLiteral( "proxy" ) );
-  tabAuth->insertTab( 1, mProxyAuthConfigSelect, tr( "Configurations" ) );
+  mAuthSettings->setDataprovider( QStringLiteral( "proxy" ) );
   QString authcfg = mSettings->value( QStringLiteral( "proxy/authcfg" ) ).toString();
-  mProxyAuthConfigSelect->setConfigId( authcfg );
-  if ( !authcfg.isEmpty() )
-  {
-    tabAuth->setCurrentIndex( tabAuth->indexOf( mProxyAuthConfigSelect ) );
-  }
+  mAuthSettings->setConfigId( authcfg );
+  mAuthSettings->setWarningText( mAuthSettings->formattedWarning( QgsAuthSettingsWidget::UserSettings ) );
 
   //Web proxy settings
   grpProxy->setChecked( mSettings->value( QStringLiteral( "proxy/proxyEnabled" ), "0" ).toBool() );
   leProxyHost->setText( mSettings->value( QStringLiteral( "proxy/proxyHost" ), "" ).toString() );
   leProxyPort->setText( mSettings->value( QStringLiteral( "proxy/proxyPort" ), "" ).toString() );
-  leProxyUser->setText( mSettings->value( QStringLiteral( "proxy/proxyUser" ), "" ).toString() );
-  leProxyPassword->setText( mSettings->value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString() );
+
+  mAuthSettings->setPassword( mSettings->value( QStringLiteral( "proxy/proxyUser" ), "" ).toString() );
+  mAuthSettings->setUsername( mSettings->value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString() );
 
   //available proxy types
   mProxyTypeComboBox->insertItem( 0, QStringLiteral( "DefaultProxy" ) );
@@ -1174,14 +1171,14 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/defaultTileMaxRetry" ), mDefaultTileMaxRetrySpinBox->value() );
 
   // Proxy stored authentication configurations
-  mSettings->setValue( QStringLiteral( "proxy/authcfg" ), mProxyAuthConfigSelect->configId( ) );
+  mSettings->setValue( QStringLiteral( "proxy/authcfg" ), mAuthSettings->configId( ) );
 
   //Web proxy settings
   mSettings->setValue( QStringLiteral( "proxy/proxyEnabled" ), grpProxy->isChecked() );
   mSettings->setValue( QStringLiteral( "proxy/proxyHost" ), leProxyHost->text() );
   mSettings->setValue( QStringLiteral( "proxy/proxyPort" ), leProxyPort->text() );
-  mSettings->setValue( QStringLiteral( "proxy/proxyUser" ), leProxyUser->text() );
-  mSettings->setValue( QStringLiteral( "proxy/proxyPassword" ), leProxyPassword->text() );
+  mSettings->setValue( QStringLiteral( "proxy/proxyUser" ),  mAuthSettings->username() );
+  mSettings->setValue( QStringLiteral( "proxy/proxyPassword" ), mAuthSettings->password() );
   mSettings->setValue( QStringLiteral( "proxy/proxyType" ), mProxyTypeComboBox->currentText() );
 
   if ( !mCacheDirectory->text().isEmpty() )

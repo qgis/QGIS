@@ -256,7 +256,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
-    QgsAuthConfigSelect *mProxyAuthConfigSelect = nullptr;
 
 };
 
