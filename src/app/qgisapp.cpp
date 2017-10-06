@@ -3708,7 +3708,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
   if ( zipItem->rowCount() <= 1 )
   {
-    delete zipItem;
+    zipItem->deleteLater();
     return false;
   }
 
@@ -3720,7 +3720,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   // exit if promptLayers=Never
   else if ( promptLayers == 2 )
   {
-    delete zipItem;
+    zipItem->deleteLater();
     return false;
   }
   else
@@ -3789,7 +3789,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     }
   }
 
-  delete zipItem;
+  zipItem->deleteLater();
   return ok;
 }
 
