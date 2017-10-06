@@ -79,10 +79,10 @@ namespace QgsVirtualLayerQueryParser
   /**
    * Get the column names and types that can be deduced from the query, using SQLite introspection
    * Special comments can also be used in the query to type columns
-   * Comments should be set after the name of the column and are introduced by "/*:"
-   * For instance 'SELECT t+1 /*:int* / FROM table' will type the column 't' as integer
+   * Comments should be set after the name of the column and are introduced by "/\htmlonly\endhtmlonly*:"
+   * For instance 'SELECT t+1 /\htmlonly\endhtmlonly*:int*\htmlonly\endhtmlonly/ FROM table' will type the column 't' as integer
    * A geometry column can also be set by specifying a type and an SRID
-   * For instance 'SELECT t, GeomFromText('POINT(0 0)',4326) as geom /*:point:4326* /
+   * For instance 'SELECT t, GeomFromText('POINT(0 0)',4326) as geom /\htmlonly\endhtmlonly*:point:4326*\htmlonly\endhtmlonly/
    */
   TableDef columnDefinitionsFromQuery( sqlite3 *db, const QString &query );
 
