@@ -810,6 +810,29 @@ class QgsMeanCoordinatesAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native raster layer unique values count algorithm.
+ */
+class QgsRasterLayerUniqueValuesCountAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsRasterLayerUniqueValuesCountAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "rasterlayeruniquevaluescount" ); }
+    QString displayName() const override { return QObject::tr( "Raster layer unique values count" ); }
+    QString group() const override { return QObject::tr( "Raster analysis" ); }
+    QString shortHelpString() const override;
+    QgsRasterLayerUniqueValuesCountAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H
