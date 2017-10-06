@@ -100,7 +100,7 @@ void QgsLayoutItem::setId( const QString &id )
   }
 
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginCommand( this, tr( "Change item ID" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Item ID changed" ) );
 
   mId = id;
 
