@@ -149,6 +149,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionSmartGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToItems );
 
   connect( mActionShowBoxes, &QAction::triggered, this, &QgsLayoutDesignerDialog::showBoxes );
+  connect( mActionShowPage, &QAction::triggered, this, &QgsLayoutDesignerDialog::showPages );
 
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
@@ -557,6 +558,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
   mActionSmartGuides->setChecked( mLayout->snapper().snapToItems() );
   mActionShowBoxes->setChecked( mLayout->context().boundingBoxesVisible() );
+  mActionShowPage->setChecked( mLayout->context().pagesVisible() );
 
   connect( mLayout->undoStack()->stack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
   connect( mLayout->undoStack()->stack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
@@ -669,6 +671,12 @@ void QgsLayoutDesignerDialog::showBoxes( bool visible )
 {
   mLayout->context().setBoundingBoxesVisible( visible );
   mSelectTool->mouseHandles()->update();
+}
+
+void QgsLayoutDesignerDialog::showPages( bool visible )
+{
+  mLayout->context().setPagesVisible( visible );
+  mLayout->pageCollection()->redraw();
 }
 
 void QgsLayoutDesignerDialog::snapToGrid( bool enabled )

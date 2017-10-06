@@ -165,7 +165,7 @@ void QgsLayoutItemPage::redraw()
 
 void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-  if ( !context.painter() || !mLayout /*|| !mLayout->pagesVisible() */ )
+  if ( !context.painter() || !mLayout || !mLayout->context().pagesVisible() )
   {
     return;
   }

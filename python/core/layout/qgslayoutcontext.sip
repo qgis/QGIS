@@ -151,6 +151,23 @@ class QgsLayoutContext
 .. seealso:: boundingBoxesVisible()
 %End
 
+    void setPagesVisible( bool visible );
+%Docstring
+ Sets whether the page items should be ``visible`` in the layout. Removing
+ them will prevent both display of the page boundaries in layout views and
+ will also prevent them from being rendered in layout exports.
+.. seealso:: pagesVisible()
+%End
+
+    bool pagesVisible() const;
+%Docstring
+ Returns whether the page items are be visible in the layout. This setting
+ effects both display of the page boundaries in layout views and
+ whether they will be rendered in layout exports.
+.. seealso:: setPagesVisible()
+ :rtype: bool
+%End
+
 };
 
 

@@ -131,6 +131,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void showBoxes( bool visible );
 
     /**
+     * Toggles whether the layout pages should be \a visible.
+     */
+    void showPages( bool visible );
+
+    /**
      * Toggles whether snapping to the page grid is \a enabled.
      */
     void snapToGrid( bool enabled );

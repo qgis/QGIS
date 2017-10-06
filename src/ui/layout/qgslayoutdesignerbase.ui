@@ -145,6 +145,7 @@
     <addaction name="separator"/>
     <addaction name="mActionShowRulers"/>
     <addaction name="mActionShowBoxes"/>
+    <addaction name="mActionShowPage"/>
     <addaction name="separator"/>
     <addaction name="mToolbarMenu"/>
     <addaction name="mPanelsMenu"/>
@@ -978,6 +979,17 @@
    </property>
    <property name="text">
     <string>Simulate Color Blindness (&amp;Deuteranope)</string>
+   </property>
+  </action>
+  <action name="mActionShowPage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Pages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show pages</string>
    </property>
   </action>
  </widget>
