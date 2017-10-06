@@ -310,6 +310,13 @@ class QgsPostgresConn : public QObject
 
     QString connInfo() const { return mConnInfo; }
 
+    /**
+     * Returns the underlying database.
+     *
+     * \since QGIS 3.0
+     */
+    QString currentDatabase();
+
     static const int GEOM_TYPE_SELECT_LIMIT;
 
     static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
