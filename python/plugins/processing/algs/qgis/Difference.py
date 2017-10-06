@@ -84,23 +84,34 @@ class Difference(GeoAlgorithm):
             diff_geom = QgsGeometry(geom)
             attrs = inFeatA.attributes()
             intersections = index.intersects(geom.boundingBox())
+            
+            unionGeom = QgsGeometry()
+            geomList = []
+
             for i in intersections:
                 request = QgsFeatureRequest().setFilterFid(i)
                 inFeatB = layerB.getFeatures(request).next()
-                tmpGeom = QgsGeometry(inFeatB.geometry())
-                if diff_geom.intersects(tmpGeom):
-                    diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
-                    if diff_geom.isGeosEmpty():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                               self.tr('Feature with NULL geometry found.'))
-                    if not diff_geom.isGeosValid():
-                        if ignoreInvalid:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
-                            add = False
-                        else:
-                            raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these errors or specify the "Ignore invalid input features" flag'))
-                        break
+                
+                if inFeatB.geometry().isGeosEmpty():
+                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                           self.tr('Feature with NULL geometry found.'))
+
+                if not inFeatB.geometry().isGeosValid():
+                    if ignoreInvalid:
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                               self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                        add = False
+                    else:
+                        raise GeoAlgorithmExecutionException(self.tr('Features with invalid geometries found. Please fix these errors or specify the "Ignore invalid input features" flag'))
+                    break
+              
+                if (inFeatB.geometry().intersects(geom)):
+                    geomList.append(QgsGeometry(inFeatB.geometry()))
+
+            unionGeom = unionGeom.unaryUnion(geomList)
+
+            if not unionGeom.isGeosEmpty():
+                diff_geom = QgsGeometry(diff_geom.difference(unionGeom))
 
             if add:
                 try:
