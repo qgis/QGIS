@@ -104,6 +104,35 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void unsetTool( QgsLayoutViewTool *tool );
 
     /**
+     * Sets whether a preview effect should be used to alter the view's appearance.
+     * \param enabled Set to true to enable the preview effect on the view.
+     * \see setPreviewMode()
+     */
+    void setPreviewModeEnabled( bool enabled );
+
+    /**
+     * Returns true if a preview effect is being used to alter the view's appearance.
+     * \see setPreviewModeEnabled()
+     */
+    bool previewModeEnabled() const;
+
+    /**
+     * Sets the preview \a mode which should be used to modify the view's appearance. Preview modes are only used
+     * if previewModeEnabled() is true.
+     * \see setPreviewModeEnabled()
+     * \see previewMode()
+     */
+    void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
+
+    /**
+     * Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
+     * if previewModeEnabled() is true.
+     * \see setPreviewMode()
+     * \see previewModeEnabled()
+     */
+    QgsPreviewEffect::PreviewMode previewMode() const;
+
+    /**
      * Scales the view in a safe way, by limiting the acceptable range
      * of the scale applied. The \a scale parameter specifies the zoom factor to scale the view by.
      */
@@ -427,6 +456,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     std::unique_ptr< QGraphicsLineItem > mVerticalSnapLine;
 
     int mCurrentPage = 0;
+
+    QgsPreviewEffect *mPreviewEffect = nullptr;
 
     friend class TestQgsLayoutView;
     friend class QgsLayoutMouseHandles;

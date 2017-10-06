@@ -68,6 +68,37 @@ class QgsLayoutView: QGraphicsView
  You don't have to call it manually, QgsLayoutViewTool takes care of it.
 %End
 
+    void setPreviewModeEnabled( bool enabled );
+%Docstring
+ Sets whether a preview effect should be used to alter the view's appearance.
+ \param enabled Set to true to enable the preview effect on the view.
+.. seealso:: setPreviewMode()
+%End
+
+    bool previewModeEnabled() const;
+%Docstring
+ Returns true if a preview effect is being used to alter the view's appearance.
+.. seealso:: setPreviewModeEnabled()
+ :rtype: bool
+%End
+
+    void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
+%Docstring
+ Sets the preview ``mode`` which should be used to modify the view's appearance. Preview modes are only used
+ if previewModeEnabled() is true.
+.. seealso:: setPreviewModeEnabled()
+.. seealso:: previewMode()
+%End
+
+    QgsPreviewEffect::PreviewMode previewMode() const;
+%Docstring
+ Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
+ if previewModeEnabled() is true.
+.. seealso:: setPreviewMode()
+.. seealso:: previewModeEnabled()
+ :rtype: QgsPreviewEffect.PreviewMode
+%End
+
     void scaleSafe( double scale );
 %Docstring
  Scales the view in a safe way, by limiting the acceptable range

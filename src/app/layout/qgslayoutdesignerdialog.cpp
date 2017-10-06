@@ -242,6 +242,38 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QShortcut *backSpace = new QShortcut( QKeySequence( QStringLiteral( "Backspace" ) ), this );
   connect( backSpace, &QShortcut::activated, mActionDeleteSelection, &QAction::trigger );
 
+  mActionPreviewModeOff->setChecked( true );
+  connect( mActionPreviewModeOff, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewModeEnabled( false );
+  } );
+  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewModeMono, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewMono );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewProtanope, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewProtanope );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewDeuteranope, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
+    mView->setPreviewModeEnabled( true );
+  } );
+  QActionGroup *previewGroup = new QActionGroup( this );
+  previewGroup->setExclusive( true );
+  mActionPreviewModeOff->setActionGroup( previewGroup );
+  mActionPreviewModeGrayscale->setActionGroup( previewGroup );
+  mActionPreviewModeMono->setActionGroup( previewGroup );
+  mActionPreviewProtanope->setActionGroup( previewGroup );
+  mActionPreviewDeuteranope->setActionGroup( previewGroup );
 
   connect( mActionZoomIn, &QAction::triggered, mView, &QgsLayoutView::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );

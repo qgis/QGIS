@@ -54,6 +54,9 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
   mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
+
+  mPreviewEffect = new QgsPreviewEffect( this );
+  viewport()->setGraphicsEffect( mPreviewEffect );
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -144,6 +147,26 @@ void QgsLayoutView::unsetTool( QgsLayoutViewTool *tool )
     emit toolSet( nullptr );
     setCursor( Qt::ArrowCursor );
   }
+}
+
+void QgsLayoutView::setPreviewModeEnabled( bool enabled )
+{
+  mPreviewEffect->setEnabled( enabled );
+}
+
+bool QgsLayoutView::previewModeEnabled() const
+{
+  return mPreviewEffect->isEnabled();
+}
+
+void QgsLayoutView::setPreviewMode( QgsPreviewEffect::PreviewMode mode )
+{
+  mPreviewEffect->setMode( mode );
+}
+
+QgsPreviewEffect::PreviewMode QgsLayoutView::previewMode() const
+{
+  return mPreviewEffect->mode();
 }
 
 void QgsLayoutView::scaleSafe( double scale )
