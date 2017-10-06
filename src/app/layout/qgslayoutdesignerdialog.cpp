@@ -49,6 +49,10 @@
 #include <QUndoView>
 #include <QTreeView>
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
 //add some nice zoom levels for zoom comboboxes
 QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
 #define FIT_LAYOUT -101
