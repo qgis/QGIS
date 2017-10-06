@@ -473,7 +473,11 @@ void QgsLayout::addLayoutItemPrivate( QgsLayoutItem *item )
 void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
 {
   mItemsModel->setItemRemoved( item );
-  removeItem( item );
+  // small chance that item is still in a scene - the model may have
+  // rejected the removal for some reason. This is probably not necessary,
+  // but can't hurt...
+  if ( item->scene() )
+    removeItem( item );
 #if 0 //TODO
   emit itemRemoved( item );
 #endif
