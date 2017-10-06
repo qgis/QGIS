@@ -92,11 +92,14 @@ class PointDistance(GeoAlgorithm):
         nPoints = self.getParameterValue(self.NEAREST_POINTS)
 
         outputFile = self.getOutputFromName(self.DISTANCE_MATRIX)
+        self.writer = outputFile.getTableWriter([])
+
+        if inLayer.id() == targetLayer.id():
+            if nPoints > 0:
+                nPoints += 1
 
         if nPoints < 1:
             nPoints = len(vector.features(targetLayer))
-
-        self.writer = outputFile.getTableWriter([])
 
         if matType == 0:
             # Linear distance matrix
@@ -158,33 +161,30 @@ class PointDistance(GeoAlgorithm):
 
     def regularMatrix(self, inLayer, inField, targetLayer, targetField,
                       nPoints, progress):
-        index = vector.spatialindex(targetLayer)
-
-        inIdx = inLayer.fieldNameIndex(inField)
-
-        distArea = QgsDistanceArea()
-
-        first = True
         features = vector.features(inLayer)
         total = 100.0 / len(features) if len(features) > 0 else 1
+
+        targetIdx = targetLayer.fieldNameIndex(targetField)
+
+        first = True
+        distArea = QgsDistanceArea()
+        index = vector.spatialindex(targetLayer)
+
         for current, inFeat in enumerate(features):
             inGeom = inFeat.geometry()
-            inID = unicode(inFeat.attributes()[inIdx])
-            featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             if first:
+                featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
                 first = False
                 data = ['ID']
-                for i in range(len(featList)):
-                    data.append('DIST_{0}'.format(i + 1))
+                request = QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([targetIdx])
+                for f in targetLayer.getFeatures(request):
+                    data.append(unicode(f[targetField]))
                 self.writer.addRecord(data)
 
-            data = [inID]
-            for i in featList:
-                request = QgsFeatureRequest().setFilterFid(i)
-                outFeat = targetLayer.getFeatures(request).next()
-                outGeom = outFeat.geometry()
-                dist = distArea.measureLine(inGeom.asPoint(),
-                                            outGeom.asPoint())
+            data = [unicode(inFeat[inField])]
+            for f in targetLayer.getFeatures(request):
+                outGeom = f.geometry()
+                dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 data.append(unicode(float(dist)))
             self.writer.addRecord(data)
 
