@@ -148,6 +148,7 @@ class TestQgsLayoutItem: public QObject
     void readXml();
     void writeReadXmlProperties();
     void undoRedo();
+    void multiItemUndo();
 
   private:
 
@@ -1450,6 +1451,35 @@ void TestQgsLayoutItem::undoRedo()
   QVERIFY( !l.items().contains( item ) );
   QVERIFY( !l.itemByUuid( uuid ) );
 
+}
+
+void TestQgsLayoutItem::multiItemUndo()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+  item->attemptMove( QgsLayoutPoint( 10, 10 ) );
+  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item2 );
+  item2->attemptMove( QgsLayoutPoint( 20, 20 ) );
+
+  l.undoStack()->beginCommand( item, tr( "Item moved" ), QgsLayoutItem::UndoIncrementalMove );
+  item->attemptMove( QgsLayoutPoint( 1, 1 ) );
+  l.undoStack()->endCommand();
+
+  l.undoStack()->beginCommand( item2, tr( "Item moved" ), QgsLayoutItem::UndoIncrementalMove );
+  item2->attemptMove( QgsLayoutPoint( 21, 21 ) );
+  l.undoStack()->endCommand();
+
+  // undo should only remove item2 move
+  l.undoStack()->stack()->undo();
+  QCOMPARE( item2->positionWithUnits(), QgsLayoutPoint( 20, 20 ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 1, 1 ) );
+  l.undoStack()->stack()->undo();
+  QCOMPARE( item2->positionWithUnits(), QgsLayoutPoint( 20, 20 ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 10, 10 ) );
 }
 
 QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )

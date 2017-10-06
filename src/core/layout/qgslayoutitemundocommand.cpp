@@ -41,6 +41,8 @@ bool QgsLayoutItemUndoCommand::mergeWith( const QUndoCommand *command )
   {
     return false;
   }
+  if ( c->itemUuid() != itemUuid() )
+    return false;
 
   setAfterState( c->afterState() );
   return true;

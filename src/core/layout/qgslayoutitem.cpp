@@ -114,12 +114,12 @@ void QgsLayoutItem::setVisibility( const bool visible )
     return;
   }
 
-  if ( mLayout && !mBlockUndoCommands )
+  if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->beginCommand( this, visible ? tr( "Item shown" ) : tr( "Item hidden" ) );
 
   QGraphicsItem::setVisible( visible );
 
-  if ( mLayout && !mBlockUndoCommands )
+  if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->endCommand();
 
   //inform model that visibility has changed
@@ -136,12 +136,12 @@ void QgsLayoutItem::setLocked( const bool locked )
     return;
   }
 
-  if ( mLayout && !mBlockUndoCommands )
+  if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->beginCommand( this, locked ? tr( "Item locked" ) : tr( "Item unlocked" ) );
 
   mIsLocked = locked;
 
-  if ( mLayout && !mBlockUndoCommands )
+  if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->endCommand();
 
   //inform model that id data has changed
@@ -330,6 +330,11 @@ void QgsLayoutItem::setScenePos( const QPointF &destinationPos )
     setPos( pos() + ( destinationPos - scenePos() ) + parentItem()->scenePos() );
   else
     setPos( pos() + ( destinationPos - scenePos() ) );
+}
+
+bool QgsLayoutItem::shouldBlockUndoCommands() const
+{
+  return !mLayout || mLayout != scene() || mBlockUndoCommands;
 }
 
 double QgsLayoutItem::itemRotation() const

@@ -615,6 +615,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void updateStoredItemPosition();
     QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
     void setScenePos( const QPointF &destinationPos );
+    bool shouldBlockUndoCommands() const;
 
     friend class TestQgsLayoutItem;
 };
