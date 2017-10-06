@@ -68,7 +68,7 @@ def processOutputs(alg):
     # Output results ('from' table and output table)
     for output in [u'from_output', u'output']:
         out = alg.getOutputValue(output)
-        command = u"v.out.ogr -c type=auto -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
+        command = u"v.out.ogr --overwrite -c type=auto -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
             alg.exportedLayers[out],
             os.path.dirname(out),
             os.path.basename(out)[:-4]

@@ -30,7 +30,7 @@ import os
 
 def processOutputs(alg):
     out = alg.getOutputValue(u"output")
-    command = u"v.out.ogr -c type=line layer=1 -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
+    command = u"v.out.ogr --overwrite -c type=line layer=1 -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
         alg.exportedLayers[out],
         os.path.dirname(out),
         os.path.basename(out)[:-4]
