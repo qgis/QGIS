@@ -25,6 +25,7 @@
 #include <QSslConfiguration>
 #include <QSslError>
 #endif
+#include <QMutexLocker>
 
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
@@ -50,6 +51,7 @@ QgsAuthIdentCertMethod::QgsAuthIdentCertMethod()
 
 QgsAuthIdentCertMethod::~QgsAuthIdentCertMethod()
 {
+  QMutexLocker locker( &mConfigMutex );
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
 }
@@ -219,6 +221,7 @@ void QgsAuthIdentCertMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 
 QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &authcfg )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsPkiConfigBundle *bundle = nullptr;
 
   // check if it is cached
@@ -263,6 +266,7 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
 
   bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey );
 
+  locker.unlock();
   // cache bundle
   putPkiConfigBundle( authcfg, bundle );
 
@@ -271,12 +275,14 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
 
 void QgsAuthIdentCertMethod::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsDebugMsg( QString( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
   sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
 void QgsAuthIdentCertMethod::removePkiConfigBundle( const QString &authcfg )
 {
+  QMutexLocker locker( &mConfigMutex );
   if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
     QgsPkiConfigBundle *pkibundle = sPkiConfigBundleCache.take( authcfg );
