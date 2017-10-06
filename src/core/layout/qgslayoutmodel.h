@@ -194,7 +194,8 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
 
 #if 0
 
-    /** Restores an item to the composition. This must be called whenever an item removed
+    /**
+     * Restores an item to the composition. This must be called whenever an item removed
      * from the composition is restored to the composition.
      * \param item to mark as restored to the composition
      * \see setItemRemoved
@@ -212,7 +213,8 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
      */
     void updateItemDisplayName( QgsLayoutItem *item );
 
-    /** Must be called when an \a item's lock status changes.
+    /**
+     * Must be called when an \a item's lock status changes.
      * \see updateItemDisplayName()
      * \see updateItemVisibility()
      * \see updateItemSelectStatus()

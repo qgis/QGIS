@@ -176,7 +176,8 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     //! Draw outlines for selected items
     void drawSelectedItemBounds( QPainter *painter );
 
-    /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
+    /**
+     * Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
     double rectHandlerBorderTolerance();
 
