@@ -16,7 +16,6 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QgsMessageBar" name="bar" native="true">
-     <zorder>groupBox</zorder>
     </widget>
    </item>
    <item>

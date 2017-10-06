@@ -111,6 +111,7 @@ const QString QgsAuthSettingsWidget::formattedWarning( WarningType warning )
     case UserSettings:
       return out.arg( tr( "user settings" ) );
   }
+  return QString(); // no build warnings
 }
 
 const QString QgsAuthSettingsWidget::configId() const

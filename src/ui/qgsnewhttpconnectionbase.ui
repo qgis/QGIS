@@ -193,7 +193,7 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
+        <layout class="QGridLayout" name="gridLayout_5">
          <property name="leftMargin">
           <number>0</number>
          </property>
