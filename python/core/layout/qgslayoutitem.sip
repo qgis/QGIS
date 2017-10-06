@@ -113,6 +113,15 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: uuid()
 %End
 
+    virtual QString displayName() const;
+%Docstring
+ Get item display name. This is the item's id if set, and if
+ not, a user-friendly string identifying item type.
+.. seealso:: id()
+.. seealso:: setId()
+ :rtype: str
+%End
+
     virtual void setSelected( bool selected );
 %Docstring
  Sets whether the item should be selected.

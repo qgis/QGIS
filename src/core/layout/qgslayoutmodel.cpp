@@ -132,10 +132,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
     case Qt::DisplayRole:
       if ( index.column() == ItemId )
       {
-#if 0 // TODO
         return item->displayName();
-#endif
-        return "my item";
       }
       else
       {
@@ -972,10 +969,7 @@ bool QgsLayoutProxyModel::lessThan( const QModelIndex &left, const QModelIndex &
   if ( !item2 )
     return true;
 
-#if 0 //TODO
   return QString::localeAwareCompare( item1->displayName(), item2->displayName() ) < 0;
-#endif
-  return QString::localeAwareCompare( QString(), QString() ) < 0;
 }
 
 QgsLayoutItem *QgsLayoutProxyModel::itemFromSourceIndex( const QModelIndex &sourceIndex ) const

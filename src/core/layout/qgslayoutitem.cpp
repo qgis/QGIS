@@ -70,6 +70,23 @@ QgsLayoutItem::~QgsLayoutItem()
   }
 }
 
+QString QgsLayoutItem::displayName() const
+{
+  //return id, if it's not empty
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  //for unnamed items, default to item type
+  if ( QgsLayoutItemAbstractMetadata *metadata = QgsApplication::layoutItemRegistry()->itemMetadata( type() ) )
+  {
+    return tr( "<%1>" ).arg( metadata->visibleName() );
+  }
+
+  return tr( "<item>" );
+}
+
 int QgsLayoutItem::type() const
 {
   return QgsLayoutItemRegistry::LayoutItem;
@@ -82,7 +99,14 @@ void QgsLayoutItem::setId( const QString &id )
     return;
   }
 
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->beginCommand( this, tr( "Change item ID" ) );
+
   mId = id;
+
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->endCommand();
+
   setToolTip( id );
 
   //inform model that id data has changed

@@ -17,12 +17,14 @@ from qgis.testing import start_app, unittest
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsLayoutItemMap,
+                       QgsLayoutItemEllipseShape,
                        QgsLayoutObject,
                        QgsProperty,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
                        QgsLayoutPoint,
-                       QgsLayoutSize)
+                       QgsLayoutSize,
+                       QgsApplication)
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
@@ -134,6 +136,14 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertEqual(item.rectWithFrame(), QRectF(-5.0, -5.0, 28.0, 22.0))
         item.setFrameStrokeWidth(QgsLayoutMeasurement(10, QgsUnitTypes.LayoutCentimeters))
         self.assertEqual(item.rectWithFrame(), QRectF(-50.0, -50.0, 118.0, 112.0))
+
+    def testDisplayName(self):
+        layout = QgsLayout(QgsProject.instance())
+        item = QgsLayoutItemEllipseShape(layout)
+        self.assertEqual(item.displayName(), '<Ellipse>')
+        item.setId('a')
+        self.assertEqual(item.displayName(), 'a')
+        self.assertEqual(item.id(), 'a')
 
 
 if __name__ == '__main__':

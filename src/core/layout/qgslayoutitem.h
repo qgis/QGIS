@@ -135,6 +135,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setId( const QString &id );
 
     /**
+     * Get item display name. This is the item's id if set, and if
+     * not, a user-friendly string identifying item type.
+     * \see id()
+     * \see setId()
+     */
+    virtual QString displayName() const;
+
+    /**
      * Sets whether the item should be selected.
      */
     virtual void setSelected( bool selected );
