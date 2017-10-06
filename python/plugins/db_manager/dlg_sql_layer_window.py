@@ -31,7 +31,7 @@ from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardI
 from qgis.PyQt.Qsci import QsciAPIs
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import QgsProject, QgsDataSourceUri
+from qgis.core import QgsProject, QgsDataSourceUri, QgsReadWriteContext
 from qgis.utils import OverrideCursor
 
 from .db_plugins import createDbPlugin
@@ -328,11 +328,11 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             XMLDocument = QDomDocument("style")
             XMLMapLayers = XMLDocument.createElement("maplayers")
             XMLMapLayer = XMLDocument.createElement("maplayer")
-            self.layer.writeLayerXML(XMLMapLayer, XMLDocument)
+            self.layer.writeLayerXml(XMLMapLayer, XMLDocument, QgsReadWriteContext())
             XMLMapLayer.firstChildElement("datasource").firstChild().setNodeValue(layer.source())
             XMLMapLayers.appendChild(XMLMapLayer)
             XMLDocument.appendChild(XMLMapLayers)
-            self.layer.readLayerXML(XMLMapLayer)
+            self.layer.readLayerXml(XMLMapLayer, QgsReadWriteContext())
             self.layer.reload()
             self.iface.actionDraw().trigger()
             self.iface.mapCanvas().refresh()
