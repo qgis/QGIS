@@ -25,6 +25,7 @@ QgsAbstractLayoutUndoCommand::QgsAbstractLayoutUndoCommand( const QString &text,
 
 void QgsAbstractLayoutUndoCommand::undo()
 {
+  QUndoCommand::undo();
   restoreState( mBeforeState );
 }
 
@@ -35,6 +36,7 @@ void QgsAbstractLayoutUndoCommand::redo()
     mFirstRun = false;
     return;
   }
+  QUndoCommand::redo();
   restoreState( mAfterState );
 }
 
