@@ -79,6 +79,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       LowerRight, //!< Lower right corner of item
     };
 
+    //! Layout item undo commands, used for collapsing undo commands
+    enum UndoCommand
+    {
+      UndoIncrementalMove = 1, //!< Layout item incremental movement, e.g. as a result of a keypress
+    };
+
     /**
      * Constructor for QgsLayoutItem, with the specified parent \a layout.
      *
@@ -443,9 +449,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void rotationChanged( double newRotation );
 
     /**
-     * Emitted when the item's size changes.
+     * Emitted when the item's size or position changes.
      */
-    void sizeChanged();
+    void sizePositionChanged();
 
   protected:
 

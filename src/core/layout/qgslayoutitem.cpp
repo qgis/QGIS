@@ -293,8 +293,8 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
   mItemSize = actualSizeTargetUnits;
 
   setRect( 0, 0, actualSizeLayoutUnits.width(), actualSizeLayoutUnits.height() );
-  emit sizeChanged();
   refreshItemPosition();
+  emit sizePositionChanged();
 }
 
 void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
@@ -317,8 +317,8 @@ void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
 
   QgsLayoutPoint referencePointTargetUnits = mLayout->convertFromLayoutUnits( evaluatedPointLayoutUnits, point.units() );
   mItemPosition = referencePointTargetUnits;
-
   setScenePos( topLeftPointLayoutUnits );
+  emit sizePositionChanged();
 }
 
 void QgsLayoutItem::setScenePos( const QPointF &destinationPos )

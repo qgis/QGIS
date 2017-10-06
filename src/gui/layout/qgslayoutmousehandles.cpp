@@ -189,14 +189,14 @@ void QgsLayoutMouseHandles::selectionChanged()
 
     if ( item->isSelected() )
     {
-      connect( item, &QgsLayoutItem::sizeChanged, this, &QgsLayoutMouseHandles::selectedItemSizeChanged );
+      connect( item, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMouseHandles::selectedItemSizeChanged );
       connect( item, &QgsLayoutItem::rotationChanged, this, &QgsLayoutMouseHandles::selectedItemRotationChanged );
       connect( item, &QgsLayoutItem::frameChanged, this, &QgsLayoutMouseHandles::selectedItemSizeChanged );
       connect( item, &QgsLayoutItem::lockChanged, this, &QgsLayoutMouseHandles::selectedItemSizeChanged );
     }
     else
     {
-      disconnect( item, &QgsLayoutItem::sizeChanged, this, &QgsLayoutMouseHandles::selectedItemSizeChanged );
+      disconnect( item, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMouseHandles::selectedItemSizeChanged );
       disconnect( item, &QgsLayoutItem::rotationChanged, this, &QgsLayoutMouseHandles::selectedItemRotationChanged );
       disconnect( item, &QgsLayoutItem::frameChanged, this, &QgsLayoutMouseHandles::selectedItemSizeChanged );
       disconnect( item, &QgsLayoutItem::lockChanged, this, &QgsLayoutMouseHandles::selectedItemSizeChanged );

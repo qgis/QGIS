@@ -52,6 +52,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       LowerRight,
     };
 
+    enum UndoCommand
+    {
+      UndoIncrementalMove,
+    };
+
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
 %Docstring
  Constructor for QgsLayoutItem, with the specified parent ``layout``.
@@ -445,9 +450,9 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  Emitted on item rotation change.
 %End
 
-    void sizeChanged();
+    void sizePositionChanged();
 %Docstring
- Emitted when the item's size changes.
+ Emitted when the item's size or position changes.
 %End
 
   protected:

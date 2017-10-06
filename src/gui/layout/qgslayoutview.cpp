@@ -731,22 +731,86 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
     mTool->keyPressEvent( event );
   }
 
-  if ( !mTool || !event->isAccepted() )
+  if ( mTool && event->isAccepted() )
+    return;
+
+  if ( event->key() == Qt::Key_Space && ! event->isAutoRepeat() )
   {
-    if ( event->key() == Qt::Key_Space && ! event->isAutoRepeat() )
+    if ( !( event->modifiers() & Qt::ControlModifier ) )
     {
-      if ( !( event->modifiers() & Qt::ControlModifier ) )
-      {
-        // Pan layout with space bar
-        setTool( mSpacePanTool );
-      }
-      else
-      {
-        //ctrl+space pressed, so switch to temporary keyboard based zoom tool
-        setTool( mSpaceZoomTool );
-      }
-      event->accept();
+      // Pan layout with space bar
+      setTool( mSpacePanTool );
     }
+    else
+    {
+      //ctrl+space pressed, so switch to temporary keyboard based zoom tool
+      setTool( mSpaceZoomTool );
+    }
+    event->accept();
+  }
+  else if ( event->key() == Qt::Key_Left
+            || event->key() == Qt::Key_Right
+            || event->key() == Qt::Key_Up
+            || event->key() == Qt::Key_Down )
+  {
+    QgsLayout *l = currentLayout();
+    const QList<QgsLayoutItem *> layoutItemList = l->selectedLayoutItems();
+
+    // increment used for cursor key item movement
+    double increment = 1.0;
+    if ( event->modifiers() & Qt::ShiftModifier )
+    {
+      //holding shift while pressing cursor keys results in a big step
+      increment = 10.0;
+    }
+    else if ( event->modifiers() & Qt::AltModifier )
+    {
+      //holding alt while pressing cursor keys results in a 1 pixel step
+      double viewScale = transform().m11();
+      if ( viewScale > 0 )
+      {
+        increment = 1 / viewScale;
+      }
+    }
+
+    double deltaX = 0;
+    double deltaY = 0;
+    switch ( event->key() )
+    {
+      case Qt::Key_Left:
+        deltaX = -increment;
+        break;
+      case Qt::Key_Right:
+        deltaX = increment;
+        break;
+      case Qt::Key_Up:
+        deltaY = -increment;
+        break;
+      case Qt::Key_Down:
+        deltaY = increment;
+        break;
+      default:
+        break;
+    }
+
+    auto moveItem = [ l, deltaX, deltaY ]( QgsLayoutItem * item )
+    {
+      QgsLayoutPoint itemPos = item->positionWithUnits();
+      QgsLayoutPoint deltaPos = l->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
+      itemPos.setX( itemPos.x() + deltaPos.x() );
+      itemPos.setY( itemPos.y() + deltaPos.y() );
+      item->attemptMove( itemPos );
+    };
+
+    l->undoStack()->beginMacro( tr( "Item moved" ) );
+    for ( QgsLayoutItem *item : layoutItemList )
+    {
+      l->undoStack()->beginCommand( item, tr( "Item moved" ), QgsLayoutItem::UndoIncrementalMove );
+      moveItem( item );
+      l->undoStack()->endCommand();
+    }
+    l->undoStack()->endMacro();
+    event->accept();
   }
 }
 

@@ -691,16 +691,17 @@ void TestQgsLayoutItem::resize()
   //resize test item (no restrictions), same units as layout
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
   TestItem *item = new TestItem( &l );
-  QSignalSpy spySizeChanged( item, &QgsLayoutItem::sizeChanged );
+  QSignalSpy spySizeChanged( item, &QgsLayoutItem::sizePositionChanged );
 
   item->setRect( 0, 0, 55, 45 );
   item->attemptMove( QgsLayoutPoint( 27, 29 ) );
+  QCOMPARE( spySizeChanged.count(), 1 );
   item->attemptResize( QgsLayoutSize( 100.0, 200.0, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( spySizeChanged.count(), 2 );
   QCOMPARE( item->rect().width(), 100.0 );
   QCOMPARE( item->rect().height(), 200.0 );
   QCOMPARE( item->scenePos().x(), 27.0 ); //item should not move
   QCOMPARE( item->scenePos().y(), 29.0 );
-  QCOMPARE( spySizeChanged.count(), 1 );
 
   //test conversion of units
   l.setUnits( QgsUnitTypes::LayoutCentimeters );
@@ -708,41 +709,41 @@ void TestQgsLayoutItem::resize()
   item->attemptResize( QgsLayoutSize( 0.30, 0.45, QgsUnitTypes::LayoutMeters ) );
   QCOMPARE( item->rect().width(), 30.0 );
   QCOMPARE( item->rect().height(), 45.0 );
-  QCOMPARE( spySizeChanged.count(), 2 );
+  QCOMPARE( spySizeChanged.count(), 4 );
 
   //test pixel -> page conversion
   l.setUnits( QgsUnitTypes::LayoutInches );
   l.context().setDpi( 100.0 );
   item->refresh();
-  QCOMPARE( spySizeChanged.count(), 3 );
+  QCOMPARE( spySizeChanged.count(), 6 );
   item->setRect( 0, 0, 1, 2 );
   item->attemptResize( QgsLayoutSize( 140, 280, QgsUnitTypes::LayoutPixels ) );
   QCOMPARE( item->rect().width(), 1.4 );
   QCOMPARE( item->rect().height(), 2.8 );
-  QCOMPARE( spySizeChanged.count(), 4 );
+  QCOMPARE( spySizeChanged.count(), 7 );
   //changing the dpi should resize the item
   l.context().setDpi( 200.0 );
   item->refresh();
   QCOMPARE( item->rect().width(), 0.7 );
   QCOMPARE( item->rect().height(), 1.4 );
-  QCOMPARE( spySizeChanged.count(), 5 );
+  QCOMPARE( spySizeChanged.count(), 8 );
 
   //test page -> pixel conversion
   l.setUnits( QgsUnitTypes::LayoutPixels );
   l.context().setDpi( 100.0 );
   item->refresh();
   item->setRect( 0, 0, 2, 2 );
-  QCOMPARE( spySizeChanged.count(), 6 );
+  QCOMPARE( spySizeChanged.count(), 10 );
   item->attemptResize( QgsLayoutSize( 1, 3, QgsUnitTypes::LayoutInches ) );
   QCOMPARE( item->rect().width(), 100.0 );
   QCOMPARE( item->rect().height(), 300.0 );
-  QCOMPARE( spySizeChanged.count(), 7 );
+  QCOMPARE( spySizeChanged.count(), 11 );
   //changing dpi results in item resize
   l.context().setDpi( 200.0 );
   item->refresh();
   QCOMPARE( item->rect().width(), 200.0 );
   QCOMPARE( item->rect().height(), 600.0 );
-  QCOMPARE( spySizeChanged.count(), 8 );
+  QCOMPARE( spySizeChanged.count(), 13 );
 
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
 }
