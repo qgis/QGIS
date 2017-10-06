@@ -54150,7 +54150,7 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
     </message>
     <message>
         <source>Search radius for identifying features and displaying map tips</source>
-        <translation>Suchradius für die Objektidentifikation und zur Maptippanzeige</translation>
+        <translation>Suchradius für die Objektidentifikation und zur Anzeige von Kartenhinweisen</translation>
     </message>
     <message>
         <source>Measure tool</source>
@@ -66078,7 +66078,7 @@ Datenanbieterfehler:</translation>
     </message>
     <message>
         <source>Map tip display text</source>
-        <translation>Map-Tippanzeigetext</translation>
+        <translation>Text für Kartenhinweise</translation>
     </message>
     <message>
         <source>Memory cache</source>
