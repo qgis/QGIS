@@ -777,5 +777,6 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(prj.crs().isValid())
         self.assertEqual(prj.crs().authid(), 'EPSG:2056')
 
+
 if __name__ == '__main__':
     unittest.main()
