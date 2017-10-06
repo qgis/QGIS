@@ -79,11 +79,9 @@ class DBManagerPlugin(object):
             self.dlg.close()
 
     def onLayerWasAdded(self, aMapLayer):
+        # Be able to update every Db layer from Postgres, Spatialite and Oracle
         if hasattr(aMapLayer, 'dataProvider') and aMapLayer.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
-            uri = QgsDataSourceUri(aMapLayer.source())
-            table = uri.table()
-            if table.startswith('(') and table.endswith(')'):
-                self.iface.addCustomActionForLayer(self.layerAction, aMapLayer)
+            self.iface.addCustomActionForLayer(self.layerAction, aMapLayer)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))
         # url.queryItemValue('query')
@@ -91,12 +89,11 @@ class DBManagerPlugin(object):
         # url.queryItemValue('geometry')
 
     def onUpdateSqlLayer(self):
+        # Be able to update every Db layer from Postgres, Spatialite and Oracle
         l = self.iface.activeLayer()
         if l.dataProvider().name() in ['postgres', 'spatialite', 'oracle']:
-            table = QgsDataSourceUri(l.source()).table()
-            if table.startswith('(') and table.endswith(')'):
-                self.run()
-                self.dlg.runSqlLayerWindow(l)
+            self.run()
+            self.dlg.runSqlLayerWindow(l)
         # virtual has QUrl source
         # url = QUrl(QUrl.fromPercentEncoding(l.source()))
         # url.queryItemValue('query')
