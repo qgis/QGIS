@@ -81,7 +81,8 @@ class DataDefinedRestorer: public QObject
 
 class QgsSymbolSelectorDialog;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Symbol selector widget that can be used to select and build a symbol
  */
 class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::QgsSymbolSelectorDialogBase
@@ -104,14 +105,16 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
      * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      * \since QGIS 3.0
      */
@@ -203,8 +206,10 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      */
     void lockLayer();
 
-    //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-    //! \since QGIS 2.14
+    /**
+     * Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
+     * \since QGIS 2.14
+     */
     void duplicateLayer();
 
     /**
@@ -225,8 +230,11 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     //! Slot to update tree when a new symbol from style
     void symbolChanged();
-    //! alters tree and sets proper widget when Layer Type is changed
-    //! \note: The layer is received from the LayerPropertiesWidget
+
+    /**
+     * alters tree and sets proper widget when Layer Type is changed
+     * \note: The layer is received from the LayerPropertiesWidget
+     */
     void changeLayer( QgsSymbolLayer *layer );
 
 
@@ -244,7 +252,8 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsSymbolWidgetContext mContext;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSymbolSelectorDialog
  */
 class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
@@ -258,14 +267,16 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
      * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      * \since QGIS 3.0
      */
@@ -310,8 +321,10 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
     void lockLayer();
 
-    //! Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
-    //! \since QGIS 2.14
+    /**
+     * Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
+     * \since QGIS 2.14
+     */
     void duplicateLayer();
 
     void layerChanged();
@@ -321,8 +334,11 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
 
     //! Slot to update tree when a new symbol from style
     void symbolChanged();
-    //! alters tree and sets proper widget when Layer Type is changed
-    //! \note: The layer is received from the LayerPropertiesWidget
+
+    /**
+     * alters tree and sets proper widget when Layer Type is changed
+     * \note: The layer is received from the LayerPropertiesWidget
+     */
     void changeLayer( QgsSymbolLayer *layer );
 
   private:

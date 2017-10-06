@@ -174,18 +174,23 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 
     bool applyConstraints( QgsMapMouseEvent *e );
 %Docstring
-:return: false if no solution was found (invalid constraints)
+ apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
+ :return: false if no solution was found (invalid constraints)
  :rtype: bool
 %End
 
     bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
 %Docstring
+ align to segment for additional constraint.
+ If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
 .. versionadded:: 3.0
  :rtype: bool
 %End
 
     void releaseLocks( bool releaseRepeatingLocks = true );
 %Docstring
+ unlock all constraints
+ \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
 .. versionadded:: 3.0
 %End
 
@@ -324,6 +329,7 @@ return the action used to enable/disable the tools
 
     void updateCadPaintItem();
 %Docstring
+ Updates canvas item that displays constraints on the ma
 .. versionadded:: 3.0
 %End
 

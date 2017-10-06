@@ -29,7 +29,8 @@
 
 class QgsChunkNode;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Element of a double-linked list
  * \since QGIS 3.0
  */
@@ -47,7 +48,8 @@ struct QgsChunkListEntry
 };
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Double linked list of chunks.
  * The list does not own entries.
  *
@@ -76,8 +78,10 @@ class QgsChunkList
     //! Returns whether the list is empty or it contains some entries
     bool isEmpty() const;
 
-    //! Inserts a new entry before the entry "next".
-    //! If "next" is null, entry will be inserted at the end of the list
+    /**
+     * Inserts a new entry before the entry "next".
+     * If "next" is null, entry will be inserted at the end of the list
+     */
     void insertEntry( QgsChunkListEntry *entry, QgsChunkListEntry *next );
 
     //! Takes the entry out of the list (does not delete it)
@@ -93,8 +97,8 @@ class QgsChunkList
     void insertLast( QgsChunkListEntry *entry );
 
   private:
-    QgsChunkListEntry *mHead;
-    QgsChunkListEntry *mTail;
+    QgsChunkListEntry *mHead = nullptr;
+    QgsChunkListEntry *mTail = nullptr;
     int mCount;
 };
 

@@ -28,7 +28,8 @@ class QgsRasterLayer;
 
 #include "qgsmaplayerref.h"
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Implementation of terrain generator that uses a raster layer with DEM to build terrain.
  * \since QGIS 3.0
  */

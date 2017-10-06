@@ -27,7 +27,8 @@ class QgsMessageOutput;
 typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )() SIP_SKIP;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for showing messages from QGIS in GUI independent way.
  * This class provides abstraction of a dialog for showing output to the user.
  * By default QgsMessageConsoleOutput will be used if not overridden with other
@@ -59,18 +60,23 @@ class CORE_EXPORT QgsMessageOutput
     //! display the message to the user and deletes itself
     virtual void showMessage( bool blocking = true ) = 0;
 
-    /** Display the blocking message to the user.
+    /**
+     * Display the blocking message to the user.
      *  \since QGIS 2.10
      */
     static void showMessage( const QString &title, const QString &message, MessageType msgType );
 
-    //! sets function that will be used to create message output
-    //! \note not available in Python bindings
+    /**
+     * sets function that will be used to create message output
+     * \note not available in Python bindings
+     */
     // TODO: implementation where Python class could be passed
     static void setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f ) SIP_SKIP;
 
-    //! function that returns new class derived from QgsMessageOutput
-    //! (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
+    /**
+     * function that returns new class derived from QgsMessageOutput
+     * (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
+     */
     static QgsMessageOutput *createMessageOutput();
 
   private:
@@ -80,7 +86,8 @@ class CORE_EXPORT QgsMessageOutput
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
 \brief Default implementation of message output interface
 
 This class outputs messages to the standard output. Therefore it might

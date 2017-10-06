@@ -54,12 +54,12 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
     void onEnabledClicked();
 
   private:
-    QCheckBox *chkEnabled;
-    QStackedWidget *widgetStack;
-    QgsLine3DSymbolWidget *widgetLine;
-    QgsPoint3DSymbolWidget *widgetPoint;
-    QgsPolygon3DSymbolWidget *widgetPolygon;
-    QLabel *widgetUnsupported;
+    QCheckBox *chkEnabled = nullptr;
+    QStackedWidget *widgetStack = nullptr;
+    QgsLine3DSymbolWidget *widgetLine = nullptr;
+    QgsPoint3DSymbolWidget *widgetPoint = nullptr;
+    QgsPolygon3DSymbolWidget *widgetPolygon = nullptr;
+    QLabel *widgetUnsupported = nullptr;
 
     std::unique_ptr<QgsVectorLayer3DRenderer> mRenderer;
 };

@@ -24,7 +24,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
     Cubic Raster Resampler
 */
 class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler

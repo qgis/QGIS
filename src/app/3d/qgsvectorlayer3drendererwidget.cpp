@@ -140,7 +140,7 @@ QgsVectorLayer3DRenderer *QgsVectorLayer3DRendererWidget::renderer()
     int pageIndex = widgetStack->currentIndex();
     if ( pageIndex == 1 || pageIndex == 2 || pageIndex == 3 )
     {
-      QgsAbstract3DSymbol *sym;
+      QgsAbstract3DSymbol *sym = nullptr;
       if ( pageIndex == 1 )
         sym = new QgsLine3DSymbol( widgetLine->symbol() );
       else if ( pageIndex == 2 )

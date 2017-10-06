@@ -32,7 +32,8 @@ class QgsRasterLayer;
 #ifndef SIP_RUN
 /// @cond PRIVATE
 
-/** \class QgsPalettedRendererClassGatherer
+/**
+ * \class QgsPalettedRendererClassGatherer
 * Calculated raster stats for paletted renderer in a thread
 */
 class QgsPalettedRendererClassGatherer: public QThread
@@ -103,7 +104,8 @@ class QgsPalettedRendererClassGatherer: public QThread
 
   signals:
 
-    /** Emitted when classes have been collected
+    /**
+     * Emitted when classes have been collected
      */
     void collectedClasses();
 
@@ -178,7 +180,8 @@ class QgsPalettedRendererModel : public QAbstractItemModel
 ///@endcond PRIVATE
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPalettedRendererWidget
  */
 class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase

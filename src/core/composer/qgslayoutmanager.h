@@ -23,7 +23,8 @@
 
 class QgsProject;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLayoutManager
  * \since QGIS 3.0
  *

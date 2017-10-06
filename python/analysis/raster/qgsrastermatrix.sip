@@ -67,6 +67,7 @@ Returns true if matrix is 1x1 (=scalar number)
 %End
 
 
+
     void setData( int cols, int rows, double *data, double nodataValue );
 
     int nColumns() const;

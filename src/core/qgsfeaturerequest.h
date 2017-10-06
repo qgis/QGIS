@@ -29,7 +29,8 @@
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class wraps a request for features to a vector layer (or directly its vector data provider).
  * The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
  * - no filter - all features are returned
@@ -94,7 +95,8 @@ class CORE_EXPORT QgsFeatureRequest
       GeometryAbortOnInvalid = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
      * It can be a simple field or an expression. Multiple order by clauses can be added to
@@ -209,7 +211,8 @@ class CORE_EXPORT QgsFeatureRequest
     };
 
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Represents a list of OrderByClauses, with the most important first and the least
      * important last.
      *
@@ -378,34 +381,39 @@ class CORE_EXPORT QgsFeatureRequest
      */
     std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
 
-    /** Set the filter expression. {\see QgsExpression}
+    /**
+     * Set the filter expression. {\see QgsExpression}
      * \param expression expression string
      * \see filterExpression
      * \see setExpressionContext
      */
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 
-    /** Returns the filter expression if set.
+    /**
+     * Returns the filter expression if set.
      * \see setFilterExpression
      * \see expressionContext
      */
     QgsExpression *filterExpression() const { return mFilterExpression.get(); }
 
-    /** Modifies the existing filter expression to add an additional expression filter. The
+    /**
+     * Modifies the existing filter expression to add an additional expression filter. The
      * filter expressions are combined using AND, so only features matching both
      * the existing expression and the additional expression will be returned.
      * \since QGIS 2.14
      */
     QgsFeatureRequest &combineFilterExpression( const QString &expression );
 
-    /** Returns the expression context used to evaluate filter expressions.
+    /**
+     * Returns the expression context used to evaluate filter expressions.
      * \since QGIS 2.12
      * \see setExpressionContext
      * \see filterExpression
      */
     QgsExpressionContext *expressionContext() { return &mExpressionContext; }
 
-    /** Sets the expression context used to evaluate filter expressions.
+    /**
+     * Sets the expression context used to evaluate filter expressions.
      * \since QGIS 2.12
      * \see expressionContext
      * \see setFilterExpression
@@ -460,14 +468,16 @@ class CORE_EXPORT QgsFeatureRequest
      */
     QgsFeatureRequest &setOrderBy( const OrderBy &orderBy );
 
-    /** Set the maximum number of features to request.
+    /**
+     * Set the maximum number of features to request.
      * \param limit maximum number of features, or -1 to request all features.
      * \see limit()
      * \since QGIS 2.14
      */
     QgsFeatureRequest &setLimit( long limit );
 
-    /** Returns the maximum number of features to request, or -1 if no limit set.
+    /**
+     * Returns the maximum number of features to request, or -1 if no limit set.
      * \see setLimit
      * \since QGIS 2.14
      */
@@ -477,8 +487,10 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
     const Flags &flags() const { return mFlags; }
 
-    //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-    //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+    /**
+     * Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
+     * To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+     */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
     /**
@@ -493,11 +505,16 @@ class CORE_EXPORT QgsFeatureRequest
     //! Set a subset of attributes by names that will be fetched
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 
-    //! Set a simplification method for geometries that will be fetched
-    //! \since QGIS 2.2
+    /**
+     * Set a simplification method for geometries that will be fetched
+     * \since QGIS 2.2
+     */
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
-    //! Get simplification method for geometries that will be fetched
-    //! \since QGIS 2.2
+
+    /**
+     * Get simplification method for geometries that will be fetched
+     * \since QGIS 2.2
+     */
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
@@ -608,7 +625,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
 class QgsFeatureIterator;
 class QgsAbstractFeatureIterator;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class that can be used for any class that is capable of returning features
  * \since QGIS 2.4
  */

@@ -81,7 +81,8 @@ class QgsDb2GeomColumnTypeThread : public QThread
 };
 
 
-/** \class QgsDb2SourceSelect
+/**
+ * \class QgsDb2SourceSelect
  * \brief Dialog to create connections and add tables from Db2.
  *
  * This dialog allows the user to define and save connection information
@@ -118,7 +119,8 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.
     */
     void on_btnConnect_clicked();

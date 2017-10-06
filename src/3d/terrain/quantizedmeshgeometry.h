@@ -54,7 +54,8 @@ class QgsMapToPixel;
 
 class Map3D;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Stores vertex and index buffer for one tile of quantized mesh terrain.
  * \since QGIS 3.0
  */
@@ -70,11 +71,11 @@ class QuantizedMeshGeometry : public Qt3DRender::QGeometry
     static void downloadTileIfMissing( int tx, int ty, int tz );
 
   private:
-    Qt3DRender::QBuffer *mVertexBuffer;
-    Qt3DRender::QBuffer *mIndexBuffer;
-    Qt3DRender::QAttribute *mPositionAttribute;
-    Qt3DRender::QAttribute *mTexCoordAttribute;
-    Qt3DRender::QAttribute *mIndexAttribute;
+    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
+    Qt3DRender::QBuffer *mIndexBuffer = nullptr;
+    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
+    Qt3DRender::QAttribute *mTexCoordAttribute = nullptr;
+    Qt3DRender::QAttribute *mIndexAttribute = nullptr;
 };
 
 #endif // QUANTIZEDMESHGEOMETRY_H

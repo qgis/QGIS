@@ -94,7 +94,8 @@ class CORE_EXPORT QgsFeatureSource
      */
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
 
-    /** Returns the minimum value for an attribute column or an invalid variant in case of error.
+    /**
+     * Returns the minimum value for an attribute column or an invalid variant in case of error.
      * The base class implementation uses a non-optimised approach of looping through
      * all features in the source.
      * \see maximumValue()
@@ -102,7 +103,8 @@ class CORE_EXPORT QgsFeatureSource
      */
     virtual QVariant minimumValue( int fieldIndex ) const;
 
-    /** Returns the maximum value for an attribute column or an invalid variant in case of error.
+    /**
+     * Returns the maximum value for an attribute column or an invalid variant in case of error.
      * The base class implementation uses a non-optimised approach of looping through
      * all features in the source.
      * \see minimumValue()

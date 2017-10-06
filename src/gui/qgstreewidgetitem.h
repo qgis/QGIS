@@ -24,7 +24,8 @@
 #include <QObject>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsTreeWidgetItem
  * QTreeWidgetItem subclass with custom handling for item sorting.
  *
@@ -36,58 +37,67 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 {
   public:
 
-    /** Constructor for QgsTreeWidgetItem
+    /**
+     * Constructor for QgsTreeWidgetItem
      * \param view parent QTreeWidget view
      * \param type item type
      */
     explicit QgsTreeWidgetItem( QTreeWidget *view SIP_TRANSFERTHIS, int type = Type );
 
-    /** Constructor for QgsTreeWidgetItem
+    /**
+     * Constructor for QgsTreeWidgetItem
      * \param type item type
      */
     explicit QgsTreeWidgetItem( int type = Type );
 
-    /** Constructor for QgsTreeWidgetItem
+    /**
+     * Constructor for QgsTreeWidgetItem
      * \param strings list of strings containing text for each column in the item
      * \param type item type
      */
     QgsTreeWidgetItem( const QStringList &strings, int type = Type );
 
-    /** Constructor for QgsTreeWidgetItem
+    /**
+     * Constructor for QgsTreeWidgetItem
      * \param view parent QTreeWidget view
      * \param strings list of strings containing text for each column in the item
      * \param type item type
      */
     QgsTreeWidgetItem( QTreeWidget *view SIP_TRANSFERTHIS, const QStringList &strings, int type = Type );
 
-    /** Constructor for QgsTreeWidgetItem
+    /**
+     * Constructor for QgsTreeWidgetItem
      * \param view parent QTreeWidget view
      * \param after QTreeWidgetItem to place insert item after in the view
      * \param type item type
      */
     QgsTreeWidgetItem( QTreeWidget *view SIP_TRANSFERTHIS, QTreeWidgetItem *after, int type = Type );
 
-    /** Constructor for QgsTreeWidgetItem
+    /**
+     * Constructor for QgsTreeWidgetItem
      * \param parent QTreeWidgetItem item
      * \param type item type
      */
     explicit QgsTreeWidgetItem( QTreeWidgetItem *parent SIP_TRANSFERTHIS, int type = Type );
 
-    /** Constructor for QgsTreeWidgetItem
+    /**
+     * Constructor for QgsTreeWidgetItem
      * \param parent QTreeWidgetItem item
      * \param strings list of strings containing text for each column in the item
      * \param type item type
      */
     QgsTreeWidgetItem( QTreeWidgetItem *parent SIP_TRANSFERTHIS, const QStringList &strings, int type = Type );
 
-    /** Constructor for QgsTreeWidgetItem
+    /**
+     * Constructor for QgsTreeWidgetItem
      * \param parent QTreeWidgetItem item
      * \param after QTreeWidgetItem to place insert item after in the view
      * \param type item type
      */
     QgsTreeWidgetItem( QTreeWidgetItem *parent SIP_TRANSFERTHIS, QTreeWidgetItem *after, int type = Type );
 
-    /** Sets the custom sort data for a specified column. If set, this value will be used when
+    /**
+     * Sets the custom sort data for a specified column. If set, this value will be used when
      * sorting the item instead of the item's display text. If not set, the item's display
      * text will be used when sorting.
      * \param column column index
@@ -96,14 +106,16 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      */
     void setSortData( int column, const QVariant &value );
 
-    /** Returns the custom sort data for a specified column. If set, this value will be used when
+    /**
+     * Returns the custom sort data for a specified column. If set, this value will be used when
      * sorting the item instead of the item's display text. If not set, the item's display
      * text will be used when sorting.
      * \see setSortData()
      */
     QVariant sortData( int column ) const;
 
-    /** Sets a the item to display always on top of other items in the widget, regardless of the
+    /**
+     * Sets a the item to display always on top of other items in the widget, regardless of the
      * sort column and sort or display value for the item.
      * \param priority priority for sorting always on top items. Items with a lower priority will
      * be placed above items with a higher priority.
@@ -111,7 +123,8 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
      */
     void setAlwaysOnTopPriority( int priority );
 
-    /** Returns the item's priority when it is set to show always on top. Items with a lower priority will
+    /**
+     * Returns the item's priority when it is set to show always on top. Items with a lower priority will
      * be placed above items with a higher priority.
      * \returns priority, or -1 if item is not set to show always on top
      * \see setAlwaysOnTopPriority()
@@ -140,7 +153,8 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsTreeWidgetItemObject
  * Custom QgsTreeWidgetItem with extra signals when item is edited.
  * \since QGIS 3.0
@@ -151,7 +165,8 @@ class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetIt
 
   public:
 
-    /** Constructor for QgsTreeWidgetItemObject
+    /**
+     * Constructor for QgsTreeWidgetItemObject
      * \param type item type
      */
     explicit QgsTreeWidgetItemObject( int type = Type );

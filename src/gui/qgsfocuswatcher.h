@@ -20,7 +20,8 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFocusWatcher
  * A event filter for watching for focus events on a parent object. Usually QObjects must
  * subclass and override methods like focusOutEvent to handle focus events. Using this class
@@ -35,7 +36,8 @@ class GUI_EXPORT QgsFocusWatcher : public QObject
 
   public:
 
-    /** Constructor for QgsFocusWatcher.
+    /**
+     * Constructor for QgsFocusWatcher.
      * \param parent parent widget to catch focus events for. This class will automatically be
      * installed as an event filter for parent.
      */
@@ -45,7 +47,8 @@ class GUI_EXPORT QgsFocusWatcher : public QObject
 
   signals:
 
-    /** Emitted when parent object's focus changes.
+    /**
+     * Emitted when parent object's focus changes.
      * \param focused true if object gained focus, false if object lost focus
      */
     void focusChanged( bool focused );

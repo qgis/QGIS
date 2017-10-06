@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include "qgscomposertablev2.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A text table item that reads text from string lists
  * \since QGIS 2.10
 */
@@ -34,7 +35,8 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
   public:
     QgsComposerTextTableV2( QgsComposition *c SIP_TRANSFERTHIS, bool createUndoCommands );
 
-    /** Adds a row to the table
+    /**
+     * Adds a row to the table
      * \param row list of strings to use for each cell's value in the newly added row
      * \note If row is shorter than the number of columns in the table than blank cells
      * will be inserted at the end of the row. If row contains more strings then the number
@@ -43,7 +45,8 @@ class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
      */
     void addRow( const QStringList &row );
 
-    /** Sets the contents of the text table.
+    /**
+     * Sets the contents of the text table.
      * \param contents list of table rows
      * \see addRow
      */

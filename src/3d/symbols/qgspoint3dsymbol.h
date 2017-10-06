@@ -23,7 +23,8 @@
 #include "qgs3dutils.h"
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * 3D symbol that draws point geometries as 3D objects using one of the predefined shapes.
  *
  * \since QGIS 3.0

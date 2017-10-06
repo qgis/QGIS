@@ -32,7 +32,8 @@ struct ANALYSIS_EXPORT vertexData
   double z;
 };
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Interface class for interpolations. Interpolators take
 the vertices of a vector layer as base data. The z-Value
 can be an attribute or the z-coordinates in case of 25D types*/
@@ -60,7 +61,8 @@ class ANALYSIS_EXPORT QgsInterpolator
 
     virtual ~QgsInterpolator() = default;
 
-    /** Calculates interpolation value for map coordinates x, y
+    /**
+     * Calculates interpolation value for map coordinates x, y
        \param x x-coordinate (in map units)
        \param y y-coordinate (in map units)
        \param result out: interpolation result
@@ -72,7 +74,8 @@ class ANALYSIS_EXPORT QgsInterpolator
 
   protected:
 
-    /** Caches the vertex and value data from the provider. All the vertex data
+    /**
+     * Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory
     \returns 0 in case of success*/
     int cacheBaseData();
@@ -88,7 +91,8 @@ class ANALYSIS_EXPORT QgsInterpolator
   private:
     QgsInterpolator() = delete;
 
-    /** Helper method that adds the vertices of a geometry to the mCachedBaseData
+    /**
+     * Helper method that adds the vertices of a geometry to the mCachedBaseData
        \param geom the geometry
        \param zCoord true if the z-coordinate of the geometry is to be interpolated
        \param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)

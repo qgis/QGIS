@@ -30,7 +30,8 @@ class QgsMessageBar;
 class QMenu;
 class QAction;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing and editing authentication identities database
  */
 class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthAuthoritiesEditor

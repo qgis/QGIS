@@ -26,7 +26,9 @@ class QgsMapHitTest
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 %Docstring
-\param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+ \param settings Map settings used to evaluate symbols
+ \param polygon Polygon geometry to refine the hit test
+ \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
 %End
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );

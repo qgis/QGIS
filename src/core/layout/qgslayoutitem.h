@@ -267,7 +267,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
   protected:
 
-    /** Draws a debugging rectangle of the item's current bounds within the specified
+    /**
+     * Draws a debugging rectangle of the item's current bounds within the specified
      * painter.
      * @param painter destination QPainter
      */

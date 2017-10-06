@@ -57,7 +57,7 @@ QgsPostgresListener::~QgsPostgresListener()
 
 void QgsPostgresListener::run()
 {
-  PGconn *conn;
+  PGconn *conn = nullptr;
   conn = PQconnectdb( mConnString.toLocal8Bit() );
 
   PGresult *res = PQexec( conn, "LISTEN qgis" );

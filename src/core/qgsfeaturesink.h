@@ -113,7 +113,7 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
 
   private:
 
-    QgsFeatureSink *mSink;
+    QgsFeatureSink *mSink = nullptr;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSink * )

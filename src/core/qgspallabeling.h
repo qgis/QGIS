@@ -73,7 +73,8 @@ class QgsVectorLayerDiagramProvider;
 class QgsExpressionContext;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLabelPosition
  */
 class CORE_EXPORT QgsLabelPosition
@@ -114,7 +115,8 @@ class CORE_EXPORT QgsLabelPosition
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPalLayerSettings
  */
 class CORE_EXPORT QgsPalLayerSettings
@@ -127,7 +129,8 @@ class CORE_EXPORT QgsPalLayerSettings
     //! copy operator - only copies the permanent members
     QgsPalLayerSettings &operator=( const QgsPalLayerSettings &s );
 
-    /** Placement modes which determine how label candidates are generated for a feature.
+    /**
+     * Placement modes which determine how label candidates are generated for a feature.
      */
     //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum Placement
@@ -160,8 +163,10 @@ class CORE_EXPORT QgsPalLayerSettings
       BottomRight, //!< Label on bottom right of point
     };
 
-    //! Behavior modifier for label offset and distance, only applies in some
-    //! label placement modes.
+    /**
+     * Behavior modifier for label offset and distance, only applies in some
+     * label placement modes.
+     */
     //TODO QGIS 3.0 - move to QgsLabelingEngine
     enum OffsetType
     {
@@ -169,7 +174,8 @@ class CORE_EXPORT QgsPalLayerSettings
       FromSymbolBounds, //!< Offset distance applies from rendered symbol bounds
     };
 
-    /** Line placement flags, which control how candidates are generated for a linear feature.
+    /**
+     * Line placement flags, which control how candidates are generated for a linear feature.
      */
     //TODO QGIS 3.0 - move to QgsLabelingEngine, rename to LinePlacementFlag, use Q_DECLARE_FLAGS to make
     //LinePlacementFlags type, and replace use of pal::LineArrangementFlag
@@ -223,7 +229,8 @@ class CORE_EXPORT QgsPalLayerSettings
                                will be drawn with right alignment*/
     };
 
-    /** Valid obstacle types, which affect how features within the layer will act as obstacles
+    /**
+     * Valid obstacle types, which affect how features within the layer will act as obstacles
      * for labels.
      */
     //TODO QGIS 3.0 - Move to QgsLabelingEngine
@@ -364,7 +371,8 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
-    /** Whether to draw labels for this layer. For some layers it may be desirable
+    /**
+     * Whether to draw labels for this layer. For some layers it may be desirable
      * to register their features as obstacles for other labels without requiring
      * labels to be drawn for the layer itself. In this case drawLabels can be set
      * to false and obstacle set to true, which will result in the layer acting
@@ -723,7 +731,8 @@ class CORE_EXPORT QgsPalLayerSettings
     // called from register feature hook
     void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f = nullptr, QgsRenderContext *context = nullptr );
 
-    /** Register a feature for labeling.
+    /**
+     * Register a feature for labeling.
      * \param f feature to label
      * \param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
@@ -739,43 +748,50 @@ class CORE_EXPORT QgsPalLayerSettings
                           QgsLabelFeature **labelFeature SIP_PYARGREMOVE = nullptr,
                           QgsGeometry obstacleGeometry SIP_PYARGREMOVE = QgsGeometry() );
 
-    /** Read settings from a DOM element
+    /**
+     * Read settings from a DOM element
      * \since QGIS 2.12
      */
     void readXml( QDomElement &elem, const QgsReadWriteContext &context );
 
-    /** Write settings into a DOM element
+    /**
+     * Write settings into a DOM element
      * \since QGIS 2.12
      */
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context );
 
-    /** Returns a reference to the label's property collection, used for data defined overrides.
+    /**
+     * Returns a reference to the label's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
-    /** Returns a reference to the label's property collection, used for data defined overrides.
+    /**
+     * Returns a reference to the label's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      * \note not available in Python bindings
      */
     const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
-    /** Sets the label's property collection, used for data defined overrides.
+    /**
+     * Sets the label's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
      * \see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
-    /** Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
+    /**
+     * Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
      * \see setFormat()
      * \since QGIS 3.0
      */
     const QgsTextFormat &format() const { return mFormat; }
 
-    /** Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
+    /**
+     * Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
      * \param format label text format
      * \see format()
      * \since QGIS 3.0
@@ -800,7 +816,8 @@ class CORE_EXPORT QgsPalLayerSettings
 
     friend class QgsVectorLayer;  // to allow calling readFromLayerCustomProperties()
 
-    /** Reads labeling configuration from layer's custom properties to support loading of simple labeling from QGIS 2.x projects.
+    /**
+     * Reads labeling configuration from layer's custom properties to support loading of simple labeling from QGIS 2.x projects.
      * \since QGIS 3.0
      */
     void readFromLayerCustomProperties( QgsVectorLayer *layer );
@@ -849,11 +866,13 @@ class CORE_EXPORT QgsPalLayerSettings
 
     void parseDropShadow( QgsRenderContext &context );
 
-    /** Checks if a feature is larger than a minimum size (in mm)
+    /**
+     * Checks if a feature is larger than a minimum size (in mm)
     \returns true if above size, false if below*/
     bool checkMinimumSizeMM( const QgsRenderContext &ct, const QgsGeometry &geom, double minSize ) const;
 
-    /** Registers a feature as an obstacle only (no label rendered)
+    /**
+     * Registers a feature as an obstacle only (no label rendered)
      */
     void registerObstacleFeature( QgsFeature &f, QgsRenderContext &context, QgsLabelFeature **obstacleFeature, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
@@ -877,7 +896,8 @@ class CORE_EXPORT QgsPalLayerSettings
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsLabelCandidate
 {
@@ -891,7 +911,8 @@ class CORE_EXPORT QgsLabelCandidate
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class that stores computed placement from labeling engine.
  * \since QGIS 2.4
  */
@@ -923,21 +944,25 @@ class CORE_EXPORT QgsLabelingResults
     friend class QgsVectorLayerDiagramProvider;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPalLabeling
  */
 class CORE_EXPORT QgsPalLabeling
 {
   public:
 
-    //! called to find out whether the layer is used for labeling
-    //! \since QGIS 2.4
+    /**
+     * called to find out whether the layer is used for labeling
+     * \since QGIS 2.4
+     */
     static bool staticWillUseLayer( QgsVectorLayer *layer );
 
     //! \note not available in Python bindings
     static void drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr ) SIP_SKIP;
 
-    /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
+    /**
+     * Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * \param geometry geometry to prepare
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
@@ -947,7 +972,8 @@ class CORE_EXPORT QgsPalLabeling
      */
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() ) SIP_FACTORY;
 
-    /** Checks whether a geometry requires preparation before registration with PAL
+    /**
+     * Checks whether a geometry requires preparation before registration with PAL
      * \param geometry geometry to prepare
      * \param context render context
      * \param ct coordinate transform, or invalid transform if no transformation required
@@ -957,7 +983,8 @@ class CORE_EXPORT QgsPalLabeling
      */
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
 
-    /** Splits a text string to a list of separate lines, using a specified wrap character.
+    /**
+     * Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
      * \param text text string to split
      * \param wrapCharacter additional character to wrap on
@@ -966,7 +993,8 @@ class CORE_EXPORT QgsPalLabeling
      */
     static QStringList splitToLines( const QString &text, const QString &wrapCharacter );
 
-    /** Splits a text string to a list of graphemes, which are the smallest allowable character
+    /**
+     * Splits a text string to a list of graphemes, which are the smallest allowable character
      * divisions in the string. This accounts for scripts were individual characters are not
      * allowed to be split apart (e.g., Arabic and Indic based scripts)
      * \param text string to split
@@ -999,7 +1027,8 @@ class CORE_EXPORT QgsPalLabeling
     friend class QgsVectorLayerLabelProvider; // to allow calling the static methods above
     friend class QgsDxfExport;                // to allow calling the static methods above
 
-    /** Checks whether a geometry exceeds the minimum required size for a geometry to be labeled.
+    /**
+     * Checks whether a geometry exceeds the minimum required size for a geometry to be labeled.
      * \param context render context
      * \param geom geometry
      * \param minSize minimum size for geometry

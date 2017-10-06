@@ -62,7 +62,8 @@ class TestSignalReceiver : public QObject
     }
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
 class TestQgsVectorLayer : public QObject

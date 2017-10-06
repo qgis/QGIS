@@ -30,7 +30,8 @@
 class QgsVectorLayer;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPropertyOverrideButton
  * A button for controlling property overrides which may apply to a widget.
  *

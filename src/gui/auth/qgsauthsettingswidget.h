@@ -23,7 +23,8 @@
 
 #include <QWidget>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for entering authentication credentials both in the form username/password
  * and by using QGIS Authentication Database and its authentication configurations.
  *

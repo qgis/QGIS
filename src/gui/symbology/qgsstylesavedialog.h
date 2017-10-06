@@ -25,7 +25,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief a dialog for setting properties of a newly saved style.
  * \since QGIS 3.0
 */
@@ -35,7 +36,8 @@ class GUI_EXPORT QgsStyleSaveDialog: public QDialog, private Ui::QgsStyleSaveDia
 
   public:
 
-    /** Constructor for QgsSymbolSaveDialog
+    /**
+     * Constructor for QgsSymbolSaveDialog
      * \param parent parent widget
      * \param type the QgsStyle entity type being saved
      */

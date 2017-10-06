@@ -66,12 +66,14 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
      */
     bool headersSent() const override;
 
-    /** Set the http status code
+    /**
+     * Set the http status code
      * \param code HTTP status code value
      */
     void setStatusCode( int code ) override;
 
-    /** Return the http status code
+    /**
+     * Return the http status code
      */
     int statusCode() const override { return mStatusCode; }
 

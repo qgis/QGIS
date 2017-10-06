@@ -23,7 +23,8 @@
 #include "qgs3dutils.h"
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * 3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).
  * \since QGIS 3.0
  */

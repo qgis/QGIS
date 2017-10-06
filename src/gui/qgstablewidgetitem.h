@@ -19,7 +19,8 @@
 #include <QTableWidget>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This can be used like a regular QTableWidgetItem with the difference that a
  * specific role can be set to sort.
  */

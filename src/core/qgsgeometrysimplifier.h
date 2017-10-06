@@ -25,7 +25,8 @@ class QgsRectangle;
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class for simplify geometries using a specific algorithm
  */
 class CORE_EXPORT QgsAbstractGeometrySimplifier
@@ -46,7 +47,8 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 
 /***************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
  *
  * Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.

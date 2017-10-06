@@ -23,7 +23,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Animated icon is keeping an animation running if there are listeners connected to frameChanged
 */
 class CORE_EXPORT QgsAnimatedIcon : public QObject

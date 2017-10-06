@@ -28,7 +28,8 @@ class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsRasterRendererWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRendererRasterPropertiesWidget
  */
 class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererRasterPropsWidgetBase
@@ -45,7 +46,8 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
      */
     QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+    /**
+     * Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * \param canvas map canvas
      * \since QGIS 2.12

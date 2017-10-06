@@ -27,7 +27,8 @@
 #include <qgscacheindexfeatureid.h>
 #include <QDebug>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the vector layer cache
  *
  * @see QgsVectorLayerCache

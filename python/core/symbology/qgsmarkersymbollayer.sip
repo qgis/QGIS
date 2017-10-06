@@ -123,6 +123,7 @@ Returns a list of all available shape types.
 
     bool prepareMarkerShape( Shape shape );
 %Docstring
+ Prepares the layer for drawing the specified shape (QPolygonF version)
 .. note::
 
    not available in Python bindings
@@ -131,6 +132,7 @@ Returns a list of all available shape types.
 
     bool prepareMarkerPath( Shape symbol );
 %Docstring
+ Prepares the layer for drawing the specified shape (QPainterPath version)
 .. note::
 
    not available in Python bindings
@@ -399,6 +401,7 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
  :return: true in case of success, false if cache image size too large
  :rtype: bool
 %End
+
 
 
 

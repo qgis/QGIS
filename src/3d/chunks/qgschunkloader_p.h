@@ -29,7 +29,8 @@
 
 #include "qgschunkqueuejob_p.h"
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Base class for jobs that load chunks
  * \since QGIS 3.0
  */
@@ -45,14 +46,17 @@ class QgsChunkLoader : public QgsChunkQueueJob
 
     virtual ~QgsChunkLoader() = default;
 
-    //! Run in main thread to use loaded data.
-    //! Returns entity attached to the given parent entity in disabled state
+    /**
+     * Run in main thread to use loaded data.
+     * Returns entity attached to the given parent entity in disabled state
+     */
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) = 0;
 
 };
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Factory for chunk loaders for a particular type of entity
  * \since QGIS 3.0
  */

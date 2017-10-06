@@ -45,7 +45,8 @@ class QgsVectorLayer;
 class QgsAnnotation;
 class QgsMapRendererCustomPainterJob;
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  \class QgsComposerMap
  *  \brief Object representing map window.
  */
@@ -64,7 +65,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerMap; }
 
-    /** Scaling modes used for the serial rendering (atlas)
+    /**
+     * Scaling modes used for the serial rendering (atlas)
      */
     enum AtlasScalingMode
     {
@@ -78,14 +80,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
        */
       Predefined,
 
-      /** The extent is adjusted so that each feature is fully visible.
+      /**
+       * The extent is adjusted so that each feature is fully visible.
        * A margin is applied around the center \see setAtlasMargin
        * \note This mode is only valid for polygon or line atlas coverage layers
       */
       Auto
     };
 
-    /** \brief Draw to paint device
+    /**
+     * \brief Draw to paint device
      *  \param painter painter
      *  \param extent map extent
      *  \param size size in scene coordinates
@@ -96,7 +100,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
-    /** Return map settings that would be used for drawing of the map
+    /**
+     * Return map settings that would be used for drawing of the map
      *  \since QGIS 2.6 */
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
 
@@ -109,13 +114,15 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Resizes an item in x- and y direction (canvas coordinates)
     void resize( double dx, double dy );
 
-    /** Move content of map
+    /**
+     * Move content of map
      * \param dx move in x-direction (item and canvas coordinates)
      * \param dy move in y-direction (item and canvas coordinates)
      */
     void moveContent( double dx, double dy ) override;
 
-    /** Zoom content of item. Does nothing per default (but implemented in composer map)
+    /**
+     * Zoom content of item. Does nothing per default (but implemented in composer map)
      * \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
      * \param point item point for zoom center
      * \param mode zoom mode
@@ -140,7 +147,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void setNewScale( double scaleDenominator, bool forceUpdate = true );
 
-    /** Sets new extent for the map. This method may change the width or height of the map
+    /**
+     * Sets new extent for the map. This method may change the width or height of the map
      * item to ensure that the extent exactly matches the specified extent, with no
      * overlap or margin. This method implicitly alters the map scale.
      * \param extent new extent for the map
@@ -148,7 +156,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void setNewExtent( const QgsRectangle &extent );
 
-    /** Zooms the map so that the specified extent is fully visible within the map item.
+    /**
+     * Zooms the map so that the specified extent is fully visible within the map item.
      * This method will not change the width or height of the map, and may result in
      * an overlap or margin from the specified extent. This method implicitly alters the
      * map scale.
@@ -158,12 +167,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void zoomToExtent( const QgsRectangle &extent );
 
-    /** Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
+    /**
+     * Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
     void setNewAtlasFeatureExtent( const QgsRectangle &extent );
 
-    /** Returns a pointer to the current map extent, which is either the original user specified
+    /**
+     * Returns a pointer to the current map extent, which is either the original user specified
      * extent or the temporary atlas-driven feature extent depending on the current atlas state
      * of the composition. Both a const and non-const version are included.
      * \returns pointer to current map extent
@@ -254,7 +265,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Stores the current layer styles into style overrides. \since QGIS 2.8
     void storeCurrentLayerStyles();
 
-    /** Whether the map should follow a map theme. If true, the layers and layer styles
+    /**
+     * Whether the map should follow a map theme. If true, the layers and layer styles
      * will be used from given preset name (configured with setFollowVisibilityPresetName() method).
      * This means when preset's settings are changed, the new settings are automatically
      * picked up next time when rendering, without having to explicitly update them.
@@ -265,16 +277,19 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * \since QGIS 2.16 */
     bool followVisibilityPreset() const { return mFollowVisibilityPreset; }
 
-    /** Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
+    /**
+     * Sets whether the map should follow a map theme. See followVisibilityPreset() for more details.
      * \since QGIS 2.16 */
     void setFollowVisibilityPreset( bool follow ) { mFollowVisibilityPreset = follow; }
 
-    /** Preset name that decides which layers and layer styles are used for map rendering. It is only
+    /**
+     * Preset name that decides which layers and layer styles are used for map rendering. It is only
      * used when followVisibilityPreset() returns true.
      * \since QGIS 2.16 */
     QString followVisibilityPresetName() const { return mFollowVisibilityPresetName; }
 
-    /** Sets preset name for map rendering. See followVisibilityPresetName() for more details.
+    /**
+     * Sets preset name for map rendering. See followVisibilityPresetName() for more details.
      * \since QGIS 2.16 */
     void setFollowVisibilityPresetName( const QString &name ) { mFollowVisibilityPresetName = name; }
 
@@ -289,19 +304,22 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! True if composer map contains layers with blend modes or flattened layers for vectors
     bool containsAdvancedEffects() const;
 
-    /** Stores state in Dom node
+    /**
+     * Stores state in Dom node
      * \param elem is Dom element corresponding to 'Composer' tag
      * \param doc Dom document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** Sets state from Dom document
+    /**
+     * Sets state from Dom document
      * \param itemElem is Dom node corresponding to 'ComposerMap' tag
      * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
-    /** Returns the map item's grid stack, which is used to control how grids
+    /**
+     * Returns the map item's grid stack, which is used to control how grids
      * are drawn over the map's contents.
      * \returns pointer to grid stack
      * \see grid()
@@ -309,14 +327,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     QgsComposerMapGridStack *grids() { return mGridStack; }
 
-    /** Returns the map item's first grid. This is a convenience function.
+    /**
+     * Returns the map item's first grid. This is a convenience function.
      * \returns pointer to first grid for map item
      * \see grids()
      * \since QGIS 2.5
      */
     QgsComposerMapGrid *grid();
 
-    /** Returns the map item's overview stack, which is used to control how overviews
+    /**
+     * Returns the map item's overview stack, which is used to control how overviews
      * are drawn over the map's contents.
      * \returns pointer to overview stack
      * \see overview()
@@ -324,7 +344,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     QgsComposerMapOverviewStack *overviews() { return mOverviewStack; }
 
-    /** Returns the map item's first overview. This is a convenience function.
+    /**
+     * Returns the map item's first overview. This is a convenience function.
      * \returns pointer to first overview for map item
      * \see overviews()
      * \since QGIS 2.5
@@ -369,25 +390,29 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Returns the conversion factor map units -> mm
     double mapUnitsToMM() const;
 
-    /** Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
+    /**
+     * Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
 
-    /** Returns whether the map extent is set to follow the current atlas feature.
+    /**
+     * Returns whether the map extent is set to follow the current atlas feature.
      * \returns true if map will follow the current atlas feature.
      * \see setAtlasDriven
      * \see atlasScalingMode
      */
     bool atlasDriven() const { return mAtlasDriven; }
 
-    /** Sets whether the map extent will follow the current atlas feature.
+    /**
+     * Sets whether the map extent will follow the current atlas feature.
      * \param enabled set to true if the map extents should be set by the current atlas feature.
      * \see atlasDriven
      * \see setAtlasScalingMode
      */
     void setAtlasDriven( bool enabled );
 
-    /** Returns the current atlas scaling mode. This controls how the map's extents
+    /**
+     * Returns the current atlas scaling mode. This controls how the map's extents
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
      * \returns the current scaling mode
@@ -397,7 +422,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     AtlasScalingMode atlasScalingMode() const { return mAtlasScalingMode; }
 
-    /** Sets the current atlas scaling mode. This controls how the map's extents
+    /**
+     * Sets the current atlas scaling mode. This controls how the map's extents
      * are calculated for the current atlas feature when an atlas composition
      * is enabled.
      * \param mode atlas scaling mode to set
@@ -407,7 +433,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void setAtlasScalingMode( AtlasScalingMode mode ) { mAtlasScalingMode = mode; }
 
-    /** Returns the margin size (percentage) used when the map is in atlas mode.
+    /**
+     * Returns the margin size (percentage) used when the map is in atlas mode.
      * \param valueType controls whether the returned value is the user specified atlas margin,
      * or the current evaluated atlas margin (which may be affected by data driven atlas margin
      * settings).
@@ -418,7 +445,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     double atlasMargin( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
 
-    /** Sets the margin size (percentage) used when the map is in atlas mode.
+    /**
+     * Sets the margin size (percentage) used when the map is in atlas mode.
      * \param margin size in percentage to leave around the atlas feature's extent
      * \note this is only used if atlasScalingMode() is Auto.
      * \see atlasScalingMode
@@ -426,14 +454,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
-    /** Get the number of layers that this item requires for exporting as layers
+    /**
+     * Get the number of layers that this item requires for exporting as layers
      * \returns 0 if this item is to be placed on the same layer as the previous item,
      * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
      * \since QGIS 2.4
      */
     int numberExportLayers() const override;
 
-    /** Returns a polygon representing the current visible map extent, considering map extents and rotation.
+    /**
+     * Returns a polygon representing the current visible map extent, considering map extents and rotation.
      * If the map rotation is 0, the result is the same as currentMapExtent
      * \returns polygon with the four corner points representing the visible map extent. The points are
      * clockwise, starting at the top-left point
@@ -450,7 +480,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Transforms map coordinates to item coordinates (considering rotation and move offset)
     QPointF mapToItemCoords( QPointF mapCoords ) const;
 
-    /** Calculates the extent to request and the yShift of the top-left point in case of rotation.
+    /**
+     * Calculates the extent to request and the yShift of the top-left point in case of rotation.
      * \since QGIS 2.6 */
     void requestedExtent( QgsRectangle &extent ) const;
 
@@ -465,7 +496,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Is emitted when the map has been prepared for atlas rendering, just before actual rendering
     void preparedForAtlas();
 
-    /** Emitted when layer style overrides are changed... a means to let
+    /**
+     * Emitted when layer style overrides are changed... a means to let
      * associated legend items know they should update
      * \since QGIS 2.10
      */
@@ -541,7 +573,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Map rotation
     double mMapRotation = 0;
 
-    /** Temporary evaluated map rotation. Data defined rotation may mean this value
+    /**
+     * Temporary evaluated map rotation. Data defined rotation may mean this value
      * differs from mMapRotation*/
     double mEvaluatedMapRotation = 0;
 
@@ -555,12 +588,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Stored style names (value) to be used with particular layer IDs (key) instead of default style
     QMap<QString, QString> mLayerStyleOverrides;
 
-    /** Whether layers and styles should be used from a preset (preset name is stored
+    /**
+     * Whether layers and styles should be used from a preset (preset name is stored
      * in mVisibilityPresetName and may be overridden by data-defined expression).
      * This flag has higher priority than mKeepLayerSet. */
     bool mFollowVisibilityPreset = false;
 
-    /** Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
+    /**
+     * Map theme name to be used for map's layers and styles in case mFollowVisibilityPreset
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
 
@@ -584,7 +619,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
     bool mDrawAnnotations = true;
 
-    /** Adjusts an extent rectangle to match the provided item width and height, so that extent
+    /**
+     * Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */
     void adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle &extent ) const;
 
@@ -616,7 +652,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! MapPolygon variant using a given extent
     void mapPolygon( const QgsRectangle &extent, QPolygonF &poly ) const;
 
-    /** Scales a composer map shift (in MM) and rotates it by mRotation
+    /**
+     * Scales a composer map shift (in MM) and rotates it by mRotation
         \param xShift in: shift in x direction (in item units), out: xShift in map units
         \param yShift in: shift in y direction (in item units), out: yShift in map units*/
     void transformShift( double &xShift, double &yShift ) const;
@@ -638,7 +675,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Test if a part of the copmosermap needs to be drawn, considering mCurrentExportLayer
     bool shouldDrawPart( PartType part ) const;
 
-    /** Refresh the map's extents, considering data defined extent, scale and rotation
+    /**
+     * Refresh the map's extents, considering data defined extent, scale and rotation
      * \param context expression context for evaluating data defined map parameters
      * \since QGIS 2.5
      */

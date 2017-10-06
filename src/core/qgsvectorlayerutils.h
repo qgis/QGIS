@@ -20,7 +20,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsVectorLayerUtils
  * \brief Contains utility methods for working with QgsVectorLayers.
  *

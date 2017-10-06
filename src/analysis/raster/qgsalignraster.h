@@ -29,7 +29,8 @@ class QgsRectangle;
 typedef void *GDALDatasetH SIP_SKIP;
 
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \brief QgsAlignRaster takes one or more raster layers and warps (resamples) them
  * so they have the same:
  * - coordinate reference system
@@ -103,8 +104,10 @@ class ANALYSIS_EXPORT QgsAlignRaster
     };
 
 
-    //! Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
-    //! \note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
+    /**
+     * Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
+     * \note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
+     */
     enum ResampleAlg
     {
       RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
@@ -151,9 +154,12 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Helper struct to be sub-classed for progress reporting
     struct ProgressHandler
     {
-      //! Method to be overridden for progress reporting.
-      //! \param complete Overall progress of the alignment operation
-      //! \returns false if the execution should be canceled, true otherwise
+
+      /**
+       * Method to be overridden for progress reporting.
+       * \param complete Overall progress of the alignment operation
+       * \returns false if the execution should be canceled, true otherwise
+       */
       virtual bool progress( double complete ) = 0;
 
       virtual ~ProgressHandler() = default;
@@ -184,47 +190,71 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Get the output CRS in WKT format
     QString destinationCrs() const { return mCrsWkt; }
 
-    //! Configure clipping extent (region of interest).
-    //! No extra clipping is done if the rectangle is null
+    /**
+     * Configure clipping extent (region of interest).
+     * No extra clipping is done if the rectangle is null
+     */
     void setClipExtent( double xmin, double ymin, double xmax, double ymax );
-    //! Configure clipping extent (region of interest).
-    //! No extra clipping is done if the rectangle is null
+
+    /**
+     * Configure clipping extent (region of interest).
+     * No extra clipping is done if the rectangle is null
+     */
     void setClipExtent( const QgsRectangle &extent );
-    //! Get clipping extent (region of interest).
-    //! No extra clipping is done if the rectangle is null
+
+    /**
+     * Get clipping extent (region of interest).
+     * No extra clipping is done if the rectangle is null
+     */
     QgsRectangle clipExtent() const;
 
-    //! Set destination CRS, cell size and grid offset from a raster file.
-    //! The user may provide custom values for some of the parameters - in such case
-    //! only the remaining parameters are calculated.
-    //!
-    //! If default CRS is used, the parameters are set according to the raster file's geo-transform.
-    //! If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
-    //! to determine suitable defaults for cell size and grid offset.
-    //!
-    //! \returns true on success (may fail if it is not possible to reproject raster to given CRS)
+    /**
+     * Set destination CRS, cell size and grid offset from a raster file.
+     * The user may provide custom values for some of the parameters - in such case
+     * only the remaining parameters are calculated.
+     *
+     * If default CRS is used, the parameters are set according to the raster file's geo-transform.
+     * If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
+     * to determine suitable defaults for cell size and grid offset.
+     *
+     * \returns true on success (may fail if it is not possible to reproject raster to given CRS)
+     */
     bool setParametersFromRaster( const RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
-    //! Overridden variant for convenience, taking filename instead RasterInfo object.
-    //! See the other variant for details.
+
+    /**
+     * Overridden variant for convenience, taking filename instead RasterInfo object.
+     * See the other variant for details.
+     */
     bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 
-    //! Determine destination extent from the input rasters and calculate derived values
-    //! \returns true on success, sets error on error (see errorMessage())
+    /**
+     * Determine destination extent from the input rasters and calculate derived values
+     * \returns true on success, sets error on error (see errorMessage())
+     */
     bool checkInputParameters();
 
-    //! Return expected size of the resulting aligned raster
-    //! \note first need to run checkInputParameters() which returns with success
+    /**
+     * Return expected size of the resulting aligned raster
+     * \note first need to run checkInputParameters() which returns with success
+     */
     QSize alignedRasterSize() const;
-    //! Return expected extent of the resulting aligned raster
-    //! \note first need to run checkInputParameters() which returns with success
+
+    /**
+     * Return expected extent of the resulting aligned raster
+     * \note first need to run checkInputParameters() which returns with success
+     */
     QgsRectangle alignedRasterExtent() const;
 
-    //! Run the alignment process
-    //! \returns true on success, sets error on error (see errorMessage())
+    /**
+     * Run the alignment process
+     * \returns true on success, sets error on error (see errorMessage())
+     */
     bool run();
 
-    //! Return error from a previous run() call.
-    //! Error message is empty if run() succeeded (returned true)
+    /**
+     * Return error from a previous run() call.
+     * Error message is empty if run() succeeded (returned true)
+     */
     QString errorMessage() const { return mErrorMessage; }
 
     //! write contents of the object to standard error stream - for debugging
@@ -261,8 +291,10 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Destination grid offset - expected to be in interval <0,cellsize)
     double mGridOffsetX, mGridOffsetY;
 
-    //! Optional clip extent: sets "requested area" which be extended to fit the raster grid.
-    //! Clipping not done if all coords are zeroes.
+    /**
+     * Optional clip extent: sets "requested area" which be extended to fit the raster grid.
+     * Clipping not done if all coords are zeroes.
+     */
     double mClipExtent[4];
 
     // derived data from other members

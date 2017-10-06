@@ -78,7 +78,8 @@ class QgsWFSProgressDialog: public QProgressDialog
     QPushButton *mHide = nullptr;
 };
 
-/** This class runs one (or several if paging is needed) GetFeature request,
+/**
+ * This class runs one (or several if paging is needed) GetFeature request,
     process the results as soon as they arrived and notify them to the
     serializer to fill the case, and to the iterator that subscribed
     Instances of this class may be run in a dedicated thread (QgsWFSThreadedFeatureDownloader)
@@ -92,7 +93,8 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     explicit QgsWFSFeatureDownloader( QgsWFSSharedData *shared );
     ~QgsWFSFeatureDownloader();
 
-    /** Start the download.
+    /**
+     * Start the download.
      * \param serializeFeatures whether to notify the sharedData serializer.
      * \param maxFeatures user-defined limit of features to download. Overrides
      *                    the one defined in the URI. Typically by the QgsWFSProvider,
@@ -142,7 +144,8 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     //! Progress dialog
     QgsWFSProgressDialog *mProgressDialog = nullptr;
 
-    /** If the progress dialog should be shown immediately, or if it should be
+    /**
+     * If the progress dialog should be shown immediately, or if it should be
         let to QProgressDialog logic to decide when to show it */
     bool mProgressDialogShowImmediately;
     bool mSupportsPaging;
@@ -183,7 +186,8 @@ class QgsWFSThreadedFeatureDownloader: public QThread
 
 class QgsWFSFeatureSource;
 
-/** Feature iterator. The iterator will internally both subscribe to a live
+/**
+ * Feature iterator. The iterator will internally both subscribe to a live
     downloader to receive 'fresh' features, and to a iterator on the features
     already cached. It will actually start by consuming cache features for
     initial feedback, and then process the live downloaded features. */

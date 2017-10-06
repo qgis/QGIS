@@ -21,7 +21,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class HalfEdge
  * \note Not available in Python bindings.
  */

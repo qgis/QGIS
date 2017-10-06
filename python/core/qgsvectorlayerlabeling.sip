@@ -56,7 +56,8 @@ Get list of sub-providers within the layer's labeling.
 
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 %Docstring
-they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
+ Get associated label settings. In case of multiple sub-providers with different settings,
+ they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
  :rtype: QgsPalLayerSettings
 %End
 

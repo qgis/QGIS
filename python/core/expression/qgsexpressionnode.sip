@@ -113,6 +113,7 @@ Takes ownership of the provided node
 
         bool hasNamedNodes() const;
 %Docstring
+ Returns true if list contains any named nodes
 .. versionadded:: 2.16
  :rtype: bool
 %End
@@ -133,6 +134,7 @@ Takes ownership of the provided node
 
         QStringList names() const;
 %Docstring
+ Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
 .. versionadded:: 2.16
  :rtype: list of str
 %End

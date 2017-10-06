@@ -29,7 +29,8 @@ class QgsTransformEffect;
 class QgsColorEffect;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPaintEffectWidget
  * \brief Base class for effect properties widgets.
  *
@@ -62,7 +63,8 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 
 #include "ui_widget_drawsource.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDrawSourceWidget
  */
 class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::WidgetDrawSource
@@ -94,7 +96,8 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
 
 #include "ui_widget_blur.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsBlurWidget
  */
 class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::WidgetBlur
@@ -128,7 +131,8 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 
 #include "ui_widget_shadoweffect.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsShadowEffectWidget
  */
 class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetShadowEffect
@@ -163,7 +167,8 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
 
 #include "ui_widget_glow.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGlowWidget
  */
 class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::WidgetGlow
@@ -198,7 +203,8 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
 
 #include "ui_widget_transform.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsTransformWidget
  */
 class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::WidgetTransform
@@ -237,7 +243,8 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
 
 #include "ui_widget_coloreffects.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorEffectWidget
  */
 class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetColorEffect

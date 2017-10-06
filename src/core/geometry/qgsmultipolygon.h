@@ -20,7 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgsmultisurface.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiPolygonV2
  * \brief Multi polygon geometry collection.
  * \since QGIS 2.10
@@ -39,7 +40,8 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
-    /** Returns the geometry converted to the more generic curve type QgsMultiSurface
+    /**
+     * Returns the geometry converted to the more generic curve type QgsMultiSurface
     \returns the converted geometry. Caller takes ownership*/
     QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 

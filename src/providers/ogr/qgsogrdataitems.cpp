@@ -612,7 +612,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     }
     // Handle collections
     // Check if the layer has sublayers by comparing the extension
-    QgsDataItem *item;
+    QgsDataItem *item = nullptr;
     if ( ! ogrSupportedDbLayersExtensions.contains( suffix ) )
     {
       item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );

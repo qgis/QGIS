@@ -44,7 +44,8 @@ class TestSignalReceiver : public QObject
     }
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
  */
 class TestQgsMapLayer : public QObject

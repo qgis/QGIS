@@ -26,7 +26,8 @@
 #include "qgis_gui.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Selector widget for authentication configs
  */
 class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfigSelect
@@ -101,7 +102,8 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
 
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper of select widget to edit an authcfg in a data source URI
  */
 class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfigUriEdit

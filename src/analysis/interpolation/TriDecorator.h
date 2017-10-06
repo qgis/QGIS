@@ -23,7 +23,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.).
  * \note Not available in Python bindings.
 */

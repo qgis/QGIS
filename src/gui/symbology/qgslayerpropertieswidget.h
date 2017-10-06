@@ -34,7 +34,8 @@ class SymbolLayerItem;
 #include <QStandardItemModel>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayerPropertiesWidget
  */
 class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
@@ -44,14 +45,16 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
   public:
     QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
      * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      * \since QGIS 3.0
      */

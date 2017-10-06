@@ -39,7 +39,8 @@ enum AltitudeBinding
 };
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Miscellaneous utility functions used from 3D code.
  * \since QGIS 3.0
  */

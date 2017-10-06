@@ -24,7 +24,8 @@ email                : ersts@amnh.org
 class QDomDocument;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Defines the list of pixel values to be considered as transparent or semi
  * transparent when rendering rasters.
  */

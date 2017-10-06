@@ -26,7 +26,8 @@
 class QMimeData;
 class QgsPanelWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorSwatchDelegate
  * A delegate for showing a color swatch in a list
  * \see QgsColorSchemeList
@@ -49,14 +50,16 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
   private:
     QWidget *mParent = nullptr;
 
-    /** Generates a checkboard pattern for transparent color backgrounds
+    /**
+     * Generates a checkboard pattern for transparent color backgrounds
      * \returns checkboard pixmap
      */
     QPixmap transparentBackground() const;
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorSchemeModel
  * A model for colors in a color scheme
  * \see QgsColorSchemeList
@@ -68,7 +71,8 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
 
   public:
 
-    /** Constructor
+    /**
+     * Constructor
      * \param scheme color scheme for list
      * \param context context string for color scheme
      * \param baseColor base color for color scheme
@@ -92,38 +96,44 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    /** Returns a list of colors shown in the widget
+    /**
+     * Returns a list of colors shown in the widget
      * \returns colors shown in the widget
      */
     QgsNamedColorList colors() const { return mColors; }
 
-    /** Sets the color scheme to show in the widget
+    /**
+     * Sets the color scheme to show in the widget
      * \param scheme color scheme
      * \param context context for color scheme
      * \param baseColor base color for color scheme
      */
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
-    /** Get the current color scheme context for the model
+    /**
+     * Get the current color scheme context for the model
      * \returns context string which is passed to scheme for color generation
      * \see baseColor
      */
     QString context() const { return mContext; }
 
-    /** Get the base color for the color scheme used by the model
+    /**
+     * Get the base color for the color scheme used by the model
      * \returns base color which is passed to scheme for color generation
      * \see context
      */
     QColor baseColor() const { return mBaseColor; }
 
-    /** Add a color to the list
+    /**
+     * Add a color to the list
      * \param color color to add
      * \param label label for color
      * \param allowDuplicate set to true to allow duplicate colors to be added (colors which are already present in the list)
      */
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
-    /** Returns whether the color scheme model has been modified
+    /**
+     * Returns whether the color scheme model has been modified
      * \returns true if colors have been modified
      */
     bool isDirty() const { return mIsDirty; }
@@ -143,7 +153,8 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     bool mIsDirty;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorSchemeList
  * An editable list of color swatches, taken from an associated QgsColorScheme.
  * \see QgsColorSchemeList
@@ -155,7 +166,8 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
   public:
 
-    /** Construct a new color swatch grid.
+    /**
+     * Construct a new color swatch grid.
      * \param parent parent widget
      * \param scheme QgsColorScheme for colors to show in the list
      * \param context context string provided to color scheme
@@ -163,30 +175,35 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      */
     QgsColorSchemeList( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsColorScheme *scheme = nullptr, const QString &context = QString(), const QColor &baseColor = QColor() );
 
-    /** Saves the current colors shown in the list back to a color scheme, if supported
+    /**
+     * Saves the current colors shown in the list back to a color scheme, if supported
      * by the color scheme.
      * \note this method is only effective if the color scheme is editable
      */
     bool saveColorsToScheme();
 
-    /** Import colors from a GPL palette file to the list
+    /**
+     * Import colors from a GPL palette file to the list
      * \param file file to import
      * \see exportColorsToGpl
      */
     bool importColorsFromGpl( QFile &file );
 
-    /** Export colors to a GPL palette file from the list
+    /**
+     * Export colors to a GPL palette file from the list
      * \param file destination file
      * \see importColorsFromGpl
      */
     bool exportColorsToGpl( QFile &file );
 
-    /** Returns whether the color scheme list has been modified
+    /**
+     * Returns whether the color scheme list has been modified
      * \returns true if colors have been modified
      */
     bool isDirty() const;
 
-    /** Returns the scheme currently selected in the list.
+    /**
+     * Returns the scheme currently selected in the list.
      * \since QGIS 3.0
      * \see setScheme()
      */
@@ -194,7 +211,8 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
   public slots:
 
-    /** Sets the color scheme to show in the list
+    /**
+     * Sets the color scheme to show in the list
      * \param scheme QgsColorScheme for colors to show in the list
      * \param context context string provided to color scheme
      * \param baseColor base color for color scheme
@@ -202,34 +220,40 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
      */
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
-    /** Removes any selected colors from the list
+    /**
+     * Removes any selected colors from the list
      */
     void removeSelection();
 
-    /** Adds a color to the list
+    /**
+     * Adds a color to the list
      * \param color color to add
      * \param label optional label for color
      * \param allowDuplicate set to true to allow duplicate colors to be added, ie colors which already exist in the list
      */
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 
-    /** Pastes colors from clipboard to the list
+    /**
+     * Pastes colors from clipboard to the list
      * \see copyColors
      */
     void pasteColors();
 
-    /** Copies colors from the list to the clipboard
+    /**
+     * Copies colors from the list to the clipboard
      * \see pasteColors
      */
     void copyColors();
 
-    /** Displays a file picker dialog allowing users to import colors into the list from a file.
+    /**
+     * Displays a file picker dialog allowing users to import colors into the list from a file.
      * \since QGIS 3.0
      * \see showExportColorsDialog()
      */
     void showImportColorsDialog();
 
-    /** Displays a file picker dialog allowing users to export colors from the list into a file.
+    /**
+     * Displays a file picker dialog allowing users to export colors from the list into a file.
      * \since QGIS 3.0
      * \see showImportColorsDialog()
      */
@@ -237,7 +261,8 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
   signals:
 
-    /** Emitted when a color is selected from the list
+    /**
+     * Emitted when a color is selected from the list
      * \param color color selected
      */
     void colorSelected( const QColor &color );

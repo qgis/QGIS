@@ -23,7 +23,8 @@
 
 class Qgs25DRenderer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class Qgs25DRendererWidget
  */
 class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, protected Ui::Qgs25DRendererWidgetBase
@@ -32,14 +33,16 @@ class GUI_EXPORT Qgs25DRendererWidget : public QgsRendererWidget, protected Ui::
 
   public:
 
-    /** Static creation method
+    /**
+     * Static creation method
      * \param layer the layer where this renderer is applied
      * \param style
      * \param renderer the mask renderer (will not take ownership)
      */
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer SIP_TRANSFER ) SIP_FACTORY;
 
-    /** Constructor
+    /**
+     * Constructor
      * \param layer the layer where this renderer is applied
      * \param style
      * \param renderer the mask renderer (will not take ownership)

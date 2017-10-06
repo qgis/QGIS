@@ -49,7 +49,8 @@ typedef QMap<int, QgsField> QgsFieldMap;
 #endif
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A vector of attributes. Mostly equal to QVector<QVariant>.
  \note QgsAttributes is implemented as a Python list of Python objects.
  */

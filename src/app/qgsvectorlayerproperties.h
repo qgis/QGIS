@@ -146,7 +146,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void aboutToShowStyleMenu();
 
-    /** Updates the variable editor to reflect layer changes
+    /**
+     * Updates the variable editor to reflect layer changes
      */
     void updateVariableEditor();
 
@@ -195,7 +196,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
 
-    /** Previous layer style. Used to reset style to previous state if new style
+    /**
+     * Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 

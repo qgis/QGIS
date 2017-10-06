@@ -71,7 +71,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   // create transform
 
-  Qt3DCore::QTransform *transform;
+  Qt3DCore::QTransform *transform = nullptr;
   transform = new Qt3DCore::QTransform();
   entity->addComponent( transform );
 

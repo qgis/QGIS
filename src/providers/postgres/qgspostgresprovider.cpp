@@ -4354,7 +4354,8 @@ QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri )
   return new QgsPostgresProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {

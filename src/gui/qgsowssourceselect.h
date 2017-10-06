@@ -39,7 +39,8 @@ class QDomDocument;
 class QDomElement;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief  Dialog to create connections and add layers WCS etc.
  *
  * This dialog allows the user to define and save connection information
@@ -81,7 +82,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Loads connections from the file
     void on_mLoadButton_clicked();
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
     void on_mConnectButton_clicked();
@@ -168,8 +170,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
      */
     virtual void populateLayerList();
 
-    //! create an item including possible parents
-    //! \note not available in Python bindings
+    /**
+     * create an item including possible parents
+     * \note not available in Python bindings
+     */
     QgsTreeWidgetItem *createItem( int id,
                                    const QStringList &names,
                                    QMap<int, QgsTreeWidgetItem *> &items,

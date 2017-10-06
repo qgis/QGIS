@@ -27,7 +27,8 @@
 class QgsVectorLayer;
 class QPaintEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A class for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
@@ -194,7 +195,8 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0 );
 
-    /** Ensures that a polygon geometry is closed and that the last vertex equals the
+    /**
+     * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
      * \param doUpdate set to true to update the map canvas immediately
      * \param geometryIndex index of the feature part (in case of multipart geometries)

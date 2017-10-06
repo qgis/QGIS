@@ -186,9 +186,11 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
   return positions;
 }
 
-//! copied from https://searchcode.com/codesearch/view/35195518/
-//! qt3d /src/threed/painting/qglpainter.cpp
-//! no changes in the code
+/**
+ * copied from https://searchcode.com/codesearch/view/35195518/
+ * qt3d /src/threed/painting/qglpainter.cpp
+ * no changes in the code
+ */
 static inline uint outcode( const QVector4D &v )
 {
   // For a discussion of outcodes see pg 388 Dunn & Parberry.
@@ -209,14 +211,16 @@ static inline uint outcode( const QVector4D &v )
 }
 
 
-//! coarse box vs frustum test for culling.
-//! corners of oriented box are transformed to clip space
-//! and there is a test that all points are on the wrong side of the same plane
-//! see http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes/
-//!
-//! should be equivalent to https://searchcode.com/codesearch/view/35195518/
-//! qt3d /src/threed/painting/qglpainter.cpp
-//! bool QGLPainter::isCullable(const QBox3D& box) const
+/**
+ * coarse box vs frustum test for culling.
+ * corners of oriented box are transformed to clip space
+ * and there is a test that all points are on the wrong side of the same plane
+ * see http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes/
+ *
+ * should be equivalent to https://searchcode.com/codesearch/view/35195518/
+ * qt3d /src/threed/painting/qglpainter.cpp
+ * bool QGLPainter::isCullable(const QBox3D& box) const
+ */
 bool Qgs3DUtils::isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix )
 {
   uint out = 0xff;

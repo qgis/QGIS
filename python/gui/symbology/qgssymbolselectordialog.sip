@@ -140,6 +140,7 @@ return menu for "advanced" button - create it if doesn't exist and show the adva
 
     void duplicateLayer();
 %Docstring
+ Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
 .. versionadded:: 2.14
 %End
 
@@ -163,9 +164,11 @@ return menu for "advanced" button - create it if doesn't exist and show the adva
 %Docstring
 Slot to update tree when a new symbol from style
 %End
+
     void changeLayer( QgsSymbolLayer *layer );
 %Docstring
-\note: The layer is received from the LayerPropertiesWidget
+ alters tree and sets proper widget when Layer Type is changed
+ \note: The layer is received from the LayerPropertiesWidget
 %End
 
 
@@ -247,6 +250,7 @@ return menu for "advanced" button - create it if doesn't exist and show the adva
 
     void duplicateLayer();
 %Docstring
+ Duplicates the current symbol layer and places the duplicated layer above the current symbol layer
 .. versionadded:: 2.14
 %End
 
@@ -259,9 +263,11 @@ return menu for "advanced" button - create it if doesn't exist and show the adva
 %Docstring
 Slot to update tree when a new symbol from style
 %End
+
     void changeLayer( QgsSymbolLayer *layer );
 %Docstring
-\note: The layer is received from the LayerPropertiesWidget
+ alters tree and sets proper widget when Layer Type is changed
+ \note: The layer is received from the LayerPropertiesWidget
 %End
 
 };

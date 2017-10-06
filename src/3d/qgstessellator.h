@@ -21,7 +21,8 @@ class QgsPolygonV2;
 #include <QVector>
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Class that takes care of tessellation of polygons into triangles.
  *
  * It is expected that client code will create the tessellator object, then repeatedly call

@@ -35,7 +35,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.
  * \note Not available in Python bindings.
 */

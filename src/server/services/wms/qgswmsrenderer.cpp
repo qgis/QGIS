@@ -2635,7 +2635,7 @@ namespace QgsWms
 
   QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest ) const
   {
-    QPainter *painter;
+    QPainter *painter = nullptr;
     if ( hitTest )
     {
       runHitTest( mapSettings, *hitTest );

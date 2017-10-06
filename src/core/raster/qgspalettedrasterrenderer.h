@@ -28,7 +28,8 @@
 class QColor;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Renderer for paletted raster images.
 */
 class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
@@ -80,11 +81,13 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     ClassData classes() const;
 
-    /** Return optional category label
+    /**
+     * Return optional category label
      * \since QGIS 2.1 */
     QString label( int idx ) const;
 
-    /** Set category label
+    /**
+     * Set category label
      *  \since QGIS 2.1 */
     void setLabel( int idx, const QString &label );
 
@@ -107,7 +110,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     void setSourceColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
-    /** Get the source color ramp
+    /**
+     * Get the source color ramp
      * \since QGIS 3.0
      * \see setSourceColorRamp()
      */

@@ -22,7 +22,8 @@ email                : hugo dot mercier at oslandia dot com
 class QgsVectorLayer;
 class QgsVirtualLayerDefinition;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Utils class for QgsVirtualLayerDefinition
  */
 class CORE_EXPORT QgsVirtualLayerDefinitionUtils

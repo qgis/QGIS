@@ -160,7 +160,9 @@ Generates legend symbol items according to the configuration
 
     void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize /Out/ = 0, int *labelXOffset /Out/ = 0 ) const;
 %Docstring
-Does nothing if legend is not configured as collapsed.
+ Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
+ If the painter in context is null, it only does size calculation without actual rendering.
+ Does nothing if legend is not configured as collapsed.
 %End
 
     QImage collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor = Qt::transparent, double paddingMM = 1 ) const;

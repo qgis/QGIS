@@ -24,7 +24,8 @@
 #include <qgsfieldexpressionwidget.h>
 #include <qgsproject.h>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the field expression widget
  *
  * @see QgsFieldExpressionWidget

@@ -26,7 +26,8 @@ class QgsProject;
 class QgsAnnotation;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsAnnotationManager
  * \since QGIS 3.0
  *

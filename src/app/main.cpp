@@ -102,7 +102,8 @@ typedef SInt32 SRefCon;
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 
-/** Print usage text
+/**
+ * Print usage text
  */
 void usage( const QString &appName )
 {

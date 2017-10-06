@@ -88,6 +88,8 @@ and by connecting the slot contextMenuViewCategories(const QPoint&)*
 
     QgsDataDefinedSizeLegendWidget *createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend ) /Factory/;
 %Docstring
+ Creates widget to setup data-defined size legend.
+ Returns newly created panel - may be null if it could not be opened. Ownership is transferred to the caller.
 .. versionadded:: 3.0
  :rtype: QgsDataDefinedSizeLegendWidget
 %End

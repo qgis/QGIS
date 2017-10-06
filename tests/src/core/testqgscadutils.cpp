@@ -22,7 +22,8 @@
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsCadUtils class.
  */
 class TestQgsCadUtils : public QObject

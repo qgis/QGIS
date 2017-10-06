@@ -24,7 +24,8 @@
 
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Brightness/contrast filter pipe for rasters.
   */
 class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface

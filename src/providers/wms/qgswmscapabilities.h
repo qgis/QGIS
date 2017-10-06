@@ -324,16 +324,22 @@ struct QgsWmtsTileMatrix
   int matrixHeight;  //!< Number of tiles vertically
   double tres;       //!< Pixel span in map units
 
-  //! Returns extent of a tile in map coordinates.
-  //! (same function as tileBBox() but returns QRectF instead of QgsRectangle)
+  /**
+   * Returns extent of a tile in map coordinates.
+   * (same function as tileBBox() but returns QRectF instead of QgsRectangle)
+   */
   QRectF tileRect( int col, int row ) const;
 
-  //! Returns extent of a tile in map coordinates
-  //! (same function as tileRect() but returns QgsRectangle instead of QRectF)
+  /**
+   * Returns extent of a tile in map coordinates
+   * (same function as tileRect() but returns QgsRectangle instead of QRectF)
+   */
   QgsRectangle tileBBox( int col, int row ) const;
 
-  //! Returns range of tiles that intersects with the view extent
-  //! (tml may be null)
+  /**
+   * Returns range of tiles that intersects with the view extent
+   * (tml may be null)
+   */
   void viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits *tml, int &col0, int &row0, int &col1, int &row1 ) const;
 
 };
@@ -756,7 +762,8 @@ class QgsWmsCapabilities
 
 
 
-/** Class that handles download of capabilities.
+/**
+ * Class that handles download of capabilities.
  */
 class QgsWmsCapabilitiesDownload : public QObject
 {

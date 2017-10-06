@@ -25,7 +25,8 @@
 #include "qgscurve.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCircularString
  * \brief Circular string geometry type
  * \since QGIS 2.10
@@ -55,13 +56,15 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool isEmpty() const override;
     int numPoints() const override;
 
-    /** Returns the point at index i within the circular string.
+    /**
+     * Returns the point at index i within the circular string.
      */
     QgsPoint pointN( int i ) const;
 
     void points( QgsPointSequence &pts SIP_OUT ) const override;
 
-    /** Sets the circular string's points
+    /**
+     * Sets the circular string's points
      */
     void setPoints( const QgsPointSequence &points );
 
@@ -69,7 +72,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual QgsPoint startPoint() const override;
     virtual QgsPoint endPoint() const override;
 
-    /** Returns a new line string geometry corresponding to a segmentized approximation
+    /**
+     * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
@@ -99,7 +103,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     void sumUpArea( double &sum SIP_OUT ) const override;
     bool hasCurvedSegments() const override;
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+    /**
+     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         \param vertex the vertex id
         \returns rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;

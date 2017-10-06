@@ -35,7 +35,8 @@ class QStringList;
 class QTableWidgetItem;
 class QPushButton;
 
-/** \class QgsSpatiaLiteSourceSelect
+/**
+ * \class QgsSpatiaLiteSourceSelect
  * \brief Dialog to create connections and add tables from SpatiaLite.
  *
  * This dialog allows the user to define and save connection information
@@ -69,7 +70,8 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();

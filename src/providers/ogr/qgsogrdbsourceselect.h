@@ -36,7 +36,8 @@ class QgsOgrDbSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsD
 
   public:
 
-    /** Construct a DB Source Select with \a theOgrDriverName specified (i.e. "GPKG", "SQLite" etc.)
+    /**
+     * Construct a DB Source Select with \a theOgrDriverName specified (i.e. "GPKG", "SQLite" etc.)
      * and \a theName as string for describing the layers managed by the source select (e.g. : "GeoPackage" etc.)
      * The \a extensions is a string dscribing the accepted file extensions (e.g. : "GeoPackage Database (*.gpkg *.GPKG)")
      */
@@ -71,7 +72,8 @@ class QgsOgrDbSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsD
     void refresh() override;
     void addButtonClicked() override;
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();

@@ -22,7 +22,8 @@
 //qgis includes...
 #include <qgis.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Includes unit tests for the Qgis namespace
  */
 class TestQgis : public QObject

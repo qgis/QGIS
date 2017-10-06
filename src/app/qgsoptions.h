@@ -55,7 +55,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     ~QgsOptions();
 
-    /** Sets the page with the specified widget name as the current page
+    /**
+     * Sets the page with the specified widget name as the current page
      * \since QGIS 2.1
      */
     void setCurrentPage( const QString &pageWidgetName );
@@ -85,7 +86,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void uiThemeChanged( const QString &theme );
 
-    /** Slot to handle when type of project to open after launch is changed
+    /**
+     * Slot to handle when type of project to open after launch is changed
      */
     void on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
 
@@ -184,17 +186,20 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_mBrowseCacheDirectory_clicked();
     void on_mClearCache_clicked();
 
-    /** Let the user add a scale to the list of scales
+    /**
+     * Let the user add a scale to the list of scales
      * used in scale combobox
      */
     void on_pbnAddScale_clicked();
 
-    /** Let the user remove a scale from the list of scales
+    /**
+     * Let the user remove a scale from the list of scales
      * used in scale combobox
      */
     void on_pbnRemoveScale_clicked();
 
-    /** Let the user restore default scales
+    /**
+     * Let the user restore default scales
      * used in scale combobox  */
     void on_pbnDefaultScaleValues_clicked();
 

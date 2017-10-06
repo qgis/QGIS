@@ -38,7 +38,8 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
 ///\endcond
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsIdentifyMenu class builds a menu to be used with identify results (\see QgsMapToolIdentify).
  * It is customizable and can display attribute actions (\see QgsAction) as well as map layer actions (\see QgsMapLayerAction).
  * It can also embed custom map layer actions, defined for this menu exclusively.
@@ -118,13 +119,17 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     void setResultsIfExternalAction( bool resultsIfExternalAction ) {mResultsIfExternalAction = resultsIfExternalAction;}
     bool resultsIfExternalAction() {return mResultsIfExternalAction;}
 
-    //! Defines the maximum number of layers displayed in the menu (default is 10).
-    //! \note 0 is unlimited.
+    /**
+     * Defines the maximum number of layers displayed in the menu (default is 10).
+     * \note 0 is unlimited.
+     */
     void setMaxLayerDisplay( int maxLayerDisplay );
     int maxLayerDisplay() {return mMaxLayerDisplay;}
 
-    //! Defines the maximum number of features displayed in the menu for vector layers (default is 10).
-    //! \note 0 is unlimited.
+    /**
+     * Defines the maximum number of features displayed in the menu for vector layers (default is 10).
+     * \note 0 is unlimited.
+     */
     void setMaxFeatureDisplay( int maxFeatureDisplay );
     int maxFeatureDisplay() {return mMaxFeatureDisplay;}
 
@@ -155,8 +160,10 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     //! adds a raster layer in the menu being built
     void addRasterLayer( QgsMapLayer *layer );
 
-    //! adds a vector layer and its results in the menu being built
-    //! if singleLayer is true, results will be displayed on the top level item (not in QMenu with the layer name)
+    /**
+     * adds a vector layer and its results in the menu being built
+     * if singleLayer is true, results will be displayed on the top level item (not in QMenu with the layer name)
+     */
     void addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapToolIdentify::IdentifyResult> &results, bool singleLayer = false );
 
     //! get the lists of results corresponding to an action in the menu

@@ -22,7 +22,8 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermapgrid.h"
 
-/** \ingroup app
+/**
+ * \ingroup app
  * Input widget for the configuration of QgsComposerMapGrids
  * */
 class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerMapGridWidgetBase

@@ -23,7 +23,8 @@
 #include "qgsrectangle.h"
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Terrain generator that creates a simple square flat area.
  *
  * \since QGIS 3.0

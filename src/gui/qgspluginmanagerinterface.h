@@ -23,7 +23,8 @@
 #include "qgsmessagebar.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPluginManagerInterface
  */
 class GUI_EXPORT QgsPluginManagerInterface : public QObject

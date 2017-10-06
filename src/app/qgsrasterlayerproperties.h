@@ -1,4 +1,6 @@
-/** \brief The qgsrasterlayerproperties class is used to set up how raster layers are displayed.
+
+/**
+ * \brief The qgsrasterlayerproperties class is used to set up how raster layers are displayed.
  */
 /* **************************************************************************
                           qgsrasterlayerproperties.h  -  description
@@ -36,7 +38,8 @@ class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 
-/** Property sheet for a raster map layer
+/**
+ * Property sheet for a raster map layer
   */
 class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
 {
@@ -44,7 +47,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
   public:
 
-    /** \brief Constructor
+    /**
+     * \brief Constructor
      * \param ml Map layer for which properties will be displayed
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
@@ -80,8 +84,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void on_pbnImportTransparentPixelValues_clicked();
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
     void on_pbnRemoveSelectedRow_clicked();
-    //! \brief slot executed when the single band radio button is pressed.
-    //! \brief slot executed when the reset null value to file default icon is selected
+
+    /**
+     * \brief slot executed when the single band radio button is pressed.
+     * \brief slot executed when the reset null value to file default icon is selected
+     */
     //void on_btnResetNull_clicked();
 
     void pixelSelected( const QgsPointXY & );
@@ -147,7 +154,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief Pointer to the raster layer that this property dilog changes the behavior of.
     QgsRasterLayer *mRasterLayer = nullptr;
 
-    /** \brief If the underlying raster layer doesn't have a provider
+    /**
+     * \brief If the underlying raster layer doesn't have a provider
 
         This variable is used to determine if various parts of the Properties UI are
         included or not
@@ -189,7 +197,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     QVector<bool> mTransparencyToEdited;
 
-    /** Previous layer style. Used to reset style to previous state if new style
+    /**
+     * Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 

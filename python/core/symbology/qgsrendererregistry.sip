@@ -144,30 +144,40 @@ class QgsRendererRegistry
 
     bool addRenderer( QgsRendererAbstractMetadata *metadata /Transfer/ );
 %Docstring
-be added (e.g., a renderer with a duplicate name already exists)
+ Adds a renderer to the registry. Takes ownership of the metadata object.
+ \param metadata renderer metadata
+ :return: true if renderer was added successfully, or false if renderer could not
+ be added (e.g., a renderer with a duplicate name already exists)
  :rtype: bool
 %End
 
     bool removeRenderer( const QString &rendererName );
 %Docstring
-renderer could not be found
+ Removes a renderer from registry.
+ \param rendererName name of renderer to remove from registry
+ :return: true if renderer was successfully removed, or false if matching
+ renderer could not be found
  :rtype: bool
 %End
 
     QgsRendererAbstractMetadata *rendererMetadata( const QString &rendererName );
 %Docstring
-renderer was not found in the registry.
+ Returns the metadata for a specified renderer. Returns NULL if a matching
+ renderer was not found in the registry.
  :rtype: QgsRendererAbstractMetadata
 %End
 
     QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
 %Docstring
-\param layerTypes flags to filter the renderers by compatible layer types
+ Returns a list of available renderers.
+ \param layerTypes flags to filter the renderers by compatible layer types
  :rtype: list of str
 %End
 
     QStringList renderersList( const QgsVectorLayer *layer ) const;
 %Docstring
+ Returns a list of available renderers which are compatible with a specified layer.
+ \param layer vector layer
 .. versionadded:: 2.16
  :rtype: list of str
 %End

@@ -20,7 +20,8 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSmartGroupCondition
  */
 class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGroupConditionWidget
@@ -63,7 +64,8 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 
 #include "qgsstyle.h" //for QgsSmartConditionMap
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSmartGroupEditorDialog
  */
 class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmartGroupEditorDialogBase
@@ -76,15 +78,19 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     //! returns the value from mNameLineEdit
     QString smartgroupName();
 
-    //! returns the condition map
-    //! \note not available in Python bindings
+    /**
+     * returns the condition map
+     * \note not available in Python bindings
+     */
     QgsSmartConditionMap conditionMap() SIP_SKIP;
 
     //! returns the AND/OR condition
     QString conditionOperator();
 
-    //! sets up the GUI for the given conditionmap
-    //! \note not available in Python bindings
+    /**
+     * sets up the GUI for the given conditionmap
+     * \note not available in Python bindings
+     */
     void setConditionMap( const QgsSmartConditionMap & ) SIP_SKIP;
 
     //! sets the operator AND/OR

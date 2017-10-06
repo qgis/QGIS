@@ -29,7 +29,8 @@
 
 class QgsFeedback;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Decorator class which adds the functionality of estimating normals at the data points.
  * \note Not available in Python bindings.
 */

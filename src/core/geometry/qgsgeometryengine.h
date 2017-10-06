@@ -24,7 +24,8 @@ email                : marco.hugentobler at sourcepole dot com
 
 class QgsAbstractGeometry;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryEngine
  * \brief Contains geometry relation and modification algorithms.
  * \since QGIS 2.10
@@ -172,7 +173,8 @@ class CORE_EXPORT QgsGeometryEngine
      */
     virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
 
-    /** Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
+    /**
+     * Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
      * relationship between the geometries.
      * \param geom geometry to relate to
      * \param errorMsg destination storage for any error message
@@ -181,7 +183,8 @@ class CORE_EXPORT QgsGeometryEngine
      */
     virtual QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
 
-    /** Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
+    /**
+     * Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
      * pattern.
      * \param geom geometry to relate to
      * \param pattern DE-9IM pattern for match
@@ -204,7 +207,8 @@ class CORE_EXPORT QgsGeometryEngine
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 
-    /** Determines whether the geometry is simple (according to OGC definition).
+    /**
+     * Determines whether the geometry is simple (according to OGC definition).
      * \since QGIS 3.0
      */
     virtual bool isSimple( QString *errorMsg = nullptr ) const = 0;

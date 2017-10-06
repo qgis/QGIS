@@ -24,7 +24,8 @@
 class QgsExpression;
 class QgsExpressionNode;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSqlExpressionCompiler
  * \brief Generic expression compiler for translation to provider specific SQL WHERE clauses.
  *
@@ -48,7 +49,8 @@ class CORE_EXPORT QgsSqlExpressionCompiler
       Fail //!< Provider cannot handle expression
     };
 
-    /** Enumeration of flags for how provider handles SQL clauses
+    /**
+     * Enumeration of flags for how provider handles SQL clauses
      */
     enum Flag
     {
@@ -60,31 +62,36 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    /** Constructor for expression compiler.
+    /**
+     * Constructor for expression compiler.
      * \param fields fields from provider
      * \param flags flags which control how expression is compiled
      */
     explicit QgsSqlExpressionCompiler( const QgsFields &fields, QgsSqlExpressionCompiler::Flags flags = Flags() );
     virtual ~QgsSqlExpressionCompiler() = default;
 
-    /** Compiles an expression and returns the result of the compilation.
+    /**
+     * Compiles an expression and returns the result of the compilation.
      */
     virtual Result compile( const QgsExpression *exp );
 
-    /** Returns the compiled expression string for use by the provider.
+    /**
+     * Returns the compiled expression string for use by the provider.
      */
     virtual QString result();
 
   protected:
 
-    /** Returns a quoted column identifier, in the format expected by the provider.
+    /**
+     * Returns a quoted column identifier, in the format expected by the provider.
      * Derived classes should override this if special handling of column identifiers
      * is required.
      * \see quotedValue()
      */
     virtual QString quotedIdentifier( const QString &identifier );
 
-    /** Returns a quoted attribute value, in the format expected by the provider.
+    /**
+     * Returns a quoted attribute value, in the format expected by the provider.
      * Derived classes should override this if special handling of attribute values is required.
      * \param value value to quote
      * \param ok wil be set to true if value can be compiled
@@ -92,21 +99,24 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      */
     virtual QString quotedValue( const QVariant &value, bool &ok );
 
-    /** Compiles an expression node and returns the result of the compilation.
+    /**
+     * Compiles an expression node and returns the result of the compilation.
      * \param node expression node to compile
      * \param str string representing compiled node should be stored in this parameter
      * \returns result of node compilation
      */
     virtual Result compileNode( const QgsExpressionNode *node, QString &str );
 
-    /** Return the SQL function for the expression function.
+    /**
+     * Return the SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \returns the SQL function name
      */
     virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
 
-    /** Return the Arguments for SQL function for the expression function.
+    /**
+     * Return the Arguments for SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \param fnArgs arguments from expression

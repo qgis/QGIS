@@ -28,7 +28,8 @@
 
 #include <memory>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the scale range widget
  *
  * @see QgsScaleRangeWidget

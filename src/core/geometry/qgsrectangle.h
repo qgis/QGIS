@@ -28,7 +28,8 @@ class QgsBox3d;
 #include "qgspointxy.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A rectangle specified with double values.
  *
  * QgsRectangle is used to store a rectangle when double values are required.

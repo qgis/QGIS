@@ -45,7 +45,8 @@ class QgsAtlasComposition;
 // long story short - don't change this without good reason. If you add a new item type, inherit
 // from QgsComposerItemWidget and trust that everything else has been done for you.
 
-/** An object for property widgets for composer items. All composer config type widgets should contain
+/**
+ * An object for property widgets for composer items. All composer config type widgets should contain
  * this object.
 */
 class QgsComposerConfigObject: public QObject
@@ -54,7 +55,8 @@ class QgsComposerConfigObject: public QObject
   public:
     QgsComposerConfigObject( QWidget *parent, QgsComposerObject *composerObject );
 
-    /** Registers a data defined button, setting up its initial value, connections and description.
+    /**
+     * Registers a data defined button, setting up its initial value, connections and description.
      * \param button button to register
      * \param key corresponding data defined property key
      */
@@ -96,7 +98,8 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
 
   protected:
 
-    /** Registers a data defined button, setting up its initial value, connections and description.
+    /**
+     * Registers a data defined button, setting up its initial value, connections and description.
      * \param button button to register
      * \param property corresponding data defined property key
      */
@@ -118,7 +121,8 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
     QgsComposerConfigObject *mConfigObject = nullptr;
 };
 
-/** A class to enter generic properties for composer items (e.g. background, stroke, frame).
+/**
+ * A class to enter generic properties for composer items (e.g. background, stroke, frame).
  This widget can be embedded into other item widgets*/
 class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
 {
@@ -136,12 +140,14 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 
   public slots:
 
-    /** Set the frame color
+    /**
+     * Set the frame color
      */
     void on_mFrameColorButton_colorChanged( const QColor &newFrameColor );
     void on_mBackgroundColorButton_clicked();
 
-    /** Set the background color
+    /**
+     * Set the background color
      */
     void on_mBackgroundColorButton_colorChanged( const QColor &newBackgroundColor );
 //    void on_mTransparencySlider_valueChanged( int value );

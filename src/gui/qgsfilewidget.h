@@ -28,7 +28,8 @@ class QHBoxLayout;
 #include "qgis.h"
 #include "qgsfilterlineedit.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsFileWidget class creates a widget for selecting a file or a folder.
  */
 class GUI_EXPORT QgsFileWidget : public QWidget
@@ -195,7 +196,8 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
 #ifndef SIP_RUN
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A line edit for capturing file names that can have files dropped onto
  * it via drag & drop.
  *

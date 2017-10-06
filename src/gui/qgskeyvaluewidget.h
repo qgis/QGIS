@@ -26,7 +26,8 @@
 #ifndef SIP_RUN
 ///@cond PRIVATE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Table model to edit a QVariantMap.
  * \since QGIS 3.0
  * \note not available in Python bindings
@@ -57,7 +58,8 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
 ///@endcond
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget allowing to edit a QVariantMap, using a table.
  * \since QGIS 3.0
  */

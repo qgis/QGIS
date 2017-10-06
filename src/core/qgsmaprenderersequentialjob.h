@@ -21,7 +21,8 @@
 
 class QgsMapRendererCustomPainterJob;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Job implementation that renders everything sequentially in one thread.
  *
  * The resulting map image can be retrieved with renderedImage() function.

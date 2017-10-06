@@ -42,7 +42,8 @@ typedef QVector<QgsPointXY> QgsMultiPoint;
 typedef QVector<QgsPolyline> QgsMultiPolyline;
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryFactory
  * \brief Contains geometry creation routines.
  * \since QGIS 2.10
@@ -52,12 +53,14 @@ class CORE_EXPORT QgsGeometryFactory
 {
   public:
 
-    /** Construct geometry from a WKB string.
+    /**
+     * Construct geometry from a WKB string.
      * Updates position of the passed WKB pointer.
      */
     static std::unique_ptr< QgsAbstractGeometry > geomFromWkb( QgsConstWkbPtr &wkb );
 
-    /** Construct geometry from a WKT string.
+    /**
+     * Construct geometry from a WKT string.
      */
     static std::unique_ptr< QgsAbstractGeometry > geomFromWkt( const QString &text );
 

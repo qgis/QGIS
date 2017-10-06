@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include "qgscurvepolygon.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPolygonV2
  * \brief Polygon geometry type.
  * \since QGIS 2.10
@@ -39,7 +40,8 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
     QByteArray asWkb() const override;
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
-    /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
+    /**
+     * Returns the geometry converted to the more generic curve type QgsCurvePolygon
      \returns the converted geometry. Caller takes ownership*/
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 

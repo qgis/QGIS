@@ -24,7 +24,8 @@ class QgsMapLayer;
 class QgsMapLayerConfigWidget;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMapLayerConfigWidgetFactory
  * \since QGIS 2.16
  * Factory class for creating custom map layer property pages

@@ -155,15 +155,14 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void loadCrsList( QSet<QString> *crsFilter = nullptr );
 
     /**
-     * \brief Make the string safe for use in SQL statements.
+     * \brief Makes a \a string safe for use in SQL statements.
      *  This involves escaping single quotes, double quotes, backslashes,
      *  and optionally, percentage symbols.  Percentage symbols are used
      *  as wildcards sometimes and so when using the string as part of the
      *  LIKE phrase of a select statement, should be escaped.
-     * \arg const QString in The input string to make safe.
      * \returns The string made safe for SQL statements.
      */
-    const QString sqlSafeString( const QString &theSQL );
+    QString sqlSafeString( const QString &string ) const;
 
     /**
      * \brief converts the CRS group to a SQL expression fragment

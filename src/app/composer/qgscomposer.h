@@ -79,7 +79,8 @@ class QgsAppComposerInterface : public QgsComposerInterface
     QgsComposer *mComposer = nullptr;
 };
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \brief A gui for composing a printable map.
  */
 class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
@@ -122,15 +123,18 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Restore the window and toolbar state
     void restoreWindowState();
 
-    /** Loads the contents of a template document into the composer's composition.
+    /**
+     * Loads the contents of a template document into the composer's composition.
      * \param templateDoc template document to load
      * \param clearExisting set to true to remove all existing composition settings and items before loading template
      * \returns true if template load was successful
      */
     bool loadFromTemplate( const QDomDocument &templateDoc, bool clearExisting );
 
-    //! Sets the specified feature as the current atlas feature
-    //! \since QGIS 2.1
+    /**
+     * Sets the specified feature as the current atlas feature
+     * \since QGIS 2.1
+     */
     void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
 
   protected:
@@ -598,8 +602,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Create a duplicate of a menu (for Mac)
     QMenu *mirrorOtherMenu( QMenu *otherMenu );
 
-    //! Toggles the state of the atlas preview and navigation controls
-    //! \since QGIS 2.1
+    /**
+     * Toggles the state of the atlas preview and navigation controls
+     * \since QGIS 2.1
+     */
     void toggleAtlasControls( bool atlasEnabled );
 
     //! Sets the printer page orientation when the page orientation changes
@@ -615,7 +621,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void dockVisibilityChanged( bool visible );
 
-    /** Repopulates the atlas page combo box with valid items.
+    /**
+     * Repopulates the atlas page combo box with valid items.
      */
     void updateAtlasPageComboBox( int pageCount );
 

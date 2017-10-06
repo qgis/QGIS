@@ -36,7 +36,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the Marker Line symbol
  */
 class TestQgsMarkerLineSymbol : public QObject

@@ -26,7 +26,8 @@
 class QgsContrastEnhancement;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster renderer pipe for single band gray.
   */
 class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer

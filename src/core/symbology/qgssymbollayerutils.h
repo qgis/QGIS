@@ -46,7 +46,8 @@ class QPixmap;
 class QPointF;
 class QSize;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSymbolLayerUtils
  */
 class CORE_EXPORT QgsSymbolLayerUtils
@@ -86,26 +87,30 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
-    /** Encodes a QPointF to a string.
+    /**
+     * Encodes a QPointF to a string.
      * \see decodePoint()
      * \see encodeSize()
      */
     static QString encodePoint( QPointF point );
 
-    /** Decodes a QSizeF from a string.
+    /**
+     * Decodes a QSizeF from a string.
      * \see encodePoint()
      * \see decodeSize()
      */
     static QPointF decodePoint( const QString &string );
 
-    /** Encodes a QSizeF to a string.
+    /**
+     * Encodes a QSizeF to a string.
      * \see decodeSize()
      * \see encodePoint()
      * \since QGIS 3.0
      */
     static QString encodeSize( QSizeF size );
 
-    /** Decodes a QSizeF from a string.
+    /**
+     * Decodes a QSizeF from a string.
      * \see encodeSize()
      * \see decodePoint()
      * \since QGIS 3.0
@@ -121,7 +126,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static QString encodeSldRealVector( const QVector<qreal> &v );
     static QVector<qreal> decodeSldRealVector( const QString &s );
 
-    /** Encodes a render unit into an SLD unit of measure string.
+    /**
+     * Encodes a render unit into an SLD unit of measure string.
      * \param unit unit to encode
      * \param scaleFactor if specified, will be set to scale factor for unit of measure
      * \returns encoded string
@@ -129,7 +135,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
 
-    /** Decodes a SLD unit of measure string to a render unit.
+    /**
+     * Decodes a SLD unit of measure string to a render unit.
      * \param str string to decode
      * \param scaleFactor if specified, will be set to scale factor for unit of measure
      * \returns matching render unit
@@ -137,7 +144,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
 
-    /** Returns the size scaled in pixels according to the uom attribute.
+    /**
+     * Returns the size scaled in pixels according to the uom attribute.
      * \param uom The uom attribute from SLD 1.1 version
      * \param size The original size
      * \returns the size in pixels
@@ -150,7 +158,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
 
     static QPainter::CompositionMode decodeBlendMode( const QString &s );
 
-    /** Returns an icon preview for a color ramp.
+    /**
+     * Returns an icon preview for a color ramp.
      * \param symbol symbol
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
@@ -158,7 +167,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QIcon symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding = 0 );
 
-    /** Returns a pixmap preview for a color ramp.
+    /**
+     * Returns a pixmap preview for a color ramp.
      * \param symbol symbol
      * \param size target pixmap size
      * \param padding space between icon edge and symbol
@@ -168,7 +178,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = nullptr );
 
-    /** Draws a symbol layer preview to a QPicture
+    /**
+     * Draws a symbol layer preview to a QPicture
      * \param layer symbol layer to draw
      * \param units size units
      * \param size target size of preview picture
@@ -179,7 +190,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
-    /** Draws a symbol layer preview to an icon.
+    /**
+     * Draws a symbol layer preview to an icon.
      * \param layer symbol layer to draw
      * \param u size units
      * \param size target size of preview icon
@@ -189,7 +201,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 
-    /** Returns an icon preview for a color ramp.
+    /**
+     * Returns an icon preview for a color ramp.
      * \param ramp color ramp
      * \param size target icon size
      * \param padding space between icon edge and color ramp
@@ -197,7 +210,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QIcon colorRampPreviewIcon( QgsColorRamp *ramp, QSize size, int padding = 0 );
 
-    /** Returns a pixmap preview for a color ramp.
+    /**
+     * Returns a pixmap preview for a color ramp.
      * \param ramp color ramp
      * \param size target pixmap size
      * \param padding space between icon edge and color ramp
@@ -210,14 +224,16 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Returns the maximum estimated bleed for the symbol
     static double estimateMaxSymbolBleed( QgsSymbol *symbol, const QgsRenderContext &context );
 
-    /** Attempts to load a symbol from a DOM element
+    /**
+     * Attempts to load a symbol from a DOM element
      * \param element DOM element representing symbol
      * \param context object to transform relative to absolute paths
      * \returns decoded symbol, if possible
      */
     static QgsSymbol *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    /** Attempts to load a symbol from a DOM element and cast it to a particular symbol
+    /**
+     * Attempts to load a symbol from a DOM element and cast it to a particular symbol
      * type.
      * \param element DOM element representing symbol
      * \param context object to transform relative to absolute paths
@@ -246,7 +262,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Writes a symbol definition to XML
     static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 
-    /** Returns a string representing the symbol. Can be used to test for equality
+    /**
+     * Returns a string representing the symbol. Can be used to test for equality
      * between symbols.
      * \since QGIS 2.12
      */
@@ -319,7 +336,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
                                        double offset = 0.0,
                                        const QVector<qreal> *dashPattern = nullptr );
 
-    /** Create ogr feature style string for brush
+    /**
+     * Create ogr feature style string for brush
      \param fillColr fill color*/
     static QString ogrFeatureStyleBrush( const QColor &fillColr );
 
@@ -390,14 +408,16 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QgsSymbol *symbolFromMimeData( const QMimeData *data ) SIP_FACTORY;
 
-    /** Creates a color ramp from the settings encoded in an XML element
+    /**
+     * Creates a color ramp from the settings encoded in an XML element
      * \param element DOM element
      * \returns new color ramp. Caller takes responsibility for deleting the returned value.
      * \see saveColorRamp()
      */
     static QgsColorRamp *loadColorRamp( QDomElement &element ) SIP_FACTORY;
 
-    /** Encodes a color ramp's settings to an XML element
+    /**
+     * Encodes a color ramp's settings to an XML element
      * \param name name of ramp
      * \param ramp color ramp to save
      * \param doc XML document
@@ -525,7 +545,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Blurs an image in place, e.g. creating Qt-independent drop shadows
     static void blurImageInPlace( QImage &image, QRect rect, int radius, bool alphaOnly );
 
-    /** Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
+    /**
+     * Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
      * \since QGIS 2.3
      */
     static void premultiplyColor( QColor &rgb, int alpha );
@@ -541,7 +562,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Return a list of svg files at the specified directory
     static QStringList listSvgFilesAt( const QString &directory );
 
-    /** Get SVG symbol's path from its name.
+    /**
+     * Get SVG symbol's path from its name.
      *  If the name is not absolute path the file is searched in SVG paths specified
      *  in settings svg/searchPathsForSVG.
      */
@@ -559,7 +581,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
     //! Calculate whether a point is within of a QPolygonF
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
 
-    /** Return a new valid expression instance for given field or expression string.
+    /**
+     * Return a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns null pointer.
      * This is useful when accepting input which could be either a non-quoted field name or expression.
@@ -567,7 +590,8 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) SIP_FACTORY;
 
-    /** Return a field name if the whole expression is just a name of the field .
+    /**
+     * Return a field name if the whole expression is just a name of the field .
      *  Returns full expression string if the expression is more complex than just one field.
      *  Using just expression->expression() method may return quoted field name, but that is not
      *  wanted for saving (due to backward compatibility) or display in GUI.
@@ -575,26 +599,30 @@ class CORE_EXPORT QgsSymbolLayerUtils
      */
     static QString fieldOrExpressionFromExpression( QgsExpression *expression );
 
-    /** Computes a sequence of about 'classes' equally spaced round values
+    /**
+     * Computes a sequence of about 'classes' equally spaced round values
      *  which cover the range of values from 'minimum' to 'maximum'.
      *  The values are chosen so that they are 1, 2 or 5 times a power of 10.
      * \since QGIS 2.10
      */
     static QList<double> prettyBreaks( double minimum, double maximum, int classes );
 
-    /** Rescales the given size based on the uomScale found in the props, if any is found, otherwise
+    /**
+     * Rescales the given size based on the uomScale found in the props, if any is found, otherwise
      *  returns the value un-modified
      * \since QGIS 3.0
      */
     static double rescaleUom( double size, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props );
 
-    /** Rescales the given point based on the uomScale found in the props, if any is found, otherwise
+    /**
+     * Rescales the given point based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */
     static QPointF rescaleUom( QPointF point, QgsUnitTypes::RenderUnit unit, const QgsStringMap &props ) SIP_PYNAME( rescalePointUom );
 
-    /** Rescales the given array based on the uomScale found in the props, if any is found, otherwise
+    /**
+     * Rescales the given array based on the uomScale found in the props, if any is found, otherwise
      *  returns a copy of the original point
      * \since QGIS 3.0
      */

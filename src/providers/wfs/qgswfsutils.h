@@ -22,7 +22,8 @@
 #include <QMutex>
 #include <QSharedMemory>
 
-/** Utility class to deal mostly with the management of the temporary directory
+/**
+ * Utility class to deal mostly with the management of the temporary directory
     that holds the on-disk cache. */
 class QgsWFSUtils
 {

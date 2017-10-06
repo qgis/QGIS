@@ -28,7 +28,8 @@
 class QgsLabelingEngine;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsAbstractLabelProvider class is an interface class. Implementations
  * return list of labels and their associated geometries - these are used by
  * QgsLabelingEngine to compute the final layout of labels.
@@ -79,9 +80,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! Returns the associated layer, or nullptr if no layer is associated with the provider.
     QgsMapLayer *layer() const { return mLayer.data(); }
 
-    //! Returns provider ID - useful in case there is more than one label provider within a layer
-    //! (e.g. in case of rule-based labeling - provider ID = rule's key). May be empty string if
-    //! layer ID is sufficient for identification of provider's configuration.
+    /**
+     * Returns provider ID - useful in case there is more than one label provider within a layer
+     * (e.g. in case of rule-based labeling - provider ID = rule's key). May be empty string if
+     * layer ID is sufficient for identification of provider's configuration.
+     */
     QString providerId() const { return mProviderId; }
 
     //! Flags associated with the provider
@@ -131,7 +134,8 @@ class CORE_EXPORT QgsAbstractLabelProvider
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsLabelingEngine class provides map labeling functionality.
  * The input for the engine is a list of label provider objects and map settings.
  * Based on the input, the engine computes layout of labels for the given map view
@@ -222,7 +226,8 @@ class CORE_EXPORT QgsLabelingEngine
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLabelingUtils
  * \brief Contains helper utilities for working with QGIS' labeling engine.
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
@@ -234,14 +239,16 @@ class CORE_EXPORT QgsLabelingUtils
 {
   public:
 
-    /** Encodes an ordered list of predefined point label positions to a string.
+    /**
+     * Encodes an ordered list of predefined point label positions to a string.
      * \param positions order list of positions
      * \returns list encoded to string
      * \see decodePredefinedPositionOrder()
      */
     static QString encodePredefinedPositionOrder( const QVector< QgsPalLayerSettings::PredefinedPointPosition > &positions );
 
-    /** Decodes a string to an ordered list of predefined point label positions.
+    /**
+     * Decodes a string to an ordered list of predefined point label positions.
      * \param positionString encoded string of positions
      * \returns decoded list
      * \see encodePredefinedPositionOrder()

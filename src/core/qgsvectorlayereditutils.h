@@ -24,7 +24,8 @@
 
 class QgsCurve;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsVectorLayerEditUtils
  */
 class CORE_EXPORT QgsVectorLayerEditUtils

@@ -186,7 +186,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     mutable OGREnvelope *mExtent = nullptr;
     bool mForceRecomputeExtent = false;
 
-    /** This member variable receives the same value as extent_
+    /**
+     * This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
     mutable QgsRectangle mExtentRect;
     OGRLayerH ogrLayer = nullptr;
@@ -204,7 +205,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! was a sub layer requested?
     bool mIsSubLayer = false;
 
-    /** Optional geometry type for layers with multiple geometries,
+    /**
+     * Optional geometry type for layers with multiple geometries,
      *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
      *  that 2D, 25D, single and multi types are mixed in one sublayer */
     OGRwkbGeometryType mOgrGeometryTypeFilter = wkbUnknown;
@@ -272,7 +274,8 @@ class QgsOgrProviderUtils
     static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
     static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
 
-    /** Quote a value for placement in a SQL string.
+    /**
+     * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value );
 

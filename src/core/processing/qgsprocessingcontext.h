@@ -147,7 +147,7 @@ class CORE_EXPORT QgsProcessingContext
       QString outputName;
 
       //! Destination project
-      QgsProject *project;
+      QgsProject *project = nullptr;
 
     };
 

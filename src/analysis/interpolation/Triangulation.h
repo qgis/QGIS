@@ -30,7 +30,8 @@ class QgsFeedback;
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Interface for Triangulation classes.
  * \note Not available in Python bindings.
 */
@@ -76,7 +77,8 @@ class ANALYSIS_EXPORT Triangulation
     //! Returns a pointer to the point with number i. Any virtual points must have the number -1
     virtual QgsPoint *getPoint( unsigned int i ) const = 0;
 
-    /** Finds out in which triangle the point with coordinates x and y is and
+    /**
+     * Finds out in which triangle the point with coordinates x and y is and
      * assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
      */
     virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) = 0 SIP_PYNAME( getTriangleVertices );
@@ -111,7 +113,8 @@ class ANALYSIS_EXPORT Triangulation
      */
     virtual QList<int> *getSurroundingTriangles( int pointno ) = 0;
 
-    /** Returns a value list with the numbers of the four points, which would be affected by an edge swap.
+    /**
+     * Returns a value list with the numbers of the four points, which would be affected by an edge swap.
      * This function is e.g. needed by NormVecDecorator to know the points,
      * for which the normals have to be recalculated.
      * The list has to be deleted by the code which calls this method
