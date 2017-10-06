@@ -399,7 +399,7 @@ bool QgsLayoutModel::dropMimeData( const QMimeData *data,
 
   rebuildSceneItemList();
 
-  mLayout->updateZValues( false );
+  mLayout->updateZValues( true );
 
   return true;
 }
