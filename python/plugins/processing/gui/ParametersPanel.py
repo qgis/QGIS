@@ -116,7 +116,7 @@ class ParametersPanel(BASE, WIDGET):
                 if isinstance(param, ParameterVector):
                     if dataobjects.canUseVectorLayer(layer, param.shapetype):
                         widget = self.valueItems[param.name]
-                        if isinstance(widget, InputLayerSelectorPanel):
+                        if isinstance(widget, InputLayerSelectorPanel) and hasattr(widget.cmbText, 'addItem'):
                             widget = widget.cmbText
                         widget.addItem(self.getExtendedLayerName(layer), layer)
         elif layer.type() == QgsMapLayer.RasterLayer and dataobjects.canUseRasterLayer(layer):
