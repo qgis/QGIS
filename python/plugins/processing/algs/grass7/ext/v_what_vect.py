@@ -42,7 +42,7 @@ def processOutputs(alg):
     # We need to add the vector layer to outputs:
     out = alg.exportedLayers[alg.getParameterValue('map')]
     from_out = alg.getOutputValue('output')
-    command = u"v.out.ogr -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
+    command = u"v.out.ogr --overwrite -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
         out, os.path.dirname(from_out),
         os.path.splitext(os.path.basename(from_out))[0]
     )

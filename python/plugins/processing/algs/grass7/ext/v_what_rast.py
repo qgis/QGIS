@@ -46,7 +46,7 @@ def removeOutput(alg):
 def outputInput(alg):
     """Make output the initial point/polygon layer"""
     output = alg.getOutputValue(u'output')
-    command = u"v.out.ogr -c type=auto -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
+    command = u"v.out.ogr --overwrite -c type=auto -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
         alg.exportedLayers[alg.getParameterValue(u'map')],
         os.path.dirname(output),
         os.path.basename(output)[:-4]
