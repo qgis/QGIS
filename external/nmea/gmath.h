@@ -28,6 +28,7 @@
 #define NMEA_GMATH_H
 
 #include "info.h"
+#include <qgis_core.h>
 
 #define NMEA_PI                     (3.141592653589793)             //!< PI value
 #define NMEA_PI180                  (NMEA_PI / 180)                 //!< PI division by 180
@@ -47,7 +48,7 @@ extern "C"
  * degree VS radian
  */
 
-double nmea_degree2radian( double val );
+double CORE_EXPORT nmea_degree2radian( double val );
 double nmea_radian2degree( double val );
 
 /*
@@ -75,7 +76,7 @@ double nmea_meters2dop( double meters );
 void nmea_info2pos( const nmeaINFO *info, nmeaPOS *pos );
 void nmea_pos2info( const nmeaPOS *pos, nmeaINFO *info );
 
-double  nmea_distance(
+double  CORE_EXPORT nmea_distance(
   const nmeaPOS *from_pos,
   const nmeaPOS *to_pos
 );
