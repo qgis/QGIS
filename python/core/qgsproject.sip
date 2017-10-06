@@ -498,7 +498,8 @@ Convenience function to query topological editing status
 .. versionadded:: 2.16
 %End
 
-    QgsTransactionGroup* transactionGroup(const QString &providerKey, const QString &connString);
+
+    QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
 %Docstring
  Get a transaction group by getting provider & connection string.
  Returns null pointer if transaction group is not available.
@@ -506,6 +507,7 @@ Convenience function to query topological editing status
  providerKey, connString -> transactionGroup
 
 .. versionadded:: 3.0
+ :rtype: QgsTransactionGroup
 %End
 
     bool evaluateDefaultValues() const;
@@ -515,7 +517,6 @@ Convenience function to query topological editing status
 .. versionadded:: 2.16
  :rtype: bool
 %End
-
 
     void setEvaluateDefaultValues( bool evaluateDefaultValues );
 %Docstring
