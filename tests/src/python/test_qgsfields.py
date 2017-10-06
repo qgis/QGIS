@@ -91,6 +91,25 @@ class TestQgsFields(unittest.TestCase):
         with self.assertRaises(KeyError):
             fields.iconForField(111)
 
+    def test_names(self):
+        ml = QgsVectorLayer(
+            "Point?crs=epsg:4236" +
+            "&field=id:integer" +
+            "&field=value:double" +
+            "&field=crazy:double",
+            "test_data",
+            "memory")
+
+        assert ml.isValid()
+        fields = ml.fields()
+
+        expected_fields = ['id', 'value', 'crazy']
+
+        self.assertEquals(fields.names(), expected_fields)
+        fields.remove(1)
+        expected_fields = ['id', 'crazy']
+        self.assertEquals(fields.names(), expected_fields)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -139,6 +139,12 @@ class CORE_EXPORT QgsFields
     int size() const;
 
     /**
+     * Returns a list with field names
+     * \since QGIS 3.0
+     */
+    QStringList names() const;
+
+    /**
      * Return if a field index is valid
      * \param i  Index of the field which needs to be checked
      * \returns   True if the field exists

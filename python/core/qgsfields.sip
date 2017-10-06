@@ -115,6 +115,13 @@ Return number of items
  :rtype: int
 %End
 
+    QStringList names() const;
+%Docstring
+ Returns a list with field names
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
+
     bool exists( int i ) const;
 %Docstring
  Return if a field index is valid
