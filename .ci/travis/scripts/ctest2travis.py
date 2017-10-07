@@ -77,7 +77,7 @@ for line in p.stdout:
     updated_line = line.decode('utf-8')
     if re.match('Run dashboard with model Experimental', updated_line):
         start_fold('build')
-        updated_line = 'Compiling\n{}'.format(updated_line)
+        updated_line = '{title}\n{line}'.format(title=colored('Running tests...', 'white', attrs=['bold']), line=updated_line)
 
     elif re.match('Test project /home/travis/build/qgis/QGIS/build', updated_line):
         end_fold() # tag=build
