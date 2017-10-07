@@ -16,6 +16,13 @@ export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
 export CTEST_BUILD_COMMAND="/usr/bin/ninja"
 export CTEST_PARALLEL_LEVEL=1
 
+##############################
+# Variables for output styling
+##############################
+
+bold=$(tput bold)
+endbold=$(tput sgr0)
+
 ###########
 # Configure
 ###########
@@ -25,7 +32,7 @@ mkdir -p build
 pushd build > /dev/null
 
 echo "travis_fold:start:cmake"
-echo "Running cmake..."
+echo "${bold}Running cmake...${endbold}"
 cmake \
  -GNinja \
  -DWITH_STAGED_PLUGINS=ON \
@@ -47,7 +54,7 @@ echo "travis_fold:end:cmake"
 # Build
 #######
 echo "travis_fold:start:ninja-build.1"
-echo "Building QGIS..."
+echo "${bold}Building QGIS...${endbold}"
 ${CTEST_BUILD_COMMAND}
 echo "travis_fold:end:ninja-build.1"
 
