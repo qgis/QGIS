@@ -319,7 +319,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         shutil.copy(self.dbname, corrupt_dbname)
         layer = QgsVectorLayer("dbname=%s table=test_pg (geometry)" % corrupt_dbname, "test_pg", "spatialite")
         # Corrupt the database
-        open(corrupt_dbname, 'wb').write(b'')
+        with open(corrupt_dbname, 'wb') as f:
+            f.write(b'')
         layer.getFeatures()
         layer = None
         os.unlink(corrupt_dbname)
