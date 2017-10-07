@@ -246,7 +246,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mBtnPosition->setFocus( Qt::TabFocusReason );
   
   acquisitionIntValidator = new QIntValidator(0, MAXACQUISITIONINTERVAL, this);
-  distanceTrasholdValidator = new QIntValidator(0, MAXDISTANCETRASHOLD, this);
+  distanceTresholdValidator = new QIntValidator(0, MAXDISTANCETRESHOLD, this);
   acquisitionTimer = new QTimer(this);
   acquisitionTimer->setSingleShot(true);
   mCboAcquisitionInterval->setInsertPolicy(QComboBox::NoInsert);
@@ -274,15 +274,15 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
   connect(mCboDistanceTreshold, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::activated),
 	  this, &QgsGPSInformationWidget::on_cboDistanceTresholdActivated);
   acIntervalEdit = new QLineEdit;
-  distTrasholdEdit = new QLineEdit;
+  distTresholdEdit = new QLineEdit;
   acIntervalEdit->setValidator(acquisitionIntValidator);
-  distTrasholdEdit->setValidator(distanceTrasholdValidator);
+  distTresholdEdit->setValidator(distanceTresholdValidator);
   connect(acIntervalEdit, &QLineEdit::editingFinished,
 	  this, &QgsGPSInformationWidget::on_cboAcquisitionIntervalEdited);
-  connect(distTrasholdEdit, &QLineEdit::editingFinished,
+  connect(distTresholdEdit, &QLineEdit::editingFinished,
 	  this, &QgsGPSInformationWidget::on_cboDistanceTresholdEdited);
   acquisitionInterval = 0;
-  distanceTrashold = 0;
+  distanceTreshold = 0;
   acquisitionEnabled = true;
 }
 
@@ -680,9 +680,9 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &in
     myNewCenter = mLastGpsPosition;
 	myNewNmeaPosition = lastNmeaPosition; 
   }
-  if ( !acquisitionEnabled || ( nmea_distance(&myNewNmeaPosition, &lastNmeaPosition) < distanceTrashold ) )
+  if ( !acquisitionEnabled || ( nmea_distance(&myNewNmeaPosition, &lastNmeaPosition) < distanceTreshold ) )
   {
-	  // do not update position if update is disabled by timer or distance is under trashold
+	  // do not update position if update is disabled by timer or distance is under treshold
 	  myNewCenter = mLastGpsPosition;
 
   }
@@ -1190,7 +1190,7 @@ void QgsGPSInformationWidget::setAcquisitionInterval(int interval)
 }
 void QgsGPSInformationWidget::setDistanceTreshold(int distance)
 {
-	distanceTrashold = distance;
+	distanceTreshold = distance;
 }
 void QgsGPSInformationWidget::on_cboAcquisitionIntervalActivated(const QString &  text)
 {
@@ -1210,7 +1210,7 @@ void QgsGPSInformationWidget::on_cboDistanceTresholdActivated(const QString &  t
 	if (text == "...")
 	{
 		mCboDistanceTreshold->setEditable(true);
-		mCboDistanceTreshold->setLineEdit(distTrasholdEdit);
+		mCboDistanceTreshold->setLineEdit(distTresholdEdit);
 		mCboDistanceTreshold->clearEditText();
 
 	}
@@ -1224,7 +1224,7 @@ void QgsGPSInformationWidget::on_cboAcquisitionIntervalEdited() {
 }
 void QgsGPSInformationWidget::on_cboDistanceTresholdEdited()
 {
-	setDistanceTreshold(distTrasholdEdit->text().toInt());
+	setDistanceTreshold(distTresholdEdit->text().toInt());
 }
 void QgsGPSInformationWidget::switchAcquisition()
 {

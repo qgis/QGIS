@@ -32,7 +32,7 @@
 #include <qwt_polar_marker.h>
 #endif
 #define MAXACQUISITIONINTERVAL 300 // max gps information acquisition suspension interval in seconds
-#define MAXDISTANCETRASHOLD 10 // max gps distance trashold
+#define MAXDISTANCETRESHOLD 10 // max gps distance treshold
 
 class QextSerialPort;
 class QgsGPSConnection;
@@ -117,13 +117,13 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QTextStream mLogFileTextStream;
     QColor mTrackColor;
 	QIntValidator *acquisitionIntValidator;
-	QIntValidator *distanceTrasholdValidator;
-	QLineEdit *acIntervalEdit, *distTrasholdEdit;
+	QIntValidator *distanceTresholdValidator;
+	QLineEdit *acIntervalEdit, *distTresholdEdit;
 	nmeaPOS lastNmeaPosition;
 	QTimer *acquisitionTimer;
 	bool acquisitionEnabled;
 	unsigned int acquisitionInterval;
-	unsigned int distanceTrashold;
+	unsigned int distanceTreshold;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H

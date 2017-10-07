@@ -700,7 +700,7 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>266</width>
+            <width>270</width>
             <height>564</height>
            </rect>
           </property>
@@ -1019,7 +1019,7 @@ gray = no data
               <item row="3" column="2">
                <widget class="QLabel" name="label_9">
                 <property name="text">
-                 <string>Distance Trashold</string>
+                 <string>Distance threshold</string>
                 </property>
                </widget>
               </item>
