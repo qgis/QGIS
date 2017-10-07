@@ -1838,7 +1838,7 @@ void QgsOptions::removeHelpPath()
   }
 }
 
-void QgsOptions::moveHelpPathpUp()
+void QgsOptions::moveHelpPathUp()
 {
   QList<QTreeWidgetItem *> selectedItems = mHelpPathTreeWidget->selectedItems();
   QList<QTreeWidgetItem *>::iterator itemIt = selectedItems.begin();
