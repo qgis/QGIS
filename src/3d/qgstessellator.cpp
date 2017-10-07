@@ -113,6 +113,8 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
 
 static QVector3D _calculateNormal( const QgsCurve *curve )
 {
+  // Calculate the polygon's normal vector, based on Newell's method
+  // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
   QgsVertexId::VertexType vt;
   QgsPoint pt1, pt2;
   QVector3D normal( 0, 0, 0 );
