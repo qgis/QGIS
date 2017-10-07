@@ -593,7 +593,7 @@ void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables
   QgsApplication::setCustomVariables( variables );
 }
 
-void QgsExpressionContextUtils::deleteGlobalVariable( const QString &name )
+void QgsExpressionContextUtils::removeGlobalVariable( const QString &name )
 {
   QVariantMap vars = QgsApplication::customVariables();
   if ( !vars.contains( name ) )
@@ -808,7 +808,7 @@ void QgsExpressionContextUtils::setProjectVariables( QgsProject *project, const 
   project->setCustomVariables( variables );
 }
 
-void QgsExpressionContextUtils::deleteProjectVariable( QgsProject *project, const QString &name )
+void QgsExpressionContextUtils::removeProjectVariable( QgsProject *project, const QString &name )
 {
   if ( !project )
   {

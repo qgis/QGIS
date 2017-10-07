@@ -726,7 +726,7 @@ class QgsExpressionContextUtils
  \param value variable value
 .. seealso:: setGlobalVariable()
 .. seealso:: globalScope()
-.. seealso:: deleteGlobalVariable()
+.. seealso:: removeGlobalVariable()
 %End
 
     static void setGlobalVariables( const QVariantMap &variables );
@@ -736,12 +736,12 @@ class QgsExpressionContextUtils
  \param variables new set of global variables
 .. seealso:: setGlobalVariable()
 .. seealso:: globalScope()
-.. seealso:: deleteGlobalVariable()
+.. seealso:: removeGlobalVariable()
 %End
 
-    static void deleteGlobalVariable( const QString &name );
+    static void removeGlobalVariable( const QString &name );
 %Docstring
- Delete a global context variable.
+ Remove a global context variable.
  \param name variable name
 .. seealso:: setGlobalVariable()
 .. seealso:: setGlobalVariables()
@@ -765,7 +765,7 @@ class QgsExpressionContextUtils
  \param name variable name
  \param value variable value
 .. seealso:: setProjectVariables()
-.. seealso:: deleteProjectVariable()
+.. seealso:: removeProjectVariable()
 .. seealso:: projectScope()
 %End
 
@@ -776,13 +776,13 @@ class QgsExpressionContextUtils
  \param project Project to apply changes to
  \param variables new set of project variables
 .. seealso:: setProjectVariable()
-.. seealso:: deleteProjectVariable()
+.. seealso:: removeProjectVariable()
 .. seealso:: projectScope()
 %End
 
-    static void deleteProjectVariable( QgsProject *project, const QString &name );
+    static void removeProjectVariable( QgsProject *project, const QString &name );
 %Docstring
- Delete a project context variable.
+ Remove project context variable.
  \param project Project to apply changes to
  \param name variable name
 .. seealso:: setProjectVariable()

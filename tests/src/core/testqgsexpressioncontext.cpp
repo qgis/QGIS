@@ -555,11 +555,11 @@ void TestQgsExpressionContext::globalScope()
 
   delete globalScope2;
 
-  //test deleteGlobalVariables
+  //test removeGlobalVariables
   QgsExpressionContextUtils::setGlobalVariable( QStringLiteral( "key" ), "value" );
   QgsExpressionContextScope *globalScope3 = QgsExpressionContextUtils::globalScope();
   QVERIFY( globalScope3->hasVariable( "key" ) );
-  QgsExpressionContextUtils::deleteGlobalVariable( QStringLiteral( "key" ) );
+  QgsExpressionContextUtils::removeGlobalVariable( QStringLiteral( "key" ) );
   globalScope3 = QgsExpressionContextUtils::globalScope();
   QVERIFY( !globalScope3->hasVariable( "key" ) );
   delete globalScope3;
@@ -609,11 +609,11 @@ void TestQgsExpressionContext::projectScope()
   QCOMPARE( projectScope->variable( "newvar2" ).toString(), QString( "val2" ) );
   delete projectScope;
 
-  //test deleteProjectVariable
+  //test removeProjectVariable
   QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "key" ), "value" );
   projectScope = QgsExpressionContextUtils::projectScope( project );
   QVERIFY( projectScope->hasVariable( "key" ) );
-  QgsExpressionContextUtils::deleteProjectVariable( project, QStringLiteral( "key" ) );
+  QgsExpressionContextUtils::removeProjectVariable( project, QStringLiteral( "key" ) );
   projectScope = QgsExpressionContextUtils::projectScope( project );
   QVERIFY( !projectScope->hasVariable( "key" ) );
   delete projectScope;
