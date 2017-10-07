@@ -19,10 +19,10 @@ export CTEST_PARALLEL_LEVEL=1
 ###########
 # Configure
 ###########
-pushd /root/QGIS
+pushd /root/QGIS > /dev/null
 mkdir -p build
 
-pushd build
+pushd build > /dev/null
 
 cmake \
  -GNinja \
@@ -56,9 +56,9 @@ export PGHOST=postgres
 export PGPASSWORD=docker
 export PGDATABASE=qgis_test
 
-pushd /root/QGIS
+pushd /root/QGIS > /dev/null
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
-popd # /root/QGIS
+popd > /dev/null # /root/QGIS
 
 ###########
 # Run tests
@@ -70,7 +70,7 @@ python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(ca
 ########################
 ccache -s
 
-popd # build
-popd # /root/QGIS
+popd > /dev/null # build
+popd > /dev/null # /root/QGIS
 
 [ -r /tmp/ctest-important.log ] && cat /tmp/ctest-important.log || true
