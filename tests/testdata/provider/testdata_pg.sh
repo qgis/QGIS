@@ -2,6 +2,8 @@
 
 set -e
 
+echo "SET client_min_messages TO WARNING;" >> ~/.psqlrc
+
 SCRIPTS="
   tests/testdata/provider/testdata_pg.sql
   tests/testdata/provider/testdata_pg_reltests.sql
