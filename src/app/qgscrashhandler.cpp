@@ -23,7 +23,7 @@
 #include "qgscrashreport.h"
 #include "qgsstacktrace.h"
 
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
 LONG WINAPI QgsCrashHandler::handle( struct _EXCEPTION_POINTERS *ExceptionInfo )
 {
   QgsStackLines stack = QgsStackTrace::trace( ExceptionInfo );
