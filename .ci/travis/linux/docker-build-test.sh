@@ -79,7 +79,10 @@ python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(ca
 ########################
 # Show ccache statistics
 ########################
+echo "travis_fold:start:ccache.stats"
+echo "ccache statistics"
 ccache -s
+echo "travis_fold:end:ccache.stats"
 
 popd > /dev/null # build
 popd > /dev/null # /root/QGIS
