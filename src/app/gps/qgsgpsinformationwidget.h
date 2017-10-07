@@ -32,7 +32,7 @@
 #include <qwt_polar_marker.h>
 #endif
 #define MAXACQUISITIONINTERVAL 300 // max gps information acquisition suspension interval in seconds
-#define MAXDISTANCETRESHOLD 10 // max gps distance treshold
+#define MAXDISTANCETHRESHOLD 10 // max gps distance threshold
 
 class QextSerialPort;
 class QgsGPSConnection;
@@ -76,9 +76,9 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void timedout();
 	void switchAcquisition();
 	void on_cboAcquisitionIntervalActivated(const QString &);
-	void on_cboDistanceTresholdActivated(const QString &);
+	void on_cboDistanceThresholdActivated(const QString &);
 	void on_cboAcquisitionIntervalEdited();
-	void on_cboDistanceTresholdEdited();
+	void on_cboDistanceThresholdEdited();
   private:
     enum FixStatus  //GPS status
     {
@@ -92,7 +92,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void setStatusIndicator( const FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
 	void setAcquisitionInterval(int);
-	void setDistanceTreshold(int);
+	void setDistanceThreshold(int);
     QgsGPSConnection *mNmea = nullptr;
     QgsMapCanvas *mpCanvas = nullptr;
     QgsGpsMarker *mpMapMarker = nullptr;
@@ -117,13 +117,13 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QTextStream mLogFileTextStream;
     QColor mTrackColor;
 	QIntValidator *acquisitionIntValidator;
-	QIntValidator *distanceTresholdValidator;
-	QLineEdit *acIntervalEdit, *distTresholdEdit;
+	QIntValidator *distanceThresholdValidator;
+	QLineEdit *acIntervalEdit, *distThresholdEdit;
 	nmeaPOS lastNmeaPosition;
 	QTimer *acquisitionTimer;
 	bool acquisitionEnabled;
 	unsigned int acquisitionInterval;
-	unsigned int distanceTreshold;
+	unsigned int distanceThreshold;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H
