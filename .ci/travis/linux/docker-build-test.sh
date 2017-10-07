@@ -24,6 +24,8 @@ mkdir -p build
 
 pushd build > /dev/null
 
+echo "travis_fold:start:cmake"
+echo "Running cmake..."
 cmake \
  -GNinja \
  -DWITH_STAGED_PLUGINS=ON \
@@ -39,12 +41,13 @@ cmake \
  -DWITH_BINDINGS=ON \
  -DDISABLE_DEPRECATED=ON \
  -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS} ..
+echo "travis_fold:end:cmake"
 
 #######
 # Build
 #######
 echo "travis_fold:start:ninja-build.1"
-ninja
+${CTEST_BUILD_COMMAND}
 echo "travis_fold:end:ninja-build.1"
 
 ############################
