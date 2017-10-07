@@ -32,7 +32,7 @@ class APP_EXPORT QgsCrashHandler
 {
 
   public:
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
     static LONG WINAPI handle( struct _EXCEPTION_POINTERS *ExceptionInfo );
 #endif
 

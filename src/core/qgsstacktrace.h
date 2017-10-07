@@ -62,7 +62,7 @@ class CORE_EXPORT QgsStackTrace
       bool isValid() const;
     };
 
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
 
     /**
      * Return a demangled stack backtrace of the caller function.

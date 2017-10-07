@@ -732,7 +732,7 @@ QString QgsApplication::userLoginName()
   if ( !sUserName.isEmpty() )
     return sUserName;
 
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
   TCHAR name [ UNLEN + 1 ];
   DWORD size = UNLEN + 1;
 
@@ -767,7 +767,7 @@ QString QgsApplication::userFullName()
   if ( !sUserFullName.isEmpty() )
     return sUserFullName;
 
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
   TCHAR name [ UNLEN + 1 ];
   DWORD size = UNLEN + 1;
 

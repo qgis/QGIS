@@ -60,10 +60,10 @@
 #include <QDir>
 #include <QUrl>
 
-#ifdef Q_OS_UNIX
-#include <utime.h>
-#elif _MSC_VER
+#ifdef _MSC_VER
 #include <sys/utime.h>
+#else
+#include <utime.h>
 #endif
 
 // canonical project instance
