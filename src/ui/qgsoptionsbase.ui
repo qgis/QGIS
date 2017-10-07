@@ -229,18 +229,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Locale</string>
-          </property>
-          <property name="toolTip">
-           <string>Locale</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/locale.png</normaloff>:/images/themes/default/propertyicons/locale.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Authentication</string>
           </property>
           <property name="icon">
@@ -354,6 +342,52 @@
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="grpLocale">
+                 <property name="title">
+                  <string>O&amp;verride system locale</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QVBoxLayout">
+                  <property name="spacing">
+                   <number>12</number>
+                  </property>
+                  <item>
+                   <layout class="QGridLayout" name="gridLayout_25">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_5">
+                      <property name="text">
+                       <string>Locale to use instead</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QComboBox" name="cboLocale"/>
+                    </item>
+                    <item row="1" column="0" colspan="2">
+                     <widget class="QLabel" name="label_7">
+                      <property name="text">
+                       <string>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing override on locale requires an application restart</string>
+                      </property>
+                      <property name="wordWrap">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="lblSystemLocale">
+                    <property name="text">
+                     <string>Detected active locale on your system</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox">
                  <property name="title">
@@ -960,7 +994,7 @@
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>40</height>
+                   <height>0</height>
                   </size>
                  </property>
                 </spacer>
@@ -4757,105 +4791,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptionsPageLocale">
-          <layout class="QVBoxLayout" name="verticalLayout_19">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QgsScrollArea" name="mOptionsScrollArea_09">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="mOptionsScrollAreaContents_09">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>268</width>
-                <height>232</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_32">
-               <item>
-                <widget class="QGroupBox" name="grpLocale">
-                 <property name="title">
-                  <string>O&amp;verride system locale</string>
-                 </property>
-                 <property name="checkable">
-                  <bool>true</bool>
-                 </property>
-                 <layout class="QGridLayout" name="_12">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_5">
-                    <property name="text">
-                     <string>Locale to use instead</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QComboBox" name="cboLocale"/>
-                  </item>
-                  <item row="1" column="0" colspan="2">
-                   <widget class="QLabel" name="label_7">
-                    <property name="text">
-                     <string>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing override on local requires an application restart</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="groupBox_12">
-                 <property name="title">
-                  <string>Additional Info</string>
-                 </property>
-                 <layout class="QGridLayout" name="_13">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="lblSystemLocale">
-                    <property name="text">
-                     <string>Detected active locale on your system</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_2">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="mOptionsPageAuth">
           <layout class="QVBoxLayout" name="verticalLayout_45">
            <property name="bottomMargin">
@@ -5406,10 +5341,21 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -5440,17 +5386,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
@@ -5476,9 +5411,11 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>mOptionsScrollArea_01</tabstop>
-  <tabstop>groupBox</tabstop>
+  <tabstop>grpLocale</tabstop>
+  <tabstop>cboLocale</tabstop>
   <tabstop>cmbStyle</tabstop>
   <tabstop>cmbUITheme</tabstop>
   <tabstop>cmbIconSize</tabstop>
@@ -5488,15 +5425,21 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>spinFontSize</tabstop>
   <tabstop>mMessageTimeoutSpnBx</tabstop>
   <tabstop>groupBox_11</tabstop>
+  <tabstop>cbxHideSplash</tabstop>
+  <tabstop>cbxCheckVersion</tabstop>
+  <tabstop>mDataSourceManagerNonModal</tabstop>
+  <tabstop>mCustomGroupBoxChkBx</tabstop>
+  <tabstop>mNativeColorDialogsChkBx</tabstop>
+  <tabstop>mLiveColorDialogsChkBx</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
   <tabstop>mProjectOnLaunchPushBtn</tabstop>
   <tabstop>cbxProjectDefaultNew</tabstop>
   <tabstop>pbnProjectDefaultSetCurrent</tabstop>
   <tabstop>pbnProjectDefaultReset</tabstop>
-  <tabstop>leTemplateFolder</tabstop>
   <tabstop>pbnTemplateFolderBrowse</tabstop>
   <tabstop>pbnTemplateFolderReset</tabstop>
+  <tabstop>leTemplateFolder</tabstop>
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>mLayerDeleteConfirmationChkBx</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
@@ -5543,6 +5486,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>cbxAddOracleDC</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
   <tabstop>groupBox_28</tabstop>
+  <tabstop>cbxEvaluateDefaultValues</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
   <tabstop>mListHiddenBrowserPaths</tabstop>
   <tabstop>mOptionsScrollArea_04</tabstop>
@@ -5669,6 +5613,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>pbnEditPyramidsOptions</tabstop>
   <tabstop>lstGdalDrivers</tabstop>
   <tabstop>mOptionsScrollArea_08</tabstop>
+  <tabstop>leProjectGlobalCrs</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
@@ -5678,9 +5623,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mAddDefaultTransformButton</tabstop>
   <tabstop>mRemoveDefaultTransformButton</tabstop>
   <tabstop>mDefaultDatumTransformTreeWidget</tabstop>
-  <tabstop>mOptionsScrollArea_09</tabstop>
-  <tabstop>grpLocale</tabstop>
-  <tabstop>cboLocale</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
   <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>leWmsSearch</tabstop>
@@ -5702,6 +5644,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mExcludeUrlListWidget</tabstop>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
   <tabstop>grpProjectionBehavior</tabstop>
+  <tabstop>mDefaultZValueSpinBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
