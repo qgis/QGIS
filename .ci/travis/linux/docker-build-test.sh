@@ -47,6 +47,7 @@ echo "travis_fold:end:cmake"
 # Build
 #######
 echo "travis_fold:start:ninja-build.1"
+echo "Building QGIS..."
 ${CTEST_BUILD_COMMAND}
 echo "travis_fold:end:ninja-build.1"
 
