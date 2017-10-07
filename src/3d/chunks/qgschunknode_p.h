@@ -36,7 +36,7 @@ namespace Qt3DCore
   class QEntity;
 }
 
-class QgsChunkListEntry;
+struct QgsChunkListEntry;
 class QgsChunkLoader;
 class QgsChunkQueueJob;
 class QgsChunkQueueJobFactory;
