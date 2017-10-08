@@ -128,7 +128,15 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
     virtual QgsSymbolLayer *symbolLayer() override;
 
-  public slots:
+  protected:
+    QgsSimpleLineSymbolLayer *mLayer = nullptr;
+
+    //creates a new icon for the 'change pattern' button
+    void updatePatternIcon();
+
+  private slots:
+
+    void updateAssistantSymbol();
     void penWidthChanged();
     void colorChanged( const QColor &color );
     void penStyleChanged();
@@ -139,16 +147,6 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void mOffsetUnitWidget_changed();
     void mDashPatternUnitWidget_changed();
     void mDrawInsideCheckBox_stateChanged( int state );
-
-  protected:
-    QgsSimpleLineSymbolLayer *mLayer = nullptr;
-
-    //creates a new icon for the 'change pattern' button
-    void updatePatternIcon();
-
-  private slots:
-
-    void updateAssistantSymbol();
 
   private:
 
@@ -183,6 +181,11 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
     void setColorStroke( const QColor &color );
     void setColorFill( const QColor &color );
+
+  protected:
+    QgsSimpleMarkerSymbolLayer *mLayer = nullptr;
+
+  private slots:
     void setSize();
     void setAngle();
     void setOffset();
@@ -193,11 +196,6 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
     void mStrokeWidthSpinBox_valueChanged( double d );
     void mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void mVerticalAnchorComboBox_currentIndexChanged( int index );
-
-  protected:
-    QgsSimpleMarkerSymbolLayer *mLayer = nullptr;
-
-  private slots:
     void setShape();
     void updateAssistantSymbol();
     void penJoinStyleChanged();
@@ -233,6 +231,11 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
   public slots:
     void setColor( const QColor &color );
     void setStrokeColor( const QColor &color );
+
+  protected:
+    QgsSimpleFillSymbolLayer *mLayer = nullptr;
+
+  private slots:
     void setBrushStyle();
     void strokeWidthChanged();
     void strokeStyleChanged();
@@ -240,8 +243,6 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void mStrokeWidthUnitWidget_changed();
     void mOffsetUnitWidget_changed();
 
-  protected:
-    QgsSimpleFillSymbolLayer *mLayer = nullptr;
 };
 
 
@@ -331,18 +332,20 @@ class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget,
      * Applies the color ramp passed on by the color ramp button
      */
     void applyColorRamp();
-
     void setGradientType( int index );
     void setCoordinateMode( int index );
     void setGradientSpread( int index );
+
+  protected:
+    QgsGradientFillSymbolLayer *mLayer = nullptr;
+
+  private slots:
     void offsetChanged();
     void referencePointChanged();
     void mOffsetUnitWidget_changed();
     void colorModeChanged();
     void mSpinAngle_valueChanged( double value );
 
-  protected:
-    QgsGradientFillSymbolLayer *mLayer = nullptr;
 };
 
 ///////////
@@ -371,6 +374,11 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
   public slots:
     void setColor( const QColor &color );
     void setColor2( const QColor &color );
+
+  protected:
+    QgsShapeburstFillSymbolLayer *mLayer = nullptr;
+
+  private slots:
     void colorModeChanged();
     void mSpinBlurRadius_valueChanged( int value );
     void mSpinMaxDistance_valueChanged( double value );
@@ -380,9 +388,6 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
     void offsetChanged();
     void mOffsetUnitWidget_changed();
     void mIgnoreRingsCheckBox_stateChanged( int state );
-
-  protected:
-    QgsShapeburstFillSymbolLayer *mLayer = nullptr;
 };
 
 ///////////
@@ -412,6 +417,12 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
     void setInterval( double val );
     void setOffsetAlongLine( double val );
+
+  protected:
+
+    QgsMarkerLineSymbolLayer *mLayer = nullptr;
+
+  private slots:
     void setRotate();
     void setOffset();
     void setPlacement();
@@ -419,9 +430,6 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void mOffsetUnitWidget_changed();
     void mOffsetAlongLineUnitWidget_changed();
 
-  protected:
-
-    QgsMarkerLineSymbolLayer *mLayer = nullptr;
 };
 
 
@@ -448,7 +456,15 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
     virtual QgsSymbolLayer *symbolLayer() override;
 
-  public slots:
+  protected:
+
+    void populateList();
+    //update gui for svg file (insert new path, update activation of gui elements for svg params)
+    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
+
+    QgsSvgMarkerSymbolLayer *mLayer = nullptr;
+
+  private slots:
     void setName( const QModelIndex &idx );
     void populateIcons( const QModelIndex &idx );
     void mFileToolButton_clicked();
@@ -462,16 +478,6 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     void mOffsetUnitWidget_changed();
     void mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void mVerticalAnchorComboBox_currentIndexChanged( int index );
-
-  protected:
-
-    void populateList();
-    //update gui for svg file (insert new path, update activation of gui elements for svg params)
-    void setGuiForSvg( const QgsSvgMarkerSymbolLayer *layer );
-
-    QgsSvgMarkerSymbolLayer *mLayer = nullptr;
-
-  private slots:
     void setWidth();
     void setHeight();
     void lockAspectRatioChanged( const bool locked );
@@ -680,6 +686,12 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void setSize( double size );
     void setAngle( double angle );
     void setCharacter( QChar chr );
+
+  protected:
+    QgsFontMarkerSymbolLayer *mLayer = nullptr;
+    CharacterWidget *widgetChar = nullptr;
+
+  private slots:
     void setOffset();
     void mSizeUnitWidget_changed();
     void mOffsetUnitWidget_changed();
@@ -687,13 +699,6 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     void mStrokeWidthSpinBox_valueChanged( double d );
     void mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void mVerticalAnchorComboBox_currentIndexChanged( int index );
-
-  protected:
-    QgsFontMarkerSymbolLayer *mLayer = nullptr;
-    CharacterWidget *widgetChar = nullptr;
-
-  private slots:
-
     void penJoinStyleChanged();
     void updateAssistantSymbol();
 

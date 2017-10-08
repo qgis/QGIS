@@ -60,8 +60,6 @@ Toggle the link between classes boundaries
 
     void rowsMoved();
     void modelDataChanged();
-    void mSizeUnitWidget_changed();
-    void methodComboBox_currentIndexChanged( int );
     void refreshRanges( bool reset = false );
 
   protected:

@@ -76,11 +76,8 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
     void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
 
-    void mSymbolUnitWidget_changed();
-
     //! Pupulates the groups combo box with available tags and smartgroups
     void populateGroups();
-    void groupsCombo_currentIndexChanged( int index );
 
     void openStyleManager();
     void clipFeaturesToggled( bool checked );
@@ -93,7 +90,8 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void changed();
 
   private slots:
-
+    void mSymbolUnitWidget_changed();
+    void groupsCombo_currentIndexChanged( int index );
     void updateAssistantSymbol();
     void opacityChanged( double value );
 

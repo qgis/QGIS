@@ -59,13 +59,10 @@ class QgsSymbolsListWidget : QWidget
 
     void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
 
-    void mSymbolUnitWidget_changed();
-
     void populateGroups();
 %Docstring
 Pupulates the groups combo box with available tags and smartgroups
 %End
-    void groupsCombo_currentIndexChanged( int index );
 
     void openStyleManager();
     void clipFeaturesToggled( bool checked );

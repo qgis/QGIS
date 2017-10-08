@@ -103,9 +103,8 @@ function to create a new ConditionBox and update UI
 slot to remove the condition with id int
 %End
 
-    void buttonBox_accepted();
-
   protected:
+
 };
 
 /************************************************************************

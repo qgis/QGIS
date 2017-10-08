@@ -50,6 +50,11 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void setSearchString( const QString &searchString );
 
   public slots:
+
+    void saveQuery();
+    void loadQuery();
+
+  private slots:
     void btnEqual_clicked();
     void on_btnOk_clicked();
     void btnLessThan_clicked();
@@ -88,9 +93,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
      * are inserted into the values list box.
      */
     void btnSampleValues_clicked();
-
-    void saveQuery();
-    void loadQuery();
 
   private:
 

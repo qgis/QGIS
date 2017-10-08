@@ -101,18 +101,6 @@ class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
 
-  public slots:
-    void penWidthChanged();
-    void colorChanged( const QColor &color );
-    void penStyleChanged();
-    void offsetChanged();
-    void mCustomCheckBox_stateChanged( int state );
-    void mChangePatternButton_clicked();
-    void mPenWidthUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
-    void mDashPatternUnitWidget_changed();
-    void mDrawInsideCheckBox_stateChanged( int state );
-
   protected:
 
     void updatePatternIcon();
@@ -143,16 +131,6 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 
     void setColorStroke( const QColor &color );
     void setColorFill( const QColor &color );
-    void setSize();
-    void setAngle();
-    void setOffset();
-    void mSizeUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
-    void mStrokeWidthUnitWidget_changed();
-    void mStrokeStyleComboBox_currentIndexChanged( int index );
-    void mStrokeWidthSpinBox_valueChanged( double d );
-    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
-    void mVerticalAnchorComboBox_currentIndexChanged( int index );
 
   protected:
 
@@ -181,14 +159,9 @@ class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
   public slots:
     void setColor( const QColor &color );
     void setStrokeColor( const QColor &color );
-    void setBrushStyle();
-    void strokeWidthChanged();
-    void strokeStyleChanged();
-    void offsetChanged();
-    void mStrokeWidthUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
 
   protected:
+
 };
 
 
@@ -256,17 +229,12 @@ class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
 %Docstring
  Applies the color ramp passed on by the color ramp button
 %End
-
     void setGradientType( int index );
     void setCoordinateMode( int index );
     void setGradientSpread( int index );
-    void offsetChanged();
-    void referencePointChanged();
-    void mOffsetUnitWidget_changed();
-    void colorModeChanged();
-    void mSpinAngle_valueChanged( double value );
 
   protected:
+
 };
 
 
@@ -292,17 +260,9 @@ class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
   public slots:
     void setColor( const QColor &color );
     void setColor2( const QColor &color );
-    void colorModeChanged();
-    void mSpinBlurRadius_valueChanged( int value );
-    void mSpinMaxDistance_valueChanged( double value );
-    void mDistanceUnitWidget_changed();
-    void mRadioUseWholeShape_toggled( bool value );
-    void applyColorRamp();
-    void offsetChanged();
-    void mOffsetUnitWidget_changed();
-    void mIgnoreRingsCheckBox_stateChanged( int state );
 
   protected:
+
 };
 
 
@@ -329,14 +289,9 @@ class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
 
     void setInterval( double val );
     void setOffsetAlongLine( double val );
-    void setRotate();
-    void setOffset();
-    void setPlacement();
-    void mIntervalUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
-    void mOffsetAlongLineUnitWidget_changed();
 
   protected:
+
 
 };
 
@@ -360,21 +315,6 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
     virtual QgsSymbolLayer *symbolLayer();
-
-  public slots:
-    void setName( const QModelIndex &idx );
-    void populateIcons( const QModelIndex &idx );
-    void mFileToolButton_clicked();
-    void mFileLineEdit_textEdited( const QString &text );
-    void mFileLineEdit_editingFinished();
-    void mChangeColorButton_colorChanged( const QColor &color );
-    void mChangeStrokeColorButton_colorChanged( const QColor &color );
-    void mStrokeWidthSpinBox_valueChanged( double d );
-    void mSizeUnitWidget_changed();
-    void mStrokeWidthUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
-    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
-    void mVerticalAnchorComboBox_currentIndexChanged( int index );
 
   protected:
 
@@ -520,13 +460,6 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     void setSize( double size );
     void setAngle( double angle );
     void setCharacter( QChar chr );
-    void setOffset();
-    void mSizeUnitWidget_changed();
-    void mOffsetUnitWidget_changed();
-    void mStrokeWidthUnitWidget_changed();
-    void mStrokeWidthSpinBox_valueChanged( double d );
-    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
-    void mVerticalAnchorComboBox_currentIndexChanged( int index );
 
   protected:
 

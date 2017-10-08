@@ -48,63 +48,15 @@ Constructor
 Triggered when the provider's connections need to be refreshed
 %End
 
-    void mNewButton_clicked();
-%Docstring
-Opens the create connection dialog to build a new connection
-%End
-    void mEditButton_clicked();
-%Docstring
-Opens a dialog to edit an existing connection
-%End
-    void mDeleteButton_clicked();
-%Docstring
-Deletes the selected connection
-%End
-    void mSaveButton_clicked();
-%Docstring
-Saves connections to the file
-%End
-    void mLoadButton_clicked();
-%Docstring
-Loads connections from the file
-%End
-
-    void mConnectButton_clicked();
-%Docstring
- Connects to the database using the stored connection parameters.
- Once connected, available layers are displayed.
-%End
-
-    void searchFinished();
-
-    void mChangeCRSButton_clicked();
-%Docstring
-Opens the Spatial Reference System dialog.
-%End
-
-    virtual void mLayersTreeWidget_itemSelectionChanged();
-%Docstring
-Signaled when a layer selection is changed.
-%End
-
-    void showStatusMessage( const QString &message );
-%Docstring
-Set status message to theMessage
-%End
-
+  protected slots:
     void showError( const QString &title, const QString &format, const QString &error );
 %Docstring
 show whatever error is exposed.
 %End
 
-    void mConnectionsComboBox_activated( int );
+    void showStatusMessage( const QString &message );
 %Docstring
-Stores the selected datasource whenerver it is changed
-%End
-
-    void mAddDefaultButton_clicked();
-%Docstring
-Add some default wms servers to the list
+Set status message to theMessage
 %End
 
   protected:
@@ -240,7 +192,6 @@ Returns currently selected time
 Returns currently selected cache load control
  :rtype: QNetworkRequest.CacheLoadControl
 %End
-
 
 
 

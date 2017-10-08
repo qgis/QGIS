@@ -64,7 +64,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
-  protected slots:
+  private slots:
     void mAddAttributeButton_clicked();
     void mRemoveAttributeButton_clicked();
     void mFileFormatComboBox_currentIndexChanged( int index );

@@ -66,12 +66,12 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
   public slots:
     //! \brief slot executed when user wishes to refresh raster histogramwidget
     void refreshHistogram();
-    //! This slot lets you save the histogram as an image to disk
-    void mSaveAsImageButton_clicked();
 
     void apply() override;
 
   private slots:
+    //! This slot lets you save the histogram as an image to disk
+    void mSaveAsImageButton_clicked();
     //! Used when the histogram band selector changes, or when tab is loaded.
     void cboHistoBand_currentIndexChanged( int );
     //! Applies the selected min/max values to the renderer widget.

@@ -120,11 +120,11 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     void rowsMoved();
     void modelDataChanged();
-    void mSizeUnitWidget_changed();
-    void methodComboBox_currentIndexChanged( int );
     void refreshRanges( bool reset = false );
 
   private slots:
+    void mSizeUnitWidget_changed();
+    void methodComboBox_currentIndexChanged( int );
     void cleanUpSymbolSelector( QgsPanelWidget *container );
     void updateSymbolsFromWidget();
     void toggleMethodWidgets( int idx );

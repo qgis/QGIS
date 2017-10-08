@@ -58,10 +58,25 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     void showEvent( QShowEvent *event ) override;
 
+    QString sql();
+    void setSql( const QString &sqlStatement );
+
   public slots:
     void accept() override;
     void reject() override;
     void clear();
+
+    /**
+     * Test the constructed sql statement to see if the vector layer data provider likes it.
+     * The number of rows that would be returned is displayed in a message box.
+     * The test uses a "select count(*) from ..." query to test the SQL
+     * statement.
+     */
+    void test();
+
+    void setDatasourceDescription( const QString &uri );
+
+  private slots:
     void btnEqual_clicked();
     void btnLessThan_clicked();
     void btnGreaterThan_clicked();
@@ -70,8 +85,6 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void btnNotIn_clicked();
     void btnLike_clicked();
     void btnILike_clicked();
-    QString sql();
-    void setSql( const QString &sqlStatement );
     void lstFields_clicked( const QModelIndex &index );
     void lstFields_doubleClicked( const QModelIndex &index );
     void lstValues_doubleClicked( const QModelIndex &index );
@@ -81,14 +94,6 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void btnAnd_clicked();
     void btnNot_clicked();
     void btnOr_clicked();
-
-    /**
-     * Test the constructed sql statement to see if the vector layer data provider likes it.
-     * The number of rows that would be returned is displayed in a message box.
-     * The test uses a "select count(*) from ..." query to test the SQL
-     * statement.
-     */
-    void test();
 
     /**
      * Get all distinct values for the field. Values are inserted
@@ -102,8 +107,6 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * are inserted into the values list box.
      */
     void btnSampleValues_clicked();
-
-    void setDatasourceDescription( const QString &uri );
 
   private:
 

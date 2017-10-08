@@ -60,19 +60,6 @@ Returns the file format for storage
 .. seealso:: crs()
 %End
 
-  protected slots:
-    void mAddAttributeButton_clicked();
-    void mRemoveAttributeButton_clicked();
-    void mFileFormatComboBox_currentIndexChanged( int index );
-    void mTypeBox_currentIndexChanged( int index );
-
-    void showHelp();
-%Docstring
-Open the associated help
-%End
-    void nameChanged( const QString & );
-    void selectionChanged();
-
 };
 
 /************************************************************************
