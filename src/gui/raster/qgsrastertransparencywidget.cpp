@@ -42,6 +42,12 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   , mMapCanvas( canvas )
 {
   setupUi( this );
+  connect( pbnAddValuesFromDisplay, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnAddValuesFromDisplay_clicked );
+  connect( pbnAddValuesManually, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnAddValuesManually_clicked );
+  connect( pbnDefaultValues, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnDefaultValues_clicked );
+  connect( pbnExportTransparentPixelValues, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked );
+  connect( pbnImportTransparentPixelValues, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked );
+  connect( pbnRemoveSelectedRow, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked );
 
   syncToLayer();
 
@@ -150,7 +156,7 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
   emit widgetChanged();
 }
 
-void QgsRasterTransparencyWidget::on_pbnAddValuesFromDisplay_clicked()
+void QgsRasterTransparencyWidget::pbnAddValuesFromDisplay_clicked()
 {
   if ( mMapCanvas && mPixelSelectorTool )
   {
@@ -158,7 +164,7 @@ void QgsRasterTransparencyWidget::on_pbnAddValuesFromDisplay_clicked()
   }
 }
 
-void QgsRasterTransparencyWidget::on_pbnAddValuesManually_clicked()
+void QgsRasterTransparencyWidget::pbnAddValuesManually_clicked()
 {
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( !renderer )
@@ -182,7 +188,7 @@ void QgsRasterTransparencyWidget::on_pbnAddValuesManually_clicked()
   tableTransparency->resizeRowsToContents();
 }
 
-void QgsRasterTransparencyWidget::on_pbnDefaultValues_clicked()
+void QgsRasterTransparencyWidget::pbnDefaultValues_clicked()
 {
   QgsRasterRenderer *r = mRasterLayer->renderer();
   if ( !r )
@@ -199,7 +205,7 @@ void QgsRasterTransparencyWidget::on_pbnDefaultValues_clicked()
 
 }
 
-void QgsRasterTransparencyWidget::on_pbnExportTransparentPixelValues_clicked()
+void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
 {
   QgsSettings myQSettings;
   QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
@@ -246,7 +252,7 @@ void QgsRasterTransparencyWidget::on_pbnExportTransparentPixelValues_clicked()
   }
 }
 
-void QgsRasterTransparencyWidget::on_pbnImportTransparentPixelValues_clicked()
+void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
 {
   int myLineCounter = 0;
   bool myImportError = false;
@@ -344,7 +350,7 @@ void QgsRasterTransparencyWidget::on_pbnImportTransparentPixelValues_clicked()
   emit widgetChanged();
 }
 
-void QgsRasterTransparencyWidget::on_pbnRemoveSelectedRow_clicked()
+void QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked()
 {
   if ( 0 < tableTransparency->rowCount() )
   {

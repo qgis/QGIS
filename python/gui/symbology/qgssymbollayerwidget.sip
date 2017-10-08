@@ -106,12 +106,12 @@ class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
     void colorChanged( const QColor &color );
     void penStyleChanged();
     void offsetChanged();
-    void on_mCustomCheckBox_stateChanged( int state );
-    void on_mChangePatternButton_clicked();
-    void on_mPenWidthUnitWidget_changed();
-    void on_mOffsetUnitWidget_changed();
-    void on_mDashPatternUnitWidget_changed();
-    void on_mDrawInsideCheckBox_stateChanged( int state );
+    void mCustomCheckBox_stateChanged( int state );
+    void mChangePatternButton_clicked();
+    void mPenWidthUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mDashPatternUnitWidget_changed();
+    void mDrawInsideCheckBox_stateChanged( int state );
 
   protected:
 
@@ -146,13 +146,13 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     void setSize();
     void setAngle();
     void setOffset();
-    void on_mSizeUnitWidget_changed();
-    void on_mOffsetUnitWidget_changed();
-    void on_mStrokeWidthUnitWidget_changed();
-    void on_mStrokeStyleComboBox_currentIndexChanged( int index );
-    void on_mStrokeWidthSpinBox_valueChanged( double d );
-    void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
-    void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void mSizeUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mStrokeWidthUnitWidget_changed();
+    void mStrokeStyleComboBox_currentIndexChanged( int index );
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void mVerticalAnchorComboBox_currentIndexChanged( int index );
 
   protected:
 
@@ -185,8 +185,8 @@ class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
     void strokeWidthChanged();
     void strokeStyleChanged();
     void offsetChanged();
-    void on_mStrokeWidthUnitWidget_changed();
-    void on_mOffsetUnitWidget_changed();
+    void mStrokeWidthUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
 
   protected:
 };
@@ -262,9 +262,9 @@ class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
     void setGradientSpread( int index );
     void offsetChanged();
     void referencePointChanged();
-    void on_mOffsetUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
     void colorModeChanged();
-    void on_mSpinAngle_valueChanged( double value );
+    void mSpinAngle_valueChanged( double value );
 
   protected:
 };
@@ -293,14 +293,14 @@ class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
     void setColor( const QColor &color );
     void setColor2( const QColor &color );
     void colorModeChanged();
-    void on_mSpinBlurRadius_valueChanged( int value );
-    void on_mSpinMaxDistance_valueChanged( double value );
-    void on_mDistanceUnitWidget_changed();
-    void on_mRadioUseWholeShape_toggled( bool value );
+    void mSpinBlurRadius_valueChanged( int value );
+    void mSpinMaxDistance_valueChanged( double value );
+    void mDistanceUnitWidget_changed();
+    void mRadioUseWholeShape_toggled( bool value );
     void applyColorRamp();
     void offsetChanged();
-    void on_mOffsetUnitWidget_changed();
-    void on_mIgnoreRingsCheckBox_stateChanged( int state );
+    void mOffsetUnitWidget_changed();
+    void mIgnoreRingsCheckBox_stateChanged( int state );
 
   protected:
 };
@@ -332,9 +332,9 @@ class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
     void setRotate();
     void setOffset();
     void setPlacement();
-    void on_mIntervalUnitWidget_changed();
-    void on_mOffsetUnitWidget_changed();
-    void on_mOffsetAlongLineUnitWidget_changed();
+    void mIntervalUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mOffsetAlongLineUnitWidget_changed();
 
   protected:
 
@@ -364,17 +364,17 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
   public slots:
     void setName( const QModelIndex &idx );
     void populateIcons( const QModelIndex &idx );
-    void on_mFileToolButton_clicked();
-    void on_mFileLineEdit_textEdited( const QString &text );
-    void on_mFileLineEdit_editingFinished();
-    void on_mChangeColorButton_colorChanged( const QColor &color );
-    void on_mChangeStrokeColorButton_colorChanged( const QColor &color );
-    void on_mStrokeWidthSpinBox_valueChanged( double d );
-    void on_mSizeUnitWidget_changed();
-    void on_mStrokeWidthUnitWidget_changed();
-    void on_mOffsetUnitWidget_changed();
-    void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
-    void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void mFileToolButton_clicked();
+    void mFileLineEdit_textEdited( const QString &text );
+    void mFileLineEdit_editingFinished();
+    void mChangeColorButton_colorChanged( const QColor &color );
+    void mChangeStrokeColorButton_colorChanged( const QColor &color );
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void mSizeUnitWidget_changed();
+    void mStrokeWidthUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void mVerticalAnchorComboBox_currentIndexChanged( int index );
 
   protected:
 
@@ -521,12 +521,12 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     void setAngle( double angle );
     void setCharacter( QChar chr );
     void setOffset();
-    void on_mSizeUnitWidget_changed();
-    void on_mOffsetUnitWidget_changed();
-    void on_mStrokeWidthUnitWidget_changed();
-    void on_mStrokeWidthSpinBox_valueChanged( double d );
-    void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
-    void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void mSizeUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mStrokeWidthUnitWidget_changed();
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void mVerticalAnchorComboBox_currentIndexChanged( int index );
 
   protected:
 

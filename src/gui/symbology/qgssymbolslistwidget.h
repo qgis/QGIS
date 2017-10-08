@@ -76,11 +76,11 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
     void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
 
-    void on_mSymbolUnitWidget_changed();
+    void mSymbolUnitWidget_changed();
 
     //! Pupulates the groups combo box with available tags and smartgroups
     void populateGroups();
-    void on_groupsCombo_currentIndexChanged( int index );
+    void groupsCombo_currentIndexChanged( int index );
 
     void openStyleManager();
     void clipFeaturesToggled( bool checked );

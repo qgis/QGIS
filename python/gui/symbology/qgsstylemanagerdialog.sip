@@ -36,7 +36,7 @@ open add color ramp dialog, return color ramp's name if the ramp has been added
     void exportItems();
     void importItems();
 
-    void on_tabItemType_currentChanged( int );
+    void tabItemType_currentChanged( int );
     void populateList();
 %Docstring
 adds symbols of some type to list

@@ -43,6 +43,8 @@ QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
 {
   setupUi( this );
+  connect( mFeatureList, &QgsFeatureListView::aboutToChangeEditSelection, this, &QgsDualView::mFeatureList_aboutToChangeEditSelection );
+  connect( mFeatureList, &QgsFeatureListView::currentEditSelectionChanged, this, &QgsDualView::mFeatureList_currentEditSelectionChanged );
 
   mConditionalFormatWidget->hide();
 
@@ -395,13 +397,13 @@ void QgsDualView::insertRecentlyUsedDisplayExpression( const QString &expression
   mLastDisplayExpressionAction = previewAction;
 }
 
-void QgsDualView::on_mFeatureList_aboutToChangeEditSelection( bool &ok )
+void QgsDualView::mFeatureList_aboutToChangeEditSelection( bool &ok )
 {
   if ( mLayer->isEditable() && !mAttributeForm->save() )
     ok = false;
 }
 
-void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
+void QgsDualView::mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
 {
   if ( !mLayer->isEditable() || mAttributeForm->save() )
   {

@@ -42,6 +42,12 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
   , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
+  connect( mTreeView, &QTreeView::clicked, this, &QgsCptCityColorRampDialog::mTreeView_clicked );
+  connect( mListWidget, &QListWidget::itemClicked, this, &QgsCptCityColorRampDialog::mListWidget_itemClicked );
+  connect( mListWidget, &QListWidget::itemSelectionChanged, this, &QgsCptCityColorRampDialog::mListWidget_itemSelectionChanged );
+  connect( tabBar, &QTabBar::currentChanged, this, &QgsCptCityColorRampDialog::tabBar_currentChanged );
+  connect( pbtnLicenseDetails, &QToolButton::pressed, this, &QgsCptCityColorRampDialog::pbtnLicenseDetails_pressed );
+  connect( cboVariantName, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsCptCityColorRampDialog::cboVariantName_currentIndexChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCptCityColorRampDialog::showHelp );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
@@ -141,7 +147,7 @@ void QgsCptCityColorRampDialog::populateVariants()
   {
     cboVariantName->setEnabled( false );
     cboVariantName->setVisible( false );
-    on_cboVariantName_currentIndexChanged( -1 );
+    cboVariantName_currentIndexChanged( -1 );
   }
   else
   {
@@ -201,7 +207,7 @@ void QgsCptCityColorRampDialog::populateVariants()
 
 }
 
-void QgsCptCityColorRampDialog::on_mTreeView_clicked( const QModelIndex &index )
+void QgsCptCityColorRampDialog::mTreeView_clicked( const QModelIndex &index )
 {
   const QModelIndex &sourceIndex = mTreeFilter->mapToSource( index );
   QgsCptCityDataItem *item = mModel->dataItem( sourceIndex );
@@ -253,7 +259,7 @@ void QgsCptCityColorRampDialog::updateTreeView( QgsCptCityDataItem *item, bool r
   }
 }
 
-void QgsCptCityColorRampDialog::on_mListWidget_itemClicked( QListWidgetItem *item )
+void QgsCptCityColorRampDialog::mListWidget_itemClicked( QListWidgetItem *item )
 {
   QgsCptCityColorRampItem *rampItem = mListRamps.at( item->data( Qt::UserRole ).toInt() );
   if ( rampItem )
@@ -270,7 +276,7 @@ void QgsCptCityColorRampDialog::on_mListWidget_itemClicked( QListWidgetItem *ite
   }
 }
 
-void QgsCptCityColorRampDialog::on_mListWidget_itemSelectionChanged()
+void QgsCptCityColorRampDialog::mListWidget_itemSelectionChanged()
 {
   if ( mListWidget->selectedItems().isEmpty() )
   {
@@ -278,7 +284,7 @@ void QgsCptCityColorRampDialog::on_mListWidget_itemSelectionChanged()
   }
 }
 
-void QgsCptCityColorRampDialog::on_tabBar_currentChanged( int index )
+void QgsCptCityColorRampDialog::tabBar_currentChanged( int index )
 {
   if ( index == 0 )
   {
@@ -303,7 +309,7 @@ void QgsCptCityColorRampDialog::on_tabBar_currentChanged( int index )
 }
 
 
-void QgsCptCityColorRampDialog::on_pbtnLicenseDetails_pressed()
+void QgsCptCityColorRampDialog::pbtnLicenseDetails_pressed()
 {
   QString path, title, copyFile, descFile;
 
@@ -432,7 +438,7 @@ void QgsCptCityColorRampDialog::updateCopyingInfo( const QMap< QString, QString 
     lblSrcLink->clear();
 }
 
-void QgsCptCityColorRampDialog::on_cboVariantName_currentIndexChanged( int index )
+void QgsCptCityColorRampDialog::cboVariantName_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   if ( cboVariantName->currentIndex() != -1 )
@@ -616,7 +622,7 @@ bool QgsCptCityColorRampDialog::updateRamp()
       QgsDebugMsg( QString( "found matching item %1 target=%2" ).arg( mListRamps.at( i )->path(), childItem->path() ) );
       QListWidgetItem *listItem = mListWidget->item( i );
       mListWidget->setCurrentItem( listItem );
-      // on_mListWidget_itemClicked( listItem );
+      // mListWidget_itemClicked( listItem );
       populateVariants();
       mListWidget->scrollToItem( listItem, QAbstractItemView::EnsureVisible );
       // mListView->selectionModel()->select( childIndex, QItemSelectionModel::Select );

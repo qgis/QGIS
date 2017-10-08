@@ -268,14 +268,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
   private slots:
 
-    void on_mFeatureList_aboutToChangeEditSelection( bool &ok );
+    void mFeatureList_aboutToChangeEditSelection( bool &ok );
 
     /**
      * Changes the currently visible feature within the attribute editor
      *
      * \param feat  The newly visible feature
      */
-    void on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat );
+    void mFeatureList_currentEditSelectionChanged( const QgsFeature &feat );
 
     void previewExpressionBuilder();
 

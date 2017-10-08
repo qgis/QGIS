@@ -40,6 +40,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 {
 
   setupUi( this );
+  connect( btnBrowseForFile, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
@@ -101,7 +102,7 @@ QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
   delete mFile;
 }
 
-void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
+void QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked()
 {
   getOpenFileName();
 }

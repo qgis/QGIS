@@ -71,10 +71,10 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, public
 
   private slots:
 
-    void on_mRendererComboBox_currentIndexChanged( int index );
-    void on_mDistanceSpinBox_valueChanged( double d );
-    void on_mDistanceUnitWidget_changed();
-    void on_mRendererSettingsButton_clicked();
+    void mRendererComboBox_currentIndexChanged( int index );
+    void mDistanceSpinBox_valueChanged( double d );
+    void mDistanceUnitWidget_changed();
+    void mRendererSettingsButton_clicked();
     void centerSymbolChanged();
     void updateRendererFromWidget();
 };

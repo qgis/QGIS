@@ -110,14 +110,14 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
   private slots:
 
-    void on_mHueRadio_toggled( bool checked );
-    void on_mSaturationRadio_toggled( bool checked );
-    void on_mValueRadio_toggled( bool checked );
-    void on_mRedRadio_toggled( bool checked );
-    void on_mGreenRadio_toggled( bool checked );
-    void on_mBlueRadio_toggled( bool checked );
+    void mHueRadio_toggled( bool checked );
+    void mSaturationRadio_toggled( bool checked );
+    void mValueRadio_toggled( bool checked );
+    void mRedRadio_toggled( bool checked );
+    void mGreenRadio_toggled( bool checked );
+    void mBlueRadio_toggled( bool checked );
 
-    void on_mAddColorToSchemeButton_clicked();
+    void mAddColorToSchemeButton_clicked();
 
     void importPalette();
     void removePalette();
@@ -126,14 +126,14 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void schemeIndexChanged( int index );
     void listSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
-    void on_mAddCustomColorButton_clicked();
+    void mAddCustomColorButton_clicked();
 
-    void on_mSampleButton_clicked();
-    void on_mTabWidget_currentChanged( int index );
+    void mSampleButton_clicked();
+    void mTabWidget_currentChanged( int index );
 
   private slots:
 
-    void on_mActionShowInButtons_toggled( bool state );
+    void mActionShowInButtons_toggled( bool state );
 
   private:
 

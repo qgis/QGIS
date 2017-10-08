@@ -256,12 +256,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     QStringList authorities();
 
     //! Apply projection on double-click
-    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
-    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
-    void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_cbxHideDeprecated_stateChanged();
-    void on_leSearch_textChanged( const QString & );
+    void lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void cbxHideDeprecated_stateChanged();
+    void leSearch_textChanged( const QString & );
 };
 
 #endif

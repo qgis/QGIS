@@ -44,6 +44,11 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   else
   {
     setupUi( this );
+    connect( cmbConfigSelect, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged );
+    connect( btnConfigAdd, &QToolButton::clicked, this, &QgsAuthConfigSelect::btnConfigAdd_clicked );
+    connect( btnConfigEdit, &QToolButton::clicked, this, &QgsAuthConfigSelect::btnConfigEdit_clicked );
+    connect( btnConfigRemove, &QToolButton::clicked, this, &QgsAuthConfigSelect::btnConfigRemove_clicked );
+    connect( btnConfigMsgClear, &QToolButton::clicked, this, &QgsAuthConfigSelect::btnConfigMsgClear_clicked );
 
     // Set icons and remove texts
     btnConfigAdd->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
@@ -188,14 +193,14 @@ void QgsAuthConfigSelect::loadAvailableConfigs()
   mConfigs = QgsAuthManager::instance()->availableAuthMethodConfigs( mDataProvider );
 }
 
-void QgsAuthConfigSelect::on_cmbConfigSelect_currentIndexChanged( int index )
+void QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged( int index )
 {
   QString authcfg = cmbConfigSelect->itemData( index ).toString();
   mAuthCfg = ( !authcfg.isEmpty() && authcfg != QLatin1String( "0" ) ) ? authcfg : QString();
   loadConfig();
 }
 
-void QgsAuthConfigSelect::on_btnConfigAdd_clicked()
+void QgsAuthConfigSelect::btnConfigAdd_clicked()
 {
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
@@ -209,7 +214,7 @@ void QgsAuthConfigSelect::on_btnConfigAdd_clicked()
   ace->deleteLater();
 }
 
-void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
+void QgsAuthConfigSelect::btnConfigEdit_clicked()
 {
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
@@ -224,7 +229,7 @@ void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
   ace->deleteLater();
 }
 
-void QgsAuthConfigSelect::on_btnConfigRemove_clicked()
+void QgsAuthConfigSelect::btnConfigRemove_clicked()
 {
   if ( QMessageBox::warning( this, tr( "Remove Authentication" ),
                              tr( "Are you sure that you want to permanently remove this configuration right now?\n\n"
@@ -242,7 +247,7 @@ void QgsAuthConfigSelect::on_btnConfigRemove_clicked()
   }
 }
 
-void QgsAuthConfigSelect::on_btnConfigMsgClear_clicked()
+void QgsAuthConfigSelect::btnConfigMsgClear_clicked()
 {
   clearMessage();
 }

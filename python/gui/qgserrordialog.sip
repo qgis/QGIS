@@ -32,8 +32,8 @@ class QgsErrorDialog: QDialog
 %End
 
   public slots:
-    void on_mDetailPushButton_clicked();
-    void on_mDetailCheckBox_stateChanged( int state );
+    void mDetailPushButton_clicked();
+    void mDetailCheckBox_stateChanged( int state );
 
 };
 

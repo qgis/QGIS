@@ -67,8 +67,8 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     explicit QgsAuthEditorWidgets( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private slots:
-    void on_btnCertManager_clicked();
-    void on_btnAuthPlugins_clicked();
+    void btnCertManager_clicked();
+    void btnAuthPlugins_clicked();
 
     //! Sets the cached master password (and verifies it if its hash is in authentication database)
     void setMasterPassword();

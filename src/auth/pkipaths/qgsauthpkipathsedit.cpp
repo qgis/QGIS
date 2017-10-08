@@ -33,6 +33,9 @@ QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
 {
   setupUi( this );
+  connect( chkPkiPathsPassShow, &QCheckBox::stateChanged, this, &QgsAuthPkiPathsEdit::chkPkiPathsPassShow_stateChanged );
+  connect( btnPkiPathsCert, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked );
+  connect( btnPkiPathsKey, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked );
 }
 
 bool QgsAuthPkiPathsEdit::validateConfig()
@@ -185,12 +188,12 @@ void QgsAuthPkiPathsEdit::clearPkiPathsKeyPass()
   chkPkiPathsPassShow->setChecked( false );
 }
 
-void QgsAuthPkiPathsEdit::on_chkPkiPathsPassShow_stateChanged( int state )
+void QgsAuthPkiPathsEdit::chkPkiPathsPassShow_stateChanged( int state )
 {
   lePkiPathsKeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
-void QgsAuthPkiPathsEdit::on_btnPkiPathsCert_clicked()
+void QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked()
 {
   const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open Client Certificate File" ),
                       tr( "PEM (*.pem);;DER (*.der)" ) );
@@ -201,7 +204,7 @@ void QgsAuthPkiPathsEdit::on_btnPkiPathsCert_clicked()
   }
 }
 
-void QgsAuthPkiPathsEdit::on_btnPkiPathsKey_clicked()
+void QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked()
 {
   const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open Private Key File" ),
                       tr( "PEM (*.pem);;DER (*.der)" ) );

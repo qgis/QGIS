@@ -62,8 +62,8 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, pr
     std::unique_ptr<QgsRendererWidget> mEmbeddedRendererWidget;
 
   private slots:
-    void on_mRendererComboBox_currentIndexChanged( int index );
-    void on_mMergePolygonsCheckBox_stateChanged( int state );
+    void mRendererComboBox_currentIndexChanged( int index );
+    void mMergePolygonsCheckBox_stateChanged( int state );
 };
 
 

@@ -61,21 +61,21 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void handleDoubleClick( QTreeWidgetItem *item, int col );
 
-    void on_btnAddCa_clicked();
+    void btnAddCa_clicked();
 
-    void on_btnRemoveCa_clicked();
+    void btnRemoveCa_clicked();
 
-    void on_btnInfoCa_clicked();
+    void btnInfoCa_clicked();
 
-    void on_btnGroupByOrg_toggled( bool checked );
+    void btnGroupByOrg_toggled( bool checked );
 
     void editDefaultTrustPolicy();
 
     void defaultTrustPolicyChanged( QgsAuthCertUtils::CertTrustPolicy trustpolicy );
 
-    void on_btnCaFile_clicked();
+    void btnCaFile_clicked();
 
-    void on_btnCaFileClear_clicked();
+    void btnCaFileClear_clicked();
 
     void showTrustedCertificateAuthorities();
 

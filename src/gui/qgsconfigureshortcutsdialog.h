@@ -59,7 +59,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void setNoShortcut();
     void saveShortcuts();
     void loadShortcuts();
-    void on_mLeFilter_textChanged( const QString &text );
+    void mLeFilter_textChanged( const QString &text );
 
     void actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 

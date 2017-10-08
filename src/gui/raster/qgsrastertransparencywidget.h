@@ -63,21 +63,21 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void transparencyCellTextEdited( const QString &text );
 
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
-    void on_pbnAddValuesFromDisplay_clicked();
+    void pbnAddValuesFromDisplay_clicked();
 
     //! \brief slot executed when user presses "Add Values Manually" button on the transparency page
-    void on_pbnAddValuesManually_clicked();
+    void pbnAddValuesManually_clicked();
 
     //! \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value
-    void on_pbnDefaultValues_clicked();
+    void pbnDefaultValues_clicked();
 
     //! \brief slot executed when user wishes to export transparency values
-    void on_pbnExportTransparentPixelValues_clicked();
+    void pbnExportTransparentPixelValues_clicked();
 
     //! \brief slow executed when user wishes to import transparency values
-    void on_pbnImportTransparentPixelValues_clicked();
+    void pbnImportTransparentPixelValues_clicked();
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
-    void on_pbnRemoveSelectedRow_clicked();
+    void pbnRemoveSelectedRow_clicked();
 
   private:
     //! \brief  A constant that signals property not used

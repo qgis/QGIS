@@ -55,7 +55,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     void updateCurrentCert( QTreeWidgetItem *item );
 
-    void on_btnSaveTrust_clicked();
+    void btnSaveTrust_clicked();
 
     void currentPolicyIndexChanged( int indx );
 

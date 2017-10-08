@@ -43,6 +43,8 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
   else
   {
     setupUi( this );
+    connect( btnInfoCa, &QToolButton::clicked, this, &QgsAuthTrustedCAsDialog::btnInfoCa_clicked );
+    connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthTrustedCAsDialog::btnGroupByOrg_toggled );
 
     connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
              this, &QgsAuthTrustedCAsDialog::authMessageOut );
@@ -281,7 +283,7 @@ void QgsAuthTrustedCAsDialog::handleDoubleClick( QTreeWidgetItem *item, int col 
   }
 }
 
-void QgsAuthTrustedCAsDialog::on_btnInfoCa_clicked()
+void QgsAuthTrustedCAsDialog::btnInfoCa_clicked()
 {
   if ( treeTrustedCAs->selectionModel()->selection().length() > 0 )
   {
@@ -290,7 +292,7 @@ void QgsAuthTrustedCAsDialog::on_btnInfoCa_clicked()
   }
 }
 
-void QgsAuthTrustedCAsDialog::on_btnGroupByOrg_toggled( bool checked )
+void QgsAuthTrustedCAsDialog::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "trustedcasortby" ), QVariant( checked ) ) )
   {

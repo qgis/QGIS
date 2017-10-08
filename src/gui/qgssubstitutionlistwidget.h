@@ -66,11 +66,11 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
 
   private slots:
 
-    void on_mButtonAdd_clicked();
-    void on_mButtonRemove_clicked();
+    void mButtonAdd_clicked();
+    void mButtonRemove_clicked();
     void tableChanged();
-    void on_mButtonExport_clicked();
-    void on_mButtonImport_clicked();
+    void mButtonExport_clicked();
+    void mButtonImport_clicked();
 
   private:
 

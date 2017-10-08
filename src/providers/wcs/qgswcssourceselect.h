@@ -64,7 +64,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     // QgsWcsCapabilities virtual methods
     void populateLayerList() override;
     void addButtonClicked() override;
-    void on_mLayersTreeWidget_itemSelectionChanged() override;
+    void mLayersTreeWidget_itemSelectionChanged() override;
     void enableLayersForCrs( QTreeWidgetItem *item ) override;
     void updateButtons() override;
     QList<QgsOWSSourceSelect::SupportedFormat> providerFormats() override;

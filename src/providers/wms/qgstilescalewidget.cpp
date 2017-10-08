@@ -34,6 +34,7 @@ QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
+  connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
 
   connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgsTileScaleWidget::scaleChanged );
 
@@ -99,7 +100,7 @@ void QgsTileScaleWidget::scaleChanged( double scale )
   mSlider->blockSignals( false );
 }
 
-void QgsTileScaleWidget::on_mSlider_valueChanged( int value )
+void QgsTileScaleWidget::mSlider_valueChanged( int value )
 {
   Q_UNUSED( value );
   QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );

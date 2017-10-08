@@ -53,9 +53,9 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
 
     void requestCredentialsMasterPassword( QString *password, bool stored, bool *ok );
 
-    void on_leMasterPass_textChanged( const QString &pass );
-    void on_leMasterPassVerify_textChanged( const QString &pass );
-    void on_chkbxEraseAuthDb_toggled( bool checked );
+    void leMasterPass_textChanged( const QString &pass );
+    void leMasterPassVerify_textChanged( const QString &pass );
+    void chkbxEraseAuthDb_toggled( bool checked );
 
   protected:
     virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) override;

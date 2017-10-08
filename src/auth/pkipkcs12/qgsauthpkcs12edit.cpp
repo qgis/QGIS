@@ -33,6 +33,9 @@ QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
 {
   setupUi( this );
+  connect( lePkcs12KeyPass, &QLineEdit::textChanged, this, &QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged );
+  connect( chkPkcs12PassShow, &QCheckBox::stateChanged, this, &QgsAuthPkcs12Edit::chkPkcs12PassShow_stateChanged );
+  connect( btnPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked );
 }
 
 bool QgsAuthPkcs12Edit::validateConfig()
@@ -184,18 +187,18 @@ void QgsAuthPkcs12Edit::clearPkcs12BundlePass()
   chkPkcs12PassShow->setChecked( false );
 }
 
-void QgsAuthPkcs12Edit::on_lePkcs12KeyPass_textChanged( const QString &pass )
+void QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged( const QString &pass )
 {
   Q_UNUSED( pass );
   validateConfig();
 }
 
-void QgsAuthPkcs12Edit::on_chkPkcs12PassShow_stateChanged( int state )
+void QgsAuthPkcs12Edit::chkPkcs12PassShow_stateChanged( int state )
 {
   lePkcs12KeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
-void QgsAuthPkcs12Edit::on_btnPkcs12Bundle_clicked()
+void QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked()
 {
   const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open PKCS#12 Certificate Bundle" ),
                       tr( "PKCS#12 (*.p12 *.pfx)" ) );

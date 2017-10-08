@@ -32,6 +32,7 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsDb2NewConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2NewConnection::showHelp );
 
   mAuthSettings->setDataprovider( QStringLiteral( "db2" ) );
@@ -123,7 +124,7 @@ void QgsDb2NewConnection::accept()
   QDialog::accept();
 }
 
-void QgsDb2NewConnection::on_btnConnect_clicked()
+void QgsDb2NewConnection::btnConnect_clicked()
 {
   testConnection();
 }

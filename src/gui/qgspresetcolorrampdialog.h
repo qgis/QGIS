@@ -64,7 +64,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
   private slots:
     void setColors();
 
-    void on_mButtonAddColor_clicked();
+    void mButtonAddColor_clicked();
 
     void newColorChanged( const QColor &color );
     void schemeChanged();

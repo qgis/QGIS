@@ -115,8 +115,8 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
     void setMultiDirectional( bool isMultiDirectional );
 
   private slots:
-    void on_mLightAzimuth_updated( double value );
-    void on_mLightAzimuthDail_updated( int value );
+    void mLightAzimuth_updated( double value );
+    void mLightAzimuthDial_updated( int value );
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERERWIDGET_H

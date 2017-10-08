@@ -37,6 +37,8 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   else
   {
     setupUi( this );
+    connect( leMasterPassCurrent, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::leMasterPassCurrent_textChanged );
+    connect( leMasterPassNew, &QgsPasswordLineEdit::textChanged, this, &QgsMasterPasswordResetDialog::leMasterPassNew_textChanged );
   }
 }
 
@@ -61,7 +63,7 @@ bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass,
   return false;
 }
 
-void QgsMasterPasswordResetDialog::on_leMasterPassCurrent_textChanged( const QString &pass )
+void QgsMasterPasswordResetDialog::leMasterPassCurrent_textChanged( const QString &pass )
 {
   // since this is called on every keystroke, block signals emitted during verification of password
   QgsAuthManager::instance()->blockSignals( true );
@@ -70,7 +72,7 @@ void QgsMasterPasswordResetDialog::on_leMasterPassCurrent_textChanged( const QSt
   validatePasswords();
 }
 
-void QgsMasterPasswordResetDialog::on_leMasterPassNew_textChanged( const QString &pass )
+void QgsMasterPasswordResetDialog::leMasterPassNew_textChanged( const QString &pass )
 {
   mPassNewOk = !pass.isEmpty();
   validatePasswords();

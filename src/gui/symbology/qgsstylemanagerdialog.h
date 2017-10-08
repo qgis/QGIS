@@ -52,7 +52,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void exportItems();
     void importItems();
 
-    void on_tabItemType_currentChanged( int );
+    void tabItemType_currentChanged( int );
     //! adds symbols of some type to list
     void populateList();
 

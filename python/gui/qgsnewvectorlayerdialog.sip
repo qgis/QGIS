@@ -61,10 +61,10 @@ Returns the file format for storage
 %End
 
   protected slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mFileFormatComboBox_currentIndexChanged( int index );
-    void on_mTypeBox_currentIndexChanged( int index );
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mFileFormatComboBox_currentIndexChanged( int index );
+    void mTypeBox_currentIndexChanged( int index );
 
     void showHelp();
 %Docstring

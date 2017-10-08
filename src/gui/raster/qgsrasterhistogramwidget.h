@@ -67,19 +67,19 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     //! \brief slot executed when user wishes to refresh raster histogramwidget
     void refreshHistogram();
     //! This slot lets you save the histogram as an image to disk
-    void on_mSaveAsImageButton_clicked();
+    void mSaveAsImageButton_clicked();
 
     void apply() override;
 
   private slots:
     //! Used when the histogram band selector changes, or when tab is loaded.
-    void on_cboHistoBand_currentIndexChanged( int );
+    void cboHistoBand_currentIndexChanged( int );
     //! Applies the selected min/max values to the renderer widget.
     void applyHistoMin();
     void applyHistoMax();
     //! Button to activate picking of the min/max value on the graph.
-    void on_btnHistoMin_toggled();
-    void on_btnHistoMax_toggled();
+    void btnHistoMin_toggled();
+    void btnHistoMax_toggled();
     //! Called when a selection has been made using the plot picker.
     void histoPickerSelected( QPointF );
 
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     //! Draw the min/max markers on the histogram plot.
     void updateHistoMarkers();
     //! Button to compute the histogram, appears when no cached histogram is available.
-    void on_btnHistoCompute_clicked();
+    void btnHistoCompute_clicked();
 
   private:
 

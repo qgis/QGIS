@@ -113,7 +113,7 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void changeCrsFilter();
     void connectToServer();
     void filterChanged( const QString &text );
-    void on_cmbConnections_activated( int index );
+    void cmbConnections_activated( int index );
     void showHelp();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );

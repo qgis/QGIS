@@ -72,12 +72,12 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
     void resetConfig();
     void saveConfig();
 
-    void on_btnClear_clicked();
+    void btnClear_clicked();
     void clearAll();
 
     void validateAuth();
 
-    void on_leName_textChanged( const QString &txt );
+    void leName_textChanged( const QString &txt );
 
   private:
     int authMethodIndex( const QString &authMethodKey );

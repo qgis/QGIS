@@ -54,22 +54,22 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     void setDatabasePath( const QString &path ) { mDatabaseEdit->setText( path ); }
 
   private slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mFieldTypeBox_currentIndexChanged( int index );
-    void on_mGeometryTypeBox_currentIndexChanged( int index );
-    void on_mSelectDatabaseButton_clicked();
-    void on_mDatabaseEdit_textChanged( const QString &text );
-    void on_mTableNameEdit_textChanged( const QString &text );
-    void on_mTableNameEdit_textEdited( const QString &text );
-    void on_mLayerIdentifierEdit_textEdited( const QString &text );
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mFieldTypeBox_currentIndexChanged( int index );
+    void mGeometryTypeBox_currentIndexChanged( int index );
+    void mSelectDatabaseButton_clicked();
+    void mDatabaseEdit_textChanged( const QString &text );
+    void mTableNameEdit_textChanged( const QString &text );
+    void mTableNameEdit_textEdited( const QString &text );
+    void mLayerIdentifierEdit_textEdited( const QString &text );
     void fieldNameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 
     void showHelp();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   private:
     bool apply();

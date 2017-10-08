@@ -85,12 +85,12 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     void setMapCanvas( QgsMapCanvas *canvas );
 
   private slots:
-    void on_mActionSelect_triggered();
-    void on_mActionAddToSelection_triggered();
-    void on_mActionRemoveFromSelection_triggered();
-    void on_mActionSelectIntersect_triggered();
-    void on_mButtonZoomToFeatures_clicked();
-    void on_mPbnClose_clicked();
+    void mActionSelect_triggered();
+    void mActionAddToSelection_triggered();
+    void mActionRemoveFromSelection_triggered();
+    void mActionSelectIntersect_triggered();
+    void mButtonZoomToFeatures_clicked();
+    void mPbnClose_clicked();
     void showHelp();
 
   protected:

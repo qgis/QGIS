@@ -39,39 +39,39 @@ change search string shown in text field
 %End
 
   public slots:
-    void on_btnEqual_clicked();
+    void btnEqual_clicked();
     void on_btnOk_clicked();
-    void on_btnLessThan_clicked();
-    void on_btnGreaterThan_clicked();
-    void on_btnLike_clicked();
-    void on_btnILike_clicked();
-    void on_btnPct_clicked();
-    void on_btnIn_clicked();
-    void on_btnNotIn_clicked();
+    void btnLessThan_clicked();
+    void btnGreaterThan_clicked();
+    void btnLike_clicked();
+    void btnILike_clicked();
+    void btnPct_clicked();
+    void btnIn_clicked();
+    void btnNotIn_clicked();
 
-    void on_lstFields_doubleClicked( const QModelIndex &index );
-    void on_lstValues_doubleClicked( const QModelIndex &index );
-    void on_btnLessEqual_clicked();
-    void on_btnGreaterEqual_clicked();
-    void on_btnNotEqual_clicked();
-    void on_btnAnd_clicked();
-    void on_btnNot_clicked();
-    void on_btnOr_clicked();
-    void on_btnClear_clicked();
+    void lstFields_doubleClicked( const QModelIndex &index );
+    void lstValues_doubleClicked( const QModelIndex &index );
+    void btnLessEqual_clicked();
+    void btnGreaterEqual_clicked();
+    void btnNotEqual_clicked();
+    void btnAnd_clicked();
+    void btnNot_clicked();
+    void btnOr_clicked();
+    void btnClear_clicked();
 
-    void on_btnTest_clicked();
+    void btnTest_clicked();
 %Docstring
  Test the constructed search string to see if it's correct.
  The number of rows that would be returned is displayed in a message box.
 %End
 
-    void on_btnGetAllValues_clicked();
+    void btnGetAllValues_clicked();
 %Docstring
  Get all distinct values for the field. Values are inserted
  into the value list box
 %End
 
-    void on_btnSampleValues_clicked();
+    void btnSampleValues_clicked();
 %Docstring
  Get sample distinct values for the selected field. The sample size is
  limited to an arbitrary value (currently set to 25). The values

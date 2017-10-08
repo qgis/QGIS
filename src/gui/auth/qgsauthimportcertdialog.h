@@ -80,9 +80,9 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
 
     void validateCertificates();
 
-    void on_btnImportFile_clicked();
+    void btnImportFile_clicked();
 
-    void on_chkAllowInvalid_toggled( bool checked );
+    void chkAllowInvalid_toggled( bool checked );
 
   private:
     QString getOpenFileName( const QString &title, const QString &extfilter );
