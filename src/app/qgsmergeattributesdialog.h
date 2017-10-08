@@ -64,8 +64,8 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
   private slots:
     void comboValueChanged( const QString &text );
     void selectedRowChanged();
-    void on_mFromSelectedPushButton_clicked();
-    void on_mRemoveFeatureFromSelectionButton_clicked();
+    void mFromSelectedPushButton_clicked();
+    void mRemoveFeatureFromSelectionButton_clicked();
     void tableWidgetCellChanged( int row, int column );
 
   private:

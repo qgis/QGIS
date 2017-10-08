@@ -62,9 +62,9 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QStringList mSelectedLayerIds;
 
   private slots:
-    void on_mBrowseButton_clicked();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void mBrowseButton_clicked();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
     void showHelp();
 };
 

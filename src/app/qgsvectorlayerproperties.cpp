@@ -83,6 +83,16 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   , mOriginalSubsetSQL( lyr->subsetString() )
 {
   setupUi( this );
+  connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
+  connect( pbnQueryBuilder, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnQueryBuilder_clicked );
+  connect( pbnIndex, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnIndex_clicked );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorLayerProperties::mCrsSelector_crsChanged );
+  connect( pbnUpdateExtents, &QPushButton::clicked, this, &QgsVectorLayerProperties::pbnUpdateExtents_clicked );
+  connect( mButtonAddJoin, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonAddJoin_clicked );
+  connect( mButtonEditJoin, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonEditJoin_clicked );
+  connect( mJoinTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked );
+  connect( mButtonRemoveJoin, &QPushButton::clicked, this, &QgsVectorLayerProperties::mButtonRemoveJoin_clicked );
+  connect( mSimplifyDrawingGroupBox, &QGroupBox::toggled, this, &QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerProperties::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -711,7 +721,7 @@ void QgsVectorLayerProperties::onCancel()
   }
 }
 
-void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
+void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 {
   // launch the query builder
   QgsQueryBuilder *qb = new QgsQueryBuilder( mLayer, this );
@@ -734,7 +744,7 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
   delete qb;
 }
 
-void QgsVectorLayerProperties::on_pbnIndex_clicked()
+void QgsVectorLayerProperties::pbnIndex_clicked()
 {
   QgsVectorDataProvider *pr = mLayer->dataProvider();
   if ( pr )
@@ -759,12 +769,12 @@ QString QgsVectorLayerProperties::htmlMetadata()
   return mLayer->htmlMetadata();
 }
 
-void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QString &text )
+void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString &text )
 {
   txtDisplayName->setText( mLayer->capitalizeLayerName( text ) );
 }
 
-void QgsVectorLayerProperties::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
+void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mLayer->setCrs( crs );
   mMetadataFilled = false;
@@ -1121,7 +1131,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
   }
 }
 
-void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
+void QgsVectorLayerProperties::mButtonAddJoin_clicked()
 {
   if ( !mLayer )
     return;
@@ -1154,13 +1164,13 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
   }
 }
 
-void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
+void QgsVectorLayerProperties::mButtonEditJoin_clicked()
 {
   QTreeWidgetItem *currentJoinItem = mJoinTreeWidget->currentItem();
-  on_mJoinTreeWidget_itemDoubleClicked( currentJoinItem, 0 );
+  mJoinTreeWidget_itemDoubleClicked( currentJoinItem, 0 );
 }
 
-void QgsVectorLayerProperties::on_mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int )
+void QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int )
 {
   if ( !mLayer || !item )
   {
@@ -1330,7 +1340,7 @@ void QgsVectorLayerProperties::openPanel( QgsPanelWidget *panel )
   panel->acceptPanel();
 }
 
-void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
+void QgsVectorLayerProperties::mButtonRemoveJoin_clicked()
 {
   QTreeWidgetItem *currentJoinItem = mJoinTreeWidget->currentItem();
   if ( !mLayer || !currentJoinItem )
@@ -1393,7 +1403,7 @@ void QgsVectorLayerProperties::setPbnQueryBuilderEnabled()
 
 }
 
-void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
+void QgsVectorLayerProperties::pbnUpdateExtents_clicked()
 {
   mLayer->updateExtents( true ); // force update whatever options activated
   mMetadataFilled = false;
@@ -1410,7 +1420,7 @@ void QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
   mMetadataFilled = true;
 }
 
-void QgsVectorLayerProperties::on_mSimplifyDrawingGroupBox_toggled( bool checked )
+void QgsVectorLayerProperties::mSimplifyDrawingGroupBox_toggled( bool checked )
 {
   if ( !( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
   {

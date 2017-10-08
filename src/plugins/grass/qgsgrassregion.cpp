@@ -196,6 +196,7 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   QgsGrass::initRegion( &mWindow );
 
   setupUi( this );
+  connect( mDrawButton, &QPushButton::clicked, this, &QgsGrassRegion::mDrawButton_clicked );
   setAttribute( Qt::WA_DeleteOnClose );
 
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsGrassRegion::buttonClicked );
@@ -489,7 +490,7 @@ void QgsGrassRegion::displayRegion()
   mRegionEdit->setSrcRegion( QgsRectangle( ul, lr ) );
 }
 
-void QgsGrassRegion::on_mDrawButton_clicked()
+void QgsGrassRegion::mDrawButton_clicked()
 {
   mCanvas->setMapTool( mRegionEdit );
 }

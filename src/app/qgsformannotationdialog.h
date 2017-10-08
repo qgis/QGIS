@@ -33,9 +33,9 @@ class APP_EXPORT QgsFormAnnotationDialog: public QDialog, private Ui::QgsFormAnn
 
   private slots:
     void applySettingsToItem();
-    void on_mBrowseToolButton_clicked();
+    void mBrowseToolButton_clicked();
     void deleteItem();
-    void on_mButtonBox_clicked( QAbstractButton *button );
+    void mButtonBox_clicked( QAbstractButton *button );
 };
 
 #endif // QGSFORMANNOTATIONDIALOG_H

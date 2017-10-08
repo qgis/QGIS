@@ -48,8 +48,8 @@ class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsCom
 
     void apply();
 
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   private:
 

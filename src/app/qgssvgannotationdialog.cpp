@@ -32,6 +32,8 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
 
 {
   setupUi( this );
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsSvgAnnotationDialog::mBrowseToolButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsSvgAnnotationDialog::mButtonBox_clicked );
   setWindowTitle( tr( "SVG annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
@@ -49,7 +51,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
 }
 
-void QgsSvgAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsSvgAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
   QFileInfo fi( mFileLineEdit->text() );
@@ -84,7 +86,7 @@ void QgsSvgAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
-void QgsSvgAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsSvgAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {

@@ -28,6 +28,9 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationCopyrightDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationCopyrightDialog::buttonBox_rejected );
+  connect( pbnColorChooser, &QgsColorButton::colorChanged, this, &QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationCopyrightDialog::showHelp );
 
   QgsSettings settings;
@@ -68,18 +71,18 @@ QgsDecorationCopyrightDialog::~QgsDecorationCopyrightDialog()
   settings.setValue( QStringLiteral( "Windows/DecorationCopyright/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationCopyrightDialog::on_buttonBox_accepted()
+void QgsDecorationCopyrightDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsDecorationCopyrightDialog::on_buttonBox_rejected()
+void QgsDecorationCopyrightDialog::buttonBox_rejected()
 {
   reject();
 }
 
-void QgsDecorationCopyrightDialog::on_pbnColorChooser_colorChanged( const QColor &c )
+void QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged( const QColor &c )
 {
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();

@@ -23,6 +23,9 @@ QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map < QString,
   , mDevices( devices )
 {
   setupUi( this );
+  connect( pbnNewDevice, &QPushButton::clicked, this, &QgsGPSDeviceDialog::pbnNewDevice_clicked );
+  connect( pbnDeleteDevice, &QPushButton::clicked, this, &QgsGPSDeviceDialog::pbnDeleteDevice_clicked );
+  connect( pbnUpdateDevice, &QPushButton::clicked, this, &QgsGPSDeviceDialog::pbnUpdateDevice_clicked );
   setAttribute( Qt::WA_DeleteOnClose );
   // Manually set the relative size of the two main parts of the
   // device dialog box.
@@ -33,7 +36,7 @@ QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map < QString,
 }
 
 
-void QgsGPSDeviceDialog::on_pbnNewDevice_clicked()
+void QgsGPSDeviceDialog::pbnNewDevice_clicked()
 {
   std::map<QString, QgsGPSDevice *>::const_iterator iter = mDevices.begin();
   QString deviceName = tr( "New device %1" );
@@ -48,7 +51,7 @@ void QgsGPSDeviceDialog::on_pbnNewDevice_clicked()
 }
 
 
-void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked()
+void QgsGPSDeviceDialog::pbnDeleteDevice_clicked()
 {
   if ( QMessageBox::warning( this, tr( "Are you sure?" ),
                              tr( "Are you sure that you want to delete this device?" ),
@@ -69,7 +72,7 @@ void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked()
 }
 
 
-void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked()
+void QgsGPSDeviceDialog::pbnUpdateDevice_clicked()
 {
   if ( lbDeviceList->count() > 0 )
   {

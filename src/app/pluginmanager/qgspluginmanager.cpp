@@ -67,6 +67,21 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mPythonUtils = nullptr;
 
   setupUi( this );
+  connect( vwPlugins, &QListView::clicked, this, &QgsPluginManager::vwPlugins_clicked );
+  connect( vwPlugins, &QListView::doubleClicked, this, &QgsPluginManager::vwPlugins_doubleClicked );
+  connect( wvDetails, &QgsWebView::linkClicked, this, &QgsPluginManager::wvDetails_linkClicked );
+  connect( leFilter, &QgsFilterLineEdit::textChanged, this, &QgsPluginManager::leFilter_textChanged );
+  connect( buttonUpgradeAll, &QPushButton::clicked, this, &QgsPluginManager::buttonUpgradeAll_clicked );
+  connect( buttonInstall, &QPushButton::clicked, this, &QgsPluginManager::buttonInstall_clicked );
+  connect( buttonUninstall, &QPushButton::clicked, this, &QgsPluginManager::buttonUninstall_clicked );
+  connect( treeRepositories, &QTreeWidget::itemSelectionChanged, this, &QgsPluginManager::treeRepositories_itemSelectionChanged );
+  connect( treeRepositories, &QTreeWidget::doubleClicked, this, &QgsPluginManager::treeRepositories_doubleClicked );
+  connect( buttonAddRep, &QPushButton::clicked, this, &QgsPluginManager::buttonAddRep_clicked );
+  connect( buttonEditRep, &QPushButton::clicked, this, &QgsPluginManager::buttonEditRep_clicked );
+  connect( buttonDeleteRep, &QPushButton::clicked, this, &QgsPluginManager::buttonDeleteRep_clicked );
+  connect( buttonRefreshRepos, &QPushButton::clicked, this, &QgsPluginManager::buttonRefreshRepos_clicked );
+  connect( ckbExperimental, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbExperimental_toggled );
+  connect( ckbDeprecated, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbDeprecated_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPluginManager::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -1165,13 +1180,13 @@ void QgsPluginManager::currentPluginChanged( const QModelIndex &index )
   if ( index.column() == 0 )
   {
     // Do exactly the same as if a plugin was clicked
-    on_vwPlugins_clicked( index );
+    vwPlugins_clicked( index );
   }
 }
 
 
 
-void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &index )
+void QgsPluginManager::vwPlugins_clicked( const QModelIndex &index )
 {
   if ( index.column() == 0 )
   {
@@ -1192,7 +1207,7 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &index )
 
 
 
-void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex &index )
+void QgsPluginManager::vwPlugins_doubleClicked( const QModelIndex &index )
 {
   if ( index.column() == 0 )
   {
@@ -1238,7 +1253,7 @@ void QgsPluginManager::sendVote( int pluginId, int vote )
   }
 }
 
-void QgsPluginManager::on_wvDetails_linkClicked( const QUrl &url )
+void QgsPluginManager::wvDetails_linkClicked( const QUrl &url )
 {
   if ( url.scheme() == QLatin1String( "rpc2" ) )
   {
@@ -1255,7 +1270,7 @@ void QgsPluginManager::on_wvDetails_linkClicked( const QUrl &url )
 }
 
 
-void QgsPluginManager::on_leFilter_textChanged( QString text )
+void QgsPluginManager::leFilter_textChanged( QString text )
 {
   if ( text.startsWith( QLatin1String( "tag:" ), Qt::CaseInsensitive ) )
   {
@@ -1277,28 +1292,28 @@ void QgsPluginManager::on_leFilter_textChanged( QString text )
 
 
 
-void QgsPluginManager::on_buttonUpgradeAll_clicked()
+void QgsPluginManager::buttonUpgradeAll_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().upgradeAllUpgradeable()" ) );
 }
 
 
 
-void QgsPluginManager::on_buttonInstall_clicked()
+void QgsPluginManager::buttonInstall_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
 }
 
 
 
-void QgsPluginManager::on_buttonUninstall_clicked()
+void QgsPluginManager::buttonUninstall_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().uninstallPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
 }
 
 
 
-void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
+void QgsPluginManager::treeRepositories_itemSelectionChanged()
 {
   buttonEditRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
   buttonDeleteRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
@@ -1306,9 +1321,9 @@ void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
 
 
 
-void QgsPluginManager::on_treeRepositories_doubleClicked( const QModelIndex & )
+void QgsPluginManager::treeRepositories_doubleClicked( const QModelIndex & )
 {
-  on_buttonEditRep_clicked();
+  buttonEditRep_clicked();
 }
 
 
@@ -1335,7 +1350,7 @@ void QgsPluginManager::clearRepositoryFilter()
 
 
 
-void QgsPluginManager::on_buttonRefreshRepos_clicked()
+void QgsPluginManager::buttonRefreshRepos_clicked()
 {
   QgsDebugMsg( "Refreshing repositories..." );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().reloadAndExportData()" ) );
@@ -1343,7 +1358,7 @@ void QgsPluginManager::on_buttonRefreshRepos_clicked()
 
 
 
-void QgsPluginManager::on_buttonAddRep_clicked()
+void QgsPluginManager::buttonAddRep_clicked()
 {
   QgsDebugMsg( "Adding repository connection..." );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().addRepository()" ) );
@@ -1351,7 +1366,7 @@ void QgsPluginManager::on_buttonAddRep_clicked()
 
 
 
-void QgsPluginManager::on_buttonEditRep_clicked()
+void QgsPluginManager::buttonEditRep_clicked()
 {
   QTreeWidgetItem *current = treeRepositories->currentItem();
   if ( current )
@@ -1365,7 +1380,7 @@ void QgsPluginManager::on_buttonEditRep_clicked()
 
 
 
-void QgsPluginManager::on_buttonDeleteRep_clicked()
+void QgsPluginManager::buttonDeleteRep_clicked()
 {
   QTreeWidgetItem *current = treeRepositories->currentItem();
   if ( current )
@@ -1379,7 +1394,7 @@ void QgsPluginManager::on_buttonDeleteRep_clicked()
 
 
 
-void QgsPluginManager::on_ckbExperimental_toggled( bool state )
+void QgsPluginManager::ckbExperimental_toggled( bool state )
 {
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
@@ -1389,7 +1404,7 @@ void QgsPluginManager::on_ckbExperimental_toggled( bool state )
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().exportPluginsToManager()" ) );
 }
 
-void QgsPluginManager::on_ckbDeprecated_toggled( bool state )
+void QgsPluginManager::ckbDeprecated_toggled( bool state )
 {
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );

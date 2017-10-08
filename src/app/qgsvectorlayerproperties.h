@@ -97,7 +97,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QString htmlMetadata();
 
     //! Slot to update layer display name as original is edited
-    void on_mLayerOrigNameLineEdit_textEdited( const QString &text );
+    void mLayerOrigNameLineEdit_textEdited( const QString &text );
 
     //! Called when apply button is pressed or dialog is accepted
     void apply();
@@ -109,22 +109,22 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //methods reimplemented from qt designer base class
     //
 
-    void on_pbnQueryBuilder_clicked();
-    void on_pbnIndex_clicked();
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void pbnQueryBuilder_clicked();
+    void pbnIndex_clicked();
+    void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void loadDefaultStyle_clicked();
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
     void saveStyleAs_clicked();
     void mOptionsStackedWidget_CurrentChanged( int indx );
-    void on_pbnUpdateExtents_clicked();
+    void pbnUpdateExtents_clicked();
 
-    void on_mButtonAddJoin_clicked();
-    void on_mButtonEditJoin_clicked();
-    void on_mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void on_mButtonRemoveJoin_clicked();
+    void mButtonAddJoin_clicked();
+    void mButtonEditJoin_clicked();
+    void mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mButtonRemoveJoin_clicked();
 
-    void on_mSimplifyDrawingGroupBox_toggled( bool checked );
+    void mSimplifyDrawingGroupBox_toggled( bool checked );
 
   signals:
 

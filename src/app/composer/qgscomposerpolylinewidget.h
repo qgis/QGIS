@@ -38,7 +38,7 @@ class QgsComposerPolylineWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void updatePolylineStyle();
 
   private slots:
-    void on_mLineStyleButton_clicked();
+    void mLineStyleButton_clicked();
 
     //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();
