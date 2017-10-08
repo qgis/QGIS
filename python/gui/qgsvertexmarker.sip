@@ -1,8 +1,18 @@
+%ModuleHeaderCode
+#include <qgsvertexmarker.h>
+%End
 
 class QgsVertexMarker : QgsMapCanvasItem
 {
 %TypeHeaderCode
 #include <qgsvertexmarker.h>
+%End
+
+%ConvertToSubClassCode
+  if ( dynamic_cast< QgsVertexMarker* > ( sipCpp ) )
+    sipType = sipType_QgsVertexMarker;
+  else
+    sipType = nullptr;
 %End
 
   public:
