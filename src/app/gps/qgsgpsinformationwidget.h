@@ -31,8 +31,8 @@
 #include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
 #endif
-#define MAXACQUISITIONINTERVAL 300 // max gps information acquisition suspension interval in seconds
-#define MAXDISTANCETHRESHOLD 10 // max gps distance threshold
+#define MAXACQUISITIONINTERVAL 300 // max gps information acquisition suspension interval (in seconds)
+#define MAXDISTANCETHRESHOLD 10 // max gps distance threshold (in meters)
 
 class QextSerialPort;
 class QgsGPSConnection;
@@ -74,11 +74,11 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void on_mBtnLogFile_clicked();
     void connected( QgsGPSConnection * );
     void timedout();
-	void switchAcquisition();
-	void on_cboAcquisitionIntervalActivated(const QString &);
-	void on_cboDistanceThresholdActivated(const QString &);
-	void on_cboAcquisitionIntervalEdited();
-	void on_cboDistanceThresholdEdited();
+    void switchAcquisition();
+    void on_cboAcquisitionIntervalActivated( const QString & );
+    void on_cboDistanceThresholdActivated( const QString & );
+    void on_cboAcquisitionIntervalEdited();
+    void on_cboDistanceThresholdEdited();
   private:
     enum FixStatus  //GPS status
     {
@@ -91,8 +91,8 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void populateDevices();
     void setStatusIndicator( const FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
-	void setAcquisitionInterval(int);
-	void setDistanceThreshold(int);
+    void setAcquisitionInterval( int );
+    void setDistanceThreshold( int );
     QgsGPSConnection *mNmea = nullptr;
     QgsMapCanvas *mpCanvas = nullptr;
     QgsGpsMarker *mpMapMarker = nullptr;
@@ -116,14 +116,14 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
     QColor mTrackColor;
-	QIntValidator *acquisitionIntValidator;
-	QIntValidator *distanceThresholdValidator;
-	QLineEdit *acIntervalEdit, *distThresholdEdit;
-	nmeaPOS lastNmeaPosition;
-	QTimer *acquisitionTimer;
-	bool acquisitionEnabled;
-	unsigned int acquisitionInterval;
-	unsigned int distanceThreshold;
+    QIntValidator *acquisitionIntValidator;
+    QIntValidator *distanceThresholdValidator;
+    QLineEdit *acIntervalEdit, *distThresholdEdit;
+    nmeaPOS lastNmeaPosition;
+    QTimer *acquisitionTimer;
+    bool acquisitionEnabled;
+    unsigned int acquisitionInterval;
+    unsigned int distanceThreshold;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H
