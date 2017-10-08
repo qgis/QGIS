@@ -31,6 +31,10 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   , mTitleBase( tr( "Extent" ) )
 {
   setupUi( this );
+  connect( mXMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mXMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mYMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mYMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
 
   mLayerMenu = new QMenu( this );
   mButtonCalcFromLayer->setMenu( mLayerMenu );

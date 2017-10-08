@@ -202,11 +202,6 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
   private slots:
 
-    void mXMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void mXMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void mYMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void mYMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-
     void groupBoxClicked();
     void layerMenuAboutToShow();
 
