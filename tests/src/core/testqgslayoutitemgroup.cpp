@@ -46,6 +46,9 @@ class TestQgsLayoutItemGroup : public QObject
     void createGroup(); //test grouping items
     void ungroup(); //test ungrouping items
     void deleteGroup(); //test deleting group works
+    void groupVisibility();
+    void moveGroup();
+    void resizeGroup();
     void undoRedo(); //test that group/ungroup undo/redo commands don't crash
 
   private:
@@ -270,6 +273,118 @@ void TestQgsLayoutItemGroup::deleteGroup()
 
   l.layoutItems( items );
   QVERIFY( items.empty() );
+}
+
+void TestQgsLayoutItemGroup::groupVisibility()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item2 );
+
+  //group items
+  QList<QgsLayoutItem *> groupItems;
+  groupItems << item << item2;
+  QgsLayoutItemGroup *group = l.groupItems( groupItems );
+
+  QVERIFY( item->isVisible() );
+  QVERIFY( item2->isVisible() );
+  QVERIFY( group->isVisible() );
+  group->setVisibility( false );
+  QVERIFY( !item->isVisible() );
+  QVERIFY( !item2->isVisible() );
+  QVERIFY( !group->isVisible() );
+  group->setVisibility( true );
+  QVERIFY( item->isVisible() );
+  QVERIFY( item2->isVisible() );
+  QVERIFY( group->isVisible() );
+}
+
+void TestQgsLayoutItemGroup::moveGroup()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+  item->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
+
+  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item2 );
+  item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutInches ) );
+
+  //group items
+  QList<QgsLayoutItem *> groupItems;
+  groupItems << item << item2;
+  QgsLayoutItemGroup *group = l.groupItems( groupItems );
+  l.addLayoutItem( group );
+
+  QCOMPARE( group->positionWithUnits().x(), 50.8 );
+  QCOMPARE( group->positionWithUnits().y(), 76.2 );
+  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+
+  group->attemptMove( QgsLayoutPoint( 20.8, 36.2, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( group->positionWithUnits().x(), 20.8 );
+  QCOMPARE( group->positionWithUnits().y(), 36.2 );
+  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( item->positionWithUnits().x(), 0.02 );
+  QCOMPARE( item->positionWithUnits().y(), 0.05 );
+  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMeters );
+  QGSCOMPARENEAR( item2->positionWithUnits().x(), 0.818898, 0.0001 );
+  QGSCOMPARENEAR( item2->positionWithUnits().y(), 1.425197, 0.0001 );
+  QCOMPARE( item2->positionWithUnits().units(), QgsUnitTypes::LayoutInches );
+}
+
+void TestQgsLayoutItemGroup::resizeGroup()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+  item->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
+  item->attemptResize( QgsLayoutSize( 0.1, 0.15, QgsUnitTypes::LayoutMeters ) );
+
+  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item2 );
+  item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutInches ) );
+  item2->attemptResize( QgsLayoutSize( 4, 6, QgsUnitTypes::LayoutInches ) );
+
+  //group items
+  QList<QgsLayoutItem *> groupItems;
+  groupItems << item << item2;
+  QgsLayoutItemGroup *group = l.groupItems( groupItems );
+  l.addLayoutItem( group );
+
+  QCOMPARE( group->positionWithUnits().x(), 50.0 );
+  QCOMPARE( group->positionWithUnits().y(), 76.2 );
+  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->sizeWithUnits().width(), 102.4 );
+  QCOMPARE( group->sizeWithUnits().height(),  163.8 );
+  QCOMPARE( group->sizeWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+
+  group->attemptResize( QgsLayoutSize( 50.8, 76.2, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( group->positionWithUnits().x(), 50.0 );
+  QCOMPARE( group->positionWithUnits().y(), 76.2 );
+  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->sizeWithUnits().width(), 50.8 );
+  QCOMPARE( group->sizeWithUnits().height(),  76.2 );
+  QCOMPARE( group->sizeWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( item->positionWithUnits().x(), 0.05 );
+  QGSCOMPARENEAR( item->positionWithUnits().y(), 0.0826198, 0.00001 );
+  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMeters );
+  QGSCOMPARENEAR( item->sizeWithUnits().width(), 0.0496094, 0.0001 );
+  QGSCOMPARENEAR( item->sizeWithUnits().height(), 0.069780, 0.0001 );
+  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutMeters );
+  QGSCOMPARENEAR( item2->positionWithUnits().x(), 1.984129, 0.0001 );
+  QGSCOMPARENEAR( item2->positionWithUnits().y(), 3.000000, 0.0001 );
+  QCOMPARE( item2->positionWithUnits().units(), QgsUnitTypes::LayoutInches );
+  QGSCOMPARENEAR( item2->sizeWithUnits().width(), 1.98438, 0.0001 );
+  QGSCOMPARENEAR( item2->sizeWithUnits().height(),  2.791209, 0.0001 );
+  QCOMPARE( item2->sizeWithUnits().units(), QgsUnitTypes::LayoutInches );
 }
 
 Q_DECLARE_METATYPE( QgsLayoutItemGroup * )

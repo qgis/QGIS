@@ -328,16 +328,13 @@ double QgsLayoutSnapper::snapPointsToItems( const QList<double> &points, Qt::Ori
   for ( QGraphicsItem *item : itemList )
   {
     QgsLayoutItem *currentItem = dynamic_cast< QgsLayoutItem *>( item );
-    if ( ignoreItems.contains( currentItem ) )
+    if ( !currentItem || ignoreItems.contains( currentItem ) )
       continue;
+    if ( currentItem->type() == QgsLayoutItemRegistry::LayoutGroup )
+      continue; // don't snap to group bounds, instead we snap to group item bounds
+    if ( !currentItem->isVisible() )
+      continue; // don't snap to invisible items
 
-    //don't snap to selected items, since they're the ones that will be snapping to something else
-    //also ignore group members - only snap to bounds of group itself
-    //also ignore hidden items
-    if ( !currentItem /* TODO || currentItem->selected() || currentItem->isGroupMember() */ || !currentItem->isVisible() )
-    {
-      continue;
-    }
     QRectF itemRect;
     if ( dynamic_cast<const QgsLayoutItemPage *>( currentItem ) )
     {

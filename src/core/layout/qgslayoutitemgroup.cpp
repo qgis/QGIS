@@ -17,6 +17,7 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
+#include "qgslayoututils.h"
 
 QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -77,7 +78,7 @@ void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
   mItems << QPointer< QgsLayoutItem >( item );
   item->setParentGroup( this );
 
-  updateBoundingRect();
+  updateBoundingRect( item );
 }
 
 void QgsLayoutItemGroup::removeItems()
@@ -121,50 +122,133 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
     mLayout->undoStack()->endMacro();
 }
 
-void QgsLayoutItemGroup::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
 {
-  // nothing to draw here!
-}
+  if ( !mLayout )
+    return;
 
-void QgsLayoutItemGroup::updateBoundingRect()
-{
-#if 0
-  mBoundingRectangle = QRectF();
+  mLayout->undoStack()->beginMacro( tr( "Moved group" ) );
 
+  QPointF scenePoint = mLayout->convertToLayoutUnits( point );
+  double deltaX = scenePoint.x() - pos().x();
+  double deltaY = scenePoint.y() - pos().y();
+
+  //also move all items within the group
   for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
   {
     if ( !item )
       continue;
 
-    //update extent
-    if ( mBoundingRectangle.isEmpty() ) //we add the first item
-    {
-      mBoundingRectangle = QRectF( item->pos().x(), item->pos().y(), item->rect().width(), item->rect().height() );
+    mLayout->undoStack()->beginCommand( item, QString() );
 
-      if ( !qgsDoubleNear( item->itemRotation(), 0.0 ) )
-      {
-        setItemRotation( item->itemRotation() );
-      }
+    // need to convert delta from layout units -> item units
+    QgsLayoutPoint itemPos = item->positionWithUnits();
+    QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
+    itemPos.setX( itemPos.x() + deltaPos.x() );
+    itemPos.setY( itemPos.y() + deltaPos.y() );
+    item->attemptMove( itemPos );
+
+    mLayout->undoStack()->endCommand();
+  }
+  //lastly move group item itself
+  QgsLayoutItem::attemptMove( point );
+  mLayout->undoStack()->endMacro();
+  resetBoundingRect();
+}
+
+void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
+{
+  if ( !mLayout )
+    return;
+
+  mLayout->undoStack()->beginMacro( tr( "Resized group" ) );
+
+  QRectF oldRect = rect();
+  QSizeF newSizeLayoutUnits = mLayout->convertToLayoutUnits( size );
+  QRectF newRect;
+  newRect.setSize( newSizeLayoutUnits );
+
+  //also resize all items within the group
+  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  {
+    if ( !item )
+      continue;
+
+    QRectF itemRect = mapRectFromItem( item, item->rect() );
+    QgsLayoutUtils::relativeResizeRect( itemRect, oldRect, newRect );
+
+    itemRect = itemRect.normalized();
+    QPointF newPos = mapToScene( itemRect.topLeft() );
+
+    // translate new position to current item units
+    QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, item->positionWithUnits().units() );
+    item->attemptMove( itemPos );
+
+    QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
+    item->attemptResize( itemSize );
+  }
+  QgsLayoutItem::attemptResize( size );
+  mLayout->undoStack()->endMacro();
+
+  resetBoundingRect();
+}
+
+void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * )
+{
+}
+
+void QgsLayoutItemGroup::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
+{
+  // nothing to draw here!
+}
+
+void QgsLayoutItemGroup::resetBoundingRect()
+{
+  mBoundingRectangle = QRectF();
+  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  {
+    updateBoundingRect( item );
+  }
+}
+
+void QgsLayoutItemGroup::updateBoundingRect( QgsLayoutItem *item )
+{
+  //update extent
+  if ( mBoundingRectangle.isEmpty() ) //we add the first item
+  {
+    mBoundingRectangle = QRectF( 0, 0, item->rect().width(), item->rect().height() );
+    setSceneRect( QRectF( item->pos().x(), item->pos().y(), item->rect().width(), item->rect().height() ) );
+
+    if ( !qgsDoubleNear( item->itemRotation(), 0.0 ) )
+    {
+      setItemRotation( item->itemRotation() );
+    }
+  }
+  else
+  {
+    if ( !qgsDoubleNear( item->itemRotation(), itemRotation() ) )
+    {
+      //items have mixed rotation, so reset rotation of group
+      mBoundingRectangle = mapRectToScene( mBoundingRectangle );
+      setItemRotation( 0 );
+      mBoundingRectangle = mBoundingRectangle.united( item->mapRectToScene( item->rect() ) );
+      setSceneRect( mBoundingRectangle );
     }
     else
     {
-      if ( !qgsDoubleNear( item->itemRotation(), itemRotation() ) )
-      {
-        //items have mixed rotation, so reset rotation of group
-        mBoundingRectangle = mapRectToScene( mBoundingRectangle );
-        setItemRotation( 0 );
-        mBoundingRectangle = mBoundingRectangle.united( item->mapRectToScene( item->rect() ) );
-      }
-      else
-      {
-        //items have same rotation, so keep rotation of group
-        mBoundingRectangle = mBoundingRectangle.united( mapRectFromItem( item, item->rect() ) );
-        mBoundingRectangle = QRectF( 0, 0, mBoundingRectangle.width(), mBoundingRectangle.height() );
-      }
+      //items have same rotation, so keep rotation of group
+      mBoundingRectangle = mBoundingRectangle.united( mapRectFromItem( item, item->rect() ) );
+      QPointF newPos = mapToScene( mBoundingRectangle.topLeft().x(), mBoundingRectangle.topLeft().y() );
+      mBoundingRectangle = QRectF( 0, 0, mBoundingRectangle.width(), mBoundingRectangle.height() );
+      setSceneRect( QRectF( newPos.x(), newPos.y(), mBoundingRectangle.width(), mBoundingRectangle.height() ) );
     }
   }
+}
 
-  //call method of superclass to avoid repositioning of items
-  QgsLayoutItem::setSceneRect( mBoundingRectangle );
-#endif
+void QgsLayoutItemGroup::setSceneRect( const QRectF &rectangle )
+{
+  mItemPosition = mLayout->convertFromLayoutUnits( rectangle.topLeft(), positionWithUnits().units() );
+  mItemSize = mLayout->convertFromLayoutUnits( rectangle.size(), sizeWithUnits().units() );
+  setScenePos( rectangle.topLeft() );
+  setRect( 0, 0, rectangle.width(), rectangle.height() );
 }

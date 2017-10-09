@@ -132,19 +132,26 @@ void QgsLayoutMouseHandles::drawSelectedItemBounds( QPainter *painter )
   painter->setBrush( Qt::NoBrush );
 
   QList< QgsLayoutItem * > itemsToDraw;
-  for ( QgsLayoutItem *item : selectedItems )
-  {
-    if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
-    {
-      // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
-      itemsToDraw.append( static_cast< QgsLayoutItemGroup * >( item )->items() );
-    }
-    else
-    {
-      itemsToDraw << item;
-    }
 
-  }
+  std::function< void( const QList< QgsLayoutItem * > items ) > collectItems;
+
+  collectItems = [&itemsToDraw, &collectItems]( const QList< QgsLayoutItem * > items )
+  {
+    for ( QgsLayoutItem *item : items )
+    {
+      if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
+      {
+        // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
+        collectItems( static_cast< QgsLayoutItemGroup * >( item )->items() );
+      }
+      else
+      {
+        itemsToDraw << item;
+      }
+    }
+  };
+  collectItems( selectedItems );
+
 
   for ( QgsLayoutItem *item : qgsAsConst( itemsToDraw ) )
   {
@@ -614,9 +621,9 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
     const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems( false );
     for ( QgsLayoutItem *item : selectedItems )
     {
-      if ( item->isLocked() || ( item->flags() & QGraphicsItem::ItemIsSelectable ) == 0 )
+      if ( item->isLocked() || ( item->flags() & QGraphicsItem::ItemIsSelectable ) == 0 || item->isGroupMember() )
       {
-        //don't move locked items
+        //don't move locked items, or grouped items (group takes care of that)
         continue;
       }
 

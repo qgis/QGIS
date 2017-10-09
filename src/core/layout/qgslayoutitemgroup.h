@@ -56,15 +56,23 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     QList<QgsLayoutItem *> items() const;
 
     //overridden to also hide grouped items
-    virtual void setVisibility( const bool visible ) override;
+    void setVisibility( const bool visible ) override;
+
+    //overridden to move child items
+    void attemptMove( const QgsLayoutPoint &point ) override;
+    void attemptResize( const QgsLayoutSize &size ) override;
+
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
   protected:
-
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
   private:
 
-    void updateBoundingRect();
+    void resetBoundingRect();
+    void updateBoundingRect( QgsLayoutItem *item );
+    void setSceneRect( const QRectF &rectangle );
+
 
     QList< QPointer< QgsLayoutItem >> mItems;
     QRectF mBoundingRectangle;

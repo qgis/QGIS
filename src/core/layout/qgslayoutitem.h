@@ -170,11 +170,25 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     bool isLocked() const { return mIsLocked; }
 
-
+    /**
+     * Returns true if the item is part of a QgsLayoutItemGroup group.
+     * \see parentGroup()
+     * \see setParentGroup()
+     */
     bool isGroupMember() const;
 
+    /**
+     * Returns the item's parent group, if the item is part of a QgsLayoutItemGroup group.
+     * \see isGroupMember()
+     * \see setParentGroup()
+     */
     QgsLayoutItemGroup *parentGroup() const;
 
+    /**
+     * Sets the item's parent \a group.
+     * \see isGroupMember()
+     * \see parentGroup()
+     */
     void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
@@ -643,6 +657,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     bool shouldBlockUndoCommands() const;
 
     friend class TestQgsLayoutItem;
+    friend class QgsLayoutItemGroup;
 };
 
 #endif //QGSLAYOUTITEM_H

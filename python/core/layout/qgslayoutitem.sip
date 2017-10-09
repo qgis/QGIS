@@ -150,18 +150,28 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: bool
 %End
 
-
     bool isGroupMember() const;
 %Docstring
+ Returns true if the item is part of a QgsLayoutItemGroup group.
+.. seealso:: parentGroup()
+.. seealso:: setParentGroup()
  :rtype: bool
 %End
 
     QgsLayoutItemGroup *parentGroup() const;
 %Docstring
+ Returns the item's parent group, if the item is part of a QgsLayoutItemGroup group.
+.. seealso:: isGroupMember()
+.. seealso:: setParentGroup()
  :rtype: QgsLayoutItemGroup
 %End
 
     void setParentGroup( QgsLayoutItemGroup *group );
+%Docstring
+ Sets the item's parent ``group``.
+.. seealso:: isGroupMember()
+.. seealso:: parentGroup()
+%End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 

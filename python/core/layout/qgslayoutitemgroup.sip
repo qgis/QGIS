@@ -50,8 +50,16 @@ class QgsLayoutItemGroup: QgsLayoutItem
 
     virtual void setVisibility( const bool visible );
 
-  protected:
 
+    virtual void attemptMove( const QgsLayoutPoint &point );
+
+    virtual void attemptResize( const QgsLayoutSize &size );
+
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+
+  protected:
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
 
 
