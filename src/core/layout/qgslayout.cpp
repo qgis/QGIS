@@ -37,6 +37,9 @@ QgsLayout::QgsLayout( QgsProject *project )
 
 QgsLayout::~QgsLayout()
 {
+  // no need for undo commands when we're destroying the layout
+  mBlockUndoCommands = true;
+
   // make sure that all layout items are removed before
   // this class is deconstructed - to avoid segfaults
   // when layout items access in destructor layout that isn't valid anymore
@@ -376,9 +379,12 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 
 void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
 {
-  QgsLayoutItemDeleteUndoCommand *deleteCommand = new QgsLayoutItemDeleteUndoCommand( item, tr( "Deleted item" ) );
+  std::unique_ptr< QgsLayoutItemDeleteUndoCommand > deleteCommand;
+  if ( !mBlockUndoCommands )
+    deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Deleted item" ) ) );
   removeLayoutItemPrivate( item );
-  mUndoStack->stack()->push( deleteCommand );
+  if ( deleteCommand )
+    mUndoStack->stack()->push( deleteCommand.release() );
 }
 
 QgsLayoutUndoStack *QgsLayout::undoStack()

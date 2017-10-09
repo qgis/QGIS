@@ -485,6 +485,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
 
+    bool mBlockUndoCommands = false;
+
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
     //! Reads only the layout settings (not member settings like grid settings, etc) from XML
