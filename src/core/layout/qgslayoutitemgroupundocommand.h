@@ -23,6 +23,7 @@
 #include "qgslayoutitem.h"
 
 #define SIP_NO_FILE
+///@cond PRIVATE
 
 /**
  * \ingroup core
@@ -67,5 +68,6 @@ class CORE_EXPORT QgsLayoutItemGroupUndoCommand: public QObject, public QUndoCom
     //changes between added / removed state
     void switchState();
 };
+///@endcond
 
 #endif // QGSLAYOUTITEMGROUPUNDOCOMMAND_H

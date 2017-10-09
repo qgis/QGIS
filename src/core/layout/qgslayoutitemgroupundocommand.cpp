@@ -20,6 +20,7 @@
 #include "qgslayout.h"
 #include "qgsproject.h"
 
+///@cond PRIVATE
 QgsLayoutItemGroupUndoCommand::QgsLayoutItemGroupUndoCommand( State s, QgsLayoutItemGroup *group, QgsLayout *layout, const QString &text, QUndoCommand *parent )
   : QUndoCommand( text, parent )
   , mGroupUuid( group->uuid() )
@@ -84,3 +85,4 @@ void QgsLayoutItemGroupUndoCommand::switchState()
   }
   mLayout->project()->setDirty( true );
 }
+///@endcond

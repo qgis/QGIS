@@ -46,12 +46,22 @@ QgsLayout::~QgsLayout()
   // this class is deconstructed - to avoid segfaults
   // when layout items access in destructor layout that isn't valid anymore
 
+  // since deletion of some item types (e.g. groups) trigger deletion
+  // of other items, we have to do this careful, one at a time...
   QList<QGraphicsItem *> itemList = items();
-  while ( !itemList.empty() )
+  bool deleted = true;
+  while ( deleted )
   {
-    QGraphicsItem *item = itemList.at( 0 );
-    if ( dynamic_cast< QgsLayoutItem * >( item ) && !dynamic_cast< QgsLayoutItemPage *>( item ) )
-      delete item;
+    deleted = false;
+    for ( QGraphicsItem *item : qgsAsConst( itemList ) )
+    {
+      if ( dynamic_cast< QgsLayoutItem * >( item ) && !dynamic_cast< QgsLayoutItemPage *>( item ) )
+      {
+        delete item;
+        deleted = true;
+        break;
+      }
+    }
     itemList = items();
   }
 
