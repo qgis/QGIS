@@ -29,10 +29,10 @@ QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *par
   , mParentTool( parentTool )
   , mShowCenterPointRubberBand( false )
 {
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircularString::setParentTool );
-  }
+  /* if ( mCanvas )
+   {
+     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircularString::setParentTool );
+   }*/
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircularString::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddCircularString::stopCapturing );
 }
@@ -43,7 +43,7 @@ QgsMapToolAddCircularString::~QgsMapToolAddCircularString()
   delete mTempRubberBand;
   removeCenterPointRubberBand();
 }
-
+/*
 void QgsMapToolAddCircularString::setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool )
 {
   QgsMapToolCapture *tool = dynamic_cast<QgsMapToolCapture *>( oldTool );
@@ -56,7 +56,7 @@ void QgsMapToolAddCircularString::setParentTool( QgsMapTool *newTool, QgsMapTool
   {
     mParentTool = tool;
   }
-}
+}*/
 
 void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent *e )
 {
