@@ -69,7 +69,7 @@ class QgsSelectedFeature: public QObject
     /**
      * Deselects all vertices of selected feature
      */
-    void deselectAllVertexes();
+    void deselectAllVertices();
 
     /**
      * Inverts selection of vertex with number

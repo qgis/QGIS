@@ -343,7 +343,7 @@ void QgsNodeEditor::updateNodeSelection( const QItemSelection &selected, const Q
 
   mUpdatingNodeSelection = true;
 
-  mSelectedFeature->deselectAllVertexes();
+  mSelectedFeature->deselectAllVertices();
   Q_FOREACH ( const QModelIndex &index, mTableView->selectionModel()->selectedRows() )
   {
     int nodeIdx = index.row();

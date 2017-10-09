@@ -180,7 +180,7 @@ class ANALYSIS_EXPORT QgsGraph
     int findVertex( const QgsPointXY &pt ) const;
 
   private:
-    QVector<QgsGraphVertex> mGraphVertexes;
+    QVector<QgsGraphVertex> mGraphVertices;
 
     QVector<QgsGraphEdge> mGraphEdges;
 };
