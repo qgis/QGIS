@@ -185,13 +185,24 @@ bool QgsMapToolCapture::tracingMouseMove( QgsMapMouseEvent *e )
   if ( mCaptureMode == CapturePolygon )
     mTempRubberBand->addPoint( *mRubberBand->getPoint( 0, 0 ), false );
 
-  // if there is offset, we need to add the previous point as well otherwise there may be a gap
-  // between the existing rubber band and temporary rubber band
+  // if there is offset, we need to fix the rubber bands to make sure they are aligned correctly.
+  // There are two cases we need to sort out:
+  // 1. the last point of mRubberBand may need to be moved off the traced curve to respect the offset
+  // 2. extra first point of mTempRubberBand may be needed if there is gap between where mRubberBand ends and trace starts
   if ( mRubberBand->numberOfVertices() != 0 )
   {
     QgsPointXY lastPoint = *mRubberBand->getPoint( 0, mRubberBand->numberOfVertices() - 1 );
-    if ( points[0] != lastPoint )
+    if ( lastPoint == pt0 && points[0] != lastPoint )
+    {
+      // if rubber band had just one point, for some strange reason it contains the point twice
+      // we only want to move the last point if there are multiple points already
+      if ( mRubberBand->numberOfVertices() > 2 || ( mRubberBand->numberOfVertices() == 2 && *mRubberBand->getPoint( 0, 0 ) != *mRubberBand->getPoint( 0, 1 ) ) )
+        mRubberBand->movePoint( points[0] );
+    }
+    else
+    {
       mTempRubberBand->addPoint( lastPoint, false );
+    }
   }
 
   //  update rubberband
@@ -240,22 +251,32 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
   if ( points.isEmpty() )
     return false; // ignore the vertex - can't find path to the end point!
 
-  // normally we skip the first vertex because it is already included, but if we
-  // use offset then we may need to include it
-  int indexStart = 1;
   if ( !mCaptureCurve.isEmpty() )
   {
     QgsPoint lp; // in layer coords
-    if ( nextPoint( QgsPoint( points[0] ), lp ) != 0 )
+    if ( nextPoint( QgsPoint( pt0 ), lp ) != 0 )
       return false;
     QgsPoint last;
     QgsVertexId::VertexType type;
     mCaptureCurve.pointAt( mCaptureCurve.numPoints() - 1, last, type );
-    if ( last != lp )
+    if ( last == lp )
     {
-      // last captured point and first point of the trace are not the same (different offset maybe)
-      // so we need to use also the first point of the trace
-      indexStart = 0;
+      // remove the last point in the curve if it is the same as our first point
+      if ( mCaptureCurve.numPoints() != 2 )
+        mCaptureCurve.deleteVertex( QgsVertexId( 0, 0, mCaptureCurve.numPoints() - 1 ) );
+      else
+      {
+        // there is a strange behavior in deleteVertex() that with just two points
+        // the whole curve is cleared - so we need to do this little dance to work it around
+        QgsPoint first = mCaptureCurve.startPoint();
+        mCaptureCurve.clear();
+        mCaptureCurve.addVertex( first );
+      }
+      // for unknown reasons, rubber band has 2 points even if only one point has been added - handle that case
+      if ( mRubberBand->numberOfVertices() == 2 && *mRubberBand->getPoint( 0, 0 ) == *mRubberBand->getPoint( 0, 1 ) )
+        mRubberBand->removeLastPoint();
+      mRubberBand->removeLastPoint();
+      mSnappingMatches.removeLast();
     }
   }
 
@@ -269,8 +290,10 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     layerPoints << lp;
   }
 
-  for ( int i = indexStart; i < points.count(); ++i )
+  for ( int i = 0; i < points.count(); ++i )
   {
+    if ( i == 0 && !mCaptureCurve.isEmpty() && mCaptureCurve.endPoint() == layerPoints[0] )
+      continue;  // avoid duplicate of the first vertex
     if ( i > 0 && points[i] == points[i - 1] )
       continue; // avoid duplicate vertices if there are any
     mRubberBand->addPoint( points[i], i == points.count() - 1 );
@@ -325,9 +348,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
     if ( !hasTrace )
     {
-      if ( mCaptureCurve.numPoints() > 0 &&
-           ( ( mCaptureMode == CaptureLine && mTempRubberBand->numberOfVertices() != 2 ) ||
-             ( mCaptureMode == CapturePolygon && mTempRubberBand->numberOfVertices() != 3 ) ) )
+      if ( mCaptureCurve.numPoints() > 0 )
       {
         // fix temporary rubber band after tracing which may have added multiple points
         mTempRubberBand->reset( mCaptureMode == CapturePolygon ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
@@ -337,6 +358,10 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         QgsPointXY mapPt = toMapCoordinates( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() ), QgsPointXY( pt.x(), pt.y() ) );
         mTempRubberBand->addPoint( mapPt );
         mTempRubberBand->addPoint( point );
+
+        // fix existing rubber band after tracing - the last point may have been moved if using offset
+        if ( mRubberBand->numberOfVertices() )
+          mRubberBand->movePoint( mapPt );
       }
       else
         mTempRubberBand->movePoint( point );

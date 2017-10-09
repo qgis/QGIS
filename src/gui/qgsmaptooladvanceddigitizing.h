@@ -106,6 +106,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void setAutoSnapEnabled( bool enabled ) { mAutoSnapEnabled = enabled; }
 
+  public:
+
     /**
      * Override this method when subclassing this class.
      * This will receive adapted events from the cad system whenever a

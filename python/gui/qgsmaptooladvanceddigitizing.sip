@@ -108,6 +108,8 @@ Catch the mouse move event, filters it, transforms it to map coordinates and sen
 .. versionadded:: 3.0
 %End
 
+  public:
+
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
 %Docstring
  Override this method when subclassing this class.
