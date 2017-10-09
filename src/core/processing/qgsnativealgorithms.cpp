@@ -2602,7 +2602,7 @@ void QgsRasterLayerUniqueValuesCountAlgorithm::initAlgorithm( const QVariantMap 
 
 QString QgsRasterLayerUniqueValuesCountAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "TODO." );
+  return QObject::tr( "This algorithm returns the count of each unique value in a given raster layer." );
 }
 
 QgsRasterLayerUniqueValuesCountAlgorithm *QgsRasterLayerUniqueValuesCountAlgorithm::createInstance() const
@@ -2617,7 +2617,7 @@ QVariantMap QgsRasterLayerUniqueValuesCountAlgorithm::processAlgorithm( const QV
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
 
 
-  QMap< double, int > uniqueValues;
+  QHash< double, int > uniqueValues;
   int width = layer->width();
   int height = layer->height();
 
@@ -2652,8 +2652,13 @@ QVariantMap QgsRasterLayerUniqueValuesCountAlgorithm::processAlgorithm( const QV
     }
   }
 
-  QVariantMap outputs;
+  QMap< double, int > sortedUniqueValues;
+  for ( auto it = uniqueValues.constBegin(); it != uniqueValues.constEnd(); ++it )
+  {
+    sortedUniqueValues.insert( it.key(), it.value() );
+  }
 
+  QVariantMap outputs;
   if ( !outputFile.isEmpty() )
   {
     QFile file( outputFile );
@@ -2666,9 +2671,10 @@ QVariantMap QgsRasterLayerUniqueValuesCountAlgorithm::processAlgorithm( const QV
       if ( noDataCount > -1 )
         out << QObject::tr( "<p>NODATA count: %1</p>\n" ).arg( noDataCount );
       out << QString( "<table><tr><td>%1</td><td>%2</td></tr>\n" ).arg( QObject::tr( "Value" ) ).arg( QObject::tr( "Count" ) );
-      for ( double key : uniqueValues.keys() )
+
+      for ( double key : sortedUniqueValues.keys() )
       {
-        out << QString( "<tr><td>%1</td><td>%2</td></tr>\n" ).arg( key ).arg( uniqueValues[key] );
+        out << QString( "<tr><td>%1</td><td>%2</td></tr>\n" ).arg( key ).arg( sortedUniqueValues[key] );
       }
       out << QString( "</table>\n</body></html>" );
       outputs.insert( QStringLiteral( "OUTPUT_HTML_FILE" ), outputFile );
