@@ -107,9 +107,9 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
 
   private slots:
 
-    void on_mWidthSpinBox_valueChanged( int value );
-    void on_mHeightSpinBox_valueChanged( int value );
-    void on_mResolutionSpinBox_valueChanged( int value );
+    void mWidthSpinBox_valueChanged( int value );
+    void mHeightSpinBox_valueChanged( int value );
+    void mResolutionSpinBox_valueChanged( int value );
     void clipToContentsToggled( bool state );
 
   private:

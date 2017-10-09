@@ -33,8 +33,8 @@ class GUI_EXPORT QgsDashSpaceDialog: public QDialog, private Ui::QgsDashSpaceDia
     QVector<qreal> dashDotVector() const;
 
   private slots:
-    void on_mAddButton_clicked();
-    void on_mRemoveButton_clicked();
+    void mAddButton_clicked();
+    void mRemoveButton_clicked();
 };
 
 #endif // QGSDASHSPACEDIALOG_H

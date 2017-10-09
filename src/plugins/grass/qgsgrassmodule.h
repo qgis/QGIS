@@ -103,15 +103,15 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
 
   public slots:
     //! Run the module with current options
-    void on_mRunButton_clicked() { run(); }
+    void mRunButton_clicked() { run(); }
     void run();
 
     //! Close the module tab
-    void on_mCloseButton_clicked() { close(); }
+    void mCloseButton_clicked() { close(); }
     void close();
 
     //! Show output in map view
-    void on_mViewButton_clicked() { viewOutput(); }
+    void mViewButton_clicked() { viewOutput(); }
     void viewOutput();
 
     //! Running process finished

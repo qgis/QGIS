@@ -62,16 +62,16 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void setCurrentPage( const QString &pageWidgetName );
 
   public slots:
-    void on_cbxProjectDefaultNew_toggled( bool checked );
+    void cbxProjectDefaultNew_toggled( bool checked );
     void setCurrentProjectDefault();
     void resetProjectDefault();
     void browseTemplateFolder();
     void resetTemplateFolder();
     //! Slot called when user chooses to change the project wide projection.
-    void on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     //! Slot called when user chooses to change the default 'on the fly' projection.
-    void on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
-    void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void editCreateOptions();
     void editPyramidsOptions();
     void editGdalDriver( const QString &driverName );
@@ -89,7 +89,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /**
      * Slot to handle when type of project to open after launch is changed
      */
-    void on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
+    void mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
 
     //! Slot to choose path to project to open after launch
     void selectProjectOnLaunch();
@@ -102,21 +102,21 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     bool newVisible();
 
     //! Slot to select the default font point size for app
-    void on_spinFontSize_valueChanged( int fontSize );
+    void spinFontSize_valueChanged( int fontSize );
 
     //! Slot to set font family for app to Qt default
-    void on_mFontFamilyRadioQt_released();
+    void mFontFamilyRadioQt_released();
 
     //! Slot to set font family for app to custom choice
-    void on_mFontFamilyRadioCustom_released();
+    void mFontFamilyRadioCustom_released();
 
     //! Slot to select custom font family choice for app
-    void on_mFontFamilyComboBox_currentFontChanged( const QFont &font );
+    void mFontFamilyComboBox_currentFontChanged( const QFont &font );
 
     //! Slot to set whether to use custom group boxes
     void useCustomGroupBox( bool chkd );
 
-    void on_mProxyTypeComboBox_currentIndexChanged( int idx );
+    void mProxyTypeComboBox_currentIndexChanged( int idx );
 
     //! Add a new URL to exclude from Proxy
     void addExcludedUrl();
@@ -128,7 +128,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void restoreDefaultWindowState();
 
     //! Slot to enable custom environment variables table and buttons
-    void on_mCustomVariablesChkBx_toggled( bool chkd );
+    void mCustomVariablesChkBx_toggled( bool chkd );
 
     //! Slot to add a custom environment variable to the app
     void addCustomVariable();
@@ -137,7 +137,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void removeCustomVariable();
 
     //! Slot to filter out current environment variables not specific to QGIS
-    void on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
+    void mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
 
     /* Let the user add a path to the list of search paths
      * used for finding user Plugin libs. */
@@ -210,7 +210,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void exportScales();
 
     //! Auto slot executed when the active page in the option section widget is changed
-    void on_mOptionsStackedWidget_currentChanged( int indx );
+    void mOptionsStackedWidget_currentChanged( int indx );
 
     //! A scale in the list of predefined scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );

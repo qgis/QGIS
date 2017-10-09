@@ -46,21 +46,21 @@ class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, priva
     void blockComboSignals( bool block );
 
   private slots:
-    void on_mShapeListWidget_itemSelectionChanged();
-    void on_mWidthSpinBox_valueChanged( double d );
-    void on_mHeightSpinBox_valueChanged( double d );
-    void on_mRotationSpinBox_valueChanged( double d );
-    void on_mStrokeStyleComboBox_currentIndexChanged( int index );
-    void on_mStrokeWidthSpinBox_valueChanged( double d );
-    void on_btnChangeColorStroke_colorChanged( const QColor &newColor );
-    void on_btnChangeColorFill_colorChanged( const QColor &newColor );
+    void mShapeListWidget_itemSelectionChanged();
+    void mWidthSpinBox_valueChanged( double d );
+    void mHeightSpinBox_valueChanged( double d );
+    void mRotationSpinBox_valueChanged( double d );
+    void mStrokeStyleComboBox_currentIndexChanged( int index );
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void btnChangeColorStroke_colorChanged( const QColor &newColor );
+    void btnChangeColorFill_colorChanged( const QColor &newColor );
 
-    void on_mSymbolWidthUnitWidget_changed();
-    void on_mStrokeWidthUnitWidget_changed();
-    void on_mSymbolHeightUnitWidget_changed();
-    void on_mOffsetUnitWidget_changed();
-    void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
-    void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void mSymbolWidthUnitWidget_changed();
+    void mStrokeWidthUnitWidget_changed();
+    void mSymbolHeightUnitWidget_changed();
+    void mOffsetUnitWidget_changed();
+    void mHorizontalAnchorComboBox_currentIndexChanged( int index );
+    void mVerticalAnchorComboBox_currentIndexChanged( int index );
 
     void penJoinStyleChanged();
 

@@ -44,9 +44,9 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     //! dialog shall remember the selection
     bool rememberSelection() const;
 
-  public slots:
-    void on_mHideDeprecatedCheckBox_stateChanged( int state );
-    void on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
+  private slots:
+    void mHideDeprecatedCheckBox_stateChanged( int state );
+    void mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
 
   private:
     QgsDatumTransformDialog();

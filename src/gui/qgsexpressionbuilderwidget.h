@@ -295,16 +295,16 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setExpressionState( bool state );
     void currentChanged( const QModelIndex &index, const QModelIndex & );
     void operatorButtonClicked();
-    void on_btnRun_pressed();
-    void on_btnNewFile_pressed();
-    void on_cmbFileNames_currentItemChanged( QListWidgetItem *item, QListWidgetItem *lastitem );
-    void on_expressionTree_doubleClicked( const QModelIndex &index );
-    void on_txtExpressionString_textChanged();
-    void on_txtSearchEdit_textChanged();
-    void on_txtSearchEditValues_textChanged();
-    void on_lblPreview_linkActivated( const QString &link );
-    void on_mValuesListView_doubleClicked( const QModelIndex &index );
-    void on_txtPython_textChanged();
+    void btnRun_pressed();
+    void btnNewFile_pressed();
+    void cmbFileNames_currentItemChanged( QListWidgetItem *item, QListWidgetItem *lastitem );
+    void expressionTree_doubleClicked( const QModelIndex &index );
+    void txtExpressionString_textChanged();
+    void txtSearchEdit_textChanged();
+    void txtSearchEditValues_textChanged();
+    void lblPreview_linkActivated( const QString &link );
+    void mValuesListView_doubleClicked( const QModelIndex &index );
+    void txtPython_textChanged();
 
   signals:
 

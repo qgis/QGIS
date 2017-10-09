@@ -97,7 +97,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
 
   private slots:
     void reloadLayer();
-    void on_mEnabledCheckBox_toggled( bool enabled );
+    void mEnabledCheckBox_toggled( bool enabled );
     void updateProperty();
 
   private:

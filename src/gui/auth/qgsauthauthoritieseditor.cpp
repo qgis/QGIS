@@ -53,6 +53,12 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   else
   {
     setupUi( this );
+    connect( btnAddCa, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnAddCa_clicked );
+    connect( btnRemoveCa, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnRemoveCa_clicked );
+    connect( btnInfoCa, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnInfoCa_clicked );
+    connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthAuthoritiesEditor::btnGroupByOrg_toggled );
+    connect( btnCaFile, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnCaFile_clicked );
+    connect( btnCaFileClear, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnCaFileClear_clicked );
 
     connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
              this, &QgsAuthAuthoritiesEditor::authMessageOut );
@@ -428,7 +434,7 @@ void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col
   }
 }
 
-void QgsAuthAuthoritiesEditor::on_btnAddCa_clicked()
+void QgsAuthAuthoritiesEditor::btnAddCa_clicked()
 {
   QgsAuthImportCertDialog *dlg = new QgsAuthImportCertDialog( this, QgsAuthImportCertDialog::CaFilter );
   dlg->setWindowModality( Qt::WindowModal );
@@ -466,7 +472,7 @@ void QgsAuthAuthoritiesEditor::on_btnAddCa_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthAuthoritiesEditor::on_btnRemoveCa_clicked()
+void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 {
   QTreeWidgetItem *item( treeWidgetCAs->currentItem() );
 
@@ -539,7 +545,7 @@ void QgsAuthAuthoritiesEditor::on_btnRemoveCa_clicked()
   mDbCaSecItem->setExpanded( true );
 }
 
-void QgsAuthAuthoritiesEditor::on_btnInfoCa_clicked()
+void QgsAuthAuthoritiesEditor::btnInfoCa_clicked()
 {
   if ( treeWidgetCAs->selectionModel()->selection().length() > 0 )
   {
@@ -548,7 +554,7 @@ void QgsAuthAuthoritiesEditor::on_btnInfoCa_clicked()
   }
 }
 
-void QgsAuthAuthoritiesEditor::on_btnGroupByOrg_toggled( bool checked )
+void QgsAuthAuthoritiesEditor::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "casortby" ), QVariant( checked ) ) )
   {
@@ -645,7 +651,7 @@ void QgsAuthAuthoritiesEditor::defaultTrustPolicyChanged( QgsAuthCertUtils::Cert
   populateCaCertsView();
 }
 
-void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
+void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
 {
   QgsAuthImportCertDialog *dlg = new QgsAuthImportCertDialog( this,
       QgsAuthImportCertDialog::CaFilter,
@@ -657,7 +663,7 @@ void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
     // clear out any currently defined file certs and their trust settings
     if ( !leCaFile->text().isEmpty() )
     {
-      on_btnCaFileClear_clicked();
+      btnCaFileClear_clicked();
     }
 
     const QString &fn = dlg->certFileToImport();
@@ -703,7 +709,7 @@ void QgsAuthAuthoritiesEditor::on_btnCaFile_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthAuthoritiesEditor::on_btnCaFileClear_clicked()
+void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
 {
   if ( !QgsAuthManager::instance()->removeAuthSetting( QStringLiteral( "cafile" ) ) )
   {

@@ -48,6 +48,8 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   , mLayer( layer )
 {
   setupUi( this );
+  connect( mSymbolUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolsListWidget::mSymbolUnitWidget_changed );
+  connect( groupsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSymbolsListWidget::groupsCombo_currentIndexChanged );
   spinAngle->setClearValue( 0 );
 
   mSymbolUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -440,7 +442,7 @@ void QgsSymbolsListWidget::saveSymbol()
   mStyle->saveSymbol( saveDlg.name(), mSymbol->clone(), saveDlg.isFavorite(), symbolTags );
 }
 
-void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed()
+void QgsSymbolsListWidget::mSymbolUnitWidget_changed()
 {
   if ( mSymbol )
   {
@@ -584,7 +586,7 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
   emit changed();
 }
 
-void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
+void QgsSymbolsListWidget::groupsCombo_currentIndexChanged( int index )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), index );

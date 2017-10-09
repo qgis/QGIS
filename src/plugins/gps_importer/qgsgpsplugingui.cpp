@@ -34,6 +34,14 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   , mDevices( devices )
 {
   setupUi( this );
+  connect( pbnIMPInput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnIMPInput_clicked );
+  connect( pbnIMPOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnIMPOutput_clicked );
+  connect( pbnCONVInput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnCONVInput_clicked );
+  connect( pbnCONVOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnCONVOutput_clicked );
+  connect( pbnDLOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnDLOutput_clicked );
+  connect( pbnRefresh, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnRefresh_clicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGPSPluginGui::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGPSPluginGui::buttonBox_rejected );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGPSPluginGui::showHelp );
 
   // restore size, position and active tab
@@ -85,7 +93,7 @@ QgsGPSPluginGui::~QgsGPSPluginGui()
   settings.setValue( QStringLiteral( "Plugin-GPS/lastTab" ), tabWidget->currentIndex() );
 }
 
-void QgsGPSPluginGui::on_buttonBox_accepted()
+void QgsGPSPluginGui::buttonBox_accepted()
 {
   // what should we do?
   switch ( tabWidget->currentIndex() )
@@ -155,7 +163,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
   // accept();
 }
 
-void QgsGPSPluginGui::on_pbnDLOutput_clicked()
+void QgsGPSPluginGui::pbnDLOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -242,7 +250,7 @@ void QgsGPSPluginGui::enableRelevantControls()
   }
 }
 
-void QgsGPSPluginGui::on_buttonBox_rejected()
+void QgsGPSPluginGui::buttonBox_rejected()
 {
   reject();
 }
@@ -264,7 +272,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
   }
 }
 
-void QgsGPSPluginGui::on_pbnIMPInput_clicked()
+void QgsGPSPluginGui::pbnIMPInput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/importdirectory" ), QDir::homePath() ).toString();
@@ -305,7 +313,7 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked()
   }
 }
 
-void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
+void QgsGPSPluginGui::pbnIMPOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -325,7 +333,7 @@ void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
   }
 }
 
-void QgsGPSPluginGui::on_pbnRefresh_clicked()
+void QgsGPSPluginGui::pbnRefresh_clicked()
 {
   populatePortComboBoxes();
 }
@@ -396,7 +404,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
     cmbDLDevice->setCurrentIndex( d );
 }
 
-void QgsGPSPluginGui::on_pbnCONVInput_clicked()
+void QgsGPSPluginGui::pbnCONVInput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -412,7 +420,7 @@ void QgsGPSPluginGui::on_pbnCONVInput_clicked()
   }
 }
 
-void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
+void QgsGPSPluginGui::pbnCONVOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();

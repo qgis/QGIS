@@ -38,6 +38,11 @@
 QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+  connect( mAddButton, &QPushButton::clicked, this, &QgsComposerManager::mAddButton_clicked );
+  connect( mTemplate, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerManager::mTemplate_currentIndexChanged );
+  connect( mTemplatePathBtn, &QPushButton::pressed, this, &QgsComposerManager::mTemplatePathBtn_pressed );
+  connect( mTemplatesDefaultDirBtn, &QPushButton::pressed, this, &QgsComposerManager::mTemplatesDefaultDirBtn_pressed );
+  connect( mTemplatesUserDirBtn, &QPushButton::pressed, this, &QgsComposerManager::mTemplatesUserDirBtn_pressed );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerManager/geometry" ) ).toByteArray() );
@@ -183,7 +188,7 @@ QMap<QString, QString> QgsComposerManager::templatesFromPath( const QString &pat
   return templateMap;
 }
 
-void QgsComposerManager::on_mAddButton_clicked()
+void QgsComposerManager::mAddButton_clicked()
 {
   QFile templateFile;
   bool loadingTemplate = ( mTemplate->currentIndex() > 0 );
@@ -248,14 +253,14 @@ void QgsComposerManager::on_mAddButton_clicked()
   }
 }
 
-void QgsComposerManager::on_mTemplate_currentIndexChanged( int indx )
+void QgsComposerManager::mTemplate_currentIndexChanged( int indx )
 {
   bool specific = ( indx == 1 ); // comes just after empty template
   mTemplatePathLineEdit->setEnabled( specific );
   mTemplatePathBtn->setEnabled( specific );
 }
 
-void QgsComposerManager::on_mTemplatePathBtn_pressed()
+void QgsComposerManager::mTemplatePathBtn_pressed()
 {
   QgsSettings settings;
   QString lastTmplDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
@@ -272,12 +277,12 @@ void QgsComposerManager::on_mTemplatePathBtn_pressed()
   }
 }
 
-void QgsComposerManager::on_mTemplatesDefaultDirBtn_pressed()
+void QgsComposerManager::mTemplatesDefaultDirBtn_pressed()
 {
   openLocalDirectory( mDefaultTemplatesDir );
 }
 
-void QgsComposerManager::on_mTemplatesUserDirBtn_pressed()
+void QgsComposerManager::mTemplatesUserDirBtn_pressed()
 {
   openLocalDirectory( mUserTemplatesDir );
 }

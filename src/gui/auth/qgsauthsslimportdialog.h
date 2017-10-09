@@ -112,7 +112,7 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
     void radioServerImportToggled( bool checked );
     void radioFileImportToggled( bool checked );
 
-    void on_btnCertPath_clicked();
+    void btnCertPath_clicked();
     void clearCertificateConfig();
     void clearStatusCertificateConfig();
 

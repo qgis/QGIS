@@ -57,6 +57,7 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   else
   {
     setupUi( this );
+    connect( btnCertInfo, &QToolButton::clicked, this, &QgsAuthSslConfigWidget::btnCertInfo_clicked );
 
     connect( grpbxSslConfig, &QGroupBox::toggled, this, &QgsAuthSslConfigWidget::configEnabledChanged );
     connect( this, &QgsAuthSslConfigWidget::configEnabledChanged, this, &QgsAuthSslConfigWidget::readyToSave );
@@ -563,7 +564,7 @@ void QgsAuthSslConfigWidget::setConfigCheckable( bool checkable )
   }
 }
 
-void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
+void QgsAuthSslConfigWidget::btnCertInfo_clicked()
 {
   if ( mCert.isNull() )
   {

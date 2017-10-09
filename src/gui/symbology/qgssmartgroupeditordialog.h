@@ -107,8 +107,6 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     //! slot to remove the condition with id int
     void removeCondition( int );
 
-    void on_buttonBox_accepted();
-
   protected:
     QgsStyle *mStyle = nullptr;
     // layout of the mConditionsBox
@@ -117,6 +115,10 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     int mCondCount;
     // map tracking the condition widget and the ids
     QMap<int, QgsSmartGroupCondition *> mConditionMap;
+
+  private slots:
+
+    void buttonBox_accepted();
 };
 
 #endif // QGSSMARTGROUPEDITORDIALOG_H

@@ -105,15 +105,15 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
   private slots:
     //! Slot to update buttons state when selecting compositions
     void toggleButtons();
-    void on_mAddButton_clicked();
+    void mAddButton_clicked();
     //! Slot to track combobox to use specific template path
-    void on_mTemplate_currentIndexChanged( int indx );
+    void mTemplate_currentIndexChanged( int indx );
     //! Slot to choose path to template
-    void on_mTemplatePathBtn_pressed();
+    void mTemplatePathBtn_pressed();
     //! Slot to open default templates dir with user's system
-    void on_mTemplatesDefaultDirBtn_pressed();
+    void mTemplatesDefaultDirBtn_pressed();
     //! Slot to open user templates dir with user's system
-    void on_mTemplatesUserDirBtn_pressed();
+    void mTemplatesUserDirBtn_pressed();
 
     void removeClicked();
     void showClicked();

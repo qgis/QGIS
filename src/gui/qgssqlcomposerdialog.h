@@ -158,14 +158,14 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
   private slots:
     void accept() override;
 
-    void on_mTablesCombo_currentIndexChanged( int );
-    void on_mColumnsCombo_currentIndexChanged( int );
-    void on_mSpatialPredicatesCombo_currentIndexChanged( int );
-    void on_mFunctionsCombo_currentIndexChanged( int );
-    void on_mOperatorsCombo_currentIndexChanged( int );
-    void on_mAddJoinButton_clicked();
-    void on_mRemoveJoinButton_clicked();
-    void on_mTableJoins_itemSelectionChanged();
+    void mTablesCombo_currentIndexChanged( int );
+    void mColumnsCombo_currentIndexChanged( int );
+    void mSpatialPredicatesCombo_currentIndexChanged( int );
+    void mFunctionsCombo_currentIndexChanged( int );
+    void mOperatorsCombo_currentIndexChanged( int );
+    void mAddJoinButton_clicked();
+    void mRemoveJoinButton_clicked();
+    void mTableJoins_itemSelectionChanged();
     void showHelp();
     void reset();
     void buildSQLFromFields();

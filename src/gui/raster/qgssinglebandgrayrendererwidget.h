@@ -56,8 +56,8 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 
   private slots:
     void bandChanged();
-    void on_mMinLineEdit_textChanged( const QString & );
-    void on_mMaxLineEdit_textChanged( const QString & );
+    void mMinLineEdit_textChanged( const QString & );
+    void mMaxLineEdit_textChanged( const QString & );
 
   private:
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;

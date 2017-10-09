@@ -44,6 +44,10 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
   else
   {
     setupUi( this );
+    connect( btnAddIdentity, &QToolButton::clicked, this, &QgsAuthIdentitiesEditor::btnAddIdentity_clicked );
+    connect( btnRemoveIdentity, &QToolButton::clicked, this, &QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked );
+    connect( btnInfoIdentity, &QToolButton::clicked, this, &QgsAuthIdentitiesEditor::btnInfoIdentity_clicked );
+    connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthIdentitiesEditor::btnGroupByOrg_toggled );
 
     connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
              this, &QgsAuthIdentitiesEditor::authMessageOut );
@@ -286,7 +290,7 @@ void QgsAuthIdentitiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col 
   }
 }
 
-void QgsAuthIdentitiesEditor::on_btnAddIdentity_clicked()
+void QgsAuthIdentitiesEditor::btnAddIdentity_clicked()
 {
   QgsAuthImportIdentityDialog *dlg = new QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::CertIdentity, this );
   dlg->setWindowModality( Qt::WindowModal );
@@ -308,7 +312,7 @@ void QgsAuthIdentitiesEditor::on_btnAddIdentity_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthIdentitiesEditor::on_btnRemoveIdentity_clicked()
+void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 {
   QTreeWidgetItem *item( treeIdentities->currentItem() );
 
@@ -355,7 +359,7 @@ void QgsAuthIdentitiesEditor::on_btnRemoveIdentity_clicked()
   delete item;
 }
 
-void QgsAuthIdentitiesEditor::on_btnInfoIdentity_clicked()
+void QgsAuthIdentitiesEditor::btnInfoIdentity_clicked()
 {
   if ( treeIdentities->selectionModel()->selection().length() > 0 )
   {
@@ -364,7 +368,7 @@ void QgsAuthIdentitiesEditor::on_btnInfoIdentity_clicked()
   }
 }
 
-void QgsAuthIdentitiesEditor::on_btnGroupByOrg_toggled( bool checked )
+void QgsAuthIdentitiesEditor::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( checked ) ) )
   {

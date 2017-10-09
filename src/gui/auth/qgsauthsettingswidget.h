@@ -195,15 +195,13 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     bool convertToEncrypted( );
 
     /**
-     * \brief on_txtUserName_textChanged set convert button state
-     * \param text the changet text
+     * Called when user name \a text is changed.
      * \note Not available in Python bindings
      */
     void userNameTextChanged( const QString &text ) SIP_SKIP;
 
     /**
-     * \brief on_txtPassword_textChanged set convert button state
-     * \param text the changed text
+     * Called when password \a text is changed.
      * \note Not available in Python bindings
      */
     void passwordTextChanged( const QString &text ) SIP_SKIP;

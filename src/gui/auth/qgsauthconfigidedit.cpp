@@ -27,6 +27,8 @@ QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcf
   , mAllowEmpty( allowEmpty )
 {
   setupUi( this );
+  connect( btnLock, &QToolButton::toggled, this, &QgsAuthConfigIdEdit::btnLock_toggled );
+  connect( leAuthCfg, &QLineEdit::textChanged, this, &QgsAuthConfigIdEdit::leAuthCfg_textChanged );
 
   leAuthCfg->setReadOnly( true );
 
@@ -97,7 +99,7 @@ void QgsAuthConfigIdEdit::updateValidityStyle( bool valid )
   leAuthCfg->setStyleSheet( ss );
 }
 
-void QgsAuthConfigIdEdit::on_btnLock_toggled( bool checked )
+void QgsAuthConfigIdEdit::btnLock_toggled( bool checked )
 {
   leAuthCfg->setReadOnly( !checked );
   if ( checked )
@@ -106,7 +108,7 @@ void QgsAuthConfigIdEdit::on_btnLock_toggled( bool checked )
   updateValidityStyle( validate() );
 }
 
-void QgsAuthConfigIdEdit::on_leAuthCfg_textChanged( const QString &txt )
+void QgsAuthConfigIdEdit::leAuthCfg_textChanged( const QString &txt )
 {
   Q_UNUSED( txt );
   validate();

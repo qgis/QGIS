@@ -48,9 +48,9 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
      */
     static void show( const QgsError &error, const QString &title, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-  public slots:
-    void on_mDetailPushButton_clicked();
-    void on_mDetailCheckBox_stateChanged( int state );
+  private slots:
+    void mDetailPushButton_clicked();
+    void mDetailCheckBox_stateChanged( int state );
 
   private:
     QgsError mError;

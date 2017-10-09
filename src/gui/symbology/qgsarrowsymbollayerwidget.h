@@ -52,25 +52,25 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
     QgsArrowSymbolLayer *mLayer = nullptr;
 
   private slots:
-    void on_mArrowWidthSpin_valueChanged( double d );
-    void on_mArrowWidthUnitWidget_changed();
+    void mArrowWidthSpin_valueChanged( double d );
+    void mArrowWidthUnitWidget_changed();
 
-    void on_mArrowStartWidthSpin_valueChanged( double d );
-    void on_mArrowStartWidthUnitWidget_changed();
+    void mArrowStartWidthSpin_valueChanged( double d );
+    void mArrowStartWidthUnitWidget_changed();
 
-    void on_mHeadLengthSpin_valueChanged( double d );
-    void on_mHeadLengthUnitWidget_changed();
-    void on_mHeadThicknessSpin_valueChanged( double d );
-    void on_mHeadThicknessUnitWidget_changed();
+    void mHeadLengthSpin_valueChanged( double d );
+    void mHeadLengthUnitWidget_changed();
+    void mHeadThicknessSpin_valueChanged( double d );
+    void mHeadThicknessUnitWidget_changed();
 
-    void on_mHeadTypeCombo_currentIndexChanged( int );
-    void on_mArrowTypeCombo_currentIndexChanged( int );
+    void mHeadTypeCombo_currentIndexChanged( int );
+    void mArrowTypeCombo_currentIndexChanged( int );
 
-    void on_mOffsetSpin_valueChanged( double d );
-    void on_mOffsetUnitWidget_changed();
+    void mOffsetSpin_valueChanged( double d );
+    void mOffsetUnitWidget_changed();
 
-    void on_mCurvedArrowChck_stateChanged( int );
-    void on_mRepeatArrowChck_stateChanged( int );
+    void mCurvedArrowChck_stateChanged( int );
+    void mRepeatArrowChck_stateChanged( int );
 };
 
 #endif

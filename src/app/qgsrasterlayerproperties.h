@@ -65,25 +65,25 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Called when cancel button is pressed
     void onCancel();
     //! \brief Slot to update layer display name as original is edited.
-    void on_mLayerOrigNameLineEd_textEdited( const QString &text );
+    void mLayerOrigNameLineEd_textEdited( const QString &text );
     //! \brief this slot asks the rasterlayer to construct pyramids
-    void on_buttonBuildPyramids_clicked();
+    void buttonBuildPyramids_clicked();
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
-    void on_pbnAddValuesFromDisplay_clicked();
+    void pbnAddValuesFromDisplay_clicked();
     //! \brief slot executed when user presses "Add Values Manually" button on the transparency page
-    void on_pbnAddValuesManually_clicked();
+    void pbnAddValuesManually_clicked();
     //! \brief slot executed when user changes the layer's CRS
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     //! \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value
-    void on_pbnDefaultValues_clicked();
+    void pbnDefaultValues_clicked();
     //! \brief slot executed when user wishes to export transparency values
-    void on_pbnExportTransparentPixelValues_clicked();
+    void pbnExportTransparentPixelValues_clicked();
     //! \brief auto slot executed when the active page in the main widget stack is changed
     void mOptionsStackedWidget_CurrentChanged( int indx );
     //! \brief slow executed when user wishes to import transparency values
-    void on_pbnImportTransparentPixelValues_clicked();
+    void pbnImportTransparentPixelValues_clicked();
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
-    void on_pbnRemoveSelectedRow_clicked();
+    void pbnRemoveSelectedRow_clicked();
 
     /**
      * \brief slot executed when the single band radio button is pressed.
@@ -94,7 +94,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void pixelSelected( const QgsPointXY & );
 
   private slots:
-    void on_mRenderTypeComboBox_currentIndexChanged( int index );
+    void mRenderTypeComboBox_currentIndexChanged( int index );
     //! Load the default style when appropriate button is pressed.
     void loadDefaultStyle_clicked();
     //! Save the default style when appropriate button is pressed.
@@ -107,7 +107,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void showHelp();
 
     //! Slot to reset all color rendering options to default
-    void on_mResetColorRenderingBtn_clicked();
+    void mResetColorRenderingBtn_clicked();
 
     //! Enable or disable Build pyramids button depending on selection in pyramids list
     void toggleBuildPyramidsButton();

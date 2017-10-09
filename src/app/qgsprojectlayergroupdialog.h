@@ -41,10 +41,10 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     bool isValid() const;
 
   private slots:
-    void on_mBrowseFileToolButton_clicked();
-    void on_mProjectFileLineEdit_editingFinished();
+    void mBrowseFileToolButton_clicked();
+    void mProjectFileLineEdit_editingFinished();
     void onTreeViewSelectionChanged();
-    void on_mButtonBox_accepted();
+    void mButtonBox_accepted();
     void showHelp();
 
   private:

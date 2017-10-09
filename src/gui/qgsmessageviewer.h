@@ -66,7 +66,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     void setCheckBoxQgsSettingsLabel( const QString &label );
 
   private slots:
-    void on_checkBox_toggled( bool );
+    void checkBox_toggled( bool );
 
 
   private:

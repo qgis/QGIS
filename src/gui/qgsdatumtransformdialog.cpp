@@ -28,6 +28,8 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString &layerName, cons
   , mLayerName( layerName )
 {
   setupUi( this );
+  connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, &QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged );
+  connect( mDatumTransformTreeWidget, &QTreeWidget::currentItemChanged, this, &QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
@@ -224,12 +226,12 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem *it
   return true;
 }
 
-void QgsDatumTransformDialog::on_mHideDeprecatedCheckBox_stateChanged( int )
+void QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged( int )
 {
   load();
 }
 
-void QgsDatumTransformDialog::on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   if ( !current )
     return;

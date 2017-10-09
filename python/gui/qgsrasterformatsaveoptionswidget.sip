@@ -104,17 +104,17 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
 %End
 
   private slots:
-    void on_mProfileNewButton_clicked() ;
+    void mProfileNewButton_clicked() ;
   private slots:
-    void on_mProfileDeleteButton_clicked() ;
+    void mProfileDeleteButton_clicked() ;
   private slots:
-    void on_mProfileResetButton_clicked() ;
+    void mProfileResetButton_clicked() ;
   private slots:
-    void on_mOptionsAddButton_clicked() ;
+    void mOptionsAddButton_clicked() ;
   private slots:
-    void on_mOptionsDeleteButton_clicked() ;
+    void mOptionsDeleteButton_clicked() ;
   private slots:
-    void on_mOptionsLineEdit_editingFinished() ;
+    void mOptionsLineEdit_editingFinished() ;
   private slots:
     void optionsTableChanged() ;
   private slots:

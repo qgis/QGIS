@@ -36,6 +36,8 @@ QgsAbout::QgsAbout( QWidget * parent )
 #endif
 {
   setupUi( this );
+  connect( btnQgisUser, &QPushButton::clicked, this, &QgsAbout::btnQgisUser_clicked );
+  connect( btnQgisHome, &QPushButton::clicked, this, &QgsAbout::btnQgisHome_clicked );
   initOptionsBase( true, QStringLiteral( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
   init();
 }
@@ -266,12 +268,12 @@ void QgsAbout::setPluginInfo()
   txtProviders->setText( myString );
 }
 
-void QgsAbout::on_btnQgisUser_clicked()
+void QgsAbout::btnQgisUser_clicked()
 {
   openUrl( QStringLiteral( "http://lists.osgeo.org/mailman/listinfo/qgis-user" ) );
 }
 
-void QgsAbout::on_btnQgisHome_clicked()
+void QgsAbout::btnQgisHome_clicked()
 {
   openUrl( QStringLiteral( "http://qgis.org" ) );
 }

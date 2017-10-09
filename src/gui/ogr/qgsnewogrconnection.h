@@ -45,7 +45,7 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
     void showHelp();
   public slots:
     void accept() override;
-    void on_btnConnect_clicked();
+    void btnConnect_clicked();
 
   private:
     QString mOriginalConnName;

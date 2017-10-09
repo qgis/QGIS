@@ -30,6 +30,9 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( btnListDatabase, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnListDatabase_clicked );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnConnect_clicked );
+  connect( cb_trustedConnection, &QCheckBox::clicked, this, &QgsMssqlNewConnection::cb_trustedConnection_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlNewConnection::showHelp );
 
   lblWarning->hide();
@@ -65,7 +68,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
     txtName->setText( connName );
   }
   txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
-  on_cb_trustedConnection_clicked();
+  cb_trustedConnection_clicked();
 }
 //! Autoconnected SLOTS *
 void QgsMssqlNewConnection::accept()
@@ -115,17 +118,17 @@ void QgsMssqlNewConnection::accept()
   QDialog::accept();
 }
 
-void QgsMssqlNewConnection::on_btnConnect_clicked()
+void QgsMssqlNewConnection::btnConnect_clicked()
 {
   testConnection();
 }
 
-void QgsMssqlNewConnection::on_btnListDatabase_clicked()
+void QgsMssqlNewConnection::btnListDatabase_clicked()
 {
   listDatabases();
 }
 
-void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
+void QgsMssqlNewConnection::cb_trustedConnection_clicked()
 {
   if ( cb_trustedConnection->checkState() == Qt::Checked )
   {

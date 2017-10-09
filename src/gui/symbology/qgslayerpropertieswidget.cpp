@@ -97,6 +97,7 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
 {
 
   setupUi( this );
+  connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayerPropertiesWidget::mEnabledCheckBox_toggled );
   // initialize the sub-widgets
   // XXX Should this thing be here this way? Initialize all the widgets just for the sake of one layer?
   // TODO Make this on demand creation
@@ -314,7 +315,7 @@ void QgsLayerPropertiesWidget::reloadLayer()
   emit changeLayer( mLayer );
 }
 
-void QgsLayerPropertiesWidget::on_mEnabledCheckBox_toggled( bool enabled )
+void QgsLayerPropertiesWidget::mEnabledCheckBox_toggled( bool enabled )
 {
   mLayer->setEnabled( enabled );
   emitSignalChanged();

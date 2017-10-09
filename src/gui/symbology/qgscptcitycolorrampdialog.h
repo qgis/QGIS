@@ -89,12 +89,12 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
   private slots:
     void populateVariants();
 
-    void on_mTreeView_clicked( const QModelIndex & );
-    void on_mListWidget_itemClicked( QListWidgetItem *item );
-    void on_mListWidget_itemSelectionChanged();
-    void on_tabBar_currentChanged( int index );
-    void on_pbtnLicenseDetails_pressed();
-    void on_cboVariantName_currentIndexChanged( int index );
+    void mTreeView_clicked( const QModelIndex & );
+    void mListWidget_itemClicked( QListWidgetItem *item );
+    void mListWidget_itemSelectionChanged();
+    void tabBar_currentChanged( int index );
+    void pbtnLicenseDetails_pressed();
+    void cboVariantName_currentIndexChanged( int index );
     void onFinished();
     void showHelp();
     /* void refresh(); */

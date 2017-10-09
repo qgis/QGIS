@@ -62,13 +62,13 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
 
     void clearCertificateConfig();
 
-    void on_buttonBox_clicked( QAbstractButton *button );
+    void buttonBox_clicked( QAbstractButton *button );
 
-    void on_btnChainInfo_clicked();
+    void btnChainInfo_clicked();
 
-    void on_btnChainCAs_clicked();
+    void btnChainCAs_clicked();
 
-    void on_grpbxSslErrors_collapsedStateChanged( bool collapsed );
+    void grpbxSslErrors_collapsedStateChanged( bool collapsed );
 
   private:
     void populateErrorsList();

@@ -49,6 +49,8 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   QgsDebugMsg( "QgsGrassMapcalc()" );
 
   setupUi( this );
+  connect( mConstantLineEdit, &QLineEdit::textChanged, this, &QgsGrassMapcalc::mConstantLineEdit_textChanged );
+  connect( mFunctionComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassMapcalc::mFunctionComboBox_activated );
 
   mStartMoveConnectorPoints.resize( 2 );
   mNextId = 0;

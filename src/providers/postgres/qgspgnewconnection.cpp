@@ -31,6 +31,8 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
 
 {
   setupUi( this );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsPgNewConnection::btnConnect_clicked );
+  connect( cb_geometryColumnsOnly, &QCheckBox::clicked, this, &QgsPgNewConnection::cb_geometryColumnsOnly_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgNewConnection::showHelp );
 
   cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceUri::SslDisable );
@@ -64,7 +66,7 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName
     cb_dontResolveType->setChecked( settings.value( key + "/dontResolveType", false ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
     // Ensure that cb_publicSchemaOnly is set correctly
-    on_cb_geometryColumnsOnly_clicked();
+    cb_geometryColumnsOnly_clicked();
 
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
 
@@ -161,12 +163,12 @@ void QgsPgNewConnection::accept()
   QDialog::accept();
 }
 
-void QgsPgNewConnection::on_btnConnect_clicked()
+void QgsPgNewConnection::btnConnect_clicked()
 {
   testConnection();
 }
 
-void QgsPgNewConnection::on_cb_geometryColumnsOnly_clicked()
+void QgsPgNewConnection::cb_geometryColumnsOnly_clicked()
 {
   if ( cb_geometryColumnsOnly->checkState() == Qt::Checked )
     cb_publicSchemaOnly->setEnabled( false );

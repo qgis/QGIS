@@ -93,6 +93,7 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   else
   {
     setupUi( this );
+    connect( btnCertPath, &QToolButton::clicked, this, &QgsAuthSslImportDialog::btnCertPath_clicked );
     QStyle *style = QApplication::style();
     lblWarningIcon->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
     lblWarningIcon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
@@ -305,6 +306,7 @@ void QgsAuthSslImportDialog::sslErrors( const QList<QSslError> &errors )
   QDialog errorDialog( this );
   Ui_SslErrors ui;
   ui.setupUi( &errorDialog );
+  connect( btnCertPath, &QToolButton::clicked, this, &QgsAuthSslImportDialog::btnCertPath_clicked );
   connect( ui.certificateChainButton, &QAbstractButton::clicked,
            this, &QgsAuthSslImportDialog::showCertificateInfo );
 
@@ -368,7 +370,7 @@ void QgsAuthSslImportDialog::radioFileImportToggled( bool checked )
   clearStatusCertificateConfig();
 }
 
-void QgsAuthSslImportDialog::on_btnCertPath_clicked()
+void QgsAuthSslImportDialog::btnCertPath_clicked()
 {
   const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )

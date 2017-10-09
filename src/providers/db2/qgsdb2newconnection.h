@@ -43,7 +43,7 @@ class QgsDb2NewConnection : public QDialog, private Ui::QgsDb2NewConnectionBase
   public slots:
     void accept() override;
     void on_btnListDatabase_clicked();
-    void on_btnConnect_clicked();
+    void btnConnect_clicked();
     void on_cb_trustedConnection_clicked();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename

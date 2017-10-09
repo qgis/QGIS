@@ -111,15 +111,15 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
 
   private slots:
 
-    void on_mUserDefinedRadioButton_toggled( bool );
-    void on_mMinMaxRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
-    void on_mStdDevRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
-    void on_mCumulativeCutRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
-    void on_mStatisticsExtentCombo_currentIndexChanged( int ) { emit widgetChanged(); }
-    void on_mCumulativeCutLowerDoubleSpinBox_valueChanged( double ) { emit widgetChanged(); }
-    void on_mCumulativeCutUpperDoubleSpinBox_valueChanged( double ) { emit widgetChanged(); }
-    void on_mStdDevSpinBox_valueChanged( double ) { emit widgetChanged(); }
-    void on_cboAccuracy_currentIndexChanged( int ) { emit widgetChanged(); }
+    void mUserDefinedRadioButton_toggled( bool );
+    void mMinMaxRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
+    void mStdDevRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
+    void mCumulativeCutRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
+    void mStatisticsExtentCombo_currentIndexChanged( int ) { emit widgetChanged(); }
+    void mCumulativeCutLowerDoubleSpinBox_valueChanged( double ) { emit widgetChanged(); }
+    void mCumulativeCutUpperDoubleSpinBox_valueChanged( double ) { emit widgetChanged(); }
+    void mStdDevSpinBox_valueChanged( double ) { emit widgetChanged(); }
+    void cboAccuracy_currentIndexChanged( int ) { emit widgetChanged(); }
 
   private:
     QgsRasterLayer *mLayer = nullptr;

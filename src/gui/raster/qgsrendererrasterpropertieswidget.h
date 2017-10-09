@@ -74,7 +74,7 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
 
   private slots:
     //! Slot to reset all color rendering options to default
-    void on_mResetColorRenderingBtn_clicked();
+    void mResetColorRenderingBtn_clicked();
 
     //! Enable or disable saturation controls depending on choice of grayscale mode
     void toggleSaturationControls( int grayscaleMode );

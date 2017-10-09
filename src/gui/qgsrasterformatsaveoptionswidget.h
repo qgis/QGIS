@@ -117,12 +117,12 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
 
   private slots:
 
-    void on_mProfileNewButton_clicked() SIP_FORCE;
-    void on_mProfileDeleteButton_clicked() SIP_FORCE;
-    void on_mProfileResetButton_clicked() SIP_FORCE;
-    void on_mOptionsAddButton_clicked() SIP_FORCE;
-    void on_mOptionsDeleteButton_clicked() SIP_FORCE;
-    void on_mOptionsLineEdit_editingFinished() SIP_FORCE;
+    void mProfileNewButton_clicked() SIP_FORCE;
+    void mProfileDeleteButton_clicked() SIP_FORCE;
+    void mProfileResetButton_clicked() SIP_FORCE;
+    void mOptionsAddButton_clicked() SIP_FORCE;
+    void mOptionsDeleteButton_clicked() SIP_FORCE;
+    void mOptionsLineEdit_editingFinished() SIP_FORCE;
     void optionsTableChanged() SIP_FORCE;
     void optionsTableEnableDeleteButton() SIP_FORCE;
     void updateOptions() SIP_FORCE;

@@ -150,7 +150,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     void readyToSaveChanged( bool cansave );
 
   private slots:
-    void on_btnCertInfo_clicked();
+    void btnCertInfo_clicked();
 
   private:
     enum ConfigType

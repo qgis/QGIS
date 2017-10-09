@@ -60,10 +60,10 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
   private slots:
 
     void applyColorRamp();
-    void on_mRadiusUnitWidget_changed();
-    void on_mRadiusSpinBox_valueChanged( double d );
-    void on_mMaxSpinBox_valueChanged( double d );
-    void on_mQualitySlider_valueChanged( int v );
+    void mRadiusUnitWidget_changed();
+    void mRadiusSpinBox_valueChanged( double d );
+    void mMaxSpinBox_valueChanged( double d );
+    void mQualitySlider_valueChanged( int v );
     void weightExpressionChanged( const QString &expression );
 
 };

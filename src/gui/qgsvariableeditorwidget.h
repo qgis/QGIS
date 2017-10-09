@@ -146,8 +146,8 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
 
   private slots:
 
-    void on_mAddButton_clicked();
-    void on_mRemoveButton_clicked();
+    void mAddButton_clicked();
+    void mRemoveButton_clicked();
     void selectionChanged();
 
 };

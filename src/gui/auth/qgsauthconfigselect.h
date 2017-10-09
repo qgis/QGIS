@@ -73,15 +73,15 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
     void validateConfig();
     void populateConfigSelector();
 
-    void on_cmbConfigSelect_currentIndexChanged( int index );
+    void cmbConfigSelect_currentIndexChanged( int index );
 
-    void on_btnConfigAdd_clicked();
+    void btnConfigAdd_clicked();
 
-    void on_btnConfigEdit_clicked();
+    void btnConfigEdit_clicked();
 
-    void on_btnConfigRemove_clicked();
+    void btnConfigRemove_clicked();
 
-    void on_btnConfigMsgClear_clicked();
+    void btnConfigMsgClear_clicked();
 
   private:
     void loadAvailableConfigs();

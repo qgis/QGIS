@@ -71,6 +71,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
   else
   {
     setupUi( this );
+    connect( btnSaveTrust, &QToolButton::clicked, this, &QgsAuthCertInfo::btnSaveTrust_clicked );
 
     lblError->setHidden( true );
 
@@ -830,7 +831,7 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
   item->treeWidget()->setItemWidget( item, 0, pte );
 }
 
-void QgsAuthCertInfo::on_btnSaveTrust_clicked()
+void QgsAuthCertInfo::btnSaveTrust_clicked()
 {
   QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
   if ( !QgsAuthManager::instance()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )

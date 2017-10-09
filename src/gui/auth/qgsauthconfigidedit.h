@@ -70,9 +70,9 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
   private slots:
     void updateValidityStyle( bool valid );
 
-    void on_btnLock_toggled( bool checked );
+    void btnLock_toggled( bool checked );
 
-    void on_leAuthCfg_textChanged( const QString &txt );
+    void leAuthCfg_textChanged( const QString &txt );
 
   private:
     bool isAlphaNumeric( const QString &authcfg );

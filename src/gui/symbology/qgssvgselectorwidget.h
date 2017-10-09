@@ -275,9 +275,9 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void svgSelectionChanged( const QModelIndex &idx );
     void updateCurrentSvgPath( const QString &svgPath );
 
-    void on_mFilePushButton_clicked();
+    void mFilePushButton_clicked();
     void updateLineEditFeedback( bool ok, const QString &tip = QString() );
-    void on_mFileLineEdit_textChanged( const QString &text );
+    void mFileLineEdit_textChanged( const QString &text );
 
   private:
 

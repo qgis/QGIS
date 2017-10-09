@@ -83,6 +83,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 {
   setupUi( this );
+  connect( cbxProjectDefaultNew, &QCheckBox::toggled, this, &QgsOptions::cbxProjectDefaultNew_toggled );
+  connect( leProjectGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leProjectGlobalCrs_crsChanged );
+  connect( leLayerGlobalCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsOptions::leLayerGlobalCrs_crsChanged );
+  connect( lstGdalDrivers, &QTreeWidget::itemDoubleClicked, this, &QgsOptions::lstGdalDrivers_itemDoubleClicked );
+  connect( mProjectOnLaunchCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged );
+  connect( spinFontSize, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsOptions::spinFontSize_valueChanged );
+  connect( mFontFamilyRadioQt, &QRadioButton::released, this, &QgsOptions::mFontFamilyRadioQt_released );
+  connect( mFontFamilyRadioCustom, &QRadioButton::released, this, &QgsOptions::mFontFamilyRadioCustom_released );
+  connect( mFontFamilyComboBox, &QFontComboBox::currentFontChanged, this, &QgsOptions::mFontFamilyComboBox_currentFontChanged );
+  connect( mProxyTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProxyTypeComboBox_currentIndexChanged );
+  connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
+  connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
+  connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsOptions::mOptionsStackedWidget_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -1035,12 +1048,12 @@ void QgsOptions::setCurrentPage( const QString &pageWidgetName )
   }
 }
 
-void QgsOptions::on_mProxyTypeComboBox_currentIndexChanged( int idx )
+void QgsOptions::mProxyTypeComboBox_currentIndexChanged( int idx )
 {
   frameManualProxy->setEnabled( idx != 0 );
 }
 
-void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
+void QgsOptions::cbxProjectDefaultNew_toggled( bool checked )
 {
   if ( checked )
   {
@@ -1105,7 +1118,7 @@ void QgsOptions::uiThemeChanged( const QString &theme )
   QgsApplication::setUITheme( theme );
 }
 
-void QgsOptions::on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
+void QgsOptions::mProjectOnLaunchCmbBx_currentIndexChanged( int indx )
 {
   bool specific = ( indx == 2 );
   mProjectOnLaunchLineEdit->setEnabled( specific );
@@ -1578,13 +1591,13 @@ void QgsOptions::rejectOptions()
   }
 }
 
-void QgsOptions::on_spinFontSize_valueChanged( int fontSize )
+void QgsOptions::spinFontSize_valueChanged( int fontSize )
 {
   mStyleSheetNewOpts.insert( QStringLiteral( "fontPointSize" ), QVariant( fontSize ) );
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
-void QgsOptions::on_mFontFamilyRadioQt_released()
+void QgsOptions::mFontFamilyRadioQt_released()
 {
   if ( mStyleSheetNewOpts.value( QStringLiteral( "fontFamily" ) ).toString() != mStyleSheetBuilder->defaultFont().family() )
   {
@@ -1593,7 +1606,7 @@ void QgsOptions::on_mFontFamilyRadioQt_released()
   }
 }
 
-void QgsOptions::on_mFontFamilyRadioCustom_released()
+void QgsOptions::mFontFamilyRadioCustom_released()
 {
   if ( mFontFamilyComboBox->currentFont().family() != mStyleSheetBuilder->defaultFont().family() )
   {
@@ -1602,7 +1615,7 @@ void QgsOptions::on_mFontFamilyRadioCustom_released()
   }
 }
 
-void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont &font )
+void QgsOptions::mFontFamilyComboBox_currentFontChanged( const QFont &font )
 {
   if ( mFontFamilyRadioCustom->isChecked()
        && mStyleSheetNewOpts.value( QStringLiteral( "fontFamily" ) ).toString() != font.family() )
@@ -1618,17 +1631,17 @@ void QgsOptions::useCustomGroupBox( bool chkd )
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
-void QgsOptions::on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )
+void QgsOptions::leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mDefaultCrs = crs;
 }
 
-void QgsOptions::on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )
+void QgsOptions::leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mLayerDefaultCrs = crs;
 }
 
-void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column )
+void QgsOptions::lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column );
   // edit driver if driver supports write
@@ -1715,7 +1728,7 @@ void QgsOptions::restoreDefaultWindowState()
   mSettings->setValue( QStringLiteral( "/qgis/restoreDefaultWindowState" ), true );
 }
 
-void QgsOptions::on_mCustomVariablesChkBx_toggled( bool chkd )
+void QgsOptions::mCustomVariablesChkBx_toggled( bool chkd )
 {
   mAddCustomVarBtn->setEnabled( chkd );
   mRemoveCustomVarBtn->setEnabled( chkd );
@@ -1768,7 +1781,7 @@ void QgsOptions::removeCustomVariable()
   mCustomVariablesTable->removeRow( mCustomVariablesTable->currentRow() );
 }
 
-void QgsOptions::on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific )
+void QgsOptions::mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific )
 {
   for ( int i = mCurrentVariablesTable->rowCount() - 1; i >= 0; --i )
   {
@@ -1967,7 +1980,7 @@ void QgsOptions::clearCache()
   QgsNetworkAccessManager::instance()->cache()->clear();
 }
 
-void QgsOptions::on_mOptionsStackedWidget_currentChanged( int indx )
+void QgsOptions::mOptionsStackedWidget_currentChanged( int indx )
 {
   Q_UNUSED( indx );
   // load gdal driver list when gdal tab is first opened
