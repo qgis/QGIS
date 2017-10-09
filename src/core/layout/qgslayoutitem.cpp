@@ -198,6 +198,7 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
     mParentGroupUuid.clear();
   else
     mParentGroupUuid = group->uuid();
+  setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
 }
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )

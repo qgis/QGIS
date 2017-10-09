@@ -100,6 +100,7 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   QVERIFY( !item->isGroupMember() );
   QVERIFY( !item2->parentGroup() );
   QVERIFY( !item2->isGroupMember() );
+  QVERIFY( item->flags() & QGraphicsItem::ItemIsSelectable );
 
   QgsLayoutItemGroup *group = new QgsLayoutItemGroup( &l );
   l.addLayoutItem( group );
@@ -112,6 +113,7 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   group->addItem( item );
   QCOMPARE( item->parentGroup(), group );
   QVERIFY( item->isGroupMember() );
+  QVERIFY( !( item->flags() & QGraphicsItem::ItemIsSelectable ) ); // group items are not selectable
   QVERIFY( !item2->parentGroup() );
   QVERIFY( !item2->isGroupMember() );
   QCOMPARE( group->items().count(), 1 );
@@ -124,6 +126,7 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   QVERIFY( item->isGroupMember() );
   QCOMPARE( item2->parentGroup(), group );
   QVERIFY( item2->isGroupMember() );
+  QVERIFY( !( item2->flags() & QGraphicsItem::ItemIsSelectable ) ); // group items are not selectable
   QCOMPARE( group->items().count(), 2 );
   QVERIFY( group->items().contains( item ) );
   QVERIFY( group->items().contains( item2 ) );
@@ -151,6 +154,7 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   QVERIFY( !item2->parentGroup() );
   QCOMPARE( item2->layout(), &l );
   QVERIFY( l.items().contains( item2 ) );
+  QVERIFY( item2->flags() & QGraphicsItem::ItemIsSelectable ); // should be selectable again
 }
 
 void TestQgsLayoutItemGroup::createGroup()
