@@ -30,7 +30,6 @@ class QgsLayerTreeModel : QAbstractItemModel
 %TypeHeaderCode
 #include "qgslayertreemodel.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->inherits( "QgsLayerTreeModel" ) )
       sipType = sipType_QgsLayerTreeModel;

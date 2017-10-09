@@ -18,7 +18,6 @@ class QgsColorRamp
 %TypeHeaderCode
 #include "qgscolorramp.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == "gradient" )
       sipType = sipType_QgsGradientColorRamp;

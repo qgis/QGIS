@@ -192,17 +192,14 @@ Utility classes for "en masse" size definition
 %Docstring
  :rtype: QgsProperty
 %End
-  private:
     virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0 ;
 %Docstring
  :rtype: QgsProperty
 %End
-  private:
     virtual double value( const QgsSymbol * ) const = 0 ;
 %Docstring
  :rtype: float
 %End
-  private:
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0 ;
 };
 

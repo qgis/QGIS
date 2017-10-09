@@ -72,7 +72,6 @@ class QgsRasterInterface
 
 %TypeHeaderCode
 #include "qgsrasterinterface.h"
-
 // QgsRasterInterface subclasses
 #include <qgsbrightnesscontrastfilter.h>
 #include <qgshuesaturationfilter.h>
@@ -90,7 +89,6 @@ class QgsRasterInterface
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
       sipType = sipType_QgsBrightnessContrastFilter;

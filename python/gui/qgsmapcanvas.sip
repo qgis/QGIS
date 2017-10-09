@@ -27,7 +27,6 @@ class QgsMapCanvas : QGraphicsView
 %TypeHeaderCode
 #include "qgsmapcanvas.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapCanvas;

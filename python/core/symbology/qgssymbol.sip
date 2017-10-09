@@ -19,7 +19,6 @@ class QgsSymbol
 %TypeHeaderCode
 #include "qgssymbol.h"
 %End
-
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
     {

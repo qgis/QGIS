@@ -33,7 +33,6 @@ class QgsMapTool : QObject
 %TypeHeaderCode
 #include "qgsmaptool.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsMapToolZoom *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolZoom;

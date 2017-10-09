@@ -105,25 +105,15 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
 
   private slots:
     void mProfileNewButton_clicked() ;
-  private slots:
     void mProfileDeleteButton_clicked() ;
-  private slots:
     void mProfileResetButton_clicked() ;
-  private slots:
     void mOptionsAddButton_clicked() ;
-  private slots:
     void mOptionsDeleteButton_clicked() ;
-  private slots:
     void mOptionsLineEdit_editingFinished() ;
-  private slots:
     void optionsTableChanged() ;
-  private slots:
     void optionsTableEnableDeleteButton() ;
-  private slots:
     void updateOptions() ;
-  private slots:
     void swapOptionsUI( int newIndex = -1 ) ;
-  private slots:
     void updateControls() ;
   protected:
     virtual void showEvent( QShowEvent *event );
@@ -136,33 +126,24 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
 %Docstring
  :rtype: str
 %End
-  private:
     QString currentProfileKey() const ;
 %Docstring
  :rtype: str
 %End
-  private:
     QString createOptions( const QString &profile ) const ;
 %Docstring
  :rtype: str
 %End
-  private:
     void deleteCreateOptions( const QString &profile ) ;
-  private:
     void setCreateOptions() ;
-  private:
     void setCreateOptions( const QString &profile, const QString &options ) ;
-  private:
     void setCreateOptions( const QString &profile, const QStringList &list ) ;
-  private:
     QStringList profiles() const ;
 %Docstring
  :rtype: list of str
 %End
-  private:
     virtual bool eventFilter( QObject *obj, QEvent *event ) ;
 
-  private:
     QString pseudoFormat() const ;
 %Docstring
  :rtype: str

@@ -191,7 +191,6 @@ Returns root node of the statement. Root node is null is parsing has failed
 %TypeHeaderCode
 #include "qgssqlstatement.h"
 %End
-
 %ConvertToSubClassCode
         switch ( sipCpp->nodeType() )
         {

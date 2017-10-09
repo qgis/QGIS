@@ -53,11 +53,8 @@ class QgsRasterPyramidsOptionsWidget: QWidget
 
   private slots:
     void cbxPyramidsLevelsCustom_toggled( bool toggled ) ;
-  private slots:
     void cbxPyramidsFormat_currentIndexChanged( int index ) ;
-  private slots:
     void setOverviewList() ;
-  private slots:
     void updateUi() ;
   signals:
     void overviewListChanged();
