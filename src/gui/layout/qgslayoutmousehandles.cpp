@@ -132,26 +132,7 @@ void QgsLayoutMouseHandles::drawSelectedItemBounds( QPainter *painter )
   painter->setBrush( Qt::NoBrush );
 
   QList< QgsLayoutItem * > itemsToDraw;
-
-  std::function< void( const QList< QgsLayoutItem * > items ) > collectItems;
-
-  collectItems = [&itemsToDraw, &collectItems]( const QList< QgsLayoutItem * > items )
-  {
-    for ( QgsLayoutItem *item : items )
-    {
-      if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
-      {
-        // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
-        collectItems( static_cast< QgsLayoutItemGroup * >( item )->items() );
-      }
-      else
-      {
-        itemsToDraw << item;
-      }
-    }
-  };
-  collectItems( selectedItems );
-
+  collectItems( selectedItems, itemsToDraw );
 
   for ( QgsLayoutItem *item : qgsAsConst( itemsToDraw ) )
   {
@@ -736,6 +717,8 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   bool snapped = false;
 
   const QList< QgsLayoutItem * > selectedItems = mLayout->selectedLayoutItems();
+  QList< QgsLayoutItem * > itemsToExclude;
+  collectItems( selectedItems, itemsToExclude );
 
   //depending on the mode, we either snap just the single point, or all the bounds of the selection
   QPointF snappedPoint;
@@ -743,11 +726,11 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   {
     case Item:
       snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
-                     snapVertical ? mVerticalSnapLine.get() : nullptr, &selectedItems ).topLeft();
+                     snapVertical ? mVerticalSnapLine.get() : nullptr, &itemsToExclude ).topLeft();
       break;
     case Point:
       snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
-                     snapVertical ? mVerticalSnapLine.get() : nullptr, &selectedItems );
+                     snapVertical ? mVerticalSnapLine.get() : nullptr, &itemsToExclude );
       break;
   }
 
@@ -758,6 +741,22 @@ void QgsLayoutMouseHandles::hideAlignItems()
 {
   mHorizontalSnapLine->hide();
   mVerticalSnapLine->hide();
+}
+
+void QgsLayoutMouseHandles::collectItems( const QList<QgsLayoutItem *> items, QList<QgsLayoutItem *> &collected )
+{
+  for ( QgsLayoutItem *item : items )
+  {
+    if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
+    {
+      // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
+      collectItems( static_cast< QgsLayoutItemGroup * >( item )->items(), collected );
+    }
+    else
+    {
+      collected << item;
+    }
+  }
 }
 
 void QgsLayoutMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *event )
