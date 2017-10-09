@@ -396,7 +396,7 @@ Returns the centroid of the geometry
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
 %Docstring
- Returns the number of vertexes of which this geometry is built.
+ Returns the number of vertices of which this geometry is built.
  :rtype: int
 %End
 

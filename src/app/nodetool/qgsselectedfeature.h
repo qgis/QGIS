@@ -67,7 +67,7 @@ class QgsSelectedFeature: public QObject
     void deselectVertex( int vertexNr );
 
     /**
-     * Deselects all vertexes of selected feature
+     * Deselects all vertices of selected feature
      */
     void deselectAllVertexes();
 
@@ -97,7 +97,7 @@ class QgsSelectedFeature: public QObject
     QgsFeatureId featureId();
 
     /**
-     * Getting vertex map of vertexes
+     * Getting vertex map of vertices
      * \returns currently used vertex map
      */
     QList<QgsVertexEntry *> &vertexMap();
