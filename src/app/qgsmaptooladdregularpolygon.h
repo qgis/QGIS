@@ -25,7 +25,6 @@ class QSpinBox;
 class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 {
     Q_OBJECT
-    void clean();
 
   public:
     QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
@@ -39,7 +38,7 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     void activate() override;
 
   protected:
-    explicit QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas ); //forbidden
+    explicit QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas ) = delete; //forbidden
 
     std::unique_ptr<QSpinBox> mNumberSidesSpinBox;
     int mNumberSides;
@@ -52,13 +51,17 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     /** The parent map tool, e.g. the add feature tool.
      *  Completed regular polygon will be added to this tool by calling its addCurve() method.
      * */
-    QgsMapToolCapture *mParentTool;
+    QgsMapToolCapture *mParentTool = nullptr;
     //! Regular Shape points (in map coordinates)
     QgsPointSequence mPoints;
     //! The rubberband to show the regular polygon currently working on
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Regular shape as a regular polygon
     QgsRegularPolygon mRegularPolygon;
+
+  private:
+    //! convenient method to clean members
+    void clean();
 };
 
 #endif // QGSMAPTOOLADDREGULARPOLYGON_H

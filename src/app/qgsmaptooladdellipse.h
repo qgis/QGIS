@@ -24,7 +24,6 @@ class QgsGeometryRubberBand;
 class QgsMapToolAddEllipse: public QgsMapToolCapture
 {
     Q_OBJECT
-    void clean();
   public:
     QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddEllipse();
@@ -37,18 +36,22 @@ class QgsMapToolAddEllipse: public QgsMapToolCapture
     void activate() override;
 
   protected:
-    explicit QgsMapToolAddEllipse( QgsMapCanvas *canvas ); //forbidden
+    explicit QgsMapToolAddEllipse( QgsMapCanvas *canvas ) = delete; //forbidden
 
     /** The parent map tool, e.g. the add feature tool.
      *  Completed ellipse will be added to this tool by calling its toLineString() method.
      * */
-    QgsMapToolCapture *mParentTool;
+    QgsMapToolCapture *mParentTool = nullptr;
     //! Ellipse points (in map coordinates)
     QgsPointSequence mPoints;
     //! The rubberband to show the ellipse currently working on
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Ellipse
     QgsEllipse mEllipse;
+
+  private:
+    //! convenient method to clean members
+    void clean();
 };
 
 #endif // QGSMAPTOOLADDELLIPSE_H

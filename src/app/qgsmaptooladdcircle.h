@@ -55,6 +55,7 @@ class QgsMapToolAddCircle: public QgsMapToolCapture
     QgsCircle mCircle;
 
   private:
+    //! convenient method to clean members
     void clean();
 };
 

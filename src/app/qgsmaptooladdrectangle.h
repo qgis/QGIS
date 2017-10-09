@@ -26,8 +26,6 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
 {
     Q_OBJECT
 
-    //! convenient method to clean members
-    void clean();
   public:
     QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddRectangle();
@@ -40,12 +38,12 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     void activate() override;
 
   protected:
-    explicit QgsMapToolAddRectangle( QgsMapCanvas *canvas ); //forbidden
+    explicit QgsMapToolAddRectangle( QgsMapCanvas *canvas ) = delete; //forbidden
 
     /** The parent map tool, e.g. the add feature tool.
      *  Completed regular shape will be added to this tool by calling its addCurve() method.
      * */
-    QgsMapToolCapture *mParentTool;
+    QgsMapToolCapture *mParentTool = nullptr;
     //! Regular Shape points (in map coordinates)
     QgsPointSequence mPoints;
     //! The rubberband to show the rectangle currently working on
@@ -85,6 +83,8 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     double mDistance2 = 0.0;
     //! Convenient member for the side where the second distance is drawn or when map is rotated.
     int mSide = 1;
+    //! convenient method to clean members
+    void clean();
 };
 
 #endif // QGSMAPTOOLADDRECTANGLE_H
