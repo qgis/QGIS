@@ -22,6 +22,7 @@
 #include "qgspoint.h"
 #include "qgisapp.h"
 #include "qgsstatusbar.h"
+#include "qgsspinbox.h"
 
 QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
@@ -38,7 +39,7 @@ QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()
 void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
 {
   deleteNumberSidesSpinBox();
-  mNumberSidesSpinBox = std::unique_ptr<QSpinBox>( new QSpinBox() );
+  mNumberSidesSpinBox = std::unique_ptr<QgsSpinBox>( new QgsSpinBox() );
   mNumberSidesSpinBox->setMaximum( 99999999 );
   mNumberSidesSpinBox->setMinimum( 3 );
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );
@@ -51,7 +52,6 @@ void QgsMapToolAddRegularPolygon::deleteNumberSidesSpinBox()
 {
   if ( mNumberSidesSpinBox )
   {
-    QgisApp::instance()->statusBarIface()->removeWidget( mNumberSidesSpinBox.get() );
     mNumberSidesSpinBox.reset( nullptr );
   }
 }
