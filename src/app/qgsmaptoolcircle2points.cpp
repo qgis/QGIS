@@ -56,6 +56,6 @@ void QgsMapToolCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   if ( mTempRubberBand )
   {
     mCircle = QgsCircle().from2Points( mPoints.at( 0 ), mapPoint );
-    mTempRubberBand->setGeometry( mCircle.toPolygon() );
+    mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
   }
 }

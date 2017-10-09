@@ -70,7 +70,7 @@ void QgsMapToolCircle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       case 2:
       {
         mCircle = QgsCircle().from3Points( mPoints.at( 0 ), mPoints.at( 1 ), mapPoint );
-        mTempRubberBand->setGeometry( mCircle.toPolygon() );
+        mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
       }
       break;
       default:

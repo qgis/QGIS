@@ -116,7 +116,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     }
 
     mCircle = QgsCircle( center, mRadius );
-    mTempRubberBand->setGeometry( mCircle.toPolygon() );
+    mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
   }
 }
 
