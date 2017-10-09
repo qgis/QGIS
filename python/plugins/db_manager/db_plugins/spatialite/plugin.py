@@ -19,8 +19,6 @@ email                : brush.tyler@gmail.com
  *                                                                         *
  ***************************************************************************/
 """
-import re
-
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import SpatiaLiteDBConnector
 
@@ -185,7 +183,7 @@ class SLTable(Table):
 
     def mimeUri(self):
         layerType = "raster" if self.type == Table.RasterType else "vector"
-        return u"%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, re.sub(":", "\:", self.uri().uri(False)))
+        return u"%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, self.uri().uri(False).replace(":", "\:"))
 
     def toMapLayer(self):
         from qgis.core import QgsVectorLayer
@@ -270,7 +268,7 @@ class SLRasterTable(SLTable, RasterTable):
 
     def mimeUri(self):
         # QGIS has no provider to load rasters, let's use GDAL
-        uri = u"raster:gdal:%s:%s" % (self.name, re.sub(":", "\:", self.uri().database()))
+        uri = u"raster:gdal:%s:%s" % (self.name, self.uri().database().replace(":", "\:"))
         return uri
 
     def toMapLayer(self):
