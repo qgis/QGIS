@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgmaptoolellilpsecenter2points.cpp  -  map tool for adding ellipse
+    qgsmaptoolellipsecenter2points.cpp  -  map tool for adding ellipse
     from center and 2 points
     ---------------------
     begin                : July 2017
