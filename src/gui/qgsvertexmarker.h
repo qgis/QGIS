@@ -35,6 +35,7 @@ class QPainter;
  */
 class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsVertexMarker *>( sipCpp ) )
