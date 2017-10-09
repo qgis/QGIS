@@ -22,6 +22,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsproject.h"
 #include "qgslayoutitemundocommand.h"
+#include "qgslayoutitemgroup.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -437,6 +438,72 @@ class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
 QgsAbstractLayoutUndoCommand *QgsLayout::createCommand( const QString &text, int id, QUndoCommand *parent )
 {
   return new QgsLayoutUndoCommand( this, text, id, parent );
+}
+
+QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
+{
+  if ( items.size() < 2 )
+  {
+    //not enough items for a group
+    return nullptr;
+  }
+
+  mUndoStack->beginMacro( tr( "Grouped items" ) );
+  std::unique_ptr< QgsLayoutItemGroup > itemGroup( new QgsLayoutItemGroup( this ) );
+  for ( QgsLayoutItem *item : items )
+  {
+    itemGroup->addItem( item );
+  }
+  QgsLayoutItemGroup *returnGroup = itemGroup.get();
+  addLayoutItem( itemGroup.release() );
+  mUndoStack->endMacro();
+
+#if 0
+  QgsGroupUngroupItemsCommand *c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Grouped, itemGroup, this, tr( "Items grouped" ) );
+  connect( c, &QgsGroupUngroupItemsCommand::itemRemoved, this, &QgsComposition::itemRemoved );
+  connect( c, &QgsGroupUngroupItemsCommand::itemAdded, this, &QgsComposition::sendItemAddedSignal );
+
+  undoStack()->push( c );
+  mProject->setDirty( true );
+  //QgsDebugMsg( QString( "itemgroup after pushAddRemove has %1" ) .arg( itemGroup->items().size() ) );
+
+  emit composerItemGroupAdded( itemGroup );
+#endif
+
+  return returnGroup;
+}
+
+QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
+{
+  QList<QgsLayoutItem *> ungroupedItems;
+  if ( !group )
+  {
+    return ungroupedItems;
+  }
+
+#if 0 //TODO
+  // group ownership transferred to QgsGroupUngroupItemsCommand
+  // Call this before removing group items so it can keep note
+  // of contents
+  QgsGroupUngroupItemsCommand *c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Ungrouped, group, this, tr( "Items ungrouped" ) );
+  connect( c, &QgsGroupUngroupItemsCommand::itemRemoved, this, &QgsComposition::itemRemoved );
+  connect( c, &QgsGroupUngroupItemsCommand::itemAdded, this, &QgsComposition::sendItemAddedSignal );
+
+  undoStack()->push( c );
+  mProject->setDirty( true );
+
+#endif
+
+  ungroupedItems = group->items();
+  group->removeItems();
+
+  removeLayoutItem( group );
+#if 0 //TODO
+  // note: emits itemRemoved
+  removeComposerItem( group, false, false );
+#endif
+
+  return ungroupedItems;
 }
 
 void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const

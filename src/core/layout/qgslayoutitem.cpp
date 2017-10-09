@@ -21,6 +21,7 @@
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutmodel.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutitemgroup.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -176,6 +177,27 @@ void QgsLayoutItem::setLocked( const bool locked )
 
   update();
   emit lockChanged();
+}
+
+bool QgsLayoutItem::isGroupMember() const
+{
+  return !mParentGroupUuid.isEmpty() && mLayout && static_cast< bool >( mLayout->itemByUuid( mParentGroupUuid ) );
+}
+
+QgsLayoutItemGroup *QgsLayoutItem::parentGroup() const
+{
+  if ( !mLayout || mParentGroupUuid.isEmpty() )
+    return nullptr;
+
+  return qobject_cast< QgsLayoutItemGroup * >( mLayout->itemByUuid( mParentGroupUuid ) );
+}
+
+void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
+{
+  if ( !group )
+    mParentGroupUuid.clear();
+  else
+    mParentGroupUuid = group->uuid();
 }
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )

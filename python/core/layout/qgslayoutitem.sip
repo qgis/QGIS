@@ -150,6 +150,19 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: bool
 %End
 
+
+    bool isGroupMember() const;
+%Docstring
+ :rtype: bool
+%End
+
+    QgsLayoutItemGroup *parentGroup() const;
+%Docstring
+ :rtype: QgsLayoutItemGroup
+%End
+
+    void setParentGroup( QgsLayoutItemGroup *group );
+
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 %Docstring

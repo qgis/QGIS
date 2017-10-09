@@ -28,6 +28,7 @@
 
 class QgsLayout;
 class QPainter;
+class QgsLayoutItemGroup;
 
 /**
  * \ingroup core
@@ -168,6 +169,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see lockChanged()
      */
     bool isLocked() const { return mIsLocked; }
+
+
+    bool isGroupMember() const;
+
+    QgsLayoutItemGroup *parentGroup() const;
+
+    void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
@@ -584,6 +592,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Unique id
     QString mUuid;
+
+    //! Parent group unique id
+    QString mParentGroupUuid;
 
     ReferencePoint mReferencePoint = UpperLeft;
     QgsLayoutSize mFixedSize;

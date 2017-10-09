@@ -1,44 +1,67 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayoutitemmap.h                                   *
+ * src/core/layout/qgslayoutitemgroup.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsLayoutItemMap : QgsLayoutItem
+class QgsLayoutItemGroup: QgsLayoutItem
 {
 %Docstring
- Layout graphical items for displaying a map.
+ A container for grouping several QgsLayoutItems.
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayoutitemmap.h"
+#include "qgslayoutitemgroup.h"
 %End
   public:
 
-    explicit QgsLayoutItemMap( QgsLayout *layout );
-%Docstring
- Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
-%End
+    explicit QgsLayoutItemGroup( QgsLayout *layout );
+    ~QgsLayoutItemGroup();
+
     virtual int type() const;
 
     virtual QString stringType() const;
 
 
+    void addItem( QgsLayoutItem *item /Transfer/ );
+%Docstring
+ Adds an ``item`` to the group. Ownership of the item
+ is transferred to the group.
+%End
+
+    void removeItems();
+%Docstring
+ Removes all items from the group (but does not delete them).
+ Items remain in the scene but are no longer grouped together
+%End
+
+    QList<QgsLayoutItem *> items() const;
+%Docstring
+ Returns a list of items contained by the group.
+ :rtype: list of QgsLayoutItem
+%End
+
+    virtual void setVisibility( const bool visible );
+
   protected:
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
 
+
 };
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayoutitemmap.h                                   *
+ * src/core/layout/qgslayoutitemgroup.h                                 *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
