@@ -21,6 +21,9 @@ class QgsLayoutItemGroup: QgsLayoutItem
   public:
 
     explicit QgsLayoutItemGroup( QgsLayout *layout );
+%Docstring
+ Constructor for QgsLayoutItemGroup, belonging to the specified ``layout``.
+%End
     ~QgsLayoutItemGroup();
 
     virtual int type() const;

@@ -31,6 +31,9 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
 
   public:
 
+    /**
+     * Constructor for QgsLayoutItemGroup, belonging to the specified \a layout.
+     */
     explicit QgsLayoutItemGroup( QgsLayout *layout );
     ~QgsLayoutItemGroup();
 
