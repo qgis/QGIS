@@ -35,7 +35,7 @@ This generates an RPM with release `.git<short commit ID>`
 
 ### MOCK old chroot
 
-It is possible to execute `mock` using the 'old chroot' behaviour (which does not uses `systemd-nspawn`) setting
+It is possible to execute `mock` using the 'old chroot' behavior (which does not uses `systemd-nspawn`) setting
 the environment variable `_MOCK_OLD_CHROOT` before running `buildrpms.sh`:
 
 ```bash
