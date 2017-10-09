@@ -66,7 +66,7 @@ void QgsMapToolAddEllipse::deactivate()
   }
 
   mParentTool->clearCurve();
-  mParentTool->addCurve( mEllipse.toLineString() );
+  mParentTool->addCurve( mEllipse.toLineString( segments() ) );
   clean();
 
   QgsMapToolCapture::deactivate();

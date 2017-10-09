@@ -18,6 +18,7 @@
 
 #include "qgsmaptoolcapture.h"
 #include "qgsellipse.h"
+#include "qgssettings.h"
 
 class QgsGeometryRubberBand;
 
@@ -49,6 +50,8 @@ class QgsMapToolAddEllipse: public QgsMapToolCapture
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Ellipse
     QgsEllipse mEllipse;
+    //! convenient method to return the number of segments
+    unsigned int segments( ) { return QgsSettings().value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() * 12; }
 
   private:
     //! convenient method to clean members

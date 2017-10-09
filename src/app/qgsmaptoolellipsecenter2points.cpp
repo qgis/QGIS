@@ -73,7 +73,7 @@ void QgsMapToolEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       case 2:
       {
         mEllipse = QgsEllipse().fromCenter2Points( mPoints.at( 0 ), mPoints.at( 1 ), mapPoint );
-        mTempRubberBand->setGeometry( mEllipse.toPolygon() );
+        mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
       }
       break;
       default:

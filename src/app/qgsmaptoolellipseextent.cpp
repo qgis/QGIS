@@ -63,7 +63,7 @@ void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
         {
           mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mapPoint );
-          mTempRubberBand->setGeometry( mEllipse.toPolygon() );
+          mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
         }
         else
         {
