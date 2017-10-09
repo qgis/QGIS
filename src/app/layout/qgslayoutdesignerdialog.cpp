@@ -38,6 +38,8 @@
 #include "qgsdockwidget.h"
 #include "qgslayoutpagepropertieswidget.h"
 #include "qgslayoutguidewidget.h"
+#include "qgslayoutmousehandles.h"
+#include "qgslayoutmodel.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -45,7 +47,11 @@
 #include <QSlider>
 #include <QLabel>
 #include <QUndoView>
+#include <QTreeView>
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
 
 //add some nice zoom levels for zoom comboboxes
 QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
@@ -140,6 +146,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionShowGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGuides );
   connect( mActionSnapGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGuides );
+  connect( mActionSmartGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToItems );
+
+  connect( mActionShowBoxes, &QAction::triggered, this, &QgsLayoutDesignerDialog::showBoxes );
+  connect( mActionShowPage, &QAction::triggered, this, &QgsLayoutDesignerDialog::showPages );
 
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
@@ -163,6 +173,55 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //..and listen out for new item types
   connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
 
+  QToolButton *orderingToolButton = new QToolButton( this );
+  orderingToolButton->setPopupMode( QToolButton::InstantPopup );
+  orderingToolButton->setAutoRaise( true );
+  orderingToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  orderingToolButton->addAction( mActionRaiseItems );
+  orderingToolButton->addAction( mActionLowerItems );
+  orderingToolButton->addAction( mActionMoveItemsToTop );
+  orderingToolButton->addAction( mActionMoveItemsToBottom );
+  orderingToolButton->setDefaultAction( mActionRaiseItems );
+  mActionsToolbar->addWidget( orderingToolButton );
+
+  QToolButton *alignToolButton = new QToolButton( this );
+  alignToolButton->setPopupMode( QToolButton::InstantPopup );
+  alignToolButton->setAutoRaise( true );
+  alignToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  alignToolButton->addAction( mActionAlignLeft );
+  alignToolButton->addAction( mActionAlignHCenter );
+  alignToolButton->addAction( mActionAlignRight );
+  alignToolButton->addAction( mActionAlignTop );
+  alignToolButton->addAction( mActionAlignVCenter );
+  alignToolButton->addAction( mActionAlignBottom );
+  alignToolButton->setDefaultAction( mActionAlignLeft );
+  mActionsToolbar->addWidget( alignToolButton );
+
+  QToolButton *distributeToolButton = new QToolButton( this );
+  distributeToolButton->setPopupMode( QToolButton::InstantPopup );
+  distributeToolButton->setAutoRaise( true );
+  distributeToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  distributeToolButton->addAction( mActionDistributeLeft );
+  distributeToolButton->addAction( mActionDistributeHCenter );
+  distributeToolButton->addAction( mActionDistributeRight );
+  distributeToolButton->addAction( mActionDistributeTop );
+  distributeToolButton->addAction( mActionDistributeVCenter );
+  distributeToolButton->addAction( mActionDistributeBottom );
+  distributeToolButton->setDefaultAction( mActionDistributeLeft );
+  mActionsToolbar->addWidget( distributeToolButton );
+
+  QToolButton *resizeToolButton = new QToolButton( this );
+  resizeToolButton->setPopupMode( QToolButton::InstantPopup );
+  resizeToolButton->setAutoRaise( true );
+  resizeToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  resizeToolButton->addAction( mActionResizeNarrowest );
+  resizeToolButton->addAction( mActionResizeWidest );
+  resizeToolButton->addAction( mActionResizeShortest );
+  resizeToolButton->addAction( mActionResizeTallest );
+  resizeToolButton->addAction( mActionResizeToSquare );
+  resizeToolButton->setDefaultAction( mActionResizeNarrowest );
+  mActionsToolbar->addWidget( resizeToolButton );
+
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
   mPanTool = new QgsLayoutViewToolPan( mView );
   mPanTool->setAction( mActionPan );
@@ -180,6 +239,42 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //Ctrl+= should also trigger zoom in
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, mActionZoomIn, &QAction::trigger );
+  //Backspace should also trigger delete selection
+  QShortcut *backSpace = new QShortcut( QKeySequence( QStringLiteral( "Backspace" ) ), this );
+  connect( backSpace, &QShortcut::activated, mActionDeleteSelection, &QAction::trigger );
+
+  mActionPreviewModeOff->setChecked( true );
+  connect( mActionPreviewModeOff, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewModeEnabled( false );
+  } );
+  connect( mActionPreviewModeGrayscale, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewGrayscale );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewModeMono, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewMono );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewProtanope, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewProtanope );
+    mView->setPreviewModeEnabled( true );
+  } );
+  connect( mActionPreviewDeuteranope, &QAction::triggered, this, [ = ]
+  {
+    mView->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
+    mView->setPreviewModeEnabled( true );
+  } );
+  QActionGroup *previewGroup = new QActionGroup( this );
+  previewGroup->setExclusive( true );
+  mActionPreviewModeOff->setActionGroup( previewGroup );
+  mActionPreviewModeGrayscale->setActionGroup( previewGroup );
+  mActionPreviewModeMono->setActionGroup( previewGroup );
+  mActionPreviewProtanope->setActionGroup( previewGroup );
+  mActionPreviewDeuteranope->setActionGroup( previewGroup );
 
   connect( mActionZoomIn, &QAction::triggered, mView, &QgsLayoutView::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );
@@ -187,7 +282,96 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionZoomActual, &QAction::triggered, mView, &QgsLayoutView::zoomActual );
   connect( mActionZoomToWidth, &QAction::triggered, mView, &QgsLayoutView::zoomWidth );
 
+  connect( mActionSelectAll, &QAction::triggered, mView, &QgsLayoutView::selectAll );
+  connect( mActionDeselectAll, &QAction::triggered, mView, &QgsLayoutView::deselectAll );
+  connect( mActionInvertSelection, &QAction::triggered, mView, &QgsLayoutView::invertSelection );
+  connect( mActionSelectNextAbove, &QAction::triggered, mView, &QgsLayoutView::selectNextItemAbove );
+  connect( mActionSelectNextBelow, &QAction::triggered, mView, &QgsLayoutView::selectNextItemBelow );
+
+  connect( mActionRaiseItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::raiseSelectedItems );
+  connect( mActionLowerItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lowerSelectedItems );
+  connect( mActionMoveItemsToTop, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToTop );
+  connect( mActionMoveItemsToBottom, &QAction::triggered, this, &QgsLayoutDesignerDialog::moveSelectedItemsToBottom );
+  connect( mActionAlignLeft, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::AlignLeft );
+  } );
+  connect( mActionAlignHCenter, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::AlignHCenter );
+  } );
+  connect( mActionAlignRight, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::AlignRight );
+  } );
+  connect( mActionAlignTop, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::AlignTop );
+  } );
+  connect( mActionAlignVCenter, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::AlignVCenter );
+  } );
+  connect( mActionAlignBottom, &QAction::triggered, this, [ = ]
+  {
+    mView->alignSelectedItems( QgsLayoutAligner::AlignBottom );
+  } );
+  connect( mActionDistributeLeft, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeLeft );
+  } );
+  connect( mActionDistributeHCenter, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeHCenter );
+  } );
+  connect( mActionDistributeRight, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeRight );
+  } );
+  connect( mActionDistributeTop, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeTop );
+  } );
+  connect( mActionDistributeVCenter, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeVCenter );
+  } );
+  connect( mActionDistributeBottom, &QAction::triggered, this, [ = ]
+  {
+    mView->distributeSelectedItems( QgsLayoutAligner::DistributeBottom );
+  } );
+  connect( mActionResizeNarrowest, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeNarrowest );
+  } );
+  connect( mActionResizeWidest, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeWidest );
+  } );
+  connect( mActionResizeShortest, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeShortest );
+  } );
+  connect( mActionResizeTallest, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeTallest );
+  } );
+  connect( mActionResizeToSquare, &QAction::triggered, this, [ = ]
+  {
+    mView->resizeSelectedItems( QgsLayoutAligner::ResizeToSquare );
+  } );
+
   connect( mActionAddPages, &QAction::triggered, this, &QgsLayoutDesignerDialog::addPages );
+
+  connect( mActionUnlockAll, &QAction::triggered, this, &QgsLayoutDesignerDialog::unlockAllItems );
+  connect( mActionLockItems, &QAction::triggered, this, &QgsLayoutDesignerDialog::lockSelectedItems );
+
+  connect( mActionHidePanels, &QAction::toggled, this, &QgsLayoutDesignerDialog::setPanelVisibility );
+
+  connect( mActionDeleteSelection, &QAction::triggered, this, [ = ]
+  {
+    mView->deleteSelectedItems();
+  } );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
@@ -245,6 +429,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mHorizontalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
   connect( mVerticalRuler, &QgsLayoutRuler::cursorPosChanged, this, &QgsLayoutDesignerDialog::updateStatusCursorPos );
 
+  connect( mView, &QgsLayoutView::itemFocused, this, [ = ]( QgsLayoutItem * item )
+  {
+    showItemOptions( item, false );
+  } );
+
   // Panel and toolbar submenus
   mToolbarMenu->addAction( mLayoutToolbar->toggleViewAction() );
   mToolbarMenu->addAction( mNavigationToolbar->toggleViewAction() );
@@ -293,16 +482,41 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mUndoView = new QUndoView( this );
   mUndoDock->setWidget( mUndoView );
 
+  mItemsDock = new QgsDockWidget( tr( "Items" ), this );
+  mItemsDock->setObjectName( QStringLiteral( "ItemsDock" ) );
+  mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
+
+  //items tree widget
+  mItemsTreeView = new QTreeView( mItemsDock );
+
+  mItemsTreeView->setColumnWidth( 0, 30 );
+  mItemsTreeView->setColumnWidth( 1, 30 );
+  mItemsTreeView->setDragEnabled( true );
+  mItemsTreeView->setAcceptDrops( true );
+  mItemsTreeView->setDropIndicatorShown( true );
+  mItemsTreeView->setDragDropMode( QAbstractItemView::InternalMove );
+
+  mItemsTreeView->setIndentation( 0 );
+  mItemsDock->setWidget( mItemsTreeView );
+
+  const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  for ( QDockWidget *dock : docks )
+  {
+    connect( dock, &QDockWidget::visibilityChanged, this, &QgsLayoutDesignerDialog::dockVisibilityChanged );
+  }
+
   addDockWidget( Qt::RightDockWidgetArea, mItemDock );
   addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
   addDockWidget( Qt::RightDockWidgetArea, mGuideDock );
   addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
+  addDockWidget( Qt::RightDockWidgetArea, mItemsDock );
 
   createLayoutPropertiesWidget();
 
   mUndoDock->show();
   mItemDock->show();
   mGeneralDock->show();
+  mItemsDock->show();
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -310,8 +524,12 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   tabifyDockWidget( mGeneralDock, mUndoDock );
   tabifyDockWidget( mItemDock, mUndoDock );
   tabifyDockWidget( mGeneralDock, mItemDock );
+  tabifyDockWidget( mItemDock, mItemsDock );
 
   restoreWindowState();
+
+  //listen out to status bar updates from the view
+  connect( mView, &QgsLayoutView::statusMessage, this, &QgsLayoutDesignerDialog::statusMessageReceived );
 }
 
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
@@ -338,12 +556,30 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
   mActionShowGuides->setChecked( mLayout->guides().visible() );
   mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
+  mActionSmartGuides->setChecked( mLayout->snapper().snapToItems() );
+  mActionShowBoxes->setChecked( mLayout->context().boundingBoxesVisible() );
+  mActionShowPage->setChecked( mLayout->context().pagesVisible() );
 
   connect( mLayout->undoStack()->stack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
   connect( mLayout->undoStack()->stack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
   connect( mActionUndo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::undo );
   connect( mActionRedo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::redo );
   mUndoView->setStack( mLayout->undoStack()->stack() );
+
+  mSelectTool->setLayout( layout );
+
+  mItemsTreeView->setModel( mLayout->itemsModel() );
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mLayout->itemsModel(), this );
+#endif
+  mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
+  mItemsTreeView->setColumnWidth( 0, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
+  mItemsTreeView->setColumnWidth( 1, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
+  mItemsTreeView->header()->setSectionsMovable( false );
+
+  connect( mItemsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, mLayout->itemsModel(), &QgsLayoutModel::setSelected );
+
 
   createLayoutPropertiesWidget();
 }
@@ -361,7 +597,7 @@ void QgsLayoutDesignerDialog::setIconSizes( int size )
   }
 }
 
-void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
+void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPanelToFront )
 {
   if ( !item )
   {
@@ -383,7 +619,8 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
   } );
 
   mItemPropertiesStack->setMainPanel( widget.release() );
-  mItemDock->setUserVisible( true );
+  if ( bringPanelToFront )
+    mItemDock->setUserVisible( true );
 
 }
 
@@ -430,6 +667,18 @@ void QgsLayoutDesignerDialog::showGrid( bool visible )
   mLayout->pageCollection()->redraw();
 }
 
+void QgsLayoutDesignerDialog::showBoxes( bool visible )
+{
+  mLayout->context().setBoundingBoxesVisible( visible );
+  mSelectTool->mouseHandles()->update();
+}
+
+void QgsLayoutDesignerDialog::showPages( bool visible )
+{
+  mLayout->context().setPagesVisible( visible );
+  mLayout->pageCollection()->redraw();
+}
+
 void QgsLayoutDesignerDialog::snapToGrid( bool enabled )
 {
   mLayout->snapper().setSnapToGrid( enabled );
@@ -443,6 +692,99 @@ void QgsLayoutDesignerDialog::showGuides( bool visible )
 void QgsLayoutDesignerDialog::snapToGuides( bool enabled )
 {
   mLayout->snapper().setSnapToGuides( enabled );
+}
+
+void QgsLayoutDesignerDialog::snapToItems( bool enabled )
+{
+  mLayout->snapper().setSnapToItems( enabled );
+}
+
+void QgsLayoutDesignerDialog::unlockAllItems()
+{
+  mView->unlockAllItems();
+}
+
+void QgsLayoutDesignerDialog::lockSelectedItems()
+{
+  mView->lockSelectedItems();
+}
+
+void QgsLayoutDesignerDialog::setPanelVisibility( bool hidden )
+{
+  /*
+  workaround the limited Qt dock widget API
+  see http://qt-project.org/forums/viewthread/1141/
+  and http://qt-project.org/faq/answer/how_can_i_check_which_tab_is_the_current_one_in_a_tabbed_qdockwidget
+  */
+
+  const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  const QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+
+  if ( hidden )
+  {
+    mPanelStatus.clear();
+    //record status of all docks
+
+    for ( QDockWidget *dock : docks )
+    {
+      mPanelStatus.insert( dock->windowTitle(), PanelStatus( dock->isVisible(), false ) );
+      dock->setVisible( false );
+    }
+
+    //record active dock tabs
+    for ( QTabBar *tabBar : tabBars )
+    {
+      QString currentTabTitle = tabBar->tabText( tabBar->currentIndex() );
+      mPanelStatus[ currentTabTitle ].isActive = true;
+    }
+  }
+  else
+  {
+    //restore visibility of all docks
+    for ( QDockWidget *dock : docks )
+    {
+      if ( ! mPanelStatus.contains( dock->windowTitle() ) )
+      {
+        dock->setVisible( true );
+        continue;
+      }
+      dock->setVisible( mPanelStatus.value( dock->windowTitle() ).isVisible );
+    }
+
+    //restore previously active dock tabs
+    for ( QTabBar *tabBar : tabBars )
+    {
+      //loop through all tabs in tab bar
+      for ( int i = 0; i < tabBar->count(); ++i )
+      {
+        QString tabTitle = tabBar->tabText( i );
+        if ( mPanelStatus.value( tabTitle ).isActive )
+        {
+          tabBar->setCurrentIndex( i );
+        }
+      }
+    }
+  }
+}
+
+void QgsLayoutDesignerDialog::raiseSelectedItems()
+{
+  mView->raiseSelectedItems();
+}
+
+void QgsLayoutDesignerDialog::lowerSelectedItems()
+{
+  mView->lowerSelectedItems();
+}
+
+void QgsLayoutDesignerDialog::moveSelectedItemsToTop()
+{
+  mView->moveSelectedItemsToTop();
+}
+
+void QgsLayoutDesignerDialog::moveSelectedItemsToBottom()
+{
+  mView->moveSelectedItemsToBottom();
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
@@ -649,6 +991,19 @@ void QgsLayoutDesignerDialog::addPages()
     if ( dlg.numberPages() > 1 )
       mLayout->undoStack()->endMacro();
 
+  }
+}
+
+void QgsLayoutDesignerDialog::statusMessageReceived( const QString &message )
+{
+  mStatusBar->showMessage( message );
+}
+
+void QgsLayoutDesignerDialog::dockVisibilityChanged( bool visible )
+{
+  if ( visible )
+  {
+    whileBlocking( mActionHidePanels )->setChecked( false );
   }
 }
 

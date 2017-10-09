@@ -20,13 +20,7 @@ class QgsLayoutGuide : QObject
 %End
   public:
 
-    enum Orientation
-    {
-      Horizontal,
-      Vertical,
-    };
-
-    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
+    QgsLayoutGuide( Qt::Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
 %Docstring
  Constructor for a new guide with the specified ``orientation`` and
  initial ``position``.
@@ -57,10 +51,10 @@ class QgsLayoutGuide : QObject
 .. seealso:: layout()
 %End
 
-    Orientation orientation() const;
+    Qt::Orientation orientation() const;
 %Docstring
  Returns the guide's orientation.
- :rtype: Orientation
+ :rtype: Qt.Orientation
 %End
 
     QgsLayoutMeasurement position() const;
@@ -213,7 +207,7 @@ class QgsLayoutGuideCollection : QAbstractTableModel, QgsLayoutSerializableObjec
  Updates the position (and visibility) of all guide line items.
 %End
 
-    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation, int page = -1 );
+    QList< QgsLayoutGuide * > guides( Qt::Orientation orientation, int page = -1 );
 %Docstring
  Returns the list of guides contained in the collection with the specified
  ``orientation`` and on a matching ``page``.
@@ -273,7 +267,7 @@ class QgsLayoutGuideProxyModel : QSortFilterProxyModel
 %End
   public:
 
-    explicit QgsLayoutGuideProxyModel( QObject *parent /TransferThis/, QgsLayoutGuide::Orientation orientation, int page );
+    explicit QgsLayoutGuideProxyModel( QObject *parent /TransferThis/, Qt::Orientation orientation, int page );
 %Docstring
  Constructor for QgsLayoutGuideProxyModel, filtered to guides of the specified ``orientation`` and ``page`` only.
 

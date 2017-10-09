@@ -27,9 +27,9 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   setupUi( this );
   setPanelTitle( tr( "Guides" ) );
 
-  mHozProxyModel = new QgsLayoutGuideProxyModel( mHozGuidesTableView, QgsLayoutGuide::Horizontal, 0 );
+  mHozProxyModel = new QgsLayoutGuideProxyModel( mHozGuidesTableView, Qt::Horizontal, 0 );
   mHozProxyModel->setSourceModel( &mLayout->guides() );
-  mVertProxyModel = new QgsLayoutGuideProxyModel( mVertGuidesTableView, QgsLayoutGuide::Vertical, 0 );
+  mVertProxyModel = new QgsLayoutGuideProxyModel( mVertGuidesTableView, Qt::Vertical, 0 );
   mVertProxyModel->setSourceModel( &mLayout->guides() );
 
   mHozGuidesTableView->setModel( mHozProxyModel );
@@ -60,13 +60,13 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
 {
-  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
+  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( Qt::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 
 void QgsLayoutGuideWidget::addVerticalGuide()
 {
-  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
+  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( Qt::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 

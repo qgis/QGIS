@@ -36,6 +36,7 @@ class QgsLayoutItem;
 class QgsPanelWidgetStack;
 class QgsDockWidget;
 class QUndoView;
+class QTreeView;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -96,8 +97,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     /**
      * Shows the configuration widget for the specified layout \a item.
+     *
+     * If \a bringPanelToFront is true, then the item properties panel will be automatically
+     * shown and raised to the top of the interface.
      */
-    void showItemOptions( QgsLayoutItem *item );
+    void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true );
 
   public slots:
 
@@ -122,6 +126,16 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void showGrid( bool visible );
 
     /**
+     * Toggles whether the item bounding boxes should be \a visible.
+     */
+    void showBoxes( bool visible );
+
+    /**
+     * Toggles whether the layout pages should be \a visible.
+     */
+    void showPages( bool visible );
+
+    /**
      * Toggles whether snapping to the page grid is \a enabled.
      */
     void snapToGrid( bool enabled );
@@ -135,6 +149,60 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Toggles whether snapping to the page guides is \a enabled.
      */
     void snapToGuides( bool enabled );
+
+    /**
+     * Toggles whether snapping to the item guides ("smart" guides) is \a enabled.
+     */
+    void snapToItems( bool enabled );
+
+    /**
+     * Unlocks all locked items in the layout.
+     * \see lockSelectedItems()
+     */
+    void unlockAllItems();
+
+    /**
+     * Locks any selected items in the layout.
+     * \see unlockAllItems()
+     */
+    void lockSelectedItems();
+
+    /**
+     * Sets whether the dock panels are \a hidden.
+     */
+    void setPanelVisibility( bool hidden );
+
+    /**
+     * Raises the selected items up the z-order.
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void raiseSelectedItems();
+
+    /**
+     * Lowers the selected items down the z-order.
+     * \see raiseSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void lowerSelectedItems();
+
+    /**
+     * Raises the selected items to the top of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToBottom()
+     */
+    void moveSelectedItemsToTop();
+
+    /**
+     * Lowers the selected items to the bottom of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     */
+    void moveSelectedItemsToBottom();
 
   signals:
 
@@ -163,6 +231,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void toggleFullScreen( bool enabled );
 
     void addPages();
+    void statusMessageReceived( const QString &message );
+    void dockVisibilityChanged( bool visible );
 
   private:
 
@@ -209,6 +279,20 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QUndoView *mUndoView = nullptr;
     QgsDockWidget *mUndoDock = nullptr;
+
+    QgsDockWidget *mItemsDock = nullptr;
+    QTreeView *mItemsTreeView = nullptr;
+
+    struct PanelStatus
+    {
+      PanelStatus( bool visible = true, bool active = false )
+        : isVisible( visible )
+        , isActive( active )
+      {}
+      bool isVisible;
+      bool isActive;
+    };
+    QMap< QString, PanelStatus > mPanelStatus;
 
     //! Save window state
     void saveWindowState();

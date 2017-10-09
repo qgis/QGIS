@@ -37,6 +37,7 @@ class TestQgsLayoutContext: public QObject
     void layer();
     void dpi();
     void renderContextFlags();
+    void boundingBoxes();
 
   private:
     QString mReport;
@@ -156,6 +157,15 @@ void TestQgsLayoutContext::renderContextFlags()
   QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( flags & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
+}
+
+void TestQgsLayoutContext::boundingBoxes()
+{
+  QgsLayoutContext context;
+  context.setBoundingBoxesVisible( false );
+  QVERIFY( !context.boundingBoxesVisible() );
+  context.setBoundingBoxesVisible( true );
+  QVERIFY( context.boundingBoxesVisible() );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

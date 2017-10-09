@@ -118,6 +118,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
 
   layout()->addLayoutItem( item );
+  layout()->setSelectedItem( item );
 }
 
 void QgsLayoutViewToolAddItem::deactivate()

@@ -279,7 +279,7 @@ class TestLayoutItem : public QgsLayoutItem
     ~TestLayoutItem() = default;
 
     //implement pure virtual methods
-    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 102; }
+    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 1002; }
     virtual QString stringType() const override { return QStringLiteral( "ItemTest" ); }
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
