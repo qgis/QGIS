@@ -27,7 +27,6 @@ class QgsComposerMultiFrame: QgsComposerObject
 %TypeHeaderCode
 #include "qgscomposermultiframe.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsComposerHtml *>( sipCpp ) != NULL )
       sipType = sipType_QgsComposerHtml;

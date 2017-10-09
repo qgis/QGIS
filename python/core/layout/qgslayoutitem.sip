@@ -18,11 +18,9 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 
 %TypeHeaderCode
 #include "qgslayoutitem.h"
-
 #include <qgslayoutitemshape.h>
 #include <qgslayoutitempage.h>
 %End
-
 %ConvertToSubClassCode
     // the conversions have to be static, because they're using multiple inheritance
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)

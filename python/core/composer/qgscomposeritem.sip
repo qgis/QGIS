@@ -17,7 +17,6 @@ class QgsComposerItem: QgsComposerObject, QGraphicsRectItem
 
 %TypeHeaderCode
 #include "qgscomposeritem.h"
-
 #include <qgscomposerarrow.h>
 #include <qgscomposerframe.h>
 #include <qgscomposeritemgroup.h>
@@ -34,7 +33,6 @@ class QgsComposerItem: QgsComposerObject, QGraphicsRectItem
 #include <qgslayoutitemshape.h>
 #include <qgslayoutitempage.h>
 %End
-
 %ConvertToSubClassCode
     // the conversions have to be static, because they're using multiple inheritance
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)

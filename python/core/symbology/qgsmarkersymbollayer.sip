@@ -463,7 +463,6 @@ class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 
   private:
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
-  private:
     virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) ;
 };
 

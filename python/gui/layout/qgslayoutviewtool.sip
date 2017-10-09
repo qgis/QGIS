@@ -25,7 +25,6 @@ class QgsLayoutViewTool : QObject
 %TypeHeaderCode
 #include "qgslayoutviewtool.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsLayoutViewToolAddItem *>( sipCpp ) != NULL )
       sipType = sipType_QgsLayoutViewToolAddItem;

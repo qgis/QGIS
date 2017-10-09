@@ -26,7 +26,6 @@ class QgsProcessingOutputDefinition
 %TypeHeaderCode
 #include "qgsprocessingoutputs.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == QgsProcessingOutputVectorLayer::typeName() )
       sipType = sipType_QgsProcessingOutputVectorLayer;

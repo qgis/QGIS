@@ -23,7 +23,6 @@ class QgsRelationReferenceWidget : QWidget
 %TypeHeaderCode
 #include "qgsrelationreferencewidget.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsRelationReferenceWidget *>( sipCpp ) )
       sipType = sipType_QgsRelationReferenceWidget;

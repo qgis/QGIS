@@ -48,7 +48,6 @@ class QgsFeatureRenderer
 %TypeHeaderCode
 #include "qgsrenderer.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == "singleSymbol" )
       sipType = sipType_QgsSingleSymbolRenderer;

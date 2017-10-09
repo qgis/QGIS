@@ -24,7 +24,6 @@ class QgsAbstractGeometry
 %TypeHeaderCode
 #include "qgsabstractgeometry.h"
 %End
-
 %ConvertToSubClassCode
     if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPoint;

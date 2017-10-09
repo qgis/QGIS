@@ -30,7 +30,6 @@ class QgsExternalResourceWidget : QWidget
 %TypeHeaderCode
 #include "qgsexternalresourcewidget.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )
       sipType = sipType_QgsExternalResourceWidget;

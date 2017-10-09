@@ -143,7 +143,6 @@ class QgsProcessingParameterDefinition
 %TypeHeaderCode
 #include "qgsprocessingparameters.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == QgsProcessingParameterBoolean::typeName() )
       sipType = sipType_QgsProcessingParameterBoolean;
