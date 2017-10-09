@@ -26,7 +26,6 @@ class QgsColorScheme
 %TypeHeaderCode
 #include "qgscolorscheme.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsUserColorScheme *>( sipCpp ) != NULL )
       sipType = sipType_QgsUserColorScheme;

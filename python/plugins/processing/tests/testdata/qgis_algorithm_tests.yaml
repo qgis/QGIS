@@ -3236,6 +3236,39 @@ tests:
           - 'Standard deviation: 43.9618116337985'
           - 'Sum of the squares: 252304334.52061242'
 
+  - algorithm: qgis:rasterlayeruniquevaluescount
+    name: Raster layer unique values count
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      BAND: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: raster_unique_values_count.html
+        type: regex
+        rules:
+          - 'Total cell count: 224'
+          - 'NODATA count: 104'
+          - '826</td><td>4</td>'
+          - '837</td><td>6</td>'
+          - '843</td><td>6</td>'
+          - '845</td><td>4</td>'
+          - '851</td><td>9</td>'
+          - '853</td><td>6</td>'
+          - '859</td><td>10</td>'
+          - '861</td><td>4</td>'
+          - '864</td><td>6</td>'
+          - '866</td><td>9</td>'
+          - '868</td><td>6</td>'
+          - '872</td><td>4</td>'
+          - '873</td><td>9</td>'
+          - '878</td><td>6</td>'
+          - '880</td><td>6</td>'
+          - '881</td><td>6</td>'
+          - '890</td><td>13</td>'
+          - '899</td><td>6</td>'
+
   - algorithm: qgis:pointsdisplacement
     name: Point displacement
     params:

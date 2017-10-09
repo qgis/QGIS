@@ -23,7 +23,6 @@ class QgsLayoutViewMouseEvent : QMouseEvent
 %TypeHeaderCode
 #include "qgslayoutviewmouseevent.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsLayoutViewMouseEvent *>( sipCpp ) )
       sipType = sipType_QgsLayoutViewMouseEvent;

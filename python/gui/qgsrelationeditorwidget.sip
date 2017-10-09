@@ -23,7 +23,6 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
 %TypeHeaderCode
 #include "qgsrelationeditorwidget.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsRelationEditorWidget *>( sipCpp ) )
       sipType = sipType_QgsRelationEditorWidget;

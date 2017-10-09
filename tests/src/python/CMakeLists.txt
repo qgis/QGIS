@@ -186,6 +186,7 @@ ADD_PYTHON_TEST(PyQgsZipUtils test_qgsziputils.py)
 ADD_PYTHON_TEST(PyQgsSourceSelectProvider test_qgssourceselectprovider.py)
 ADD_PYTHON_TEST(PyQgsAuthManagerProxy test_authmanager_proxy.py)
 ADD_PYTHON_TEST(PyQgsAuthSettingsWidget test_authsettingswidget.py)
+ADD_PYTHON_TEST(PyQgsAuxiliaryStorage test_qgsauxiliarystorage.py)
 
 IF (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)

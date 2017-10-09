@@ -26,7 +26,6 @@ class QgsProcessingAlgorithm
 %TypeHeaderCode
 #include "qgsprocessingalgorithm.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
       sipType = sipType_QgsProcessingModelAlgorithm;

@@ -19,7 +19,16 @@ class QgsSymbolsListWidget : QWidget
 #include "qgssymbolslistwidget.h"
 %End
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, const QgsVectorLayer *layer = 0 );
+
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, QgsVectorLayer *layer = 0 );
+%Docstring
+ Constructor for QgsSymbolsListWidget.
+ \param symbol the symbol
+ \param style the style
+ \param menu the menu where to show it
+ \param parent parent widget
+ \param layer associated vector layer
+%End
 
 
     virtual ~QgsSymbolsListWidget();

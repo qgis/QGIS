@@ -26,7 +26,6 @@ class QgsFilterLineEdit : QLineEdit
 %TypeHeaderCode
 #include "qgsfilterlineedit.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsFilterLineEdit *>( sipCpp ) )
       sipType = sipType_QgsFilterLineEdit;

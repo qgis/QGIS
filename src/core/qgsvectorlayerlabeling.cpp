@@ -546,3 +546,13 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QgsStringMap &
 
 
 }
+
+void QgsVectorLayerSimpleLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )
+{
+  Q_UNUSED( providerId );
+
+  if ( mSettings.get() == settings )
+    return;
+
+  mSettings.reset( settings );
+}

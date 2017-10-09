@@ -57,7 +57,6 @@ class QgsLayerTreeNode : QObject
 %TypeHeaderCode
 #include "qgslayertreenode.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->inherits( "QgsLayerTreeNode" ) )
     {

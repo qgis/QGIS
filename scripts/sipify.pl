@@ -374,7 +374,8 @@ while ($LINE_IDX < $LINE_COUNT){
             $SIP_RUN = 1;
             if ($ACCESS[$#ACCESS] == PRIVATE){
                 dbg_info("writing private content");
-                write_output("PRV1", $PRIVATE_SECTION_LINE."\n");
+                write_output("PRV1", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+                $PRIVATE_SECTION_LINE = '';
             }
             next;
         }
@@ -424,7 +425,8 @@ while ($LINE_IDX < $LINE_COUNT){
                     # code here will be printed out
                     if ($ACCESS[$#ACCESS] == PRIVATE){
                         dbg_info("writing private content");
-                        write_output("PRV2", $PRIVATE_SECTION_LINE."\n");
+                        write_output("PRV2", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+                        $PRIVATE_SECTION_LINE = '';
                     }
                     $SIP_RUN = 1;
                     last;
@@ -649,7 +651,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     elsif ( $ACCESS[$#ACCESS] == PRIVATE && $LINE =~ m/SIP_FORCE/){
         dbg_info("private with SIP_FORCE");
-        write_output("PRV3", $PRIVATE_SECTION_LINE."\n");
+        write_output("PRV3", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+        $PRIVATE_SECTION_LINE = '';
     }
     elsif ( PRIVATE ~~ @ACCESS && $SIP_RUN == 0 ) {
         $COMMENT = '';

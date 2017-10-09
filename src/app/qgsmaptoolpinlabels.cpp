@@ -260,13 +260,6 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
       continue;
     }
 
-    QgsVectorLayer *vlayer = mCurrentLabel.layer;
-    if ( !vlayer->isEditable() )
-    {
-      QgsDebugMsg( QString( "Vector layer not editable, skipping label" ) );
-      continue;
-    }
-
     // unpin label
     if ( isPinned() && ( doUnpin  || toggleUnpinOrPin ) )
     {
@@ -297,7 +290,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
 
   if ( labelChanged )
   {
-    mCanvas->refresh();
+    mCurrentLabel.layer->triggerRepaint();
 
     if ( !mShowPinned )
     {

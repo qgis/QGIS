@@ -43,7 +43,15 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     Q_OBJECT
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Constructor for QgsLayerPropertiesWidget.
+     * \param layer the symbol layer
+     * \param symbol the symbol
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
@@ -93,7 +101,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     QgsSymbolLayer *mLayer = nullptr;
 
     const QgsSymbol *mSymbol = nullptr;
-    const QgsVectorLayer *mVectorLayer = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
 
   private slots:
     void reloadLayer();

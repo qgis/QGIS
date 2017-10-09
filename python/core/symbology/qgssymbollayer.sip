@@ -16,10 +16,8 @@ class QgsSymbolLayer
 
 %TypeHeaderCode
 #include "qgssymbollayer.h"
-
 #include <qgslinesymbollayer.h>
 %End
-
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
     {

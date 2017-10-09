@@ -30,7 +30,6 @@ class QgsLayerTreeView : QTreeView
 %TypeHeaderCode
 #include "qgslayertreeview.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->inherits( "QgsLayerTreeView" ) )
       sipType = sipType_QgsLayerTreeView;

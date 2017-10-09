@@ -21,7 +21,6 @@ class QgsExpressionNode /Abstract/
 %TypeHeaderCode
 #include "qgsexpressionnode.h"
 %End
-
 %ConvertToSubClassCode
     switch ( sipCpp->nodeType() )
     {

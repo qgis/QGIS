@@ -18,7 +18,6 @@ class QgsFileWidget : QWidget
 %TypeHeaderCode
 #include "qgsfilewidget.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsFileWidget *>( sipCpp ) )
       sipType = sipType_QgsFileWidget;

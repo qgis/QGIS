@@ -152,6 +152,8 @@
 %Include qgsmessagelogviewer.sip
 %Include qgsmessageviewer.sip
 %Include qgsmetadatawidget.sip
+%Include qgsnewauxiliarylayerdialog.sip
+%Include qgsnewauxiliaryfielddialog.sip
 %Include qgsnewhttpconnection.sip
 %Include qgsnewmemorylayerdialog.sip
 %Include qgsnewnamedialog.sip

@@ -65,7 +65,6 @@ Creates a renderer from XML element
 %Docstring
  :rtype: QgsPointClusterRenderer
 %End
-  private:
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) ;
 
 };

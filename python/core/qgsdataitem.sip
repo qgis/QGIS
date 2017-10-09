@@ -22,7 +22,6 @@ class QgsDataItem : QObject
 %TypeHeaderCode
 #include "qgsdataitem.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsLayerItem *>( sipCpp ) )
       sipType = sipType_QgsLayerItem;

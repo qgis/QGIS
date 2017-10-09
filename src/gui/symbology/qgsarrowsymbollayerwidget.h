@@ -37,13 +37,13 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
      * \param layer the layer where this symbol layer is applied
      * \param parent the parent widget
      */
-    QgsArrowSymbolLayerWidget( const QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsArrowSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Static creation method
      * \param layer the layer where this symbol layer is applied
      */
-    static QgsSymbolLayerWidget *create( const QgsVectorLayer *layer ) SIP_FACTORY { return new QgsArrowSymbolLayerWidget( layer ); }
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *layer ) SIP_FACTORY { return new QgsArrowSymbolLayerWidget( layer ); }
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
     virtual QgsSymbolLayer *symbolLayer() override;

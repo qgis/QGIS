@@ -452,7 +452,6 @@ class QgsDiagramRenderer
 %TypeHeaderCode
 #include "qgsdiagramrenderer.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->rendererName() == QStringLiteral( "SingleCategory" ) )
       sipType = sipType_QgsSingleCategoryDiagramRenderer;

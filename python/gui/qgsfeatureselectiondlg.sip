@@ -21,7 +21,6 @@ class QgsFeatureSelectionDlg : QDialog
 %TypeHeaderCode
 #include "qgsfeatureselectiondlg.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsFeatureSelectionDlg *>( sipCpp ) )
       sipType = sipType_QgsFeatureSelectionDlg;

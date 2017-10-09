@@ -42,25 +42,29 @@ class QgsPropertyOverrideButton: QToolButton
     void init( int propertyKey,
                const QgsProperty &property,
                const QgsPropertiesDefinition &definitions,
-               const QgsVectorLayer *layer = 0 );
+               const QgsVectorLayer *layer = 0,
+               bool auxiliaryStorageEnabled = false );
 %Docstring
  Initialize a newly constructed property button (useful if button was included in a UI layout).
  \param propertyKey key for corresponding property
  \param property initial value of associated property to show in widget
  \param definitions properties definitions for corresponding collection
  \param layer associated vector layer
+ \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
 %End
 
     void init( int propertyKey,
                const QgsAbstractPropertyCollection &collection,
                const QgsPropertiesDefinition &definitions,
-               const QgsVectorLayer *layer = 0 );
+               const QgsVectorLayer *layer = 0,
+               bool auxiliaryStorageEnabled = false );
 %Docstring
  Initialize a newly constructed property button (useful if button was included in a UI layout).
  \param propertyKey key for corresponding property
  \param collection associated property collection
  \param definitions properties definitions for collection
  \param layer associated vector layer
+ \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
 %End
 
     QgsProperty toProperty() const;
@@ -172,6 +176,13 @@ class QgsPropertyOverrideButton: QToolButton
  an expression context for the button when required.
 %End
 
+    void updateFieldLists();
+%Docstring
+ Updates list of fields.
+
+.. versionadded:: 3.0
+%End
+
 
   public slots:
 
@@ -190,6 +201,11 @@ Emitted when property definition changes
     void activated( bool isActive );
 %Docstring
 Emitted when the activated status of the widget changes
+%End
+
+    void createAuxiliaryField();
+%Docstring
+Emitted when creating a new auxiliary field
 %End
 
   protected:

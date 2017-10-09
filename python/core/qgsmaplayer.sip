@@ -22,7 +22,6 @@ class QgsMapLayer : QObject
 %TypeHeaderCode
 #include "qgsmaplayer.h"
 %End
-
 %ConvertToSubClassCode
     QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 

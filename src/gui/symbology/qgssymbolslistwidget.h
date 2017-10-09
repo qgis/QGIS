@@ -38,7 +38,16 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, const QgsVectorLayer *layer = nullptr );
+
+    /**
+     * Constructor for QgsSymbolsListWidget.
+     * \param symbol the symbol
+     * \param style the style
+     * \param menu the menu where to show it
+     * \param parent parent widget
+     * \param layer associated vector layer
+     */
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, QgsVectorLayer *layer = nullptr );
 
 
     virtual ~QgsSymbolsListWidget();
@@ -94,6 +103,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void groupsCombo_currentIndexChanged( int index );
     void updateAssistantSymbol();
     void opacityChanged( double value );
+    void createAuxiliaryField();
 
   private:
     QgsSymbol *mSymbol = nullptr;
@@ -101,7 +111,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsStyle *mStyle = nullptr;
     QMenu *mAdvancedMenu = nullptr;
     QAction *mClipFeaturesAction = nullptr;
-    const QgsVectorLayer *mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
 
     void populateSymbolView();

@@ -29,7 +29,6 @@ class QgsDataProvider : QObject
 %TypeHeaderCode
 #include "qgsdataprovider.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsVectorDataProvider *>( sipCpp ) )
     {
