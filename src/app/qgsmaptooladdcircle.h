@@ -29,7 +29,7 @@ struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 class QgsMapToolAddCircle: public QgsMapToolCapture
 {
     Q_OBJECT
-    void clean();
+
   public:
     QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
     ~QgsMapToolAddCircle();
@@ -38,22 +38,24 @@ class QgsMapToolAddCircle: public QgsMapToolCapture
     void keyReleaseEvent( QKeyEvent *e ) override;
 
     void deactivate() override;
-
     void activate() override;
 
   protected:
-    explicit QgsMapToolAddCircle( QgsMapCanvas *canvas ); //forbidden
+    explicit QgsMapToolAddCircle( QgsMapCanvas *canvas ) = delete; //forbidden
 
     /** The parent map tool, e.g. the add feature tool.
      *  Completed circle will be added to this tool by calling its addCurve() method.
      * */
-    QgsMapToolCapture *mParentTool;
+    QgsMapToolCapture *mParentTool = nullptr;
     //! Circle points (in map coordinates)
     QgsPointSequence mPoints;
     //! The rubberband to show the circular string currently working on
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
     //! Circle
     QgsCircle mCircle;
+
+  private:
+    void clean();
 };
 
 #endif // QGSMAPTOOLADDCIRCLE_H
