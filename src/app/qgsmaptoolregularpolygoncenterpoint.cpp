@@ -28,10 +28,7 @@ QgsMapToolRegularPolygonCenterPoint::QgsMapToolRegularPolygonCenterPoint( QgsMap
 
 QgsMapToolRegularPolygonCenterPoint::~QgsMapToolRegularPolygonCenterPoint()
 {
-  if ( mNumberSidesSpinBox )
-  {
-    deleteNumberSidesSpinBox();
-  }
+  deleteNumberSidesSpinBox();
 }
 
 void QgsMapToolRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -50,10 +47,6 @@ void QgsMapToolRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEven
         mTempRubberBand->show();
 
         createNumberSidesSpinBox();
-        if ( mNumberSidesSpinBox )
-        {
-          mNumberSidesSpinBox->setMinimum( 3 );
-        }
       }
     }
   }
