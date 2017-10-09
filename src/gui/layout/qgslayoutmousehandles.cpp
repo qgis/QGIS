@@ -25,6 +25,7 @@
 #include "qgslayoutview.h"
 #include "qgslayoutviewtoolselect.h"
 #include "qgslayoutsnapper.h"
+#include "qgslayoutitemgroup.h"
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
@@ -130,7 +131,22 @@ void QgsLayoutMouseHandles::drawSelectedItemBounds( QPainter *painter )
   painter->setPen( selectedItemPen );
   painter->setBrush( Qt::NoBrush );
 
+  QList< QgsLayoutItem * > itemsToDraw;
   for ( QgsLayoutItem *item : selectedItems )
+  {
+    if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
+    {
+      // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
+      itemsToDraw.append( static_cast< QgsLayoutItemGroup * >( item )->items() );
+    }
+    else
+    {
+      itemsToDraw << item;
+    }
+
+  }
+
+  for ( QgsLayoutItem *item : qgsAsConst( itemsToDraw ) )
   {
     //get bounds of selected item
     QPolygonF itemBounds;
