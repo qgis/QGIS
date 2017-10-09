@@ -15,6 +15,7 @@
 
 #include "qgslayoutappmenuprovider.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitemgroup.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayout.h"
 #include <QMenu>
@@ -30,6 +31,46 @@ QgsLayoutAppMenuProvider::QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *des
 QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *layout, QPointF layoutPoint ) const
 {
   QMenu *menu = new QMenu( parent );
+
+  const QList< QgsLayoutItem * > selectedItems = layout->selectedLayoutItems();
+  if ( !selectedItems.empty() )
+  {
+    bool addedGroupAction = false;
+    if ( selectedItems.count() > 1 )
+    {
+      QAction *groupAction = new QAction( tr( "Group" ), menu );
+      connect( groupAction, &QAction::triggered, this, [this]()
+      {
+        mDesigner->view()->groupSelectedItems();
+      } );
+      menu->addAction( groupAction );
+      addedGroupAction = true;
+    }
+    bool foundSelectedGroup = false;
+    QList< QgsLayoutItemGroup * > groups;
+    layout->layoutItems( groups );
+    for ( QgsLayoutItemGroup *group : qgsAsConst( groups ) )
+    {
+      if ( group->isSelected() )
+      {
+        foundSelectedGroup = true;
+        break;
+      }
+    }
+    if ( foundSelectedGroup )
+    {
+      QAction *ungroupAction = new QAction( tr( "Ungroup" ), menu );
+      connect( ungroupAction, &QAction::triggered, this, [this]()
+      {
+        mDesigner->view()->ungroupSelectedItems();
+      } );
+      menu->addAction( ungroupAction );
+      addedGroupAction = true;
+    }
+
+    if ( addedGroupAction )
+      menu->addSeparator();
+  }
 
   // is a page under the mouse?
   QgsLayoutItemPage *page = layout->pageCollection()->pageAtPoint( layoutPoint );
