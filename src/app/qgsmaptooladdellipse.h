@@ -38,9 +38,10 @@ class QgsMapToolAddEllipse: public QgsMapToolCapture
   protected:
     explicit QgsMapToolAddEllipse( QgsMapCanvas *canvas ) = delete; //forbidden
 
-    /** The parent map tool, e.g. the add feature tool.
+    /**
+     * The parent map tool, e.g. the add feature tool.
      *  Completed ellipse will be added to this tool by calling its toLineString() method.
-     * */
+     **/
     QgsMapToolCapture *mParentTool = nullptr;
     //! Ellipse points (in map coordinates)
     QgsPointSequence mPoints;

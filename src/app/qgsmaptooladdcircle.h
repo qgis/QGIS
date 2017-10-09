@@ -43,9 +43,10 @@ class QgsMapToolAddCircle: public QgsMapToolCapture
   protected:
     explicit QgsMapToolAddCircle( QgsMapCanvas *canvas ) = delete; //forbidden
 
-    /** The parent map tool, e.g. the add feature tool.
+    /**
+     * The parent map tool, e.g. the add feature tool.
      *  Completed circle will be added to this tool by calling its addCurve() method.
-     * */
+     **/
     QgsMapToolCapture *mParentTool = nullptr;
     //! Circle points (in map coordinates)
     QgsPointSequence mPoints;

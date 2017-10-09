@@ -48,9 +48,10 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     //! delete the spin box to enter the number of sides, if it exists
     void deleteNumberSidesSpinBox();
 
-    /** The parent map tool, e.g. the add feature tool.
+    /**
+     * The parent map tool, e.g. the add feature tool.
      *  Completed regular polygon will be added to this tool by calling its addCurve() method.
-     * */
+     **/
     QgsMapToolCapture *mParentTool = nullptr;
     //! Regular Shape points (in map coordinates)
     QgsPointSequence mPoints;
