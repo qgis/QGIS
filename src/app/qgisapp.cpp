@@ -8008,7 +8008,8 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   // Wait only if the current layer is in the rendering pool
   if ( mMapCanvas->mapSettings().layers().contains( vlayer->id() ) )
   {
-    if ( vlayer->dataProvider()->storageType().count( "SQLite" ) )
+    if ( vlayer->dataProvider()->storageType().count( "SQLite" ) ||
+         vlayer->dataProvider()->storageType().count( "GPKG" ) )
     {
       // notify wait the rendering end
       if ( mMapCanvas->isDrawing() )
