@@ -231,6 +231,17 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! Try to find a rule given its unique key
         const QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) const;
 
+        /**
+         * Find a labeling rule thanks to its key.
+         *
+         * \param key The key of the rule to find
+         *
+         * \returns The rule or a nullptr if not found
+         *
+         * \since QGIS 3.0
+         */
+        QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) SIP_SKIP;
+
         //! clone this rule, return new instance
         QgsRuleBasedLabeling::Rule *clone() const SIP_FACTORY;
 
@@ -350,6 +361,16 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     virtual QStringList subProviders() const override;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+
+    /**
+     * Set pal settings for a specific provider (takes ownership).
+     *
+     * \param settings Pal layer settings
+     * \param providerId The id of the provider
+     *
+     * \since QGIS 3.0
+     */
+    virtual void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
     bool requiresAdvancedEffects() const override;
 
   protected:

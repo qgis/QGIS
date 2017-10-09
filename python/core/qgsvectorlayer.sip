@@ -774,6 +774,41 @@ Return the provider type for this layer
  :rtype: str
 %End
 
+    bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
+%Docstring
+ Loads the auxiliary layer for this vector layer. If there's no
+ corresponding table in the database, then nothing happens and false is
+ returned. The key is optional because if this layer has been read from
+ a XML document, then the key read in this document is used by default.
+
+ \param storage The auxiliary storage where to look for the table
+ \param key The key to use for joining.
+
+ :return: true if the auxiliary layer is well loaded, false otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setAuxiliaryLayer( QgsAuxiliaryLayer *layer /Transfer/ = 0 );
+%Docstring
+ Sets the current auxiliary layer. The auxiliary layer is automatically
+ put in editable mode and fields are updated. Moreover, a join is created
+ between the current layer and the auxiliary layer. Ownership is
+ transferred.
+
+.. versionadded:: 3.0
+%End
+
+    QgsAuxiliaryLayer *auxiliaryLayer();
+%Docstring
+ Returns the current auxiliary layer.
+
+.. versionadded:: 3.0
+ :rtype: QgsAuxiliaryLayer
+%End
+
+
     virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
@@ -1059,7 +1094,8 @@ Return the provider type for this layer
  :rtype: int
 %End
 
-    const QgsAbstractVectorLayerLabeling *labeling() const;
+
+    QgsAbstractVectorLayerLabeling *labeling();
 %Docstring
  Access to labeling configuration. May be null if labeling is not used.
 .. versionadded:: 3.0
@@ -1087,6 +1123,15 @@ Returns true if this is a geometry layer and false in case of NoGeometry (table 
     virtual bool isModified() const;
 %Docstring
 Returns true if the provider has been modified since the last commit
+ :rtype: bool
+%End
+
+    bool isAuxiliaryField( int index, int &srcIndex ) const;
+%Docstring
+ Returns true if the field comes from the auxiliary layer,
+ false otherwise.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -1269,7 +1314,7 @@ Returns a map of field name to attribute alias
  A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
 
-    bool deleteAttribute( int attr );
+    virtual bool deleteAttribute( int attr );
 %Docstring
 Delete an attribute field (but does not commit it)
  :rtype: bool

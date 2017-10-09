@@ -20,9 +20,14 @@
 
 #include "qgsmaptool.h"
 #include "qgspallabeling.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsauxiliarystorage.h"
 #include "qgis_app.h"
 
 class QgsRubberBand;
+
+typedef QMap<QgsPalLayerSettings::Property, int> QgsPalIndexes;
+typedef QMap<QgsDiagramLayerSettings::Property, int> QgsDiagramIndexes;
 
 //! Base class for map tools that modify label properties
 class APP_EXPORT QgsMapToolLabel: public QgsMapTool
@@ -175,6 +180,14 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       \since QGIS 2.16
       */
     bool isPinned();
+
+    bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
+    bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;
+    bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes );
+    bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes );
+
+    QList<QgsPalLayerSettings::Property> mPalProperties;
+    QList<QgsDiagramLayerSettings::Property> mDiagramProperties;
 };
 
 #endif // QGSMAPTOOLLABEL_H

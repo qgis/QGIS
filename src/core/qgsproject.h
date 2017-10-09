@@ -61,6 +61,7 @@ class QgsAnnotationManager;
 class QgsLayoutManager;
 class QgsLayerTree;
 class QgsLabelingEngineSettings;
+class QgsAuxiliaryStorage;
 
 /**
  * \ingroup core
@@ -809,6 +810,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool trustLayerMetadata() const { return mTrustLayerMetadata; }
 
+    /**
+     * Returns the current const auxiliary storage.
+     *
+     * \since QGIS 3.0
+     */
+    const QgsAuxiliaryStorage *auxiliaryStorage() const SIP_SKIP;
+
+    /**
+     * Returns the current auxiliary storage.
+     *
+     * \since QGIS 3.0
+     */
+    QgsAuxiliaryStorage *auxiliaryStorage();
+
   signals:
     //! emitted when project is being read
     void readProject( const QDomDocument & );
@@ -1101,6 +1116,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Zip project
     bool zip( const QString &filename );
 
+    //! Save auxiliary storage to database
+    bool saveAuxiliaryStorage( const QString &filename = QString() );
+
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
@@ -1135,6 +1153,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QVariantMap mCustomVariables;
 
     std::unique_ptr<QgsProjectArchive> mArchive;
+
+    std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable

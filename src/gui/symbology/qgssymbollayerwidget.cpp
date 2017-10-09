@@ -38,6 +38,9 @@
 #include "qgssvgselectorwidget.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsnewauxiliaryfielddialog.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QAbstractButton>
 #include <QColorDialog>
@@ -109,10 +112,51 @@ QgsSymbolWidgetContext QgsSymbolLayerWidget::context() const
 
 void QgsSymbolLayerWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
 {
-  button->init( key, symbolLayer()->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer );
+  button->init( key, symbolLayer()->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsSymbolLayerWidget::updateDataDefinedProperty );
+  connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsSymbolLayerWidget::createAuxiliaryField );
 
   button->registerExpressionContextGenerator( this );
+}
+
+void QgsSymbolLayerWidget::createAuxiliaryField()
+{
+  // try to create an auxiliary layer if not yet created
+  if ( !mVectorLayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( mVectorLayer, this );
+    dlg.exec();
+  }
+
+  // return if still not exists
+  if ( !mVectorLayer->auxiliaryLayer() )
+    return;
+
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  QgsPropertyDefinition def = QgsSymbolLayer::propertyDefinitions()[key];
+
+  // create property in auxiliary storage if necessary
+  if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
+  {
+    QgsNewAuxiliaryFieldDialog dlg( def, mVectorLayer, true, this );
+    if ( dlg.exec() == QDialog::Accepted )
+      def = dlg.propertyDefinition();
+  }
+
+  // return if still not exist
+  if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
+    return;
+
+  // update property with join field name from auxiliary storage
+  QgsProperty property = button->toProperty();
+  property.setField( QgsAuxiliaryLayer::nameFromProperty( def, true ) );
+  property.setActive( true );
+  button->updateFieldLists();
+  button->setToProperty( property );
+  symbolLayer()->setDataDefinedProperty( key, button->toProperty() );
+
+  emit changed();
 }
 
 void QgsSymbolLayerWidget::updateDataDefinedProperty()
@@ -123,7 +167,7 @@ void QgsSymbolLayerWidget::updateDataDefinedProperty()
   emit changed();
 }
 
-QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsSimpleLineSymbolLayerWidget::QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -371,7 +415,7 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
 ///////////
 
 
-QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -660,7 +704,7 @@ void QgsSimpleMarkerSymbolLayerWidget::updateAssistantSymbol()
 
 ///////////
 
-QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsSimpleFillSymbolLayerWidget::QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -813,7 +857,7 @@ void QgsSimpleFillSymbolLayerWidget::mOffsetUnitWidget_changed()
 
 ///////////
 
-QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -991,7 +1035,7 @@ void QgsFilledMarkerSymbolLayerWidget::updateAssistantSymbol()
 
 ///////////
 
-QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsGradientFillSymbolLayerWidget::QgsGradientFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -1322,7 +1366,7 @@ void QgsGradientFillSymbolLayerWidget::mOffsetUnitWidget_changed()
 
 ///////////
 
-QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsShapeburstFillSymbolLayerWidget::QgsShapeburstFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -1583,7 +1627,7 @@ void QgsShapeburstFillSymbolLayerWidget::mIgnoreRingsCheckBox_stateChanged( int 
 
 ///////////
 
-QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsMarkerLineSymbolLayerWidget::QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -1753,7 +1797,7 @@ void QgsMarkerLineSymbolLayerWidget::mOffsetAlongLineUnitWidget_changed()
 ///////////
 
 
-QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -2239,7 +2283,7 @@ void QgsSvgMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged(
 
 /////////////
 
-QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ): QgsSymbolLayerWidget( parent, vl )
+QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent ): QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
   setupUi( this );
@@ -2538,7 +2582,7 @@ void QgsSVGFillSymbolLayerWidget::mSvgStrokeWidthUnitWidget_changed()
 
 /////////////
 
-QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ):
+QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent ):
   QgsSymbolLayerWidget( parent, vl )
 {
   setupUi( this );
@@ -2645,7 +2689,7 @@ void QgsLinePatternFillSymbolLayerWidget::mOffsetUnitWidget_changed()
 
 /////////////
 
-QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ):
+QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent ):
   QgsSymbolLayerWidget( parent, vl )
 {
   setupUi( this );
@@ -2795,7 +2839,7 @@ void QgsPointPatternFillSymbolLayerWidget::mVerticalDisplacementUnitWidget_chang
 
 /////////////
 
-QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsFontMarkerSymbolLayerWidget::QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -3034,7 +3078,7 @@ void QgsFontMarkerSymbolLayerWidget::updateAssistantSymbol()
 ///////////////
 
 
-QgsCentroidFillSymbolLayerWidget::QgsCentroidFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsCentroidFillSymbolLayerWidget::QgsCentroidFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -3076,7 +3120,7 @@ void QgsCentroidFillSymbolLayerWidget::mDrawAllPartsCheckBox_stateChanged( int s
 
 ///////////////
 
-QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 {
   mLayer = nullptr;
@@ -3359,7 +3403,7 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 }
 
 
-QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsGeometryGeneratorSymbolLayerWidget::QgsGeometryGeneratorSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 
 {

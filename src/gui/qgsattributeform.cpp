@@ -1996,10 +1996,11 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 
     mJoinedFeatures[info] = joinFeature;
 
-    QStringList *subsetFields = info->joinFieldNamesSubset();
-    if ( subsetFields )
+    if ( info->hasSubset() )
     {
-      Q_FOREACH ( const QString &field, *subsetFields )
+      const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *info );
+
+      Q_FOREACH ( const QString &field, subsetNames )
       {
         QString prefixedName = info->prefixedFieldName( field );
         QVariant val;

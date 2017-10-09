@@ -17,7 +17,7 @@
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
 
-QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 
 {

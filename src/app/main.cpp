@@ -98,6 +98,7 @@ typedef SInt32 SRefCon;
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
 #include "qgscrashhandler.h"
+#include "qgsziputils.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1169,7 +1170,8 @@ int main( int argc, char *argv[] )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive )
+         && !QgsZipUtils::isZipFile( layerName ) )
     {
       qgis->openLayer( layerName );
     }

@@ -49,7 +49,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) = 0 SIP_FACTORY;
     //! Create widget for symbol layer of this type. Can return NULL if there's no GUI
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer * ) SIP_FACTORY { return nullptr; }
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer * ) SIP_FACTORY { return nullptr; }
     //! Create a symbol layer of this type given the map of properties.
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) SIP_FACTORY { return nullptr; }
 
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 };
 
 typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFunc )( const QgsStringMap & ) SIP_SKIP;
-typedef QgsSymbolLayerWidget *( *QgsSymbolLayerWidgetFunc )( const QgsVectorLayer * ) SIP_SKIP;
+typedef QgsSymbolLayerWidget *( *QgsSymbolLayerWidgetFunc )( QgsVectorLayer * ) SIP_SKIP;
 typedef QgsSymbolLayer *( *QgsSymbolLayerCreateFromSldFunc )( QDomElement & ) SIP_SKIP;
 typedef void ( *QgsSymbolLayerPathResolverFunc )( QgsStringMap &, const QgsPathResolver &, bool ) SIP_SKIP;
 
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
     virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override SIP_FACTORY { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
     virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
     {

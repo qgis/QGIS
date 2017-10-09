@@ -61,6 +61,16 @@ Get list of sub-providers within the layer's labeling.
  :rtype: QgsPalLayerSettings
 %End
 
+    virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() ) = 0;
+%Docstring
+ Set pal settings for a specific provider (takes ownership).
+
+ \param settings Pal layer settings
+ \param providerId The id of the provider
+
+.. versionadded:: 3.0
+%End
+
     virtual bool requiresAdvancedEffects() const = 0;
 %Docstring
  Returns true if drawing labels requires advanced effects like composition
@@ -109,6 +119,17 @@ Constructs simple labeling configuration with given initial settings
     virtual QgsAbstractVectorLayerLabeling *clone() const /Factory/;
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
+
+    virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() );
+%Docstring
+ Set pal settings (takes ownership).
+
+ \param settings Pal layer settings
+ \param providerId Unused parameter
+
+.. versionadded:: 3.0
+%End
+
     virtual bool requiresAdvancedEffects() const;
 
     virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
