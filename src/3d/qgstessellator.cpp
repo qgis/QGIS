@@ -264,7 +264,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
           mData << pNormal.x() << pNormal.z() << - pNormal.y();
       }
     }
-    else if (polyline.size() >= 3)
+    else if ( polyline.size() >= 3 )
     {
       p2t::CDT *cdt = new p2t::CDT( polyline );
 
