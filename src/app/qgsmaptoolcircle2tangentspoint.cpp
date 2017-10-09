@@ -24,6 +24,7 @@
 #include "qgsstatusbar.h"
 #include "qgslinestring.h"
 #include "qgsmultipolygon.h"
+#include "qgsspinbox.h"
 #include <memory>
 #include <QMouseEvent>
 
@@ -31,13 +32,11 @@ QgsMapToolCircle2TangentsPoint::QgsMapToolCircle2TangentsPoint( QgsMapToolCaptur
     QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolAddCircle( parentTool, canvas, mode )
 {
-  mCenters.clear();
 }
 
 QgsMapToolCircle2TangentsPoint::~QgsMapToolCircle2TangentsPoint()
 {
   deleteRadiusSpinBox();
-  mCenters.clear();
 }
 
 void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
@@ -83,10 +82,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
       mTempRubberBand = nullptr;
     }
 
-    for ( int i = 0; i < mRubberBands.size() ; ++i )
-    {
-      delete mRubberBands.at( i );
-    }
+    qDeleteAll( mRubberBands );
     mRubberBands.clear();
 
     deactivate();
@@ -226,7 +222,7 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
 void QgsMapToolCircle2TangentsPoint::createRadiusSpinBox()
 {
   deleteRadiusSpinBox();
-  mRadiusSpinBox = new QSpinBox();
+  mRadiusSpinBox = new QgsSpinBox();
   mRadiusSpinBox->setMaximum( 99999999 );
   mRadiusSpinBox->setMinimum( 0 );
   mRadiusSpinBox->setPrefix( tr( "Radius of the circle: " ) );
@@ -240,7 +236,6 @@ void QgsMapToolCircle2TangentsPoint::deleteRadiusSpinBox()
 {
   if ( mRadiusSpinBox )
   {
-    QgisApp::instance()->statusBarIface()->removeWidget( mRadiusSpinBox );
     delete mRadiusSpinBox;
     mRadiusSpinBox = nullptr;
   }
@@ -251,10 +246,7 @@ void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( int radius )
   mRadius = radius;
   getPossibleCenter( );
 
-  for ( int i = 0; i < mRubberBands.size() ; ++i )
-  {
-    delete mRubberBands.at( i );
-  }
+  qDeleteAll( mRubberBands );
   mRubberBands.clear();
   if ( mTempRubberBand )
   {

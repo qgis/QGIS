@@ -32,7 +32,7 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
     ~QgsMapToolCircle2TangentsPoint();
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    void cadCanvasMoveEvent( QgsMapMouseEvent *e );
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
   public slots:
     void radiusSpinBoxChanged( int radius );
