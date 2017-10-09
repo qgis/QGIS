@@ -596,12 +596,8 @@ void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables
 void QgsExpressionContextUtils::removeGlobalVariable( const QString &name )
 {
   QVariantMap vars = QgsApplication::customVariables();
-  if ( !vars.contains( name ) )
-  {
-    return;
-  }
-  vars.remove( name );
-  QgsApplication::setCustomVariables( vars );
+  if ( vars.remove( name ) )
+    QgsApplication::setCustomVariables( vars );
 }
 
 
@@ -816,12 +812,8 @@ void QgsExpressionContextUtils::removeProjectVariable( QgsProject *project, cons
   }
 
   QVariantMap vars = project->customVariables();
-  if ( !vars.contains( name ) )
-  {
-    return;
-  }
-  vars.remove( name );
-  project->setCustomVariables( vars );
+  if ( vars.remove( name ) )
+    project->setCustomVariables( vars );
 }
 
 QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLayer *layer )
