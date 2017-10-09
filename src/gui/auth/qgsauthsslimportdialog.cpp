@@ -306,10 +306,6 @@ void QgsAuthSslImportDialog::sslErrors( const QList<QSslError> &errors )
   QDialog errorDialog( this );
   Ui_SslErrors ui;
   ui.setupUi( &errorDialog );
-  connect( btnCertPath, &QToolButton::clicked, this, &QgsAuthSslImportDialog::btnCertPath_clicked );
-  connect( ui.certificateChainButton, &QAbstractButton::clicked,
-           this, &QgsAuthSslImportDialog::showCertificateInfo );
-
   Q_FOREACH ( const QSslError &error, errors )
   {
     ui.sslErrorList->addItem( error.errorString() );
