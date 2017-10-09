@@ -134,6 +134,12 @@ Refresh item children
     virtual void fetchMore( const QModelIndex &parent );
 
 
+    bool initialized( ) const;
+%Docstring
+Returns true if the model has been initialized
+ :rtype: bool
+%End
+
   signals:
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 %Docstring
@@ -177,12 +183,6 @@ Reload the whole model
     void hidePath( QgsDataItem *item );
 %Docstring
 Hide the given path in the browser model
-%End
-
-    bool initialized( ) const;
-%Docstring
-Returns true if the model has been initialized
- :rtype: bool
 %End
 
     void initialize();

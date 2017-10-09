@@ -870,6 +870,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
+    /**
+     * Returns the message that should be notified by the provider to triggerRepaint
+     *
+     * \since QGIS 3.0
+     */
+    QString refreshOnNotifyMessage() const { return mRefreshOnNofifyMessage; }
+
+    /**
+     * Returns true if the refresh on provider nofification is enabled
+     *
+     * \since QGIS 3.0
+     */
+    bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
+
   public slots:
 
     /**
@@ -944,21 +958,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.0
      */
     void setRefreshOnNofifyMessage( const QString &message ) { mRefreshOnNofifyMessage = message; }
-
-    /**
-     * Returns the message that should be notified by the provider to triggerRepaint
-     *
-     * \since QGIS 3.0
-     */
-    QString refreshOnNotifyMessage() const { return mRefreshOnNofifyMessage; }
-
-    /**
-     * Returns true if the refresh on provider nofification is enabled
-     *
-     * \since QGIS 3.0
-     */
-    bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
-
 
   signals:
 

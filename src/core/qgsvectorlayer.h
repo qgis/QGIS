@@ -1700,6 +1700,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool readExtentFromXml() const;
 
+    /**
+     * Test if an edit command is active
+     *
+     * \since QGIS 3.0
+     */
+    bool isEditCommandActive() const { return mEditCommandActive; }
+
   public slots:
 
     /**
@@ -1760,13 +1767,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * rollBack().
      */
     bool startEditing();
-
-    /**
-     * Test if an edit command is active
-     *
-     * \since QGIS 3.0
-     */
-    bool isEditCommandActive() const { return mEditCommandActive; }
 
   signals:
 

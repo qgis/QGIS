@@ -49,6 +49,13 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      */
     explicit QgsDockWidget( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = 0 );
 
+    /**
+     * Returns true if the dock is both opened and raised to the front (ie not hidden by
+     * any other tabs.
+     * \see setUserVisible()
+     */
+    bool isUserVisible() const;
+
   public slots:
 
     /**
@@ -65,13 +72,6 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * \see isUserVisible()
      */
     void setUserVisible( bool visible );
-
-    /**
-     * Returns true if the dock is both opened and raised to the front (ie not hidden by
-     * any other tabs.
-     * \see setUserVisible()
-     */
-    bool isUserVisible() const;
 
   protected:
 

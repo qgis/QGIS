@@ -700,7 +700,7 @@ The display name of the Authentication Manager
  \param level Message log level
 %End
 
-    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
 %Docstring
  Custom logging signal to inform the user about master password <-> password manager interactions
  @see QgsMessageLog
@@ -710,18 +710,18 @@ The display name of the Authentication Manager
 %End
 
 
-    void masterPasswordVerified( bool verified ) const;
+    void masterPasswordVerified( bool verified );
 %Docstring
  Emitted when a password has been verify (or not)
  \param verified The state of password's verification
 %End
 
-    void authDatabaseEraseRequested() const;
+    void authDatabaseEraseRequested();
 %Docstring
 Emitted when a user has indicated they may want to erase the authentication db.
 %End
 
-    void authDatabaseChanged() const;
+    void authDatabaseChanged();
 %Docstring
 Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc.
 %End

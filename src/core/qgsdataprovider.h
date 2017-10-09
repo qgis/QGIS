@@ -478,7 +478,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \since QGIS 3.0
      */
-    void notify( const QString &msg ) const;
+    void notify( const QString &msg );
 
 
   protected:
