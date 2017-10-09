@@ -2640,14 +2640,7 @@ QVariantMap QgsRasterLayerUniqueValuesCountAlgorithm::processAlgorithm( const QV
       else
       {
         double value = rasterBlock->value( row, column );
-        if ( uniqueValues.contains( value ) )
-        {
-          uniqueValues[ value ]++;
-        }
-        else
-        {
-          uniqueValues.insert( value, 1 );
-        }
+        uniqueValues[ value ]++;
       }
     }
   }
