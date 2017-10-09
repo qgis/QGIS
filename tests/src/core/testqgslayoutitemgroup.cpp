@@ -320,7 +320,6 @@ void TestQgsLayoutItemGroup::moveGroup()
   QList<QgsLayoutItem *> groupItems;
   groupItems << item << item2;
   QgsLayoutItemGroup *group = l.groupItems( groupItems );
-  l.addLayoutItem( group );
 
   QCOMPARE( group->positionWithUnits().x(), 50.8 );
   QCOMPARE( group->positionWithUnits().y(), 76.2 );
@@ -357,7 +356,6 @@ void TestQgsLayoutItemGroup::resizeGroup()
   QList<QgsLayoutItem *> groupItems;
   groupItems << item << item2;
   QgsLayoutItemGroup *group = l.groupItems( groupItems );
-  l.addLayoutItem( group );
 
   QCOMPARE( group->positionWithUnits().x(), 50.0 );
   QCOMPARE( group->positionWithUnits().y(), 76.2 );

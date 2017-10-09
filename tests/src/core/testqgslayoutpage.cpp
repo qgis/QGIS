@@ -79,7 +79,7 @@ void TestQgsLayoutPage::itemType()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
   QCOMPARE( page->type(), static_cast< int >( QgsLayoutItemRegistry::LayoutPage ) );
 }
 
@@ -87,7 +87,7 @@ void TestQgsLayoutPage::pageSize()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
   page->setPageSize( QgsLayoutSize( 270, 297, QgsUnitTypes::LayoutMeters ) );
   QCOMPARE( page->pageSize().width(), 270.0 );
   QCOMPARE( page->pageSize().height(), 297.0 );
@@ -137,7 +137,7 @@ void TestQgsLayoutPage::grid()
   // test that grid follows page around
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
 
   // should have a grid
   QVERIFY( page->mGrid.get() );
@@ -169,9 +169,9 @@ void TestQgsLayoutPage::hiddenPages()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
   page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
-  l.pageCollection()->addPage( page );
+  l.pageCollection()->addPage( page.release() );
 
 #if 0 //TODO
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();

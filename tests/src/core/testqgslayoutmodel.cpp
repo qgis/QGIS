@@ -569,6 +569,7 @@ void TestQgsLayoutModel::setItemRemoved()
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 0 ), item2 );
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 1 ), item1 );
   delete label;
+  delete item3;
 }
 
 void TestQgsLayoutModel::rebuildZListWithRemoved()
@@ -603,6 +604,7 @@ void TestQgsLayoutModel::rebuildZListWithRemoved()
   QCOMPARE( layout.itemsModel()->mItemsInScene.size(), 2 );
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 0 ), item2 );
   QCOMPARE( layout.itemsModel()->mItemsInScene.at( 1 ), item1 );
+  delete item3;
 }
 
 void TestQgsLayoutModel::reorderUpWithRemoved()

@@ -375,7 +375,7 @@ void TestQgsLayoutItem::positionWithUnits()
   QgsProject p;
   QgsLayout l( &p );
 
-  TestItem *item = new TestItem( &l );
+  std::unique_ptr< TestItem > item( new TestItem( &l ) );
   item->attemptMove( QgsLayoutPoint( 60.0, 15.0, QgsUnitTypes::LayoutMillimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 60.0 );
   QCOMPARE( item->positionWithUnits().y(), 15.0 );
@@ -690,8 +690,8 @@ void TestQgsLayoutItem::resize()
 
   //resize test item (no restrictions), same units as layout
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
-  TestItem *item = new TestItem( &l );
-  QSignalSpy spySizeChanged( item, &QgsLayoutItem::sizePositionChanged );
+  std::unique_ptr< TestItem > item( new TestItem( &l ) );
+  QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
   item->setRect( 0, 0, 55, 45 );
   item->attemptMove( QgsLayoutPoint( 27, 29 ) );
@@ -754,7 +754,7 @@ void TestQgsLayoutItem::referencePoint()
   QgsLayout l( &p );
 
   //test setting/getting reference point
-  TestItem *item = new TestItem( &l );
+  std::unique_ptr< TestItem > item( new TestItem( &l ) );
   item->setReferencePoint( QgsLayoutItem::LowerMiddle );
   QCOMPARE( item->referencePoint(), QgsLayoutItem::LowerMiddle );
 
@@ -793,8 +793,7 @@ void TestQgsLayoutItem::referencePoint()
   QCOMPARE( item->positionWithUnits().x(), 3.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
 
-  delete item;
-  item = new TestItem( &l );
+  item.reset( new TestItem( &l ) );
 
   //test that setting item position is done relative to reference point
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
@@ -836,8 +835,7 @@ void TestQgsLayoutItem::referencePoint()
   QCOMPARE( item->scenePos().x(), -1.0 );
   QCOMPARE( item->scenePos().y(), -2.0 );
 
-  delete item;
-  item = new TestItem( &l );
+  item.reset( new TestItem( &l ) );
 
   //test that resizing is done relative to reference point
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
@@ -922,7 +920,7 @@ void TestQgsLayoutItem::adjustPointForReference()
   QgsProject p;
   QgsLayout l( &p );
 
-  TestItem *item = new TestItem( &l );
+  std::unique_ptr< TestItem > item( new TestItem( &l ) );
   QPointF result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::UpperLeft );
   QCOMPARE( result.x(), 5.0 );
   QCOMPARE( result.y(), 7.0 );
@@ -1027,7 +1025,7 @@ void TestQgsLayoutItem::fixedSize()
   QgsLayout l( &p );
 
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
-  FixedSizedItem *item = new FixedSizedItem( &l );
+  std::unique_ptr< FixedSizedItem > item( new FixedSizedItem( &l ) );
   QCOMPARE( item->fixedSize().width(), 2.0 );
   QCOMPARE( item->fixedSize().height(), 4.0 );
   QCOMPARE( item->fixedSize().units(), QgsUnitTypes::LayoutInches );
@@ -1050,7 +1048,7 @@ void TestQgsLayoutItem::minSize()
   QgsLayout l( &p );
 
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
-  MinSizedItem *item = new MinSizedItem( &l );
+  std::unique_ptr< MinSizedItem > item( new MinSizedItem( &l ) );
   QCOMPARE( item->minimumSize().width(), 5.0 );
   QCOMPARE( item->minimumSize().height(), 10.0 );
   QCOMPARE( item->minimumSize().units(), QgsUnitTypes::LayoutCentimeters );
@@ -1073,7 +1071,7 @@ void TestQgsLayoutItem::minSize()
   QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * DBL_EPSILON );
 
   //also need check that fixed size trumps min size
-  FixedMinSizedItem *fixedMinItem = new FixedMinSizedItem( &l );
+  std::unique_ptr< FixedMinSizedItem > fixedMinItem( new FixedMinSizedItem( &l ) );
   QCOMPARE( fixedMinItem->minimumSize().width(), 5.0 );
   QCOMPARE( fixedMinItem->minimumSize().height(), 9.0 );
   QCOMPARE( fixedMinItem->minimumSize().units(), QgsUnitTypes::LayoutCentimeters );
@@ -1094,7 +1092,7 @@ void TestQgsLayoutItem::move()
 
   //move test item, same units as layout
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
-  TestItem *item = new TestItem( &l );
+  std::unique_ptr< TestItem > item( new TestItem( &l ) );
   item->setRect( 0, 0, 55, 45 );
   item->setPos( 27, 29 );
   item->attemptMove( QgsLayoutPoint( 60.0, 15.0, QgsUnitTypes::LayoutMillimeters ) );

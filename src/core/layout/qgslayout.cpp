@@ -46,11 +46,13 @@ QgsLayout::~QgsLayout()
   // this class is deconstructed - to avoid segfaults
   // when layout items access in destructor layout that isn't valid anymore
 
-  const QList<QGraphicsItem *> itemList = items();
-  for ( QGraphicsItem *item : itemList )
+  QList<QGraphicsItem *> itemList = items();
+  while ( !itemList.empty() )
   {
+    QGraphicsItem *item = itemList.at( 0 );
     if ( dynamic_cast< QgsLayoutItem * >( item ) && !dynamic_cast< QgsLayoutItemPage *>( item ) )
       delete item;
+    itemList = items();
   }
 
   mItemsModel.reset(); // manually delete, so we can control order of destruction
