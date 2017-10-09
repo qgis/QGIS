@@ -301,6 +301,23 @@ void TestQgsLayoutItemGroup::groupVisibility()
   QVERIFY( item->isVisible() );
   QVERIFY( item2->isVisible() );
   QVERIFY( group->isVisible() );
+
+  l.undoStack()->stack()->undo();
+  QVERIFY( !item->isVisible() );
+  QVERIFY( !item2->isVisible() );
+  QVERIFY( !group->isVisible() );
+  l.undoStack()->stack()->undo();
+  QVERIFY( item->isVisible() );
+  QVERIFY( item2->isVisible() );
+  QVERIFY( group->isVisible() );
+  l.undoStack()->stack()->redo();
+  QVERIFY( !item->isVisible() );
+  QVERIFY( !item2->isVisible() );
+  QVERIFY( !group->isVisible() );
+  l.undoStack()->stack()->redo();
+  QVERIFY( item->isVisible() );
+  QVERIFY( item2->isVisible() );
+  QVERIFY( group->isVisible() );
 }
 
 void TestQgsLayoutItemGroup::moveGroup()

@@ -115,10 +115,14 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
   {
     if ( !item )
       continue;
+    bool prev = item->mBlockUndoCommands;
+    item->mBlockUndoCommands = mBlockUndoCommands;
     item->setVisibility( visible );
+    item->mBlockUndoCommands = prev;
   }
   //lastly set visibility for group item itself
   QgsLayoutItem::setVisibility( visible );
+
   if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->endMacro();
 }
