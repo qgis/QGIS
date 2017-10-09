@@ -372,6 +372,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->deleteSelectedItems();
   } );
+  connect( mActionGroupItems, &QAction::triggered, this, [ = ]
+  {
+    mView->groupSelectedItems();
+  } );
+  connect( mActionUngroupItems, &QAction::triggered, this, [ = ]
+  {
+    mView->ungroupSelectedItems();
+  } );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );

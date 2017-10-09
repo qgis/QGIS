@@ -36,6 +36,7 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
 
     int type() const override;
     QString stringType() const override;
+    QString displayName() const override;
 
     /**
      * Adds an \a item to the group. Ownership of the item

@@ -207,6 +207,9 @@
      <addaction name="separator"/>
      <addaction name="mActionResizeToSquare"/>
     </widget>
+    <addaction name="mActionGroupItems"/>
+    <addaction name="mActionUngroupItems"/>
+    <addaction name="separator"/>
     <addaction name="mActionRaiseItems"/>
     <addaction name="mActionLowerItems"/>
     <addaction name="mActionMoveItemsToTop"/>
@@ -252,6 +255,8 @@
    </attribute>
    <addaction name="mActionLockItems"/>
    <addaction name="mActionUnlockAll"/>
+   <addaction name="mActionGroupItems"/>
+   <addaction name="mActionUngroupItems"/>
   </widget>
   <action name="mActionClose">
    <property name="text">
@@ -990,6 +995,36 @@
    </property>
    <property name="toolTip">
     <string>Show pages</string>
+   </property>
+  </action>
+  <action name="mActionGroupItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionGroupItems.svg</normaloff>:/images/themes/default/mActionGroupItems.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Group items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="mActionUngroupItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionUngroupItems.svg</normaloff>:/images/themes/default/mActionUngroupItems.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Ungroup</string>
+   </property>
+   <property name="toolTip">
+    <string>Ungroup items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
    </property>
   </action>
  </widget>

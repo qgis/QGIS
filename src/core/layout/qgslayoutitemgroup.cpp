@@ -52,6 +52,16 @@ QString QgsLayoutItemGroup::stringType() const
   return QStringLiteral( "ItemGroup" );
 }
 
+QString QgsLayoutItemGroup::displayName() const
+{
+  //return id, if it's not empty
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+  return tr( "<Group>" );
+}
+
 void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
 {
   if ( !item )
@@ -67,10 +77,6 @@ void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
   mItems << QPointer< QgsLayoutItem >( item );
   item->setParentGroup( this );
 
-#if 0 //TODO - move to gui
-  item->setSelected( false );
-#endif
-
   updateBoundingRect();
 }
 
@@ -82,10 +88,6 @@ void QgsLayoutItemGroup::removeItems()
       continue;
 
     item->setParentGroup( nullptr );
-
-#if 0 //TODO - move to GUI
-    item->setSelected( true );
-#endif
   }
   mItems.clear();
 }
@@ -104,6 +106,8 @@ QList<QgsLayoutItem *> QgsLayoutItemGroup::items() const
 
 void QgsLayoutItemGroup::setVisibility( const bool visible )
 {
+  if ( mLayout )
+    mLayout->undoStack()->beginMacro( tr( "Set group visibility" ) );
   //also set visibility for all items within the group
   for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
   {
@@ -113,6 +117,8 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
   }
   //lastly set visibility for group item itself
   QgsLayoutItem::setVisibility( visible );
+  if ( mLayout )
+    mLayout->undoStack()->endMacro();
 }
 
 void QgsLayoutItemGroup::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )

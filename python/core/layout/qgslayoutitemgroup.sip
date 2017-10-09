@@ -27,6 +27,8 @@ class QgsLayoutItemGroup: QgsLayoutItem
 
     virtual QString stringType() const;
 
+    virtual QString displayName() const;
+
 
     void addItem( QgsLayoutItem *item /Transfer/ );
 %Docstring

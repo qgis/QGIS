@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgsproject.h"
+#include "qgslayoutitemgroup.h"
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>
@@ -612,6 +613,60 @@ void QgsLayoutView::deleteSelectedItems()
 #if 0
   }
 #endif
+}
+
+void QgsLayoutView::groupSelectedItems()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+  //group selected items
+  const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
+  QgsLayoutItemGroup *itemGroup = currentLayout()->groupItems( selectionList );
+
+  if ( !itemGroup )
+  {
+    //group could not be created
+    return;
+  }
+
+  for ( QgsLayoutItem *item : selectionList )
+  {
+    item->setSelected( false );
+  }
+
+  currentLayout()->setSelectedItem( itemGroup );
+}
+
+void QgsLayoutView::ungroupSelectedItems()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+  QList< QgsLayoutItem * > ungroupedItems;
+  //hunt through selection for any groups, and ungroup them
+  const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
+  for ( QgsLayoutItem *item : selectionList )
+  {
+    if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
+    {
+      QgsLayoutItemGroup *itemGroup = static_cast<QgsLayoutItemGroup *>( item );
+      ungroupedItems.append( currentLayout()->ungroupItems( itemGroup ) );
+    }
+  }
+
+  if ( !ungroupedItems.empty() )
+  {
+    for ( QgsLayoutItem *item : qgsAsConst( ungroupedItems ) )
+    {
+      item->setSelected( true );
+    }
+    emit itemFocused( ungroupedItems.at( 0 ) );
+  }
 }
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
