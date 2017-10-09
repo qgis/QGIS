@@ -30,6 +30,14 @@ class QgsLayoutItemGroup: QgsLayoutItem
     virtual QString displayName() const;
 
 
+    static QgsLayoutItemGroup *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+%Docstring
+ Returns a new group item for the specified ``layout``.
+
+ The caller takes responsibility for deleting the returned object.
+ :rtype: QgsLayoutItemGroup
+%End
+
     void addItem( QgsLayoutItem *item /Transfer/ );
 %Docstring
  Adds an ``item`` to the group. Ownership of the item
@@ -54,6 +62,11 @@ class QgsLayoutItemGroup: QgsLayoutItem
     virtual void attemptMove( const QgsLayoutPoint &point );
 
     virtual void attemptResize( const QgsLayoutSize &size );
+
+
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );

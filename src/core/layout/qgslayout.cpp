@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutitemgroupundocommand.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -382,10 +383,16 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
 {
   std::unique_ptr< QgsLayoutItemDeleteUndoCommand > deleteCommand;
   if ( !mBlockUndoCommands )
+  {
+    mUndoStack->beginMacro( tr( "Deleted item" ) );
     deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Deleted item" ) ) );
+  }
   removeLayoutItemPrivate( item );
   if ( deleteCommand )
+  {
     mUndoStack->stack()->push( deleteCommand.release() );
+    mUndoStack->endMacro();
+  }
 }
 
 QgsLayoutUndoStack *QgsLayout::undoStack()
@@ -456,19 +463,16 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   }
   QgsLayoutItemGroup *returnGroup = itemGroup.get();
   addLayoutItem( itemGroup.release() );
-  mUndoStack->endMacro();
+
+  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Items grouped" ) ) );
+  mUndoStack->stack()->push( c.release() );
+  mProject->setDirty( true );
 
 #if 0
-  QgsGroupUngroupItemsCommand *c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Grouped, itemGroup, this, tr( "Items grouped" ) );
-  connect( c, &QgsGroupUngroupItemsCommand::itemRemoved, this, &QgsComposition::itemRemoved );
-  connect( c, &QgsGroupUngroupItemsCommand::itemAdded, this, &QgsComposition::sendItemAddedSignal );
-
-  undoStack()->push( c );
-  mProject->setDirty( true );
-  //QgsDebugMsg( QString( "itemgroup after pushAddRemove has %1" ) .arg( itemGroup->items().size() ) );
-
   emit composerItemGroupAdded( itemGroup );
 #endif
+
+  mUndoStack->endMacro();
 
   return returnGroup;
 }
@@ -481,25 +485,21 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
     return ungroupedItems;
   }
 
-#if 0 //TODO
-  // group ownership transferred to QgsGroupUngroupItemsCommand
+  mUndoStack->beginMacro( tr( "Ungrouped items" ) );
   // Call this before removing group items so it can keep note
   // of contents
-  QgsGroupUngroupItemsCommand *c = new QgsGroupUngroupItemsCommand( QgsGroupUngroupItemsCommand::Ungrouped, group, this, tr( "Items ungrouped" ) );
-  connect( c, &QgsGroupUngroupItemsCommand::itemRemoved, this, &QgsComposition::itemRemoved );
-  connect( c, &QgsGroupUngroupItemsCommand::itemAdded, this, &QgsComposition::sendItemAddedSignal );
+  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Items ungrouped" ) ) );
+  mUndoStack->stack()->push( c.release() );
 
-  undoStack()->push( c );
   mProject->setDirty( true );
-
-#endif
 
   ungroupedItems = group->items();
   group->removeItems();
 
   removeLayoutItem( group );
+  mUndoStack->endMacro();
+
 #if 0 //TODO
-  // note: emits itemRemoved
   removeComposerItem( group, false, false );
 #endif
 
@@ -554,7 +554,7 @@ void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
 #if 0 //TODO
   emit itemRemoved( item );
 #endif
-  item->deleteLater();
+  delete item;
 }
 
 void QgsLayout::updateZValues( const bool addUndoCommands )

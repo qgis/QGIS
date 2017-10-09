@@ -523,6 +523,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     friend class QgsLayoutItemDeleteUndoCommand;
     friend class QgsLayoutItemUndoCommand;
     friend class QgsLayoutUndoCommand;
+    friend class QgsLayoutItemGroupUndoCommand;
     friend class QgsLayoutModel;
 };
 

@@ -17,6 +17,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitemgroup.h"
 #include "qgsgloweffect.h"
 #include "qgseffectstack.h"
 #include <QPainter>
@@ -43,11 +44,14 @@ bool QgsLayoutItemRegistry::populate()
   };
 
   addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QStringLiteral( "Group" ), QIcon(), QgsLayoutItemGroup::create ) );
+
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QStringLiteral( "Page" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ), QgsLayoutItemPage::create ) );
 
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutRectangle, QStringLiteral( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), QgsLayoutItemRectangularShape::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutEllipse, QStringLiteral( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), QgsLayoutItemEllipseShape::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutTriangle, QStringLiteral( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), QgsLayoutItemTriangleShape::create ) );
+
 
   return true;
 }

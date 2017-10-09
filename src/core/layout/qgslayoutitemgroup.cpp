@@ -25,8 +25,6 @@ QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
 
 QgsLayoutItemGroup::~QgsLayoutItemGroup()
 {
-  if ( mLayout )
-    mLayout->undoStack()->beginMacro( tr( "Removed group" ) );
   //loop through group members and remove them from the scene
   for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
   {
@@ -37,10 +35,8 @@ QgsLayoutItemGroup::~QgsLayoutItemGroup()
     if ( mLayout )
       mLayout->removeLayoutItem( item );
     else
-      item->deleteLater();
+      delete item;
   }
-  if ( mLayout )
-    mLayout->undoStack()->endMacro();
 }
 
 int QgsLayoutItemGroup::type() const
@@ -61,6 +57,11 @@ QString QgsLayoutItemGroup::displayName() const
     return id();
   }
   return tr( "<Group>" );
+}
+
+QgsLayoutItemGroup *QgsLayoutItemGroup::create( QgsLayout *layout, const QVariantMap & )
+{
+  return new QgsLayoutItemGroup( layout );
 }
 
 void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
@@ -107,7 +108,7 @@ QList<QgsLayoutItem *> QgsLayoutItemGroup::items() const
 
 void QgsLayoutItemGroup::setVisibility( const bool visible )
 {
-  if ( mLayout )
+  if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->beginMacro( tr( "Set group visibility" ) );
   //also set visibility for all items within the group
   for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
@@ -118,7 +119,7 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
   }
   //lastly set visibility for group item itself
   QgsLayoutItem::setVisibility( visible );
-  if ( mLayout )
+  if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->endMacro();
 }
 
@@ -127,7 +128,8 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
   if ( !mLayout )
     return;
 
-  mLayout->undoStack()->beginMacro( tr( "Moved group" ) );
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->beginMacro( tr( "Moved group" ) );
 
   QPointF scenePoint = mLayout->convertToLayoutUnits( point );
   double deltaX = scenePoint.x() - pos().x();
@@ -139,7 +141,12 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
     if ( !item )
       continue;
 
-    mLayout->undoStack()->beginCommand( item, QString() );
+    std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
+    if ( !shouldBlockUndoCommands() )
+    {
+      command.reset( createCommand( QString(), 0 ) );
+      command->saveBeforeState();
+    }
 
     // need to convert delta from layout units -> item units
     QgsLayoutPoint itemPos = item->positionWithUnits();
@@ -148,11 +155,16 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
     itemPos.setY( itemPos.y() + deltaPos.y() );
     item->attemptMove( itemPos );
 
-    mLayout->undoStack()->endCommand();
+    if ( command )
+    {
+      command->saveAfterState();
+      mLayout->undoStack()->stack()->push( command.release() );
+    }
   }
   //lastly move group item itself
   QgsLayoutItem::attemptMove( point );
-  mLayout->undoStack()->endMacro();
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->endMacro();
   resetBoundingRect();
 }
 
@@ -161,7 +173,8 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
   if ( !mLayout )
     return;
 
-  mLayout->undoStack()->beginMacro( tr( "Resized group" ) );
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->beginMacro( tr( "Resized group" ) );
 
   QRectF oldRect = rect();
   QSizeF newSizeLayoutUnits = mLayout->convertToLayoutUnits( size );
@@ -173,6 +186,13 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
   {
     if ( !item )
       continue;
+
+    std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
+    if ( !shouldBlockUndoCommands() )
+    {
+      command.reset( createCommand( QString(), 0 ) );
+      command->saveBeforeState();
+    }
 
     QRectF itemRect = mapRectFromItem( item, item->rect() );
     QgsLayoutUtils::relativeResizeRect( itemRect, oldRect, newRect );
@@ -186,11 +206,76 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
 
     QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
     item->attemptResize( itemSize );
+
+    if ( command )
+    {
+      command->saveAfterState();
+      mLayout->undoStack()->stack()->push( command.release() );
+    }
   }
   QgsLayoutItem::attemptResize( size );
-  mLayout->undoStack()->endMacro();
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->endMacro();
 
   resetBoundingRect();
+}
+
+bool QgsLayoutItemGroup::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  QDomElement element = document.createElement( QStringLiteral( "LayoutItem" ) );
+  element.setAttribute( QStringLiteral( "type" ), stringType() );
+
+  writePropertiesToElement( element, document, context );
+
+  for ( QgsLayoutItem *item : mItems )
+  {
+    if ( !item )
+      continue;
+
+    QDomElement childItem = document.createElement( QStringLiteral( "ComposerItemGroupElement" ) );
+    childItem.setAttribute( QStringLiteral( "uuid" ), item->uuid() );
+    element.appendChild( childItem );
+  }
+
+  parentElement.appendChild( element );
+
+  return true;
+}
+
+bool QgsLayoutItemGroup::readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  if ( itemElement.nodeName() != QStringLiteral( "LayoutItem" ) || itemElement.attribute( QStringLiteral( "type" ) ) != stringType() )
+  {
+    return false;
+  }
+
+  bool result = readPropertiesFromElement( itemElement, document, context );
+
+  QList<QgsLayoutItem *> items;
+  mLayout->layoutItems( items );
+
+  QDomNodeList elementNodes = itemElement.elementsByTagName( QStringLiteral( "ComposerItemGroupElement" ) );
+  for ( int i = 0; i < elementNodes.count(); ++i )
+  {
+    QDomNode elementNode = elementNodes.at( i );
+    if ( !elementNode.isElement() )
+      continue;
+
+    QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
+
+    for ( QgsLayoutItem *item : qgsAsConst( items ) )
+    {
+      if ( item && ( item->mUuid == uuid /* TODO || item->mTemplateUuid == uuid */ ) )
+      {
+        addItem( item );
+        break;
+      }
+    }
+  }
+
+  resetBoundingRect();
+
+  return result;
 }
 
 void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * )

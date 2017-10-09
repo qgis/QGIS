@@ -139,13 +139,20 @@ void QgsLayoutItem::setVisibility( const bool visible )
     return;
   }
 
+  std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginCommand( this, visible ? tr( "Item shown" ) : tr( "Item hidden" ) );
+  {
+    command.reset( createCommand( visible ? tr( "Item shown" ) : tr( "Item hidden" ), 0 ) );
+    command->saveBeforeState();
+  }
 
   QGraphicsItem::setVisible( visible );
 
-  if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->endCommand();
+  if ( command )
+  {
+    command->saveAfterState();
+    mLayout->undoStack()->stack()->push( command.release() );
+  }
 
   //inform model that visibility has changed
   if ( mLayout )
@@ -729,6 +736,7 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
   element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
   element.setAttribute( QStringLiteral( "rotation" ), QString::number( rotation() ) );
+  element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
 
   element.setAttribute( "zValue", QString::number( zValue() ) );
   element.setAttribute( "visibility", isVisible() );
@@ -806,6 +814,15 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
   attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
   attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
   setItemRotation( element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
+
+  mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
+  if ( !mParentGroupUuid.isEmpty() )
+  {
+    if ( QgsLayoutItemGroup *group = parentGroup() )
+    {
+      group->addItem( this );
+    }
+  }
 
   //TODO
   /*

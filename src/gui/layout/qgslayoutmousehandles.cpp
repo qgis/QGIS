@@ -627,7 +627,8 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
         continue;
       }
 
-      mLayout->undoStack()->beginCommand( item, QString() );
+      std::unique_ptr< QgsAbstractLayoutUndoCommand > command( item->createCommand( QString(), 0 ) );
+      command->saveBeforeState();
 
       // need to convert delta from layout units -> item units
       QgsLayoutPoint itemPos = item->positionWithUnits();
@@ -636,7 +637,8 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       itemPos.setY( itemPos.y() + deltaPos.y() );
       item->attemptMove( itemPos );
 
-      mLayout->undoStack()->endCommand();
+      command->saveAfterState();
+      mLayout->undoStack()->stack()->push( command.release() );
     }
     mLayout->undoStack()->endMacro();
   }
@@ -655,7 +657,8 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
         continue;
       }
 
-      mLayout->undoStack()->beginCommand( item, QString() );
+      std::unique_ptr< QgsAbstractLayoutUndoCommand > command( item->createCommand( QString(), 0 ) );
+      command->saveBeforeState();
 
       QRectF itemRect;
       if ( selectedItems.size() == 1 )
@@ -680,7 +683,8 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
       item->attemptResize( itemSize );
 
-      mLayout->undoStack()->endCommand();
+      command->saveAfterState();
+      mLayout->undoStack()->stack()->push( command.release() );
     }
     mLayout->undoStack()->endMacro();
   }

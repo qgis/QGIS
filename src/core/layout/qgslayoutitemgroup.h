@@ -39,6 +39,13 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     QString displayName() const override;
 
     /**
+     * Returns a new group item for the specified \a layout.
+     *
+     * The caller takes responsibility for deleting the returned object.
+     */
+    static QgsLayoutItemGroup *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
+
+    /**
      * Adds an \a item to the group. Ownership of the item
      * is transferred to the group.
     */
@@ -61,6 +68,9 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     //overridden to move child items
     void attemptMove( const QgsLayoutPoint &point ) override;
     void attemptResize( const QgsLayoutSize &size ) override;
+
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
