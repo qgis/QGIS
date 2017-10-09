@@ -825,7 +825,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     const QgsAuxiliaryLayer *auxiliaryLayer() const SIP_SKIP;
 
-    /** 
+    /**
      * Read the symbology for the current layer from the Dom node supplied.
      * \param layerNode node that will contain the symbology definition for this layer.
      * \param errorMessage reference to string that will be updated with any error messages

@@ -37,7 +37,8 @@ class GUI_EXPORT QgsSymbolLayerWidget : public QWidget, protected QgsExpressionC
 
   public:
 
-    /** Constructor for QgsSymbolLayerWidget.
+    /**
+     * Constructor for QgsSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
@@ -129,13 +130,15 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
   public:
 
-    /** Constructor for QgsSimpleLineSymbolLayerWidget.
+    /**
+     * Constructor for QgsSimpleLineSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsSimpleLineSymbolLayerWidget.
+    /**
+     * Creates a new QgsSimpleLineSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleLineSymbolLayerWidget( vl ); }
@@ -186,13 +189,15 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerWidget : public QgsSymbolLayerWidget,
 
   public:
 
-    /** Constructor for QgsSimpleMarkerSymbolLayerWidget.
+    /**
+     * Constructor for QgsSimpleMarkerSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsSimpleMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsSimpleMarkerSymbolLayerWidget.
+    /**
+     * Creates a new QgsSimpleMarkerSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleMarkerSymbolLayerWidget( vl ); }
@@ -245,13 +250,15 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
   public:
 
-    /** Constructor for QgsSimpleFillSymbolLayerWidget.
+    /**
+     * Constructor for QgsSimpleFillSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsSimpleFillSymbolLayerWidget.
+    /**
+     * Creates a new QgsSimpleFillSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSimpleFillSymbolLayerWidget( vl ); }
@@ -349,13 +356,15 @@ class GUI_EXPORT QgsGradientFillSymbolLayerWidget : public QgsSymbolLayerWidget,
 
   public:
 
-    /** Constructor for QgsGradientFillSymbolLayerWidget.
+    /**
+     * Constructor for QgsGradientFillSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsGradientFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsGradientFillSymbolLayerWidget.
+    /**
+     * Creates a new QgsGradientFillSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsGradientFillSymbolLayerWidget( vl ); }
@@ -404,13 +413,15 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerWidget : public QgsSymbolLayerWidge
 
   public:
 
-    /** Constructor for QgsShapeburstFillSymbolLayerWidget.
+    /**
+     * Constructor for QgsShapeburstFillSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsShapeburstFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsShapeburstFillSymbolLayerWidget.
+    /**
+     * Creates a new QgsShapeburstFillSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsShapeburstFillSymbolLayerWidget( vl ); }
@@ -454,13 +465,15 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
   public:
 
-    /** Constructor for QgsMarkerLineSymbolLayerWidget.
+    /**
+     * Constructor for QgsMarkerLineSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsMarkerLineSymbolLayerWidget.
+    /**
+     * Creates a new QgsMarkerLineSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsMarkerLineSymbolLayerWidget( vl ); }
@@ -505,13 +518,15 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
 
   public:
 
-    /** Constructor for QgsSvgMarkerSymbolLayerWidget.
+    /**
+     * Constructor for QgsSvgMarkerSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsSvgMarkerSymbolLayerWidget.
+    /**
+     * Creates a new QgsSvgMarkerSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSvgMarkerSymbolLayerWidget( vl ); }
@@ -572,13 +587,15 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
   public:
 
-    /** Constructor for QgsRasterFillSymbolLayerWidget.
+    /**
+     * Constructor for QgsRasterFillSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsRasterFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsRasterFillSymbolLayerWidget.
+    /**
+     * Creates a new QgsRasterFillSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsRasterFillSymbolLayerWidget( vl ); }
@@ -621,13 +638,15 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
 
   public:
 
-    /** Constructor for QgsSVGFillSymbolLayerWidget.
+    /**
+     * Constructor for QgsSVGFillSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsSVGFillSymbolLayerWidget.
+    /**
+     * Creates a new QgsSVGFillSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsSVGFillSymbolLayerWidget( vl ); }
@@ -679,13 +698,15 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerWidg
 
   public:
 
-    /** Constructor for QgsLinePatternFillSymbolLayerWidget.
+    /**
+     * Constructor for QgsLinePatternFillSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsLinePatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsLinePatternFillSymbolLayerWidget.
+    /**
+     * Creates a new QgsLinePatternFillSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsLinePatternFillSymbolLayerWidget( vl ); }
@@ -720,13 +741,15 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerWidg
 
   public:
 
-    /** Constructor for QgsPointPatternFillSymbolLayerWidget.
+    /**
+     * Constructor for QgsPointPatternFillSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsPointPatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsPointPatternFillSymbolLayerWidget.
+    /**
+     * Creates a new QgsPointPatternFillSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsPointPatternFillSymbolLayerWidget( vl ); }
@@ -765,13 +788,15 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
 
   public:
 
-    /** Constructor for QgsFontMarkerSymbolLayerWidget.
+    /**
+     * Constructor for QgsFontMarkerSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsFontMarkerSymbolLayerWidget.
+    /**
+     * Creates a new QgsFontMarkerSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsFontMarkerSymbolLayerWidget( vl ); }
@@ -830,13 +855,15 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
 
   public:
 
-    /** Constructor for QgsCentroidFillSymbolLayerWidget.
+    /**
+     * Constructor for QgsCentroidFillSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */
     QgsCentroidFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Creates a new QgsCentroidFillSymbolLayerWidget.
+    /**
+     * Creates a new QgsCentroidFillSymbolLayerWidget.
      * \param vl associated vector layer
      */
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsCentroidFillSymbolLayerWidget( vl ); }
@@ -870,7 +897,8 @@ class GUI_EXPORT QgsGeometryGeneratorSymbolLayerWidget : public QgsSymbolLayerWi
 
   public:
 
-    /** Constructor for QgsGeometryGeneratorSymbolLayerWidget.
+    /**
+     * Constructor for QgsGeometryGeneratorSymbolLayerWidget.
      * \param vl associated vector layer
      * \param parent parent widget
      */

@@ -44,7 +44,8 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
 
   public:
 
-    /** Constructor for QgsLayerPropertiesWidget.
+    /**
+     * Constructor for QgsLayerPropertiesWidget.
      * \param layer the symbol layer
      * \param symbol the symbol
      * \param vl associated vector layer

@@ -39,7 +39,8 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
   public:
 
-    /** Constructor for QgsSymbolsListWidget.
+    /**
+     * Constructor for QgsSymbolsListWidget.
      * \param symbol the symbol
      * \param style the style
      * \param menu the menu where to show it
