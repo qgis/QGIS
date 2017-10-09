@@ -44,19 +44,20 @@ void QgsLayoutUndoStack::beginCommand( QgsLayoutUndoObjectInterface *object, con
     return;
   }
 
-  mActiveCommand.reset( object->createCommand( commandText, id, nullptr ) );
-  mActiveCommand->saveBeforeState();
+  mActiveCommands.emplace_back( std::unique_ptr< QgsAbstractLayoutUndoCommand >( object->createCommand( commandText, id, nullptr ) ) );
+  mActiveCommands.back()->saveBeforeState();
 }
 
 void QgsLayoutUndoStack::endCommand()
 {
-  if ( !mActiveCommand )
+  if ( mActiveCommands.empty() )
     return;
 
-  mActiveCommand->saveAfterState();
-  if ( mActiveCommand->containsChange() ) //protect against empty commands
+  mActiveCommands.back()->saveAfterState();
+  if ( mActiveCommands.back()->containsChange() ) //protect against empty commands
   {
-    mUndoStack->push( mActiveCommand.release() );
+    mUndoStack->push( mActiveCommands.back().release() );
+    mActiveCommands.pop_back();
 
     mLayout->project()->setDirty( true );
   }
@@ -64,7 +65,10 @@ void QgsLayoutUndoStack::endCommand()
 
 void QgsLayoutUndoStack::cancelCommand()
 {
-  mActiveCommand.reset();
+  if ( mActiveCommands.empty() )
+    return;
+
+  mActiveCommands.pop_back();
 }
 
 QUndoStack *QgsLayoutUndoStack::stack()

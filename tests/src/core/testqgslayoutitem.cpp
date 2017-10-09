@@ -149,6 +149,7 @@ class TestQgsLayoutItem: public QObject
     void writeReadXmlProperties();
     void undoRedo();
     void multiItemUndo();
+    void overlappingUndo();
 
   private:
 
@@ -1479,6 +1480,36 @@ void TestQgsLayoutItem::multiItemUndo()
   l.undoStack()->stack()->undo();
   QCOMPARE( item2->positionWithUnits(), QgsLayoutPoint( 20, 20 ) );
   QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 10, 10 ) );
+}
+
+void TestQgsLayoutItem::overlappingUndo()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+  item->attemptMove( QgsLayoutPoint( 10, 10 ) );
+  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item2 );
+  item2->attemptMove( QgsLayoutPoint( 20, 20 ) );
+
+  //commands overlap
+  l.undoStack()->beginCommand( item, tr( "Item moved" ), QgsLayoutItem::UndoIncrementalMove );
+  item->attemptMove( QgsLayoutPoint( 1, 1 ) );
+  l.undoStack()->beginCommand( item2, tr( "Item moved" ), QgsLayoutItem::UndoIncrementalMove );
+  item2->attemptMove( QgsLayoutPoint( 21, 21 ) );
+  l.undoStack()->endCommand();
+  l.undoStack()->endCommand();
+
+  // undo should remove item move
+  l.undoStack()->stack()->undo();
+  QCOMPARE( item2->positionWithUnits(), QgsLayoutPoint( 21, 21 ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 10, 10 ) );
+  l.undoStack()->stack()->undo();
+  QCOMPARE( item2->positionWithUnits(), QgsLayoutPoint( 20, 20 ) );
+  QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 10, 10 ) );
+
 }
 
 QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )
