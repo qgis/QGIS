@@ -733,6 +733,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param value variable value
      * \see setGlobalVariable()
      * \see globalScope()
+     * \see removeGlobalVariable()
      */
     static void setGlobalVariable( const QString &name, const QVariant &value );
 
@@ -742,8 +743,18 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param variables new set of global variables
      * \see setGlobalVariable()
      * \see globalScope()
+     * \see removeGlobalVariable()
      */
     static void setGlobalVariables( const QVariantMap &variables );
+
+    /**
+     * Remove a global context variable.
+     * \param name variable name
+     * \see setGlobalVariable()
+     * \see setGlobalVariables()
+     * \see globalScope()
+     */
+    static void removeGlobalVariable( const QString &name );
 
     /**
      * Creates a new scope which contains variables and functions relating to a QGIS project.
@@ -760,6 +771,7 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param name variable name
      * \param value variable value
      * \see setProjectVariables()
+     * \see removeProjectVariable()
      * \see projectScope()
      */
     static void setProjectVariable( QgsProject *project, const QString &name, const QVariant &value );
@@ -770,9 +782,20 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param project Project to apply changes to
      * \param variables new set of project variables
      * \see setProjectVariable()
+     * \see removeProjectVariable()
      * \see projectScope()
      */
     static void setProjectVariables( QgsProject *project, const QVariantMap &variables );
+
+    /**
+     * Remove project context variable.
+     * \param project Project to apply changes to
+     * \param name variable name
+     * \see setProjectVariable()
+     * \see setProjectVariables()
+     * \see projectScope()
+     */
+    static void removeProjectVariable( QgsProject *project, const QString &name );
 
     /**
      * Creates a new scope which contains variables and functions relating to a QgsMapLayer.

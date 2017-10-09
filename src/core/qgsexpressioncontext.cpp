@@ -593,6 +593,14 @@ void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables
   QgsApplication::setCustomVariables( variables );
 }
 
+void QgsExpressionContextUtils::removeGlobalVariable( const QString &name )
+{
+  QVariantMap vars = QgsApplication::customVariables();
+  if ( vars.remove( name ) )
+    QgsApplication::setCustomVariables( vars );
+}
+
+
 /// @cond PRIVATE
 
 class GetNamedProjectColor : public QgsScopedExpressionFunction
@@ -794,6 +802,18 @@ void QgsExpressionContextUtils::setProjectVariables( QgsProject *project, const 
     return;
 
   project->setCustomVariables( variables );
+}
+
+void QgsExpressionContextUtils::removeProjectVariable( QgsProject *project, const QString &name )
+{
+  if ( !project )
+  {
+    return;
+  }
+
+  QVariantMap vars = project->customVariables();
+  if ( vars.remove( name ) )
+    project->setCustomVariables( vars );
 }
 
 QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLayer *layer )
