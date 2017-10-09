@@ -606,20 +606,20 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param tag Associated tag (title)
      * @param level Message log level
      */
-    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
 
 
     /**
      * Emitted when a password has been verify (or not)
      * \param verified The state of password's verification
      */
-    void masterPasswordVerified( bool verified ) const;
+    void masterPasswordVerified( bool verified );
 
     //! Emitted when a user has indicated they may want to erase the authentication db.
-    void authDatabaseEraseRequested() const;
+    void authDatabaseEraseRequested();
 
     //! Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc.
-    void authDatabaseChanged() const;
+    void authDatabaseChanged();
 
   public slots:
     //! Clear all authentication configs from authentication method caches

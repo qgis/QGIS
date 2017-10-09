@@ -149,6 +149,13 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
+    /**
+     * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+     * If the aspect ratio isn't fixed, the width and height will be set to zero.
+     * \since QGIS 3.0
+     * */
+    QSize ratio() const { return mRatio; }
+
   public slots:
 
     /**
@@ -185,13 +192,6 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      * \since QGIS 3.0
      * */
     void setRatio( QSize ratio ) { mRatio = ratio; }
-
-    /**
-     * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
-     * If the aspect ratio isn't fixed, the width and height will be set to zero.
-     * \since QGIS 3.0
-     * */
-    QSize ratio() const { return mRatio; }
 
   signals:
 

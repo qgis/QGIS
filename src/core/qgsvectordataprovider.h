@@ -526,7 +526,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      *
      * \since QGIS 3.0
      */
-    virtual bool hasMetadata() const { return true; };
+    virtual bool hasMetadata() const { return true; }
 
   signals:
 

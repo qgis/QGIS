@@ -139,6 +139,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     bool canFetchMore( const QModelIndex &parent ) const override;
     void fetchMore( const QModelIndex &parent ) override;
 
+    //! Returns true if the model has been initialized
+    bool initialized( ) const { return mInitialized;  }
+
   signals:
     //! Emitted when item children fetch was finished
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
@@ -177,9 +180,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     //! Hide the given path in the browser model
     void hidePath( QgsDataItem *item );
-
-    //! Returns true if the model has been initialized
-    bool initialized( ) const { return mInitialized;  }
 
     //! Delayed initialization, needed because the provider registry must be already populated
     void initialize();

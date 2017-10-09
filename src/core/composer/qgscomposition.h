@@ -873,6 +873,27 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QRectF compositionBounds( bool ignorePages = false, double margin = 0.0 ) const;
 
+    /**
+     * Creates an expression context relating to the compositions's current state. The context includes
+     * scopes for global, project, composition and atlas properties.
+     * \since QGIS 2.12
+     */
+    QgsExpressionContext createExpressionContext() const override;
+
+    /**
+     * Returns a reference to the composition's property collection, used for data defined overrides.
+     * \since QGIS 3.0
+     * \see setDataDefinedProperties()
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the composition's property collection, used for data defined overrides.
+     * \since QGIS 3.0
+     * \see setDataDefinedProperties()
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+
   public slots:
     //! Casts object to the proper subclass type and calls corresponding itemAdded signal
     void sendItemAddedSignal( QgsComposerItem *item );
@@ -913,27 +934,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      * \since QGIS 2.5
      */
     void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr );
-
-    /**
-     * Creates an expression context relating to the compositions's current state. The context includes
-     * scopes for global, project, composition and atlas properties.
-     * \since QGIS 2.12
-     */
-    QgsExpressionContext createExpressionContext() const override;
-
-    /**
-     * Returns a reference to the composition's property collection, used for data defined overrides.
-     * \since QGIS 3.0
-     * \see setDataDefinedProperties()
-     */
-    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
-
-    /**
-     * Returns a reference to the composition's property collection, used for data defined overrides.
-     * \since QGIS 3.0
-     * \see setDataDefinedProperties()
-     */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /**
      * Sets the composition's property collection, used for data defined overrides.

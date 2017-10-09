@@ -1759,6 +1759,14 @@ Returns the current blending mode for features
  :rtype: bool
 %End
 
+    bool isEditCommandActive() const;
+%Docstring
+ Test if an edit command is active
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -1818,14 +1826,6 @@ Returns the current blending mode for features
  This starts an edit session on this layer. Changes made in this edit session will not
  be made persistent until commitChanges() is called and can be reverted by calling
  rollBack().
- :rtype: bool
-%End
-
-    bool isEditCommandActive() const;
-%Docstring
- Test if an edit command is active
-
-.. versionadded:: 3.0
  :rtype: bool
 %End
 
