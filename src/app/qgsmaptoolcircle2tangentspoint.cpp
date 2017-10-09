@@ -43,6 +43,8 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 {
 
   QgsPoint mapPoint( e->mapPoint() );
+  EdgesOnlyFilter filter;
+  QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 
   QgsPointXY p1, p2;
 
@@ -50,8 +52,6 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
   {
     if ( mPoints.size() < 2 * 2 )
     {
-      EdgesOnlyFilter filter;
-      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
       if ( match.isValid() )
       {
         match.edgePoints( p1, p2 );
@@ -69,8 +69,8 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
             QgsMessageBar::CRITICAL, QgisApp::instance()->messageTimeout() );
         deactivate();
       }
-
-      createRadiusSpinBox();
+      else
+        createRadiusSpinBox();
     }
   }
   else if ( e->button() == Qt::RightButton )
@@ -98,14 +98,38 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsPoint mapPoint( e->mapPoint() );
-  if ( mPoints.size() == 4 )
+  EdgesOnlyFilter filter;
+  QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
+
+  if ( mPoints.size() < 2 * 2 )
   {
     if ( !mTempRubberBand )
     {
       mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+      mTempRubberBand->setFillColor( QColor( 0, 0, 255 ) );
+      mTempRubberBand->setStrokeColor( QColor( 0, 0, 255 ) );
+      mTempRubberBand->setStrokeWidth( 2 );
       mTempRubberBand->show();
     }
+    else
+      mTempRubberBand->hide();
 
+    if ( match.isValid() )
+    {
+      QgsPointXY p1, p2;
+      match.edgePoints( p1, p2 );
+      std::unique_ptr<QgsLineString> line( new QgsLineString() );
+
+      line->addVertex( QgsPoint( p1 ) );
+      line->addVertex( QgsPoint( p2 ) );
+
+      mTempRubberBand->setGeometry( line.release() );
+      mTempRubberBand->show();
+    }
+  }
+
+  if ( mPoints.size() == 4 )
+  {
     QgsPoint center = QgsPoint( mCenters.at( 0 ) );
     const double currentDist = mapPoint.distanceSquared( center );
     for ( int i = 1; i < mCenters.size(); ++i )
@@ -248,7 +272,7 @@ void QgsMapToolCircle2TangentsPoint::radiusSpinBoxChanged( int radius )
 
   qDeleteAll( mRubberBands );
   mRubberBands.clear();
-  if ( mTempRubberBand )
+  if ( mPoints.size() == 4 )
   {
     std::unique_ptr<QgsMultiPolygonV2> rb( new QgsMultiPolygonV2() );
     for ( int i = 0; i < mCenters.size(); ++i )

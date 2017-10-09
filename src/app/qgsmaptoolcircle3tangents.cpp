@@ -46,20 +46,6 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mPoints.append( QgsPoint( p1 ) );
       mPoints.append( QgsPoint( p2 ) );
     }
-    if ( !mPoints.isEmpty() )
-    {
-      if ( !mTempRubberBand )
-      {
-        mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
-        mTempRubberBand->show();
-      }
-      std::unique_ptr<QgsLineString> line( new QgsLineString() );
-
-      line->addVertex( QgsPoint( p1 ) );
-      line->addVertex( QgsPoint( p2 ) );
-
-      mTempRubberBand->setGeometry( line.release() );
-    }
   }
   else if ( e->button() == Qt::RightButton )
   {
@@ -83,4 +69,36 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mParentTool->canvasReleaseEvent( e );
     }
   }
+}
+
+void QgsMapToolCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e )
+{
+  QgsPoint mapPoint( e->mapPoint() );
+  EdgesOnlyFilter filter;
+  QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
+
+  if ( !mTempRubberBand )
+  {
+    mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
+    mTempRubberBand->setFillColor( QColor( 0, 0, 255 ) );
+    mTempRubberBand->setStrokeColor( QColor( 0, 0, 255 ) );
+    mTempRubberBand->setStrokeWidth( 2 );
+    mTempRubberBand->show();
+  }
+  else
+    mTempRubberBand->hide();
+
+  if ( match.isValid() )
+  {
+    QgsPointXY p1, p2;
+    match.edgePoints( p1, p2 );
+    std::unique_ptr<QgsLineString> line( new QgsLineString() );
+
+    line->addVertex( QgsPoint( p1 ) );
+    line->addVertex( QgsPoint( p2 ) );
+
+    mTempRubberBand->setGeometry( line.release() );
+    mTempRubberBand->show();
+  }
+
 }

@@ -28,6 +28,7 @@ class QgsMapToolCircle3Tangents: public QgsMapToolAddCircle
     QgsMapToolCircle3Tangents( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 };
 
 #endif // QGSMAPTOOLCIRCLE3TANGENTS_H
