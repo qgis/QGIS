@@ -557,8 +557,10 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   delete mRedoAction;
   mUndoAction = layout->undoStack()->stack()->createUndoAction( this );
   mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
+  mUndoAction->setShortcuts( QKeySequence::Undo );
   mRedoAction = layout->undoStack()->stack()->createRedoAction( this );
   mRedoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
+  mRedoAction->setShortcuts( QKeySequence::Redo );
   menuEdit->insertAction( menuEdit->actions().at( 0 ), mRedoAction );
   menuEdit->insertAction( mRedoAction, mUndoAction );
   mLayoutToolbar->addAction( mUndoAction );
