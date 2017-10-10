@@ -111,7 +111,7 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
   }
 }
 
-static QVector3D _calculateNormal( const QgsCurve *curve )
+static QVector3D _calculateNormal( const QgsCurve *curve, bool &hasValidZ )
 {
   // Calculate the polygon's normal vector, based on Newell's method
   // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
@@ -119,15 +119,26 @@ static QVector3D _calculateNormal( const QgsCurve *curve )
   QgsPoint pt1, pt2;
   QVector3D normal( 0, 0, 0 );
 
+  // assume that Z coordinates are not present
+  hasValidZ = false;
+
   for ( int i = 0; i < curve->numPoints() - 1; i++ )
   {
     curve->pointAt( i, pt1, vt );
     curve->pointAt( i + 1, pt2, vt );
 
+    if ( qIsNaN( pt1.z() ) || qIsNaN( pt2.z() ) )
+      continue;
+
+    hasValidZ = true;
+
     normal.setX( normal.x() + ( pt1.y() - pt2.y() ) * ( pt1.z() + pt2.z() ) );
     normal.setY( normal.y() + ( pt1.z() - pt2.z() ) * ( pt1.x() + pt2.x() ) );
     normal.setZ( normal.z() + ( pt1.x() - pt2.x() ) * ( pt1.y() + pt2.y() ) );
   }
+
+  if ( !hasValidZ )
+    return QVector3D( 0, 0, 1 );
 
   normal.normalize();
 
@@ -183,7 +194,8 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
   QgsVertexId::VertexType vt;
   QgsPoint pt;
 
-  const QVector3D pNormal = _calculateNormal( exterior );
+  bool hasValidZ;
+  const QVector3D pNormal = _calculateNormal( exterior, hasValidZ );
   const int pCount = exterior->numPoints();
 
   // Polygon is a triangle
@@ -207,7 +219,8 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     }
 
     const QgsPoint ptFirst( exterior->startPoint() );
-    QVector3D pOrigin( ptFirst.x(), ptFirst.y(), ptFirst.z() ), pXVector;
+    QVector3D pOrigin( ptFirst.x(), ptFirst.y(), qIsNaN( ptFirst.z() ) ? 0 : ptFirst.z() );
+    QVector3D pXVector;
     // Here we define the two perpendicular vectors that define the local
     // 2D space on the plane. They will act as axis for which we will
     // calculate the projection coordinates of a 3D point to the plane.
