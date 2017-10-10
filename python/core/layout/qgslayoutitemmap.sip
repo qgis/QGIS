@@ -29,6 +29,14 @@ class QgsLayoutItemMap : QgsLayoutItem
     virtual QString stringType() const;
 
 
+    static QgsLayoutItemMap *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+%Docstring
+ Returns a new map item for the specified ``layout``.
+
+ The caller takes responsibility for deleting the returned object.
+ :rtype: QgsLayoutItemMap
+%End
+
   protected:
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );

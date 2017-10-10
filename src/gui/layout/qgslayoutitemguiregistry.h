@@ -250,12 +250,6 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
 
     ~QgsLayoutItemGuiRegistry();
 
-    /**
-     * Populates the registry with standard item types. If called on a non-empty registry
-     * then this will have no effect and will return false.
-     */
-    bool populate();
-
     //! QgsLayoutItemGuiRegistry cannot be copied.
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh ) = delete;
     //! QgsLayoutItemGuiRegistry cannot be copied.

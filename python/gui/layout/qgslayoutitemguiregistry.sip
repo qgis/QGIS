@@ -159,13 +159,6 @@ class QgsLayoutItemGuiRegistry : QObject
 
     ~QgsLayoutItemGuiRegistry();
 
-    bool populate();
-%Docstring
- Populates the registry with standard item types. If called on a non-empty registry
- then this will have no effect and will return false.
- :rtype: bool
-%End
-
 
     QgsLayoutItemAbstractGuiMetadata *itemMetadata( int type ) const;
 %Docstring

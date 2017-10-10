@@ -174,6 +174,7 @@ SET(QGIS_APP_SRCS
   composer/qgsatlascompositionwidget.cpp
 
   layout/qgslayoutaddpagesdialog.cpp
+  layout/qgslayoutapputils.cpp
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutguidewidget.cpp
   layout/qgslayoutappmenuprovider.cpp

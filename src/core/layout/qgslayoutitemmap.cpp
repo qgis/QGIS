@@ -34,6 +34,11 @@ QString QgsLayoutItemMap::stringType() const
   return QStringLiteral( "ItemMap" );
 }
 
+QgsLayoutItemMap *QgsLayoutItemMap::create( QgsLayout *layout, const QVariantMap & )
+{
+  return new QgsLayoutItemMap( layout );
+}
+
 void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
 {
 

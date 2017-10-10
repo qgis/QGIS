@@ -41,6 +41,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     int type() const override;
     QString stringType() const override;
 
+    /**
+     * Returns a new map item for the specified \a layout.
+     *
+     * The caller takes responsibility for deleting the returned object.
+     */
+    static QgsLayoutItemMap *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
+
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
