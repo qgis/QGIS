@@ -119,13 +119,6 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
     if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
       geom = QgsGeometry( geom.geometry()->segmentize() );
 
-    if ( !geom.isGeosValid() )
-    {
-      // invalid geometries break tessellation
-      qDebug() << "skipping invalid geometry" << f.id();
-      continue;
-    }
-
     const QgsAbstractGeometry *g = geom.geometry();
 
     if ( const QgsPolygonV2 *poly = qgsgeometry_cast< const QgsPolygonV2 *>( g ) )
