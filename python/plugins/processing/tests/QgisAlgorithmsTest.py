@@ -50,7 +50,7 @@ class TestAlg(QgsProcessingAlgorithm):
     def displayName(self):
         return 'testalg'
 
-    def initAlgorithm(self):
+    def initAlgorithm(self, config=None):
         pass
 
     def createInstance(self):
