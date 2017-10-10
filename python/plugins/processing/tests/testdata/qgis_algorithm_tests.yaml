@@ -3236,8 +3236,8 @@ tests:
           - 'Standard deviation: 43.9618116337985'
           - 'Sum of the squares: 252304334.52061242'
 
-  - algorithm: qgis:rasterlayeruniquevaluescount
-    name: Raster layer unique values count
+  - algorithm: qgis:rasterlayeruniquevaluesreport
+    name: Raster layer unique values report
     params:
       INPUT:
         name: raster.tif
@@ -3248,26 +3248,26 @@ tests:
         name: raster_unique_values_count.html
         type: regex
         rules:
-          - 'Total cell count: 224'
-          - 'NODATA count: 104'
-          - '826</td><td>4</td>'
-          - '837</td><td>6</td>'
-          - '843</td><td>6</td>'
-          - '845</td><td>4</td>'
-          - '851</td><td>9</td>'
-          - '853</td><td>6</td>'
-          - '859</td><td>10</td>'
-          - '861</td><td>4</td>'
-          - '864</td><td>6</td>'
-          - '866</td><td>9</td>'
-          - '868</td><td>6</td>'
-          - '872</td><td>4</td>'
-          - '873</td><td>9</td>'
-          - '878</td><td>6</td>'
-          - '880</td><td>6</td>'
-          - '881</td><td>6</td>'
-          - '890</td><td>13</td>'
-          - '899</td><td>6</td>'
+          - 'Total pixel count: 224'
+          - 'NODATA pixel count: 104'
+          - '826</td><td>4</td><td>411.2757251916548'
+          - '837</td><td>6</td><td>616.9135877874822'
+          - '843</td><td>6</td><td>616.9135877874822'
+          - '845</td><td>4</td><td>411.2757251916548'
+          - '851</td><td>9</td><td>925.3703816812233'
+          - '853</td><td>6</td><td>616.9135877874822'
+          - '859</td><td>10</td><td>1028.189312979137'
+          - '861</td><td>4</td><td>411.2757251916548'
+          - '864</td><td>6</td><td>616.9135877874822'
+          - '866</td><td>9</td><td>925.3703816812233'
+          - '868</td><td>6</td><td>616.9135877874822'
+          - '872</td><td>4</td><td>411.2757251916548'
+          - '873</td><td>9</td><td>925.3703816812233'
+          - '878</td><td>6</td><td>616.9135877874822'
+          - '880</td><td>6</td><td>616.9135877874822'
+          - '881</td><td>6</td><td>616.9135877874822'
+          - '890</td><td>13</td><td>1336.646106872878'
+          - '899</td><td>6</td><td>616.9135877874822'
 
   - algorithm: qgis:pointsdisplacement
     name: Point displacement
