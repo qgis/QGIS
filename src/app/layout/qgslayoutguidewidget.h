@@ -62,7 +62,7 @@ class QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
 
   public:
 
-    QgsLayoutGuidePositionDelegate( QgsLayout *layout, QAbstractItemModel *model );
+    QgsLayoutGuidePositionDelegate( QObject *parent, QgsLayout *layout, QAbstractItemModel *model );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
@@ -82,7 +82,7 @@ class QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
 
   public:
 
-    QgsLayoutGuideUnitDelegate( QgsLayout *layout, QAbstractItemModel *model );
+    QgsLayoutGuideUnitDelegate( QObject *parent, QgsLayout *layout, QAbstractItemModel *model );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;

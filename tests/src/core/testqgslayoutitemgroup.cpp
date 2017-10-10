@@ -48,7 +48,9 @@ class TestQgsLayoutItemGroup : public QObject
     void deleteGroup(); //test deleting group works
     void groupVisibility();
     void moveGroup();
+    void moveGroupReferencePos();
     void resizeGroup();
+    void resizeGroupReferencePos();
     void undoRedo(); //test that group/ungroup undo/redo commands don't crash
 
   private:
@@ -354,6 +356,69 @@ void TestQgsLayoutItemGroup::moveGroup()
   QCOMPARE( item2->positionWithUnits().units(), QgsUnitTypes::LayoutInches );
 }
 
+void TestQgsLayoutItemGroup::moveGroupReferencePos()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+  item->attemptMove( QgsLayoutPoint( 5, 9 ) );
+  item->attemptResize( QgsLayoutSize( 4, 7 ) );
+  item->setReferencePoint( QgsLayoutItem::UpperRight );
+
+  QCOMPARE( item->positionWithUnits().x(), 9.0 );
+  QCOMPARE( item->positionWithUnits().y(), 9.0 );
+  QCOMPARE( item->scenePos().x(), 5.0 );
+  QCOMPARE( item->scenePos().y(), 9.0 );
+
+  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item2 );
+  item2->attemptMove( QgsLayoutPoint( 15, 19 ) );
+  item2->attemptResize( QgsLayoutSize( 6, 3 ) );
+  item2->setReferencePoint( QgsLayoutItem::LowerLeft );
+
+  QCOMPARE( item2->positionWithUnits().x(), 15.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 22.0 );
+  QCOMPARE( item2->scenePos().x(), 15.0 );
+  QCOMPARE( item2->scenePos().y(), 19.0 );
+
+  //group items
+  QList<QgsLayoutItem *> groupItems;
+  groupItems << item << item2;
+  QgsLayoutItemGroup *group = l.groupItems( groupItems );
+
+  QCOMPARE( group->positionWithUnits().x(), 5.0 );
+  QCOMPARE( group->positionWithUnits().y(), 9.0 );
+  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->sizeWithUnits().width(), 16.0 );
+  QCOMPARE( group->sizeWithUnits().height(), 13.0 );
+  QCOMPARE( group->scenePos().x(), 5.0 );
+  QCOMPARE( group->scenePos().y(), 9.0 );
+  QCOMPARE( group->rect().width(), 16.0 );
+  QCOMPARE( group->rect().height(), 13.0 );
+
+  group->attemptMove( QgsLayoutPoint( 2, 4 ) );
+  QCOMPARE( group->positionWithUnits().x(), 2.0 );
+  QCOMPARE( group->positionWithUnits().y(), 4.0 );
+  QCOMPARE( group->scenePos().x(), 2.0 );
+  QCOMPARE( group->scenePos().y(), 4.0 );
+  QCOMPARE( group->sizeWithUnits().width(), 16.0 );
+  QCOMPARE( group->sizeWithUnits().height(), 13.0 );
+  QCOMPARE( group->rect().width(), 16.0 );
+  QCOMPARE( group->rect().height(), 13.0 );
+
+  QCOMPARE( item->pos().x(), 2.0 );
+  QCOMPARE( item->pos().y(), 4.0 );
+  QCOMPARE( item->positionWithUnits().x(), 6.0 );
+  QCOMPARE( item->positionWithUnits().y(), 4.0 );
+
+  QCOMPARE( item2->pos().x(), 12.0 );
+  QCOMPARE( item2->pos().y(), 14.0 );
+  QCOMPARE( item2->positionWithUnits().x(), 12.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 17.0 );
+}
+
 void TestQgsLayoutItemGroup::resizeGroup()
 {
   QgsProject proj;
@@ -400,6 +465,77 @@ void TestQgsLayoutItemGroup::resizeGroup()
   QGSCOMPARENEAR( item2->sizeWithUnits().width(), 1.98438, 0.0001 );
   QGSCOMPARENEAR( item2->sizeWithUnits().height(),  2.791209, 0.0001 );
   QCOMPARE( item2->sizeWithUnits().units(), QgsUnitTypes::LayoutInches );
+}
+
+void TestQgsLayoutItemGroup::resizeGroupReferencePos()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+  item->attemptMove( QgsLayoutPoint( 5, 9 ) );
+  item->attemptResize( QgsLayoutSize( 4, 7 ) );
+  item->setReferencePoint( QgsLayoutItem::UpperRight );
+
+  QCOMPARE( item->positionWithUnits().x(), 9.0 );
+  QCOMPARE( item->positionWithUnits().y(), 9.0 );
+  QCOMPARE( item->scenePos().x(), 5.0 );
+  QCOMPARE( item->scenePos().y(), 9.0 );
+
+  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item2 );
+  item2->attemptMove( QgsLayoutPoint( 15, 19 ) );
+  item2->attemptResize( QgsLayoutSize( 6, 3 ) );
+  item2->setReferencePoint( QgsLayoutItem::LowerLeft );
+
+  QCOMPARE( item2->positionWithUnits().x(), 15.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 22.0 );
+  QCOMPARE( item2->scenePos().x(), 15.0 );
+  QCOMPARE( item2->scenePos().y(), 19.0 );
+
+  //group items
+  QList<QgsLayoutItem *> groupItems;
+  groupItems << item << item2;
+  QgsLayoutItemGroup *group = l.groupItems( groupItems );
+
+  QCOMPARE( group->positionWithUnits().x(), 5.0 );
+  QCOMPARE( group->positionWithUnits().y(), 9.0 );
+  QCOMPARE( group->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( group->sizeWithUnits().width(), 16.0 );
+  QCOMPARE( group->sizeWithUnits().height(), 13.0 );
+  QCOMPARE( group->scenePos().x(), 5.0 );
+  QCOMPARE( group->scenePos().y(), 9.0 );
+  QCOMPARE( group->rect().width(), 16.0 );
+  QCOMPARE( group->rect().height(), 13.0 );
+
+  group->attemptResize( QgsLayoutSize( 32.0, 26.0 ) );
+  QCOMPARE( group->positionWithUnits().x(), 5.0 );
+  QCOMPARE( group->positionWithUnits().y(), 9.0 );
+  QCOMPARE( group->scenePos().x(), 5.0 );
+  QCOMPARE( group->scenePos().y(), 9.0 );
+  QCOMPARE( group->sizeWithUnits().width(), 32.0 );
+  QCOMPARE( group->sizeWithUnits().height(), 26.0 );
+  QCOMPARE( group->rect().width(), 32.0 );
+  QCOMPARE( group->rect().height(), 26.0 );
+
+  QCOMPARE( item->pos().x(), 5.0 );
+  QCOMPARE( item->pos().y(), 9.0 );
+  QCOMPARE( item->positionWithUnits().x(), 13.0 );
+  QCOMPARE( item->positionWithUnits().y(), 9.0 );
+  QCOMPARE( item->sizeWithUnits().width(), 8.0 );
+  QCOMPARE( item->sizeWithUnits().height(), 14.0 );
+  QCOMPARE( item->rect().width(), 8.0 );
+  QCOMPARE( item->rect().height(), 14.0 );
+
+  QCOMPARE( item2->pos().x(), 25.0 );
+  QCOMPARE( item2->pos().y(), 29.0 );
+  QCOMPARE( item2->positionWithUnits().x(), 25.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 35.0 );
+  QCOMPARE( item2->sizeWithUnits().width(), 12.0 );
+  QCOMPARE( item2->sizeWithUnits().height(), 6.0 );
+  QCOMPARE( item2->rect().width(), 12.0 );
+  QCOMPARE( item2->rect().height(), 6.0 );
 }
 
 Q_DECLARE_METATYPE( QgsLayoutItemGroup * )

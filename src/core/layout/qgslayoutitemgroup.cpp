@@ -204,12 +204,12 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
     itemRect = itemRect.normalized();
     QPointF newPos = mapToScene( itemRect.topLeft() );
 
-    // translate new position to current item units
-    QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, item->positionWithUnits().units() );
-    item->attemptMove( itemPos );
-
     QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
     item->attemptResize( itemSize );
+
+    // translate new position to current item units
+    QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, item->positionWithUnits().units() );
+    item->attemptMove( itemPos, false );
 
     if ( command )
     {
