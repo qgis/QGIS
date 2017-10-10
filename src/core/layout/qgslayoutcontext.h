@@ -31,8 +31,10 @@ class QgsVectorLayer;
  * \brief Stores information relating to the current context and rendering settings for a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutContext
+class CORE_EXPORT QgsLayoutContext : public QObject
 {
+
+    Q_OBJECT
 
   public:
 
@@ -179,6 +181,14 @@ class CORE_EXPORT QgsLayoutContext
      */
     bool pagesVisible() const { return mPagesVisible; }
 
+  signals:
+
+    /**
+     * Emitted whenever the context's \a flags change.
+     * \see setFlags()
+     */
+    void flagsChanged( QgsLayoutContext::Flags flags );
+
   private:
 
     Flags mFlags = 0;
@@ -194,6 +204,8 @@ class CORE_EXPORT QgsLayoutContext
 
 
 };
+
+Q_DECLARE_METATYPE( QgsLayoutContext::Flags )
 
 #endif //QGSLAYOUTCONTEXT_H
 

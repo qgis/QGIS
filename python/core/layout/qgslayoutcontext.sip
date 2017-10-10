@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutContext
+class QgsLayoutContext : QObject
 {
 %Docstring
  Stores information relating to the current context and rendering settings for a layout.
@@ -168,7 +168,16 @@ class QgsLayoutContext
  :rtype: bool
 %End
 
+  signals:
+
+    void flagsChanged( QgsLayoutContext::Flags flags );
+%Docstring
+ Emitted whenever the context's ``flags`` change.
+.. seealso:: setFlags()
+%End
+
 };
+
 
 
 

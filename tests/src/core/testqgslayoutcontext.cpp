@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include <QObject>
 #include "qgstest.h"
+#include <QtTest/QSignalSpy>
 
 class TestQgsLayoutContext: public QObject
 {
@@ -81,16 +82,27 @@ void TestQgsLayoutContext::creation()
 void TestQgsLayoutContext::flags()
 {
   QgsLayoutContext context;
+  QSignalSpy spyFlagsChanged( &context, &QgsLayoutContext::flagsChanged );
+
   //test getting and setting flags
   context.setFlags( QgsLayoutContext::Flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects ) );
+  // default flags, so should be no signal
+  QCOMPARE( spyFlagsChanged.count(), 0 );
+
   QVERIFY( context.flags() == ( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects ) );
   QVERIFY( context.testFlag( QgsLayoutContext::FlagAntialiasing ) );
   QVERIFY( context.testFlag( QgsLayoutContext::FlagUseAdvancedEffects ) );
   QVERIFY( ! context.testFlag( QgsLayoutContext::FlagDebug ) );
   context.setFlag( QgsLayoutContext::FlagDebug );
+  QCOMPARE( spyFlagsChanged.count(), 1 );
   QVERIFY( context.testFlag( QgsLayoutContext::FlagDebug ) );
   context.setFlag( QgsLayoutContext::FlagDebug, false );
+  QCOMPARE( spyFlagsChanged.count(), 2 );
   QVERIFY( ! context.testFlag( QgsLayoutContext::FlagDebug ) );
+  context.setFlag( QgsLayoutContext::FlagDebug, false ); //no change
+  QCOMPARE( spyFlagsChanged.count(), 2 );
+  context.setFlags( QgsLayoutContext::FlagDebug );
+  QCOMPARE( spyFlagsChanged.count(), 3 );
 }
 
 void TestQgsLayoutContext::feature()
