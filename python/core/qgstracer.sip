@@ -64,20 +64,28 @@ Set extent to which graph's features will be limited (empty extent means no limi
 
     double offset() const;
 %Docstring
+ Get offset in map units that should be applied to the traced paths returned from findShortestPath().
+ Positive offset for right side, negative offset for left side.
 .. versionadded:: 3.0
  :rtype: float
 %End
+
     void setOffset( double offset );
 %Docstring
+ Set offset in map units that should be applied to the traced paths returned from findShortestPath().
+ Positive offset for right side, negative offset for left side.
 .. versionadded:: 3.0
 %End
 
     void offsetParameters( int &quadSegments /Out/, int &joinStyle /Out/, double &miterLimit /Out/ );
 %Docstring
+ Get extra parameters for offset curve algorithm (used when offset is non-zero)
 .. versionadded:: 3.0
 %End
+
     void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
 %Docstring
+ Set extra parameters for offset curve algorithm (used when offset is non-zero)
 .. versionadded:: 3.0
 %End
 

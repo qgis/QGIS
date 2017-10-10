@@ -63,20 +63,30 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Set extent to which graph's features will be limited (empty extent means no limit)
     void setExtent( const QgsRectangle &extent );
 
-    //! Get offset in map units that should be applied to the traced paths returned from findShortestPath().
-    //! Positive offset for right side, negative offset for left side.
-    //! \since QGIS 3.0
+    /**
+     * Get offset in map units that should be applied to the traced paths returned from findShortestPath().
+     * Positive offset for right side, negative offset for left side.
+     * \since QGIS 3.0
+     */
     double offset() const { return mOffset; }
-    //! Set offset in map units that should be applied to the traced paths returned from findShortestPath().
-    //! Positive offset for right side, negative offset for left side.
-    //! \since QGIS 3.0
+
+    /**
+     * Set offset in map units that should be applied to the traced paths returned from findShortestPath().
+     * Positive offset for right side, negative offset for left side.
+     * \since QGIS 3.0
+     */
     void setOffset( double offset );
 
-    //! Get extra parameters for offset curve algorithm (used when offset is non-zero)
-    //! \since QGIS 3.0
+    /**
+     * Get extra parameters for offset curve algorithm (used when offset is non-zero)
+     * \since QGIS 3.0
+     */
     void offsetParameters( int &quadSegments SIP_OUT, int &joinStyle SIP_OUT, double &miterLimit SIP_OUT );
-    //! Set extra parameters for offset curve algorithm (used when offset is non-zero)
-    //! \since QGIS 3.0
+
+    /**
+     * Set extra parameters for offset curve algorithm (used when offset is non-zero)
+     * \since QGIS 3.0
+     */
     void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
 
     //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
@@ -162,6 +172,7 @@ class CORE_EXPORT QgsTracer : public QObject
     int mOffsetJoinStyle = 2;
     //! Offset parameter: Limit for miter join style
     double mOffsetMiterLimit = 5.;
+
     /**
      * Limit of how many features can be in the graph (0 means no limit).
      * This is to avoid possibly long graph preparation for complicated layers

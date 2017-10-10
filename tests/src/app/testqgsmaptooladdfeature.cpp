@@ -64,7 +64,8 @@ static QgsFeatureId _newFeatureId( QgsVectorLayer *layer, QSet<QgsFeatureId> old
 
 
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the node tool
  */
 class TestQgsMapToolAddFeature : public QObject
@@ -189,7 +190,7 @@ void TestQgsMapToolAddFeature::initTestCase()
   mCanvas->setMapTool( mCaptureTool );
   mCanvas->setCurrentLayer( mLayerLine );
 
-  mEnableTracingAction = new QAction();
+  mEnableTracingAction = new QAction( nullptr );
   mEnableTracingAction->setCheckable( true );
 
   mTracer = new QgsMapCanvasTracer( mCanvas, nullptr );
