@@ -156,3 +156,9 @@ void QgsRatioLockButton::setHeightSpinBox( QDoubleSpinBox *widget )
   mPrevHeight = widget->value();
   connect( mHeightSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRatioLockButton::heightSpinBoxChanged );
 }
+
+void QgsRatioLockButton::resetRatio()
+{
+  mPrevWidth = mWidthSpinBox ? mWidthSpinBox->value() : 0.0;
+  mPrevHeight = mHeightSpinBox ? mHeightSpinBox->value() : 0.0;
+}

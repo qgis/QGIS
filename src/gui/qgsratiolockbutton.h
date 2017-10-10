@@ -82,6 +82,12 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
      */
     void setHeightSpinBox( QDoubleSpinBox *widget );
 
+    /**
+     * Resets the current width/height ratio, taking the width and height
+     * from the current values of the width and height spin boxes.
+     */
+    void resetRatio();
+
   signals:
 
     /**

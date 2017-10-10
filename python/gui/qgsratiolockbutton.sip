@@ -67,6 +67,12 @@ class QgsRatioLockButton : QToolButton
 .. seealso:: setWidthSpinBox()
 %End
 
+    void resetRatio();
+%Docstring
+ Resets the current width/height ratio, taking the width and height
+ from the current values of the width and height spin boxes.
+%End
+
   signals:
 
     void lockChanged( const bool locked );
