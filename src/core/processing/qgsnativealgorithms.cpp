@@ -2595,6 +2595,19 @@ void QgsRasterLayerUniqueValuesReportAlgorithm::initAlgorithm( const QVariantMap
                 QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ),
                 QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "AREA_UNIT" ), QObject::tr( "Area unit" ), QStringList()
+                << QObject::tr( "layer unit" )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMeters )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareKilometers )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareFeet )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareYards )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMiles )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaHectares )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaAcres )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareNauticalMiles )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareDegrees )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareCentimeters )
+                << QgsUnitTypes::toString( QgsUnitTypes::AreaSquareMillimeters ) ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ),
                 QObject::tr( "Unique values report" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
 
@@ -2623,7 +2636,6 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
   int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
-
 
   QHash< double, int > uniqueValues;
   int width = layer->width();
@@ -2672,8 +2684,14 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
     QFile file( outputFile );
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
-      QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ) );
-      double cellArea = layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelY();
+      QgsUnitTypes::AreaUnit areaUnit = QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() );
+      double pixelArea = layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelY();
+      if ( parameterAsEnum( parameters, QStringLiteral( "AREA_UNIT" ), context ) != 0 )
+      {
+        areaUnit = static_cast< QgsUnitTypes::AreaUnit >( parameterAsEnum( parameters, QStringLiteral( "AREA_UNIT" ), context ) - 1 );
+        pixelArea *= QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ), areaUnit );
+      }
+      QString areaUnitAbbr = QgsUnitTypes::toAbbreviatedString( areaUnit );
 
       QTextStream out( &file );
       out << QString( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
@@ -2685,11 +2703,11 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Total pixel count" ) ).arg( width * height );
       if ( noDataCount > -1 )
         out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "NODATA pixel count" ) ).arg( noDataCount );
-      out << QString( "<table><tr><td>%1</td><td>%2</td><td>%3 (%4)</td></tr>\n" ).arg( QObject::tr( "Value" ) ).arg( QObject::tr( "Pixel count" ) ).arg( QObject::tr( "Area" ) ).arg( areaUnit );
+      out << QString( "<table><tr><td>%1</td><td>%2</td><td>%3 (%4)</td></tr>\n" ).arg( QObject::tr( "Value" ) ).arg( QObject::tr( "Pixel count" ) ).arg( QObject::tr( "Area" ) ).arg( areaUnitAbbr );
 
       for ( double key : sortedUniqueValues.keys() )
       {
-        double area = sortedUniqueValues[key] * cellArea;
+        double area = sortedUniqueValues[key] * pixelArea;
         out << QString( "<tr><td>%1</td><td>%2</td><td>%3</td></tr>\n" ).arg( key ).arg( sortedUniqueValues[key] ).arg( QString::number( area, 'g', 16 ) );
       }
       out << QString( "</table>\n</body></html>" );
