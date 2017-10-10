@@ -231,6 +231,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the donors file.
     static QString donorsFilePath();
 
+    //! Returns the path to the server resources directory.
+    static QString serverResourcesPath();
+
     /**
      * Returns the path to the sponsors file.
      */

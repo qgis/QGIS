@@ -210,6 +210,12 @@ Returns the path to the donors file.
  :rtype: str
 %End
 
+    static QString serverResourcesPath();
+%Docstring
+Returns the path to the server resources directory.
+ :rtype: str
+%End
+
     static QString translatorsFilePath();
 %Docstring
  Returns the path to the sponsors file.

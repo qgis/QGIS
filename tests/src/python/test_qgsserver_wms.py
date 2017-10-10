@@ -184,6 +184,11 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  '&layers=testlayer%20%C3%A8%C3%A9&',
                                  'getstyles')
 
+    def test_wms_getschemaextension(self):
+        self.wms_request_compare('GetSchemaExtension',
+                                 '',
+                                 'getschemaextension')
+
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
         project = self.testdata_path + "test_project_inspire.qgs"
