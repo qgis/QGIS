@@ -129,8 +129,14 @@ QgsVectorLayer *QgsLayoutConfigObject::coverageLayer() const
 QgsLayoutItemBaseWidget::QgsLayoutItemBaseWidget( QWidget *parent, QgsLayoutObject *layoutObject )
   : QgsPanelWidget( parent )
   , mConfigObject( new QgsLayoutConfigObject( this, layoutObject ) )
+  , mObject( layoutObject )
 {
 
+}
+
+QgsLayoutObject *QgsLayoutItemBaseWidget::layoutObject()
+{
+  return mObject;
 }
 
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
@@ -165,7 +171,7 @@ void QgsLayoutItemPropertiesWidget::updateVariables()
 {
   QgsExpressionContext context = mItem->createExpressionContext();
   mVariableEditor->setContext( &context );
-  int editableIndex = context.indexOfScope( tr( "Composer Item" ) );
+  int editableIndex = context.indexOfScope( tr( "Layout Item" ) );
   if ( editableIndex >= 0 )
     mVariableEditor->setEditableScopeIndex( editableIndex );
 }
@@ -211,7 +217,6 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   mItemRotationSpinBox->setClearValue( 0 );
   mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );
   mStrokeUnitsComboBox->setConverter( &mItem->layout()->context().measurementConverter() );
-
 
   //make button exclusive
   QButtonGroup *buttonGroup = new QButtonGroup( this );

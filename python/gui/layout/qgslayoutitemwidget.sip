@@ -75,6 +75,12 @@ class QgsLayoutItemBaseWidget: QgsPanelWidget
  Constructor for QgsLayoutItemBaseWidget, linked with the specified ``layoutObject``.
 %End
 
+    QgsLayoutObject *layoutObject();
+%Docstring
+ Returns the layout object associated with this widget.
+ :rtype: QgsLayoutObject
+%End
+
   protected:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );

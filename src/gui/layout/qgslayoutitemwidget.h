@@ -121,6 +121,11 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      */
     QgsLayoutItemBaseWidget( QWidget *parent SIP_TRANSFERTHIS, QgsLayoutObject *layoutObject );
 
+    /**
+     * Returns the layout object associated with this widget.
+     */
+    QgsLayoutObject *layoutObject();
+
   protected:
 
     /**
@@ -147,6 +152,8 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
   private:
 
     QgsLayoutConfigObject *mConfigObject = nullptr;
+
+    QgsLayoutObject *mObject = nullptr;
 };
 
 

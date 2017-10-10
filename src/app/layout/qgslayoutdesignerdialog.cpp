@@ -620,6 +620,18 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
     return;
   }
 
+  if ( auto widget = qobject_cast< QgsLayoutItemBaseWidget * >( mItemPropertiesStack->mainPanel() ) )
+  {
+    if ( widget->layoutObject() == item )
+    {
+      // already showing properties for this item - we don't want to create a new panel
+      if ( bringPanelToFront )
+        mItemDock->setUserVisible( true );
+
+      return;
+    }
+  }
+
   std::unique_ptr< QgsLayoutItemBaseWidget > widget( QgsGui::layoutItemGuiRegistry()->createItemWidget( item ) );
   if ( ! widget )
   {
@@ -1069,8 +1081,8 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
   }
 
   // update layout based widgets
-  QgsLayoutPropertiesWidget *oldCompositionWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
-  delete oldCompositionWidget;
+  QgsLayoutPropertiesWidget *oldLayoutWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+  delete oldLayoutWidget;
   QgsLayoutGuideWidget *oldGuideWidget = qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
   delete oldGuideWidget;
 
