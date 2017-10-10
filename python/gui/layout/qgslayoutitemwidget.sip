@@ -81,6 +81,17 @@ class QgsLayoutItemBaseWidget: QgsPanelWidget
  :rtype: QgsLayoutObject
 %End
 
+    bool setItem( QgsLayoutItem *item );
+%Docstring
+ Sets the current ``item`` to show in the widget. If true is returned, ``item``
+ was an acceptable type for display in this widget and the widget has been
+ updated to match ``item``'s properties.
+
+ If false is returned, then the widget could not be successfully updated
+ to show the properties of ``item``.
+ :rtype: bool
+%End
+
   protected:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );
@@ -99,6 +110,19 @@ class QgsLayoutItemBaseWidget: QgsPanelWidget
  Returns the current layout context coverage layer (if set).
  :rtype: QgsVectorLayer
 %End
+
+    virtual bool setNewItem( QgsLayoutItem *item );
+%Docstring
+ Attempts to update the widget to show the properties
+ for the specified ``item``.
+
+ Subclasses can override this if they support changing items in place.
+
+ Implementations must return true if the item was accepted and
+ the widget was updated.
+ :rtype: bool
+%End
+
 
 
 };
@@ -126,6 +150,8 @@ class QgsLayoutItemPropertiesWidget: QWidget
     void showBackgroundGroup( bool showGroup );
 
     void showFrameGroup( bool showGroup );
+
+    void setItem( QgsLayoutItem *item );
 
   protected slots:
     void initializeDataDefinedButtons();

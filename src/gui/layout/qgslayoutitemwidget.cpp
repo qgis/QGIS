@@ -139,6 +139,17 @@ QgsLayoutObject *QgsLayoutItemBaseWidget::layoutObject()
   return mObject;
 }
 
+bool QgsLayoutItemBaseWidget::setItem( QgsLayoutItem *item )
+{
+  if ( setNewItem( item ) )
+  {
+    mObject = item;
+    return true;
+  }
+
+  return false;
+}
+
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
 {
   mConfigObject->initializeDataDefinedButton( button, property );
@@ -152,6 +163,11 @@ void QgsLayoutItemBaseWidget::updateDataDefinedButton( QgsPropertyOverrideButton
 QgsVectorLayer *QgsLayoutItemBaseWidget::coverageLayer() const
 {
   return mConfigObject->coverageLayer();
+}
+
+bool QgsLayoutItemBaseWidget::setNewItem( QgsLayoutItem * )
+{
+  return false;
 }
 
 #if 0 //TODO
@@ -178,7 +194,6 @@ void QgsLayoutItemPropertiesWidget::updateVariables()
 
 QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item )
   : QWidget( parent )
-  , mItem( item )
   , mConfigObject( new QgsLayoutConfigObject( this, item ) )
   , mFreezeXPosSpin( false )
   , mFreezeYPosSpin( false )
@@ -186,20 +201,19 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   , mFreezeHeightSpin( false )
   , mFreezePageSpin( false )
 {
-
   setupUi( this );
 
   mItemRotationSpinBox->setClearValue( 0 );
   mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );
-  mStrokeUnitsComboBox->setConverter( &mItem->layout()->context().measurementConverter() );
+  mStrokeUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
 
   mPosUnitsComboBox->linkToWidget( mXPosSpin );
   mPosUnitsComboBox->linkToWidget( mYPosSpin );
   mSizeUnitsComboBox->linkToWidget( mWidthSpin );
   mSizeUnitsComboBox->linkToWidget( mHeightSpin );
 
-  mPosUnitsComboBox->setConverter( &mItem->layout()->context().measurementConverter() );
-  mSizeUnitsComboBox->setConverter( &mItem->layout()->context().measurementConverter() );
+  mPosUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
+  mSizeUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
 
   mPosLockAspectRatio->setWidthSpinBox( mXPosSpin );
   mPosLockAspectRatio->setHeightSpinBox( mYPosSpin );
@@ -249,14 +263,11 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
 
   initializeDataDefinedButtons();
 
-  setValuesForGuiElements();
-
 #if 0 //TODO
   connect( mItem->composition(), &QgsComposition::paperSizeChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
 #endif
 
-  connect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
-  connect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
+  setItem( item );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayoutItemPropertiesWidget::opacityChanged );
 
@@ -264,10 +275,10 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsLayoutItemPropertiesWidget::variablesChanged );
   // listen out for variable edits
   connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
-  connect( mItem->layout()->project(), &QgsProject::customVariablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
+  connect( item->layout()->project(), &QgsProject::customVariablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
 
-  if ( mItem->layout() )
-    connect( mItem->layout(), &QgsLayout::variablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
+  if ( item->layout() )
+    connect( item->layout(), &QgsLayout::variablesChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
 }
 
 void QgsLayoutItemPropertiesWidget::showBackgroundGroup( bool showGroup )
@@ -278,6 +289,20 @@ void QgsLayoutItemPropertiesWidget::showBackgroundGroup( bool showGroup )
 void QgsLayoutItemPropertiesWidget::showFrameGroup( bool showGroup )
 {
   mFrameGroupBox->setVisible( showGroup );
+}
+
+void QgsLayoutItemPropertiesWidget::setItem( QgsLayoutItem *item )
+{
+  if ( mItem )
+  {
+    disconnect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
+    disconnect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
+  }
+  mItem = item;
+  connect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
+  connect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
+
+  setValuesForGuiElements();
 }
 
 //slots

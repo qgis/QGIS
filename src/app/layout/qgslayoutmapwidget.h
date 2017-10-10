@@ -89,6 +89,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void blockOverviewItemsSignals( bool block );
 
   protected:
+    bool setNewItem( QgsLayoutItem *item ) override;
 
     void addPageToToolbox( QWidget *widget, const QString &name );
 
@@ -124,6 +125,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
   private:
     QgsLayoutItemMap *mMapItem = nullptr;
+    QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Sets extent of composer map from line edits
     void updateComposerExtentFromGui();

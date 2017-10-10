@@ -68,8 +68,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   mMapRotationSpinBox->setClearValue( 0 );
 
   //add widget for general composer item properties
-  QgsLayoutItemPropertiesWidget *itemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, item );
-  mainLayout->addWidget( itemPropertiesWidget );
+  mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, item );
+  mainLayout->addWidget( mItemPropertiesWidget );
 
   mScaleLineEdit->setValidator( new QDoubleValidator( mScaleLineEdit ) );
 
@@ -139,6 +139,17 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mMapRotationSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutMapWidget::rotationChanged );
 
   blockAllSignals( false );
+}
+
+bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
+{
+  if ( item->type() != QgsLayoutItemRegistry::LayoutMap )
+    return false;
+
+  mMapItem = qobject_cast< QgsLayoutItemMap * >( item );
+  mItemPropertiesWidget->setItem( mMapItem );
+
+  return true;
 }
 
 void QgsLayoutMapWidget::populateDataDefinedButtons()

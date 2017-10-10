@@ -630,6 +630,17 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
 
       return;
     }
+    else
+    {
+      // try to reuse
+      if ( widget->setItem( item ) )
+      {
+        if ( bringPanelToFront )
+          mItemDock->setUserVisible( true );
+
+        return;
+      }
+    }
   }
 
   std::unique_ptr< QgsLayoutItemBaseWidget > widget( QgsGui::layoutItemGuiRegistry()->createItemWidget( item ) );
