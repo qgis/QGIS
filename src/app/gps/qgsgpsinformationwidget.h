@@ -75,10 +75,10 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void connected( QgsGPSConnection * );
     void timedout();
     void switchAcquisition();
-    void on_cboAcquisitionIntervalActivated( const QString & );
-    void on_cboDistanceThresholdActivated( const QString & );
-    void on_cboAcquisitionIntervalEdited();
-    void on_cboDistanceThresholdEdited();
+    void cboAcquisitionIntervalActivated( const QString & );
+    void cboDistanceThresholdActivated( const QString & );
+    void cboAcquisitionIntervalEdited();
+    void cboDistanceThresholdEdited();
   private:
     enum FixStatus  //GPS status
     {
@@ -116,14 +116,14 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
     QColor mTrackColor;
-    QIntValidator *acquisitionIntValidator;
-    QIntValidator *distanceThresholdValidator;
-    QLineEdit *acIntervalEdit, *distThresholdEdit;
-    nmeaPOS lastNmeaPosition;
-    QTimer *acquisitionTimer;
-    bool acquisitionEnabled;
-    unsigned int acquisitionInterval;
-    unsigned int distanceThreshold;
+    QIntValidator *mAcquisitionIntValidator = nullptr;
+    QIntValidator *mDistanceThresholdValidator = nullptr;
+    QLineEdit *mAcIntervalEdit = nullptr, *mDistThresholdEdit = nullptr;
+    nmeaPOS mLastNmeaPosition;
+    std::unique_ptr<QTimer> mAcquisitionTimer;
+    bool mAcquisitionEnabled = true;
+    unsigned int mAcquisitionInterval = 0;
+    unsigned int mDistanceThreshold = 0;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H

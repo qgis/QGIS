@@ -70,7 +70,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mpLastLayer = nullptr;
 
   mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
-  lastNmeaPosition.lat = nmea_degree2radian( 0.0 ); lastNmeaPosition.lon = nmea_degree2radian( 0.0 );
+  mLastNmeaPosition.lat = nmea_degree2radian( 0.0 ); mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
   mpMapMarker = nullptr;
   mpRubberBand = nullptr;
@@ -245,10 +245,10 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mStackedWidget->setCurrentIndex( 3 ); // force to Options
   mBtnPosition->setFocus( Qt::TabFocusReason );
 
-  acquisitionIntValidator = new QIntValidator( 0, MAXACQUISITIONINTERVAL, this );
-  distanceThresholdValidator = new QIntValidator( 0, MAXDISTANCETHRESHOLD, this );
-  acquisitionTimer = new QTimer( this );
-  acquisitionTimer->setSingleShot( true );
+  mAcquisitionIntValidator = new QIntValidator( 0, MAXACQUISITIONINTERVAL, this );
+  mDistanceThresholdValidator = new QIntValidator( 0, MAXDISTANCETHRESHOLD, this );
+  mAcquisitionTimer = std::make_unique<QTimer>( this );
+  mAcquisitionTimer->setSingleShot( true );
   mCboAcquisitionInterval->setInsertPolicy( QComboBox::NoInsert );
   mCboDistanceThreshold->setInsertPolicy( QComboBox::NoInsert );
   mCboAcquisitionInterval->addItem( QStringLiteral( "0" ), 0 );
@@ -258,32 +258,30 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mCboAcquisitionInterval->addItem( QStringLiteral( "15" ), 15 );
   mCboAcquisitionInterval->addItem( QStringLiteral( "30" ), 30 );
   mCboAcquisitionInterval->addItem( QStringLiteral( "60" ), 60 );
-  mCboAcquisitionInterval->addItem( tr( "..." ) );
+  mCboAcquisitionInterval->addItem( tr( "…" ) );
   mCboDistanceThreshold->addItem( QStringLiteral( "0" ), 0 );
   mCboDistanceThreshold->addItem( QStringLiteral( "3" ), 3 );
   mCboDistanceThreshold->addItem( QStringLiteral( "5" ), 5 );
   mCboDistanceThreshold->addItem( QStringLiteral( "10" ), 10 );
   mCboDistanceThreshold->addItem( QStringLiteral( "15" ), 15 );
-  mCboDistanceThreshold->addItem( tr( "..." ) );
+  mCboDistanceThreshold->addItem( tr( "…" ) );
   mCboAcquisitionInterval->setCurrentIndex( 0 );
   mCboAcquisitionInterval->setCurrentIndex( 0 );
-  connect( acquisitionTimer, &QTimer::timeout,
+  connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsGPSInformationWidget::switchAcquisition );
   connect( mCboAcquisitionInterval, static_cast<void( QComboBox::* )( const QString & )>( &QComboBox::activated ),
-           this, &QgsGPSInformationWidget::on_cboAcquisitionIntervalActivated );
+           this, &QgsGPSInformationWidget::cboAcquisitionIntervalActivated );
   connect( mCboDistanceThreshold, static_cast<void( QComboBox::* )( const QString & )>( &QComboBox::activated ),
-           this, &QgsGPSInformationWidget::on_cboDistanceThresholdActivated );
-  acIntervalEdit = new QLineEdit;
-  distThresholdEdit = new QLineEdit;
-  acIntervalEdit->setValidator( acquisitionIntValidator );
-  distThresholdEdit->setValidator( distanceThresholdValidator );
-  connect( acIntervalEdit, &QLineEdit::editingFinished,
-           this, &QgsGPSInformationWidget::on_cboAcquisitionIntervalEdited );
-  connect( distThresholdEdit, &QLineEdit::editingFinished,
-           this, &QgsGPSInformationWidget::on_cboDistanceThresholdEdited );
-  acquisitionInterval = 0;
-  distanceThreshold = 0;
-  acquisitionEnabled = true;
+           this, &QgsGPSInformationWidget::cboDistanceThresholdActivated );
+  mAcIntervalEdit = new QLineEdit;
+  mDistThresholdEdit = new QLineEdit;
+  mAcIntervalEdit->setValidator( mAcquisitionIntValidator );
+  mDistThresholdEdit->setValidator( mDistanceThresholdValidator );
+  connect( mAcIntervalEdit, &QLineEdit::editingFinished,
+           this, &QgsGPSInformationWidget::cboAcquisitionIntervalEdited );
+  connect( mDistThresholdEdit, &QLineEdit::editingFinished,
+           this, &QgsGPSInformationWidget::cboDistanceThresholdEdited );
+
 }
 
 QgsGPSInformationWidget::~QgsGPSInformationWidget()
@@ -346,7 +344,7 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   {
     mySettings.setValue( QStringLiteral( "gps/panMode" ), "none" );
   }
-  delete acquisitionTimer;
+
 }
 
 void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int value )
@@ -669,24 +667,24 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &in
   }
 
   QgsPointXY myNewCenter;
-  nmeaPOS myNewNmeaPosition;
+  nmeaPOS newNmeaPosition;
   if ( validFlag )
   {
     myNewCenter = QgsPointXY( info.longitude, info.latitude );
-    myNewNmeaPosition.lat = nmea_degree2radian( info.latitude ); myNewNmeaPosition.lon = nmea_degree2radian( info.longitude );
+    newNmeaPosition.lat = nmea_degree2radian( info.latitude ); newNmeaPosition.lon = nmea_degree2radian( info.longitude );
   }
   else
   {
     myNewCenter = mLastGpsPosition;
-    myNewNmeaPosition = lastNmeaPosition;
+    newNmeaPosition = mLastNmeaPosition;
   }
-  if ( !acquisitionEnabled || ( nmea_distance( &myNewNmeaPosition, &lastNmeaPosition ) < distanceThreshold ) )
+  if ( !mAcquisitionEnabled || ( nmea_distance( &newNmeaPosition, &mLastNmeaPosition ) < mDistanceThreshold ) )
   {
     // do not update position if update is disabled by timer or distance is under threshold
     myNewCenter = mLastGpsPosition;
 
   }
-  if ( validFlag && acquisitionEnabled )
+  if ( validFlag && mAcquisitionEnabled )
   {
     // position updated by valid data, reset timer
     switchAcquisition();
@@ -722,7 +720,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &in
   if ( mLastGpsPosition != myNewCenter )
   {
     mLastGpsPosition = myNewCenter;
-    lastNmeaPosition = myNewNmeaPosition;
+    mLastNmeaPosition = newNmeaPosition;
     // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
@@ -1182,23 +1180,23 @@ void QgsGPSInformationWidget::showStatusBarMessage( const QString &msg )
 }
 void QgsGPSInformationWidget::setAcquisitionInterval( int interval )
 {
-  acquisitionInterval = interval * 1000;
-  if ( acquisitionTimer->isActive() )
-    acquisitionTimer->stop();
-  acquisitionEnabled = true;
+  mAcquisitionInterval = interval * 1000;
+  if ( mAcquisitionTimer->isActive() )
+    mAcquisitionTimer->stop();
+  mAcquisitionEnabled = true;
   switchAcquisition();
 
 }
 void QgsGPSInformationWidget::setDistanceThreshold( int distance )
 {
-  distanceThreshold = distance;
+  mDistanceThreshold = distance;
 }
-void QgsGPSInformationWidget::on_cboAcquisitionIntervalActivated( const QString   &text )
+void QgsGPSInformationWidget::cboAcquisitionIntervalActivated( const QString   &text )
 {
-  if ( text == "..." )
+  if ( text == "…" )
   {
     mCboAcquisitionInterval->setEditable( true );
-    mCboAcquisitionInterval->setLineEdit( acIntervalEdit );
+    mCboAcquisitionInterval->setLineEdit( mAcIntervalEdit );
     mCboAcquisitionInterval->clearEditText();
   }
   else
@@ -1206,12 +1204,12 @@ void QgsGPSInformationWidget::on_cboAcquisitionIntervalActivated( const QString 
     setAcquisitionInterval( text.toInt() );
   }
 }
-void QgsGPSInformationWidget::on_cboDistanceThresholdActivated( const QString   &text )
+void QgsGPSInformationWidget::cboDistanceThresholdActivated( const QString   &text )
 {
-  if ( text == "..." )
+  if ( text == "…" )
   {
     mCboDistanceThreshold->setEditable( true );
-    mCboDistanceThreshold->setLineEdit( distThresholdEdit );
+    mCboDistanceThreshold->setLineEdit( mDistThresholdEdit );
     mCboDistanceThreshold->clearEditText();
 
   }
@@ -1220,24 +1218,24 @@ void QgsGPSInformationWidget::on_cboDistanceThresholdActivated( const QString   
     setDistanceThreshold( text.toInt() );
   }
 }
-void QgsGPSInformationWidget::on_cboAcquisitionIntervalEdited()
+void QgsGPSInformationWidget::cboAcquisitionIntervalEdited()
 {
-  setAcquisitionInterval( acIntervalEdit->text().toInt() );
+  setAcquisitionInterval( mAcIntervalEdit->text().toInt() );
 }
-void QgsGPSInformationWidget::on_cboDistanceThresholdEdited()
+void QgsGPSInformationWidget::cboDistanceThresholdEdited()
 {
-  setDistanceThreshold( distThresholdEdit->text().toInt() );
+  setDistanceThreshold( mDistThresholdEdit->text().toInt() );
 }
 void QgsGPSInformationWidget::switchAcquisition()
 {
-  if ( acquisitionInterval > 0 )
+  if ( mAcquisitionInterval > 0 )
   {
-    if ( acquisitionEnabled )
-      acquisitionTimer->start( acquisitionInterval );
+    if ( mAcquisitionEnabled )
+      mAcquisitionTimer->start( mAcquisitionInterval );
     else
       //wait only acquisitionInterval/10 for new valid data
-      acquisitionTimer->start( acquisitionInterval / 10 );
+      mAcquisitionTimer->start( mAcquisitionInterval / 10 );
     // anyway switch to enabled / disabled acquisition
-    acquisitionEnabled = !acquisitionEnabled;
+    mAcquisitionEnabled = !mAcquisitionEnabled;
   }
 }
