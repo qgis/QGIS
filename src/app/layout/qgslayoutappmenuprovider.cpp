@@ -99,6 +99,19 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       }
     } );
     menu->addAction( removePageAction );
+
+    menu->addSeparator();
+  }
+
+  if ( !selectedItems.empty() )
+  {
+    QAction *itemPropertiesAction = new QAction( tr( "Item Properties…" ), menu );
+    QgsLayoutItem *item = selectedItems.at( 0 );
+    connect( itemPropertiesAction, &QAction::triggered, this, [this, item]()
+    {
+      mDesigner->showItemOptions( item, true );
+    } );
+    menu->addAction( itemPropertiesAction );
   }
 
   return menu;
