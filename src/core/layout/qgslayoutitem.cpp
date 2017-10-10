@@ -224,7 +224,7 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
-  if ( !painter || !painter->device() )
+  if ( !painter || !painter->device() || !shouldDrawItem() )
   {
     return;
   }
@@ -411,6 +411,20 @@ bool QgsLayoutItem::shouldBlockUndoCommands() const
   return !mLayout || mLayout != scene() || mBlockUndoCommands;
 }
 
+bool QgsLayoutItem::shouldDrawItem() const
+{
+#if 0 //TODO
+  if ( ( mLayout && mLayout->plotStyle() == QgsComposition::Preview ) || !mLayout )
+  {
+    //preview mode or no composition, so OK to draw item
+    return true;
+  }
+#endif
+
+  //exporting layout, so check if item is excluded from exports
+  return !mEvaluatedExcludeFromExports;
+}
+
 double QgsLayoutItem::itemRotation() const
 {
   return rotation();
@@ -518,6 +532,17 @@ void QgsLayoutItem::setBlendMode( const QPainter::CompositionMode mode )
   refreshBlendMode();
 }
 
+bool QgsLayoutItem::excludeFromExports() const
+{
+  return mExcludeFromExports;
+}
+
+void QgsLayoutItem::setExcludeFromExports( bool exclude )
+{
+  mExcludeFromExports = exclude;
+  refreshDataDefinedProperty( QgsLayoutObject::ExcludeFromExports );
+}
+
 double QgsLayoutItem::estimatedFrameBleed() const
 {
   if ( !hasFrame() )
@@ -617,6 +642,14 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   {
     refreshBlendMode();
   }
+  if ( property == QgsLayoutObject::ExcludeFromExports || property == QgsLayoutObject::AllProperties )
+  {
+    bool exclude = mExcludeFromExports;
+    //data defined exclude from exports set?
+    mEvaluatedExcludeFromExports = mDataDefinedProperties.valueAsBool( QgsLayoutObject::ExcludeFromExports, createExpressionContext(), exclude );
+  }
+
+  update();
 }
 
 void QgsLayoutItem::setItemRotation( const double angle )
@@ -842,9 +875,9 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
 #if 0
   //transparency
   //  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
-
-  //  composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
 #endif
+
+  element.setAttribute( "excludeFromExports", mExcludeFromExports );
 
   writeObjectPropertiesToElement( element, document, context );
   return true;
@@ -968,9 +1001,9 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
 #if 0 //TODO
   //transparency
   setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
-  mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
-  mEvaluatedExcludeFromExports = mExcludeFromExports;
 #endif
+  mExcludeFromExports = element.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
+  mEvaluatedExcludeFromExports = mExcludeFromExports;
 
   mBlockUndoCommands = false;
   return true;

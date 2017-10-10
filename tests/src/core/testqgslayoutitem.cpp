@@ -152,6 +152,7 @@ class TestQgsLayoutItem: public QObject
     void multiItemUndo();
     void overlappingUndo();
     void blendMode();
+    void excludeFromExports();
 
   private:
 
@@ -1355,6 +1356,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setBackgroundEnabled( false );
   original->setBackgroundColor( QColor( 200, 150, 100 ) );
   original->setBlendMode( QPainter::CompositionMode_Darken );
+  original->setExcludeFromExports( true );
 
   QgsLayoutItem *copy = createCopyViaXml( &l, original );
 
@@ -1378,6 +1380,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QVERIFY( !copy->hasBackground() );
   QCOMPARE( copy->backgroundColor(), QColor( 200, 150, 100 ) );
   QCOMPARE( copy->blendMode(), QPainter::CompositionMode_Darken );
+  QVERIFY( copy->excludeFromExports( ) );
 
   delete copy;
   delete original;
@@ -1554,6 +1557,37 @@ void TestQgsLayoutItem::blendMode()
   item->refreshDataDefinedProperty();
   QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken ); // should not change
   QCOMPARE( item->mEffect->compositionMode(), QPainter::CompositionMode_Lighten );
+}
+
+void TestQgsLayoutItem::excludeFromExports()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+
+  item->setExcludeFromExports( true );
+  QVERIFY( item->excludeFromExports() );
+  item->setExcludeFromExports( false );
+  QVERIFY( !item->excludeFromExports() );
+
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
+  item->refreshDataDefinedProperty();
+  QVERIFY( !item->excludeFromExports() ); // should not change
+  QVERIFY( item->mEvaluatedExcludeFromExports );
+
+  item->setPos( 100, 100 );
+  item->setRect( 0, 0, 200, 200 );
+  l.setSceneRect( 0, 0, 400, 400 );
+  l.context().setFlag( QgsLayoutContext::FlagDebug, true );
+  QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
+  image.fill( 0 );
+  QPainter painter( &image );
+  l.render( &painter );
+  painter.end();
+
+  QVERIFY( renderCheck( QStringLiteral( "layoutitem_excluded" ), image, 0 ) );
 }
 
 QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )

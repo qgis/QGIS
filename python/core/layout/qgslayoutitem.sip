@@ -427,6 +427,19 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: blendMode()
 %End
 
+    bool excludeFromExports() const;
+%Docstring
+ Returns whether the item should be excluded from layout exports and prints.
+.. seealso:: setExcludeFromExports()
+ :rtype: bool
+%End
+
+    void setExcludeFromExports( bool exclude );
+%Docstring
+ Sets whether the item should be excluded from composer exports and prints.
+.. seealso:: excludeFromExports()
+%End
+
     virtual double estimatedFrameBleed() const;
 %Docstring
  Returns the estimated amount the item's frame bleeds outside the item's

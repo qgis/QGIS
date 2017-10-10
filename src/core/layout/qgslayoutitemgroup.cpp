@@ -129,6 +129,7 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
 
 void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint )
 {
+  Q_UNUSED( useReferencePoint ); //groups should always have reference point in top left
   if ( !mLayout )
     return;
 

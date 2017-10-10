@@ -430,6 +430,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setBlendMode( const QPainter::CompositionMode mode );
 
     /**
+     * Returns whether the item should be excluded from layout exports and prints.
+     * \see setExcludeFromExports()
+     */
+    bool excludeFromExports() const;
+
+    /**
+     * Sets whether the item should be excluded from composer exports and prints.
+     * \see excludeFromExports()
+     */
+    void setExcludeFromExports( bool exclude );
+
+    /**
      * Returns the estimated amount the item's frame bleeds outside the item's
      * actual rectangle. For instance, if the item has a 2mm frame stroke, then
      * 1mm of this frame is drawn outside the item's rect. In this case the
@@ -657,6 +669,15 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QgsLayoutPoint mItemPosition;
     double mItemRotation = 0.0;
 
+    //! Whether item should be excluded in exports
+    bool mExcludeFromExports = false;
+
+    /**
+     * Temporary evaluated item exclusion. Data defined properties may mean
+     * this value differs from mExcludeFromExports.
+     */
+    bool mEvaluatedExcludeFromExports = false;
+
     //! Composition blend mode for item
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
     std::unique_ptr< QgsLayoutEffect > mEffect;
@@ -698,6 +719,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
     void setScenePos( const QPointF &destinationPos );
     bool shouldBlockUndoCommands() const;
+
+    /**
+     * Returns whether the item should be drawn in the current context
+     */
+    bool shouldDrawItem() const;
 
     friend class TestQgsLayoutItem;
     friend class QgsLayoutItemGroup;

@@ -644,8 +644,8 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
 #if 0//TODO
   mOpacityWidget->setOpacity( mItem->itemOpacity() );
   mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
-  mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports( QgsComposerObject::OriginalValue ) );
 #endif
+  mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports() );
 
   block( false );
 }
@@ -889,9 +889,7 @@ void QgsLayoutItemPropertiesWidget::mExcludeFromPrintsCheckBox_toggled( bool che
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, checked ? tr( "Exclude from Exports" ) : tr( "Include in Exports" ) );
-#if 0 //TODO
     mItem->setExcludeFromExports( checked );
-#endif
     mItem->layout()->undoStack()->endCommand();
   }
 }
