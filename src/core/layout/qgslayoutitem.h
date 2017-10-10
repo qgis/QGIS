@@ -84,6 +84,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     enum UndoCommand
     {
       UndoIncrementalMove = 1, //!< Layout item incremental movement, e.g. as a result of a keypress
+      UndoIncrementalResize, //!< Incremental resize
       UndoStrokeColor, //!< Stroke color adjustment
       UndoStrokeWidth, //!< Stroke width adjustment
       UndoBackgroundColor, //!< Background color adjustment

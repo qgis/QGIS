@@ -206,18 +206,20 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
     void mPageSpinBox_valueChanged( int );
     void mXPosSpin_valueChanged( double );
     void mYPosSpin_valueChanged( double );
+    void positionUnitsChanged( QgsUnitTypes::LayoutUnit unit );
     void mWidthSpin_valueChanged( double );
     void mHeightSpin_valueChanged( double );
+    void sizeUnitsChanged( QgsUnitTypes::LayoutUnit unit );
 
-    void mUpperLeftCheckBox_stateChanged( int state );
-    void mUpperMiddleCheckBox_stateChanged( int state );
-    void mUpperRightCheckBox_stateChanged( int state );
-    void mMiddleLeftCheckBox_stateChanged( int state );
-    void mMiddleCheckBox_stateChanged( int state );
-    void mMiddleRightCheckBox_stateChanged( int state );
-    void mLowerLeftCheckBox_stateChanged( int state );
-    void mLowerMiddleCheckBox_stateChanged( int state );
-    void mLowerRightCheckBox_stateChanged( int state );
+    void mUpperLeftCheckBox_stateChanged( bool state );
+    void mUpperMiddleCheckBox_stateChanged( bool state );
+    void mUpperRightCheckBox_stateChanged( bool state );
+    void mMiddleLeftCheckBox_stateChanged( bool state );
+    void mMiddleCheckBox_stateChanged( bool state );
+    void mMiddleRightCheckBox_stateChanged( bool state );
+    void mLowerLeftCheckBox_stateChanged( bool state );
+    void mLowerMiddleCheckBox_stateChanged( bool state );
+    void mLowerRightCheckBox_stateChanged( bool state );
 
     void mBlendModeCombo_currentIndexChanged( int index );
     void opacityChanged( double value );
@@ -247,6 +249,8 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
 
 //    void changeItemTransparency( int value );
     void changeItemPosition();
+    void changeItemReference( QgsLayoutItem::ReferencePoint point );
+    void changeItemSize();
 
 };
 

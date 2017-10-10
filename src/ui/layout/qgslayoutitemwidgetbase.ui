@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>548</width>
+    <width>634</width>
     <height>1812</height>
    </rect>
   </property>
@@ -42,25 +42,20 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1,1,1">
-        <item row="3" column="0">
-         <widget class="QLabel" name="mWidthLabel">
-          <property name="text">
-           <string>Width</string>
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0,0,0,0">
+        <item row="4" column="1" colspan="2">
+         <widget class="QgsDoubleSpinBox" name="mHeightSpin">
+          <property name="suffix">
+           <string/>
           </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="mXLabel">
-          <property name="text">
-           <string>X</string>
+          <property name="decimals">
+           <number>3</number>
           </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="mHeightLabel">
-          <property name="text">
-           <string>Height</string>
+          <property name="maximum">
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -68,6 +63,23 @@
          <widget class="QLabel" name="mYLabel">
           <property name="text">
            <string>Y</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5" rowspan="2">
+         <widget class="QgsLayoutUnitsComboBox" name="mPosUnitsComboBox"/>
+        </item>
+        <item row="3" column="3">
+         <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
+          <property name="text">
+           <string>…</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="3">
+         <widget class="QgsPropertyOverrideButton" name="mYPositionDDBtn">
+          <property name="text">
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -85,24 +97,77 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="3">
-         <widget class="QgsPropertyOverrideButton" name="mYPositionDDBtn">
+        <item row="4" column="0">
+         <widget class="QLabel" name="mHeightLabel">
           <property name="text">
-           <string>…</string>
+           <string>Height</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="3">
-         <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
-          <property name="text">
-           <string>…</string>
+        <item row="1" column="4" rowspan="2">
+         <layout class="QHBoxLayout" name="_2">
+          <property name="leftMargin">
+           <number>2</number>
+          </property>
+          <property name="topMargin">
+           <number>2</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QgsRatioLockButton" name="mPosLockAspectRatio">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Lock aspect ratio (including while drawing extent onto canvas)</string>
+            </property>
+            <property name="leftMargin" stdset="0">
+             <number>13</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="1" colspan="2">
+         <widget class="QgsDoubleSpinBox" name="mXPosSpin">
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>-9999999.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
-        <item row="4" column="3">
-         <widget class="QgsPropertyOverrideButton" name="mHeightDDBtn">
-          <property name="text">
-           <string>…</string>
+        <item row="3" column="1" colspan="2">
+         <widget class="QgsDoubleSpinBox" name="mWidthSpin">
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="maximum">
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -116,42 +181,31 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1" colspan="2">
-         <widget class="QgsDoubleSpinBox" name="mWidthSpin">
-          <property name="suffix">
-           <string> mm</string>
-          </property>
-          <property name="decimals">
-           <number>3</number>
-          </property>
-          <property name="maximum">
-           <double>9999999.000000000000000</double>
-          </property>
-          <property name="showClearButton" stdset="0">
-           <bool>false</bool>
+        <item row="1" column="0">
+         <widget class="QLabel" name="mXLabel">
+          <property name="text">
+           <string>X</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1" colspan="2">
-         <widget class="QgsDoubleSpinBox" name="mHeightSpin">
-          <property name="suffix">
-           <string> mm</string>
+        <item row="4" column="3">
+         <widget class="QgsPropertyOverrideButton" name="mHeightDDBtn">
+          <property name="text">
+           <string>…</string>
           </property>
-          <property name="decimals">
-           <number>3</number>
-          </property>
-          <property name="maximum">
-           <double>9999999.000000000000000</double>
-          </property>
-          <property name="showClearButton" stdset="0">
-           <bool>false</bool>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="mWidthLabel">
+          <property name="text">
+           <string>Width</string>
           </property>
          </widget>
         </item>
         <item row="2" column="1" colspan="2">
          <widget class="QgsDoubleSpinBox" name="mYPosSpin">
           <property name="suffix">
-           <string> mm</string>
+           <string/>
           </property>
           <property name="decimals">
            <number>3</number>
@@ -167,24 +221,40 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="1" colspan="2">
-         <widget class="QgsDoubleSpinBox" name="mXPosSpin">
-          <property name="suffix">
-           <string> mm</string>
+        <item row="3" column="4" rowspan="2">
+         <layout class="QHBoxLayout" name="_3">
+          <property name="leftMargin">
+           <number>2</number>
           </property>
-          <property name="decimals">
-           <number>3</number>
+          <property name="topMargin">
+           <number>2</number>
           </property>
-          <property name="minimum">
-           <double>-9999999.000000000000000</double>
+          <property name="rightMargin">
+           <number>0</number>
           </property>
-          <property name="maximum">
-           <double>9999999.000000000000000</double>
+          <property name="bottomMargin">
+           <number>2</number>
           </property>
-          <property name="showClearButton" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
+          <item>
+           <widget class="QgsRatioLockButton" name="mSizeLockAspectRatio">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Lock aspect ratio (including while drawing extent onto canvas)</string>
+            </property>
+            <property name="leftMargin" stdset="0">
+             <number>13</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="5" rowspan="2">
+         <widget class="QgsLayoutUnitsComboBox" name="mSizeUnitsComboBox"/>
         </item>
        </layout>
       </item>
@@ -202,34 +272,21 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="mUpperLeftRadioButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
-           <widget class="QCheckBox" name="mUpperMiddleCheckBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QCheckBox" name="mMiddleRightCheckBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QCheckBox" name="mMiddleCheckBox">
+           <widget class="QRadioButton" name="mUpperMiddleRadioButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -242,7 +299,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QCheckBox" name="mUpperRightCheckBox">
+           <widget class="QRadioButton" name="mUpperRightRadioButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -254,8 +311,21 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QCheckBox" name="mLowerMiddleCheckBox">
+          <item row="1" column="2">
+           <widget class="QRadioButton" name="mMiddleRightRadioButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QRadioButton" name="mMiddleRadioButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -268,20 +338,7 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QCheckBox" name="mLowerRightCheckBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="mUpperLeftCheckBox">
+           <widget class="QRadioButton" name="mLowerRightRadioButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -294,7 +351,20 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QCheckBox" name="mLowerLeftCheckBox">
+           <widget class="QRadioButton" name="mLowerLeftRadioButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QRadioButton" name="mLowerMiddleRadioButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -307,7 +377,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QCheckBox" name="mMiddleLeftCheckBox">
+           <widget class="QRadioButton" name="mMiddleLeftRadioButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -424,7 +494,7 @@
         <item>
          <widget class="QgsColorButton" name="mFrameColorButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -435,29 +505,10 @@
             <height>0</height>
            </size>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>16777215</height>
-           </size>
-          </property>
           <property name="text">
            <string/>
           </property>
          </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
         <item>
          <widget class="QgsPropertyOverrideButton" name="mItemFrameColorDDBtn">
@@ -551,7 +602,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Background color</string>
+         <string>Color</string>
         </property>
        </widget>
       </item>
@@ -560,7 +611,7 @@
         <item>
          <widget class="QgsColorButton" name="mBackgroundColorButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -571,29 +622,10 @@
             <height>0</height>
            </size>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>16777215</height>
-           </size>
-          </property>
           <property name="text">
            <string/>
           </property>
          </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
         <item>
          <widget class="QgsPropertyOverrideButton" name="mItemBackgroundColorDDBtn">
@@ -811,6 +843,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsRatioLockButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsratiolockbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsLayoutUnitsComboBox</class>
    <extends>QComboBox</extends>
    <header>qgslayoutunitscombobox.h</header>
@@ -823,19 +861,23 @@
   <tabstop>mXPositionDDBtn</tabstop>
   <tabstop>mYPosSpin</tabstop>
   <tabstop>mYPositionDDBtn</tabstop>
+  <tabstop>mPosLockAspectRatio</tabstop>
+  <tabstop>mPosUnitsComboBox</tabstop>
   <tabstop>mWidthSpin</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mHeightSpin</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
-  <tabstop>mUpperLeftCheckBox</tabstop>
-  <tabstop>mUpperMiddleCheckBox</tabstop>
-  <tabstop>mUpperRightCheckBox</tabstop>
-  <tabstop>mMiddleLeftCheckBox</tabstop>
-  <tabstop>mMiddleCheckBox</tabstop>
-  <tabstop>mMiddleRightCheckBox</tabstop>
-  <tabstop>mLowerLeftCheckBox</tabstop>
-  <tabstop>mLowerMiddleCheckBox</tabstop>
-  <tabstop>mLowerRightCheckBox</tabstop>
+  <tabstop>mSizeLockAspectRatio</tabstop>
+  <tabstop>mSizeUnitsComboBox</tabstop>
+  <tabstop>mUpperLeftRadioButton</tabstop>
+  <tabstop>mUpperMiddleRadioButton</tabstop>
+  <tabstop>mUpperRightRadioButton</tabstop>
+  <tabstop>mMiddleLeftRadioButton</tabstop>
+  <tabstop>mMiddleRadioButton</tabstop>
+  <tabstop>mMiddleRightRadioButton</tabstop>
+  <tabstop>mLowerLeftRadioButton</tabstop>
+  <tabstop>mLowerMiddleRadioButton</tabstop>
+  <tabstop>mLowerRightRadioButton</tabstop>
   <tabstop>mTransformsGroupBox</tabstop>
   <tabstop>mItemRotationSpinBox</tabstop>
   <tabstop>mItemRotationDDBtn</tabstop>
@@ -843,6 +885,7 @@
   <tabstop>mFrameColorButton</tabstop>
   <tabstop>mItemFrameColorDDBtn</tabstop>
   <tabstop>mStrokeWidthSpinBox</tabstop>
+  <tabstop>mStrokeUnitsComboBox</tabstop>
   <tabstop>mFrameJoinStyleCombo</tabstop>
   <tabstop>mBackgroundGroupBox</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
@@ -852,6 +895,7 @@
   <tabstop>groupRendering</tabstop>
   <tabstop>mBlendModeCombo</tabstop>
   <tabstop>mBlendModeDDBtn</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mOpacityDDBtn</tabstop>
   <tabstop>mExcludeFromPrintsCheckBox</tabstop>
   <tabstop>mExcludePrintsDDBtn</tabstop>

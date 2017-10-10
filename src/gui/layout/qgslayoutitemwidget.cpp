@@ -188,6 +188,24 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
 {
 
   setupUi( this );
+
+  mItemRotationSpinBox->setClearValue( 0 );
+  mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );
+  mStrokeUnitsComboBox->setConverter( &mItem->layout()->context().measurementConverter() );
+
+  mPosUnitsComboBox->linkToWidget( mXPosSpin );
+  mPosUnitsComboBox->linkToWidget( mYPosSpin );
+  mSizeUnitsComboBox->linkToWidget( mWidthSpin );
+  mSizeUnitsComboBox->linkToWidget( mHeightSpin );
+
+  mPosUnitsComboBox->setConverter( &mItem->layout()->context().measurementConverter() );
+  mSizeUnitsComboBox->setConverter( &mItem->layout()->context().measurementConverter() );
+
+  mPosLockAspectRatio->setWidthSpinBox( mXPosSpin );
+  mPosLockAspectRatio->setHeightSpinBox( mYPosSpin );
+  mSizeLockAspectRatio->setWidthSpinBox( mWidthSpin );
+  mSizeLockAspectRatio->setHeightSpinBox( mHeightSpin );
+
   connect( mFrameColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutItemPropertiesWidget::mFrameColorButton_colorChanged );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutItemPropertiesWidget::mBackgroundColorButton_colorChanged );
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mStrokeWidthSpinBox_valueChanged );
@@ -199,36 +217,34 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   connect( mPageSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mPageSpinBox_valueChanged );
   connect( mXPosSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mXPosSpin_valueChanged );
   connect( mYPosSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mYPosSpin_valueChanged );
+  connect( mPosUnitsComboBox, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutItemPropertiesWidget::positionUnitsChanged );
   connect( mWidthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mWidthSpin_valueChanged );
   connect( mHeightSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mHeightSpin_valueChanged );
-  connect( mUpperLeftCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mUpperLeftCheckBox_stateChanged );
-  connect( mUpperMiddleCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mUpperMiddleCheckBox_stateChanged );
-  connect( mUpperRightCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mUpperRightCheckBox_stateChanged );
-  connect( mMiddleLeftCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mMiddleLeftCheckBox_stateChanged );
-  connect( mMiddleCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mMiddleCheckBox_stateChanged );
-  connect( mMiddleRightCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mMiddleRightCheckBox_stateChanged );
-  connect( mLowerLeftCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mLowerLeftCheckBox_stateChanged );
-  connect( mLowerMiddleCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mLowerMiddleCheckBox_stateChanged );
-  connect( mLowerRightCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutItemPropertiesWidget::mLowerRightCheckBox_stateChanged );
+  connect( mSizeUnitsComboBox, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutItemPropertiesWidget::sizeUnitsChanged );
+  connect( mUpperLeftRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mUpperLeftCheckBox_stateChanged );
+  connect( mUpperMiddleRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mUpperMiddleCheckBox_stateChanged );
+  connect( mUpperRightRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mUpperRightCheckBox_stateChanged );
+  connect( mMiddleLeftRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mMiddleLeftCheckBox_stateChanged );
+  connect( mMiddleRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mMiddleCheckBox_stateChanged );
+  connect( mMiddleRightRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mMiddleRightCheckBox_stateChanged );
+  connect( mLowerLeftRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mLowerLeftCheckBox_stateChanged );
+  connect( mLowerMiddleRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mLowerMiddleCheckBox_stateChanged );
+  connect( mLowerRightRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mLowerRightCheckBox_stateChanged );
   connect( mBlendModeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutItemPropertiesWidget::mBlendModeCombo_currentIndexChanged );
   connect( mItemRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mItemRotationSpinBox_valueChanged );
   connect( mExcludeFromPrintsCheckBox, &QCheckBox::toggled, this, &QgsLayoutItemPropertiesWidget::mExcludeFromPrintsCheckBox_toggled );
 
-  mItemRotationSpinBox->setClearValue( 0 );
-  mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );
-  mStrokeUnitsComboBox->setConverter( &mItem->layout()->context().measurementConverter() );
-
   //make button exclusive
   QButtonGroup *buttonGroup = new QButtonGroup( this );
-  buttonGroup->addButton( mUpperLeftCheckBox );
-  buttonGroup->addButton( mUpperMiddleCheckBox );
-  buttonGroup->addButton( mUpperRightCheckBox );
-  buttonGroup->addButton( mMiddleLeftCheckBox );
-  buttonGroup->addButton( mMiddleCheckBox );
-  buttonGroup->addButton( mMiddleRightCheckBox );
-  buttonGroup->addButton( mLowerLeftCheckBox );
-  buttonGroup->addButton( mLowerMiddleCheckBox );
-  buttonGroup->addButton( mLowerRightCheckBox );
+  buttonGroup->addButton( mUpperLeftRadioButton );
+  buttonGroup->addButton( mUpperMiddleRadioButton );
+  buttonGroup->addButton( mUpperRightRadioButton );
+  buttonGroup->addButton( mMiddleLeftRadioButton );
+  buttonGroup->addButton( mMiddleRadioButton );
+  buttonGroup->addButton( mMiddleRightRadioButton );
+  buttonGroup->addButton( mLowerLeftRadioButton );
+  buttonGroup->addButton( mLowerMiddleRadioButton );
+  buttonGroup->addButton( mLowerRightRadioButton );
   buttonGroup->setExclusive( true );
 
   initializeDataDefinedButtons();
@@ -237,9 +253,9 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
 
 #if 0 //TODO
   connect( mItem->composition(), &QgsComposition::paperSizeChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
-  connect( mItem, &QgsComposerItem::sizeChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
 #endif
 
+  connect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
   connect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayoutItemPropertiesWidget::opacityChanged );
@@ -304,17 +320,28 @@ void QgsLayoutItemPropertiesWidget::mBackgroundColorButton_colorChanged( const Q
 
 void QgsLayoutItemPropertiesWidget::changeItemPosition()
 {
-  mItem->layout()->undoStack()->beginCommand( mItem, tr( "Move Item" ) );
+  mItem->layout()->undoStack()->beginCommand( mItem, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
 
-  double x = mXPosSpin->value();
-  double y = mYPosSpin->value();
-  double width = mWidthSpin->value();
-  double height = mHeightSpin->value();
+  QgsLayoutPoint point( mXPosSpin->value(), mYPosSpin->value(), mPosUnitsComboBox->unit() );
+  mItem->attemptMove( point );
 
-#if 0 //TODO
-  mItem->setItemPosition( x, y, width, height, positionMode(), false, mPageSpinBox->value() );
-#endif
-  mItem->update();
+  mItem->layout()->undoStack()->endCommand();
+}
+
+void QgsLayoutItemPropertiesWidget::changeItemReference( QgsLayoutItem::ReferencePoint point )
+{
+  mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Item Reference" ) );
+  mItem->setReferencePoint( point );
+  mItem->layout()->undoStack()->endCommand();
+}
+
+void QgsLayoutItemPropertiesWidget::changeItemSize()
+{
+  mItem->layout()->undoStack()->beginCommand( mItem, tr( "Resize Item" ), QgsLayoutItem::UndoIncrementalResize );
+
+  QgsLayoutSize size( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() );
+  mItem->attemptResize( size );
+
   mItem->layout()->undoStack()->endCommand();
 }
 
@@ -327,39 +354,39 @@ void QgsLayoutItemPropertiesWidget::variablesChanged()
 
 QgsLayoutItem::ReferencePoint QgsLayoutItemPropertiesWidget::positionMode() const
 {
-  if ( mUpperLeftCheckBox->checkState() == Qt::Checked )
+  if ( mUpperLeftRadioButton->isChecked() )
   {
     return QgsLayoutItem::UpperLeft;
   }
-  else if ( mUpperMiddleCheckBox->checkState() == Qt::Checked )
+  else if ( mUpperMiddleRadioButton->isChecked() )
   {
     return QgsLayoutItem::UpperMiddle;
   }
-  else if ( mUpperRightCheckBox->checkState() == Qt::Checked )
+  else if ( mUpperRightRadioButton->isChecked() )
   {
     return QgsLayoutItem::UpperRight;
   }
-  else if ( mMiddleLeftCheckBox->checkState() == Qt::Checked )
+  else if ( mMiddleLeftRadioButton->isChecked() )
   {
     return QgsLayoutItem::MiddleLeft;
   }
-  else if ( mMiddleCheckBox->checkState() == Qt::Checked )
+  else if ( mMiddleRadioButton->isChecked() )
   {
     return QgsLayoutItem::Middle;
   }
-  else if ( mMiddleRightCheckBox->checkState() == Qt::Checked )
+  else if ( mMiddleRightRadioButton->isChecked() )
   {
     return QgsLayoutItem::MiddleRight;
   }
-  else if ( mLowerLeftCheckBox->checkState() == Qt::Checked )
+  else if ( mLowerLeftRadioButton->isChecked() )
   {
     return QgsLayoutItem::LowerLeft;
   }
-  else if ( mLowerMiddleCheckBox->checkState() == Qt::Checked )
+  else if ( mLowerMiddleRadioButton->isChecked() )
   {
     return QgsLayoutItem::LowerMiddle;
   }
-  else if ( mLowerRightCheckBox->checkState() == Qt::Checked )
+  else if ( mLowerRightRadioButton->isChecked() )
   {
     return QgsLayoutItem::LowerRight;
   }
@@ -449,139 +476,111 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements()
     return;
   }
 
-  mXPosSpin->blockSignals( true );
-  mYPosSpin->blockSignals( true );
-  mWidthSpin->blockSignals( true );
-  mHeightSpin->blockSignals( true );
-  mUpperLeftCheckBox->blockSignals( true );
-  mUpperMiddleCheckBox->blockSignals( true );
-  mUpperRightCheckBox->blockSignals( true );
-  mMiddleLeftCheckBox->blockSignals( true );
-  mMiddleCheckBox->blockSignals( true );
-  mMiddleRightCheckBox->blockSignals( true );
-  mLowerLeftCheckBox->blockSignals( true );
-  mLowerMiddleCheckBox->blockSignals( true );
-  mLowerRightCheckBox->blockSignals( true );
-  mPageSpinBox->blockSignals( true );
+  auto block = [ = ]( bool blocked )
+  {
+    mXPosSpin->blockSignals( blocked );
+    mYPosSpin->blockSignals( blocked );
+    mPosUnitsComboBox->blockSignals( blocked );
+    mWidthSpin->blockSignals( blocked );
+    mHeightSpin->blockSignals( blocked );
+    mSizeUnitsComboBox->blockSignals( blocked );
+    mUpperLeftRadioButton->blockSignals( blocked );
+    mUpperMiddleRadioButton->blockSignals( blocked );
+    mUpperRightRadioButton->blockSignals( blocked );
+    mMiddleLeftRadioButton->blockSignals( blocked );
+    mMiddleRadioButton->blockSignals( blocked );
+    mMiddleRightRadioButton->blockSignals( blocked );
+    mLowerLeftRadioButton->blockSignals( blocked );
+    mLowerMiddleRadioButton->blockSignals( blocked );
+    mLowerRightRadioButton->blockSignals( blocked );
+    mPageSpinBox->blockSignals( blocked );
+  };
+  block( true );
 
   QPointF pos; //TODO = mItem->pagePos();
+
+  QgsLayoutPoint point = mItem->positionWithUnits();
+
+  if ( !mFreezeXPosSpin )
+    mXPosSpin->setValue( point.x() );
+  if ( !mFreezeYPosSpin )
+    mYPosSpin->setValue( point.y() );
+  mPosUnitsComboBox->setUnit( point.units() );
 
   switch ( mItem->referencePoint() )
   {
     case QgsLayoutItem::UpperLeft:
     {
-      mUpperLeftCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() );
+      mUpperLeftRadioButton->setChecked( true );
       break;
     }
 
     case QgsLayoutItem::UpperMiddle:
     {
-      mUpperMiddleCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() );
+      mUpperMiddleRadioButton->setChecked( true );
       break;
     }
 
     case QgsLayoutItem::UpperRight:
     {
-      mUpperRightCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() + mItem->rect().width() );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() );
+      mUpperRightRadioButton->setChecked( true );
       break;
     }
 
     case QgsLayoutItem::MiddleLeft:
     {
-      mMiddleLeftCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
+      mMiddleLeftRadioButton->setChecked( true );
       break;
     }
 
     case QgsLayoutItem::Middle:
     {
-      mMiddleCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
+      mMiddleRadioButton->setChecked( true );
       break;
     }
 
     case QgsLayoutItem::MiddleRight:
     {
-      mMiddleRightCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() + mItem->rect().width() );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
+      mMiddleRightRadioButton->setChecked( true );
       break;
     }
 
     case QgsLayoutItem::LowerLeft:
     {
-      mLowerLeftCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() + mItem->rect().height() );
+      mLowerLeftRadioButton->setChecked( true );
       break;
     }
 
     case QgsLayoutItem::LowerMiddle:
     {
-      mLowerMiddleCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() + mItem->rect().height() );
+      mLowerMiddleRadioButton->setChecked( true );
       break;
     }
 
     case QgsLayoutItem::LowerRight:
     {
-      mLowerRightCheckBox->setChecked( true );
-      if ( !mFreezeXPosSpin )
-        mXPosSpin->setValue( pos.x() + mItem->rect().width() );
-      if ( !mFreezeYPosSpin )
-        mYPosSpin->setValue( pos.y() + mItem->rect().height() );
+      mLowerRightRadioButton->setChecked( true );
       break;
     }
   }
 
+  QgsLayoutSize size = mItem->sizeWithUnits();
   if ( !mFreezeWidthSpin )
-    mWidthSpin->setValue( mItem->rect().width() );
+    mWidthSpin->setValue( size.width() );
   if ( !mFreezeHeightSpin )
-    mHeightSpin->setValue( mItem->rect().height() );
+    mHeightSpin->setValue( size.height() );
+
+  mSizeUnitsComboBox->setUnit( size.units() );
+
+  mSizeLockAspectRatio->resetRatio();
+  mPosLockAspectRatio->resetRatio();
+
 #if 0 //TODO
   if ( !mFreezePageSpin )
     mPageSpinBox->setValue( mItem->page() );
 #endif
 
-  mXPosSpin->blockSignals( false );
-  mYPosSpin->blockSignals( false );
-  mWidthSpin->blockSignals( false );
-  mHeightSpin->blockSignals( false );
-  mUpperLeftCheckBox->blockSignals( false );
-  mUpperMiddleCheckBox->blockSignals( false );
-  mUpperRightCheckBox->blockSignals( false );
-  mMiddleLeftCheckBox->blockSignals( false );
-  mMiddleCheckBox->blockSignals( false );
-  mMiddleRightCheckBox->blockSignals( false );
-  mLowerLeftCheckBox->blockSignals( false );
-  mLowerMiddleCheckBox->blockSignals( false );
-  mLowerRightCheckBox->blockSignals( false );
-  mPageSpinBox->blockSignals( false );
+  block( false );
 }
 
 void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
@@ -591,18 +590,22 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
     return;
   }
 
-  mStrokeWidthSpinBox->blockSignals( true );
-  mStrokeUnitsComboBox->blockSignals( true );
-  mFrameGroupBox->blockSignals( true );
-  mBackgroundGroupBox->blockSignals( true );
-  mItemIdLineEdit->blockSignals( true );
-  mBlendModeCombo->blockSignals( true );
-  mOpacityWidget->blockSignals( true );
-  mFrameColorButton->blockSignals( true );
-  mFrameJoinStyleCombo->blockSignals( true );
-  mBackgroundColorButton->blockSignals( true );
-  mItemRotationSpinBox->blockSignals( true );
-  mExcludeFromPrintsCheckBox->blockSignals( true );
+  auto block = [ = ]( bool blocked )
+  {
+    mStrokeWidthSpinBox->blockSignals( blocked );
+    mStrokeUnitsComboBox->blockSignals( blocked );
+    mFrameGroupBox->blockSignals( blocked );
+    mBackgroundGroupBox->blockSignals( blocked );
+    mItemIdLineEdit->blockSignals( blocked );
+    mBlendModeCombo->blockSignals( blocked );
+    mOpacityWidget->blockSignals( blocked );
+    mFrameColorButton->blockSignals( blocked );
+    mFrameJoinStyleCombo->blockSignals( blocked );
+    mBackgroundColorButton->blockSignals( blocked );
+    mItemRotationSpinBox->blockSignals( blocked );
+    mExcludeFromPrintsCheckBox->blockSignals( blocked );
+  };
+  block( true );
 
   mBackgroundColorButton->setColor( mItem->backgroundColor() );
   mFrameColorButton->setColor( mItem->frameStrokeColor() );
@@ -619,18 +622,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports( QgsComposerObject::OriginalValue ) );
 #endif
 
-  mBackgroundColorButton->blockSignals( false );
-  mFrameColorButton->blockSignals( false );
-  mFrameJoinStyleCombo->blockSignals( false );
-  mStrokeWidthSpinBox->blockSignals( false );
-  mStrokeUnitsComboBox->blockSignals( false );
-  mFrameGroupBox->blockSignals( false );
-  mBackgroundGroupBox->blockSignals( false );
-  mItemIdLineEdit->blockSignals( false );
-  mBlendModeCombo->blockSignals( false );
-  mOpacityWidget->blockSignals( false );
-  mItemRotationSpinBox->blockSignals( false );
-  mExcludeFromPrintsCheckBox->blockSignals( false );
+  block( false );
 }
 
 void QgsLayoutItemPropertiesWidget::initializeDataDefinedButtons()
@@ -732,141 +724,126 @@ void QgsLayoutItemPropertiesWidget::mYPosSpin_valueChanged( double )
   mFreezeYPosSpin = false;
 }
 
+void QgsLayoutItemPropertiesWidget::positionUnitsChanged( QgsUnitTypes::LayoutUnit )
+{
+  changeItemPosition();
+}
+
 void QgsLayoutItemPropertiesWidget::mWidthSpin_valueChanged( double )
 {
   mFreezeWidthSpin = true;
-  changeItemPosition();
+  changeItemSize();
   mFreezeWidthSpin = false;
 }
 
 void QgsLayoutItemPropertiesWidget::mHeightSpin_valueChanged( double )
 {
   mFreezeHeightSpin = true;
-  changeItemPosition();
+  changeItemSize();
   mFreezeHeightSpin = false;
 }
 
-void QgsLayoutItemPropertiesWidget::mUpperLeftCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::sizeUnitsChanged( QgsUnitTypes::LayoutUnit )
 {
-  if ( state != Qt::Checked )
+  changeItemSize();
+}
+
+void QgsLayoutItemPropertiesWidget::mUpperLeftCheckBox_stateChanged( bool state )
+{
+  if ( !state )
     return;
+
   if ( mItem )
   {
-#if 0 // TODO
-    mItem->setItemPosition( mItem->pos().x(), mItem->pos().y(), QgsComposerItem::UpperLeft );
-#endif
+    changeItemReference( QgsLayoutItem::UpperLeft );
   }
   setValuesForGuiPositionElements();
 }
 
-void QgsLayoutItemPropertiesWidget::mUpperMiddleCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::mUpperMiddleCheckBox_stateChanged( bool state )
 {
-  if ( state != Qt::Checked )
+  if ( !state )
     return;
   if ( mItem )
   {
-#if 0 //TODO
-    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width() / 2.0,
-                            mItem->pos().y(), QgsComposerItem::UpperMiddle );
-#endif
+    changeItemReference( QgsLayoutItem::UpperMiddle );
   }
   setValuesForGuiPositionElements();
 }
 
-void QgsLayoutItemPropertiesWidget::mUpperRightCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::mUpperRightCheckBox_stateChanged( bool state )
 {
-  if ( state != Qt::Checked )
+  if ( !state )
     return;
   if ( mItem )
   {
-#if 0 //TODO
-    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width(),
-                            mItem->pos().y(), QgsComposerItem::UpperRight );
-#endif
+    changeItemReference( QgsLayoutItem::UpperRight );
   }
   setValuesForGuiPositionElements();
 }
 
-void QgsLayoutItemPropertiesWidget::mMiddleLeftCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::mMiddleLeftCheckBox_stateChanged( bool state )
 {
-  if ( state != Qt::Checked )
+  if ( !state )
     return;
   if ( mItem )
   {
-#if 0 //TODO
-    mItem->setItemPosition( mItem->pos().x(),
-                            mItem->pos().y() + mItem->rect().height() / 2.0, QgsComposerItem::MiddleLeft );
-#endif
+    changeItemReference( QgsLayoutItem::MiddleLeft );
   }
   setValuesForGuiPositionElements();
 }
 
-void QgsLayoutItemPropertiesWidget::mMiddleCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::mMiddleCheckBox_stateChanged( bool state )
 {
-  if ( state != Qt::Checked )
+  if ( !state )
     return;
   if ( mItem )
   {
-#if 0 //TODO
-    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width() / 2.0,
-                            mItem->pos().y() + mItem->rect().height() / 2.0, QgsComposerItem::Middle );
-#endif
+    changeItemReference( QgsLayoutItem::Middle );
   }
   setValuesForGuiPositionElements();
 }
 
-void QgsLayoutItemPropertiesWidget::mMiddleRightCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::mMiddleRightCheckBox_stateChanged( bool state )
 {
-  if ( state != Qt::Checked )
+  if ( !state )
     return;
   if ( mItem )
   {
-#if 0 //TODO
-    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width(),
-                            mItem->pos().y() + mItem->rect().height() / 2.0, QgsComposerItem::MiddleRight );
-#endif
+    changeItemReference( QgsLayoutItem::MiddleRight );
   }
   setValuesForGuiPositionElements();
 }
 
-void QgsLayoutItemPropertiesWidget::mLowerLeftCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::mLowerLeftCheckBox_stateChanged( bool state )
 {
-  if ( state != Qt::Checked )
+  if ( !state )
     return;
   if ( mItem )
   {
-#if 0 //TODO
-    mItem->setItemPosition( mItem->pos().x(),
-                            mItem->pos().y() + mItem->rect().height(), QgsComposerItem::LowerLeft );
-#endif
+    changeItemReference( QgsLayoutItem::LowerLeft );
   }
   setValuesForGuiPositionElements();
 }
 
-void QgsLayoutItemPropertiesWidget::mLowerMiddleCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::mLowerMiddleCheckBox_stateChanged( bool state )
 {
-  if ( state != Qt::Checked )
+  if ( !state )
     return;
   if ( mItem )
   {
-#if 0 //TODO
-    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width() / 2.0,
-                            mItem->pos().y() + mItem->rect().height(), QgsComposerItem::LowerMiddle );
-#endif
+    changeItemReference( QgsLayoutItem::LowerMiddle );
   }
   setValuesForGuiPositionElements();
 }
 
-void QgsLayoutItemPropertiesWidget::mLowerRightCheckBox_stateChanged( int state )
+void QgsLayoutItemPropertiesWidget::mLowerRightCheckBox_stateChanged( bool state )
 {
-  if ( state != Qt::Checked )
+  if ( !state )
     return;
   if ( mItem )
   {
-#if 0 //TODO
-    mItem->setItemPosition( mItem->pos().x() + mItem->rect().width(),
-                            mItem->pos().y() + mItem->rect().height(), QgsComposerItem::LowerRight );
-#endif
+    changeItemReference( QgsLayoutItem::LowerRight );
   }
   setValuesForGuiPositionElements();
 }
