@@ -177,6 +177,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutapputils.cpp
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutguidewidget.cpp
+  layout/qgslayoutitemslistview.cpp
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutmapwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp
@@ -374,6 +375,7 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutdesignerdialog.h
   layout/qgslayoutguidewidget.h
+  layout/qgslayoutitemslistview.h
   layout/qgslayoutmapwidget.h
   layout/qgslayoutpagepropertieswidget.h
   layout/qgslayoutpropertieswidget.h

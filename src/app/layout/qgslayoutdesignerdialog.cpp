@@ -40,6 +40,7 @@
 #include "qgslayoutguidewidget.h"
 #include "qgslayoutmousehandles.h"
 #include "qgslayoutmodel.h"
+#include "qgslayoutitemslistview.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -495,16 +496,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
 
   //items tree widget
-  mItemsTreeView = new QTreeView( mItemsDock );
-
-  mItemsTreeView->setColumnWidth( 0, 30 );
-  mItemsTreeView->setColumnWidth( 1, 30 );
-  mItemsTreeView->setDragEnabled( true );
-  mItemsTreeView->setAcceptDrops( true );
-  mItemsTreeView->setDropIndicatorShown( true );
-  mItemsTreeView->setDragDropMode( QAbstractItemView::InternalMove );
-
-  mItemsTreeView->setIndentation( 0 );
+  mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, this );
   mItemsDock->setWidget( mItemsTreeView );
 
   const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
@@ -582,19 +574,10 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mUndoView->setStack( mLayout->undoStack()->stack() );
 
   mSelectTool->setLayout( layout );
-
-  mItemsTreeView->setModel( mLayout->itemsModel() );
+  mItemsTreeView->setCurrentLayout( mLayout );
 #ifdef ENABLE_MODELTEST
   new ModelTest( mLayout->itemsModel(), this );
 #endif
-  mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
-  mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
-  mItemsTreeView->setColumnWidth( 0, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
-  mItemsTreeView->setColumnWidth( 1, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
-  mItemsTreeView->header()->setSectionsMovable( false );
-
-  connect( mItemsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, mLayout->itemsModel(), &QgsLayoutModel::setSelected );
-
 
   createLayoutPropertiesWidget();
 }

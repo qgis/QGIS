@@ -240,7 +240,14 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
 ///@endcond
 
     /**
+     * Returns the QgsLayoutItem corresponding to a QModelIndex \a index, if possible.
+     * \see indexForItem()
+     */
+    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
+
+    /**
      * Returns the QModelIndex corresponding to a QgsLayoutItem \a item and \a column, if possible.
+     * \see itemFromIndex()
      */
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
 
@@ -266,11 +273,6 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
 
     //! Parent layout
     QgsLayout *mLayout = nullptr;
-
-    /**
-     * Returns the QgsLayoutItem corresponding to a QModelIndex \a index, if possible
-     */
-    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
 
     /**
      * Rebuilds the list of all layout items which are present in the layout. This is

@@ -73,9 +73,17 @@ class QgsLayoutModel: QAbstractItemModel
 
 
 
+    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
+%Docstring
+ Returns the QgsLayoutItem corresponding to a QModelIndex ``index``, if possible.
+.. seealso:: indexForItem()
+ :rtype: QgsLayoutItem
+%End
+
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
 %Docstring
  Returns the QModelIndex corresponding to a QgsLayoutItem ``item`` and ``column``, if possible.
+.. seealso:: itemFromIndex()
  :rtype: QModelIndex
 %End
 

@@ -37,6 +37,7 @@ class QgsPanelWidgetStack;
 class QgsDockWidget;
 class QUndoView;
 class QTreeView;
+class QgsLayoutItemsListView;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -281,7 +282,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsDockWidget *mUndoDock = nullptr;
 
     QgsDockWidget *mItemsDock = nullptr;
-    QTreeView *mItemsTreeView = nullptr;
+    QgsLayoutItemsListView *mItemsTreeView = nullptr;
 
     QAction *mUndoAction = nullptr;
     QAction *mRedoAction = nullptr;
