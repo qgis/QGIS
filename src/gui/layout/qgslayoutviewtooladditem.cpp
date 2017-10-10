@@ -119,6 +119,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   layout()->addLayoutItem( item );
   layout()->setSelectedItem( item );
+  emit createdItem();
 }
 
 void QgsLayoutViewToolAddItem::deactivate()

@@ -236,6 +236,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mSelectTool->setAction( mActionSelectMoveItem );
   mToolsActionGroup->addAction( mActionSelectMoveItem );
   connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [ = ] { mView->setTool( mSelectTool ); } );
+  // after creating an item with the add item tool, switch immediately to select tool
+  connect( mAddItemTool, &QgsLayoutViewToolAddItem::createdItem, this, [ = ] { mView->setTool( mSelectTool ); } );
 
   //Ctrl+= should also trigger zoom in
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );

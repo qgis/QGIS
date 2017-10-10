@@ -53,6 +53,13 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
     void deactivate() override;
 
+  signals:
+
+    /**
+     * Emitted when an item has been created using the tool.
+     */
+    void createdItem();
+
   private:
 
     bool mDrawing = false;

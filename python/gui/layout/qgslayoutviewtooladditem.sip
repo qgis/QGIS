@@ -44,6 +44,13 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
     virtual void deactivate();
 
 
+  signals:
+
+    void createdItem();
+%Docstring
+ Emitted when an item has been created using the tool.
+%End
+
 };
 
 /************************************************************************
