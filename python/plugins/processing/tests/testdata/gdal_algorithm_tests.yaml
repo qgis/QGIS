@@ -153,6 +153,9 @@ tests:
       OUTPUT:
         name: expected/gdal/tile_index.gml
         type: vector
+        compare:
+          fields:
+            location: skip
 
   - algorithm: gdal:gridaverage
     name: Moving average interpolation (gdal_grid)
