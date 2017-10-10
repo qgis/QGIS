@@ -532,6 +532,12 @@ void QgsLayoutItem::setBlendMode( const QPainter::CompositionMode mode )
   refreshBlendMode();
 }
 
+void QgsLayoutItem::setItemOpacity( double opacity )
+{
+  mOpacity = opacity;
+  refreshOpacity( true );
+}
+
 bool QgsLayoutItem::excludeFromExports() const
 {
   return mExcludeFromExports;
@@ -629,6 +635,10 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   if ( property == QgsLayoutObject::ItemRotation || property == QgsLayoutObject::AllProperties )
   {
     refreshItemRotation();
+  }
+  if ( property == QgsLayoutObject::Opacity || property == QgsLayoutObject::AllProperties )
+  {
+    refreshOpacity( false );
   }
   if ( property == QgsLayoutObject::FrameColor || property == QgsLayoutObject::AllProperties )
   {
@@ -871,11 +881,8 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
   //blend mode
   element.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
 
-  //TODO
-#if 0
-  //transparency
-  //  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
-#endif
+  //opacity
+  element.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
 
   element.setAttribute( "excludeFromExports", mExcludeFromExports );
 
@@ -998,10 +1005,16 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
   //blend mode
   setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
 
-#if 0 //TODO
-  //transparency
-  setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
-#endif
+  //opacity
+  if ( element.hasAttribute( QStringLiteral( "opacity" ) ) )
+  {
+    setItemOpacity( element.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1" ) ).toDouble() );
+  }
+  else
+  {
+    setItemOpacity( 1.0 - element.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() / 100.0 );
+  }
+
   mExcludeFromExports = element.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
   mEvaluatedExcludeFromExports = mExcludeFromExports;
 
@@ -1063,6 +1076,20 @@ QSizeF QgsLayoutItem::applyFixedSize( const QSizeF &targetSize )
 void QgsLayoutItem::refreshItemRotation()
 {
   setItemRotation( itemRotation() );
+}
+
+void QgsLayoutItem::refreshOpacity( bool updateItem )
+{
+  //data defined opacity set?
+  double opacity = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::Opacity, createExpressionContext(), mOpacity * 100.0 );
+
+  // Set the QGraphicItem's opacity
+  setOpacity( opacity / 100.0 );
+
+  if ( updateItem )
+  {
+    update();
+  }
 }
 
 void QgsLayoutItem::refreshFrame( bool updateItem )

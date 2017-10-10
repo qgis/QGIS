@@ -152,6 +152,7 @@ class TestQgsLayoutItem: public QObject
     void multiItemUndo();
     void overlappingUndo();
     void blendMode();
+    void opacity();
     void excludeFromExports();
 
   private:
@@ -1357,6 +1358,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setBackgroundColor( QColor( 200, 150, 100 ) );
   original->setBlendMode( QPainter::CompositionMode_Darken );
   original->setExcludeFromExports( true );
+  original->setItemOpacity( 0.75 );
 
   QgsLayoutItem *copy = createCopyViaXml( &l, original );
 
@@ -1381,6 +1383,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( copy->backgroundColor(), QColor( 200, 150, 100 ) );
   QCOMPARE( copy->blendMode(), QPainter::CompositionMode_Darken );
   QVERIFY( copy->excludeFromExports( ) );
+  QCOMPARE( copy->itemOpacity(), 0.75 );
 
   delete copy;
   delete original;
@@ -1557,6 +1560,24 @@ void TestQgsLayoutItem::blendMode()
   item->refreshDataDefinedProperty();
   QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken ); // should not change
   QCOMPARE( item->mEffect->compositionMode(), QPainter::CompositionMode_Lighten );
+}
+
+void TestQgsLayoutItem::opacity()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+
+  item->setItemOpacity( 0.75 );
+  QCOMPARE( item->itemOpacity(), 0.75 );
+  QCOMPARE( item->opacity(), 0.75 );
+
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::Opacity, QgsProperty::fromExpression( "35" ) );
+  item->refreshDataDefinedProperty();
+  QCOMPARE( item->itemOpacity(), 0.75 ); // should not change
+  QCOMPARE( item->opacity(), 0.35 );
 }
 
 void TestQgsLayoutItem::excludeFromExports()

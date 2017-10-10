@@ -427,6 +427,25 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: blendMode()
 %End
 
+    double itemOpacity() const;
+%Docstring
+ Returns the item's opacity. This method should be used instead of
+ QGraphicsItem.opacity() as any data defined overrides will be
+ respected.
+ :return: opacity as double between 1.0 (opaque) and 0 (transparent).
+.. seealso:: setItemOpacity()
+ :rtype: float
+%End
+
+    void setItemOpacity( double opacity );
+%Docstring
+ Sets the item's ``opacity``. This method should be used instead of
+ QGraphicsItem.setOpacity() as any data defined overrides will be
+ respected.
+ \param opacity double between 1.0 (opaque) and 0 (transparent).
+.. seealso:: itemOpacity()
+%End
+
     bool excludeFromExports() const;
 %Docstring
  Returns whether the item should be excluded from layout exports and prints.
@@ -589,6 +608,13 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  such as data defined rotation.
 .. seealso:: refreshItemSize()
 .. seealso:: refreshItemPosition()
+%End
+
+    void refreshOpacity( bool updateItem = true );
+%Docstring
+ Refresh item's opacity, considering data defined opacity.
+ If ``updateItem`` is set to false the item will not be automatically
+ updated after the opacity is set and a later call to update() must be made.
 %End
 
     void refreshFrame( bool updateItem = true );

@@ -641,8 +641,9 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
-#if 0//TODO
   mOpacityWidget->setOpacity( mItem->itemOpacity() );
+
+#if 0//TODO
   mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
 #endif
   mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports() );
@@ -708,9 +709,7 @@ void QgsLayoutItemPropertiesWidget::opacityChanged( double value )
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Opacity" ), QgsLayoutItem::UndoOpacity );
-#if 0 //TODO
     mItem->setItemOpacity( value );
-#endif
     mItem->layout()->undoStack()->endCommand();
   }
 }

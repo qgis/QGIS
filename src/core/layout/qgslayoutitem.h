@@ -430,6 +430,24 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setBlendMode( const QPainter::CompositionMode mode );
 
     /**
+     * Returns the item's opacity. This method should be used instead of
+     * QGraphicsItem::opacity() as any data defined overrides will be
+     * respected.
+     * \returns opacity as double between 1.0 (opaque) and 0 (transparent).
+     * \see setItemOpacity()
+     */
+    double itemOpacity() const { return mOpacity; }
+
+    /**
+     * Sets the item's \a opacity. This method should be used instead of
+     * QGraphicsItem::setOpacity() as any data defined overrides will be
+     * respected.
+     * \param opacity double between 1.0 (opaque) and 0 (transparent).
+     * \see itemOpacity()
+     */
+    void setItemOpacity( double opacity );
+
+    /**
      * Returns whether the item should be excluded from layout exports and prints.
      * \see setExcludeFromExports()
      */
@@ -590,6 +608,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void refreshItemRotation();
 
     /**
+     * Refresh item's opacity, considering data defined opacity.
+      * If \a updateItem is set to false the item will not be automatically
+      * updated after the opacity is set and a later call to update() must be made.
+     */
+    void refreshOpacity( bool updateItem = true );
+
+    /**
      * Refresh item's frame, considering data defined colors and frame size.
      * If \a updateItem is set to false, the item will not be automatically updated
      * after the frame is set and a later call to update() must be made.
@@ -681,6 +706,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     //! Composition blend mode for item
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
     std::unique_ptr< QgsLayoutEffect > mEffect;
+
+    //! Item opacity, between 0 and 1
+    double mOpacity = 1.0;
 
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
