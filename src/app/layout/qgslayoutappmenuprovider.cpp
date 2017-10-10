@@ -32,6 +32,12 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
 {
   QMenu *menu = new QMenu( parent );
 
+  //undo/redo
+  menu->addAction( layout->undoStack()->stack()->createUndoAction( menu ) );
+  menu->addAction( layout->undoStack()->stack()->createRedoAction( menu ) );
+  menu->addSeparator();
+
+
   const QList< QgsLayoutItem * > selectedItems = layout->selectedLayoutItems();
   if ( !selectedItems.empty() )
   {
