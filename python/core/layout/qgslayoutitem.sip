@@ -235,13 +235,20 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: sizeWithUnits()
 %End
 
-    virtual void attemptMove( const QgsLayoutPoint &point );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true );
 %Docstring
- Attempts to move the item to a specified ``point``. This method respects the item's
+ Attempts to move the item to a specified ``point``.
+
+ If ``useReferencePoint`` is true, this method will respect the item's
  reference point, in that the item will be moved so that its current reference
  point is placed at the specified target point.
+
+ If ``useReferencePoint`` is false, the item will be moved so that ``point``
+ falls at the top-left corner of the item.
+
  Note that the final position of the item may not match the specified target position,
  as data defined item position may override the specified value.
+
 .. seealso:: attemptResize()
 .. seealso:: referencePoint()
 .. seealso:: positionWithUnits()
@@ -575,7 +582,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
     QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
 %Docstring
  Adjusts the specified ``point`` at which a ``reference`` position of the item
- sits and returns the top left corner of the item, if reference point where placed at the specified position.
+ sits and returns the top left corner of the item, if reference point were placed at the specified position.
  :rtype: QPointF
 %End
 
@@ -583,6 +590,13 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 %Docstring
  Returns the current position (in layout units) of a ``reference`` point for the item.
  :rtype: QPointF
+%End
+
+    QgsLayoutPoint topLeftToReferencePoint( const QgsLayoutPoint &point ) const;
+%Docstring
+ Returns the position for the reference point of the item, if the top-left of the item
+ was placed at the specified ``point``.
+ :rtype: QgsLayoutPoint
 %End
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

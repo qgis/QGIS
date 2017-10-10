@@ -127,7 +127,7 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
     mLayout->undoStack()->endMacro();
 }
 
-void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
+void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint )
 {
   if ( !mLayout )
     return;

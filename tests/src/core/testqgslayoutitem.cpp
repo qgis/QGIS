@@ -1139,7 +1139,24 @@ void TestQgsLayoutItem::move()
 
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
 
-  //TODO - reference points
+  //reference points
+  item->attemptMove( QgsLayoutPoint( 5, 9 ) );
+  item->attemptResize( QgsLayoutSize( 4, 6 ) );
+  item->setReferencePoint( QgsLayoutItem::LowerRight );
+  QCOMPARE( item->positionWithUnits().x(), 9.0 );
+  QCOMPARE( item->positionWithUnits().y(), 15.0 );
+
+  item->attemptMove( QgsLayoutPoint( 11, 13 ) );
+  QCOMPARE( item->positionWithUnits().x(), 11.0 );
+  QCOMPARE( item->positionWithUnits().y(), 13.0 );
+  QCOMPARE( item->scenePos().x(), 7.0 );
+  QCOMPARE( item->scenePos().y(), 7.0 );
+
+  item->attemptMove( QgsLayoutPoint( 10, 12 ), false );
+  QCOMPARE( item->positionWithUnits().x(), 14.0 );
+  QCOMPARE( item->positionWithUnits().y(), 18.0 );
+  QCOMPARE( item->scenePos().x(), 10.0 );
+  QCOMPARE( item->scenePos().y(), 12.0 );
 }
 
 void TestQgsLayoutItem::rotation()

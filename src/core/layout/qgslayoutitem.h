@@ -250,16 +250,23 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void attemptResize( const QgsLayoutSize &size );
 
     /**
-     * Attempts to move the item to a specified \a point. This method respects the item's
+     * Attempts to move the item to a specified \a point.
+     *
+     * If \a useReferencePoint is true, this method will respect the item's
      * reference point, in that the item will be moved so that its current reference
      * point is placed at the specified target point.
+     *
+     * If \a useReferencePoint is false, the item will be moved so that \a point
+     * falls at the top-left corner of the item.
+     *
      * Note that the final position of the item may not match the specified target position,
      * as data defined item position may override the specified value.
+     *
      * \see attemptResize()
      * \see referencePoint()
      * \see positionWithUnits()
     */
-    virtual void attemptMove( const QgsLayoutPoint &point );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true );
 
     /**
      * Returns the item's current position, including units. The position returned
@@ -572,7 +579,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Adjusts the specified \a point at which a \a reference position of the item
-     * sits and returns the top left corner of the item, if reference point where placed at the specified position.
+     * sits and returns the top left corner of the item, if reference point were placed at the specified position.
      */
     QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
 
@@ -580,6 +587,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Returns the current position (in layout units) of a \a reference point for the item.
     */
     QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
+
+    /**
+     * Returns the position for the reference point of the item, if the top-left of the item
+     * was placed at the specified \a point.
+    */
+    QgsLayoutPoint topLeftToReferencePoint( const QgsLayoutPoint &point ) const;
 
     /**
      * Stores item state within an XML DOM element.

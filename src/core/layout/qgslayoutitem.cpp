@@ -351,7 +351,7 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
   emit sizePositionChanged();
 }
 
-void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
+void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint )
 {
   if ( !mLayout )
   {
@@ -360,7 +360,13 @@ void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
     return;
   }
 
-  QgsLayoutPoint evaluatedPoint = applyDataDefinedPosition( point );
+  QgsLayoutPoint evaluatedPoint = point;
+  if ( !useReferencePoint )
+  {
+    evaluatedPoint = topLeftToReferencePoint( point );
+  }
+
+  evaluatedPoint = applyDataDefinedPosition( evaluatedPoint );
   QPointF evaluatedPointLayoutUnits = mLayout->convertToLayoutUnits( evaluatedPoint );
   QPointF topLeftPointLayoutUnits = adjustPointForReferencePosition( evaluatedPointLayoutUnits, rect().size(), mReferencePoint );
   if ( topLeftPointLayoutUnits == scenePos() && point.units() == mItemPosition.units() )
@@ -735,6 +741,13 @@ QPointF QgsLayoutItem::positionAtReferencePoint( const QgsLayoutItem::ReferenceP
 {
   QPointF pointWithinItem = itemPositionAtReferencePoint( reference, rect().size() );
   return mapToScene( pointWithinItem );
+}
+
+QgsLayoutPoint QgsLayoutItem::topLeftToReferencePoint( const QgsLayoutPoint &point ) const
+{
+  QPointF topLeft = mLayout->convertToLayoutUnits( point );
+  QPointF refPoint = topLeft + itemPositionAtReferencePoint( mReferencePoint, rect().size() );
+  return mLayout->convertFromLayoutUnits( refPoint, point.units() );
 }
 
 bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
