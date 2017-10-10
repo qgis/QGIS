@@ -644,12 +644,11 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
   }
 
   std::unique_ptr< QgsLayoutItemBaseWidget > widget( QgsGui::layoutItemGuiRegistry()->createItemWidget( item ) );
-  if ( ! widget )
-  {
-    return;
-  }
-
   delete mItemPropertiesStack->takeMainPanel();
+
+  if ( ! widget )
+    return;
+
   widget->setDockMode( true );
   connect( item, &QgsLayoutItem::destroyed, widget.get(), [this]
   {
