@@ -283,6 +283,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsDockWidget *mItemsDock = nullptr;
     QTreeView *mItemsTreeView = nullptr;
 
+    QAction *mUndoAction = nullptr;
+    QAction *mRedoAction = nullptr;
+
     struct PanelStatus
     {
       PanelStatus( bool visible = true, bool active = false )
