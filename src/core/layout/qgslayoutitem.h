@@ -84,6 +84,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     enum UndoCommand
     {
       UndoIncrementalMove = 1, //!< Layout item incremental movement, e.g. as a result of a keypress
+      UndoStrokeColor, //!< Stroke color adjustment
+      UndoStrokeWidth, //!< Stroke width adjustment
+      UndoBackgroundColor, //!< Background color adjustment
+      UndoOpacity, //!< Opacity adjustment
+      UndoSetId, //!< Change item ID
+      UndoRotation, //!< Rotation adjustment
     };
 
     /**
@@ -384,7 +390,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see hasBackground()
      * \see setBackgroundColor()
      */
-    void setBackgroundEnabled( bool drawBackground ) { mBackground = drawBackground; }
+    void setBackgroundEnabled( bool drawBackground );
 
     /**
      * Returns the background color for this item. This is only used if hasBackground()

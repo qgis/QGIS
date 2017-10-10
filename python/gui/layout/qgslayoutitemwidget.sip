@@ -97,6 +97,43 @@ class QgsLayoutItemBaseWidget: QgsPanelWidget
 
 };
 
+
+class QgsLayoutItemPropertiesWidget: QWidget
+{
+%Docstring
+ A widget for controlling the common properties of layout items (e.g. position and size, background, stroke, frame).
+ This widget can be embedded into other layout item widgets.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemwidget.h"
+%End
+  public:
+    QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
+
+    QgsLayoutItem::ReferencePoint positionMode() const;
+%Docstring
+ :rtype: QgsLayoutItem.ReferencePoint
+%End
+
+    void showBackgroundGroup( bool showGroup );
+
+    void showFrameGroup( bool showGroup );
+
+  protected slots:
+    void initializeDataDefinedButtons();
+%Docstring
+Initializes data defined buttons to current atlas coverage layer
+%End
+    void populateDataDefinedButtons();
+%Docstring
+Sets data defined button state to match item
+%End
+
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -279,6 +279,7 @@ bool QgsLayoutItemGroup::readXml( const QDomElement &itemElement, const QDomDocu
 
   resetBoundingRect();
 
+  emit changed();
   return result;
 }
 

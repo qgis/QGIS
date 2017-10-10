@@ -166,6 +166,13 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  Refreshes the object, causing a recalculation of any property overrides.
 %End
 
+  signals:
+
+    void changed();
+%Docstring
+ Emitted when the object's properties change.
+%End
+
   protected:
 
     bool writeObjectPropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;

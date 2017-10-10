@@ -189,6 +189,13 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      */
     virtual void refresh() {}
 
+  signals:
+
+    /**
+     * Emitted when the object's properties change.
+     */
+    void changed();
+
   protected:
 
     /**

@@ -414,7 +414,10 @@ bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &do
     return false;
   }
 
-  return readPropertiesFromElement( itemElem, doc, context );
+  bool result = readPropertiesFromElement( itemElem, doc, context );
+  emit changed();
+  update();
+  return result;
 }
 
 QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )
@@ -473,6 +476,12 @@ void QgsLayoutItem::setFrameJoinStyle( const Qt::PenJoinStyle style )
   itemPen.setJoinStyle( mFrameJoinStyle );
   setPen( itemPen );
   emit frameChanged();
+}
+
+void QgsLayoutItem::setBackgroundEnabled( bool drawBackground )
+{
+  mBackground = drawBackground;
+  update();
 }
 
 void QgsLayoutItem::setBackgroundColor( const QColor &color )
@@ -995,14 +1004,14 @@ void QgsLayoutItem::refreshFrame( bool updateItem )
   //data defined stroke color set?
   bool ok = false;
   QColor frameColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::FrameColor, createExpressionContext(), mFrameColor, &ok );
-  QPen itemPen = pen();
+  QPen itemPen;
   if ( ok )
   {
-    itemPen.setColor( frameColor );
+    itemPen = QPen( frameColor );
   }
   else
   {
-    itemPen.setColor( mFrameColor );
+    itemPen = QPen( mFrameColor );
   }
   itemPen.setJoinStyle( mFrameJoinStyle );
 

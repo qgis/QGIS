@@ -53,6 +53,12 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
     enum UndoCommand
     {
       UndoIncrementalMove,
+      UndoStrokeColor,
+      UndoStrokeWidth,
+      UndoBackgroundColor,
+      UndoOpacity,
+      UndoSetId,
+      UndoRotation,
     };
 
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );

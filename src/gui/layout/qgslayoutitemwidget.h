@@ -18,6 +18,8 @@
 #include "qgis_gui.h"
 #include "qgslayoutobject.h"
 #include "qgspanelwidget.h"
+#include "qgslayoutitem.h"
+#include "ui_qgslayoutitemwidgetbase.h"
 #include <QObject>
 #include <QPointer>
 
@@ -146,5 +148,100 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
 
     QgsLayoutConfigObject *mConfigObject = nullptr;
 };
+
+
+/**
+ * \class QgsLayoutItemPropertiesWidget
+ * \ingroup gui
+ * A widget for controlling the common properties of layout items (e.g. position and size, background, stroke, frame).
+ * This widget can be embedded into other layout item widgets.
+ * \since QGIS 3.0
+*/
+class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsLayoutItemWidgetBase
+{
+    Q_OBJECT
+  public:
+    QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
+
+    QgsLayoutItem::ReferencePoint positionMode() const;
+
+    void showBackgroundGroup( bool showGroup );
+
+    void showFrameGroup( bool showGroup );
+
+  protected slots:
+    //! Initializes data defined buttons to current atlas coverage layer
+    void initializeDataDefinedButtons();
+    //! Sets data defined button state to match item
+    void populateDataDefinedButtons();
+
+  private slots:
+
+    /**
+     * Set the frame color
+     */
+    void mFrameColorButton_colorChanged( const QColor &newFrameColor );
+
+    /**
+     * Set the background color
+     */
+    void mBackgroundColorButton_colorChanged( const QColor &newBackgroundColor );
+//    void on_mTransparencySlider_valueChanged( int value );
+//    void on_mTransparencySpinBox_valueChanged( int value );
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void strokeUnitChanged( QgsUnitTypes::LayoutUnit unit );
+    void mFrameGroupBox_toggled( bool state );
+    void mFrameJoinStyleCombo_currentIndexChanged( int index );
+    void mBackgroundGroupBox_toggled( bool state );
+    void mItemIdLineEdit_editingFinished();
+
+    //adjust coordinates in line edits
+    void mPageSpinBox_valueChanged( int );
+    void mXPosSpin_valueChanged( double );
+    void mYPosSpin_valueChanged( double );
+    void mWidthSpin_valueChanged( double );
+    void mHeightSpin_valueChanged( double );
+
+    void mUpperLeftCheckBox_stateChanged( int state );
+    void mUpperMiddleCheckBox_stateChanged( int state );
+    void mUpperRightCheckBox_stateChanged( int state );
+    void mMiddleLeftCheckBox_stateChanged( int state );
+    void mMiddleCheckBox_stateChanged( int state );
+    void mMiddleRightCheckBox_stateChanged( int state );
+    void mLowerLeftCheckBox_stateChanged( int state );
+    void mLowerMiddleCheckBox_stateChanged( int state );
+    void mLowerRightCheckBox_stateChanged( int state );
+
+    void mBlendModeCombo_currentIndexChanged( int index );
+    void opacityChanged( double value );
+
+    void mItemRotationSpinBox_valueChanged( double val );
+    void mExcludeFromPrintsCheckBox_toggled( bool checked );
+
+    void setValuesForGuiElements();
+    //sets the values for all position related (x, y, width, height) elements
+    void setValuesForGuiPositionElements();
+    //sets the values for all non-position related elements
+    void setValuesForGuiNonPositionElements();
+
+    void variablesChanged();
+    void updateVariables();
+
+  private:
+
+    QgsLayoutItem *mItem = nullptr;
+    QgsLayoutConfigObject *mConfigObject = nullptr;
+
+    bool mFreezeXPosSpin = false;
+    bool mFreezeYPosSpin = false;
+    bool mFreezeWidthSpin = false;
+    bool mFreezeHeightSpin = false;
+    bool mFreezePageSpin = false;
+
+//    void changeItemTransparency( int value );
+    void changeItemPosition();
+
+};
+
 
 #endif // QGSLAYOUTITEMWIDGET_H

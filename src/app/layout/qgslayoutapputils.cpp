@@ -18,6 +18,8 @@
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutviewrubberband.h"
+#include "qgslayoutmapwidget.h"
+#include "qgslayoutitemmap.h"
 
 void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 {
@@ -40,7 +42,11 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 
   registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), nullptr, createRubberBand ) );
 
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutMap, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ), nullptr, createRubberBand ) );
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutMap, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ),
+                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
+  }, createRubberBand ) );
 
   registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutRectangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), nullptr, createRubberBand, QStringLiteral( "shapes" ) ) );
   registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutEllipse, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), nullptr, createEllipseBand, QStringLiteral( "shapes" ) ) );
