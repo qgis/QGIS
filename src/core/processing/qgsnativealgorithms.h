@@ -811,20 +811,21 @@ class QgsMeanCoordinatesAlgorithm : public QgsProcessingAlgorithm
 };
 
 /**
- * Native raster layer unique values count algorithm.
+ * Native raster layer unique values report algorithm.
  */
-class QgsRasterLayerUniqueValuesCountAlgorithm : public QgsProcessingAlgorithm
+class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
 
-    QgsRasterLayerUniqueValuesCountAlgorithm() = default;
+    QgsRasterLayerUniqueValuesReportAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override { return QStringLiteral( "rasterlayeruniquevaluescount" ); }
-    QString displayName() const override { return QObject::tr( "Raster layer unique values count" ); }
+    QString name() const override { return QStringLiteral( "rasterlayeruniquevaluesreport" ); }
+    QString displayName() const override { return QObject::tr( "Raster layer unique values report" ); }
+    virtual QStringList tags() const override { return QObject::tr( "count,area,statistics" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Raster analysis" ); }
     QString shortHelpString() const override;
-    QgsRasterLayerUniqueValuesCountAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsRasterLayerUniqueValuesReportAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
