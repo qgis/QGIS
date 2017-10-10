@@ -109,7 +109,7 @@ QList<QgsLayoutItem *> QgsLayoutItemGroup::items() const
 void QgsLayoutItemGroup::setVisibility( const bool visible )
 {
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginMacro( tr( "Set group visibility" ) );
+    mLayout->undoStack()->beginMacro( tr( "Set Group Visibility" ) );
   //also set visibility for all items within the group
   for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
   {
@@ -133,7 +133,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
     return;
 
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginMacro( tr( "Moved group" ) );
+    mLayout->undoStack()->beginMacro( tr( "Move group" ) );
 
   QPointF scenePoint = mLayout->convertToLayoutUnits( point );
   double deltaX = scenePoint.x() - pos().x();
@@ -178,7 +178,7 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
     return;
 
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginMacro( tr( "Resized group" ) );
+    mLayout->undoStack()->beginMacro( tr( "Resize Group" ) );
 
   QRectF oldRect = rect();
   QSizeF newSizeLayoutUnits = mLayout->convertToLayoutUnits( size );

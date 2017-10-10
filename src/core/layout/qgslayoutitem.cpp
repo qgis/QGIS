@@ -101,7 +101,7 @@ void QgsLayoutItem::setId( const QString &id )
   }
 
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginCommand( this, tr( "Item ID changed" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Change Item ID" ) );
 
   mId = id;
 
@@ -142,7 +142,7 @@ void QgsLayoutItem::setVisibility( const bool visible )
   std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
   if ( !shouldBlockUndoCommands() )
   {
-    command.reset( createCommand( visible ? tr( "Item shown" ) : tr( "Item hidden" ), 0 ) );
+    command.reset( createCommand( visible ? tr( "Show Item" ) : tr( "Hide Item" ), 0 ) );
     command->saveBeforeState();
   }
 
@@ -169,7 +169,7 @@ void QgsLayoutItem::setLocked( const bool locked )
   }
 
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginCommand( this, locked ? tr( "Item locked" ) : tr( "Item unlocked" ) );
+    mLayout->undoStack()->beginCommand( this, locked ? tr( "Lock Item" ) : tr( "Unlock Item" ) );
 
   mIsLocked = locked;
 

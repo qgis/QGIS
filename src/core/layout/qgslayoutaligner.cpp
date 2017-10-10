@@ -299,17 +299,17 @@ QString QgsLayoutAligner::undoText( Distribution distribution )
   switch ( distribution )
   {
     case DistributeLeft:
-      return QObject::tr( "Distributed items by left" );
+      return QObject::tr( "Distribute Items by Left" );
     case DistributeHCenter:
-      return QObject::tr( "Distributed items by center" );
+      return QObject::tr( "Distribute Items by Center" );
     case DistributeRight:
-      return QObject::tr( "Distributed items by right" );
+      return QObject::tr( "Distribute Items by Right" );
     case DistributeTop:
-      return QObject::tr( "Distributed items by top" );
+      return QObject::tr( "Distribute Items by Top" );
     case DistributeVCenter:
-      return QObject::tr( "Distributed items by vertical center" );
+      return QObject::tr( "Distribute Items by Vertical Center" );
     case DistributeBottom:
-      return QObject::tr( "Distributed items by bottom" );
+      return QObject::tr( "Distribute Items by Bottom" );
   }
   return QString(); //no warnings
 }
@@ -319,15 +319,15 @@ QString QgsLayoutAligner::undoText( QgsLayoutAligner::Resize resize )
   switch ( resize )
   {
     case ResizeNarrowest:
-      return QObject::tr( "Resized items to narrowest" );
+      return QObject::tr( "Resize Items to Narrowest" );
     case ResizeWidest:
-      return QObject::tr( "Resized items to widest" );
+      return QObject::tr( "Resize Items to Widest" );
     case ResizeShortest:
-      return QObject::tr( "Resized items to shortest" );
+      return QObject::tr( "Resize Items to Shortest" );
     case ResizeTallest:
-      return QObject::tr( "Resized items to tallest" );
+      return QObject::tr( "Resize Items to Tallest" );
     case ResizeToSquare:
-      return QObject::tr( "Resized items to square" );
+      return QObject::tr( "Resize Items to Square" );
   }
   return QString(); //no warnings
 }
@@ -337,17 +337,17 @@ QString QgsLayoutAligner::undoText( Alignment alignment )
   switch ( alignment )
   {
     case AlignLeft:
-      return QObject::tr( "Aligned items to left" );
+      return QObject::tr( "Align Items to Left" );
     case AlignHCenter:
-      return QObject::tr( "Aligned items to center" );
+      return QObject::tr( "Align Items to Center" );
     case AlignRight:
-      return QObject::tr( "Aligned items to right" );
+      return QObject::tr( "Align Items to Right" );
     case AlignTop:
-      return QObject::tr( "Aligned items to top" );
+      return QObject::tr( "Align Items to Top" );
     case AlignVCenter:
-      return QObject::tr( "Aligned items to vertical center" );
+      return QObject::tr( "Align Items to Vertical Center" );
     case AlignBottom:
-      return QObject::tr( "Aligned items to bottom" );
+      return QObject::tr( "Align Items to Bottom" );
   }
   return QString(); //no warnings
 }

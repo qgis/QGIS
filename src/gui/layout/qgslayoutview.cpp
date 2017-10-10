@@ -524,7 +524,7 @@ void QgsLayoutView::moveSelectedItemsToBottom()
 
 void QgsLayoutView::lockSelectedItems()
 {
-  currentLayout()->undoStack()->beginMacro( tr( "Items locked" ) );
+  currentLayout()->undoStack()->beginMacro( tr( "Lock Items" ) );
   const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
   for ( QgsLayoutItem *item : selectionList )
   {
@@ -538,7 +538,7 @@ void QgsLayoutView::lockSelectedItems()
 void QgsLayoutView::unlockAllItems()
 {
   //unlock all items in layout
-  currentLayout()->undoStack()->beginMacro( tr( "Items unlocked" ) );
+  currentLayout()->undoStack()->beginMacro( tr( "Unlock Items" ) );
 
   //first, clear the selection
   currentLayout()->deselectAll();
@@ -601,7 +601,7 @@ void QgsLayoutView::deleteSelectedItems()
 #endif
     const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
 
-    currentLayout()->undoStack()->beginMacro( tr( "Items deleted" ) );
+    currentLayout()->undoStack()->beginMacro( tr( "Delete Items" ) );
     //delete selected items
     for ( QgsLayoutItem *item : selectedItems )
     {
@@ -857,10 +857,10 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
       item->attemptMove( itemPos );
     };
 
-    l->undoStack()->beginMacro( tr( "Item moved" ) );
+    l->undoStack()->beginMacro( tr( "Move Item" ) );
     for ( QgsLayoutItem *item : layoutItemList )
     {
-      l->undoStack()->beginCommand( item, tr( "Item moved" ), QgsLayoutItem::UndoIncrementalMove );
+      l->undoStack()->beginCommand( item, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
       moveItem( item );
       l->undoStack()->endCommand();
     }

@@ -994,7 +994,7 @@ void QgsLayoutDesignerDialog::addPages()
     }
 
     if ( dlg.numberPages() > 1 )
-      mLayout->undoStack()->beginMacro( tr( "Add pages" ) );
+      mLayout->undoStack()->beginMacro( tr( "Add Pages" ) );
     for ( int i = 0; i < dlg.numberPages(); ++i )
     {
       QgsLayoutItemPage *page = new QgsLayoutItemPage( mLayout );

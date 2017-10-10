@@ -591,7 +591,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
   if ( mCurrentMouseMoveAction == QgsLayoutMouseHandles::MoveItem )
   {
     //move selected items
-    mLayout->undoStack()->beginMacro( tr( "Change item position" ) );
+    mLayout->undoStack()->beginMacro( tr( "Move Items" ) );
 
     QPointF mEndHandleMovePos = scenePos();
 
@@ -626,7 +626,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
   else if ( mCurrentMouseMoveAction != QgsLayoutMouseHandles::NoAction )
   {
     //resize selected items
-    mLayout->undoStack()->beginMacro( tr( "Change item size" ) );
+    mLayout->undoStack()->beginMacro( tr( "Resize Items" ) );
 
     //resize all selected items
     const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems( false );

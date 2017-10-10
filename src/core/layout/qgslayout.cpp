@@ -382,11 +382,11 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
   QString undoText;
   if ( QgsLayoutItemAbstractMetadata *metadata = QgsApplication::layoutItemRegistry()->itemMetadata( item->type() ) )
   {
-    undoText = tr( "Created %1" ).arg( metadata->visibleName() );
+    undoText = tr( "Create %1" ).arg( metadata->visibleName() );
   }
   else
   {
-    undoText = tr( "Created item" );
+    undoText = tr( "Create Item" );
   }
   mUndoStack->stack()->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
 }
@@ -396,8 +396,8 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
   std::unique_ptr< QgsLayoutItemDeleteUndoCommand > deleteCommand;
   if ( !mBlockUndoCommands )
   {
-    mUndoStack->beginMacro( tr( "Deleted item" ) );
-    deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Deleted item" ) ) );
+    mUndoStack->beginMacro( tr( "Delete Items" ) );
+    deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Delete Item" ) ) );
   }
   removeLayoutItemPrivate( item );
   if ( deleteCommand )
@@ -467,7 +467,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
     return nullptr;
   }
 
-  mUndoStack->beginMacro( tr( "Grouped items" ) );
+  mUndoStack->beginMacro( tr( "Group Items" ) );
   std::unique_ptr< QgsLayoutItemGroup > itemGroup( new QgsLayoutItemGroup( this ) );
   for ( QgsLayoutItem *item : items )
   {
@@ -476,7 +476,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   QgsLayoutItemGroup *returnGroup = itemGroup.get();
   addLayoutItem( itemGroup.release() );
 
-  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Items grouped" ) ) );
+  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Group Items" ) ) );
   mUndoStack->stack()->push( c.release() );
   mProject->setDirty( true );
 
@@ -497,10 +497,10 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
     return ungroupedItems;
   }
 
-  mUndoStack->beginMacro( tr( "Ungrouped items" ) );
+  mUndoStack->beginMacro( tr( "Ungroup Items" ) );
   // Call this before removing group items so it can keep note
   // of contents
-  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Items ungrouped" ) ) );
+  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Ungroup Items" ) ) );
   mUndoStack->stack()->push( c.release() );
 
   mProject->setDirty( true );
@@ -576,7 +576,7 @@ void QgsLayout::updateZValues( const bool addUndoCommands )
 
   if ( addUndoCommands )
   {
-    mUndoStack->beginMacro( tr( "Item z-order changed" ) );
+    mUndoStack->beginMacro( tr( "Change Item Stacking" ) );
   }
   for ( QgsLayoutItem *currentItem : zOrderList )
   {
