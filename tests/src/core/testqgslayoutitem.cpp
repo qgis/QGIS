@@ -25,6 +25,7 @@
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemshape.h"
+#include "qgslayouteffect.h"
 #include <QObject>
 #include <QPainter>
 #include <QImage>
@@ -150,6 +151,7 @@ class TestQgsLayoutItem: public QObject
     void undoRedo();
     void multiItemUndo();
     void overlappingUndo();
+    void blendMode();
 
   private:
 
@@ -1352,6 +1354,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setFrameJoinStyle( Qt::MiterJoin );
   original->setBackgroundEnabled( false );
   original->setBackgroundColor( QColor( 200, 150, 100 ) );
+  original->setBlendMode( QPainter::CompositionMode_Darken );
 
   QgsLayoutItem *copy = createCopyViaXml( &l, original );
 
@@ -1374,6 +1377,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( copy->frameJoinStyle(), Qt::MiterJoin );
   QVERIFY( !copy->hasBackground() );
   QCOMPARE( copy->backgroundColor(), QColor( 200, 150, 100 ) );
+  QCOMPARE( copy->blendMode(), QPainter::CompositionMode_Darken );
 
   delete copy;
   delete original;
@@ -1527,6 +1531,29 @@ void TestQgsLayoutItem::overlappingUndo()
   QCOMPARE( item2->positionWithUnits(), QgsLayoutPoint( 20, 20 ) );
   QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 10, 10 ) );
 
+}
+
+void TestQgsLayoutItem::blendMode()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( item );
+
+  item->setBlendMode( QPainter::CompositionMode_Darken );
+  QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken );
+  QVERIFY( item->mEffect->isEnabled() );
+
+  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, false );
+  QVERIFY( !item->mEffect->isEnabled() );
+  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, true );
+  QVERIFY( item->mEffect->isEnabled() );
+
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::BlendMode, QgsProperty::fromExpression( "'lighten'" ) );
+  item->refreshDataDefinedProperty();
+  QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken ); // should not change
+  QCOMPARE( item->mEffect->compositionMode(), QPainter::CompositionMode_Lighten );
 }
 
 QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )

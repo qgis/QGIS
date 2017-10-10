@@ -22,6 +22,8 @@
 #include "qgslayoutmodel.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemgroup.h"
+#include "qgspainting.h"
+#include "qgslayouteffect.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -61,6 +63,18 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   {
     mLayoutManagesZValue = false;
   }
+
+  // Setup layout effect
+  mEffect.reset( new QgsLayoutEffect() );
+  if ( mLayout )
+  {
+    mEffect->setEnabled( mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
+    connect( &mLayout->context(), &QgsLayoutContext::flagsChanged, this, [ = ]( QgsLayoutContext::Flags flags )
+    {
+      mEffect->setEnabled( flags & QgsLayoutContext::FlagUseAdvancedEffects );
+    } );
+  }
+  setGraphicsEffect( mEffect.get() );
 }
 
 QgsLayoutItem::~QgsLayoutItem()
@@ -497,6 +511,13 @@ void QgsLayoutItem::setBackgroundColor( const QColor &color )
   refreshBackgroundColor( true );
 }
 
+void QgsLayoutItem::setBlendMode( const QPainter::CompositionMode mode )
+{
+  mBlendMode = mode;
+  // Update the item effect to use the new blend mode
+  refreshBlendMode();
+}
+
 double QgsLayoutItem::estimatedFrameBleed() const
 {
   if ( !hasFrame() )
@@ -591,6 +612,10 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   if ( property == QgsLayoutObject::BackgroundColor || property == QgsLayoutObject::AllProperties )
   {
     refreshBackgroundColor( false );
+  }
+  if ( property == QgsLayoutObject::BlendMode || property == QgsLayoutObject::AllProperties )
+  {
+    refreshBlendMode();
   }
 }
 
@@ -810,11 +835,11 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
   bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
   element.appendChild( bgColorElem );
 
+  //blend mode
+  element.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
+
   //TODO
 #if 0
-  //blend mode
-  //  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
-
   //transparency
   //  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
 
@@ -937,9 +962,10 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
     refreshBackgroundColor( false );
   }
 
-#if 0 //TODO
   //blend mode
-  setBlendMode( QgsMapRenderer::getCompositionMode( ( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
+  setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
+
+#if 0 //TODO
   //transparency
   setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
   mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
@@ -1058,4 +1084,22 @@ void QgsLayoutItem::refreshBackgroundColor( bool updateItem )
   {
     update();
   }
+}
+
+void QgsLayoutItem::refreshBlendMode()
+{
+  QPainter::CompositionMode blendMode = mBlendMode;
+
+  //data defined blend mode set?
+  bool ok = false;
+  QString blendStr = mDataDefinedProperties.valueAsString( QgsLayoutObject::BlendMode, createExpressionContext(), QString(), &ok );
+  if ( ok && !blendStr.isEmpty() )
+  {
+    QString blendstr = blendStr.trimmed();
+    QPainter::CompositionMode blendModeD = QgsSymbolLayerUtils::decodeBlendMode( blendstr );
+    blendMode = blendModeD;
+  }
+
+  // Update the item effect to use the new blend mode
+  mEffect->setCompositionMode( blendMode );
 }

@@ -158,7 +158,6 @@
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
 %Include layout/qgslayoutaligner.sip
-%Include layout/qgslayoutcontext.sip
 %Include layout/qgslayoutgridsettings.sip
 %Include layout/qgslayoutmeasurement.sip
 %Include layout/qgslayoutmeasurementconverter.sip
@@ -403,6 +402,8 @@
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsgpsdconnection.sip
 %Include layout/qgslayout.sip
+%Include layout/qgslayoutcontext.sip
+%Include layout/qgslayouteffect.sip
 %Include layout/qgslayoutguidecollection.sip
 %Include layout/qgslayoutitem.sip
 %Include layout/qgslayoutitemgroup.sip

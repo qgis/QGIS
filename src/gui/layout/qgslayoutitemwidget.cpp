@@ -640,8 +640,8 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
-#if 0//TODO
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
+#if 0//TODO
   mOpacityWidget->setOpacity( mItem->itemOpacity() );
   mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
   mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports( QgsComposerObject::OriginalValue ) );
@@ -698,9 +698,7 @@ void QgsLayoutItemPropertiesWidget::mBlendModeCombo_currentIndexChanged( int ind
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Blend Mode" ) );
-#if 0 //TODO
     mItem->setBlendMode( mBlendModeCombo->blendMode() );
-#endif
     mItem->layout()->undoStack()->endCommand();
   }
 }

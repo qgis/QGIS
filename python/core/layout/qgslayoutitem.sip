@@ -414,6 +414,19 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: setBackgroundEnabled()
 %End
 
+    QPainter::CompositionMode blendMode() const;
+%Docstring
+ Returns the item's composition blending mode.
+.. seealso:: setBlendMode()
+ :rtype: QPainter.CompositionMode
+%End
+
+    void setBlendMode( const QPainter::CompositionMode mode );
+%Docstring
+ Sets the item's composition blending ``mode``.
+.. seealso:: blendMode()
+%End
+
     virtual double estimatedFrameBleed() const;
 %Docstring
  Returns the estimated amount the item's frame bleeds outside the item's
@@ -577,6 +590,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  Refresh item's background color, considering data defined colors.
  If ``updateItem`` is set to false, the item will not be automatically updated
  after the frame color is set and a later call to update() must be made.
+%End
+
+    void refreshBlendMode();
+%Docstring
+ Refresh item's blend mode, considering data defined blend mode.
 %End
 
     QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;

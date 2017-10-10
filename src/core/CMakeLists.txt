@@ -362,6 +362,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayout.cpp
   layout/qgslayoutaligner.cpp
   layout/qgslayoutcontext.cpp
+  layout/qgslayouteffect.cpp
   layout/qgslayoutgridsettings.cpp
   layout/qgslayoutguidecollection.cpp
   layout/qgslayoutitem.cpp
@@ -713,6 +714,8 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
+  layout/qgslayoutcontext.h
+  layout/qgslayouteffect.h
   layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemgroup.h

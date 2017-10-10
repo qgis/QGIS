@@ -25,10 +25,12 @@
 #include "qgslayoutundocommand.h"
 #include "qgslayoutmeasurement.h"
 #include <QGraphicsRectItem>
+#include <QPainter>
 
 class QgsLayout;
 class QPainter;
 class QgsLayoutItemGroup;
+class QgsLayoutEffect;
 
 /**
  * \ingroup core
@@ -416,6 +418,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setBackgroundColor( const QColor &color );
 
     /**
+     * Returns the item's composition blending mode.
+     * \see setBlendMode()
+     */
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+
+    /**
+     * Sets the item's composition blending \a mode.
+     * \see blendMode()
+     */
+    void setBlendMode( const QPainter::CompositionMode mode );
+
+    /**
      * Returns the estimated amount the item's frame bleeds outside the item's
      * actual rectangle. For instance, if the item has a 2mm frame stroke, then
      * 1mm of this frame is drawn outside the item's rect. In this case the
@@ -578,6 +592,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void refreshBackgroundColor( bool updateItem = true );
 
     /**
+     * Refresh item's blend mode, considering data defined blend mode.
+     */
+    void refreshBlendMode();
+
+    /**
      * Adjusts the specified \a point at which a \a reference position of the item
      * sits and returns the top left corner of the item, if reference point were placed at the specified position.
      */
@@ -637,6 +656,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QgsLayoutSize mItemSize;
     QgsLayoutPoint mItemPosition;
     double mItemRotation = 0.0;
+
+    //! Composition blend mode for item
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
+    std::unique_ptr< QgsLayoutEffect > mEffect;
 
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
