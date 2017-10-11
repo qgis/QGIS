@@ -29,6 +29,7 @@ IF (WITH_GUI)
   )
   SET(OGR_MOC_HDRS ${OGR_MOC_HDRS}
     qgsogrsourceselect.h
+    qgsogrdbsourceselect.h
   )
 ENDIF ()
 
