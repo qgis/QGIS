@@ -42,7 +42,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     ~QgsTessellatedPolygonGeometry();
 
     //! Initializes vertex buffer from given polygons. Takes ownership of passed polygon geometries
-    void setPolygons( const QList<QgsPolygonV2 *> &polygons, const QgsPointXY &origin, float extrusionHeight );
+    void setPolygons( const QList<QgsPolygonV2 *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
 
   private:
     QList<QgsPolygonV2 *> mPolygons;

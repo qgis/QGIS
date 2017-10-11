@@ -118,11 +118,11 @@ void QgsVectorLayer3DRendererWidget::setRenderer( const QgsVectorLayer3DRenderer
       pageIndex = 3;
       if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "polygon" )
       {
-        whileBlocking( widgetPolygon )->setSymbol( *static_cast<const QgsPolygon3DSymbol *>( mRenderer->symbol() ) );
+        whileBlocking( widgetPolygon )->setSymbol( *static_cast<const QgsPolygon3DSymbol *>( mRenderer->symbol() ), vlayer );
       }
       else
       {
-        whileBlocking( widgetPolygon )->setSymbol( QgsPolygon3DSymbol() );
+        whileBlocking( widgetPolygon )->setSymbol( QgsPolygon3DSymbol(), vlayer );
       }
       break;
 

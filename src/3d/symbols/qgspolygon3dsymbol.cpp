@@ -44,6 +44,10 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
   mMaterial.writeXml( elemMaterial );
   elem.appendChild( elemMaterial );
+
+  QDomElement elemDDP = doc.createElement( QStringLiteral( "data-defined-properties" ) );
+  mDataDefinedProperties.writeXml( elemDDP, propertyDefinitions() );
+  elem.appendChild( elemDDP );
 }
 
 void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -58,4 +62,8 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );
+
+  QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  if ( !elemDDP.isNull() )
+    mDataDefinedProperties.readXml( elemDDP, propertyDefinitions() );
 }
