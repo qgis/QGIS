@@ -1079,7 +1079,7 @@ border-radius: 2px;</string>
                    <property name="frameShadow">
                     <enum>QFrame::Plain</enum>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                   <layout class="QHBoxLayout" name="horizontalLayout_1">
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -2223,7 +2223,7 @@ border-radius: 2px;</string>
              </widget>
             </item>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_6">
+             <widget class="QLabel" name="label_1">
               <property name="text">
                <string>Auxiliary storage tables can contain additional data that should only belong to the project file. For instance, specific location or rotation for labels. Auxiliary data are saved in qgd files. New fields can be added from any data-defined widget when needed. Be aware that this information will NOT be saved in you datasource but only in the project file.</string>
               </property>
