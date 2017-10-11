@@ -2885,10 +2885,21 @@ void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Hub layer" ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "HUB_FIELD" ),
                 QObject::tr( "Hub ID field" ), QVariant(), QStringLiteral( "HUBS" ) ) );
+
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "HUB_FIELDS" ),
+                QObject::tr( "Hub layer fields to copy (leave empty to copy all fields)" ),
+                QVariant(), QStringLiteral( "HUBS" ), QgsProcessingParameterField::Any,
+                true, true ) );
+
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SPOKES" ),
                 QObject::tr( "Spoke layer" ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "SPOKE_FIELD" ),
                 QObject::tr( "Spoke ID field" ), QVariant(), QStringLiteral( "SPOKES" ) ) );
+
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "SPOKE_FIELDS" ),
+                QObject::tr( "Spoke layer fields to copy (leave empty to copy all fields)" ),
+                QVariant(), QStringLiteral( "SPOKES" ), QgsProcessingParameterField::Any,
+                true, true ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Hub lines" ), QgsProcessing::TypeVectorLine ) );
 }
@@ -2917,13 +2928,69 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
 
   QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );
   int fieldHubIndex = hubSource->fields().lookupField( fieldHubName );
+  const QStringList hubFieldsToCopy = parameterAsFields( parameters, QStringLiteral( "HUB_FIELDS" ), context );
+
   QString fieldSpokeName = parameterAsString( parameters, QStringLiteral( "SPOKE_FIELD" ), context );
   int fieldSpokeIndex = spokeSource->fields().lookupField( fieldSpokeName );
+  const QStringList spokeFieldsToCopy = parameterAsFields( parameters, QStringLiteral( "SPOKE_FIELDS" ), context );
 
   if ( fieldHubIndex < 0 || fieldSpokeIndex < 0 )
     throw QgsProcessingException( QObject::tr( "Invalid ID field" ) );
 
-  QgsFields fields = QgsProcessingUtils::combineFields( hubSource->fields(), spokeSource->fields() );
+  QgsFields hubOutFields;
+  QgsAttributeList hubFieldIndices;
+  if ( hubFieldsToCopy.empty() )
+  {
+    hubOutFields = hubSource->fields();
+    for ( int i = 0; i < hubOutFields.count(); ++i )
+    {
+      hubFieldIndices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : hubFieldsToCopy )
+    {
+      int index = hubSource->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        hubFieldIndices << index;
+        hubOutFields.append( hubSource->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsAttributeList hubFields2Fetch = hubFieldIndices;
+  hubFields2Fetch << fieldHubIndex;
+
+  QgsFields spokeOutFields;
+  QgsAttributeList spokeFieldIndices;
+  if ( spokeFieldsToCopy.empty() )
+  {
+    spokeOutFields = spokeSource->fields();
+    for ( int i = 0; i < spokeOutFields.count(); ++i )
+    {
+      spokeFieldIndices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : spokeFieldsToCopy )
+    {
+      int index = spokeSource->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        spokeFieldIndices << index;
+        spokeOutFields.append( spokeSource->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsAttributeList spokeFields2Fetch = spokeFieldIndices;
+  spokeFields2Fetch << fieldSpokeIndex;
+
+
+  QgsFields fields = QgsProcessingUtils::combineFields( hubOutFields, spokeOutFields );
 
   QgsWkbTypes::Type outType = QgsWkbTypes::LineString;
   bool hasZ = false;
@@ -2959,7 +3026,7 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
     return p;
   };
 
-  QgsFeatureIterator hubFeatures = hubSource->getFeatures();
+  QgsFeatureIterator hubFeatures = hubSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( hubFields2Fetch ) );
   double step = hubSource->featureCount() > 0 ? 100.0 / hubSource->featureCount() : 1;
   int i = 0;
   QgsFeature hubFeature;
@@ -2977,9 +3044,18 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
       continue;
 
     QgsPoint hubPoint = getPointFromFeature( hubFeature );
-    QgsAttributes hubAttributes = hubFeature.attributes();
+
+    // only keep selected attributes
+    QgsAttributes hubAttributes;
+    for ( int j = 0; j < hubFeature.attributes().count(); ++j )
+    {
+      if ( !hubFieldIndices.contains( j ) )
+        continue;
+      hubAttributes << hubFeature.attribute( j );
+    }
 
     QgsFeatureRequest spokeRequest = QgsFeatureRequest().setDestinationCrs( hubSource->sourceCrs() );
+    spokeRequest.setSubsetOfAttributes( spokeFields2Fetch );
     spokeRequest.setFilterExpression( QgsExpression::createFieldEqualityExpression( fieldSpokeName, hubFeature.attribute( fieldHubIndex ) ) );
 
     QgsFeatureIterator spokeFeatures = spokeSource->getFeatures( spokeRequest );
@@ -2990,13 +3066,25 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
       {
         break;
       }
+      if ( !spokeFeature.hasGeometry() )
+        continue;
 
       QgsPoint spokePoint = getPointFromFeature( spokeFeature );
       QgsGeometry line( new QgsLineString( QVector< QgsPoint >() << hubPoint << spokePoint ) );
 
       QgsFeature outFeature;
       QgsAttributes outAttributes = hubAttributes;
-      outAttributes.append( spokeFeature.attributes() );
+
+      // only keep selected attributes
+      QgsAttributes spokeAttributes;
+      for ( int j = 0; j < spokeFeature.attributes().count(); ++j )
+      {
+        if ( !spokeFieldIndices.contains( j ) )
+          continue;
+        spokeAttributes << spokeFeature.attribute( j );
+      }
+
+      outAttributes.append( spokeAttributes );
       outFeature.setAttributes( outAttributes );
       outFeature.setGeometry( line );
       sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
