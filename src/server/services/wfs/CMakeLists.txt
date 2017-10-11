@@ -10,6 +10,7 @@ SET (wfs_SRCS
   qgswfsdescribefeaturetype.cpp
   qgswfsgetfeature.cpp
   qgswfstransaction.cpp
+  qgswfstransaction_1_0_0.cpp
   qgswfsparameters.cpp
 )
 
