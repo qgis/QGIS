@@ -38,20 +38,16 @@ struct TriangleCoords
   //! Constructs from tessellator output. Note: tessellator outputs (X,-Z,Y) tuples for (X,Y,Z) input coords
   TriangleCoords( const float *data, bool withNormal )
   {
-    pts[0] = QVector3D( data[0], -data[2], data[1] );
-    pts[1] = QVector3D( data[3], -data[5], data[4] );
-    pts[2] = QVector3D( data[6], -data[8], data[7] );
-    if ( withNormal )
-    {
-      data += 9;
-      normals[0] = QVector3D( data[0], -data[2], data[1] );
-      normals[1] = QVector3D( data[3], -data[5], data[4] );
-      normals[2] = QVector3D( data[6], -data[8], data[7] );
-    }
-    else
-    {
-      normals[0] = normals[1] = normals[2] = QVector3D();
-    }
+#define FLOAT3_TO_VECTOR(x)  QVector3D( data[0], -data[2], data[1] )
+
+    pts[0] = FLOAT3_TO_VECTOR( data ); data += 3;
+    if ( withNormal ) { normals[0] = FLOAT3_TO_VECTOR( data ); data += 3; }
+
+    pts[1] = FLOAT3_TO_VECTOR( data ); data += 3;
+    if ( withNormal ) { normals[1] = FLOAT3_TO_VECTOR( data ); data += 3; }
+
+    pts[2] = FLOAT3_TO_VECTOR( data ); data += 3;
+    if ( withNormal ) { normals[2] = FLOAT3_TO_VECTOR( data ); data += 3; }
   }
 
   //! Compares two triangles
@@ -62,9 +58,46 @@ struct TriangleCoords
            normals[0] == other.normals[0] && normals[1] == other.normals[1] && normals[2] == other.normals[2];
   }
 
+  bool operator!=( const TriangleCoords &other ) const
+  {
+    return !operator==( other );
+  }
+
+  void dump() const
+  {
+    qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2];
+  }
+
   QVector3D pts[3];
   QVector3D normals[3];
 };
+
+
+bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QList<TriangleCoords> &expected )
+{
+  int valuesPerTriangle = withNormals ? 18 : 9;
+  if ( data.count() != expected.count() * valuesPerTriangle )
+    return false;
+
+  // TODO: allow arbitrary order of triangles in output
+  const float *dataRaw = data.constData();
+  for ( int i = 0; i < expected.count(); ++i )
+  {
+    const TriangleCoords &exp = expected.at( i );
+    TriangleCoords out( dataRaw, withNormals );
+    if ( exp != out )
+    {
+      qDebug() << "expected:";
+      exp.dump();
+      qDebug() << "got:";
+      out.dump();
+      return false;
+    }
+    dataRaw += withNormals ? 18 : 9;
+  }
+  return true;
+}
+
 
 /**
  * \ingroup UnitTests
@@ -103,17 +136,37 @@ void TestQgsTessellator::testBasic()
   QgsPolygonV2 polygon;
   polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
 
+  QgsPolygonV2 polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 0, 2 1 0, 3 2 0, 1 2 0, 1 1 0))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
+
+  QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
+  QList<TriangleCoords> tcNormals;
+  tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
+  tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
+
+  // without normals
+
   QgsTessellator t( 0, 0, false );
   t.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
 
-  TriangleCoords tcA( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
-  TriangleCoords tcB( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
+  QgsTessellator tZ( 0, 0, false );
+  tZ.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
 
-  QVector<float> polygonData = t.data();
-  QCOMPARE( polygonData.count(), 2 * 3 * 3 ); // two triangles (3 points with x/y/z coords)
-  // TODO: allow arbitrary order of triangles in output
-  QVERIFY( tcA == TriangleCoords( polygonData.constData(), false ) );
-  QVERIFY( tcB == TriangleCoords( polygonData.constData() + 9, false ) );
+  // with normals
+
+  QgsTessellator tN( 0, 0, true );
+  tN.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( tN.data(), true, tcNormals ) );
+
+  QgsTessellator tNZ( 0, 0, true );
+  tNZ.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormals ) );
 }
 
 

@@ -111,37 +111,60 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
   }
 }
 
-static QVector3D _calculateNormal( const QgsCurve *curve, bool &hasValidZ )
+static QVector3D _calculateNormal( const QgsCurve *curve, double originX, double originY )
 {
-  // Calculate the polygon's normal vector, based on Newell's method
-  // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
   QgsVertexId::VertexType vt;
   QgsPoint pt1, pt2;
-  QVector3D normal( 0, 0, 0 );
 
-  // assume that Z coordinates are not present
-  hasValidZ = false;
+  // if it is just plain 2D curve there is no need to calculate anything
+  // because it will be a flat horizontally oriented patch
+  if ( !QgsWkbTypes::hasZ( curve->wkbType() ) )
+    return QVector3D( 0, 0, 1 );
 
+  // often we have 3D coordinates, but Z is the same for all vertices
+  // so in order to save calculation and avoid possible issues with order of vertices
+  // (the calculation below may decide that a polygon faces downwards)
+  bool sameZ = true;
+  curve->pointAt( 0, pt1, vt );
+  for ( int i = 1; i < curve->numPoints(); i++ )
+  {
+    curve->pointAt( i, pt2, vt );
+    if ( pt1.z() != pt2.z() )
+    {
+      sameZ = false;
+      break;
+    }
+  }
+  if ( sameZ )
+    return QVector3D( 0, 0, 1 );
+
+  // Calculate the polygon's normal vector, based on Newell's method
+  // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
+  //
+  // Order of vertices is important here as it determines the front/back face of the polygon
+
+  double nx = 0, ny = 0, nz = 0;
   for ( int i = 0; i < curve->numPoints() - 1; i++ )
   {
     curve->pointAt( i, pt1, vt );
     curve->pointAt( i + 1, pt2, vt );
 
+    // shift points by the tessellator's origin - this does not affect normal calculation and it may save us from losing some precision
+    pt1.setX( pt1.x() - originX );
+    pt1.setY( pt1.y() - originY );
+    pt2.setX( pt2.x() - originX );
+    pt2.setY( pt2.y() - originY );
+
     if ( std::isnan( pt1.z() ) || std::isnan( pt2.z() ) )
       continue;
 
-    hasValidZ = true;
-
-    normal.setX( normal.x() + ( pt1.y() - pt2.y() ) * ( pt1.z() + pt2.z() ) );
-    normal.setY( normal.y() + ( pt1.z() - pt2.z() ) * ( pt1.x() + pt2.x() ) );
-    normal.setZ( normal.z() + ( pt1.x() - pt2.x() ) * ( pt1.y() + pt2.y() ) );
+    nx += ( pt1.y() - pt2.y() ) * ( pt1.z() + pt2.z() );
+    ny += ( pt1.z() - pt2.z() ) * ( pt1.x() + pt2.x() );
+    nz += ( pt1.x() - pt2.x() ) * ( pt1.y() + pt2.y() );
   }
 
-  if ( !hasValidZ )
-    return QVector3D( 0, 0, 1 );
-
+  QVector3D normal( nx, ny, nz );
   normal.normalize();
-
   return normal;
 }
 
@@ -194,8 +217,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
   QgsVertexId::VertexType vt;
   QgsPoint pt;
 
-  bool hasValidZ;
-  const QVector3D pNormal = _calculateNormal( exterior, hasValidZ );
+  const QVector3D pNormal = _calculateNormal( exterior, mOriginX, mOriginY );
   const int pCount = exterior->numPoints();
 
   // Polygon is a triangle
