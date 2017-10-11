@@ -8022,7 +8022,11 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
         // wait
         while ( mMapCanvas->isDrawing() )
         {
-          QgsApplication::instance()->processEvents( QEventLoop::AllEvents, 100 );
+          QEventLoop loop;
+          QTimer t;
+          connect( &t, SIGNAL( timeout() ), &loop, SLOT( quit() ) );
+          t.start( 100 );
+          loop.exec();
         }
         // remove wait message
         messageBar()->popWidget( item );
