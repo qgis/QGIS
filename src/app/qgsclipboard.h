@@ -149,25 +149,29 @@ class APP_EXPORT QgsClipboard : public QObject
      */
     void setSystemClipboard();
 
-    /** Creates a text representation of the clipboard features.
+    /**
+     * Creates a text representation of the clipboard features.
      * \returns clipboard text, respecting user export format
      */
     QString generateClipboardText() const;
 
-    /** Attempts to convert a string to a list of features, by parsing the string as WKT and GeoJSON
+    /**
+     * Attempts to convert a string to a list of features, by parsing the string as WKT and GeoJSON
      * \param string string to convert
      * \param fields fields for resultant features
      * \returns list of features if conversion was successful
      */
     QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields ) const;
 
-    /** Attempts to parse the clipboard contents and return a QgsFields object representing the fields
+    /**
+     * Attempts to parse the clipboard contents and return a QgsFields object representing the fields
      * present in the clipboard.
      * \note Only valid for text based clipboard contents
      */
     QgsFields retrieveFields() const;
 
-    /** QGIS-internal vector feature clipboard.
+    /**
+     * QGIS-internal vector feature clipboard.
         Stored as values not pointers as each clipboard operation
         involves a deep copy anyway.
      */
@@ -177,7 +181,7 @@ class APP_EXPORT QgsClipboard : public QObject
     QPointer<QgsVectorLayer> mSrcLayer;
 
     //! True when the data from the system clipboard should be read
-    bool mUseSystemClipboard;
+    bool mUseSystemClipboard = false;
 
     friend class TestQgisAppClipboard;
 

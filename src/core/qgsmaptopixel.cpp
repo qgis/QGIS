@@ -48,11 +48,8 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
   : mMapUnitsPerPixel( mapUnitsPerPixel )
   , mWidth( 0 )
   , mHeight( 0 )
-  , mRotation( 0 )
   , mXCenter( 0 )
   , mYCenter( 0 )
-  , xMin( 0 )
-  , yMin( 0 )
 {
   updateMatrix();
 }
@@ -65,14 +62,6 @@ QgsMapToPixel QgsMapToPixel::fromScale( double scale, QgsUnitTypes::DistanceUnit
 }
 
 QgsMapToPixel::QgsMapToPixel()
-  : mMapUnitsPerPixel( 1 )
-  , mWidth( 1 )
-  , mHeight( 1 )
-  , mRotation( 0.0 )
-  , mXCenter( 0.5 )
-  , mYCenter( 0.5 )
-  , xMin( 0 )
-  , yMin( 0 )
 {
   updateMatrix();
 }

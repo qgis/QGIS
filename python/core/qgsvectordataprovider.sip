@@ -533,6 +533,7 @@ Returns a list of available encodings
 .. versionadded:: 3.0
  :rtype: bool
 %End
+
   signals:
 
     void raiseError( const QString &msg ) const;

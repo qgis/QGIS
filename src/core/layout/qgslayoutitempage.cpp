@@ -24,7 +24,7 @@
 #include <QStyleOptionGraphicsItem>
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
-  : QgsLayoutItem( layout )
+  : QgsLayoutItem( layout, false )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   setFlag( QGraphicsItem::ItemIsMovable, false );
@@ -165,7 +165,7 @@ void QgsLayoutItemPage::redraw()
 
 void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-  if ( !context.painter() || !mLayout /*|| !mLayout->pagesVisible() */ )
+  if ( !context.painter() || !mLayout || !mLayout->context().pagesVisible() )
   {
     return;
   }
@@ -179,7 +179,7 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   painter->save();
 
 #if 0 //TODO
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
 #endif
   {
     //if in preview mode, draw page border and shadow so that it's
@@ -224,6 +224,11 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   painter->restore();
 }
 
+void QgsLayoutItemPage::drawFrame( QgsRenderContext & )
+{}
+
+void QgsLayoutItemPage::drawBackground( QgsRenderContext & )
+{}
 
 //
 // QgsLayoutItemPageGrid

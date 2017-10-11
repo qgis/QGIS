@@ -21,7 +21,8 @@
 #include <QVariant>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Base widget allowing to edit a collection, using a table.
  *
  * This widget includes buttons to add and remove rows.
@@ -59,12 +60,12 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, protected Ui::QgsTableWidge
     /**
      * Called when the add button is clicked.
      */
-    void on_addButton_clicked();
+    void addButton_clicked();
 
     /**
      * Called when the remove button is clicked.
      */
-    void on_removeButton_clicked();
+    void removeButton_clicked();
 
     /**
      * Called when the selection is changed to enable/disable the delete button.

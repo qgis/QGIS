@@ -33,7 +33,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for layer blend modes
  */
 class TestQgsBlendModes : public QObject
@@ -41,14 +42,7 @@ class TestQgsBlendModes : public QObject
     Q_OBJECT
 
   public:
-    TestQgsBlendModes()
-      : mMapSettings( 0 )
-      , mpPointsLayer( 0 )
-      , mpPolysLayer( 0 )
-      , mpLinesLayer( 0 )
-      , mRasterLayer1( 0 )
-      , mRasterLayer2( 0 )
-    {}
+    TestQgsBlendModes() = default;
     ~TestQgsBlendModes()
     {
       delete mMapSettings;

@@ -20,14 +20,6 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsvectorlayer.h"
 
-QgsHistogram::QgsHistogram()
-  : mMax( 0 )
-  , mMin( 0 )
-  , mIQR( 0 )
-{
-
-}
-
 void QgsHistogram::prepareValues()
 {
   std::sort( mValues.begin(), mValues.end() );

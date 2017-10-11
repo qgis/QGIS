@@ -106,42 +106,25 @@ int CPL_STDCALL progressCallback( double dfComplete,
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   : QgsRasterDataProvider( uri )
   , mUpdate( false )
-  , mValid( false )
-  , mHasPyramids( false )
-  , mWidth( 0 )
-  , mHeight( 0 )
-  , mXBlockSize( 0 )
-  , mYBlockSize( 0 )
-  , mGdalBaseDataset( nullptr )
-  , mGdalDataset( nullptr )
 {
-  mGeoTransform[0] =  0;
-  mGeoTransform[1] =  1;
-  mGeoTransform[2] =  0;
-  mGeoTransform[3] =  0;
-  mGeoTransform[4] =  0;
+  mGeoTransform[0] = 0;
+  mGeoTransform[1] = 1;
+  mGeoTransform[2] = 0;
+  mGeoTransform[3] = 0;
+  mGeoTransform[4] = 0;
   mGeoTransform[5] = -1;
   setError( error );
 }
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   : QgsRasterDataProvider( uri )
-  , QgsGdalProviderBase()
   , mUpdate( update )
-  , mValid( false )
-  , mHasPyramids( false )
-  , mWidth( 0 )
-  , mHeight( 0 )
-  , mXBlockSize( 0 )
-  , mYBlockSize( 0 )
-  , mGdalBaseDataset( nullptr )
-  , mGdalDataset( nullptr )
 {
-  mGeoTransform[0] =  0;
-  mGeoTransform[1] =  1;
-  mGeoTransform[2] =  0;
-  mGeoTransform[3] =  0;
-  mGeoTransform[4] =  0;
+  mGeoTransform[0] = 0;
+  mGeoTransform[1] = 1;
+  mGeoTransform[2] = 0;
+  mGeoTransform[3] = 0;
+  mGeoTransform[4] = 0;
   mGeoTransform[5] = -1;
 
   QgsDebugMsg( "constructing with uri '" + uri + "'." );
@@ -175,7 +158,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
-  if ( vsiPrefix != QLatin1String( "" ) )
+  if ( !vsiPrefix.isEmpty() )
   {
     if ( !uri.startsWith( vsiPrefix ) )
       setDataSourceUri( vsiPrefix + uri );
@@ -454,7 +437,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   QgsDebugMsgLevel( "thePixelHeight = "  + QString::number( pixelHeight ), 5 );
   QgsDebugMsgLevel( "theExtent: " + extent.toString(), 5 );
 
-  for ( int i = 0 ; i < 6; i++ )
+  for ( int i = 0; i < 6; i++ )
   {
     QgsDebugMsgLevel( QString( "transform : %1" ).arg( mGeoTransform[i] ), 5 );
   }
@@ -729,7 +712,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
 
   GDALSetGeoTransform( myGdalMemDataset, myMemGeoTransform );
 
-  for ( int i = 0 ; i < 6; i++ )
+  for ( int i = 0; i < 6; i++ )
   {
     QgsDebugMsg( QString( "transform : %1 %2" ).arg( myGeoTransform[i] ).arg( myMemGeoTransform[i] ) );
   }
@@ -964,7 +947,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
               QString dim = ( *j );
               if ( values.at( 0 ) != "NETCDF_DIM_" + dim )
                 continue;
-              if ( unitsMap.contains( dim ) && unitsMap[ dim ] != QLatin1String( "" ) && unitsMap[ dim ] != QLatin1String( "none" ) )
+              if ( unitsMap.contains( dim ) && !unitsMap[ dim ].isEmpty() && unitsMap[ dim ] != QLatin1String( "none" ) )
                 bandNameValues.append( dim + '=' + values.at( 1 ) + " (" + unitsMap[ dim ] + ')' );
               else
                 bandNameValues.append( dim + '=' + values.at( 1 ) );
@@ -983,7 +966,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
 
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
-  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
+  QgsDebugMsg( QString( "thePoint = %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
 
   QMap<int, QVariant> results;
 
@@ -1878,7 +1861,8 @@ QGISEXTERN QgsGdalProvider *classFactory( const QString *uri )
   return new QgsGdalProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -1911,11 +1895,11 @@ QGISEXTERN bool isProvider()
   call.  The regular express, glob, will have both all lower and upper
   case versions added.
 
-  @note
+  \note
 
   Copied from qgisapp.cpp.
 
-  @todo XXX This should probably be generalized and moved to a standard
+  \todo XXX This should probably be generalized and moved to a standard
             utility type thingy.
 
 */
@@ -1959,7 +1943,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   // driver, which will be found in DMD_LONGNAME, which will have the
   // same form.
 
-  fileFiltersString = QLatin1String( "" );
+  fileFiltersString.clear();
 
   QgsDebugMsg( QString( "GDAL driver count: %1" ).arg( GDALGetDriverCount() ) );
 
@@ -1986,7 +1970,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     // QgsDebugMsg(QString("got driver string %1").arg(myGdalDriverDescription));
 
-    myGdalDriverExtension = myGdalDriverLongName = QLatin1String( "" );
+    myGdalDriverExtension.clear();
+    myGdalDriverLongName.clear();
 
     myGdalDriverMetadata = GDALGetMetadata( myGdalDriver, nullptr );
 
@@ -2162,7 +2147,7 @@ QGISEXTERN bool isValidRasterFileName( QString const &fileNameQString, QString &
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   // TODO suppress error messages and report in debug, like in OGR provider
   QString vsiPrefix = QgsZipItem::vsiPrefix( fileName );
-  if ( vsiPrefix != QLatin1String( "" ) )
+  if ( !vsiPrefix.isEmpty() )
   {
     if ( !fileName.startsWith( vsiPrefix ) )
       fileName = vsiPrefix + fileName;
@@ -2384,7 +2369,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
   if ( CE_None == myerval )
   {
     myRasterBandStats.bandNumber = bandNo;
-    myRasterBandStats.range =  pdfMax - pdfMin;
+    myRasterBandStats.range = pdfMax - pdfMin;
     myRasterBandStats.minimumValue = pdfMin;
     myRasterBandStats.maximumValue = pdfMax;
     //calculate the mean
@@ -2489,11 +2474,11 @@ void QgsGdalProvider::initBaseDataset()
   if ( !hasGeoTransform )
   {
     // Initialize the affine transform matrix
-    mGeoTransform[0] =  0;
-    mGeoTransform[1] =  1;
-    mGeoTransform[2] =  0;
-    mGeoTransform[3] =  0;
-    mGeoTransform[4] =  0;
+    mGeoTransform[0] = 0;
+    mGeoTransform[1] = 1;
+    mGeoTransform[2] = 0;
+    mGeoTransform[3] = 0;
+    mGeoTransform[4] = 0;
     mGeoTransform[5] = -1;
   }
 

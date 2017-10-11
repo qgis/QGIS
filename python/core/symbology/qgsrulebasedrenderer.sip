@@ -211,11 +211,14 @@ Constructor takes ownership of the symbol
 
         QString ruleKey() const;
 %Docstring
+ Unique rule identifier (for identification of rule within renderer)
 .. versionadded:: 2.6
  :rtype: str
 %End
+
         void setRuleKey( const QString &key );
 %Docstring
+ Override the assigned rule key (should be used just internally by rule-based renderer)
 .. versionadded:: 2.6
 %End
 
@@ -408,6 +411,7 @@ take child rule out, set parent as null
 
         QgsRuleBasedRenderer::Rule *findRuleByKey( const QString &key );
 %Docstring
+ Try to find a rule given its unique key
 .. versionadded:: 2.6
  :rtype: QgsRuleBasedRenderer.Rule
 %End
@@ -520,7 +524,9 @@ take a rule and create a list of new rules with intervals of scales given by the
 
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
-:return: a new renderer if the conversion was possible, otherwise 0.
+ creates a QgsRuleBasedRenderer from an existing renderer.
+.. versionadded:: 2.5
+ :return: a new renderer if the conversion was possible, otherwise 0.
  :rtype: QgsRuleBasedRenderer
 %End
 

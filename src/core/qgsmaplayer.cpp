@@ -28,6 +28,8 @@
 
 #include <sqlite3.h>
 
+#include "qgs3drendererregistry.h"
+#include "qgsabstract3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
@@ -52,11 +54,9 @@
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
-  : mValid( false ) // assume the layer is invalid
-  , mDataSource( source )
+  : mDataSource( source )
   , mLayerOrigName( lyrname ) // store the original name
   , mLayerType( type )
-  , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   // Set the display name = internal name
@@ -88,6 +88,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
 
 QgsMapLayer::~QgsMapLayer()
 {
+  delete m3DRenderer;
   delete mLegend;
   delete mStyleManager;
 }
@@ -551,6 +552,19 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
 
+  QgsAbstract3DRenderer *r3D = nullptr;
+  QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
+  if ( !renderer3DElem.isNull() )
+  {
+    QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
+    Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
+    if ( meta3D )
+    {
+      r3D = meta3D->createRenderer( renderer3DElem, context );
+    }
+  }
+  setRenderer3D( r3D );
+
   return true;
 } // bool QgsMapLayer::readLayerXML
 
@@ -823,6 +837,14 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   mMetadata.writeMetadataXml( myMetadataElem, document );
   layerElement.appendChild( myMetadataElem );
 
+  if ( m3DRenderer )
+  {
+    QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
+    renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
+    m3DRenderer->writeXml( renderer3DElem, context );
+    layerElement.appendChild( renderer3DElem );
+  }
+
   // now append layer node to map layer node
 
   writeCustomProperties( layerElement, document );
@@ -841,6 +863,12 @@ bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const 
 
   return true;
 } // void QgsMapLayer::writeXml
+
+void QgsMapLayer::resolveReferences( QgsProject *project )
+{
+  if ( m3DRenderer )
+    m3DRenderer->resolveReferences( *project );
+}
 
 
 void QgsMapLayer::readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith )
@@ -1073,7 +1101,7 @@ QString QgsMapLayer::loadDefaultStyle( bool &resultFlag )
 
 bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml )
 {
-  QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db, uri ) );
+  QgsDebugMsgLevel( QString( "db = %1 uri = %2" ).arg( db, uri ), 4 );
 
   bool resultFlag = false;
 
@@ -1083,7 +1111,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
   const char *myTail = nullptr;
   int myResult;
 
-  QgsDebugMsg( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ) );
+  QgsDebugMsgLevel( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
 
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
@@ -1118,7 +1146,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
 QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
 {
-  QgsDebugMsg( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ) );
+  QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
   resultFlag = false;
 
@@ -1140,7 +1168,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
   else
   {
     QFileInfo project( QgsProject::instance()->fileName() );
-    QgsDebugMsg( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ) );
+    QgsDebugMsgLevel( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString qml;
     if ( loadNamedStyleFromDatabase( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||
@@ -1679,6 +1707,21 @@ QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
   return mStyleManager;
 }
 
+void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
+{
+  if ( renderer == m3DRenderer )
+    return;
+
+  delete m3DRenderer;
+  m3DRenderer = renderer;
+  emit renderer3DChanged();
+}
+
+QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
+{
+  return m3DRenderer;
+}
+
 void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
   emit repaintRequested( deferredUpdate );
@@ -1698,7 +1741,7 @@ QString QgsMapLayer::htmlMetadata() const
 
 QDateTime QgsMapLayer::timestamp() const
 {
-  return QDateTime() ;
+  return QDateTime();
 }
 
 void QgsMapLayer::emitStyleChanged()

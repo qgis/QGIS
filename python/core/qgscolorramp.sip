@@ -18,7 +18,6 @@ class QgsColorRamp
 %TypeHeaderCode
 #include "qgscolorramp.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == "gradient" )
       sipType = sipType_QgsGradientColorRamp;
@@ -417,7 +416,11 @@ class QgsRandomColorRamp: QgsColorRamp
 #include "qgscolorramp.h"
 %End
   public:
+
     QgsRandomColorRamp();
+%Docstring
+ Constructor for QgsRandomColorRamp.
+%End
 
     virtual int count() const;
 

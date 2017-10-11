@@ -32,11 +32,9 @@
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
   : QDialog( parent )
   , mManager( manager )
-  , mGettingShortcut( false )
-  , mModifiers( 0 )
-  , mKey( 0 )
 {
   setupUi( this );
+  connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsConfigureShortcutsDialog::mLeFilter_textChanged );
 
   if ( !mManager )
     mManager = QgsGui::shortcutsManager();
@@ -477,7 +475,7 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence &
   actionChanged( treeActions->currentItem(), nullptr );
 }
 
-void QgsConfigureShortcutsDialog::on_mLeFilter_textChanged( const QString &text )
+void QgsConfigureShortcutsDialog::mLeFilter_textChanged( const QString &text )
 {
   for ( int i = 0; i < treeActions->topLevelItemCount(); i++ )
   {

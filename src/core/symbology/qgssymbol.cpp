@@ -269,10 +269,9 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
       defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), QLatin1String( "" ) );
       break;
     default:
-      defaultSymbol = QLatin1String( "" );
       break;
   }
-  if ( defaultSymbol != QLatin1String( "" ) )
+  if ( !defaultSymbol.isEmpty() )
     s = QgsStyle::defaultStyle()->symbol( defaultSymbol );
 
   // if no default found for this type, get global default (as previously)
@@ -308,7 +307,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   s->setOpacity( opacity );
 
   // set random color, it project prefs allow
-  if ( defaultSymbol == QLatin1String( "" ) ||
+  if ( defaultSymbol.isEmpty() ||
        QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
   {
     s->setColor( QColor::fromHsv( qrand() % 360, 64 + qrand() % 192, 128 + qrand() % 128 ) );
@@ -776,6 +775,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
     break;
     case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Triangle:
     {
       QPolygonF pts;
       QList<QPolygonF> holes;
@@ -856,7 +856,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         context.setGeometry( geomCollection.geometryN( i ) );
         const QgsCurve &curve = dynamic_cast<const QgsCurve &>( *geomCollection.geometryN( i ) );
-        const QPolygonF pts =  _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
+        const QPolygonF pts = _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
         static_cast<QgsLineSymbol *>( this )->renderPolyline( pts, &feature, context, layer, selected );
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )

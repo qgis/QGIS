@@ -277,7 +277,7 @@
                  <item>
                   <widget class="QPushButton" name="btnNewLinePushButton">
                    <property name="toolTip">
-                    <string>New Line </string>
+                    <string>New Line</string>
                    </property>
                    <property name="text">
                     <string>'\n'</string>

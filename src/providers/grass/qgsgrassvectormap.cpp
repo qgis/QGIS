@@ -387,7 +387,7 @@ QgsGrassVectorMapLayer *QgsGrassVectorMap::openLayer( int field )
 
   if ( !layer )
   {
-    layer = new QgsGrassVectorMapLayer( this, field ) ;
+    layer = new QgsGrassVectorMapLayer( this, field );
     layer->load();
     mLayers << layer;
   }
@@ -716,10 +716,6 @@ void QgsGrassVectorMap::closeAllIterators()
 
 //------------------------------------ QgsGrassVectorMapStore ------------------------------------
 QgsGrassVectorMapStore *QgsGrassVectorMapStore::sStore = 0;
-
-QgsGrassVectorMapStore::QgsGrassVectorMapStore()
-{
-}
 
 QgsGrassVectorMapStore *QgsGrassVectorMapStore::instance()
 {

@@ -28,12 +28,8 @@
 #include "qgsidwinterpolator.h"
 #include "qgstininterpolator.h"
 
-QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder( QgsVectorLayer *vl ): mVectorLayer( vl )
-{
-
-}
-
-QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder(): mVectorLayer( nullptr )
+QgsInterpolationLayerBuilder::QgsInterpolationLayerBuilder( QgsVectorLayer *vl )
+  : mVectorLayer( vl )
 {
 
 }

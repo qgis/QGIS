@@ -37,7 +37,8 @@
 
 class QgsPointXY;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief QgsRasterProjector implements approximate projection support for
  * it calculates grid of points in source CRS for target CRS + extent
  * which are used to calculate affine transformation matrices.
@@ -47,7 +48,8 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
   public:
 
-    /** Precision defines if each pixel is reprojected or approximate reprojection based
+    /**
+     * Precision defines if each pixel is reprojected or approximate reprojection based
      *  on an approximation matrix of reprojected points is used.
      */
     enum Precision
@@ -99,13 +101,13 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     QgsCoordinateReferenceSystem mDestCRS;
 
     //! Source datum transformation id (or -1 if none)
-    int mSrcDatumTransform;
+    int mSrcDatumTransform = -1;
 
     //! Destination datum transformation id (or -1 if none)
-    int mDestDatumTransform;
+    int mDestDatumTransform = -1;
 
     //! Requested precision
-    Precision mPrecision;
+    Precision mPrecision = Approximate;
 
 };
 
@@ -128,7 +130,8 @@ class ProjectorData
     ProjectorData( const ProjectorData &other ) = delete;
     ProjectorData &operator=( const ProjectorData &other ) = delete;
 
-    /** \brief Get source row and column indexes for current source extent and resolution
+    /**
+     * \brief Get source row and column indexes for current source extent and resolution
         If source pixel is outside source extent srcRow and srcCol are left unchanged.
         \returns true if inside source
      */
@@ -174,11 +177,13 @@ class ProjectorData
     //! \brief calculate minimum source width and height
     void calcSrcRowsCols();
 
-    /** \brief check error along columns
+    /**
+     * \brief check error along columns
       * returns true if within threshold */
     bool checkCols( const QgsCoordinateTransform &ct );
 
-    /** \brief check error along rows
+    /**
+     * \brief check error along rows
       * returns true if within threshold */
     bool checkRows( const QgsCoordinateTransform &ct );
 
@@ -191,7 +196,8 @@ class ProjectorData
     //! Get mCPMatrix as string
     QString cpToString();
 
-    /** Use approximation (requested precision is Approximate and it is possible to calculate
+    /**
+     * Use approximation (requested precision is Approximate and it is possible to calculate
      *  an approximation matrix with a sufficient precision) */
     bool mApproximate;
 

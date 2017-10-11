@@ -221,7 +221,7 @@ QStringList QgsMimeDataUtils::decode( const QString &encoded )
     else if ( c == ':' && !inEscape )
     {
       items.append( item );
-      item = QLatin1String( "" );
+      item.clear();
     }
     else
     {

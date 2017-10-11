@@ -26,7 +26,8 @@
 #include "qgis_sip.h"
 
 
-/** \ingroup server
+/**
+ * \ingroup server
  * \class  QgsServerException
  * \brief Exception base class for server exceptions.
  *
@@ -48,7 +49,8 @@ class SERVER_EXPORT QgsServerException
      */
     int responseCode() const { return mResponseCode; }
 
-    /** Format the exception for sending to client
+    /**
+     * Format the exception for sending to client
      *
      * \param responseFormat QString to store the content type of the response format.
      * \returns QByteArray the fermatted response.
@@ -61,7 +63,8 @@ class SERVER_EXPORT QgsServerException
     int mResponseCode;
 };
 
-/** \ingroup server
+/**
+ * \ingroup server
  * \class  QgsOgcServiceException
  * \brief Exception base class for service exceptions.
  *

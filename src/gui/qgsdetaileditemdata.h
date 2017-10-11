@@ -23,14 +23,20 @@
 #include <QPixmap>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class is the data only representation of a
  * QgsDetailedItemWidget, designed to be used in custom views.
  */
 class GUI_EXPORT QgsDetailedItemData
 {
   public:
-    QgsDetailedItemData();
+
+    /**
+     * Constructor for QgsDetailedItemData.
+     */
+    QgsDetailedItemData() = default;
+
     void setTitle( const QString &title );
     void setDetail( const QString &detail );
     void setCategory( const QString &category );
@@ -39,7 +45,8 @@ class GUI_EXPORT QgsDetailedItemData
     void setChecked( const bool flag );
     void setEnabled( bool flag );
 
-    /** This is a hint to the delegate to render using
+    /**
+     * This is a hint to the delegate to render using
      * a widget rather than manually painting every
      * part of the list item.
      * \note the delegate may completely ignore this
@@ -62,10 +69,10 @@ class GUI_EXPORT QgsDetailedItemData
     QString mCategory;
     QString mLibraryName;
     QPixmap mPixmap;
-    bool mCheckableFlag;
-    bool mCheckedFlag;
-    bool mEnabledFlag;
-    bool mRenderAsWidgetFlag;
+    bool mCheckableFlag = false;
+    bool mCheckedFlag = false;
+    bool mEnabledFlag = true;
+    bool mRenderAsWidgetFlag = false;
 };
 
 // Make QVariant aware of this data type (see qtdocs star

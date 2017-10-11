@@ -133,7 +133,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
       continue;
     }
 
-    QString path =  pathPrefix + mName;
+    QString path = pathPrefix + mName;
 
     QVector<QgsDataItem *> items;
     QList<QgsDataItemProvider *> *providerList = dataItemProvidersFn();

@@ -29,11 +29,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-
-QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()
-  : QgsVectorLayerTools()
-{}
-
 bool QgsGuiVectorLayerTools::addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feat ) const
 {
   QgsFeature *f = feat;

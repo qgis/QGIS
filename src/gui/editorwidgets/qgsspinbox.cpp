@@ -28,10 +28,6 @@
 
 QgsSpinBox::QgsSpinBox( QWidget *parent )
   : QSpinBox( parent )
-  , mShowClearButton( true )
-  , mClearValueMode( MinimumValue )
-  , mCustomClearValue( 0 )
-  , mExpressionsEnabled( true )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
@@ -130,7 +126,7 @@ void QgsSpinBox::setClearValueMode( QgsSpinBox::ClearValueMode mode, const QStri
 int QgsSpinBox::clearValue() const
 {
   if ( mClearValueMode == MinimumValue )
-    return minimum() ;
+    return minimum();
   else if ( mClearValueMode == MaximumValue )
     return maximum();
   else

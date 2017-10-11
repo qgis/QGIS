@@ -31,7 +31,8 @@
 #include "qgspoint.h"
 #include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
  */
 class TestQgisAppClipboard : public QObject
@@ -59,11 +60,7 @@ class TestQgisAppClipboard : public QObject
     QString mTestDataDir;
 };
 
-TestQgisAppClipboard::TestQgisAppClipboard()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgisAppClipboard::TestQgisAppClipboard() = default;
 
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()
@@ -265,7 +262,7 @@ void TestQgisAppClipboard::pasteGeoJson()
 void TestQgisAppClipboard::retrieveFields()
 {
   //empty string
-  mQgisApp->clipboard()->setText( QLatin1String( "" ) );
+  mQgisApp->clipboard()->setText( QString() );
 
   QgsFields fields = mQgisApp->clipboard()->fields();
   QCOMPARE( fields.count(), 0 );

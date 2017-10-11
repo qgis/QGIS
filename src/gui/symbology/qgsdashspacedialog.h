@@ -20,7 +20,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A dialog to enter a custom dash space pattern for lines
 */
 class GUI_EXPORT QgsDashSpaceDialog: public QDialog, private Ui::QgsDashSpaceDialogBase
@@ -32,8 +33,8 @@ class GUI_EXPORT QgsDashSpaceDialog: public QDialog, private Ui::QgsDashSpaceDia
     QVector<qreal> dashDotVector() const;
 
   private slots:
-    void on_mAddButton_clicked();
-    void on_mRemoveButton_clicked();
+    void mAddButton_clicked();
+    void mRemoveButton_clicked();
 };
 
 #endif // QGSDASHSPACEDIALOG_H

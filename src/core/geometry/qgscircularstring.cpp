@@ -26,8 +26,9 @@
 #include "qgslogger.h"
 #include <QPainter>
 #include <QPainterPath>
+#include <memory>
 
-QgsCircularString::QgsCircularString(): QgsCurve()
+QgsCircularString::QgsCircularString()
 {
   mWkbType = QgsWkbTypes::CircularString;
 }
@@ -301,9 +302,8 @@ QString QgsCircularString::asWkt( int precision ) const
 QDomElement QgsCircularString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   // GML2 does not support curves
-  QgsLineString *line = curveToLine();
+  std::unique_ptr< QgsLineString > line( curveToLine() );
   QDomElement gml = line->asGML2( doc, precision, ns );
-  delete line;
   return gml;
 }
 
@@ -324,9 +324,8 @@ QDomElement QgsCircularString::asGML3( QDomDocument &doc, int precision, const Q
 QString QgsCircularString::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
-  QgsLineString *line = curveToLine();
+  std::unique_ptr< QgsLineString > line( curveToLine() );
   QString json = line->asJSON( precision );
-  delete line;
   return json;
 }
 

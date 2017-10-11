@@ -97,7 +97,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QString htmlMetadata();
 
     //! Slot to update layer display name as original is edited
-    void on_mLayerOrigNameLineEdit_textEdited( const QString &text );
+    void mLayerOrigNameLineEdit_textEdited( const QString &text );
 
     //! Called when apply button is pressed or dialog is accepted
     void apply();
@@ -109,22 +109,22 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //methods reimplemented from qt designer base class
     //
 
-    void on_pbnQueryBuilder_clicked();
-    void on_pbnIndex_clicked();
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void pbnQueryBuilder_clicked();
+    void pbnIndex_clicked();
+    void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void loadDefaultStyle_clicked();
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
     void saveStyleAs_clicked();
     void mOptionsStackedWidget_CurrentChanged( int indx );
-    void on_pbnUpdateExtents_clicked();
+    void pbnUpdateExtents_clicked();
 
-    void on_mButtonAddJoin_clicked();
-    void on_mButtonEditJoin_clicked();
-    void on_mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void on_mButtonRemoveJoin_clicked();
+    void mButtonAddJoin_clicked();
+    void mButtonEditJoin_clicked();
+    void mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mButtonRemoveJoin_clicked();
 
-    void on_mSimplifyDrawingGroupBox_toggled( bool checked );
+    void mSimplifyDrawingGroupBox_toggled( bool checked );
 
   signals:
 
@@ -146,7 +146,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void aboutToShowStyleMenu();
 
-    /** Updates the variable editor to reflect layer changes
+    /**
+     * Updates the variable editor to reflect layer changes
      */
     void updateVariableEditor();
 
@@ -154,6 +155,18 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
      * \brief updates the FieldsPropertiesDialog when syncing the layer properties
      */
     void updateFieldsPropertiesDialog();
+
+    void onAuxiliaryLayerNew();
+
+    void onAuxiliaryLayerClear();
+
+    void onAuxiliaryLayerDelete();
+
+    void onAuxiliaryLayerDeleteField();
+
+    void onAuxiliaryLayerAddField();
+
+    void onAuxiliaryLayerExport();
 
   private:
 
@@ -168,7 +181,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsVectorLayer *mLayer = nullptr;
 
-    bool mMetadataFilled;
+    bool mMetadataFilled = false;
 
     QString mOriginalSubsetSQL;
 
@@ -195,7 +208,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
 
-    /** Previous layer style. Used to reset style to previous state if new style
+    /**
+     * Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 
@@ -203,6 +217,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, const int insertIndex = -1 );
+
+    void updateAuxiliaryStoragePage( bool reset = false );
+    void deleteAuxiliaryField( int index );
 
     QgsExpressionContext mContext;
 
@@ -214,6 +231,13 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void showHelp();
 
     QgsMetadataWidget *mMetadataWidget = nullptr;
+
+    QAction *mAuxiliaryLayerActionNew = nullptr;
+    QAction *mAuxiliaryLayerActionClear = nullptr;
+    QAction *mAuxiliaryLayerActionDelete = nullptr;
+    QAction *mAuxiliaryLayerActionExport = nullptr;
+    QAction *mAuxiliaryLayerActionDeleteField = nullptr;
+    QAction *mAuxiliaryLayerActionAddField = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

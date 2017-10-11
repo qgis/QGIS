@@ -94,8 +94,6 @@ class eVis: public QObject, public QgisPlugin
     //! Constructor
     explicit eVis( QgisInterface *interface );
 
-    ~eVis();
-
   public slots:
     //! init the gui
     virtual void initGui() override;

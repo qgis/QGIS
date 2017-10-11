@@ -40,15 +40,6 @@
 #include <ctime>
 
 
-QgsRendererRange::QgsRendererRange()
-  : mLowerValue( 0 )
-  , mUpperValue( 0 )
-  , mSymbol( nullptr )
-  , mLabel()
-  , mRender( true )
-{
-}
-
 QgsRendererRange::QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol, const QString &label, bool render )
   : mLowerValue( lowerValue )
   , mUpperValue( upperValue )
@@ -184,10 +175,6 @@ const int QgsRendererRangeLabelFormat::MIN_PRECISION = -6;
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
   : mFormat( QStringLiteral( " %1 - %2 " ) )
-  , mPrecision( 4 )
-  , mTrimTrailingZeroes( false )
-  , mNumberScale( 1.0 )
-  , mNumberSuffix( QLatin1String( "" ) )
   , mReTrailingZeroes( "[.,]?0*$" )
   , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
 {
@@ -222,7 +209,7 @@ void QgsRendererRangeLabelFormat::setPrecision( int precision )
   precision = qBound( MIN_PRECISION, precision, MAX_PRECISION );
   mPrecision = precision;
   mNumberScale = 1.0;
-  mNumberSuffix = QLatin1String( "" );
+  mNumberSuffix.clear();
   while ( precision < 0 )
   {
     precision++;
@@ -290,11 +277,6 @@ void QgsRendererRangeLabelFormat::saveToDomElement( QDomElement &element )
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
   : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )
   , mAttrName( attrName )
-  , mMode( Custom )
-  , mGraduatedMethod( GraduatedColor )
-  , mAttrNum( -1 )
-  , mCounting( false )
-
 {
   // TODO: check ranges for sanity (NULL symbols, invalid ranges)
 
@@ -1276,9 +1258,9 @@ void QgsGraduatedSymbolRenderer::setSymbolSizes( double minSize, double maxSize 
   for ( int i = 0; i < mRanges.count(); i++ )
   {
     std::unique_ptr<QgsSymbol> symbol( mRanges.at( i ).symbol() ? mRanges.at( i ).symbol()->clone() : nullptr );
-    const double size =  mRanges.count() > 1
-                         ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
-                         : .5 * ( maxSize + minSize );
+    const double size = mRanges.count() > 1
+                        ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
+                        : .5 * ( maxSize + minSize );
     if ( symbol->type() == QgsSymbol::Marker )
       static_cast< QgsMarkerSymbol * >( symbol.get() )->setSize( size );
     if ( symbol->type() == QgsSymbol::Line )

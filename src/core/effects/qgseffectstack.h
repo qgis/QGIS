@@ -21,7 +21,8 @@
 #include "qgis.h"
 #include "qgspainteffect.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsEffectStack
  * \brief A paint effect which consists of a stack of other chained paint effects
  *
@@ -45,17 +46,23 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
 
   public:
 
-    /** Creates a new QgsEffectStack effect. This method ignores
+    /**
+     * Creates a new QgsEffectStack effect. This method ignores
      * the map parameter, and always returns an empty effect stack.
      * \param map unused encoded properties string map
      * \returns new QgsEffectStack
      */
     static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
-    QgsEffectStack();
+    /**
+     * Constructor for empty QgsEffectStack.
+     */
+    QgsEffectStack() = default;
+
     QgsEffectStack( const QgsEffectStack &other );
 
-    /** Creates a new QgsEffectStack effect from a single initial effect.
+    /**
+     * Creates a new QgsEffectStack effect from a single initial effect.
      * \param effect initial effect to add to the stack. The effect will
      * be cloned, so ownership is not transferred to the stack.
      * \returns new QgsEffectStack containing initial effect
@@ -69,22 +76,26 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
     virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const override;
     virtual bool readProperties( const QDomElement &element ) override;
 
-    /** Unused for QgsEffectStack, will always return an empty string map
+    /**
+     * Unused for QgsEffectStack, will always return an empty string map
      */
     virtual QgsStringMap properties() const override;
 
-    /** Unused for QgsEffectStack, props parameter will be ignored
+    /**
+     * Unused for QgsEffectStack, props parameter will be ignored
      */
     virtual void readProperties( const QgsStringMap &props ) override;
 
-    /** Appends an effect to the end of the stack.
+    /**
+     * Appends an effect to the end of the stack.
      * \param effect QgsPaintEffect to append. Ownership of the effect will be
      * transferred to the stack object.
      * \see insertEffect
      */
     void appendEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
-    /** Inserts an effect at a specified index within the stack.
+    /**
+     * Inserts an effect at a specified index within the stack.
      * \param index position to insert the effect
      * \param effect QgsPaintEffect to insert. Ownership of the effect will be
      * transferred to the stack object.
@@ -92,30 +103,35 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      */
     bool insertEffect( const int index, QgsPaintEffect *effect SIP_TRANSFER );
 
-    /** Replaces the effect at a specified position within the stack.
+    /**
+     * Replaces the effect at a specified position within the stack.
      * \param index position of effect to replace
      * \param effect QgsPaintEffect to replace with. Ownership of the effect will be
      * transferred to the stack object.
      */
     bool changeEffect( const int index, QgsPaintEffect *effect SIP_TRANSFER );
 
-    /** Removes an effect from the stack and returns a pointer to it.
+    /**
+     * Removes an effect from the stack and returns a pointer to it.
      * \param index position of effect to take
      */
     QgsPaintEffect *takeEffect( const int index SIP_TRANSFERBACK );
 
-    /** Returns a pointer to the list of effects currently contained by
+    /**
+     * Returns a pointer to the list of effects currently contained by
      * the stack
      * \returns list of QgsPaintEffects within the stack
      */
     QList< QgsPaintEffect * > *effectList();
 
-    /** Returns count of effects contained by the stack
+    /**
+     * Returns count of effects contained by the stack
      * \returns count of effects
      */
     int count() const { return mEffectList.count(); }
 
-    /** Returns a pointer to the effect at a specified index within the stack
+    /**
+     * Returns a pointer to the effect at a specified index within the stack
      * \param index position of effect to return
      * \returns QgsPaintEffect at specified position
      */

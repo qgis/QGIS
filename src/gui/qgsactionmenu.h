@@ -29,7 +29,8 @@ class QgsMapLayerAction;
 class QgsVectorLayer;
 class QgsActionManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class is a menu that is populated automatically with the actions defined for a given layer.
  */
 
@@ -47,13 +48,17 @@ class GUI_EXPORT QgsActionMenu : public QMenu
 
     struct GUI_EXPORT ActionData
     {
-      ActionData();
+
+      /**
+       * Constructor for ActionData.
+       */
+      ActionData() = default;
       ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
       ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      QgsActionMenu::ActionType actionType;
+      QgsActionMenu::ActionType actionType = Invalid;
       QVariant actionData;
-      QgsFeatureId featureId;
+      QgsFeatureId featureId = 0;
       QgsMapLayer *mapLayer = nullptr;
     };
 

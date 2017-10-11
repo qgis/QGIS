@@ -40,20 +40,12 @@
 //
 
 
-class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
+class QgsTextBufferSettingsPrivate : public QSharedData
 {
   public:
 
     QgsTextBufferSettingsPrivate()
-      : enabled( false )
-      , size( 1 )
-      , sizeUnit( QgsUnitTypes::RenderMillimeters )
-      , color( Qt::white )
-      , opacity( 1.0 )
-      , fillBufferInterior( false )
-      , joinStyle( Qt::RoundJoin )
-      , blendMode( QPainter::CompositionMode_SourceOver )
-      , paintEffect( nullptr )
+      : color( Qt::white )
     {
     }
 
@@ -77,43 +69,29 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
       delete paintEffect;
     }
 
-    bool enabled;
-    double size;
-    QgsUnitTypes::RenderUnit sizeUnit;
+    bool enabled = false;
+    double size = 1;
+    QgsUnitTypes::RenderUnit sizeUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale sizeMapUnitScale;
     QColor color;
-    double opacity;
-    bool fillBufferInterior;
-    Qt::PenJoinStyle joinStyle;
-    QPainter::CompositionMode blendMode;
-    QgsPaintEffect *paintEffect;
+    double opacity = 1.0;
+    bool fillBufferInterior = false;
+    Qt::PenJoinStyle joinStyle = Qt::RoundJoin;
+    QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
+    QgsPaintEffect *paintEffect = nullptr;
 };
 
 
-class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
+class QgsTextBackgroundSettingsPrivate : public QSharedData
 {
   public:
 
     QgsTextBackgroundSettingsPrivate()
-      : enabled( false )
-      , type( QgsTextBackgroundSettings::ShapeRectangle )
-      , sizeType( QgsTextBackgroundSettings::SizeBuffer )
-      , size( QSizeF( 0.0, 0.0 ) )
-      , sizeUnits( QgsUnitTypes::RenderMillimeters )
-      , rotationType( QgsTextBackgroundSettings::RotationSync )
-      , rotation( 0.0 )
+      : size( QSizeF( 0.0, 0.0 ) )
       , offset( QPointF( 0.0, 0.0 ) )
-      , offsetUnits( QgsUnitTypes::RenderMillimeters )
       , radii( QSizeF( 0.0, 0.0 ) )
-      , radiiUnits( QgsUnitTypes::RenderMillimeters )
-      , blendMode( QPainter::CompositionMode_SourceOver )
       , fillColor( Qt::white )
       , strokeColor( Qt::darkGray )
-      , opacity( 1.0 )
-      , strokeWidth( 0.0 )
-      , strokeWidthUnits( QgsUnitTypes::RenderMillimeters )
-      , joinStyle( Qt::BevelJoin )
-      , paintEffect( nullptr )
     {
     }
 
@@ -151,52 +129,40 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
       delete paintEffect;
     }
 
-    bool enabled;
-    QgsTextBackgroundSettings::ShapeType type;
+    bool enabled = false;
+    QgsTextBackgroundSettings::ShapeType type = QgsTextBackgroundSettings::ShapeRectangle;
     QString svgFile;   //!< Absolute path to SVG file
-    QgsTextBackgroundSettings::SizeType sizeType;
+    QgsTextBackgroundSettings::SizeType sizeType = QgsTextBackgroundSettings::SizeBuffer;
     QSizeF size;
-    QgsUnitTypes::RenderUnit sizeUnits;
+    QgsUnitTypes::RenderUnit sizeUnits = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale sizeMapUnitScale;
-    QgsTextBackgroundSettings::RotationType rotationType;
-    double rotation;
+    QgsTextBackgroundSettings::RotationType rotationType = QgsTextBackgroundSettings::RotationSync;
+    double rotation = 0.0;
     QPointF offset;
-    QgsUnitTypes::RenderUnit offsetUnits;
+    QgsUnitTypes::RenderUnit offsetUnits = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale offsetMapUnitScale;
     QSizeF radii;
-    QgsUnitTypes::RenderUnit radiiUnits;
+    QgsUnitTypes::RenderUnit radiiUnits = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale radiiMapUnitScale;
-    QPainter::CompositionMode blendMode;
+    QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
     QColor fillColor;
     QColor strokeColor;
-    double opacity;
-    double strokeWidth;
-    QgsUnitTypes::RenderUnit strokeWidthUnits;
+    double opacity = 1.0;
+    double strokeWidth = 0.0;
+    QgsUnitTypes::RenderUnit strokeWidthUnits = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale strokeWidthMapUnitScale;
-    Qt::PenJoinStyle joinStyle;
-    QgsPaintEffect *paintEffect;
+    Qt::PenJoinStyle joinStyle = Qt::BevelJoin;
+    QgsPaintEffect *paintEffect = nullptr;
 };
 
 
 
-class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
+class QgsTextShadowSettingsPrivate : public QSharedData
 {
   public:
 
     QgsTextShadowSettingsPrivate()
-      : enabled( false )
-      , shadowUnder( QgsTextShadowSettings::ShadowLowest )
-      , offsetAngle( 135 )
-      , offsetDist( 1.0 )
-      , offsetUnits( QgsUnitTypes::RenderMillimeters )
-      , offsetGlobal( true )
-      , radius( 1.5 )
-      , radiusUnits( QgsUnitTypes::RenderMillimeters )
-      , radiusAlphaOnly( false )
-      , scale( 100 )
-      , color( QColor( 0, 0, 0 ) )
-      , opacity( 0.7 )
-      , blendMode( QPainter::CompositionMode_Multiply )
+      : color( QColor( 0, 0, 0 ) )
     {
 
     }
@@ -221,36 +187,30 @@ class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
     {
     }
 
-    bool enabled;
-    QgsTextShadowSettings::ShadowPlacement shadowUnder;
-    int offsetAngle;
-    double offsetDist;
-    QgsUnitTypes::RenderUnit offsetUnits;
+    bool enabled = false;
+    QgsTextShadowSettings::ShadowPlacement shadowUnder = QgsTextShadowSettings::ShadowLowest;
+    int offsetAngle = 135;
+    double offsetDist = 1.0;
+    QgsUnitTypes::RenderUnit offsetUnits = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale offsetMapUnitScale;
-    bool offsetGlobal;
-    double radius;
-    QgsUnitTypes::RenderUnit radiusUnits;
+    bool offsetGlobal = true;
+    double radius = 1.5;
+    QgsUnitTypes::RenderUnit radiusUnits = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale radiusMapUnitScale;
-    bool radiusAlphaOnly;
-    int scale;
+    bool radiusAlphaOnly = false;
+    int scale = 100;
     QColor color;
-    double opacity;
-    QPainter::CompositionMode blendMode;
+    double opacity = 0.7;
+    QPainter::CompositionMode blendMode = QPainter::CompositionMode_Multiply;
 };
 
 
-class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
+class QgsTextSettingsPrivate : public QSharedData
 {
   public:
 
     QgsTextSettingsPrivate()
-      : textFont( QApplication::font() )
-      , fontSizeUnits( QgsUnitTypes::RenderPoints )
-      , fontSize( 10 )
-      , textColor( Qt::black )
-      , opacity( 1.0 )
-      , blendMode( QPainter::CompositionMode_SourceOver )
-      , multilineHeight( 1.0 )
+      : textColor( Qt::black )
     {
     }
 
@@ -270,13 +230,13 @@ class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
 
     QFont textFont;
     QString textNamedStyle;
-    QgsUnitTypes::RenderUnit fontSizeUnits;
+    QgsUnitTypes::RenderUnit fontSizeUnits = QgsUnitTypes::RenderPoints;
     QgsMapUnitScale fontSizeMapUnitScale;
-    double fontSize; //may differ from size in textFont due to units (e.g., size in map units)
+    double fontSize = 10 ; //may differ from size in textFont due to units (e.g., size in map units)
     QColor textColor;
-    double opacity;
-    QPainter::CompositionMode blendMode;
-    double multilineHeight; //0.0 to 10.0, leading between lines as multiplyer of line height
+    double opacity = 1.0;
+    QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
+    double multilineHeight = 1.0 ; //0.0 to 10.0, leading between lines as multiplyer of line height
 
 };
 

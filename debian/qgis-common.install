@@ -18,3 +18,4 @@ usr/share/qgis/i18n/*
 usr/share/qgis/images/*
 usr/share/qgis/resources/spatialite.db
 usr/share/qgis/resources/themes/*
+usr/share/qgis/qgis_global_settings.ini

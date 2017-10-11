@@ -28,7 +28,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
 Class for parsing SQL statements.
 * \since QGIS 2.16
 */
@@ -59,7 +60,8 @@ class CORE_EXPORT QgsSQLStatement
     //! Returns parser error
     QString parserErrorString() const;
 
-    /** Performs basic validity checks. Basically checking that columns referencing
+    /**
+     * Performs basic validity checks. Basically checking that columns referencing
      * a table, references a specified table. Returns true if the validation is
      * successful */
     bool doBasicValidationChecks( QString &errorMsgOut SIP_OUT ) const;
@@ -69,34 +71,42 @@ class CORE_EXPORT QgsSQLStatement
     //! Returns root node of the statement. Root node is null is parsing has failed
     const QgsSQLStatement::Node *rootNode() const;
 
-    //! Return the original, unmodified statement string.
-    //! If there was none supplied because it was constructed by sole
-    //! API calls, dump() will be used to create one instead.
+    /**
+     * Return the original, unmodified statement string.
+     * If there was none supplied because it was constructed by sole
+     * API calls, dump() will be used to create one instead.
+     */
     QString statement() const;
 
-    //! Return  statement string, constructed from the internal
-    //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferable to use
-    //! statement() instead.
+    /**
+     * Return  statement string, constructed from the internal
+     * abstract syntax tree. This does not contain any nice whitespace
+     * formatting or comments. In general it is preferable to use
+     * statement() instead.
+     */
     QString dump() const;
 
-    /** Returns a quoted column reference (in double quotes)
+    /**
+     * Returns a quoted column reference (in double quotes)
      * \see quotedString(), quotedIdentifierIfNeeded()
      */
     static QString quotedIdentifier( QString name );
 
-    /** Returns a quoted column reference (in double quotes) if needed, or
+    /**
+     * Returns a quoted column reference (in double quotes) if needed, or
      * otherwise the original string.
      * \see quotedString(), quotedIdentifier()
      */
     static QString quotedIdentifierIfNeeded( const QString &name );
 
-    /** Remove double quotes from an identifier.
+    /**
+     * Remove double quotes from an identifier.
      * \see quotedIdentifier()
      */
     static QString stripQuotedIdentifier( QString text );
 
-    /** Returns a quoted version of a string (in single quotes)
+    /**
+     * Returns a quoted version of a string (in single quotes)
      * \see quotedIdentifier(), quotedIdentifierIfNeeded()
      */
     static QString quotedString( QString text );
@@ -195,7 +205,8 @@ class CORE_EXPORT QgsSQLStatement
       ntCast
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Abstract node class */
     class CORE_EXPORT Node
     {
@@ -267,7 +278,8 @@ class CORE_EXPORT QgsSQLStatement
         virtual void accept( QgsSQLStatement::Visitor &v ) const = 0;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * List of nodes */
     class CORE_EXPORT NodeList
     {
@@ -282,7 +294,8 @@ class CORE_EXPORT QgsSQLStatement
         //! Return list
         QList<QgsSQLStatement::Node *> list() { return mList; }
 
-        /** Returns the number of nodes in the list.
+        /**
+         * Returns the number of nodes in the list.
          */
         int count() const { return mList.count(); }
 
@@ -299,7 +312,8 @@ class CORE_EXPORT QgsSQLStatement
         QList<Node *> mList;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Unary logicial/arithmetical operator ( NOT, - ) */
     class CORE_EXPORT NodeUnaryOperator : public QgsSQLStatement::Node
     {
@@ -325,7 +339,8 @@ class CORE_EXPORT QgsSQLStatement
         Node *mOperand = nullptr;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Binary logical/arithmetical operator (AND, OR, =, +, ...) */
     class CORE_EXPORT NodeBinaryOperator : public QgsSQLStatement::Node
     {
@@ -366,7 +381,8 @@ class CORE_EXPORT QgsSQLStatement
         Node *mOpRight = nullptr;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * 'x IN (y, z)' operator */
     class CORE_EXPORT NodeInOperator : public QgsSQLStatement::Node
     {
@@ -396,7 +412,8 @@ class CORE_EXPORT QgsSQLStatement
         bool mNotIn;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * 'X BETWEEN y and z' operator */
     class CORE_EXPORT NodeBetweenOperator : public QgsSQLStatement::Node
     {
@@ -431,7 +448,8 @@ class CORE_EXPORT QgsSQLStatement
         bool mNotBetween;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Function with a name and arguments node */
     class CORE_EXPORT NodeFunction : public QgsSQLStatement::Node
     {
@@ -458,7 +476,8 @@ class CORE_EXPORT QgsSQLStatement
 
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Literal value (integer, integer64, double, string) */
     class CORE_EXPORT NodeLiteral : public QgsSQLStatement::Node
     {
@@ -479,7 +498,8 @@ class CORE_EXPORT QgsSQLStatement
         QVariant mValue;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Reference to a column */
     class CORE_EXPORT NodeColumnRef : public QgsSQLStatement::Node
     {
@@ -519,7 +539,8 @@ class CORE_EXPORT QgsSQLStatement
         bool mStar;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Selected column */
     class CORE_EXPORT NodeSelectedColumn : public QgsSQLStatement::Node
     {
@@ -550,7 +571,8 @@ class CORE_EXPORT QgsSQLStatement
         QString mAlias;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * CAST operator */
     class CORE_EXPORT NodeCast : public QgsSQLStatement::Node
     {
@@ -576,7 +598,8 @@ class CORE_EXPORT QgsSQLStatement
         QString mType;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Table definition */
     class CORE_EXPORT NodeTableDef : public QgsSQLStatement::Node
     {
@@ -605,7 +628,8 @@ class CORE_EXPORT QgsSQLStatement
         QString mAlias;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Join definition */
     class CORE_EXPORT NodeJoin : public QgsSQLStatement::Node
     {
@@ -613,7 +637,7 @@ class CORE_EXPORT QgsSQLStatement
         //! Constructor with table definition, ON expression
         NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, QgsSQLStatement::Node *onExpr SIP_TRANSFER, QgsSQLStatement::JoinType type ) : mTableDef( tabledef ), mOnExpr( onExpr ), mType( type ) {}
         //! Constructor with table definition and USING columns
-        NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, const QList<QString> &usingColumns, QgsSQLStatement::JoinType type ) : mTableDef( tabledef ), mOnExpr( nullptr ), mUsingColumns( usingColumns ), mType( type ) {}
+        NodeJoin( QgsSQLStatement::NodeTableDef *tabledef SIP_TRANSFER, const QList<QString> &usingColumns, QgsSQLStatement::JoinType type ) : mTableDef( tabledef ), mUsingColumns( usingColumns ), mType( type ) {}
         virtual ~NodeJoin() { delete mTableDef; delete mOnExpr; }
 
         //! Table definition
@@ -643,7 +667,8 @@ class CORE_EXPORT QgsSQLStatement
         JoinType mType;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Column in a ORDER BY */
     class CORE_EXPORT NodeColumnSorted : public QgsSQLStatement::Node
     {
@@ -671,13 +696,14 @@ class CORE_EXPORT QgsSQLStatement
         bool mAsc;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * SELECT node */
     class CORE_EXPORT NodeSelect : public QgsSQLStatement::Node
     {
       public:
         //! Constructor
-        NodeSelect( const QList<QgsSQLStatement::NodeTableDef *> &tableList SIP_TRANSFER, const QList<QgsSQLStatement::NodeSelectedColumn *> &columns SIP_TRANSFER, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ), mWhere( nullptr ) {}
+        NodeSelect( const QList<QgsSQLStatement::NodeTableDef *> &tableList SIP_TRANSFER, const QList<QgsSQLStatement::NodeSelectedColumn *> &columns SIP_TRANSFER, bool distinct ) : mTableList( tableList ), mColumns( columns ), mDistinct( distinct ) {}
         virtual ~NodeSelect();
 
         //! Set joins
@@ -719,7 +745,8 @@ class CORE_EXPORT QgsSQLStatement
 
     //////
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Support for visitor pattern - algorithms dealing with the statement
         may be implemented without modifying the Node classes */
     class CORE_EXPORT Visitor
@@ -754,7 +781,8 @@ class CORE_EXPORT QgsSQLStatement
         virtual void visit( const QgsSQLStatement::NodeCast &n ) = 0;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * A visitor that recursively explores all children */
     class CORE_EXPORT RecursiveVisitor: public QgsSQLStatement::Visitor
     {

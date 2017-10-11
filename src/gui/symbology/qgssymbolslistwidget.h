@@ -29,7 +29,8 @@ class QgsStyle;
 
 class QMenu;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSymbolsListWidget
  */
 class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListWidget, private QgsExpressionContextGenerator
@@ -37,25 +38,37 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, const QgsVectorLayer *layer = nullptr );
+
+    /**
+     * Constructor for QgsSymbolsListWidget.
+     * \param symbol the symbol
+     * \param style the style
+     * \param menu the menu where to show it
+     * \param parent parent widget
+     * \param layer associated vector layer
+     */
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, QgsVectorLayer *layer = nullptr );
 
 
     virtual ~QgsSymbolsListWidget();
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
      * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      * \since QGIS 3.0
      */
     QgsSymbolWidgetContext context() const;
 
-    /** Returns the vector layer associated with the widget.
+    /**
+     * Returns the vector layer associated with the widget.
      * \since QGIS 2.12
      */
     const QgsVectorLayer *layer() const { return mLayer; }
@@ -72,11 +85,8 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
     void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
 
-    void on_mSymbolUnitWidget_changed();
-
     //! Pupulates the groups combo box with available tags and smartgroups
     void populateGroups();
-    void on_groupsCombo_currentIndexChanged( int index );
 
     void openStyleManager();
     void clipFeaturesToggled( bool checked );
@@ -89,9 +99,11 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void changed();
 
   private slots:
-
+    void mSymbolUnitWidget_changed();
+    void groupsCombo_currentIndexChanged( int index );
     void updateAssistantSymbol();
     void opacityChanged( double value );
+    void createAuxiliaryField();
 
   private:
     QgsSymbol *mSymbol = nullptr;
@@ -99,7 +111,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsStyle *mStyle = nullptr;
     QMenu *mAdvancedMenu = nullptr;
     QAction *mClipFeaturesAction = nullptr;
-    const QgsVectorLayer *mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
 
     void populateSymbolView();

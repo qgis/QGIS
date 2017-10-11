@@ -17,12 +17,6 @@
 #include "qgsarcgisrestutils.h"
 #include "qgslogger.h"
 
-QgsAfsSharedData::QgsAfsSharedData()
-{
-
-
-}
-
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
 {
   // If cached, return cached feature

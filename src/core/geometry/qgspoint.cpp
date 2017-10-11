@@ -32,8 +32,7 @@
  ****************************************************************************/
 
 QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wkbType )
-  : QgsAbstractGeometry()
-  , mX( x )
+  : mX( x )
   , mY( y )
   , mZ( z )
   , mM( m )
@@ -57,8 +56,7 @@ QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wk
 }
 
 QgsPoint::QgsPoint( const QgsPointXY &p )
-  : QgsAbstractGeometry()
-  , mX( p.x() )
+  : mX( p.x() )
   , mY( p.y() )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
@@ -67,8 +65,7 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
 }
 
 QgsPoint::QgsPoint( QPointF p )
-  : QgsAbstractGeometry()
-  , mX( p.x() )
+  : mX( p.x() )
   , mY( p.y() )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
@@ -77,8 +74,7 @@ QgsPoint::QgsPoint( QPointF p )
 }
 
 QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, double m )
-  : QgsAbstractGeometry()
-  , mX( x )
+  : mX( x )
   , mY( y )
   , mZ( QgsWkbTypes::hasZ( wkbType ) ? z : std::numeric_limits<double>::quiet_NaN() )
   , mM( QgsWkbTypes::hasM( wkbType ) ? m : std::numeric_limits<double>::quiet_NaN() )
@@ -544,7 +540,7 @@ double QgsPoint::distanceSquared( double x, double y ) const
 
 double QgsPoint::distanceSquared( const QgsPoint &other ) const
 {
-  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) ;
+  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
 }
 
 double QgsPoint::distance3D( double x, double y, double z ) const

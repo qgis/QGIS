@@ -189,7 +189,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
         if ( !wmsURL.isEmpty() )
         {
           QStandardItem *titleItem = new QStandardItem( layer.title );
-          QStandardItem *nameItem;
+          QStandardItem *nameItem = nullptr;
           if ( !layer.name.isEmpty() )
           {
             nameItem = new QStandardItem( layer.name );
@@ -216,7 +216,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
         if ( !wfsURL.isEmpty() )
         {
           QStandardItem *titleItem = new QStandardItem( layer.title );
-          QStandardItem *nameItem;
+          QStandardItem *nameItem = nullptr;
           if ( !layer.name.isEmpty() )
           {
             nameItem = new QStandardItem( layer.name );
@@ -243,7 +243,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
         if ( !xyzURL.isEmpty() )
         {
           QStandardItem *titleItem = new QStandardItem( layer.title );
-          QStandardItem *nameItem;
+          QStandardItem *nameItem = nullptr;
           if ( !layer.name.isEmpty() )
           {
             nameItem = new QStandardItem( layer.name );

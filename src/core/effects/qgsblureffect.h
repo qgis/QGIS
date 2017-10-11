@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include <QPainter>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsBlurEffect
  * \brief A paint effect which blurs a source picture, using a number of different blur
  * methods.
@@ -42,20 +43,25 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
       GaussianBlur //!< Gaussian blur, a slower but high quality blur. Blur level values are the distance in pixels for the blur operation.
     };
 
-    /** Creates a new QgsBlurEffect effect from a properties string map.
+    /**
+     * Creates a new QgsBlurEffect effect from a properties string map.
      * \param map encoded properties string map
      * \returns new QgsBlurEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
-    QgsBlurEffect();
+    /**
+     * Constructor for QgsBlurEffect.
+     */
+    QgsBlurEffect() = default;
 
     virtual QString type() const override { return QStringLiteral( "blur" ); }
     virtual QgsStringMap properties() const override;
     virtual void readProperties( const QgsStringMap &props ) override;
     virtual QgsBlurEffect *clone() const override SIP_FACTORY;
 
-    /** Sets blur level (strength)
+    /**
+     * Sets blur level (strength)
      * \param level blur level. Depending on the current blurMethod(), this parameter
      * has different effects
      * \see blurLevel
@@ -63,7 +69,8 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      */
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
-    /** Returns the blur level (strength)
+    /**
+     * Returns the blur level (strength)
      * \returns blur level. Depending on the current blurMethod(), this parameter
      * has different effects
      * \see setBlurLevel
@@ -71,40 +78,46 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      */
     int blurLevel() const { return mBlurLevel; }
 
-    /** Sets the blur method (algorithm) to use for performing the blur.
+    /**
+     * Sets the blur method (algorithm) to use for performing the blur.
      * \param method blur method
      * \see blurMethod
      */
     void setBlurMethod( const BlurMethod method ) { mBlurMethod = method; }
 
-    /** Returns the blur method (algorithm) used for performing the blur.
+    /**
+     * Returns the blur method (algorithm) used for performing the blur.
      * \returns blur method
      * \see setBlurMethod
      */
     BlurMethod blurMethod() const { return mBlurMethod; }
 
-    /** Sets the \a opacity for the effect.
+    /**
+     * Sets the \a opacity for the effect.
      * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
      * and 1 is fully opaque
      * \see opacity()
      */
     void setOpacity( const double opacity ) { mOpacity = opacity; }
 
-    /** Returns the opacity for the effect.
+    /**
+     * Returns the opacity for the effect.
      * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
      * and 1 is fully opaque
      * \see setOpacity()
      */
     double opacity() const { return mOpacity; }
 
-    /** Sets the blend mode for the effect
+    /**
+     * Sets the blend mode for the effect
      * \param mode blend mode used for drawing the effect on to a destination
      * paint device
      * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
-    /** Returns the blend mode for the effect
+    /**
+     * Returns the blend mode for the effect
      * \returns blend mode used for drawing the effect on to a destination
      * paint device
      * \see setBlendMode
@@ -118,10 +131,10 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
 
   private:
 
-    int mBlurLevel;
-    BlurMethod mBlurMethod;
+    int mBlurLevel = 10;
+    BlurMethod mBlurMethod = StackBlur;
     double mOpacity = 1.0;
-    QPainter::CompositionMode mBlendMode;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
     void drawStackBlur( QgsRenderContext &context );
     void drawGaussianBlur( QgsRenderContext &context );

@@ -17,7 +17,6 @@
 #include "qgsmaplayerlistutils.h"
 
 QgsLayerTree::QgsLayerTree()
-  : QgsLayerTreeGroup()
 {
   connect( this, &QgsLayerTree::addedChildren, this, &QgsLayerTree::nodeAddedChildren );
   connect( this, &QgsLayerTree::removedChildren, this, &QgsLayerTree::nodeRemovedChildren );

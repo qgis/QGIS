@@ -35,8 +35,6 @@
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
-  , mEditSelectionDrag( false )
-  , mRowAnchor( 0 )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
@@ -299,14 +297,14 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
-    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "AttributeTableRow" ), this );
+    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
     menu->exec( event->globalPos() );
   }
 }
 
 void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 {
-  QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
+  QItemSelectionModel::SelectionFlags command = selectionCommand( index );
   int row = index.row();
 
   if ( anchor )

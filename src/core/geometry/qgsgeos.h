@@ -28,7 +28,8 @@ class QgsPolygonV2;
 class QgsGeometry;
 class QgsGeometryCollection;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Does vector analysis using the geos library and handles import, export, exception handling*
  * \note not available in Python bindings
  */
@@ -36,7 +37,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 {
   public:
 
-    /** GEOS geometry engine constructor
+    /**
+     * GEOS geometry engine constructor
      * \param geometry The geometry
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      */
@@ -136,7 +138,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
-    /** Splits this geometry according to a given line.
+    /**
+     * Splits this geometry according to a given line.
     \param splitLine the line that splits the geometry
     \param[out] newGeometries list of new geometries that have been created with the split
     \param topological true if topological editing is enabled
@@ -177,7 +180,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     QgsAbstractGeometry *reshapeGeometry( const QgsLineString &reshapeWithLine, EngineOperationResult *errorCode, QString *errorMsg = nullptr ) const;
 
-    /** Merges any connected lines in a LineString/MultiLineString geometry and
+    /**
+     * Merges any connected lines in a LineString/MultiLineString geometry and
      * converts them to single line strings.
      * \param errorMsg if specified, will be set to any reported GEOS errors
      * \returns a LineString or MultiLineString geometry, with any connected lines
@@ -187,19 +191,22 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     QgsGeometry mergeLines( QString *errorMsg = nullptr ) const;
 
-    /** Returns the closest point on the geometry to the other geometry.
+    /**
+     * Returns the closest point on the geometry to the other geometry.
      * \since QGIS 2.14
      * \see shortestLine()
      */
     QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
-    /** Returns the shortest line joining this geometry to the other geometry.
+    /**
+     * Returns the shortest line joining this geometry to the other geometry.
      * \since QGIS 2.14
      * \see closestPoint()
      */
     QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
-    /** Returns a distance representing the location along this linestring of the closest point
+    /**
+     * Returns a distance representing the location along this linestring of the closest point
      * on this linestring geometry to the specified point. Ie, the returned value indicates
      * how far along this linestring you need to traverse to get to the closest location
      * where this linestring comes to the specified point.
@@ -249,7 +256,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg = nullptr ) const;
 
-    /** Create a geometry from a GEOSGeometry
+    /**
+     * Create a geometry from a GEOSGeometry
      * \param geos GEOSGeometry. Ownership is NOT transferred.
      */
     static QgsAbstractGeometry *fromGeos( const GEOSGeometry *geos );
@@ -294,7 +302,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static GEOSGeometry *nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry *> &splitResult ) const;
 
-    /** Ownership of geoms is transferred
+    /**
+     * Ownership of geoms is transferred
      */
     static GEOSGeometry *createGeosCollection( int typeId, const QVector<GEOSGeometry *> &geoms );
 

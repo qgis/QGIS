@@ -45,16 +45,11 @@ QgsGrassModuleOptions::QgsGrassModuleOptions(
   : mIface( iface )
   , mTools( tools )
   , mModule( module )
-  , mRegionModeComboBox( 0 )
   , mDirect( direct )
 {
   QgsDebugMsg( "called." );
 
   mCanvas = mIface->mapCanvas();
-}
-
-QgsGrassModuleOptions::~QgsGrassModuleOptions()
-{
 }
 
 QStringList QgsGrassModuleOptions::arguments()
@@ -866,11 +861,6 @@ bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput *in
     return false;
   }
   return true;
-}
-
-
-QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
-{
 }
 
 QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QString &xname, QStringList &errors )

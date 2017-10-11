@@ -31,8 +31,6 @@ class QgsWMSConnection : public QgsOwsConnection
     //! Constructor
     explicit QgsWMSConnection( const QString &connName );
 
-    ~QgsWMSConnection();
-
     static QStringList connectionList();
 
     static void deleteConnection( const QString &name );

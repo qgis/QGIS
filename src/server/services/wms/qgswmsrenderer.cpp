@@ -998,7 +998,13 @@ namespace QgsWms
     QByteArray ba;
 
     QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
-    if ( infoFormat == QgsWmsParameters::Format::TEXT )
+
+    if ( infoFormat == QgsWmsParameters::Format::NONE )
+    {
+      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
+                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
+    }
+    else if ( infoFormat == QgsWmsParameters::Format::TEXT )
       ba = convertFeatureInfoToText( result );
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
       ba = convertFeatureInfoToHtml( result );
@@ -1255,10 +1261,13 @@ namespace QgsWms
 
     Q_FOREACH ( QString queryLayer, queryLayers )
     {
+      bool validLayer = false;
       Q_FOREACH ( QgsMapLayer *layer, layers )
       {
         if ( queryLayer == layerNickname( *layer ) )
         {
+          validLayer = true;
+
           QDomElement layerElement;
           if ( infoFormat == QgsWmsParameters::Format::GML )
           {
@@ -1315,6 +1324,12 @@ namespace QgsWms
           }
           break;
         }
+      }
+
+      if ( !validLayer )
+      {
+        QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
+        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
       }
     }
 
@@ -2620,7 +2635,7 @@ namespace QgsWms
 
   QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest ) const
   {
-    QPainter *painter;
+    QPainter *painter = nullptr;
     if ( hitTest )
     {
       runHitTest( mapSettings, *hitTest );
@@ -2926,8 +2941,6 @@ namespace QgsWms
 
     for ( QgsVectorLayerFeatureCounter *c : counters )
     {
-      if ( !c )
-        continue;
       c->waitForFinished();
     }
 

@@ -3088,7 +3088,7 @@ QgsNamedColorList QgsSymbolLayerUtils::colorListFromMimeData( const QMimeData *d
         }
 
         QPair< QColor, QString> namedColor;
-        namedColor.first =  QgsSymbolLayerUtils::decodeColor( currentElem.attribute( QStringLiteral( "color" ), QStringLiteral( "255,255,255,255" ) ) );
+        namedColor.first = QgsSymbolLayerUtils::decodeColor( currentElem.attribute( QStringLiteral( "color" ), QStringLiteral( "255,255,255,255" ) ) );
         namedColor.second = currentElem.attribute( QStringLiteral( "label" ), QLatin1String( "" ) );
 
         mimeColors << namedColor;

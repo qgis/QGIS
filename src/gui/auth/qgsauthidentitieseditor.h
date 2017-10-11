@@ -27,7 +27,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing and editing authentication identities database
  */
 class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthIdentitiesEditor
@@ -57,13 +58,13 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void handleDoubleClick( QTreeWidgetItem *item, int col );
 
-    void on_btnAddIdentity_clicked();
+    void btnAddIdentity_clicked();
 
-    void on_btnRemoveIdentity_clicked();
+    void btnRemoveIdentity_clicked();
 
-    void on_btnInfoIdentity_clicked();
+    void btnInfoIdentity_clicked();
 
-    void on_btnGroupByOrg_toggled( bool checked );
+    void btnGroupByOrg_toggled( bool checked );
 
     //! Relay messages to widget's messagebar
     void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
@@ -96,7 +97,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
     QgsMessageBar *messageBar();
     int messageTimeout();
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 

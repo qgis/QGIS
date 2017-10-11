@@ -151,8 +151,8 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     QList<QString> mExpression;
 
     QgsVectorLayer *mLayer = nullptr;
-    bool mAllowExpression;
-    bool mAllowEmpty;
+    bool mAllowExpression = false;
+    bool mAllowEmpty = false;
 
   private:
     void fetchFeature();

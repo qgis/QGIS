@@ -33,6 +33,7 @@ QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas )
   , mCurrentMouseAzimuth( 0.0 )
   , mCtrlPressed( false )
 {
+  mPalProperties << QgsPalLayerSettings::LabelRotation;
 }
 
 QgsMapToolRotateLabel::~QgsMapToolRotateLabel()
@@ -76,6 +77,14 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
     bool hasRotationValue;
     int rotationCol;
+
+    if ( !labelIsRotatable( mCurrentLabel.layer, mCurrentLabel.settings, rotationCol ) )
+    {
+      QgsPalIndexes indexes;
+      if ( createAuxiliaryFields( indexes ) )
+        return;
+    }
+
     if ( currentLabelDataDefinedRotation( mCurrentRotation, hasRotationValue, rotationCol, true ) )
     {
       if ( !hasRotationValue )

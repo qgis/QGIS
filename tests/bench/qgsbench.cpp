@@ -119,8 +119,7 @@ int getrusage( int who, struct rusage *rusage )
 #endif
 
 QgsBench::QgsBench( int width, int height, int iterations )
-  : QObject()
-  , mWidth( width )
+  : mWidth( width )
   , mHeight( height )
   , mIterations( iterations )
   , mSetExtent( false )
@@ -133,10 +132,6 @@ QgsBench::QgsBench( int width, int height, int iterations )
 
   connect( QgsProject::instance(), &QgsProject::readProject,
            this, &QgsBench::readProject );
-}
-
-QgsBench::~QgsBench()
-{
 }
 
 bool QgsBench::openProject( const QString &fileName )

@@ -28,7 +28,7 @@
 #include <QPainterPath>
 #include <memory>
 
-QgsCurvePolygon::QgsCurvePolygon(): QgsSurface()
+QgsCurvePolygon::QgsCurvePolygon()
 {
   mWkbType = QgsWkbTypes::CurvePolygon;
 }
@@ -333,20 +333,19 @@ QDomElement QgsCurvePolygon::asGML2( QDomDocument &doc, int precision, const QSt
   // GML2 does not support curves
   QDomElement elemPolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
   QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, QStringLiteral( "outerBoundaryIs" ) );
-  QgsLineString *exteriorLineString = exteriorRing()->curveToLine();
+  std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
   QDomElement outerRing = exteriorLineString->asGML2( doc, precision, ns );
   outerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
   elemOuterBoundaryIs.appendChild( outerRing );
-  delete exteriorLineString;
   elemPolygon.appendChild( elemOuterBoundaryIs );
+  std::unique_ptr< QgsLineString > interiorLineString;
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
     QDomElement elemInnerBoundaryIs = doc.createElementNS( ns, QStringLiteral( "innerBoundaryIs" ) );
-    QgsLineString *interiorLineString = interiorRing( i )->curveToLine();
+    interiorLineString.reset( interiorRing( i )->curveToLine() );
     QDomElement innerRing = interiorLineString->asGML2( doc, precision, ns );
     innerRing.toElement().setTagName( QStringLiteral( "LinearRing" ) );
     elemInnerBoundaryIs.appendChild( innerRing );
-    delete interiorLineString;
     elemPolygon.appendChild( elemInnerBoundaryIs );
   }
   return elemPolygon;
@@ -383,19 +382,18 @@ QString QgsCurvePolygon::asJSON( int precision ) const
   // GeoJSON does not support curves
   QString json = QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [" );
 
-  QgsLineString *exteriorLineString = exteriorRing()->curveToLine();
+  std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
   QgsPointSequence exteriorPts;
   exteriorLineString->points( exteriorPts );
   json += QgsGeometryUtils::pointsToJSON( exteriorPts, precision ) + ", ";
-  delete exteriorLineString;
 
+  std::unique_ptr< QgsLineString > interiorLineString;
   for ( int i = 0, n = numInteriorRings(); i < n; ++i )
   {
-    QgsLineString *interiorLineString = interiorRing( i )->curveToLine();
+    interiorLineString.reset( interiorRing( i )->curveToLine() );
     QgsPointSequence interiorPts;
     interiorLineString->points( interiorPts );
     json += QgsGeometryUtils::pointsToJSON( interiorPts, precision ) + ", ";
-    delete interiorLineString;
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
   {

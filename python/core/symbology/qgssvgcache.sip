@@ -18,9 +18,11 @@ class QgsSvgCacheEntry
 #include "qgssvgcache.h"
 %End
   public:
+
     QgsSvgCacheEntry();
 
-    QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke );
+    QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke,
+                      double fixedAspectRatio = 0 ) ;
 %Docstring
  Constructor.
  \param path Absolute path to SVG file (relative paths are not resolved).
@@ -29,6 +31,7 @@ class QgsSvgCacheEntry
  \param widthScaleFactor width scale factor
  \param fill color of fill
  \param stroke color of stroke
+ \param fixedAspectRatio fixed aspect ratio (optional)
 %End
     ~QgsSvgCacheEntry();
 
@@ -37,9 +40,14 @@ class QgsSvgCacheEntry
 %Docstring
 Absolute path to SVG file
 %End
-    double size; //size in pixels (cast to int for QImage)
+    double size;
     double strokeWidth;
     double widthScaleFactor;
+
+    double fixedAspectRatio;
+%Docstring
+Fixed aspect ratio
+%End
 
     QSizeF viewboxSize;
 %Docstring
@@ -91,7 +99,7 @@ the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. 
     ~QgsSvgCache();
 
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                       double widthScaleFactor, bool &fitsInCache );
+                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
 %Docstring
  Get SVG as QImage.
  \param path Absolute path to SVG file.
@@ -101,11 +109,12 @@ the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. 
  \param strokeWidth width of stroke
  \param widthScaleFactor width scale factor
  \param fitsInCache
+ \param fixedAspectRatio fixed aspect ratio (optional)
  :rtype: QImage
 %End
 
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, bool forceVectorOutput = false );
+                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
 %Docstring
  Get SVG  as QPicture&.
  \param path Absolute path to SVG file.
@@ -115,11 +124,12 @@ the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. 
  \param strokeWidth width of stroke
  \param widthScaleFactor width scale factor
  \param forceVectorOutput
+ \param fixedAspectRatio fixed aspect ratio (optional)
  :rtype: QPicture
 %End
 
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor );
+                           double widthScaleFactor, double fixedAspectRatio = 0 );
 %Docstring
  Calculates the viewbox size of a (possibly cached) SVG file.
  \param path Absolute path to SVG file.
@@ -128,6 +138,7 @@ the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. 
  \param stroke color of stroke
  \param strokeWidth width of stroke
  \param widthScaleFactor width scale factor
+ \param fixedAspectRatio fixed aspect ratio (optional)
  :return: viewbox size set in SVG file
 .. versionadded:: 2.14
  :rtype: QSizeF
@@ -177,7 +188,7 @@ Get image data
 %End
 
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor );
+                           double widthScaleFactor, double fixedAspectRatio = 0 );
 %Docstring
 Get SVG content
  :rtype: QByteArray
@@ -192,7 +203,7 @@ Emit a signal to be caught by qgisapp and display a msg on status bar
   protected:
 
     QgsSvgCacheEntry *insertSvg( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                 double widthScaleFactor );
+                                 double widthScaleFactor, double fixedAspectRatio = 0 );
 %Docstring
  Creates new cache entry and returns pointer to it
  \param path Absolute path to SVG file
@@ -201,6 +212,7 @@ Emit a signal to be caught by qgisapp and display a msg on status bar
  \param stroke color of stroke
  \param strokeWidth width of stroke
  \param widthScaleFactor width scale factor
+ \param fixedAspectRatio fixed aspect ratio (optional)
  :rtype: QgsSvgCacheEntry
 %End
 
@@ -208,7 +220,7 @@ Emit a signal to be caught by qgisapp and display a msg on status bar
     void cacheImage( QgsSvgCacheEntry *entry );
     void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     QgsSvgCacheEntry *cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                  double widthScaleFactor );
+                                  double widthScaleFactor, double fixedAspectRatio = 0 );
 %Docstring
 Returns entry from cache or creates a new entry if it does not exist already
  :rtype: QgsSvgCacheEntry

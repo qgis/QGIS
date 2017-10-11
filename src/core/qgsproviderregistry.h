@@ -35,7 +35,8 @@ class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
   * A registry / canonical manager of data providers.
   *
   * This is a Singleton class that manages data provider access.
@@ -53,8 +54,10 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
-    //! Different ways a source select dialog can be used
-    //! (embedded is for the data source manager dialog)
+    /**
+     * Different ways a source select dialog can be used
+     * (embedded is for the data source manager dialog)
+     */
     enum WidgetMode
     {
       None,
@@ -95,7 +98,8 @@ class CORE_EXPORT QgsProviderRegistry
     QgsDataProvider *createProvider( const QString &providerKey,
                                      const QString &dataSource ) SIP_FACTORY;
 
-    /** Return the provider capabilities
+    /**
+     * Return the provider capabilities
         \param providerKey identificator of the provider
         \since QGIS 2.6
      */
@@ -136,7 +140,8 @@ class CORE_EXPORT QgsProviderRegistry
     //! Return metadata of the provider or NULL if not found
     const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
-    /** Return vector file filter string
+    /**
+     * Return vector file filter string
 
       Returns a string suitable for a QFileDialog of vector file formats
       supported by all data providers.
@@ -150,7 +155,8 @@ class CORE_EXPORT QgsProviderRegistry
      */
     virtual QString fileVectorFilters() const;
 
-    /** Return raster file filter string
+    /**
+     * Return raster file filter string
 
       Returns a string suitable for a QFileDialog of raster file formats
       supported by all data providers.
@@ -170,7 +176,8 @@ class CORE_EXPORT QgsProviderRegistry
 
     void registerGuis( QWidget *widget );
 
-    /** Open the given vector data source
+    /**
+     * Open the given vector data source
      *
      * Similar to open(QString const &), except that the user specifies a data provider
      * with which to open the data source instead of using the default data provider
@@ -213,7 +220,8 @@ class CORE_EXPORT QgsProviderRegistry
     //! Directory in which provider plugins are installed
     QDir mLibraryDirectory;
 
-    /** File filter string for vector files
+    /**
+     * File filter string for vector files
      *
      * Built once when registry is constructed by appending strings returned
      * from iteratively calling vectorFileFilter() for each visited data
@@ -223,24 +231,28 @@ class CORE_EXPORT QgsProviderRegistry
      */
     QString mVectorFileFilters;
 
-    /** File filter string for raster files
+    /**
+     * File filter string for raster files
      */
     QString mRasterFileFilters;
 
-    /** Available database drivers string for vector databases
+    /**
+     * Available database drivers string for vector databases
      *
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mDatabaseDrivers;
 
-    /** Available directory drivers string for vector databases
+    /**
+     * Available directory drivers string for vector databases
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mDirectoryDrivers;
 
-    /** Available protocol drivers string for vector databases
+    /**
+     * Available protocol drivers string for vector databases
      *
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...

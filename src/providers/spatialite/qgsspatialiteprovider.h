@@ -84,7 +84,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual bool supportsSubsetString() const override { return true; }
     QgsWkbTypes::Type wkbType() const override;
 
-    /** Return the number of layers for the current data source
+    /**
+     * Return the number of layers for the current data source
      *
      * \note Should this be subLayerCount() instead?
      */
@@ -112,7 +113,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     bool createAttributeIndex( int field ) override;
 
-    /** The SpatiaLite provider does its own transforms so we return
+    /**
+     * The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
      * should not be handled by the QgsCoordinateTransform object. See the
      * documentation on QgsVectorDataProvider for details on these functions.
@@ -217,22 +219,22 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsFields mAttributeFields;
 
     //! Flag indicating if the layer data source is a valid SpatiaLite layer
-    bool mValid;
+    bool mValid = false;
 
     //! Flag indicating if the layer data source is based on a query
-    bool mIsQuery;
+    bool mIsQuery = false;
 
     //! Flag indicating if the layer data source is based on a plain Table
-    bool mTableBased;
+    bool mTableBased = false;
 
     //! Flag indicating if the layer data source is based on a View
-    bool mViewBased;
+    bool mViewBased = false;
 
     //! Flag indicating if the layer data source is based on a VirtualShape
-    bool mVShapeBased;
+    bool mVShapeBased = false;
 
     //! Flag indicating if the layer data source has ReadOnly restrictions
-    bool mReadOnly;
+    bool mReadOnly = false;
 
     //! DB full path
     QString mSqlitePath;
@@ -262,7 +264,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString mIndexGeometry;
 
     //! Geometry type
-    QgsWkbTypes::Type mGeomType;
+    QgsWkbTypes::Type mGeomType = QgsWkbTypes::Unknown;
 
     //! SQLite handle
     sqlite3 *mSqliteHandle = nullptr;
@@ -274,7 +276,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     int nDims;
 
     //! Spatial reference id of the layer
-    int mSrid;
+    int mSrid = -1;
 
     //! auth id
     QString mAuthId;
@@ -286,13 +288,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsRectangle mLayerExtent;
 
     //! Number of features in the layer
-    long mNumberFeatures;
+    long mNumberFeatures = 0;
 
     //! this Geometry is supported by an R*Tree spatial index
-    bool mSpatialIndexRTree;
+    bool mSpatialIndexRTree = false;
 
     //! this Geometry is supported by an MBR cache spatial index
-    bool mSpatialIndexMbrCache;
+    bool mSpatialIndexMbrCache = false;
 
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;
 
@@ -302,13 +304,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString mSpatialiteVersionInfo;
 
     //! Are mSpatialiteVersionMajor, mSpatialiteVersionMinor valid?
-    bool mGotSpatialiteVersion;
+    bool mGotSpatialiteVersion = false;
 
     //! SpatiaLite major version
-    int mSpatialiteVersionMajor;
+    int mSpatialiteVersionMajor = 0;
 
     //! SpatiaLite minor version
-    int mSpatialiteVersionMinor;
+    int mSpatialiteVersionMinor = 0;
 
     /**
      * internal utility functions used to handle common SQLite tasks

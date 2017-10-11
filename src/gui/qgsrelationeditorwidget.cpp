@@ -34,9 +34,6 @@
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
-  , mViewMode( QgsDualView::AttributeEditor )
-  , mShowLabel( true )
-  , mVisible( false )
 {
   QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setContentsMargins( 0, 9, 0, 0 );

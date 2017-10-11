@@ -476,6 +476,7 @@ QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizin
 
 - canvasPressEvent(), canvasReleaseEvent(), canvasMoveEvent() were removed. Handling of events is done in QgsMapToolAdvancedDigitizing.
 - snappingMode() was removed. Advanced digitizing now always uses project's snapping configuration.
+- lineCircleIntersection() was removed
 
 
 QgsApplication        {#qgis_api_break_3_0_QgsApplication}
@@ -1154,6 +1155,8 @@ QgsExpression::Function       {#qgis_api_break_3_0_QgsExpression_Function}
 - `QgsExpression::Function::usesgeometry()` has been renamed to `QgsExpression::Function::usesGeometry( const NodeFunction* node )`
 - `QStringList QgsExpression::Function::referencedColumns()` has been changed to `QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction* node )`
 - `QgsExpression::Function::helptext()` has been renamed to `helpText()`
+- `QgsExpression::Function::func` has an additional parameter `node` that
+  provides access to the original node.
 
 QgsExpressionItem        {#qgis_api_break_3_0_QgsExpressionItem}
 -----------------

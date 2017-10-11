@@ -21,7 +21,8 @@
 #include "qgssymbollayer.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsArrowSymbolLayer
  * \brief Line symbol layer used for representing lines as arrows.
  * \since QGIS 2.16
@@ -151,33 +152,33 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     //! Filling sub symbol
     std::unique_ptr<QgsFillSymbol> mSymbol;
 
-    double mArrowWidth;
-    QgsUnitTypes::RenderUnit mArrowWidthUnit;
+    double mArrowWidth = 1.0;
+    QgsUnitTypes::RenderUnit mArrowWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mArrowWidthUnitScale;
 
-    double mArrowStartWidth;
-    QgsUnitTypes::RenderUnit mArrowStartWidthUnit;
+    double mArrowStartWidth = 1.0;
+    QgsUnitTypes::RenderUnit mArrowStartWidthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mArrowStartWidthUnitScale;
 
-    double mHeadLength;
-    QgsUnitTypes::RenderUnit mHeadLengthUnit;
+    double mHeadLength = 1.5;
+    QgsUnitTypes::RenderUnit mHeadLengthUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mHeadLengthUnitScale;
-    double mHeadThickness;
-    QgsUnitTypes::RenderUnit mHeadThicknessUnit;
+    double mHeadThickness = 1.5;
+    QgsUnitTypes::RenderUnit mHeadThicknessUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mHeadThicknessUnitScale;
 
-    HeadType mHeadType;
-    ArrowType mArrowType;
-    bool mIsCurved;
-    bool mIsRepeated;
+    HeadType mHeadType = HeadSingle;
+    ArrowType mArrowType = ArrowPlain;
+    bool mIsCurved = true;
+    bool mIsRepeated = true;
 
-    double mScaledArrowWidth;
-    double mScaledArrowStartWidth;
-    double mScaledHeadLength;
-    double mScaledHeadThickness;
-    double mScaledOffset;
-    HeadType mComputedHeadType;
-    ArrowType mComputedArrowType;
+    double mScaledArrowWidth = 1.0;
+    double mScaledArrowStartWidth = 1.0;
+    double mScaledHeadLength = 1.5;
+    double mScaledHeadThickness = 1.5;
+    double mScaledOffset = 0.0;
+    HeadType mComputedHeadType = HeadSingle;
+    ArrowType mComputedArrowType = ArrowPlain;
 
     std::unique_ptr<QgsExpressionContextScope> mExpressionScope;
 

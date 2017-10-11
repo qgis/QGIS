@@ -36,7 +36,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for ellipse marker symbol types.
  */
 class TestQgsEllipseMarkerSymbol : public QObject
@@ -44,13 +45,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsEllipseMarkerSymbol()
-      : mTestHasError( false )
-      , mpPointsLayer( 0 )
-      , mEllipseMarkerLayer( 0 )
-      , mMarkerSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsEllipseMarkerSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -65,7 +60,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
     void bounds();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A graphics effect which can be applied to a widget to simulate various printing and
  * color blindness modes.
  */
@@ -42,14 +43,16 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
 
     QgsPreviewEffect( QObject *parent SIP_TRANSFERTHIS );
 
-    /** Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
+    /**
+     * Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
      * \param mode PreviewMode to use to draw the widget
      * \since QGIS 2.3
      * \see mode
      */
     void setMode( PreviewMode mode );
 
-    /** Returns the mode used for the preview effect.
+    /**
+     * Returns the mode used for the preview effect.
      * \returns PreviewMode currently used by the effect
      * \since QGIS 2.3
      * \see setMode

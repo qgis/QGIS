@@ -22,7 +22,6 @@ class QgsMapLayer : QObject
 %TypeHeaderCode
 #include "qgsmaplayer.h"
 %End
-
 %ConvertToSubClassCode
     QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
@@ -453,6 +452,12 @@ Invoked by QgsProject.read().
  :rtype: bool
 %End
 
+    virtual void resolveReferences( QgsProject *project );
+%Docstring
+ Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+.. versionadded:: 3.0
+%End
+
     QStringList customPropertyKeys() const;
 %Docstring
  Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
@@ -754,6 +759,19 @@ Return pointer to layer's undo stack
  :rtype: QgsMapLayerStyleManager
 %End
 
+    void setRenderer3D( QgsAbstract3DRenderer *renderer /Transfer/ );
+%Docstring
+ Sets 3D renderer for the layer. Takes ownership of the renderer.
+.. versionadded:: 3.0
+%End
+
+    QgsAbstract3DRenderer *renderer3D() const;
+%Docstring
+ Returns 3D renderer associated with the layer. May be null.
+.. versionadded:: 3.0
+ :rtype: QgsAbstract3DRenderer
+%End
+
     bool isInScaleRange( double scale ) const;
 %Docstring
  Tests whether the layer should be visible at the specified ``scale``.
@@ -887,6 +905,22 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
  :rtype: set of QgsMapLayerDependency
 %End
 
+    QString refreshOnNotifyMessage() const;
+%Docstring
+ Returns the message that should be notified by the provider to triggerRepaint
+
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    bool isRefreshOnNotifyEnabled() const;
+%Docstring
+ Returns true if the refresh on provider nofification is enabled
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -969,23 +1003,6 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 .. versionadded:: 3.0
 %End
 
-    QString refreshOnNotifyMessage() const;
-%Docstring
- Returns the message that should be notified by the provider to triggerRepaint
-
-.. versionadded:: 3.0
- :rtype: str
-%End
-
-    bool isRefreshOnNotifyEnabled() const;
-%Docstring
- Returns true if the refresh on provider nofification is enabled
-
-.. versionadded:: 3.0
- :rtype: bool
-%End
-
-
   signals:
 
     void statusChanged( const QString &status );
@@ -1047,6 +1064,12 @@ Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode(
 %Docstring
  Signal emitted when legend of the layer has changed
 .. versionadded:: 2.6
+%End
+
+    void renderer3DChanged();
+%Docstring
+ Signal emitted when 3D renderer associated with the layer has changed.
+.. versionadded:: 3.0
 %End
 
     void configChanged();
@@ -1115,7 +1138,6 @@ Set whether layer is valid or not - should be used in constructor.
   project files.
  :rtype: bool
 %End
-
 
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 %Docstring

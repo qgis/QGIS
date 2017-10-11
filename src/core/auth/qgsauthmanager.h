@@ -53,7 +53,8 @@ class QgsAuthProvider;
 class QTimer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
  */
@@ -72,7 +73,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     };
     Q_ENUM( MessageLevel );
 
-    /** Enforce singleton pattern
+    /**
+     * Enforce singleton pattern
      * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
      */
     static QgsAuthManager *instance();
@@ -97,25 +99,29 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Standard message for when QCA's qca-ossl plugin is missing and system is disabled
     const QString disabledMessage() const;
 
-    /** The standard authentication database file in ~/.qgis3/ or defined location
+    /**
+     * The standard authentication database file in ~/.qgis3/ or defined location
      * \see QgsApplication::qgisAuthDatabaseFilePath
      */
     const QString authenticationDatabasePath() const { return mAuthDbPath; }
 
-    /** Main call to initially set or continually check master password is set
+    /**
+     * Main call to initially set or continually check master password is set
      * \note If it is not set, the user is asked for its input
      * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( bool verify = false );
 
-    /** Overloaded call to reset master password or set it initially without user interaction
+    /**
+     * Overloaded call to reset master password or set it initially without user interaction
      * \note Only use this in trusted reset functions, unit tests or user/app setup scripts!
      * \param pass Password to use
      * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( const QString &pass, bool verify = false );
 
-    /** Verify the supplied master password against any existing hash in authentication database
+    /**
+     * Verify the supplied master password against any existing hash in authentication database
      * \note Do not emit verification signals when only comparing
      * \param compare Password to compare against
      */
@@ -127,17 +133,20 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Verify a password hash existing in authentication database
     bool masterPasswordHashInDatabase() const;
 
-    /** Clear supplied master password
+    /**
+     * Clear supplied master password
      * \note This will not necessarily clear authenticated connections cached in network connection managers
      */
     void clearMasterPassword() { mMasterPass = QString(); }
 
-    /** Check whether supplied password is the same as the one already set
+    /**
+     * Check whether supplied password is the same as the one already set
      * \param pass Password to verify
      */
     bool masterPasswordSame( const QString &pass ) const;
 
-    /** Reset the master password to a new one, then re-encrypt all previous
+    /**
+     * Reset the master password to a new one, then re-encrypt all previous
      * configs in a new database file, optionally backup curren database
      * \param newpass New master password to replace existing
      * \param oldpass Current master password to replace existing
@@ -146,12 +155,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath SIP_INOUT = nullptr );
 
-    /** Whether there is a scheduled opitonal erase of authentication database.
+    /**
+     * Whether there is a scheduled opitonal erase of authentication database.
      * \note not available in Python bindings
      */
     bool scheduledAuthDatabaseErase() { return mScheduledDbErase; } SIP_SKIP
 
-    /** Schedule an optional erase of authentication database, starting when mutex is lockable.
+    /**
+     * Schedule an optional erase of authentication database, starting when mutex is lockable.
      * \note When an erase is scheduled, any attempt to set the master password,
      * e.g. password input dialog, is effectively canceled.
      * For example: In a GUI app, this keeps excess password input dialogs from popping
@@ -164,7 +175,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     void setScheduledAuthDatabaseErase( bool scheduleErase ) SIP_SKIP;
 
-    /** Re-emit a signal to schedule an optional erase of authentication database.
+    /**
+     * Re-emit a signal to schedule an optional erase of authentication database.
      * \note This can be called from the slot connected to a previously emitted scheduling signal,
      * so that the slot can ask for another emit later, if the slot noticies the current GUI
      * processing state is not ready for interacting with the user, e.g. project is still loading
@@ -332,6 +344,16 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool updateDataSourceUriItems( QStringList &connectionItems SIP_INOUT, const QString &authcfg,
                                    const QString &dataprovider = QString() );
 
+    /**
+     * Provider call to update a QNetworkProxy with an authentication config
+     * \param proxy the QNetworkProxy
+     * \param authcfg Associated authentication config id
+     * \param dataprovider Provider key filter, offering logic branching in authentication method
+     * \returns Whether operation succeeded
+     */
+    bool updateNetworkProxy( QNetworkProxy &proxy SIP_INOUT, const QString &authcfg,
+                             const QString &dataprovider = QString() );
+
     ////////////////// Generic settings ///////////////////////
 
     //! Store an authentication setting (stored as string via QVariant( value ).toString() )
@@ -358,7 +380,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Get a certificate identity by id (sha hash)
     const QSslCertificate getCertIdentity( const QString &id );
 
-    /** Get a certificate identity bundle by id (sha hash).
+    /**
+     * Get a certificate identity bundle by id (sha hash).
      * \note not available in Python bindings
      */
     const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString &id ) SIP_SKIP;
@@ -397,7 +420,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Remove an SSL certificate custom config
     bool removeSslCertCustomConfig( const QString &id, const QString &hostport );
 
-    /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
+    /**
+     * Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
      * \note not available in Python bindings
      */
     QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
@@ -442,7 +466,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Get sha1-mapped database-stored certificate authorities
     const QMap<QString, QSslCertificate> getMappedDatabaseCAs();
 
-    /** Get all CA certs mapped to their sha1 from cache.
+    /**
+     * Get all CA certs mapped to their sha1 from cache.
      * \note not available in Python bindings
      */
     const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > getCaCertsCache() SIP_SKIP
@@ -456,7 +481,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Store user trust value for a certificate
     bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy );
 
-    /** Get a whether certificate is trusted by user
+    /**
+     * Get a whether certificate is trusted by user
         \returns DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
      */
     QgsAuthCertUtils::CertTrustPolicy getCertTrustPolicy( const QSslCertificate &cert );
@@ -502,32 +528,46 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Return pointer to mutex
     QMutex *mutex() { return mMutex; }
 
-    //! Error message getter
-    //! @note not available in Python bindings
+    /**
+     * Error message getter
+     * \note not available in Python bindings
+     */
     const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; } SIP_SKIP
 
-    //! Delete master password from wallet
-    //! @note not available in Python bindings
+    /**
+     * Delete master password from wallet
+     * \note not available in Python bindings
+     */
     bool passwordHelperDelete() SIP_SKIP;
 
-    //! Password helper enabled getter
-    //! @note not available in Python bindings
+    /**
+     * Password helper enabled getter
+     * \note not available in Python bindings
+     */
     bool passwordHelperEnabled() const SIP_SKIP;
 
-    //! Password helper enabled setter
-    //! @note not available in Python bindings
+    /**
+     * Password helper enabled setter
+     * \note not available in Python bindings
+     */
     void setPasswordHelperEnabled( const bool enabled ) SIP_SKIP;
 
-    //! Password helper logging enabled getter
-    //! @note not available in Python bindings
+    /**
+     * Password helper logging enabled getter
+     * \note not available in Python bindings
+     */
     bool passwordHelperLoggingEnabled() const SIP_SKIP;
 
-    //! Password helper logging enabled setter
-    //! @note not available in Python bindings
+    /**
+     * Password helper logging enabled setter
+     * \note not available in Python bindings
+     */
     void setPasswordHelperLoggingEnabled( const bool enabled ) SIP_SKIP;
 
-    //! Store the password manager into the wallet
-    //! @note not available in Python bindings
+    /**
+     * Store the password manager into the wallet
+     * \note not available in Python bindings
+     */
     bool passwordHelperSync() SIP_SKIP;
 
     //! The display name of the password helper (platform dependent)
@@ -566,20 +606,20 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * @param tag Associated tag (title)
      * @param level Message log level
      */
-    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
 
 
     /**
      * Emitted when a password has been verify (or not)
      * \param verified The state of password's verification
      */
-    void masterPasswordVerified( bool verified ) const;
+    void masterPasswordVerified( bool verified );
 
     //! Emitted when a user has indicated they may want to erase the authentication db.
-    void authDatabaseEraseRequested() const;
+    void authDatabaseEraseRequested();
 
     //! Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc.
-    void authDatabaseChanged() const;
+    void authDatabaseChanged();
 
   public slots:
     //! Clear all authentication configs from authentication method caches
@@ -591,7 +631,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
   private slots:
     void writeToConsole( const QString &message, const QString &tag = QString(), QgsAuthManager::MessageLevel level = INFO );
 
-    /** This slot emits the authDatabaseEraseRequested signal, instead of attempting
+    /**
+     * This slot emits the authDatabaseEraseRequested signal, instead of attempting
      * the erase. It relies upon a slot connected to the signal in calling application
      * (the one that initiated the erase) to initiate the erase, when it is ready.
      * Upon activation, a receiving slot should get confimation from the user, then
@@ -627,8 +668,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Clear error code and message
     void passwordHelperClearErrors();
 
-    //! Process the error: show it and/or disable the password helper system in case of
-    //! access denied or no backend, reset error flags at the end
+    /**
+     * Process the error: show it and/or disable the password helper system in case of
+     * access denied or no backend, reset error flags at the end
+     */
     void passwordHelperProcessError();
 
     bool createConfigTables();
@@ -693,7 +736,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static const QString AUTH_TRUST_TABLE;
     static const QString AUTH_CFG_REGEX;
 
-    bool mAuthInit;
+    bool mAuthInit = false;
     QString mAuthDbPath;
 
     QCA::Initializer *mQcaInitializer = nullptr;
@@ -702,14 +745,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QHash<QString, QgsAuthMethod *> mAuthMethods;
 
     QString mMasterPass;
-    int mPassTries;
-    bool mAuthDisabled;
+    int mPassTries = 0;
+    bool mAuthDisabled = false;
     QString mAuthDisabledMessage;
     QTimer *mScheduledDbEraseTimer = nullptr;
-    bool mScheduledDbErase;
-    int mScheduledDbEraseRequestWait; // in seconds
-    bool mScheduledDbEraseRequestEmitted;
-    int mScheduledDbEraseRequestCount;
+    bool mScheduledDbErase = false;
+    int mScheduledDbEraseRequestWait = 3 ; // in seconds
+    bool mScheduledDbEraseRequestEmitted = false;
+    int mScheduledDbEraseRequestCount = 0;
     QMutex *mMutex = nullptr;
 
 #ifndef QT_NO_SSL
@@ -728,19 +771,19 @@ class CORE_EXPORT QgsAuthManager : public QObject
     // Password Helper Variables
 
     //! Master password verification has failed
-    bool mPasswordHelperVerificationError;
+    bool mPasswordHelperVerificationError = false;
 
     //! Store last error message
     QString mPasswordHelperErrorMessage;
 
     //! Store last error code (enum)
-    QKeychain::Error mPasswordHelperErrorCode;
+    QKeychain::Error mPasswordHelperErrorCode = QKeychain::NoError;
 
     //! Enable logging
-    bool mPasswordHelperLoggingEnabled;
+    bool mPasswordHelperLoggingEnabled = false;
 
     //! Whether the keychain bridge failed to initialize
-    bool mPasswordHelperFailedInit;
+    bool mPasswordHelperFailedInit = false;
 
     //! Master password name in the wallets
     static const QLatin1String AUTH_PASSWORD_HELPER_KEY_NAME;

@@ -22,7 +22,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Node is a class used by Line3D. It represents a node in the single directed linked list. Associated QgsPoint objects are deleted when the node is deleted.
  * \note Not available in Python bindings
 */
@@ -52,8 +53,6 @@ class ANALYSIS_EXPORT Node
 
 
 inline Node::Node()
-  : mPoint( nullptr )
-  , mNext( nullptr )
 {
 
 }

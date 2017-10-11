@@ -23,7 +23,8 @@
 class QgsComposition;
 class QgsComposerMultiFrame;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Frame item for a composer multiframe item.
 */
 class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
@@ -33,14 +34,16 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
   public:
     QgsComposerFrame( QgsComposition *c SIP_TRANSFERTHIS, QgsComposerMultiFrame *mf, qreal x, qreal y, qreal width, qreal height );
 
-    /** Sets the visible part of the multiframe's content which is visible within
+    /**
+     * Sets the visible part of the multiframe's content which is visible within
      * this frame (relative to the total multiframe extent in mm).
      * \param section visible portion of content
      * \see extent
      */
     void setContentSection( const QRectF &section ) { mSection = section; }
 
-    /** Returns the parent multiframe for the frame.
+    /**
+     * Returns the parent multiframe for the frame.
      * \returns parent multiframe
      */
     QgsComposerMultiFrame *multiFrame() const { return mMultiFrame; }
@@ -58,7 +61,8 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
     int type() const override { return ComposerFrame; }
 
-    /** Returns the visible portion of the multi frame's content which
+    /**
+     * Returns the visible portion of the multi frame's content which
      * is shown in this frame.
      * \returns extent of visible portion
      * \since QGIS 2.5
@@ -66,35 +70,40 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      */
     QRectF extent() const { return mSection; }
 
-    /** Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+    /**
+     * Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
      * \returns true if page should be hidden if frame is empty
      * \since QGIS 2.5
      * \see setHidePageIfEmpty
      */
     bool hidePageIfEmpty() const { return mHidePageIfEmpty; }
 
-    /** Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+    /**
+     * Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
      * \param hidePageIfEmpty set to true if page should be hidden if frame is empty
      * \since QGIS 2.5
      * \see hidePageIfEmpty
      */
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
 
-    /** Returns whether the background and frame stroke should be hidden if this frame is empty
+    /**
+     * Returns whether the background and frame stroke should be hidden if this frame is empty
      * \returns true if background and stroke should be hidden if frame is empty
      * \since QGIS 2.5
      * \see setHideBackgroundIfEmpty
      */
     bool hideBackgroundIfEmpty() const { return mHideBackgroundIfEmpty; }
 
-    /** Sets whether the background and frame stroke should be hidden if this frame is empty
+    /**
+     * Sets whether the background and frame stroke should be hidden if this frame is empty
      * \param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
      * \since QGIS 2.5
      * \see hideBackgroundIfEmpty
      */
     void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
 
-    /** Returns whether the frame is empty
+    /**
+     * Returns whether the frame is empty
      * \returns true if frame is empty
      * \since QGIS 2.5
      * \see hidePageIfEmpty
@@ -109,9 +118,9 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     QRectF mSection;
 
     //! If true, composition will not export page if this frame is empty
-    bool mHidePageIfEmpty;
+    bool mHidePageIfEmpty = false;
     //! If true, background and outside frame will not be drawn if frame is empty
-    bool mHideBackgroundIfEmpty;
+    bool mHideBackgroundIfEmpty = false;
 
 };
 

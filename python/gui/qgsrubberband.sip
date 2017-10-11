@@ -216,7 +216,7 @@ for tracking the mouse while drawing polylines or polygons.
   \param rect rectangle in canvas coordinates
 %End
 
-    void addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
+    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
 %Docstring
  Adds the geometry of an existing feature to a rubberband
  This is useful for multi feature highlighting.
@@ -224,9 +224,19 @@ for tracking the mouse while drawing polylines or polygons.
  of the rubberband explicitly by calling reset() or setToGeometry() with appropriate arguments.
  setToGeometry() is also to be preferred for backwards-compatibility.
 
-  \param geom the geometry object. Will be treated as a collection of vertices.
+  \param geometry the geometry object. Will be treated as a collection of vertices.
   \param layer the layer containing the feature, used for coord transformation to map
                crs. In case of 0 pointer, the coordinates are not going to be transformed.
+%End
+
+    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+%Docstring
+ Adds a ``geometry`` to the rubberband.
+
+ If ``crs`` is specified, the geometry will be automatically reprojected from ``crs``
+ to the canvas CRS.
+
+.. versionadded:: 3.0
 %End
 
     void setTranslationOffset( double dx, double dy );
@@ -275,7 +285,7 @@ for tracking the mouse while drawing polylines or polygons.
   \param p The QPainter object
 %End
 
-    void drawShape( QPainter *p, QVector<QPointF> &pts );
+    void drawShape( QPainter *p, const QVector<QPointF> &pts );
 %Docstring
  Draws shape of the rubber band.
   \param p The QPainter object

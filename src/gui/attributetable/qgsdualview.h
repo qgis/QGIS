@@ -32,7 +32,8 @@ class QSignalMapper;
 class QgsMapLayerAction;
 class QgsScrollArea;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This widget is used to show the attributes of a set of features of a QgsVectorLayer.
  * The attributes can be edited.
  * It supports two different layouts: the table layout, in which the attributes for the features
@@ -216,12 +217,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     void openConditionalStyles();
 
-    /** Sets whether multi edit mode is enabled.
+    /**
+     * Sets whether multi edit mode is enabled.
      * \since QGIS 2.16
      */
     void setMultiEditEnabled( bool enabled );
 
-    /** Toggles whether search mode should be enabled in the form.
+    /**
+     * Toggles whether search mode should be enabled in the form.
      * \param enabled set to true to switch on search mode
      * \since QGIS 2.16
      */
@@ -246,14 +249,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void filterChanged();
 
-    /** Is emitted when a filter expression is set using the view.
+    /**
+     * Is emitted when a filter expression is set using the view.
      * \param expression filter expression
      * \param type filter type
      * \since QGIS 2.16
      */
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 
-    /** Emitted when the form changes mode.
+    /**
+     * Emitted when the form changes mode.
      * \param mode new mode
      */
     void formModeChanged( QgsAttributeForm::Mode mode );
@@ -263,14 +268,14 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
   private slots:
 
-    void on_mFeatureList_aboutToChangeEditSelection( bool &ok );
+    void mFeatureList_aboutToChangeEditSelection( bool &ok );
 
     /**
      * Changes the currently visible feature within the attribute editor
      *
      * \param feat  The newly visible feature
      */
-    void on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat );
+    void mFeatureList_currentEditSelectionChanged( const QgsFeature &feat );
 
     void previewExpressionBuilder();
 
@@ -328,6 +333,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     //! Pans to the active feature
     void panToCurrentFeature();
 
+    void flashCurrentFeature();
+
     void rebuildFullLayerCache();
 
   private:
@@ -366,7 +373,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     friend class TestQgsAttributeTable;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTableAction
  */
 class GUI_EXPORT QgsAttributeTableAction : public QAction
@@ -397,7 +405,8 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     QModelIndex mFieldIdx;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTableMapLayerAction
  */
 class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction

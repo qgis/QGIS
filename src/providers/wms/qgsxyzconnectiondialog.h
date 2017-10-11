@@ -20,7 +20,6 @@
 
 #include "ui_qgsxyzconnectiondialog.h"
 
-class QgsAuthConfigSelect;
 
 struct QgsXyzConnection;
 
@@ -39,8 +38,6 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
 
     QString mBaseKey;
     QString mCredentialsBaseKey;
-    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
-
 };
 
 #endif // QGSXYZCONNECTIONDIALOG_H

@@ -37,6 +37,15 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *pa
 {
   QgsDebugMsg( "Entered." );
   setupUi( this );
+  connect( mUserDefinedRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mUserDefinedRadioButton_toggled );
+  connect( mMinMaxRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mMinMaxRadioButton_toggled );
+  connect( mStdDevRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mStdDevRadioButton_toggled );
+  connect( mCumulativeCutRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mCumulativeCutRadioButton_toggled );
+  connect( mStatisticsExtentCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMinMaxWidget::mStatisticsExtentCombo_currentIndexChanged );
+  connect( mCumulativeCutLowerDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mCumulativeCutLowerDoubleSpinBox_valueChanged );
+  connect( mCumulativeCutUpperDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mCumulativeCutUpperDoubleSpinBox_valueChanged );
+  connect( mStdDevSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mStdDevSpinBox_valueChanged );
+  connect( cboAccuracy, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMinMaxWidget::cboAccuracy_currentIndexChanged );
 
   QgsRasterMinMaxOrigin defaultMinMaxOrigin;
   setFromMinMaxOrigin( defaultMinMaxOrigin );
@@ -78,7 +87,7 @@ void QgsRasterMinMaxWidget::userHasSetManualMinMaxValues()
   mStatisticsExtentCombo->setCurrentIndex( IDX_WHOLE_RASTER );
 }
 
-void QgsRasterMinMaxWidget::on_mUserDefinedRadioButton_toggled( bool toggled )
+void QgsRasterMinMaxWidget::mUserDefinedRadioButton_toggled( bool toggled )
 {
   mStatisticsExtentCombo->setEnabled( !toggled );
   cboAccuracy->setEnabled( !toggled );

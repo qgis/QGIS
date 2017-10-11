@@ -42,13 +42,11 @@ class TestSignalReceiver : public QObject
   public:
     TestSignalReceiver()
       : QObject( 0 )
-      , rendererChanged( false )
       , featureBlendMode( QPainter::CompositionMode( 0 ) )
-      , opacity( 1.0 )
     {}
-    bool rendererChanged;
+    bool rendererChanged =  false ;
     QPainter::CompositionMode featureBlendMode;
-    double opacity;
+    double opacity =  1.0 ;
   public slots:
     void onRendererChanged()
     {
@@ -64,23 +62,18 @@ class TestSignalReceiver : public QObject
     }
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
 class TestQgsVectorLayer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsVectorLayer()
-      : mTestHasError( false )
-      , mpPointsLayer( 0 )
-      , mpLinesLayer( 0 )
-      , mpPolysLayer( 0 )
-      , mpNonSpatialLayer( 0 )
-    {}
+    TestQgsVectorLayer() = default;
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     QgsMapLayer *mpPointsLayer = nullptr;
     QgsMapLayer *mpLinesLayer = nullptr;
     QgsMapLayer *mpPolysLayer = nullptr;

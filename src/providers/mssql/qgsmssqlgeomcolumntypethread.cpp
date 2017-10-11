@@ -7,8 +7,7 @@
 #include "qgsmssqlprovider.h"
 
 QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &connectionName, bool useEstimatedMetadata )
-  : QThread()
-  , mConnectionName( connectionName )
+  : mConnectionName( connectionName )
   , mUseEstimatedMetadata( useEstimatedMetadata )
   , mStopped( false )
 {
@@ -97,8 +96,8 @@ void QgsMssqlGeomColumnTypeThread::run()
     }
     else
     {
-      layerProperty.type = QLatin1String( "" );
-      layerProperty.srid = QLatin1String( "" );
+      layerProperty.type.clear();
+      layerProperty.srid.clear();
     }
 
     // Now tell the layer list dialog box...

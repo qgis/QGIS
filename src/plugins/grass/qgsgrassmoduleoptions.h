@@ -37,7 +37,8 @@ class QgsGrassModule;
 class QgisInterface;
 class QgsMapCanvas;
 
-/** \class QgsGrassModuleOptions
+/**
+ * \class QgsGrassModuleOptions
  *  \brief Widget with GRASS options.QgsGrassTools
  *
  */
@@ -55,8 +56,7 @@ class QgsGrassModuleOptions
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface, bool direct );
 
-
-    virtual ~QgsGrassModuleOptions();
+    virtual ~QgsGrassModuleOptions() = default;
 
     //! Get module options as list of arguments for QProcess
     virtual QStringList arguments();
@@ -133,7 +133,8 @@ class QgsGrassModuleOptions
     QStringList mErrors;
 };
 
-/** \class QgsGrassModuleStandardOptions
+/**
+ * \class QgsGrassModuleStandardOptions
  *  \brief Widget with GRASS standard options.
  *
  */
@@ -148,9 +149,6 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QgisInterface *iface,
       QString xname, QDomElement confDocElem,
       bool direct, QWidget *parent = 0, Qt::WindowFlags f = 0 );
-
-
-    ~QgsGrassModuleStandardOptions();
 
     //! Get module options as list of arguments for QProcess
     QStringList arguments() override;
@@ -180,12 +178,14 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
 
   private:
 
-    /** Read and parse module options (--interface-description).
+    /**
+     * Read and parse module options (--interface-description).
      * \param errors - list to which possible errors are added
      */
     QDomDocument readInterfaceDescription( const QString &xname, QStringList &errors );
 
-    /** Get region for currently selected map. It will show warning dialog if region could not be read.
+    /**
+     * Get region for currently selected map. It will show warning dialog if region could not be read.
      * \returns true if region was successfully read
      */
     bool getCurrentMapRegion( QgsGrassModuleInput *param, struct Cell_head *window );

@@ -33,13 +33,7 @@ class TestQgsComposerGroup : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerGroup()
-      : mComposition( 0 )
-      , mMapSettings( 0 )
-      , mItem1( 0 )
-      , mItem2( 0 )
-      , mGroup( 0 )
-    {}
+    TestQgsComposerGroup() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

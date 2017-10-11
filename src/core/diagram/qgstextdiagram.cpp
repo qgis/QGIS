@@ -19,7 +19,7 @@
 
 #include <QPainter>
 
-QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
+QgsTextDiagram::QgsTextDiagram()
 {
   mPen.setWidthF( 2.0 );
   mPen.setColor( QColor( 0, 0, 0 ) );

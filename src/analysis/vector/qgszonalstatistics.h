@@ -34,7 +34,8 @@ class QgsRasterDataProvider;
 class QgsRectangle;
 class QgsField;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  *  A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
@@ -68,7 +69,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 
-    /** Starts the calculation
+    /**
+     * Starts the calculation
       \returns 0 in case of success*/
     int calculateStatistics( QgsFeedback *feedback );
 
@@ -116,7 +118,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
         bool mStoreValueCounts;
     };
 
-    /** Analysis what cells need to be considered to cover the bounding box of a feature
+    /**
+     * Analysis what cells need to be considered to cover the bounding box of a feature
       \returns 0 in case of success*/
     int cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
                          int &offsetX, int &offsetY, int &nCellsX, int &nCellsY ) const;

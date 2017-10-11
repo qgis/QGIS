@@ -512,7 +512,8 @@ Set flags that affect how features will be fetched
 
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 %Docstring
-To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+ Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
+ To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
  :rtype: QgsFeatureRequest
 %End
 
@@ -537,11 +538,14 @@ Set a subset of attributes by names that will be fetched
 
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
 %Docstring
+ Set a simplification method for geometries that will be fetched
 .. versionadded:: 2.2
  :rtype: QgsFeatureRequest
 %End
+
     const QgsSimplifyMethod &simplifyMethod() const;
 %Docstring
+ Get simplification method for geometries that will be fetched
 .. versionadded:: 2.2
  :rtype: QgsSimplifyMethod
 %End

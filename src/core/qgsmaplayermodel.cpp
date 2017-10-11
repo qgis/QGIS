@@ -24,10 +24,6 @@
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayersChecked( QMap<QString, Qt::CheckState>() )
-  , mItemCheckable( false )
-  , mAllowEmpty( false )
-  , mShowCrs( false )
 {
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
@@ -35,10 +31,6 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
 
 QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayersChecked( QMap<QString, Qt::CheckState>() )
-  , mItemCheckable( false )
-  , mAllowEmpty( false )
-  , mShowCrs( false )
 {
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );

@@ -30,7 +30,7 @@ QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
 }
 
 QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
-  : QObject()
+  : QObject( nullptr )
   , mNodeType( other.mNodeType )
   , mChecked( other.mChecked )
   , mExpanded( other.mExpanded )

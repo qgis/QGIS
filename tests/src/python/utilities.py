@@ -123,6 +123,8 @@ def writeShape(theMemoryLayer, theFileName):
         mySkipAttributesFlag)
     assert myResult == QgsVectorFileWriter.NoError, 'Writing shape failed, Error {} ({})'.format(myResult, myErrorMessage)
 
+    return myFileName
+
 
 def doubleNear(a, b, tol=0.0000000001):
     """

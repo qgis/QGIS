@@ -175,12 +175,6 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   return static_cast< int >( Success );
 }
 
-QgsRasterCalculator::QgsRasterCalculator()
-  : mNumOutputColumns( 0 )
-  , mNumOutputRows( 0 )
-{
-}
-
 GDALDriverH QgsRasterCalculator::openOutputDriver()
 {
   char **driverMetadata = nullptr;

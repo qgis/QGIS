@@ -37,7 +37,8 @@ extern "C"
 #include <grass/gis.h>
 }
 
-/** \class QgsGrassRegion
+/**
+ * \class QgsGrassRegion
  *  \brief GRASS attributes.
  *
  */
@@ -84,7 +85,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     //! Called when the capture finished to refresh the mWindow values
     void onCaptureFinished();
 
-    void on_mDrawButton_clicked();
+    void mDrawButton_clicked();
 
     void canvasMapToolSet( QgsMapTool *tool );
   private:

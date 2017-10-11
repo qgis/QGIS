@@ -26,7 +26,8 @@ class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;
 class QgsSymbol;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsVectorLayerLabelProvider class implements a label provider
  * for vector layers. Parameters for the labeling are taken from the layer's
  * custom properties or from the given settings.
@@ -75,7 +76,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      */
     virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
-    /** Returns the geometry for a point feature which should be used as an obstacle for labels. This
+    /**
+     * Returns the geometry for a point feature which should be used as an obstacle for labels. This
      * obstacle geometry will respect the dimensions and offsets of the symbol used to render the
      * point, and ensures that labels will not overlap large or offset points.
      * \param fet point feature

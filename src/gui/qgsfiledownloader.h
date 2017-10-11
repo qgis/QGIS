@@ -26,7 +26,8 @@
 #include <QSslError>
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * QgsFileDownloader is a utility class for downloading files.
  *
  * To use this class, it is necessary to pass the URL and an output file name as

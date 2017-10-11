@@ -34,7 +34,8 @@ class QgsMapLayer;
 class QgsVectorLayer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
  * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.

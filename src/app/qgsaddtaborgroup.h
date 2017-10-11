@@ -48,8 +48,8 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     virtual void accept() override;
 
   private slots:
-    void on_mGroupButton_toggled( bool checked );
-    void on_mTabButton_toggled( bool checked );
+    void mGroupButton_toggled( bool checked );
+    void mTabButton_toggled( bool checked );
     void showHelp();
 
   protected:

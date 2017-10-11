@@ -31,12 +31,7 @@ class TestQgsComposerModel : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerModel()
-      : mComposition( 0 )
-      , mItem1( 0 )
-      , mItem2( 0 )
-      , mItem3( 0 )
-    {}
+    TestQgsComposerModel() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

@@ -56,7 +56,7 @@ bool QgsLayoutItemGuiRegistry::populate()
     return new QgsLayoutViewTriangleRubberBand( view );
   } );
 
-  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( 101, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), nullptr, createRubberBand ) );
+  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), nullptr, createRubberBand ) );
   addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutRectangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), nullptr, createRubberBand, QStringLiteral( "shapes" ) ) );
   addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutEllipse, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), nullptr, createEllipseBand, QStringLiteral( "shapes" ) ) );
   addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutTriangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), nullptr, createTriangleBand, QStringLiteral( "shapes" ) ) );

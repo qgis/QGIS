@@ -275,6 +275,15 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
 
 {
   setupUi( this );
+  connect( mRemoveColumnPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mRemoveColumnPushButton_clicked );
+  connect( mAddColumnPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mAddColumnPushButton_clicked );
+  connect( mColumnUpPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mColumnUpPushButton_clicked );
+  connect( mColumnDownPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mColumnDownPushButton_clicked );
+  connect( mResetColumnsPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mResetColumnsPushButton_clicked );
+  connect( mAddSortColumnPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mAddSortColumnPushButton_clicked );
+  connect( mRemoveSortColumnPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked );
+  connect( mSortColumnUpPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mSortColumnUpPushButton_clicked );
+  connect( mSortColumnDownPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mSortColumnDownPushButton_clicked );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/AttributeSelectionDialog/geometry" ) ).toByteArray() );
@@ -319,7 +328,7 @@ QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
   settings.setValue( QStringLiteral( "Windows/AttributeSelectionDialog/geometry" ), saveGeometry() );
 }
 
-void QgsAttributeSelectionDialog::on_mRemoveColumnPushButton_clicked()
+void QgsAttributeSelectionDialog::mRemoveColumnPushButton_clicked()
 {
   //remove selected row from model
   QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
@@ -330,13 +339,13 @@ void QgsAttributeSelectionDialog::on_mRemoveColumnPushButton_clicked()
   }
 }
 
-void QgsAttributeSelectionDialog::on_mAddColumnPushButton_clicked()
+void QgsAttributeSelectionDialog::mAddColumnPushButton_clicked()
 {
   //add a new row to the model
   mColumnModel->insertRow( mColumnModel->rowCount() );
 }
 
-void QgsAttributeSelectionDialog::on_mColumnUpPushButton_clicked()
+void QgsAttributeSelectionDialog::mColumnUpPushButton_clicked()
 {
   //move selected row up
   QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
@@ -347,7 +356,7 @@ void QgsAttributeSelectionDialog::on_mColumnUpPushButton_clicked()
   }
 }
 
-void QgsAttributeSelectionDialog::on_mColumnDownPushButton_clicked()
+void QgsAttributeSelectionDialog::mColumnDownPushButton_clicked()
 {
   //move selected row down
   QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
@@ -358,14 +367,14 @@ void QgsAttributeSelectionDialog::on_mColumnDownPushButton_clicked()
   }
 }
 
-void QgsAttributeSelectionDialog::on_mResetColumnsPushButton_clicked()
+void QgsAttributeSelectionDialog::mResetColumnsPushButton_clicked()
 {
   //reset columns to match vector layer's fields
   mColumnModel->resetToLayer();
   mSortColumnComboBox->setCurrentIndex( 0 );
 }
 
-void QgsAttributeSelectionDialog::on_mAddSortColumnPushButton_clicked()
+void QgsAttributeSelectionDialog::mAddSortColumnPushButton_clicked()
 {
   //add column to sort order widget
   QgsComposerTableColumn *column = mAvailableSortProxyModel->columnFromRow( mSortColumnComboBox->currentIndex() );
@@ -380,7 +389,7 @@ void QgsAttributeSelectionDialog::on_mAddSortColumnPushButton_clicked()
   mSortedProxyModel->resetFilter();
 }
 
-void QgsAttributeSelectionDialog::on_mRemoveSortColumnPushButton_clicked()
+void QgsAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked()
 {
   //remove selected rows from sort order widget
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
@@ -406,7 +415,7 @@ void QgsAttributeSelectionDialog::on_mRemoveSortColumnPushButton_clicked()
   mSortColumnTableView->selectRow( rowToRemove );
 }
 
-void QgsAttributeSelectionDialog::on_mSortColumnUpPushButton_clicked()
+void QgsAttributeSelectionDialog::mSortColumnUpPushButton_clicked()
 {
   //find selected row
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );
@@ -425,7 +434,7 @@ void QgsAttributeSelectionDialog::on_mSortColumnUpPushButton_clicked()
   mColumnModel->moveColumnInSortRank( column, QgsComposerAttributeTableColumnModelV2::ShiftUp );
 }
 
-void QgsAttributeSelectionDialog::on_mSortColumnDownPushButton_clicked()
+void QgsAttributeSelectionDialog::mSortColumnDownPushButton_clicked()
 {
   //find selected row
   QItemSelection sortSelection( mSortColumnTableView->selectionModel()->selection() );

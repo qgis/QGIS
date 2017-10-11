@@ -240,9 +240,15 @@ bool QgsExpression::isValid() const
   return d->mRootNode;
 }
 
-bool QgsExpression::hasParserError() const { return !d->mParserErrorString.isNull(); }
+bool QgsExpression::hasParserError() const
+{
+  return !d->mParserErrorString.isNull();
+}
 
-QString QgsExpression::parserErrorString() const { return d->mParserErrorString; }
+QString QgsExpression::parserErrorString() const
+{
+  return d->mParserErrorString;
+}
 
 QSet<QString> QgsExpression::referencedColumns() const
 {
@@ -705,7 +711,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
 
   //provider notification
-  sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Contend of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Content of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )

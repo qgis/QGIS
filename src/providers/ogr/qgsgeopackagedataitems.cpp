@@ -219,7 +219,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     }
     else
     {
-      QgsMapLayer *srcLayer;
+      QgsMapLayer *srcLayer = nullptr;
       bool owner;
       bool isVector = false;
       QString error;
@@ -268,7 +268,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
             options.insert( QStringLiteral( "layerName" ), dropUri.name );
-            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner ) ;
+            QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
             mainTask->addSubTask( exportTask, importTasks );
             importTasks << exportTask;
             // when export is successful:
@@ -294,7 +294,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
           }
           else  // Import raster
           {
-            QgsGeoPackageRasterWriterTask  *exportTask = new QgsGeoPackageRasterWriterTask( dropUri, mPath ) ;
+            QgsGeoPackageRasterWriterTask  *exportTask = new QgsGeoPackageRasterWriterTask( dropUri, mPath );
             mainTask->addSubTask( exportTask, importTasks );
             importTasks << exportTask;
             // when export is successful:
@@ -362,7 +362,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
     {
       QString baseUri = pieces.at( 1 );
       QString layerName = pieces.at( 2 );
-      sqlite3 *handle;
+      sqlite3 *handle = nullptr;
       int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
       if ( status != SQLITE_OK )
       {

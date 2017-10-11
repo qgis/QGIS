@@ -54,7 +54,9 @@ create renderer from XML element
 
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
-:return: a new renderer if the conversion was possible, otherwise 0.
+ creates a QgsSingleSymbolRenderer from an existing renderer.
+.. versionadded:: 2.5
+ :return: a new renderer if the conversion was possible, otherwise 0.
  :rtype: QgsSingleSymbolRenderer
 %End
 

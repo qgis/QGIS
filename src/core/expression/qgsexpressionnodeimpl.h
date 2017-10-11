@@ -20,7 +20,8 @@
 #include "qgsexpressionnode.h"
 #include "qgsinterval.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A unary node is either negative as in boolean (not) or as in numbers (minus).
  */
 class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
@@ -74,7 +75,8 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
     static const char *UNARY_OPERATOR_TEXT[];
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 {
@@ -157,7 +159,8 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     qlonglong computeInt( qlonglong x, qlonglong y );
     double computeDouble( double x, double y );
 
-    /** Computes the result date time calculation from a start datetime and an interval
+    /**
+     * Computes the result date time calculation from a start datetime and an interval
      * \param d start datetime
      * \param i interval to add or subtract (depending on mOp)
      */
@@ -170,7 +173,8 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
     static const char *BINARY_OPERATOR_TEXT[];
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
 {
@@ -207,7 +211,8 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
     bool mNotIn;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 {
@@ -241,10 +246,10 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
   private:
     int mFnIndex;
     NodeList *mArgs = nullptr;
-
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
 {
@@ -271,7 +276,8 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
     QVariant mValue;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
 {
@@ -301,7 +307,8 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
     int mIndex;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
 {

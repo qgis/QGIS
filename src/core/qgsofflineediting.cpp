@@ -495,11 +495,11 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
   // create table
   QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
-  QString delim = QLatin1String( "" );
+  QString delim;
   const QgsFields providerFields = layer->dataProvider()->fields();
   for ( const auto &field : providerFields )
   {
-    QString dataType = QLatin1String( "" );
+    QString dataType;
     QVariant::Type type = field.type();
     if ( type == QVariant::Int || type == QVariant::LongLong )
     {
@@ -528,7 +528,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   // add geometry column
   if ( layer->isSpatial() )
   {
-    QString geomType = QLatin1String( "" );
+    QString geomType;
     switch ( layer->wkbType() )
     {
       case QgsWkbTypes::Point:

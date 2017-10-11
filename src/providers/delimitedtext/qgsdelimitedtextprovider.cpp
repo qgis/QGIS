@@ -65,24 +65,6 @@ QRegExp QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mLayerValid( false )
-  , mValid( false )
-  , mGeomRep( GeomNone )
-  , mFieldCount( 0 )
-  , mXFieldIndex( -1 )
-  , mYFieldIndex( -1 )
-  , mWktFieldIndex( -1 )
-  , mWktHasPrefix( false )
-  , mXyDms( false )
-  , mSubsetString( QLatin1String( "" ) )
-  , mBuildSubsetIndex( true )
-  , mUseSubsetIndex( false )
-  , mMaxInvalidLines( 50 )
-  , mShowInvalidLines( true )
-  , mRescanRequired( false )
-  , mWkbType( QgsWkbTypes::NoGeometry )
-  , mGeometryType( QgsWkbTypes::UnknownGeometry )
-  , mBuildSpatialIndex( false )
 {
 
   // Add supported types to enable creating expression fields in field calculator
@@ -1167,7 +1149,8 @@ QGISEXTERN QgsDelimitedTextProvider *classFactory( const QString *uri )
   return new QgsDelimitedTextProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {

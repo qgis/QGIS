@@ -110,49 +110,49 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void pluginItemChanged( QStandardItem *item );
 
     //! Display details of inactive item too
-    void on_vwPlugins_clicked( const QModelIndex &index );
+    void vwPlugins_clicked( const QModelIndex &index );
 
     //! Load/unload plugin by double-click
-    void on_vwPlugins_doubleClicked( const QModelIndex &index );
+    void vwPlugins_doubleClicked( const QModelIndex &index );
 
     //! Handle click in the web view
-    void on_wvDetails_linkClicked( const QUrl &url );
+    void wvDetails_linkClicked( const QUrl &url );
 
     //! Update the filter when user changes the filter expression
-    void on_leFilter_textChanged( QString text );
+    void leFilter_textChanged( QString text );
 
     //! Upgrade all upgradeable plugins
-    void on_buttonUpgradeAll_clicked();
+    void buttonUpgradeAll_clicked();
 
     //! Install selected plugin
-    void on_buttonInstall_clicked();
+    void buttonInstall_clicked();
 
     //! Uninstall selected plugin
-    void on_buttonUninstall_clicked();
+    void buttonUninstall_clicked();
 
     //! Enable/disable buttons according to selected repository
-    void on_treeRepositories_itemSelectionChanged();
+    void treeRepositories_itemSelectionChanged();
 
     //! Edit selected repository
-    void on_treeRepositories_doubleClicked( const QModelIndex & );
+    void treeRepositories_doubleClicked( const QModelIndex & );
 
     //! Define new repository connection
-    void on_buttonAddRep_clicked();
+    void buttonAddRep_clicked();
 
     //! Edit selected repository connection
-    void on_buttonEditRep_clicked();
+    void buttonEditRep_clicked();
 
     //! Delete selected repository connection
-    void on_buttonDeleteRep_clicked();
+    void buttonDeleteRep_clicked();
 
     //! Reload all repositories
-    void on_buttonRefreshRepos_clicked();
+    void buttonRefreshRepos_clicked();
 
     //! Reload plugin metadata registry after allowing/disallowing experimental plugins
-    void on_ckbExperimental_toggled( bool state );
+    void ckbExperimental_toggled( bool state );
 
     //! Reload plugin metadata registry after allowing/disallowing deprecated plugins
-    void on_ckbDeprecated_toggled( bool state );
+    void ckbDeprecated_toggled( bool state );
 
     //! Open help browser
     void showHelp();

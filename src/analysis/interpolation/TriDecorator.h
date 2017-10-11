@@ -23,7 +23,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Decorator class for Triangulations (s. Decorator pattern in Gamma et al.).
  * \note Not available in Python bindings.
 */
@@ -68,12 +69,13 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
 
 #ifndef SIP_RUN
 
-inline TriDecorator::TriDecorator(): mTIN( nullptr )
+inline TriDecorator::TriDecorator()
 {
 
 }
 
-inline TriDecorator::TriDecorator( Triangulation *t ): mTIN( t )
+inline TriDecorator::TriDecorator( Triangulation *t )
+  : mTIN( t )
 {
 
 }

@@ -21,7 +21,8 @@
 
 SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Factory for widgets for editing a QVariantList or a QStringList
  * \since QGIS 3.0
  * \note not available in Python bindings

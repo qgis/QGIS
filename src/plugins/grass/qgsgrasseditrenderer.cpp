@@ -32,8 +32,6 @@
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()
   : QgsFeatureRenderer( QStringLiteral( "grassEdit" ) )
-  , mLineRenderer( 0 )
-  , mMarkerRenderer( 0 )
 {
   QHash<int, QColor> colors;
   //colors.insert( QgsGrassVectorMap::TopoUndefined, QColor( 125, 125, 125 ) );
@@ -263,9 +261,6 @@ QgsRendererWidget *QgsGrassEditRendererWidget::create( QgsVectorLayer *layer, Qg
 
 QgsGrassEditRendererWidget::QgsGrassEditRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( 0 )
-  , mLineRendererWidget( 0 )
-  , mPointRendererWidget( 0 )
 {
   mRenderer = dynamic_cast<QgsGrassEditRenderer *>( renderer->clone() );
   if ( !mRenderer )

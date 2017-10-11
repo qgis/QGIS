@@ -38,10 +38,6 @@ static const QString sPluginIcon = QStringLiteral( ":/offline_editing/offline_ed
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mActionConvertProject( nullptr )
-  , mActionSynchronize( nullptr )
-  , mOfflineEditing( nullptr )
-  , mProgressDialog( nullptr )
 {
 }
 
@@ -166,7 +162,7 @@ void QgsOfflineEditingPlugin::setLayerProgress( int layer, int numLayers )
 
 void QgsOfflineEditingPlugin::setProgressMode( QgsOfflineEditing::ProgressMode mode, int maximum )
 {
-  QString format = QLatin1String( "" );
+  QString format;
   switch ( mode )
   {
     case QgsOfflineEditing::CopyFeatures:

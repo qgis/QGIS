@@ -57,9 +57,7 @@ class TestQgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsPointLocator()
-      : mVL( 0 )
-    {}
+    TestQgsPointLocator() = default;
 
   private:
     QgsVectorLayer *mVL = nullptr;

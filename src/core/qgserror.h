@@ -25,7 +25,8 @@
 // Macro to create Error message including info about where it was created.
 #define QGS_ERROR_MESSAGE(message, tag) QgsErrorMessage(QString(message),QString(tag), QString(__FILE__), QString(__FUNCTION__), __LINE__)
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsErrorMessage represents single error message.
 */
 class CORE_EXPORT QgsErrorMessage
@@ -39,11 +40,10 @@ class CORE_EXPORT QgsErrorMessage
     };
 
     QgsErrorMessage()
-      : mLine( 0 )
-      , mFormat( Text )
     {}
 
-    /** Constructor.
+    /**
+     * Constructor.
      *  \param message error message string
      *  \param tag error label, for example GDAL, GDAL Provider, Raster layer
      *  \param file the file where error was created
@@ -68,13 +68,14 @@ class CORE_EXPORT QgsErrorMessage
     //! Detailed debug info
     QString mFile;
     QString mFunction;
-    int mLine;
+    int mLine = 0;
 
     //! Message format
-    Format mFormat;
+    Format mFormat = Text;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsError is container for error messages (report). It may contain chain
  * (sort of traceback) of error messages (e.g. GDAL - provider - layer).
  * Higher level messages are appended at the end.
@@ -85,35 +86,41 @@ class CORE_EXPORT QgsError
 
     QgsError() {}
 
-    /** Constructor with single message.
+    /**
+     * Constructor with single message.
      *  \param message error message
      *  \param tag short description, e.g. GDAL, Provider, Layer
      */
     QgsError( const QString &message, const QString &tag );
 
-    /** Append new error message.
+    /**
+     * Append new error message.
      *  \param message error message string
      *  \param tag error label, for example GDAL, GDAL Provider, Raster layer
      */
     void append( const QString &message, const QString &tag );
 
-    /** Append new error message.
+    /**
+     * Append new error message.
      *  \param message error message
      */
     void append( const QgsErrorMessage &message );
 
-    /** Test if any error is set.
+    /**
+     * Test if any error is set.
      *  \returns true if contains error
      */
     bool isEmpty() const { return mMessageList.isEmpty(); }
 
-    /** Full error messages description
+    /**
+     * Full error messages description
      *  \param format output format
      *  \returns error report
      */
     QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
 
-    /** Short error description, usually the first error in chain, the real error.
+    /**
+     * Short error description, usually the first error in chain, the real error.
      *  \returns error description
      */
     QString summary() const;

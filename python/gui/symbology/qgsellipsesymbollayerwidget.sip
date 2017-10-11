@@ -15,10 +15,18 @@ class QgsEllipseSymbolLayerWidget: QgsSymbolLayerWidget
 #include "qgsellipsesymbollayerwidget.h"
 %End
   public:
-    QgsEllipseSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 
-    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) /Factory/;
+    QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
+ Constructor for QgsEllipseSymbolLayerWidget.
+ \param vl associated vector layer
+ \param parent parent widget
+%End
+
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+ Creates a new QgsSymbolLayerWidget.
+ \param vl associated vector layer
  :rtype: QgsSymbolLayerWidget
 %End
 

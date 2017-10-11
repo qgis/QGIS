@@ -38,7 +38,6 @@ QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::sPkiConfigBundleCache
 
 
 QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
-  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -302,7 +301,8 @@ QGISEXTERN QgsAuthPkiPathsMethod *classFactory()
   return new QgsAuthPkiPathsMethod();
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
  */
 QGISEXTERN QString authMethodKey()
 {

@@ -23,8 +23,6 @@
 #include "qgsapplication.h"
 
 QgsDb2TableModel::QgsDb2TableModel()
-  : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -38,9 +36,6 @@ QgsDb2TableModel::QgsDb2TableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsDb2TableModel::~QgsDb2TableModel()
-{
-}
 void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
 {
   QgsDebugMsg( QString( " DB2 **** %1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
@@ -94,11 +89,11 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
   sridItem->setEditable( false );
 
-  QString pkText, pkCol = QLatin1String( "" );
+  QString pkText;
+  QString pkCol;
   switch ( layerProperty.pkCols.size() )
   {
     case 0:
-      pkText = QLatin1String( "" );
       break;
     case 1:
       pkText = layerProperty.pkCols[0];

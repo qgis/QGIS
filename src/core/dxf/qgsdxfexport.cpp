@@ -53,10 +53,6 @@
 
 #include <QIODevice>
 
-#define DXF_HANDSEED 100
-#define DXF_HANDMAX 9999999
-#define DXF_HANDPLOTSTYLE 0xf
-
 // dxf color palette
 int QgsDxfExport::sDxfColors[][3] =
 {
@@ -366,17 +362,6 @@ const char *QgsDxfExport::DXF_ENCODINGS[][2] =
   { "ANSI_1258", "CP1258" },
 };
 
-QgsDxfExport::QgsDxfExport()
-  : mSymbologyScale( 1.0 )
-  , mSymbologyExport( NoSymbology )
-  , mMapUnits( QgsUnitTypes::DistanceMeters )
-  , mLayerTitleAsName( false )
-  , mSymbolLayerCounter( 0 )
-  , mNextHandleId( DXF_HANDSEED )
-  , mBlockCounter( 0 )
-{
-}
-
 QgsDxfExport::QgsDxfExport( const QgsDxfExport &dxfExport )
 {
   *this = dxfExport;
@@ -514,6 +499,9 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
   mTextStream.setDevice( d );
   mTextStream.setCodec( encoding.toLocal8Bit() );
 
+  if ( mCrs.isValid() )
+    mMapSettings.setDestinationCrs( mCrs );
+
   if ( mExtent.isEmpty() )
   {
     const QList< QgsMapLayer * > layers = mMapSettings.layers();
@@ -544,8 +532,6 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
   mFactor = 1000 * dpi / mSymbologyScale / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, QgsUnitTypes::DistanceMeters );
   mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
   mMapSettings.setOutputDpi( dpi );
-  if ( mCrs.isValid() )
-    mMapSettings.setDestinationCrs( mCrs );
 
   writeHeader( dxfEncoding( encoding ) );
   writeTables();

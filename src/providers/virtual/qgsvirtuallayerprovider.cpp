@@ -56,9 +56,6 @@ static QString quotedColumn( QString name )
 
 QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
-  , mValid( true )
-  , mCachedStatistics( false )
-  , mFeatureCount( 0 )
 {
   mError.clear();
 
@@ -450,10 +447,6 @@ bool QgsVirtualLayerProvider::createIt()
   return true;
 }
 
-QgsVirtualLayerProvider::~QgsVirtualLayerProvider()
-{
-}
-
 void QgsVirtualLayerProvider::resetSqlite()
 {
   bool hasSpatialrefsys = false;
@@ -625,7 +618,8 @@ QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString *uri )
   return new QgsVirtualLayerProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {

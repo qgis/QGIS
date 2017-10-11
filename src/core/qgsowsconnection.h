@@ -28,7 +28,8 @@
 #include <QStringList>
 #include <QPushButton>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Connections management
  */
 class CORE_EXPORT QgsOwsConnection : public QObject

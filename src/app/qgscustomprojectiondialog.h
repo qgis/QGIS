@@ -36,12 +36,12 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     ~QgsCustomProjectionDialog();
 
   public slots:
-    void on_pbnCalculate_clicked();
-    void on_pbnAdd_clicked();
-    void on_pbnRemove_clicked();
-    void on_pbnCopyCRS_clicked();
-    void on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_buttonBox_accepted();
+    void pbnCalculate_clicked();
+    void pbnAdd_clicked();
+    void pbnRemove_clicked();
+    void pbnCopyCRS_clicked();
+    void leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void buttonBox_accepted();
 
   private:
 

@@ -59,7 +59,6 @@ class QgsWMSLayerItem : public QgsLayerItem
                      const QgsWmsCapabilitiesProperty &capabilitiesProperty,
                      const QgsDataSourceUri &dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
-    ~QgsWMSLayerItem();
 
     QString createUri();
 
@@ -82,7 +81,6 @@ class QgsWMTSLayerItem : public QgsLayerItem
                       const QString &tileMatrixSet,
                       const QString &crs,
                       const QString &title );
-    ~QgsWMTSLayerItem();
 
     QString createUri();
     QString layerName() const override { return mTitle; }
@@ -97,7 +95,6 @@ class QgsWMSRootItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsWMSRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsWMSRootItem();
 
     QVector<QgsDataItem *> createChildren() override;
 

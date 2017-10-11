@@ -151,6 +151,34 @@ class CORE_EXPORT QgsLayoutContext
      */
     void setGridVisible( bool visible );
 
+    /**
+     * Returns true if the item bounding boxes should be drawn.
+     * \see setBoundingBoxesVisible()
+     */
+    bool boundingBoxesVisible() const;
+
+    /**
+     * Sets whether the item bounding boxes should be \a visible.
+     * \see boundingBoxesVisible()
+     */
+    void setBoundingBoxesVisible( bool visible );
+
+    /**
+     * Sets whether the page items should be \a visible in the layout. Removing
+     * them will prevent both display of the page boundaries in layout views and
+     * will also prevent them from being rendered in layout exports.
+     * \see pagesVisible()
+     */
+    void setPagesVisible( bool visible );
+
+    /**
+     * Returns whether the page items are be visible in the layout. This setting
+     * effects both display of the page boundaries in layout views and
+     * whether they will be rendered in layout exports.
+     * \see setPagesVisible()
+     */
+    bool pagesVisible() const { return mPagesVisible; }
+
   private:
 
     Flags mFlags = 0;
@@ -161,6 +189,8 @@ class CORE_EXPORT QgsLayoutContext
     QgsLayoutMeasurementConverter mMeasurementConverter;
 
     bool mGridVisible = false;
+    bool mBoundingBoxesVisible = true;
+    bool mPagesVisible = true;
 
 
 };

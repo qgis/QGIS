@@ -48,7 +48,8 @@ static QgsRenderContext _createRenderContext( double mupp, double dpi, double sc
 }
 
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for legend rendering when using data-defined size of markers.
  */
 class TestQgsDataDefinedSizeLegend : public QObject

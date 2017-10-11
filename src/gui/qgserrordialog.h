@@ -25,7 +25,8 @@
 #include "qgis_gui.h"
 #include "qgis.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsErrorDialog
  */
 class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
@@ -38,7 +39,8 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
      */
     QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    /** Show dialog with error
+    /**
+     * Show dialog with error
      * \param error error
      * \param title title
      * \param parent parent object
@@ -46,9 +48,9 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
      */
     static void show( const QgsError &error, const QString &title, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-  public slots:
-    void on_mDetailPushButton_clicked();
-    void on_mDetailCheckBox_stateChanged( int state );
+  private slots:
+    void mDetailPushButton_clicked();
+    void mDetailCheckBox_stateChanged( int state );
 
   private:
     QgsError mError;

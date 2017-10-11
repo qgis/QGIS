@@ -33,7 +33,8 @@
 #include <langinfo.h>
 #endif
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsVectorFileWriter class.
  *
  *  Possible QVariant::Type s
@@ -84,7 +85,7 @@ class TestQgsVectorFileWriter: public QObject
     // a little util fn used by all tests
     bool cleanupFile( QString fileBase );
     QString mEncoding;
-    QgsVectorFileWriter::WriterError mError;
+    QgsVectorFileWriter::WriterError mError =  QgsVectorFileWriter::NoError ;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
     QgsPointXY mPoint1;
@@ -92,11 +93,7 @@ class TestQgsVectorFileWriter: public QObject
     QgsPointXY mPoint3;
 };
 
-TestQgsVectorFileWriter::TestQgsVectorFileWriter()
-  : mError( QgsVectorFileWriter::NoError )
-{
-
-}
+TestQgsVectorFileWriter::TestQgsVectorFileWriter() = default;
 
 void TestQgsVectorFileWriter::initTestCase()
 {

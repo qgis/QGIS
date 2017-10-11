@@ -286,6 +286,15 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
   return normalized.trimmed();
 }
 
+QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
+{
+  QString s = string;
+  s.replace( '"', QStringLiteral( "\\\"" ) );
+  s.replace( '\'', QStringLiteral( "\\\'" ) );
+  s = s.prepend( '\'' ).append( '\'' );
+  return s;
+}
+
 void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
 {
   QRegularExpression splitRx( QStringLiteral( "^(.{3,}):(.*)$" ) );
@@ -498,7 +507,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
 
   QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n " );
   s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
-  s +=  QObject::tr( "<h2>Input parameters</h2>\n" );
+  s += QObject::tr( "<h2>Input parameters</h2>\n" );
 
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, algorithm->parameterDefinitions() )
   {

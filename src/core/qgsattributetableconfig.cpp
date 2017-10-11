@@ -17,13 +17,6 @@
 #include "qgsfields.h"
 #include <QStringList>
 
-QgsAttributeTableConfig::QgsAttributeTableConfig()
-  : mActionWidgetStyle( DropDown )
-  , mSortOrder( Qt::AscendingOrder )
-{
-
-}
-
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
 {
   return mColumns;

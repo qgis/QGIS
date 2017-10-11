@@ -23,7 +23,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * This class represents a line. It is implemented as a single directed linked list of nodes (with related QgsPoint objects). Attention: the points inserted in a line are not deleted from Line3D
  * \note Not available in Python bindings
 */

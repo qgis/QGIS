@@ -109,8 +109,10 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
 }
 
 
-//! Determine whether a vertex is in the middle of a circular edge or not
-//! (wrapper for slightly awkward API)
+/**
+ * Determine whether a vertex is in the middle of a circular edge or not
+ * (wrapper for slightly awkward API)
+ */
 static bool isCircularVertex( const QgsGeometry &geom, int vertexIndex )
 {
   QgsVertexId vid;
@@ -152,7 +154,7 @@ class OneFeatureFilter : public QgsPointLocator::MatchFilter
     }
 
   private:
-    const QgsVectorLayer *layer;
+    const QgsVectorLayer *layer = nullptr;
     QgsFeatureId fid;
 };
 
@@ -162,7 +164,7 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 {
   public:
     QList<QgsPointLocator::Match> matches;
-    QgsNodeTool *nodetool;
+    QgsNodeTool *nodetool = nullptr;
 
     MatchCollectingFilter( QgsNodeTool *nodetool )
       : nodetool( nodetool ) {}

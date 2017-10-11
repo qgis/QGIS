@@ -52,10 +52,6 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   mBaseUri = uri.param( QStringLiteral( "url" ) );
 }
 
-QgsWfsLayerItem::~QgsWfsLayerItem()
-{
-}
-
 QList<QMenu *> QgsWfsLayerItem::menus( QWidget *parent )
 {
   QList<QMenu *> menus;
@@ -140,14 +136,9 @@ void QgsWfsLayerItem::copyStyle()
 QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
-  , mWfsCapabilities( nullptr )
 {
   mIconName = QStringLiteral( "mIconWfs.svg" );
   mCapabilities |= Collapse;
-}
-
-QgsWfsConnectionItem::~QgsWfsConnectionItem()
-{
 }
 
 QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
@@ -228,10 +219,6 @@ QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path 
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWfs.svg" );
   populate();
-}
-
-QgsWfsRootItem::~QgsWfsRootItem()
-{
 }
 
 QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
@@ -370,33 +357,6 @@ QGISEXTERN QgsWFSSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl
   return new QgsWFSSourceSelect( parent, fl, widgetMode );
 }
 #endif
-
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::Net;
-}
-
-QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
-{
-  QgsDebugMsg( "path = " + path );
-  if ( path.isEmpty() )
-  {
-    return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );
-  }
-
-  // path schema: wfs:/connection name (used by OWS)
-  if ( path.startsWith( QLatin1String( "wfs:/" ) ) )
-  {
-    QString connectionName = path.split( '/' ).last();
-    if ( QgsWfsConnection::connectionList().contains( connectionName ) )
-    {
-      QgsWfsConnection connection( connectionName );
-      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, connection.uri().uri() );
-    }
-  }
-
-  return nullptr;
-}
 
 QGISEXTERN QList<QgsDataItemProvider *> *dataItemProviders()
 {

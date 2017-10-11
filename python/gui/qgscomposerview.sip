@@ -21,7 +21,6 @@ class QgsComposerView: QGraphicsView
 %TypeHeaderCode
 #include "qgscomposerview.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->inherits( "QgsComposerView" ) )
       sipType = sipType_QgsComposerView;

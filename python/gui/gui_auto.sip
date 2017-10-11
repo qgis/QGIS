@@ -29,6 +29,7 @@
 %Include auth/qgsauthcerttrustpolicycombobox.sip
 %Include auth/qgsauthconfigeditor.sip
 %Include auth/qgsauthconfigselect.sip
+%Include auth/qgsauthsettingswidget.sip
 %Include auth/qgsautheditorwidgets.sip
 %Include auth/qgsauthidentitieseditor.sip
 %Include auth/qgsauthimportcertdialog.sip
@@ -151,6 +152,8 @@
 %Include qgsmessagelogviewer.sip
 %Include qgsmessageviewer.sip
 %Include qgsmetadatawidget.sip
+%Include qgsnewauxiliarylayerdialog.sip
+%Include qgsnewauxiliaryfielddialog.sip
 %Include qgsnewhttpconnection.sip
 %Include qgsnewmemorylayerdialog.sip
 %Include qgsnewnamedialog.sip

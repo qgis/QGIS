@@ -22,7 +22,6 @@ class QgsDataItem : QObject
 %TypeHeaderCode
 #include "qgsdataitem.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsLayerItem *>( sipCpp ) )
       sipType = sipType_QgsLayerItem;
@@ -343,9 +342,13 @@ Refresh connections: update GUI and emit signal
     void endRemoveItems();
     void dataChanged( QgsDataItem *item );
     void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+
     void connectionsChanged();
 %Docstring
-open browsers
+ Emitted when the provider's connections of the child items have changed
+ This signal is normally forwarded to the app in order to refresh the connection
+ item in the provider dialogs and to refresh the connection items in the other
+ open browsers
 %End
 
   protected slots:

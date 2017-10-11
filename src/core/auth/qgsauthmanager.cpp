@@ -804,7 +804,7 @@ const QString QgsAuthManager::uniqueConfigId() const
 
   while ( true )
   {
-    id = QLatin1String( "" );
+    id.clear();
     for ( int i = 0; i < len; i++ )
     {
       switch ( qrand() % 2 )
@@ -1457,6 +1457,32 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
   return false;
 }
 
+bool QgsAuthManager::updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg, const QString &dataprovider )
+{
+  if ( isDisabled() )
+    return false;
+
+  QgsAuthMethod *authmethod = configAuthMethod( authcfg );
+  if ( authmethod )
+  {
+    if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkProxy ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Proxy updating not supported by authcfg: %1" ).arg( authcfg ) );
+      return true;
+    }
+
+    if ( !authmethod->updateNetworkProxy( proxy, authcfg, dataprovider.toLower() ) )
+    {
+      authmethod->clearCachedConfig( authcfg );
+      return false;
+    }
+    QgsDebugMsg( QStringLiteral( "Proxy updated successfully from authcfg: %1" ).arg( authcfg ) );
+    return true;
+  }
+
+  return false;
+}
+
 bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant &value, bool encrypt )
 {
   if ( key.isEmpty() )
@@ -1713,8 +1739,8 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
     QSslKey key;
     if ( query.first() )
     {
-      key =  QSslKey( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 0 ).toString() ).toLatin1(),
-                      QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
+      key = QSslKey( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 0 ).toString() ).toLatin1(),
+                     QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
       if ( key.isNull() )
       {
         const char *err = QT_TR_NOOP( "Retrieve certificate identity bundle: FAILED to create private key" );
@@ -2842,22 +2868,6 @@ void QgsAuthManager::tryToStartDbErase()
 }
 
 QgsAuthManager::QgsAuthManager()
-  : QObject()
-  , mAuthInit( false )
-  , mAuthDbPath( QString() )
-  , mMasterPass( QString() )
-  , mPassTries( 0 )
-  , mAuthDisabled( false )
-  , mScheduledDbErase( false )
-  , mScheduledDbEraseRequestWait( 3 )
-  , mScheduledDbEraseRequestEmitted( false )
-  , mScheduledDbEraseRequestCount( 0 )
-  , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
-  , mPasswordHelperVerificationError( false )
-  , mPasswordHelperErrorMessage( QLatin1String( "" ) )
-  , mPasswordHelperErrorCode( QKeychain::NoError )
-  , mPasswordHelperLoggingEnabled( false )
-  , mPasswordHelperFailedInit( false )
 {
   mMutex = new QMutex( QMutex::Recursive );
   connect( this, &QgsAuthManager::messageOut,
@@ -3039,7 +3049,7 @@ void QgsAuthManager::setPasswordHelperLoggingEnabled( const bool enabled )
 void QgsAuthManager::passwordHelperClearErrors()
 {
   mPasswordHelperErrorCode = QKeychain::NoError;
-  mPasswordHelperErrorMessage = QLatin1String( "" );
+  mPasswordHelperErrorMessage.clear();
 }
 
 void QgsAuthManager::passwordHelperProcessError()

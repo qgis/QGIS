@@ -41,7 +41,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapToPixelGeometrySimplifier class
  */
 class TestQgsMapToPixelGeometrySimplifier : public QObject
@@ -78,9 +79,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
 
 };
 
-TestQgsMapToPixelGeometrySimplifier::TestQgsMapToPixelGeometrySimplifier()
-{
-}
+TestQgsMapToPixelGeometrySimplifier::TestQgsMapToPixelGeometrySimplifier() = default;
 
 void TestQgsMapToPixelGeometrySimplifier::initTestCase()
 {

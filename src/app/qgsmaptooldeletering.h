@@ -51,7 +51,8 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
     //! return ring number in multipolygon and set parNum to index of the part
     int ringNumInMultiPolygon( const QgsGeometry &g, int vertexNr, int &partNum );
 
-    /** Return the geometry of the ring under the point p and sets fid to the feature id,
+    /**
+     * Return the geometry of the ring under the point p and sets fid to the feature id,
      * partNum to the part number in the feature and ringNum to the ring number in the part
      */
     QgsGeometry ringUnderPoint( const QgsPointXY &p, QgsFeatureId &fid, int &partNum, int &ringNum );

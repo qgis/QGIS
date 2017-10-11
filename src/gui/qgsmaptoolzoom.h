@@ -22,7 +22,8 @@
 
 class QgsRubberBand;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A map tool for zooming into the map.
  * \see QgsMapTool
  */

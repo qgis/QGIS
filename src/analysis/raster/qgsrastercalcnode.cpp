@@ -17,25 +17,14 @@
 #include "qgsrastermatrix.h"
 #include <cfloat>
 
-QgsRasterCalcNode::QgsRasterCalcNode()
-  : mType( tNumber )
-  , mNumber( 0 )
-  , mOperator( opNONE )
-{
-}
-
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
-  : mType( tNumber )
-  , mNumber( number )
-  , mOperator( opNONE )
+  : mNumber( number )
 {
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( QgsRasterMatrix *matrix )
   : mType( tMatrix )
-  , mNumber( 0 )
   , mMatrix( matrix )
-  , mOperator( opNONE )
 {
 
 }
@@ -44,16 +33,13 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
   : mType( tOperator )
   , mLeft( left )
   , mRight( right )
-  , mNumber( 0 )
   , mOperator( op )
 {
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( const QString &rasterName )
   : mType( tRasterRef )
-  , mNumber( 0 )
   , mRasterName( rasterName )
-  , mOperator( opNONE )
 {
   if ( mRasterName.startsWith( '"' ) && mRasterName.endsWith( '"' ) )
     mRasterName = mRasterName.mid( 1, mRasterName.size() - 2 );

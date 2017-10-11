@@ -44,6 +44,13 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::mAddAttributeButton_clicked );
+  connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::mRemoveAttributeButton_clicked );
+  connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewSpatialiteLayerDialog::mTypeBox_currentIndexChanged );
+  connect( pbnFindSRID, &QPushButton::clicked, this, &QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked );
+  connect( toolButtonNewDatabase, &QToolButton::clicked, this, &QgsNewSpatialiteLayerDialog::toolButtonNewDatabase_clicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsNewSpatialiteLayerDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsNewSpatialiteLayerDialog::buttonBox_rejected );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewSpatiaLiteLayer/geometry" ) ).toByteArray() );
@@ -96,7 +103,7 @@ QgsNewSpatialiteLayerDialog::~QgsNewSpatialiteLayerDialog()
   settings.setValue( QStringLiteral( "Windows/NewSpatiaLiteLayer/geometry" ), saveGeometry() );
 }
 
-void QgsNewSpatialiteLayerDialog::on_mTypeBox_currentIndexChanged( int index )
+void QgsNewSpatialiteLayerDialog::mTypeBox_currentIndexChanged( int index )
 {
   // This isn't used since widths are irrelevant in sqlite3
   switch ( index )
@@ -109,7 +116,7 @@ void QgsNewSpatialiteLayerDialog::on_mTypeBox_currentIndexChanged( int index )
   }
 }
 
-void QgsNewSpatialiteLayerDialog::on_toolButtonNewDatabase_clicked()
+void QgsNewSpatialiteLayerDialog::toolButtonNewDatabase_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "New SpatiaLite Database File" ),
                      QDir::homePath(),
@@ -167,7 +174,7 @@ void QgsNewSpatialiteLayerDialog::checkOk()
   mOkButton->setEnabled( created );
 }
 
-void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
+void QgsNewSpatialiteLayerDialog::mAddAttributeButton_clicked()
 {
   if ( !mNameEdit->text().isEmpty() )
   {
@@ -182,14 +189,14 @@ void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
   }
 }
 
-void QgsNewSpatialiteLayerDialog::on_mRemoveAttributeButton_clicked()
+void QgsNewSpatialiteLayerDialog::mRemoveAttributeButton_clicked()
 {
   delete mAttributeView->currentItem();
 
   checkOk();
 }
 
-void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
+void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
 {
   // first get list of supported SRID from the selected SpatiaLite database
   // to build filter for projection selector
@@ -325,13 +332,13 @@ bool QgsNewSpatialiteLayerDialog::createDb()
   return true;
 }
 
-void QgsNewSpatialiteLayerDialog::on_buttonBox_accepted()
+void QgsNewSpatialiteLayerDialog::buttonBox_accepted()
 {
   if ( apply() )
     accept();
 }
 
-void QgsNewSpatialiteLayerDialog::on_buttonBox_rejected()
+void QgsNewSpatialiteLayerDialog::buttonBox_rejected()
 {
   reject();
 }
@@ -340,7 +347,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
 {
   // Build up the sql statement for creating the table
   QString sql = QStringLiteral( "create table %1(" ).arg( quotedIdentifier( leLayerName->text() ) );
-  QString delim = QLatin1String( "" );
+  QString delim;
 
   if ( checkBoxPrimaryKey->isChecked() )
   {

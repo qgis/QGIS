@@ -387,7 +387,7 @@ bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x
 
 bool QgsRelief::setElevationColor( double elevation, int *red, int *green, int *blue )
 {
-  QList< ReliefColor >::const_iterator reliefColorIt =  mReliefColors.constBegin();
+  QList< ReliefColor >::const_iterator reliefColorIt = mReliefColors.constBegin();
   for ( ; reliefColorIt != mReliefColors.constEnd(); ++reliefColorIt )
   {
     if ( elevation >= reliefColorIt->minElevation && elevation <= reliefColorIt->maxElevation )

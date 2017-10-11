@@ -27,7 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
 
-QgsGeometryCollection::QgsGeometryCollection(): QgsAbstractGeometry()
+QgsGeometryCollection::QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::GeometryCollection;
 }
@@ -530,7 +530,10 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<Q
   QPair<QgsWkbTypes::Type, QString> parts = QgsGeometryUtils::wktReadBlock( wkt );
 
   if ( QgsWkbTypes::flatType( parts.first ) != QgsWkbTypes::flatType( wkbType() ) )
+  {
+    qDeleteAll( subtypes );
     return false;
+  }
   mWkbType = parts.first;
 
   QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? "Z" : "", isMeasure() ? "M" : "" );

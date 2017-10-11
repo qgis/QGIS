@@ -24,13 +24,18 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
     Cubic Raster Resampler
 */
 class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
 {
   public:
-    QgsCubicRasterResampler();
+
+    /**
+     * Constructor for QgsCubicRasterResampler.
+     */
+    QgsCubicRasterResampler() = default;
     QgsCubicRasterResampler *clone() const override SIP_FACTORY;
     void resample( const QImage &srcImage, QImage &dstImage ) override;
     QString type() const override { return QStringLiteral( "cubic" ); }
@@ -57,73 +62,73 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
     //control points
 
     //red
-    double cRed00;
-    double cRed10;
-    double cRed20;
-    double cRed30;
-    double cRed01;
-    double cRed11;
-    double cRed21;
-    double cRed31;
-    double cRed02;
-    double cRed12;
-    double cRed22;
-    double cRed32;
-    double cRed03;
-    double cRed13;
-    double cRed23;
-    double cRed33;
+    double cRed00 = 0.0;
+    double cRed10 = 0.0;
+    double cRed20 = 0.0;
+    double cRed30 = 0.0;
+    double cRed01 = 0.0;
+    double cRed11 = 0.0;
+    double cRed21 = 0.0;
+    double cRed31 = 0.0;
+    double cRed02 = 0.0;
+    double cRed12 = 0.0;
+    double cRed22 = 0.0;
+    double cRed32 = 0.0;
+    double cRed03 = 0.0;
+    double cRed13 = 0.0;
+    double cRed23 = 0.0;
+    double cRed33 = 0.0;
     //green
-    double cGreen00;
-    double cGreen10;
-    double cGreen20;
-    double cGreen30;
-    double cGreen01;
-    double cGreen11;
-    double cGreen21;
-    double cGreen31;
-    double cGreen02;
-    double cGreen12;
-    double cGreen22;
-    double cGreen32;
-    double cGreen03;
-    double cGreen13;
-    double cGreen23;
-    double cGreen33;
+    double cGreen00 = 0.0;
+    double cGreen10 = 0.0;
+    double cGreen20 = 0.0;
+    double cGreen30 = 0.0;
+    double cGreen01 = 0.0;
+    double cGreen11 = 0.0;
+    double cGreen21 = 0.0;
+    double cGreen31 = 0.0;
+    double cGreen02 = 0.0;
+    double cGreen12 = 0.0;
+    double cGreen22 = 0.0;
+    double cGreen32 = 0.0;
+    double cGreen03 = 0.0;
+    double cGreen13 = 0.0;
+    double cGreen23 = 0.0;
+    double cGreen33 = 0.0;
     //blue
-    double cBlue00;
-    double cBlue10;
-    double cBlue20;
-    double cBlue30;
-    double cBlue01;
-    double cBlue11;
-    double cBlue21;
-    double cBlue31;
-    double cBlue02;
-    double cBlue12;
-    double cBlue22;
-    double cBlue32;
-    double cBlue03;
-    double cBlue13;
-    double cBlue23;
-    double cBlue33;
+    double cBlue00 = 0.0;
+    double cBlue10 = 0.0;
+    double cBlue20 = 0.0;
+    double cBlue30 = 0.0;
+    double cBlue01 = 0.0;
+    double cBlue11 = 0.0;
+    double cBlue21 = 0.0;
+    double cBlue31 = 0.0;
+    double cBlue02 = 0.0;
+    double cBlue12 = 0.0;
+    double cBlue22 = 0.0;
+    double cBlue32 = 0.0;
+    double cBlue03 = 0.0;
+    double cBlue13 = 0.0;
+    double cBlue23 = 0.0;
+    double cBlue33 = 0.0;
     //alpha
-    double cAlpha00;
-    double cAlpha10;
-    double cAlpha20;
-    double cAlpha30;
-    double cAlpha01;
-    double cAlpha11;
-    double cAlpha21;
-    double cAlpha31;
-    double cAlpha02;
-    double cAlpha12;
-    double cAlpha22;
-    double cAlpha32;
-    double cAlpha03;
-    double cAlpha13;
-    double cAlpha23;
-    double cAlpha33;
+    double cAlpha00 = 0.0;
+    double cAlpha10 = 0.0;
+    double cAlpha20 = 0.0;
+    double cAlpha30 = 0.0;
+    double cAlpha01 = 0.0;
+    double cAlpha11 = 0.0;
+    double cAlpha21 = 0.0;
+    double cAlpha31 = 0.0;
+    double cAlpha02 = 0.0;
+    double cAlpha12 = 0.0;
+    double cAlpha22 = 0.0;
+    double cAlpha32 = 0.0;
+    double cAlpha03 = 0.0;
+    double cAlpha13 = 0.0;
+    double cAlpha23 = 0.0;
+    double cAlpha33 = 0.0;
 
 
 };

@@ -215,7 +215,7 @@ class SymbolLayerItem : public QStandardItem
 
 //////////
 
-QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent )
+QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent )
   : QgsPanelWidget( parent )
   , mVectorLayer( vl )
 {
@@ -335,7 +335,7 @@ void QgsSymbolSelectorWidget::loadSymbol()
 
 void QgsSymbolSelectorWidget::updateUi()
 {
-  QModelIndex currentIdx =  layersTree->currentIndex();
+  QModelIndex currentIdx = layersTree->currentIndex();
   if ( !currentIdx.isValid() )
     return;
 
@@ -671,7 +671,7 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
   layerChanged();
 }
 
-QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent, bool embedded )
+QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent, bool embedded )
   : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );

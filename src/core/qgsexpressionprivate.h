@@ -37,10 +37,6 @@ class QgsExpressionPrivate
   public:
     QgsExpressionPrivate()
       : ref( 1 )
-      , mRootNode( nullptr )
-      , mCalc( nullptr )
-      , mDistanceUnit( QgsUnitTypes::DistanceUnknownUnit )
-      , mAreaUnit( QgsUnitTypes::AreaUnknownUnit )
     {}
 
     QgsExpressionPrivate( const QgsExpressionPrivate &other )
@@ -69,8 +65,8 @@ class QgsExpressionPrivate
     QString mExp;
 
     std::shared_ptr<QgsDistanceArea> mCalc;
-    QgsUnitTypes::DistanceUnit mDistanceUnit;
-    QgsUnitTypes::AreaUnit mAreaUnit;
+    QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
+    QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
 };
 ///@endcond
 

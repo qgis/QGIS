@@ -68,7 +68,12 @@ point features or be used to define the path of a way.
 #include "qgsosmbase.h"
 %End
   public:
+
     QgsOSMNode();
+%Docstring
+ Constructor for QgsOSMNode.
+%End
+
     QgsOSMNode( QgsOSMId id, const QgsPointXY &point );
 
     QgsPointXY point() const;
@@ -93,7 +98,12 @@ or both.
 #include "qgsosmbase.h"
 %End
   public:
+
     QgsOSMWay();
+%Docstring
+ Constructor for QgsOSMWay.
+%End
+
     QgsOSMWay( QgsOSMId id, const QList<QgsOSMId> &nodes );
 
     QList<QgsOSMId> nodes() const;
@@ -116,7 +126,11 @@ class QgsOSMTags
 #include "qgsosmbase.h"
 %End
   public:
+
     QgsOSMTags();
+%Docstring
+ Constructor for QgsOSMTags.
+%End
 
     int count() const;
 %Docstring

@@ -21,7 +21,8 @@
 #include "qgsderivativefilter.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsHillshadeFilter
  */
 class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
@@ -30,7 +31,8 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
     QgsHillshadeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat, double lightAzimuth = 300,
                         double lightAngle = 40 );
 
-    /** Calculates output value from nine input values. The input values and the output value can be equal to the
+    /**
+     * Calculates output value from nine input values. The input values and the output value can be equal to the
     nodata value if not present or outside of the border. Must be implemented by subclasses*/
     float processNineCellWindow( float *x11, float *x21, float *x31,
                                  float *x12, float *x22, float *x32,

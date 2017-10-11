@@ -102,6 +102,8 @@ QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
 
 {
   setupUi( this );
+  connect( btnCertManager, &QPushButton::clicked, this, &QgsAuthEditorWidgets::btnCertManager_clicked );
+  connect( btnAuthPlugins, &QPushButton::clicked, this, &QgsAuthEditorWidgets::btnAuthPlugins_clicked );
   if ( !QgsAuthManager::instance()->isDisabled() )
   {
     wdgtConfigEditor->setRelayMessages( false );
@@ -114,7 +116,7 @@ QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
   }
 }
 
-void QgsAuthEditorWidgets::on_btnCertManager_clicked()
+void QgsAuthEditorWidgets::btnCertManager_clicked()
 {
   QgsAuthCertManager *dlg = new QgsAuthCertManager( this );
   dlg->setWindowModality( Qt::ApplicationModal );
@@ -123,7 +125,7 @@ void QgsAuthEditorWidgets::on_btnCertManager_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthEditorWidgets::on_btnAuthPlugins_clicked()
+void QgsAuthEditorWidgets::btnAuthPlugins_clicked()
 {
   QgsAuthMethodPlugins *dlg = new QgsAuthMethodPlugins( this );
   dlg->setWindowModality( Qt::WindowModal );

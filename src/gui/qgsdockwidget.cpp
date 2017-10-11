@@ -21,14 +21,12 @@
 
 QgsDockWidget::QgsDockWidget( QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( parent, flags )
-  , mVisibleAndActive( false )
 {
   connect( this, &QDockWidget::visibilityChanged, this, &QgsDockWidget::handleVisibilityChanged );
 }
 
 QgsDockWidget::QgsDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( title, parent, flags )
-  , mVisibleAndActive( false )
 {
   connect( this, &QDockWidget::visibilityChanged, this, &QgsDockWidget::handleVisibilityChanged );
 }

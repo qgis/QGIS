@@ -21,7 +21,6 @@ class QgsLayoutViewRubberBand
 %TypeHeaderCode
 #include "qgslayoutviewrubberband.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsLayoutViewMouseEvent *>( sipCpp ) )
       sipType = sipType_QgsLayoutViewMouseEvent;

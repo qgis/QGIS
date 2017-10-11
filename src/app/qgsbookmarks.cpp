@@ -37,6 +37,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
 {
   setupUi( this );
+  connect( lstBookmarks, &QTreeView::doubleClicked, this, &QgsBookmarks::lstBookmarks_doubleClicked );
   restorePosition();
 
   bookmarksDockContents->layout()->setMargin( 0 );
@@ -206,7 +207,7 @@ void QgsBookmarks::deleteClicked()
   }
 }
 
-void QgsBookmarks::on_lstBookmarks_doubleClicked( const QModelIndex &index )
+void QgsBookmarks::lstBookmarks_doubleClicked( const QModelIndex &index )
 {
   Q_UNUSED( index );
   zoomToBookmark();
@@ -483,7 +484,7 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
 
   for ( int newRow = row ; newRow < rowCount() - count ; newRow++ )
   {
-    for ( int column = 0 ; column < columnCount() ; column++ )
+    for ( int column = 0; column < columnCount() ; column++ )
     {
       setData( index( newRow, column ), data( index( newRow + count, column ) ) );
     }

@@ -2524,6 +2524,11 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
+          fields:
+            cost:
+              precision: 2
 
   - algorithm: qgis:shortestpathpointtopoint
     name: Shortest path (point to point, fastest route)
@@ -2547,6 +2552,8 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
 
   - algorithm: qgis:serviceareafrompoint
     name: Service area (from point, shortest)
@@ -2569,6 +2576,8 @@ tests:
         type: vector
         compare:
           ignore_crs_check: true
+          geometry:
+            precision: 5
 
   - algorithm: qgis:createattributeindex
     name: Create attribute index
@@ -2762,22 +2771,30 @@ tests:
           fields:
             fid: skip
 
-#  - algorithm: qgis:zonalstatistics
-#    name: simple zonal statistics
-#    params:
-#      COLUMN_PREFIX: _
-#      GLOBAL_EXTENT: false
-#      INPUT_RASTER:
-#        name: dem.tif
-#        type: raster
-#      INPUT_VECTOR:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      RASTER_BAND: 1
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/zonal_statistics.gml
-#        type: vector
+  - algorithm: qgis:zonalstatistics
+    name: simple zonal statistics
+    params:
+      COLUMN_PREFIX: _
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/zonal_stats.shp
+        type: vector
+        in_place: true
+      RASTER_BAND: 1
+      STATS:
+      - 0
+      - 1
+      - 2
+    results:
+      INPUT_VECTOR:
+        name: expected/zonal_stats.shp
+        type: vector
+        in_place_result: true
+        compare:
+          geometry:
+            precision: 5
 
   - algorithm: native:fixgeometries
     name: Fix geometries
@@ -3120,14 +3137,18 @@ tests:
         name: expected/add_field.gml
         type: vector
 
-#  - algorithm: qgis:randompointsinextent
-#    name: Random point in extent, don't check result
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
-#      MIN_DISTANCE: 0.0
-#      POINT_NUMBER: 5
-#    results: {}
+  - algorithm: qgis:randompointsinextent
+    name: Random point in extent, don't check result
+    params:
+      TARGET_CRS: EPSG:4326
+      EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
+      MIN_DISTANCE: 0.0
+      POINTS_NUMBER: 5
+    results:
+      OUTPUT:
+        compare: false
+        type: vector
+        name: randompointsinextent.gml
 
   - algorithm: script:selectbyattribute
     name: Select by attribute
@@ -3214,6 +3235,39 @@ tests:
           - 'Mean value: 147.17197994967066'
           - 'Standard deviation: 43.9618116337985'
           - 'Sum of the squares: 252304334.52061242'
+
+  - algorithm: qgis:rasterlayeruniquevaluesreport
+    name: Raster layer unique values report
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      BAND: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: raster_unique_values_count.html
+        type: regex
+        rules:
+          - 'Total pixel count: 224'
+          - 'NODATA pixel count: 104'
+          - '826</td><td>4</td><td>411.2757251916548'
+          - '837</td><td>6</td><td>616.9135877874822'
+          - '843</td><td>6</td><td>616.9135877874822'
+          - '845</td><td>4</td><td>411.2757251916548'
+          - '851</td><td>9</td><td>925.3703816812233'
+          - '853</td><td>6</td><td>616.9135877874822'
+          - '859</td><td>10</td><td>1028.189312979137'
+          - '861</td><td>4</td><td>411.2757251916548'
+          - '864</td><td>6</td><td>616.9135877874822'
+          - '866</td><td>9</td><td>925.3703816812233'
+          - '868</td><td>6</td><td>616.9135877874822'
+          - '872</td><td>4</td><td>411.2757251916548'
+          - '873</td><td>9</td><td>925.3703816812233'
+          - '878</td><td>6</td><td>616.9135877874822'
+          - '880</td><td>6</td><td>616.9135877874822'
+          - '881</td><td>6</td><td>616.9135877874822'
+          - '890</td><td>13</td><td>1336.646106872878'
+          - '899</td><td>6</td><td>616.9135877874822'
 
   - algorithm: qgis:pointsdisplacement
     name: Point displacement

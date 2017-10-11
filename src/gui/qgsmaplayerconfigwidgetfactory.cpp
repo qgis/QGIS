@@ -15,18 +15,9 @@
 
 #include "qgsmaplayerconfigwidgetfactory.h"
 
-QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory()
-  : mSupportsDock( true )
-  , mSupportsProperties( true )
-{
-
-}
-
 QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon )
   : mIcon( icon )
   , mTitle( title )
-  , mSupportsDock( true )
-  , mSupportsProperties( true )
 {
 }
 

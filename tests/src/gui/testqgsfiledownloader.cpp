@@ -28,16 +28,7 @@ class TestQgsFileDownloader: public QObject
 {
     Q_OBJECT
   public:
-    TestQgsFileDownloader()
-      : mTempFile( nullptr )
-      , mErrorMessage()
-      , mCanceled( false )
-      , mProgress( false )
-      , mError( false )
-      , mCompleted( false )
-      , mExited( false )
-      , mFileDownloader( nullptr )
-    {}
+    TestQgsFileDownloader() = default;
 
   public slots:
     //! Called when the download has completed successfully
@@ -91,11 +82,11 @@ class TestQgsFileDownloader: public QObject
     void makeCall( QUrl url, QString fileName, bool cancel = false );
     QTemporaryFile *mTempFile = nullptr;
     QString mErrorMessage;
-    bool mCanceled;
-    bool mProgress;
-    bool mError;
-    bool mCompleted;
-    bool mExited;
+    bool mCanceled =  false ;
+    bool mProgress =  false ;
+    bool mError =  false ;
+    bool mCompleted =  false ;
+    bool mExited =  false ;
     QgsFileDownloader *mFileDownloader = nullptr;
 };
 

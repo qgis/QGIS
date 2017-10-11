@@ -29,7 +29,8 @@
 
 class QgsFeedback;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Decorator class which adds the functionality of estimating normals at the data points.
  * \note Not available in Python bindings.
 */
@@ -86,12 +87,18 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
 
 #ifndef SIP_RUN
 
-inline NormVecDecorator::NormVecDecorator(): TriDecorator(), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) ), mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
+inline NormVecDecorator::NormVecDecorator()
+  : TriDecorator()
+  , mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) )
+  , mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
 {
   alreadyestimated = false;
 }
 
-inline NormVecDecorator::NormVecDecorator( Triangulation *tin ): TriDecorator( tin ), mInterpolator( nullptr ), mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) ), mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
+inline NormVecDecorator::NormVecDecorator( Triangulation *tin )
+  : TriDecorator( tin )
+  , mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) )
+  , mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
 {
   alreadyestimated = false;
 }

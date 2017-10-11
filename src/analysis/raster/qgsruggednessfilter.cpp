@@ -18,12 +18,14 @@
 #include "qgsruggednessfilter.h"
 #include <cmath>
 
-QgsRuggednessFilter::QgsRuggednessFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat ): QgsNineCellFilter( inputFile, outputFile, outputFormat )
+QgsRuggednessFilter::QgsRuggednessFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
+  : QgsNineCellFilter( inputFile, outputFile, outputFormat )
 {
 
 }
 
-QgsRuggednessFilter::QgsRuggednessFilter(): QgsNineCellFilter( QLatin1String( "" ), QLatin1String( "" ), QLatin1String( "" ) )
+QgsRuggednessFilter::QgsRuggednessFilter()
+  : QgsNineCellFilter( QString(), QString(), QString() )
 {
 
 }

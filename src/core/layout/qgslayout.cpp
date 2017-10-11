@@ -15,14 +15,16 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
+#include "qgslayoutitem.h"
+#include "qgslayoutmodel.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutguidecollection.h"
 #include "qgsreadwritecontext.h"
 #include "qgsproject.h"
+#include "qgslayoutitemundocommand.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
-  : QGraphicsScene()
-  , mProject( project )
+  : mProject( project )
   , mSnapper( QgsLayoutSnapper( this ) )
   , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
@@ -30,6 +32,23 @@ QgsLayout::QgsLayout( QgsProject *project )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
+  mItemsModel.reset( new QgsLayoutModel( this ) );
+}
+
+QgsLayout::~QgsLayout()
+{
+  // make sure that all layout items are removed before
+  // this class is deconstructed - to avoid segfaults
+  // when layout items access in destructor layout that isn't valid anymore
+
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    if ( dynamic_cast< QgsLayoutItem * >( item ) && !dynamic_cast< QgsLayoutItemPage *>( item ) )
+      delete item;
+  }
+
+  mItemsModel.reset(); // manually delete, so we can control order of destruction
 }
 
 void QgsLayout::initializeDefaults()
@@ -46,6 +65,107 @@ QgsProject *QgsLayout::project() const
   return mProject;
 }
 
+QgsLayoutModel *QgsLayout::itemsModel()
+{
+  return mItemsModel.get();
+}
+
+QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedItems )
+{
+  QList<QgsLayoutItem *> layoutItemList;
+
+  const QList<QGraphicsItem *> graphicsItemList = selectedItems();
+  for ( QGraphicsItem *item : graphicsItemList )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    if ( layoutItem && ( includeLockedItems || !layoutItem->isLocked() ) )
+    {
+      layoutItemList.push_back( layoutItem );
+    }
+  }
+
+  return layoutItemList;
+}
+
+void QgsLayout::setSelectedItem( QgsLayoutItem *item )
+{
+  whileBlocking( this )->deselectAll();
+  if ( item )
+  {
+    item->setSelected( true );
+  }
+  emit selectedItemChanged( item );
+}
+
+void QgsLayout::deselectAll()
+{
+  //we can't use QGraphicsScene::clearSelection, as that emits no signals
+  //and we don't know which items are being deselected
+  //accordingly, we can't inform the layout model of selection changes
+  //instead, do the clear selection manually...
+  const QList<QGraphicsItem *> selectedItemList = selectedItems();
+  for ( QGraphicsItem *item : selectedItemList )
+  {
+    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+    {
+      layoutItem->setSelected( false );
+    }
+  }
+  emit selectedItemChanged( nullptr );
+}
+
+bool QgsLayout::raiseItem( QgsLayoutItem *item, bool deferUpdate )
+{
+  //model handles reordering items
+  bool result = mItemsModel->reorderItemUp( item );
+  if ( result && !deferUpdate )
+  {
+    //update all positions
+    updateZValues();
+    update();
+  }
+  return result;
+}
+
+bool QgsLayout::lowerItem( QgsLayoutItem *item, bool deferUpdate )
+{
+  //model handles reordering items
+  bool result = mItemsModel->reorderItemDown( item );
+  if ( result && !deferUpdate )
+  {
+    //update all positions
+    updateZValues();
+    update();
+  }
+  return result;
+}
+
+bool QgsLayout::moveItemToTop( QgsLayoutItem *item, bool deferUpdate )
+{
+  //model handles reordering items
+  bool result = mItemsModel->reorderItemToTop( item );
+  if ( result && !deferUpdate )
+  {
+    //update all positions
+    updateZValues();
+    update();
+  }
+  return result;
+}
+
+bool QgsLayout::moveItemToBottom( QgsLayoutItem *item, bool deferUpdate )
+{
+  //model handles reordering items
+  bool result = mItemsModel->reorderItemToBottom( item );
+  if ( result && !deferUpdate )
+  {
+    //update all positions
+    updateZValues();
+    update();
+  }
+  return result;
+}
+
 QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
 {
   QList<QgsLayoutItem *> itemList;
@@ -58,6 +178,42 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
     }
   }
 
+  return nullptr;
+}
+
+QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const bool ignoreLocked ) const
+{
+  return layoutItemAt( position, nullptr, ignoreLocked );
+}
+
+QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked ) const
+{
+  //get a list of items which intersect the specified position, in descending z order
+  const QList<QGraphicsItem *> itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
+
+  bool foundBelowItem = false;
+  for ( QGraphicsItem *graphicsItem : itemList )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );
+    if ( layoutItem && !paperItem )
+    {
+      // If we are not checking for a an item below a specified item, or if we've
+      // already found that item, then we've found our target
+      if ( ( ! belowItem || foundBelowItem ) && ( !ignoreLocked || !layoutItem->isLocked() ) )
+      {
+        return layoutItem;
+      }
+      else
+      {
+        if ( layoutItem == belowItem )
+        {
+          //Target item is next in list
+          foundBelowItem = true;
+        }
+      }
+    }
+  }
   return nullptr;
 }
 
@@ -205,8 +361,24 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
 
 void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 {
-  addItem( item );
-  updateBounds();
+  addLayoutItemPrivate( item );
+  QString undoText;
+  if ( QgsLayoutItemAbstractMetadata *metadata = QgsApplication::layoutItemRegistry()->itemMetadata( item->type() ) )
+  {
+    undoText = tr( "Created %1" ).arg( metadata->visibleName() );
+  }
+  else
+  {
+    undoText = tr( "Created item" );
+  }
+  mUndoStack->stack()->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
+}
+
+void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
+{
+  QgsLayoutItemDeleteUndoCommand *deleteCommand = new QgsLayoutItemDeleteUndoCommand( item, tr( "Deleted item" ) );
+  removeLayoutItemPrivate( item );
+  mUndoStack->stack()->push( deleteCommand );
 }
 
 QgsLayoutUndoStack *QgsLayout::undoStack()
@@ -289,6 +461,58 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
   setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
   return true;
+}
+
+void QgsLayout::addLayoutItemPrivate( QgsLayoutItem *item )
+{
+  addItem( item );
+  updateBounds();
+  mItemsModel->rebuildZList();
+}
+
+void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
+{
+  mItemsModel->setItemRemoved( item );
+  // small chance that item is still in a scene - the model may have
+  // rejected the removal for some reason. This is probably not necessary,
+  // but can't hurt...
+  if ( item->scene() )
+    removeItem( item );
+#if 0 //TODO
+  emit itemRemoved( item );
+#endif
+  item->deleteLater();
+}
+
+void QgsLayout::updateZValues( const bool addUndoCommands )
+{
+  int counter = mItemsModel->zOrderListSize();
+  const QList<QgsLayoutItem *> zOrderList = mItemsModel->zOrderList();
+
+  if ( addUndoCommands )
+  {
+    mUndoStack->beginMacro( tr( "Item z-order changed" ) );
+  }
+  for ( QgsLayoutItem *currentItem : zOrderList )
+  {
+    if ( currentItem )
+    {
+      if ( addUndoCommands )
+      {
+        mUndoStack->beginCommand( currentItem, QString() );
+      }
+      currentItem->setZValue( counter );
+      if ( addUndoCommands )
+      {
+        mUndoStack->endCommand();
+      }
+    }
+    --counter;
+  }
+  if ( addUndoCommands )
+  {
+    mUndoStack->endMacro();
+  }
 }
 
 bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )

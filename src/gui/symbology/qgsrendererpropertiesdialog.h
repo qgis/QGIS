@@ -34,7 +34,8 @@ class QgsPaintEffect;
 class QgsRendererWidget;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRendererPropertiesDialog
  */
 class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRendererPropsDialogBase
@@ -43,7 +44,8 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
 
   public:
 
-    /** Constructor for QgsRendererPropertiesDialog.
+    /**
+     * Constructor for QgsRendererPropertiesDialog.
      * \param layer associated layer
      * \param style style collection
      * \param embedded set to true to indicate that the dialog will be embedded in another widget, rather
@@ -53,7 +55,8 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
     QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsRendererPropertiesDialog();
 
-    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+    /**
+     * Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
      * \param canvas map canvas
      * \since QGIS 2.12

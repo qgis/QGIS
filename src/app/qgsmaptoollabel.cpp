@@ -25,6 +25,9 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
 #include "qgssettings.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QMouseEvent>
 
@@ -685,18 +688,17 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
 //
 
 QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
-  : valid( false )
-  , pos( p )
+  : pos( p )
 {
   layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( pos.layerID ) );
-  if ( layer && layer->labeling() )
+  if ( layer && layer->labeling() && !p.isDiagram )
   {
     settings = layer->labeling()->settings( pos.providerID );
-
-    if ( p.isDiagram )
-      valid = layer->diagramsEnabled();
-    else
-      valid = true;
+    valid = true;
+  }
+  else if ( layer && layer->diagramsEnabled() && p.isDiagram )
+  {
+    valid = true;
   }
 
   if ( !valid )
@@ -704,4 +706,96 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
     layer = nullptr;
     settings = QgsPalLayerSettings();
   }
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes )
+{
+  return createAuxiliaryFields( mCurrentLabel, indexes );
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes ) const
+{
+  bool newAuxiliaryLayer = false;
+  QgsVectorLayer *vlayer = details.layer;
+  QString providerId = details.pos.providerID;
+
+  if ( !vlayer || !vlayer->labeling() )
+    return newAuxiliaryLayer;
+
+  if ( !vlayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vlayer );
+    dlg.exec();
+    newAuxiliaryLayer = true;
+  }
+
+  if ( !vlayer->auxiliaryLayer() )
+    return false;
+
+  for ( const QgsPalLayerSettings::Property &p : qgsAsConst( mPalProperties ) )
+  {
+    int index = -1;
+
+    // always use the default activated property
+    QgsProperty prop = details.settings.dataDefinedProperties().property( p );
+    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    {
+      index = vlayer->fields().lookupField( prop.field() );
+    }
+    else
+    {
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+    }
+
+    indexes[p] = index;
+  }
+
+  details.settings = vlayer->labeling()->settings( providerId );
+
+  return newAuxiliaryLayer;
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes )
+{
+  return createAuxiliaryFields( mCurrentLabel, indexes );
+}
+
+
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes )
+{
+  bool newAuxiliaryLayer = false;
+  QgsVectorLayer *vlayer = details.layer;
+
+  if ( !vlayer )
+    return newAuxiliaryLayer;
+
+  if ( !vlayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vlayer );
+    dlg.exec();
+    newAuxiliaryLayer = true;
+  }
+
+  if ( !vlayer->auxiliaryLayer() )
+    return false;
+
+  for ( const QgsDiagramLayerSettings::Property &p : qgsAsConst( mDiagramProperties ) )
+  {
+    int index = -1;
+
+    // always use the default activated property
+    QgsProperty prop = vlayer->diagramLayerSettings()->dataDefinedProperties().property( p );
+    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    {
+      index = vlayer->fields().lookupField( prop.field() );
+    }
+    else
+    {
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+    }
+
+    indexes[p] = index;
+  }
+
+  return newAuxiliaryLayer;
 }

@@ -28,7 +28,6 @@
 
 CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas )
   : QgsMapTool( thepCanvas )
-  , mpRubberBand( nullptr )
 {
   // set cursor
   QPixmap myCursor = QPixmap( ( const char ** ) capture_point_cursor );
@@ -37,10 +36,6 @@ CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas )
   mpRubberBand = new QgsRubberBand( mpMapCanvas, QgsWkbTypes::PolygonGeometry );
   mpRubberBand->setColor( Qt::red );
   mpRubberBand->setWidth( 1 );
-}
-
-CoordinateCaptureMapTool::~CoordinateCaptureMapTool()
-{
 }
 
 void CoordinateCaptureMapTool::canvasMoveEvent( QgsMapMouseEvent *thepEvent )

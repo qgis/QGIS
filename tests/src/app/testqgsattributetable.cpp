@@ -29,7 +29,8 @@
 
 #include "qgstest.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the attribute table dialog
  */
 class TestQgsAttributeTable : public QObject
@@ -53,11 +54,7 @@ class TestQgsAttributeTable : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsAttributeTable::TestQgsAttributeTable()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgsAttributeTable::TestQgsAttributeTable() = default;
 
 //runs before all tests
 void TestQgsAttributeTable::initTestCase()

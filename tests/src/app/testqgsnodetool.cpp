@@ -42,7 +42,8 @@ namespace QTest
   }
 }
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the node tool
  */
 class TestQgsNodeTool : public QObject
@@ -117,10 +118,7 @@ class TestQgsNodeTool : public QObject
     QgsFeatureId mFidPointF1 = 0;
 };
 
-TestQgsNodeTool::TestQgsNodeTool()
-  : mCanvas( nullptr )
-{
-}
+TestQgsNodeTool::TestQgsNodeTool() = default;
 
 
 //runs before all tests

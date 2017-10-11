@@ -38,11 +38,6 @@ bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &
 // QgsRecentColorScheme
 //
 
-QgsRecentColorScheme::QgsRecentColorScheme() : QgsColorScheme()
-{
-
-}
-
 QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {
   Q_UNUSED( context );
@@ -112,12 +107,6 @@ QColor QgsRecentColorScheme::lastUsedColor()
     return QColor();
 
   return recentColorVariants.at( 0 ).value<QColor>();
-}
-
-
-QgsCustomColorScheme::QgsCustomColorScheme() : QgsColorScheme()
-{
-
 }
 
 QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, const QColor &baseColor )
@@ -258,12 +247,6 @@ QgsProjectColorScheme *QgsProjectColorScheme::clone() const
 //
 // QgsGplColorScheme
 //
-
-QgsGplColorScheme::QgsGplColorScheme()
-  : QgsColorScheme()
-{
-
-}
 
 QgsNamedColorList QgsGplColorScheme::fetchColors( const QString &context, const QColor &baseColor )
 {

@@ -26,13 +26,6 @@ QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand( State s, QgsCompos
   , mMultiFrame( multiFrame )
   , mComposition( c )
   , mState( s )
-  , mFirstRun( true )
-{
-}
-
-QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand()
-  : mState( Added )
-  , mFirstRun( true )
 {
 }
 

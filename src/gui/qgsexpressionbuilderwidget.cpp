@@ -41,11 +41,19 @@
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
-  , mAutoSave( true )
-  , mExpressionValid( false )
   , mProject( QgsProject::instance() )
 {
   setupUi( this );
+  connect( btnRun, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnRun_pressed );
+  connect( btnNewFile, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnNewFile_pressed );
+  connect( cmbFileNames, &QListWidget::currentItemChanged, this, &QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged );
+  connect( expressionTree, &QTreeView::doubleClicked, this, &QgsExpressionBuilderWidget::expressionTree_doubleClicked );
+  connect( txtExpressionString, &QgsCodeEditorSQL::textChanged, this, &QgsExpressionBuilderWidget::txtExpressionString_textChanged );
+  connect( txtPython, &QgsCodeEditorPython::textChanged, this, &QgsExpressionBuilderWidget::txtPython_textChanged );
+  connect( txtSearchEditValues, &QgsFilterLineEdit::textChanged, this, &QgsExpressionBuilderWidget::txtSearchEditValues_textChanged );
+  connect( txtSearchEdit, &QgsFilterLineEdit::textChanged, this, &QgsExpressionBuilderWidget::txtSearchEdit_textChanged );
+  connect( lblPreview, &QLabel::linkActivated, this, &QgsExpressionBuilderWidget::lblPreview_linkActivated );
+  connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
 
   mValueGroupBox->hide();
   mLoadGroupBox->hide();
@@ -105,7 +113,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
 
-  lblAutoSave->setText( QLatin1String( "" ) );
+  lblAutoSave->clear();
   txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
 }
 
@@ -135,7 +143,7 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 
 void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
 {
-  txtSearchEditValues->setText( QLatin1String( "" ) );
+  txtSearchEditValues->clear();
 
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
@@ -157,7 +165,7 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   txtHelpText->setText( help );
 }
 
-void QgsExpressionBuilderWidget::on_btnRun_pressed()
+void QgsExpressionBuilderWidget::btnRun_pressed()
 {
   if ( !cmbFileNames->currentItem() )
     return;
@@ -234,7 +242,7 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
   saveFunctionFile( fileName );
 }
 
-void QgsExpressionBuilderWidget::on_btnNewFile_pressed()
+void QgsExpressionBuilderWidget::btnNewFile_pressed()
 {
   bool ok;
   QString text = QInputDialog::getText( this, tr( "Enter new file name" ),
@@ -246,7 +254,7 @@ void QgsExpressionBuilderWidget::on_btnNewFile_pressed()
   }
 }
 
-void QgsExpressionBuilderWidget::on_cmbFileNames_currentItemChanged( QListWidgetItem *item, QListWidgetItem *lastitem )
+void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetItem *item, QListWidgetItem *lastitem )
 {
   if ( lastitem )
   {
@@ -270,7 +278,7 @@ void QgsExpressionBuilderWidget::loadFunctionCode( const QString &code )
   txtPython->setText( code );
 }
 
-void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIndex &index )
+void QgsExpressionBuilderWidget::expressionTree_doubleClicked( const QModelIndex &index )
 {
   QModelIndex idx = mProxyModel->mapToSource( index );
   QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
@@ -555,7 +563,7 @@ void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContex
   loadRecent( mRecentKey );
 }
 
-void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
+void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
 {
   QString text = expressionText();
 
@@ -563,7 +571,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   // we don't show the user an error as it will be confusing.
   if ( text.isEmpty() )
   {
-    lblPreview->setText( QLatin1String( "" ) );
+    lblPreview->clear();
     lblPreview->setStyleSheet( QLatin1String( "" ) );
     txtExpressionString->setToolTip( QLatin1String( "" ) );
     lblPreview->setToolTip( QLatin1String( "" ) );
@@ -684,7 +692,7 @@ void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
   txtExpressionString->setFocus();
 }
 
-void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
+void QgsExpressionBuilderWidget::txtSearchEdit_textChanged()
 {
   mProxyModel->setFilterWildcard( txtSearchEdit->text() );
   if ( txtSearchEdit->text().isEmpty() )
@@ -703,13 +711,13 @@ void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
   }
 }
 
-void QgsExpressionBuilderWidget::on_txtSearchEditValues_textChanged()
+void QgsExpressionBuilderWidget::txtSearchEditValues_textChanged()
 {
   mProxyValues->setFilterCaseSensitivity( Qt::CaseInsensitive );
   mProxyValues->setFilterWildcard( txtSearchEditValues->text() );
 }
 
-void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( const QString &link )
+void QgsExpressionBuilderWidget::lblPreview_linkActivated( const QString &link )
 {
   Q_UNUSED( link );
   QgsMessageViewer *mv = new QgsMessageViewer( this );
@@ -718,7 +726,7 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( const QString &lin
   mv->exec();
 }
 
-void QgsExpressionBuilderWidget::on_mValuesListView_doubleClicked( const QModelIndex &index )
+void QgsExpressionBuilderWidget::mValuesListView_doubleClicked( const QModelIndex &index )
 {
   // Insert the item text or replace selected text
   txtExpressionString->insertText( ' ' + index.data( Qt::DisplayRole ).toString() + ' ' );
@@ -777,7 +785,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
   fillFieldValues( item->text(), -1 );
 }
 
-void QgsExpressionBuilderWidget::on_txtPython_textChanged()
+void QgsExpressionBuilderWidget::txtPython_textChanged()
 {
   lblAutoSave->setText( QStringLiteral( "Saving..." ) );
   if ( mAutoSave )

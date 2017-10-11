@@ -68,9 +68,10 @@ email                : sherman at mrcc.com
 #include <cmath>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
- * @note not available in Python bindings
+ * \note not available in Python bindings
 */
 //TODO QGIS 3.0 - remove
 class QgsMapCanvas::CanvasProperties
@@ -100,17 +101,7 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   : QGraphicsView( parent )
   , mCanvasProperties( new CanvasProperties )
-  , mFrozen( false )
-  , mRefreshScheduled( false )
-  , mRenderFlag( true ) // by default, the canvas is rendered
-  , mLastExtentIndex( -1 )
-  , mWheelZoomFactor( 2.0 )
-  , mJobCanceled( false )
-  , mUseParallelRendering( false )
-  , mDrawRenderingStats( false )
-  , mScaleLocked( false )
   , mExpressionContextScope( tr( "Map Canvas" ) )
-  , mZoomDragging( false )
 {
   mScene = new QGraphicsScene();
   setScene( mScene );
@@ -186,6 +177,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( this, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvas::updateCanvasItemPositions );
 
   setInteractive( false );
+
+  // make sure we have the same default in QgsMapSettings and the scene's background brush
+  // (by default map settings has white bg color, scene background brush is black)
+  setCanvasColor( mSettings.backgroundColor() );
 
   refresh();
 
@@ -1068,6 +1063,106 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
   refresh();
 }
 
+void QgsMapCanvas::flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
+                                    const QColor &color1, const QColor &color2,
+                                    int flashes, int duration )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  QList< QgsGeometry > geoms;
+
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setFilterFids( ids ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeature fet;
+  while ( it.nextFeature( fet ) )
+  {
+    if ( !fet.hasGeometry() )
+      continue;
+    geoms << fet.geometry();
+  }
+
+  flashGeometries( geoms, layer->crs(), color1, color2, flashes, duration );
+}
+
+void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const QgsCoordinateReferenceSystem &crs, const QColor &color1, const QColor &color2, int flashes, int duration )
+{
+  if ( geometries.isEmpty() )
+    return;
+
+  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( geometries.at( 0 ).wkbType() );
+  QgsRubberBand *rb = new QgsRubberBand( this, geomType );
+  for ( const QgsGeometry &geom : geometries )
+    rb->addGeometry( geom, crs );
+
+  if ( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PointGeometry )
+  {
+    rb->setWidth( 2 );
+    rb->setSecondaryStrokeColor( QColor( 255, 255, 255 ) );
+  }
+  if ( geomType == QgsWkbTypes::PointGeometry )
+    rb->setIcon( QgsRubberBand::ICON_CIRCLE );
+
+  QColor startColor = color1;
+  if ( !startColor.isValid() )
+  {
+    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    {
+      startColor = rb->fillColor();
+    }
+    else
+    {
+      startColor = rb->strokeColor();
+    }
+    startColor.setAlpha( 255 );
+  }
+  QColor endColor = color2;
+  if ( !endColor.isValid() )
+  {
+    endColor = startColor;
+    endColor.setAlpha( 0 );
+  }
+
+
+  QVariantAnimation *animation = new QVariantAnimation( this );
+  connect( animation, &QVariantAnimation::finished, this, [animation, rb]
+  {
+    animation->deleteLater();
+    delete rb;
+  } );
+  connect( animation, &QPropertyAnimation::valueChanged, this, [rb, geomType]( const QVariant & value )
+  {
+    QColor c = value.value<QColor>();
+    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    {
+      rb->setFillColor( c );
+    }
+    else
+    {
+      rb->setStrokeColor( c );
+      QColor c = rb->secondaryStrokeColor();
+      c.setAlpha( c.alpha() );
+      rb->setSecondaryStrokeColor( c );
+    }
+    rb->update();
+  } );
+
+  animation->setDuration( duration * flashes );
+  animation->setStartValue( endColor );
+  double midStep = 0.2 / flashes;
+  for ( int i = 0; i < flashes; ++i )
+  {
+    double start = static_cast< double >( i ) / flashes;
+    animation->setKeyValueAt( start + midStep, startColor );
+    double end = static_cast< double >( i + 1 ) / flashes;
+    if ( !qgsDoubleNear( end, 1.0 ) )
+      animation->setKeyValueAt( end, endColor );
+  }
+  animation->setEndValue( endColor );
+  animation->start();
+}
+
 void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
 {
   if ( mCanvasProperties->mouseButtonDown || mCanvasProperties->panSelectorDown )
@@ -1560,6 +1655,9 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )
 {
+  if ( canvasColor() == color )
+    return;
+
   // background of map's pixmap
   mSettings.setBackgroundColor( color );
 
@@ -1574,6 +1672,8 @@ void QgsMapCanvas::setCanvasColor( const QColor &color )
 
   // background of QGraphicsScene
   mScene->setBackgroundBrush( bgBrush );
+
+  emit canvasColorChanged();
 }
 
 QColor QgsMapCanvas::canvasColor() const
@@ -1584,6 +1684,11 @@ QColor QgsMapCanvas::canvasColor() const
 void QgsMapCanvas::setSelectionColor( const QColor &color )
 {
   mSettings.setSelectionColor( color );
+}
+
+QColor QgsMapCanvas::selectionColor() const
+{
+  return mSettings.selectionColor();
 }
 
 int QgsMapCanvas::layerCount() const

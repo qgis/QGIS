@@ -23,7 +23,8 @@
 
 class QgsMapLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Layer tree node points to a map layer.
  *
  * The node can exist also without a valid instance of a layer (just ID). That

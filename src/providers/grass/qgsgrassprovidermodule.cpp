@@ -332,7 +332,6 @@ QgsGrassObjectItemBase::QgsGrassObjectItemBase( const QgsGrassObject &grassObjec
 QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path )
   : QgsDirectoryItem( parent, QLatin1String( "" ), dirPath, path )
   , QgsGrassObjectItemBase( QgsGrassObject() )
-  , mActions( 0 )
 {
   // modify path to distinguish from directory, so that it can be expanded by path in browser
   QDir dir( mDirPath );
@@ -379,8 +378,6 @@ QList<QgsGrassImport *> QgsGrassMapsetItem::sImports;
 QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem *parent, QString dirPath, QString path )
   : QgsDirectoryItem( parent, QLatin1String( "" ), dirPath, path )
   , QgsGrassObjectItemBase( QgsGrassObject() )
-  , mActions( 0 )
-  , mMapsetFileSystemWatcher( 0 )
   , mRefreshLater( false )
 {
   QDir dir( mDirPath );
@@ -972,7 +969,6 @@ QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem *parent, QgsGrassObject gras
                                         LayerType layerType, QString providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
   , QgsGrassObjectItemBase( grassObject )
-  , mActions( 0 )
 {
   setState( Populated ); // no children, to show non expandable in browser
 #ifdef HAVE_GUI
@@ -992,8 +988,6 @@ QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject gras
   : QgsDataCollectionItem( parent, labelName.isEmpty() ? grassObject.name() : labelName, path )
   , QgsGrassObjectItemBase( grassObject )
   , mValid( valid )
-  , mActions( 0 )
-  , mWatcher( 0 )
 {
   QgsDebugMsg( "name = " + grassObject.name() + " path = " + path );
   mCapabilities = NoCapabilities; // disable Fertile from QgsDataCollectionItem
@@ -1277,7 +1271,8 @@ QGISEXTERN QgsGrassProvider *classFactory( const QString *uri )
   return new QgsGrassProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {

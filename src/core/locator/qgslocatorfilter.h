@@ -41,10 +41,7 @@ class CORE_EXPORT QgsLocatorResult
     /**
      * Constructor for QgsLocatorResult.
      */
-    QgsLocatorResult()
-      : filter( nullptr )
-      , score( 0.5 )
-    {}
+    QgsLocatorResult() = default;
 
     /**
      * Constructor for QgsLocatorResult.
@@ -53,7 +50,6 @@ class CORE_EXPORT QgsLocatorResult
       : filter( filter )
       , displayString( displayString )
       , userData( userData )
-      , score( 0.5 )
     {}
 
     /**
@@ -84,7 +80,7 @@ class CORE_EXPORT QgsLocatorResult
     /**
      * Match score, from 0 - 1, where 1 represents a perfect match.
      */
-    double score;
+    double score = 0.5;
 
 };
 

@@ -49,6 +49,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   , mModified( false )
 {
   setupUi( this );
+  connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
 
@@ -187,7 +188,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
   mGroupTreeContextMenu->addAction( actnRemoveGroup );
 
-  on_tabItemType_currentChanged( 0 );
+  tabItemType_currentChanged( 0 );
 }
 
 void QgsStyleManagerDialog::onFinished()
@@ -243,7 +244,7 @@ void QgsStyleManagerDialog::populateTypes()
 #endif
 }
 
-void QgsStyleManagerDialog::on_tabItemType_currentChanged( int )
+void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   bool flag = currentItemType() != 3;
@@ -859,7 +860,7 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString &dir, const
   if ( dir.isEmpty() )
     return;
 
-  QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+  QModelIndexList indexes = listItems->selectionModel()->selection().indexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     QString name = index.data().toString();
@@ -1406,7 +1407,7 @@ void QgsStyleManagerDialog::addFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     mStyle->addFavorite( type, index.data().toString() );
@@ -1423,7 +1424,7 @@ void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     mStyle->removeFavorite( type, index.data().toString() );
@@ -1459,7 +1460,7 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
       tag = selectedItem->data().toString();
     }
 
-    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       mStyle->tagSymbol( type, index.data().toString(), QStringList( tag ) );
@@ -1482,7 +1483,7 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
       QgsDebugMsg( "unknown entity type" );
       return;
     }
-    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       mStyle->detagSymbol( type, index.data().toString() );

@@ -155,15 +155,14 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void loadCrsList( QSet<QString> *crsFilter = nullptr );
 
     /**
-     * \brief Make the string safe for use in SQL statements.
+     * \brief Makes a \a string safe for use in SQL statements.
      *  This involves escaping single quotes, double quotes, backslashes,
      *  and optionally, percentage symbols.  Percentage symbols are used
      *  as wildcards sometimes and so when using the string as part of the
      *  LIKE phrase of a select statement, should be escaped.
-     * \arg const QString in The input string to make safe.
      * \returns The string made safe for SQL statements.
      */
-    const QString sqlSafeString( const QString &theSQL );
+    QString sqlSafeString( const QString &string ) const;
 
     /**
      * \brief converts the CRS group to a SQL expression fragment
@@ -228,20 +227,20 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void insertRecent( long crsId );
 
     //! Has the Projection List been populated?
-    bool mProjListDone;
+    bool mProjListDone = false;
 
     //! Has the User Projection List been populated?
-    bool mUserProjListDone;
+    bool mUserProjListDone = false;
 
 
     //! Has the Recent Projection List been populated?
-    bool mRecentProjListDone;
+    bool mRecentProjListDone = false;
 
     enum Columns { NameColumn, AuthidColumn, QgisCrsIdColumn, None };
-    int mSearchColumn;
+    int mSearchColumn = QgsProjectionSelectionTreeWidget::None;
     QString mSearchValue;
 
-    bool mPushProjectionToFront;
+    bool mPushProjectionToFront = false;
 
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;
@@ -257,12 +256,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     QStringList authorities();
 
     //! Apply projection on double-click
-    void on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
-    void on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
-    void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_cbxHideDeprecated_stateChanged();
-    void on_leSearch_textChanged( const QString & );
+    void lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
+    void lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void cbxHideDeprecated_stateChanged();
+    void leSearch_textChanged( const QString & );
 };
 
 #endif

@@ -27,7 +27,8 @@ class QgsField;
 #include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Manages an editor widget
  * Widget and wrapper share the same parent
  *
@@ -124,7 +125,8 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void setEnabled( bool enabled ) override;
 
-    /** Sets the widget to display in an indeterminate "mixed value" state.
+    /**
+     * Sets the widget to display in an indeterminate "mixed value" state.
      * \since QGIS 2.16
      */
     virtual void showIndeterminateState() {}

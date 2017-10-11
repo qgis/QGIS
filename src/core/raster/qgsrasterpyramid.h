@@ -20,7 +20,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
   * This struct is used to store pyramid info for the raster layer.
   */
 class CORE_EXPORT QgsRasterPyramid

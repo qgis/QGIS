@@ -21,19 +21,15 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterBlock class.
  */
 class TestQgsRasterBlock : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRasterBlock()
-      : mpRasterLayer( nullptr )
-    {}
-    ~TestQgsRasterBlock()
-    {
-    }
+    TestQgsRasterBlock() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

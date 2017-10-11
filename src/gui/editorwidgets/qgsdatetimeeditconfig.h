@@ -22,7 +22,8 @@
 
 SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDateTimeEditConfig
  * \note not available in Python bindings
  */

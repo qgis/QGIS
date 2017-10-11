@@ -28,7 +28,8 @@ class QgsBox3d;
 #include "qgspointxy.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A rectangle specified with double values.
  *
  * QgsRectangle is used to store a rectangle when double values are required.
@@ -173,7 +174,8 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Get rectangle enlarged by buffer.
-     * \since QGIS 2.1
+     * \note In earlier QGIS releases this method was named buffer().
+     * \since QGIS 3.0
      * \see grow()
     */
     QgsRectangle buffered( double width ) const;

@@ -22,7 +22,8 @@
 #include "qgsexception.h"
 #include "qpolygon.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Custom exception class for Wkb related exceptions.
  * \note not available in Python bindings
  */
@@ -35,7 +36,8 @@ class CORE_EXPORT QgsWkbException : public QgsException
 #endif
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsWkbPtr
  */
 class CORE_EXPORT QgsWkbPtr
@@ -112,7 +114,8 @@ class CORE_EXPORT QgsWkbPtr
     inline int writtenSize() const { return mP - mStart; } SIP_SKIP
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsConstWkbPtr
  */
 

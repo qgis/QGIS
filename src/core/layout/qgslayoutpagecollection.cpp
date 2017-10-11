@@ -277,7 +277,7 @@ QList<int> QgsLayoutPageCollection::visiblePageNumbers( QRectF region ) const
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
   if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Add page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Added page" ) );
   mPages.append( page );
   mLayout->addItem( page );
   reflow();
@@ -288,7 +288,7 @@ void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePage )
 {
   if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Add page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Added page" ) );
 
   if ( beforePage < 0 )
     beforePage = 0;
@@ -314,8 +314,8 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
 
   if ( !mBlockUndoCommands )
   {
-    mLayout->undoStack()->beginMacro( tr( "Remove page" ) );
-    mLayout->undoStack()->beginCommand( this, tr( "Remove page" ) );
+    mLayout->undoStack()->beginMacro( tr( "Removed page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Removed page" ) );
   }
   emit pageAboutToBeRemoved( pageNumber );
   QgsLayoutItemPage *page = mPages.takeAt( pageNumber );

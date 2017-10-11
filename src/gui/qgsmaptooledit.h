@@ -25,7 +25,8 @@ class QgsGeometryRubberBand;
 class QgsVectorLayer;
 class QKeyEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Base class for map tools that edit vector geometry
 */
 class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
@@ -52,7 +53,8 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     //! Returns fill color for rubber bands (from global settings)
     static QColor digitizingFillColor();
 
-    /** Creates a rubber band with the color/line width from
+    /**
+     * Creates a rubber band with the color/line width from
      *   the QGIS settings. The caller takes ownership of the
      *   returned object
      *   \param geometryType
@@ -65,7 +67,8 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     //! Returns the current vector layer of the map canvas or 0
     QgsVectorLayer *currentVectorLayer();
 
-    /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+    /**
+     * Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
      * \param geom list of points (in layer coordinate system)
      * \returns 0 in case of success
      */

@@ -22,7 +22,8 @@
 #include "qgsdetaileditemdata.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A widget renderer for detailed item views.
  * \see also QgsDetailedItem and QgsDetailedItemData.
  */

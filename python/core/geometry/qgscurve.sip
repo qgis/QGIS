@@ -21,7 +21,11 @@ class QgsCurve: QgsAbstractGeometry
 #include "qgscurve.h"
 %End
   public:
+
     QgsCurve();
+%Docstring
+ Constructor for QgsCurve.
+%End
 
     virtual bool operator==( const QgsCurve &other ) const = 0;
     virtual bool operator!=( const QgsCurve &other ) const = 0;

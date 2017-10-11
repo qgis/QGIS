@@ -201,18 +201,18 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &currentIdx );
 
-    void on_cmbIdentifyMode_currentIndexChanged( int index );
+    void cmbIdentifyMode_currentIndexChanged( int index );
 
-    void on_cmbViewMode_currentIndexChanged( int index );
+    void cmbViewMode_currentIndexChanged( int index );
 
-    void on_mExpandNewAction_triggered( bool checked );
+    void mExpandNewAction_triggered( bool checked );
 
-    void on_cbxAutoFeatureForm_toggled( bool checked );
+    void cbxAutoFeatureForm_toggled( bool checked );
 
-    void on_mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ); expandAll(); }
-    void on_mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
+    void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ); expandAll(); }
+    void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
 
-    void on_mActionCopy_triggered( bool checked );
+    void mActionCopy_triggered( bool checked );
 
     void formatChanged( int index );
 

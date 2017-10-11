@@ -20,7 +20,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsBrushStyleComboBox
  */
 class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox

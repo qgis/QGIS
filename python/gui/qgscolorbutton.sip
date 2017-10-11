@@ -20,7 +20,6 @@ class QgsColorButton : QToolButton
 %TypeHeaderCode
 #include "qgscolorbutton.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsColorButton *>( sipCpp ) )
       sipType = sipType_QgsColorButton;

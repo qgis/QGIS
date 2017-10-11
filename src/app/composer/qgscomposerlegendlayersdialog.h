@@ -19,7 +19,8 @@
 
 class QgsMapLayer;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * A dialog to add new layers to the legend.
  * */
 class QgsComposerLegendLayersDialog: public QDialog, private Ui::QgsComposerLegendLayersDialogBase

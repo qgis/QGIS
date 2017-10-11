@@ -27,6 +27,7 @@
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
+#include "qgstriangle.h"
 #include "qgswkbtypes.h"
 #include "qgslogger.h"
 
@@ -241,6 +242,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkb
       return std::unique_ptr<QgsAbstractGeometry>( new QgsMultiSurface() );
     case QgsWkbTypes::GeometryCollection:
       return std::unique_ptr<QgsAbstractGeometry>( new QgsGeometryCollection() );
+    case QgsWkbTypes::Triangle:
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsTriangle() );
     default:
       return nullptr;
   }

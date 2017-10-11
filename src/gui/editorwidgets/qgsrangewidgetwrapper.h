@@ -30,7 +30,8 @@ class QDial;
 class QgsSlider;
 class QgsDial;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a range widget.
  *
  * Options:

@@ -43,7 +43,11 @@ class QgsGraphVertex;
 class ANALYSIS_EXPORT QgsGraphEdge
 {
   public:
-    QgsGraphEdge();
+
+    /**
+     * Constructor for QgsGraphEdge.
+     */
+    QgsGraphEdge() = default;
 
     /**
      * Returns edge cost calculated using specified strategy
@@ -70,8 +74,8 @@ class ANALYSIS_EXPORT QgsGraphEdge
 
     QVector< QVariant > mStrategies;
 
-    int mOut;
-    int mIn;
+    int mOut = 0;
+    int mIn = 0;
 
     friend class QgsGraph;
 };
@@ -176,7 +180,7 @@ class ANALYSIS_EXPORT QgsGraph
     int findVertex( const QgsPointXY &pt ) const;
 
   private:
-    QVector<QgsGraphVertex> mGraphVertexes;
+    QVector<QgsGraphVertex> mGraphVertices;
 
     QVector<QgsGraphEdge> mGraphEdges;
 };
