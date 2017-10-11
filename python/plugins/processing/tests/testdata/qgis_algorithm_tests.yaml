@@ -414,7 +414,7 @@ tests:
         name: expected/unique_values.gml
         type: vector
 
-  - algorithm: qgis:addautoincrementalfield
+  - algorithm: native:addautoincrementalfield
     name: Add autoincremental field
     params:
       INPUT:
@@ -424,6 +424,33 @@ tests:
       OUTPUT:
         name: expected/autoincrement_field.gml
         type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add autoincremental field with start value
+    params:
+      FIELD_NAME: AUTO
+      INPUT:
+        name: points.gml
+        type: vector
+      START: 10
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field_start.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add autoincremental field with name
+    params:
+      FIELD_NAME: my_field
+      INPUT:
+        name: points.gml
+        type: vector
+      START: 0
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field_field_name.gml
+        type: vector
+
 
   - algorithm: native:dissolve
     name: Dissolve using field

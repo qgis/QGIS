@@ -93,6 +93,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
+  addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -696,6 +697,51 @@ QgsFeature QgsAssignProjectionAlgorithm::processFeature( const QgsFeature &featu
   return feature;
 }
 
+
+
+QString QgsAddIncrementalFieldAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm adds a new integer field to a vector layer, with a sequential value for each feature.\n\n"
+                      "This field can be used as a unique ID for features in the layer. The new attribute "
+                      "is not added to the input layer but a new layer is generated instead.\n\n"
+                      "The initial starting value for the incremental series can be specified." );
+}
+
+QgsAddIncrementalFieldAlgorithm *QgsAddIncrementalFieldAlgorithm::createInstance() const
+{
+  return new QgsAddIncrementalFieldAlgorithm();
+}
+
+void QgsAddIncrementalFieldAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QStringLiteral( "AUTO" ) ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "START" ), QObject::tr( "Start values at" ),
+                QgsProcessingParameterNumber::Integer, 0, true ) );
+}
+
+QgsFields QgsAddIncrementalFieldAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields outFields = inputFields;
+  outFields.append( QgsField( mFieldName, QVariant::LongLong ) );
+  return outFields;
+}
+
+bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mValue = parameterAsInt( parameters, QStringLiteral( "START" ), context );
+  mFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  return true;
+}
+
+QgsFeature QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  QgsAttributes attributes = f.attributes();
+  attributes.append( mValue );
+  mValue++;
+  f.setAttributes( attributes );
+  return f;
+}
 
 
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )

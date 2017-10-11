@@ -1,10 +1,3 @@
-qgis:addautoincrementalfield: >
-  This algorithm adds a new integer field to a vector layer, with a sequential value for each feature.
-
-  This field can be used as a unique ID for features in the layer.
-
-  The new attribute is not added to the input layer but a new layer is generated instead.
-
 qgis:addfieldtoattributestable: >
   This algorithm adds a new attribute to a vector layer.
 

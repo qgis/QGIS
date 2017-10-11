@@ -164,6 +164,39 @@ class QgsAssignProjectionAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 };
 
+
+/**
+ * Native add incremental field algorithm.
+ */
+class QgsAddIncrementalFieldAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsAddIncrementalFieldAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "addautoincrementalfield" ); }
+    QString displayName() const override { return QObject::tr( "Add autoincremental field" ); }
+    virtual QStringList tags() const override { return QObject::tr( "add,create,serial,primary,key,unique,field" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector table" ); }
+    QString shortHelpString() const override;
+    QgsAddIncrementalFieldAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QString outputName() const override { return QObject::tr( "Incremented" ); }
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    long long mValue = 0;
+    QString mFieldName;
+
+};
+
 /**
  * Native buffer algorithm.
  */

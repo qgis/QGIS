@@ -43,7 +43,6 @@ from .QgisAlgorithm import QgisAlgorithm
 from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .Aspect import Aspect
-from .AutoincrementalField import AutoincrementalField
 from .BasicStatistics import BasicStatisticsForField
 from .Boundary import Boundary
 from .CheckValidity import CheckValidity
@@ -174,7 +173,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         algs = [AddTableField(),
                 Aggregate(),
                 Aspect(),
-                AutoincrementalField(),
                 BasicStatisticsForField(),
                 Boundary(),
                 CheckValidity(),
