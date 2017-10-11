@@ -35,7 +35,7 @@
 static const QString AUTH_METHOD_KEY = "PKI-Paths";
 static const QString AUTH_METHOD_DESCRIPTION = "PKI paths authentication";
 
-QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::mPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
+QMap<QString, QgsPkiConfigBundle *> QgsAuthPkiPathsMethod::sPkiConfigBundleCache = QMap<QString, QgsPkiConfigBundle *>();
 
 
 QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
@@ -230,9 +230,9 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
   QgsPkiConfigBundle *bundle = nullptr;
 
   // check if it is cached
-  if ( mPkiConfigBundleCache.contains( authcfg ) )
+  if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
-    bundle = mPkiConfigBundleCache.value( authcfg );
+    bundle = sPkiConfigBundleCache.value( authcfg );
     if ( bundle )
     {
       QgsDebugMsg( QString( "Retrieved PKI bundle for authcfg %1" ).arg( authcfg ) );
@@ -280,7 +280,7 @@ void QgsAuthPkiPathsMethod::putPkiConfigBundle( const QString &authcfg, QgsPkiCo
 {
   QMutexLocker locker( &mConfigMutex );
   QgsDebugMsg( QString( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
-  mPkiConfigBundleCache.insert( authcfg, pkibundle );
+  sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
 void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
@@ -288,7 +288,7 @@ void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
   QMutexLocker locker( &mConfigMutex );
   if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
-    QgsPkiConfigBundle * pkibundle = mPkiConfigBundleCache.take( authcfg );
+    QgsPkiConfigBundle * pkibundle = sPkiConfigBundleCache.take( authcfg );
     delete pkibundle;
     pkibundle = nullptr;
     QgsDebugMsg( QString( "Removed PKI bundle for authcfg: %1" ).arg( authcfg ) );
