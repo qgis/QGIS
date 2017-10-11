@@ -508,12 +508,12 @@ struct QgsWmsAuthorization
     {
       return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
     }
-    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
     {
       request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
     }
 
-    if ( !mReferer.isNull() )
+    if ( !mReferer.isEmpty() )
     {
       request.setRawHeader( "Referer", QStringLiteral( "%1" ).arg( mReferer ).toLatin1() );
     }
