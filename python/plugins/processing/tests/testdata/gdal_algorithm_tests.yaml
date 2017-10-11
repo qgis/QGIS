@@ -247,7 +247,9 @@ tests:
       RADIUS: -1.0
     results:
       OUTPUT:
-        hash: aca7c839c679613f4910cbdea660359f1551c104c57fea9a61795668
+        hash:
+        - aca7c839c679613f4910cbdea660359f1551c104c57fea9a61795668
+        - 57e2bc100ec9836e2aa7df4ccf6b5715bd3f3524a524ce47bec52f68
         type: rasterhash
 
   - algorithm: gdal:gridnearestneighbor
