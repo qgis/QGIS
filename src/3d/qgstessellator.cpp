@@ -127,7 +127,7 @@ static QVector3D _calculateNormal( const QgsCurve *curve, bool &hasValidZ )
     curve->pointAt( i, pt1, vt );
     curve->pointAt( i + 1, pt2, vt );
 
-    if ( qIsNaN( pt1.z() ) || qIsNaN( pt2.z() ) )
+    if ( std::isnan( pt1.z() ) || std::isnan( pt2.z() ) )
       continue;
 
     hasValidZ = true;
@@ -219,7 +219,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     }
 
     const QgsPoint ptFirst( exterior->startPoint() );
-    QVector3D pOrigin( ptFirst.x(), ptFirst.y(), qIsNaN( ptFirst.z() ) ? 0 : ptFirst.z() );
+    QVector3D pOrigin( ptFirst.x(), ptFirst.y(), std::isnan( ptFirst.z() ) ? 0 : ptFirst.z() );
     QVector3D pXVector;
     // Here we define the two perpendicular vectors that define the local
     // 2D space on the plane. They will act as axis for which we will
@@ -242,7 +242,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     for ( int i = 0; i < pCount - 1; ++i )
     {
       exterior->pointAt( i, pt, vt );
-      QVector3D tempPt( pt.x(), pt.y(), ( qIsNaN( pt.z() ) ? 0 : pt.z() ) );
+      QVector3D tempPt( pt.x(), pt.y(), ( std::isnan( pt.z() ) ? 0 : pt.z() ) );
       const float x = QVector3D::dotProduct( tempPt - pOrigin, pXVector );
       const float y = QVector3D::dotProduct( tempPt - pOrigin, pYVector );
 
@@ -256,7 +256,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
       p2t::Point *pt2 = new p2t::Point( x, y );
       polyline.push_back( pt2 );
 
-      z[pt2] = qIsNaN( pt.z() ) ? 0 : pt.z();
+      z[pt2] = std::isnan( pt.z() ) ? 0 : pt.z();
     }
     polylinesToDelete << polyline;
 
@@ -271,7 +271,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
         QVector3D nPoint = pOrigin + pXVector * p->x + pYVector * p->y;
         const double fx = nPoint.x() - mOriginX;
         const double fy = nPoint.y() - mOriginY;
-        const double fz = extrusionHeight + ( qIsNaN( zPt ) ? 0 : zPt );
+        const double fz = extrusionHeight + ( std::isnan( zPt ) ? 0 : zPt );
         mData << fx << fz << -fy;
         if ( mAddNormals )
           mData << pNormal.x() << pNormal.z() << - pNormal.y();
@@ -290,7 +290,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
         for ( int j = 0; j < hole->numPoints() - 1; ++j )
         {
           hole->pointAt( j, pt, vt );
-          QVector3D tempPt( pt.x(), pt.y(), ( qIsNaN( pt.z() ) ? 0 : pt.z() ) );
+          QVector3D tempPt( pt.x(), pt.y(), ( std::isnan( pt.z() ) ? 0 : pt.z() ) );
 
           const float x = QVector3D::dotProduct( tempPt - pOrigin, pXVector );
           const float y = QVector3D::dotProduct( tempPt - pOrigin, pYVector );
@@ -305,7 +305,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
           p2t::Point *pt2 = new p2t::Point( x, y );
           holePolyline.push_back( pt2 );
 
-          z[pt2] = qIsNaN( pt.z() ) ? 0 : pt.z();
+          z[pt2] = std::isnan( pt.z() ) ? 0 : pt.z();
         }
         cdt->AddHole( holePolyline );
         polylinesToDelete << holePolyline;
@@ -326,7 +326,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
             QVector3D nPoint = pOrigin + pXVector * p->x + pYVector * p->y;
             float fx = nPoint.x() - mOriginX;
             float fy = nPoint.y() - mOriginY;
-            float fz = extrusionHeight + ( qIsNaN( zPt ) ? 0 : zPt );
+            float fz = extrusionHeight + ( std::isnan( zPt ) ? 0 : zPt );
             mData << fx << fz << -fy;
             if ( mAddNormals )
               mData << pNormal.x() << pNormal.z() << - pNormal.y();

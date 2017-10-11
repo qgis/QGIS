@@ -236,7 +236,7 @@ void QgsCameraController::frameTriggered( float dt )
     mCameraData.y -= p2.y() - p1.y();
   }
 
-  if ( qIsNaN( mCameraData.x ) || qIsNaN( mCameraData.y ) )
+  if ( std::isnan( mCameraData.x ) || std::isnan( mCameraData.y ) )
   {
     // something went horribly wrong but we need to at least try to fix it somehow
     qDebug() << "camera position got NaN!";
