@@ -1,16 +1,23 @@
 
 SET (GEONODE_SRCS
-  qgsgeonodedataitems.cpp
-  qgsgeonodenewconnection.cpp
   qgsgeonodeprovider.cpp
-  qgsgeonodesourceselect.cpp
 )
 
 SET(GEONODE_MOC_HDRS
-  qgsgeonodedataitems.h
-  qgsgeonodenewconnection.h
-  qgsgeonodesourceselect.h
 )
+
+IF (WITH_GUI)
+  SET(GEONODE_SRCS ${GEONODE_SRCS}
+    qgsgeonodedataitems.cpp
+    qgsgeonodenewconnection.cpp
+    qgsgeonodesourceselect.cpp
+  )
+  SET(GEONODE_MOC_HDRS ${GEONODE_MOC_HDRS}
+    qgsgeonodesourceselect.h
+    qgsgeonodenewconnection.h
+    qgsgeonodedataitems.h
+  )
+ENDIF ()
 
 ########################################################
 # Build

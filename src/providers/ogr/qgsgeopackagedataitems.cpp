@@ -24,7 +24,9 @@
 #include "qgsrasterlayer.h"
 #include "qgsogrprovider.h"
 #include "qgsogrdataitems.h"
+#ifdef HAVE_GUI
 #include "qgsnewgeopackagelayerdialog.h"
+#endif
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsgeopackagerasterwritertask.h"
@@ -89,7 +91,6 @@ QWidget *QgsGeoPackageRootItem::paramWidget()
 {
   return nullptr;
 }
-#endif
 
 void QgsGeoPackageRootItem::onConnectionsChanged()
 {
@@ -104,8 +105,6 @@ void QgsGeoPackageRootItem::newConnection()
   }
 }
 
-
-#ifdef HAVE_GUI
 void QgsGeoPackageRootItem::createDatabase()
 {
   QgsNewGeoPackageLayerDialog dialog( nullptr );
@@ -188,9 +187,6 @@ QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
 
   return lst;
 }
-#endif
-
-
 
 bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
@@ -345,7 +341,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   }
   return true;
 }
-
+#endif
 
 bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &uri, QString &errCause )
 {
@@ -546,7 +542,6 @@ QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
   lst.append( actionDeleteLayer );
   return lst;
 }
-#endif
 
 void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
@@ -587,6 +582,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
   }
 
 }
+#endif
 
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
