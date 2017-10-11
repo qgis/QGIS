@@ -16,6 +16,8 @@
 #ifndef QGSTESSELLATOR_H
 #define QGSTESSELLATOR_H
 
+#include "qgis_3d.h"
+
 class QgsPolygonV2;
 
 #include <QVector>
@@ -32,7 +34,7 @@ class QgsPolygonV2;
  *
  * \since QGIS 3.0
  */
-class QgsTessellator
+class _3D_EXPORT QgsTessellator
 {
   public:
     //! Creates tessellator with a specified origin point of the world (in map coordinates)

@@ -111,26 +111,60 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
   }
 }
 
-static QVector3D _calculateNormal( const QgsCurve *curve )
+static QVector3D _calculateNormal( const QgsCurve *curve, double originX, double originY )
 {
-  // Calculate the polygon's normal vector, based on Newell's method
-  // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
   QgsVertexId::VertexType vt;
   QgsPoint pt1, pt2;
-  QVector3D normal( 0, 0, 0 );
 
+  // if it is just plain 2D curve there is no need to calculate anything
+  // because it will be a flat horizontally oriented patch
+  if ( !QgsWkbTypes::hasZ( curve->wkbType() ) )
+    return QVector3D( 0, 0, 1 );
+
+  // often we have 3D coordinates, but Z is the same for all vertices
+  // so in order to save calculation and avoid possible issues with order of vertices
+  // (the calculation below may decide that a polygon faces downwards)
+  bool sameZ = true;
+  curve->pointAt( 0, pt1, vt );
+  for ( int i = 1; i < curve->numPoints(); i++ )
+  {
+    curve->pointAt( i, pt2, vt );
+    if ( pt1.z() != pt2.z() )
+    {
+      sameZ = false;
+      break;
+    }
+  }
+  if ( sameZ )
+    return QVector3D( 0, 0, 1 );
+
+  // Calculate the polygon's normal vector, based on Newell's method
+  // https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
+  //
+  // Order of vertices is important here as it determines the front/back face of the polygon
+
+  double nx = 0, ny = 0, nz = 0;
   for ( int i = 0; i < curve->numPoints() - 1; i++ )
   {
     curve->pointAt( i, pt1, vt );
     curve->pointAt( i + 1, pt2, vt );
 
-    normal.setX( normal.x() + ( pt1.y() - pt2.y() ) * ( pt1.z() + pt2.z() ) );
-    normal.setY( normal.y() + ( pt1.z() - pt2.z() ) * ( pt1.x() + pt2.x() ) );
-    normal.setZ( normal.z() + ( pt1.x() - pt2.x() ) * ( pt1.y() + pt2.y() ) );
+    // shift points by the tessellator's origin - this does not affect normal calculation and it may save us from losing some precision
+    pt1.setX( pt1.x() - originX );
+    pt1.setY( pt1.y() - originY );
+    pt2.setX( pt2.x() - originX );
+    pt2.setY( pt2.y() - originY );
+
+    if ( std::isnan( pt1.z() ) || std::isnan( pt2.z() ) )
+      continue;
+
+    nx += ( pt1.y() - pt2.y() ) * ( pt1.z() + pt2.z() );
+    ny += ( pt1.z() - pt2.z() ) * ( pt1.x() + pt2.x() );
+    nz += ( pt1.x() - pt2.x() ) * ( pt1.y() + pt2.y() );
   }
 
+  QVector3D normal( nx, ny, nz );
   normal.normalize();
-
   return normal;
 }
 
@@ -183,7 +217,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
   QgsVertexId::VertexType vt;
   QgsPoint pt;
 
-  const QVector3D pNormal = _calculateNormal( exterior );
+  const QVector3D pNormal = _calculateNormal( exterior, mOriginX, mOriginY );
   const int pCount = exterior->numPoints();
 
   // Polygon is a triangle
@@ -207,7 +241,8 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     }
 
     const QgsPoint ptFirst( exterior->startPoint() );
-    QVector3D pOrigin( ptFirst.x(), ptFirst.y(), ptFirst.z() ), pXVector;
+    QVector3D pOrigin( ptFirst.x(), ptFirst.y(), std::isnan( ptFirst.z() ) ? 0 : ptFirst.z() );
+    QVector3D pXVector;
     // Here we define the two perpendicular vectors that define the local
     // 2D space on the plane. They will act as axis for which we will
     // calculate the projection coordinates of a 3D point to the plane.
@@ -229,7 +264,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
     for ( int i = 0; i < pCount - 1; ++i )
     {
       exterior->pointAt( i, pt, vt );
-      QVector3D tempPt( pt.x(), pt.y(), ( qIsNaN( pt.z() ) ? 0 : pt.z() ) );
+      QVector3D tempPt( pt.x(), pt.y(), ( std::isnan( pt.z() ) ? 0 : pt.z() ) );
       const float x = QVector3D::dotProduct( tempPt - pOrigin, pXVector );
       const float y = QVector3D::dotProduct( tempPt - pOrigin, pYVector );
 
@@ -243,7 +278,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
       p2t::Point *pt2 = new p2t::Point( x, y );
       polyline.push_back( pt2 );
 
-      z[pt2] = qIsNaN( pt.z() ) ? 0 : pt.z();
+      z[pt2] = std::isnan( pt.z() ) ? 0 : pt.z();
     }
     polylinesToDelete << polyline;
 
@@ -258,7 +293,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
         QVector3D nPoint = pOrigin + pXVector * p->x + pYVector * p->y;
         const double fx = nPoint.x() - mOriginX;
         const double fy = nPoint.y() - mOriginY;
-        const double fz = extrusionHeight + ( qIsNaN( zPt ) ? 0 : zPt );
+        const double fz = extrusionHeight + ( std::isnan( zPt ) ? 0 : zPt );
         mData << fx << fz << -fy;
         if ( mAddNormals )
           mData << pNormal.x() << pNormal.z() << - pNormal.y();
@@ -277,7 +312,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
         for ( int j = 0; j < hole->numPoints() - 1; ++j )
         {
           hole->pointAt( j, pt, vt );
-          QVector3D tempPt( pt.x(), pt.y(), ( qIsNaN( pt.z() ) ? 0 : pt.z() ) );
+          QVector3D tempPt( pt.x(), pt.y(), ( std::isnan( pt.z() ) ? 0 : pt.z() ) );
 
           const float x = QVector3D::dotProduct( tempPt - pOrigin, pXVector );
           const float y = QVector3D::dotProduct( tempPt - pOrigin, pYVector );
@@ -292,7 +327,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
           p2t::Point *pt2 = new p2t::Point( x, y );
           holePolyline.push_back( pt2 );
 
-          z[pt2] = qIsNaN( pt.z() ) ? 0 : pt.z();
+          z[pt2] = std::isnan( pt.z() ) ? 0 : pt.z();
         }
         cdt->AddHole( holePolyline );
         polylinesToDelete << holePolyline;
@@ -313,7 +348,7 @@ void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHei
             QVector3D nPoint = pOrigin + pXVector * p->x + pYVector * p->y;
             float fx = nPoint.x() - mOriginX;
             float fy = nPoint.y() - mOriginY;
-            float fz = extrusionHeight + ( qIsNaN( zPt ) ? 0 : zPt );
+            float fz = extrusionHeight + ( std::isnan( zPt ) ? 0 : zPt );
             mData << fx << fz << -fy;
             if ( mAddNormals )
               mData << pNormal.x() << pNormal.z() << - pNormal.y();
