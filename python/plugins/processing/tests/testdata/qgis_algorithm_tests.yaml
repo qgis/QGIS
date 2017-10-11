@@ -4148,3 +4148,15 @@ tests:
       OUTPUT:
         name: expected/extract_by_extent_clip.gml
         type: vector
+
+  - algorithm: native:assignprojection
+    name: Assign projection
+    params:
+      CRS: EPSG:4283
+      INPUT:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/assign_projection.gml
+        type: vector

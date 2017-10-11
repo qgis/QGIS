@@ -131,6 +131,39 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 };
 
+
+
+/**
+ * Native assign projection algorithm.
+ */
+class QgsAssignProjectionAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsAssignProjectionAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "assignprojection" ); }
+    QString displayName() const override { return QObject::tr( "Assign projection" ); }
+    virtual QStringList tags() const override { return QObject::tr( "assign,set,transform,reproject,crs,srs,warp" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general" ); }
+    QString shortHelpString() const override;
+    QgsAssignProjectionAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem & ) const override { return mDestCrs; }
+    QString outputName() const override { return QObject::tr( "Assigned CRS" ); }
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QgsCoordinateReferenceSystem mDestCrs;
+
+};
+
 /**
  * Native buffer algorithm.
  */

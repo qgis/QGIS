@@ -92,6 +92,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
+  addAlgorithm( new QgsAssignProjectionAlgorithm() );
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -664,6 +665,37 @@ QgsFeature QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProces
   }
   return feature;
 }
+
+
+QString QgsAssignProjectionAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm assigns a new projection to a vector layer. It creates a new layer with the exact same features "
+                      "and geometries as the input one, but assigned to a new CRS. E.g. the geometries are not reprojected, they are just assigned "
+                      "to a different CRS. This algorithm can be used to repair layers which have been assigned an incorrect projection.\n\n"
+                      "Attributes are not modified by this algorithm." );
+}
+
+QgsAssignProjectionAlgorithm *QgsAssignProjectionAlgorithm::createInstance() const
+{
+  return new QgsAssignProjectionAlgorithm();
+}
+
+void QgsAssignProjectionAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Assigned CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+}
+
+bool QgsAssignProjectionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mDestCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  return true;
+}
+
+QgsFeature QgsAssignProjectionAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  return feature;
+}
+
 
 
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
