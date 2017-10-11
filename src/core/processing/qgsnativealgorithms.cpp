@@ -2618,53 +2618,87 @@ QgsRasterLayerUniqueValuesReportAlgorithm *QgsRasterLayerUniqueValuesReportAlgor
   return new QgsRasterLayerUniqueValuesReportAlgorithm();
 }
 
-QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+bool QgsRasterLayerUniqueValuesReportAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
   int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+
+  if ( !layer )
+    return false;
+
+  mInterface.reset( layer->dataProvider()->clone() );
+  mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( band );
+  mLayerWidth = layer->width();
+  mLayerHeight = layer->height();
+  mExtent = layer->extent();
+  mCrs = layer->crs();
+  mRasterUnitsPerPixelX = layer->rasterUnitsPerPixelX();
+  mRasterUnitsPerPixelY = layer->rasterUnitsPerPixelY();
+  mSource = layer->source();
+
+  return true;
+}
+
+QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
 
+  QHash< double, qgssize > uniqueValues;
+  qgssize noDataCount = 0;
 
-  QHash< double, int > uniqueValues;
-  int width = layer->width();
-  int height = layer->height();
+  qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
+  int maxWidth = 4000;
+  int maxHeight = 4000;
+  int nbBlocksWidth = std::ceil( 1.0 * mLayerWidth / maxWidth );
+  int nbBlocksHeight = std::ceil( 1.0 * mLayerHeight / maxHeight );
+  int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
-  QgsRasterBlock *rasterBlock = layer->dataProvider()->block( band, layer->extent(), width, height );
-  int noDataCount = -1;
-  if ( rasterBlock->hasNoDataValue() )
-    noDataCount = 0;
+  QgsRasterIterator iter( mInterface.get() );
+  iter.setMaximumTileWidth( maxWidth );
+  iter.setMaximumTileHeight( maxHeight );
+  iter.startRasterRead( band, mLayerWidth, mLayerHeight, mExtent );
 
-  for ( int row = 0; row < height; row++ )
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
+  QgsRasterBlock *rasterBlock = nullptr;
+  while ( iter.readNextRasterPart( band, iterCols, iterRows, &rasterBlock, iterLeft, iterTop ) )
   {
-    feedback->setProgress( 100 * row / height );
-    for ( int column = 0; column < width; column++ )
+    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback->isCanceled() )
         break;
-      if ( noDataCount > -1 && rasterBlock->isNoData( row, column ) )
+      for ( int column = 0; column < iterCols; column++ )
       {
-        noDataCount += 1;
-      }
-      else
-      {
-        double value = rasterBlock->value( row, column );
-        uniqueValues[ value ]++;
+        if ( mHasNoDataValue && rasterBlock->isNoData( row, column ) )
+        {
+          noDataCount += 1;
+        }
+        else
+        {
+          double value = rasterBlock->value( row, column );
+          uniqueValues[ value ]++;
+        }
       }
     }
+    delete rasterBlock;
   }
 
-  QMap< double, int > sortedUniqueValues;
+  QMap< double, qgssize > sortedUniqueValues;
   for ( auto it = uniqueValues.constBegin(); it != uniqueValues.constEnd(); ++it )
   {
     sortedUniqueValues.insert( it.key(), it.value() );
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "EXTENT" ), layer->extent().toString() );
-  outputs.insert( QStringLiteral( "CRS_AUTHID" ), layer->crs().authid() );
-  outputs.insert( QStringLiteral( "WIDTH_IN_PIXELS" ), width );
-  outputs.insert( QStringLiteral( "HEIGHT_IN_PIXELS" ), height );
-  outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), width * height );
+  outputs.insert( QStringLiteral( "EXTENT" ), mExtent.toString() );
+  outputs.insert( QStringLiteral( "CRS_AUTHID" ), mCrs.authid() );
+  outputs.insert( QStringLiteral( "WIDTH_IN_PIXELS" ), mLayerWidth );
+  outputs.insert( QStringLiteral( "HEIGHT_IN_PIXELS" ), mLayerHeight );
+  outputs.insert( QStringLiteral( "TOTAL_PIXEL_COUNT" ), layerSize );
   outputs.insert( QStringLiteral( "NODATA_PIXEL_COUNT" ), noDataCount );
 
   if ( !outputFile.isEmpty() )
@@ -2672,24 +2706,24 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
     QFile file( outputFile );
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
-      QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( layer->crs().mapUnits() ) );
-      double cellArea = layer->rasterUnitsPerPixelX() * layer->rasterUnitsPerPixelY();
+      QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) );
+      double pixelArea = mRasterUnitsPerPixelX * mRasterUnitsPerPixelY;
 
       QTextStream out( &file );
       out << QString( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
-      out << QString( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Analyzed file" ) ).arg( layer->source() ).arg( QObject::tr( "band" ) ).arg( band );
-      out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Extent" ) ).arg( layer->extent().toString() );
-      out << QObject::tr( "<p>%1: %2 (%3)</p>\n" ).arg( QObject::tr( "Projection" ) ).arg( layer->crs().description() ).arg( layer->crs().authid() );
-      out << QObject::tr( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Width in pixels" ) ).arg( width ).arg( QObject::tr( "units per pixel" ) ).arg( layer->rasterUnitsPerPixelX() );
-      out << QObject::tr( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Height in pixels" ) ).arg( height ).arg( QObject::tr( "units per pixel" ) ).arg( layer->rasterUnitsPerPixelY() );
-      out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Total pixel count" ) ).arg( width * height );
-      if ( noDataCount > -1 )
+      out << QString( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Analyzed file" ) ).arg( mSource ).arg( QObject::tr( "band" ) ).arg( band );
+      out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Extent" ) ).arg( mExtent.toString() );
+      out << QObject::tr( "<p>%1: %2 (%3)</p>\n" ).arg( QObject::tr( "Projection" ) ).arg( mCrs.description() ).arg( mCrs.authid() );
+      out << QObject::tr( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Width in pixels" ) ).arg( mLayerWidth ).arg( QObject::tr( "units per pixel" ) ).arg( mRasterUnitsPerPixelX );
+      out << QObject::tr( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Height in pixels" ) ).arg( mLayerHeight ).arg( QObject::tr( "units per pixel" ) ).arg( mRasterUnitsPerPixelY );
+      out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Total pixel count" ) ).arg( layerSize );
+      if ( mHasNoDataValue )
         out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "NODATA pixel count" ) ).arg( noDataCount );
       out << QString( "<table><tr><td>%1</td><td>%2</td><td>%3 (%4)</td></tr>\n" ).arg( QObject::tr( "Value" ) ).arg( QObject::tr( "Pixel count" ) ).arg( QObject::tr( "Area" ) ).arg( areaUnit );
 
       for ( double key : sortedUniqueValues.keys() )
       {
-        double area = sortedUniqueValues[key] * cellArea;
+        double area = sortedUniqueValues[key] * pixelArea;
         out << QString( "<tr><td>%1</td><td>%2</td><td>%3</td></tr>\n" ).arg( key ).arg( sortedUniqueValues[key] ).arg( QString::number( area, 'g', 16 ) );
       }
       out << QString( "</table>\n</body></html>" );

@@ -829,8 +829,21 @@ class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
+    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
                                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    std::unique_ptr< QgsRasterInterface > mInterface;
+    bool mHasNoDataValue = false;
+    int mLayerWidth;
+    int mLayerHeight;
+    QgsRectangle mExtent;
+    QgsCoordinateReferenceSystem mCrs;
+    double mRasterUnitsPerPixelX;
+    double mRasterUnitsPerPixelY;
+    QString mSource;
 
 };
 
