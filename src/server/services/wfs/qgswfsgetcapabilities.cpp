@@ -166,7 +166,7 @@ namespace QgsWfs
     if ( !keywords.isEmpty() && !keywords.join( QStringLiteral( ", " ) ).isEmpty() )
     {
       QDomElement keywordsElem = doc.createElement( QStringLiteral( "ows:Keywords" ) );
-      for ( QString keyword : keywords )
+      for ( const QString &keyword : keywords )
       {
         if ( !keyword.isEmpty() )
         {
@@ -193,7 +193,7 @@ namespace QgsWfs
 
     QDomElement feesElem = doc.createElement( QStringLiteral( "ows:Fees" ) );
     QDomText feesText = doc.createTextNode( "None" );
-    QString fees = QgsServerProjectUtils::owsServiceFees( *project );
+    const QString fees = QgsServerProjectUtils::owsServiceFees( *project );
     if ( !fees.isEmpty() )
     {
       feesText = doc.createTextNode( fees );
@@ -202,7 +202,7 @@ namespace QgsWfs
     serviceElem.appendChild( feesElem );
 
     QDomElement accessConstraintsElem = doc.createElement( QStringLiteral( "ows:AccessConstraints" ) );
-    QString accessConstraints = QgsServerProjectUtils::owsServiceAccessConstraints( *project );
+    const QString accessConstraints = QgsServerProjectUtils::owsServiceAccessConstraints( *project );
     QDomText accessConstraintsText = doc.createTextNode( "None" );
     if ( !accessConstraints.isEmpty() )
     {
@@ -221,7 +221,7 @@ namespace QgsWfs
     QDomElement serviceElem = doc.createElement( QStringLiteral( "ows:ServiceProvider" ) );
 
     //ProviderName
-    QString contactOrganization = QgsServerProjectUtils::owsServiceContactOrganization( *project );
+    const QString contactOrganization = QgsServerProjectUtils::owsServiceContactOrganization( *project );
     if ( !contactOrganization.isEmpty() )
     {
       QDomElement providerNameElem = doc.createElement( QStringLiteral( "ows:ProviderName" ) );
@@ -230,8 +230,8 @@ namespace QgsWfs
       serviceElem.appendChild( providerNameElem );
     }
 
-    QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *project );
-    QString contactPosition = QgsServerProjectUtils::owsServiceContactPosition( *project );
+    const QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *project );
+    const QString contactPosition = QgsServerProjectUtils::owsServiceContactPosition( *project );
     if ( !contactPerson.isEmpty() ||
          !contactPosition.isEmpty() )
     {
@@ -254,9 +254,9 @@ namespace QgsWfs
         serviceContactElem.appendChild( positionNameElem );
       }
 
-      QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *project );
-      QString contactPhone = QgsServerProjectUtils::owsServiceContactPhone( *project );
-      QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
+      const QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *project );
+      const QString contactPhone = QgsServerProjectUtils::owsServiceContactPhone( *project );
+      const QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
       if ( !contactMail.isEmpty() ||
            !contactPhone.isEmpty() ||
            !onlineResource.isEmpty() )
@@ -414,13 +414,13 @@ namespace QgsWfs
     QDomElement queryElement = doc.createElement( QStringLiteral( "Query" )/*wfs:Query*/ );
     operationsElement.appendChild( queryElement );
 
-    QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
-    QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
-    QStringList wfstInsertLayersId = QgsServerProjectUtils::wfstInsertLayerIds( *project );
-    QStringList wfstDeleteLayersId = QgsServerProjectUtils::wfstDeleteLayerIds( *project );
-    for ( int i = 0; i < wfsLayerIds.size(); ++i )
+    const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+    const QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
+    const QStringList wfstInsertLayersId = QgsServerProjectUtils::wfstInsertLayerIds( *project );
+    const QStringList wfstDeleteLayersId = QgsServerProjectUtils::wfstDeleteLayerIds( *project );
+    for ( const QString &wfsLayerId : wfsLayerIds )
     {
-      QgsMapLayer *layer = project->mapLayer( wfsLayerIds.at( i ) );
+      QgsMapLayer *layer = project->mapLayer( wfsLayerId );
       if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
       {
         continue;
@@ -482,14 +482,14 @@ namespace QgsWfs
       }
 
       //create DefaultSRS element
-      QString defaultSrs = layer->crs().authid();
+      const QString defaultSrs = layer->crs().authid();
       QDomElement srsElem = doc.createElement( QStringLiteral( "DefaultSRS" ) );
       QDomText srsText = doc.createTextNode( defaultSrs );
       srsElem.appendChild( srsText );
       layerElem.appendChild( srsElem );
 
       //create OtherSRS elements
-      QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
+      const QStringList outputCrsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
       for ( const QString &crs : outputCrsList )
       {
         if ( crs == defaultSrs )

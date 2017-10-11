@@ -72,7 +72,8 @@ namespace QgsWfs
       {}
   };
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsBadRequestException
    * \brief Exception thrown in case of malformed request
    */

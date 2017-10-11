@@ -50,11 +50,13 @@ namespace QgsWfs
     QString geometryName;
   };
 
-  /** Add SortBy element to featureRequest
+  /**
+   * Add SortBy element to featureRequest
    */
   void parseSortByElement( QDomElement &sortByElem, QgsFeatureRequest &featureRequest, const QString &typeName );
 
-  /** Transform Query element to getFeatureQuery
+  /**
+   * Transform Query element to getFeatureQuery
    */
   getFeatureQuery parseQueryElement( QDomElement &queryElem );
 

@@ -123,7 +123,8 @@ namespace QgsWfs
        */
       QgsProjectVersion versionAsNumber() const;
 
-      /** Returns OUTPUTFORMAT parameter as a string.
+      /**
+       * Returns OUTPUTFORMAT parameter as a string.
        * \returns outputFormat parameter as string
        */
       QString outputFormatAsString() const;
@@ -135,28 +136,33 @@ namespace QgsWfs
        */
       Format outputFormat() const;
 
-      /** Returns RESULTTYPE parameter as a string.
+      /**
+       * Returns RESULTTYPE parameter as a string.
        * \returns resultType parameter as string
        */
       QString resultTypeAsString() const;
 
-      /** Returns resultType. If the RESULTTYPE parameter is not used, then the
+      /**
+       * Returns resultType. If the RESULTTYPE parameter is not used, then the
        *  default value is RESULTS.
        * \returns resultType
        */
       ResultType resultType() const;
 
-      /** Returns PROPERTYNAME parameter as list.
+      /**
+       * Returns PROPERTYNAME parameter as list.
        * \returns propertyName parameter as list
        */
       QStringList propertyNames() const;
 
-      /** Returns MAXFEATURES parameter as a string.
+      /**
+       * Returns MAXFEATURES parameter as a string.
        * \returns maxFeatures parameter as string
        */
       QString maxFeatures() const;
 
-      /** Returns MAXFEATURES parameter as an int or its default value if not
+      /**
+       * Returns MAXFEATURES parameter as an int or its default value if not
        *  defined. An exception is raised if I is defined and cannot be
        *  converted.
        * \returns maxFeatures parameter
@@ -164,12 +170,14 @@ namespace QgsWfs
        */
       int maxFeaturesAsInt() const;
 
-      /** Returns STARTINDEX parameter as a string.
+      /**
+       * Returns STARTINDEX parameter as a string.
        * \returns startIndex parameter as string
        */
       QString startIndex() const;
 
-      /** Returns STARTINDEX parameter as an int or its default value if not
+      /**
+       * Returns STARTINDEX parameter as an int or its default value if not
        *  defined. An exception is raised if I is defined and cannot be
        *  converted.
        * \returns startIndex parameter
@@ -177,49 +185,58 @@ namespace QgsWfs
        */
       int startIndexAsInt() const;
 
-      /** Returns SRSNAME parameter as a string.
+      /**
+       * Returns SRSNAME parameter as a string.
        * \returns srsName parameter as string
        */
       QString srsName() const;
 
-      /** Returns TYPENAME parameter as list.
+      /**
+       * Returns TYPENAME parameter as list.
        * \returns typeName parameter as list
        */
       QStringList typeNames() const;
 
-      /** Returns FEATUREID parameter as list.
+      /**
+       * Returns FEATUREID parameter as list.
        * \returns featureId parameter as list
        */
       QStringList featureIds() const;
 
-      /** Returns FILTER parameter as list.
+      /**
+       * Returns FILTER parameter as list.
        * \returns filter parameter as list
        */
       QStringList filters() const;
 
-      /** Returns BBOX if defined or an empty string.
+      /**
+       * Returns BBOX if defined or an empty string.
        * \returns bbox parameter
        */
       QString bbox() const;
 
-      /** Returns BBOX as a rectangle if defined and valid. An exception is
+      /**
+       * Returns BBOX as a rectangle if defined and valid. An exception is
        *  raised if the BBOX string cannot be converted into a rectangle.
        * \returns bbox as rectangle
        * \throws QgsBadRequestException
        */
       QgsRectangle bboxAsRectangle() const;
 
-      /** Returns SORTBY parameter as list.
+      /**
+       * Returns SORTBY parameter as list.
        * \returns sortBy parameter as list
        */
       QStringList sortBy() const;
 
-      /** Returns EXP_FILTER parameter as list.
+      /**
+       * Returns EXP_FILTER parameter as list.
        * \returns expFilters parameter as list
        */
       QStringList expFilters() const;
 
-      /** Returns GEOMETRYNAME parameter as a string.
+      /**
+       * Returns GEOMETRYNAME parameter as a string.
        * \returns geometryName parameter as string
        */
       QString geometryNameAsString() const;

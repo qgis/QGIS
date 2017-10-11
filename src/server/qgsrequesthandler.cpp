@@ -251,12 +251,12 @@ void QgsRequestHandler::parseInput()
         if ( map.item( i ).isNull() )
           continue;
 
-        QDomNode attrNode = map.item( i );
-        QDomAttr attr = attrNode.toAttr();
+        const QDomNode attrNode = map.item( i );
+        const QDomAttr attr = attrNode.toAttr();
         if ( attr.isNull() )
           continue;
 
-        QString attrName = attr.name();
+        const QString attrName = attr.name();
         if ( attrName.startsWith( "xmlns" ) || attrName.startsWith( "xsi:" ) )
           continue;
 
