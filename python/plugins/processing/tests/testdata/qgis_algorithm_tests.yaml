@@ -2444,7 +2444,7 @@ tests:
         name: expected/hub_distance_lines.gml
         type: vector
 
-  - algorithm: qgis:hublines
+  - algorithm: native:hublines
     name: Hub lines
     params:
       HUBS:
@@ -2459,6 +2459,46 @@ tests:
       OUTPUT:
         name: expected/hub_lines.gml
         type: vector
+
+  - algorithm: native:hublines
+    name: Hub lines (with polygons)
+    params:
+      HUBS:
+        name: dissolve_polys.gml
+        type: vector
+      HUB_FIELD: intval
+      SPOKES:
+        name: points.gml
+        type: vector
+      SPOKE_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/hub_lines_to_poly.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: native:hublines
+    name: Hub lines ( with z )
+    params:
+      HUBS:
+        name: multipoints.gml
+        type: vector
+      HUB_FIELD: d
+      SPOKES:
+        name: pointsz.gml
+        type: vector
+      SPOKE_FIELD: elev
+    results:
+      OUTPUT:
+        name: expected/hub_lines_multi_to_z.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
 
   - algorithm: qgis:pointstopath
     name: Points to path (non grouped)

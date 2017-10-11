@@ -91,6 +91,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
+  addAlgorithm( new QgsJoinWithLinesAlgorithm() );
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -2870,6 +2871,136 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
     attrs.append( input2AttributeCache.value( feat.attribute( joinField1Index ) ) );
     feat.setAttributes( attrs );
     sink->addFeature( feat, QgsFeatureSink::FastInsert );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
+void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "HUBS" ),
+                QObject::tr( "Hub layer" ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "HUB_FIELD" ),
+                QObject::tr( "Hub ID field" ), QVariant(), QStringLiteral( "HUBS" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SPOKES" ),
+                QObject::tr( "Spoke layer" ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "SPOKE_FIELD" ),
+                QObject::tr( "Spoke ID field" ), QVariant(), QStringLiteral( "SPOKES" ) ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Hub lines" ), QgsProcessing::TypeVectorLine ) );
+}
+
+QString QgsJoinWithLinesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates hub and spoke diagrams by connecting lines from points on the Spoke layer to matching points in the Hub layer.\n\n"
+                      "Determination of which hub goes with each point is based on a match between the Hub ID field on the hub points and the Spoke ID field on the spoke points.\n\n"
+                      "If input layers are not point layers, a point on the surface of the geometries will be taken as the connecting location." );
+}
+
+QgsJoinWithLinesAlgorithm *QgsJoinWithLinesAlgorithm::createInstance() const
+{
+  return new QgsJoinWithLinesAlgorithm();
+}
+
+QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  if ( parameters.value( QStringLiteral( "SPOKES" ) ) == parameters.value( QStringLiteral( "HUBS" ) ) )
+    throw QgsProcessingException( QObject::tr( "Same layer given for both hubs and spokes" ) );
+
+  std::unique_ptr< QgsFeatureSource > hubSource( parameterAsSource( parameters, QStringLiteral( "HUBS" ), context ) );
+  std::unique_ptr< QgsFeatureSource > spokeSource( parameterAsSource( parameters, QStringLiteral( "SPOKES" ), context ) );
+  if ( !hubSource || !spokeSource )
+    return QVariantMap();
+
+  QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );
+  int fieldHubIndex = hubSource->fields().lookupField( fieldHubName );
+  QString fieldSpokeName = parameterAsString( parameters, QStringLiteral( "SPOKE_FIELD" ), context );
+  int fieldSpokeIndex = spokeSource->fields().lookupField( fieldSpokeName );
+
+  if ( fieldHubIndex < 0 || fieldSpokeIndex < 0 )
+    throw QgsProcessingException( QObject::tr( "Invalid ID field" ) );
+
+  QgsFields fields = QgsProcessingUtils::combineFields( hubSource->fields(), spokeSource->fields() );
+
+  QgsWkbTypes::Type outType = QgsWkbTypes::LineString;
+  bool hasZ = false;
+  if ( QgsWkbTypes::hasZ( hubSource->wkbType() ) || QgsWkbTypes::hasZ( spokeSource->wkbType() ) )
+  {
+    outType = QgsWkbTypes::addZ( outType );
+    hasZ = true;
+  }
+  bool hasM = false;
+  if ( QgsWkbTypes::hasM( hubSource->wkbType() ) || QgsWkbTypes::hasM( spokeSource->wkbType() ) )
+  {
+    outType = QgsWkbTypes::addM( outType );
+    hasM = true;
+  }
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
+                                          outType, hubSource->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+  auto getPointFromFeature = [hasZ, hasM]( const QgsFeature & feature )->QgsPoint
+  {
+    QgsPoint p;
+    if ( feature.geometry().type() == QgsWkbTypes::PointGeometry && !feature.geometry().isMultipart() )
+      p = *static_cast< QgsPoint *>( feature.geometry().geometry() );
+    else
+      p = *static_cast< QgsPoint *>( feature.geometry().pointOnSurface().geometry() );
+    if ( hasZ && !p.is3D() )
+      p.addZValue( 0 );
+    if ( hasM && !p.isMeasure() )
+      p.addMValue( 0 );
+    return p;
+  };
+
+  QgsFeatureIterator hubFeatures = hubSource->getFeatures();
+  double step = hubSource->featureCount() > 0 ? 100.0 / hubSource->featureCount() : 1;
+  int i = 0;
+  QgsFeature hubFeature;
+  while ( hubFeatures.nextFeature( hubFeature ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( i * step );
+
+    if ( !hubFeature.hasGeometry() )
+      continue;
+
+    QgsPoint hubPoint = getPointFromFeature( hubFeature );
+    QgsAttributes hubAttributes = hubFeature.attributes();
+
+    QgsFeatureRequest spokeRequest = QgsFeatureRequest().setDestinationCrs( hubSource->sourceCrs() );
+    spokeRequest.setFilterExpression( QgsExpression::createFieldEqualityExpression( fieldSpokeName, hubFeature.attribute( fieldHubIndex ) ) );
+
+    QgsFeatureIterator spokeFeatures = spokeSource->getFeatures( spokeRequest );
+    QgsFeature spokeFeature;
+    while ( spokeFeatures.nextFeature( spokeFeature ) )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+
+      QgsPoint spokePoint = getPointFromFeature( spokeFeature );
+      QgsGeometry line( new QgsLineString( QVector< QgsPoint >() << hubPoint << spokePoint ) );
+
+      QgsFeature outFeature;
+      QgsAttributes outAttributes = hubAttributes;
+      outAttributes.append( spokeFeature.attributes() );
+      outFeature.setAttributes( outAttributes );
+      outFeature.setGeometry( line );
+      sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+    }
   }
 
   QVariantMap outputs;

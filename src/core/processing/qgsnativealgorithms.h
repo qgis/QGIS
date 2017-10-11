@@ -871,6 +871,30 @@ class QgsJoinByAttributeAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native join by lines ("hub lines") algorithm.
+ */
+class QgsJoinWithLinesAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsJoinWithLinesAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "hublines" ); }
+    QString displayName() const override { return QObject::tr( "Join by lines (hub lines)" ); }
+    virtual QStringList tags() const override { return QObject::tr( "join,connect,lines,points,hub,spoke" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector analysis" ); }
+    QString shortHelpString() const override;
+    QgsJoinWithLinesAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H

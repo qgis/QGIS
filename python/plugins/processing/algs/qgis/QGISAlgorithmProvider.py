@@ -84,7 +84,6 @@ from .Heatmap import Heatmap
 from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
-from .HubLines import HubLines
 from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
@@ -216,7 +215,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Hillshade(),
                 HubDistanceLines(),
                 HubDistancePoints(),
-                HubLines(),
                 HypsometricCurves(),
                 IdwInterpolation(),
                 ImportIntoPostGIS(),
