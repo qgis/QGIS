@@ -18,6 +18,7 @@
 #define QGSAUTHBASICMETHOD_H
 
 #include <QObject>
+#include <QMutex>
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
@@ -57,7 +58,9 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
     QString escapeUserPass( const QString &theVal, QChar delim = '\'' ) const;
 
-    static QMap<QString, QgsAuthMethodConfig> mAuthConfigCache;
+    static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
+
+    QMutex mConfigMutex;
 };
 
 #endif // QGSAUTHBASICMETHOD_H

@@ -18,6 +18,7 @@
 #define QGSAUTHIDENTCERTMETHOD_H
 
 #include <QObject>
+#include <QMutex>
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
@@ -56,7 +57,9 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
     void removePkiConfigBundle( const QString &authcfg );
 
-    static QMap<QString, QgsPkiConfigBundle *> mPkiConfigBundleCache;
+    static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
+
+    QMutex mConfigMutex;
 };
 
 #endif // QGSAUTHIDENTCERTMETHOD_H
