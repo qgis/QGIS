@@ -29,7 +29,7 @@ class QgsPolygon3DSymbolWidget : public QWidget, private Ui::Polygon3DSymbolWidg
   public:
     explicit QgsPolygon3DSymbolWidget( QWidget *parent = nullptr );
 
-    void setSymbol( const QgsPolygon3DSymbol &symbol );
+    void setSymbol( const QgsPolygon3DSymbol &symbol, QgsVectorLayer *layer );
     QgsPolygon3DSymbol symbol() const;
 
   signals:
