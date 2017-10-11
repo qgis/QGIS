@@ -2487,7 +2487,7 @@ tests:
         - expected/points_to_path_grouped2.gml
         type: vector
 
-  - algorithm: qgis:joinattributestable
+  - algorithm: native:joinattributestable
     name: join the attribute table by common field
     params:
       INPUT:
@@ -2502,6 +2502,25 @@ tests:
       OUTPUT:
         name: expected/join_attribute_table.gml
         type: vector
+
+  - algorithm: native:joinattributestable
+    name: Join attributes table with subset of fields
+    params:
+      FIELD: id
+      FIELDS_TO_COPY:
+      - NUM_A
+      FIELD_2: ID
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table.dbf
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/join_attribute_table_subset.gml
+        type: vector
+
 
   - algorithm: qgis:shortestpathpointtopoint
     name: Shortest path (point to point, shortest route)

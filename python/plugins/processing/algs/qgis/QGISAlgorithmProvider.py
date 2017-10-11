@@ -90,7 +90,6 @@ from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
-from .JoinAttributes import JoinAttributes
 from .LinesToPolygons import LinesToPolygons
 from .Merge import Merge
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
@@ -223,7 +222,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
-                JoinAttributes(),
                 LinesToPolygons(),
                 Merge(),
                 MinimumBoundingGeometry(),

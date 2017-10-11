@@ -847,6 +847,30 @@ class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
 
 };
 
+/**
+ * Native join by attribute algorithm.
+ */
+class QgsJoinByAttributeAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsJoinByAttributeAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "joinattributestable" ); }
+    QString displayName() const override { return QObject::tr( "Join attributes table" ); }
+    virtual QStringList tags() const override { return QObject::tr( "join,connect,attributes,values,fields" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general" ); }
+    QString shortHelpString() const override;
+    QgsJoinByAttributeAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSNATIVEALGORITHMS_H
