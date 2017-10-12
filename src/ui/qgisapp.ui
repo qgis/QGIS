@@ -238,15 +238,6 @@
     <property name="title">
      <string>Vect&amp;or</string>
     </property>
-    <widget class="QMenu" name="menuOpenStreetMap">
-     <property name="title">
-      <string>&amp;OpenStreetMap</string>
-     </property>
-     <addaction name="mActionOSMDownload"/>
-     <addaction name="mActionOSMImport"/>
-     <addaction name="mActionOSMExport"/>
-    </widget>
-    <addaction name="menuOpenStreetMap"/>
    </widget>
    <widget class="QMenu" name="mEditMenu">
     <property name="title">
@@ -2231,21 +2222,6 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Rotate Feature(s)</string>
-   </property>
-  </action>
-  <action name="mActionOSMDownload">
-   <property name="text">
-    <string>&amp;Download Data...</string>
-   </property>
-  </action>
-  <action name="mActionOSMImport">
-   <property name="text">
-    <string>&amp;Import Topology from XML...</string>
-   </property>
-  </action>
-  <action name="mActionOSMExport">
-   <property name="text">
-    <string>&amp;Export Topology to SpatiaLite...</string>
    </property>
   </action>
   <action name="mActionIncreaseBrightness">

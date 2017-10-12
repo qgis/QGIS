@@ -38,11 +38,6 @@ SET(QGIS_ANALYSIS_SRCS
   vector/qgsgeometrysnapper.cpp
   vector/qgszonalstatistics.cpp
 
-  openstreetmap/qgsosmbase.cpp
-  openstreetmap/qgsosmdatabase.cpp
-  openstreetmap/qgsosmdownload.cpp
-  openstreetmap/qgsosmimport.cpp
-
   network/qgsgraph.cpp
   network/qgsgraphbuilder.cpp
   network/qgsnetworkspeedstrategy.cpp
@@ -52,8 +47,6 @@ SET(QGIS_ANALYSIS_SRCS
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
-  openstreetmap/qgsosmdownload.h
-  openstreetmap/qgsosmimport.h
   vector/qgsgeometrysnapper.h
 
   network/qgsgraphdirector.h
@@ -134,11 +127,6 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/LinTriangleInterpolator.h
   interpolation/NormVecDecorator.h
   interpolation/Line3D.h
-
-  openstreetmap/qgsosmbase.h
-  openstreetmap/qgsosmdatabase.h
-  openstreetmap/qgsosmdownload.h
-  openstreetmap/qgsosmimport.h
 
   network/qgsgraph.h
   network/qgsgraphbuilderinterface.h
