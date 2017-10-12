@@ -631,27 +631,27 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryTypeCheck>::cre
   QgsSettings().setValue( sSettingsGroup + "checkTypeMultipolygon", ui.checkBoxMultipolygon->isChecked() );
 
   int allowedTypes = 0;
-  if ( ui.checkBoxPoint->isChecked() )
+  if ( ui.checkBoxPoint->isEnabled() && ui.checkBoxPoint->isChecked() )
   {
     allowedTypes |= 1 << QgsWkbTypes::Point;
   }
-  if ( ui.checkBoxMultipoint->isChecked() )
+  if ( ui.checkBoxMultipoint->isEnabled() && ui.checkBoxMultipoint->isChecked() )
   {
     allowedTypes |= 1 << QgsWkbTypes::MultiPoint;
   }
-  if ( ui.checkBoxLine->isChecked() )
+  if ( ui.checkBoxLine->isEnabled() && ui.checkBoxLine->isChecked() )
   {
     allowedTypes |= 1 << QgsWkbTypes::LineString;
   }
-  if ( ui.checkBoxMultiline->isChecked() )
+  if ( ui.checkBoxMultiline->isEnabled() && ui.checkBoxMultiline->isChecked() )
   {
     allowedTypes |= 1 << QgsWkbTypes::MultiLineString;
   }
-  if ( ui.checkBoxPolygon->isChecked() )
+  if ( ui.checkBoxPolygon->isEnabled() && ui.checkBoxPolygon->isChecked() )
   {
     allowedTypes |= 1 << QgsWkbTypes::Polygon;
   }
-  if ( ui.checkBoxMultipolygon->isChecked() )
+  if ( ui.checkBoxMultipolygon->isEnabled() && ui.checkBoxMultipolygon->isChecked() )
   {
     allowedTypes |= 1 << QgsWkbTypes::MultiPolygon;
   }
