@@ -71,6 +71,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
+class QgsMapToolAddFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
 class QgsPluginLayer;
@@ -1791,7 +1792,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mMeasureDist = nullptr;
         QgsMapTool *mMeasureArea = nullptr;
         QgsMapTool *mMeasureAngle = nullptr;
-        QgsMapTool *mAddFeature = nullptr;
+        QgsMapToolAddFeature *mAddFeature = nullptr;
         QgsMapTool *mCircularStringCurvePoint = nullptr;
         QgsMapTool *mCircularStringRadius = nullptr;
         QgsMapTool *mCircle2Points = nullptr;
