@@ -821,12 +821,13 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPointV2>& reshapeLine )
 
   if ( errorCode == 0 && geom )
   {
-    detach( true );
-    delete d->geometry;
+    detach( false );
     removeWkbGeos();
     d->geometry = geom;
     return 0;
   }
+
+  delete geom;
 
   return errorCode;
 }
