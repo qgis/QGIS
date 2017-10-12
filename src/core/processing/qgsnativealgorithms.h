@@ -99,6 +99,85 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 };
 
 /**
+ * Native boundary algorithm.
+ */
+class QgsBoundaryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsBoundaryAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "boundary" ); }
+    QString displayName() const override { return QObject::tr( "Boundary" ); }
+    QStringList tags() const override { return QObject::tr( "boundary,ring,border,exterior" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QList<int> inputLayerTypes() const override;
+    QgsBoundaryAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QString outputName() const override { return QObject::tr( "Boundary" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+};
+
+/**
+ * Native drop geometries algorithm.
+ */
+class QgsDropGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsDropGeometryAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "dropgeometries" ); }
+    QString displayName() const override { return QObject::tr( "Drop geometries" ); }
+    QStringList tags() const override { return QObject::tr( "remove,drop,delete,geometry,objects" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general" ); }
+    QString shortHelpString() const override;
+    QgsDropGeometryAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const override;
+
+  protected:
+
+    QString outputName() const override { return QObject::tr( "Dropped geometries" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    QgsFeatureRequest request() const override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+};
+
+/**
+ * Native drop M/Z values algorithm.
+ */
+class QgsDropMZValuesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsDropMZValuesAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "dropmzvalues" ); }
+    QString displayName() const override { return QObject::tr( "Drop M/Z values" ); }
+    QStringList tags() const override { return QObject::tr( "drop,set,convert,m,measure,z,25d,3d,values" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsDropMZValuesAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QString outputName() const override { return QObject::tr( "Z/M Dropped" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    bool mDropM = false;
+    bool mDropZ = false;
+};
+
+/**
  * Native transform algorithm.
  */
 class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
@@ -128,6 +207,73 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool mCreatedTransform = false;
     QgsCoordinateReferenceSystem mDestCrs;
     QgsCoordinateTransform mTransform;
+
+};
+
+
+
+/**
+ * Native assign projection algorithm.
+ */
+class QgsAssignProjectionAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsAssignProjectionAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "assignprojection" ); }
+    QString displayName() const override { return QObject::tr( "Assign projection" ); }
+    virtual QStringList tags() const override { return QObject::tr( "assign,set,transform,reproject,crs,srs,warp" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general" ); }
+    QString shortHelpString() const override;
+    QgsAssignProjectionAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem & ) const override { return mDestCrs; }
+    QString outputName() const override { return QObject::tr( "Assigned CRS" ); }
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    QgsCoordinateReferenceSystem mDestCrs;
+
+};
+
+
+/**
+ * Native add incremental field algorithm.
+ */
+class QgsAddIncrementalFieldAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsAddIncrementalFieldAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "addautoincrementalfield" ); }
+    QString displayName() const override { return QObject::tr( "Add autoincremental field" ); }
+    virtual QStringList tags() const override { return QObject::tr( "add,create,serial,primary,key,unique,field" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector table" ); }
+    QString shortHelpString() const override;
+    QList<int> inputLayerTypes() const override;
+    QgsAddIncrementalFieldAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QString outputName() const override { return QObject::tr( "Incremented" ); }
+    QgsFields outputFields( const QgsFields &inputFields ) const override;
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    long long mValue = 0;
+    QString mFieldName;
 
 };
 
@@ -620,6 +766,7 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     virtual QStringList tags() const override { return QObject::tr( "line,merge,join,parts" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
+    QList<int> inputLayerTypes() const override;
     QgsMergeLinesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -645,6 +792,7 @@ class QgsSmoothAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsSmoothAlgorithm *createInstance() const override SIP_FACTORY;
+    QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
@@ -674,6 +822,7 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsSimplifyAlgorithm *createInstance() const override SIP_FACTORY;
+    QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
@@ -844,6 +993,54 @@ class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
     double mRasterUnitsPerPixelX;
     double mRasterUnitsPerPixelY;
     QString mSource;
+
+};
+
+/**
+ * Native join by attribute algorithm.
+ */
+class QgsJoinByAttributeAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsJoinByAttributeAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "joinattributestable" ); }
+    QString displayName() const override { return QObject::tr( "Join attributes table" ); }
+    virtual QStringList tags() const override { return QObject::tr( "join,connect,attributes,values,fields" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general" ); }
+    QString shortHelpString() const override;
+    QgsJoinByAttributeAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
+/**
+ * Native join by lines ("hub lines") algorithm.
+ */
+class QgsJoinWithLinesAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsJoinWithLinesAlgorithm() = default;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override { return QStringLiteral( "hublines" ); }
+    QString displayName() const override { return QObject::tr( "Join by lines (hub lines)" ); }
+    virtual QStringList tags() const override { return QObject::tr( "join,connect,lines,points,hub,spoke" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector analysis" ); }
+    QString shortHelpString() const override;
+    QgsJoinWithLinesAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

@@ -43,9 +43,7 @@ from .QgisAlgorithm import QgisAlgorithm
 from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .Aspect import Aspect
-from .AutoincrementalField import AutoincrementalField
 from .BasicStatistics import BasicStatisticsForField
-from .Boundary import Boundary
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
 from .CreateAttributeIndex import CreateAttributeIndex
@@ -59,8 +57,6 @@ from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
-from .DropGeometry import DropGeometry
-from .DropMZValues import DropMZValues
 from .EliminateSelection import EliminateSelection
 from .EquivalentNumField import EquivalentNumField
 from .ExecuteSQL import ExecuteSQL
@@ -84,13 +80,11 @@ from .Heatmap import Heatmap
 from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
-from .HubLines import HubLines
 from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
-from .JoinAttributes import JoinAttributes
 from .LinesToPolygons import LinesToPolygons
 from .Merge import Merge
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
@@ -176,9 +170,7 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         algs = [AddTableField(),
                 Aggregate(),
                 Aspect(),
-                AutoincrementalField(),
                 BasicStatisticsForField(),
-                Boundary(),
                 CheckValidity(),
                 ConcaveHull(),
                 CreateAttributeIndex(),
@@ -192,8 +184,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
                 Difference(),
-                DropGeometry(),
-                DropMZValues(),
                 EliminateSelection(),
                 EquivalentNumField(),
                 ExecuteSQL(),
@@ -217,13 +207,11 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Hillshade(),
                 HubDistanceLines(),
                 HubDistancePoints(),
-                HubLines(),
                 HypsometricCurves(),
                 IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
-                JoinAttributes(),
                 LinesToPolygons(),
                 Merge(),
                 MinimumBoundingGeometry(),

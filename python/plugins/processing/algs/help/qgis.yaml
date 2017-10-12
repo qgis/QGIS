@@ -1,10 +1,3 @@
-qgis:addautoincrementalfield: >
-  This algorithm adds a new integer field to a vector layer, with a sequential value for each feature.
-
-  This field can be used as a unique ID for features in the layer.
-
-  The new attribute is not added to the input layer but a new layer is generated instead.
-
 qgis:addfieldtoattributestable: >
   This algorithm adds a new attribute to a vector layer.
 
@@ -160,12 +153,6 @@ qgis:distancetonearesthub: >
 
   The resulting layer can contain only source points with an additional field indicating the distance to the nearest point and the name of the destination point, or lines linking each source point with its nearest destination point.
 
-qgis:dropgeometries: >
-  This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes.
-
-qgis:dropmzvalues: >
-  This algorithm can remove any measure (M) or Z values from input geometries.
-
 qgis:eliminateselectedpolygons: >
   This algorithm combines selected polygons of the input layer with certain adjacent polygons by erasing their common boundary. The adjacent polygon can be either the one with the largest or smallest area or the one sharing the largest common boundary with the polygon to be eliminated. The selected features will always be eliminated whether the option "Use only selected features" is set or not.
   Eliminate is normally used to get rid of sliver polygons, i.e. tiny polygons that are a result of polygon intersection processes where boundaries of the inputs are similar but not identical.
@@ -236,11 +223,6 @@ qgis:generatepointspixelcentroidsalongline:
 qgis:generatepointspixelcentroidsinsidepolygons:
 
 
-qgis:hublines:
-  This algorithm creates hub and spoke diagrams with lines drawn from points on the Spoke Point layer to matching points in the Hub Point layer.
-
-  Determination of which hub goes with each point is based on a match between the Hub ID field on the hub points and the Spoke ID field on the spoke points.
-
 qgis:hypsometriccurves: >
   This algorithm computes hypsometric curves  for an input Digital Elevation Model. Curves are produced as table files in an output folder specified by the user.
 
@@ -261,11 +243,6 @@ qgis:joinattributesbylocation: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
 
   The additional attributes and their values are taken from a second vector layer. A spatial criteria is applied to select the values from the second layer that are added to each feature from the first layer in the resulting one.
-
-qgis:joinattributestable: >
-  This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.
-
-  The additional attributes and their values are taken from a second vector layer. An attribute is selected in each of them to define the join criteria.
 
 qgis:joinbylocationsummary: >
   This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the input one, with additional attributes in its attribute table.

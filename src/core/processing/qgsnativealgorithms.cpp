@@ -90,6 +90,13 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
+  addAlgorithm( new QgsJoinByAttributeAlgorithm() );
+  addAlgorithm( new QgsJoinWithLinesAlgorithm() );
+  addAlgorithm( new QgsAssignProjectionAlgorithm() );
+  addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
+  addAlgorithm( new QgsBoundaryAlgorithm() );
+  addAlgorithm( new QgsDropGeometryAlgorithm() );
+  addAlgorithm( new QgsDropMZValuesAlgorithm() );
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -661,6 +668,87 @@ QgsFeature QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProces
     }
   }
   return feature;
+}
+
+
+QString QgsAssignProjectionAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm assigns a new projection to a vector layer. It creates a new layer with the exact same features "
+                      "and geometries as the input one, but assigned to a new CRS. E.g. the geometries are not reprojected, they are just assigned "
+                      "to a different CRS. This algorithm can be used to repair layers which have been assigned an incorrect projection.\n\n"
+                      "Attributes are not modified by this algorithm." );
+}
+
+QgsAssignProjectionAlgorithm *QgsAssignProjectionAlgorithm::createInstance() const
+{
+  return new QgsAssignProjectionAlgorithm();
+}
+
+void QgsAssignProjectionAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Assigned CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+}
+
+bool QgsAssignProjectionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mDestCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  return true;
+}
+
+QgsFeature QgsAssignProjectionAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  return feature;
+}
+
+
+
+QString QgsAddIncrementalFieldAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm adds a new integer field to a vector layer, with a sequential value for each feature.\n\n"
+                      "This field can be used as a unique ID for features in the layer. The new attribute "
+                      "is not added to the input layer but a new layer is generated instead.\n\n"
+                      "The initial starting value for the incremental series can be specified." );
+}
+
+QList<int> QgsAddIncrementalFieldAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVector;
+}
+
+QgsAddIncrementalFieldAlgorithm *QgsAddIncrementalFieldAlgorithm::createInstance() const
+{
+  return new QgsAddIncrementalFieldAlgorithm();
+}
+
+void QgsAddIncrementalFieldAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Field name" ), QStringLiteral( "AUTO" ) ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "START" ), QObject::tr( "Start values at" ),
+                QgsProcessingParameterNumber::Integer, 0, true ) );
+}
+
+QgsFields QgsAddIncrementalFieldAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  QgsFields outFields = inputFields;
+  outFields.append( QgsField( mFieldName, QVariant::LongLong ) );
+  return outFields;
+}
+
+bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mValue = parameterAsInt( parameters, QStringLiteral( "START" ), context );
+  mFieldName = parameterAsString( parameters, QStringLiteral( "FIELD_NAME" ), context );
+  return true;
+}
+
+QgsFeature QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  QgsAttributes attributes = f.attributes();
+  attributes.append( mValue );
+  mValue++;
+  f.setAttributes( attributes );
+  return f;
 }
 
 
@@ -1754,6 +1842,11 @@ QString QgsMergeLinesAlgorithm::shortHelpString() const
                       "geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts." );
 }
 
+QList<int> QgsMergeLinesAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorLine;
+}
+
 QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
 {
   return new QgsMergeLinesAlgorithm();
@@ -1792,6 +1885,11 @@ QString QgsSmoothAlgorithm::shortHelpString() const
 QgsSmoothAlgorithm *QgsSmoothAlgorithm::createInstance() const
 {
   return new QgsSmoothAlgorithm();
+}
+
+QList<int> QgsSmoothAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
 }
 
 void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
@@ -1841,6 +1939,11 @@ QString QgsSimplifyAlgorithm::shortHelpString() const
 QgsSimplifyAlgorithm *QgsSimplifyAlgorithm::createInstance() const
 {
   return new QgsSimplifyAlgorithm();
+}
+
+QList<int> QgsSimplifyAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
 }
 
 void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
@@ -2734,6 +2837,515 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   return outputs;
 }
 
+
+
+void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
+                QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ),
+                QObject::tr( "Table field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
+
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_2" ),
+                QObject::tr( "Input layer 2" ), QList< int>() << QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_2" ),
+                QObject::tr( "Table field 2" ), QVariant(), QStringLiteral( "INPUT_2" ) ) );
+
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELDS_TO_COPY" ),
+                QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ),
+                QVariant(), QStringLiteral( "INPUT_2" ), QgsProcessingParameterField::Any,
+                true, true ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ) ) );
+}
+
+QString QgsJoinByAttributeAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes an input vector layer and creates a new vector layer that is an extended version of the "
+                      "input one, with additional attributes in its attribute table.\n\n"
+                      "The additional attributes and their values are taken from a second vector layer. An attribute is selected "
+                      "in each of them to define the join criteria." );
+}
+
+QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
+{
+  return new QgsJoinByAttributeAlgorithm();
+}
+
+QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
+  if ( !input || !input2 )
+    return QVariantMap();
+
+  QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
+  const QStringList fieldsToCopy = parameterAsFields( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
+
+  int joinField1Index = input->fields().lookupField( field1Name );
+  int joinField2Index = input2->fields().lookupField( field2Name );
+  if ( joinField1Index < 0 || joinField2Index < 0 )
+    return QVariantMap();
+
+  QgsFields outFields2;
+  QgsAttributeList fields2Indices;
+  if ( fieldsToCopy.empty() )
+  {
+    outFields2 = input2->fields();
+    for ( int i = 0; i < outFields2.count(); ++i )
+    {
+      fields2Indices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : fieldsToCopy )
+    {
+      int index = input2->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        fields2Indices << index;
+        outFields2.append( input2->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsAttributeList fields2Fetch = fields2Indices;
+  fields2Fetch << joinField2Index;
+
+  QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), outFields2 );
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
+                                          input->wkbType(), input->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+
+  // cache attributes of input2
+  QHash< QVariant, QgsAttributes > input2AttributeCache;
+  QgsFeatureIterator features = input2->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fields2Fetch ) );
+  double step = input2->featureCount() > 0 ? 50.0 / input2->featureCount() : 1;
+  int i = 0;
+  QgsFeature feat;
+  while ( features.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( i * step );
+
+    if ( input2AttributeCache.contains( feat.attribute( joinField2Index ) ) )
+      continue;
+
+    // only keep selected attributes
+    QgsAttributes attributes;
+    for ( int j = 0; j < feat.attributes().count(); ++j )
+    {
+      if ( ! fields2Indices.contains( j ) )
+        continue;
+      attributes << feat.attribute( j );
+    }
+
+    input2AttributeCache.insert( feat.attribute( joinField2Index ), attributes );
+  }
+
+  // Create output vector layer with additional attribute
+  step = input->featureCount() > 0 ? 50.0 / input->featureCount() : 1;
+  features = input->getFeatures();
+  i = 0;
+  while ( features.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( 50 + i * step );
+
+    QgsAttributes attrs = feat.attributes();
+    attrs.append( input2AttributeCache.value( feat.attribute( joinField1Index ) ) );
+    feat.setAttributes( attrs );
+    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+
+void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "HUBS" ),
+                QObject::tr( "Hub layer" ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "HUB_FIELD" ),
+                QObject::tr( "Hub ID field" ), QVariant(), QStringLiteral( "HUBS" ) ) );
+
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "HUB_FIELDS" ),
+                QObject::tr( "Hub layer fields to copy (leave empty to copy all fields)" ),
+                QVariant(), QStringLiteral( "HUBS" ), QgsProcessingParameterField::Any,
+                true, true ) );
+
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SPOKES" ),
+                QObject::tr( "Spoke layer" ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "SPOKE_FIELD" ),
+                QObject::tr( "Spoke ID field" ), QVariant(), QStringLiteral( "SPOKES" ) ) );
+
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "SPOKE_FIELDS" ),
+                QObject::tr( "Spoke layer fields to copy (leave empty to copy all fields)" ),
+                QVariant(), QStringLiteral( "SPOKES" ), QgsProcessingParameterField::Any,
+                true, true ) );
+
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Hub lines" ), QgsProcessing::TypeVectorLine ) );
+}
+
+QString QgsJoinWithLinesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm creates hub and spoke diagrams by connecting lines from points on the Spoke layer to matching points in the Hub layer.\n\n"
+                      "Determination of which hub goes with each point is based on a match between the Hub ID field on the hub points and the Spoke ID field on the spoke points.\n\n"
+                      "If input layers are not point layers, a point on the surface of the geometries will be taken as the connecting location." );
+}
+
+QgsJoinWithLinesAlgorithm *QgsJoinWithLinesAlgorithm::createInstance() const
+{
+  return new QgsJoinWithLinesAlgorithm();
+}
+
+QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  if ( parameters.value( QStringLiteral( "SPOKES" ) ) == parameters.value( QStringLiteral( "HUBS" ) ) )
+    throw QgsProcessingException( QObject::tr( "Same layer given for both hubs and spokes" ) );
+
+  std::unique_ptr< QgsFeatureSource > hubSource( parameterAsSource( parameters, QStringLiteral( "HUBS" ), context ) );
+  std::unique_ptr< QgsFeatureSource > spokeSource( parameterAsSource( parameters, QStringLiteral( "SPOKES" ), context ) );
+  if ( !hubSource || !spokeSource )
+    return QVariantMap();
+
+  QString fieldHubName = parameterAsString( parameters, QStringLiteral( "HUB_FIELD" ), context );
+  int fieldHubIndex = hubSource->fields().lookupField( fieldHubName );
+  const QStringList hubFieldsToCopy = parameterAsFields( parameters, QStringLiteral( "HUB_FIELDS" ), context );
+
+  QString fieldSpokeName = parameterAsString( parameters, QStringLiteral( "SPOKE_FIELD" ), context );
+  int fieldSpokeIndex = spokeSource->fields().lookupField( fieldSpokeName );
+  const QStringList spokeFieldsToCopy = parameterAsFields( parameters, QStringLiteral( "SPOKE_FIELDS" ), context );
+
+  if ( fieldHubIndex < 0 || fieldSpokeIndex < 0 )
+    throw QgsProcessingException( QObject::tr( "Invalid ID field" ) );
+
+  QgsFields hubOutFields;
+  QgsAttributeList hubFieldIndices;
+  if ( hubFieldsToCopy.empty() )
+  {
+    hubOutFields = hubSource->fields();
+    for ( int i = 0; i < hubOutFields.count(); ++i )
+    {
+      hubFieldIndices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : hubFieldsToCopy )
+    {
+      int index = hubSource->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        hubFieldIndices << index;
+        hubOutFields.append( hubSource->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsAttributeList hubFields2Fetch = hubFieldIndices;
+  hubFields2Fetch << fieldHubIndex;
+
+  QgsFields spokeOutFields;
+  QgsAttributeList spokeFieldIndices;
+  if ( spokeFieldsToCopy.empty() )
+  {
+    spokeOutFields = spokeSource->fields();
+    for ( int i = 0; i < spokeOutFields.count(); ++i )
+    {
+      spokeFieldIndices << i;
+    }
+  }
+  else
+  {
+    for ( const QString &field : spokeFieldsToCopy )
+    {
+      int index = spokeSource->fields().lookupField( field );
+      if ( index >= 0 )
+      {
+        spokeFieldIndices << index;
+        spokeOutFields.append( spokeSource->fields().at( index ) );
+      }
+    }
+  }
+
+  QgsAttributeList spokeFields2Fetch = spokeFieldIndices;
+  spokeFields2Fetch << fieldSpokeIndex;
+
+
+  QgsFields fields = QgsProcessingUtils::combineFields( hubOutFields, spokeOutFields );
+
+  QgsWkbTypes::Type outType = QgsWkbTypes::LineString;
+  bool hasZ = false;
+  if ( QgsWkbTypes::hasZ( hubSource->wkbType() ) || QgsWkbTypes::hasZ( spokeSource->wkbType() ) )
+  {
+    outType = QgsWkbTypes::addZ( outType );
+    hasZ = true;
+  }
+  bool hasM = false;
+  if ( QgsWkbTypes::hasM( hubSource->wkbType() ) || QgsWkbTypes::hasM( spokeSource->wkbType() ) )
+  {
+    outType = QgsWkbTypes::addM( outType );
+    hasM = true;
+  }
+
+  QString dest;
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
+                                          outType, hubSource->sourceCrs() ) );
+  if ( !sink )
+    return QVariantMap();
+
+  auto getPointFromFeature = [hasZ, hasM]( const QgsFeature & feature )->QgsPoint
+  {
+    QgsPoint p;
+    if ( feature.geometry().type() == QgsWkbTypes::PointGeometry && !feature.geometry().isMultipart() )
+      p = *static_cast< QgsPoint *>( feature.geometry().geometry() );
+    else
+      p = *static_cast< QgsPoint *>( feature.geometry().pointOnSurface().geometry() );
+    if ( hasZ && !p.is3D() )
+      p.addZValue( 0 );
+    if ( hasM && !p.isMeasure() )
+      p.addMValue( 0 );
+    return p;
+  };
+
+  QgsFeatureIterator hubFeatures = hubSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( hubFields2Fetch ) );
+  double step = hubSource->featureCount() > 0 ? 100.0 / hubSource->featureCount() : 1;
+  int i = 0;
+  QgsFeature hubFeature;
+  while ( hubFeatures.nextFeature( hubFeature ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
+
+    feedback->setProgress( i * step );
+
+    if ( !hubFeature.hasGeometry() )
+      continue;
+
+    QgsPoint hubPoint = getPointFromFeature( hubFeature );
+
+    // only keep selected attributes
+    QgsAttributes hubAttributes;
+    for ( int j = 0; j < hubFeature.attributes().count(); ++j )
+    {
+      if ( !hubFieldIndices.contains( j ) )
+        continue;
+      hubAttributes << hubFeature.attribute( j );
+    }
+
+    QgsFeatureRequest spokeRequest = QgsFeatureRequest().setDestinationCrs( hubSource->sourceCrs() );
+    spokeRequest.setSubsetOfAttributes( spokeFields2Fetch );
+    spokeRequest.setFilterExpression( QgsExpression::createFieldEqualityExpression( fieldSpokeName, hubFeature.attribute( fieldHubIndex ) ) );
+
+    QgsFeatureIterator spokeFeatures = spokeSource->getFeatures( spokeRequest );
+    QgsFeature spokeFeature;
+    while ( spokeFeatures.nextFeature( spokeFeature ) )
+    {
+      if ( feedback->isCanceled() )
+      {
+        break;
+      }
+      if ( !spokeFeature.hasGeometry() )
+        continue;
+
+      QgsPoint spokePoint = getPointFromFeature( spokeFeature );
+      QgsGeometry line( new QgsLineString( QVector< QgsPoint >() << hubPoint << spokePoint ) );
+
+      QgsFeature outFeature;
+      QgsAttributes outAttributes = hubAttributes;
+
+      // only keep selected attributes
+      QgsAttributes spokeAttributes;
+      for ( int j = 0; j < spokeFeature.attributes().count(); ++j )
+      {
+        if ( !spokeFieldIndices.contains( j ) )
+          continue;
+        spokeAttributes << spokeFeature.attribute( j );
+      }
+
+      outAttributes.append( spokeAttributes );
+      outFeature.setAttributes( outAttributes );
+      outFeature.setGeometry( line );
+      sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
+    }
+  }
+
+  QVariantMap outputs;
+  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  return outputs;
+}
+
+QString QgsBoundaryAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Returns the closure of the combinatorial boundary of the input geometries (ie the "
+                      "topological boundary of the geometry). For instance, a polygon geometry will have a "
+                      "boundary consisting of the linestrings for each ring in the polygon. Only valid for "
+                      "polygon or line layers." );
+}
+
+QList<int> QgsBoundaryAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+}
+
+QgsBoundaryAlgorithm *QgsBoundaryAlgorithm::createInstance() const
+{
+  return new QgsBoundaryAlgorithm();
+}
+
+QgsWkbTypes::Type QgsBoundaryAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  QgsWkbTypes::Type outputWkb = QgsWkbTypes::Unknown;
+  switch ( QgsWkbTypes::geometryType( inputWkbType ) )
+  {
+    case QgsWkbTypes::LineGeometry:
+      outputWkb = QgsWkbTypes::MultiPoint;
+      break;
+
+    case QgsWkbTypes::PolygonGeometry:
+      outputWkb = QgsWkbTypes::MultiLineString;
+      break;
+
+    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      outputWkb = QgsWkbTypes::NoGeometry;
+      break;
+  }
+
+  if ( QgsWkbTypes::hasZ( inputWkbType ) )
+    outputWkb = QgsWkbTypes::addZ( outputWkb );
+  if ( QgsWkbTypes::hasM( inputWkbType ) )
+    outputWkb = QgsWkbTypes::addM( outputWkb );
+
+  return outputWkb;
+}
+
+QgsFeature QgsBoundaryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  QgsFeature outFeature = feature;
+
+  if ( feature.hasGeometry() )
+  {
+    QgsGeometry inputGeometry = feature.geometry();
+    QgsGeometry outputGeometry = QgsGeometry( inputGeometry.geometry()->boundary() );
+    if ( !outputGeometry )
+    {
+      feedback->reportError( QObject::tr( "No boundary for feature %1 (possibly a closed linestring?)'" ).arg( feature.id() ) );
+      outFeature.clearGeometry();
+    }
+    else
+    {
+      outFeature.setGeometry( outputGeometry );
+    }
+  }
+  return outFeature;
+}
+
+QString QgsDropGeometryAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes." );
+}
+
+QgsDropGeometryAlgorithm *QgsDropGeometryAlgorithm::createInstance() const
+{
+  return new QgsDropGeometryAlgorithm();
+}
+
+QgsCoordinateReferenceSystem QgsDropGeometryAlgorithm::outputCrs( const QgsCoordinateReferenceSystem & ) const
+{
+  return QgsCoordinateReferenceSystem();
+}
+
+QgsWkbTypes::Type QgsDropGeometryAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+{
+  return QgsWkbTypes::NoGeometry;
+}
+
+QgsFeatureRequest QgsDropGeometryAlgorithm::request() const
+{
+  return QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
+}
+
+QgsFeature QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  f.clearGeometry();
+  return f;
+}
+
+QString QgsDropMZValuesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm can remove any measure (M) or Z values from input geometries." );
+}
+
+QgsDropMZValuesAlgorithm *QgsDropMZValuesAlgorithm::createInstance() const
+{
+  return new QgsDropMZValuesAlgorithm();
+}
+
+void QgsDropMZValuesAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DROP_M_VALUES" ), QObject::tr( "Drop M Values" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DROP_Z_VALUES" ), QObject::tr( "Drop Z Values" ), false ) );
+}
+
+QgsWkbTypes::Type QgsDropMZValuesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  QgsWkbTypes::Type wkb = inputWkbType;
+  if ( mDropM )
+    wkb = QgsWkbTypes::dropM( wkb );
+  if ( mDropZ )
+    wkb = QgsWkbTypes::dropZ( wkb );
+  return wkb;
+}
+
+bool QgsDropMZValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mDropM = parameterAsBool( parameters, QStringLiteral( "DROP_M_VALUES" ), context );
+  mDropZ = parameterAsBool( parameters, QStringLiteral( "DROP_Z_VALUES" ), context );
+  return true;
+}
+
+QgsFeature QgsDropMZValuesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    std::unique_ptr< QgsAbstractGeometry > newGeom( f.geometry().geometry()->clone() );
+    if ( mDropM )
+      newGeom->dropMValue();
+    if ( mDropZ )
+      newGeom->dropZValue();
+    f.setGeometry( QgsGeometry( newGeom.release() ) );
+  }
+
+  return f;
+}
+
 ///@endcond
+
 
 

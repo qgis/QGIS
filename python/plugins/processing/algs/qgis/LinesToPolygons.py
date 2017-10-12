@@ -74,6 +74,9 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
     def outputType(self):
         return QgsProcessing.TypeVectorPolygon
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
+
     def outputWkbType(self, input_wkb_type):
         return self.convertWkbToPolygons(input_wkb_type)
 
