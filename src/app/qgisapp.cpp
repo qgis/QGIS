@@ -11345,40 +11345,30 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionPasteFeatures->setEnabled( isEditable && canAddFeatures && !clipboard()->isEmpty() );
 
       mActionAddFeature->setEnabled( isEditable && canAddFeatures );
-      mActionCircularStringCurvePoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionCircularStringRadius->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionCircle2Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                        && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionCircle3Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                        && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionCircle3Tangents->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionCircle2TangentsPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionCircleCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                            && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionEllipseCenter2Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionEllipseCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                             && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionEllipseExtent->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                        && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionEllipseFoci->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                      && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionRectangleCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionRectangleExtent->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionRectangle3Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-                                           && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionRegularPolygon2Points->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionRegularPolygonCenterPoint->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
-      mActionRegularPolygonCenterCorner->setEnabled( isEditable && ( canAddFeatures || canChangeGeometry )
-          && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ) );
+
+      bool enableCircularTools;
+      bool enableShapeTools;
+      enableCircularTools = isEditable && ( canAddFeatures || canChangeGeometry )
+                            && ( vlayer->geometryType() == QgsWkbTypes::LineGeometry || vlayer->geometryType() == QgsWkbTypes::PolygonGeometry );
+      enableShapeTools = enableCircularTools;
+      mActionCircularStringCurvePoint->setEnabled( enableCircularTools );
+      mActionCircularStringRadius->setEnabled( enableCircularTools );
+      mActionCircle2Points->setEnabled( enableShapeTools );
+      mActionCircle3Points->setEnabled( enableShapeTools );
+      mActionCircle3Tangents->setEnabled( enableShapeTools );
+      mActionCircle2TangentsPoint->setEnabled( enableShapeTools );
+      mActionCircleCenterPoint->setEnabled( enableShapeTools );
+      mActionEllipseCenter2Points->setEnabled( enableShapeTools );
+      mActionEllipseCenterPoint->setEnabled( enableShapeTools );
+      mActionEllipseExtent->setEnabled( enableShapeTools );
+      mActionEllipseFoci->setEnabled( enableShapeTools );
+      mActionRectangleCenterPoint->setEnabled( enableShapeTools );
+      mActionRectangleExtent->setEnabled( enableShapeTools );
+      mActionRectangle3Points->setEnabled( enableShapeTools );
+      mActionRegularPolygon2Points->setEnabled( enableShapeTools );
+      mActionRegularPolygonCenterPoint->setEnabled( enableShapeTools );
+      mActionRegularPolygonCenterCorner->setEnabled( enableShapeTools );
+
       //does provider allow deleting of features?
       mActionDeleteSelected->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
       mActionCutFeatures->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
