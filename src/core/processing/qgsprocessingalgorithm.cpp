@@ -629,9 +629,43 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
 
 void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap &config )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), inputLayerTypes() ) );
   initParameters( config );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputLayerType() ) );
+}
+
+QList<int> QgsProcessingFeatureBasedAlgorithm::inputLayerTypes() const
+{
+  return QList<int>();
+}
+
+QgsProcessing::SourceType QgsProcessingFeatureBasedAlgorithm::outputLayerType() const
+{
+  return QgsProcessing::TypeVectorAnyGeometry;
+}
+
+QgsProcessingFeatureSource::Flag QgsProcessingFeatureBasedAlgorithm::sourceFlags() const
+{
+  return static_cast<QgsProcessingFeatureSource::Flag>( 0 );
+}
+
+QgsWkbTypes::Type QgsProcessingFeatureBasedAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  return inputWkbType;
+}
+
+QgsFields QgsProcessingFeatureBasedAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  return inputFields;
+}
+
+QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
+{
+  return inputCrs;
+}
+
+void QgsProcessingFeatureBasedAlgorithm::initParameters( const QVariantMap & )
+{
 }
 
 QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::sourceCrs() const

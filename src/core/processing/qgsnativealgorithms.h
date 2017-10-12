@@ -99,6 +99,30 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 };
 
 /**
+ * Native boundary algorithm.
+ */
+class QgsBoundaryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsBoundaryAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "boundary" ); }
+    QString displayName() const override { return QObject::tr( "Boundary" ); }
+    QStringList tags() const override { return QObject::tr( "boundary,ring,border,exterior" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QList<int> inputLayerTypes() const override;
+    QgsBoundaryAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QString outputName() const override { return QObject::tr( "Boundary" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+};
+
+/**
  * Native transform algorithm.
  */
 class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
@@ -179,6 +203,7 @@ class QgsAddIncrementalFieldAlgorithm : public QgsProcessingFeatureBasedAlgorith
     virtual QStringList tags() const override { return QObject::tr( "add,create,serial,primary,key,unique,field" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector table" ); }
     QString shortHelpString() const override;
+    QList<int> inputLayerTypes() const override;
     QgsAddIncrementalFieldAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -686,6 +711,7 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     virtual QStringList tags() const override { return QObject::tr( "line,merge,join,parts" ).split( ',' ); }
     QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
+    QList<int> inputLayerTypes() const override;
     QgsMergeLinesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -711,6 +737,7 @@ class QgsSmoothAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsSmoothAlgorithm *createInstance() const override SIP_FACTORY;
+    QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
@@ -740,6 +767,7 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override { return QObject::tr( "Vector geometry" ); }
     QString shortHelpString() const override;
     QgsSimplifyAlgorithm *createInstance() const override SIP_FACTORY;
+    QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:

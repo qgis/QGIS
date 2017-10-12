@@ -94,6 +94,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
+  addAlgorithm( new QgsBoundaryAlgorithm() );
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -705,6 +706,11 @@ QString QgsAddIncrementalFieldAlgorithm::shortHelpString() const
                       "This field can be used as a unique ID for features in the layer. The new attribute "
                       "is not added to the input layer but a new layer is generated instead.\n\n"
                       "The initial starting value for the incremental series can be specified." );
+}
+
+QList<int> QgsAddIncrementalFieldAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVector;
 }
 
 QgsAddIncrementalFieldAlgorithm *QgsAddIncrementalFieldAlgorithm::createInstance() const
@@ -1834,6 +1840,11 @@ QString QgsMergeLinesAlgorithm::shortHelpString() const
                       "geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts." );
 }
 
+QList<int> QgsMergeLinesAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorLine;
+}
+
 QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
 {
   return new QgsMergeLinesAlgorithm();
@@ -1872,6 +1883,11 @@ QString QgsSmoothAlgorithm::shortHelpString() const
 QgsSmoothAlgorithm *QgsSmoothAlgorithm::createInstance() const
 {
   return new QgsSmoothAlgorithm();
+}
+
+QList<int> QgsSmoothAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
 }
 
 void QgsSmoothAlgorithm::initParameters( const QVariantMap & )
@@ -1921,6 +1937,11 @@ QString QgsSimplifyAlgorithm::shortHelpString() const
 QgsSimplifyAlgorithm *QgsSimplifyAlgorithm::createInstance() const
 {
   return new QgsSimplifyAlgorithm();
+}
+
+QList<int> QgsSimplifyAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
 }
 
 void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
@@ -3172,6 +3193,73 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
+}
+
+QString QgsBoundaryAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Returns the closure of the combinatorial boundary of the input geometries (ie the "
+                      "topological boundary of the geometry). For instance, a polygon geometry will have a "
+                      "boundary consisting of the linestrings for each ring in the polygon. Only valid for "
+                      "polygon or line layers." );
+}
+
+QList<int> QgsBoundaryAlgorithm::inputLayerTypes() const
+{
+  return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
+}
+
+QgsBoundaryAlgorithm *QgsBoundaryAlgorithm::createInstance() const
+{
+  return new QgsBoundaryAlgorithm();
+}
+
+QgsWkbTypes::Type QgsBoundaryAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  QgsWkbTypes::Type outputWkb = QgsWkbTypes::Unknown;
+  switch ( QgsWkbTypes::geometryType( inputWkbType ) )
+  {
+    case QgsWkbTypes::LineGeometry:
+      outputWkb = QgsWkbTypes::MultiPoint;
+      break;
+
+    case QgsWkbTypes::PolygonGeometry:
+      outputWkb = QgsWkbTypes::MultiLineString;
+      break;
+
+    case QgsWkbTypes::PointGeometry:
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NoGeometry:
+      outputWkb = QgsWkbTypes::NoGeometry;
+      break;
+  }
+
+  if ( QgsWkbTypes::hasZ( inputWkbType ) )
+    outputWkb = QgsWkbTypes::addZ( outputWkb );
+  if ( QgsWkbTypes::hasM( inputWkbType ) )
+    outputWkb = QgsWkbTypes::addM( outputWkb );
+
+  return outputWkb;
+}
+
+QgsFeature QgsBoundaryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+{
+  QgsFeature outFeature = feature;
+
+  if ( feature.hasGeometry() )
+  {
+    QgsGeometry inputGeometry = feature.geometry();
+    QgsGeometry outputGeometry = QgsGeometry( inputGeometry.geometry()->boundary() );
+    if ( !outputGeometry )
+    {
+      feedback->reportError( QObject::tr( "No boundary for feature %1 (possibly a closed linestring?)'" ).arg( feature.id() ) );
+      outFeature.clearGeometry();
+    }
+    else
+    {
+      outFeature.setGeometry( outputGeometry );
+    }
+  }
+  return outFeature;
 }
 
 

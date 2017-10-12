@@ -665,7 +665,7 @@ tests:
         name: expected/multipoint_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundary
+  - algorithm: native:boundary
     name: Polygon boundary
     params:
       INPUT:
@@ -676,7 +676,7 @@ tests:
         name: expected/poly_boundary.gml
         type: vector
 
-  - algorithm: qgis:boundary
+  - algorithm: native:boundary
     name: Multipoly boundary
     params:
       INPUT:
@@ -687,7 +687,7 @@ tests:
         name: expected/multipoly_boundary.gml
         type: vector
 
-  - algorithm: qgis:boundary
+  - algorithm: native:boundary
     name: Line boundary
     params:
       INPUT:
@@ -698,7 +698,7 @@ tests:
         name: expected/lines_boundary.gml
         type: vector
 
-  - algorithm: qgis:boundary
+  - algorithm: native:boundary
     name: Multiline boundary
     params:
       INPUT:

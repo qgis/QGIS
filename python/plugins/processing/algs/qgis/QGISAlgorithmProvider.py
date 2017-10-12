@@ -44,7 +44,6 @@ from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .Aspect import Aspect
 from .BasicStatistics import BasicStatisticsForField
-from .Boundary import Boundary
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
 from .CreateAttributeIndex import CreateAttributeIndex
@@ -174,7 +173,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Aggregate(),
                 Aspect(),
                 BasicStatisticsForField(),
-                Boundary(),
                 CheckValidity(),
                 ConcaveHull(),
                 CreateAttributeIndex(),
