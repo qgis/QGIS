@@ -243,7 +243,7 @@ bool QgsCurvePolygon::fromWkt( const QString &wkt )
     hasZ = hasZ || mExteriorRing->is3D();
     hasM = hasM || mExteriorRing->isMeasure();
   }
-  for ( const QgsCurve *curve : qgsAsConst( mInteriorRings ) )
+  for ( const QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -290,7 +290,7 @@ QByteArray QgsCurvePolygon::asWkb() const
   wkbPtr << static_cast<char>( QgsApplication::endian() );
   wkbPtr << static_cast<quint32>( wkbType() );
   wkbPtr << static_cast<quint32>( wkbForRings.count() );
-  for ( const QByteArray &wkb : qgsAsConst( wkbForRings ) )
+  for ( const QByteArray &wkb : qgis::as_const( wkbForRings ) )
   {
     wkbPtr << wkb;
   }
@@ -545,7 +545,7 @@ void QgsCurvePolygon::setExteriorRing( QgsCurve *ring )
   }
 
   //match dimensionality for rings
-  for ( QgsCurve *ring : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *ring : qgis::as_const( mInteriorRings ) )
   {
     if ( is3D() )
       ring->addZValue();
@@ -652,7 +652,7 @@ void QgsCurvePolygon::transform( const QgsCoordinateTransform &ct, QgsCoordinate
     mExteriorRing->transform( ct, d, transformZ );
   }
 
-  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
     curve->transform( ct, d, transformZ );
   }
@@ -666,7 +666,7 @@ void QgsCurvePolygon::transform( const QTransform &t )
     mExteriorRing->transform( t );
   }
 
-  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
     curve->transform( t );
   }
@@ -928,7 +928,7 @@ bool QgsCurvePolygon::addZValue( double zValue )
 
   if ( mExteriorRing )
     mExteriorRing->addZValue( zValue );
-  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
     curve->addZValue( zValue );
   }
@@ -945,7 +945,7 @@ bool QgsCurvePolygon::addMValue( double mValue )
 
   if ( mExteriorRing )
     mExteriorRing->addMValue( mValue );
-  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
     curve->addMValue( mValue );
   }
@@ -961,7 +961,7 @@ bool QgsCurvePolygon::dropZValue()
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropZValue();
-  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
     curve->dropZValue();
   }
@@ -977,7 +977,7 @@ bool QgsCurvePolygon::dropMValue()
   mWkbType = QgsWkbTypes::dropM( mWkbType );
   if ( mExteriorRing )
     mExteriorRing->dropMValue();
-  for ( QgsCurve *curve : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
     curve->dropMValue();
   }

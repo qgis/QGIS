@@ -57,7 +57,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
     QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
     QStringList valueList;
 
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgsAsConst( vrCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( vrCache ) )
     {
       if ( keyList.contains( item.key.toString() ) )
       {
@@ -74,7 +74,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, i
       return QgsApplication::nullRepresentation();
     }
 
-    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgsAsConst( vrCache ) )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( vrCache ) )
     {
       if ( item.key == value )
       {

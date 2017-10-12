@@ -784,7 +784,7 @@ void QgsVectorLayer::updateDefaultValues( QgsFeatureId fid, QgsFeature feature )
       feature = getFeature( fid );
 
     int size = mFields.size();
-    for ( int idx : qgsAsConst( mDefaultValueOnUpdateFields ) )
+    for ( int idx : qgis::as_const( mDefaultValueOnUpdateFields ) )
     {
       if ( idx < 0 || idx >= size )
         continue;

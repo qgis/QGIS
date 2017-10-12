@@ -134,7 +134,7 @@ void QgsLayoutMouseHandles::drawSelectedItemBounds( QPainter *painter )
   QList< QgsLayoutItem * > itemsToDraw;
   collectItems( selectedItems, itemsToDraw );
 
-  for ( QgsLayoutItem *item : qgsAsConst( itemsToDraw ) )
+  for ( QgsLayoutItem *item : qgis::as_const( itemsToDraw ) )
   {
     //get bounds of selected item
     QPolygonF itemBounds;

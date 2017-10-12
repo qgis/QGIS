@@ -2853,7 +2853,7 @@ static QVariant fcnOrderParts( const QVariantList &values, const QgsExpressionCo
   while ( orderedGeom->partCount() )
     orderedGeom->removeGeometry( 0 );
 
-  for ( const QgsFeature &feature : qgsAsConst( partFeatures ) )
+  for ( const QgsFeature &feature : qgis::as_const( partFeatures ) )
   {
     orderedGeom->addGeometry( feature.geometry().geometry()->clone() );
   }
@@ -4467,7 +4467,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     QgsExpressionContextUtils::registerContextFunctions();
 
     //QgsExpression has ownership of all built-in functions
-    for ( QgsExpressionFunction *func : qgsAsConst( sFunctions ) )
+    for ( QgsExpressionFunction *func : qgis::as_const( sFunctions ) )
     {
       sOwnedFunctions << func;
       sBuiltinFunctions << func->name();

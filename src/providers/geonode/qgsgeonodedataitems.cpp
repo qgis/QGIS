@@ -137,7 +137,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
 
     QVector<QgsDataItem *> items;
     QList<QgsDataItemProvider *> *providerList = dataItemProvidersFn();
-    for ( QgsDataItemProvider *pr : qgsAsConst( *providerList ) )
+    for ( QgsDataItemProvider *pr : qgis::as_const( *providerList ) )
     {
       if ( !pr->name().startsWith( mServiceName ) )
         continue;
@@ -160,7 +160,7 @@ QVector<QgsDataItem *> QgsGeoNodeServiceItem::createChildren()
       return items;
     }
 
-    for ( QgsDataItem *item : qgsAsConst( items ) )
+    for ( QgsDataItem *item : qgis::as_const( items ) )
     {
       item->populate( true ); // populate in foreground - this is already run in a thread
 

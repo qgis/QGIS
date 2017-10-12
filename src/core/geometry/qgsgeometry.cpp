@@ -730,7 +730,7 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgsAsConst( results ) )
+    for ( const QgsGeometry &result : qgis::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -810,7 +810,7 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPointXY>
     detachAndReset( std::unique_ptr< QgsAbstractGeometry >( newGeoms.takeFirst() ) );
 
     newGeometries.clear();
-    for ( QgsAbstractGeometry *part : qgsAsConst( newGeoms ) )
+    for ( QgsAbstractGeometry *part : qgis::as_const( newGeoms ) )
     {
       newGeometries.push_back( QgsGeometry( part ) );
     }
@@ -1624,7 +1624,7 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgsAsConst( results ) )
+    for ( const QgsGeometry &result : qgis::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -1666,7 +1666,7 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgsAsConst( results ) )
+    for ( const QgsGeometry &result : qgis::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -1709,7 +1709,7 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
       return QgsGeometry();
 
     QgsGeometry first = results.takeAt( 0 );
-    for ( const QgsGeometry &result : qgsAsConst( results ) )
+    for ( const QgsGeometry &result : qgis::as_const( results ) )
     {
       first.addPart( result );
     }
@@ -2132,7 +2132,7 @@ QPolygonF QgsGeometry::asQPolygonF() const
     return result;
   }
 
-  for ( const QgsPointXY &p : qgsAsConst( polyline ) )
+  for ( const QgsPointXY &p : qgis::as_const( polyline ) )
   {
     result << p.toQPointF();
   }

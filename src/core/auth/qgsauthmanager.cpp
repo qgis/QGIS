@@ -2437,7 +2437,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
     filecerts = QgsAuthCertUtils::certsFromFile( cafile );
   }
   // only CAs or certs capable of signing other certs are allowed
-  for ( const auto &cert : qgsAsConst( filecerts ) )
+  for ( const auto &cert : qgis::as_const( filecerts ) )
   {
     if ( !allowinvalid.toBool() && !cert.isValid() )
     {
@@ -3403,7 +3403,7 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
   QStringList encryptedsettings;
   encryptedsettings << "";
 
-  for ( const auto & sett, qgsAsConst( encryptedsettings ) )
+  for ( const auto & sett, qgis::as_const( encryptedsettings ) )
   {
     if ( sett.isEmpty() || !existsAuthSetting( sett ) )
       continue;

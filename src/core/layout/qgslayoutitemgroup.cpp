@@ -26,7 +26,7 @@ QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
 QgsLayoutItemGroup::~QgsLayoutItemGroup()
 {
   //loop through group members and remove them from the scene
-  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -84,7 +84,7 @@ void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
 
 void QgsLayoutItemGroup::removeItems()
 {
-  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -97,7 +97,7 @@ void QgsLayoutItemGroup::removeItems()
 QList<QgsLayoutItem *> QgsLayoutItemGroup::items() const
 {
   QList<QgsLayoutItem *> val;
-  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -111,7 +111,7 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
   if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->beginMacro( tr( "Set Group Visibility" ) );
   //also set visibility for all items within the group
-  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -140,7 +140,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
   double deltaY = scenePoint.y() - pos().y();
 
   //also move all items within the group
-  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -186,7 +186,7 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
   newRect.setSize( newSizeLayoutUnits );
 
   //also resize all items within the group
-  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
   {
     if ( !item )
       continue;
@@ -267,7 +267,7 @@ bool QgsLayoutItemGroup::readXml( const QDomElement &itemElement, const QDomDocu
 
     QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
 
-    for ( QgsLayoutItem *item : qgsAsConst( items ) )
+    for ( QgsLayoutItem *item : qgis::as_const( items ) )
     {
       if ( item && ( item->mUuid == uuid /* TODO || item->mTemplateUuid == uuid */ ) )
       {
@@ -294,7 +294,7 @@ void QgsLayoutItemGroup::draw( QgsRenderContext &, const QStyleOptionGraphicsIte
 void QgsLayoutItemGroup::resetBoundingRect()
 {
   mBoundingRectangle = QRectF();
-  for ( QgsLayoutItem *item : qgsAsConst( mItems ) )
+  for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
   {
     updateBoundingRect( item );
   }
