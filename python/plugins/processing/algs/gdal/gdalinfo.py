@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    information.py
+    gdalinfo.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,52 +33,67 @@ from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingOutputHtml)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.outputs import OutputHTML
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class information(GdalAlgorithm):
+class gdalinfo(GdalAlgorithm):
 
     INPUT = 'INPUT'
+    MIN_MAX = 'MIN_MAX'
+    STATS = 'STATS'
+    NO_GCP = 'NOGCP'
+    NO_METADATA = 'NO_METADATA'
     OUTPUT = 'OUTPUT'
-    NOGCP = 'NOGCP'
-    NOMETADATA = 'NOMETADATA'
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(information.INPUT,
-                                                            self.tr('Input layer'), optional=False))
-        self.addParameter(QgsProcessingParameterBoolean(information.NOGCP,
-                                                        self.tr('Suppress GCP info'), defaultValue=False))
-        self.addParameter(QgsProcessingParameterBoolean(information.NOMETADATA,
-                                                        self.tr('Suppress metadata info'), defaultValue=False))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBoolean(self.MIN_MAX,
+                                                        self.tr('Force computation of the actual min/max values for each band'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.STATS,
+                                                        self.tr('Read and display image statistics (force computation if necessary)'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.NO_GCP,
+                                                        self.tr('Suppress GCP info'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.NO_METADATA,
+                                                        self.tr('Suppress metadata info'),
+                                                        defaultValue=False))
 
-        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Layer information'), self.tr('HTML files (*.html)')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
+                                                                self.tr('Layer information'),
+                                                                self.tr('HTML files (*.html)')))
         self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Layer information')))
 
     def name(self):
         return 'gdalinfo'
 
     def displayName(self):
-        return self.tr('Information')
+        return self.tr('Raster information')
 
     def group(self):
         return self.tr('Raster miscellaneous')
 
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
+
     def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
-        if self.parameterAsBool(parameters, information.NOGCP, context):
+        if self.parameterAsBool(parameters, self.MIN_MAX, context):
+            arguments.append('-mm')
+        if self.parameterAsBool(parameters, self.STATS, context):
+            arguments.append('-stats')
+        if self.parameterAsBool(parameters, self.NO_GCP, context):
             arguments.append('-nogcp')
-        if self.parameterAsBool(parameters, information.NOMETADATA, context):
+        if self.parameterAsBool(parameters, self.NO_METADATA, context):
             arguments.append('-nomd')
-        arguments.append(self.parameterAsRasterLayer(parameters, information.INPUT, context).source())
+        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
         return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):

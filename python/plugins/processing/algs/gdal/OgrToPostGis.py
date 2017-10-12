@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ogr2ogrtopostgis.py
+    OgrToPostGis.py
     ---------------------
     Date                 : November 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
@@ -40,7 +39,7 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import isWindows
 
 
-class Ogr2OgrToPostGis(GdalAlgorithm):
+class OgrToPostGis(GdalAlgorithm):
 
     INPUT = 'INPUT'
     SHAPE_ENCODING = 'SHAPE_ENCODING'
@@ -309,4 +308,4 @@ class Ogr2OgrToPostGis(GdalAlgorithm):
         return commands
 
     def commandName(self):
-        return "ogr2ogr"
+        return 'ogr2ogr'

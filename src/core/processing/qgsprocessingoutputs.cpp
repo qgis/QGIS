@@ -57,5 +57,8 @@ QgsProcessingOutputString::QgsProcessingOutputString( const QString &name, const
 
 QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
-{
-}
+{}
+
+QgsProcessingOutputFile::QgsProcessingOutputFile( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{}

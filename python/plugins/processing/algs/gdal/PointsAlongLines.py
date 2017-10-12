@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ogr2ogrpointsonlines.py
+    PointsAlongLines.py
     ---------------------
     Date                 : Janaury 2015
     Copyright            : (C) 2015 by Giovanni Manghi
@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -30,7 +29,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingParameterDefinition,
                        QgsProcessing)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -39,89 +38,84 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import isWindows
 
 
-class Ogr2OgrPointsOnLines(GdalAlgorithm):
+class PointsAlongLines(GdalAlgorithm):
 
-    OUTPUT = 'OUTPUT'
     INPUT = 'INPUT'
-    DISTANCE = 'DISTANCE'
     GEOMETRY = 'GEOMETRY'
+    DISTANCE = 'DISTANCE'
     OPTIONS = 'OPTIONS'
+    OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorLine], optional=False))
+                                                              self.tr('Input layer'),
+                                                              [QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY,
-                                                       self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
-                                                       defaultValue='geometry', optional=False))
+                                                       self.tr('Geometry column name'),
+                                                       defaultValue='geometry'))
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance from line start represented as fraction of line length'), type=QgsProcessingParameterNumber.Double, minValue=0, maxValue=1, defaultValue=0.5))
-        self.addParameter(QgsProcessingParameterString(self.OPTIONS,
-                                                       self.tr('Additional creation options (see ogr2ogr manual)'),
-                                                       defaultValue='', optional=True))
+                                                       self.tr('Distance from line start represented as fraction of line length'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0,
+                                                       maxValue=1,
+                                                       defaultValue=0.5))
 
-        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT, self.tr('Points along lines'), QgsProcessing.TypeVectorPoint))
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(options_param)
+
+        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
+                                                                  self.tr('Points along lines'),
+                                                                  QgsProcessing.TypeVectorPoint))
 
     def name(self):
-        return 'createpointsalonglines'
+        return 'pointsalonglines'
 
     def displayName(self):
-        return self.tr('Create points along lines')
+        return self.tr('Points along lines')
 
     def group(self):
         return self.tr('Vector geoprocessing')
 
+    def commandName(self):
+        return 'ogr2ogr'
+
     def getConsoleCommands(self, parameters, context, feedback):
         fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
-        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
-
-        distance = str(self.parameterAsDouble(parameters, self.DISTANCE, context))
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
-
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-
-        output, format = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
+
+        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         other_fields = []
         for f in fields:
             if f.name() == geometry:
                 continue
-
             other_fields.append(f.name())
 
         arguments = []
-        if format:
-            arguments.append('-f {}'.format(format))
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append('-dialect')
+        arguments.append('sqlite')
+        arguments.append('-sql')
 
-        arguments.append('-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(')
-        arguments.append(geometry)
-        arguments.append(',')
-        arguments.append(distance)
-        arguments.append(')')
-        arguments.append('AS')
-        arguments.append(geometry)
-        arguments.append(',')
-        arguments.append(','.join(other_fields))
-        arguments.append('FROM')
-        arguments.append(layername)
-        arguments.append('"')
+        sql = "SELECT ST_Line_Interpolate_Point({}, {}) AS {}, {} FROM '{}'".format(geometry, distance, geometry, ','.join(other_fields), layerName)
+        arguments.append(sql)
 
-        if options is not None and len(options.strip()) > 0:
+        if options:
             arguments.append(options)
 
-        commands = []
-        if isWindows():
-            commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',
-                        GdalUtils.escapeAndJoin(arguments)]
-        else:
-            commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
+        if outputFormat:
+            arguments.append('-f {}'.format(outputFormat))
 
-        return commands
-
-    def commandName(self):
-        return "ogr2ogr"
+        return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

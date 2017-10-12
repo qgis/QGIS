@@ -324,8 +324,9 @@ class GdalUtils(object):
 
     @staticmethod
     def ogrLayerName(uri):
-        if os.path.isfile(uri):
-            return os.path.basename(os.path.splitext(uri)[0])
+        uri = uri.strip('"')
+        #if os.path.isfile(uri):
+        #    return os.path.basename(os.path.splitext(uri)[0])
 
         if ' table=' in uri:
             # table="schema"."table"
