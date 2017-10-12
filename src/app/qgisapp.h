@@ -1221,40 +1221,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newBookmark();
     //! activates the add feature tool
     void addFeature();
-    //! activates the add circular string tool
-    void circularStringCurvePoint();
-    //! activates the circular string radius tool
-    void circularStringRadius();
-    //! activates the add circle from 2 points tool
-    void circle2Points();
-    //! activates the add circle from 3 points tool
-    void circle3Points();
-    //! activates the add circle from 3 tangents tool
-    void circle3Tangents();
-    //! activates the add circle from 2 tangents and a point tool
-    void circle2TangentsPoint();
-    //! activates the add circle from center and radius tool
-    void circleCenterPoint();
-    //! activates the add ellipse from center and 2 points tool
-    void ellipseCenter2Points();
-    //! activates the add ellipse from center point tool
-    void ellipseCenterPoint();
-    //! activates the add ellipse from extent tool
-    void ellipseExtent();
-    //! activates the add ellipse from foci tool
-    void ellipseFoci();
-    //! activates the add rectangle from center and a point tool
-    void rectangleCenterPoint();
-    //! activates the add rectangle from extent tool
-    void rectangleExtent();
-    //! activates the add rectangle from 3 points tool
-    void rectangle3Points();
-    //! activates the add regular polygon from 2 points tool
-    void regularPolygon2Points();
-    //! activates the add regular polygon from center and a point tool
-    void regularPolygonCenterPoint();
-    //! activates the add regular polygon from center and a corner tool
-    void regularPolygonCenterCorner();
     //! activates the move feature tool
     void moveFeature();
     //! activates the copy and move feature tool
@@ -1293,6 +1259,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void offsetPointSymbol();
     //! shows the snapping Options
     void snappingOptions();
+    //! activates the tool
+    void setMapTool( QgsMapTool *tool );
+
 
     //! activates the rectangle selection tool
     void selectFeatures();
