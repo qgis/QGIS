@@ -308,10 +308,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 
-#include "qgsosmdownloaddialog.h"
-#include "qgsosmimportdialog.h"
-#include "qgsosmexportdialog.h"
-
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
@@ -1933,11 +1929,6 @@ void QgisApp::createActions()
   connect( mActionDecreaseBrightness, &QAction::triggered, this, &QgisApp::decreaseBrightness );
   connect( mActionIncreaseContrast, &QAction::triggered, this, &QgisApp::increaseContrast );
   connect( mActionDecreaseContrast, &QAction::triggered, this, &QgisApp::decreaseContrast );
-
-  // Vector Menu Items
-  connect( mActionOSMDownload, &QAction::triggered, this, &QgisApp::osmDownloadDialog );
-  connect( mActionOSMImport, &QAction::triggered, this, &QgisApp::osmImportDialog );
-  connect( mActionOSMExport, &QAction::triggered, this, &QgisApp::osmExportDialog );
 
   // Help Menu Items
 
@@ -12592,24 +12583,6 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
   mTray->showMessage( title, message );
   // Re-hide menubar icon
   mTray->hide();
-}
-
-void QgisApp::osmDownloadDialog()
-{
-  QgsOSMDownloadDialog dlg;
-  dlg.exec();
-}
-
-void QgisApp::osmImportDialog()
-{
-  QgsOSMImportDialog dlg;
-  dlg.exec();
-}
-
-void QgisApp::osmExportDialog()
-{
-  QgsOSMExportDialog dlg;
-  dlg.exec();
 }
 
 void QgisApp::showStatisticsDockWidget()

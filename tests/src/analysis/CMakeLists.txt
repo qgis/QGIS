@@ -64,7 +64,6 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 SET(TESTS
  testqgsgeometrysnapper.cpp
- testopenstreetmap.cpp
  testqgszonalstatistics.cpp
  testqgsrastercalculator.cpp
  testqgsalignraster.cpp

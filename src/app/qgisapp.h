@@ -1510,10 +1510,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! trust and load project macros
     void enableProjectMacros();
 
-    void osmDownloadDialog();
-    void osmImportDialog();
-    void osmExportDialog();
-
     void clipboardChanged();
 
     //! catch MapCanvas keyPress event so we can check if selected feature collection must be deleted
