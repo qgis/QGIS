@@ -125,11 +125,11 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       std::unique_ptr<QgsCurvePolygon> poly;
       if ( QgsWkbTypes::flatType( curve->wkbType() ) == QgsWkbTypes::LineString )
       {
-        poly.reset( new QgsPolygonV2() );
+        poly = qgis::make_unique< QgsPolygonV2 >();
       }
       else
       {
-        poly.reset( new QgsCurvePolygon() );
+        poly = qgis::make_unique< QgsCurvePolygon >();
       }
       // Ownership is still with part, curve points to the same object and is transferred
       // to poly here.
