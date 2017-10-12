@@ -325,7 +325,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 
-  return parts;
+  return std::move( parts );
 }
 
 QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -1083,7 +1083,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
           multiPoint->addGeometry( coordSeqPoint( cs, 0, hasZ, hasM ).clone() );
         }
       }
-      return multiPoint;
+      return std::move( multiPoint );
     }
     case GEOS_MULTILINESTRING:
     {
@@ -1097,7 +1097,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
           multiLineString->addGeometry( line.release() );
         }
       }
-      return multiLineString;
+      return std::move( multiLineString );
     }
     case GEOS_MULTIPOLYGON:
     {
@@ -1112,7 +1112,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
           multiPolygon->addGeometry( poly.release() );
         }
       }
-      return multiPolygon;
+      return std::move( multiPolygon );
     }
     case GEOS_GEOMETRYCOLLECTION:
     {
@@ -1126,7 +1126,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
           geomCollection->addGeometry( geom.release() );
         }
       }
-      return geomCollection;
+      return std::move( geomCollection );
     }
   }
   return nullptr;
