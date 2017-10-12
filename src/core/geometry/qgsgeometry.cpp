@@ -229,17 +229,16 @@ QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry > &geometries
 {
   QgsGeometry collected;
 
-  QList< QgsGeometry >::const_iterator git = geometries.constBegin();
-  for ( ; git != geometries.constEnd(); ++git )
+  for ( const QgsGeometry &g : geometries )
   {
     if ( collected.isNull() )
     {
-      collected = QgsGeometry( *git );
+      collected = g;
       collected.convertToMultiType();
     }
     else
     {
-      collected.addPart( *git );
+      collected.addPart( g );
     }
   }
   return collected;
@@ -2133,10 +2132,9 @@ QPolygonF QgsGeometry::asQPolygonF() const
     return result;
   }
 
-  QgsPolyline::const_iterator lineIt = polyline.constBegin();
-  for ( ; lineIt != polyline.constEnd(); ++lineIt )
+  for ( const QgsPointXY &p : qgsAsConst( polyline ) )
   {
-    result << lineIt->toQPointF();
+    result << p.toQPointF();
   }
   return result;
 }
@@ -2245,12 +2243,11 @@ QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry> &geometries )
   QgsGeos geos( nullptr );
 
   QList<QgsAbstractGeometry *> geomV2List;
-  QList<QgsGeometry>::const_iterator it = geometries.constBegin();
-  for ( ; it != geometries.constEnd(); ++it )
+  for ( const QgsGeometry &g : geometries )
   {
-    if ( !( ( *it ).isNull() ) )
+    if ( !( g.isNull() ) )
     {
-      geomV2List.append( ( *it ).geometry() );
+      geomV2List.append( g.geometry() );
     }
   }
 
@@ -2266,12 +2263,11 @@ QgsGeometry QgsGeometry::polygonize( const QList<QgsGeometry> &geometryList )
   QgsGeos geos( nullptr );
 
   QList<QgsAbstractGeometry *> geomV2List;
-  QList<QgsGeometry>::const_iterator it = geometryList.constBegin();
-  for ( ; it != geometryList.constEnd(); ++it )
+  for ( const QgsGeometry &g : geometryList )
   {
-    if ( !( ( *it ).isNull() ) )
+    if ( !( g.isNull() ) )
     {
-      geomV2List.append( ( *it ).geometry() );
+      geomV2List.append( g.geometry() );
     }
   }
 
@@ -2512,20 +2508,18 @@ QString QgsGeometry::lastError() const
 void QgsGeometry::convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output )
 {
   output.clear();
-  QList<QgsPointXY>::const_iterator it = input.constBegin();
-  for ( ; it != input.constEnd(); ++it )
+  for ( const QgsPointXY &p : input )
   {
-    output.append( QgsPoint( it->x(), it->y() ) );
+    output.append( QgsPoint( p ) );
   }
 }
 
 void QgsGeometry::convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output )
 {
   output.clear();
-  QgsPointSequence::const_iterator it = input.constBegin();
-  for ( ; it != input.constEnd(); ++it )
+  for ( const QgsPoint &p : input )
   {
-    output.append( QgsPointXY( it->x(), it->y() ) );
+    output.append( QgsPointXY( p.x(), p.y() ) );
   }
 }
 
@@ -2595,10 +2589,9 @@ QgsPolygon QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
 QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
 {
   QgsPolyline result;
-  QPolygonF::const_iterator it = polygon.constBegin();
-  for ( ; it != polygon.constEnd(); ++it )
+  for ( const QPointF &p : polygon )
   {
-    result.append( QgsPointXY( *it ) );
+    result.append( QgsPointXY( p ) );
   }
   return result;
 }
@@ -2857,11 +2850,11 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       // input geometry is multipart
       if ( isMultipart() )
       {
-        QgsMultiPolyline multiLine = asMultiPolyline();
+        const QgsMultiPolyline multiLine = asMultiPolyline();
         QgsMultiPoint multiPoint;
-        for ( QgsMultiPolyline::const_iterator multiLineIt = multiLine.constBegin(); multiLineIt != multiLine.constEnd(); ++multiLineIt )
-          for ( QgsPolyline::const_iterator lineIt = ( *multiLineIt ).constBegin(); lineIt != ( *multiLineIt ).constEnd(); ++lineIt )
-            multiPoint << *lineIt;
+        for ( const QgsPolyline &l : multiLine )
+          for ( const QgsPointXY &p : l )
+            multiPoint << p;
         return fromMultiPoint( multiPoint );
       }
       // input geometry is not multipart: copy directly the line into a multipoint
@@ -2883,22 +2876,22 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       // input geometry is multipart: make a multipoint from multipolygon
       if ( isMultipart() )
       {
-        QgsMultiPolygon multiPolygon = asMultiPolygon();
+        const QgsMultiPolygon multiPolygon = asMultiPolygon();
         QgsMultiPoint multiPoint;
-        for ( QgsMultiPolygon::const_iterator polygonIt = multiPolygon.constBegin(); polygonIt != multiPolygon.constEnd(); ++polygonIt )
-          for ( QgsMultiPolyline::const_iterator multiLineIt = ( *polygonIt ).constBegin(); multiLineIt != ( *polygonIt ).constEnd(); ++multiLineIt )
-            for ( QgsPolyline::const_iterator lineIt = ( *multiLineIt ).constBegin(); lineIt != ( *multiLineIt ).constEnd(); ++lineIt )
-              multiPoint << *lineIt;
+        for ( const QgsPolygon &poly : multiPolygon )
+          for ( const QgsPolyline &line : poly )
+            for ( const QgsPointXY &pt : line )
+              multiPoint << pt;
         return fromMultiPoint( multiPoint );
       }
       // input geometry is not multipart: make a multipoint from polygon
       else
       {
-        QgsPolygon polygon = asPolygon();
+        const QgsPolygon polygon = asPolygon();
         QgsMultiPoint multiPoint;
-        for ( QgsMultiPolyline::const_iterator multiLineIt = polygon.constBegin(); multiLineIt != polygon.constEnd(); ++multiLineIt )
-          for ( QgsPolyline::const_iterator lineIt = ( *multiLineIt ).constBegin(); lineIt != ( *multiLineIt ).constEnd(); ++lineIt )
-            multiPoint << *lineIt;
+        for ( const QgsPolyline &line : polygon )
+          for ( const QgsPointXY &pt : line )
+            multiPoint << pt;
         return fromMultiPoint( multiPoint );
       }
     }
@@ -2959,11 +2952,11 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       // input geometry is multipolygon
       if ( isMultipart() )
       {
-        QgsMultiPolygon multiPolygon = asMultiPolygon();
+        const QgsMultiPolygon multiPolygon = asMultiPolygon();
         QgsMultiPolyline multiLine;
-        for ( QgsMultiPolygon::const_iterator polygonIt = multiPolygon.constBegin(); polygonIt != multiPolygon.constEnd(); ++polygonIt )
-          for ( QgsMultiPolyline::const_iterator multiLineIt = ( *polygonIt ).constBegin(); multiLineIt != ( *polygonIt ).constEnd(); ++multiLineIt )
-            multiLine << *multiLineIt;
+        for ( const QgsPolygon &poly : multiPolygon )
+          for ( const QgsPolyline &line : poly )
+            multiLine << line;
 
         if ( destMultipart )
         {
@@ -2987,10 +2980,10 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
           // TODO: would it be better to remove rings?
           if ( destMultipart )
           {
-            QgsPolygon polygon = asPolygon();
+            const QgsPolygon polygon = asPolygon();
             QgsMultiPolyline multiLine;
-            for ( QgsMultiPolyline::const_iterator multiLineIt = polygon.constBegin(); multiLineIt != polygon.constEnd(); ++multiLineIt )
-              multiLine << *multiLineIt;
+            for ( const QgsPolyline &line : polygon )
+              multiLine << line;
             return fromMultiPolyline( multiLine );
           }
         }
