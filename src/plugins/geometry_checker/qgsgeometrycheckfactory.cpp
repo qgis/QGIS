@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsgeometrycheckfactory.h"
 
@@ -23,6 +24,7 @@
 #include "qgsgeometrydegeneratepolygoncheck.h"
 #include "qgsgeometryduplicatecheck.h"
 #include "qgsgeometryduplicatenodescheck.h"
+#include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometrygapcheck.h"
 #include "qgsgeometryholecheck.h"
 #include "qgsgeometrylineintersectioncheck.h"
@@ -242,6 +244,36 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesC
 }
 
 REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryDuplicateNodesCheck> )
+
+///////////////////////////////////////////////////////////////////////////////
+
+template<> void QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  ui.checkBoxFollowBoundaries->setChecked( QgsSettings().value( sSettingsGroup + "checkFollowBoundaries" ).toBool() );
+}
+
+template<> bool QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck>::checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int /*nPoint*/, int nLineString, int nPolygon ) const
+{
+  ui.checkBoxFollowBoundaries->setEnabled( nLineString + nPolygon > 0 );
+  ui.checkBoxFollowBoundaries->setEnabled( nLineString + nPolygon > 0 );
+  return ui.checkBoxFollowBoundaries->isEnabled();
+}
+
+template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck>::createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const
+{
+  QgsSettings().setValue( sSettingsGroup + "checkFollowBoundaries", ui.checkBoxFollowBoundaries->isChecked() );
+  if ( ui.checkBoxFollowBoundaries->isEnabled() && ui.checkBoxFollowBoundaries->isChecked() )
+  {
+    QgsVectorLayer *checkLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) );
+    return new QgsGeometryFollowBoundariesCheck( context, checkLayer );
+  }
+  else
+  {
+    return nullptr;
+  }
+}
+
+REGISTER_QGS_GEOMETRY_CHECK_FACTORY( QgsGeometryCheckFactoryT<QgsGeometryFollowBoundariesCheck> )
 
 ///////////////////////////////////////////////////////////////////////////////
 

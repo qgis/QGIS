@@ -41,9 +41,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-265</y>
         <width>626</width>
-        <height>991</height>
+        <height>1016</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -485,6 +485,37 @@
              <property name="spacing">
               <number>2</number>
              </property>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="checkBoxDuplicates">
+               <property name="text">
+                <string>Check for duplicates</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxGapArea">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QComboBox" name="comboLineLayerIntersection">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QCheckBox" name="checkLineIntersection">
+               <property name="text">
+                <string>Lines must not intersect any other lines</string>
+               </property>
+              </widget>
+             </item>
              <item row="3" column="0">
               <widget class="QCheckBox" name="checkBoxGaps">
                <property name="sizePolicy">
@@ -495,6 +526,37 @@
                </property>
                <property name="text">
                 <string>Check for gaps smaller than (map units sqr.)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="doubleSpinBoxOverlapArea">
+               <property name="decimals">
+                <number>6</number>
+               </property>
+               <property name="maximum">
+                <double>999999999.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="checkBoxCovered">
+               <property name="text">
+                <string>Check for features within other features</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="checkPointCoveredByLine">
+               <property name="text">
+                <string>Points must be covered by lines</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QCheckBox" name="checkLineLayerIntersection">
+               <property name="text">
+                <string>Lines must not intersect with features of layer</string>
                </property>
               </widget>
              </item>
@@ -511,61 +573,6 @@
                </property>
               </widget>
              </item>
-             <item row="6" column="0">
-              <widget class="QCheckBox" name="checkLineIntersection">
-               <property name="text">
-                <string>Lines must not intersect any other lines</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="checkBoxDuplicates">
-               <property name="text">
-                <string>Check for duplicates</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="checkBoxCovered">
-               <property name="text">
-                <string>Check for features within other features</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxGapArea">
-               <property name="decimals">
-                <number>6</number>
-               </property>
-               <property name="maximum">
-                <double>999999999.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="9" column="0" colspan="2">
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>&lt;i&gt;Note: Topology checks are performed in the current map CRS.&lt;/i&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QDoubleSpinBox" name="doubleSpinBoxOverlapArea">
-               <property name="decimals">
-                <number>6</number>
-               </property>
-               <property name="maximum">
-                <double>999999999.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QCheckBox" name="checkPointCoveredByLine">
-               <property name="text">
-                <string>Points must be covered by lines</string>
-               </property>
-              </widget>
-             </item>
              <item row="5" column="0">
               <widget class="QCheckBox" name="checkPointInPolygon">
                <property name="text">
@@ -573,15 +580,22 @@
                </property>
               </widget>
              </item>
-             <item row="7" column="0">
-              <widget class="QCheckBox" name="checkLineLayerIntersection">
+             <item row="10" column="0" colspan="2">
+              <widget class="QLabel" name="label">
                <property name="text">
-                <string>Lines must not intersect with features of layer</string>
+                <string>&lt;i&gt;Note: Topology checks are performed in the current map CRS.&lt;/i&gt;</string>
                </property>
               </widget>
              </item>
-             <item row="7" column="1">
-              <widget class="QComboBox" name="comboLineLayerIntersection">
+             <item row="8" column="0">
+              <widget class="QCheckBox" name="checkBoxFollowBoundaries">
+               <property name="text">
+                <string>Polygons must follow boundaries of layer</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="1">
+              <widget class="QComboBox" name="comboBoxFollowBoundaries">
                <property name="enabled">
                 <bool>false</bool>
                </property>

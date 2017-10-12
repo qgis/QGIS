@@ -94,6 +94,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometryduplicatecheck.cpp
   vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp
   vector/geometry_checker/qgsgeometrygapcheck.cpp
+  vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp
   vector/geometry_checker/qgsgeometryholecheck.cpp
   vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp
   vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp
@@ -128,6 +129,7 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.h
   vector/geometry_checker/qgsgeometryduplicatecheck.h
   vector/geometry_checker/qgsgeometryduplicatenodescheck.h
+  vector/geometry_checker/qgsgeometryfollowboundariescheck.h
   vector/geometry_checker/qgsgeometrygapcheck.h
   vector/geometry_checker/qgsgeometryholecheck.h
   vector/geometry_checker/qgsgeometrylineintersectioncheck.h

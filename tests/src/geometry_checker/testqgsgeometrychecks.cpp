@@ -26,6 +26,7 @@
 #include "qgsgeometrydegeneratepolygoncheck.h"
 #include "qgsgeometryduplicatecheck.h"
 #include "qgsgeometryduplicatenodescheck.h"
+#include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometrygapcheck.h"
 #include "qgsgeometryholecheck.h"
 #include "qgsgeometrylineintersectioncheck.h"
@@ -69,6 +70,7 @@ class TestQgsGeometryChecks: public QObject
     void testDegeneratePolygonCheck();
     void testDuplicateCheck();
     void testDuplicateNodesCheck();
+    void testFollowBoundariesCheck();
     void testGapCheck();
     void testHoleCheck();
     void testLineIntersectionCheck();
@@ -119,6 +121,7 @@ void TestQgsGeometryChecks::testAngleCheck()
   QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 1, QgsPointXY( 0.6960, 0.5908 ), QgsVertexId( 0, 0, 0 ), 7.0556 ) == 1 );
   QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 1, QgsPointXY( 0.98690, 0.55699 ), QgsVertexId( 1, 0, 5 ), 7.7351 ) == 1 );
   QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 11, QgsPointXY( -0.3186, 1.6734 ), QgsVertexId( 0, 0, 1 ), 3.5092 ) == 1 );
+
 }
 
 void TestQgsGeometryChecks::testAreaCheck()
@@ -219,6 +222,26 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 6, QgsPointXY( 0.2473, 2.0821 ), QgsVertexId( 0, 0, 1 ) ) == 1 );
   QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 6, QgsPointXY( 0.5158, 2.0930 ), QgsVertexId( 0, 0, 3 ) ) == 1 );
   QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 4, QgsPointXY( 1.6319, 0.5642 ), QgsVertexId( 0, 0, 1 ) ) == 1 );
+}
+
+void TestQgsGeometryChecks::testFollowBoundariesCheck()
+{
+  QMap<QString, QString> layers;
+  layers.insert( "follow_ref.shp", "" );
+  layers.insert( "follow_subj.shp", "" );
+  QgsGeometryCheckerContext *context = createTestContext( layers );
+
+  QList<QgsGeometryCheckError *> checkErrors;
+  QStringList messages;
+
+  QgsGeometryFollowBoundariesCheck( context, context->featurePools[layers["follow_ref.shp"]]->getLayer() ).collectErrors( checkErrors, messages );
+  listErrors( checkErrors, messages );
+
+  QCOMPARE( checkErrors.size(), 2 );
+  QVERIFY( searchCheckError( checkErrors, layers["follow_subj.shp"], 1 ) == 1 );
+  QVERIFY( searchCheckError( checkErrors, layers["follow_subj.shp"], 3 ) == 1 );
+
+  cleanupTestContext( context );
 }
 
 void TestQgsGeometryChecks::testGapCheck()

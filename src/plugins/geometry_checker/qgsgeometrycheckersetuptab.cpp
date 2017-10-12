@@ -79,6 +79,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   connect( ui.checkBoxSliverPolygons, &QAbstractButton::toggled, ui.widgetSliverThreshold, &QWidget::setEnabled );
   connect( ui.checkBoxSliverArea, &QAbstractButton::toggled, ui.doubleSpinBoxSliverArea, &QWidget::setEnabled );
   connect( ui.checkLineLayerIntersection, &QAbstractButton::toggled, ui.comboLineLayerIntersection, &QComboBox::setEnabled );
+  connect( ui.checkBoxFollowBoundaries, &QAbstractButton::toggled, ui.comboBoxFollowBoundaries, &QComboBox::setEnabled );
 
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
   {
@@ -105,6 +106,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   }
   ui.listWidgetInputLayers->clear();
   ui.comboLineLayerIntersection->clear();
+  ui.comboBoxFollowBoundaries->clear();
 
   // Collect layers
   for ( QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>() )
@@ -124,6 +126,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     {
       item->setIcon( QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" ) );
       ui.comboLineLayerIntersection->addItem( layer->name(), layer->id() );
+      ui.comboBoxFollowBoundaries->addItem( layer->name(), layer->id() );
     }
     else
     {
@@ -263,6 +266,13 @@ void QgsGeometryCheckerSetupTab::runChecks()
         return;
       }
     }
+  }
+  QgsVectorLayer *lineLayerCheckLayer = ui.comboLineLayerIntersection->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) ) : nullptr;
+  QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) ) : nullptr;
+  if ( layers.contains( lineLayerCheckLayer ) || layers.contains( followBoundaryCheckLayer ) )
+  {
+    QMessageBox::critical( this, tr( "Error" ), tr( "The test layer set contains a layer selected for a topology check." ) );
+    return;
   }
 
   for ( QgsVectorLayer *layer : layers )
