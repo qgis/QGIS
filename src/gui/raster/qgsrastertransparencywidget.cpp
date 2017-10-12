@@ -53,6 +53,8 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
   connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mSrcNoDataValueCheckBox, &QCheckBox::stateChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( leNoDataValue, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
@@ -102,6 +104,17 @@ void QgsRasterTransparencyWidget::syncToLayer()
 
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
+
+  QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
+  QgsDebugMsg( QString( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
+  if ( !noDataRangeList.isEmpty() )
+  {
+    leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
+  }
+  else
+  {
+    leNoDataValue->insert( QLatin1String( "" ) );
+  }
 
   populateTransparencyTable( mRasterLayer->renderer() );
 }
@@ -366,6 +379,25 @@ bool QgsRasterTransparencyWidget::rasterIsMultiBandColor()
 
 void QgsRasterTransparencyWidget::apply()
 {
+  //set NoDataValue
+  QgsRasterRangeList myNoDataRangeList;
+  if ( "" != leNoDataValue->text() )
+  {
+    bool myDoubleOk = false;
+    double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
+    if ( myDoubleOk )
+    {
+      QgsRasterRange myNoDataRange( myNoDataValue, myNoDataValue );
+      myNoDataRangeList << myNoDataRange;
+    }
+  }
+  for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
+  {
+    mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
+    mRasterLayer->dataProvider()->setUseSourceNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
+  }
+
+  //transparency settings
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();
   if ( rasterRenderer )
   {
