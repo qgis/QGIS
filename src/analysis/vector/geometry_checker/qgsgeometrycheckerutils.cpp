@@ -32,9 +32,9 @@ namespace QgsGeometryCheckerUtils
     , mMapCrs( useMapCrs )
   {
     mGeometry = feature.geometry().geometry()->clone();
-    if ( useMapCrs && !mLayerToMapTransform.isShortCircuited() )
+    if ( useMapCrs && !mFeaturePool->getLayerToMapTransform().isShortCircuited() )
     {
-      mGeometry->transform( mLayerToMapTransform );
+      mGeometry->transform( mFeaturePool->getLayerToMapTransform() );
     }
   }
   LayerFeature::~LayerFeature()

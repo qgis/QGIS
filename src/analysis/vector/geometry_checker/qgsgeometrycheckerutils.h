@@ -48,8 +48,6 @@ namespace QgsGeometryCheckerUtils
     private:
       const QgsFeaturePool *mFeaturePool;
       QgsFeature mFeature;
-      double mLayerToMapUnits;
-      QgsCoordinateTransform mLayerToMapTransform;
       QgsAbstractGeometry *mGeometry = nullptr;
       bool mMapCrs;
   };
