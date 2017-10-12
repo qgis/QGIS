@@ -8003,6 +8003,18 @@ void QgisApp::saveEdits( QgsMapLayer *layer, bool leaveEditable, bool triggerRep
   if ( vlayer == activeLayer() )
     mSaveRollbackInProgress = true;
 
+  // stop rendering to avoid lock in case of
+  // splilte and gpkg fix #15498
+  if ( mMapCanvas->mapSettings().layers().contains( vlayer->id() ) )
+  {
+    if ( vlayer->dataProvider()->storageType().count( "SQLite" ) ||
+         vlayer->dataProvider()->storageType().count( "GPKG" ) )
+    {
+      if ( mMapCanvas->isDrawing() )
+        mMapCanvas->stopRendering();
+    }
+  }
+
   if ( !vlayer->commitChanges() )
   {
     mSaveRollbackInProgress = false;
