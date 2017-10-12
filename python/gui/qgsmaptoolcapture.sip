@@ -164,6 +164,15 @@ class QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QList<QgsPoint> points();
 
     /**
+     * List of digitized points with z support
+     *
+     * @return List of points
+     *
+     * @node added in 2.18
+     */
+    QList<QgsPointV2> pointsV2();
+
+    /**
      * Set the points on which to work
      *
      * @param pointList A list of points
