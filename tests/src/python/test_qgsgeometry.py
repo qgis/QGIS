@@ -3525,5 +3525,6 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertAlmostEqual(polygon.angleAtVertex(3), math.radians(225.0), places=3)
         self.assertAlmostEqual(polygon.angleAtVertex(4), math.radians(135.0), places=3)
 
+
 if __name__ == '__main__':
     unittest.main()

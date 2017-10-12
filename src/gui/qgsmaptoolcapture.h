@@ -199,7 +199,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * @return List of points
      *
-     * @node added in 2.18
+     * @note added in 2.18
      */
     QgsPointSequenceV2 pointsV2();
 
