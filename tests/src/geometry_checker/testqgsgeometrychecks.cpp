@@ -26,6 +26,7 @@
 #include "qgsgeometrydegeneratepolygoncheck.h"
 #include "qgsgeometryduplicatecheck.h"
 #include "qgsgeometryduplicatenodescheck.h"
+#include "qgsgeometrygapcheck.h"
 #include "qgsgeometryholecheck.h"
 #include "qgsgeometrylineintersectioncheck.h"
 #include "qgsgeometrylinelayerintersectioncheck.h"
@@ -38,7 +39,6 @@
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsgeometrysliverpolygoncheck.h"
 
-#include "qgsgeometrygapcheck.h"
 #include "qgsgeometrytypecheck.h"
 
 
@@ -230,8 +230,15 @@ void TestQgsGeometryChecks::testGapCheck()
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  QgsGeometryGapCheck( context, 0.001 ).collectErrors( checkErrors, messages );
+  QgsGeometryGapCheck( context, 0.01 ).collectErrors( checkErrors, messages );
   listErrors( checkErrors, messages );
+
+  QCOMPARE( checkErrors.size(), 5 );
+  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ) == 1 );
+  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.4238, -0.7479 ), QgsVertexId(), 0.0071 ) == 1 );
+  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.0094, -0.4448 ), QgsVertexId(), 0.0033 ) == 1 );
+  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.2939, -0.4694 ), QgsVertexId(), 0.0053 ) == 1 );
+  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.6284, -0.3641 ), QgsVertexId(), 0.0018 ) == 1 );
 
   cleanupTestContext( context );
 }
