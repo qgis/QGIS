@@ -123,6 +123,31 @@ class QgsBoundaryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 };
 
 /**
+ * Native drop geometries algorithm.
+ */
+class QgsDropGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsDropGeometryAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "dropgeometries" ); }
+    QString displayName() const override { return QObject::tr( "Drop geometries" ); }
+    QStringList tags() const override { return QObject::tr( "remove,drop,delete,geometry,objects" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector general" ); }
+    QString shortHelpString() const override;
+    QgsDropGeometryAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const override;
+
+  protected:
+
+    QString outputName() const override { return QObject::tr( "Dropped geometries" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    QgsFeatureRequest request() const override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+};
+
+/**
  * Native transform algorithm.
  */
 class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm

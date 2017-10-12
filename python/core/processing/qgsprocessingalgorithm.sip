@@ -896,6 +896,13 @@ class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
                                           QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
+    virtual QgsFeatureRequest request() const;
+%Docstring
+ Returns the feature request used for fetching features to process from the
+ source layer. The default implementation requests all attributes and geometry.
+ :rtype: QgsFeatureRequest
+%End
+
 };
 
 

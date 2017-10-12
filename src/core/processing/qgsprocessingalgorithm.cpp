@@ -718,3 +718,8 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
+
+QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
+{
+  return QgsFeatureRequest();
+}

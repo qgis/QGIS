@@ -95,6 +95,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
   addAlgorithm( new QgsBoundaryAlgorithm() );
+  addAlgorithm( new QgsDropGeometryAlgorithm() );
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -3262,5 +3263,38 @@ QgsFeature QgsBoundaryAlgorithm::processFeature( const QgsFeature &feature, QgsP
   return outFeature;
 }
 
+QString QgsDropGeometryAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes." );
+}
+
+QgsDropGeometryAlgorithm *QgsDropGeometryAlgorithm::createInstance() const
+{
+  return new QgsDropGeometryAlgorithm();
+}
+
+QgsCoordinateReferenceSystem QgsDropGeometryAlgorithm::outputCrs( const QgsCoordinateReferenceSystem & ) const
+{
+  return QgsCoordinateReferenceSystem();
+}
+
+QgsWkbTypes::Type QgsDropGeometryAlgorithm::outputWkbType( QgsWkbTypes::Type ) const
+{
+  return QgsWkbTypes::NoGeometry;
+}
+
+QgsFeatureRequest QgsDropGeometryAlgorithm::request() const
+{
+  return QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
+}
+
+QgsFeature QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  f.clearGeometry();
+  return f;
+}
+
 
 ///@endcond
+

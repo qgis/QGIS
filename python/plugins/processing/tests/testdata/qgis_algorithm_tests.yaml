@@ -2008,7 +2008,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:dropgeometries
+  - algorithm: native:dropgeometries
     name: Drop geometries
     params:
       INPUT:

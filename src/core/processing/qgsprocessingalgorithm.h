@@ -877,6 +877,12 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
                                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    /**
+     * Returns the feature request used for fetching features to process from the
+     * source layer. The default implementation requests all attributes and geometry.
+     */
+    virtual QgsFeatureRequest request() const;
+
   private:
 
     std::unique_ptr< QgsProcessingFeatureSource > mSource;
