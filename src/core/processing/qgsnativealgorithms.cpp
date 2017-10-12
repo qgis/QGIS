@@ -3230,7 +3230,7 @@ QgsWkbTypes::Type QgsBoundaryAlgorithm::outputWkbType( QgsWkbTypes::Type inputWk
 
     case QgsWkbTypes::PointGeometry:
     case QgsWkbTypes::UnknownGeometry:
-    case QgsWkbTypes::NoGeometry:
+    case QgsWkbTypes::NullGeometry:
       outputWkb = QgsWkbTypes::NoGeometry;
       break;
   }
