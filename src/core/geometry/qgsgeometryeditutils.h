@@ -45,7 +45,7 @@ class QgsGeometryEditUtils
      * \returns 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      * 3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring
      */
-    static QgsGeometry::OperationResult addRing( QgsAbstractGeometry *geometry, QgsCurve *ring SIP_TRANSFER );
+    static QgsGeometry::OperationResult addRing( QgsAbstractGeometry *geometry, std::unique_ptr< QgsCurve > ring );
 
     /**
      * Add a \a part to multi type \a geometry.
@@ -53,7 +53,7 @@ class QgsGeometryEditUtils
      * \returns 0 in case of success, 1 if not a multigeometry, 2 if part is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
-    static QgsGeometry::OperationResult addPart( QgsAbstractGeometry *geometry, QgsAbstractGeometry *part SIP_TRANSFER );
+    static QgsGeometry::OperationResult addPart( QgsAbstractGeometry *geometry, std::unique_ptr< QgsAbstractGeometry > part );
 
     /**
      * Deletes a ring from a geometry.

@@ -56,7 +56,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Performs a fast, non-robust intersection between the geometry and
      * a \a rectangle. The returned geometry may be invalid.
      */
-    QgsAbstractGeometry *clip( const QgsRectangle &rectangle, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > clip( const QgsRectangle &rectangle, QString *errorMsg = nullptr ) const;
 
     /**
      * Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.0
      */
-    QgsAbstractGeometry *subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
 
     QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry *> &, QString *errorMsg = nullptr ) const override;
@@ -167,9 +167,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * calculated
      * \since QGIS 3.0
      */
-    QgsAbstractGeometry *singleSidedBuffer( double distance, int segments, int side,
-                                            int joinStyle, double miterLimit,
-                                            QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, int side,
+        int joinStyle, double miterLimit,
+        QString *errorMsg = nullptr ) const;
 
     /**
      * Reshapes the geometry using a line
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @param errorMsg if specified, provides more details about failure
      * @return the reshaped geometry
      */
-    QgsAbstractGeometry *reshapeGeometry( const QgsLineString &reshapeWithLine, EngineOperationResult *errorCode, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > reshapeGeometry( const QgsLineString &reshapeWithLine, EngineOperationResult *errorCode, QString *errorMsg = nullptr ) const;
 
     /**
      * Merges any connected lines in a LineString/MultiLineString geometry and
@@ -260,8 +260,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Create a geometry from a GEOSGeometry
      * \param geos GEOSGeometry. Ownership is NOT transferred.
      */
-    static QgsAbstractGeometry *fromGeos( const GEOSGeometry *geos );
-    static QgsPolygonV2 *fromGeosPolygon( const GEOSGeometry *geos );
+    static std::unique_ptr< QgsAbstractGeometry > fromGeos( const GEOSGeometry *geos );
+    static std::unique_ptr< QgsPolygonV2 > fromGeosPolygon( const GEOSGeometry *geos );
     static GEOSGeometry *asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
     static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
@@ -294,10 +294,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     //geos util functions
     void cacheGeos() const;
-    QgsAbstractGeometry *overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr ) const;
     bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
-    static QgsLineString *sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
+    static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry *g );
     static GEOSGeometry *nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry *> &splitResult ) const;

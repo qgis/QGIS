@@ -897,7 +897,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
 }
 
 
-QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
+std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
 {
   //bool is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -936,7 +936,7 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
   if ( !geosout )
     return nullptr;
 
-  QgsAbstractGeometry *lwgeom_out = QgsGeos::fromGeos( geosout );
+  std::unique_ptr< QgsAbstractGeometry > lwgeom_out = QgsGeos::fromGeos( geosout );
   GEOSGeom_destroy_r( handle, geosout );
   if ( !lwgeom_out )
     return nullptr;
@@ -960,8 +960,8 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
         collection = new QgsGeometryCollection();
         break;
     }
-    collection->addGeometry( lwgeom_out ); // takes ownership
-    lwgeom_out = collection;
+    collection->addGeometry( lwgeom_out.release() ); // takes ownership
+    lwgeom_out.reset( collection );
   }
 
   return lwgeom_out;

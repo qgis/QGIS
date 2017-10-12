@@ -26,9 +26,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsvectorlayer.h"
 #include <limits>
 
-QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, QgsCurve *r )
+QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, std::unique_ptr<QgsCurve> ring )
 {
-  std::unique_ptr<QgsCurve> ring( r );
   if ( !ring )
   {
     return QgsGeometry::InvalidInput;
@@ -96,9 +95,8 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry 
   return QgsGeometry::AddRingNotInExistingFeature; //not contained in any outer ring
 }
 
-QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, QgsAbstractGeometry *p )
+QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, std::unique_ptr<QgsAbstractGeometry> part )
 {
-  std::unique_ptr<QgsAbstractGeometry> part( p );
   if ( !geom )
   {
     return QgsGeometry::InvalidBaseGeometry;
