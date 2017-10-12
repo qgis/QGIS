@@ -1685,6 +1685,16 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = g.exportToWkt()
         assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
+        # Test reshape with z support
+        wkt = 'LineStringZ (-1 0 -3, 0 0 20, 5 0 9999)'
+        g = QgsGeometry.fromWkt(wkt)
+
+        self.assertEqual(g.reshapeGeometry([QgsPointV2(QgsWKBTypes.PointZ, -1, 0, -3), QgsPointV2(QgsWKBTypes.PointZ, -6, 5, 55)]), 0)
+        wkt = g.exportToWkt()
+
+        expWkt = 'LineStringZ (-6 5 55, -1 0 -3, 0 0 20, 5 0 9999)'
+        assert compareWkt(expWkt, wkt), "testReshape failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
+
     def testConvertToMultiType(self):
         """ Test converting geometries to multi type """
         point = QgsGeometry.fromWkt('Point (1 2)')
