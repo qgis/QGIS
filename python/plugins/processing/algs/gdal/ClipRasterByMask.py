@@ -32,7 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessing,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterString,
@@ -65,9 +65,9 @@ class ClipRasterByMask(GdalAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterVectorLayer(self.MASK,
-                                                            self.tr('Mask layer'),
-                                                            [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.MASK,
+                                                              self.tr('Mask layer'),
+                                                              [QgsProcessing.TypeVectorPolygon]))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
@@ -119,8 +119,7 @@ class ClipRasterByMask(GdalAlgorithm):
     def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
 
-        maskLayer = self.parameterAsVectorLayer(parameters, self.MASK, context)
-        connectionString = GdalUtils.ogrConnectionString(maskLayer.source(), context)
+        maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback)
 
         nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
@@ -140,10 +139,7 @@ class ClipRasterByMask(GdalAlgorithm):
             arguments.append('-tap')
 
         arguments.append('-cutline')
-        arguments.append(connectionString)
-        if maskLayer.subsetString():
-            arguments.append('-cwhere')
-            arguments.append(maskLayer.subsetString())
+        arguments.append(maskLayer)
 
         if self.parameterAsBool(parameters, self.CROP_TO_CUTLINE, context):
             arguments.append('-crop_to_cutline')
