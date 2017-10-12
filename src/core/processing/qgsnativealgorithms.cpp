@@ -96,6 +96,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsDropGeometryAlgorithm() );
+  addAlgorithm( new QgsDropMZValuesAlgorithm() );
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -3295,6 +3296,56 @@ QgsFeature QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, 
   return f;
 }
 
+QString QgsDropMZValuesAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm can remove any measure (M) or Z values from input geometries." );
+}
+
+QgsDropMZValuesAlgorithm *QgsDropMZValuesAlgorithm::createInstance() const
+{
+  return new QgsDropMZValuesAlgorithm();
+}
+
+void QgsDropMZValuesAlgorithm::initParameters( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DROP_M_VALUES" ), QObject::tr( "Drop M Values" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DROP_Z_VALUES" ), QObject::tr( "Drop Z Values" ), false ) );
+}
+
+QgsWkbTypes::Type QgsDropMZValuesAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  QgsWkbTypes::Type wkb = inputWkbType;
+  if ( mDropM )
+    wkb = QgsWkbTypes::dropM( wkb );
+  if ( mDropZ )
+    wkb = QgsWkbTypes::dropZ( wkb );
+  return wkb;
+}
+
+bool QgsDropMZValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mDropM = parameterAsBool( parameters, QStringLiteral( "DROP_M_VALUES" ), context );
+  mDropZ = parameterAsBool( parameters, QStringLiteral( "DROP_Z_VALUES" ), context );
+  return true;
+}
+
+QgsFeature QgsDropMZValuesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+{
+  QgsFeature f = feature;
+  if ( f.hasGeometry() )
+  {
+    std::unique_ptr< QgsAbstractGeometry > newGeom( f.geometry().geometry()->clone() );
+    if ( mDropM )
+      newGeom->dropMValue();
+    if ( mDropZ )
+      newGeom->dropZValue();
+    f.setGeometry( QgsGeometry( newGeom.release() ) );
+  }
+
+  return f;
+}
 
 ///@endcond
+
+
 

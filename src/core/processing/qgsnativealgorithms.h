@@ -148,6 +148,36 @@ class QgsDropGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 };
 
 /**
+ * Native drop M/Z values algorithm.
+ */
+class QgsDropMZValuesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+{
+
+  public:
+
+    QgsDropMZValuesAlgorithm() = default;
+    QString name() const override { return QStringLiteral( "dropmzvalues" ); }
+    QString displayName() const override { return QObject::tr( "Drop M/Z values" ); }
+    QStringList tags() const override { return QObject::tr( "drop,set,convert,m,measure,z,25d,3d,values" ).split( ',' ); }
+    QString group() const override { return QObject::tr( "Vector geometry" ); }
+    QString shortHelpString() const override;
+    QgsDropMZValuesAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
+    QString outputName() const override { return QObject::tr( "Z/M Dropped" ); }
+    QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    bool mDropM = false;
+    bool mDropZ = false;
+};
+
+/**
  * Native transform algorithm.
  */
 class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm

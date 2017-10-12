@@ -57,7 +57,6 @@ from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
-from .DropMZValues import DropMZValues
 from .EliminateSelection import EliminateSelection
 from .EquivalentNumField import EquivalentNumField
 from .ExecuteSQL import ExecuteSQL
@@ -185,7 +184,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
                 Difference(),
-                DropMZValues(),
                 EliminateSelection(),
                 EquivalentNumField(),
                 ExecuteSQL(),

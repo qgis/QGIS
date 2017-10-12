@@ -733,7 +733,7 @@ tests:
         name: expected/set_z_value.shp
         type: vector
 
-  - algorithm: qgis:dropmzvalues
+  - algorithm: native:dropmzvalues
     name: Drop M Value
     params:
       INPUT:
@@ -746,7 +746,7 @@ tests:
         name: expected/m_dropped.shp
         type: vector
 
-  - algorithm: qgis:dropmzvalues
+  - algorithm: native:dropmzvalues
     name: Drop Z Value
     params:
       INPUT:
@@ -759,7 +759,7 @@ tests:
         name: expected/z_dropped.shp
         type: vector
 
-  - algorithm: qgis:dropmzvalues
+  - algorithm: native:dropmzvalues
     name: Drop ZM Value
     params:
       INPUT:
