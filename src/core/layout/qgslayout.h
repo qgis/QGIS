@@ -468,6 +468,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
   public slots:
 
     /**
+     * Forces the layout, and all items contained within it, to refresh. For instance, this causes maps to redraw
+     * and rebuild cached images, html items to reload their source url, and attribute tables
+     * to refresh their contents. Calling this also triggers a recalculation of all data defined
+     * attributes within the layout.
+     *
+     * \see refreshed()
+     */
+    void refresh();
+
+    /**
      * Updates the scene bounds of the layout.
      */
     void updateBounds();
@@ -484,6 +494,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * If nullptr, no item is selected.
      */
     void selectedItemChanged( QgsLayoutItem *selected );
+
+    /**
+     * Is emitted when the layout has been refreshed and items should also be refreshed
+     * and updated.
+     */
+    void refreshed();
 
   private:
 

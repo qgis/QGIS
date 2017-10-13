@@ -142,6 +142,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mHorizontalRuler->setContextMenu( rulerMenu );
   mVerticalRuler->setContextMenu( rulerMenu );
 
+  connect( mActionRefreshView, &QAction::triggered, this, &QgsLayoutDesignerDialog::refreshLayout );
+
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
 
@@ -807,6 +809,28 @@ void QgsLayoutDesignerDialog::moveSelectedItemsToTop()
 void QgsLayoutDesignerDialog::moveSelectedItemsToBottom()
 {
   mView->moveSelectedItemsToBottom();
+}
+
+void QgsLayoutDesignerDialog::refreshLayout()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+#if 0 //TODO
+  //refresh atlas feature first, to update attributes
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  {
+    //block signals from atlas, since the later call to mComposition->refreshItems() will
+    //also trigger items to refresh atlas dependent properties
+    mComposition->atlasComposition().blockSignals( true );
+    mComposition->atlasComposition().refreshFeature();
+    mComposition->atlasComposition().blockSignals( false );
+  }
+#endif
+
+  currentLayout()->refresh();
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )

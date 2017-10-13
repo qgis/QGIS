@@ -518,6 +518,12 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   return ungroupedItems;
 }
 
+void QgsLayout::refresh()
+{
+  emit refreshed();
+  update();
+}
+
 void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   mCustomProperties.writeXml( element, document );

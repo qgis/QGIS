@@ -124,6 +124,7 @@
      <addaction name="mActionPreviewProtanope"/>
      <addaction name="mActionPreviewDeuteranope"/>
     </widget>
+    <addaction name="mActionRefreshView"/>
     <addaction name="menuPreview"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomIn"/>
@@ -238,6 +239,7 @@
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomActual"/>
    <addaction name="mActionZoomAll"/>
+   <addaction name="mActionRefreshView"/>
   </widget>
   <widget class="QToolBar" name="mActionsToolbar">
    <property name="windowTitle">
@@ -990,6 +992,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+G</string>
+   </property>
+  </action>
+  <action name="mActionRefreshView">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDraw.svg</normaloff>:/images/themes/default/mActionDraw.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Refresh</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh view</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>
