@@ -176,6 +176,10 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void setShowTerrainTilesInfo( bool enabled );
     //! Returns whether to display extra tile info on top of terrain tiles (for debugging)
     bool showTerrainTilesInfo() const { return mShowTerrainTileInfo; }
+    //! Sets whether to display labels on terrain tiles
+    void setShowLabels( bool enabled );
+    //! Returns whether to display labels on terrain tiles
+    bool showLabels() const { return mShowLabels; }
 
   signals:
     //! Emitted when the background color has changed
@@ -198,6 +202,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void showTerrainBoundingBoxesChanged();
     //! Emitted when the flag whether terrain's tile info is shown has changed
     void showTerrainTilesInfoChanged();
+    //! Emitted when the flag whether labels are displayed on terrain tiles has changed
+    void showLabelsChanged();
 
   private:
     double mOriginX, mOriginY, mOriginZ;   //!< Coordinates in map CRS at which our 3D world has origin (0,0,0)
@@ -211,6 +217,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     float mMaxTerrainGroundError;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
     bool mShowTerrainBoundingBoxes;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
+    bool mShowLabels; //!< Whether to display labels on terrain tiles
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
     bool mSkyboxEnabled;  //!< Whether to render skybox
