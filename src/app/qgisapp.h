@@ -99,6 +99,8 @@ class QgsStatusBar;
 
 class QgsUserProfileManagerWidgetFactory;
 
+class Qgs3DMapCanvasDockWidget;
+
 class QDomDocument;
 class QNetworkReply;
 class QNetworkProxy;
@@ -1752,6 +1754,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createMapTips();
     void createDecorations();
     void init3D();
+
+    //! Creates a new 3D map dock without initializing its position or contents
+    Qgs3DMapCanvasDockWidget *createNew3DMapCanvasDock( const QString &name );
+
+    //! Closes any existing 3D map docks
+    void closeAdditional3DMapCanvases();
 
     /**
      * Refresh the user profile menu.

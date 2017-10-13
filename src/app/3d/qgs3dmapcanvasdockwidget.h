@@ -31,9 +31,11 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     Qgs3DMapCanvasDockWidget( QWidget *parent = nullptr );
 
     //! takes ownership
-    void setMap( Qgs3DMapSettings *map );
+    void setMapSettings( Qgs3DMapSettings *map );
 
     void setMainCanvas( QgsMapCanvas *canvas );
+
+    Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
 
   private slots:
     void resetView();
