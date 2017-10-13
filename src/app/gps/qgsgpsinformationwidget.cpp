@@ -260,7 +260,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWid
 
   mAcquisitionIntValidator = new QIntValidator( 0, MAXACQUISITIONINTERVAL, this );
   mDistanceThresholdValidator = new QIntValidator( 0, MAXDISTANCETHRESHOLD, this );
-  mAcquisitionTimer = std::make_unique<QTimer>( this );
+  mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
   mAcquisitionTimer->setSingleShot( true );
   mCboAcquisitionInterval->setInsertPolicy( QComboBox::NoInsert );
   mCboDistanceThreshold->setInsertPolicy( QComboBox::NoInsert );
