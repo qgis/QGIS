@@ -154,6 +154,16 @@ void TestOpenStreetMap::importAndQueries()
   QgsOSMWay wNot = db.way( 1234567 );
   QCOMPARE( wNot.isValid(), false );
 
+  // see https://issues.qgis.org/issues/10790
+  w = db.way( 471587870 );
+  QCOMPARE( w.isValid(), true );
+  QCOMPARE( w.nodes().count(), 5 );
+  QCOMPARE( w.nodes().at( 0 ), ( QgsOSMId )4657497964 );
+  QCOMPARE( w.nodes().at( 1 ), ( QgsOSMId )4657497963 );
+  QCOMPARE( w.nodes().at( 2 ), ( QgsOSMId )4657497956 );
+  QCOMPARE( w.nodes().at( 3 ), ( QgsOSMId )4657497957 );
+  QCOMPARE( w.nodes().at( 4 ), ( QgsOSMId )4657497964 );
+
   // query way tags
 
   QgsOSMTags tagsW = db.tags( true, 32137532 );
@@ -167,6 +177,7 @@ void TestOpenStreetMap::importAndQueries()
 
   QgsOSMWayIterator ways = db.listWays();
   QCOMPARE( ways.next().id(), ( qint64 )32137532 );
+  QCOMPARE( ways.next().id(), ( qint64 )471587870 );
   QCOMPARE( ways.next().isValid(), false );
   ways.close();
 

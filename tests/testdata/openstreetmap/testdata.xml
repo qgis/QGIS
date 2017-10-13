@@ -30,6 +30,21 @@
   <tag k="source" v="cuzk:km"/>
  </way>
 
+ <!-- way composed by nodes with id not fitting 32bit -->
+ <!-- See https://issues.qgis.org/issues/10790 -->
+ <node id="4657497956" lat="51.3967158" lon="6.3797713"/>
+ <node id="4657497957" lat="51.3967242" lon="6.3796371"/>
+ <node id="4657497963" lat="51.3967845" lon="6.3797780"/>
+ <node id="4657497964" lat="51.3967886" lon="6.3796439"/>
+ <way id="471587870">
+   <nd ref="4657497964"/>
+   <nd ref="4657497963"/>
+   <nd ref="4657497956"/>
+   <nd ref="4657497957"/>
+   <nd ref="4657497964"/>
+   <tag k="building" v="yes"/>
+ </way>
+
  <!-- relation -->
  <relation id="126753" user="BiIbo" uid="3516" visible="true" version="1" changeset="1078773" timestamp="2009-05-04T19:51:58Z">
   <member type="way" ref="32137532" role="outer"/>
