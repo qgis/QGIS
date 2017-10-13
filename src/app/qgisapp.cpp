@@ -3257,6 +3257,8 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   if ( !dock )
     return nullptr;
 
+  setupDockWidget( dock );  // use default dock position settings
+
   dock->mapCanvas()->setLayers( mMapCanvas->layers() );
   dock->mapCanvas()->setExtent( mMapCanvas->extent() );
   QgsDebugMsgLevel( QString( "QgisApp::createNewMapCanvas -2- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
@@ -3265,7 +3267,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   return dock->mapCanvas();
 }
 
-QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area )
+QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
 {
   Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
   {
@@ -3300,31 +3302,36 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
 
-  mapCanvasWidget->setFloating( isFloating );
+  return mapCanvasWidget;
+}
+
+
+void QgisApp::setupDockWidget( QDockWidget *dockWidget, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area )
+{
+  dockWidget->setFloating( isFloating );
   if ( dockGeometry.isEmpty() )
   {
     // try to guess a nice initial placement for view - about 3/4 along, half way down
-    mapCanvasWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
-    addDockWidget( area, mapCanvasWidget );
+    dockWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
+    addDockWidget( area, dockWidget );
   }
   else
   {
     if ( !isFloating )
     {
       // ugly hack, but only way to set dock size correctly for Qt < 5.6
-      mapCanvasWidget->setFixedSize( dockGeometry.size() );
-      addDockWidget( area, mapCanvasWidget );
-      mapCanvasWidget->resize( dockGeometry.size() );
+      dockWidget->setFixedSize( dockGeometry.size() );
+      addDockWidget( area, dockWidget );
+      dockWidget->resize( dockGeometry.size() );
       QgsApplication::processEvents(); // required!
-      mapCanvasWidget->setFixedSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX );
+      dockWidget->setFixedSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX );
     }
     else
     {
-      mapCanvasWidget->setGeometry( dockGeometry );
-      addDockWidget( area, mapCanvasWidget );
+      dockWidget->setGeometry( dockGeometry );
+      addDockWidget( area, dockWidget );
     }
   }
-  return mapCanvasWidget;
 }
 
 void QgisApp::closeMapCanvas( const QString &name )
@@ -9907,9 +9914,10 @@ void QgisApp::newMapCanvas()
     }
   }
 
-  QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name, true );
+  QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name );
   if ( dock )
   {
+    setupDockWidget( dock, true );
     dock->mapCanvas()->setLayers( mMapCanvas->layers() );
     dock->mapCanvas()->setExtent( mMapCanvas->extent() );
     QgsDebugMsgLevel( QString( "QgisApp::newMapCanvas() -4- : QgsProject::instance()->crs().description[%1] ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
@@ -11988,24 +11996,42 @@ void QgisApp::writeProject( QDomDocument &doc )
   {
     QDomElement node = doc.createElement( QStringLiteral( "view" ) );
     node.setAttribute( QStringLiteral( "name" ), w->mapCanvas()->objectName() );
-    node.setAttribute( QStringLiteral( "x" ), w->x() );
-    node.setAttribute( QStringLiteral( "y" ), w->y() );
-    node.setAttribute( QStringLiteral( "width" ), w->width() );
-    node.setAttribute( QStringLiteral( "height" ), w->height() );
-    node.setAttribute( QStringLiteral( "floating" ), w->isFloating() );
-    node.setAttribute( QStringLiteral( "area" ), dockWidgetArea( w ) );
     node.setAttribute( QStringLiteral( "synced" ), w->isViewCenterSynchronized() );
     node.setAttribute( QStringLiteral( "showCursor" ), w->isCursorMarkerVisible() );
     node.setAttribute( QStringLiteral( "showExtent" ), w->isMainCanvasExtentVisible() );
     node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
     node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
     node.setAttribute( QStringLiteral( "showLabels" ), w->labelsVisible() );
+    writeDockWidgetSettings( w, node );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
 
   projectChanged( doc );
 }
+
+void QgisApp::writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem )
+{
+  elem.setAttribute( QStringLiteral( "x" ), dockWidget->x() );
+  elem.setAttribute( QStringLiteral( "y" ), dockWidget->y() );
+  elem.setAttribute( QStringLiteral( "width" ), dockWidget->width() );
+  elem.setAttribute( QStringLiteral( "height" ), dockWidget->height() );
+  elem.setAttribute( QStringLiteral( "floating" ), dockWidget->isFloating() );
+  elem.setAttribute( QStringLiteral( "area" ), dockWidgetArea( dockWidget ) );
+}
+
+void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
+{
+  int x = elem.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
+  int y = elem.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
+  int w = elem.attribute( QStringLiteral( "width" ), QStringLiteral( "400" ) ).toInt();
+  int h = elem.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
+  bool floating = elem.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
+  Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elem.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
+
+  setupDockWidget( dockWidget, floating, QRect( x, y, w, h ), area );
+}
+
 
 void QgisApp::readProject( const QDomDocument &doc )
 {
@@ -12030,20 +12056,15 @@ void QgisApp::readProject( const QDomDocument &doc )
     {
       QDomElement elementNode = nodes.at( i ).toElement();
       QString mapName = elementNode.attribute( QStringLiteral( "name" ) );
-      int x = elementNode.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
-      int y = elementNode.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
-      int w = elementNode.attribute( QStringLiteral( "width" ), QStringLiteral( "400" ) ).toInt();
-      int h = elementNode.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
-      bool floating = elementNode.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
       bool synced = elementNode.attribute( QStringLiteral( "synced" ), QStringLiteral( "0" ) ).toInt();
       bool showCursor = elementNode.attribute( QStringLiteral( "showCursor" ), QStringLiteral( "0" ) ).toInt();
       bool showExtent = elementNode.attribute( QStringLiteral( "showExtent" ), QStringLiteral( "0" ) ).toInt();
       bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
       double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
       bool showLabels = elementNode.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "1" ) ).toInt();
-      Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elementNode.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
-      QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName, floating, QRect( x, y, w, h ), area );
+      QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName );
+      readDockWidgetSettings( mapCanvasDock, elementNode );
       QgsMapCanvas *mapCanvas = mapCanvasDock->mapCanvas();
       mapCanvasDock->setViewCenterSynchronized( synced );
       mapCanvasDock->setCursorMarkerVisible( showCursor );
