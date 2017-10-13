@@ -125,6 +125,42 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath
   return certs;
 }
 
+QList<QSslCertificate> QgsAuthCertUtils::casFromFile( const QString &certspath )
+{
+  QList<QSslCertificate> cas;
+  const QList<QSslCertificate> certs( certsFromFile( certspath ) );
+  for ( const auto &cert : certs )
+  {
+    if ( certificateIsAuthority( cert ) )
+    {
+      cas.append( cert );
+    }
+  }
+  return cas;
+}
+
+QList<QSslCertificate> QgsAuthCertUtils::casMerge( const QList<QSslCertificate> &bundle1, const QList<QSslCertificate> &bundle2 )
+{
+  QStringList shas;
+  QList<QSslCertificate> result( bundle1 );
+  const QList<QSslCertificate> c_bundle1( bundle1 );
+  for ( const auto &cert : c_bundle1 )
+  {
+    shas.append( shaHexForCert( cert ) );
+  }
+  const QList<QSslCertificate> c_bundle2( bundle2 );
+  for ( const auto &cert : c_bundle2 )
+  {
+    if ( ! shas.contains( shaHexForCert( cert ) ) )
+    {
+      result.append( cert );
+    }
+  }
+  return result;
+}
+
+
+
 QSslCertificate QgsAuthCertUtils::certFromFile( const QString &certpath )
 {
   QSslCertificate cert;
@@ -244,6 +280,42 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
   }
 
   return QStringList() << bundle.certificateChain().primary().toPEM() << bundle.privateKey().toPEM( passarray ) << algtype;
+}
+
+QList<QSslCertificate> QgsAuthCertUtils::pkcs12BundleCas( const QString &bundlepath, const QString &bundlepass )
+{
+  QList<QSslCertificate> result;
+  if ( !QCA::isSupported( "pkcs12" ) )
+    return result;
+
+  QCA::KeyBundle bundle( QgsAuthCertUtils::qcaKeyBundle( bundlepath, bundlepass ) );
+  if ( bundle.isNull() )
+    return result;
+
+  const QCA::CertificateChain chain( bundle.certificateChain() );
+  for ( const auto &cert : chain )
+  {
+    if ( cert.isCA( ) )
+    {
+      result.append( QSslCertificate::fromData( cert.toPEM().toAscii() ) );
+    }
+  }
+  return result;
+}
+
+QByteArray QgsAuthCertUtils::certsToPemText( const QList<QSslCertificate> &certs )
+{
+  QByteArray capem;
+  if ( !certs.isEmpty() )
+  {
+    QStringList certslist;
+    for ( const auto &cert : certs )
+    {
+      certslist << cert.toPem();
+    }
+    capem = certslist.join( QStringLiteral( "\n" ) ).toLatin1(); //+ "\n";
+  }
+  return capem;
 }
 
 QString QgsAuthCertUtils::pemTextToTempFile( const QString &name, const QByteArray &pemtext )

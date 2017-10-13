@@ -87,10 +87,27 @@ Return list of concatenated certs from a PEM or DER formatted file
  :rtype: list of QSslCertificate
 %End
 
+    static QList<QSslCertificate> casFromFile( const QString &certspath );
+%Docstring
+Return list of concatenated CAs from a PEM or DER formatted file
+ :rtype: list of QSslCertificate
+%End
+
     static QSslCertificate certFromFile( const QString &certpath );
 %Docstring
 Return first cert from a PEM or DER formatted file
  :rtype: QSslCertificate
+%End
+
+    static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1,
+                                            const QList<QSslCertificate> &bundle2 );
+%Docstring
+ casMerge merges two certificate bundles in a single one removing duplicates, the certificates
+ from the ``bundle2`` are appended to ``bundle1`` if not already there
+ \param bundle1 first bundle
+ \param bundle2 second bundle
+ :return: a list of unique certificates
+ :rtype: list of QSslCertificate
 %End
 
     static QSslKey keyFromFile( const QString &keypath,
@@ -134,6 +151,25 @@ Return list of concatenated certs from a PEM Base64 text block
  \param reencrypt Whether to re-encrypt the private key with the passphrase
  :return: certificate, private key, key's algorithm type
  :rtype: list of str
+%End
+
+    static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath,
+        const QString &bundlepass = QString() );
+%Docstring
+ Return list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
+ \param bundlepath File path to the PKCS bundle
+ \param bundlepass Passphrase for bundle
+ :return: list of certificate
+ :rtype: list of QSslCertificate
+%End
+
+
+    static QByteArray certsToPemText( const QList<QSslCertificate> &certs );
+%Docstring
+ certsToPemText dump a list of QSslCertificates to PEM text
+ \param certs list of certs
+ :return: a byte array of concatenated certificates as PEM text
+ :rtype: QByteArray
 %End
 
     static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
