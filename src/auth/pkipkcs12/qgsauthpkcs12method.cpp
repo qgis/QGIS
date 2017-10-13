@@ -101,6 +101,13 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   sslConfig.setLocalCertificate( pkibundle->clientCert() );
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    QList<QSslCertificate> cas;
+    cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
+    sslConfig.setCaCertificates( cas );
+  }
+
   request.setSslConfiguration( sslConfig );
 
   return true;
@@ -141,10 +148,23 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
     return false;
   }
 
+  // add extra CAs in the bundle
+  QList<QSslCertificate> cas;
+
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
+  }
+  else
+  {
+    cas = QgsAuthManager::instance()->getTrustedCaCerts();
+  }
+
   // save CAs to temp file
   QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsAuthManager::instance()->getTrustedCaCertsPemText() );
+                         QgsAuthCertUtils::certsToPemText( cas ) );
+
   if ( caFilePath.isEmpty() )
   {
     return false;
@@ -272,7 +292,10 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
     return bundle;
   }
 
-  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey );
+  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey,
+                                   QgsAuthCertUtils::pkcs12BundleCas(
+                                     mconfig.config( QStringLiteral( "bundlepath" ) ),
+                                     mconfig.config( QStringLiteral( "bundlepass" ) ) ) );
 
   locker.unlock();
   // cache bundle
