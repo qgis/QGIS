@@ -302,7 +302,8 @@ class QgsPkiConfigBundle
 
     QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
                         const QSslCertificate &cert,
-                        const QSslKey &certkey );
+                        const QSslKey &certkey,
+                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
 %Docstring
  Construct a bundle from existing PKI components and authentication method configuration
  \param config Authentication method configuration
@@ -344,6 +345,16 @@ Private key object
     void setClientCertKey( const QSslKey &certkey );
 %Docstring
 Set private key object
+%End
+
+    QList<QSslCertificate> caChain() const;
+%Docstring
+Return CA chain
+ :rtype: list of QSslCertificate
+%End
+    void setCaChain( const QList<QSslCertificate> &caChain );
+%Docstring
+Set CA chain
 %End
 
 };

@@ -267,7 +267,8 @@ class CORE_EXPORT QgsPkiConfigBundle
      */
     QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
                         const QSslCertificate &cert,
-                        const QSslKey &certkey );
+                        const QSslKey &certkey,
+                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
 
     //! Whether the bundle is valid
     bool isValid();
@@ -287,10 +288,16 @@ class CORE_EXPORT QgsPkiConfigBundle
     //! Set private key object
     void setClientCertKey( const QSslKey &certkey ) { mCertKey = certkey; }
 
+    //! Return CA chain
+    QList<QSslCertificate> caChain() const { return mCaChain; }
+    //! Set CA chain
+    void setCaChain( const QList<QSslCertificate> &caChain ) { mCaChain = caChain; }
+
   private:
     QgsAuthMethodConfig mConfig;
     QSslCertificate mCert;
     QSslKey mCertKey;
+    QList<QSslCertificate> mCaChain;
 };
 
 

@@ -329,10 +329,12 @@ void QgsPkiBundle::setClientKey( const QSslKey &certkey )
 
 QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
                                         const QSslCertificate &cert,
-                                        const QSslKey &certkey )
+                                        const QSslKey &certkey,
+                                        const QList<QSslCertificate> &cachain )
   : mConfig( config )
   , mCert( cert )
   , mCertKey( certkey )
+  , mCaChain( cachain )
 {
 }
 
