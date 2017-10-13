@@ -250,15 +250,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvas *createNewMapCanvas( const QString &name );
 
     /**
-     * Create a new map canvas dock widget with the specified unique \a name. The \a isFloating
-     * and \a dockGeometry arguments can be used to specify an initial floating state
-     * and widget geometry rect for the dock.
+     * Create a new map canvas dock widget with the specified unique \a name.
      * \note the mapCanvas() inside the dock widget will initially be frozen to avoid multiple
      * unwanted map redraws. Callers must manually unfreeze the map canvas when they have finished
      * setting the initial state of the canvas and are ready for it to begin rendering.
      */
-    QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
-        Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
+    QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name );
 
     /**
      * Closes the additional map canvas with matching \a name.
@@ -1782,6 +1779,26 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Applies global qgis settings to the specified canvas
      */
     void applyDefaultSettingsToCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Configures positioning of a newly created dock widget.
+     * The \a isFloating and \a dockGeometry arguments can be used to specify an initial floating state
+     * and widget geometry rect for the dock.
+     */
+    void setupDockWidget( QDockWidget *dockWidget, bool isFloating = false, const QRect &dockGeometry = QRect(),
+                          Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
+
+    /**
+     * Reads dock widget's position settings from a DOM element and calls setupDockWidget()
+     * \sa writeDockWidgetSettings()
+     */
+    void readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem );
+
+    /**
+     * Writes dock widget's position settings to a DOM element
+     * \sa readDockWidgetSettings()
+     */
+    void writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem );
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
