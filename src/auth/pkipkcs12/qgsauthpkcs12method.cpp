@@ -103,9 +103,7 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
 
   if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
   {
-    QList<QSslCertificate> cas;
-    cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
-    sslConfig.setCaCertificates( cas );
+    sslConfig.setCaCertificates( pkibundle->caChain() );
   }
 
   request.setSslConfiguration( sslConfig );

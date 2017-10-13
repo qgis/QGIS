@@ -98,21 +98,20 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
   QSslConfiguration sslConfig = request.sslConfiguration();
   //QSslConfiguration sslConfig( QSslConfiguration::defaultConfiguration() );
 
-  sslConfig.setLocalCertificate( pkibundle->clientCert() );
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
+  sslConfig.setLocalCertificate( pkibundle->clientCert() );
 
-  // add extra CAs in the bundle
+  // add extra CAs from the bundle
+  // this does not work due to the fact that QNAM overrides it in createRequest!
   if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
   {
-    QList<QSslCertificate> cas;
-    cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
-    sslConfig.setCaCertificates( cas );
+    sslConfig.setCaCertificates( pkibundle->caChain() );
   }
-
   request.setSslConfiguration( sslConfig );
 
   return true;
 }
+
 
 bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
