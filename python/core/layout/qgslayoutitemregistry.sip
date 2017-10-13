@@ -98,6 +98,7 @@ class QgsLayoutItemRegistry : QObject
     enum ItemType
     {
       LayoutItem,
+      LayoutGroup,
 
       // known
       LayoutPage,

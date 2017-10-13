@@ -28,6 +28,7 @@
 
 class QgsLayout;
 class QPainter;
+class QgsLayoutItemGroup;
 
 /**
  * \ingroup core
@@ -168,6 +169,27 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see lockChanged()
      */
     bool isLocked() const { return mIsLocked; }
+
+    /**
+     * Returns true if the item is part of a QgsLayoutItemGroup group.
+     * \see parentGroup()
+     * \see setParentGroup()
+     */
+    bool isGroupMember() const;
+
+    /**
+     * Returns the item's parent group, if the item is part of a QgsLayoutItemGroup group.
+     * \see isGroupMember()
+     * \see setParentGroup()
+     */
+    QgsLayoutItemGroup *parentGroup() const;
+
+    /**
+     * Sets the item's parent \a group.
+     * \see isGroupMember()
+     * \see parentGroup()
+     */
+    void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
@@ -585,6 +607,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     //! Unique id
     QString mUuid;
 
+    //! Parent group unique id
+    QString mParentGroupUuid;
+
     ReferencePoint mReferencePoint = UpperLeft;
     QgsLayoutSize mFixedSize;
     QgsLayoutSize mMinimumSize;
@@ -632,6 +657,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     bool shouldBlockUndoCommands() const;
 
     friend class TestQgsLayoutItem;
+    friend class QgsLayoutItemGroup;
 };
 
 #endif //QGSLAYOUTITEM_H

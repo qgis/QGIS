@@ -403,6 +403,7 @@
 %Include layout/qgslayout.sip
 %Include layout/qgslayoutguidecollection.sip
 %Include layout/qgslayoutitem.sip
+%Include layout/qgslayoutitemgroup.sip
 %Include layout/qgslayoutitemmap.sip
 %Include layout/qgslayoutitempage.sip
 %Include layout/qgslayoutitemregistry.sip

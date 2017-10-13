@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgsproject.h"
+#include "qgslayoutitemgroup.h"
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>
@@ -523,7 +524,7 @@ void QgsLayoutView::moveSelectedItemsToBottom()
 
 void QgsLayoutView::lockSelectedItems()
 {
-  currentLayout()->undoStack()->beginMacro( tr( "Items locked" ) );
+  currentLayout()->undoStack()->beginMacro( tr( "Lock Items" ) );
   const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
   for ( QgsLayoutItem *item : selectionList )
   {
@@ -537,7 +538,7 @@ void QgsLayoutView::lockSelectedItems()
 void QgsLayoutView::unlockAllItems()
 {
   //unlock all items in layout
-  currentLayout()->undoStack()->beginMacro( tr( "Items unlocked" ) );
+  currentLayout()->undoStack()->beginMacro( tr( "Unlock Items" ) );
 
   //first, clear the selection
   currentLayout()->deselectAll();
@@ -600,7 +601,7 @@ void QgsLayoutView::deleteSelectedItems()
 #endif
     const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
 
-    currentLayout()->undoStack()->beginMacro( tr( "Items deleted" ) );
+    currentLayout()->undoStack()->beginMacro( tr( "Delete Items" ) );
     //delete selected items
     for ( QgsLayoutItem *item : selectedItems )
     {
@@ -612,6 +613,60 @@ void QgsLayoutView::deleteSelectedItems()
 #if 0
   }
 #endif
+}
+
+void QgsLayoutView::groupSelectedItems()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+  //group selected items
+  const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
+  QgsLayoutItemGroup *itemGroup = currentLayout()->groupItems( selectionList );
+
+  if ( !itemGroup )
+  {
+    //group could not be created
+    return;
+  }
+
+  for ( QgsLayoutItem *item : selectionList )
+  {
+    item->setSelected( false );
+  }
+
+  currentLayout()->setSelectedItem( itemGroup );
+}
+
+void QgsLayoutView::ungroupSelectedItems()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+  QList< QgsLayoutItem * > ungroupedItems;
+  //hunt through selection for any groups, and ungroup them
+  const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
+  for ( QgsLayoutItem *item : selectionList )
+  {
+    if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
+    {
+      QgsLayoutItemGroup *itemGroup = static_cast<QgsLayoutItemGroup *>( item );
+      ungroupedItems.append( currentLayout()->ungroupItems( itemGroup ) );
+    }
+  }
+
+  if ( !ungroupedItems.empty() )
+  {
+    for ( QgsLayoutItem *item : qgsAsConst( ungroupedItems ) )
+    {
+      item->setSelected( true );
+    }
+    emit itemFocused( ungroupedItems.at( 0 ) );
+  }
 }
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
@@ -802,10 +857,10 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
       item->attemptMove( itemPos );
     };
 
-    l->undoStack()->beginMacro( tr( "Item moved" ) );
+    l->undoStack()->beginMacro( tr( "Move Item" ) );
     for ( QgsLayoutItem *item : layoutItemList )
     {
-      l->undoStack()->beginCommand( item, tr( "Item moved" ), QgsLayoutItem::UndoIncrementalMove );
+      l->undoStack()->beginCommand( item, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
       moveItem( item );
       l->undoStack()->endCommand();
     }

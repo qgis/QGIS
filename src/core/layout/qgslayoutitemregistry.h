@@ -180,6 +180,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     enum ItemType
     {
       LayoutItem = QGraphicsItem::UserType + 100, //!< Base class for items
+      LayoutGroup, //!< Grouped item
 
       // known item types
       LayoutPage, //!< Page items

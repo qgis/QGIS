@@ -25,6 +25,7 @@
 #include "qgslayoutview.h"
 #include "qgslayoutviewtoolselect.h"
 #include "qgslayoutsnapper.h"
+#include "qgslayoutitemgroup.h"
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
@@ -130,7 +131,10 @@ void QgsLayoutMouseHandles::drawSelectedItemBounds( QPainter *painter )
   painter->setPen( selectedItemPen );
   painter->setBrush( Qt::NoBrush );
 
-  for ( QgsLayoutItem *item : selectedItems )
+  QList< QgsLayoutItem * > itemsToDraw;
+  collectItems( selectedItems, itemsToDraw );
+
+  for ( QgsLayoutItem *item : qgsAsConst( itemsToDraw ) )
   {
     //get bounds of selected item
     QPolygonF itemBounds;
@@ -587,7 +591,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
   if ( mCurrentMouseMoveAction == QgsLayoutMouseHandles::MoveItem )
   {
     //move selected items
-    mLayout->undoStack()->beginMacro( tr( "Change item position" ) );
+    mLayout->undoStack()->beginMacro( tr( "Move Items" ) );
 
     QPointF mEndHandleMovePos = scenePos();
 
@@ -598,13 +602,14 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
     const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems( false );
     for ( QgsLayoutItem *item : selectedItems )
     {
-      if ( item->isLocked() || ( item->flags() & QGraphicsItem::ItemIsSelectable ) == 0 )
+      if ( item->isLocked() || ( item->flags() & QGraphicsItem::ItemIsSelectable ) == 0 || item->isGroupMember() )
       {
-        //don't move locked items
+        //don't move locked items, or grouped items (group takes care of that)
         continue;
       }
 
-      mLayout->undoStack()->beginCommand( item, QString() );
+      std::unique_ptr< QgsAbstractLayoutUndoCommand > command( item->createCommand( QString(), 0 ) );
+      command->saveBeforeState();
 
       // need to convert delta from layout units -> item units
       QgsLayoutPoint itemPos = item->positionWithUnits();
@@ -613,14 +618,15 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       itemPos.setY( itemPos.y() + deltaPos.y() );
       item->attemptMove( itemPos );
 
-      mLayout->undoStack()->endCommand();
+      command->saveAfterState();
+      mLayout->undoStack()->stack()->push( command.release() );
     }
     mLayout->undoStack()->endMacro();
   }
   else if ( mCurrentMouseMoveAction != QgsLayoutMouseHandles::NoAction )
   {
     //resize selected items
-    mLayout->undoStack()->beginMacro( tr( "Change item size" ) );
+    mLayout->undoStack()->beginMacro( tr( "Resize Items" ) );
 
     //resize all selected items
     const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems( false );
@@ -632,7 +638,8 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
         continue;
       }
 
-      mLayout->undoStack()->beginCommand( item, QString() );
+      std::unique_ptr< QgsAbstractLayoutUndoCommand > command( item->createCommand( QString(), 0 ) );
+      command->saveBeforeState();
 
       QRectF itemRect;
       if ( selectedItems.size() == 1 )
@@ -657,7 +664,8 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
       item->attemptResize( itemSize );
 
-      mLayout->undoStack()->endCommand();
+      command->saveAfterState();
+      mLayout->undoStack()->stack()->push( command.release() );
     }
     mLayout->undoStack()->endMacro();
   }
@@ -709,6 +717,8 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   bool snapped = false;
 
   const QList< QgsLayoutItem * > selectedItems = mLayout->selectedLayoutItems();
+  QList< QgsLayoutItem * > itemsToExclude;
+  collectItems( selectedItems, itemsToExclude );
 
   //depending on the mode, we either snap just the single point, or all the bounds of the selection
   QPointF snappedPoint;
@@ -716,11 +726,11 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   {
     case Item:
       snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
-                     snapVertical ? mVerticalSnapLine.get() : nullptr, &selectedItems ).topLeft();
+                     snapVertical ? mVerticalSnapLine.get() : nullptr, &itemsToExclude ).topLeft();
       break;
     case Point:
       snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
-                     snapVertical ? mVerticalSnapLine.get() : nullptr, &selectedItems );
+                     snapVertical ? mVerticalSnapLine.get() : nullptr, &itemsToExclude );
       break;
   }
 
@@ -731,6 +741,22 @@ void QgsLayoutMouseHandles::hideAlignItems()
 {
   mHorizontalSnapLine->hide();
   mVerticalSnapLine->hide();
+}
+
+void QgsLayoutMouseHandles::collectItems( const QList<QgsLayoutItem *> items, QList<QgsLayoutItem *> &collected )
+{
+  for ( QgsLayoutItem *item : items )
+  {
+    if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
+    {
+      // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
+      collectItems( static_cast< QgsLayoutItemGroup * >( item )->items(), collected );
+    }
+    else
+    {
+      collected << item;
+    }
+  }
 }
 
 void QgsLayoutMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *event )

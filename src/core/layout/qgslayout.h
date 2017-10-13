@@ -447,6 +447,23 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = nullptr ) SIP_FACTORY override;
 
+    /**
+     * Creates a new group from a list of layout \a items and adds the group to the layout.
+     * If grouping was not possible, a nullptr will be returned.
+     * \see ungroupItems()
+     */
+    QgsLayoutItemGroup *groupItems( const QList<QgsLayoutItem *> &items );
+
+    /**
+     * Ungroups items by removing them from an item \a group and removing the group from the
+     * layout. Child items will remain in the layout and will not be deleted.
+     *
+     * Returns a list of the items removed from the group, or an empty list if ungrouping
+     * was not successful.
+     *
+     * \see groupItems()
+     */
+    QList<QgsLayoutItem *> ungroupItems( QgsLayoutItemGroup *group );
 
   public slots:
 
@@ -485,6 +502,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
 
+    bool mBlockUndoCommands = false;
+
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
     //! Reads only the layout settings (not member settings like grid settings, etc) from XML
@@ -504,6 +523,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     friend class QgsLayoutItemDeleteUndoCommand;
     friend class QgsLayoutItemUndoCommand;
     friend class QgsLayoutUndoCommand;
+    friend class QgsLayoutItemGroupUndoCommand;
     friend class QgsLayoutModel;
 };
 

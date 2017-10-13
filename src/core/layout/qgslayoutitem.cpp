@@ -21,6 +21,7 @@
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutmodel.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutitemgroup.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -100,7 +101,7 @@ void QgsLayoutItem::setId( const QString &id )
   }
 
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginCommand( this, tr( "Item ID changed" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Change Item ID" ) );
 
   mId = id;
 
@@ -138,13 +139,20 @@ void QgsLayoutItem::setVisibility( const bool visible )
     return;
   }
 
+  std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginCommand( this, visible ? tr( "Item shown" ) : tr( "Item hidden" ) );
+  {
+    command.reset( createCommand( visible ? tr( "Show Item" ) : tr( "Hide Item" ), 0 ) );
+    command->saveBeforeState();
+  }
 
   QGraphicsItem::setVisible( visible );
 
-  if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->endCommand();
+  if ( command )
+  {
+    command->saveAfterState();
+    mLayout->undoStack()->stack()->push( command.release() );
+  }
 
   //inform model that visibility has changed
   if ( mLayout )
@@ -161,7 +169,7 @@ void QgsLayoutItem::setLocked( const bool locked )
   }
 
   if ( !shouldBlockUndoCommands() )
-    mLayout->undoStack()->beginCommand( this, locked ? tr( "Item locked" ) : tr( "Item unlocked" ) );
+    mLayout->undoStack()->beginCommand( this, locked ? tr( "Lock Item" ) : tr( "Unlock Item" ) );
 
   mIsLocked = locked;
 
@@ -176,6 +184,28 @@ void QgsLayoutItem::setLocked( const bool locked )
 
   update();
   emit lockChanged();
+}
+
+bool QgsLayoutItem::isGroupMember() const
+{
+  return !mParentGroupUuid.isEmpty() && mLayout && static_cast< bool >( mLayout->itemByUuid( mParentGroupUuid ) );
+}
+
+QgsLayoutItemGroup *QgsLayoutItem::parentGroup() const
+{
+  if ( !mLayout || mParentGroupUuid.isEmpty() )
+    return nullptr;
+
+  return qobject_cast< QgsLayoutItemGroup * >( mLayout->itemByUuid( mParentGroupUuid ) );
+}
+
+void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
+{
+  if ( !group )
+    mParentGroupUuid.clear();
+  else
+    mParentGroupUuid = group->uuid();
+  setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
 }
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
@@ -706,6 +736,7 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
   element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
   element.setAttribute( QStringLiteral( "rotation" ), QString::number( rotation() ) );
+  element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
 
   element.setAttribute( "zValue", QString::number( zValue() ) );
   element.setAttribute( "visibility", isVisible() );
@@ -783,6 +814,15 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
   attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
   attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
   setItemRotation( element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
+
+  mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
+  if ( !mParentGroupUuid.isEmpty() )
+  {
+    if ( QgsLayoutItemGroup *group = parentGroup() )
+    {
+      group->addItem( this );
+    }
+  }
 
   //TODO
   /*

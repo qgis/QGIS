@@ -397,6 +397,25 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = 0 ) /Factory/;
 
 
+    QgsLayoutItemGroup *groupItems( const QList<QgsLayoutItem *> &items );
+%Docstring
+ Creates a new group from a list of layout ``items`` and adds the group to the layout.
+ If grouping was not possible, a None will be returned.
+.. seealso:: ungroupItems()
+ :rtype: QgsLayoutItemGroup
+%End
+
+    QList<QgsLayoutItem *> ungroupItems( QgsLayoutItemGroup *group );
+%Docstring
+ Ungroups items by removing them from an item ``group`` and removing the group from the
+ layout. Child items will remain in the layout and will not be deleted.
+
+ Returns a list of the items removed from the group, or an empty list if ungrouping
+ was not successful.
+
+.. seealso:: groupItems()
+ :rtype: list of QgsLayoutItem
+%End
 
   public slots:
 

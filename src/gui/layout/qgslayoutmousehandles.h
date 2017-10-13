@@ -29,6 +29,7 @@
 class QgsLayout;
 class QGraphicsView;
 class QgsLayoutView;
+class QgsLayoutItem;
 class QInputEvent;
 
 ///@cond PRIVATE
@@ -206,6 +207,9 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true );
 
     void hideAlignItems();
+
+    //! Collects all items from a list of \a items, exploring for any group members and adding them too
+    void collectItems( const QList< QgsLayoutItem * > items, QList< QgsLayoutItem * > &collected );
 
 };
 

@@ -853,7 +853,7 @@ QgsLayoutItem *QgsLayoutModel::findItemAbove( QgsLayoutItem *item ) const
     while ( it.hasPrevious() )
     {
       //now find previous item, since list is sorted from lowest->highest items
-      if ( it.hasPrevious() /* TODO && !it.peekPrevious()->isGroupMember() */ )
+      if ( it.hasPrevious() && !it.peekPrevious()->isGroupMember() )
       {
         return it.previous();
       }
@@ -872,7 +872,7 @@ QgsLayoutItem *QgsLayoutModel::findItemBelow( QgsLayoutItem *item ) const
     //return next item (list is sorted from lowest->highest items)
     while ( it.hasNext() )
     {
-      if ( true /* TODO !it.peekNext()->isGroupMember()*/ )
+      if ( !it.peekNext()->isGroupMember() )
       {
         return it.next();
       }

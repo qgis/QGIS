@@ -372,6 +372,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->deleteSelectedItems();
   } );
+  connect( mActionGroupItems, &QAction::triggered, this, [ = ]
+  {
+    mView->groupSelectedItems();
+  } );
+  connect( mActionUngroupItems, &QAction::triggered, this, [ = ]
+  {
+    mView->ungroupSelectedItems();
+  } );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
@@ -518,9 +526,6 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mGeneralDock->show();
   mItemsDock->show();
 
-  mActionUndo->setEnabled( false );
-  mActionRedo->setEnabled( false );
-
   tabifyDockWidget( mGeneralDock, mUndoDock );
   tabifyDockWidget( mItemDock, mUndoDock );
   tabifyDockWidget( mGeneralDock, mItemDock );
@@ -547,6 +552,20 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mLayout = layout;
   mView->setCurrentLayout( layout );
 
+  // add undo/redo actions which apply to the correct layout undo stack
+  delete mUndoAction;
+  delete mRedoAction;
+  mUndoAction = layout->undoStack()->stack()->createUndoAction( this );
+  mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
+  mUndoAction->setShortcuts( QKeySequence::Undo );
+  mRedoAction = layout->undoStack()->stack()->createRedoAction( this );
+  mRedoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
+  mRedoAction->setShortcuts( QKeySequence::Redo );
+  menuEdit->insertAction( menuEdit->actions().at( 0 ), mRedoAction );
+  menuEdit->insertAction( mRedoAction, mUndoAction );
+  mLayoutToolbar->addAction( mUndoAction );
+  mLayoutToolbar->addAction( mRedoAction );
+
   connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [ = ]
   {
     mLayout->guides().clear();
@@ -560,10 +579,6 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mActionShowBoxes->setChecked( mLayout->context().boundingBoxesVisible() );
   mActionShowPage->setChecked( mLayout->context().pagesVisible() );
 
-  connect( mLayout->undoStack()->stack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
-  connect( mLayout->undoStack()->stack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
-  connect( mActionUndo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::undo );
-  connect( mActionRedo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::redo );
   mUndoView->setStack( mLayout->undoStack()->stack() );
 
   mSelectTool->setLayout( layout );
@@ -981,7 +996,7 @@ void QgsLayoutDesignerDialog::addPages()
     }
 
     if ( dlg.numberPages() > 1 )
-      mLayout->undoStack()->beginMacro( tr( "Add pages" ) );
+      mLayout->undoStack()->beginMacro( tr( "Add Pages" ) );
     for ( int i = 0; i < dlg.numberPages(); ++i )
     {
       QgsLayoutItemPage *page = new QgsLayoutItemPage( mLayout );

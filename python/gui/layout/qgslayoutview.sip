@@ -314,6 +314,18 @@ class QgsLayoutView: QGraphicsView
  Deletes all selected items.
 %End
 
+    void groupSelectedItems();
+%Docstring
+ Groups all selected items.
+.. seealso:: ungroupSelectedItems()
+%End
+
+    void ungroupSelectedItems();
+%Docstring
+ Ungroups all selected items.
+.. seealso:: groupSelectedItems()
+%End
+
     void viewChanged();
 %Docstring
  Updates associated rulers and other widgets after view extent or zoom has changed.
