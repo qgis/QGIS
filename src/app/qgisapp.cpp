@@ -85,6 +85,7 @@
 #include "qgsabstract3drenderer.h"
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3drendererregistry.h"
+#include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -3356,6 +3357,17 @@ void QgisApp::closeAdditionalMapCanvases()
     delete w;
   }
   freezeCanvases( false );
+}
+
+void QgisApp::closeAdditional3DMapCanvases()
+{
+#ifdef HAVE_3D
+  for ( Qgs3DMapCanvasDockWidget *w : findChildren< Qgs3DMapCanvasDockWidget * >() )
+  {
+    w->close();
+    delete w;
+  }
+#endif
 }
 
 void QgisApp::freezeCanvases( bool frozen )
@@ -9957,26 +9969,68 @@ void QgisApp::new3DMapCanvas()
     return;
   }
 
-  Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( prj->crs() );
-  map->setOrigin( fullExtent.center().x(), fullExtent.center().y(), 0 );
-  map->setSelectionColor( mMapCanvas->selectionColor() );
-  map->setBackgroundColor( mMapCanvas->canvasColor() );
-  map->setLayers( mMapCanvas->layers() );
+  int i = 1;
 
-  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
-  flatTerrain->setExtent( fullExtent );
-  map->setTerrainGenerator( flatTerrain );
+  bool existing = true;
+  const QList< Qgs3DMapCanvas * > existingCanvases = findChildren< Qgs3DMapCanvas * >();
+  QString name;
+  while ( existing )
+  {
+    name = tr( "3D Map %1" ).arg( i++ );
+    existing = false;
+    for ( Qgs3DMapCanvas *canvas : existingCanvases )
+    {
+      if ( canvas->objectName() == name )
+      {
+        existing = true;
+        break;
+      }
+    }
+  }
 
-  // TODO: combine with code in createNewMapCanvasDock()
+  Qgs3DMapCanvasDockWidget *dock = createNew3DMapCanvasDock( name );
+  if ( dock )
+  {
+    setupDockWidget( dock, true );
+
+    Qgs3DMapSettings *map = new Qgs3DMapSettings;
+    map->setCrs( prj->crs() );
+    map->setOrigin( fullExtent.center().x(), fullExtent.center().y(), 0 );
+    map->setSelectionColor( mMapCanvas->selectionColor() );
+    map->setBackgroundColor( mMapCanvas->canvasColor() );
+    map->setLayers( mMapCanvas->layers() );
+
+    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+    flatTerrain->setCrs( map->crs() );
+    flatTerrain->setExtent( fullExtent );
+    map->setTerrainGenerator( flatTerrain );
+
+    dock->setMapSettings( map );
+  }
+#endif
+}
+
+Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name )
+{
+#ifdef HAVE_3D
+  const QList<Qgs3DMapCanvas *> mapCanvases = findChildren<Qgs3DMapCanvas *>();
+  for ( Qgs3DMapCanvas *canvas : mapCanvases )
+  {
+    if ( canvas->objectName() == name )
+    {
+      QgsDebugMsg( tr( "A map canvas with name '%1' already exists!" ).arg( name ) );
+      return nullptr;
+    }
+  }
+
   Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
-  map3DWidget->setWindowTitle( "3D Map" );
   map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
-  map3DWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
-  map3DWidget->setMap( map );
+  map3DWidget->setWindowTitle( name );
+  map3DWidget->mapCanvas3D()->setObjectName( name );
   map3DWidget->setMainCanvas( mMapCanvas );
-  addDockWidget( Qt::BottomDockWidgetArea, map3DWidget );
+  return map3DWidget;
+#else
+  Q_UNUSED( name );
 #endif
 }
 
@@ -10100,6 +10154,7 @@ void QgisApp::closeProject()
   mActionFilterLegend->setChecked( false );
 
   closeAdditionalMapCanvases();
+  closeAdditional3DMapCanvases();
 
   deletePrintComposers();
   removeAnnotationItems();
@@ -12007,6 +12062,22 @@ void QgisApp::writeProject( QDomDocument &doc )
   }
   qgisNode.appendChild( mapViewNode );
 
+#ifdef HAVE_3D
+  QgsReadWriteContext readWriteContext;
+  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  QDomElement elem3DMaps = doc.createElement( QStringLiteral( "mapViewDocks3D" ) );
+  for ( Qgs3DMapCanvasDockWidget *w : findChildren<Qgs3DMapCanvasDockWidget *>() )
+  {
+    QDomElement elem3DMap = doc.createElement( QStringLiteral( "view" ) );
+    elem3DMap.setAttribute( QStringLiteral( "name" ), w->mapCanvas3D()->objectName() );
+    QDomElement elem3DMapSettings = w->mapCanvas3D()->map()->writeXml( doc, readWriteContext );
+    elem3DMap.appendChild( elem3DMapSettings );
+    writeDockWidgetSettings( w, elem3DMap );
+    elem3DMaps.appendChild( elem3DMap );
+  }
+  qgisNode.appendChild( elem3DMaps );
+#endif
+
   projectChanged( doc );
 }
 
@@ -12076,6 +12147,42 @@ void QgisApp::readProject( const QDomDocument &doc )
       views << mapCanvas;
     }
   }
+
+#ifdef HAVE_3D
+  QgsReadWriteContext readWriteContext;
+  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  QDomElement elem3DMaps = doc.documentElement().firstChildElement( QStringLiteral( "mapViewDocks3D" ) );
+  if ( !elem3DMaps.isNull() )
+  {
+    QDomElement elem3DMap = elem3DMaps.firstChildElement( QStringLiteral( "view" ) );
+    while ( !elem3DMap.isNull() )
+    {
+      QString mapName = elem3DMap.attribute( QStringLiteral( "name" ) );
+
+      Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( mapName );
+      readDockWidgetSettings( mapCanvasDock3D, elem3DMap );
+
+      QDomElement elem3D = elem3DMap.firstChildElement( QStringLiteral( "qgis3d" ) );
+      Qgs3DMapSettings *map = new Qgs3DMapSettings;
+      map->readXml( elem3D, readWriteContext );
+      map->resolveReferences( *QgsProject::instance() );
+
+      // these things are not saved in project
+      map->setSelectionColor( mMapCanvas->selectionColor() );
+      map->setBackgroundColor( mMapCanvas->canvasColor() );
+      if ( map->terrainGenerator()->type() == QgsTerrainGenerator::Flat )
+      {
+        QgsFlatTerrainGenerator *flatTerrainGen = static_cast<QgsFlatTerrainGenerator *>( map->terrainGenerator() );
+        flatTerrainGen->setExtent( mMapCanvas->fullExtent() );
+      }
+
+      mapCanvasDock3D->setMapSettings( map );
+
+      elem3DMap = elem3DMap.nextSiblingElement( QStringLiteral( "view" ) );
+    }
+  }
+#endif
+
   // unfreeze all new views at once. We don't do this as they are created since additional
   // views which may exist in project could rearrange the docks and cause the canvases to resize
   // resulting in multiple redraws

@@ -52,7 +52,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   setWidget( contentsWidget );
 }
 
-void Qgs3DMapCanvasDockWidget::setMap( Qgs3DMapSettings *map )
+void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
 }

@@ -49,6 +49,9 @@ void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
 {
   QWidget::resizeEvent( ev );
 
+  if ( !mScene )
+    return;
+
   QRect viewportRect( QPoint( 0, 0 ), size() );
   mScene->cameraController()->setViewport( viewportRect );
 }
