@@ -780,7 +780,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
     if ( geom.isNull() )
       return tr( "<i>&lt;empty geometry&gt;</i>" );
     else
-      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.geometry()->wkbType() ) );
+      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) );
   }
   else if ( !value.isValid() )
   {

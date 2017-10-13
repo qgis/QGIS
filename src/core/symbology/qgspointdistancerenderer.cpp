@@ -142,7 +142,7 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRender
   QgsMultiPointV2 *groupMultiPoint = new QgsMultiPointV2();
   Q_FOREACH ( const GroupedFeature &f, group )
   {
-    groupMultiPoint->addGeometry( f.feature.geometry().geometry()->clone() );
+    groupMultiPoint->addGeometry( f.feature.geometry().constGet()->clone() );
   }
   QgsGeometry groupGeom( groupMultiPoint );
   QgsGeometry centroid = groupGeom.centroid();

@@ -41,7 +41,7 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int meth
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeom.geometry();
+  const QgsAbstractGeometry *geom = featureGeom.constGet();
 
   // Check if error still applies
   if ( geom->partCount() > 1 || !QgsWkbTypes::isMultiType( geom->wkbType() ) )

@@ -136,7 +136,7 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
 
       if ( !engine )
       {
-        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().geometry() ) );
+        engine.reset( QgsGeometry::createGeometryEngine( f.geometry().constGet() ) );
         engine->prepareGeometry();
       }
 
@@ -146,31 +146,31 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
         switch ( predicate )
         {
           case Intersects:
-            isMatch = engine->intersects( testFeature.geometry().geometry() );
+            isMatch = engine->intersects( testFeature.geometry().constGet() );
             break;
           case Contains:
-            isMatch = engine->contains( testFeature.geometry().geometry() );
+            isMatch = engine->contains( testFeature.geometry().constGet() );
             break;
           case Disjoint:
-            if ( engine->intersects( testFeature.geometry().geometry() ) )
+            if ( engine->intersects( testFeature.geometry().constGet() ) )
             {
               disjointSet.remove( testFeature.id() );
             }
             break;
           case IsEqual:
-            isMatch = engine->isEqual( testFeature.geometry().geometry() );
+            isMatch = engine->isEqual( testFeature.geometry().constGet() );
             break;
           case Touches:
-            isMatch = engine->touches( testFeature.geometry().geometry() );
+            isMatch = engine->touches( testFeature.geometry().constGet() );
             break;
           case Overlaps:
-            isMatch = engine->overlaps( testFeature.geometry().geometry() );
+            isMatch = engine->overlaps( testFeature.geometry().constGet() );
             break;
           case Within:
-            isMatch = engine->within( testFeature.geometry().geometry() );
+            isMatch = engine->within( testFeature.geometry().constGet() );
             break;
           case Crosses:
-            isMatch = engine->crosses( testFeature.geometry().geometry() );
+            isMatch = engine->crosses( testFeature.geometry().constGet() );
             break;
         }
         if ( isMatch )

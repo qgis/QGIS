@@ -1206,7 +1206,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     }
     QgsFeature feature = mEditBuffer->addedFeatures().value( fid );
     QgsGeometry featureGeometry = feature.geometry();
-    geometry = featureGeometry.geometry();
+    geometry = featureGeometry.constGet();
     if ( !geometry )
     {
       QgsDebugMsg( "geometry is null" );
@@ -1222,7 +1222,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     if ( wkbType == QgsWkbTypes::Polygon )
     {
       QgsGeometry addedFeatureGeom = addedFeatures[fid].geometry();
-      const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( addedFeatureGeom.geometry() );
+      const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( addedFeatureGeom.constGet() );
       if ( polygon )
       {
         QgsLineString *lineString = polygon->exteriorRing()->curveToLine();
@@ -1662,7 +1662,7 @@ void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &g
     }
   }
 
-  setPoints( mPoints, geom.geometry() );
+  setPoints( mPoints, geom.constGet() );
 
   mLayer->map()->lockReadWrite();
   // Vect_rewrite_line may delete/write the line with a new id

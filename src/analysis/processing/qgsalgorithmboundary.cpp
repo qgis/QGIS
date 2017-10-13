@@ -97,7 +97,7 @@ QgsFeature QgsBoundaryAlgorithm::processFeature( const QgsFeature &feature, QgsP
   if ( feature.hasGeometry() )
   {
     QgsGeometry inputGeometry = feature.geometry();
-    QgsGeometry outputGeometry = QgsGeometry( inputGeometry.geometry()->boundary() );
+    QgsGeometry outputGeometry = QgsGeometry( inputGeometry.constGet()->boundary() );
     if ( !outputGeometry )
     {
       feedback->reportError( QObject::tr( "No boundary for feature %1 (possibly a closed linestring?)'" ).arg( feature.id() ) );

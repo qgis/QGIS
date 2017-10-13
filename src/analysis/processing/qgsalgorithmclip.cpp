@@ -109,7 +109,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   }
 
   // use prepared geometries for faster intersection tests
-  std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( combinedClipGeom.geometry() ) );
+  std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( combinedClipGeom.constGet() ) );
   engine->prepareGeometry();
 
   QgsFeatureIds testedFeatureIds;
@@ -154,15 +154,15 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
       }
       testedFeatureIds.insert( inputFeature.id() );
 
-      if ( !engine->intersects( inputFeature.geometry().geometry() ) )
+      if ( !engine->intersects( inputFeature.geometry().constGet() ) )
         continue;
 
       QgsGeometry newGeometry;
-      if ( !engine->contains( inputFeature.geometry().geometry() ) )
+      if ( !engine->contains( inputFeature.geometry().constGet() ) )
       {
         QgsGeometry currentGeometry = inputFeature.geometry();
         newGeometry = combinedClipGeom.intersection( currentGeometry );
-        if ( newGeometry.wkbType() == QgsWkbTypes::Unknown || QgsWkbTypes::flatType( newGeometry.geometry()->wkbType() ) == QgsWkbTypes::GeometryCollection )
+        if ( newGeometry.wkbType() == QgsWkbTypes::Unknown || QgsWkbTypes::flatType( newGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
         {
           QgsGeometry intCom = inputFeature.geometry().combine( newGeometry );
           QgsGeometry intSym = inputFeature.geometry().symDifference( newGeometry );

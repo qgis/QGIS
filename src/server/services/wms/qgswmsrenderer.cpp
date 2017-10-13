@@ -1613,13 +1613,13 @@ namespace QgsWms
 
             if ( segmentizeWktGeometry )
             {
-              QgsAbstractGeometry *abstractGeom = geom.geometry();
+              const QgsAbstractGeometry *abstractGeom = geom.constGet();
               if ( abstractGeom )
               {
                 if ( QgsWkbTypes::isCurvedType( abstractGeom->wkbType() ) )
                 {
                   QgsAbstractGeometry *segmentizedGeom = abstractGeom->segmentize();
-                  geom.setGeometry( segmentizedGeom );
+                  geom.set( segmentizedGeom );
                 }
               }
             }

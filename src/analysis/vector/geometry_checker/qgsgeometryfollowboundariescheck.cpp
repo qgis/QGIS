@@ -74,7 +74,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckErro
       QgsFeature refFeature;
       while ( refFeatureIt.nextFeature( refFeature ) )
       {
-        QgsAbstractGeometry *refGeom = refFeature.geometry().geometry();
+        const QgsAbstractGeometry *refGeom = refFeature.geometry().constGet();
         QSharedPointer<QgsGeometryEngine> refgeomEngine = QgsGeometryCheckerUtils::createGeomEngine( refGeom, mContext->tolerance );
         QScopedPointer<QgsAbstractGeometry> reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0 ) );
         if ( !( geomEngine->contains( reducedRefGeom.data() ) || geomEngine->disjoint( reducedRefGeom.data() ) ) )

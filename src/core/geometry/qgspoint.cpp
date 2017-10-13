@@ -401,7 +401,7 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   }
 }
 
-void QgsPoint::adjacentVertices( QgsVertexId, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
+void QgsPoint::adjacentVertices( QgsVertexId, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
 {
   previousVertex = QgsVertexId();
   nextVertex = QgsVertexId();

@@ -414,16 +414,16 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolyline &mpl )
   QgsGeometry geom = g;
   // segmentize curved geometries - we will use noding algorithm from GEOS
   // to find all intersections a bit later (so we need them segmentized anyway)
-  if ( QgsWkbTypes::isCurvedType( g.geometry()->wkbType() ) )
+  if ( QgsWkbTypes::isCurvedType( g.wkbType() ) )
   {
-    QgsAbstractGeometry *segmentizedGeomV2 = g.geometry()->segmentize();
+    QgsAbstractGeometry *segmentizedGeomV2 = g.constGet()->segmentize();
     if ( !segmentizedGeomV2 )
       return;
 
     geom = QgsGeometry( segmentizedGeomV2 );
   }
 
-  switch ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) )
+  switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
   {
     case QgsWkbTypes::LineString:
       mpl << geom.asPolyline();

@@ -2109,13 +2109,13 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
       QgsGeometry geom = feature.geometry();
 
       // turn single geometry to multi geometry if needed
-      if ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) != QgsWkbTypes::flatType( mWkbType ) &&
-           QgsWkbTypes::flatType( geom.geometry()->wkbType() ) == QgsWkbTypes::flatType( QgsWkbTypes::singleType( mWkbType ) ) )
+      if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::flatType( mWkbType ) &&
+           QgsWkbTypes::flatType( geom.wkbType() ) == QgsWkbTypes::flatType( QgsWkbTypes::singleType( mWkbType ) ) )
       {
         geom.convertToMultiType();
       }
 
-      if ( geom.geometry()->wkbType() != mWkbType )
+      if ( geom.wkbType() != mWkbType )
       {
         OGRGeometryH mGeom2 = nullptr;
 
@@ -2127,10 +2127,10 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
           //so the exported WKB has a different type to what the OGRGeometry is expecting.
           //possibly this is handled already in OGR, but it should be fixed regardless by actually converting
           //geom to the correct WKB type
-          QgsWkbTypes::Type wkbType = geom.geometry()->wkbType();
+          QgsWkbTypes::Type wkbType = geom.wkbType();
           if ( wkbType >= QgsWkbTypes::PointZ && wkbType <= QgsWkbTypes::MultiPolygonZ )
           {
-            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( geom.geometry()->wkbType() - QgsWkbTypes::PointZ + QgsWkbTypes::Point25D );
+            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( geom.wkbType() - QgsWkbTypes::PointZ + QgsWkbTypes::Point25D );
             mGeom2 = createEmptyGeometry( wkbType25d );
           }
         }
@@ -2145,7 +2145,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
           //
           // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
           // i.e. Polygons can't be imported to OGRMultiPolygon
-          mGeom2 = createEmptyGeometry( geom.geometry()->wkbType() );
+          mGeom2 = createEmptyGeometry( geom.wkbType() );
         }
 
         if ( !mGeom2 )
@@ -2431,7 +2431,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
           }
         }
 
-        if ( fet.hasGeometry() && QgsWkbTypes::isMultiType( fet.geometry().geometry()->wkbType() ) )
+        if ( fet.hasGeometry() && QgsWkbTypes::isMultiType( fet.geometry().wkbType() ) )
         {
           destWkbType = QgsWkbTypes::multiType( destWkbType );
           break;
@@ -2526,7 +2526,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       req.setFilterRect( filterRect );
     }
     filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
-    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry.geometry() ) );
+    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry.constGet() ) );
     filterRectEngine->prepareGeometry();
   }
 
@@ -2613,7 +2613,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( fet.geometry().geometry() ) )
+    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( fet.geometry().constGet() ) )
       continue;
 
     if ( attributes.empty() && options.skipAttributeCreation )

@@ -286,7 +286,7 @@ class TestQgsPointLocator : public QObject
       QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsGeometry g;
-      g.setGeometry( new QgsPolygonV2() );
+      g.set( new QgsPolygonV2() );
       ff.setGeometry( g );
       QgsFeatureList flist;
       flist << ff;

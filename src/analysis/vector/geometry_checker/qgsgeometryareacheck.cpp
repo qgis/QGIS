@@ -49,7 +49,7 @@ void QgsGeometryAreaCheck::fixError( QgsGeometryCheckError *error, int method, c
   }
   double layerToMapUnits = featurePool->getLayerToMapUnits();
   QgsGeometry g = feature.geometry();
-  QgsAbstractGeometry *geom = g.geometry();
+  const QgsAbstractGeometry *geom = g.constGet();
   QgsVertexId vidx = error->vidx();
 
   // Check if polygon still exists
@@ -111,7 +111,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
   int mergePartIdx = -1;
   bool matchFound = false;
   QgsGeometry featureGeometry = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeometry.geometry();
+  const QgsAbstractGeometry *geom = featureGeometry.constGet();
 
   // Search for touching neighboring geometries
   for ( QgsFeatureId testId : featurePool->getIntersects( featureGeometry.boundingBox() ) )
@@ -122,7 +122,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
       continue;
     }
     QgsGeometry testFeatureGeom = testFeature.geometry();
-    QgsAbstractGeometry *testGeom = testFeatureGeom.geometry();
+    const QgsAbstractGeometry *testGeom = testFeatureGeom.constGet();
     for ( int testPartIdx = 0, nTestParts = testGeom->partCount(); testPartIdx < nTestParts; ++testPartIdx )
     {
       if ( testId == feature.id() && testPartIdx == partIdx )
@@ -141,8 +141,8 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
           }
           else
           {
-            if ( dynamic_cast<QgsGeometryCollection *>( testGeom ) )
-              val = static_cast<QgsGeometryCollection *>( testGeom )->geometryN( testPartIdx )->area();
+            if ( dynamic_cast<const QgsGeometryCollection *>( testGeom ) )
+              val = static_cast<const QgsGeometryCollection *>( testGeom )->geometryN( testPartIdx )->area();
             else
               val = testGeom->area();
           }
@@ -178,7 +178,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
 
   // Merge geometries
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
-  QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
+  const QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.constGet();
   QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), mContext->reducedTolerance );
   QgsAbstractGeometry *combinedGeom = geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( geom, partIdx ), &errMsg );
   if ( !combinedGeom || combinedGeom->isEmpty() || !QgsWkbTypes::isSingleType( combinedGeom->wkbType() ) )

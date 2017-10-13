@@ -322,74 +322,74 @@ void TestQgsGeometry::copy()
 {
   //create a point geometry
   QgsGeometry original( new QgsPoint( 1.0, 2.0 ) );
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 
   //implicitly shared copy
   QgsGeometry copy( original );
-  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( copy.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( copy.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 
   //trigger a detach
-  copy.setGeometry( new QgsPoint( 3.0, 4.0 ) );
-  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 3.0 );
-  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 4.0 );
+  copy.set( new QgsPoint( 3.0, 4.0 ) );
+  QCOMPARE( copy.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 3.0 );
+  QCOMPARE( copy.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 4.0 );
 
   //make sure original was untouched
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 }
 
 void TestQgsGeometry::assignment()
 {
   //create a point geometry
   QgsGeometry original( new QgsPoint( 1.0, 2.0 ) );
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 
   //assign to implicitly shared copy
   QgsGeometry copy;
   copy = original;
-  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( copy.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( copy.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 
   //trigger a detach
-  copy.setGeometry( new QgsPoint( 3.0, 4.0 ) );
-  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 3.0 );
-  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 4.0 );
+  copy.set( new QgsPoint( 3.0, 4.0 ) );
+  QCOMPARE( copy.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 3.0 );
+  QCOMPARE( copy.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 4.0 );
 
   //make sure original was untouched
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 }
 
 void TestQgsGeometry::asVariant()
 {
   //create a point geometry
   QgsGeometry original( new QgsPoint( 1.0, 2.0 ) );
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 
   //convert to and from a QVariant
   QVariant var = QVariant::fromValue( original );
   QVERIFY( var.isValid() );
 
   QgsGeometry fromVar = qvariant_cast<QgsGeometry>( var );
-  QCOMPARE( fromVar.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( fromVar.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( fromVar.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 
   //also check copying variant
   QVariant var2 = var;
   QVERIFY( var2.isValid() );
   QgsGeometry fromVar2 = qvariant_cast<QgsGeometry>( var2 );
-  QCOMPARE( fromVar2.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( fromVar2.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( fromVar2.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar2.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 
   //modify original and check detachment
-  original.setGeometry( new QgsPoint( 3.0, 4.0 ) );
+  original.set( new QgsPoint( 3.0, 4.0 ) );
   QgsGeometry fromVar3 = qvariant_cast<QgsGeometry>( var );
-  QCOMPARE( fromVar3.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
-  QCOMPARE( fromVar3.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+  QCOMPARE( fromVar3.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar3.constGet()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 }
 
 void TestQgsGeometry::isEmpty()
@@ -397,10 +397,10 @@ void TestQgsGeometry::isEmpty()
   QgsGeometry geom;
   QVERIFY( geom.isNull() );
 
-  geom.setGeometry( new QgsPoint( 1.0, 2.0 ) );
+  geom.set( new QgsPoint( 1.0, 2.0 ) );
   QVERIFY( !geom.isNull() );
 
-  geom.setGeometry( 0 );
+  geom.set( 0 );
   QVERIFY( geom.isNull() );
 
   QgsGeometryCollection collection;
@@ -412,10 +412,10 @@ void TestQgsGeometry::operatorBool()
   QgsGeometry geom;
   QVERIFY( !geom );
 
-  geom.setGeometry( new QgsPoint( 1.0, 2.0 ) );
+  geom.set( new QgsPoint( 1.0, 2.0 ) );
   QVERIFY( geom );
 
-  geom.setGeometry( 0 );
+  geom.set( 0 );
   QVERIFY( !geom );
 }
 
@@ -15099,10 +15099,10 @@ void TestQgsGeometry::intersectionCheck1()
 {
   QVERIFY( mpPolygonGeometryA.intersects( mpPolygonGeometryB ) );
 
-  std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mpPolygonGeometryA.geometry() ) );
-  QVERIFY( engine->intersects( mpPolygonGeometryB.geometry() ) );
+  std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mpPolygonGeometryA.constGet() ) );
+  QVERIFY( engine->intersects( mpPolygonGeometryB.constGet() ) );
   engine->prepareGeometry();
-  QVERIFY( engine->intersects( mpPolygonGeometryB.geometry() ) );
+  QVERIFY( engine->intersects( mpPolygonGeometryB.constGet() ) );
 
   // should be a single polygon as A intersect B
   QgsGeometry mypIntersectionGeometry  =  mpPolygonGeometryA.intersection( mpPolygonGeometryB );
@@ -15389,7 +15389,7 @@ void TestQgsGeometry::dataStream()
   ds.device()->seek( 0 );
   ds >> resultGeometry;
 
-  QCOMPARE( geom.geometry()->asWkt(), resultGeometry.geometry()->asWkt() );
+  QCOMPARE( geom.constGet()->asWkt(), resultGeometry.constGet()->asWkt() );
 
   //also test with geometry without data
   std::unique_ptr<QgsGeometry> emptyGeom( new QgsGeometry() );
@@ -15863,7 +15863,7 @@ void TestQgsGeometry::minimalEnclosingCircle()
   result = geomTest.minimalEnclosingCircle( center, radius );
   QCOMPARE( center, QgsPointXY( 5, 5 ) );
   QCOMPARE( radius, 0.0 );
-  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
   // case 2
@@ -15871,35 +15871,35 @@ void TestQgsGeometry::minimalEnclosingCircle()
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 5, 6 ), 0.0001 );
   QGSCOMPARENEAR( radius, sqrt( 2 ) * 2, 0.0001 );
-  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING( 0 5, 2 2, 0 -5, -1 -1 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
-  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 2 2, 0 -5, -1 -1 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
-  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 5, 2 2, 0 -5, -1 -1 ))" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
-  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
   geomTest = QgsGeometry::fromWkt( QStringLiteral( "MULTIPOINT( 0 5, 0 -5, 0 0 )" ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0, 0 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5, 0.0001 );
-  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
   // case 3
@@ -15907,7 +15907,7 @@ void TestQgsGeometry::minimalEnclosingCircle()
   result = geomTest.minimalEnclosingCircle( center, radius );
   QGSCOMPARENEARPOINT( center, QgsPointXY( 0.8333, 0.8333 ), 0.0001 );
   QGSCOMPARENEAR( radius, 5.8926, 0.0001 );
-  resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
+  resultTest.set( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
 }

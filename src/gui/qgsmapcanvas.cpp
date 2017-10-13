@@ -1018,7 +1018,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorL
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }
-    else if ( geom.geometry()->isEmpty() )
+    else if ( geom.constGet()->isEmpty() )
     {
       errorMsg = tr( "Feature geometry is empty" );
     }

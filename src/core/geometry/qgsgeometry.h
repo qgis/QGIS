@@ -164,18 +164,42 @@ class CORE_EXPORT QgsGeometry
     ~QgsGeometry();
 
     /**
-     * Returns the underlying geometry store.
-    * \since QGIS 2.10
-    * \see setGeometry
+     * Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
+     *
+     * This is much faster then calling the non-const get() method.
+     *
+     * \note In QGIS 2.x this method was named geometry().
+     *
+     * \since QGIS 3.0
+     * \see primitive()
+     * \see set()
     */
-    QgsAbstractGeometry *geometry() const;
+    const QgsAbstractGeometry *constGet() const;
+
+    /**
+     * Returns a modifiable (non-const) reference to the underlying abstract geometry primitive.
+     *
+     * This method can be slow to call, as it may trigger a detachment of the geometry
+     * and a deep copy. Where possible, use constGet() instead.
+     *
+     * \note In QGIS 2.x this method was named geometry().
+     *
+     * \since QGIS 3.0
+     * \see constGet()
+     * \see set()
+    */
+    QgsAbstractGeometry *get();
 
     /**
      * Sets the underlying geometry store. Ownership of geometry is transferred.
-     * \since QGIS 2.10
-     * \see geometry
+     *
+     * \note In QGIS 2.x this method was named setGeometry().
+     *
+     * \since QGIS 3.0
+     * \see get()
+     * \see constGet()
      */
-    void setGeometry( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    void set( QgsAbstractGeometry *geometry SIP_TRANSFER );
 
     /**
      * Returns true if the geometry is null (ie, contains no underlying geometry

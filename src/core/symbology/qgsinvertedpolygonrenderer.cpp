@@ -285,7 +285,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
       Q_FOREACH ( const QgsGeometry &geom, cit.geometries )
       {
         QgsMultiPolygon multi;
-        QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.geometry()->wkbType() );
+        QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
 
         if ( ( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )
         {

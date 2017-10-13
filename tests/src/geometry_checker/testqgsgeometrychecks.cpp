@@ -141,21 +141,21 @@ void TestQgsGeometryChecks::testAngleCheck()
   int n1, n2;
 
   context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
-  n1 = f.geometry().geometry()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
+  n1 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometryAngleCheck::DeleteNode, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, errs1[0]->vidx()}} ) );
   context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
-  n2 = f.geometry().geometry()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
+  n2 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
 
   context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
-  n1 = f.geometry().geometry()->vertexCount( errs2[0]->vidx().part, errs2[0]->vidx().ring );
+  n1 = f.geometry().constGet()->vertexCount( errs2[0]->vidx().part, errs2[0]->vidx().ring );
   QVERIFY( fixCheckError( errs2[0],
                           QgsGeometryAngleCheck::DeleteNode, QgsGeometryCheckError::StatusFixed,
   {{errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, errs2[0]->vidx()}} ) );
   context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
-  n2 = f.geometry().geometry()->vertexCount( errs2[0]->vidx().part, errs2[0]->vidx().ring );
+  n2 = f.geometry().constGet()->vertexCount( errs2[0]->vidx().part, errs2[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
 
   // Test change tracking
@@ -455,12 +455,12 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   QgsFeature f;
 
   context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
-  int n1 = f.geometry().geometry()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
+  int n1 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometryDuplicateNodesCheck::RemoveDuplicates, QgsGeometryCheckError::StatusFixed,
   {{errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, errs1[0]->vidx()}} ) );
   context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
-  int n2 = f.geometry().geometry()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
+  int n2 = f.geometry().constGet()->vertexCount( errs1[0]->vidx().part, errs1[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
 
   cleanupTestContext( context );
@@ -562,7 +562,7 @@ void TestQgsGeometryChecks::testHoleCheck()
     {errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0, 1 )}
   } ) );
   context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
-  QVERIFY( f.geometry().geometry()->ringCount( 0 ) == 1 );
+  QVERIFY( f.geometry().constGet()->ringCount( 0 ) == 1 );
 
   cleanupTestContext( context );
 }
@@ -867,11 +867,11 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs1[0]->layerId(), nextId, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId()}
   } ) );
   context->featurePools[errs1[0]->layerId()]->get( errs1[0]->featureId(), f );
-  QCOMPARE( f.geometry().geometry()->partCount(), 1 );
-  QCOMPARE( f.geometry().geometry()->vertexCount(), 4 );
+  QCOMPARE( f.geometry().constGet()->partCount(), 1 );
+  QCOMPARE( f.geometry().constGet()->vertexCount(), 4 );
   context->featurePools[errs1[0]->layerId()]->get( nextId, f );
-  QCOMPARE( f.geometry().geometry()->partCount(), 1 );
-  QCOMPARE( f.geometry().geometry()->vertexCount(), 6 );
+  QCOMPARE( f.geometry().constGet()->partCount(), 1 );
+  QCOMPARE( f.geometry().constGet()->vertexCount(), 6 );
 
   QVERIFY( fixCheckError( errs2[0],
                           QgsGeometrySelfIntersectionCheck::ToMultiObject, QgsGeometryCheckError::StatusFixed,
@@ -881,9 +881,9 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 1 )}
   } ) );
   context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
-  QCOMPARE( f.geometry().geometry()->partCount(), 2 );
-  QCOMPARE( f.geometry().geometry()->vertexCount( 0 ), 4 );
-  QCOMPARE( f.geometry().geometry()->vertexCount( 1 ), 5 );
+  QCOMPARE( f.geometry().constGet()->partCount(), 2 );
+  QCOMPARE( f.geometry().constGet()->vertexCount( 0 ), 4 );
+  QCOMPARE( f.geometry().constGet()->vertexCount( 1 ), 5 );
 
   nextId = context->featurePools[errs3[0]->layerId()]->getLayer()->featureCount();
   QVERIFY( fixCheckError( errs3[0],
@@ -893,11 +893,11 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs3[0]->layerId(), nextId, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId()}
   } ) );
   context->featurePools[errs3[0]->layerId()]->get( errs3[0]->featureId(), f );
-  QCOMPARE( f.geometry().geometry()->partCount(), 1 );
-  QCOMPARE( f.geometry().geometry()->vertexCount(), 6 );
+  QCOMPARE( f.geometry().constGet()->partCount(), 1 );
+  QCOMPARE( f.geometry().constGet()->vertexCount(), 6 );
   context->featurePools[errs3[0]->layerId()]->get( nextId, f );
-  QCOMPARE( f.geometry().geometry()->partCount(), 1 );
-  QCOMPARE( f.geometry().geometry()->vertexCount(), 4 );
+  QCOMPARE( f.geometry().constGet()->partCount(), 1 );
+  QCOMPARE( f.geometry().constGet()->vertexCount(), 4 );
 
   QVERIFY( fixCheckError( errs4[0],
                           QgsGeometrySelfIntersectionCheck::ToMultiObject, QgsGeometryCheckError::StatusFixed,
@@ -907,12 +907,12 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
     {errs4[0]->layerId(), errs4[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 1 )}
   } ) );
   context->featurePools[errs4[0]->layerId()]->get( errs4[0]->featureId(), f );
-  QCOMPARE( f.geometry().geometry()->partCount(), 2 );
-  QCOMPARE( f.geometry().geometry()->ringCount( 0 ), 1 );
-  QCOMPARE( f.geometry().geometry()->vertexCount( 0, 0 ), 5 );
-  QCOMPARE( f.geometry().geometry()->ringCount( 1 ), 2 );
-  QCOMPARE( f.geometry().geometry()->vertexCount( 1, 0 ), 5 );
-  QCOMPARE( f.geometry().geometry()->vertexCount( 1, 1 ), 5 );
+  QCOMPARE( f.geometry().constGet()->partCount(), 2 );
+  QCOMPARE( f.geometry().constGet()->ringCount( 0 ), 1 );
+  QCOMPARE( f.geometry().constGet()->vertexCount( 0, 0 ), 5 );
+  QCOMPARE( f.geometry().constGet()->ringCount( 1 ), 2 );
+  QCOMPARE( f.geometry().constGet()->vertexCount( 1, 0 ), 5 );
+  QCOMPARE( f.geometry().constGet()->vertexCount( 1, 1 ), 5 );
 
   // Test change tracking
   QgsGeometrySelfIntersectionCheckError *err = static_cast<QgsGeometrySelfIntersectionCheckError *>( errs4[0] );

@@ -140,11 +140,11 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
         QgsGeometry splitGeom = splitGeoms.value( line );
         if ( !engine )
         {
-          engine.reset( QgsGeometry::createGeometryEngine( inGeom.geometry() ) );
+          engine.reset( QgsGeometry::createGeometryEngine( inGeom.constGet() ) );
           engine->prepareGeometry();
         }
 
-        if ( engine->intersects( splitGeom.geometry() ) )
+        if ( engine->intersects( splitGeom.constGet() ) )
         {
           QList< QgsGeometry > splitGeomParts = splitGeom.asGeometryCollection();
           splittingLines.append( splitGeomParts );
@@ -159,7 +159,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
           QList< QgsGeometry > outGeoms;
 
           // use prepared geometries for faster intersection tests
-          std::unique_ptr< QgsGeometryEngine > splitGeomEngine( QgsGeometry::createGeometryEngine( splitGeom.geometry() ) );
+          std::unique_ptr< QgsGeometryEngine > splitGeomEngine( QgsGeometry::createGeometryEngine( splitGeom.constGet() ) );
           splitGeomEngine->prepareGeometry();
           while ( !inGeoms.empty() )
           {
@@ -172,12 +172,12 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
             if ( !inGeom )
               continue;
 
-            if ( splitGeomEngine->intersects( inGeom.geometry() ) )
+            if ( splitGeomEngine->intersects( inGeom.constGet() ) )
             {
               QgsGeometry before = inGeom;
               if ( splitterPList.empty() )
               {
-                const QgsCoordinateSequence sequence = splitGeom.geometry()->coordinateSequence();
+                const QgsCoordinateSequence sequence = splitGeom.constGet()->coordinateSequence();
                 for ( const QgsRingSequence &part : sequence )
                 {
                   for ( const QgsPointSequence &ring : part )
@@ -237,12 +237,12 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
       bool passed = true;
       if ( QgsWkbTypes::geometryType( aGeom.wkbType() ) == QgsWkbTypes::LineGeometry )
       {
-        int numPoints = aGeom.geometry()->nCoordinates();
+        int numPoints = aGeom.constGet()->nCoordinates();
 
         if ( numPoints <= 2 )
         {
           if ( numPoints == 2 )
-            passed = !static_cast< QgsCurve * >( aGeom.geometry() )->isClosed(); // tests if vertex 0 = vertex 1
+            passed = !static_cast< const QgsCurve * >( aGeom.constGet() )->isClosed(); // tests if vertex 0 = vertex 1
           else
             passed = false; // sometimes splitting results in lines of zero length
         }

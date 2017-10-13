@@ -73,7 +73,7 @@ void QgsGeometryAngleCheck::fixError( QgsGeometryCheckError *error, int method, 
     return;
   }
   QgsGeometry featureGeometry = feature.geometry();
-  QgsAbstractGeometry *geometry = featureGeometry.geometry();
+  QgsAbstractGeometry *geometry = featureGeometry.get();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists

@@ -133,7 +133,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     else
     {
       request.setFilterRect( transformedPolygon.boundingBox() );
-      polygonEngine.reset( QgsGeometry::createGeometryEngine( transformedPolygon.geometry() ) );
+      polygonEngine.reset( QgsGeometry::createGeometryEngine( transformedPolygon.constGet() ) );
       polygonEngine->prepareGeometry();
     }
   }
@@ -155,7 +155,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     // filter out elements outside of the polygon
     if ( f.geometry() && polygonEngine )
     {
-      if ( !polygonEngine->intersects( f.geometry().geometry() ) )
+      if ( !polygonEngine->intersects( f.geometry().constGet() ) )
       {
         continue;
       }

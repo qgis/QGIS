@@ -31,7 +31,7 @@ namespace QgsGeometryCheckerUtils
     , mFeature( feature )
     , mMapCrs( useMapCrs )
   {
-    mGeometry = feature.geometry().geometry()->clone();
+    mGeometry = feature.geometry().constGet()->clone();
     if ( useMapCrs && !mFeaturePool->getLayerToMapTransform().isShortCircuited() )
     {
       mGeometry->transform( mFeaturePool->getLayerToMapTransform() );
@@ -124,7 +124,7 @@ namespace QgsGeometryCheckerUtils
       if ( mParent->mProgressCounter )
         mParent->mProgressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( featurePool->get( *mFeatureIt, feature ) && feature.geometry() && feature.geometry().geometry() )
+      if ( featurePool->get( *mFeatureIt, feature ) && feature.geometry() && feature.geometry().constGet() )
       {
         delete mCurrentFeature;
         mCurrentFeature = new LayerFeature( mParent->mFeaturePools[*mLayerIt], feature, mParent->mUseMapCrs );

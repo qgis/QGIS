@@ -90,7 +90,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeom.geometry();
+  QgsAbstractGeometry *geom = featureGeom.get();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists

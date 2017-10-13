@@ -341,7 +341,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QList<QgsGeometry> &geomList, QStri
     if ( !g )
       continue;
 
-    geosGeometries << asGeos( g.geometry(), mPrecision ).release();
+    geosGeometries << asGeos( g.constGet(), mPrecision ).release();
   }
 
   geos::unique_ptr geomUnion;
@@ -2043,7 +2043,7 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
     return QgsGeometry();
   }
 
-  geos::unique_ptr otherGeom( asGeos( other.geometry(), mPrecision ) );
+  geos::unique_ptr otherGeom( asGeos( other.constGet(), mPrecision ) );
   if ( !otherGeom )
   {
     return QgsGeometry();
@@ -2077,7 +2077,7 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg )
     return QgsGeometry();
   }
 
-  geos::unique_ptr otherGeom( asGeos( other.geometry(), mPrecision ) );
+  geos::unique_ptr otherGeom( asGeos( other.constGet(), mPrecision ) );
   if ( !otherGeom )
   {
     return QgsGeometry();

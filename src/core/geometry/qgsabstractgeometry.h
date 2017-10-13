@@ -298,7 +298,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns the vertices adjacent to a specified \a vertex within a geometry.
      * \since QGIS 3.0
      */
-    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) = 0;
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const = 0;
 
     /**
      * Retrieves the sequence of geometries, rings and nodes.

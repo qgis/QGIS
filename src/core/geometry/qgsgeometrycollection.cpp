@@ -80,7 +80,7 @@ QgsAbstractGeometry *QgsGeometryCollection::boundary() const
   return nullptr;
 }
 
-void QgsGeometryCollection::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
+void QgsGeometryCollection::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
 {
   if ( vertex.part < 0 || vertex.part >= mGeometries.count() )
   {

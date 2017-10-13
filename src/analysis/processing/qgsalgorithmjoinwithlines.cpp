@@ -177,9 +177,9 @@ QVariantMap QgsJoinWithLinesAlgorithm::processAlgorithm( const QVariantMap &para
   {
     QgsPoint p;
     if ( feature.geometry().type() == QgsWkbTypes::PointGeometry && !feature.geometry().isMultipart() )
-      p = *static_cast< QgsPoint *>( feature.geometry().geometry() );
+      p = *static_cast< const QgsPoint *>( feature.geometry().constGet() );
     else
-      p = *static_cast< QgsPoint *>( feature.geometry().pointOnSurface().geometry() );
+      p = *static_cast< const QgsPoint *>( feature.geometry().pointOnSurface().constGet() );
     if ( hasZ && !p.is3D() )
       p.addZValue( 0 );
     if ( hasM && !p.isMeasure() )

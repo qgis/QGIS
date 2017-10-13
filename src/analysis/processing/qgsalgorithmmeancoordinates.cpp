@@ -164,7 +164,7 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
 
     QgsVertexId vid;
     QgsPoint pt;
-    const QgsAbstractGeometry *g = feat.geometry().geometry();
+    const QgsAbstractGeometry *g = feat.geometry().constGet();
     // NOTE - should this be including the duplicate nodes for closed rings? currently it is,
     // but I suspect that the expected behavior would be to NOT include these
     while ( g->nextVertex( vid, pt ) )

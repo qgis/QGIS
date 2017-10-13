@@ -55,7 +55,7 @@ void QgsGeometryDuplicateNodesCheck::fixError( QgsGeometryCheckError *error, int
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeom.geometry();
+  QgsAbstractGeometry *geom = featureGeom.get();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists

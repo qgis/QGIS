@@ -376,14 +376,14 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   if ( feature->hasGeometry() )
   {
     geometryType = feature->geometry().type();
-    wkbType = feature->geometry().geometry()->wkbType();
+    wkbType = feature->geometry().wkbType();
     //find closest vertex to clicked point
-    closestPoint = QgsGeometryUtils::closestVertex( *feature->geometry().geometry(), QgsPoint( layerPoint.x(), layerPoint.y() ), vId );
+    closestPoint = QgsGeometryUtils::closestVertex( *feature->geometry().constGet(), QgsPoint( layerPoint.x(), layerPoint.y() ), vId );
   }
 
   if ( QgsWkbTypes::isMultiType( wkbType ) )
   {
-    QString str = QLocale::system().toString( static_cast<const QgsGeometryCollection *>( feature->geometry().geometry() )->numGeometries() );
+    QString str = QLocale::system().toString( static_cast<const QgsGeometryCollection *>( feature->geometry().constGet() )->numGeometries() );
     derivedAttributes.insert( tr( "Parts" ), str );
     str = QLocale::system().toString( vId.part + 1 );
     derivedAttributes.insert( tr( "Part number" ), str );
@@ -396,7 +396,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     QString str = formatDistance( dist );
     derivedAttributes.insert( tr( "Length" ), str );
 
-    const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( feature->geometry().geometry() );
+    const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( feature->geometry().constGet() );
     if ( curve )
     {
       str = QLocale::system().toString( curve->nCoordinates() );
@@ -431,11 +431,11 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     str = formatDistance( perimeter );
     derivedAttributes.insert( tr( "Perimeter" ), str );
 
-    str = QLocale::system().toString( feature->geometry().geometry()->nCoordinates() );
+    str = QLocale::system().toString( feature->geometry().constGet()->nCoordinates() );
     derivedAttributes.insert( tr( "Vertices" ), str );
 
     //add details of closest vertex to identify point
-    closestVertexAttributes( *feature->geometry().geometry(), vId, layer, derivedAttributes );
+    closestVertexAttributes( *feature->geometry().constGet(), vId, layer, derivedAttributes );
   }
   else if ( geometryType == QgsWkbTypes::PointGeometry &&
             QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point )
@@ -449,12 +449,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
 
     if ( QgsWkbTypes::hasZ( wkbType ) )
     {
-      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().geometry() )->z(), 'g', 10 );
+      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().constGet() )->z(), 'g', 10 );
       derivedAttributes.insert( QStringLiteral( "Z" ), str );
     }
     if ( QgsWkbTypes::hasM( wkbType ) )
     {
-      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().geometry() )->m(), 'g', 10 );
+      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().constGet() )->m(), 'g', 10 );
       derivedAttributes.insert( QStringLiteral( "M" ), str );
     }
   }
