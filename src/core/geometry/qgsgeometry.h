@@ -1537,13 +1537,13 @@ class CORE_EXPORT QgsGeometry
      * Detaches the private geometry container from this instance, and clones
      * the existing geometry ready for modification.
      */
-    void detachAndClone();
+    void detach();
 
     /**
      * Detaches the private geometry container from this instance, and resets it
      * to a new abstract geometry pointer.
      */
-    void detachAndReset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
+    void reset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
 
     static void convertToPolyline( const QgsPointSequence &input, QgsPolyline &output );
     static void convertPolygon( const QgsPolygonV2 &input, QgsPolygon &output );

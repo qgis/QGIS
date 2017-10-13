@@ -98,7 +98,7 @@ QgsGeometry &QgsGeometry::operator=( QgsGeometry const &other )
   return *this;
 }
 
-void QgsGeometry::detachAndClone()
+void QgsGeometry::detach()
 {
   if ( d->ref <= 1 )
     return;
@@ -107,10 +107,10 @@ void QgsGeometry::detachAndClone()
   if ( d->geometry )
     cGeom.reset( d->geometry->clone() );
 
-  detachAndReset( std::move( cGeom ) );
+  reset( std::move( cGeom ) );
 }
 
-void QgsGeometry::detachAndReset( std::unique_ptr<QgsAbstractGeometry> newGeometry )
+void QgsGeometry::reset( std::unique_ptr<QgsAbstractGeometry> newGeometry )
 {
   if ( d->ref > 1 )
   {
@@ -132,7 +132,7 @@ void QgsGeometry::setGeometry( QgsAbstractGeometry *geometry )
     return;
   }
 
-  detachAndReset( std::unique_ptr< QgsAbstractGeometry >( geometry ) );
+  reset( std::unique_ptr< QgsAbstractGeometry >( geometry ) );
 }
 
 bool QgsGeometry::isNull() const
@@ -247,14 +247,14 @@ QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry > &geometries
 void QgsGeometry::fromWkb( unsigned char *wkb, int length )
 {
   QgsConstWkbPtr ptr( wkb, length );
-  detachAndReset( QgsGeometryFactory::geomFromWkb( ptr ) );
+  reset( QgsGeometryFactory::geomFromWkb( ptr ) );
   delete [] wkb;
 }
 
 void QgsGeometry::fromWkb( const QByteArray &wkb )
 {
   QgsConstWkbPtr ptr( wkb );
-  detachAndReset( QgsGeometryFactory::geomFromWkb( ptr ) );
+  reset( QgsGeometryFactory::geomFromWkb( ptr ) );
 }
 
 GEOSGeometry *QgsGeometry::exportToGeos( double precision ) const
@@ -311,7 +311,7 @@ bool QgsGeometry::isMultipart() const
 
 void QgsGeometry::fromGeos( GEOSGeometry *geos )
 {
-  detachAndReset( QgsGeos::fromGeos( geos ) );
+  reset( QgsGeos::fromGeos( geos ) );
   GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), geos );
 }
 
@@ -429,7 +429,7 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
     return false;
   }
 
-  detachAndClone();
+  detach();
 
   return d->geometry->moveVertex( id, QgsPoint( x, y ) );
 }
@@ -447,7 +447,7 @@ bool QgsGeometry::moveVertex( const QgsPoint &p, int atVertex )
     return false;
   }
 
-  detachAndClone();
+  detach();
 
   return d->geometry->moveVertex( id, p );
 }
@@ -462,7 +462,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
   //maintain compatibility with < 2.10 API
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::MultiPoint )
   {
-    detachAndClone();
+    detach();
     //delete geometry instead of point
     return static_cast< QgsGeometryCollection * >( d->geometry.get() )->removeGeometry( atVertex );
   }
@@ -470,7 +470,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
   //if it is a point, set the geometry to nullptr
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
   {
-    detachAndReset( nullptr );
+    reset( nullptr );
     return true;
   }
 
@@ -480,7 +480,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
     return false;
   }
 
-  detachAndClone();
+  detach();
 
   return d->geometry->deleteVertex( id );
 }
@@ -495,7 +495,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   //maintain compatibility with < 2.10 API
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::MultiPoint )
   {
-    detachAndClone();
+    detach();
     //insert geometry instead of point
     return static_cast< QgsGeometryCollection * >( d->geometry.get() )->insertGeometry( new QgsPoint( x, y ), beforeVertex );
   }
@@ -506,7 +506,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
     return false;
   }
 
-  detachAndClone();
+  detach();
 
   return d->geometry->insertVertex( id, QgsPoint( x, y ) );
 }
@@ -521,7 +521,7 @@ bool QgsGeometry::insertVertex( const QgsPoint &point, int beforeVertex )
   //maintain compatibility with < 2.10 API
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::MultiPoint )
   {
-    detachAndClone();
+    detach();
     //insert geometry instead of point
     return static_cast< QgsGeometryCollection * >( d->geometry.get() )->insertGeometry( new QgsPoint( point ), beforeVertex );
   }
@@ -532,7 +532,7 @@ bool QgsGeometry::insertVertex( const QgsPoint &point, int beforeVertex )
     return false;
   }
 
-  detachAndClone();
+  detach();
 
   return d->geometry->insertVertex( id, point );
 }
@@ -637,7 +637,7 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
     return InvalidInput;
   }
 
-  detachAndClone();
+  detach();
 
   return QgsGeometryEditUtils::addRing( d->geometry.get(), std::move( r ) );
 }
@@ -673,22 +673,22 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qg
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        detachAndReset( qgis::make_unique< QgsMultiPointV2 >() );
+        reset( qgis::make_unique< QgsMultiPointV2 >() );
         break;
       case QgsWkbTypes::LineGeometry:
-        detachAndReset( qgis::make_unique< QgsMultiLineString >() );
+        reset( qgis::make_unique< QgsMultiLineString >() );
         break;
       case QgsWkbTypes::PolygonGeometry:
-        detachAndReset( qgis::make_unique< QgsMultiPolygonV2 >() );
+        reset( qgis::make_unique< QgsMultiPolygonV2 >() );
         break;
       default:
-        detachAndReset( nullptr );
+        reset( nullptr );
         return QgsGeometry::AddPartNotMultiGeometry;
     }
   }
   else
   {
-    detachAndClone();
+    detach();
   }
 
   convertToMultiType();
@@ -755,7 +755,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
     return QgsGeometry::AddPartNotMultiGeometry;
   }
 
-  detachAndClone();
+  detach();
 
   std::unique_ptr< QgsAbstractGeometry > geom = QgsGeos::fromGeos( newPart );
   return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( geom ) );
@@ -768,7 +768,7 @@ QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
     return QgsGeometry::InvalidBaseGeometry;
   }
 
-  detachAndClone();
+  detach();
 
   d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
   return QgsGeometry::Success;
@@ -781,7 +781,7 @@ QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPoin
     return QgsGeometry::InvalidBaseGeometry;
   }
 
-  detachAndClone();
+  detach();
 
   QTransform t = QTransform::fromTranslate( center.x(), center.y() );
   t.rotate( -rotation );
@@ -807,7 +807,7 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPointXY>
 
   if ( result == QgsGeometryEngine::Success )
   {
-    detachAndReset( std::unique_ptr< QgsAbstractGeometry >( newGeoms.takeFirst() ) );
+    reset( std::unique_ptr< QgsAbstractGeometry >( newGeoms.takeFirst() ) );
 
     newGeometries.clear();
     for ( QgsAbstractGeometry *part : qgis::as_const( newGeoms ) )
@@ -855,7 +855,7 @@ QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &
   std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
-    detachAndReset( std::move( geom ) );
+    reset( std::move( geom ) );
     return Success;
   }
 
@@ -897,7 +897,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
     return 1;
   }
 
-  detachAndReset( std::move( diffGeom ) );
+  reset( std::move( diffGeom ) );
   return 0;
 }
 
@@ -1257,7 +1257,7 @@ bool QgsGeometry::convertToMultiType()
   }
 
   multiGeom->addGeometry( d->geometry->clone() );
-  detachAndReset( std::move( geom ) );
+  reset( std::move( geom ) );
   return true;
 }
 
@@ -1278,7 +1278,7 @@ bool QgsGeometry::convertToSingleType()
     return false;
 
   std::unique_ptr< QgsAbstractGeometry > firstPart( multiGeom->geometryN( 0 )->clone() );
-  detachAndReset( std::move( firstPart ) );
+  reset( std::move( firstPart ) );
   return true;
 }
 
@@ -2136,7 +2136,7 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
     return false;
   }
 
-  detachAndClone();
+  detach();
   bool ok = QgsGeometryEditUtils::deleteRing( d->geometry.get(), ringNum, partNum );
   return ok;
 }
@@ -2154,7 +2154,7 @@ bool QgsGeometry::deletePart( int partNum )
     return true;
   }
 
-  detachAndClone();
+  detach();
   bool ok = QgsGeometryEditUtils::deletePart( d->geometry.get(), partNum );
   return ok;
 }
@@ -2169,7 +2169,7 @@ int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidInterse
   std::unique_ptr< QgsAbstractGeometry > diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, ignoreFeatures );
   if ( diffGeom )
   {
-    detachAndReset( std::move( diffGeom ) );
+    reset( std::move( diffGeom ) );
   }
   return 0;
 }
@@ -2275,7 +2275,7 @@ void QgsGeometry::convertToStraightSegment()
   }
 
   std::unique_ptr< QgsAbstractGeometry > straightGeom( d->geometry->segmentize() );
-  detachAndReset( std::move( straightGeom ) );
+  reset( std::move( straightGeom ) );
 }
 
 bool QgsGeometry::requiresConversionToStraightSegments() const
@@ -2295,7 +2295,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransfor
     return QgsGeometry::InvalidBaseGeometry;
   }
 
-  detachAndClone();
+  detach();
   d->geometry->transform( ct );
   return QgsGeometry::Success;
 }
@@ -2307,7 +2307,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct )
     return QgsGeometry::InvalidBaseGeometry;
   }
 
-  detachAndClone();
+  detach();
   d->geometry->transform( ct );
   return QgsGeometry::Success;
 }
@@ -2316,7 +2316,7 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel &mtp )
 {
   if ( d->geometry )
   {
-    detachAndClone();
+    detach();
     d->geometry->transform( mtp.transform() );
   }
 }
