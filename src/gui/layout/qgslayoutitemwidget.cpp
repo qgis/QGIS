@@ -642,10 +642,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
   mOpacityWidget->setOpacity( mItem->itemOpacity() );
-
-#if 0//TODO
-  mItemRotationSpinBox->setValue( mItem->itemRotation( QgsComposerObject::OriginalValue ) );
-#endif
+  mItemRotationSpinBox->setValue( mItem->itemRotation() );
   mExcludeFromPrintsCheckBox->setChecked( mItem->excludeFromExports() );
 
   block( false );
@@ -875,9 +872,7 @@ void QgsLayoutItemPropertiesWidget::mItemRotationSpinBox_valueChanged( double va
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Rotate" ), QgsLayoutItem::UndoRotation );
-#if 0 //TODO
     mItem->setItemRotation( val, true );
-#endif
     mItem->update();
     mItem->layout()->undoStack()->endCommand();
   }

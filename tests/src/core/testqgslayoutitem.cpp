@@ -1228,6 +1228,22 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item->sceneBoundingRect().top(), 8.0 );
   QCOMPARE( item->sceneBoundingRect().bottom(), 18.0 );
 
+  // set rotation, using top left
+  std::unique_ptr< TestItem > item2( new TestItem( &l ) );
+  item2->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
+  item2->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
+  item2->setItemRotation( 90, false );
+  QCOMPARE( item2->positionWithUnits().x(), 5.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 8.0 );
+  QCOMPARE( item2->pos().x(), 5.0 );
+  QCOMPARE( item2->pos().y(), 8.0 );
+  item2->setItemRotation( 180, true );
+  QCOMPARE( item2->positionWithUnits().x(), 7.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 16.0 );
+  QCOMPARE( item2->pos().x(), 7.0 );
+  QCOMPARE( item2->pos().y(), 16.0 );
+
+
   //TODO also changing size?
 
 
@@ -1240,15 +1256,28 @@ void TestQgsLayoutItem::rotation()
   item->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "90" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::ItemRotation );
-  QCOMPARE( item->itemRotation(), 90.0 );
+  QCOMPARE( item->itemRotation(), 0.0 ); // should be unchanged
+  QCOMPARE( item->rotation(), 90.0 );
   QCOMPARE( spyRotationChanged.count(), 6 );
   QCOMPARE( spyRotationChanged.at( 5 ).at( 0 ).toDouble(), 90.0 );
+
+  // rotation should have applied around item center
+  QCOMPARE( item->positionWithUnits().x(), 13.0 );
+  QCOMPARE( item->positionWithUnits().y(), 6.0 );
+  QCOMPARE( item->pos().x(), 13.0 );
+  QCOMPARE( item->pos().y(), 6.0 );
+
   //also check when refreshing all properties
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "45" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "180" ) ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::AllProperties );
-  QCOMPARE( item->itemRotation(), 45.0 );
+  QCOMPARE( item->itemRotation(), 0.0 ); // should be unchanged
+  QCOMPARE( item->rotation(), 180.0 );
   QCOMPARE( spyRotationChanged.count(), 7 );
-  QCOMPARE( spyRotationChanged.at( 6 ).at( 0 ).toDouble(), 45.0 );
+  QCOMPARE( spyRotationChanged.at( 6 ).at( 0 ).toDouble(), 180.0 );
+  QCOMPARE( item->positionWithUnits().x(), 15.0 );
+  QCOMPARE( item->positionWithUnits().y(), 14.0 );
+  QCOMPARE( item->pos().x(), 15.0 );
+  QCOMPARE( item->pos().y(), 14.0 );
 
   delete item;
 
@@ -1273,7 +1302,6 @@ void TestQgsLayoutItem::rotation()
 }
 
 //TODO rotation tests:
-//restoring item from xml respects rotation/position
 //rotate item around layout point
 
 

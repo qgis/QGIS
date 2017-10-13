@@ -310,14 +310,14 @@ void QgsLayoutItemGroup::updateBoundingRect( QgsLayoutItem *item )
     mBoundingRectangle = QRectF( 0, 0, item->rect().width(), item->rect().height() );
     setSceneRect( QRectF( item->pos().x(), item->pos().y(), item->rect().width(), item->rect().height() ) );
 
-    if ( !qgsDoubleNear( item->itemRotation(), 0.0 ) )
+    if ( !qgsDoubleNear( item->rotation(), 0.0 ) )
     {
-      setItemRotation( item->itemRotation() );
+      setItemRotation( item->rotation() );
     }
   }
   else
   {
-    if ( !qgsDoubleNear( item->itemRotation(), itemRotation() ) )
+    if ( !qgsDoubleNear( item->rotation(), rotation() ) )
     {
       //items have mixed rotation, so reset rotation of group
       mBoundingRectangle = mapRectToScene( mBoundingRectangle );

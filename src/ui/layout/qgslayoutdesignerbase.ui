@@ -83,7 +83,7 @@
      <x>0</x>
      <y>0</y>
      <width>1083</width>
-     <height>42</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -1011,6 +1011,7 @@
   </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

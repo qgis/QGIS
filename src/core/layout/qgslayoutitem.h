@@ -289,9 +289,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Returns the current rotation for the item, in degrees clockwise.
+     *
+     * Note that this method will always return the user-set rotation for the item,
+     * which may differ from the current item rotation (if data defined rotation
+     * settings are present). Use QGraphicsItem::rotation() to obtain the current
+     * item rotation.
+     *
      * \see setItemRotation()
      */
-    //TODO
     double itemRotation() const;
 
     /**
@@ -504,11 +509,15 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     /**
-     * Sets the layout item's \a rotation, in degrees clockwise. This rotation occurs around the center of the item.
+     * Sets the layout item's \a rotation, in degrees clockwise.
+     *
+     * If \a adjustPosition is true, then this rotation occurs around the center of the item.
+     * If \a adjustPosition is false, rotation occurs around the item origin.
+     *
      * \see itemRotation()
      * \see rotateItem()
     */
-    virtual void setItemRotation( const double rotation );
+    virtual void setItemRotation( double rotation, bool adjustPosition = true );
 
     /**
      * Rotates the item by a specified \a angle in degrees clockwise around a specified reference point.
@@ -602,10 +611,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Refreshes an item's rotation by rechecking it against any possible overrides
      * such as data defined rotation.
+     *
+     * The optional \a origin point specifies the origin (in item coordinates)
+     * around which the rotation should be applied.
+     *
      * \see refreshItemSize()
      * \see refreshItemPosition()
      */
-    void refreshItemRotation();
+    void refreshItemRotation( QPointF *origin = nullptr );
 
     /**
      * Refresh item's opacity, considering data defined opacity.

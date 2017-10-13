@@ -275,6 +275,14 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 
     double itemRotation() const;
 %Docstring
+ Returns the current rotation for the item, in degrees clockwise.
+
+ Note that this method will always return the user-set rotation for the item,
+ which may differ from the current item rotation (if data defined rotation
+ settings are present). Use QGraphicsItem.rotation() to obtain the current
+ item rotation.
+
+.. seealso:: setItemRotation()
  :rtype: float
 %End
 
@@ -506,9 +514,13 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  refreshed.
 %End
 
-    virtual void setItemRotation( const double rotation );
+    virtual void setItemRotation( double rotation, bool adjustPosition = true );
 %Docstring
- Sets the layout item's ``rotation``, in degrees clockwise. This rotation occurs around the center of the item.
+ Sets the layout item's ``rotation``, in degrees clockwise.
+
+ If ``adjustPosition`` is true, then this rotation occurs around the center of the item.
+ If ``adjustPosition`` is false, rotation occurs around the item origin.
+
 .. seealso:: itemRotation()
 .. seealso:: rotateItem()
 %End
@@ -602,10 +614,14 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: refreshItemSize()
 %End
 
-    void refreshItemRotation();
+    void refreshItemRotation( QPointF *origin = 0 );
 %Docstring
  Refreshes an item's rotation by rechecking it against any possible overrides
  such as data defined rotation.
+
+ The optional ``origin`` point specifies the origin (in item coordinates)
+ around which the rotation should be applied.
+
 .. seealso:: refreshItemSize()
 .. seealso:: refreshItemPosition()
 %End

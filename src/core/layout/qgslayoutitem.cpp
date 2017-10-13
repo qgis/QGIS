@@ -427,7 +427,7 @@ bool QgsLayoutItem::shouldDrawItem() const
 
 double QgsLayoutItem::itemRotation() const
 {
-  return rotation();
+  return mItemRotation;
 }
 
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -662,11 +662,19 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   update();
 }
 
-void QgsLayoutItem::setItemRotation( const double angle )
+void QgsLayoutItem::setItemRotation( double angle, const bool adjustPosition )
 {
-  QPointF itemCenter = positionAtReferencePoint( QgsLayoutItem::Middle );
-  double rotationRequired = angle - itemRotation();
-  rotateItem( rotationRequired, itemCenter );
+  if ( angle >= 360.0 || angle <= -360.0 )
+  {
+    angle = std::fmod( angle, 360.0 );
+  }
+
+  QPointF point = adjustPosition ? positionAtReferencePoint( QgsLayoutItem::Middle )
+                  : pos();
+  double rotationRequired = angle - rotation();
+  rotateItem( rotationRequired, point );
+
+  mItemRotation = angle;
 }
 
 void QgsLayoutItem::updateStoredItemPosition()
@@ -679,19 +687,11 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF &transformOrig
 {
   double evaluatedAngle = angle + rotation();
   evaluatedAngle = QgsLayoutUtils::normalizedAngle( evaluatedAngle, true );
-  evaluatedAngle = applyDataDefinedRotation( evaluatedAngle );
+  mItemRotation = evaluatedAngle;
 
   QPointF itemTransformOrigin = mapFromScene( transformOrigin );
-  setTransformOriginPoint( itemTransformOrigin );
-  setRotation( evaluatedAngle );
 
-  //adjust stored position of item to match scene pos of reference point
-  updateStoredItemPosition();
-
-  emit rotationChanged( evaluatedAngle );
-
-  //update bounds of scene, since rotation may affect this
-  mLayout->updateBounds();
+  refreshItemRotation( &itemTransformOrigin );
 }
 
 
@@ -825,7 +825,7 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument
   element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
   element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
-  element.setAttribute( QStringLiteral( "rotation" ), QString::number( rotation() ) );
+  element.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
   element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
 
   element.setAttribute( "zValue", QString::number( zValue() ) );
@@ -900,7 +900,7 @@ bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const
   mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
   attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
   attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
-  setItemRotation( element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
+  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
 
   mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
   if ( !mParentGroupUuid.isEmpty() )
@@ -1073,9 +1073,43 @@ QSizeF QgsLayoutItem::applyFixedSize( const QSizeF &targetSize )
   return targetSize.expandedTo( fixedSizeLayoutUnits );
 }
 
-void QgsLayoutItem::refreshItemRotation()
+void QgsLayoutItem::refreshItemRotation( QPointF *origin )
 {
-  setItemRotation( itemRotation() );
+  double r = mItemRotation;
+
+  //data defined rotation set?
+  r = mDataDefinedProperties.valueAsDouble( QgsLayoutItem::ItemRotation, createExpressionContext(), r );
+
+  if ( qgsDoubleNear( r, rotation() ) && !origin )
+  {
+    return;
+  }
+
+  QPointF transformPoint = origin ? *origin : mapFromScene( positionAtReferencePoint( QgsLayoutItem::Middle ) );
+
+  if ( !transformPoint.isNull() )
+  {
+    //adjustPosition set, so shift the position of the item so that rotation occurs around item center
+    //create a line from the transform point to the item's origin, in scene coordinates
+    QLineF refLine = QLineF( mapToScene( transformPoint ), mapToScene( QPointF( 0, 0 ) ) );
+    //rotate this line by the current rotation angle
+    refLine.setAngle( refLine.angle() - r + rotation() );
+    //get new end point of line - this is the new item position
+    QPointF rotatedReferencePoint = refLine.p2();
+    setPos( rotatedReferencePoint );
+  }
+
+  setTransformOriginPoint( 0, 0 );
+  QGraphicsItem::setRotation( r );
+
+  //adjust stored position of item to match scene pos of reference point
+  updateStoredItemPosition();
+  emit sizePositionChanged();
+
+  emit rotationChanged( r );
+
+  //update bounds of scene, since rotation may affect this
+  mLayout->updateBounds();
 }
 
 void QgsLayoutItem::refreshOpacity( bool updateItem )
