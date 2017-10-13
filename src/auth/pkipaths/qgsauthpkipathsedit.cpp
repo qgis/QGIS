@@ -36,6 +36,9 @@ QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   connect( chkPkiPathsPassShow, &QCheckBox::stateChanged, this, &QgsAuthPkiPathsEdit::chkPkiPathsPassShow_stateChanged );
   connect( btnPkiPathsCert, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked );
   connect( btnPkiPathsKey, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked );
+  lblCas->hide();
+  twCas->hide();
+  cbAddCas->hide();
 }
 
 bool QgsAuthPkiPathsEdit::validateConfig()
@@ -100,6 +103,11 @@ bool QgsAuthPkiPathsEdit::validateConfig()
                    tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
                    ( certvalid ? Valid : Invalid ) );
 
+  bool showCas( certvalid && populateCas() );
+  lblCas->setVisible( showCas );
+  twCas->setVisible( showCas );
+  cbAddCas->setVisible( showCas );
+
   return validityChange( certvalid );
 }
 
@@ -109,6 +117,7 @@ QgsStringMap QgsAuthPkiPathsEdit::configMap() const
   config.insert( QStringLiteral( "certpath" ), lePkiPathsCert->text() );
   config.insert( QStringLiteral( "keypath" ), lePkiPathsKey->text() );
   config.insert( QStringLiteral( "keypass" ), lePkiPathsKeyPass->text() );
+  config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
 
   return config;
 }
@@ -121,6 +130,7 @@ void QgsAuthPkiPathsEdit::loadConfig( const QgsStringMap &configmap )
   lePkiPathsCert->setText( configmap.value( QStringLiteral( "certpath" ) ) );
   lePkiPathsKey->setText( configmap.value( QStringLiteral( "keypath" ) ) );
   lePkiPathsKeyPass->setText( configmap.value( QStringLiteral( "keypass" ) ) );
+  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
 
   validateConfig();
 }
@@ -223,4 +233,40 @@ bool QgsAuthPkiPathsEdit::validityChange( bool curvalid )
     emit validityChanged( curvalid );
   }
   return curvalid;
+}
+
+
+bool QgsAuthPkiPathsEdit::populateCas()
+{
+  twCas->clear();
+  const QList<QSslCertificate> cas( QgsAuthCertUtils::casFromFile( lePkiPathsCert->text() ) );
+  if ( cas.isEmpty() )
+  {
+    return false;
+  }
+
+  QTreeWidgetItem *prevItem( nullptr );
+  QList<QSslCertificate>::const_iterator it( cas.constEnd() );
+  while ( it != cas.constBegin() )
+  {
+    --it;
+    const QSslCertificate cert = static_cast<QSslCertificate>( *it );
+    QTreeWidgetItem *item;
+
+    if ( prevItem && cert.issuerInfo( QSslCertificate::SubjectInfo::CommonName ).contains( prevItem->text( 0 ) ) )
+    {
+      item = new QTreeWidgetItem( QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
+      prevItem->addChild( item );
+    }
+    else
+    {
+      item = new QTreeWidgetItem( twCas, QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
+    }
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setToolTip( 0, tr( "<ul><li>Serial #: %1</li><li>Expiry date: %2</li></ul>" ).arg( cert.serialNumber( ), cert.expiryDate().toString( Qt::TextDate ) ) );
+    prevItem = item;
+  }
+  twCas->expandAll();
+
+  return true;
 }
