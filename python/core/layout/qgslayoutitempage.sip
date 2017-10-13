@@ -87,7 +87,7 @@ class QgsLayoutItemPage : QgsLayoutItem
  :rtype: QgsLayoutItemPage.Orientation
 %End
 
-    virtual void attemptResize( const QgsLayoutSize &size );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;

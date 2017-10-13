@@ -338,13 +338,23 @@ void QgsLayoutItem::setReferencePoint( const QgsLayoutItem::ReferencePoint &poin
   refreshItemPosition();
 }
 
-void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
+void QgsLayoutItem::attemptResize( const QgsLayoutSize &s, bool includesFrame )
 {
   if ( !mLayout )
   {
-    mItemSize = size;
-    setRect( 0, 0, size.width(), size.height() );
+    mItemSize = s;
+    setRect( 0, 0, s.width(), s.height() );
     return;
+  }
+
+  QgsLayoutSize size = s;
+
+  if ( includesFrame )
+  {
+    //adjust position to account for frame size
+    double bleed = mLayout->convertFromLayoutUnits( estimatedFrameBleed(), size.units() ).length();
+    size.setWidth( size.width() - 2 * bleed );
+    size.setHeight( size.height() - 2 * bleed );
   }
 
   QgsLayoutSize evaluatedSize = applyDataDefinedSize( size );
@@ -365,13 +375,23 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
   emit sizePositionChanged();
 }
 
-void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint )
+void QgsLayoutItem::attemptMove( const QgsLayoutPoint &p, bool useReferencePoint, bool includesFrame )
 {
   if ( !mLayout )
   {
-    mItemPosition = point;
-    setPos( point.toQPointF() );
+    mItemPosition = p;
+    setPos( p.toQPointF() );
     return;
+  }
+
+  QgsLayoutPoint point = p;
+
+  if ( includesFrame )
+  {
+    //adjust position to account for frame size
+    double bleed = mLayout->convertFromLayoutUnits( estimatedFrameBleed(), point.units() ).length();
+    point.setX( point.x() + bleed );
+    point.setY( point.y() + bleed );
   }
 
   QgsLayoutPoint evaluatedPoint = point;

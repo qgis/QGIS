@@ -127,7 +127,7 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
     mLayout->undoStack()->endMacro();
 }
 
-void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint )
+void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint, bool includesFrame )
 {
   Q_UNUSED( useReferencePoint ); //groups should always have reference point in top left
   if ( !mLayout )
@@ -158,7 +158,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
     QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
     itemPos.setX( itemPos.x() + deltaPos.x() );
     itemPos.setY( itemPos.y() + deltaPos.y() );
-    item->attemptMove( itemPos );
+    item->attemptMove( itemPos, includesFrame );
 
     if ( command )
     {
@@ -167,13 +167,13 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
     }
   }
   //lastly move group item itself
-  QgsLayoutItem::attemptMove( point );
+  QgsLayoutItem::attemptMove( point, includesFrame );
   if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->endMacro();
   resetBoundingRect();
 }
 
-void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
+void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includesFrame )
 {
   if ( !mLayout )
     return;
@@ -206,7 +206,7 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
     QPointF newPos = mapToScene( itemRect.topLeft() );
 
     QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
-    item->attemptResize( itemSize );
+    item->attemptResize( itemSize, includesFrame );
 
     // translate new position to current item units
     QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, item->positionWithUnits().units() );

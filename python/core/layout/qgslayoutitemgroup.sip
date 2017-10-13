@@ -62,9 +62,9 @@ class QgsLayoutItemGroup: QgsLayoutItem
     virtual void setVisibility( const bool visible );
 
 
-    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
 
-    virtual void attemptResize( const QgsLayoutSize &size );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
 
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;

@@ -658,11 +658,11 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       QPointF newPos = mapToScene( itemRect.topLeft() );
 
       QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
-      item->attemptResize( itemSize );
+      item->attemptResize( itemSize, true );
 
       // translate new position to current item units
       QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, item->positionWithUnits().units() );
-      item->attemptMove( itemPos, false );
+      item->attemptMove( itemPos, false, true );
 
       command->saveAfterState();
       mLayout->undoStack()->stack()->push( command.release() );

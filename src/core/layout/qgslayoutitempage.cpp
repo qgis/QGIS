@@ -117,9 +117,9 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
   return Landscape;
 }
 
-void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size )
+void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size, bool includesFrame )
 {
-  QgsLayoutItem::attemptResize( size );
+  QgsLayoutItem::attemptResize( size, includesFrame );
   //update size of attached grid to reflect new page size and position
   mGrid->setRect( 0, 0, rect().width(), rect().height() );
 

@@ -244,12 +244,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * item may not match the specified target size, as items with a fixed or minimum
      * size will place restrictions on the allowed item size. Data defined item size overrides
      * will also override the specified target size.
+     *
+     * If \a includesFrame is true, then the size specified by \a size includes the
+     * item's frame.
+     *
      * \see minimumSize()
      * \see fixedSize()
      * \see attemptMove()
      * \see sizeWithUnits()
     */
-    virtual void attemptResize( const QgsLayoutSize &size );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
     /**
      * Attempts to move the item to a specified \a point.
@@ -261,6 +265,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * If \a useReferencePoint is false, the item will be moved so that \a point
      * falls at the top-left corner of the item.
      *
+     * If \a includesFrame is true, then the position specified by \a point represents the
+     * point at which to place the outside of the item's frame.
+     *
      * Note that the final position of the item may not match the specified target position,
      * as data defined item position may override the specified value.
      *
@@ -268,7 +275,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see referencePoint()
      * \see positionWithUnits()
     */
-    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
 
     /**
      * Returns the item's current position, including units. The position returned

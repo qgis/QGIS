@@ -881,6 +881,20 @@ void TestQgsLayoutItem::referencePoint()
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
   QCOMPARE( item->scenePos().x(), 2.0 );
   QCOMPARE( item->scenePos().y(), 1.0 );
+
+  item.reset( new TestItem( &l ) );
+
+  //item with frame
+  item->attemptResize( QgsLayoutSize( 2, 4 ) );
+  item->attemptMove( QgsLayoutPoint( 1, 2 ) );
+  item->setFrameEnabled( true );
+  item->setFrameStrokeWidth( QgsLayoutMeasurement( 1 ) );
+  item->attemptResize( QgsLayoutSize( 4, 6 ) );
+  QCOMPARE( item->sizeWithUnits().width(), 4.0 );
+  QCOMPARE( item->sizeWithUnits().height(), 6.0 );
+  item->attemptResize( QgsLayoutSize( 4, 6 ), true );
+  QCOMPARE( item->sizeWithUnits().width(), 3.0 );
+  QCOMPARE( item->sizeWithUnits().height(), 5.0 );
 }
 
 void TestQgsLayoutItem::itemPositionReferencePoint()
@@ -1161,6 +1175,19 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->positionWithUnits().y(), 18.0 );
   QCOMPARE( item->scenePos().x(), 10.0 );
   QCOMPARE( item->scenePos().y(), 12.0 );
+
+  //item with frame
+  item.reset( new TestItem( &l ) );
+  item->attemptResize( QgsLayoutSize( 2, 4 ) );
+  item->attemptMove( QgsLayoutPoint( 1, 2 ) );
+  item->setFrameEnabled( true );
+  item->setFrameStrokeWidth( QgsLayoutMeasurement( 1 ) );
+  item->attemptMove( QgsLayoutPoint( 1, 3 ) );
+  QCOMPARE( item->positionWithUnits().x(), 1.0 );
+  QCOMPARE( item->positionWithUnits().y(), 3.0 );
+  item->attemptMove( QgsLayoutPoint( 4, 6 ), false, true );
+  QCOMPARE( item->positionWithUnits().x(), 4.5 );
+  QCOMPARE( item->positionWithUnits().y(), 6.5 );
 }
 
 void TestQgsLayoutItem::rotation()

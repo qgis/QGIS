@@ -117,7 +117,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     */
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok SIP_OUT = nullptr );
 
-    void attemptResize( const QgsLayoutSize &size ) override;
+    void attemptResize( const QgsLayoutSize &size, bool includesFrame = false ) override;
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 

@@ -69,8 +69,8 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     void setVisibility( const bool visible ) override;
 
     //overridden to move child items
-    void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true ) override;
-    void attemptResize( const QgsLayoutSize &size ) override;
+    void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false ) override;
+    void attemptResize( const QgsLayoutSize &size, bool includesFrame = false ) override;
 
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;

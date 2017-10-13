@@ -223,19 +223,23 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: QgsLayoutSize
 %End
 
-    virtual void attemptResize( const QgsLayoutSize &size );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 %Docstring
  Attempts to resize the item to a specified target ``size``. Note that the final size of the
  item may not match the specified target size, as items with a fixed or minimum
  size will place restrictions on the allowed item size. Data defined item size overrides
  will also override the specified target size.
+
+ If ``includesFrame`` is true, then the size specified by ``size`` includes the
+ item's frame.
+
 .. seealso:: minimumSize()
 .. seealso:: fixedSize()
 .. seealso:: attemptMove()
 .. seealso:: sizeWithUnits()
 %End
 
-    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
 %Docstring
  Attempts to move the item to a specified ``point``.
 
@@ -245,6 +249,9 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 
  If ``useReferencePoint`` is false, the item will be moved so that ``point``
  falls at the top-left corner of the item.
+
+ If ``includesFrame`` is true, then the position specified by ``point`` represents the
+ point at which to place the outside of the item's frame.
 
  Note that the final position of the item may not match the specified target position,
  as data defined item position may override the specified value.
