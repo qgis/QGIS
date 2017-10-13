@@ -797,7 +797,7 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPointXY>
     return InvalidBaseGeometry;
   }
 
-  QList<QgsAbstractGeometry *> newGeoms;
+  QList<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
   QgsPointSequence tp;
 
@@ -807,13 +807,9 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPointXY>
 
   if ( result == QgsGeometryEngine::Success )
   {
-    reset( std::unique_ptr< QgsAbstractGeometry >( newGeoms.takeFirst() ) );
+    *this = newGeoms.takeAt( 0 );
 
-    newGeometries.clear();
-    for ( QgsAbstractGeometry *part : qgis::as_const( newGeoms ) )
-    {
-      newGeometries.push_back( QgsGeometry( part ) );
-    }
+    newGeometries = newGeoms;
   }
 
   convertPointList( tp, topologyTestPoints );
@@ -2252,7 +2248,7 @@ QgsGeometry QgsGeometry::polygonize( const QList<QgsGeometry> &geometryList )
 {
   QgsGeos geos( nullptr );
 
-  QList<QgsAbstractGeometry *> geomV2List;
+  QList<const QgsAbstractGeometry *> geomV2List;
   for ( const QgsGeometry &g : geometryList )
   {
     if ( !( g.isNull() ) )

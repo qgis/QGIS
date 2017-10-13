@@ -563,7 +563,7 @@ double QgsGeos::length( QString *errorMsg ) const
 }
 
 QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry( const QgsLineString &splitLine,
-    QList<QgsAbstractGeometry *> &newGeometries,
+    QList<QgsGeometry> &newGeometries,
     bool topological,
     QgsPointSequence &topologyTestPoints,
     QString *errorMsg ) const
@@ -767,7 +767,7 @@ GEOSGeometry *QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) const
   return asGeos( &lines, mPrecision );
 }
 
-QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry> &newGeometries ) const
 {
   if ( !splitLine )
     return InvalidInput;
@@ -815,7 +815,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeome
 
   for ( int i = 0; i < lineGeoms.size(); ++i )
   {
-    newGeometries << fromGeos( lineGeoms[i] ).release();
+    newGeometries << QgsGeometry( fromGeos( lineGeoms[i] ) );
     GEOSGeom_destroy_r( geosinit.ctxt, lineGeoms[i] );
   }
 
@@ -823,7 +823,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeome
   return Success;
 }
 
-QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsGeometry> &newGeometries ) const
 {
   if ( !splitLine )
     return InvalidInput;
@@ -917,7 +917,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
   }
 
   for ( i = 0; i < testedGeometries.size(); ++i )
-    newGeometries << fromGeos( testedGeometries[i] ).release();
+    newGeometries << QgsGeometry( fromGeos( testedGeometries[i] ) );
 
   return Success;
 }
@@ -2172,7 +2172,7 @@ double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) cons
   return distance;
 }
 
-QgsGeometry QgsGeos::polygonize( const QList<QgsAbstractGeometry *> &geometries, QString *errorMsg )
+QgsGeometry QgsGeos::polygonize( const QList<const QgsAbstractGeometry *> &geometries, QString *errorMsg )
 {
   GEOSGeometry **const lineGeosGeometries = new GEOSGeometry*[ geometries.size()];
   int validLines = 0;

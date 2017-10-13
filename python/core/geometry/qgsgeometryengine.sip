@@ -37,7 +37,21 @@ class QgsGeometryEngine
     virtual ~QgsGeometryEngine();
 
     virtual void geometryChanged() = 0;
+%Docstring
+ Should be called whenever the geometry associated with the engine
+ has been modified and the engine must be updated to suit.
+%End
+
     virtual void prepareGeometry() = 0;
+%Docstring
+ Prepares the geometry, so that subsequent calls to spatial relation methods
+ are much faster.
+
+ This should be called for any geometry which is used for multiple relation
+ tests against other geometries.
+
+.. seealso:: geometryChanged()
+%End
 
     virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
@@ -244,10 +258,17 @@ class QgsGeometryEngine
 %End
 
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-        QList<QgsAbstractGeometry *> &newGeometries,
+        QList<QgsGeometry > &newGeometries /Out/,
         bool topological,
         QgsPointSequence &topologyTestPoints, QString *errorMsg = 0 ) const;
 %Docstring
+ Splits this geometry according to a given line.
+ \param splitLine the line that splits the geometry
+ \param[out] newGeometries list of new geometries that have been created with the split
+ \param topological true if topological editing is enabled
+ \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+ \param[out] errorMsg error messages emitted, if any
+ :return: 0 in case of success, 1 if geometry has not been split, error else
  :rtype: QgsGeometryEngine.EngineOperationResult
 %End
 

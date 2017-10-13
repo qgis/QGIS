@@ -45,7 +45,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
     ~QgsGeos();
 
-    //! Removes caches
     void geometryChanged() override;
     void prepareGeometry() override;
 
@@ -138,16 +137,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
-    /**
-     * Splits this geometry according to a given line.
-    \param splitLine the line that splits the geometry
-    \param[out] newGeometries list of new geometries that have been created with the split
-    \param topological true if topological editing is enabled
-    \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-    \param[out] errorMsg error messages emitted, if any
-    \returns 0 in case of success, 1 if geometry has not been split, error else*/
     EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-                                         QList<QgsAbstractGeometry *> &newGeometries,
+                                         QList< QgsGeometry > &newGeometries,
                                          bool topological,
                                          QgsPointSequence &topologyTestPoints,
                                          QString *errorMsg = nullptr ) const override;
@@ -226,7 +217,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * An empty geometry will be returned in the case of errors.
      * \since QGIS 3.0
      */
-    static QgsGeometry polygonize( const QList<QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
+    static QgsGeometry polygonize( const QList< const QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.
@@ -315,8 +306,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     //utils for geometry split
     bool topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
     GEOSGeometry *linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
-    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
-    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
+    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry > &newGeometries ) const;
+    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsGeometry > &newGeometries ) const;
 
     //utils for reshape
     static GEOSGeometry *reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );
