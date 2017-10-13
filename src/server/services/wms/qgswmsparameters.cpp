@@ -875,6 +875,12 @@ namespace QgsWms
           }
         }
 
+        if ( d[0] > d[2] || d[1] > d[3] )
+        {
+          *error = true;
+          return extent;
+        }
+
         extent = QgsRectangle( d[0], d[1], d[2], d[3] );
       }
       else
