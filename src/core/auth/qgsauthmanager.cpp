@@ -2756,18 +2756,7 @@ bool QgsAuthManager::rebuildTrustedCaCertsCache()
 
 const QByteArray QgsAuthManager::getTrustedCaCertsPemText()
 {
-  QByteArray capem;
-  const QList<QSslCertificate> certs( getTrustedCaCertsCache() );
-  if ( !certs.isEmpty() )
-  {
-    QStringList certslist;
-    for ( const auto &cert : certs )
-    {
-      certslist << cert.toPem();
-    }
-    capem = certslist.join( QStringLiteral( "\n" ) ).toLatin1(); //+ "\n";
-  }
-  return capem;
+  return QgsAuthCertUtils::certsToPemText( getTrustedCaCertsCache() );
 }
 
 bool QgsAuthManager::passwordHelperSync()
