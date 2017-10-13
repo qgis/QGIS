@@ -227,6 +227,12 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( testFlag( ShowRasterPreviewIcon ) )
         {
           QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
+          // avoid to create preview for wms that imply a better multi thread management
+          // due to async nature of wms.
+          // The following two line of code is part of the fix of
+          // https://issues.qgis.org/issues/16803
+          if ( rlayer->providerType() == QLatin1String( "wms" ) )
+            return QgsLayerItem::iconRaster();
           return QIcon( QPixmap::fromImage( rlayer->previewAsImage( QSize( 32, 32 ) ) ) );
         }
         else
