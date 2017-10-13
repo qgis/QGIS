@@ -48,7 +48,7 @@ class QgsLocator : QObject
  Destructor for QgsLocator. Destruction will block while any currently running query is terminated.
 %End
 
-    void registerFilter( QgsLocatorFilter *filter /Transfer/ );
+    void registerFilter( QgsLocatorFilter *filter /Transfer/, bool enableByDefault = true );
 %Docstring
  Registers a ``filter`` within the locator. Ownership of the filter is transferred to the
  locator.

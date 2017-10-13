@@ -20,6 +20,7 @@
 
 #include "qgslocatorfilter.h"
 class QAction;
+class QNetworkReply;
 
 class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 {
@@ -75,6 +76,26 @@ class QgsActionLocatorFilter : public QgsLocatorFilter
 
     void searchActions( const QString &string, QWidget *parent, QList< QAction *> &found );
 
+};
+
+class QgsJosmRemoteLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsJosmRemoteLocatorFilter( QObject *parent = nullptr );
+    virtual QString name() const override { return QStringLiteral( "josm" ); }
+    virtual QString displayName() const override { return tr( "JOSM Remote" ); }
+    virtual Priority priority() const override { return Medium; }
+    QString prefix() const override { return QStringLiteral( "josm" ); }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
+  private:
+    QNetworkReply *mReturnFromJosm = nullptr;
+    void josmReplyFinished();
 };
 
 class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter

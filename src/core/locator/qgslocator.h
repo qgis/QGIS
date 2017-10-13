@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLocator : public QObject
      * deregisterFilter() and deregister their filters upon plugin unload to avoid crashes.
      * \see deregisterFilter()
      */
-    void registerFilter( QgsLocatorFilter *filter SIP_TRANSFER );
+    void registerFilter( QgsLocatorFilter *filter SIP_TRANSFER, bool enableByDefault = true );
 
     /**
      * Deregisters a \a filter from the locator and deletes it. Calling this will block whilst

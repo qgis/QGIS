@@ -16,17 +16,29 @@
  ***************************************************************************/
 
 
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsinbuiltlocatorfilters.h"
 #include "qgsproject.h"
 #include "qgslayertree.h"
 #include "qgsfeedback.h"
 #include "qgisapp.h"
 #include "qgsstringutils.h"
+#include "qgslogger.h"
 #include "qgsmaplayermodel.h"
 #include "qgscomposition.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsrectangle.h"
+#include "QIcon"
+#include "QNetworkReply"
+#include "QNetworkRequest"
+#include <QString>
 #include <QToolButton>
+#include <QUrl>
+#include <QUrlQuery>
 
 QgsLayerTreeLocatorFilter::QgsLayerTreeLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
@@ -164,6 +176,65 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     }
   }
 }
+
+//
+// QgsJosmRemoteLocatorFilter
+//
+
+QgsJosmRemoteLocatorFilter::QgsJosmRemoteLocatorFilter( QObject *parent )
+  : QgsLocatorFilter( parent )
+{
+}
+
+void QgsJosmRemoteLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
+{
+  Q_UNUSED( string );
+
+  if ( feedback->isCanceled() )
+    return;
+
+  // Default load and zoom to map canvas
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateTransform transform( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), crs );
+  QgsRectangle extent = transform.transform( QgisApp::instance()->mapCanvas()->extent() );
+  QUrl command( "http://localhost:8111/load_and_zoom" );
+  QUrlQuery query;
+  query.addQueryItem( QStringLiteral( "left" ), QString::number( extent.xMinimum() ) );
+  query.addQueryItem( QStringLiteral( "right" ), QString::number( extent.xMaximum() ) );
+  query.addQueryItem( QStringLiteral( "bottom" ), QString::number( extent.yMinimum() ) );
+  query.addQueryItem( QStringLiteral( "top" ), QString::number( extent.yMaximum() ) );
+  command.setQuery( query );
+
+  // Loading the map canvas into JOSM
+  QgsLocatorResult result;
+  result.filter = this;
+  result.displayString = tr( "Load in JOSM the area %1,%2 : %3,%4" ).arg( extent.xMinimum(), 0, 'f', 3 ).arg( extent.yMinimum(), 0, 'f', 3 ).arg( extent.xMaximum(), 0, 'f', 3 ).arg( extent.yMaximum(), 0, 'f', 3 );
+  result.userData = command;
+  result.icon = QIcon( QgsApplication::iconsPath() + QStringLiteral( "josm_icon.svg" ) );
+  result.score = 1.0;
+  emit resultFetched( result );
+}
+
+void QgsJosmRemoteLocatorFilter::triggerResult( const QgsLocatorResult &result )
+{
+  QgsDebugMsg( result.userData.toString() );
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
+  mReturnFromJosm = nam->get( QNetworkRequest( QUrl( result.userData.toString() ) ) );
+  connect( mReturnFromJosm, &QNetworkReply::finished, this, &QgsJosmRemoteLocatorFilter::josmReplyFinished );
+}
+
+void QgsJosmRemoteLocatorFilter::josmReplyFinished()
+{
+  if ( mReturnFromJosm->error() != QNetworkReply::NoError )
+  {
+    QgisApp::instance()->messageBar()->pushWarning( tr( "JOSM Remote" ), tr( "JOSM must be running and the remote enabled." ) );
+  }
+  mReturnFromJosm->deleteLater();
+}
+
+//
+// QgsActiveLayerFeaturesLocatorFilter
+//
 
 QgsActiveLayerFeaturesLocatorFilter::QgsActiveLayerFeaturesLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

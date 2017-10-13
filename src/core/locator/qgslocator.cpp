@@ -54,7 +54,7 @@ QMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
   return mPrefixedFilters;
 }
 
-void QgsLocator::registerFilter( QgsLocatorFilter *filter )
+void QgsLocator::registerFilter( QgsLocatorFilter *filter, bool enableByDefault )
 {
   mFilters.append( filter );
   filter->setParent( this );
@@ -64,7 +64,7 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
   {
     if ( filter->name() == QStringLiteral( "actions" ) || filter->name() == QStringLiteral( "processing_alg" )
          || filter->name() == QStringLiteral( "layertree" ) || filter->name() == QStringLiteral( "layouts" )
-         || filter->name() == QStringLiteral( "features" ) )
+         || filter->name() == QStringLiteral( "features" ) || filter->name() == QStringLiteral( "josm" ) )
     {
       //inbuilt filter, no prefix check
       mPrefixedFilters.insert( filter->prefix(), filter );
@@ -77,7 +77,7 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 
   // restore settings
   QgsSettings settings;
-  bool enabled = settings.value( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), true, QgsSettings::Section::Gui ).toBool();
+  bool enabled = settings.value( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), enableByDefault, QgsSettings::Section::Gui ).toBool();
   bool byDefault = settings.value( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), filter->useWithoutPrefix(), QgsSettings::Section::Gui ).toBool();
 
   filter->setEnabled( enabled );
