@@ -25,14 +25,14 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
   if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
 
   // Collect geometries, build spatial index
-  QList<QgsAbstractGeometry *> geomList;
+  QList<QgsGeometry > geomList;
   const QgsFeatureIds &featureIds = ids.isEmpty() ? mFeaturePool->getFeatureIds() : ids;
   Q_FOREACH ( QgsFeatureId id, featureIds )
   {
     QgsFeature feature;
     if ( mFeaturePool->get( id, feature ) )
     {
-      geomList.append( feature.geometry().geometry()->clone() );
+      geomList.append( feature.geometry() );
     }
   }
 
@@ -46,7 +46,6 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
   // Create union of geometry
   QString errMsg;
   QgsAbstractGeometry *unionGeom = geomEngine->combine( geomList, &errMsg );
-  qDeleteAll( geomList );
   delete geomEngine;
   if ( !unionGeom )
   {

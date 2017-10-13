@@ -333,14 +333,17 @@ QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString 
   return overlay( geom, UNION, errorMsg ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QList<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::combine( const QList<QgsGeometry> &geomList, QString *errorMsg ) const
 {
 
   QVector< GEOSGeometry * > geosGeometries;
-  geosGeometries.resize( geomList.size() );
-  for ( int i = 0; i < geomList.size(); ++i )
+  geosGeometries.reserve( geomList.size() );
+  for ( const QgsGeometry &g : geomList )
   {
-    geosGeometries[i] = asGeos( geomList.at( i ), mPrecision );
+    if ( !g )
+      continue;
+
+    geosGeometries << asGeos( g.geometry(), mPrecision );
   }
 
   GEOSGeometry *geomUnion = nullptr;

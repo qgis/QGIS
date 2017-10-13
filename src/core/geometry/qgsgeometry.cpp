@@ -2228,17 +2228,8 @@ QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry> &geometries )
 {
   QgsGeos geos( nullptr );
 
-  QList<QgsAbstractGeometry *> geomV2List;
-  for ( const QgsGeometry &g : geometries )
-  {
-    if ( !( g.isNull() ) )
-    {
-      geomV2List.append( g.geometry() );
-    }
-  }
-
   QString error;
-  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geomV2List, &error ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error ) );
   QgsGeometry result( std::move( geom ) );
   result.mLastError = error;
   return result;

@@ -1289,6 +1289,7 @@ QgsGeometryEngine        {#qgis_api_break_3_0_QgsGeometryEngine}
 - `centroid()` returns the point instead of working on a parameter. The return value is a `nullptr` when `false` has been returned in the past.
 - `pointOnSurface()` returns the point instead of working on a parameter. The return value is a `nullptr` when `false` has been returned in the past.
 - splitGeometry() now returns new geometries as QgsGeometry, instead of QgsAbstractGeometry
+- combine() now requires a list of QgsGeometry, instead of QgsAbstractGeometry
 
 
 QgsGeometrySimplifier        {#qgis_api_break_3_0_QgsGeometrySimplifier}

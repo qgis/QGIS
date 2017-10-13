@@ -77,7 +77,7 @@ class QgsGeometryEngine
  :rtype: QgsAbstractGeometry
 %End
 
-    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &geometries, QString *errorMsg = 0 ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *combine( const QList< QgsGeometry > &geometries, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
  Calculate the combination of this and ``geometries``.
 

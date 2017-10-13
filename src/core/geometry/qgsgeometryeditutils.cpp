@@ -240,7 +240,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   if ( avoidIntersectionsLayers.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
-  QList< QgsAbstractGeometry * > nearGeometries;
+  QList< QgsGeometry > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
   for ( QgsVectorLayer *currentLayer : avoidIntersectionsLayers )
@@ -262,7 +262,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
       if ( !f.hasGeometry() )
         continue;
 
-      nearGeometries << f.geometry().geometry()->clone();
+      nearGeometries << f.geometry();
     }
   }
 
@@ -271,9 +271,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
     return nullptr;
   }
 
-
   std::unique_ptr< QgsAbstractGeometry > combinedGeometries( geomEngine->combine( nearGeometries ) );
-  qDeleteAll( nearGeometries );
   if ( !combinedGeometries )
   {
     return nullptr;
