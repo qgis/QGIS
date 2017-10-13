@@ -802,7 +802,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 6, QStringLiteral( "CONTINUOUS" ) );
   writeHandle( 390, DXF_HANDPLOTSTYLE );
 
-  for ( const QString &layerName : qgsAsConst( layerNames ) )
+  for ( const QString &layerName : qgis::as_const( layerNames ) )
   {
     writeGroup( 0, QStringLiteral( "LAYER" ) );
     writeHandle();

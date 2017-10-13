@@ -53,7 +53,7 @@ QgsLayout::~QgsLayout()
   while ( deleted )
   {
     deleted = false;
-    for ( QGraphicsItem *item : qgsAsConst( itemList ) )
+    for ( QGraphicsItem *item : qgis::as_const( itemList ) )
     {
       if ( dynamic_cast< QgsLayoutItem * >( item ) && !dynamic_cast< QgsLayoutItemPage *>( item ) )
       {

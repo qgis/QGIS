@@ -65,7 +65,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
   if ( !linesToProcess.empty() )
   {
     std::unique_ptr< QgsLineString > secondline;
-    for ( QgsLineString *line : qgsAsConst( linesToProcess ) )
+    for ( QgsLineString *line : qgis::as_const( linesToProcess ) )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 
@@ -504,7 +504,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
+    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -662,7 +662,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
+    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -697,7 +697,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
+    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
     {
       first.addPart( g );
     }

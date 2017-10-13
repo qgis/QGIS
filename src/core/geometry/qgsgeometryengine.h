@@ -53,7 +53,21 @@ class CORE_EXPORT QgsGeometryEngine
 
     virtual ~QgsGeometryEngine() = default;
 
+    /**
+     * Should be called whenever the geometry associated with the engine
+     * has been modified and the engine must be updated to suit.
+     */
     virtual void geometryChanged() = 0;
+
+    /**
+     * Prepares the geometry, so that subsequent calls to spatial relation methods
+     * are much faster.
+     *
+     * This should be called for any geometry which is used for multiple relation
+     * tests against other geometries.
+     *
+     * \see geometryChanged()
+     */
     virtual void prepareGeometry() = 0;
 
     /**
@@ -82,7 +96,7 @@ class CORE_EXPORT QgsGeometryEngine
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QList< QgsGeometry > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the symmetric difference of this and \a geom.
@@ -213,8 +227,17 @@ class CORE_EXPORT QgsGeometryEngine
      */
     virtual bool isSimple( QString *errorMsg = nullptr ) const = 0;
 
+    /**
+     * Splits this geometry according to a given line.
+     * \param splitLine the line that splits the geometry
+     * \param[out] newGeometries list of new geometries that have been created with the split
+     * \param topological true if topological editing is enabled
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] errorMsg error messages emitted, if any
+     * \returns 0 in case of success, 1 if geometry has not been split, error else
+    */
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-        QList<QgsAbstractGeometry *> &newGeometries,
+        QList<QgsGeometry > &newGeometries SIP_OUT,
         bool topological,
         QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr ) const
     {

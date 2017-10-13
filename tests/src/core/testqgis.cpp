@@ -302,7 +302,7 @@ void TestQgis::testQgsAsConst()
   ConstTester ct;
   ct.doSomething();
   QCOMPARE( ct.mVal, 1 );
-  qgsAsConst( ct ).doSomething();
+  qgis::as_const( ct ).doSomething();
   QCOMPARE( ct.mVal, 2 );
 }
 

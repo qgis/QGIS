@@ -386,7 +386,7 @@ void QgsRubberBand::paint( QPainter *p )
     return;
 
   QVector< QVector<QPointF> > shapes;
-  for ( const QList<QgsPointXY> &line : qgsAsConst( mPoints ) )
+  for ( const QList<QgsPointXY> &line : qgis::as_const( mPoints ) )
   {
     QVector<QPointF> pts;
     for ( const QgsPointXY &pt : line )
@@ -415,7 +415,7 @@ void QgsRubberBand::paint( QPainter *p )
       p->setPen( mPen );
     }
 
-    for ( const QVector<QPointF> &shape : qgsAsConst( shapes ) )
+    for ( const QVector<QPointF> &shape : qgis::as_const( shapes ) )
     {
       drawShape( p, shape );
     }

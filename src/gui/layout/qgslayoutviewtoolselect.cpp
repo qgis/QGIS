@@ -187,7 +187,7 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
     itemList = layout()->items( rect.center(), selectionMode );
   else
     itemList = layout()->items( rect, selectionMode );
-  for ( QGraphicsItem *item : qgsAsConst( itemList ) )
+  for ( QGraphicsItem *item : qgis::as_const( itemList ) )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
     QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );

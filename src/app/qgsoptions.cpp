@@ -2416,7 +2416,7 @@ void QgsOptions::showHelp()
   QString link;
 
   // give first priority to created pages which have specified a help key
-  for ( const QgsOptionsPageWidget *widget : qgsAsConst( mAdditionalOptionWidgets ) )
+  for ( const QgsOptionsPageWidget *widget : qgis::as_const( mAdditionalOptionWidgets ) )
   {
     if ( widget == activeTab )
     {

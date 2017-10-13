@@ -1170,7 +1170,7 @@ Returns an extruded version of this geometry.
  :rtype: int
 %End
 
-    QgsGeometry makeValid();
+    QgsGeometry makeValid() const;
 %Docstring
  Attempts to make an invalid geometry valid without losing vertices.
 
@@ -1225,7 +1225,7 @@ Returns an extruded version of this geometry.
       ValidatorGeos,
     };
 
-    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal );
+    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal ) const;
 %Docstring
  Validates geometry and produces a list of geometry errors.
  The ``method`` argument dictates which validator to utilize.

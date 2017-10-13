@@ -45,7 +45,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
     ~QgsGeos();
 
-    //! Removes caches
     void geometryChanged() override;
     void prepareGeometry() override;
 
@@ -56,7 +55,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Performs a fast, non-robust intersection between the geometry and
      * a \a rectangle. The returned geometry may be invalid.
      */
-    QgsAbstractGeometry *clip( const QgsRectangle &rectangle, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > clip( const QgsRectangle &rectangle, QString *errorMsg = nullptr ) const;
 
     /**
      * Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
@@ -72,10 +71,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \since QGIS 3.0
      */
-    QgsAbstractGeometry *subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
 
     QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry *> &, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine( const QList< QgsGeometry > &, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
@@ -138,16 +137,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isEmpty( QString *errorMsg = nullptr ) const override;
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
-    /**
-     * Splits this geometry according to a given line.
-    \param splitLine the line that splits the geometry
-    \param[out] newGeometries list of new geometries that have been created with the split
-    \param topological true if topological editing is enabled
-    \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-    \param[out] errorMsg error messages emitted, if any
-    \returns 0 in case of success, 1 if geometry has not been split, error else*/
     EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-                                         QList<QgsAbstractGeometry *> &newGeometries,
+                                         QList< QgsGeometry > &newGeometries,
                                          bool topological,
                                          QgsPointSequence &topologyTestPoints,
                                          QString *errorMsg = nullptr ) const override;
@@ -167,9 +158,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * calculated
      * \since QGIS 3.0
      */
-    QgsAbstractGeometry *singleSidedBuffer( double distance, int segments, int side,
-                                            int joinStyle, double miterLimit,
-                                            QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, int side,
+        int joinStyle, double miterLimit,
+        QString *errorMsg = nullptr ) const;
 
     /**
      * Reshapes the geometry using a line
@@ -178,7 +169,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * @param errorMsg if specified, provides more details about failure
      * @return the reshaped geometry
      */
-    QgsAbstractGeometry *reshapeGeometry( const QgsLineString &reshapeWithLine, EngineOperationResult *errorCode, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > reshapeGeometry( const QgsLineString &reshapeWithLine, EngineOperationResult *errorCode, QString *errorMsg = nullptr ) const;
 
     /**
      * Merges any connected lines in a LineString/MultiLineString geometry and
@@ -226,7 +217,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * An empty geometry will be returned in the case of errors.
      * \since QGIS 3.0
      */
-    static QgsGeometry polygonize( const QList<QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
+    static QgsGeometry polygonize( const QList< const QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.
@@ -260,8 +251,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * Create a geometry from a GEOSGeometry
      * \param geos GEOSGeometry. Ownership is NOT transferred.
      */
-    static QgsAbstractGeometry *fromGeos( const GEOSGeometry *geos );
-    static QgsPolygonV2 *fromGeosPolygon( const GEOSGeometry *geos );
+    static std::unique_ptr< QgsAbstractGeometry > fromGeos( const GEOSGeometry *geos );
+    static std::unique_ptr< QgsPolygonV2 > fromGeosPolygon( const GEOSGeometry *geos );
     static GEOSGeometry *asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
     static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
@@ -294,10 +285,10 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     //geos util functions
     void cacheGeos() const;
-    QgsAbstractGeometry *overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > overlay( const QgsAbstractGeometry *geom, Overlay op, QString *errorMsg = nullptr ) const;
     bool relation( const QgsAbstractGeometry *geom, Relation r, QString *errorMsg = nullptr ) const;
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
-    static QgsLineString *sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
+    static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry *g );
     static GEOSGeometry *nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry *> &splitResult ) const;
@@ -315,8 +306,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     //utils for geometry split
     bool topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
     GEOSGeometry *linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
-    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
-    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsAbstractGeometry *> &newGeometries ) const;
+    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry > &newGeometries ) const;
+    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsGeometry > &newGeometries ) const;
 
     //utils for reshape
     static GEOSGeometry *reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );

@@ -1619,7 +1619,7 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
         engine->prepareGeometry();
       }
 
-      for ( Predicate predicate : qgsAsConst( predicates ) )
+      for ( Predicate predicate : qgis::as_const( predicates ) )
       {
         bool isMatch = false;
         switch ( predicate )
@@ -2251,11 +2251,11 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
           QgsMultiPoint points;
           QgsGeometry intersectGeom = inGeom.intersection( tmpGeom );
           QgsAttributes outAttributes;
-          for ( int a : qgsAsConst( fieldsAIndices ) )
+          for ( int a : qgis::as_const( fieldsAIndices ) )
           {
             outAttributes.append( inFeatureA.attribute( a ) );
           }
-          for ( int b : qgsAsConst( fieldsBIndices ) )
+          for ( int b : qgis::as_const( fieldsBIndices ) )
           {
             outAttributes.append( inFeatureB.attribute( b ) );
           }
@@ -2270,7 +2270,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
               points.append( intersectGeom.asPoint() );
             }
 
-            for ( const QgsPointXY &j : qgsAsConst( points ) )
+            for ( const QgsPointXY &j : qgis::as_const( points ) )
             {
               outFeature.setGeometry( QgsGeometry::fromPoint( j ) );
               outFeature.setAttributes( outAttributes );
@@ -2404,7 +2404,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
 
       if ( !splittingLines.empty() )
       {
-        for ( const QgsGeometry &splitGeom : qgsAsConst( splittingLines ) )
+        for ( const QgsGeometry &splitGeom : qgis::as_const( splittingLines ) )
         {
           QList<QgsPointXY> splitterPList;
           QList< QgsGeometry > outGeoms;
@@ -2478,7 +2478,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
     }
 
     QList< QgsGeometry > parts;
-    for ( const QgsGeometry &aGeom : qgsAsConst( inGeoms ) )
+    for ( const QgsGeometry &aGeom : qgis::as_const( inGeoms ) )
     {
       if ( feedback->isCanceled() )
       {

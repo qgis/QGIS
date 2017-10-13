@@ -1423,7 +1423,7 @@ void QgisApp::dropEvent( QDropEvent *event )
   {
     freezeCanvases();
 
-    for ( const QString &file : qgsAsConst( files ) )
+    for ( const QString &file : qgis::as_const( files ) )
     {
       bool handled = false;
 
@@ -7926,7 +7926,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
-  for ( const QgsFeature &f : qgsAsConst( newFeatures ) )
+  for ( const QgsFeature &f : qgis::as_const( newFeatures ) )
   {
     newIds << f.id();
   }

@@ -510,7 +510,7 @@ bool QgsMetadataWidget::checkMetadata() const
   QString errors;
   if ( results == false )
   {
-    for ( const QgsMetadataValidator::ValidationResult &result : qgsAsConst( validationResults ) )
+    for ( const QgsMetadataValidator::ValidationResult &result : qgis::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
       if ( ! result.identifier.isNull() )

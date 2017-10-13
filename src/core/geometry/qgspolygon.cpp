@@ -196,7 +196,7 @@ void QgsPolygonV2::setExteriorRing( QgsCurve *ring )
   setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
 
   //match dimensionality for rings
-  for ( QgsCurve *ring : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *ring : qgis::as_const( mInteriorRings ) )
   {
     ring->convertTo( mExteriorRing->wkbType() );
   }

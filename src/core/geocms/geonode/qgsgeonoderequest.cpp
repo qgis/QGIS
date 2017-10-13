@@ -284,7 +284,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
 
   if ( majorVersion == 2 && minorVersion == 6 )
   {
-    for ( const QVariant &layer : qgsAsConst( layerList ) )
+    for ( const QVariant &layer : qgis::as_const( layerList ) )
     {
       QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
       const QVariantMap layerMap = layer.toMap();
@@ -323,7 +323,7 @@ QList<QgsGeoNodeRequest::ServiceLayerDetail> QgsGeoNodeRequest::parseLayers( con
   // Geonode version 2.7 or newer
   else if ( ( majorVersion == 2 && minorVersion >= 7 ) || ( majorVersion >= 3 ) )
   {
-    for ( const QVariant &layer : qgsAsConst( layerList ) )
+    for ( const QVariant &layer : qgis::as_const( layerList ) )
     {
       QgsGeoNodeRequest::ServiceLayerDetail layerStruct;
       const QVariantMap layerMap = layer.toMap();

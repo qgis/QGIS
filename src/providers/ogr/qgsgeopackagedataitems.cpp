@@ -389,7 +389,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
         QStringList optionalTables;
         optionalTables << QStringLiteral( "gpkg_extensions" )
                        << QStringLiteral( "gpkg_metadata_reference" );
-        for ( const QString &tableName : qgsAsConst( optionalTables ) )
+        for ( const QString &tableName : qgis::as_const( optionalTables ) )
         {
           char *sql = sqlite3_mprintf( "DELETE FROM %w WHERE table_name = '%q'",
                                        tableName.toUtf8().constData(),

@@ -661,7 +661,7 @@ void QgsLayoutView::ungroupSelectedItems()
 
   if ( !ungroupedItems.empty() )
   {
-    for ( QgsLayoutItem *item : qgsAsConst( ungroupedItems ) )
+    for ( QgsLayoutItem *item : qgis::as_const( ungroupedItems ) )
     {
       item->setSelected( true );
     }

@@ -1166,7 +1166,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  for ( const QString &layerName : qgsAsConst( sFileList ) )
+  for ( const QString &layerName : qgis::as_const( sFileList ) )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
